@@ -47,7 +47,7 @@ const enhance = compose(
         },
         loader: {
             width: '100%',
-            height: '100%',
+            padding: '100px 0',
             background: '#fff',
             justifyContent: 'center',
             alignItems: 'center',
@@ -373,7 +373,7 @@ const StatSalesGridList = enhance((props) => {
             <Col xs={3}>Магазин</Col>
             <Col xs={2}>Агент</Col>
             <Col xs={1}>Возврат</Col>
-            <Col xs={2} tyle={{textAlign: 'right'}}>Сумма</Col>
+            <Col xs={2} style={{textAlign: 'right'}}>Сумма</Col>
         </Row>
     )
 
@@ -391,7 +391,7 @@ const StatSalesGridList = enhance((props) => {
 
             return (
                 <Row key={id} className="dottedList">
-                    <Col xs={1}>{id}</Col>
+                    <Col xs={1}><a onClick={() => { statSaleDialog.handleOpenStatSaleDialog(id) }}>{id}</a></Col>
                     <Col xs={2}>{createdDate}</Col>
                     <Col xs={3}>{marketName}</Col>
                     <Col xs={2}>

@@ -1,19 +1,26 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import _ from 'lodash'
-import {compose, withReducer} from 'recompose'
+import {compose, withReducer, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import CloseIcon2 from '../CloseIcon2'
+import ConfirmDialog from '../ConfirmDialog'
 import LinearProgress from '../LinearProgress'
 import numberFormat from '../../helpers/numberFormat'
 import AcceptClientTransactionDialog from './AcceptClientTransactionDialog'
 import PaymentIcon from 'material-ui/svg-icons/action/payment'
 import Tooltip from '../ToolTip'
 import getConfig from '../../helpers/getConfig'
+import Pagination from '../ReduxForm/Pagination'
+import TransactionUpdatePriceDialog from './TransactionUpdatePriceDialog'
+import Edit from 'material-ui/svg-icons/editor/mode-edit'
+import Delete from 'material-ui/svg-icons/action/delete-forever'
+import dateFormat from '../../helpers/dateFormat'
+import moment from 'moment'
 
 const enhance = compose(
     injectSheet({
@@ -116,6 +123,9 @@ const enhance = compose(
             margin: '0 -30px',
             padding: '0 30px',
             boxSizing: 'content-box',
+            '& > div:first-child': {
+                height: '50px'
+            },
             '& .row': {
                 margin: '0',
                 '&:first-child': {
@@ -140,7 +150,11 @@ const enhance = compose(
                 borderBottom: 'none'
             },
             '& > div:last-child': {
-                textAlign: 'right'
+                textAlign: 'right',
+                opacity: '0'
+            },
+            '&:hover > div:last-child': {
+                opacity: '1'
             }
         },
         closeDetail: {
@@ -152,6 +166,11 @@ const enhance = compose(
             cursor: 'pointer',
             zIndex: '1'
         },
+        pagination: {
+            position: 'absolute',
+            width: '170px',
+            left: 'calc(50% - 85px)'
+        },
         noData: {
             textAlign: 'center',
             padding: '20px'
@@ -160,40 +179,117 @@ const enhance = compose(
     withReducer('state', 'dispatch', (state, action) => {
         return {...state, ...action}
     }, {open: false}),
+    withState('currentItem', 'setItem', null)
+
 )
+
+const iconStyle = {
+    icon: {
+        color: '#666666',
+        width: 24,
+        height: 24,
+        lineHeight: 'normal'
+    },
+    button: {
+        width: 24,
+        height: 24,
+        padding: 0
+    }
+}
 
 const TransactionCashDialog = enhance((props) => {
     const {
         open,
+        filterItem,
         loading,
         onClose,
         classes,
         paymentData,
         cashBoxDialog,
-        acceptCashDialog
+        acceptCashDialog,
+        superUser,
+        setItem,
+        currentItem
     } = props
-
+    const ZERO = 0
+    const TWO = 2
+    const openEditDialog = (thisItem) => {
+        superUser.handleOpenSuperUserDialog(thisItem.id)
+        setItem(thisItem)
+    }
+    const initialValues = {
+        amount: _.get(currentItem, 'amount'),
+        comment: _.get(currentItem, 'comment'),
+        division: {
+            text: _.get(currentItem, ['division', 'name']),
+            value: _.get(currentItem, ['division', 'id'])
+        },
+        paymentType: {
+            value: _.toInteger(_.get(currentItem, 'paymentType')) === ZERO ? TWO : _.toInteger(_.get(currentItem, 'paymentType'))
+        },
+        user: {
+            value: _.get(currentItem, ['user', 'id'])
+        }
+    }
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
-
+    const isSuperUser = _.get(superUser, 'isSuperUser')
     const detailRow = (
         _.get(paymentData, 'paymentLoading') ? <LinearProgress/>
             : _.map(_.get(paymentData, 'data'), (item) => {
+                const id = _.get(item, 'id')
                 const clientName = _.get(item, ['client', 'name'])
-                const marketName = _.get(item, ['market', 'name'])
+                const marketName = _.get(item, ['market', 'name']) || '-'
                 const currency = _.get(item, ['currency', 'name'])
-                const order = _.get(item, ['order'])
+                const division = _.get(item, ['division', 'name'])
+                const order = _.get(item, ['order']) ? '№' + _.get(item, ['order']) : '-'
                 const customRate = _.get(item, ['customRate'])
+                const createdDate = dateFormat(_.get(item, ['createdDate'])) + ' ' + moment(_.get(item, ['createdDate'])).format('HH:mm')
                 const internal = _.toNumber(_.get(item, 'internal'))
                 const amount = _.toNumber(_.get(item, 'amount'))
                 return (
-                    <Row key={_.get(item, 'id')} className={classes.detailsRow}>
-                        <Col xs={4}>{clientName}</Col>
-                        <Col xs={3}>{marketName}</Col>
-                        <Col xs={2}>{order}</Col>
-                        <Col xs={3}>
+                    <Row key={id} className={classes.detailsRow}>
+                        <Col xs={1}>{id}</Col>
+                        <Col xs={2}>{clientName}</Col>
+                        <Col xs={2}>{marketName}</Col>
+                        <Col xs={2}>{division}</Col>
+                        <Col xs={1}>{order}</Col>
+                        <Col xs={1} style={{whiteSpace: 'nowrap'}}>{createdDate}</Col>
+                        <Col xs={2} style={{textAlign: 'right', paddingRight: '0'}}>
                             <div>{numberFormat(amount, currency)}</div>
-                            <div>{currency !== primaryCurrency && customRate ? '(internal ' + numberFormat(customRate, primaryCurrency) + ')'
-                                : (!customRate ? '(internal ' + numberFormat((amount / internal), primaryCurrency) + ')' : null) }</div>
+                            <div>{currency !== primaryCurrency
+                                ? customRate
+                                    ? '( Курс  ' + numberFormat(customRate) + ')'
+                                    : '( Курс  ' + numberFormat((amount / internal)) + ')'
+                                : null }</div>
+
+                        </Col>
+                        <Col xs={1}>
+                            {
+                            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-end'}}>
+                                <Tooltip position="bottom" text="Изменить">
+                                    <IconButton
+                                        iconStyle={iconStyle.icon}
+                                        style={iconStyle.button}
+                                        disableTouchRipple={true}
+                                        touch={true}
+                                        onTouchTap={() => { openEditDialog(item) }}>
+                                        <Edit />
+                                    </IconButton>
+                                </Tooltip>
+                                <Tooltip position="bottom" text="Удалить">
+                                    <IconButton
+                                        iconStyle={iconStyle.icon}
+                                        style={iconStyle.button}
+                                        disableTouchRipple={true}
+                                        touch={true}
+                                        onTouchTap={() => {
+                                            superUser.handleOpenDeleteTransaction(id)
+                                            setItem(id)
+                                        }}>
+                                        <Delete />
+                                    </IconButton>
+                                </Tooltip>
+                            </div>}
                         </Col>
                     </Row>
 
@@ -204,7 +300,7 @@ const TransactionCashDialog = enhance((props) => {
     return (
         <Dialog
             modal={true}
-            contentStyle={loading ? {width: '300px'} : {width: '900px', maxWidth: 'auto'}}
+            contentStyle={{width: '1000px', maxWidth: 'none'}}
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
@@ -223,7 +319,7 @@ const TransactionCashDialog = enhance((props) => {
                 <div className={classes.inContent} style={{minHeight: 'initial'}}>
                     <div className={classes.list}>
                         <Row className="dottedList">
-                            <Col xs={10}>Агент</Col>
+                            <Col xs={9}>Агент</Col>
                             <Col xs={2}>Сумма</Col>
                         </Row>
                         {_.map(_.get(acceptCashDialog, ['data']), (item, index) => {
@@ -243,9 +339,12 @@ const TransactionCashDialog = enhance((props) => {
                                                     acceptCashDialog.handleCloseAcceptCashDetail()
                                                 }}>
                                             </div>
-                                            <Col xs={5} style={{textAlign: 'right'}}>{amount}</Col>
+                                            <div className={classes.pagination}>
+                                                <Pagination filter={filterItem}/>
+                                            </div>
+                                            <Col xs={5} style={{textAlign: 'right', paddingRight: '0'}}>{amount}</Col>
                                             <Col xs={1}>
-                                                <div style={{marginRight: '-4px'}}>
+                                                <div style={{paddingLeft: '7px'}}>
                                                     <Tooltip position="bottom" text="Оплатить">
                                                         <IconButton
                                                             onTouchTap={() => {
@@ -259,10 +358,14 @@ const TransactionCashDialog = enhance((props) => {
                                         </Row>
                                         <div>
                                             <Row className={classes.detailsRow}>
-                                                <Col xs={4}>Клиент</Col>
-                                                <Col xs={3}>Магазин</Col>
-                                                <Col xs={2}>№ заказа</Col>
-                                                <Col xs={3}>Сумма</Col>
+                                                <Col xs={1}>№</Col>
+                                                <Col xs={2}>Клиент</Col>
+                                                <Col xs={2}>Магазин</Col>
+                                                <Col xs={2}>Подразделение</Col>
+                                                <Col xs={1}>Заказ</Col>
+                                                <Col xs={1}>Дата</Col>
+                                                <Col xs={2} style={{textAlign: 'right', paddingRight: '0'}}>Сумма</Col>
+                                                <Col xs={1}> </Col>
                                             </Row>
                                             {detailRow}
                                         </div>
@@ -307,6 +410,21 @@ const TransactionCashDialog = enhance((props) => {
                 data={paymentData.currentCashBoxDetails}
                 currency={paymentData.currencyId}
                 loading={paymentData.paymentLoading}/>
+            {isSuperUser && <TransactionUpdatePriceDialog
+                open={superUser.open}
+                loading={superUser.loading}
+                initialValues={initialValues}
+                onClose={superUser.handleCloseSuperUserDialog}
+                onSubmit={superUser.handleSubmitSuperUserDialog}
+                client={_.get(currentItem, ['client'])}
+            />}
+            {isSuperUser && <ConfirmDialog
+                open={superUser.openDelete}
+                type={'delete'}
+                onSubmit={superUser.handleSubmitDeleteTransaction}
+                onClose={superUser.handleCloseDeleteTransaction}
+                message={'Транзакция №' + currentItem}
+            />}
 
         </Dialog>
     )

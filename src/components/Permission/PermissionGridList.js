@@ -4,54 +4,39 @@ import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
-import DeleteIcon from 'material-ui/svg-icons/action/delete'
-import Time from 'material-ui/svg-icons/device/access-time'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
-import PermissionCreateDialog from './PermissionCreateDialog'
-import PermissionToggle from './PermissionToggle'
-import ConfirmDialog from '../ConfirmDialog'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import SettingSideMenu from '../Setting/SettingSideMenu'
 import SetDateDialog from './SetDateDialog'
 import Tooltip from '../ToolTip'
 import toBoolean from '../../helpers/toBoolean'
-import {Field, reduxForm} from 'redux-form'
+import {
+    getPermName,
+    ON_TIME,
+    OFF_TIME
+} from '../../constants/permissionTime'
 
 const listHeader = [
     {
         sorting: false,
         name: 'name',
-        xs: 4,
+        xs: 5,
         title: 'Наименование'
     },
     {
         sorting: false,
-        name: 'fromTime',
-        xs: 2,
-        title: 'Время начала'
+        name: 'toTime',
+        xs: 5,
+        title: 'Время работы'
     },
     {
         sorting: false,
-        name: 'toTime',
-        xs: 2,
-        title: 'Время окончания'
-    },
-    {
-        sorting: true,
-        xs: 2,
-        alignRight: true,
-        name: 'actions',
-        title: 'Статус'
-    },
-    {
-        sorting: true,
         name: 'edit',
-        alignRight: true,
         xs: 2,
-        title: 'Рабочее время'
+        title: ''
     }
 ]
 
@@ -101,10 +86,6 @@ const enhance = compose(
             display: 'inline-flex'
         }
     }),
-    reduxForm({
-        form: 'PermissionCreateForm',
-        enableReinitialize: true
-    })
 )
 const iconStyle = {
     icon: {
@@ -121,32 +102,14 @@ const iconStyle = {
         justifyContent: 'flex-end'
     }
 }
-const ONE = 1
 const ZERO = 0
 const PermissionGridList = enhance((props) => {
     const {
         filter,
-        createDialog,
-        updateDialog,
-        actionsDialog,
-        confirmDialog,
         listData,
-        detailData,
         setDateDialog,
         classes
     } = props
-
-    const actions = (
-        <div>
-            <IconButton onTouchTap={actionsDialog.handleActionEdit}>
-                <ModEditorIcon />
-            </IconButton>
-
-            <IconButton onTouchTap={actionsDialog.handleActionDelete}>
-                <DeleteIcon />
-            </IconButton>
-        </div>
-    )
 
     const permissionDetail = (
         <span>a</span>
@@ -161,21 +124,8 @@ const PermissionGridList = enhance((props) => {
 
         return (
             <Row key={id} className={classes.listRow}>
-                <Col xs={4}>{name}</Col>
-                <Col xs={2}>{fromTime}</Col>
-                <Col xs={2}>{toTime}</Col>
-                <Col xs={2} style={{textAlign: 'right'}}>
-                    <div className={classes.iconBtn}>
-                        <Field
-                            filter={filter}
-                            name={'toggle' + id}
-                            status={status}
-                            id={id}
-                            update={() => { updateDialog.handleSubmitUpdateDialog(id, _.toInteger(status) === ONE) }}
-                            component={PermissionToggle}
-                        />
-                    </div>
-                </Col>
+                <Col xs={5}>{name}</Col>
+                <Col xs={5}>{getPermName[status]} {(status === ON_TIME || status === OFF_TIME) && ': ' + fromTime + ' - ' + toTime} </Col>
                 <Col xs={2} style={{textAlign: 'right'}}>
                     <div className={classes.iconBtn}>
                         <Tooltip position="bottom" text="Изменить">
@@ -185,7 +135,7 @@ const PermissionGridList = enhance((props) => {
                                 disableTouchRipple={true}
                                 touch={true}
                                 onTouchTap={() => { setDateDialog.handleOpenSetDateDialog(id) }}>
-                                <Time color='#5d6474'/>
+                                <ModEditorIcon color='#5d6474'/>
                             </IconButton>
                         </Tooltip>
                     </div>
@@ -209,45 +159,17 @@ const PermissionGridList = enhance((props) => {
                         filter={filter}
                         list={list}
                         detail={permissionDetail}
-                        actionsDialog={actions}
                         transparentLoading={true}
                         listShadow={false}
                     />
                 </div>
             </div>
-
-            <PermissionCreateDialog
-                initialValues={{}}
-                open={createDialog.openCreateDialog}
-                loading={createDialog.createLoading}
-                onClose={createDialog.handleCloseCreateDialog}
-                onSubmit={createDialog.handleSubmitCreateDialog}
-            />
-
-            <PermissionCreateDialog
-                isUpdate={true}
-                initialValues={updateDialog.initialValues}
-                open={updateDialog.openUpdateDialog}
-                loading={updateDialog.updateLoading}
-                onClose={updateDialog.handleCloseUpdateDialog}
-                onSubmit={updateDialog.handleSubmitUpdateDialog}
-            />
             <SetDateDialog
                 initialValues={setDateDialog.initialValues}
                 open={_.toInteger(setDateDialog.open) > ZERO ? true : toBoolean(setDateDialog.open)}
-                loading={setDateDialog.loading}
                 onClose={setDateDialog.handleCloseSetDateDialog}
                 onSubmit={setDateDialog.handleSubmitSetDateDialog}
             />
-
-            {detailData.data && <ConfirmDialog
-                type="delete"
-                message={_.get(detailData, ['data', 'name'])}
-                loading={confirmDialog.confirmLoading}
-                onClose={confirmDialog.handleCloseConfirmDialog}
-                onSubmit={confirmDialog.handleSendConfirmDialog}
-                open={confirmDialog.openConfirmDialog}
-            />}
         </Container>
     )
 })
@@ -255,31 +177,11 @@ const PermissionGridList = enhance((props) => {
 PermissionGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
-    detailData: PropTypes.object,
-    createDialog: PropTypes.shape({
-        createLoading: PropTypes.bool.isRequired,
-        openCreateDialog: PropTypes.bool.isRequired,
-        handleOpenCreateDialog: PropTypes.func.isRequired,
-        handleCloseCreateDialog: PropTypes.func.isRequired,
-        handleSubmitCreateDialog: PropTypes.func.isRequired
-    }).isRequired,
-    confirmDialog: PropTypes.shape({
-        confirmLoading: PropTypes.bool.isRequired,
-        openConfirmDialog: PropTypes.bool.isRequired,
-        handleOpenConfirmDialog: PropTypes.func.isRequired,
-        handleCloseConfirmDialog: PropTypes.func.isRequired,
-        handleSendConfirmDialog: PropTypes.func.isRequired
-    }).isRequired,
-    updateDialog: PropTypes.shape({
-        updateLoading: PropTypes.bool.isRequired,
-        openUpdateDialog: PropTypes.bool.isRequired,
-        handleOpenUpdateDialog: PropTypes.func.isRequired,
-        handleCloseUpdateDialog: PropTypes.func.isRequired,
-        handleSubmitUpdateDialog: PropTypes.func.isRequired
-    }).isRequired,
-    actionsDialog: PropTypes.shape({
-        handleActionEdit: PropTypes.func.isRequired,
-        handleActionDelete: PropTypes.func.isRequired
+    setDateDialog: PropTypes.shape({
+        open: PropTypes.number,
+        handleOpenSetDateDialog: PropTypes.func.isRequired,
+        handleCloseSetDateDialog: PropTypes.func.isRequired,
+        handleSubmitSetDateDialog: PropTypes.func.isRequired
     }).isRequired
 }
 

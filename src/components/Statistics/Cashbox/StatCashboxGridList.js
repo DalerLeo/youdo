@@ -32,7 +32,7 @@ const enhance = compose(
     injectSheet({
         loader: {
             width: '100%',
-            height: '100%',
+            padding: '100px 0',
             background: '#fff',
             alignItems: 'center',
             zIndex: '999',
@@ -199,7 +199,7 @@ const enhance = compose(
                 marginBottom: '5px'
             },
             '& div': {
-                fontSize: '24px',
+                fontSize: '20px',
                 fontWeight: '600'
             },
             '&:last-child': {
@@ -310,11 +310,12 @@ for (let i = 0, t = 20; i < t; i++) {
 
 const StatCashboxGridList = enhance((props) => {
     const {
-        filter,
+        filterDetail,
         listData,
         detailData,
         classes,
         getDocument,
+        detailFilterForm,
         handleSubmitFilterDialog
     } = props
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
@@ -467,7 +468,8 @@ const StatCashboxGridList = enhance((props) => {
                         </div>
 
                     {openDetails && <CashboxDetails
-                        filter={filter}
+                        filter={filterDetail}
+                        initialValues={detailFilterForm.initialValues}
                         detailData={detailData}
                         listData={listData}
                         handleSubmitFilterDialog={_.get(detailData, 'handleSubmitDetailFilterDialog')}

@@ -218,6 +218,7 @@ export const STATISTICS_MARKET_ITEM_URL = `/${STATISTICS_MARKET}/:statMarketId`
 export const STATISTICS_MARKET_ITEM_PATH = `/${STATISTICS_MARKET}/%d`
 
 export const STATISTICS_FINANCE_URL = `/${STATISTICS}/finance`
+export const STATISTICS_CLIENT_INCOME_URL = `/${STATISTICS}/clientIncome`
 export const STATISTICS_INCOME = 'statistics/income'
 export const STATISTICS_INCOME_URL = `/${STATISTICS_INCOME}`
 export const STATISTICS_OUTCOME = 'statistics/outcome'
@@ -315,3 +316,8 @@ export const PERMISSION = 'permission'
 export const PERMISSION_LIST_URL = `/${PERMISSION}`
 export const PERMISSION_ITEM_URL = `/${PERMISSION}/:itemId`
 export const PERMISSION_ITEM_PATH = `/${PERMISSION}/%d`
+
+export const GOOGLE_CUSTOM = 'googleMap'
+export const GOOGLE_CUSTOM_LIST_URL = `/${GOOGLE_CUSTOM}`
+export const GOOGLE_CUSTOM_ITEM_URL = `/${GOOGLE_CUSTOM}/:itemId`
+export const GOOGLE_CUSTOM_ITEM_PATH = `/${GOOGLE_CUSTOM}/%d`

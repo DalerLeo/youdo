@@ -88,7 +88,7 @@ export const listFilterSerializer = (data) => {
         'created_by': _.get(defaultData, 'createdBy'),
         'is_active': _.get(defaultData, 'isActive'),
         'frequency': _.get(defaultData, 'frequency'),
-        'zone': _.get(defaultData, 'zone'),
+        'border': _.get(defaultData, 'zone'),
         'market_type': _.get(defaultData, 'marketType'),
         'created_date_0': _.get(defaultData, 'fromDate'),
         'created_date_1': _.get(defaultData, 'toDate'),

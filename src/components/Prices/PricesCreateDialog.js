@@ -320,6 +320,7 @@ const PricesCreateDialog = enhance((props) => {
                                         component={CustomChipField}
                                         className={classes.inputFieldCustom}
                                         fullWidth={true}
+                                        isUpdate={isUpdate}
                                         label="Выберите тип магазинов "
                                     />
                                 </div>

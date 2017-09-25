@@ -30,7 +30,7 @@ const enhance = compose(
     injectSheet({
         loader: {
             width: '100%',
-            height: '100%',
+            padding: '100px 0',
             background: '#fff',
             display: 'flex',
             alignItems: 'center',
@@ -47,8 +47,6 @@ const enhance = compose(
             WebkitTransition: 'all 500ms ease',
             padding: '20px 30px',
             display: 'flex',
-            overflowY: 'auto',
-            overflowX: 'hidden',
             flexDirection: 'column',
             height: '100%',
             '& > div:nth-child(3)': {
@@ -62,6 +60,7 @@ const enhance = compose(
         tableWrapper: {
             display: 'flex',
             margin: '0 -30px',
+            overflow: 'hidden',
             paddingLeft: '30px',
             '& > div:first-child': {
                 zIndex: '20',
@@ -141,7 +140,7 @@ const enhance = compose(
         rightPanel: {
             flexBasis: 'calc(100% - 250px)',
             maxWidth: 'calc(100% - 250px)',
-            overflow: 'hidden'
+            overflowY: 'auto'
         },
         searchButton: {
             marginLeft: '-10px !important',
@@ -187,7 +186,8 @@ const enhance = compose(
                 flexBasis: '25%',
                 maxWidth: '25%',
                 '& div': {
-                    fontSize: '24px',
+                    fontSize: '17px',
+                    marginTop: '2px',
                     fontWeight: '600'
                 }
             }
@@ -471,7 +471,7 @@ const StatProductMoveGridList = enhance((props) => {
                                                     <td rowSpan={2}>Код товара</td>
                                                     <td colSpan={2}>Остаток на начало периода</td>
                                                     <td colSpan={2}>Поступивший товара за период</td>
-                                                    <td colSpan={2}>Возврать</td>
+                                                    <td colSpan={2}>Возврат</td>
                                                     <td colSpan={2}>Выданный товара за период</td>
                                                     <td colSpan={2}>Остаток на конец</td>
                                                 </tr>

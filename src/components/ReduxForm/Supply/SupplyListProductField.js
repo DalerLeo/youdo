@@ -123,23 +123,17 @@ const enhance = compose(
         },
         background: {
             display: 'flex',
-            alignItems: 'flex-start',
+            alignItems: 'flex-end',
             padding: '10px',
             margin: '5px -30px 0',
             backgroundColor: '#f1f5f8',
             position: 'relative',
             zIndex: '2',
-            '& > div': {
-                marginTop: '-2px !important'
-            },
             '& > button > div > span': {
                 padding: '0 !important'
             },
             '& button': {
                 alignSelf: 'center'
-            },
-            '& > div > div > div:first-child': {
-                overflow: 'hidden'
             }
         }
     }),

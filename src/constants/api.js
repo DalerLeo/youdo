@@ -90,6 +90,7 @@ export const TRANSACTION_LIST = `/${TRANSACTION}/`
 export const TRANSACTION_ITEM = `/${TRANSACTION}/%d/`
 export const TRANSACTION_SEND = 'finance/transfer/'
 export const TRANSACTION_DELETE = `/${TRANSACTION}/%d/`
+export const TRANSACTION_PAYMENT_DELETE = 'sales/client_transaction/%d/cancel/'
 
 export const CLIENT_TRANSACTION = 'sales/client_transaction'
 export const CLIENT_TRANSACTION_CREATE = `/${CLIENT_TRANSACTION}/`
@@ -253,6 +254,9 @@ export const STAT_CASHBOX_ITEM = `/${STAT_CASHBOX}/%d/`
 export const STAT_CASHBOX_DELETE = `/${STAT_CASHBOX}/%d/`
 export const STAT_CASHBOX_DATA_ITEM = 'stats/cashbox/%d/'
 
+export const STAT_CLIENT_INCOME = 'stats/client_transactions'
+export const STAT_CLIENT_INCOME_LIST = `/${STAT_CLIENT_INCOME}/`
+
 export const MANUFACTURE_PRODUCT = 'manufacture/create_ingredient'
 export const MANUFACTURE_PRODUCT_CREATE = `/${MANUFACTURE_PRODUCT}/`
 export const MANUFACTURE_PRODUCT_LIST = `/${MANUFACTURE_PRODUCT}/`
@@ -387,6 +391,7 @@ export const POSITION_RATE = `/${POSITION}/%d/permissions/`
 export const POSITION_PERMISSION = 'main/group/gcrud'
 
 export const ACTIVITY = 'market/plan_tasks'
+export const ACTIVITY_SUMMARY = `${ACTIVITY}/sum/`
 export const ACTIVITY_ORDER_LIST = `${ACTIVITY}/`
 export const ACTIVITY_ORDER_ITEM = `${ORDER}/%d`
 export const ACTIVITY_VISIT_LIST = `/${ACTIVITY}/`
@@ -398,7 +403,7 @@ export const ACTIVITY_DELIVERY_LIST = `/${ACTIVITY}/`
 
 export const STAT_PRODUCT_MOVE_LIST = 'stats/stock/products/'
 export const STAT_PRODUCT_MOVE_SUM = 'stats/stock/sum/'
-export const STAT_PRODUCT_MOVE_GET_DOCUMENT = '/stats/agents/export/'
+export const STAT_PRODUCT_MOVE_GET_DOCUMENT = '/stats/stock/products/export/'
 
 export const STAT_REPORT_LIST = 'stats/general/'
 export const STAT_REPORT_ITEM = 'sales/order/'

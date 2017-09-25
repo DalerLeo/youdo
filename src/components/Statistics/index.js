@@ -14,6 +14,7 @@ import StatProductMoveGridList from './ProductMove/StatProductMoveGridList'
 import StatReportGridList from './StatReportGridLIst'
 import StatReturnGridList from './Return/StatReturnGridList'
 import StatReturnDialog from './Return/StatReturnDialog'
+import ClientIncomeGridList from './ClientIncome/ClientIncomeGridList'
 
 const STAT_AGENT_DIALOG_OPEN = 'openStatAgentDialog'
 const STAT_RETURN_DIALOG_OPEN = 'openStatReturnDialog'
@@ -44,6 +45,7 @@ export {
     StatCashboxGridList,
     StatProductMoveGridList,
     StatReportGridList,
+    ClientIncomeGridList,
     DATE,
     STAT_AGENT_DIALOG_OPEN,
     STAT_MARKET_DIALOG_OPEN,

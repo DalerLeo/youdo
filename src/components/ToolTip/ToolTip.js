@@ -8,11 +8,14 @@ import {compose, withState} from 'recompose'
 const enhance = compose(
     injectSheet({
         wrapper: {
-            position: 'relative'
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center'
         },
         tooltip: {
             zIndex: '999999 !important',
-            lineHeight: '1.2',
+            borderRadius: '2px !important',
+            lineHeight: '1.3',
             '&.place-left': {
                 '&:after': {
                     right: '-5px !important'
@@ -23,17 +26,17 @@ const enhance = compose(
     withState('visible', 'setVisible', false)
 )
 
-const ToolTip = enhance(({classes, text, children, position}) => {
+const ToolTip = enhance(({classes, text, children, position, type}) => {
     const uniqId = _.uniqueId('tooltip_')
     return (
         <div>
-            <div data-tip data-for={uniqId}>
+            <div data-tip data-for={uniqId} className={classes.wrapper}>
                 {children}
             </div>
             <ReactTooltip
                 place={position}
                 id={uniqId}
-                type="dark"
+                type={type || 'dark'}
                 effect="solid"
                 className={classes.tooltip}
                 html={true}>

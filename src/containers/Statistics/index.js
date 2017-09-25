@@ -12,6 +12,7 @@ import StatCashboxList from './StatCashbox'
 import StatProductMoveList from './StatProductMove'
 import StatReportList from './StatReport'
 import StatReturnList from './StatReturn'
+import StatClientIncomeList from './StatClientIncome'
 
 export {
     StatReturnList,
@@ -27,5 +28,6 @@ export {
     StatRemainderList,
     StatCashboxList,
     StatProductMoveList,
-    StatReportList
+    StatReportList,
+    StatClientIncomeList
 }

@@ -26,7 +26,7 @@ const enhance = compose(
         },
         loader: {
             width: '100%',
-            height: '100%',
+            padding: '100px 0',
             background: '#fff',
             justifyContent: 'center',
             alignItems: 'center',
@@ -282,29 +282,29 @@ const StatReportGridList = enhance((props) => {
                 <li>
                     <span>Баланс <br/> на начало периода</span>
                     <div>
-                        <span>{_.get(cashBoxesData, 'sum')}</span>
-                        <span>15 000 000 UZS</span>
+                        <span>{numberFormat(_.get(cashBoxesData, ['startBalance', 'cash']), currency)}</span>
+                        <span>{numberFormat(_.get(cashBoxesData, ['startBalance', 'bank']), currency)}</span>
                     </div>
                 </li>
                 <li>
                     <span>Поступления</span>
                     <div>
-                        <span>5 000 000 UZS</span>
-                        <span>15 000 000 UZS</span>
+                        <span>{numberFormat(_.get(cashBoxesData, ['income', 'cash']), currency)}</span>
+                        <span>{numberFormat(_.get(cashBoxesData, ['income', 'bank']), currency)}</span>
                     </div>
                 </li>
                 <li>
                     <span>Списания</span>
                     <div>
-                        <span>5 000 000 UZS</span>
-                        <span>15 000 000 UZS</span>
+                        <span>{numberFormat(_.get(cashBoxesData, ['expenses', 'cash']), currency)}</span>
+                        <span>{numberFormat(_.get(cashBoxesData, ['expenses', 'bank']), currency)}</span>
                     </div>
                 </li>
                 <li>
                     <span>Баланс <br/> на конец периода</span>
                     <div>
-                        <span>5 000 000 UZS</span>
-                        <span>15 000 000 UZS</span>
+                        <span>{numberFormat(_.get(cashBoxesData, ['endBalance', 'cash']), currency)}</span>
+                        <span>{numberFormat(_.get(cashBoxesData, ['endBalance', 'bank']), currency)}</span>
                     </div>
                 </li>
             </ul>

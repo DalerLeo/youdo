@@ -13,6 +13,7 @@ import ContentAdd from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
 import CloseIcon2 from '../CloseIcon2'
 import Person from '../Images/person.png'
+import NoShop from '../Images/no-shop.svg'
 
 const enhance = compose(
     injectSheet({
@@ -92,11 +93,7 @@ const enhance = compose(
         },
         zoneInfoTitle: {
             extend: 'zonesInfoTitle',
-            padding: '20px 0',
-            justifyContent: 'space-between',
-            '& > div': {
-                marginRight: '0'
-            }
+            padding: '20px 0'
         },
         zoneInfoNameTitle: {
             background: '#fff',
@@ -228,6 +225,13 @@ const enhance = compose(
             '& svg': {
                 fill: '#666 !important'
             }
+        },
+        noShop: {
+            background: 'url(' + NoShop + ') no-repeat center center',
+            backgroundSize: '135px',
+            padding: '180px 0 0',
+            color: '#666',
+            textAlign: 'center'
         }
     })
 )
@@ -242,11 +246,15 @@ const ZoneDetails = enhance((props) => {
     } = props
 
     const loading = _.get(detailData, 'detailLoading')
+    const marketsLoading = _.get(detailData, ['shop', 'shopListLoading'])
     const id = _.get(detailData, ['data', 'id'])
     const name = _.get(detailData, ['data', 'properties', 'title'])
+    const ZERO = 0
+    const marketsCount = _.toInteger(_.get(detailData, ['shop', 'marketsCount']))
+    const agentsCount = _.get(detailData, ['data', 'properties', 'agents'])
     return (
         <div className={classes.detailWrap}>
-            {loading && <div className={classes.loader}>
+            {(loading || marketsLoading) && <div className={classes.loader}>
                 <CircularProgress size={40} thickness={4}/>
             </div>}
             <div className={classes.zoneInfoNameTitle}>
@@ -263,16 +271,12 @@ const ZoneDetails = enhance((props) => {
             <div className={classes.zoneInfoContent}>
                 <div className={classes.zoneInfoTitle}>
                     <div>
-                        <big>24</big>
+                        <big>{marketsCount}</big>
                         <span>всего магазинов <br/> в зоне</span>
                     </div>
                     <div>
-                        <big>4</big>
-                        <span>закреплено <br/> агентов</span>
-                    </div>
-                    <div>
-                        <big>2</big>
-                        <span>закреплено <br/> инкассаторов</span>
+                        <big>{!_.isEmpty(agentsCount) ? agentsCount.length : '0'}</big>
+                        <span>закреплено <br/> персонал</span>
                     </div>
                 </div>
                 <div className={classes.personal}>
@@ -310,16 +314,21 @@ const ZoneDetails = enhance((props) => {
                 <div className={classes.stores}>
                     <div className="dottedList">
                         <span>Магазины в зоне</span>
-                        <a>+ добавить</a>
                     </div>
-                    <div className="dottedList">OOO Angels Food</div>
-                    <div className="dottedList">OOO Angels Food</div>
-                    <div className="dottedList">OOO Angels Food</div>
-                    <div className="dottedList">OOO Angels Food</div>
-                    <div className="dottedList">OOO Angels Food</div>
-                    <div className="dottedList">OOO Angels Food</div>
-                    <div className="dottedList">OOO Angels Food</div>
-                    <div className="dottedList">OOO Angels Food</div>
+
+                    {_.map(_.get(detailData, ['shop', 'data']), (item) => {
+                        const shopId = _.get(item, 'id')
+                        const shopName = _.get(item, 'name')
+                        return (
+                            <Link key={shopId} target="_blank" to={{pathname: sprintf(ROUTES.SHOP_ITEM_PATH, shopId), query: {search: shopId}}}>
+                                <div className="dottedList">{shopName}</div>
+                            </Link>
+                        )
+                    })}
+                    {marketsCount === ZERO &&
+                    <div className={classes.noShop}>
+                        <div>В данной зоне нет магазинов</div>
+                    </div>}
                 </div>
             </div>
         </div>

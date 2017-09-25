@@ -3,7 +3,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
-import {connect} from 'react-redux'
 import CircularProgress from 'material-ui/CircularProgress'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
@@ -270,12 +269,7 @@ const enhance = compose(
             margin: '0 -30px'
         }
     }),
-    withState('openDetails', 'setOpenDetails', false),
-    connect((state) => {
-        const isAdmin = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
-
-        return {isAdmin}
-    })
+    withState('openDetails', 'setOpenDetails', false)
 )
 
 const iconStyle = {
@@ -323,6 +317,7 @@ const SupplyDetails = enhance((props) => {
     const finishedTime = (_.get(data, 'finishedTime')) ? moment(_.get(data, 'finishedTime')).format('DD.MM.YYYY HH:mm:ss') : 'Не закончилась'
     const totalCost = _.get(data, 'totalCost')
     const comment = _.get(data, 'comment')
+    const IN_PROGRESS = 1
     const CANCELED = 4
     const status = _.toInteger(_.get(data, 'status'))
     const isFinished = !_.isEmpty(_.get(data, 'finishedTime')) || status === CANCELED
@@ -397,7 +392,7 @@ const SupplyDetails = enhance((props) => {
                     </Tooltip>}
                     {confirmDialog && <Tooltip position="bottom" text="Отменить">
                         <IconButton
-                            disabled={(!isAdmin && isFinished) || status === CANCELED}
+                            disabled={(!isAdmin && isFinished && status !== IN_PROGRESS) || status === CANCELED}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}

@@ -124,6 +124,9 @@ const enhance = compose(
                 fontWeight: '600'
             },
             '& > .row': {
+                '&:hover > div:last-child': {
+                    opacity: '1'
+                },
                 margin: '0',
                 padding: '15px 0',
                 alignItems: 'center',
@@ -203,7 +206,7 @@ const ClientBalanceInfoDialog = enhance((props) => {
         }
 
         return (
-            <Row key={index} className={classes.dottedList}>
+            <Row key={index} className='dottedList'>
                 <div style={{flexBasis: '4%', maxWidth: '4%'}}>
                     {(amount > ZERO) ? <ArrowUpIcon color="#92ce95"/> : <ArrowDownIcon color="#e27676"/>}
                 </div>

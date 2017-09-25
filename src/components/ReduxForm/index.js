@@ -29,6 +29,7 @@ import ExpensiveCategorySearchField from './ExpensiveCategorySearchField'
 import PaymentTypeSearchField from './PaymentTypeSearchField'
 import StockTypeSearchField from './Stock/StockTypeSearchField'
 import CashboxSearchField from './Cashbox/CashboxSearchField'
+import CashboxByCurrencySearchField from './Cashbox/CashboxByCurrencySearchField'
 import CashboxTypeSearchField from './Cashbox/CashboxTypeSearchField'
 import DeliveryTypeSearchField from './DeliveryTypeSearchField'
 import ManufactureSearchField from './Manufacture/ManufactureSearchField'
@@ -68,11 +69,10 @@ import ChipField from './Basic/ChipField'
 import CustomChipField from './Basic/CustomChipField'
 import OrderTransferTypeSearchField from './OrderTransferTypeSearchFiled'
 import StockHistoryTypeSearchField from '../ReduxForm/StockHistoryTypeSearchField'
-import AgentSearchField from '../ReduxForm/AgentSearchField'
 import UserStockRadioButtonField from './UserStockRadioButtonField'
+import PermissionTimeSearchField from './PermissionTimeSearchField'
 
 export {
-    AgentSearchField,
     StockHistoryTypeSearchField,
     ReturnStatusSearchField,
     ReturnTypeSearchField,
@@ -118,6 +118,7 @@ export {
     StockTypeSearchField,
     CashboxSearchField,
     CashboxTypeSearchField,
+    CashboxByCurrencySearchField,
     CashboxCustomField,
     CashboxCashCustomField,
     CashboxBankCustomField,
@@ -143,5 +144,6 @@ export {
     ChipField,
     CustomChipField,
     OrderTransferTypeSearchField,
-    UserStockRadioButtonField
+    UserStockRadioButtonField,
+    PermissionTimeSearchField
 }

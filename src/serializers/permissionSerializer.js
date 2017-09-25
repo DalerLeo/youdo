@@ -24,13 +24,13 @@ export const listFilterSerializer = (data) => {
     }
 }
 export const setDateSerializer = (data) => {
-    const setTime = _.get(data, 'setTime')
+    const status = _.get(data, ['status', 'value'])
     const fromTime = _.get(data, 'fromTime')
     const toTime = _.get(data, 'toTime')
-
     return {
-        'from_time': setTime ? null : moment(fromTime).format('HH:mm:ss'),
-        'to_time': setTime ? null : moment(toTime).format('HH:mm:ss')
+        'from_time': fromTime && moment(fromTime).format('HH:mm:ss'),
+        'to_time': toTime && moment(toTime).format('HH:mm:ss'),
+        status
     }
 }
 

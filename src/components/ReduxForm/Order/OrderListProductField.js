@@ -134,7 +134,7 @@ const enhance = compose(
         },
         background: {
             display: 'flex',
-            alignItems: 'flex-start',
+            alignItems: 'flex-end',
             padding: '10px',
             margin: '5px -30px 0',
             backgroundColor: '#f1f5f8',
@@ -148,9 +148,6 @@ const enhance = compose(
             },
             '& button': {
                 alignSelf: 'center'
-            },
-            '& > div > div > div:first-child': {
-                overflow: 'hidden'
             }
         },
         confirm: {
@@ -401,6 +398,7 @@ const OrderListProductField = enhance((props) => {
                             label="Кол-во"
                             name="amount"
                             type="number"
+                            normalize={normalizeNumber}
                             className={classes.inputFieldCustom}
                             fullWidth={true}
                             {..._.get(props, 'amount')}
@@ -461,7 +459,7 @@ const OrderListProductField = enhance((props) => {
                             stripedRows={false}>
                             {_.map(products, (item, index) => {
                                 const product = _.get(item, ['product', 'value', 'name'])
-                                const itemMeasurement = _.get(item, 'measurement') || ''
+                                const itemMeasurement = _.get(item, 'measurement') || _.get(item, ['product', 'value', 'measurement', 'name'])
                                 const cost = _.toNumber(_.get(item, 'cost'))
                                 const amount = _.toNumber(_.get(item, 'amount'))
                                 const isEditable = _.get(item, 'customPrice')
@@ -474,19 +472,23 @@ const OrderListProductField = enhance((props) => {
                                                 {editOnlyCost
                                                     ? <TableRowColumn>{amount} {itemMeasurement}</TableRowColumn>
                                                     : <TableRowColumn style={{padding: 0}}>
-                                                        <TextField
+                                                        <Field
+                                                            name="editAmount"
+                                                            component={TextField}
+                                                            normalize={normalizeNumber}
                                                             placeholder={amount + ' ' + itemMeasurement}
                                                             className={classes.inputFieldEdit}
                                                             fullWidth={true}
-                                                            {..._.get(props, 'editAmount')}
                                                         />
                                                     </TableRowColumn>}
                                                 <TableRowColumn style={{padding: 0, textAlign: 'right'}}>
-                                                    <TextField
+                                                    <Field
+                                                        name="editCost"
+                                                        component={TextField}
+                                                        normalize={normalizeNumber}
                                                         placeholder={cost}
                                                         className={classes.inputFieldEditRight}
                                                         fullWidth={true}
-                                                        {..._.get(props, 'editCost')}
                                                     />
                                                 </TableRowColumn>
                                                 <TableRowColumn style={{textAlign: 'right'}}>
@@ -507,20 +509,24 @@ const OrderListProductField = enhance((props) => {
                                             {editOnlyCost
                                                 ? <TableRowColumn>{amount} {itemMeasurement}</TableRowColumn>
                                                 : <TableRowColumn style={{padding: 0}}>
-                                                    <TextField
+                                                    <Field
+                                                        name="editAmount"
+                                                        component={TextField}
+                                                        normalize={normalizeNumber}
                                                         placeholder={amount + ' ' + itemMeasurement}
                                                         className={classes.inputFieldEdit}
                                                         fullWidth={true}
-                                                        {..._.get(props, 'editAmount')}
                                                     />
                                                 </TableRowColumn>}
                                             <TableRowColumn style={{padding: 0, textAlign: 'right'}}>
                                                 {isEditable
-                                                    ? <TextField
+                                                    ? <Field
+                                                        name="editCost"
+                                                        component={TextField}
+                                                        normalize={normalizeNumber}
                                                         placeholder={cost}
                                                         className={classes.inputFieldEditRight}
                                                         fullWidth={true}
-                                                        {..._.get(props, 'editCost')}
                                                     />
                                                     : numberFormat(cost)}
                                             </TableRowColumn>

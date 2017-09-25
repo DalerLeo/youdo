@@ -8,7 +8,7 @@ export const createSerializer = (data, id) => {
     const amount = numberWithoutSpaces(_.get(data, ['amount']))
     const currency = _.get(data, ['currency', 'value'])
     const comment = _.get(data, 'comment')
-    const supplyProduct = _.get(data, ['product', 'value'])
+    const supplyProduct = _.get(data, ['product', 'value', 'id'])
 
     return {
         supply,

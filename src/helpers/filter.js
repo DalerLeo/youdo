@@ -195,10 +195,22 @@ const filter = (data, pathname, query = {}, newKeys = {}) => {
             createMaterials: null,
             openPopoverDialog: null,
             openAddDialog: null,
+            openInfo: null,
+            openAddZone: null,
+            draw: null,
+            zoneId: null,
+            openUpdateZone: null,
+            deleteZone: null,
             openSetDiscountDialog: null,
             openSuperUser: null,
             popType: null,
-            openStockSupplyDialog: null
+            openStockSupplyDialog: null,
+            openStatReturnDialog: null,
+            openTransactionInfo: null,
+            openTransactionEditPrice: null,
+            deleteTransaction: null,
+            openBindAgent: null,
+            unbindAgent: null
         }))
     }
 

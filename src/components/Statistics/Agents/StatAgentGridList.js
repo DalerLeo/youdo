@@ -22,7 +22,7 @@ const enhance = compose(
     injectSheet({
         loader: {
             width: '100%',
-            height: '100%',
+            padding: '100px 0',
             background: '#fff',
             alignItems: 'center',
             zIndex: '999',
@@ -353,6 +353,17 @@ const StatAgentGridList = enhance((props) => {
                             <PlanMonthFilter calendar={calendar}/>
                             <Pagination filter={filter}/>
                         </div>
+                        <div className={classes.tableWrapper}>
+                            <GridListHeader
+                                filter={filter}
+                                listIds={listIds}
+                                withoutCheckboxes={false}
+                                column={listHeader}
+                                listShadow={true}
+                                style={{position: 'relative'}}
+                                className={classes.header}
+                                statistics={true}
+                            />
                     {listLoading
                         ? <div className={classes.loader}>
                             <CircularProgress size={40} thickness={4}/>
@@ -361,19 +372,9 @@ const StatAgentGridList = enhance((props) => {
                             ? <div className={classes.emptyQuery}>
                                 <div>По вашему запросу ничего не найдено</div>
                             </div>
-                            : <div className={classes.tableWrapper}>
-                                <GridListHeader
-                                    filter={filter}
-                                    listIds={listIds}
-                                    withoutCheckboxes={false}
-                                    column={listHeader}
-                                    listShadow={true}
-                                    style={{position: 'relative'}}
-                                    className={classes.header}
-                                    statistics={true}
-                                />
-                                {list}
-                            </div>}
+                            : <div>{list}</div>
+                            }
+                        </div>
                     </div>
                 </div>
             </Row>

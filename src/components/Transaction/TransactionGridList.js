@@ -3,6 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {Row} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
+import {Link} from 'react-router'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
 import Tooltip from '../ToolTip'
@@ -12,6 +13,7 @@ import TransactionFilterForm from './TransactionFilterForm'
 import TransactionCreateDialog from './TransactionCreateDialog'
 import TransactionSendDialog from './TransactionSendDialog'
 import TransactionCashDialog from './TransactionCashDialog'
+import TransactionInfoDialog from './TransactionInfoDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
@@ -20,13 +22,15 @@ import Paper from 'material-ui/Paper'
 import CashPayment from '../CashPayment'
 import BankPayment from '../BankPayment'
 import CircularProgress from 'material-ui/CircularProgress'
-import IconMenu from 'material-ui/IconMenu'
-import MenuItem from 'material-ui/MenuItem'
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
-import Edit from 'material-ui/svg-icons/image/edit'
 import numberFormat from '../../helpers/numberFormat'
 import dateFormat from '../../helpers/dateFormat'
 import toBoolean from '../../helpers/toBoolean'
+import sprintf from 'sprintf'
+import {
+    ORDER,
+    INCOME_FROM_AGENT,
+    formattedType
+} from '../../constants/transactionTypes'
 
 const enhance = compose(
     injectSheet({
@@ -120,10 +124,22 @@ const enhance = compose(
             pointerEvents: 'none',
             opacity: '0.4'
         },
+        deleteBtn: {
+            opacity: '0'
+        },
         rows: {
+            padding: '5px 0',
             '& > div': {
-                padding: '0 5px'
+                padding: '0 8px !important'
+            },
+            '&:hover button': {
+                opacity: '1 !important'
             }
+        },
+        clickable: {
+            cursor: 'pointer',
+            color: '#12aaeb !important',
+            fontWeight: '600'
         }
     }),
 )
@@ -132,6 +148,7 @@ const ZERO = 0
 const TransactionGridList = enhance((props) => {
     const {
         filter,
+        filterItem,
         createExpenseDialog,
         createIncomeDialog,
         updateExpenseDialog,
@@ -146,7 +163,9 @@ const TransactionGridList = enhance((props) => {
         detailData,
         cashBoxDialog,
         classes,
-        paymentData
+        paymentData,
+        transactionInfoDialog,
+        superUser
     } = props
 
     const transactionFilterDialog = (
@@ -172,7 +191,7 @@ const TransactionGridList = enhance((props) => {
     const listHeader = [
         {
             sorting: true,
-            name: 'id',
+            name: '№',
             title: 'Id',
             width: '10%'
         },
@@ -202,37 +221,70 @@ const TransactionGridList = enhance((props) => {
             width: '15%'
         }
     ]
+    const iconStyle = {
+        button: {
+            width: 44,
+            height: 44,
+            padding: 3
+        },
+        icon: {
+            color: '#666',
+            width: 22,
+            height: 22
+        }
+    }
 
     const transactionList = _.map(_.get(listData, 'data'), (item) => {
         const zero = 0
         const id = _.get(item, 'id')
         const comment = _.get(item, 'comment')
         const type = _.get(item, 'amount') || 'N/A'
-        const cashbox = _.get(item, 'cashbox') || 'N/A'
+        const cashbox = _.get(item, ['cashbox', 'id']) || 'N/A'
         const user = _.get(item, 'user')
+        const order = _.get(item, 'order')
         const amount = numberFormat(_.get(item, 'amount')) || 'N/A'
         const createdDate = dateFormat(_.get(item, 'createdDate'), true)
         const currentCurrency = _.get(_.find(_.get(cashboxData, 'data'), {'id': cashbox}), ['currency', 'name'])
         const client = showCashbox ? _.get(_.find(_.get(cashboxData, 'data'), {'id': cashbox}), 'name') : null
-        const clientName = _.get(item, ['client', 'name']) || 'Не указан'
+        const clientName = _.get(item, ['client', 'name'])
+        const clientId = _.get(item, ['client', 'id'])
         const expanseCategory = _.get(item, ['expanseCategory', 'name'])
+        const transType = _.get(item, ['type'])
 
-        const iconButton = (
-            <IconButton style={{padding: '0 12px'}}>
-                <MoreVertIcon />
-            </IconButton>
-        )
         return (
             <Row key={id} className={classes.rows}>
                 <div style={{flexBasis: '10%', maxWidth: '10%'}}>{id}</div>
                 <div style={{flexBasis: '22%', maxWidth: '24%'}}>
                     {client}
-                    {!showCashbox ? <div><span className={classes.label}>Клиент: </span>{clientName}</div> : null}
+                    {!showCashbox ? <div>{clientName || 'Не указан'}</div> : null}
                 </div>
                 <div style={{flexBasis: '30%', maxWidth: '30%'}}>
-                    {expanseCategory ? <div><span className={classes.label}>Категория: </span> {expanseCategory}</div>
-                        : ((!_.get(item, 'expanseCategory') && !_.get(item, 'client') && user) ? 'Оплата с ' + _.get(user, 'firstName') + ' ' + _.get(user, 'secondName') : null)}
-                    <div>{comment}</div>
+                    {expanseCategory
+                        ? <div><span className={classes.label}>Категория: </span> {expanseCategory}</div> : ''}
+                    {transType &&
+                    <div>
+                        <span style={{fontWeight: '600'}}>Тип:</span> {transType === ORDER
+                        ? <Link to={{
+                            pathname: sprintf(ROUTES.ORDER_ITEM_PATH, order),
+                            query: {search: order}
+                        }} target="_blank"><span className={classes.clickable}> Оплата заказа № {order}</span></Link>
+                        : (transType === INCOME_FROM_AGENT)
+                            ? <span className={classes.clickable}
+                                    onClick={() => { transactionInfoDialog.handleOpenDialog(id) }}> {'Приемка наличных с  ' + _.get(user, 'firstName') + ' ' + _.get(user, 'secondName')}</span>
+                            : <span> {formattedType[transType]} {clientName &&
+                                <Link
+                                    target="_blank"
+                                    className={classes.clickable}
+                                    to={{
+                                        pathname: ROUTES.CLIENT_BALANCE_LIST_URL,
+                                        query: {search: clientId}
+                                    }}>
+                                    {clientName}
+                                </Link>}
+                                </span>}
+
+                    </div>}
+                    {comment && <div><strong>Комментарий:</strong> {comment}</div>}
                 </div>
                 <div style={{flexBasis: '18%', maxWidth: '18%'}}>{createdDate}</div>
                 <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}
@@ -240,28 +292,13 @@ const TransactionGridList = enhance((props) => {
                     {amount} {currentCurrency}
                 </div>
                 <div style={{flexBasis: '5%', maxWidth: '5%', textAlign: 'right'}}>
-                    <IconMenu
-                        iconButtonElement={iconButton}
-                        menuItemStyle={{fontSize: '13px'}}
-                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                        <MenuItem
-                            primaryText="Изменить"
-                            disabled={true}
-                            leftIcon={<Edit />}
-                            onTouchTap={() => {
-                                updateExpenseDialog.handleOpenUpdateDialog(id, _.get(item, 'amount'))
-                            }}
-                        />
-                        <MenuItem
-                            primaryText="Удалить "
-                            disabled={true}
-                            leftIcon={<DeleteIcon />}
-                            onTouchTap={() => {
-                                confirmDialog.handleOpenConfirmDialog(id)
-                            }}
-                        />
-                    </IconMenu>
+                    <IconButton
+                        className={classes.deleteBtn}
+                        style={iconStyle.button}
+                        iconStyle={iconStyle.icon}
+                        onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}>
+                        <DeleteIcon/>
+                    </IconButton>
                 </div>
             </Row>
         )
@@ -278,7 +315,7 @@ const TransactionGridList = enhance((props) => {
         return (
             <div key={id} className={classes.list} onClick={() => {
                 cashboxData.handleClickCashbox(id)
-            } }
+            }}
                  style={isActive ? {backgroundColor: '#ffffff'} : {backgroundColor: '#f2f5f8'}}>
                 <div>
                     <div className={classes.title}>{name}</div>
@@ -322,7 +359,7 @@ const TransactionGridList = enhance((props) => {
                             <div className={classes.list}
                                  onClick={() => {
                                      cashboxData.handleClickCashbox(AllCashboxId)
-                                 } }
+                                 }}
                                  style={_.get(cashboxData, 'cashboxId') === AllCashboxId ? {backgroundColor: '#ffffff'} : {backgroundColor: '#f2f5f8'}}>
                                 <div className={classes.title}>
                                     Общий объем
@@ -343,23 +380,29 @@ const TransactionGridList = enhance((props) => {
                         <div className={classes.outerTitle}>{cashboxName}</div>
                         <div className={classes.outerTitle}>
                             <div className={classes.buttons}>
-                                <a onClick={acceptCashDialog.handleOpenCashDialog} className={classes.btnSend}>Принять наличные</a>
+                                <a onClick={acceptCashDialog.handleOpenCashDialog} className={classes.btnSend}>Принять
+                                    наличные</a>
 
-                                { _.get(cashboxData, 'cashboxId') === AllCashboxId &&
-                                    <Tooltip position="bottom" text="Пожалуйста выберите кассу">
-                                        <div className={classes.actionButtons}>
+                                {_.get(cashboxData, 'cashboxId') === AllCashboxId &&
+                                <Tooltip position="bottom" text="Пожалуйста, выберите кассу">
+                                    <div className={classes.actionButtons}>
                                         <a onClick={createSendDialog.handleOpenDialog} className={classes.btnSend}>Перевод</a>
-                                        <a onClick={createIncomeDialog.handleOpenDialog} className={classes.btnAdd}>+ Доход</a>
-                                        <a onClick={createExpenseDialog.handleOpenDialog} className={classes.btnRemove}>- Расход</a>
-                                        </div>
-                                    </Tooltip>
-                                }
-                                { _.get(cashboxData, 'cashboxId') !== AllCashboxId &&
-                                    <div>
-                                        <a onClick={createSendDialog.handleOpenDialog} className={classes.btnSend}>Перевод</a>
-                                        <a onClick={createIncomeDialog.handleOpenDialog} className={classes.btnAdd}>+ Доход</a>
-                                        <a onClick={createExpenseDialog.handleOpenDialog} className={classes.btnRemove}>- Расход</a>
+                                        <a onClick={createIncomeDialog.handleOpenDialog} className={classes.btnAdd}>+
+                                            Доход</a>
+                                        <a onClick={createExpenseDialog.handleOpenDialog} className={classes.btnRemove}>-
+                                            Расход</a>
                                     </div>
+                                </Tooltip>
+                                }
+                                {_.get(cashboxData, 'cashboxId') !== AllCashboxId &&
+                                <div>
+                                    <a onClick={createSendDialog.handleOpenDialog}
+                                       className={classes.btnSend}>Перевод</a>
+                                    <a onClick={createIncomeDialog.handleOpenDialog} className={classes.btnAdd}>+
+                                        Доход</a>
+                                    <a onClick={createExpenseDialog.handleOpenDialog} className={classes.btnRemove}>-
+                                        Расход</a>
+                                </div>
                                 }
                             </div>
                         </div>
@@ -368,6 +411,7 @@ const TransactionGridList = enhance((props) => {
                     <GridList
                         filter={filter}
                         withoutRow={true}
+                        flexibleRow={true}
                         list={list}
                         detail={transactionDetail}
                         filterDialog={transactionFilterDialog}
@@ -419,21 +463,29 @@ const TransactionGridList = enhance((props) => {
                         onSubmit={createSendDialog.handleSubmitDialog}
                     />
 
-                    {detailData.data && <ConfirmDialog
+                    {detailData.id && <ConfirmDialog
                         type="delete"
-                        message={_.get(detailData, ['data', 'comment'])}
+                        message={'Транзакция №' + _.get(detailData, 'id')}
                         onClose={confirmDialog.handleCloseConfirmDialog}
                         onSubmit={confirmDialog.handleExpenseConfirmDialog}
                         open={confirmDialog.open}
                     />}
 
                     <TransactionCashDialog
+                        filterItem={filterItem}
                         open={acceptCashDialog.open}
                         onClose={acceptCashDialog.handleCloseCashDialog}
                         paymentData={paymentData}
                         loading={acceptCashDialog.loading}
                         cashBoxDialog={cashBoxDialog}
                         acceptCashDialog={acceptCashDialog}
+                        superUser={superUser}
+                    />
+                    <TransactionInfoDialog
+                        open={transactionInfoDialog.open}
+                        onClose={transactionInfoDialog.handleCloseDialog}
+                        data={transactionInfoDialog.data}
+                        loading={transactionInfoDialog.loading}
                     />
                 </div>
             </div>
@@ -508,6 +560,12 @@ TransactionGridList.propTypes = {
         handleOpenCashDialog: PropTypes.func.isRequired,
         handleCloseCashDialog: PropTypes.func.isRequired,
         handleSubmitCashDialog: PropTypes.func.isRequired
+    }).isRequired,
+    transactionInfoDialog: PropTypes.shape({
+        data: PropTypes.array,
+        open: PropTypes.number.isRequired,
+        handleOpenDialog: PropTypes.func.isRequired,
+        handleCloseDialog: PropTypes.func.isRequired
     }).isRequired
 }
 

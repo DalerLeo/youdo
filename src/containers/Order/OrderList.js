@@ -254,6 +254,8 @@ const enhance = compose(
             const zone = _.get(filterForm, ['values', 'zone', 'value']) || null
             const dept = _.get(filterForm, ['values', 'dept', 'value']) || null
             const initiator = _.get(filterForm, ['values', 'initiator', 'value']) || null
+            const onlyBonus = _.get(filterForm, ['values', 'onlyBonus']) || null
+            const exclude = _.get(filterForm, ['values', 'exclude']) || null
 
             filter.filterBy({
                 [ORDER_FILTER_OPEN]: false,
@@ -265,6 +267,8 @@ const enhance = compose(
                 [ORDER_FILTER_KEY.SHOP]: shop,
                 [ORDER_FILTER_KEY.DIVISION]: division,
                 [ORDER_FILTER_KEY.DEPT]: dept,
+                [ORDER_FILTER_KEY.ONLY_BONUS]: onlyBonus,
+                [ORDER_FILTER_KEY.EXCLUDE]: exclude,
                 [ORDER_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [ORDER_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD'),
                 [ORDER_FILTER_KEY.DELIVERY_FROM_DATE]: deliveryFromDate && deliveryFromDate.format('YYYY-MM-DD'),
@@ -583,6 +587,7 @@ const OrderList = enhance((props) => {
     const openShortageDialog = toBoolean(_.get(location, ['query', ORDER_SHORTAGE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', ORDER_UPDATE_DIALOG_OPEN]))
     const openCancelOrderReturnDialog = _.toInteger(_.get(location, ['query', CANCEL_ORDER_RETURN_DIALOG_OPEN]))
+
     const client = _.toInteger(filter.getParam(ORDER_FILTER_KEY.CLIENT))
     const dept = _.toInteger(filter.getParam(ORDER_FILTER_KEY.DEPT))
     const initiator = _.toInteger(filter.getParam(ORDER_FILTER_KEY.INITIATOR))
@@ -596,6 +601,9 @@ const OrderList = enhance((props) => {
     const deliveryFromDate = filter.getParam(ORDER_FILTER_KEY.DELIVERY_FROM_DATE)
     const toDate = filter.getParam(ORDER_FILTER_KEY.TO_DATE)
     const deliveryToDate = filter.getParam(ORDER_FILTER_KEY.DELIVERY_TO_DATE)
+    const onlyBonus = filter.getParam(ORDER_FILTER_KEY.ONLY_BONUS)
+    const exclude = filter.getParam(ORDER_FILTER_KEY.EXCLUDE)
+
     const detailId = _.toInteger(_.get(params, 'orderId'))
     const tab = _.get(location, ['query', TAB]) || ORDER_TAB.ORDER_DEFAULT_TAB
 
@@ -774,6 +782,8 @@ const OrderList = enhance((props) => {
                 deliveryFromDate: deliveryFromDate && moment(deliveryFromDate, 'YYYY-MM-DD'),
                 deliveryToDate: deliveryToDate && moment(deliveryToDate, 'YYYY-MM-DD')
             },
+            onlyBonus: onlyBonus,
+            exclude: exclude,
             date: {
                 fromDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),
                 toDate: toDate && moment(toDate, 'YYYY-MM-DD')

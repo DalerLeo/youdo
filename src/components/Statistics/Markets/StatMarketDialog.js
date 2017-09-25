@@ -119,7 +119,7 @@ const enhance = compose(
 )
 
 const StatMarketDialog = enhance((props) => {
-    const {open, onClose, classes, detailData, filterItem} = props
+    const {open, onClose, classes, detailData, filter} = props
 
     const loading = _.get(detailData, 'detailLoading')
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
@@ -181,7 +181,7 @@ const StatMarketDialog = enhance((props) => {
                             </Row>
                             {orderList}
                         </div>
-                        <Pagination filter={filterItem}/>
+                        <Pagination filter={filter}/>
                     </div>
                 </div>}
         </Dialog>
@@ -189,7 +189,6 @@ const StatMarketDialog = enhance((props) => {
 })
 
 StatMarketDialog.propTyeps = {
-    filter: PropTypes.object.isRequired,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     loading: PropTypes.bool

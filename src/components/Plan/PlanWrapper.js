@@ -368,6 +368,7 @@ const PlanWrapper = enhance((props) => {
                 onSubmit={addPlan.handleSubmitAddPlan}
                 zonesList={addPlan.zonesList}
                 zonesLoading={addPlan.zonesLoading}
+                calendar={calendar}
             />
 
             <PlanSalesDialog

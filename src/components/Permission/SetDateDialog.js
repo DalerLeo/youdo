@@ -9,9 +9,13 @@ import FlatButton from 'material-ui/FlatButton'
 import IconButton from 'material-ui/IconButton'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TimeField, CheckBox} from '../ReduxForm'
+import {TimeField, PermissionTimeSearchField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import MainStyles from '../Styles/MainStyles'
+import {
+    ON_TIME,
+    OFF_TIME
+} from '../../constants/permissionTime'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -68,17 +72,16 @@ const enhance = compose(
         enableReinitialize: true
     }),
     connect((state) => {
-        const setTime = _.get(state, ['form', 'SetDateDialogForm', 'values', 'setTime'])
+        const status = _.get(state, ['form', 'SetDateDialogForm', 'values', 'status', 'value'])
         return {
-            setTime
+            status
         }
     })
 )
 
 const SetDateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, setTime} = props
+    const {open, loading, handleSubmit, onClose, classes, status} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
-
     return (
         <Dialog
             modal={true}
@@ -96,30 +99,29 @@ const SetDateDialog = enhance((props) => {
             </div>
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit}>
-                    <div className={classes.inContent} style={{minHeight: '190px'}}>
+                        <div className={classes.inContent} style={status && (status === ON_TIME || status === OFF_TIME) ? {minHeight: '150px'} : {minHeight: '100px'}}>
                         <div className={classes.field} style={{paddingTop: '15px'}}>
-                            <div className={classes.iconBtn}>
+                            <Field
+                                name="status"
+                                component={PermissionTimeSearchField}
+                                className={classes.inputFieldTime}
+                                label="Тип"
+                                fullWidth={true}/>
+                            {(status === ON_TIME || status === OFF_TIME) &&
+                            <div style={{display: 'flex', justifyContent: 'space-between'}}>
                                 <Field
-                                    name="setTime"
-                                    className={classes.checkbox}
-                                    component={CheckBox}
-                                    label={'Время не ограничено'}/>
-                            </div>
-                            <Field
-                                disabled={setTime}
-                                name="fromTime"
-                                component={TimeField}
-                                className={classes.inputFieldTime}
-                                value='asdasd'
-                                label="Начало"
-                                fullWidth={true}/>
-                            <Field
-                                disabled={setTime}
-                                name="toTime"
-                                component={TimeField}
-                                className={classes.inputFieldTime}
-                                label="Конец"
-                                fullWidth={true}/>
+                                    name="fromTime"
+                                    component={TimeField}
+                                    className={classes.inputFieldTime}
+                                    label="Начало"
+                                    fullWidth={true}/>
+                                <Field
+                                    name="toTime"
+                                    component={TimeField}
+                                    className={classes.inputFieldTime}
+                                    label="Конец"
+                                    fullWidth={true}/>
+                            </div>}
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
@@ -137,15 +139,9 @@ const SetDateDialog = enhance((props) => {
 })
 
 SetDateDialog.propTypes = {
-    isUpdate: PropTypes.bool,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    onSubmit: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired
-}
-
-SetDateDialog.defaultProps = {
-    isUpdate: false
+    onSubmit: PropTypes.func.isRequired
 }
 
 export default SetDateDialog
