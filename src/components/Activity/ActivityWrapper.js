@@ -33,24 +33,10 @@ const enhance = compose(
             height: 'calc(100% - 32px)',
             margin: '0 -28px'
         },
-        padding: {
-            padding: '20px 30px'
-        },
-        addButton: {
-            '& button': {
-                backgroundColor: '#275482 !important'
-            }
-        },
-        addButtonWrapper: {
-            position: 'absolute',
-            top: '10px',
-            right: '0',
-            marginBottom: '0px'
-        },
         tubeWrapper: {
             padding: '0 30px 25px',
             marginTop: '10px',
-            height: 'calc(100% - 85px)'
+            height: 'calc(100vh - 145px)'
         },
         horizontal: {
             display: 'flex',
@@ -63,86 +49,6 @@ const enhance = compose(
         },
         block: {
             paddingRight: '20px'
-        },
-        blockTitle: {
-            padding: '15px 0',
-            fontWeight: 'bold'
-        },
-        blockItems: {
-            overflowY: 'auto',
-            height: 'calc(100% - 80px)',
-            paddingRight: '10px'
-        },
-        tube: {
-            padding: '20px 15px',
-            marginBottom: '10px',
-            width: '300px',
-            cursor: 'pointer',
-            transition: 'box-shadow 125ms ease-out !important',
-            '&:hover': {
-                boxShadow: 'rgba(0, 0, 0, 0.16) 0px 3px 10px, rgba(0, 0, 0, 0.23) 0px 3px 10px !important'
-            }
-        },
-        tubeTitle: {
-            fontWeight: '600',
-            display: 'flex',
-            justifyContent: 'space-between'
-        },
-        tubeTime: {
-            fontSize: '10px',
-            color: '#999'
-        },
-        status: {
-            borderRadius: '2px',
-            height: '4px',
-            width: '30px'
-        },
-        statusGreen: {
-            extend: 'status',
-            background: '#92ce95'
-        },
-        statusRed: {
-            extend: 'status',
-            background: '#e57373'
-        },
-        tubeImg: {
-            marginTop: '10px',
-            '& img': {
-                width: '100%',
-                display: 'block',
-                cursor: 'pointer'
-            }
-        },
-        tubeImgDouble: {
-            extend: 'tubeImg',
-            display: 'flex',
-            justifyContent: 'space-between',
-            '& > div': {
-                width: 'calc(50% - 4px)',
-                position: 'relative',
-                '&:after': {
-                    content: '""',
-                    position: 'absolute',
-                    top: '8px',
-                    left: '8px',
-                    padding: '2px 8px',
-                    color: '#fff',
-                    background: '#333',
-                    opacity: '0.8',
-                    fontSize: '11px',
-                    fontWeight: '600'
-                },
-                '&:first-child:after': {
-                    content: '"до"'
-                },
-                '&:last-child:after': {
-                    content: '"после"'
-                }
-            }
-        },
-        tubeInfo: {
-            marginTop: '10px',
-            lineHeight: '15px'
         },
         horizontalScroll: {
             position: 'fixed',
@@ -166,8 +72,16 @@ const enhance = compose(
     })
 )
 
+const VISIT = 1
+const ORDER = 2
+const REPORT = 3
+const ORDER_RETURN = 4
+const PAYMENT = 5
+const DELIVERY = 6
+
 const ActivityWrapper = enhance((props) => {
     const {
+        summaryData,
         orderlistData,
         classes,
         orderDetails,
@@ -195,40 +109,40 @@ const ActivityWrapper = enhance((props) => {
     const paymentListEmpty = _.isEmpty(_.get(paymentlistData, 'data'))
     const deliveryListEmpty = _.isEmpty(_.get(deliverylistData, 'data'))
 
-    let megaLoading = false
-    if (orderlistLoading &&
-        visitlistLoading &&
-        reportlistLoading &&
-        returnlistLoading &&
-        paymentlistLoading &&
-        deliverylistLoading) {
-        megaLoading = true
-    }
-    let emptyQuery = false
-    if (orderListEmpty && visitListEmpty && reportListEmpty && returnListEmpty && paymentListEmpty && deliveryListEmpty) {
-        emptyQuery = true
-    }
+    const megaLoading = (orderlistLoading && visitlistLoading && reportlistLoading && returnlistLoading && paymentlistLoading && deliverylistLoading)
+    const emptyQuery = (orderListEmpty && visitListEmpty && reportListEmpty && returnListEmpty && paymentListEmpty && deliveryListEmpty)
 
     const tubeWrapper = (
         <div className={classes.tubeWrapper}>
             <div className={classes.horizontal}>
                 <ActivityOrder
+                    summary={_.get(summaryData, ['data', ORDER])}
+                    summaryLoading={_.get(summaryData, 'summaryListLoading')}
                     orderlistData={orderlistData}
                     orderDetails={orderDetails}/>
                 <ActivityVisit
+                    summary={_.get(summaryData, ['data', VISIT])}
+                    summaryLoading={_.get(summaryData, 'summaryListLoading')}
                     visitlistData={visitlistData}/>
                 <ActivityReport
+                    summary={_.get(summaryData, ['data', REPORT])}
+                    summaryLoading={_.get(summaryData, 'summaryListLoading')}
                     reportImageData={reportImageData}
                     reportlistData={reportlistData}/>
                 <ActivityReturn
+                    summary={_.get(summaryData, ['data', ORDER_RETURN])}
+                    summaryLoading={_.get(summaryData, 'summaryListLoading')}
                     returnListData={returnlistData}/>
                 <ActivityPayment
+                    summary={_.get(summaryData, ['data', PAYMENT])}
+                    summaryLoading={_.get(summaryData, 'summaryListLoading')}
                     paymentlistData={paymentlistData}/>
                 <ActivityDelivery
+                    summary={_.get(summaryData, ['data', DELIVERY])}
+                    summaryLoading={_.get(summaryData, 'summaryListLoading')}
                     deliverylistData={deliverylistData}/>
             </div>
-            <Paper className={classes.horizontalScroll}>
-            </Paper>
+            <Paper className={classes.horizontalScroll} zDepth={1}> </Paper>
         </div>
     )
 
@@ -245,11 +159,11 @@ const ActivityWrapper = enhance((props) => {
                     ? <div className={classes.loader}>
                         <CircularProgress size={40} thickness={4}/>
                     </div>
-                    : (!emptyQuery
-                        ? tubeWrapper
-                        : <div className={classes.emptyQuery}>
+                    : (emptyQuery && !(orderlistLoading || visitlistLoading || reportlistLoading || returnlistLoading || paymentlistLoading || deliverylistLoading)
+                        ? <div className={classes.emptyQuery}>
                             <div>По вашему запросу ничего не найдено...</div>
-                        </div>)}
+                        </div>
+                        : tubeWrapper)}
             </div>
 
             <ActivityOrderDetails

@@ -22,6 +22,7 @@ import {CurrencyList} from '../containers/Currency'
 import {PositionList} from '../containers/Position'
 import {BrandList} from '../containers/Brand'
 import {MeasurementList} from '../containers/Measurement'
+import {ZonesList} from '../containers/Zones'
 import {ExpensiveCategoryList} from '../containers/ExpensiveCategory'
 import {UsersList} from '../containers/Users'
 import {ProviderList} from '../containers/Provider'
@@ -41,7 +42,6 @@ import {StatCashbox} from '../containers/StatCashbox'
 import {PendingPaymentsList} from '../containers/PendingPayments'
 import {EquipmentList} from '../containers/Equipment'
 import {ShiftList} from '../containers/Shift'
-import {Zones} from '../containers/Zones'
 import {Tracking} from '../containers/Tracking'
 import {MarketTypeList} from '../containers/MarketType'
 import {PricesList} from '../containers/Prices'
@@ -62,7 +62,8 @@ import {
     StatRemainderList,
     StatCashboxList,
     StatProductMoveList,
-    StatReportList
+    StatReportList,
+    StatClientIncomeList
 } from '../containers/Statistics'
 import {ClientBalanceList} from '../containers/ClientBalance'
 import {StockReceiveHistoryList, StockReceiveList, StockTransferList, StockTransferHistoryList, StockOutHistoryList} from '../containers/StockReceive'
@@ -402,10 +403,10 @@ export default {
         // ZONES
         {
             path: ROUTES.ZONES_LIST_URL,
-            component: userIsAdminChain(Zones),
+            component: userIsAdminChain(ZonesList),
             childRoutes: [{
                 path: ROUTES.ZONES_ITEM_URL,
-                component: userIsAuth(Zones)
+                component: userIsAuth(ZonesList)
             }]
         },
         // TRACKING
@@ -605,6 +606,12 @@ export default {
         {
             path: ROUTES.STATISTICS_OUTCOME_CATEGORY_URL,
             component: userIsAdminChain(StatOutcomeCategoryList),
+            childRoutes: []
+        },
+        // Statistics/ client income
+        {
+            path: ROUTES.STATISTICS_CLIENT_INCOME_URL,
+            component: userIsAdminChain(StatClientIncomeList),
             childRoutes: []
         },
         // Stock Receive

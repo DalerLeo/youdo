@@ -9,7 +9,8 @@ import getConfig from '../../helpers/getConfig'
 import paymentTypeFormat from '../../helpers/paymentTypeFormat'
 import CircularProgress from 'material-ui/CircularProgress'
 import Paper from 'material-ui/Paper'
-import InfiniteScroll from 'react-infinite-scroller'
+import Info from 'material-ui/svg-icons/action/info-outline'
+import Tooltip from '../ToolTip'
 
 const enhance = compose(
     injectSheet({
@@ -30,7 +31,13 @@ const enhance = compose(
         },
         blockTitle: {
             padding: '15px 0',
-            fontWeight: 'bold'
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginRight: '10px',
+            '& strong': {
+                fontWeight: 'bold'
+            }
         },
         blockItems: {
             overflowY: 'auto',
@@ -120,10 +127,16 @@ const ActivityOrder = enhance((props) => {
     const {
         orderlistData,
         classes,
-        orderDetails
+        orderDetails,
+        summary,
+        summaryLoading
     } = props
 
     const orderlistLoading = _.get(orderlistData, 'orderListLoading')
+    const countSummary = _.get(summary, 'count')
+    const cashSummary = numberFormat(_.get(summary, 'cash'), currentCurrency)
+    const bankSummary = numberFormat(_.get(summary, 'bank'), currentCurrency)
+    const tooltipText = '<div>Сумма (нал): ' + cashSummary + '</div> <div>Сумма (пер): ' + bankSummary + '</div>'
     const orderList = _.map(_.get(orderlistData, 'data'), (item) => {
         const id = _.get(item, ['order', 'id'])
         const name = _.get(item, ['order', 'user', 'firstName']) + ' ' + _.get(item, ['order', 'user', 'secondName'])
@@ -147,7 +160,7 @@ const ActivityOrder = enhance((props) => {
 
     if (_.isEmpty(orderList)) {
         return false
-    } else if (orderlistLoading) {
+    } else if (orderlistLoading || summaryLoading) {
         return (
             <div className={classes.loader}>
                 <CircularProgress size={40} thickness={4}/>
@@ -157,14 +170,15 @@ const ActivityOrder = enhance((props) => {
 
     return (
         <div className={classes.block}>
-            <div className={classes.blockTitle}>Cделки</div>
-            <InfiniteScroll
-                pageStart={0}
-                loader={<div className={classes.loader}><CircularProgress size={30} thickness={3}/></div>}
-                useWindow={false}
-                className={classes.blockItems}>
+            <div className={classes.blockTitle}>
+                <strong>Cделки ({countSummary})</strong>
+                <Tooltip position="left" text={tooltipText}>
+                    <Info color="#666"/>
+                </Tooltip>
+            </div>
+            <div className={classes.blockItems}>
                 {orderList}
-            </InfiniteScroll>
+            </div>
         </div>
     )
 })

@@ -15,7 +15,7 @@ import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 import numberformat from '../../helpers/numberFormat'
 import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
-import convertCurrency from '../../helpers/convertCurrency'
+import {convertCurrency} from '../../helpers/convertCurrency'
 import CashboxCurrencyField from '../ReduxForm/CashboxCurrencyField'
 import PendingPaymentRadioButton from '../ReduxForm/PendingPaymentRadioButton'
 import getConfig from '../../helpers/getConfig'
@@ -97,7 +97,7 @@ const enhance = compose(
         const currencyRate = _.toInteger(_.get(state, ['form', 'PendingPaymentsCreateForm', 'values', 'currencyRate']))
         const customRate = _.get(state, ['form', 'PendingPaymentsCreateForm', 'values', 'customRate'])
         const amountValue = _.get(state, ['form', 'PendingPaymentsCreateForm', 'values', 'amount'])
-        const currency = _.get(state, ['form', 'PendingPaymentsCreateForm', 'values', 'cashbox', 'value', 'currency'])
+        const currency = _.get(state, ['form', 'PendingPaymentsCreateForm', 'values', 'cashbox', 'value', 'currency', 'name'])
 
         return {
             currencyRate,

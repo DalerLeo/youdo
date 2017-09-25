@@ -1,9 +1,9 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../../helpers/serializer'
 import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
+import getConfig from '../../helpers/getConfig'
 
 const ZERO = 0
-const ONE = 1
 const MINUS_ONE = -1
 
 export const createIncomeSerializer = (data, cashboxId) => {
@@ -21,6 +21,27 @@ export const createIncomeSerializer = (data, cashboxId) => {
         'division': division && division
     }
 }
+const TWO = 2
+
+export const updateTransactionSerializer = (data, client) => {
+    const amount = numberWithoutSpaces(_.get(data, 'amount'))
+    const newAmount = amount > ZERO ? amount : amount * MINUS_ONE
+    const comment = _.get(data, 'comment')
+    const currency = getConfig('PRIMARY_CURRENCY_ID')
+    const division = _.get(data, ['division', 'value'])
+    const user = _.get(data, ['user', 'value'])
+    const paymentType = _.get(data, ['paymentType', 'value'])
+    return {
+        'amount': newAmount,
+        'comment': comment,
+        client,
+        currency,
+        division,
+        user,
+        type: 1,
+        payment_type: paymentType === TWO ? ZERO : paymentType
+    }
+}
 
 export const createExpenseSerializer = (data, cashboxId) => {
     let amount = numberWithoutSpaces(_.get(data, 'amount'))
@@ -28,16 +49,27 @@ export const createExpenseSerializer = (data, cashboxId) => {
         amount *= MINUS_ONE
     }
     const comment = _.get(data, 'comment')
+    const showClients = _.get(data, 'showClients')
     const objectId = _.get(data, ['expanseCategory', 'value'])
     const clientId = _.get(data, ['client', 'value'])
     const customRate = numberWithoutSpaces(_.get(data, 'custom_rate'))
     const division = _.get(data, ['division', 'value'])
+    if (showClients) {
+        return {
+            amount: amount,
+            comment,
+            'cashbox': cashboxId,
+            'expanse_category': objectId,
+            'client': clientId,
+            'custom_rate': customRate,
+            'division': division && division
+        }
+    }
     return {
         amount: amount,
         comment,
         'cashbox': cashboxId,
         'expanse_category': objectId,
-        'client': clientId,
         'custom_rate': customRate,
         'division': division && division
     }
@@ -47,6 +79,16 @@ export const createSendSerializer = (data, cashboxId) => {
     const amount = _.get(data, 'amount') < ZERO ? _.get(data, 'amount') * MINUS_ONE : _.get(data, 'amount')
     const toCashbox = _.get(data, ['categoryId', 'value'])
     const comment = _.get(data, 'comment')
+    const customRate = _.get(data, 'custom_rate')
+    if (customRate) {
+        return {
+            amount: numberWithoutSpaces(amount),
+            'from_cashbox': cashboxId,
+            'to_cashbox': toCashbox,
+            'custom_rate': numberWithoutSpaces(customRate),
+            comment
+        }
+    }
     return {
         amount: numberWithoutSpaces(amount),
         'from_cashbox': cashboxId,
@@ -59,8 +101,7 @@ export const listFilterSerializer = (data, cashbox) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
     const newCashbox = (cashbox && cashbox > ZERO) ? cashbox : null
-    const payType = _.get(defaultData, 'type')
-    const type = (payType) ? (_.toNumber(payType) === ONE) ? 'out' : 'in' : null
+    const type = _.get(defaultData, 'type')
     return {
         'division': _.get(defaultData, 'division'),
         'created_date_0': _.get(defaultData, 'fromDate'),
@@ -75,4 +116,3 @@ export const listFilterSerializer = (data, cashbox) => {
         'expanse_category': _.get(data, 'categoryExpense')
     }
 }
-

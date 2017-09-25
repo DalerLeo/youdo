@@ -45,6 +45,7 @@ const enhance = compose(
         const createForm = _.get(state, ['form', 'PlanCreateForm', 'values'])
         const monthlyPlanForm = _.get(state, ['form', 'PlanSalesForm', 'values'])
         const selectedDate = _.get(query, DATE) || defaultDate
+        const selectedDay = _.get(query, 'day') || moment().format('DD')
         const filter = filterHelper(usersList, pathname, query)
         return {
             query,
@@ -59,6 +60,7 @@ const enhance = compose(
             zonesLoading,
             createForm,
             selectedDate,
+            selectedDay,
             monthlyPlanForm,
             monthlyPlanCreateLoading,
             plan,
@@ -108,13 +110,13 @@ const enhance = compose(
         },
 
         handleOpenAddPlan: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[ADD_PLAN]: true})})
+            const {location: {pathname}} = props
+            hashHistory.push({pathname, query: {[ADD_PLAN]: true}})
         },
 
         handleCloseAddPlan: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[ADD_PLAN]: false})})
+            const {location: {pathname}} = props
+            hashHistory.push({pathname, query: {[ADD_PLAN]: false}})
         },
 
         handleSubmitAddPlan: props => () => {
@@ -125,7 +127,7 @@ const enhance = compose(
                     return dispatch(openSnackbarAction({message: 'Зона успешно добавлена'}))
                 })
                 .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[ADD_PLAN]: false})})
+                    hashHistory.push({pathname, query: {[ADD_PLAN]: false}})
                     dispatch(planAgentsListFetchAction(filter))
                 })
         },
@@ -169,6 +171,11 @@ const enhance = compose(
             const nextMonth = moment(selectedDate).add(ONE, 'month')
             const dateForURL = nextMonth.format('YYYY-MM')
             hashHistory.push({pathname, query: filter.getParams({[DATE]: dateForURL})})
+        },
+
+        handleChooseDay: props => (day) => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({'day': day})})
         }
     })
 )
@@ -190,7 +197,8 @@ const PlanList = enhance((props) => {
         monthlyPlanCreateLoading,
         plan,
         planLoading,
-        currentDate
+        currentDate,
+        selectedDay
     } = props
 
     const openAddPlan = toBoolean(_.get(location, ['query', ADD_PLAN]))
@@ -235,7 +243,9 @@ const PlanList = enhance((props) => {
     }
 
     const calendar = {
+        selectedDay,
         selectedDate: selectedDate,
+        handleChooseDay: props.handleChooseDay,
         handlePrevMonth: props.handlePrevMonth,
         handleNextMonth: props.handleNextMonth
     }

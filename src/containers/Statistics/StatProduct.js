@@ -26,6 +26,7 @@ const enhance = compose(
         const list = _.get(state, ['statProduct', 'list', 'data'])
         const listLoading = _.get(state, ['statProduct', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'StatProductFilterForm'])
+        const searchForm = _.get(state, ['form', 'StatProductForm'])
         const filter = filterHelper(list, pathname, query)
         return {
             list,
@@ -33,7 +34,8 @@ const enhance = compose(
             detail,
             detailLoading,
             filter,
-            filterForm
+            filterForm,
+            searchForm
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -64,6 +66,11 @@ const enhance = compose(
         handleCloseDetail: props => () => {
             const {filter} = props
             hashHistory.push({pathname: ROUTER.STATISTICS_LIST_URL, query: filter.getParams()})
+        },
+        handleSubmitSearch: props => () => {
+            const {filter, location: {pathname}, searchForm} = props
+            const term = _.get(searchForm, ['values', 'search'])
+            hashHistory.push({pathname, query: filter.getParams({search: term})})
         },
         handleGetDocument: props => () => {
             const {filter} = props
@@ -121,6 +128,7 @@ const StatProductList = enhance((props) => {
                 handleSubmitFilterDialog={props.handleSubmitFilterDialog}
                 getDocument={getDocument}
                 filterForm={filterForm}
+                searchSubmit={props.handleSubmitSearch}
             />
         </Layout>
     )

@@ -12,7 +12,7 @@ import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 import normalizeNumber from '../ReduxForm/normalizers/normalizeNumber'
 import CircularProgress from 'material-ui/CircularProgress'
-import {DivisionSearchField, PaymentTypeSearchField} from '../ReduxForm'
+import {DivisionSearchField, PaymentTypeSearchField, UsersSearchField} from '../ReduxForm'
 
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
@@ -46,7 +46,7 @@ const enhance = compose(
 )
 
 const ClientBalanceUpdateDialog = enhance((props) => {
-    const {classes, open, onClose, handleSubmit, loading, name, addDialog} = props
+    const {classes, open, onClose, handleSubmit, loading, name} = props
 
     const onSubmit = handleSubmit(() => props.onSubmit())
     return (
@@ -58,7 +58,7 @@ const ClientBalanceUpdateDialog = enhance((props) => {
             contentStyle={loading ? {width: '400px'} : {width: '400px'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>{addDialog ? 'Добавить даход клиенту' : 'Добавить расход клиенту'}</span>
+                <span>Изменение баланса клиента</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
@@ -72,6 +72,12 @@ const ClientBalanceUpdateDialog = enhance((props) => {
                     <form onSubmit={onSubmit} className={classes.form}>
                         <div className={classes.inContent} style={{minHeight: '100px'}}>
                             <div style={{width: '100%'}}>
+                                <Field
+                                    name="user"
+                                    component={UsersSearchField}
+                                    label="Пользователь"
+                                    className={classes.inputFieldCustom}
+                                    fullWidth={true}/>
                                 <Field
                                     name="paymentType"
                                     component={PaymentTypeSearchField}

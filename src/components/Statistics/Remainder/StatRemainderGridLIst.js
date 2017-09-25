@@ -21,6 +21,7 @@ import numberFormat from '../../../helpers/numberFormat.js'
 import NotFound from '../../Images/not-found.png'
 import getConfig from '../../../helpers/getConfig'
 import Tooltip from '../../ToolTip/index'
+import OK from 'material-ui/svg-icons/action/done'
 
 export const STAT_REMAINDER_FILTER_KEY = {
     STOCK: 'stock',
@@ -39,7 +40,7 @@ const enhance = compose(
         },
         loader: {
             width: '100%',
-            height: '100%',
+            padding: '100px 0',
             background: '#fff',
             justifyContent: 'center',
             alignItems: 'center',
@@ -60,6 +61,7 @@ const enhance = compose(
             }
         },
         tableWrapper: {
+            borderTop: '1px solid #efefef',
             height: 'calc(100% - 118px)',
             '& .row': {
                 '&:after': {
@@ -118,7 +120,8 @@ const enhance = compose(
                 position: 'relative',
                 marginRight: '40px',
                 '&:last-child': {
-                    margin: '0'
+                    margin: '0',
+                    width: '25px !important'
                 },
                 '&:after': {
                     content: '""',
@@ -193,6 +196,11 @@ const enhance = compose(
                 height: '50px !important',
                 color: '#999 !important'
             }
+        },
+        searchForm: {
+            display: 'flex',
+            alignItems: 'center',
+            width: '30%'
         }
     }),
     reduxForm({
@@ -271,7 +279,7 @@ const StatRemainderGridList = enhance((props) => {
                 <Col xs={2}>{productType}</Col>
                 <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right', fontWeight: '600', whiteSpace: 'nowrap'}}>
                     <Tooltip position="top" text="Всего / Забронировано / Брак">
-                        {balance} / <span style={{color: '#90a4ae'}}> {reserved} </span> / <span style={{color: '#e57373'}}> {defects} </span>
+                        {balance} / <span style={{color: '#90a4ae', margin: '0 3px'}}> {reserved} </span> / <span style={{color: '#e57373', margin: '0 3px'}}> {defects} </span>
                     </Tooltip>
                 </Col>
                 <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right', fontWeight: '600', fontSize: '15px'}}>{available}</Col>
@@ -315,19 +323,15 @@ const StatRemainderGridList = enhance((props) => {
                                     component={ProductTypeChildSearchField}
                                     label="Подкатегория"
                                     fullWidth={true}/>}
-                                <Field
-                                    className={classes.inputFieldCustom}
-                                    name="search"
-                                    component={TextField}
-                                    label="Поиск"
-                                    fullWidth={true}/>
-                                <IconButton
-                                    className={classes.searchButton}
-                                    iconStyle={iconStyle.icon}
-                                    style={iconStyle.button}
-                                    type="submit">
-                                    <Search/>
-                                </IconButton>
+                                <Tooltip position="bottom" text="Применить">
+                                    <IconButton
+                                        className={classes.searchButton}
+                                        iconStyle={iconStyle.icon}
+                                        style={iconStyle.button}
+                                        type="submit">
+                                        <OK color="rgb(88, 190, 217)"/>
+                                    </IconButton>
+                                </Tooltip>
                             </div>
                             <a className={classes.excel}
                                onClick = {getDocument.handleGetDocument}>
@@ -343,8 +347,24 @@ const StatRemainderGridList = enhance((props) => {
                                 <div>По вашему запросу ничего не найдено</div>
                             </div>
                             : <div>
-                                <Pagination filter={filter}/>
-
+                                <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                    <form onSubmit={handleSubmit(onSubmit)} className={classes.searchForm}>
+                                        <Field
+                                            className={classes.inputFieldCustom}
+                                            name="search"
+                                            component={TextField}
+                                            label="Поиск"
+                                            fullWidth={true}/>
+                                        <IconButton
+                                            className={classes.searchButton}
+                                            iconStyle={iconStyle.icon}
+                                            style={iconStyle.button}
+                                            type="submit">
+                                            <Search/>
+                                        </IconButton>
+                                    </form>
+                                    <Pagination filter={filter}/>
+                                </div>
                                 <div className={classes.tableWrapper}>
                                 {headers}
                                 {list}

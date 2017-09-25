@@ -20,6 +20,8 @@ import InProcess from 'material-ui/svg-icons/action/cached'
 import DoneIcon from 'material-ui/svg-icons/action/done-all'
 import Canceled from 'material-ui/svg-icons/notification/do-not-disturb-alt'
 import dateFormat from '../../helpers/dateTimeFormat'
+import ReturnUpdateDialog from '../Order/OrderReturnDialog'
+import ClientReturnUpdateDialog from '../ClientBalance/ClientBalanceReturnDialog'
 
 const listHeader = [
     {
@@ -121,7 +123,9 @@ const OrderGridList = enhance((props) => {
         detailData,
         classes,
         printDialog,
-        cancelReturnDialog
+        updateDialog,
+        cancelReturnDialog,
+        isAdmin
     } = props
 
     const orderFilterDialog = (
@@ -148,12 +152,16 @@ const OrderGridList = enhance((props) => {
             key={_.get(detailData, 'id')}
             data={_.get(detailData, 'data') || {}}
             getDocument={getDocument}
+            updateDialog={updateDialog}
             confirmDialog={confirmDialog}
             loading={_.get(detailData, 'detailLoading')}
             handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
             cancelReturnDialog={cancelReturnDialog}
+            isAdmin={isAdmin}
         />
     )
+    const CLIENT_RETURN = 2
+    const returnType = _.toInteger(_.get(detailData, ['data', 'type']))
     const orderList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const client = _.get(item, ['client', 'name']) || '-'
@@ -247,6 +255,25 @@ const OrderGridList = enhance((props) => {
                 onSubmit={confirmDialog.handleSendConfirmDialog}
                 open={confirmDialog.openConfirmDialog}
             />}
+            {(returnType === CLIENT_RETURN)
+                ? (isAdmin && <ClientReturnUpdateDialog
+                    isUpdate={true}
+                    name={_.get(detailData, ['data', 'client', 'name'])}
+                    initialValues={updateDialog.initialValues}
+                    loading={updateDialog.updateLoading}
+                    open={updateDialog.openUpdateDialog}
+                    onClose={updateDialog.handleCloseUpdateDialog}
+                    onSubmit={updateDialog.handleSubmitUpdateDialog}
+                />)
+                : (isAdmin && <ReturnUpdateDialog
+                    isUpdate={true}
+                    orderData={_.get(detailData, 'data')}
+                    initialValues={updateDialog.initialValues}
+                    loading={updateDialog.updateLoading}
+                    open={updateDialog.openUpdateDialog}
+                    onClose={updateDialog.handleCloseUpdateDialog}
+                    onSubmit={updateDialog.handleSubmitUpdateDialog}
+                />)}
         </Container>
     )
 })

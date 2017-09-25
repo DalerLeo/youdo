@@ -10,7 +10,6 @@ import {reduxForm, Field} from 'redux-form'
 import DateToDateField from '../../ReduxForm/Basic/DateToDateField'
 import DivisionSearchField from '../../ReduxForm/DivisionSearchField'
 import StatSideMenu from '../StatSideMenu'
-import Person from '../../Images/person.png'
 import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
@@ -31,7 +30,7 @@ const enhance = compose(
     injectSheet({
         loader: {
             width: '100%',
-            height: '100%',
+            padding: '100px 0',
             background: '#fff',
             alignItems: 'center',
             zIndex: '999',
@@ -91,14 +90,6 @@ const enhance = compose(
                 }
             }
         },
-        balanceInfo: {
-            padding: '15px 0'
-        },
-        balance: {
-            paddingRight: '10px',
-            fontSize: '24px!important',
-            fontWeight: '600'
-        },
         inputFieldCustom: {
             fontSize: '13px !important',
             height: '45px !important',
@@ -113,11 +104,6 @@ const enhance = compose(
             '& input': {
                 marginTop: '0 !important'
             }
-        },
-        balanceButtonWrap: {
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between'
         },
         form: {
             display: 'flex',
@@ -246,16 +232,13 @@ const StatOutcomeCategoryGridList = enhance((props) => {
 
         return (
             <Row key={id} className="dottedList">
-                <Col xs={3}>
-                    <div className="personImage"><img src={Person}/></div>
-                    <div>{name}</div>
-                </Col>
+                <Col xs={3}>{name}</Col>
                 <Col xs={6}>
                     <LinearProgress
                         color="#58bed9"
                         mode="determinate"
                         value={percent}
-                        style={{backgroundColor: '#fff', height: '10px'}}/>
+                        style={{backgroundColor: '#efefef', height: '10px'}}/>
                 </Col>
                 <Col xs={3} style={{justifyContent: 'flex-end'}}>{amount}</Col>
             </Row>

@@ -32,6 +32,12 @@ export default class CustomBadge extends React.Component {
             })
     }
 
+    componentWillUnmount () {
+        this.setState({
+            count: null
+        })
+    }
+
     render () {
         const {classBadge, style, handleOpen} = this.props
         if (this.state.count <= ZERO) {

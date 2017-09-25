@@ -14,6 +14,7 @@ import {
     RETURN_FILTER_KEY,
     RETURN_FILTER_OPEN,
     CANCEL_RETURN_DIALOG_OPEN,
+    RETURN_UPDATE_DIALOG_OPEN,
     ReturnGridList,
     ReturnPrint
 } from '../../components/Return'
@@ -21,10 +22,12 @@ import {
     returnListFetchAction,
     returnItemFetchAction,
     returnListPrintFetchAction,
-    returnCancelAction
+    returnCancelAction,
+    returnUpdateAction
 } from '../../actions/return'
 import {openSnackbarAction} from '../../actions/snackbar'
 
+const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -38,6 +41,8 @@ const enhance = compose(
         const listLoading = _.get(state, ['return', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'ReturnFilterForm'])
         const filter = filterHelper(list, pathname, query)
+        const updateForm = _.get(state, ['form', 'OrderReturnForm']) || _.get(state, ['form', 'ClientBalanceReturnForm'])
+        const isAdmin = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
 
         return {
             list,
@@ -48,7 +53,9 @@ const enhance = compose(
             detailLoading,
             updateLoading,
             filter,
-            filterForm
+            filterForm,
+            updateForm,
+            isAdmin
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -135,12 +142,13 @@ const enhance = compose(
             const fromDate = _.get(filterForm, ['values', 'data', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'data', 'toDate']) || null
             const type = _.get(filterForm, ['values', 'type', 'value']) || null
-            const order = _.get(filterForm, ['values', 'order', 'value']) || null
+            const order = _.get(filterForm, ['values', 'order']) || null
             const client = _.get(filterForm, ['values', 'client', 'value']) || null
-            const status = _.get(filterForm, ['values', 'status', 'value']) || null
+            const status = _.get(filterForm, ['values', 'status', 'value']) === ZERO ? '0' : _.get(filterForm, ['values', 'status', 'value']) || null
             const market = _.get(filterForm, ['values', 'market', 'value']) || null
             const initiator = _.get(filterForm, ['values', 'initiator', 'value']) || null
             const product = _.get(filterForm, ['values', 'product', 'value']) || null
+            const division = _.get(filterForm, ['values', 'division', 'value']) || null
             const code = _.get(filterForm, ['values', 'code']) || null
 
             filter.filterBy({
@@ -152,6 +160,7 @@ const enhance = compose(
                 [RETURN_FILTER_KEY.INITIATOR]: initiator,
                 [RETURN_FILTER_KEY.MARKET]: market,
                 [RETURN_FILTER_KEY.PRODUCT]: product,
+                [RETURN_FILTER_KEY.DIVISION]: division,
                 [RETURN_FILTER_KEY.CODE]: code,
                 [RETURN_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [RETURN_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
@@ -191,6 +200,33 @@ const enhance = compose(
                 })
         },
 
+        handleOpenUpdateDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[RETURN_UPDATE_DIALOG_OPEN]: true})})
+        },
+
+        handleCloseUpdateDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[RETURN_UPDATE_DIALOG_OPEN]: false})})
+        },
+
+        handleSubmitUpdateDialog: props => () => {
+            const {dispatch, updateForm, filter, location: {pathname}} = props
+            const returnId = _.toInteger(_.get(props, ['params', 'returnId']))
+
+            return dispatch(returnUpdateAction(returnId, _.get(updateForm, ['values'])))
+                .then(() => {
+                    return dispatch(returnItemFetchAction(returnId))
+                })
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                })
+                .then(() => {
+                    hashHistory.push({pathname, query: filter.getParams({[RETURN_UPDATE_DIALOG_OPEN]: false})})
+                    dispatch(returnListFetchAction(filter))
+                })
+        },
+
         handleCloseDetail: props => () => {
             const {filter} = props
             hashHistory.push({pathname: ROUTER.RETURN_LIST_URL, query: filter.getParams()})
@@ -207,6 +243,7 @@ const ReturnList = enhance((props) => {
         returnData,
         returnReturnList,
         detailLoading,
+        updateLoading,
         returnDataLoading,
         filter,
         layout,
@@ -214,13 +251,16 @@ const ReturnList = enhance((props) => {
         openPrint,
         params,
         listPrint,
-        listPrintLoading
+        listPrintLoading,
+        isAdmin
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', RETURN_FILTER_OPEN]))
     const openCancelDialog = _.toInteger(_.get(location, ['query', CANCEL_RETURN_DIALOG_OPEN]))
+    const openUpdateDialog = toBoolean(_.get(location, ['query', RETURN_UPDATE_DIALOG_OPEN]))
     const client = _.toInteger(filter.getParam(RETURN_FILTER_KEY.CLIENT))
     const zone = _.toInteger(filter.getParam(RETURN_FILTER_KEY.ZONE))
+    const division = _.toInteger(filter.getParam(RETURN_FILTER_KEY.DIVISION))
     const returnStatus = _.toInteger(filter.getParam(RETURN_FILTER_KEY.STATUS))
     const fromDate = filter.getParam(RETURN_FILTER_KEY.FROM_DATE)
     const deliveryFromDate = filter.getParam(RETURN_FILTER_KEY.DELIVERY_FROM_DATE)
@@ -257,6 +297,9 @@ const ReturnList = enhance((props) => {
             zone: {
                 value: zone
             },
+            division: {
+                value: division
+            },
             deliveryDate: {
                 deliveryFromDate: deliveryFromDate && moment(deliveryFromDate, 'YYYY-MM-DD'),
                 deliveryToDate: deliveryToDate && moment(deliveryToDate, 'YYYY-MM-DD')
@@ -290,6 +333,75 @@ const ReturnList = enhance((props) => {
         handleCloseDetail: props.handleCloseDetail
     }
 
+    const CLIENT_RETURN = 2
+    const type = _.toInteger(_.get(detail, 'type'))
+
+    const forUpdateProducts = _.map(_.get(detail, 'returnedProducts'), (item) => {
+        const amount = _.toNumber(_.get(item, 'amount'))
+        const price = _.toNumber(_.get(item, 'price'))
+        if (type === CLIENT_RETURN) {
+            return {
+                amount,
+                cost: price,
+                measurement: _.get(item, ['product', 'measurement', 'name']),
+                product: {
+                    value: {
+                        id: _.get(item, 'id'),
+                        price: _.get(item, 'price'),
+                        name: _.get(item, ['product', 'name']),
+                        measurement: {
+                            id: _.get(item, ['product', 'measurement', 'id']),
+                            name: _.get(item, ['product', 'measurement', 'name'])
+                        }
+                    }
+                }
+            }
+        }
+        return {
+            amount,
+            product: {
+                value: {
+                    id: _.get(item, 'orderProduct'),
+                    price,
+                    name: _.get(item, ['product', 'name']),
+                    product: {
+                        measurement: {
+                            id: _.get(item, ['product', 'measurement', 'id']),
+                            name: _.get(item, ['product', 'measurement', 'name'])
+                        }
+                    }
+                },
+                text: _.get(item, ['product', 'name'])
+            }
+        }
+    })
+
+    const updateDialog = {
+        initialValues: (() => {
+            if (!detail) {
+                return {}
+            } else if (type === CLIENT_RETURN) {
+                return {
+                    stock: {value: _.get(detail, ['stock', 'id'])},
+                    market: {value: _.get(detail, ['market', 'id'])},
+                    comment: _.get(detail, 'comment'),
+                    products: forUpdateProducts
+                }
+            }
+
+            return {
+                stock: {value: _.get(detail, ['stock', 'id'])},
+                comment: _.get(detail, 'comment'),
+                products: forUpdateProducts
+            }
+        })(),
+        updateLoading,
+        openUpdateDialog,
+        handleOpenUpdateDialog: props.handleOpenUpdateDialog,
+        handleCloseUpdateDialog: props.handleCloseUpdateDialog,
+        handleSubmitUpdateDialog: props.handleSubmitUpdateDialog
+    }
+
     const printDialog = {
         openPrint,
         handleOpenPrintDialog: props.handleOpenPrintDialog,
@@ -314,11 +426,13 @@ const ReturnList = enhance((props) => {
                 returnListData={returnReturnList}
                 getDocument={getDocument}
                 confirmDialog={confirmDialog}
+                updateDialog={updateDialog}
                 returnDataLoading={returnDataLoading}
                 filterDialog={filterDialog}
                 products={products}
                 printDialog={printDialog}
                 cancelReturnDialog={cancelReturnDialog}
+                isAdmin={isAdmin}
             />
         </Layout>
     )

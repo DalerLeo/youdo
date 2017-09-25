@@ -5,23 +5,6 @@ import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/permissionSerializer'
 
-export const permissionUpdateAction = (id, status) => {
-    const requestData = serializers.updateSerializer(id, status)
-    const payload = axios()
-        .put(sprintf(API.ACCESS_ITEM, id), requestData)
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.ACCESS_UPDATE,
-        payload
-    }
-}
-
 export const permissionListFetchAction = (filter) => {
     const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()

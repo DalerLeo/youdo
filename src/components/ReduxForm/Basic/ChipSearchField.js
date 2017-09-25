@@ -54,7 +54,7 @@ const enhance = compose(
     withReducer('state', 'dispatch', (state, action) => {
         return {...state, ...action}
     },
-        {dataSource: [], text: '', loading: false, chips: []}
+        {dataSource: [], text: '', loading: false, chips: [], initial: true}
     ),
     withHandlers({
         handleRequestDelete: props => (value) => {
@@ -67,6 +67,11 @@ const enhance = compose(
         return (!_.get(props, ['dataSource']) && _.get(nextProps, ['loading']) === false)
     }, (props) => {
         _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)
+    }),
+    withPropsOnChange((props) => {
+        return _.get(props, ['state', 'initial'])
+    }, (props) => {
+        props.state.initial && props.input.value.length > ZERO && props.dispatch({chips: props.input.value, initial: false})
     }),
 
 )
@@ -88,12 +93,10 @@ const ChipSearchField = enhance((props) => {
         handleRequestDelete,
         ...defaultProps
     } = props
-
     const autoCompleteProps = excludeObjKey(defaultProps, [
         'sheet', 'getText', 'getValue', 'getOptions', 'getItem', 'getItemText'
     ])
     const MINUS_ONE = -1
-
     return (
         <div>
         <div className={classes.wrapper}>

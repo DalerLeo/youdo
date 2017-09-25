@@ -5,8 +5,8 @@ import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/zoneSerializer'
 
-export const zoneCreateAction = (formValues) => {
-    const requestData = serializers.createSerializer(formValues)
+export const zoneCreateAction = (title, points) => {
+    const requestData = serializers.createSerializer(title, points)
     const payload = axios()
         .post(API.ZONE_CREATE, requestData)
         .then((response) => {
@@ -22,8 +22,8 @@ export const zoneCreateAction = (formValues) => {
     }
 }
 
-export const zoneUpdateAction = (id, formValues) => {
-    const requestData = serializers.updateSerializer(formValues)
+export const zoneUpdateAction = (id, title, points) => {
+    const requestData = serializers.updateSerializer(title, points)
     const payload = axios()
         .put(sprintf(API.ZONE_UPDATE, id), requestData)
         .then((response) => {
@@ -142,6 +142,55 @@ export const zoneUnbindAgentAction = (detailId, agentId) => {
         })
     return {
         type: actionTypes.ZONE_BIND_AGENT,
+        payload
+    }
+}
+
+export const zoneCustomCreateAction = (title, points) => {
+    const requestData = serializers.createCustomSerializer(title, points)
+    const payload = axios()
+        .post(API.ZONE_CREATE, requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.ZONE_CREATE,
+        payload
+    }
+}
+
+export const zoneCustomUpdateAction = (id, title, points) => {
+    const requestData = serializers.updateCustomSerializer(title, points)
+    const payload = axios()
+        .put(sprintf(API.ZONE_UPDATE, id), requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.ZONE_UPDATE,
+        payload
+    }
+}
+
+export const shopListFetchAction = (zoneId) => {
+    const payload = axios()
+        .get(API.SHOP_LIST, {params: {border: zoneId}})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+    return {
+        type: actionTypes.SHOP_LIST,
         payload
     }
 }

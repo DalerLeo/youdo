@@ -50,12 +50,12 @@ const muiTheme = getMuiTheme({
         fontSize: 13,
         fontWeight: 400
     },
-    reisedButton: {
+    raisedButton: {
         fontSize: 13,
         fontWeight: 400
     },
-    menuItem: {
-
+    timePicker: {
+        headerColor: '#2d3037'
     }
 })
 

@@ -7,7 +7,10 @@ import moment from 'moment'
 import CircularProgress from 'material-ui/CircularProgress'
 import Paper from 'material-ui/Paper'
 import numberFormat from '../../helpers/numberFormat'
+import getConfig from '../../helpers/getConfig'
 import InfiniteScroll from 'react-infinite-scroller'
+import Info from 'material-ui/svg-icons/action/info-outline'
+import Tooltip from '../ToolTip'
 
 const enhance = compose(
     injectSheet({
@@ -33,7 +36,13 @@ const enhance = compose(
         },
         blockTitle: {
             padding: '15px 0',
-            fontWeight: 'bold'
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginRight: '10px',
+            '& strong': {
+                fontWeight: 'bold'
+            }
         },
         blockItems: {
             overflowY: 'auto',
@@ -114,12 +123,19 @@ const dateFormat = (date, defaultText) => {
 }
 
 const ActivityPayment = enhance((props) => {
+    const currentCurrency = getConfig('PRIMARY_CURRENCY')
     const {
         paymentlistData,
-        classes
+        classes,
+        summary,
+        summaryLoading
     } = props
 
     const paymentlistLoading = _.get(paymentlistData, 'paymentListLoading')
+    const countSummary = _.get(summary, 'count')
+    const cashSummary = numberFormat(_.get(summary, 'cash'), currentCurrency)
+    const bankSummary = numberFormat(_.get(summary, 'bank'), currentCurrency)
+    const tooltipText = '<div>Сумма (нал): ' + cashSummary + '</div> <div>Сумма (пер): ' + bankSummary + '</div>'
     const paymentList = _.map(_.get(paymentlistData, 'data'), (item) => {
         const id = _.get(item, ['clientTransaction', 'id'])
         const currency = _.get(item, ['clientTransaction', 'currency', 'name'])
@@ -140,7 +156,7 @@ const ActivityPayment = enhance((props) => {
 
     if (_.isEmpty(paymentList)) {
         return false
-    } else if (paymentlistLoading) {
+    } else if (paymentlistLoading || summaryLoading) {
         return (
             <div className={classes.loader}>
                 <CircularProgress size={40} thickness={4}/>
@@ -153,7 +169,12 @@ const ActivityPayment = enhance((props) => {
 
     return (
         <div className={classes.block}>
-            <div className={classes.blockTitle}>Сбор денег</div>
+            <div className={classes.blockTitle}>
+                <strong>Сбор денег ({countSummary})</strong>
+                <Tooltip position="left" text={tooltipText}>
+                    <Info color="#666"/>
+                </Tooltip>
+            </div>
             <div className={classes.blockItems}>
                 <InfiniteScroll
                     pageStart={500}

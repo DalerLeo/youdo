@@ -14,6 +14,7 @@ const enhance = compose(
             alignItems: 'center',
             justifyContent: 'space-between',
             height: '55px',
+            minHeight: '55px',
             padding: '0px 30px',
             position: 'relative',
             '& nav': {

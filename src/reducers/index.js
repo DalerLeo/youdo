@@ -41,7 +41,8 @@ const rootReducer = combineReducers({
         list: createThunkReducer(actionTypes.TRANSACTION_LIST),
         item: createThunkReducer(actionTypes.TRANSACTION_ITEM),
         update: createThunkReducer(actionTypes.TRANSACTION_UPDATE),
-        acceptCash: createThunkReducer(actionTypes.TRANSACTION_ACCEPT_CASH)
+        acceptCash: createThunkReducer(actionTypes.TRANSACTION_ACCEPT_CASH),
+        info: createThunkReducer(actionTypes.TRANSACTION_INFO)
     }),
     clientTransaction: combineReducers({
         create: createThunkReducer(actionTypes.CLIENT_TRANSACTION_CREATE),
@@ -60,8 +61,7 @@ const rootReducer = combineReducers({
         create: createThunkReducer(actionTypes.PRICES_CREATE),
         list: createThunkReducer(actionTypes.PRICES_LIST),
         item: createThunkReducer(actionTypes.PRICES_ITEM),
-        update: createThunkReducer(actionTypes.PRICES_UPDATE),
-        marketType: createThunkReducer(actionTypes.MARKET_TYPE_LIST)
+        update: createThunkReducer(actionTypes.PRICES_UPDATE)
     }),
     supplyExpense: combineReducers({
         create: createThunkReducer(actionTypes.SUPPLY_EXPENSE_CREATE),
@@ -362,6 +362,11 @@ const rootReducer = combineReducers({
         list: createThunkReducer(actionTypes.STAT_REMAINDER_LIST),
         item: createThunkReducer(actionTypes.STAT_REMAINDER_ITEM)
     }),
+    statClientIncome: combineReducers({
+        dataIn: createThunkReducer(actionTypes.STAT_CLIENT_INCOME_IN),
+        dataOut: createThunkReducer(actionTypes.STAT_CLIENT_INCOME_OUT),
+        list: createThunkReducer(actionTypes.STAT_CLIENT_INCOME_LIST)
+    }),
     position: combineReducers({
         create: createThunkReducer(actionTypes.POSITION_CREATE),
         list: createThunkReducer(actionTypes.POSITION_LIST),
@@ -391,7 +396,8 @@ const rootReducer = combineReducers({
         reportImage: createThunkReducer(actionTypes.ACTIVITY_REPORT_SHOW_IMAGE),
         returnList: createThunkReducer(actionTypes.ACTIVITY_ORDER_RETURN_LIST),
         paymentList: createThunkReducer(actionTypes.ACTIVITY_PAYMENT_LIST),
-        deliveryList: createThunkReducer(actionTypes.ACTIVITY_DELIVERY_LIST)
+        deliveryList: createThunkReducer(actionTypes.ACTIVITY_DELIVERY_LIST),
+        summary: createThunkReducer(actionTypes.ACTIVITY_SUMMARY)
     }),
     statProductMove: combineReducers({
         list: createThunkReducer(actionTypes.STAT_PRODUCT_MOVE_LIST),

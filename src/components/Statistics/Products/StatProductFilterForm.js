@@ -3,11 +3,12 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
+import ToolTip from '../../ToolTip'
 import {reduxForm, Field} from 'redux-form'
 import {connect} from 'react-redux'
-import {TextField, ProductTypeChildSearchField, ProductTypeParentSearchField} from '../../ReduxForm/index'
+import {ProductTypeChildSearchField, ProductTypeParentSearchField} from '../../ReduxForm/index'
 import DateToDateField from '../../ReduxForm/Basic/DateToDateField'
-import Search from 'material-ui/svg-icons/action/search'
+import OK from 'material-ui/svg-icons/action/done'
 import IconButton from 'material-ui/IconButton'
 import Excel from 'material-ui/svg-icons/av/equalizer'
 
@@ -70,6 +71,9 @@ const enhance = compose(
                     background: '#efefef'
                 },
                 '&:last-child': {
+                    width: '25px !important',
+                    position: 'unset',
+                    marginRight: 'auto',
                     '&:after': {
                         content: '""',
                         background: 'none'
@@ -109,9 +113,9 @@ const StatProductFilterForm = enhance((props) => {
     } = props
     const iconStyle = {
         icon: {
-            color: '#5d6474',
-            width: 22,
-            height: 22
+            color: 'rgb(88, 190, 217)',
+            width: 25,
+            height: 25
         },
         button: {
             minWidth: 40,
@@ -145,19 +149,15 @@ const StatProductFilterForm = enhance((props) => {
                     label="Подкатегория"
                     fullWidth={true}
                 /> : null}
-                <Field
-                    className={classes.inputFieldCustom}
-                    name="search"
-                    component={TextField}
-                    label="Поиск"
-                    fullWidth={true}/>
-                <IconButton
-                    className={classes.searchButton}
-                    iconStyle={iconStyle.icon}
-                    style={iconStyle.button}
-                    type="submit">
-                    <Search/>
-                </IconButton>
+                <ToolTip position="bottom" text="Применить">
+                    <IconButton
+                        className={classes.searchButton}
+                        iconStyle={iconStyle.icon}
+                        style={iconStyle.button}
+                        type="submit">
+                        <OK/>
+                    </IconButton>
+                </ToolTip>
             </div>
             <a className={classes.excel}
                onClick={getDocument.handleGetDocument}>

@@ -24,8 +24,7 @@ import {
     pricesUpdateAction,
     pricesListFetchAction,
     pricesDeleteAction,
-    pricesItemFetchAction,
-    pricesMarketTypeFetchAction
+    pricesItemFetchAction
 } from '../../actions/prices'
 
 import {openSnackbarAction} from '../../actions/snackbar'
@@ -39,7 +38,6 @@ const enhance = compose(
         const createLoading = _.get(state, ['prices', 'create', 'loading'])
         const updateLoading = _.get(state, ['prices', 'update', 'loading'])
         const list = _.get(state, ['prices', 'list', 'data'])
-        const marketTypeList = _.get(state, ['prices', 'marketType', 'data'])
         const listLoading = _.get(state, ['prices', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'PricesFilterForm'])
         const createForm = _.get(state, ['form', 'PricesCreateForm'])
@@ -54,8 +52,7 @@ const enhance = compose(
             updateLoading,
             filter,
             filterForm,
-            createForm,
-            marketTypeList
+            createForm
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -70,15 +67,6 @@ const enhance = compose(
     }, ({dispatch, params}) => {
         const pricesId = _.toInteger(_.get(params, 'pricesId'))
         pricesId && dispatch(pricesItemFetchAction(pricesId))
-        dispatch(pricesMarketTypeFetchAction())
-    }),
-    withPropsOnChange((props, nextProps) => {
-        const prevDialog = toBoolean(_.get(nextProps, ['location', 'query', PRICES_CREATE_DIALOG_OPEN]))
-        const nextDialog = toBoolean(_.get(nextProps, ['location', 'query', PRICES_CREATE_DIALOG_OPEN]))
-        return prevDialog !== nextDialog && nextDialog
-    }, ({dispatch, location}) => {
-        const nextDialog = toBoolean(_.get(location, ['query', PRICES_CREATE_DIALOG_OPEN]))
-        nextDialog && dispatch(pricesMarketTypeFetchAction())
     }),
 
     withHandlers({
@@ -204,8 +192,7 @@ const PricesList = enhance((props) => {
         updateLoading,
         filter,
         layout,
-        params,
-        marketTypeList
+        params
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', PRICES_FILTER_OPEN]))
@@ -273,12 +260,20 @@ const PricesList = enhance((props) => {
             giftAmount: _.get(item, 'amount')
         }
     })
+
+    const formattedMarketType = _.map(_.get(detail, 'marketTypes'), (item) => {
+        return {
+            text: _.get(item, 'name'),
+            value: _.get(item, 'id')
+        }
+    })
+
     const updateDialog = {
         initialValues: (() => {
             const promotionType = _.get(detail, 'type')
             if (!detail || openCreateDialog) {
                 return {
-                    marketTypes: _.get(marketTypeList, 'results')
+                    marketTypes: []
                 }
             }
             if (promotionType === 'bonus') {
@@ -291,7 +286,7 @@ const PricesList = enhance((props) => {
                     giftProducts: forUpdateGift && forUpdateGift,
                     promotionType: promotionType,
                     amount: _.toNumber(_.get(detail, 'totalAmount')),
-                    marketTypes: _.get(detail, 'marketTypes')
+                    marketTypes: formattedMarketType
                 }
             }
             return {
@@ -302,7 +297,7 @@ const PricesList = enhance((props) => {
                 products: forUpdateProducts,
                 promotionType: promotionType,
                 amount: _.get(detail, 'totalAmount'),
-                marketTypes: _.get(detail, 'marketTypes')
+                marketTypes: formattedMarketType
             }
         })(),
         updateLoading,

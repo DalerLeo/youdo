@@ -2,6 +2,7 @@ import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
+import {connect} from 'react-redux'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
@@ -9,6 +10,7 @@ import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
+import {convertTransfer} from '../../helpers/convertCurrency'
 import {TextField, CashboxTypeSearchField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import MainStyles from '../Styles/MainStyles'
@@ -60,19 +62,36 @@ const enhance = compose(
             color: '#999'
         },
         itemList: {
-            marginTop: '20px'
+            marginTop: '20px',
+            marginBottom: '10px'
         }
     })),
     reduxForm({
         form: 'TransactionCreateForm',
         enableReinitialize: true
+    }),
+    connect((state) => {
+        const chosenCashbox = _.get(state, ['form', 'TransactionCreateForm', 'values', 'categoryId', 'value'])
+        const amount = _.get(state, ['form', 'TransactionCreateForm', 'values', 'amount'])
+        const rate = _.get(state, ['form', 'TransactionCreateForm', 'values', 'custom_rate'])
+        return {
+            chosenCashbox,
+            amount,
+            rate
+        }
     })
 )
 
 const TransactionSendDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, cashboxData} = props
+    const {open, loading, handleSubmit, onClose, classes, cashboxData, chosenCashbox, amount, rate} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const cashbox = _.find(_.get(cashboxData, 'data'), {'id': _.get(cashboxData, 'cashboxId')})
+    const chosenCurrencyId = _.get(_.find(_.get(cashboxData, 'data'), {'id': chosenCashbox}), ['currency', 'id'])
+    const currentCurrencyId = _.get(_.find(_.get(cashboxData, 'data'), {'id': _.get(cashboxData, 'cashboxId')}), ['currency', 'id'])
+    const currentCurrencyName = _.get(_.find(_.get(cashboxData, 'data'), {'id': _.get(cashboxData, 'cashboxId')}), ['currency', 'name'])
+    const chosenCurrencyName = _.get(_.find(_.get(cashboxData, 'data'), {'id': chosenCashbox}), ['currency', 'name'])
+    const convertAmount = convertTransfer(amount, rate)
+
     return (
         <Dialog
             modal={true}
@@ -105,19 +124,29 @@ const TransactionSendDialog = enhance((props) => {
                                 cashbox={cashbox}
                                 label="Касса получатель"
                                 fullWidth={true}/>
-                            <div className={classes.flex} style={{alignItems: 'baseline'}}>
-                                {cashbox && <Field
-                                    name="amount"
-                                    className={classes.inputFieldCustom}
-                                    component={TextField}
-                                    label="Сумма"
-                                    normalize={normalizeNumber}
-                                    style={{width: '50%'}}
-                                    fullWidth={false}/>}
-                                <div style={{marginLeft: '20px'}}>
-                                   {_.get(cashbox, ['currency', 'name'])}
+                            <div className={classes.flex} style={{justifyContent: 'space-between'}}>
+                                <div style={{display: 'flex', alignItems: 'baseline', width: '49%'}}>
+                                    {cashbox && <Field
+                                        name="amount"
+                                        className={classes.inputFieldCustom}
+                                        component={TextField}
+                                        label="Сумма"
+                                        normalize={normalizeNumber}
+                                        fullWidth={true}/>}
+                                    <span style={{marginLeft: '10px'}}>{_.get(cashbox, ['currency', 'name'])}</span>
                                 </div>
+                                {(chosenCurrencyId !== currentCurrencyId && chosenCurrencyId) &&
+                                <div style={{width: '47%'}}>
+                                    <Field
+                                        name="custom_rate"
+                                        className={classes.inputFieldCustom}
+                                        component={TextField}
+                                        label="Курс"
+                                        fullWidth={true}/>
+                                </div>}
                             </div>
+                            {(rate && chosenCurrencyId !== currentCurrencyId && chosenCurrencyId) && <div style={{padding: '10px 0'}}>1{currentCurrencyName} = {rate} {chosenCurrencyName}</div>}
+                            {(amount && rate) && <div style={{padding: '10px 0'}}>После конвертации: <strong>{convertAmount} {chosenCurrencyName}</strong></div>}
                             <Field
                                 name="comment"
                                 className={classes.inputFieldCustom}

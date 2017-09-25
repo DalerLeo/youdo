@@ -234,7 +234,7 @@ const OrderGridList = enhance((props) => {
         const user = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName']) || 'N/A'
         const dateDelivery = dateFormat((_.get(item, 'dateDelivery')), '')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY HH:MM')
-        const totalBalance = _.toInteger(_.get(item, 'totalBalance'))
+        const totalBalance = _.toNumber(_.get(item, 'totalBalance'))
         const balanceTooltip = numberFormat(totalBalance, currentCurrency)
         const totalPrice = numberFormat(_.get(item, 'totalPrice'), currentCurrency)
         const status = _.toInteger(_.get(item, 'status'))
@@ -320,7 +320,7 @@ const OrderGridList = enhance((props) => {
                         ? PAY_DELAY
                         : (totalBalance > ZERO) && ((paymentDate.diff(now, 'days') > ZERO))
                             ? PAY_PENDING
-                            : 'Оплачено'}>
+                            : totalBalance === ZERO ? 'Оплачено' : null}>
                         <IconButton
                             disableTouchRipple={true}
                             iconStyle={iconStyle.icon}
@@ -330,7 +330,7 @@ const OrderGridList = enhance((props) => {
                                 ? '#e57373'
                                 : (totalBalance > ZERO) && ((paymentDate.diff(now, 'days') > ZERO))
                                     ? '#B7BBB7'
-                                    : '#81c784'
+                                    : (totalBalance === ZERO ? '#81c784' : '#B7BBB7')
                             }/>
                         </IconButton>
                     </Tooltip>

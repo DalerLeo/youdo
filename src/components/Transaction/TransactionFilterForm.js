@@ -117,7 +117,7 @@ const enhance = compose(
 )
 
 const TransactionFilterForm = enhance((props) => {
-    const {classes, filterDialog, getCount} = props
+    const {classes, filterDialog, getCount, handleSubmit} = props
     const filterCounts = getCount()
 
     if (!filterDialog.openFilterDialog) {
@@ -157,22 +157,12 @@ const TransactionFilterForm = enhance((props) => {
                         <CloseIcon className={classes.icon} />
                     </IconButton>
                 </div>
-                <form onSubmit={filterDialog.handleSubmitFilterDialog}>
-                    <div>
-                        <Field className={classes.inputFieldCustom} name="categoryExpense" component={ExpensiveCategorySearchField} label="Категории расходов"/>
-                    </div>
-                    <div>
-                        <Field className={classes.inputFieldCustom} name="type" component={TransactionTypeSearchField} label="Тип"/>
-                    </div>
-                    <div>
-                        <Field className={classes.inputFieldCustom} name="client" component={ClientSearchField} label="Клиент" fullWidth={true}/>
-                    </div>
-                    <div>
-                        <Field className={classes.inputFieldCustom} name="division" component={DivisionSearchField} label="Подразделение" fullWidth={true}/>
-                    </div>
-                    <div>
-                        <Field className={classes.inputFieldCustom} name="date" component={DateToDateField} label="Диапазон дат" fullWidth={true}/>
-                    </div>
+                <form onSubmit={handleSubmit(filterDialog.handleSubmitFilterDialog)}>
+                    <Field className={classes.inputFieldCustom} name="categoryExpense" component={ExpensiveCategorySearchField} label="Категории расходов"/>
+                    <Field className={classes.inputFieldCustom} name="type" component={TransactionTypeSearchField} label="Тип"/>
+                    <Field className={classes.inputFieldCustom} name="client" component={ClientSearchField} label="Клиент" fullWidth={true}/>
+                    <Field className={classes.inputFieldCustom} name="division" component={DivisionSearchField} label="Подразделение" fullWidth={true}/>
+                    <Field className={classes.inputFieldCustom} name="date" component={DateToDateField} label="Диапазон дат" fullWidth={true}/>
 
                     <RaisedButton
                         type="submit"

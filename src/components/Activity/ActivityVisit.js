@@ -109,10 +109,13 @@ const dateFormat = (date, defaultText) => {
 const ActivityVisit = enhance((props) => {
     const {
         visitlistData,
-        classes
+        classes,
+        summary,
+        summaryLoading
     } = props
 
     const visitlistLoading = _.get(visitlistData, 'visitListLoading')
+    const countSummary = _.get(summary, 'count')
     const visitList = _.map(_.get(visitlistData, 'data'), (item) => {
         const id = _.get(item, ['visit', 'id'])
         const market = _.get(item, ['visit', 'market', 'name'])
@@ -133,7 +136,7 @@ const ActivityVisit = enhance((props) => {
 
     if (_.isEmpty(visitList)) {
         return false
-    } else if (visitlistLoading) {
+    } else if (visitlistLoading || summaryLoading) {
         return (
             <div className={classes.loader}>
                 <CircularProgress size={40} thickness={4}/>
@@ -143,7 +146,7 @@ const ActivityVisit = enhance((props) => {
 
     return (
         <div className={classes.block}>
-            <div className={classes.blockTitle}>Визиты</div>
+            <div className={classes.blockTitle}>Визиты ({countSummary})</div>
             <div className={classes.blockItems}>
                 {visitList}
             </div>

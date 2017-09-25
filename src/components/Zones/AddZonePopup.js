@@ -8,7 +8,6 @@ import {Field, reduxForm, SubmissionError} from 'redux-form'
 import FlatButton from 'material-ui/FlatButton'
 import {TextField} from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
-import toBoolean from '../../helpers/toBoolean'
 import injectSheet from 'react-jss'
 import {compose, withHandlers} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
@@ -28,7 +27,7 @@ const validate = (data) => {
     })
 }
 const DRAW = 'draw'
-const pathname = 'zones'
+const pathname = 'googleMap'
 const enhance = compose(
     injectSheet({
         addZoneWrapper: {
@@ -109,14 +108,16 @@ const enhance = compose(
 )
 const AddZonePopup = enhance((props) => {
     const {
-        filter,
         classes,
         onClose,
-        handleSubmit
+        handleSubmit,
+        handleClearDrawing,
+        draw,
+        edit,
+        data,
+        isDrawing
     } = props
-    const submitZone = handleSubmit(() => props.onSubmit().catch(validate))
-    const isDraw = toBoolean(_.get(filter.getParams(), 'draw'))
-
+    const submitZone = handleSubmit(() => props.onSubmit(data()).catch(validate))
     return (
         <div>
             <Paper zDepth={1} className={classes.addZoneWrapper}>
@@ -131,8 +132,8 @@ const AddZonePopup = enhance((props) => {
                         <Tooltip text="Режим рисования" position="bottom">
                             <IconButton
                                 disableTouchRipple={true}
-                                className={isDraw ? classes.activeButton : classes.button}
-                                onTouchTap={props.clickDraw}>
+                                className={isDrawing ? classes.activeButton : classes.button}
+                                onTouchTap={() => { draw() }}>
                                 <Draw color="#666"/>
                             </IconButton>
                         </Tooltip>
@@ -140,8 +141,8 @@ const AddZonePopup = enhance((props) => {
                         <Tooltip text="Обычный режим" position="bottom">
                             <IconButton
                                 disableTouchRipple={true}
-                                className={!isDraw ? classes.activeButton : classes.button}
-                                onTouchTap={props.clickPoint}>
+                                className={!isDrawing ? classes.activeButton : classes.button}
+                                onTouchTap={() => { edit() }}>
                                 <Touch color="#666"/>
                             </IconButton>
                         </Tooltip>
@@ -149,7 +150,9 @@ const AddZonePopup = enhance((props) => {
                         <Tooltip text="Очистить" position="bottom">
                             <IconButton
                                 disableTouchRipple={true}>
-                                <DeleteIcon color="#666"/>
+                                <DeleteIcon color="#666"
+                                onTouchTap={(event) => { handleClearDrawing(event) }}
+                                />
                             </IconButton>
                         </Tooltip>
                     </div>
@@ -168,7 +171,10 @@ const AddZonePopup = enhance((props) => {
                     <FloatingActionButton
                         mini={true}
                         zDepth={1}
-                        onTouchTap={onClose}>
+                        onTouchTap={ () => {
+                            onClose()
+                            edit()
+                        } }>
                         <CloseIcon2/>
                     </FloatingActionButton>
                 </Tooltip>

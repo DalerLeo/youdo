@@ -14,12 +14,12 @@ import Excel from 'material-ui/svg-icons/av/equalizer'
 import Back from 'material-ui/svg-icons/content/reply'
 import Pagination from '../../GridList/GridListNavPagination/index'
 import NotFound from '../../Images/not-found.png'
-import Person from '../../Images/person.png'
 import numberFormat from '../../../helpers/numberFormat'
+import dateFormat from '../../../helpers/dateFormat'
 import ReactHighcharts from 'react-highcharts'
 
 export const STAT_CASHBOX_DETAIL_FILTER_KEY = {
-    CASHBOX: 'cashbox',
+    DIVISION: 'division',
     TO_DATE: 'toDate',
     FROM_DATE: 'fromDate'
 }
@@ -171,22 +171,8 @@ const enhance = compose(
         navigation: {
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between',
+            justifyContent: 'flex-end',
             borderBottom: '1px #efefef solid'
-        },
-        cashier: {
-            display: 'flex',
-            alignItems: 'center',
-            fontWeight: '600',
-            '& img': {
-                width: '30px',
-                height: '30px',
-                borderRadius: '50%',
-                marginRight: '10px'
-            },
-            '& span': {
-                lineHeight: '13px'
-            }
         },
         emptyQuery: {
             background: 'url(' + NotFound + ') no-repeat center center',
@@ -220,6 +206,7 @@ const StatCashboxDetails = enhance((props) => {
         detailData,
         classes,
         filter,
+        handleSubmit,
         handleSubmitFilterDialog,
         getDocument
     } = props
@@ -228,7 +215,7 @@ const StatCashboxDetails = enhance((props) => {
         return _.toInteger(_.get(item, 'balance'))
     })
     const date = _.map(_.get(detailData, ['itemGraph']), (item) => {
-        return _.toInteger(_.get(item, 'date'))
+        return dateFormat(_.get(item, 'date'))
     })
 
     const ZERO = 0
@@ -326,14 +313,12 @@ const StatCashboxDetails = enhance((props) => {
 
         }]
     }
-    const listLoading = _.get(detailData, 'sumItemDataLoading')
+    const listLoading = _.get(detailData, 'sumItemDataLoading') || _.get(detailData, 'detailLoading') || _.get(detailData, 'itemGraphLoading') || _.get(detailData, 'transactionsLoading')
     const handleCloseDetail = _.get(detailData, 'handleCloseDetail')
     const startBalance = _.get(detailData, ['sumItemData', 'startBalance'])
     const endBalance = _.get(detailData, ['sumItemData', 'endBalance'])
     const income = _.get(detailData, ['sumItemData', 'income'])
     const expenses = _.get(detailData, ['sumItemData', 'expenses'])
-    const firstName = _.get(detailData, ['data', 'cashier', 'firstName'])
-    const secondName = _.get(detailData, ['data', 'cashier', 'secondName'])
     const currency = _.get(detailData, ['data', 'currency', 'name'])
     const headerStyle = {
         backgroundColor: '#fff',
@@ -363,8 +348,8 @@ const StatCashboxDetails = enhance((props) => {
     )
     const list = _.map(_.get(detailData, 'transactionData'), (item) => {
         const id = _.get(item, 'id')
-        const comment = _.get(item, 'comment') || '-'
-        const expanseCategory = _.get(item, ['expanseCategory', 'name'])
+        const comment = _.get(item, 'comment') || 'Комментариев нет'
+        const expanseCategory = _.get(item, ['expanseCategory', 'name']) || '-'
         const amount = numberFormat(_.get(item, 'amount'), currency)
 
         return (
@@ -384,7 +369,7 @@ const StatCashboxDetails = enhance((props) => {
                     <CircularProgress size={40} thickness={4}/>
                 </div>
                 : <div className={classes.wrapper}>
-                    <form className={classes.form} onSubmit={handleSubmitFilterDialog}>
+                    <form className={classes.form} onSubmit={handleSubmit(handleSubmitFilterDialog)}>
                         <div className={classes.filter}>
                             <Field
                                 className={classes.inputFieldCustom}
@@ -452,13 +437,10 @@ const StatCashboxDetails = enhance((props) => {
                         </Row>
                     </div>
                     <div className={classes.navigation}>
-                        <div className={classes.cashier}>
-                            <img src={Person} alt=""/>
-                            <span>{firstName}<br/> {secondName}</span>
-                        </div>
                         <Pagination filter={filter}/>
                     </div>
-                    {(_.isEmpty(list) && !listLoading) ? <div className={classes.emptyQuery}>
+                    {(_.isEmpty(list) && !listLoading)
+                        ? <div className={classes.emptyQuery}>
                             <div>По вашему запросу ничего не найдено</div>
                         </div>
                         : <div className={classes.tableWrapper}>

@@ -18,6 +18,9 @@ import Pagination from '../../GridList/GridListNavPagination/index'
 import getConfig from '../../../helpers/getConfig'
 import dateFormat from '../../../helpers/dateFormat'
 import numberFormat from '../../../helpers/numberFormat'
+import {formattedType} from '../../../constants/transactionTypes'
+import CircularProgress from 'material-ui/CircularProgress'
+
 export const STAT_FINANCE_FILTER_KEY = {
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate',
@@ -29,6 +32,12 @@ const NEGATIVE = -1
 
 const enhance = compose(
     injectSheet({
+        green: {
+            color: '#81c784'
+        },
+        red: {
+            color: '#e57373'
+        },
         mainWrapper: {
             background: '#fff',
             margin: '0 -28px',
@@ -36,12 +45,22 @@ const enhance = compose(
             boxShadow: 'rgba(0, 0, 0, 0.09) 0px -1px 6px, rgba(0, 0, 0, 0.10) 0px -1px 4px'
         },
         wrapper: {
-            height: 'calc(100% - 40px)',
+            height: '100%',
+            overflowY: 'auto',
             padding: '20px 30px',
             '& .row': {
                 marginLeft: '0',
                 marginRight: '0'
             }
+        },
+        loader: {
+            width: '100%',
+            padding: '100px 0',
+            background: '#fff',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: '999',
+            display: 'flex'
         },
         pagination: {
             display: 'flex',
@@ -51,24 +70,19 @@ const enhance = compose(
             borderBottom: '1px #efefef solid'
         },
         tableWrapper: {
-            height: 'calc(100% - 283px)',
-            overflowY: 'auto',
-            overflowX: 'hidden',
             '& .row': {
                 '&:after': {
                     bottom: '-1px'
                 },
                 '& > div': {
-                    display: 'flex',
-                    height: '50px',
-                    alignItems: 'center',
                     '&:last-child': {
-                        justifyContent: 'flex-end'
+                        textAlign: 'right'
                     }
                 }
             },
             '& .dottedList': {
-                padding: '0',
+                padding: '5px 0',
+                minHeight: '50px',
                 '&:last-child:after': {
                     content: '""',
                     backgroundImage: 'none'
@@ -184,7 +198,7 @@ const enhance = compose(
             color: '#666'
         },
         summaryValue: {
-            fontSize: '24px',
+            fontSize: '20px',
             fontWeight: '600'
         },
         mainSummary: {
@@ -195,7 +209,10 @@ const enhance = compose(
         },
         secondarySummary: {
             margin: '10px 0',
-            '& > div:nth-child(even)': {
+            '& span': {
+                display: 'block'
+            },
+            '& > div': {
                 fontSize: '16px'
             }
         },
@@ -216,10 +233,12 @@ const StatFinanceGridList = enhance((props) => {
         graphData,
         classes,
         filter,
+        handleSubmit,
         handleSubmitFilterDialog,
         listData
     } = props
 
+    const loading = _.get(listData, 'listLoading')
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     let sumIn = 0
     const valueIn = _.map(_.get(graphData, 'dataIn'), (item) => {
@@ -238,7 +257,7 @@ const StatFinanceGridList = enhance((props) => {
     const config = {
         chart: {
             type: 'areaspline',
-            height: 145
+            height: 160
         },
         title: {
             text: '',
@@ -301,9 +320,9 @@ const StatFinanceGridList = enhance((props) => {
             useHTML: true,
             crosshairs: true,
             pointFormat:
-                '<div class="diagramTooltip">' +
-                    '{series.name}: {point.y}' +
-                '</div>'
+            '<div class="diagramTooltip">' +
+            '{series.name}: {point.y}' +
+            '</div>'
         },
         series: [{
             marker: {
@@ -349,8 +368,8 @@ const StatFinanceGridList = enhance((props) => {
     const headers = (
         <Row style={headerStyle} className="dottedList">
             <Col xs={2}>№ заказа</Col>
-            <Col xs={3}>Дата</Col>
-            <Col xs={4}>Описания</Col>
+            <Col xs={2}>Дата</Col>
+            <Col xs={5}>Описание</Col>
             <Col xs={3}>Сумма</Col>
         </Row>
     )
@@ -360,87 +379,102 @@ const StatFinanceGridList = enhance((props) => {
         const date = dateFormat(_.get(item, 'createdDate'))
         const amount = numberFormat(_.get(item, 'amount'), primaryCurrency)
         const comment = _.get(item, 'comment')
+        const transType = _.get(item, 'type')
+        const user = _.get(item, 'user')
+        const type = formattedType[transType]
         return (
             <Row key={id} className="dottedList">
                 <Col xs={2}>{id}</Col>
-                <Col xs={3}>{date}</Col>
-                <Col xs={4}>{comment}</Col>
-                <Col xs={3} style={{justifyContent: 'flex-end'}}>{amount}</Col>
+                <Col xs={2}>{date}</Col>
+                <Col xs={5}>
+                    <div><strong>Тип:</strong> {type} {!_.isNull(user) &&
+                    <strong>{user.firstName} {user.secondName}</strong>}</div>
+                    {comment && <div><strong>Комментарий:</strong> {comment}</div>}
+                </Col>
+                <Col xs={3} style={{textAlign: 'right'}}>{amount}</Col>
             </Row>
         )
     })
 
     const page = (
-            <div className={classes.mainWrapper}>
-                <Row style={{margin: '0', height: '100%'}}>
-                    <div className={classes.leftPanel}>
-                        <StatSideMenu currentUrl={ROUTES.STATISTICS_FINANCE_URL}/>
-                    </div>
-                    <div className={classes.rightPanel}>
-                        <div className={classes.wrapper}>
-                            <form className={classes.form} onSubmit={handleSubmitFilterDialog}>
-                                <div className={classes.filter}>
-                                    <Field
-                                        className={classes.inputFieldCustom}
-                                        name="date"
-                                        component={DateToDateField}
-                                        label="Диапазон дат"
-                                        fullWidth={true}/>
-                                    <Field
-                                        name="division"
-                                        component={DivisionSearchField}
-                                        className={classes.inputFieldCustom}
-                                        label="Подразделение"
-                                        fullWidth={true}/>
-                                    <Field
-                                        className={classes.inputFieldCustom}
-                                        name="search"
-                                        component={TextField}
-                                        label="Поиск"
-                                        fullWidth={true}/>
+        <div className={classes.mainWrapper}>
+            <Row style={{margin: '0', height: '100%'}}>
+                <div className={classes.leftPanel}>
+                    <StatSideMenu currentUrl={ROUTES.STATISTICS_FINANCE_URL}/>
+                </div>
+                <div className={classes.rightPanel}>
+                    <div className={classes.wrapper}>
+                        {loading
+                            ? <div className={classes.loader}>
+                                <CircularProgress/>
+                            </div>
+                            : <div>
+                                <form className={classes.form} onSubmit={handleSubmit(handleSubmitFilterDialog)}>
+                                    <div className={classes.filter}>
+                                        <Field
+                                            className={classes.inputFieldCustom}
+                                            name="date"
+                                            component={DateToDateField}
+                                            label="Диапазон дат"
+                                            fullWidth={true}/>
+                                        <Field
+                                            name="division"
+                                            component={DivisionSearchField}
+                                            className={classes.inputFieldCustom}
+                                            label="Подразделение"
+                                            fullWidth={true}/>
+                                        <Field
+                                            className={classes.inputFieldCustom}
+                                            name="search"
+                                            component={TextField}
+                                            label="Поиск"
+                                            fullWidth={true}/>
 
-                                    <IconButton
-                                        className={classes.searchButton}
-                                        iconStyle={iconStyle.icon}
-                                        style={iconStyle.button}
-                                        type="submit">
-                                        <Search/>
-                                    </IconButton>
+                                        <IconButton
+                                            className={classes.searchButton}
+                                            iconStyle={iconStyle.icon}
+                                            style={iconStyle.button}
+                                            type="submit">
+                                            <Search/>
+                                        </IconButton>
+                                    </div>
+                                    <a className={classes.excel}>
+                                        <Excel color="#fff"/> <span>Excel</span>
+                                    </a>
+                                </form>
+                                <Row className={classes.diagram}>
+                                    <Col xs={3} className={classes.salesSummary}>
+                                        <div className={classes.mainSummary}>
+                                            <div className={classes.summaryTitle}>Прибыль за период</div>
+                                            <div className={classes.summaryValue}>5 000 000 {primaryCurrency}</div>
+                                        </div>
+                                        <div className={classes.secondarySummary}>
+                                            <span className={classes.summaryTitle}>Доход</span>
+                                            <div
+                                                className={classes.summaryValue + ' ' + classes.green}>{numberFormat(sumIn)} {primaryCurrency}</div>
+                                            <div style={{margin: '5px 0'}}> </div>
+                                            <span className={classes.summaryTitle}>Расход</span>
+                                            <div
+                                                className={classes.summaryValue + ' ' + classes.red}>{numberFormat(sumOut)} {primaryCurrency}</div>
+                                        </div>
+                                    </Col>
+                                    <Col xs={9} className={classes.chart}>
+                                        <ReactHighcharts config={config} neverReflow={true} isPureConfig={true}/>
+                                    </Col>
+                                </Row>
+                                <div className={classes.pagination}>
+                                    <div><b>История заказов</b></div>
+                                    <Pagination filter={filter}/>
                                 </div>
-                                <a className={classes.excel}>
-                                    <Excel color="#fff"/> <span>Excel</span>
-                                </a>
-                            </form>
-                            <Row className={classes.diagram}>
-                                <Col xs={3} className={classes.salesSummary}>
-                                    <div className={classes.mainSummary}>
-                                        <div className={classes.summaryTitle}>Прибыль за период</div>
-                                        <div className={classes.summaryValue}>5 000 000 {primaryCurrency}</div>
-                                    </div>
-                                    <div className={classes.secondarySummary}>
-                                        <div className={classes.summaryTitle}>Доход</div>
-                                        <div className={classes.summaryValue}>{numberFormat(sumIn)} {primaryCurrency}</div>
-
-                                        <div className={classes.summaryTitle}>Расход</div>
-                                        <div className={classes.summaryValue}>{numberFormat(sumOut)} {primaryCurrency}</div>
-                                    </div>
-                                </Col>
-                                <Col xs={9} className={classes.chart}>
-                                    <ReactHighcharts config={config} neverReflow={true} isPureConfig={true}/>
-                                </Col>
-                            </Row>
-                            <div className={classes.pagination}>
-                                <div><b>История заказов</b></div>
-                                <Pagination filter={filter}/>
-                            </div>
-                            <div className={classes.tableWrapper}>
-                                {headers}
-                                {list}
-                            </div>
-                        </div>
+                                <div className={classes.tableWrapper}>
+                                    {headers}
+                                    {list}
+                                </div>
+                            </div>}
                     </div>
-                </Row>
-            </div>
+                </div>
+            </Row>
+        </div>
     )
 
     return (

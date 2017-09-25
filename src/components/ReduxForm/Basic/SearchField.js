@@ -2,17 +2,13 @@ import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
-import {compose, withPropsOnChange, withReducer} from 'recompose'
-import MUIAutoComplete from 'material-ui/AutoComplete'
-import CircularProgress from 'material-ui/CircularProgress'
-import excludeObjKey from '../../../helpers/excludeObjKey'
-import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
-
+import {compose, withPropsOnChange, withReducer, withHandlers} from 'recompose'
+import Select from 'react-select'
+import 'react-select/dist/react-select.css'
 const DELAY_FOR_TYPE_ATTACK = 300
 
 const fetchList = ({state, dispatch, getOptions, getText, getValue}) => {
     dispatch({loading: true})
-
     getOptions(state.text)
         .then((data) => {
             return _.map(data, (item) => {
@@ -27,32 +23,53 @@ const fetchList = ({state, dispatch, getOptions, getText, getValue}) => {
         })
 }
 
-const fetchItem = (props) => {
-    const {dispatch, getItem, getItemText} = props
-    const id = _.get(props, ['input', 'value', 'value'])
-
-    id && getItem(id)
-        .then(data => {
-            return getItemText(data)
-        })
-        .then(data => dispatch({text: data}))
-}
-
-const errorStyle = {
-    textAlign: 'left',
-    bottom: '5px'
-}
-
 const enhance = compose(
     injectSheet({
         wrapper: {
             position: 'relative',
-            width: '100%'
+            width: '100%',
+            height: '45px',
+            '& .Select-menu': {
+                maxHeight: '300px',
+                boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px 3px, rgba(0, 0, 0, 0.12) 0px 1px 4px'
+            },
+            '& .is-focused:not(.is-open) > .Select-control': {
+                borderBottom: 'solid 2px #5d6474',
+                boxShadow: 'unset'
+            }
         },
         icon: {
             position: 'absolute',
             right: '0',
             top: '20px'
+        },
+        select: {
+            '& .Select-menu': {
+                background: '#fff'
+            },
+            '& .Select-menu-outer': {
+                overflowY: 'unset',
+                zIndex: '6',
+                border: 'unset'
+            },
+            '& .Select-control': {
+                borderRadius: '0px',
+                border: '0',
+                borderBottom: '1px solid #e8e8e8'
+            },
+            '& .Select-placeholder': {
+                color: 'rgba(0,0,0, 0.3)',
+                padding: '0'
+            },
+            '& .Select-arrow-zone': {
+                paddingRight: '0'
+            },
+            '& .Select-value': {
+                paddingLeft: '0 !important'
+            },
+            '& .Select-input': {
+                paddingLeft: '0'
+            }
         }
     }),
 
@@ -60,63 +77,47 @@ const enhance = compose(
         return {...state, ...action}
     }, {dataSource: [], text: '', loading: false}),
 
+    withHandlers({
+        valueRenderer: props => (option) => {
+            const {meta: {error}} = props
+            if (error) {
+                return <span style={{color: 'red'}}>{option.text}</span>
+            }
+            return option.text
+        }
+    }),
     withPropsOnChange((props, nextProps) => {
         return _.get(props, ['state', 'text']) !== _.get(nextProps, ['state', 'text'])
     }, (props) => _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)),
-
-    withPropsOnChange((props, nextProps) => {
-        const value = _.get(props, ['input', 'value', 'value'])
-        const nextValue = _.get(nextProps, ['input', 'value', 'value'])
-        return nextValue && value !== nextValue
-    }, (props) => fetchItem(props))
 )
 
 const SearchField = enhance((props) => {
     const {
         classes,
-        input,
         label,
-        meta: {error},
         state,
         dispatch,
-        selectFieldScroll,
-        ...defaultProps
+        valueRenderer,
+        input,
+        getItem,
+        withDetails
     } = props
 
-    const scrollable = _.get(selectFieldScroll, 'scrollable')
-    const scrollMaxHeight = _.get(selectFieldScroll, 'maxHeight')
-
-    const autoCompleteProps = excludeObjKey(defaultProps, [
-        'sheet', 'getText', 'getValue', 'getOptions', 'getItem', 'getItemText'
-    ])
-    const inputAutoComplete = excludeObjKey(input, ['value', 'onChange'])
-
+    withDetails && input.value && getItem(_.get(input, ['value', 'value']))
     return (
         <div className={classes.wrapper}>
-            <MUIAutoComplete
-                menuProps={{menuItemStyle: {fontSize: '13px'}}}
-                errorText={error}
-                searchText={state.text}
-                errorStyle={errorStyle}
-                floatingLabelText={label}
-                dataSource={state.dataSource}
-                dataSourceConfig={{text: 'text', value: 'value'}}
-                onUpdateInput={value => dispatch({text: value})}
-                onNewRequest={value => input.onChange(value)}
-                openOnFocus={true}
-                filter={() => true}
-                listStyle={scrollable && {maxHeight: scrollMaxHeight, overflowY: 'auto'}}
-                maxSearchResults={20}
-                className="autocomplete"
-                {...inputAutoComplete}
-                {...autoCompleteProps}
+            <Select
+                className={classes.select}
+                options={state.dataSource}
+                value={input.value.value || null}
+                onInputChange={text => dispatch({text: text})}
+                onChange={value => input.onChange(value)}
+                placeholder={label}
+                noResultsText={'Не найдено'}
+                isLoading={state.loading}
+                valueRenderer={valueRenderer}
+                labelKey={'text'}
             />
-            {!state.loading && <div className={classes.icon}>
-                <KeyboardArrowDown style={{color: '#ccc', height: '20px', width: '20px'}}/>
-            </div>}
-            {state.loading && <div className={classes.icon}>
-                <CircularProgress size={20} thickness={2} />
-            </div>}
         </div>
     )
 })
@@ -136,9 +137,7 @@ SearchField.defaultGetValue = (value) => {
 SearchField.propTypes = {
     getText: PropTypes.func.isRequired,
     getValue: PropTypes.func.isRequired,
-    getOptions: PropTypes.func.isRequired,
-    getItemText: PropTypes.func.isRequired,
-    getItem: PropTypes.func.isRequired
+    getOptions: PropTypes.func.isRequired
 }
 
 export default SearchField

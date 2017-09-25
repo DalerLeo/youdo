@@ -6,6 +6,10 @@ import {compose} from 'recompose'
 import moment from 'moment'
 import CircularProgress from 'material-ui/CircularProgress'
 import Paper from 'material-ui/Paper'
+import numberFormat from '../../helpers/numberFormat'
+import getConfig from '../../helpers/getConfig'
+import Info from 'material-ui/svg-icons/action/info-outline'
+import Tooltip from '../ToolTip'
 
 const enhance = compose(
     injectSheet({
@@ -26,7 +30,13 @@ const enhance = compose(
         },
         blockTitle: {
             padding: '15px 0',
-            fontWeight: 'bold'
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginRight: '10px',
+            '& strong': {
+                fontWeight: 'bold'
+            }
         },
         blockItems: {
             overflowY: 'auto',
@@ -107,12 +117,18 @@ const dateFormat = (date, defaultText) => {
 }
 
 const ActivityReturn = enhance((props) => {
+    const currentCurrency = getConfig('PRIMARY_CURRENCY')
     const {
         returnListData,
-        classes
+        classes,
+        summary,
+        summaryLoading
     } = props
 
     const returnlistLoading = _.get(returnListData, 'returnListLoading')
+    const summaryCount = _.get(summary, 'count')
+    const summaryPrice = numberFormat(_.get(summary, 'totalPrice'), currentCurrency)
+    const tooltipText = '<div>Cумма возврата ' + summaryPrice + '</div>'
     const returnList = _.map(_.get(returnListData, 'data'), (item) => {
         const id = _.get(item, ['orderReturn', 'id'])
         const market = _.get(item, ['orderReturn', 'market', 'name'])
@@ -133,7 +149,7 @@ const ActivityReturn = enhance((props) => {
 
     if (_.isEmpty(returnList)) {
         return false
-    } else if (returnlistLoading) {
+    } else if (returnlistLoading || summaryLoading) {
         return (
             <div className={classes.loader}>
                 <CircularProgress size={40} thickness={4}/>
@@ -143,7 +159,12 @@ const ActivityReturn = enhance((props) => {
 
     return (
         <div className={classes.block}>
-            <div className={classes.blockTitle}>Возвраты</div>
+            <div className={classes.blockTitle}>
+                <strong>Возвраты ({summaryCount})</strong>
+                <Tooltip position="left" text={tooltipText}>
+                    <Info color="#666"/>
+                </Tooltip>
+            </div>
             <div className={classes.blockItems}>
                 {returnList}
             </div>
