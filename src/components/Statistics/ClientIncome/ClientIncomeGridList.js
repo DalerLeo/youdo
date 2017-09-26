@@ -195,7 +195,6 @@ const enhance = compose(
             overflow: 'hidden'
         },
         searchButton: {
-            marginLeft: '-10px !important',
             '& div': {
                 display: 'flex',
                 alignItems: 'center',
@@ -265,6 +264,7 @@ const ClientIncomeGridList = enhance((props) => {
         handleSubmitFilterDialog,
         openFilter,
         setOpenFilter,
+        handleGetDocument,
         listData
     } = props
 
@@ -520,7 +520,7 @@ const ClientIncomeGridList = enhance((props) => {
                                     <a className={classes.filterBtn} onClick={() => { setOpenFilter(true) }}>
                                         <Filter color="#fff"/> <span>Фильтр</span>
                                     </a>
-                                    <a className={classes.excel}>
+                                    <a className={classes.excel} onClick={handleGetDocument}>
                                         <Excel color="#fff"/> <span>Excel</span>
                                     </a>
                                 </div>
