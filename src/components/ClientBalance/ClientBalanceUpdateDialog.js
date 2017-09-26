@@ -6,13 +6,20 @@ import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import {Field, reduxForm} from 'redux-form'
-import TextField from '../ReduxForm/Basic/TextField'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 import normalizeNumber from '../ReduxForm/normalizers/normalizeNumber'
 import CircularProgress from 'material-ui/CircularProgress'
-import {DivisionSearchField, PaymentTypeSearchField, UsersSearchField} from '../ReduxForm'
+import {
+    DivisionSearchField,
+    PaymentTypeSearchField,
+    UsersSearchField,
+    CurrencySearchField,
+    TextField
+} from '../ReduxForm'
+import getConfig from '../../helpers/getConfig'
+import {connect} from 'react-redux'
 
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
@@ -42,13 +49,18 @@ const enhance = compose(
     reduxForm({
         form: 'ClientBalanceUpdateForm',
         enableReinitialize: true
+    }),
+    connect((state) => {
+        const chosenCurrency = _.get(state, ['form', 'ClientBalanceUpdateForm', 'values', 'currency', 'value'])
+        return {chosenCurrency}
     })
 )
 
 const ClientBalanceUpdateDialog = enhance((props) => {
-    const {classes, open, onClose, handleSubmit, loading, name} = props
+    const {classes, open, onClose, handleSubmit, loading, name, chosenCurrency} = props
 
     const onSubmit = handleSubmit(() => props.onSubmit())
+    const primaryCurrency = _.toInteger(getConfig('PRIMARY_CURRENCY_ID'))
     return (
         <Dialog
             modal={true}
@@ -91,6 +103,20 @@ const ClientBalanceUpdateDialog = enhance((props) => {
                                     normalize={normalizeNumber}
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
+                                <Field
+                                    name="currency"
+                                    component={CurrencySearchField}
+                                    label="Валюта"
+                                    className={classes.inputFieldCustom}
+                                    fullWidth={true}/>
+                                {(chosenCurrency !== primaryCurrency && chosenCurrency) &&
+                                <Field
+                                    name="custom_rate"
+                                    component={TextField}
+                                    label="Курс"
+                                    normalize={normalizeNumber}
+                                    className={classes.inputFieldCustom}
+                                    fullWidth={true}/>}
                                 <Field
                                     name="division"
                                     component={DivisionSearchField}

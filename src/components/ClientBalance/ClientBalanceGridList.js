@@ -342,18 +342,9 @@ const ClientBalanceGridList = enhance((props) => {
                         <td>{orderNo}</td>
                         {_.map(amountValues, (val, index) => {
                             const amount = _.toNumber(_.get(val, 'amount'))
-                            if (amount !== ZERO) {
-                                return (
-                                    <td key={index} style={{cursor: 'pointer'}} onClick={() => {
-                                        infoDialog.handleOpenInfoDialog(id, _.get(val, 'id'), _.get(val, 'type'))
-                                    }}>
-                                        <span className={(amount > ZERO) ? classes.green : (amount < ZERO) && classes.red}>{amount} {primaryCurrency}</span>
-                                    </td>
-                                )
-                            }
                             return (
-                                <td key={index}>
-                                    <span>{amount} {primaryCurrency}</span>
+                                <td key={index} style={{cursor: 'pointer'}} onClick={() => { infoDialog.handleOpenInfoDialog(id, _.get(val, 'id'), _.get(val, 'type')) }}>
+                                    <span className={(amount > ZERO) ? classes.green : (amount < ZERO) && classes.red}>{amount} {primaryCurrency}</span>
                                 </td>
                             )
                         })}
@@ -431,25 +422,19 @@ const ClientBalanceGridList = enhance((props) => {
                 <Col xs={3}>{clientName}</Col>
                 <Col xs={2}>{orders}</Col>
                 <Col xs={2} className={classes.balance}>
-                    <span onClick={() => {
-                        infoDialog.handleOpenInfoDialog(id, DIVISION.KOSMETIKA)
-                    }}
+                    <span onClick={() => { infoDialog.handleOpenInfoDialog(id, DIVISION.KOSMETIKA) }}
                           className={cosmeticsBalance > ZERO ? classes.green : (cosmeticsBalance < ZERO ? classes.red : classes.black)}>
                         {numberFormat(cosmeticsBalance, currentCurrency)}
                     </span>
                 </Col>
                 <Col xs={2} className={classes.balance}>
-                    <span onClick={() => {
-                        infoDialog.handleOpenInfoDialog(id, DIVISION.SHAMPUN, 'cash')
-                    }}
+                    <span onClick={() => { infoDialog.handleOpenInfoDialog(id, DIVISION.SHAMPUN, 'cash') }}
                           className={shampooBalance > ZERO ? classes.green : (shampooBalance < ZERO ? classes.red : classes.black)}>
                         {numberFormat(shampooBalance, currentCurrency)}
                     </span>
                 </Col>
                 <Col xs={2} className={classes.balance}>
-                    <span onClick={() => {
-                        infoDialog.handleOpenInfoDialog(id, DIVISION.SHAMPUN, 'bank')
-                    }}
+                    <span onClick={() => { infoDialog.handleOpenInfoDialog(id, DIVISION.SHAMPUN, 'bank') }}
                           className={shampooBank > ZERO ? classes.green : (shampooBank < ZERO ? classes.red : classes.black)}>
                         {numberFormat(shampooBank, currentCurrency)}
                     </span>
@@ -504,7 +489,14 @@ const ClientBalanceGridList = enhance((props) => {
     const client = _.find(_.get(listData, 'data'), {'id': _.get(detailData, 'id')})
     const clientName = _.find(_.get(listData, 'data'), {'id': _.toInteger(_.get(clientReturnDialog, 'openClientReturnDialog'))})
     const TWO = 2
+
+    const amount = _.toNumber(_.get(currentItem, 'amount'))
+    const internal = _.toNumber(_.get(currentItem, 'internal'))
     const initialValues = {
+        currency: {
+            value: _.get(currentItem, ['currency', 'id'])
+        },
+        custom_rate: !_.isNil(_.get(currentItem, 'customRate')) ? _.get(currentItem, 'customRate') : _.toInteger(amount / internal),
         paymentType: {
             value: _.toInteger(_.get(currentItem, 'paymentType')) === ZERO ? TWO : _.toInteger(_.get(currentItem, 'paymentType'))
         },
