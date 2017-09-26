@@ -176,10 +176,7 @@ const enhance = compose(
             zIndex: '2',
             '& > div': {
                 marginTop: '-7px !important',
-                display: 'flex',
-                '& > div': {
-                    overflow: 'hidden'
-                }
+                display: 'flex'
             },
             '& > button > div > span': {
                 padding: '0 !important'

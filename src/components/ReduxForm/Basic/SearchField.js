@@ -7,7 +7,7 @@ import Select from 'react-select'
 import 'react-select/dist/react-select.css'
 const DELAY_FOR_TYPE_ATTACK = 300
 
-const fetchList = ({state, dispatch, getOptions, getText, getValue, input, getItem}) => {
+const fetchList = ({state, dispatch, getOptions, getText, getValue}) => {
     dispatch({loading: true})
     getOptions(state.text)
         .then((data) => {
@@ -33,18 +33,13 @@ const enhance = compose(
                 boxShadow: 'unset'
             }
         },
-        icon: {
-            position: 'absolute',
-            right: '0',
-            top: '20px'
-        },
         select: {
             '& .Select-menu': {
                 background: '#fff',
-                height: '400px'
+                maxHeight: '200px'
             },
             '& .Select-menu-outer': {
-                height: '400px',
+                maxHeight: '200px',
                 zIndex: '9999',
                 boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px 3px, rgba(0, 0, 0, 0.12) 0px 1px 4px'
             },

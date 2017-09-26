@@ -47,11 +47,10 @@ const enhance = compose(
             display: ({loading}) => loading ? 'flex' : 'none'
         },
         popUp: {
-            overflowY: 'hidden !important',
+            overflow: 'unset !important',
             fontSize: '13px !important',
             position: 'relative',
             padding: '0 !important',
-            overflowX: 'hidden',
             height: '100%',
             maxHeight: 'inherit !important',
             marginBottom: '64px'
@@ -79,8 +78,7 @@ const enhance = compose(
             minHeight: '450px'
         },
         innerWrap: {
-            maxHeight: '100vh',
-            overflow: 'auto'
+            maxHeight: '100vh'
         },
         bodyContent: {
             color: '#333',
