@@ -195,7 +195,6 @@ const enhance = compose(
             overflow: 'hidden'
         },
         searchButton: {
-            marginLeft: '-10px !important',
             '& div': {
                 display: 'flex',
                 alignItems: 'center',
@@ -265,6 +264,7 @@ const ClientIncomeGridList = enhance((props) => {
         handleSubmitFilterDialog,
         openFilter,
         setOpenFilter,
+        handleGetDocument,
         listData
     } = props
 
@@ -400,8 +400,9 @@ const ClientIncomeGridList = enhance((props) => {
     const headers = (
         <Row style={headerStyle} className="dottedList">
             <Col xs={1}>№</Col>
-            <Col xs={3}>Дата</Col>
-            <Col xs={3}>Пользователь</Col>
+            <Col xs={2}>Дата</Col>
+            <Col xs={2}>Клиент</Col>
+            <Col xs={2}>Пользователь</Col>
             <Col xs={3}>Описание</Col>
             <Col xs={2}>Сумма</Col>
         </Row>
@@ -413,16 +414,21 @@ const ClientIncomeGridList = enhance((props) => {
         const transId = _.get(item, 'id')
         const user = _.get(item, 'user')
         const comment = _.get(item, 'comment')
+        const client = _.get(item, ['client', 'name'])
+        const currency = _.get(item, ['currency', 'name'])
         const userName = !_.isNull(user) ? user.firstName + ' ' + user.secondName : 'Не известно'
         const date = dateFormat(_.get(item, 'createdDate')) + ' ' + moment(_.get(item, 'createdDate')).format('HH:mm')
         const amount = _.toNumber(_.get(item, 'amount'))
+        const internal = _.toNumber(_.get(item, 'internal'))
+        const customRate = _.get(item, 'customRate') ? _.get(item, 'customRate') : _.toInteger(amount / internal)
         const type = _.get(item, 'type')
         const id = _.toInteger(type) === THREE ? _.get(item, 'orderReturn') : (_.get(item, 'order') || _.get(item, 'transaction'))
         return (
             <Row key={index} className="dottedList">
                 <Col xs={1}>{transId}</Col>
-                <Col xs={3}>{date}</Col>
-                <Col xs={3}>{userName}</Col>
+                <Col xs={2}>{date}</Col>
+                <Col xs={2}>{client}</Col>
+                <Col xs={2}>{userName}</Col>
                 <Col xs={3}>
                     {type && <div><strong>Тип:</strong> <span>{type === PAYMENT ? 'Оплата'
                         : type === CANCEL ? 'Отмена'
@@ -442,7 +448,12 @@ const ClientIncomeGridList = enhance((props) => {
                     </div>}
                     {comment && <div><strong>Комментарий:</strong> {comment}</div>}
                 </Col>
-                <Col xs={2} style={{textAlign: 'right'}}><span className={amount > ZERO ? 'greenFont' : (amount === ZERO ? '' : 'redFont')}>{numberFormat(amount, primaryCurrency)}</span></Col>
+                <Col xs={2} style={{textAlign: 'right'}}>
+                    <div className={amount > ZERO ? 'greenFont' : (amount === ZERO ? '' : 'redFont')}>
+                        <span>{numberFormat(amount, currency)}</span>
+                        {primaryCurrency !== currency && <div>{numberFormat(internal, primaryCurrency)} <span style={{fontSize: 11, color: '#666', fontWeight: 600}}>({customRate})</span></div>}
+                    </div>
+                </Col>
             </Row>
         )
     })
@@ -499,6 +510,7 @@ const ClientIncomeGridList = enhance((props) => {
 
                                                 <FlatButton
                                                     label="Применить"
+                                                    fullWidth={false}
                                                     labelStyle={{color: '#12aaeb', textTransform: 'none', fontWeight: '600'}}
                                                     className={classes.searchButton}
                                                     type="submit" />
@@ -508,7 +520,7 @@ const ClientIncomeGridList = enhance((props) => {
                                     <a className={classes.filterBtn} onClick={() => { setOpenFilter(true) }}>
                                         <Filter color="#fff"/> <span>Фильтр</span>
                                     </a>
-                                    <a className={classes.excel}>
+                                    <a className={classes.excel} onClick={handleGetDocument}>
                                         <Excel color="#fff"/> <span>Excel</span>
                                     </a>
                                 </div>

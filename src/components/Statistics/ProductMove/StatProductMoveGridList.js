@@ -48,7 +48,6 @@ const enhance = compose(
             padding: '20px 30px',
             display: 'flex',
             flexDirection: 'column',
-            height: '100%',
             '& > div:nth-child(3)': {
                 marginTop: '10px',
                 borderTop: '1px #efefef solid'

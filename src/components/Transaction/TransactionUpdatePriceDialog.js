@@ -12,7 +12,9 @@ import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 import normalizeNumber from '../ReduxForm/normalizers/normalizeNumber'
 import CircularProgress from 'material-ui/CircularProgress'
-import {DivisionSearchField, PaymentTypeSearchField, UsersSearchField} from '../ReduxForm'
+import {DivisionSearchField, PaymentTypeSearchField, UsersSearchField, CurrencySearchField} from '../ReduxForm'
+import getConfig from '../../helpers/getConfig'
+import {connect} from 'react-redux'
 
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
@@ -42,12 +44,17 @@ const enhance = compose(
     reduxForm({
         form: 'ClientBalanceUpdateForm',
         enableReinitialize: true
+    }),
+    connect((state) => {
+        const chosenCurrency = _.get(state, ['form', 'ClientBalanceUpdateForm', 'values', 'currency', 'value'])
+        return {chosenCurrency}
     })
 )
 
 const TransactionUpdatePriceDialog = enhance((props) => {
-    const {classes, open, onClose, handleSubmit, loading, client} = props
+    const {classes, open, onClose, handleSubmit, loading, client, chosenCurrency} = props
     const onSubmit = handleSubmit(() => props.onSubmit(_.get(client, 'id')))
+    const primaryCurrency = _.toInteger(getConfig('PRIMARY_CURRENCY_ID'))
     return (
         <Dialog
             modal={true}
@@ -96,6 +103,18 @@ const TransactionUpdatePriceDialog = enhance((props) => {
                                     label="Подразделение"
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
+                                <Field
+                                    name="currency"
+                                    component={CurrencySearchField}
+                                    label="Валюта"
+                                    className={classes.inputFieldCustom}
+                                    fullWidth={true}/>
+                                {(primaryCurrency !== chosenCurrency && chosenCurrency) && <Field
+                                    name="custom_rate"
+                                    component={TextField}
+                                    className={classes.inputFieldCustom}
+                                    label="Курс"
+                                    fullWidth={true}/>}
                                 <Field
                                     name="comment"
                                     style={{top: '-20px', lineHeight: '20px', fontSize: '13px'}}

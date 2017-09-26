@@ -7,7 +7,7 @@ import Select from 'react-select'
 import 'react-select/dist/react-select.css'
 const DELAY_FOR_TYPE_ATTACK = 300
 
-const fetchList = ({state, dispatch, getOptions, getText, getValue}) => {
+const fetchList = ({state, dispatch, getOptions, getText, getValue, input, getItem}) => {
     dispatch({loading: true})
     getOptions(state.text)
         .then((data) => {
@@ -26,13 +26,8 @@ const fetchList = ({state, dispatch, getOptions, getText, getValue}) => {
 const enhance = compose(
     injectSheet({
         wrapper: {
-            position: 'relative',
             width: '100%',
             height: '45px',
-            '& .Select-menu': {
-                maxHeight: '300px',
-                boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px 3px, rgba(0, 0, 0, 0.12) 0px 1px 4px'
-            },
             '& .is-focused:not(.is-open) > .Select-control': {
                 borderBottom: 'solid 2px #5d6474',
                 boxShadow: 'unset'
@@ -45,30 +40,27 @@ const enhance = compose(
         },
         select: {
             '& .Select-menu': {
-                background: '#fff'
+                background: '#fff',
+                height: '400px'
             },
             '& .Select-menu-outer': {
-                overflowY: 'unset',
-                zIndex: '6',
-                border: 'unset'
+                height: '400px',
+                zIndex: '9999',
+                boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px 3px, rgba(0, 0, 0, 0.12) 0px 1px 4px'
             },
             '& .Select-control': {
                 borderRadius: '0px',
                 border: '0',
-                borderBottom: '1px solid #e8e8e8'
-            },
-            '& .Select-placeholder': {
-                color: 'rgba(0,0,0, 0.3)',
-                padding: '0'
-            },
-            '& .Select-arrow-zone': {
-                paddingRight: '0'
-            },
-            '& .Select-value': {
-                paddingLeft: '0 !important'
-            },
-            '& .Select-input': {
-                paddingLeft: '0'
+                borderBottom: '1px solid #e8e8e8',
+                '& .Select-value': {
+                    paddingLeft: '0'
+                },
+                '& .Select-placeholder': {
+                    paddingLeft: '0'
+                },
+                '& .Select-input': {
+                    paddingLeft: '0'
+                }
             }
         }
     }),
@@ -89,6 +81,22 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         return _.get(props, ['state', 'text']) !== _.get(nextProps, ['state', 'text'])
     }, (props) => _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)),
+    withPropsOnChange((props, nextProps) => {
+        return !_.isEmpty(_.get(nextProps, ['state', 'dataSource'])) && _.get(nextProps, ['input', 'value']) &&
+            _.get(props, ['state', 'loading']) !== _.get(nextProps, ['state', 'loading'])
+    }, (props) => {
+        const {state, input, getItem, dispatch, getText, getValue} = props
+        const finder = _.find(state.dataSource, {'value': input.value.value})
+        if (_.isEmpty(finder) && input.value.value) {
+            getItem(input.value.value).then((data) => {
+                return dispatch({
+                    dataSource: _.union(props.state.dataSource, [{
+                        text: getText(data), value: getValue(data)
+                    }])
+                })
+            })
+        }
+    }),
 )
 
 const SearchField = enhance((props) => {
@@ -102,7 +110,6 @@ const SearchField = enhance((props) => {
         getItem,
         withDetails
     } = props
-
     withDetails && input.value && getItem(_.get(input, ['value', 'value']))
     return (
         <div className={classes.wrapper}>

@@ -256,6 +256,7 @@ export const STAT_CASHBOX_DATA_ITEM = 'stats/cashbox/%d/'
 
 export const STAT_CLIENT_INCOME = 'stats/client_transactions'
 export const STAT_CLIENT_INCOME_LIST = `/${STAT_CLIENT_INCOME}/`
+export const STAT_CLIENT_INCOME_GET_DOCUMENT = '/sales/client_transaction/export/'
 
 export const MANUFACTURE_PRODUCT = 'manufacture/create_ingredient'
 export const MANUFACTURE_PRODUCT_CREATE = `/${MANUFACTURE_PRODUCT}/`
@@ -338,6 +339,8 @@ export const STAT_SALES_GET_DOCUMENT = '/sales/order/export/'
 
 export const STAT_PRODUCT_LIST = 'stats/products/'
 export const STAT_PRODUCT_GET_DOCUMENT = '/stats/products/export'
+
+export const STAT_RETURN_GET_DOCUMENT = '/sales/order_return/excel/'
 
 export const STAT_OUTCOME_CATEGORY_LIST = 'stats/expenses/'
 export const STAT_OUTCOME_CATEGORY_ITEM = 'sales/order/'
