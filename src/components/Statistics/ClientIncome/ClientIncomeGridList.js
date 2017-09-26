@@ -195,7 +195,6 @@ const enhance = compose(
             overflow: 'hidden'
         },
         searchButton: {
-            marginLeft: '-10px !important',
             '& div': {
                 display: 'flex',
                 alignItems: 'center',
