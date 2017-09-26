@@ -52,7 +52,7 @@ const MainStyles = {
         display: 'flex',
         maxHeight: '50vh',
         minHeight: '184px',
-        overflow: 'auto',
+        overflow: 'unset',
         padding: '0 30px',
         color: '#333'
     },

@@ -50,11 +50,10 @@ const enhance = compose(
             display: ({loading}) => loading ? 'flex' : 'none'
         },
         popUp: {
-            overflowY: 'hidden !important',
+            overflow: 'unset !important',
             fontSize: '13px !important',
             position: 'relative',
             padding: '0 !important',
-            overflowX: 'hidden',
             height: '100%',
             maxHeight: 'inherit !important',
             marginBottom: '64px'
@@ -103,12 +102,6 @@ const enhance = compose(
         },
         form: {
             position: 'relative'
-        },
-        fields: {
-            width: '100%',
-            padding: '20px 30px',
-            maxHeight: '622px',
-            overflowY: 'auto'
         },
         inputFieldCustom: {
             fontSize: '13px !important',

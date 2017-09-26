@@ -47,10 +47,6 @@ const enhance = compose(
             position: 'relative',
             width: '100%',
             height: '45px',
-            '& .Select-menu': {
-                maxHeight: '300px',
-                boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px 3px, rgba(0, 0, 0, 0.12) 0px 1px 4px'
-            },
             '& .is-focused:not(.is-open) > .Select-control': {
                 borderBottom: 'solid 2px #5d6474',
                 boxShadow: 'unset'
@@ -63,13 +59,16 @@ const enhance = compose(
         },
         select: {
             '& .Select-menu': {
-                background: '#fff'
+                background: '#fff',
+                maxHeight: '200px',
+                boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px 3px, rgba(0, 0, 0, 0.12) 0px 1px 4px'
             },
             '& .Select-menu-outer': {
                 overflowY: 'unset',
                 zIndex: '6',
                 border: 'unset',
-                marginTop: '5px'
+                marginTop: '5px',
+                maxHeight: '200px'
             },
             '& .Select-control': {
                 borderRadius: '0px',
