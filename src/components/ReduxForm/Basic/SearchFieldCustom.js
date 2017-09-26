@@ -75,8 +75,16 @@ const enhance = compose(
                 border: '0',
                 paddingBottom: '1px',
                 borderBottom: '1px solid rgb(224, 224, 224)',
-                backgroundColor: 'unset'
-
+                backgroundColor: 'unset',
+                '& .Select-value': {
+                    paddingLeft: '0'
+                },
+                '& .Select-placeholder': {
+                    paddingLeft: '0'
+                },
+                '& .Select-input': {
+                    paddingLeft: '0'
+                }
             }
         }
     }),

@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import sprintf from 'sprintf'
 import React from 'react'
-import SearchField from '../Basic/SearchField'
+import SearchField from '../Basic/SearchFieldCustom'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
@@ -14,8 +14,8 @@ const getOptions = (search) => {
         })
 }
 
-const getItem = (value) => {
-    return axios().get(sprintf(PATH.CASHBOX_ITEM, _.get(value, 'id')))
+const getItem = (id) => {
+    return axios().get(sprintf(PATH.CASHBOX_ITEM, id))
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data))
         })
@@ -25,7 +25,7 @@ const CashboxCashCustomField = (props) => {
     return (
         <SearchField
             getValue={(value) => {
-                return value
+                return _.get(value, 'id')
             }}
             getText={(value) => { return _.get(value, ['name']) }}
             getOptions={getOptions}

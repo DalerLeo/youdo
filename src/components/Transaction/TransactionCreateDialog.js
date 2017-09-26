@@ -133,9 +133,9 @@ const TransactionCreateDialog = enhance((props) => {
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
             </div>
-            <div className={classes.bodyContent}>
+            <div className={classes.bodyContent} style={{minHeight: '420px'}}>
                 <form onSubmit={onSubmit} className={classes.form}>
-                    <div className={classes.inContent} style={{minHeight: '230px'}}>
+                    <div className={classes.inContent} style={{minHeight: '420px'}}>
                         <div className={classes.loader}>
                             <CircularProgress size={40} thickness={4}/>
                         </div>
@@ -201,7 +201,7 @@ const TransactionCreateDialog = enhance((props) => {
                                     label="Комментарий..."
                                     multiLine={true}
                                     rows={1}
-                                    rowsMax={3}
+                                    rowsMax={2}
                                     fullWidth={true}/>
                             </div>
                         : <div className={classes.field}>
@@ -264,7 +264,7 @@ const TransactionCreateDialog = enhance((props) => {
                                     fullWidth={true}/>
                             </div>}
                     </div>
-                    <div className={classes.bottomButton}>
+                    <div className={classes.bottomButton} style={{position: 'absolute'}}>
                         <FlatButton
                             label="Сохранить"
                             className={classes.actionButton}

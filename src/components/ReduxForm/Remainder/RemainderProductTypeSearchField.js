@@ -12,8 +12,8 @@ const getOptions = (search) => {
         }).then((data) => {
             return {options: _.map(data, (item) => {
                 return {
-                    label: item.name,
-                    value: item.id
+                    label: _.get(item, 'name'),
+                    value: _.get(item, 'id')
                 }
             })}
         })
