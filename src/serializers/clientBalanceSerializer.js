@@ -129,6 +129,6 @@ export const createReturnSerializer = (data, id) => {
         comment,
         products,
         market,
-        'payment_type': paymentType
+        payment_type: paymentType === TWO ? ZERO : paymentType
     }
 }

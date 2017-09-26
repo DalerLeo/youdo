@@ -188,6 +188,8 @@ const StatCashboxList = enhance((props) => {
     }
 
     const detailData = {
+        cashboxList: _.get(list, 'results'),
+        cashboxListLoading: listLoading,
         itemGraphLoading,
         itemGraph: _.get(itemGraph, 'results'),
         sumItemData,

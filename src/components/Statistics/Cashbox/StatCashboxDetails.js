@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
-import {Row, Col} from 'react-flexbox-grid'
+import {Row} from 'react-flexbox-grid'
 import CircularProgress from 'material-ui/CircularProgress'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
@@ -12,11 +12,10 @@ import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
 import Excel from 'material-ui/svg-icons/av/equalizer'
 import Back from 'material-ui/svg-icons/content/reply'
-import Pagination from '../../GridList/GridListNavPagination/index'
 import NotFound from '../../Images/not-found.png'
-import numberFormat from '../../../helpers/numberFormat'
 import dateFormat from '../../../helpers/dateFormat'
 import ReactHighcharts from 'react-highcharts'
+import TransactionsList from '../../Transaction/TransactionsList'
 
 export const STAT_CASHBOX_DETAIL_FILTER_KEY = {
     DIVISION: 'division',
@@ -190,6 +189,11 @@ const enhance = compose(
         salesSummary: {
             width: '440px',
             display: 'flex'
+        },
+        listWrapper: {
+            '& > div': {
+                margin: '0 -30px'
+            }
         }
     }),
     reduxForm({
@@ -320,11 +324,6 @@ const StatCashboxDetails = enhance((props) => {
     const income = _.get(detailData, ['sumItemData', 'income'])
     const expenses = _.get(detailData, ['sumItemData', 'expenses'])
     const currency = _.get(detailData, ['data', 'currency', 'name'])
-    const headerStyle = {
-        backgroundColor: '#fff',
-        fontWeight: '600',
-        color: '#666'
-    }
     const iconStyle = {
         icon: {
             color: '#5d6474',
@@ -337,30 +336,15 @@ const StatCashboxDetails = enhance((props) => {
             padding: 0
         }
     }
-
-    const headers = (
-        <Row style={headerStyle} className="dottedList">
-            <Col xs={2}>№</Col>
-            <Col xs={3}>Категория</Col>
-            <Col xs={4}>Описание</Col>
-            <Col xs={3}>Сумма</Col>
-        </Row>
-    )
-    const list = _.map(_.get(detailData, 'transactionData'), (item) => {
-        const id = _.get(item, 'id')
-        const comment = _.get(item, 'comment') || 'Комментариев нет'
-        const expanseCategory = _.get(item, ['expanseCategory', 'name']) || '-'
-        const amount = numberFormat(_.get(item, 'amount'), currency)
-
-        return (
-            <Row key={id} className="dottedList">
-                <Col xs={2}>{id}</Col>
-                <Col xs={3}>{expanseCategory}</Col>
-                <Col xs={4}>{comment}</Col>
-                <Col xs={3}>{amount}</Col>
-            </Row>
-        )
-    })
+    const listData = {
+        listLoading: _.get(detailData, 'transactionsLoading'),
+        data: _.get(detailData, 'transactionData')
+    }
+    const cashboxData = {
+        data: _.get(detailData, 'cashboxList'),
+        cashboxId: _.get(detailData, ['data', 'id']),
+        listLoading: _.get(detailData, 'cashboxListLoading')
+    }
 
     return (
         <div className={classes.detailWrapper}>
@@ -436,17 +420,14 @@ const StatCashboxDetails = enhance((props) => {
                             </div>
                         </Row>
                     </div>
-                    <div className={classes.navigation}>
-                        <Pagination filter={filter}/>
+                    <div className={classes.listWrapper}>
+                        <TransactionsList
+                            listData={listData}
+                            listShadow={false}
+                            cashboxData={cashboxData}
+                            showOnlyList={true}
+                            filter={filter}/>
                     </div>
-                    {(_.isEmpty(list) && !listLoading)
-                        ? <div className={classes.emptyQuery}>
-                            <div>По вашему запросу ничего не найдено</div>
-                        </div>
-                        : <div className={classes.tableWrapper}>
-                            {headers}
-                            {list}
-                        </div>}
                 </div>}
 
         </div>
