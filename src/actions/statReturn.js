@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import sprintf from 'sprintf'
 import fileDownload from 'react-file-download'
 import axios from '../helpers/axios'
 import * as API from '../constants/api'
