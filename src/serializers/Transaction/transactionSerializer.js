@@ -1,7 +1,6 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../../helpers/serializer'
 import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
-import getConfig from '../../helpers/getConfig'
 
 const ZERO = 0
 const MINUS_ONE = -1
