@@ -252,10 +252,10 @@ const TransactionCashDialog = enhance((props) => {
                 const currency = _.get(item, ['currency', 'name'])
                 const division = _.get(item, ['division', 'name'])
                 const order = _.get(item, ['order']) ? '№' + _.get(item, ['order']) : '-'
-                const customRate = _.toNumber(_.get(item, ['customRate']))
                 const createdDate = dateFormat(_.get(item, ['createdDate'])) + ' ' + moment(_.get(item, ['createdDate'])).format('HH:mm')
                 const internal = _.toNumber(_.get(item, 'internal'))
                 const amount = _.toNumber(_.get(item, 'amount'))
+                const customRate = _.get(item, ['customRate']) ? _.toNumber(_.get(item, ['customRate'])) : _.toInteger(amount / internal)
                 return (
                     <Row key={id} className={classes.detailsRow}>
                         <Col xs={1}>{id}</Col>
@@ -266,12 +266,7 @@ const TransactionCashDialog = enhance((props) => {
                         <Col xs={1} style={{whiteSpace: 'nowrap'}}>{createdDate}</Col>
                         <Col xs={2} style={{textAlign: 'right', paddingRight: '0'}}>
                             <div>{numberFormat(amount, currency)}</div>
-                            <div style={{fontSize: '11px'}}>{currency !== primaryCurrency
-                                ? customRate
-                                    ? '(Курс ' + numberFormat(customRate) + ')'
-                                    : '(Курс ' + numberFormat(_.toInteger(amount / internal)) + ')'
-                                : null}</div>
-
+                            {currency !== primaryCurrency && <div style={{fontSize: 11}}>{numberFormat(internal, primaryCurrency)} <span>({customRate})</span></div>}
                         </Col>
                         <Col xs={1}>
                             {
