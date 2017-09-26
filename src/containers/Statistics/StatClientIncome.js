@@ -5,6 +5,9 @@ import {connect} from 'react-redux'
 import Layout from '../../components/Layout'
 import {compose, withHandlers, withPropsOnChange} from 'recompose'
 import filterHelper from '../../helpers/filter'
+import getDocuments from '../../helpers/getDocument'
+import * as serializers from '../../serializers/Statistics/statClientIncomeSerializer'
+import * as API from '../../constants/api'
 
 import {ClientIncomeGridList} from '../../components/Statistics'
 import {CLIENT_INCOME_FILTER_KEY} from '../../components/Statistics/ClientIncome/ClientIncomeGridList'
@@ -66,6 +69,11 @@ const enhance = compose(
                 [CLIENT_INCOME_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
 
             })
+        },
+        handleGetDocument: props => () => {
+            const {filter} = props
+            const params = serializers.listFilterSerializer(filter.getParams())
+            getDocuments(API.STAT_CLIENT_INCOME_GET_DOCUMENT, params)
         }
     })
 )
@@ -127,7 +135,7 @@ const ClientIncomeList = enhance((props) => {
                 handleSubmitFilterDialog={props.handleSubmitFilterDialog}
                 initialValues={filterForm.initialValues}
                 filterForm={filterForm}
-
+                handleGetDocument={props.handleGetDocument}
             />
         </Layout>
     )
