@@ -39,7 +39,7 @@ const enhance = compose(
             boxShadow: 'rgba(0, 0, 0, 0.09) 0px -1px 6px, rgba(0, 0, 0, 0.10) 0px -1px 4px'
         },
         wrapper: {
-            height: 'calc(100% - 40px)',
+            height: '100%',
             overflowX: 'hidden',
             overflowY: 'auto',
             padding: '20px 30px',
@@ -268,7 +268,7 @@ const StatProductGridList = enhance((props) => {
             minWidth: 40,
             width: 40,
             height: 40,
-            padding: 0
+            padding: 9
         }
     }
     const listLoading = _.get(listData, 'listLoading')

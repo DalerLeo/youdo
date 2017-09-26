@@ -57,7 +57,7 @@ const enhance = compose(
             display: 'flex',
             alignItems: 'center',
             '& > div': {
-                width: '100% !important',
+                width: '200px !important',
                 position: 'relative',
                 marginRight: '40px',
                 '&:after': {

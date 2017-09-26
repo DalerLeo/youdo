@@ -28,8 +28,8 @@ export const setDateSerializer = (data) => {
     const fromTime = _.get(data, 'fromTime')
     const toTime = _.get(data, 'toTime')
     return {
-        'from_time': fromTime && moment(fromTime).format('HH:mm:ss'),
-        'to_time': toTime && moment(toTime).format('HH:mm:ss'),
+        'from_time': _.isString(fromTime) ? fromTime + ':00' : moment(fromTime).format('HH:mm:ss'),
+        'to_time': _.isString(toTime) ? toTime + ':00' : moment(toTime).format('HH:mm:ss'),
         status
     }
 }
