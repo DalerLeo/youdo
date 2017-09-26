@@ -52,12 +52,14 @@ const enhance = compose(
             const {filter, filterForm} = props
             const search = _.get(filterForm, ['values', 'search']) || null
             const division = _.get(filterForm, ['values', 'division', 'value']) || null
+            const type = _.get(filterForm, ['values', 'type', 'value']) || null
             const client = _.get(filterForm, ['values', 'client', 'value']) || null
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
 
             filter.filterBy({
                 [CLIENT_INCOME_FILTER_KEY.SEARCH]: search,
+                [CLIENT_INCOME_FILTER_KEY.TYPE]: type,
                 [CLIENT_INCOME_FILTER_KEY.DIVISION]: division,
                 [CLIENT_INCOME_FILTER_KEY.CLIENT]: client,
                 [CLIENT_INCOME_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
@@ -85,6 +87,7 @@ const ClientIncomeList = enhance((props) => {
     const firstDayOfMonth = _.get(location, ['query', 'fromDate']) || moment().format('YYYY-MM-01')
     const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
     const division = !_.isNull(_.get(location, ['query', 'division'])) && _.toInteger(_.get(location, ['query', 'division']))
+    const type = !_.isNull(_.get(location, ['query', 'type'])) && _.toInteger(_.get(location, ['query', 'type']))
     const client = !_.isNull(_.get(location, ['query', 'client'])) && _.toInteger(_.get(location, ['query', 'client']))
 
     const graphData = {
@@ -105,6 +108,9 @@ const ClientIncomeList = enhance((props) => {
             },
             division: {
                 value: division
+            },
+            type: {
+                value: type
             },
             client: {
                 value: client

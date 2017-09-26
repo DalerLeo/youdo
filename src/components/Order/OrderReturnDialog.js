@@ -189,7 +189,7 @@ const enhance = compose(
 )
 
 const OrderReturnDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, orderData} = props
+    const {open, loading, handleSubmit, onClose, classes, orderData, isUpdate} = props
     const returnId = _.get(orderData, 'id')
 
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
@@ -203,7 +203,7 @@ const OrderReturnDialog = enhance((props) => {
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>Возврат товаров заказа №{returnId}</span>
+                <span>{isUpdate ? 'Изменение возврата №' + returnId : 'Возврат товаров заказа №' + returnId}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
@@ -234,9 +234,10 @@ const OrderReturnDialog = enhance((props) => {
                             </div>
                             <div className={classes.rightOrderPart}>
                                 <Fields
-                                    names={['returned_products', 'product', 'amount', 'cost', 'editAmount']}
+                                    names={['products', 'product', 'amount', 'cost', 'editAmount']}
                                     component={OrderListReturnField}
                                     orderData={orderData}
+                                    isUpdate={isUpdate}
                                 />
                             </div>
                         </div>

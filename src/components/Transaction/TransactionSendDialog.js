@@ -10,7 +10,7 @@ import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {convertCurrency, converToUZS} from '../../helpers/convertCurrency'
+import {convertTransfer} from '../../helpers/convertCurrency'
 import {TextField, CashboxTypeSearchField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import MainStyles from '../Styles/MainStyles'
@@ -62,7 +62,8 @@ const enhance = compose(
             color: '#999'
         },
         itemList: {
-            marginTop: '20px'
+            marginTop: '20px',
+            marginBottom: '10px'
         }
     })),
     reduxForm({
@@ -83,13 +84,13 @@ const enhance = compose(
 
 const TransactionSendDialog = enhance((props) => {
     const {open, loading, handleSubmit, onClose, classes, cashboxData, chosenCashbox, amount, rate} = props
-    const SUM = 2
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const cashbox = _.find(_.get(cashboxData, 'data'), {'id': _.get(cashboxData, 'cashboxId')})
     const chosenCurrencyId = _.get(_.find(_.get(cashboxData, 'data'), {'id': chosenCashbox}), ['currency', 'id'])
     const currentCurrencyId = _.get(_.find(_.get(cashboxData, 'data'), {'id': _.get(cashboxData, 'cashboxId')}), ['currency', 'id'])
+    const currentCurrencyName = _.get(_.find(_.get(cashboxData, 'data'), {'id': _.get(cashboxData, 'cashboxId')}), ['currency', 'name'])
     const chosenCurrencyName = _.get(_.find(_.get(cashboxData, 'data'), {'id': chosenCashbox}), ['currency', 'name'])
-    const convertAmount = currentCurrencyId === SUM ? convertCurrency(amount, rate) : converToUZS(amount, rate)
+    const convertAmount = convertTransfer(amount, rate)
 
     return (
         <Dialog
@@ -141,10 +142,10 @@ const TransactionSendDialog = enhance((props) => {
                                         className={classes.inputFieldCustom}
                                         component={TextField}
                                         label="Курс"
-                                        normalize={normalizeNumber}
                                         fullWidth={true}/>
                                 </div>}
                             </div>
+                            {(rate && chosenCurrencyId !== currentCurrencyId && chosenCurrencyId) && <div style={{padding: '10px 0'}}>1{currentCurrencyName} = {rate} {chosenCurrencyName}</div>}
                             {(amount && rate) && <div style={{padding: '10px 0'}}>После конвертации: <strong>{convertAmount} {chosenCurrencyName}</strong></div>}
                             <Field
                                 name="comment"

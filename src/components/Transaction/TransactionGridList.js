@@ -398,10 +398,8 @@ const TransactionGridList = enhance((props) => {
                                 <div>
                                     <a onClick={createSendDialog.handleOpenDialog}
                                        className={classes.btnSend}>Перевод</a>
-                                    <a onClick={createIncomeDialog.handleOpenDialog} className={classes.btnAdd}>+
-                                        Доход</a>
-                                    <a onClick={createExpenseDialog.handleOpenDialog} className={classes.btnRemove}>-
-                                        Расход</a>
+                                    <a onClick={createIncomeDialog.handleOpenDialog} className={classes.btnAdd}>Приход</a>
+                                    <a onClick={createExpenseDialog.handleOpenDialog} className={classes.btnRemove}>Расход</a>
                                 </div>
                                 }
                             </div>
@@ -463,13 +461,13 @@ const TransactionGridList = enhance((props) => {
                         onSubmit={createSendDialog.handleSubmitDialog}
                     />
 
-                    {detailData.id && <ConfirmDialog
+                    <ConfirmDialog
                         type="delete"
                         message={'Транзакция №' + _.get(detailData, 'id')}
                         onClose={confirmDialog.handleCloseConfirmDialog}
                         onSubmit={confirmDialog.handleExpenseConfirmDialog}
                         open={confirmDialog.open}
-                    />}
+                    />
 
                     <TransactionCashDialog
                         filterItem={filterItem}

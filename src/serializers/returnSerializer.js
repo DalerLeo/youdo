@@ -1,6 +1,28 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
 
+export const updateSerializer = (data) => {
+    const comment = _.get(data, 'comment')
+    const stock = _.get(data, ['stock', 'value'])
+    const market = _.get(data, ['market', 'value'])
+    const returnedProducts = _.map(_.get(data, ['products']), (item) => {
+        return {
+            order_product: _.get(item, ['product', 'value', 'id']),
+            amount: _.get(item, 'amount'),
+            cost: _.get(item, 'cost'),
+            comment: _.get(item, 'comment'),
+            product: _.get(item, ['product', 'value']),
+            name: _.get(item, ['product', 'value', 'name'])
+        }
+    })
+    return {
+        comment,
+        'returned_products': returnedProducts,
+        stock,
+        market
+    }
+}
+
 export const listFilterSerializer = (data, id) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')

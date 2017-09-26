@@ -5,20 +5,23 @@ import * as ROUTES from '../../../constants/routes'
 import _ from 'lodash'
 import Container from '../../Container/index'
 import injectSheet from 'react-jss'
-import {compose} from 'recompose'
+import {compose, withState} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
 import ReactHighcharts from 'react-highcharts'
 import DateToDateField from '../../ReduxForm/Basic/DateToDateField'
-import {DivisionSearchField, TextField, ClientSearchField} from '../../ReduxForm'
+import {DivisionSearchField, TextField, ClientSearchField, ClientTransactionTypeSearchField} from '../../ReduxForm'
 import StatSideMenu from '../StatSideMenu'
-import Search from 'material-ui/svg-icons/action/search'
-import IconButton from 'material-ui/IconButton'
 import Excel from 'material-ui/svg-icons/av/equalizer'
+import Filter from 'material-ui/svg-icons/content/filter-list'
+import Close from 'material-ui/svg-icons/action/highlight-off'
 import Pagination from '../../GridList/GridListNavPagination/index'
 import getConfig from '../../../helpers/getConfig'
 import dateFormat from '../../../helpers/dateFormat'
 import numberFormat from '../../../helpers/numberFormat'
 import CircularProgress from 'material-ui/CircularProgress'
+import IconButton from 'material-ui/IconButton'
+import FlatButton from 'material-ui/FlatButton'
+import Paper from 'material-ui/Paper'
 import moment from 'moment'
 import {Link} from 'react-router'
 import sprintf from 'sprintf'
@@ -28,6 +31,7 @@ export const CLIENT_INCOME_FILTER_KEY = {
     TO_DATE: 'toDate',
     SEARCH: 'search',
     DIVISION: 'division',
+    TYPE: 'type',
     CLIENT: 'client'
 }
 
@@ -148,35 +152,36 @@ const enhance = compose(
             alignItems: 'center',
             justifyContent: 'space-between'
         },
-        form: {
+        filterWrapper: {
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between'
+            justifyContent: 'space-between',
+            position: 'relative'
+        },
+        form: {
+            position: 'absolute',
+            left: '0',
+            top: '0',
+            width: '300px',
+            background: '#fff',
+            zIndex: '10'
         },
         filter: {
             display: 'flex',
-            alignItems: 'center',
-            '& > div': {
-                width: '170px!important',
-                position: 'relative',
-                marginRight: '40px',
-                '&:last-child': {
-                    margin: '0'
-                },
-                '&:after': {
-                    content: '""',
-                    position: 'absolute',
-                    right: '-20px',
-                    height: '30px',
-                    width: '1px',
-                    top: '50%',
-                    marginTop: '-15px',
-                    background: '#efefef'
-                },
-                '&:last-child:after': {
-                    display: 'none'
-                }
+            width: '100%',
+            padding: '20px 30px',
+            flexDirection: 'column',
+            position: 'relative',
+            '& h3': {
+                fontSize: '14px',
+                fontWeight: '600',
+                marginBottom: '20px'
             }
+        },
+        closeFilter: {
+            position: 'absolute !important',
+            top: 10,
+            right: 10
         },
         leftPanel: {
             backgroundColor: '#f2f5f8',
@@ -208,6 +213,10 @@ const enhance = compose(
             '& svg': {
                 width: '18px !important'
             }
+        },
+        filterBtn: {
+            extend: 'excel',
+            background: '#12aaeb'
         },
         diagram: {
             marginTop: '30px'
@@ -244,6 +253,7 @@ const enhance = compose(
         form: 'ClientIncomeFilterForm',
         enableReinitialize: true
     }),
+    withState('openFilter', 'setOpenFilter', false)
 )
 
 const ClientIncomeGridList = enhance((props) => {
@@ -253,6 +263,8 @@ const ClientIncomeGridList = enhance((props) => {
         filter,
         handleSubmit,
         handleSubmitFilterDialog,
+        openFilter,
+        setOpenFilter,
         listData
     } = props
 
@@ -373,15 +385,15 @@ const ClientIncomeGridList = enhance((props) => {
     }
 
     const iconStyle = {
-        icon: {
-            color: '#5d6474',
-            width: 22,
-            height: 22
-        },
         button: {
-            width: 40,
-            height: 40,
-            padding: 0
+            width: 44,
+            height: 44,
+            padding: 11
+        },
+        icon: {
+            width: 22,
+            height: 22,
+            color: '#666'
         }
     }
 
@@ -448,45 +460,58 @@ const ClientIncomeGridList = enhance((props) => {
                                 <CircularProgress/>
                             </div>
                             : <div>
-                                <form className={classes.form} onSubmit={handleSubmit(handleSubmitFilterDialog)}>
-                                    <div className={classes.filter}>
-                                        <Field
-                                            className={classes.inputFieldCustom}
-                                            name="date"
-                                            component={DateToDateField}
-                                            label="Диапазон дат"
-                                            fullWidth={true}/>
-                                        <Field
-                                            name="division"
-                                            component={DivisionSearchField}
-                                            className={classes.inputFieldCustom}
-                                            label="Подразделение"
-                                            fullWidth={true}/>
-                                        <Field
-                                            name="client"
-                                            component={ClientSearchField}
-                                            className={classes.inputFieldCustom}
-                                            label="Клиент"
-                                            fullWidth={true}/>
-                                        <Field
-                                            className={classes.inputFieldCustom}
-                                            name="search"
-                                            component={TextField}
-                                            label="Поиск"
-                                            fullWidth={true}/>
+                                <div className={classes.filterWrapper}>
+                                    {openFilter && <Paper zDepth={2} className={classes.form}>
+                                        <form onSubmit={handleSubmit(handleSubmitFilterDialog)}>
+                                            <div className={classes.filter}>
+                                                <h3>Фильтр</h3>
+                                                <IconButton
+                                                    className={classes.closeFilter}
+                                                    style={iconStyle.button}
+                                                    iconStyle={iconStyle.icon}
+                                                    onTouchTap={() => { setOpenFilter(false) }}>
+                                                    <Close />
+                                                </IconButton>
+                                                <Field
+                                                    className={classes.inputFieldCustom}
+                                                    name="date"
+                                                    component={DateToDateField}
+                                                    label="Диапазон дат"
+                                                    fullWidth={true}/>
+                                                <Field
+                                                    name="type"
+                                                    component={ClientTransactionTypeSearchField}
+                                                    className={classes.inputFieldCustom}
+                                                    label="Тип транзакции"
+                                                    fullWidth={true}/>
+                                                <Field
+                                                    name="division"
+                                                    component={DivisionSearchField}
+                                                    className={classes.inputFieldCustom}
+                                                    label="Подразделение"
+                                                    fullWidth={true}/>
+                                                <Field
+                                                    name="client"
+                                                    component={ClientSearchField}
+                                                    className={classes.inputFieldCustom}
+                                                    label="Клиент"
+                                                    fullWidth={true}/>
 
-                                        <IconButton
-                                            className={classes.searchButton}
-                                            iconStyle={iconStyle.icon}
-                                            style={iconStyle.button}
-                                            type="submit">
-                                            <Search/>
-                                        </IconButton>
-                                    </div>
+                                                <FlatButton
+                                                    label="Применить"
+                                                    labelStyle={{color: '#12aaeb', textTransform: 'none', fontWeight: '600'}}
+                                                    className={classes.searchButton}
+                                                    type="submit" />
+                                            </div>
+                                        </form>
+                                    </Paper>}
+                                    <a className={classes.filterBtn} onClick={() => { setOpenFilter(true) }}>
+                                        <Filter color="#fff"/> <span>Фильтр</span>
+                                    </a>
                                     <a className={classes.excel}>
                                         <Excel color="#fff"/> <span>Excel</span>
                                     </a>
-                                </form>
+                                </div>
                                 <Row className={classes.diagram}>
                                     <Col xs={3} className={classes.salesSummary}>
                                         <div className={classes.secondarySummary}>
@@ -503,6 +528,14 @@ const ClientIncomeGridList = enhance((props) => {
                                 </Row>
                                 <div className={classes.pagination}>
                                     <div><b>История транзакции</b></div>
+                                    <form onSubmit={handleSubmit(handleSubmitFilterDialog)}>
+                                        <Field
+                                            className={classes.inputFieldCustom}
+                                            name="search"
+                                            component={TextField}
+                                            hintText="Поиск"
+                                            fullWidth={false}/>
+                                    </form>
                                     <Pagination filter={filter}/>
                                 </div>
                                 <div className={classes.tableWrapper}>
