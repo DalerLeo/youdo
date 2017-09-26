@@ -48,7 +48,6 @@ const enhance = compose(
             display: 'flex'
         },
         wrapper: {
-            minWidth: '946px',
             padding: '20px 30px',
             height: 'calc(100% - 40px)',
             '& > div:nth-child(2)': {
