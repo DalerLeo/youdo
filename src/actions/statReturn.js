@@ -25,7 +25,7 @@ export const statReturnDataFetchAction = (filter) => {
 
 export const getDocumentAction = () => {
     const payload = axios()
-        .get(sprintf(API.STAT_AGENT_GET_DOCUMENT))
+        .get(API.STAT_RETURN_GET_DOCUMENT)
         .then((response) => {
             fileDownload(response.data, 'document.xlsx')
             return _.get(response, 'data')
@@ -35,7 +35,7 @@ export const getDocumentAction = () => {
         })
 
     return {
-        type: actionTypes.STAT_AGENT_GET_DOCUMENT,
+        type: actionTypes.STAT_RETURN_GET_DOCUMENT,
         payload
     }
 }
