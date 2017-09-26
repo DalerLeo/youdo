@@ -12,7 +12,7 @@ import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 import normalizeNumber from '../ReduxForm/normalizers/normalizeNumber'
 import CircularProgress from 'material-ui/CircularProgress'
-import {DivisionSearchField, PaymentTypeSearchField, UsersSearchField} from '../ReduxForm'
+import {DivisionSearchField, PaymentTypeSearchField, UsersSearchField, CurrencySearchField} from '../ReduxForm'
 
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
@@ -94,6 +94,18 @@ const TransactionUpdatePriceDialog = enhance((props) => {
                                     name="division"
                                     component={DivisionSearchField}
                                     label="Подразделение"
+                                    className={classes.inputFieldCustom}
+                                    fullWidth={true}/>
+                                <Field
+                                    name="custom_rate"
+                                    component={TextField}
+                                    className={classes.inputFieldCustom}
+                                    label="Курс"
+                                    fullWidth={true}/>
+                                <Field
+                                    name="currency"
+                                    component={CurrencySearchField}
+                                    label="Валюта"
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
                                 <Field

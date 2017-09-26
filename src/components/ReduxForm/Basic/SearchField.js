@@ -39,18 +39,13 @@ const enhance = compose(
             top: '20px'
         },
         select: {
-            position: 'unset',
             '& .Select-menu': {
                 background: '#fff',
-                zIndex: '999999',
                 height: '400px'
             },
             '& .Select-menu-outer': {
-                overflowY: 'unset',
-                zIndex: '999999',
-                border: 'unset',
-                top: '100px',
                 height: '400px',
+                zIndex: '9999',
                 boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px 3px, rgba(0, 0, 0, 0.12) 0px 1px 4px'
             },
             '& .Select-control': {
@@ -92,7 +87,7 @@ const enhance = compose(
     }, (props) => {
         const {state, input, getItem, dispatch, getText, getValue} = props
         const finder = _.find(state.dataSource, {'value': input.value.value})
-        if (_.isEmpty(finder) && input.value) {
+        if (_.isEmpty(finder) && input.value.value) {
             getItem(input.value.value).then((data) => {
                 return dispatch({
                     dataSource: _.union(props.state.dataSource, [{
@@ -121,7 +116,7 @@ const SearchField = enhance((props) => {
             <Select
                 className={classes.select}
                 options={state.dataSource}
-                value={input.value.value}
+                value={input.value.value || null}
                 onInputChange={text => dispatch({text: text})}
                 onChange={value => input.onChange(value)}
                 placeholder={label}

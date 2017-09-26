@@ -220,12 +220,16 @@ const TransactionCashDialog = enhance((props) => {
     const initialValues = {
         amount: _.get(currentItem, 'amount'),
         comment: _.get(currentItem, 'comment'),
+        custom_rate: _.get(currentItem, 'custom_rate'),
         division: {
             text: _.get(currentItem, ['division', 'name']),
             value: _.get(currentItem, ['division', 'id'])
         },
         paymentType: {
             value: _.toInteger(_.get(currentItem, 'paymentType')) === ZERO ? TWO : _.toInteger(_.get(currentItem, 'paymentType'))
+        },
+        currency: {
+            value: _.get(currentItem, ['currency', 'id'])
         },
         user: {
             value: _.get(currentItem, ['user', 'id'])
