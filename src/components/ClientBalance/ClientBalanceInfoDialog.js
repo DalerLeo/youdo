@@ -187,15 +187,17 @@ const ClientBalanceInfoDialog = enhance((props) => {
     const isSuperUser = _.get(superUser, 'isSuperUser')
     const ZERO = 0
     const currentCurrency = getConfig('PRIMARY_CURRENCY')
+    const currentCurrencyId = _.toInteger(getConfig('PRIMARY_CURRENCY_ID'))
     const loading = _.get(detailData, 'detailLoading')
     const detailList = _.map(_.get(detailData, 'data'), (item, index) => {
         const createdDate = dateFormat(_.get(item, 'createdDate')) + ' ' + moment(_.get(item, 'createdDate')).format('HH:MM')
         const comment = _.get(item, 'comment') || 'Комментариев нет'
         const currency = _.get(item, ['currency', 'name'])
+        const currencyId = _.get(item, ['currency', 'id'])
         const market = _.get(item, ['market', 'name'])
         const amount = _.toNumber(_.get(item, 'amount'))
-        const customRate = _.get(item, 'customRate') ? ' (' + _.toNumber(_.get(item, 'customRate')) + ')' : ''
         const internal = _.toNumber(_.get(item, 'internal'))
+        const customRate = _.get(item, 'customRate') ? _.toNumber(_.get(item, 'customRate')) : _.toInteger(amount / internal)
         const user = _.get(item, 'user') ? (_.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName'])) : 'Система'
         const type = _.get(item, 'type')
         const id = _.toInteger(type) === THREE ? _.get(item, 'orderReturn') : (_.get(item, 'order') || _.get(item, 'transaction'))
@@ -234,7 +236,10 @@ const ClientBalanceInfoDialog = enhance((props) => {
                 </div>
                 <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>
                     <div>{numberFormat(amount, currency)}</div>
-                    <div>{currency !== currentCurrency ? numberFormat(internal, currentCurrency) + customRate : null} </div>
+                    {currencyId !== currentCurrencyId &&
+                    <div>
+                        <div>{numberFormat(internal, currentCurrency)} <span style={{fontSize: 11, color: '#666'}}>({customRate})</span></div>
+                    </div>}
                 </div>
                 {(isSuperUser && (type === FIRST_BALANCE || type === NONE_TYPE)) &&
                     <div className={classes.iconBtn}>

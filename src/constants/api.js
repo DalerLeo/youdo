@@ -339,6 +339,8 @@ export const STAT_SALES_GET_DOCUMENT = '/sales/order/export/'
 export const STAT_PRODUCT_LIST = 'stats/products/'
 export const STAT_PRODUCT_GET_DOCUMENT = '/stats/products/export'
 
+export const STAT_RETURN_GET_DOCUMENT = 'sales/order_return/excel/'
+
 export const STAT_OUTCOME_CATEGORY_LIST = 'stats/expenses/'
 export const STAT_OUTCOME_CATEGORY_ITEM = 'sales/order/'
 export const STAT_OUTCOME_CATEGORY_GET_DOCUMENT = 'stats/agents/export/'
@@ -402,7 +404,7 @@ export const ACTIVITY_DELIVERY_LIST = `/${ACTIVITY}/`
 
 export const STAT_PRODUCT_MOVE_LIST = 'stats/stock/products/'
 export const STAT_PRODUCT_MOVE_SUM = 'stats/stock/sum/'
-export const STAT_PRODUCT_MOVE_GET_DOCUMENT = '/stats/stock/products/export/'
+export const STAT_PRODUCT_MOVE_GET_DOCUMENT = '/sales/client_transaction/export/'
 
 export const STAT_REPORT_LIST = 'stats/general/'
 export const STAT_REPORT_ITEM = 'sales/order/'
