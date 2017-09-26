@@ -3,16 +3,14 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import {compose, withPropsOnChange, withReducer} from 'recompose'
-import MUIAutoComplete from 'material-ui/AutoComplete'
-import CircularProgress from 'material-ui/CircularProgress'
-import excludeObjKey from '../../../helpers/excludeObjKey'
-import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
+import Select from 'react-select'
+import 'react-select/dist/react-select.css'
 
 const DELAY_FOR_TYPE_ATTACK = 300
 
-const fetchList = ({state, dispatch, getOptions, getText, getValue}) => {
+const fetchList = ({state, dispatch, getOptions, getText, getValue, input}) => {
     dispatch({loading: true})
-
+    input.onChange(null)
     getOptions(state.text)
         .then((data) => {
             return _.map(data, (item) => {
@@ -27,33 +25,60 @@ const fetchList = ({state, dispatch, getOptions, getText, getValue}) => {
         })
 }
 
-const ZERO = 0
-const fetchItem = (props) => {
-    const {dispatch, getItem, getItemText} = props
-    const id = _.get(props, ['input', 'value', 'value'])
-
-    id && getItem(id)
-        .then(data => {
-            return getItemText(data)
-        })
-        .then(data => dispatch({text: data}))
-}
-
-const errorStyle = {
-    textAlign: 'left',
-    bottom: '5px'
+const fetchItem = (props, selectedItem) => {
+    const {getItem, input, dispatch} = props
+    dispatch({loading: true})
+    const id = _.get(selectedItem, 'value')
+    if (id) {
+        getItem(id)
+            .then(data => {
+                input.onChange({value: data})
+                dispatch({loading: false})
+            })
+    } else {
+        input.onChange(null)
+        dispatch({loading: false})
+    }
 }
 
 const enhance = compose(
     injectSheet({
         wrapper: {
             position: 'relative',
-            width: '100%'
+            width: '100%',
+            height: '45px',
+            '& .Select-menu': {
+                maxHeight: '300px',
+                boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px 3px, rgba(0, 0, 0, 0.12) 0px 1px 4px'
+            },
+            '& .is-focused:not(.is-open) > .Select-control': {
+                borderBottom: 'solid 2px #5d6474',
+                boxShadow: 'unset'
+            }
         },
         icon: {
             position: 'absolute',
             right: '0',
             top: '20px'
+        },
+        select: {
+            '& .Select-menu': {
+                background: '#fff'
+            },
+            '& .Select-menu-outer': {
+                overflowY: 'unset',
+                zIndex: '6',
+                border: 'unset',
+                marginTop: '5px'
+            },
+            '& .Select-control': {
+                borderRadius: '0px',
+                border: '0',
+                paddingBottom: '1px',
+                borderBottom: '1px solid rgb(224, 224, 224)',
+                backgroundColor: 'unset'
+
+            }
         }
     }),
 
@@ -62,21 +87,11 @@ const enhance = compose(
     }, {dataSource: [], text: '', loading: false}),
 
     withPropsOnChange((props, nextProps) => {
-        return (!_.get(props, ['dataSource']) && _.get(nextProps, ['loading']) === false) ||
-                (_.get(nextProps, ['type']) && (_.get(props, ['type']) !== _.get(nextProps, ['type']))) ||
-            ((_.get(props, ['state', 'text']) !== _.get(nextProps, ['state', 'text'])) && (_.get(nextProps, ['state', 'text']).length === ZERO))
+        return _.get(props, ['state', 'text']) !== _.get(nextProps, ['state', 'text']) ||
+            _.get(props, ['parent']) !== _.get(nextProps, ['parent'])
     }, (props) => {
-        if (_.get(props, ['type']) && _.toInteger(_.get(props, ['type'])) > ZERO) {
-            props.dispatch({text: ''})
-        }
         _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)
-    }),
-
-    withPropsOnChange((props, nextProps) => {
-        const value = _.get(props, ['input', 'value', 'value'])
-        const nextValue = _.get(nextProps, ['input', 'value', 'value'])
-        return nextValue && value !== nextValue
-    }, (props) => fetchItem(props))
+    })
 )
 
 const SearchFieldCustom = enhance((props) => {
@@ -84,46 +99,25 @@ const SearchFieldCustom = enhance((props) => {
         classes,
         input,
         label,
-        meta: {error},
+        getValue,
         state,
-        dispatch,
-        ...defaultProps
+        dispatch
     } = props
-
-    const autoCompleteProps = excludeObjKey(defaultProps, [
-        'sheet', 'getText', 'getValue', 'getOptions', 'getItem', 'getItemText'
-    ])
-    const inputAutoComplete = excludeObjKey(input, ['value', 'onChange'])
-    const MINUS_ONE = -1
-
     return (
         <div className={classes.wrapper}>
-            <MUIAutoComplete
-                errorText={error}
-                searchText={input.value ? state.text : ''}
-                menuProps={{menuItemStyle: {fontSize: '13px'}}}
-                errorStyle={errorStyle}
-                floatingLabelText={label}
-                filter={(searchText, key) => (searchText.length > ZERO ? key.toLowerCase().search(searchText.toLowerCase()) !== MINUS_ONE : true)}
-                dataSource={state.dataSource}
-                dataSourceConfig={{text: 'text', value: 'value'}}
-                onUpdateInput={value => dispatch({text: value})}
-                onNewRequest={value => input.onChange(value)}
-                openOnFocus={true}
-                style={{position: 'relative'}}
-                menuStyle={{maxHeight: '300px', overflowY: 'auto'}}
-                textFieldStyle={{width: '400px'}}
-                listStyle={{}}
-                className="autocomplete"
-                {...inputAutoComplete}
-                {...autoCompleteProps}
-            />
-            {!state.loading && <div className={classes.icon}>
-                <KeyboardArrowDown style={{color: '#ccc', height: '20px', width: '20px'}}/>
-            </div>}
-            {state.loading && <div className={classes.icon}>
-                <CircularProgress size={20} thickness={2} />
-            </div>}
+            <div className={classes.wrapper}>
+                <Select
+                    className={classes.select}
+                    options={state.dataSource}
+                    value={getValue(_.get(input, ['value', 'value']))}
+                    onInputChange={text => dispatch({text: text})}
+                    onChange={value => fetchItem(props, value)}
+                    placeholder={label}
+                    noResultsText={'Не найдено'}
+                    isLoading={state.loading}
+                    labelKey={'text'}
+                />
+            </div>
         </div>
     )
 })
@@ -144,7 +138,6 @@ SearchFieldCustom.propTypes = {
     getText: PropTypes.func.isRequired,
     getValue: PropTypes.func.isRequired,
     getOptions: PropTypes.func.isRequired,
-    getItemText: PropTypes.func.isRequired,
     getItem: PropTypes.func.isRequired
 }
 
