@@ -6,28 +6,17 @@ import * as ROUTES from '../../../constants/routes'
 import Container from '../../Container/index'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import {reduxForm, Field} from 'redux-form'
 import ReactHighcharts from 'react-highcharts'
-import DateToDateField from '../../ReduxForm/Basic/DateToDateField'
-import DivisionSearchField from '../../ReduxForm/DivisionSearchField'
 import StatSideMenu from '../StatSideMenu'
-import Search from 'material-ui/svg-icons/action/search'
-import IconButton from 'material-ui/IconButton'
-import Excel from 'material-ui/svg-icons/av/equalizer'
-import Pagination from '../../GridList/GridListNavPagination/index'
+import Pagination from '../../GridList/GridListNavPagination'
 import numberFormat from '../../../helpers/numberFormat'
-import StatSaleDialog from './StatSaleDialog'
+import StatSaleDialog from './SalesDialog'
 import moment from 'moment'
 import CircularProgress from 'material-ui/CircularProgress'
+import SalesFilter from './SalesFilter'
 import dateFormat from '../../../helpers/dateFormat'
 import getConfig from '../../../helpers/getConfig'
 import NotFound from '../../Images/not-found.png'
-
-export const STAT_SALES_FILTER_KEY = {
-    FROM_DATE: 'fromDate',
-    TO_DATE: 'toDate',
-    DIVISION: 'division'
-}
 
 const enhance = compose(
     injectSheet({
@@ -213,11 +202,7 @@ const enhance = compose(
                 color: '#999 !important'
             }
         }
-    }),
-    reduxForm({
-        form: 'StatSalesFilterForm',
-        enableReinitialize: true
-    }),
+    })
 )
 
 const StatSalesGridList = enhance((props) => {
@@ -228,9 +213,9 @@ const StatSalesGridList = enhance((props) => {
         onSubmit,
         listData,
         statSaleDialog,
-        handleSubmit,
         detailData,
-        handleGetDocument
+        handleGetDocument,
+        initialValues
     } = props
 
     const loading = _.get(listData, 'listLoading')
@@ -353,19 +338,6 @@ const StatSalesGridList = enhance((props) => {
         color: '#666'
     }
 
-    const iconStyle = {
-        icon: {
-            color: '#5d6474',
-            width: 22,
-            height: 22
-        },
-        button: {
-            width: 40,
-            height: 40,
-            padding: 0
-        }
-    }
-
     const headers = (
         <Row style={headerStyle} className="dottedList">
             <Col xs={1}>№ Сделки</Col>
@@ -397,8 +369,8 @@ const StatSalesGridList = enhance((props) => {
                     <Col xs={2}>
                         <div>{firstName} {secondName}</div>
                     </Col>
-                    <Col xs={1}>{numberFormat(returnPrice)} {currentCurrency}</Col>
-                    <Col xs={2} style={{textAlign: 'right'}}>{numberFormat(totalPrice)} {currentCurrency}</Col>
+                    <Col xs={1}>{numberFormat(returnPrice, currentCurrency)}</Col>
+                    <Col xs={2} style={{textAlign: 'right'}}>{numberFormat(totalPrice, currentCurrency)}</Col>
                 </Row>
             )
         })
@@ -413,32 +385,12 @@ const StatSalesGridList = enhance((props) => {
                     </div>
                     <div className={classes.rightPanel}>
                         <div className={classes.wrapper}>
-                            <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
-                                <div className={classes.filter}>
-                                    <Field
-                                        className={classes.inputFieldCustom}
-                                        name="date"
-                                        component={DateToDateField}
-                                        label="Диапазон дат"
-                                        fullWidth={true}/>
-                                    <Field
-                                        name="division"
-                                        component={DivisionSearchField}
-                                        className={classes.inputFieldCustom}
-                                        label="Подразделение"
-                                        fullWidth={true}/>
-                                    <IconButton
-                                        className={classes.searchButton}
-                                        iconStyle={iconStyle.icon}
-                                        style={iconStyle.button}
-                                        type="submit">
-                                        <Search/>
-                                    </IconButton>
-                                </div>
-                                <a className={classes.excel} onClick={handleGetDocument}>
-                                    <Excel color="#fff"/> <span>Excel</span>
-                                </a>
-                            </form>
+                            <SalesFilter
+                                filter={filter}
+                                initialValues={initialValues}
+                                handleSubmitFilterDialog={onSubmit}
+                                handleGetDocument={handleGetDocument}
+                            />
                             {loading
                             ? <div className={classes.loader}>
                                 <CircularProgress size={70} thickness={4} />

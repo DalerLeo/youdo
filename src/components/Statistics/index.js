@@ -1,5 +1,5 @@
 import StatSideMenu from './StatSideMenu'
-import StatSalesGridList from './Sales/StatSalesGridList'
+import StatSalesGridList from './Sales/SalesGridList'
 import StatAgentGridList from './Agents/StatAgentGridList'
 import StatProductGridList from './Products/StatProductGridList'
 import StatMarketGridList from './Markets/StatMarketGridList'

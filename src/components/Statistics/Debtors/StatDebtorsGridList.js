@@ -19,7 +19,7 @@ import Excel from 'material-ui/svg-icons/av/equalizer'
 import Pagination from '../../GridList/GridListNavPagination/index'
 import numberFormat from '../../../helpers/numberFormat'
 import getConfig from '../../../helpers/getConfig'
-import StatSaleDialog from '../Sales/StatSaleDialog'
+import StatSaleDialog from '../Sales/SalesDialog'
 import NotFound from '../../Images/not-found.png'
 
 export const STAT_DEBTORS_FILTER_KEY = {
