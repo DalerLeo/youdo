@@ -12,7 +12,7 @@ import Pagination from '../../GridList/GridListNavPagination/index'
 import getConfig from '../../../helpers/getConfig'
 import numberFormat from '../../../helpers/numberFormat.js'
 import NotFound from '../../Images/not-found.png'
-import StatProductFilterForm from './StatProductFilterForm'
+import {ProductTypeChildSearchField, ProductTypeParentSearchField, DateToDateField} from '../../ReduxForm'
 import ordering from '../../../helpers/ordering'
 import {reduxForm, Field} from 'redux-form'
 import {TextField} from '../../ReduxForm/index'
@@ -20,6 +20,16 @@ import IconButton from 'material-ui/IconButton'
 import Search from 'material-ui/svg-icons/action/search'
 import ArrowUpIcon from 'material-ui/svg-icons/navigation/arrow-upward'
 import ArrowDownIcon from 'material-ui/svg-icons/navigation/arrow-downward'
+import {StatisticsFilterExcel} from '../../Statistics'
+import {connect} from 'react-redux'
+
+export const STAT_PRODUCT_FILTER_KEY = {
+    SEARCH: 'search',
+    PRODUCT_TYPE: 'productType',
+    PRODUCT_TYPE_CHILD: 'productTypeChild',
+    TO_DATE: 'toDate',
+    FROM_DATE: 'fromDate'
+}
 
 const enhance = compose(
     injectSheet({
@@ -213,6 +223,12 @@ const enhance = compose(
         form: 'StatProductForm',
         enableReinitialize: true
     }),
+    connect((state) => {
+        const typeParent = _.get(state, ['form', 'StatisticsFilterForm', 'values', 'productType', 'value'])
+        return {
+            typeParent
+        }
+    })
 )
 const listHeader = [
     {
@@ -251,6 +267,7 @@ const StatProductGridList = enhance((props) => {
         listData,
         classes,
         filter,
+        typeParent,
         handleSubmitFilterDialog,
         getDocument,
         filterForm,
@@ -306,6 +323,32 @@ const StatProductGridList = enhance((props) => {
             </tr>
         )
     })
+
+    const fields = (
+        <div>
+            <Field
+                className={classes.inputFieldCustom}
+                name="date"
+                component={DateToDateField}
+                label="Диапазон дат"
+                fullWidth={true}/>
+            <Field
+                className={classes.inputFieldCustom}
+                name="productType"
+                component={ProductTypeParentSearchField}
+                label="Тип товара"
+                fullWidth={true}/>
+            {typeParent ? <Field
+                name="productTypeChild"
+                className={classes.inputFieldCustom}
+                component={ProductTypeChildSearchField}
+                parentType={typeParent}
+                label="Подкатегория"
+                fullWidth={true}
+            /> : null}
+        </div>
+    )
+
     const page = (
         <div className={classes.mainWrapper}>
             <Row style={{margin: '0', height: '100%'}}>
@@ -314,7 +357,14 @@ const StatProductGridList = enhance((props) => {
                 </div>
                 <div className={classes.rightPanel}>
                     <div className={classes.wrapper}>
-                        <StatProductFilterForm onSubmit={handleSubmitFilterDialog} getDocument={getDocument} initialValues={filterForm.initialValues}/>
+                        <StatisticsFilterExcel
+                            filter={filter}
+                            handleGetDocument={getDocument.handleGetDocument}
+                            initialValues={filterForm.initialValues}
+                            handleSubmitFilterDialog={handleSubmitFilterDialog}
+                            fields={fields}
+                            filterKeys={STAT_PRODUCT_FILTER_KEY}
+                        />
                         <div style={{display: 'flex', justifyContent: 'space-between'}}>
                             <form className={classes.form} onSubmit={handleSubmit(searchSubmit)}>
                                 <Field
@@ -341,34 +391,34 @@ const StatProductGridList = enhance((props) => {
                             <div>По вашему запросу ничего не найдено</div>
                         </div>
                         : <div className={classes.tableWrapper}>
-                                    <div className={classes.leftTable}>
-                                        <div><span>Товар</span></div>
-                                        {tableLeft}
-                                    </div>
-                                    <div>
-                                        <table className={classes.mainTable}>
-                                            <tbody className={classes.tableBody}>
-                                                <tr className={classes.title}>
-                                                    <td rowSpan={2}>Тип</td>
-                                                    <td colSpan={2}>Продажа</td>
-                                                    <td colSpan={2}>Возврат</td>
-                                                    <td colSpan={2}>Фактическая продажа</td>
-                                                </tr>
-                                                <tr className={classes.subTitle}>
-                                                    {_.map(listHeader, (header, index) => {
-                                                        const sortingType = filter.getSortingType(header.name)
-                                                        const icon = _.isNil(sortingType) ? null : sortingType ? <ArrowUpIcon className={classes.icon}/> : <ArrowDownIcon className={classes.icon}/>
-                                                        if (!header.sorting) {
-                                                            return <td>{header.title}</td>
-                                                        }
-                                                        return <td key={index} style={{cursor: 'pointer'}} onClick={ () => ordering(filter, header.name)}>{header.title}{icon}</td>
-                                                    })}
-                                                </tr>
-                                                {tableList}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>}
+                            <div className={classes.leftTable}>
+                                <div><span>Товар</span></div>
+                                {tableLeft}
+                            </div>
+                            <div>
+                                <table className={classes.mainTable}>
+                                    <tbody className={classes.tableBody}>
+                                        <tr className={classes.title}>
+                                            <td rowSpan={2}>Тип</td>
+                                            <td colSpan={2}>Продажа</td>
+                                            <td colSpan={2}>Возврат</td>
+                                            <td colSpan={2}>Фактическая продажа</td>
+                                        </tr>
+                                        <tr className={classes.subTitle}>
+                                            {_.map(listHeader, (header, index) => {
+                                                const sortingType = filter.getSortingType(header.name)
+                                                const icon = _.isNil(sortingType) ? null : sortingType ? <ArrowUpIcon className={classes.icon}/> : <ArrowDownIcon className={classes.icon}/>
+                                                if (!header.sorting) {
+                                                    return <td>{header.title}</td>
+                                                }
+                                                return <td key={index} style={{cursor: 'pointer'}} onClick={ () => ordering(filter, header.name)}>{header.title}{icon}</td>
+                                            })}
+                                        </tr>
+                                        {tableList}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>}
                     </div>
                 </div>
             </Row>

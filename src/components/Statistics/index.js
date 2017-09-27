@@ -4,8 +4,6 @@ import StatAgentGridList from './Agents/StatAgentGridList'
 import StatProductGridList from './Products/StatProductGridList'
 import StatMarketGridList from './Markets/StatMarketGridList'
 import StatFinanceGridList from './Finance/StatFinanceGridList'
-import StatIncomeGridList from './Income/StatIncomeGridList'
-import StatOutcomeGridList from './Outcome/StatOutcomeGridList'
 import StatDebtorsGridList from './Debtors/StatDebtorsGridList'
 import StatOutcomeCategoryGridList from './Outcome/StatOutcomeCategoryGridList'
 import StatRemainderGridList from './Remainder/StatRemainderGridLIst'
@@ -15,6 +13,7 @@ import StatReportGridList from './StatReportGridLIst'
 import StatReturnGridList from './Return/StatReturnGridList'
 import StatReturnDialog from './Return/StatReturnDialog'
 import ClientIncomeGridList from './ClientIncome/ClientIncomeGridList'
+import StatisticsFilterExcel from './StatisticsFilterExcel'
 
 const STAT_AGENT_DIALOG_OPEN = 'openStatAgentDialog'
 const STAT_RETURN_DIALOG_OPEN = 'openStatReturnDialog'
@@ -37,8 +36,6 @@ export {
     StatProductGridList,
     StatMarketGridList,
     StatFinanceGridList,
-    StatIncomeGridList,
-    StatOutcomeGridList,
     StatDebtorsGridList,
     StatOutcomeCategoryGridList,
     StatRemainderGridList,
@@ -46,6 +43,7 @@ export {
     StatProductMoveGridList,
     StatReportGridList,
     ClientIncomeGridList,
+    StatisticsFilterExcel,
     DATE,
     STAT_AGENT_DIALOG_OPEN,
     STAT_MARKET_DIALOG_OPEN,

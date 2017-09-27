@@ -55,8 +55,6 @@ import {
     StatProductList,
     StatMarketList,
     StatFinanceList,
-    StatIncomeList,
-    StatOutcomeList,
     StatDebtorsList,
     StatOutcomeCategoryList,
     StatRemainderList,
@@ -577,18 +575,6 @@ export default {
         {
             path: ROUTES.STATISTICS_FINANCE_URL,
             component: userIsAdminChain(StatFinanceList),
-            childRoutes: []
-        },
-        // Statistics/income
-        {
-            path: ROUTES.STATISTICS_INCOME_URL,
-            component: userIsAdminChain(StatIncomeList),
-            childRoutes: []
-        },
-        // Statistics/outcome
-        {
-            path: ROUTES.STATISTICS_OUTCOME_URL,
-            component: userIsAdminChain(StatOutcomeList),
             childRoutes: []
         },
         // Statistics/debtors

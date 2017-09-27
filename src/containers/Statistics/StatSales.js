@@ -12,7 +12,7 @@ import toBoolean from '../../helpers/toBoolean'
 import * as serializers from '../../serializers/Statistics/statSalesSerializer'
 import getDocuments from '../../helpers/getDocument'
 import {StatSalesGridList, STAT_SALES_DIALOG_OPEN} from '../../components/Statistics'
-import {STAT_SALES_FILTER_KEY} from '../../components/Statistics/Sales/SalesFilter'
+import {STAT_SALES_FILTER_KEY} from '../../components/Statistics/Sales/SalesGridList'
 import {
     orderItemFetchAction
 } from '../../actions/order'
@@ -33,9 +33,10 @@ const enhance = compose(
         const detailLoading = _.get(state, ['order', 'item', 'loading'])
         const list = _.get(state, ['order', 'list', 'data'])
         const listLoading = _.get(state, ['order', 'list', 'loading'])
-        const filterForm = _.get(state, ['form', 'StatSalesFilterForm'])
+        const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
         const filter = filterHelper(list, pathname, query)
         return {
+            query,
             list,
             listLoading,
             detail,
@@ -50,6 +51,10 @@ const enhance = compose(
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
         dispatch(orderListFetchAction(filter, ONE))
+    }),
+    withPropsOnChange((props, nextProps) => {
+        return props.list && (props.query.fromDate !== nextProps.query.fromDate || props.query.toDate !== nextProps.query.toDate)
+    }, ({dispatch, filter}) => {
         dispatch(statSalesDataFetchAction(filter))
     }),
     withPropsOnChange((props, nextProps) => {
@@ -188,8 +193,8 @@ const StatSalesList = enhance((props) => {
                 value: zone
             },
             deliveryDate: {
-                deliveryFromDate: deliveryFromDate && moment(deliveryFromDate, 'YYYY-MM-DD'),
-                deliveryToDate: deliveryToDate && moment(deliveryToDate, 'YYYY-MM-DD')
+                fromDate: deliveryFromDate && moment(deliveryFromDate, 'YYYY-MM-DD'),
+                toDate: deliveryToDate && moment(deliveryToDate, 'YYYY-MM-DD')
             },
             onlyBonus: onlyBonus,
             exclude: exclude,

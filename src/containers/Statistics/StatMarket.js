@@ -32,7 +32,7 @@ const enhance = compose(
         const graphLoading = _.get(state, ['statMarket', 'data', 'loading'])
         const list = _.get(state, ['statMarket', 'list', 'data'])
         const listLoading = _.get(state, ['statMarket', 'list', 'loading'])
-        const filterForm = _.get(state, ['form', 'StatMarketFilterForm'])
+        const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
         const filter = filterHelper(list, pathname, query)
         return {
             list,
@@ -62,18 +62,15 @@ const enhance = compose(
         }
     }),
     withHandlers({
-        handleSubmitFilterDialog: props => (event) => {
-            event.preventDefault()
+        handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
             const search = _.get(filterForm, ['values', 'search']) || null
-            const division = _.get(filterForm, ['values', 'division', 'value']) || null
-            const agent = _.get(filterForm, ['values', 'agent', 'value']) || null
+            const user = _.get(filterForm, ['values', 'user', 'value']) || null
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
             filter.filterBy({
                 [STAT_MARKET_FILTER_KEY.SEARCH]: search,
-                [STAT_MARKET_FILTER_KEY.DIVISION]: division,
-                [STAT_MARKET_FILTER_KEY.AGENT]: agent,
+                [STAT_MARKET_FILTER_KEY.USER]: user,
                 [STAT_MARKET_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [STAT_MARKET_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
 
@@ -132,6 +129,8 @@ const StatMarketList = enhance((props) => {
     const firstDayOfMonth = _.get(location, ['query', 'fromDate']) || moment().format('YYYY-MM-01')
     const lastDay = moment().daysInMonth()
     const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
+    const user = !_.isNull(_.get(location, ['query', 'user'])) && _.toInteger(_.get(location, ['query', 'user']))
+    const search = !_.isNull(_.get(location, ['query', 'search'])) ? _.get(location, ['query', 'search']) : null
 
     const statMarketDialog = {
         openStatMarketDialog,
@@ -167,6 +166,10 @@ const StatMarketList = enhance((props) => {
         handleGetDocument: props.handleGetDocument
     }
     const initialValues = {
+        search: search,
+        user: {
+            value: user
+        },
         date: {
             fromDate: moment(firstDayOfMonth),
             toDate: moment(lastDayOfMonth)

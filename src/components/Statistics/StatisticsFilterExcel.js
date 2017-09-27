@@ -3,18 +3,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import injectSheet from 'react-jss'
 import {compose, withState} from 'recompose'
-import {reduxForm, Field} from 'redux-form'
-import DateToDateField from '../../ReduxForm/Basic/DateToDateField'
-import {
-    ClientSearchField,
-    MarketSearchField,
-    UsersSearchField,
-    DeptSearchField,
-    ZoneSearchField,
-    DivisionSearchField,
-    CheckBox
-} from '../../ReduxForm'
-import OrderStatusSearchField from '../../ReduxForm/Order/OrderStatusSearchField'
+import {reduxForm} from 'redux-form'
 import Excel from 'material-ui/svg-icons/av/equalizer'
 import Filter from 'material-ui/svg-icons/content/filter-list'
 import Close from 'material-ui/svg-icons/action/highlight-off'
@@ -24,21 +13,6 @@ import Paper from 'material-ui/Paper'
 import moment from 'moment'
 
 const ZERO = 0
-export const STAT_SALES_FILTER_KEY = {
-    CLIENT: 'client',
-    STATUS: 'status',
-    INITIATOR: 'initiator',
-    SHOP: 'shop',
-    DIVISION: 'division',
-    DEPT: 'dept',
-    FROM_DATE: 'fromDate',
-    TO_DATE: 'toDate',
-    DELIVERY_FROM_DATE: 'deliveryFromDate',
-    DELIVERY_TO_DATE: 'deliveryToDate',
-    ZONE: 'zone',
-    ONLY_BONUS: 'onlyBonus',
-    EXCLUDE: 'exclude'
-}
 
 const enhance = compose(
     injectSheet({
@@ -69,7 +43,7 @@ const enhance = compose(
             top: '0',
             width: '300px',
             background: '#fff',
-            zIndex: '10'
+            zIndex: '50'
         },
         filter: {
             display: 'flex',
@@ -133,21 +107,24 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'StatSalesFilterForm',
+        form: 'StatisticsFilterForm',
         enableReinitialize: true
     }),
     withState('openFilter', 'setOpenFilter', false)
 )
 
-const ClientIncomeFilter = enhance((props) => {
+const StatisticsFilterExcel = enhance((props) => {
     const {
         filter,
         classes,
+        filterKeys,
+        fields,
         handleSubmit,
         handleSubmitFilterDialog,
         openFilter,
         setOpenFilter,
-        handleGetDocument
+        handleGetDocument,
+        withoutDate
     } = props
 
     const iconStyle = {
@@ -163,9 +140,9 @@ const ClientIncomeFilter = enhance((props) => {
         }
     }
     const getFilterCount = () => {
-        return _(STAT_SALES_FILTER_KEY)
+        return _(filterKeys)
             .values()
-            .filter(item => item !== STAT_SALES_FILTER_KEY.FROM_DATE)
+            .filter(item => item !== filterKeys.FROM_DATE)
             .filter(item => filter.getParam(item))
             .value()
             .length
@@ -187,17 +164,8 @@ const ClientIncomeFilter = enhance((props) => {
                             onTouchTap={() => { setOpenFilter(false) }}>
                             <Close />
                         </IconButton>
-                        <Field name="date" className={classes.inputDateCustom} component={DateToDateField} fullWidth={true} label="Диапазон дат"/>
-                        <Field name="client" className={classes.inputFieldCustom} component={ClientSearchField} fullWidth={true} label="Клиент"/>
-                        <Field name="status" className={classes.inputFieldCustom} component={OrderStatusSearchField} fullWidth={true} label="Статус"/>
-                        <Field name="shop" className={classes.inputFieldCustom} component={MarketSearchField} fullWidth={true} label="Магазин"/>
-                        <Field name="division" className={classes.inputFieldCustom} component={DivisionSearchField} fullWidth={true} label="Подразделение"/>
-                        <Field name="initiator" className={classes.inputFieldCustom} component={UsersSearchField} fullWidth={true} label="Инициатор "/>
-                        <Field name="dept" className={classes.inputFieldCustom} component={DeptSearchField} fullWidth={true} label="Оплаченный "/>
-                        <Field name="zone" className={classes.inputFieldCustom} component={ZoneSearchField} fullWidth={true} label="Зона"/>
-                        <Field name="deliveryDate" className={classes.inputDateCustom} component={DateToDateField} fullWidth={true} label="Дата доставки"/>
-                        <Field name="onlyBonus" component={CheckBox} label="Только бонусные заказы"/>
-                        <Field name="exclude" component={CheckBox} label="Исключить отмененные заказы"/>
+
+                        {fields}
 
                         <FlatButton
                             label="Применить"
@@ -211,7 +179,8 @@ const ClientIncomeFilter = enhance((props) => {
             <a className={classes.filterBtn} onClick={() => { setOpenFilter(true) }}>
                 <Filter color="#fff"/> <span>Фильтр</span>
                 {filterCount > ZERO && <span className={classes.count}>{filterCount}</span>}
-                <span className={classes.date} style={filterCount > ZERO ? {left: 'calc(100% + 30px)'} : {left: '100%'}}>{filterDate}</span>
+                {!withoutDate && <span className={classes.date} style={filterCount > ZERO ? {left: 'calc(100% +' +
+                ' 30px)'} : {left: '100%'}}>{filterDate}</span>}
             </a>
             <a className={classes.excel} onClick={handleGetDocument}>
                 <Excel color="#fff"/> <span>Excel</span>
@@ -220,10 +189,13 @@ const ClientIncomeFilter = enhance((props) => {
     )
 })
 
-ClientIncomeFilter.propTypes = {
+StatisticsFilterExcel.propTypes = {
     filter: PropTypes.object.isRequired,
+    filterKeys: PropTypes.object.isRequired,
+    initialValues: PropTypes.object.isRequired,
+    fields: PropTypes.node.isRequired,
     handleSubmitFilterDialog: PropTypes.func.isRequired,
     handleGetDocument: PropTypes.func.isRequired
 }
 
-export default ClientIncomeFilter
+export default StatisticsFilterExcel
