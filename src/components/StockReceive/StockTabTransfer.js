@@ -9,6 +9,8 @@ import {compose} from 'recompose'
 import moment from 'moment'
 import Details from './StockTransferDetails'
 import ConfirmDialog from '../ConfirmDialog'
+import StockReceiveTabList from '../../containers/StockReceive/StockReceiveTabList'
+import * as TAB from '../../constants/stockReceiveTab'
 
 const ZERO = 0
 
@@ -59,7 +61,6 @@ const enhance = compose(
             display: 'flex'
         },
         wrapper: {
-            marginTop: '20px',
             '& .row > div > svg': {
                 position: 'relative',
                 width: '16px !important',
@@ -97,7 +98,7 @@ const StockTabTransfer = enhance((props) => {
             detailData={detailData || {}}
             key={_.get(detailData, 'id') + '_' + _.get(detailData, 'type')}
             handleCloseDetail={handleCloseDetail}
-            loading={_.get(detailData, 'transferDetailLoading')}
+            loading={_.get(detailData, 'detailLoading')}
             printDialog={printDialog}
             confirmDialog={confirmDialog}
             confirm={true}
@@ -136,6 +137,7 @@ const StockTabTransfer = enhance((props) => {
 
     return (
         <div className={classes.wrapper}>
+            <StockReceiveTabList currentTab={TAB.STOCK_RECEIVE_TAB_TRANSFER}/>
             <GridList
                 filter={filter}
                 list={list}
@@ -144,7 +146,7 @@ const StockTabTransfer = enhance((props) => {
             />
             <ConfirmDialog
                 type="submit"
-                message={'Запрос № ' + _.get(detailData, ['currentTransferDetail', 'id'])}
+                message={'Запрос № ' + _.get(detailData, 'id')}
                 onClose={confirmDialog.handleCloseConfirmDialog}
                 onSubmit={confirmDialog.handleSubmitTransferAcceptDialog}
                 open={confirmDialog.openConfirmDialog > ZERO}

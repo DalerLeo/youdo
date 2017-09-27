@@ -324,12 +324,28 @@ const rootReducer = combineReducers({
         list: createThunkReducer(actionTypes.STOCK_RECEIVE_LIST),
         history: createThunkReducer(actionTypes.STOCK_HISTORY_LIST),
         print: createThunkReducer(actionTypes.ORDER_LIST_PRINT),
-        transfer: createThunkReducer(actionTypes.STOCK_TRANSFER_LIST),
-        transferItem: createThunkReducer(actionTypes.STOCK_TRANSFER_ITEM),
-        stockTransfer: createThunkReducer(actionTypes.STOCK_RECEIVE_ORDER_ITEM),
         item: createThunkReducer(actionTypes.STOCK_RECEIVE_ITEM),
         create: createThunkReducer(actionTypes.STOCK_RECEIVE_CREATE),
         barcodeList: createThunkReducer(actionTypes.STOCK_BARCODE_LIST)
+    }),
+    stockReceiveContent: combineReducers({
+        list: createThunkReducer(actionTypes.STOCK_RECEIVE_LIST),
+        item: createThunkReducer(actionTypes.STOCK_RECEIVE_ITEM)
+    }),
+    stockReceiveHistory: combineReducers({
+        list: createThunkReducer(actionTypes.STOCK_RECEIVE_LIST),
+        item: createThunkReducer(actionTypes.STOCK_RECEIVE_HISTORY_ITEM)
+    }),
+    stockTransfer: combineReducers({
+        list: createThunkReducer(actionTypes.STOCK_TRANSFER_LIST),
+        item: createThunkReducer(actionTypes.STOCK_TRANSFER_ITEM)
+    }),
+    stockTransferHistory: combineReducers({
+        list: createThunkReducer(actionTypes.REMAINDER_LIST),
+        item: createThunkReducer(actionTypes.REMAINDER_ITEM)
+    }),
+    stockOutHistory: combineReducers({
+        list: createThunkReducer(actionTypes.STOCK_HISTORY_LIST)
     }),
     statistics: combineReducers({
         list: createThunkReducer(actionTypes.REMAINDER_LIST),
@@ -363,6 +379,9 @@ const rootReducer = combineReducers({
 
     statSales: combineReducers({
         data: createThunkReducer(actionTypes.STAT_SALES_DATA)
+    }),
+    statReturn: combineReducers({
+        data: createThunkReducer(actionTypes.STAT_RETURN_DATA)
     }),
     statFinance: combineReducers({
         dataIn: createThunkReducer(actionTypes.STAT_FINANCE_DATA_IN),

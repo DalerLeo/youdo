@@ -5,12 +5,13 @@ import {Row, Col} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
 import moment from 'moment'
 import {compose} from 'recompose'
+import StockReceiveTabList from '../../containers/StockReceive/StockReceiveTabList'
 import StockReceiveDetails from './StockReceiveDetails'
 import stockTypeFormat from '../../helpers/stockTypeFormat'
 import ConfirmDialog from '../ConfirmDialog'
-import CreateDialog from './StockReceiveCreateDialog'
 import TabTransferFilterForm from './TabTransferFilterForm'
 import GridList from '../GridList'
+import * as TAB from '../../constants/stockReceiveTab'
 
 const ZERO = 0
 const RETURN = 3
@@ -19,7 +20,6 @@ const DELIVERY = 4
 const enhance = compose(
     injectSheet({
         wrapper: {
-            marginTop: '20px',
             '& .row > div > svg': {
                 position: 'relative',
                 width: '16px !important',
@@ -134,13 +134,9 @@ const StockTabReceive = enhance((props) => {
         filter,
         classes,
         confirmDialog,
-        updateDialog,
         handleCloseDetail,
-        createDialog,
         filterDialog,
-        history,
-        handleCheckedForm,
-        handleCheckedDefect
+        history
     } = props
     const listLoading = _.get(listData, 'listLoading')
     const stockReceiveFilterDialog = (
@@ -157,17 +153,15 @@ const StockTabReceive = enhance((props) => {
             loading={_.get(detailData, 'detailLoading')}
             confirmDialog={confirmDialog}
             handleCloseDetail={handleCloseDetail}
-            createDialog={createDialog}
             history={history}
-            updateDialog={updateDialog}
     />
     )
 
     const stockReceiveList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const orderId = _.get(item, 'orderId')
-        const by = _.get(item, ['by'])
-        const type = _.get(item, ['type'])
+        const by = _.get(item, 'by')
+        const type = _.get(item, 'type')
         const formattedType = stockTypeFormat(type)
         const date = _.get(item, 'date') ? moment(_.get(item, 'date')).format('DD.MM.YYYY') : 'Не указана'
         const stockName = _.get(item, ['stock', 'name'])
@@ -199,6 +193,7 @@ const StockTabReceive = enhance((props) => {
 
     return (
         <div className={classes.wrapper}>
+            <StockReceiveTabList currentTab={history ? TAB.STOCK_RECEIVE_TAB_HISTORY : TAB.STOCK_RECEIVE_TAB_RECEIVE}/>
             <GridList
                 filter={filter}
                 filterDialog={stockReceiveFilterDialog}
@@ -216,26 +211,6 @@ const StockTabReceive = enhance((props) => {
                                         : confirmDialog.handleSubmitReceiveConfirmDialog}
                 open={confirmDialog.openConfirmDialog > ZERO}
             />
-            <CreateDialog
-                loading={createDialog.createLoading}
-                open={createDialog.openCreateDialog}
-                detailProducts={createDialog.detailProducts}
-                listLoading={createDialog.detailLoading}
-                onClose={createDialog.handleCloseCreateDialog}
-                onSubmit={createDialog.handleSubmitCreateDialog}
-                handleCheckedForm={handleCheckedForm}
-            />
-            <CreateDialog
-                loading={updateDialog.updateLoading}
-                open={updateDialog.openUpdateDialog}
-                detailProducts={updateDialog.detailProducts}
-                listLoading={updateDialog.detailLoading}
-                onClose={updateDialog.handleCloseUpdateDialog}
-                onSubmit={updateDialog.handleSubmitUpdateDialog}
-                isUpdate={true}
-                initialValues={updateDialog.initialValues}
-                handleCheckedDefect={handleCheckedDefect}
-            />
         </div>
     )
 })
@@ -251,15 +226,6 @@ StockTabReceive.propTypes = {
         handleCloseConfirmDialog: PropTypes.func.isRequired,
         handleSubmitReceiveConfirmDialog: PropTypes.func.isRequired,
         handleSubmitOrderReturnDialog: PropTypes.func.isRequired
-    }).isRequired,
-    createDialog: PropTypes.shape({
-        createLoading: PropTypes.bool.isRequired,
-        openCreateDialog: PropTypes.bool.isRequired,
-        detailProducts: PropTypes.object,
-        detailLoading: PropTypes.bool,
-        handleOpenCreateDialog: PropTypes.func.isRequired,
-        handleCloseCreateDialog: PropTypes.func.isRequired,
-        handleSubmitCreateDialog: PropTypes.func.isRequired
     }).isRequired
 }
 

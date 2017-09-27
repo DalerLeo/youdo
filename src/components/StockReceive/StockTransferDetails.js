@@ -79,22 +79,6 @@ const enhance = compose(
                 alignItems: 'center'
             }
         },
-        rightSide: {
-            flexBasis: '30%',
-            maxWidth: '30%',
-            padding: '20px 30px',
-            borderLeft: '1px #efefef solid',
-            '& > div:last-child': {
-                marginTop: '5px'
-            }
-        },
-        printer: {
-            position: 'absolute',
-            right: '0'
-        },
-        subtitle: {
-            fontWeight: '600'
-        },
         emptyQuery: {
             background: 'url(' + NotFound + ') no-repeat center 25px',
             backgroundSize: '200px',
@@ -143,10 +127,10 @@ const StockTransferDetails = enhance((props) => {
         detailData,
         handleCloseDetail,
         confirmDialog,
+        loading,
         printDialog
     } = props
 
-    const detailLoading = _.get(detailData, 'transferDetailLoading')
     const products = _.get(detailData, ['data', 'products'])
     const id = _.get(detailData, 'id')
     const dateRequest = dateFormat(_.get(detailData, ['currentTransferDetail', 'dateRequest']))
@@ -155,7 +139,7 @@ const StockTransferDetails = enhance((props) => {
     const stockName = _.get(detailData, ['currentTransferDetail', 'stock', 'name'])
     const detailType = _.toInteger(_.get(detailData, 'type'))
     const tooltipText = 'Подтвердить Запрос № ' + id
-    if (detailLoading) {
+    if (loading) {
         return (
             <div className={classes.loader}>
                 <CircularProgress size={40} thickness={4} />
@@ -163,7 +147,7 @@ const StockTransferDetails = enhance((props) => {
         )
     }
     return (
-        <div className={classes.wrapper} style={detailLoading ? {padding: '0 30px', border: 'none', maxHeight: '2px'} : {maxHeight: 'unset'}}>
+        <div className={classes.wrapper} style={loading ? {padding: '0 30px', border: 'none', maxHeight: '2px'} : {maxHeight: 'unset'}}>
             {_.isEmpty(products)
                 ? <div className={classes.emptyQuery}>
                     <div>Товаров не найдено</div>

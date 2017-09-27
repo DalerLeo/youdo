@@ -136,9 +136,9 @@ const StockTransferDetails = enhance((props) => {
         classes,
         detailData,
         handleCloseDetail,
-        handleOpenPrint
+        handleOpenPrint,
+        loading
     } = props
-    const detailLoading = _.get(detailData, 'transferDetailLoading')
     const products = _.get(detailData, ['data', 'products'])
     const comment = _.get(detailData, ['data', 'comment']) || 'Комментарий отсутствует'
     const id = _.get(detailData, 'id')
@@ -150,8 +150,8 @@ const StockTransferDetails = enhance((props) => {
 
     if (_.isEmpty(products)) {
         return (
-            <div className={classes.wrapper} style={detailLoading ? {padding: '0 30px', border: 'none', maxHeight: '2px'} : {maxHeight: '250px', overflowY: 'hidden', height: '100%'}}>
-                {detailLoading ? <LinearProgress/>
+            <div className={classes.wrapper} style={loading ? {padding: '0 30px', border: 'none', maxHeight: '2px'} : {maxHeight: '250px', overflowY: 'hidden', height: '100%'}}>
+                {loading ? <LinearProgress/>
                 : <div className={classes.emptyQuery}>
                     <div>Товаров не найдено</div>
                 </div>}
@@ -160,8 +160,8 @@ const StockTransferDetails = enhance((props) => {
     }
 
     return (
-        <div className={classes.wrapper} style={detailLoading ? {padding: '0 30px', border: 'none', maxHeight: '2px'} : {maxHeight: 'unset'}}>
-            {detailLoading ? <LinearProgress/>
+        <div className={classes.wrapper} style={loading ? {padding: '0 30px', border: 'none', maxHeight: '2px'} : {maxHeight: 'unset'}}>
+            {loading ? <LinearProgress/>
                 : <div style={{width: '100%'}}>
                   <div className={classes.header}>
                       <div className={classes.closeDetail}

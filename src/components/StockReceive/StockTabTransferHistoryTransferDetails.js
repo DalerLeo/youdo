@@ -3,12 +3,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
-import {Row, Col} from 'react-flexbox-grid'
-import Dialog from 'material-ui/Dialog'
-import CloseIcon2 from '../CloseIcon2'
-import IconButton from 'material-ui/IconButton'
+import StockReceiveDetails from './StockReceiveDetails'
 import CircularProgress from 'material-ui/CircularProgress'
-import getConfig from '../../helpers/getConfig'
 
 const enhance = compose(
     injectSheet({
@@ -43,17 +39,8 @@ const enhance = compose(
             '& > div': {
                 width: 'auto',
                 border: 'none',
-                padding: '0',
-                maxHeight: '573px',
-                '& > div > div:last-child > div > div:first-child': {
-                    maxHeight: '465px',
-                    overflowY: 'auto',
-                    margin: '0 -30px',
-                    padding: '0 30px'
-                },
-                '& > div > div:last-child > div > div:last-child': {
-                    padding: '0'
-                }
+                overflow: 'hidden',
+                padding: '0'
             }
         },
         titleSummary: {
@@ -140,58 +127,26 @@ const enhance = compose(
     }),
 )
 
-const StockTransferDialog = enhance((props) => {
+const StockTransferOrgDetails = enhance((props) => {
     const {
-        open,
-        onClose,
         classes,
-        data,
-        loading
+        loading,
+        detailData,
+        onClose
     } = props
-
-    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
-    return (
-        <Dialog
-            modal={true}
-            open={open}
-            onRequestClose={onClose}
-            className={classes.dialog}
-            contentStyle={loading ? {width: '500px'} : {width: '1000px', maxWidth: 'unset'}}
-            bodyStyle={{minHeight: 'auto'}}
-            bodyClassName={classes.popUp}>
-            <div className={classes.titleContent}>
-                <span>Движение товаров</span>
-                <IconButton onTouchTap={onClose}>
-                    <CloseIcon2 color="#666666"/>
-                </IconButton>
-            </div>
-            {loading ? <div className={classes.loader}>
+    return loading ? <div className={classes.loader}>
                     <CircularProgress/>
                 </div>
-                : _.map(data, (item) => {
-                    const clientName = _.get(item, ['client', 'name'])
-                    const marketName = _.get(item, ['market', 'name'])
-                    const currency = _.get(item, ['currency', 'name'])
-                    const order = _.get(item, ['order'])
-                    const customRate = _.get(item, ['customRate'])
-                    const internal = _.get(item, 'internal')
-                    const amount = _.get(item, ['amount'])
-                    return (
-                        <Row key={_.get(item, 'id')} className={classes.detailsRow}>
-                            <Col xs={4}>{clientName}</Col>
-                            <Col xs={3}>{marketName}</Col>
-                            <Col xs={3}>{order}</Col>
-                            <Col xs={3}>{amount} {currency} {currency !== primaryCurrency && customRate ? '(internal ' + customRate + ' ' + primaryCurrency + ')'
-                                : (!customRate ? '(internal ' + (amount / internal) + ' ' + primaryCurrency + ')' : null) }</Col>
-                        </Row>
-
-                    )
-                })}
-        </Dialog>
-    )
+                : <div className={classes.content}>
+                    <StockReceiveDetails
+                        handleCloseDetail={onClose}
+                        detailData={detailData}
+                        loading={_.get(detailData, 'loading')}
+                        history={false}/>
+                </div>
 })
 
-StockTransferDialog.propTyeps = {
+StockTransferOrgDetails.propTyeps = {
     filter: PropTypes.object.isRequired,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
@@ -199,4 +154,4 @@ StockTransferDialog.propTyeps = {
     detailData: PropTypes.object
 }
 
-export default StockTransferDialog
+export default StockTransferOrgDetails

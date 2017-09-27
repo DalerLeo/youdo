@@ -10,6 +10,7 @@ import List from 'material-ui/svg-icons/action/list'
 import IconButton from 'material-ui/IconButton'
 import Excel from 'material-ui/svg-icons/av/equalizer'
 import CircularProgress from 'material-ui/CircularProgress'
+import ReactHighcharts from 'react-highcharts'
 import StatReturnDialog from './StatReturnDialog'
 import StatSideMenu from '../StatSideMenu'
 import DateToDateField from '../../ReduxForm/Basic/DateToDateField'
@@ -229,7 +230,8 @@ const StatReturnGridList = enhance((props) => {
         statReturnDialog,
         handleSubmit,
         detailData,
-        handleGetDocument
+        handleGetDocument,
+        graphData
     } = props
 
     const loading = _.get(listData, 'listLoading')
@@ -252,6 +254,105 @@ const StatReturnGridList = enhance((props) => {
         }
     }
 
+    let returnSum = 0
+
+    const returnedValue = _.map(_.get(graphData, 'data'), (item) => {
+        returnSum += _.toInteger(_.get(item, 'returnAmount'))
+        return _.toInteger(_.get(item, 'returnAmount'))
+    })
+
+    const valueName = _.map(_.get(graphData, 'data'), (item) => {
+        return dateFormat(_.get(item, 'date'))
+    })
+
+    const config = {
+        chart: {
+            type: 'areaspline',
+            height: 180
+        },
+        title: {
+            text: '',
+            style: {
+                display: 'none'
+            }
+        },
+        legend: {
+            enabled: false
+        },
+        credits: {
+            enabled: false
+        },
+        yAxis: {
+            title: {
+                text: '',
+                style: {
+                    display: 'none'
+                }
+            },
+            gridLineColor: '#fff',
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: 'transparent'
+            }],
+            labels: {
+                enabled: false
+            },
+            lineWidth: 0,
+            minorGridLineWidth: 0,
+            lineColor: 'transparent',
+            minorTickLength: 0,
+            tickLength: 0
+        },
+        xAxis: {
+            categories: valueName,
+            lineWidth: 0,
+            minorGridLineWidth: 0,
+            lineColor: 'transparent',
+            minorTickLength: 0,
+            tickLength: 0,
+            labels: {
+                enabled: false
+            }
+        },
+        plotOptions: {
+            series: {
+                lineWidth: 0,
+                pointPlacement: 'on'
+            },
+            areaspline: {
+                fillOpacity: 0.7
+            }
+        },
+        tooltip: {
+            shared: true,
+            valueSuffix: ' ' + getConfig('PRIMARY_CURRENCY'),
+            backgroundColor: '#363636',
+            style: {
+                color: '#fff'
+            },
+            borderRadius: 2,
+            borderWidth: 0,
+            enabled: true,
+            shadow: true,
+            useHTML: true,
+            crosshairs: true,
+            pointFormat: '<div class="diagramTooltip">' +
+            '{series.name}: {point.y}' +
+            '</div>'
+        },
+        series: [{
+            marker: {
+                enabled: false,
+                symbol: 'circle'
+            },
+            name: 'Возврат',
+            data: returnedValue,
+            color: '#6cc6de'
+
+        }]
+    }
+
     const headers = (
         <Row style={headerStyle} className="dottedList">
             <Col xs={1}>Воз.</Col>
@@ -259,8 +360,9 @@ const StatReturnGridList = enhance((props) => {
             <Col xs={1}>Заказ</Col>
             <Col xs={2}>Склад</Col>
             <Col xs={2}>Добавил</Col>
-            <Col xs={2}>Дата возврата</Col>
+            <Col xs={1}>Дата возврата</Col>
             <Col xs={2} style={{textAlign: 'right'}}>Сумма возврата</Col>
+            <Col xs={1} style={{textAlign: 'right'}}></Col>
         </Row>
     )
 
@@ -280,59 +382,80 @@ const StatReturnGridList = enhance((props) => {
                 <Col xs={1}>{order}</Col>
                 <Col xs={2}>{stock}</Col>
                 <Col xs={2}>{user}</Col>
-                <Col xs={2}>{createdDate}</Col>
-                <Col xs={2}>{totalPrice}
+                <Col xs={1}>{createdDate}</Col>
+                <Col xs={2}>
+                    <div style={{textAlign: 'right !important'}}>
+                        {totalPrice}
+                    </div>
+                </Col>
+                <Col xs={1}>
                     <IconButton
-                        onTouchTap={ () => { statReturnDialog.handleOpenStatReturnDialog(id) }}>
-                        <List color="#12aaeb"/>
-                    </IconButton></Col>
+                    onTouchTap={() => {
+                        statReturnDialog.handleOpenStatReturnDialog(id)
+                    }}>
+                    <List color="#12aaeb"/>
+                </IconButton>
+                </Col>
             </Row>
         )
     })
 
     const page = (
-            <div className={classes.mainWrapper}>
-                <Row style={{margin: '0', height: '100%'}}>
-                    <div className={classes.leftPanel}>
-                        <StatSideMenu currentUrl={ROUTES.STATISTICS_RETURN_URL}/>
-                    </div>
-                    <div className={classes.rightPanel}>
-                        <div className={classes.wrapper}>
-                            <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
-                                <div className={classes.filter}>
-                                    <Field
-                                        className={classes.inputFieldCustom}
-                                        name="date"
-                                        component={DateToDateField}
-                                        label="Диапазон дат"
-                                        fullWidth={true}/>
-                                    <Field
-                                        name="division"
-                                        component={DivisionSearchField}
-                                        className={classes.inputFieldCustom}
-                                        label="Подразделение"
-                                        fullWidth={true}/>
-                                    <IconButton
-                                        className={classes.searchButton}
-                                        iconStyle={iconStyle.icon}
-                                        style={iconStyle.button}
-                                        type="submit">
-                                        <Search/>
-                                    </IconButton>
-                                </div>
-                                <a className={classes.excel} onClick={handleGetDocument}>
-                                    <Excel color="#fff"/> <span>Excel</span>
-                                </a>
-                            </form>
-                            {loading
+        <div className={classes.mainWrapper}>
+            <Row style={{margin: '0', height: '100%'}}>
+                <div className={classes.leftPanel}>
+                    <StatSideMenu currentUrl={ROUTES.STATISTICS_RETURN_URL}/>
+                </div>
+                <div className={classes.rightPanel}>
+                    <div className={classes.wrapper}>
+                        <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
+                            <div className={classes.filter}>
+                                <Field
+                                    className={classes.inputFieldCustom}
+                                    name="date"
+                                    component={DateToDateField}
+                                    label="Диапазон дат"
+                                    fullWidth={true}/>
+                                <Field
+                                    name="division"
+                                    component={DivisionSearchField}
+                                    className={classes.inputFieldCustom}
+                                    label="Подразделение"
+                                    fullWidth={true}/>
+                                <IconButton
+                                    className={classes.searchButton}
+                                    iconStyle={iconStyle.icon}
+                                    style={iconStyle.button}
+                                    type="submit">
+                                    <Search/>
+                                </IconButton>
+                            </div>
+                            <a className={classes.excel} onClick={handleGetDocument}>
+                                <Excel color="#fff"/> <span>Excel</span>
+                            </a>
+                        </form>
+                        {loading
                             ? <div className={classes.loader}>
-                                <CircularProgress size={70} thickness={4} />
+                                <CircularProgress size={70} thickness={4}/>
                             </div>
                             : (_.isEmpty(list) && !loading)
                                 ? <div className={classes.emptyQuery}>
                                     <div>По вашему запросу ничего не найдено</div>
                                 </div>
                                 : <div>
+                                    <Row className={classes.diagram}>
+                                        <Col xs={3} className={classes.salesSummary}>
+                                            <div>Общая сумма возврата</div>
+                                            <div>{numberFormat(returnSum, getConfig('PRIMARY_CURRENCY'))}</div>
+                                        </Col>
+                                        <Col xs={9}>
+                                            {_.get(graphData, 'graphLoading') && <div className={classes.loader}>
+                                                <CircularProgress size={50} thickness={4}/>
+                                            </div>}
+                                            {!_.get(graphData, 'graphLoading') &&
+                                            <ReactHighcharts config={config} neverReflow={true} isPureConfig={true}/>}
+                                        </Col>
+                                    </Row>
                                     <div className={classes.pagination}>
                                         <div><b>История возврата</b></div>
                                         <Pagination filter={filter}/>
@@ -341,12 +464,12 @@ const StatReturnGridList = enhance((props) => {
                                         {headers}
                                         {list}
                                     </div>
-                                  </div>
-                            }
-                        </div>
+                                </div>
+                        }
                     </div>
-                </Row>
-            </div>
+                </div>
+            </Row>
+        </div>
     )
 
     return (

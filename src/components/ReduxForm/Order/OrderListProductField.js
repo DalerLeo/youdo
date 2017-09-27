@@ -397,6 +397,7 @@ const OrderListProductField = enhance((props) => {
                             component={TextField}
                             label="Кол-во"
                             name="amount"
+                            type="number"
                             normalize={normalizeNumber}
                             className={classes.inputFieldCustom}
                             fullWidth={true}

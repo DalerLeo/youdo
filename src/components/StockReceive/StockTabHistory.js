@@ -15,6 +15,8 @@ import StockSupplyDialog from '../StockReceive/StockSupplyDialog'
 import stockTypeFormat from '../../helpers/stockTypeFormat'
 import InfoDialog from '../Statistics/Sales/StatSaleDialog'
 import PopoverDialog from './PopoverDialog'
+import StockReceiveTabList from '../../containers/StockReceive/StockReceiveTabList'
+import * as TAB from '../../constants/stockReceiveTab'
 
 const ZERO = 0
 const listHeader = [
@@ -64,7 +66,6 @@ const enhance = compose(
             display: 'flex'
         },
         wrapper: {
-            marginTop: '20px',
             '& .row > div > svg': {
                 position: 'relative',
                 width: '16px !important',
@@ -155,6 +156,7 @@ const StockTabHistory = enhance((props) => {
     }
     return (
         <div className={classes.wrapper}>
+            <StockReceiveTabList currentTab={TAB.STOCK_RECEIVE_TAB_OUT_HISTORY}/>
             <GridList
                 filter={filter}
                 list={list}
