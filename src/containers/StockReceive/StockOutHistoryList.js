@@ -297,7 +297,7 @@ const StockOutHistoryList = enhance((props) => {
         handleOpenHistoryDialog: props.handleOpenHistoryDialog,
         handleCloseHistoryDialog: props.handleCloseHistoryDialog
     }
-    const historyData = {
+    const listData = {
         listLoading,
         historyOrderLoading,
         data: _.get(list, 'results'),
@@ -388,7 +388,7 @@ const StockOutHistoryList = enhance((props) => {
         <Layout {...layout}>
             <TabHistory
                 filter={filter}
-                listData={historyData}
+                listData={listData}
                 filterDialog={filterDialog}
                 historyDialog={historyDialog}
                 returnDialog={returnDialog}

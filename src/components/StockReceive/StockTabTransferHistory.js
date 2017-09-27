@@ -10,6 +10,7 @@ import moment from 'moment'
 import Details from './StockTabTransferHistoryDetails'
 import StockReceiveDetails from './StockReceiveDetails'
 import * as TAB from '../../constants/stockReceiveTab'
+import ConfirmDialog from '../ConfirmDialog'
 import StockReceiveTabList from '../../containers/StockReceive/StockReceiveTabList'
 
 const listHeader = [
@@ -76,6 +77,7 @@ const enhance = compose(
     }),
 )
 
+const ZERO = 0
 const StockTabTransferHistory = enhance((props) => {
     const {
         filter,
@@ -85,7 +87,8 @@ const StockTabTransferHistory = enhance((props) => {
         handleCloseDetail,
         classes,
         printDialog,
-        transferType
+        transferType,
+        confirmDialog
     } = props
 
     const usersFilterDialog = (
@@ -103,7 +106,8 @@ const StockTabTransferHistory = enhance((props) => {
             handleCloseDetail={handleCloseDetail}
             loading={_.get(detailData, 'detailLoading')}
             handleOpenPrint={printDialog.handleOpenPrintDialog}
-            confirm={false}/>
+            confirm={false}
+            confirmDialog={confirmDialog}/>
     )
     const historyTransferDetail = (
         <StockReceiveDetails
@@ -111,7 +115,7 @@ const StockTabTransferHistory = enhance((props) => {
             handleCloseDetail={handleCloseDetail}
             detailData={detailData}
             loading={_.get(detailData, 'detailLoading')}
-            history={false}
+            history={true}
             popover={true}
         />)
 
@@ -152,6 +156,13 @@ const StockTabTransferHistory = enhance((props) => {
                 list={list}
                 detail={transferType === 'transfer' ? historyTransferDetail : historyDetail}
                 filterDialog={usersFilterDialog}
+            />
+            <ConfirmDialog
+                type={'submit' }
+                message={'Запрос № ' + _.get(detailData, 'id')}
+                onClose={confirmDialog.handleCloseConfirmDialog}
+                onSubmit={confirmDialog.openConfirmDialog}
+                open={confirmDialog.openConfirmDialog > ZERO}
             />
         </div>
     )

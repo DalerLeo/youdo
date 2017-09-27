@@ -3,14 +3,15 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
+import RemoveCircleIcon from 'material-ui/svg-icons/content/remove-circle'
+import PrintIcon from 'material-ui/svg-icons/action/print'
+import IconButton from 'material-ui/IconButton'
 import LinearProgress from '../LinearProgress'
-import numberformat from '../../helpers/numberFormat'
-import dateFormat from '../../helpers/dateFormat'
 import {Row, Col} from 'react-flexbox-grid'
 import NotFound from '../Images/not-found.png'
-import PrintIcon from 'material-ui/svg-icons/action/print'
 import Tooltip from '../ToolTip'
-import IconButton from 'material-ui/IconButton'
+import dateFormat from '../../helpers/dateFormat'
+import numberformat from '../../helpers/numberFormat'
 
 const colorBlue = '#12aaeb !important'
 const enhance = compose(
@@ -137,6 +138,7 @@ const StockTransferDetails = enhance((props) => {
         detailData,
         handleCloseDetail,
         handleOpenPrint,
+        confirmDialog,
         loading
     } = props
     const products = _.get(detailData, ['data', 'products'])
@@ -147,6 +149,7 @@ const StockTransferDetails = enhance((props) => {
     const receiver = _.get(detailData, ['currentTransferDetail', 'receiver'])
     const detailType = _.toInteger(_.get(detailData, 'type'))
     const stockName = _.get(detailData, ['currentTransferDetail', 'stock', 'name'])
+    const tooltipCancelText = 'Отменить Запрос №' + id
 
     if (_.isEmpty(products)) {
         return (
@@ -173,6 +176,17 @@ const StockTransferDetails = enhance((props) => {
                         <Col xs={2}>{stockName}</Col>
                         <Col xs={3}>{receiver}</Col>
                         <Col xs={2}>{dateDelivery}</Col>
+                        <div style={{marginLeft: '-10px'}}>
+                            <Tooltip position="right" text={tooltipCancelText}>
+                                <IconButton
+                                    iconStyle={iconStyle.icon}
+                                    style={iconStyle.button}
+                                    onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
+                                    touch={true}>
+                                    <RemoveCircleIcon />
+                                </IconButton>
+                            </Tooltip>
+                        </div>
                         <div className={classes.printer}>
                             <Tooltip position="bottom" text="Распечатать накладную">
                                 <IconButton
