@@ -64,7 +64,7 @@ import {
     StatClientIncomeList
 } from '../containers/Statistics'
 import {ClientBalanceList} from '../containers/ClientBalance'
-import {StockReceiveList} from '../containers/StockReceive'
+import {StockReceiveHistoryList, StockReceiveList, StockTransferList, StockTransferHistoryList, StockOutHistoryList} from '../containers/StockReceive'
 import {PlanList} from '../containers/Plan'
 import {ActivityList} from '../containers/Activity'
 import {DivisionList} from '../containers/Division'
@@ -600,7 +600,7 @@ export default {
             component: userIsAdminChain(StatClientIncomeList),
             childRoutes: []
         },
-        // Stock Receive Transfer
+        // Stock Receive
         {
             path: ROUTES.STOCK_RECEIVE_LIST_URL,
             component: userIsAdminChain(StockReceiveList),
@@ -608,6 +608,50 @@ export default {
                 {
                     path: ROUTES.STOCK_RECEIVE_ITEM_URL,
                     component: userIsAuth(StockReceiveList)
+                }
+            ]
+        },
+        // Stock Receive History
+        {
+            path: ROUTES.STOCK_RECEIVE_HISTORY_LIST_URL,
+            component: userIsAdminChain(StockReceiveHistoryList),
+            childRoutes: [
+                {
+                    path: ROUTES.STOCK_RECEIVE_HISTORY_ITEM_URL,
+                    component: userIsAuth(StockReceiveHistoryList)
+                }
+            ]
+        },
+        // Stock Receive Tab Transfer
+        {
+            path: ROUTES.STOCK_TRANSFER_LIST_URL,
+            component: userIsAdminChain(StockTransferList),
+            childRoutes: [
+                {
+                    path: ROUTES.STOCK_TRANSFER_ITEM_URL,
+                    component: userIsAuth(StockTransferList)
+                }
+            ]
+        },
+        // Stock Receive Tab Transfer History
+        {
+            path: ROUTES.STOCK_TRANSFER_HISTORY_LIST_URL,
+            component: userIsAdminChain(StockTransferHistoryList),
+            childRoutes: [
+                {
+                    path: ROUTES.STOCK_TRANSFER_HISTORY_ITEM_URL,
+                    component: userIsAuth(StockTransferHistoryList)
+                }
+            ]
+        },
+        // Stock Receive Tab Out History
+        {
+            path: ROUTES.STOCK_OUT_HISTORY_LIST_URL,
+            component: userIsAdminChain(StockOutHistoryList),
+            childRoutes: [
+                {
+                    path: ROUTES.STOCK_OUT_HISTORY_ITEM_URL,
+                    component: userIsAuth(StockOutHistoryList)
                 }
             ]
         },

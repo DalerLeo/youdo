@@ -8,6 +8,10 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import moment from 'moment'
 import Details from './StockTabTransferHistoryDetails'
+import StockReceiveDetails from './StockReceiveDetails'
+import * as TAB from '../../constants/stockReceiveTab'
+import ConfirmDialog from '../ConfirmDialog'
+import StockReceiveTabList from '../../containers/StockReceive/StockReceiveTabList'
 
 const listHeader = [
     {
@@ -29,9 +33,15 @@ const listHeader = [
         xs: 2
     },
     {
+        sorting: true,
+        name: 'type',
+        title: 'Тип',
+        xs: 2
+    },
+    {
         name: 'receiver',
         title: 'Кому',
-        xs: 3
+        xs: 2
     },
     {
         sorting: true,
@@ -56,7 +66,6 @@ const enhance = compose(
             display: 'flex'
         },
         wrapper: {
-            marginTop: '20px',
             '& .row > div > svg': {
                 position: 'relative',
                 width: '16px !important',
@@ -65,9 +74,10 @@ const enhance = compose(
                 marginRight: '5px'
             }
         }
-    })
+    }),
 )
 
+const ZERO = 0
 const StockTabTransferHistory = enhance((props) => {
     const {
         filter,
@@ -76,7 +86,9 @@ const StockTabTransferHistory = enhance((props) => {
         detailData,
         handleCloseDetail,
         classes,
-        printDialog
+        printDialog,
+        transferType,
+        confirmDialog
     } = props
 
     const usersFilterDialog = (
@@ -87,32 +99,45 @@ const StockTabTransferHistory = enhance((props) => {
             transfer={true}
         />
     )
-
     const historyDetail = (
         <Details
             detailData={detailData || {}}
             key={_.get(detailData, 'id') + '_' + _.get(detailData, 'type')}
             handleCloseDetail={handleCloseDetail}
-            loading={_.get(detailData, 'transferDetailLoading')}
+            loading={_.get(detailData, 'detailLoading')}
             handleOpenPrint={printDialog.handleOpenPrintDialog}
-            confirm={false}/>
+            confirm={false}
+            confirmDialog={confirmDialog}/>
     )
+    const historyTransferDetail = (
+        <StockReceiveDetails
+            key={_.get(detailData, 'id') + '_' + _.get(detailData, 'type')}
+            handleCloseDetail={handleCloseDetail}
+            detailData={detailData}
+            loading={_.get(detailData, 'detailLoading')}
+            history={true}
+            popover={true}
+        />)
+
     const historyList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const dateRequest = moment(_.get(item, 'dateRequest')).format('DD.MM.YYYY')
         const dateDelivery = moment(_.get(item, 'dateDelivery')).format('DD.MM.YYYY')
         const receiver = _.get(item, ['receiver'])
         const stockId = _.get(item, ['stock', 'id'])
+        const typeOrg = _.get(item, 'type')
+        const type = typeOrg === 'order' ? 'Заказ' : (typeOrg === 'transfer' ? 'Передача' : null)
         const stockName = _.get(item, ['stock', 'name'])
         return (
             <Row
                 key={id + '_' + stockId}
                 style={{position: 'relative', cursor: 'pointer'}}
-                onClick={() => { listData.handleOpenDetail(id, stockId) }}>
+                onClick={() => { listData.handleOpenDetail(id, stockId, typeOrg) }}>
                 <Col xs={2} >{id}</Col>
                 <Col xs={2}>{dateRequest}</Col>
                 <Col xs={2}>{stockName}</Col>
-                <Col xs={3}>{receiver}</Col>
+                <Col xs={2}>{type}</Col>
+                <Col xs={2}>{receiver}</Col>
                 <Col xs={2}>{dateDelivery}</Col>
             </Row>
         )
@@ -121,16 +146,23 @@ const StockTabTransferHistory = enhance((props) => {
     const list = {
         header: listHeader,
         list: historyList,
-        loading: _.get(listData, 'transferListLoading')
+        loading: _.get(listData, 'listLoading')
     }
-
     return (
         <div className={classes.wrapper}>
+            <StockReceiveTabList currentTab={TAB.STOCK_RECEIVE_TAB_TRANSFER_HISTORY}/>
             <GridList
                 filter={filter}
                 list={list}
-                detail={historyDetail}
+                detail={transferType === 'transfer' ? historyTransferDetail : historyDetail}
                 filterDialog={usersFilterDialog}
+            />
+            <ConfirmDialog
+                type={'submit' }
+                message={'Запрос № ' + _.get(detailData, 'id')}
+                onClose={confirmDialog.handleCloseConfirmDialog}
+                onSubmit={confirmDialog.openConfirmDialog}
+                open={confirmDialog.openConfirmDialog > ZERO}
             />
         </div>
     )

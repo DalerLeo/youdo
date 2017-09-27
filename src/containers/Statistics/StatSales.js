@@ -12,16 +12,10 @@ import toBoolean from '../../helpers/toBoolean'
 import * as serializers from '../../serializers/Statistics/statSalesSerializer'
 import getDocuments from '../../helpers/getDocument'
 import {StatSalesGridList, STAT_SALES_DIALOG_OPEN} from '../../components/Statistics'
-import {STAT_SALES_FILTER_KEY} from '../../components/Statistics/Sales/SalesGridList'
-import {
-    orderItemFetchAction
-} from '../../actions/order'
+import {STAT_SALES_FILTER_KEY} from '../../components/Statistics/Sales/StatSalesGridList'
+import {orderItemFetchAction} from '../../actions/order'
 import * as API from '../../constants/api'
-import {
-    statSalesDataFetchAction,
-    orderListFetchAction
-}
-from '../../actions/statSales'
+import {statSalesDataFetchAction, orderListFetchAction} from '../../actions/statSales'
 const ONE = 1
 const enhance = compose(
     connect((state, props) => {
