@@ -7,26 +7,24 @@ import Container from '../../Container/index'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import {reduxForm, Field} from 'redux-form'
-import {TextField, DivisionSearchField, AgentSearchField} from '../../ReduxForm'
+import {TextField, AgentSearchField} from '../../ReduxForm'
 import DateToDateField from '../../ReduxForm/Basic/DateToDateField'
 import StatSideMenu from '../StatSideMenu'
 import LinearLoading from '../../LinearProgress/index'
-import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import List from 'material-ui/svg-icons/action/list'
-import Excel from 'material-ui/svg-icons/av/equalizer'
 import Pagination from '../../GridList/GridListNavPagination/index'
 import numberFormat from '../../../helpers/numberFormat'
 import getConfig from '../../../helpers/getConfig'
 import ReactHighcharts from 'react-highcharts'
 import NotFound from '../../Images/not-found.png'
 import dateFormat from '../../../helpers/dateFormat'
+import {StatisticsFilterExcel} from '../../Statistics'
 
 export const STAT_MARKET_FILTER_KEY = {
     SEARCH: 'search',
-    DIVISION: 'division',
-    AGENT: 'agent',
+    USER: 'user',
     TO_DATE: 'toDate',
     FROM_DATE: 'fromDate'
 }
@@ -168,12 +166,7 @@ const enhance = compose(
             padding: '200px 0 0',
             textAlign: 'center',
             fontSize: '13px',
-            color: '#666',
-            '& svg': {
-                width: '50px !important',
-                height: '50px !important',
-                color: '#999 !important'
-            }
+            color: '#666'
         },
         summary: {
             borderTop: 'solid 1px #efefef',
@@ -191,13 +184,13 @@ const enhance = compose(
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            '& div:first-child': {
+            '& > div:first-child': {
                 fontWeight: '600'
             }
         }
     }),
     reduxForm({
-        form: 'StatMarketFilterForm',
+        form: 'StatisticsFilterForm',
         enableReinitialize: true
     }),
 )
@@ -209,14 +202,15 @@ const StatMarketGridList = enhance((props) => {
         classes,
         filter,
         handleSubmitFilterDialog,
-        getDocument
+        initialValues,
+        getDocument,
+        handleSubmit
     } = props
 
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const listLoading = _.get(listData, 'listLoading')
-    const graphLoading = _.get(detailData, ['graphLoading'])
+    const graphLoading = _.get(detailData, ['sumLoading'])
     const sumData = _.get(listData, ['sumData', 'income'])
-    const sumLoading = _.get(listData, ['sumLoading'])
     const headerStyle = {
         backgroundColor: '#fff',
         fontWeight: '600',
@@ -233,8 +227,8 @@ const StatMarketGridList = enhance((props) => {
 
     const config = {
         chart: {
-            type: 'column',
-            height: 145
+            type: 'areaspline',
+            height: 160
         },
         title: {
             text: '',
@@ -307,18 +301,6 @@ const StatMarketGridList = enhance((props) => {
 
         }]
     }
-    const iconStyle = {
-        icon: {
-            color: '#5d6474',
-            width: 22,
-            height: 22
-        },
-        button: {
-            width: 40,
-            height: 40,
-            padding: 0
-        }
-    }
 
     const headers = (
         <Row style={headerStyle} className="dottedList">
@@ -385,6 +367,24 @@ const StatMarketGridList = enhance((props) => {
         )
     })
 
+    const fields = (
+        <div>
+            <Field
+                className={classes.inputFieldCustom}
+                name="date"
+                component={DateToDateField}
+                label="Диапазон дат"
+                fullWidth={true}/>
+            <Field
+                name="user"
+                component={AgentSearchField}
+                className={classes.inputFieldCustom}
+                label="Агент"
+                fullWidth={true}
+            />
+        </div>
+    )
+
     const page = (
         <div className={classes.mainWrapper}>
             <Row style={{margin: '0', height: '100%'}}>
@@ -393,72 +393,46 @@ const StatMarketGridList = enhance((props) => {
                 </div>
                 <div className={classes.rightPanel}>
                      <div className={classes.wrapper}>
-                        <form className={classes.form} onSubmit={ handleSubmitFilterDialog }>
-                            <div className={classes.filter}>
-                                <Field
-                                    className={classes.inputFieldCustom}
-                                    name="date"
-                                    component={DateToDateField}
-                                    label="Диапазон дат"
-                                    fullWidth={true}/>
-                                <Field
-                                    name="division"
-                                    component={DivisionSearchField}
-                                    className={classes.inputFieldCustom}
-                                    label="Подразделение"
-                                    fullWidth={true}
-                                />
-                                <Field
-                                    name="agent"
-                                    component={AgentSearchField}
-                                    className={classes.inputFieldCustom}
-                                    label="Агент"
-                                    fullWidth={true}
-                                />
-                                <Field
-                                    className={classes.inputFieldCustom}
-                                    name="search"
-                                    component={TextField}
-                                    label="Магазин"
-                                    fullWidth={true}/>
-
-                                <IconButton
-                                    className={classes.searchButton}
-                                    iconStyle={iconStyle.icon}
-                                    style={iconStyle.button}
-                                    type="submit">
-                                    <Search/>
-                                </IconButton>
-                            </div>
-                            <a className={classes.excel}
-                               onClick={getDocument.handleGetDocument}>
-                                <Excel color="#fff"/> <span>Excel</span>
-                            </a>
-                        </form>
+                         <StatisticsFilterExcel
+                            filter={filter}
+                            filterKeys={STAT_MARKET_FILTER_KEY}
+                            handleSubmitFilterDialog={handleSubmitFilterDialog}
+                            fields={fields}
+                            initialValues={initialValues}
+                            handleGetDocument={getDocument.handleGetDocument}
+                         />
 
                         {listLoading
-                             ? <div className={classes.loader}>
-                                 <CircularProgress size={40} thickness={4}/>
-                             </div>
-                             : (_.isEmpty(list) && sumLoading && !listLoading)
-                                ? <div className={classes.emptyQuery}>
-                                    <div>По вашему запросу ничего не найдено</div>
-                                  </div>
-                                : <div>
-                                    <div className={classes.summary}>Сумма от продаж
-                                        <div>
-                                            {numberFormat(sumData, primaryCurrency)}
-                                        </div>
-                                    </div>
-                                    <div className={classes.pagination}>
-                                        <div>Продажи по магазинам в зоне</div>
-                                        <Pagination filter={filter}/>
-                                    </div>
-                                    <div className={classes.tableWrapper}>
-                                        {headers}
-                                        {list}
+                         ? <div className={classes.loader}>
+                             <CircularProgress size={40} thickness={4}/>
+                         </div>
+                         : <div>
+                            <div className={classes.summary}>
+                                Сумма от продаж
+                                <div>{numberFormat(sumData, primaryCurrency)}</div>
+                            </div>
+                            <div className={classes.pagination}>
+                                <div>Продажи по магазинам в зоне</div>
+                                <form onSubmit={handleSubmit(handleSubmitFilterDialog)}>
+                                    <Field
+                                        className={classes.inputFieldCustom}
+                                        name="search"
+                                        component={TextField}
+                                        hintText="Магазин"/>
+                                </form>
+                                <Pagination filter={filter}/>
+                            </div>
+                            {!_.isEmpty(list)
+                                ? <div className={classes.tableWrapper}>
+                                    {headers}
+                                    {list}
+                                </div>
+                                : <div className={classes.tableWrapper}>
+                                    <div className={classes.emptyQuery}>
+                                        <div>По вашему запросу ничего не найдено</div>
                                     </div>
                                 </div>}
+                            </div>}
                      </div>
                 </div>
             </Row>

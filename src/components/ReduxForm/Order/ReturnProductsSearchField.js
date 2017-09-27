@@ -21,12 +21,12 @@ const ReturnProductsSearchField = enhance((props) => {
     return (
         <SearchFieldCustom
             selectFieldScroll={selectFieldScroll}
-            getValue={(value) => { return value }}
+            getValue={(value) => { return _.get(value, 'id') }}
             getText={(value) => { return _.get(value, ['product', 'name']) }}
             getOptions={() => { return Promise.resolve(productItems) }}
             getItem={(value) => {
                 return Promise.resolve(
-                    _.find(productItems, (o) => { return _.toInteger(_.get(o, ['product', 'id'])) === _.toInteger(_.get(value, ['product', 'id'])) }))
+                    _.find(productItems, (o) => { return _.toInteger(_.get(o, ['id'])) === _.toInteger(value) }))
             }}
                 getItemText={(value) => { return _.get(value, ['product', 'name']) }}
             {...props}

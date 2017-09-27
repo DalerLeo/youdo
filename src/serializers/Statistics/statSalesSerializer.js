@@ -2,6 +2,11 @@ import _ from 'lodash'
 import {orderingSnakeCase} from '../../helpers/serializer'
 import moment from 'moment'
 
+const ZERO = 0
+const ONE = 1
+const TWO = 2
+const FIVE = 5
+
 export const listFilterSerializer = (data) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
@@ -35,22 +40,30 @@ export const orderListFilterSerializer = (data, withOrderReturn) => {
     const firstDayOfMonth = moment().format('YYYY-MM-01')
     const lastDay = moment().daysInMonth()
     const lastDayOfMonth = moment().format('YYYY-MM-' + lastDay)
+    const debt = _.toInteger(_.get(defaultData, 'dept'))
+    const status = _.get(defaultData, 'status') ? (_.toInteger(_.get(defaultData, 'status')) === FIVE ? ZERO : _.toInteger(_.get(defaultData, 'status'))) : null
     return {
         'client': _.get(defaultData, 'client'),
         'division': _.get(defaultData, 'division'),
+        'zone': _.get(defaultData, 'zone'),
+        'user': _.get(defaultData, 'initiator'),
+        'debt': debt === ONE ? true : (debt === TWO ? false : null),
         'market': _.get(defaultData, 'shop'),
+        'status': status,
+        'only_bonus': _.get(defaultData, 'onlyBonus') ? 'True' : null,
+        'exclude_cancelled': _.get(defaultData, 'exclude') ? 'True' : null,
+        'delivery_date_0': _.get(defaultData, 'deliveryFromDate'),
+        'delivery_date_1': _.get(defaultData, 'deliveryToDate') || _.get(defaultData, 'deliveryFromDate'),
+        'with_order_return': withOrderReturn,
         'date_delivery': _.get(defaultData, 'dateDelivery'),
         'total_price': _.get(defaultData, 'totalPrice'),
         'total_balance': _.get(defaultData, 'totalBalance'),
         'created_date_0': _.get(defaultData, 'fromDate') || firstDayOfMonth,
         'created_date_1': _.get(defaultData, 'toDate') || lastDayOfMonth,
-        'delivery_date_0': _.get(defaultData, 'deliveryFromDate'),
-        'delivery_date_1': _.get(defaultData, 'deliveryToDate') || _.get(defaultData, 'deliveryFromDate'),
         'search': _.get(defaultData, 'search'),
 
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),
-        'with_order_return': withOrderReturn,
         'ordering': ordering && orderingSnakeCase(ordering)
     }
 }

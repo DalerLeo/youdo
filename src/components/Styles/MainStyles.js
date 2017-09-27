@@ -23,11 +23,10 @@ const MainStyles = {
     },
     popUp: {
         color: '#333 !important',
-        overflowY: 'hidden !important',
+        overflow: 'unset !important',
         fontSize: '13px !important',
         position: 'relative',
         padding: '0 !important',
-        overflowX: 'hidden',
         height: '100%',
         maxHeight: 'none !important',
         marginBottom: '64px'
@@ -53,7 +52,7 @@ const MainStyles = {
         display: 'flex',
         maxHeight: '50vh',
         minHeight: '184px',
-        overflow: 'auto',
+        overflow: 'unset',
         padding: '0 30px',
         color: '#333'
     },

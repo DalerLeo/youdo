@@ -5,14 +5,10 @@ export const createSerializer = (data, detail) => {
     const comment = _.get(data, 'comment')
     const dealType = _.get(data, 'dealType')
     const stock = _.get(data, ['stock', 'value'])
-    const returnedProducts = _.map(_.get(data, ['returned_products']), (item) => {
+    const returnedProducts = _.map(_.get(data, ['products']), (item) => {
         return {
             order_product: item.product.value.id,
-            amount: item.amount,
-            cost: item.cost,
-            comment: item.comment,
-            product: item.product.value,
-            name: item.product.value.product.name
+            amount: item.amount
         }
     })
     return {

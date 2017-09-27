@@ -108,19 +108,16 @@ const enhance = compose(
             backgroundColor: '#f1f5f8',
             position: 'relative',
             '& > div': {
-                textAlign: 'right',
                 width: '50%',
                 padding: '0 30px'
-            },
-            '& > div > div > div:first-child': {
-                overflow: 'hidden'
             }
         },
         bonusProduct: {
             borderRight: '1px #ccc solid'
         },
         addProduct: {
-            marginTop: '10px'
+            marginTop: '10px',
+            textAlign: 'right'
         },
         subTitle: {
             textAlign: 'left',
@@ -129,7 +126,11 @@ const enhance = compose(
         },
         productAmount: {
             display: 'flex',
-            justifyContent: 'space-between'
+            justifyContent: 'space-between',
+            alignItems: 'flex-end',
+            '& .Select-control': {
+                paddingBottom: '3px'
+            }
         }
     }),
     connect((state) => {
@@ -230,7 +231,7 @@ const PricesBonusProductField = ({classes, state, dispatch, handleAddBonus, hand
                             fullWidth={true}
                         />
                         <div className={classes.productAmount}>
-                            <div style={{width: '100%'}}>
+                            <div style={{width: '100%', marginTop: '8px'}}>
                                 <Field
                                     label="Наименование"
                                     name="bonusProduct"

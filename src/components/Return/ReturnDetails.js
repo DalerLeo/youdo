@@ -180,7 +180,7 @@ const iconStyle = {
         padding: 0
     }
 }
-
+const ONE = 1
 const ReturnDetails = enhance((props) => {
     const {
         classes,
@@ -214,6 +214,7 @@ const ReturnDetails = enhance((props) => {
     const CANCELLED = 3
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const totalPrice = numberFormat(_.get(data, 'totalPrice'), primaryCurrency)
+    const edit = PENDING === ZERO || IN_PROGRESS === ONE
 
     const products = _.get(data, 'returnedProducts')
     if (loading) {
@@ -248,6 +249,7 @@ const ReturnDetails = enhance((props) => {
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
+                            disabled={!edit}
                             touch={true}
                             onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
                             <Edit />

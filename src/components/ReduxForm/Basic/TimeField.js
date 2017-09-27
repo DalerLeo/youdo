@@ -1,25 +1,14 @@
 import React from 'react'
 import injectSheet from 'react-jss'
 import TimePicker from 'material-ui/TimePicker'
-import {compose} from 'recompose'
 
 const errorStyle = {
     textAlign: 'left'
 }
 
-const enhance = compose(
-    injectSheet({
-        wrapper: {
-
-        }
-    })
-)
-
-const TimeField = enhance((props) => {
-    const {input, label, meta: {error}, ...defaultProps} = props
-    input.value = input.value || {}
+const TimeField = ({classes, input, label, meta: {error}, ...defaultProps}) => {
     return (
-        <section>
+        <div className={classes.wrapper}>
             <div>
                 <TimePicker
                     format="24hr"
@@ -32,8 +21,9 @@ const TimeField = enhance((props) => {
                 />
             </div>
             {error && <span>{error}</span>}
-        </section>
+        </div>
     )
-})
+}
 
-export default TimeField
+export default injectSheet({
+})(TimeField)

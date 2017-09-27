@@ -218,18 +218,28 @@ const TransactionCashDialog = enhance((props) => {
         setItem(thisItem)
     }
     const initialValues = {
-        amount: _.get(currentItem, 'amount'),
-        comment: _.get(currentItem, 'comment'),
-        division: {
-            text: _.get(currentItem, ['division', 'name']),
-            value: _.get(currentItem, ['division', 'id'])
-        },
-        paymentType: {
-            value: _.toInteger(_.get(currentItem, 'paymentType')) === ZERO ? TWO : _.toInteger(_.get(currentItem, 'paymentType'))
-        },
-        user: {
-            value: _.get(currentItem, ['user', 'id'])
-        }
+        initialValues: (() => {
+            const amount = _.toNumber(_.get(currentItem, 'amount'))
+            const internal = _.toNumber(_.get(currentItem, 'internal'))
+            return {
+                amount: amount,
+                comment: _.get(currentItem, 'comment'),
+                custom_rate: !_.isNull(_.get(currentItem, 'customRate')) ? _.get(currentItem, 'customRate') : _.toInteger(amount / internal),
+                division: {
+                    text: _.get(currentItem, ['division', 'name']),
+                    value: _.get(currentItem, ['division', 'id'])
+                },
+                paymentType: {
+                    value: _.toInteger(_.get(currentItem, 'paymentType')) === ZERO ? TWO : _.toInteger(_.get(currentItem, 'paymentType'))
+                },
+                currency: {
+                    value: _.get(currentItem, ['currency', 'id'])
+                },
+                user: {
+                    value: _.get(currentItem, ['user', 'id'])
+                }
+            }
+        })()
     }
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const isSuperUser = _.get(superUser, 'isSuperUser')
@@ -242,10 +252,10 @@ const TransactionCashDialog = enhance((props) => {
                 const currency = _.get(item, ['currency', 'name'])
                 const division = _.get(item, ['division', 'name'])
                 const order = _.get(item, ['order']) ? '№' + _.get(item, ['order']) : '-'
-                const customRate = _.get(item, ['customRate'])
                 const createdDate = dateFormat(_.get(item, ['createdDate'])) + ' ' + moment(_.get(item, ['createdDate'])).format('HH:mm')
                 const internal = _.toNumber(_.get(item, 'internal'))
                 const amount = _.toNumber(_.get(item, 'amount'))
+                const customRate = _.get(item, ['customRate']) ? _.toNumber(_.get(item, ['customRate'])) : _.toInteger(amount / internal)
                 return (
                     <Row key={id} className={classes.detailsRow}>
                         <Col xs={1}>{id}</Col>
@@ -256,12 +266,7 @@ const TransactionCashDialog = enhance((props) => {
                         <Col xs={1} style={{whiteSpace: 'nowrap'}}>{createdDate}</Col>
                         <Col xs={2} style={{textAlign: 'right', paddingRight: '0'}}>
                             <div>{numberFormat(amount, currency)}</div>
-                            <div>{currency !== primaryCurrency
-                                ? customRate
-                                    ? '( Курс  ' + numberFormat(customRate) + ')'
-                                    : '( Курс  ' + numberFormat((amount / internal)) + ')'
-                                : null }</div>
-
+                            {currency !== primaryCurrency && <div style={{fontSize: 11}}>{numberFormat(internal, primaryCurrency)} <span>({customRate})</span></div>}
                         </Col>
                         <Col xs={1}>
                             {
@@ -344,7 +349,7 @@ const TransactionCashDialog = enhance((props) => {
                                             </div>
                                             <Col xs={5} style={{textAlign: 'right', paddingRight: '0'}}>{amount}</Col>
                                             <Col xs={1}>
-                                                <div style={{paddingLeft: '7px'}}>
+                                                <div style={{paddingLeft: '6px'}}>
                                                     <Tooltip position="bottom" text="Оплатить">
                                                         <IconButton
                                                             onTouchTap={() => {
@@ -413,7 +418,7 @@ const TransactionCashDialog = enhance((props) => {
             {isSuperUser && <TransactionUpdatePriceDialog
                 open={superUser.open}
                 loading={superUser.loading}
-                initialValues={initialValues}
+                initialValues={initialValues.initialValues}
                 onClose={superUser.handleCloseSuperUserDialog}
                 onSubmit={superUser.handleSubmitSuperUserDialog}
                 client={_.get(currentItem, ['client'])}

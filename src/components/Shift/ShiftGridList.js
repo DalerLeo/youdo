@@ -1,3 +1,4 @@
+import moment from 'moment'
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
@@ -144,8 +145,8 @@ const ShiftGridList = enhance((props) => {
     const shiftList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const beginTime = _.get(item, 'beginTime')
-        const endTime = _.get(item, 'endTime')
+        const beginTime = moment(_.get(item, 'beginTime')).format('HH:mm')
+        const endTime = moment(_.get(item, 'endTime')).format('HH:mm')
         return (
             <Row key={id} className={classes.listRow}>
                 <Col xs={1}>{id}</Col>

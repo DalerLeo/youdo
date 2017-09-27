@@ -15,6 +15,7 @@ import {
 } from '../../actions/permission'
 import {openSnackbarAction} from '../../actions/snackbar'
 import {openErrorAction} from '../../actions/error'
+import {getPermName} from '../../constants/permissionTime'
 
 const SET_DATE_DIALOG_DATE = 'openSetDateDialog'
 
@@ -106,8 +107,22 @@ const PermissionList = enhance((props) => {
         data: _.get(list, 'results'),
         listLoading
     }
+    const detail = _.find(_.get(list, 'results'), {'id': openSetDateDialog})
 
     const setDateDialog = {
+        initialValues: (() => {
+            if (!detail) {
+                return {}
+            }
+            return {
+                status: {
+                    text: getPermName[_.toInteger(_.get(detail, 'status'))],
+                    value: _.toInteger(_.get(detail, 'status'))
+                },
+                fromTime: _.get(detail, 'fromTime'),
+                toTime: _.get(detail, 'toTime')
+            }
+        })(),
         open: openSetDateDialog,
         handleOpenSetDateDialog: props.handleOpenSetDateDialog,
         handleCloseSetDateDialog: props.handleCloseSetDateDialog,

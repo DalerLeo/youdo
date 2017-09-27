@@ -23,12 +23,9 @@ build:
   script:
     - "export SOURCE_DIR=`pwd`"
     - "export API_HOST=api.wienerdeming.com"
-    - "yarn install"
     - "export NODE_ENV=production"
-    - "yarn build"
     - "rm -rf ~/basic_ui_${CI_BUILD_REF_NAME}"
     - "mkdir ~/basic_ui_${CI_BUILD_REF_NAME}"
-    - "cp -R ${SOURCE_DIR}/dist/* ~/basic_ui_${CI_BUILD_REF_NAME}"
   tags:
     - staging
 
@@ -48,6 +45,14 @@ test:
 deploy:
   stage: deploy
   script:
+    - "export SOURCE_DIR=`pwd`"
+    - "export API_HOST=api.wienerdeming.com"
+    - "yarn install"
+    - "export NODE_ENV=production"
+#    - "yarn build"
+    - "rm -rf ~/basic_ui_${CI_BUILD_REF_NAME}"
+    - "mkdir ~/basic_ui_${CI_BUILD_REF_NAME}"
+    - "cp -R ${SOURCE_DIR}/dist/* ~/basic_ui_${CI_BUILD_REF_NAME}"
     - "rm -rf ${PROJECT_DIR}/*"
     - "cp -R ~/basic_ui_${CI_BUILD_REF_NAME}/* ${PROJECT_DIR}/"
   only:

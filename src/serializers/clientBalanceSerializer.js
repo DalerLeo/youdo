@@ -87,7 +87,8 @@ export const updateTransactionSerializer = (data, client) => {
     const amount = numberWithoutSpaces(_.get(data, 'amount'))
     const newAmount = amount > ZERO ? amount : amount * MINUS_ONE
     const comment = _.get(data, 'comment')
-    const currency = getConfig('PRIMARY_CURRENCY_ID')
+    const customRate = _.get(data, 'custom_rate')
+    const currency = _.get(data, ['currency', 'value'])
     const division = _.get(data, ['division', 'value'])
     const user = _.get(data, ['user', 'value'])
     const paymentType = _.get(data, ['paymentType', 'value'])
@@ -97,6 +98,7 @@ export const updateTransactionSerializer = (data, client) => {
         'comment': comment,
         client,
         currency,
+        'custom_rate': customRate || null,
         division,
         user,
         type: 9,
@@ -127,6 +129,6 @@ export const createReturnSerializer = (data, id) => {
         comment,
         products,
         market,
-        'payment_type': paymentType
+        payment_type: paymentType === TWO ? ZERO : paymentType
     }
 }

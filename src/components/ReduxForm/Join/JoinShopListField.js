@@ -39,8 +39,10 @@ const enhance = compose(
         table: {
             marginTop: '20px',
             display: 'flex',
-            alignItems: 'flex-end',
+            overflowY: 'auto',
+            overflowX: 'hidden',
             '& > div:first-child': {
+                marginTop: '40px',
                 width: '40px',
                 '& > div > div': {
                     height: '40px !important',
@@ -51,6 +53,7 @@ const enhance = compose(
         list: {
             width: '100%',
             '& .row': {
+                margin: '0',
                 height: '40px',
                 alignItems: 'center',
                 '&:first-child': {
@@ -112,8 +115,8 @@ const enhance = compose(
             '& button': {
                 alignSelf: 'center'
             },
-            '& > div > div > div:first-child': {
-                overflow: 'hidden'
+            '& .Select-control': {
+                backgroundColor: 'unset'
             }
         }
     }),

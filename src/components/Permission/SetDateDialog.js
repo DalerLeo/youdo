@@ -99,7 +99,7 @@ const SetDateDialog = enhance((props) => {
             </div>
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit}>
-                        <div className={classes.inContent} style={status && (status === ON_TIME || status === OFF_TIME) ? {minHeight: '150px'} : {minHeight: '100px'}}>
+                        <div className={classes.inContent} style={{minHeight: '150px'}}>
                         <div className={classes.field} style={{paddingTop: '15px'}}>
                             <Field
                                 name="status"
@@ -107,8 +107,9 @@ const SetDateDialog = enhance((props) => {
                                 className={classes.inputFieldTime}
                                 label="Тип"
                                 fullWidth={true}/>
-                            {(status === ON_TIME || status === OFF_TIME) &&
-                            <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                            <div style={(status === ON_TIME || status === OFF_TIME)
+                                ? {display: 'flex', justifyContent: 'space-between'}
+                                : {display: 'flex', justifyContent: 'space-between', visibility: 'hidden'}}>
                                 <div style={{width: '48%'}}>
                                     <Field
                                         name="fromTime"
@@ -125,7 +126,7 @@ const SetDateDialog = enhance((props) => {
                                         label="Конец"
                                         fullWidth={true}/>
                                 </div>
-                            </div>}
+                            </div>
                         </div>
                     </div>
                     <div className={classes.bottomButton}>

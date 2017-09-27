@@ -38,11 +38,10 @@ const enhance = compose(
         },
         popUp: {
             color: '#333 !important',
-            overflowY: 'hidden !important',
+            overflow: 'unset !important',
             fontSize: '13px !important',
             position: 'relative',
             padding: '0 !important',
-            overflowX: 'hidden',
             height: '100%',
             marginBottom: '64px'
         },
@@ -96,7 +95,8 @@ const enhance = compose(
         },
         noPadding: {
             color: '#333 !important',
-            padding: '0! important'
+            padding: '0 !important',
+            fontSize: 'unset !important'
         },
         subTitle: {
             fontWeight: '600'

@@ -73,6 +73,7 @@ const enhance = compose(
         noPadding: {
             padding: '0! important',
             maxHeight: 'none !important',
+            fontSize: 'unset !important',
             color: '#333 !important'
         },
         subTitle: {

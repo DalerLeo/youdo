@@ -5,35 +5,21 @@ import * as ROUTES from '../../../constants/routes'
 import _ from 'lodash'
 import Container from '../../Container/index'
 import injectSheet from 'react-jss'
-import {compose, withState} from 'recompose'
+import {compose} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
 import ReactHighcharts from 'react-highcharts'
-import DateToDateField from '../../ReduxForm/Basic/DateToDateField'
-import {DivisionSearchField, TextField, ClientSearchField, ClientTransactionTypeSearchField} from '../../ReduxForm'
+import {TextField} from '../../ReduxForm'
 import StatSideMenu from '../StatSideMenu'
-import Excel from 'material-ui/svg-icons/av/equalizer'
-import Filter from 'material-ui/svg-icons/content/filter-list'
-import Close from 'material-ui/svg-icons/action/highlight-off'
 import Pagination from '../../GridList/GridListNavPagination/index'
 import getConfig from '../../../helpers/getConfig'
 import dateFormat from '../../../helpers/dateFormat'
 import numberFormat from '../../../helpers/numberFormat'
 import CircularProgress from 'material-ui/CircularProgress'
-import IconButton from 'material-ui/IconButton'
-import FlatButton from 'material-ui/FlatButton'
-import Paper from 'material-ui/Paper'
 import moment from 'moment'
 import {Link} from 'react-router'
 import sprintf from 'sprintf'
-
-export const CLIENT_INCOME_FILTER_KEY = {
-    FROM_DATE: 'fromDate',
-    TO_DATE: 'toDate',
-    SEARCH: 'search',
-    DIVISION: 'division',
-    TYPE: 'type',
-    CLIENT: 'client'
-}
+import ClientIncomeFilter from './ClientIncomeFilter'
+import NotFound from '../../Images/not-found.png'
 
 import {
     PAYMENT,
@@ -80,6 +66,12 @@ const enhance = compose(
             alignItems: 'center',
             zIndex: '999',
             display: 'flex'
+        },
+        graphLoader: {
+            extend: 'loader',
+            height: '160px',
+            marginTop: '30px',
+            padding: '0'
         },
         pagination: {
             display: 'flex',
@@ -152,37 +144,6 @@ const enhance = compose(
             alignItems: 'center',
             justifyContent: 'space-between'
         },
-        filterWrapper: {
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            position: 'relative'
-        },
-        form: {
-            position: 'absolute',
-            left: '0',
-            top: '0',
-            width: '300px',
-            background: '#fff',
-            zIndex: '10'
-        },
-        filter: {
-            display: 'flex',
-            width: '100%',
-            padding: '20px 30px',
-            flexDirection: 'column',
-            position: 'relative',
-            '& h3': {
-                fontSize: '14px',
-                fontWeight: '600',
-                marginBottom: '20px'
-            }
-        },
-        closeFilter: {
-            position: 'absolute !important',
-            top: 10,
-            right: 10
-        },
         leftPanel: {
             backgroundColor: '#f2f5f8',
             flexBasis: '250px',
@@ -193,30 +154,6 @@ const enhance = compose(
             flexBasis: 'calc(100% - 250px)',
             maxWidth: 'calc(100% - 250px)',
             overflow: 'hidden'
-        },
-        searchButton: {
-            marginLeft: '-10px !important',
-            '& div': {
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-            }
-        },
-        excel: {
-            background: '#71ce87',
-            borderRadius: '2px',
-            color: '#fff',
-            fontWeight: '600',
-            display: 'flex',
-            alignItems: 'center',
-            padding: '5px 15px',
-            '& svg': {
-                width: '18px !important'
-            }
-        },
-        filterBtn: {
-            extend: 'excel',
-            background: '#12aaeb'
         },
         diagram: {
             marginTop: '30px'
@@ -247,13 +184,20 @@ const enhance = compose(
             '& .highcharts-label': {
                 boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px !important'
             }
+        },
+        emptyQuery: {
+            background: 'url(' + NotFound + ') no-repeat center center',
+            backgroundSize: '200px',
+            padding: '200px 0 0',
+            textAlign: 'center',
+            fontSize: '13px',
+            color: '#666'
         }
     }),
     reduxForm({
         form: 'ClientIncomeFilterForm',
         enableReinitialize: true
-    }),
-    withState('openFilter', 'setOpenFilter', false)
+    })
 )
 
 const ClientIncomeGridList = enhance((props) => {
@@ -263,11 +207,12 @@ const ClientIncomeGridList = enhance((props) => {
         filter,
         handleSubmit,
         handleSubmitFilterDialog,
-        openFilter,
-        setOpenFilter,
+        handleGetDocument,
+        initialValues,
         listData
     } = props
 
+    const graphLoading = _.get(graphData, 'graphInLoading') || _.get(graphData, 'graphOutLoading')
     const loading = _.get(listData, 'listLoading')
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const sumIn = _.sumBy(_.get(graphData, 'dataIn'), (item) => {
@@ -384,24 +329,12 @@ const ClientIncomeGridList = enhance((props) => {
         color: '#666'
     }
 
-    const iconStyle = {
-        button: {
-            width: 44,
-            height: 44,
-            padding: 11
-        },
-        icon: {
-            width: 22,
-            height: 22,
-            color: '#666'
-        }
-    }
-
     const headers = (
         <Row style={headerStyle} className="dottedList">
             <Col xs={1}>№</Col>
-            <Col xs={3}>Дата</Col>
-            <Col xs={3}>Пользователь</Col>
+            <Col xs={2}>Дата</Col>
+            <Col xs={2}>Клиент</Col>
+            <Col xs={2}>Пользователь</Col>
             <Col xs={3}>Описание</Col>
             <Col xs={2}>Сумма</Col>
         </Row>
@@ -413,16 +346,21 @@ const ClientIncomeGridList = enhance((props) => {
         const transId = _.get(item, 'id')
         const user = _.get(item, 'user')
         const comment = _.get(item, 'comment')
+        const client = _.get(item, ['client', 'name'])
+        const currency = _.get(item, ['currency', 'name'])
         const userName = !_.isNull(user) ? user.firstName + ' ' + user.secondName : 'Не известно'
         const date = dateFormat(_.get(item, 'createdDate')) + ' ' + moment(_.get(item, 'createdDate')).format('HH:mm')
         const amount = _.toNumber(_.get(item, 'amount'))
+        const internal = _.toNumber(_.get(item, 'internal'))
+        const customRate = _.get(item, 'customRate') ? _.get(item, 'customRate') : _.toInteger(amount / internal)
         const type = _.get(item, 'type')
         const id = _.toInteger(type) === THREE ? _.get(item, 'orderReturn') : (_.get(item, 'order') || _.get(item, 'transaction'))
         return (
             <Row key={index} className="dottedList">
                 <Col xs={1}>{transId}</Col>
-                <Col xs={3}>{date}</Col>
-                <Col xs={3}>{userName}</Col>
+                <Col xs={2}>{date}</Col>
+                <Col xs={2}>{client}</Col>
+                <Col xs={2}>{userName}</Col>
                 <Col xs={3}>
                     {type && <div><strong>Тип:</strong> <span>{type === PAYMENT ? 'Оплата'
                         : type === CANCEL ? 'Отмена'
@@ -442,7 +380,12 @@ const ClientIncomeGridList = enhance((props) => {
                     </div>}
                     {comment && <div><strong>Комментарий:</strong> {comment}</div>}
                 </Col>
-                <Col xs={2} style={{textAlign: 'right'}}><span className={amount > ZERO ? 'greenFont' : (amount === ZERO ? '' : 'redFont')}>{numberFormat(amount, primaryCurrency)}</span></Col>
+                <Col xs={2} style={{textAlign: 'right'}}>
+                    <div className={amount > ZERO ? 'greenFont' : (amount === ZERO ? '' : 'redFont')}>
+                        <span>{numberFormat(amount, currency)}</span>
+                        {primaryCurrency !== currency && <div>{numberFormat(internal, primaryCurrency)} <span style={{fontSize: 11, color: '#666', fontWeight: 600}}>({customRate})</span></div>}
+                    </div>
+                </Col>
             </Row>
         )
     })
@@ -455,94 +398,58 @@ const ClientIncomeGridList = enhance((props) => {
                 </div>
                 <div className={classes.rightPanel}>
                     <div className={classes.wrapper}>
-                        {loading
-                            ? <div className={classes.loader}>
-                                <CircularProgress/>
+                        <ClientIncomeFilter
+                            filter={filter}
+                            initialValues={initialValues}
+                            handleGetDocument={handleGetDocument}
+                            handleSubmitFilterDialog={handleSubmitFilterDialog}
+                        />
+                        {graphLoading
+                            ? <div className={classes.graphLoader}>
+                                <CircularProgress thickness={4} size={40}/>
                             </div>
-                            : <div>
-                                <div className={classes.filterWrapper}>
-                                    {openFilter && <Paper zDepth={2} className={classes.form}>
-                                        <form onSubmit={handleSubmit(handleSubmitFilterDialog)}>
-                                            <div className={classes.filter}>
-                                                <h3>Фильтр</h3>
-                                                <IconButton
-                                                    className={classes.closeFilter}
-                                                    style={iconStyle.button}
-                                                    iconStyle={iconStyle.icon}
-                                                    onTouchTap={() => { setOpenFilter(false) }}>
-                                                    <Close />
-                                                </IconButton>
-                                                <Field
-                                                    className={classes.inputFieldCustom}
-                                                    name="date"
-                                                    component={DateToDateField}
-                                                    label="Диапазон дат"
-                                                    fullWidth={true}/>
-                                                <Field
-                                                    name="type"
-                                                    component={ClientTransactionTypeSearchField}
-                                                    className={classes.inputFieldCustom}
-                                                    label="Тип транзакции"
-                                                    fullWidth={true}/>
-                                                <Field
-                                                    name="division"
-                                                    component={DivisionSearchField}
-                                                    className={classes.inputFieldCustom}
-                                                    label="Подразделение"
-                                                    fullWidth={true}/>
-                                                <Field
-                                                    name="client"
-                                                    component={ClientSearchField}
-                                                    className={classes.inputFieldCustom}
-                                                    label="Клиент"
-                                                    fullWidth={true}/>
-
-                                                <FlatButton
-                                                    label="Применить"
-                                                    labelStyle={{color: '#12aaeb', textTransform: 'none', fontWeight: '600'}}
-                                                    className={classes.searchButton}
-                                                    type="submit" />
-                                            </div>
-                                        </form>
-                                    </Paper>}
-                                    <a className={classes.filterBtn} onClick={() => { setOpenFilter(true) }}>
-                                        <Filter color="#fff"/> <span>Фильтр</span>
-                                    </a>
-                                    <a className={classes.excel}>
-                                        <Excel color="#fff"/> <span>Excel</span>
-                                    </a>
+                            : <Row className={classes.diagram}>
+                                <Col xs={3} className={classes.salesSummary}>
+                                    <div className={classes.secondarySummary}>
+                                        <span className={classes.summaryTitle}>Приход за период</span>
+                                        <div className={classes.summaryValue} style={{color: '#81c784 '}}>{numberFormat(sumIn)} {primaryCurrency}</div>
+                                        <div style={{margin: '10px 0'}}>{null}</div>
+                                        <span className={classes.summaryTitle}>Расход за период</span>
+                                        <div className={classes.summaryValue} style={{color: '#EB9696'}}>{numberFormat(sumOut)} {primaryCurrency}</div>
+                                    </div>
+                                </Col>
+                                <Col xs={9} className={classes.chart}>
+                                    <ReactHighcharts config={config} neverReflow={true} isPureConfig={true}/>
+                                </Col>
+                            </Row>}
+                        <div className={classes.pagination}>
+                            <div><b>История транзакции</b></div>
+                            <form onSubmit={handleSubmit(handleSubmitFilterDialog)}>
+                                <Field
+                                    className={classes.inputFieldCustom}
+                                    name="search"
+                                    component={TextField}
+                                    hintText="Поиск"
+                                    fullWidth={false}/>
+                            </form>
+                            <Pagination filter={filter}/>
+                        </div>
+                        {loading
+                        ? <div className={classes.tableWrapper}>
+                            <div className={classes.loader}>
+                                <CircularProgress thickness={4} size={40}/>
+                            </div>
+                        </div>
+                        : <div className={classes.tableWrapper}>
+                            {_.isEmpty(list) && !loading
+                                ? <div className={classes.emptyQuery}>
+                                    <div>По вашему запросу ничего не найдено</div>
                                 </div>
-                                <Row className={classes.diagram}>
-                                    <Col xs={3} className={classes.salesSummary}>
-                                        <div className={classes.secondarySummary}>
-                                            <span className={classes.summaryTitle}>Приход за период</span>
-                                            <div className={classes.summaryValue} style={{color: '#81c784 '}}>{numberFormat(sumIn)} {primaryCurrency}</div>
-                                            <div style={{margin: '10px 0'}}> </div>
-                                            <span className={classes.summaryTitle}>Расход за период</span>
-                                            <div className={classes.summaryValue} style={{color: '#EB9696'}}>{numberFormat(sumOut)} {primaryCurrency}</div>
-                                        </div>
-                                    </Col>
-                                    <Col xs={9} className={classes.chart}>
-                                        <ReactHighcharts config={config} neverReflow={true} isPureConfig={true}/>
-                                    </Col>
-                                </Row>
-                                <div className={classes.pagination}>
-                                    <div><b>История транзакции</b></div>
-                                    <form onSubmit={handleSubmit(handleSubmitFilterDialog)}>
-                                        <Field
-                                            className={classes.inputFieldCustom}
-                                            name="search"
-                                            component={TextField}
-                                            hintText="Поиск"
-                                            fullWidth={false}/>
-                                    </form>
-                                    <Pagination filter={filter}/>
-                                </div>
-                                <div className={classes.tableWrapper}>
+                                : <div>
                                     {headers}
                                     {list}
-                                </div>
-                            </div>}
+                                </div>}
+                        </div>}
                     </div>
                 </div>
             </Row>
