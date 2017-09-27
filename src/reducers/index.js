@@ -300,14 +300,6 @@ const rootReducer = combineReducers({
         data: createThunkReducer(actionTypes.STAT_MARKET_DATA),
         sum: createThunkReducer(actionTypes.STAT_MARKET_SUM)
     }),
-    statIncome: combineReducers({
-        data: createThunkReducer(actionTypes.STAT_INCOME_DATA),
-        list: createThunkReducer(actionTypes.STAT_INCOME_LIST)
-    }),
-    statOutcome: combineReducers({
-        data: createThunkReducer(actionTypes.STAT_OUTCOME_DATA),
-        list: createThunkReducer(actionTypes.STAT_OUTCOME_LIST)
-    }),
     statReport: combineReducers({
         data: createThunkReducer(actionTypes.STAT_REPORT_DATA),
         list: createThunkReducer(actionTypes.STAT_REPORT_LIST)

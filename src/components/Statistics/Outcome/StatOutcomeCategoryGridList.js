@@ -282,19 +282,19 @@ const StatOutcomeCategoryGridList = enhance((props) => {
                                 <Excel color="#fff"/> <span>Excel</span>
                             </a>
                         </form>
-                            <Pagination filter={filter}/>
+                        <Pagination filter={filter}/>
                         {listLoading
-                        ? <div className={classes.loader}>
-                            <CircularProgress size={40} thickness={4}/>
-                        </div>
-                        : (_.isEmpty(list) && !listLoading)
-                            ? <div className={classes.emptyQuery}>
-                                <div>По вашему запросу ничего не найдено</div>
-                              </div>
-                            : <div className={classes.tableWrapper}>
-                                {headers}
-                                {list}
-                              </div>}
+                            ? <div className={classes.loader}>
+                                <CircularProgress size={40} thickness={4}/>
+                            </div>
+                            : (_.isEmpty(list) && !listLoading)
+                                ? <div className={classes.emptyQuery}>
+                                    <div>По вашему запросу ничего не найдено</div>
+                                </div>
+                                : <div className={classes.tableWrapper}>
+                                    {headers}
+                                    {list}
+                                </div>}
                     </div>
                 </div>
             </Row>

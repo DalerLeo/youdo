@@ -6,29 +6,45 @@ import * as ROUTES from '../../../constants/routes'
 import Container from '../../Container/index'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import {reduxForm, Field} from 'redux-form'
+import {Field} from 'redux-form'
 import ReactHighcharts from 'react-highcharts'
-import DateToDateField from '../../ReduxForm/Basic/DateToDateField'
-import DivisionSearchField from '../../ReduxForm/DivisionSearchField'
 import StatSideMenu from '../StatSideMenu'
-import Search from 'material-ui/svg-icons/action/search'
-import IconButton from 'material-ui/IconButton'
-import Excel from 'material-ui/svg-icons/av/equalizer'
-import Pagination from '../../GridList/GridListNavPagination/index'
+import Pagination from '../../GridList/GridListNavPagination'
 import numberFormat from '../../../helpers/numberFormat'
-import StatSaleDialog from './StatSaleDialog'
+import StatSaleDialog from './SalesDialog'
+import {StatisticsFilterExcel} from '../../Statistics'
 import moment from 'moment'
 import CircularProgress from 'material-ui/CircularProgress'
 import dateFormat from '../../../helpers/dateFormat'
 import getConfig from '../../../helpers/getConfig'
 import NotFound from '../../Images/not-found.png'
+import {
+    DateToDateField,
+    ClientSearchField,
+    MarketSearchField,
+    UsersSearchField,
+    DeptSearchField,
+    ZoneSearchField,
+    DivisionSearchField,
+    CheckBox
+} from '../../ReduxForm'
+import OrderStatusSearchField from '../../ReduxForm/Order/OrderStatusSearchField'
 
 export const STAT_SALES_FILTER_KEY = {
+    CLIENT: 'client',
+    STATUS: 'status',
+    INITIATOR: 'initiator',
+    SHOP: 'shop',
+    DIVISION: 'division',
+    DEPT: 'dept',
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate',
-    DIVISION: 'division'
+    DELIVERY_FROM_DATE: 'deliveryFromDate',
+    DELIVERY_TO_DATE: 'deliveryToDate',
+    ZONE: 'zone',
+    ONLY_BONUS: 'onlyBonus',
+    EXCLUDE: 'exclude'
 }
-
 const enhance = compose(
     injectSheet({
         mainWrapper: {
@@ -53,6 +69,12 @@ const enhance = compose(
             alignItems: 'center',
             zIndex: '999',
             display: 'flex'
+        },
+        graphLoader: {
+            extend: 'loader',
+            height: '180px',
+            padding: '0',
+            marginTop: '20px'
         },
         pagination: {
             display: 'flex',
@@ -213,11 +235,7 @@ const enhance = compose(
                 color: '#999 !important'
             }
         }
-    }),
-    reduxForm({
-        form: 'StatSalesFilterForm',
-        enableReinitialize: true
-    }),
+    })
 )
 
 const StatSalesGridList = enhance((props) => {
@@ -228,24 +246,26 @@ const StatSalesGridList = enhance((props) => {
         onSubmit,
         listData,
         statSaleDialog,
-        handleSubmit,
         detailData,
-        handleGetDocument
+        handleGetDocument,
+        initialValues
     } = props
 
+    const graphLoading = _.get(graphData, 'graphLoading')
+
     const loading = _.get(listData, 'listLoading')
-    let sum = 0
-    let returnSum = 0
     const value = _.map(_.get(graphData, 'data'), (item) => {
-        sum += _.toInteger(_.get(item, 'amount'))
-        return _.toInteger(_.get(item, 'amount'))
+        return _.toNumber(_.get(item, 'amount'))
     })
-
+    const sum = _.sumBy(_.get(graphData, 'data'), (item) => {
+        return _.toNumber(_.get(item, 'amount'))
+    })
     const returnedValue = _.map(_.get(graphData, 'data'), (item) => {
-        returnSum += _.toInteger(_.get(item, 'returnAmount'))
-        return _.toInteger(_.get(item, 'returnAmount'))
+        return _.toNumber(_.get(item, 'returnAmount'))
     })
-
+    const returnSum = _.sumBy(_.get(graphData, 'data'), (item) => {
+        return _.toNumber(_.get(item, 'returnAmount'))
+    })
     const valueName = _.map(_.get(graphData, 'data'), (item) => {
         return dateFormat(_.get(item, 'date'))
     })
@@ -353,33 +373,19 @@ const StatSalesGridList = enhance((props) => {
         color: '#666'
     }
 
-    const iconStyle = {
-        icon: {
-            color: '#5d6474',
-            width: 22,
-            height: 22
-        },
-        button: {
-            width: 40,
-            height: 40,
-            padding: 0
-        }
-    }
-
     const headers = (
         <Row style={headerStyle} className="dottedList">
             <Col xs={1}>№ Сделки</Col>
             <Col xs={2}>Дата</Col>
             <Col xs={3}>Магазин</Col>
             <Col xs={2}>Агент</Col>
-            <Col xs={1}>Возврат</Col>
+            <Col xs={2}>Возврат</Col>
             <Col xs={2} style={{textAlign: 'right'}}>Сумма</Col>
         </Row>
     )
 
     const currentCurrency = getConfig('PRIMARY_CURRENCY')
     const list = (
-
         _.map(_.get(listData, 'data'), (item) => {
             const marketName = _.get(item, ['market', 'name'])
             const id = _.get(item, 'id')
@@ -397,12 +403,28 @@ const StatSalesGridList = enhance((props) => {
                     <Col xs={2}>
                         <div>{firstName} {secondName}</div>
                     </Col>
-                    <Col xs={1}>{numberFormat(returnPrice)} {currentCurrency}</Col>
-                    <Col xs={2} style={{textAlign: 'right'}}>{numberFormat(totalPrice)} {currentCurrency}</Col>
+                    <Col xs={2}>{numberFormat(returnPrice, currentCurrency)}</Col>
+                    <Col xs={2} style={{textAlign: 'right'}}>{numberFormat(totalPrice, currentCurrency)}</Col>
                 </Row>
             )
         })
 
+    )
+
+    const fields = (
+        <div>
+            <Field name="date" className={classes.inputDateCustom} component={DateToDateField} fullWidth={true} label="Диапазон дат"/>
+            <Field name="client" className={classes.inputFieldCustom} component={ClientSearchField} fullWidth={true} label="Клиент"/>
+            <Field name="status" className={classes.inputFieldCustom} component={OrderStatusSearchField} fullWidth={true} label="Статус"/>
+            <Field name="shop" className={classes.inputFieldCustom} component={MarketSearchField} fullWidth={true} label="Магазин"/>
+            <Field name="division" className={classes.inputFieldCustom} component={DivisionSearchField} fullWidth={true} label="Подразделение"/>
+            <Field name="initiator" className={classes.inputFieldCustom} component={UsersSearchField} fullWidth={true} label="Инициатор "/>
+            <Field name="dept" className={classes.inputFieldCustom} component={DeptSearchField} fullWidth={true} label="Оплаченный "/>
+            <Field name="zone" className={classes.inputFieldCustom} component={ZoneSearchField} fullWidth={true} label="Зона"/>
+            <Field name="deliveryDate" className={classes.inputDateCustom} component={DateToDateField} fullWidth={true} label="Дата доставки"/>
+            <Field name="onlyBonus" component={CheckBox} label="Только бонусные заказы"/>
+            <Field name="exclude" component={CheckBox} label="Исключить отмененные заказы"/>
+        </div>
     )
 
     const page = (
@@ -413,68 +435,53 @@ const StatSalesGridList = enhance((props) => {
                     </div>
                     <div className={classes.rightPanel}>
                         <div className={classes.wrapper}>
-                            <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
-                                <div className={classes.filter}>
-                                    <Field
-                                        className={classes.inputFieldCustom}
-                                        name="date"
-                                        component={DateToDateField}
-                                        label="Диапазон дат"
-                                        fullWidth={true}/>
-                                    <Field
-                                        name="division"
-                                        component={DivisionSearchField}
-                                        className={classes.inputFieldCustom}
-                                        label="Подразделение"
-                                        fullWidth={true}/>
-                                    <IconButton
-                                        className={classes.searchButton}
-                                        iconStyle={iconStyle.icon}
-                                        style={iconStyle.button}
-                                        type="submit">
-                                        <Search/>
-                                    </IconButton>
+                            <StatisticsFilterExcel
+                                filter={filter}
+                                initialValues={initialValues}
+                                fields={fields}
+                                filterKeys={STAT_SALES_FILTER_KEY}
+                                handleSubmitFilterDialog={onSubmit}
+                                handleGetDocument={handleGetDocument}
+                            />
+                            <div>
+                                {graphLoading
+                                ? <div className={classes.graphLoader}>
+                                    <CircularProgress size={40} thickness={4} />
                                 </div>
-                                <a className={classes.excel} onClick={handleGetDocument}>
-                                    <Excel color="#fff"/> <span>Excel</span>
-                                </a>
-                            </form>
-                            {loading
-                            ? <div className={classes.loader}>
-                                <CircularProgress size={70} thickness={4} />
-                            </div>
-                            : (_.isEmpty(list) && !loading)
-                                ? <div className={classes.emptyQuery}>
-                                    <div>По вашему запросу ничего не найдено</div>
+                                : <Row className={classes.diagram}>
+                                    <Col xs={3} className={classes.salesSummary}>
+                                        <div>Сумма продаж за период</div>
+                                        <div>{numberFormat(sum, getConfig('PRIMARY_CURRENCY'))}</div>
+                                        <div>Сумма возврата за период</div>
+                                        <div>{numberFormat(returnSum, getConfig('PRIMARY_CURRENCY'))}</div>
+                                        <div>Фактическая сумма продаж</div>
+                                        <div>{numberFormat(sum - returnSum, getConfig('PRIMARY_CURRENCY'))}</div>
+                                    </Col>
+                                    <Col xs={9}>
+                                        <ReactHighcharts config={config} neverReflow={true} isPureConfig={true}/>
+                                    </Col>
+                                </Row>}
+                                <div className={classes.pagination}>
+                                    <div><b>История продаж</b></div>
+                                    <Pagination filter={filter}/>
                                 </div>
-                                : <div>
-                                    <Row className={classes.diagram}>
-                                        <Col xs={3} className={classes.salesSummary}>
-                                            <div>Сумма продаж за период</div>
-                                            <div>{numberFormat(sum, getConfig('PRIMARY_CURRENCY'))}</div>
-                                            <div>Сумма возврата за период</div>
-                                            <div>{numberFormat(returnSum, getConfig('PRIMARY_CURRENCY'))}</div>
-                                            <div>Фактическая сумма продаж</div>
-                                            <div>{numberFormat(sum - returnSum, getConfig('PRIMARY_CURRENCY'))}</div>
-                                        </Col>
-                                        <Col xs={9}>
-                                            {_.get(graphData, 'graphLoading') && <div className={classes.loader}>
-                                                <CircularProgress size={50} thickness={4} />
+                                {loading
+                                    ? <div className={classes.tableWrapper}>
+                                        <div className={classes.loader}>
+                                            <CircularProgress thickness={4} size={40}/>
+                                        </div>
+                                    </div>
+                                    : <div className={classes.tableWrapper}>
+                                        {_.isEmpty(list) && !loading
+                                            ? <div className={classes.emptyQuery}>
+                                                <div>По вашему запросу ничего не найдено</div>
+                                            </div>
+                                            : <div>
+                                                {headers}
+                                                {list}
                                             </div>}
-                                            {!_.get(graphData, 'graphLoading') &&
-                                            <ReactHighcharts config={config} neverReflow={true} isPureConfig={true}/>}
-                                        </Col>
-                                    </Row>
-                                    <div className={classes.pagination}>
-                                        <div><b>История продаж</b></div>
-                                        <Pagination filter={filter}/>
-                                    </div>
-                                    <div className={classes.tableWrapper}>
-                                        {headers}
-                                        {list}
-                                    </div>
-                                  </div>
-                            }
+                                    </div>}
+                              </div>
                         </div>
                     </div>
                 </Row>

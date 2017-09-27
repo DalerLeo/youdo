@@ -6,6 +6,8 @@ import * as ROUTES from '../../../constants/routes'
 import Container from '../../Container/index'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
+import {reduxForm, Field} from 'redux-form'
+import {TextField, ZoneSearchField} from '../../ReduxForm'
 import StatAgentDialog from './StatAgentDialog'
 import StatSideMenu from '../StatSideMenu'
 import CircularProgress from 'material-ui/CircularProgress'
@@ -13,11 +15,17 @@ import Pagination from '../../GridList/GridListNavPagination/index'
 import numberFormat from '../../../helpers/numberFormat.js'
 import getConfig from '../../../helpers/getConfig'
 import NotFound from '../../Images/not-found.png'
-import StatAgentFilterForm from './StatAgentFilterForm'
 import GridListHeader from '../../GridList/GridListHeader/index'
 import PlanMonthFilter from '../../../components/Plan/PlanMonthFilter'
 import Tooltip from '../../ToolTip'
+import {StatisticsFilterExcel} from '../../Statistics'
 
+export const STAT_AGENT_FILTER_KEY = {
+    FROM_DATE: 'fromDate',
+    TO_DATE: 'toDate',
+    ZONE: 'zone',
+    SEARCH: 'search'
+}
 const enhance = compose(
     injectSheet({
         loader: {
@@ -234,6 +242,10 @@ const enhance = compose(
             }
         }
     }),
+    reduxForm({
+        form: 'StatisticsFilterForm',
+        enableReinitialize: true
+    })
 )
 
 const listHeader = [
@@ -290,7 +302,8 @@ const StatAgentGridList = enhance((props) => {
         detailData,
         getDocument,
         calendar,
-        initialValues
+        initialValues,
+        handleSubmit
     } = props
 
     const listLoading = _.get(listData, 'listLoading')
@@ -335,6 +348,14 @@ const StatAgentGridList = enhance((props) => {
             </Row>
         )
     })
+    const fields = (
+        <Field
+            className={classes.inputFieldCustom}
+            name="zone"
+            component={ZoneSearchField}
+            label="Зона"
+            fullWidth={true}/>
+    )
     const listIds = _.map(list, item => _.toInteger(_.get(item, 'key')))
     const page = (
         <div className={classes.mainWrapper}>
@@ -344,13 +365,24 @@ const StatAgentGridList = enhance((props) => {
                 </div>
                 <div className={classes.rightPanel}>
                     <div className={classes.wrapper}>
-                        <StatAgentFilterForm
-                            onSubmit={handleSubmitFilterDialog}
+                        <StatisticsFilterExcel
+                            filter={filter}
+                            fields={fields}
+                            filterKeys={STAT_AGENT_FILTER_KEY}
                             initialValues={initialValues}
-                            getDocument={getDocument}
-                            calendar={calendar}/>
+                            handleSubmitFilterDialog={handleSubmitFilterDialog}
+                            handleGetDocument={getDocument.handleGetDocument}
+                            withoutDate={true}
+                        />
                         <div className={classes.filters}>
                             <PlanMonthFilter calendar={calendar}/>
+                            <form onSubmit={handleSubmit(handleSubmitFilterDialog)}>
+                                <Field
+                                    className={classes.inputFieldCustom}
+                                    name="search"
+                                    component={TextField}
+                                    hintText="Поиск"/>
+                            </form>
                             <Pagination filter={filter}/>
                         </div>
                         <div className={classes.tableWrapper}>

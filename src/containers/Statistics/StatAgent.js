@@ -18,7 +18,7 @@ import {
     STAT_AGENT_DIALOG_OPEN,
     DATE
 } from '../../components/Statistics'
-import {STAT_AGENT_FILTER_KEY} from '../../components/Statistics/Agents/StatAgentFilterForm'
+import {STAT_AGENT_FILTER_KEY} from '../../components/Statistics/Agents/StatAgentGridList'
 import {
     statAgentListFetchAction,
     statAgentItemFetchAction
@@ -35,7 +35,7 @@ const enhance = compose(
         const detailLoading = _.get(state, ['statAgent', 'item', 'loading'])
         const list = _.get(state, ['statAgent', 'list', 'data'])
         const listLoading = _.get(state, ['statAgent', 'list', 'loading'])
-        const filterForm = _.get(state, ['form', 'StatAgentFilterForm'])
+        const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
         const filter = filterHelper(list, pathname, query)
         const filterItem = filterHelper(detail, pathname, query)
         const selectedDate = _.get(query, DATE) || defaultDate
@@ -85,19 +85,15 @@ const enhance = compose(
             hashHistory.push({pathname: ROUTER.STATISTICS_LIST_URL, query: filter.getParams()})
         },
 
-        handleSubmitFilterDialog: props => (event) => {
-            event.preventDefault()
+        handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
-
             const search = _.get(filterForm, ['values', 'search']) || null
             const zone = _.get(filterForm, ['values', 'zone', 'value']) || null
-            const division = _.get(filterForm, ['values', 'division', 'value']) || null
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
             filter.filterBy({
                 [STAT_AGENT_FILTER_KEY.SEARCH]: search,
                 [STAT_AGENT_FILTER_KEY.ZONE]: zone,
-                [STAT_AGENT_FILTER_KEY.DIVISION]: division,
                 [STAT_AGENT_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [STAT_AGENT_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
 
@@ -145,6 +141,7 @@ const StatAgentList = enhance((props) => {
     const lastDay = moment().daysInMonth()
     const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
     const selectedDate = _.get(location, ['query', DATE]) || currentDate
+    const zone = !_.isNull(_.get(location, ['query', 'zone'])) && _.toInteger(_.get(location, ['query', 'zone']))
 
     const statAgentDialog = {
         openStatAgentDialog,
@@ -177,6 +174,9 @@ const StatAgentList = enhance((props) => {
         handleGetDocument: props.handleGetDocument
     }
     const initialValues = {
+        zone: {
+            value: zone
+        },
         date: {
             fromDate: moment(firstDayOfMonth),
             toDate: moment(lastDayOfMonth)

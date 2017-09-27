@@ -12,7 +12,7 @@ import * as serializers from '../../serializers/Statistics/statProductSerializer
 import getDocuments from '../../helpers/getDocument'
 
 import {StatProductGridList} from '../../components/Statistics'
-import {STAT_PRODUCT_FILTER_KEY} from '../../components/Statistics/Products/StatProductFilterForm'
+import {STAT_PRODUCT_FILTER_KEY} from '../../components/Statistics/Products/StatProductGridList'
 import {
     statProductListFetchAction
 } from '../../actions/statProduct'
@@ -25,7 +25,7 @@ const enhance = compose(
         const detailLoading = _.get(state, ['statProduct', 'item', 'loading'])
         const list = _.get(state, ['statProduct', 'list', 'data'])
         const listLoading = _.get(state, ['statProduct', 'list', 'loading'])
-        const filterForm = _.get(state, ['form', 'StatProductFilterForm'])
+        const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
         const searchForm = _.get(state, ['form', 'StatProductForm'])
         const filter = filterHelper(list, pathname, query)
         return {
@@ -95,9 +95,17 @@ const StatProductList = enhance((props) => {
     const firstDayOfMonth = _.get(location, ['query', 'fromDate']) || moment().format('YYYY-MM-01')
     const lastDay = moment().daysInMonth()
     const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
+    const productType = !_.isNull(location, ['query', 'productType']) && _.toInteger(_.get(location, ['query', 'productType']))
+    const productTypeChild = !_.isNull(location, ['query', 'productTypeChild']) && _.toInteger(_.get(location, ['query', 'productTypeChild']))
 
     const filterForm = {
         initialValues: {
+            productType: {
+                value: productType
+            },
+            productTypeChild: {
+                value: productTypeChild
+            },
             date: {
                 fromDate: moment(firstDayOfMonth),
                 toDate: moment(lastDayOfMonth)
