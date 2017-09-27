@@ -74,9 +74,9 @@ const enhance = compose(
         }
     }),
     withPropsOnChange((props, nextProps) => {
-        return _.get(props, ['input', 'value', 'value']) !== _.get(nextProps, ['input', 'value', 'value']) && _.get(nextProps, ['withD'])
+        return _.get(props, ['input', 'value', 'value']) !== _.get(nextProps, ['input', 'value', 'value']) && _.get(nextProps, ['withDetails'])
     }, (props) => {
-        _.get(props, ['withD']) &&
+        _.get(props, ['withDetails']) &&
         _.get(props, ['input', 'value', 'value']) &&
         props.getItem(_.get(props, ['input', 'value', 'value']))
     }),
@@ -108,11 +108,8 @@ const SearchField = enhance((props) => {
         state,
         dispatch,
         valueRenderer,
-        input,
-        getItem,
-        withDetails
+        input
     } = props
-    withDetails && input.value && getItem(_.get(input, ['value', 'value']))
     return (
         <div className={classes.wrapper}>
             <Select
