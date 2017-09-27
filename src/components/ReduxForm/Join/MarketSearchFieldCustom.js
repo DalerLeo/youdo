@@ -56,6 +56,7 @@ const MarketSearchFieldCustom = enhance((props) => {
             getItem={test}
             getItemText={SearchField.defaultGetText('name')}
             {...defaultProps}
+            withDetails={true}
         />
     )
 })

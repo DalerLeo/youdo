@@ -100,15 +100,13 @@ const enhance = compose(
         },
         background: {
             display: 'flex',
+            alignItems: 'flex-end',
             padding: '10px 30px',
             margin: '0 -30px',
             marginTop: '5px',
             backgroundColor: '#f1f5f8',
             position: 'relative',
-            zIndex: '2',
-            '& > div > div > div': {
-                overflow: 'hidden'
-            }
+            zIndex: '2'
         },
         inputFieldCustom: {
             fontSize: '13px !important',
@@ -265,10 +263,10 @@ const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove
                             name="amount"
                         />
                     </div>
-                    <div>
+                    <div style={{paddingBottom: '8px'}}>
                         <OrderReturnMeasurementField/>
                     </div>
-                    <div className="summa" style={{width: '25%', textAlign: 'right', paddingRight: '20px'}}>
+                    <div className="summa" style={{width: '25%', textAlign: 'right', paddingRight: '20px', paddingBottom: '8px'}}>
                         <ProductReturnCostField />
                     </div>
                     <div style={{width: '20%', textAlign: 'right', paddingTop: '9px'}}>
@@ -310,7 +308,7 @@ const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove
 
                                 return value > normalize ? normalize : value
                             }
-                            const product = _.get(item, ['product', 'text'])
+                            const product = _.get(item, ['product', 'value', 'product', 'name'])
                             const amount = numberFormat(_.get(item, 'amount'))
                             const measurement = _.get(item, ['product', 'value', 'product', 'measurement', 'name'])
                             const price = numberFormat((_.get(item, ['product', 'value', 'price']) * (_.get(item, 'amount'))), getConfig('PRIMARY_CURRENCY'))
