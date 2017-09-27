@@ -6,12 +6,14 @@ const STOCK_SUPPLY_DIALOG_OPEN = 'openStockSupplyDialog'
 const SROCK_POPVER_DIALOG_OPEN = 'openPopoverDialog'
 const TAB = 'tab'
 const HISTORY_FILTER_OPEN = 'openFilterDialog'
+const STOCK_REPEAL_DIALOG_OPEN = 'openRepealDialog'
 const STOCK_CONFIRM_DIALOG_OPEN = 'openConfirmDialog'
 
 export {
     HISTORY_FILTER_OPEN,
     TAB,
     HISTORY_FILTER_KEY,
+    STOCK_REPEAL_DIALOG_OPEN,
     STOCK_CONFIRM_DIALOG_OPEN,
     STOCK_SUPPLY_DIALOG_OPEN,
     SROCK_POPVER_DIALOG_OPEN,

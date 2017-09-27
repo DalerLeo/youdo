@@ -13,19 +13,21 @@ import TabTransferHistory from '../../components/StockReceive/StockTabTransferHi
 import {OrderPrint} from '../../components/Order'
 import {
     STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN,
-    STOCK_CONFIRM_DIALOG_OPEN,
     HISTORY_FILTER_OPEN,
+    STOCK_REPEAL_DIALOG_OPEN,
     TAB,
     TAB_TRANSFER_FILTER_KEY
 } from '../../components/StockReceive'
 import {
     stockTransferListFetchAction,
     stockTransferItemFetchAction,
-    stockReceiveOrderItemFetchAction
+    stockReceiveOrderItemFetchAction,
+    stockTransferHistoryRepealAction,
+    stockTransferHistoryReturnAction
 } from '../../actions/stockReceive'
-import {
-    orderListPintFetchAction
-} from '../../actions/order'
+import {orderListPintFetchAction} from '../../actions/order'
+import {openErrorAction} from '../../actions/error'
+import {openSnackbarAction} from '../../actions/snackbar'
 
 const TYPE = 'openType'
 const TRANSFER_TYPE = 'transferType'
@@ -143,14 +145,39 @@ const enhance = compose(
                 query: filter.getParams({[TYPE]: type, [TRANSFER_TYPE]: typeOrg})
             })
         },
-        handleOpenConfirmDialog: props => (status) => {
+        handleOpenRepealDialog: props => (id) => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[STOCK_CONFIRM_DIALOG_OPEN]: status})})
+            hashHistory.push({pathname, query: filter.getParams({[STOCK_REPEAL_DIALOG_OPEN]: id})})
         },
 
-        handleCloseConfirmDialog: props => () => {
+        handleCloseRepealDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[STOCK_CONFIRM_DIALOG_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[STOCK_REPEAL_DIALOG_OPEN]: false})})
+        },
+        handleSubmitRepealDialog: props => () => {
+            const {location: {pathname}, location, filter, params, dispatch} = props
+            const orderId = _.toInteger(_.get(params, 'stockTransferHistoryId'))
+            const stockId = _.toInteger(_.get(location, ['query', 'openType']))
+            dispatch(stockTransferHistoryRepealAction(orderId, stockId))
+                .then(() => {
+                    dispatch(stockTransferHistoryReturnAction(orderId))
+                })
+                .then(() => {
+                    hashHistory.push({pathname, query: filter.getParams({[STOCK_REPEAL_DIALOG_OPEN]: false})})
+                    return dispatch(openSnackbarAction({message: 'Успешно отменено'}))
+                })
+                .catch((error) => {
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
+                    })
+
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                            {errorWhole}
+                        </div>
+                    }))
+                })
+            hashHistory.push({pathname, query: filter.getParams({[STOCK_REPEAL_DIALOG_OPEN]: false})})
         }
     })
 )
@@ -170,7 +197,7 @@ const StockTransferHistoryList = enhance((props) => {
         params
     } = props
 
-    const openConfirmDialog = _.toInteger(_.get(location, ['query', STOCK_CONFIRM_DIALOG_OPEN]))
+    const openRepealDialog = _.toInteger(_.get(location, ['query', STOCK_REPEAL_DIALOG_OPEN]))
     const detailId = _.toInteger(_.get(params, 'stockTransferHistoryId'))
     const transferType = _.get(location, ['query', 'transferType'])
     const openFilterDialog = toBoolean(_.get(location, ['query', HISTORY_FILTER_OPEN]))
@@ -223,14 +250,11 @@ const StockTransferHistoryList = enhance((props) => {
         handleOpenPrintDialog: props.handleOpenPrintDialog,
         handleClosePrintDialog: props.handleClosePrintDialog
     }
-    const confirmDialog = {
-        openConfirmDialog,
-        handleOpenConfirmDialog: props.handleOpenConfirmDialog,
-        handleCloseConfirmDialog: props.handleCloseConfirmDialog,
-        handleSubmitTransferAcceptDialog: props.handleSubmitTransferAcceptDialog,
-        handleSubmitReceiveConfirmDialog: props.handleSubmitReceiveConfirmDialog,
-        handleSubmitOrderReturnDialog: props.handleSubmitOrderReturnDialog,
-        handleSubmitReceiveDeliveryConfirmDialog: props.handleSubmitReceiveDeliveryConfirmDialog
+    const repealDialog = {
+        openRepealDialog,
+        handleOpenRepealDialog: props.handleOpenRepealDialog,
+        handleCloseRepealDialog: props.handleCloseRepealDialog,
+        handleSubmitRepealDialog: props.handleSubmitRepealDialog
     }
 
     if (openPrint) {
@@ -252,7 +276,7 @@ const StockTransferHistoryList = enhance((props) => {
                 handleCloseDetail={handleCloseDetail}
                 printDialog={printDialog}
                 transferType={transferType}
-                confirmDialog={confirmDialog}/>
+                repealDialog={repealDialog}/>
         </Layout>
     )
 })

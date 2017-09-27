@@ -354,6 +354,8 @@ export const STOCK_HISTORY_LIST = `/${STOCK_HISTORY}/`
 export const STOCK_TRANSFER = 'stock/outcome_tasks'
 export const STOCK_TRANSFER_LIST = `/${STOCK_TRANSFER}/`
 export const STOCK_TRANSFER_ITEM = '/sales/order/%d/'
+export const STOCK_TRANSFER_HISTORY_REPEAL_URL = '/sales/order/%d/cancel_accepts/'
+export const STOCK_TRANSFER_HISTORY_RETURN_URL = '/sales/order_return/%d/cancel_accepts/'
 
 export const STOCK_TRANSFER_ACCEPT = '/stock/accept_outcome/'
 export const STOCK_RECEIVE_LIST = '/stock/income_tasks/'
