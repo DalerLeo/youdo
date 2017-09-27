@@ -152,7 +152,7 @@ const StockTabHistory = enhance((props) => {
     const list = {
         header: listHeader,
         list: historyList,
-        loading: _.get(listData, 'historyListLoading')
+        loading: _.get(listData, 'listLoading')
     }
     return (
         <div className={classes.wrapper}>

@@ -284,6 +284,17 @@ const StockReceiveDetails = enhance((props) => {
                                         </IconButton>
                                     </Tooltip>
                                     }
+                                    {history && type !== 'transfer' &&
+                                    <Tooltip position="right" text={tooltipCancelText}>
+                                        <IconButton
+                                            iconStyle={iconStyle.icon}
+                                            style={iconStyle.button}
+                                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(CANCEL) }}
+                                            touch={true}>
+                                            <RemoveCircleIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                    }
                                     {
                                         popover && <IconButton onTouchTap={onClose}>
                                             <CloseIcon2 color="#666666"/>

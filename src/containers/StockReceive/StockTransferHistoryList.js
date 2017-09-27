@@ -13,6 +13,7 @@ import TabTransferHistory from '../../components/StockReceive/StockTabTransferHi
 import {OrderPrint} from '../../components/Order'
 import {
     STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN,
+    STOCK_CONFIRM_DIALOG_OPEN,
     HISTORY_FILTER_OPEN,
     TAB,
     TAB_TRANSFER_FILTER_KEY
@@ -141,6 +142,15 @@ const enhance = compose(
                 pathname: sprintf(ROUTER.STOCK_TRANSFER_HISTORY_ITEM_PATH, id),
                 query: filter.getParams({[TYPE]: type, [TRANSFER_TYPE]: typeOrg})
             })
+        },
+        handleOpenConfirmDialog: props => (status) => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[STOCK_CONFIRM_DIALOG_OPEN]: status})})
+        },
+
+        handleCloseConfirmDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[STOCK_CONFIRM_DIALOG_OPEN]: false})})
         }
     })
 )
@@ -160,6 +170,7 @@ const StockTransferHistoryList = enhance((props) => {
         params
     } = props
 
+    const openConfirmDialog = _.toInteger(_.get(location, ['query', STOCK_CONFIRM_DIALOG_OPEN]))
     const detailId = _.toInteger(_.get(params, 'stockTransferHistoryId'))
     const transferType = _.get(location, ['query', 'transferType'])
     const openFilterDialog = toBoolean(_.get(location, ['query', HISTORY_FILTER_OPEN]))
@@ -212,6 +223,15 @@ const StockTransferHistoryList = enhance((props) => {
         handleOpenPrintDialog: props.handleOpenPrintDialog,
         handleClosePrintDialog: props.handleClosePrintDialog
     }
+    const confirmDialog = {
+        openConfirmDialog,
+        handleOpenConfirmDialog: props.handleOpenConfirmDialog,
+        handleCloseConfirmDialog: props.handleCloseConfirmDialog,
+        handleSubmitTransferAcceptDialog: props.handleSubmitTransferAcceptDialog,
+        handleSubmitReceiveConfirmDialog: props.handleSubmitReceiveConfirmDialog,
+        handleSubmitOrderReturnDialog: props.handleSubmitOrderReturnDialog,
+        handleSubmitReceiveDeliveryConfirmDialog: props.handleSubmitReceiveDeliveryConfirmDialog
+    }
 
     if (openPrint) {
         document.getElementById('wrapper').style.height = 'auto'
@@ -231,7 +251,8 @@ const StockTransferHistoryList = enhance((props) => {
                 detailData={detailData}
                 handleCloseDetail={handleCloseDetail}
                 printDialog={printDialog}
-                transferType={transferType}/>
+                transferType={transferType}
+                confirmDialog={confirmDialog}/>
         </Layout>
     )
 })
