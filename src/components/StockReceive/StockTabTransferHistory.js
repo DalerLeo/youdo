@@ -88,7 +88,7 @@ const StockTabTransferHistory = enhance((props) => {
         classes,
         printDialog,
         transferType,
-        confirmDialog
+        repealDialog
     } = props
 
     const usersFilterDialog = (
@@ -107,7 +107,7 @@ const StockTabTransferHistory = enhance((props) => {
             loading={_.get(detailData, 'detailLoading')}
             handleOpenPrint={printDialog.handleOpenPrintDialog}
             confirm={false}
-            confirmDialog={confirmDialog}/>
+            repealDialog={repealDialog}/>
     )
     const historyTransferDetail = (
         <StockReceiveDetails
@@ -160,9 +160,9 @@ const StockTabTransferHistory = enhance((props) => {
             <ConfirmDialog
                 type={'submit' }
                 message={'Запрос № ' + _.get(detailData, 'id')}
-                onClose={confirmDialog.handleCloseConfirmDialog}
-                onSubmit={confirmDialog.openConfirmDialog}
-                open={confirmDialog.openConfirmDialog > ZERO}
+                onClose={repealDialog.handleCloseRepealDialog}
+                onSubmit={repealDialog.handleSubmitRepealDialog}
+                open={repealDialog.openRepealDialog > ZERO}
             />
         </div>
     )

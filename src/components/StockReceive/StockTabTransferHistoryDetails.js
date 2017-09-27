@@ -138,7 +138,7 @@ const StockTransferDetails = enhance((props) => {
         detailData,
         handleCloseDetail,
         handleOpenPrint,
-        confirmDialog,
+        repealDialog,
         loading
     } = props
     const products = _.get(detailData, ['data', 'products'])
@@ -181,7 +181,7 @@ const StockTransferDetails = enhance((props) => {
                                 <IconButton
                                     iconStyle={iconStyle.icon}
                                     style={iconStyle.button}
-                                    onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
+                                    onTouchTap={() => { repealDialog.handleOpenRepealDialog(id) }}
                                     touch={true}>
                                     <RemoveCircleIcon />
                                 </IconButton>

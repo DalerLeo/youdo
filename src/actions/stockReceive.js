@@ -247,3 +247,33 @@ export const stockReceiveTransferItemFetchAction = (id) => {
         payload
     }
 }
+export const stockTransferHistoryRepealAction = (orderId, stockId) => {
+    const payload = axios()
+        .delete(sprintf(API.STOCK_TRANSFER_HISTORY_REPEAL_URL, orderId), {'params': {'stock': stockId}})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STOCK_RECEIVE_ITEM,
+        payload
+    }
+}
+export const stockTransferHistoryReturnAction = (orderId) => {
+    const payload = axios()
+        .delete(sprintf(API.STOCK_TRANSFER_HISTORY_RETURN_URL, orderId))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STOCK_RECEIVE_ITEM,
+        payload
+    }
+}
