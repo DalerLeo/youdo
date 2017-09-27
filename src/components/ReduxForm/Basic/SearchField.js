@@ -74,6 +74,13 @@ const enhance = compose(
         }
     }),
     withPropsOnChange((props, nextProps) => {
+        return _.get(props, ['input', 'value', 'value']) !== _.get(nextProps, ['input', 'value', 'value']) && _.get(nextProps, ['withD'])
+    }, (props) => {
+        _.get(props, ['withD']) &&
+        _.get(props, ['input', 'value', 'value']) &&
+        props.getItem(_.get(props, ['input', 'value', 'value']))
+    }),
+    withPropsOnChange((props, nextProps) => {
         return _.get(props, ['state', 'text']) !== _.get(nextProps, ['state', 'text'])
     }, (props) => _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)),
     withPropsOnChange((props, nextProps) => {

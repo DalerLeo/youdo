@@ -198,7 +198,7 @@ const EquipmentList = enhance((props) => {
             return {
                 name: _.get(detail, 'name'),
                 manufacture: {
-                    value: _.get(detail, 'manufacture')
+                    value: _.get(detail, ['manufacture', 'id'])
                 },
                 image: _.get(detail, 'image')
             }

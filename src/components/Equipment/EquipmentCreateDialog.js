@@ -95,6 +95,7 @@ const EquipmentCreateDialog = enhance((props) => {
                             <Field
                                 name="manufacture"
                                 component={ManufactureSearchField}
+                                isUpdate={true}
                                 className={classes.inputFieldCustom}
                                 label="Производство"
                                 fullWidth={true}
