@@ -4,9 +4,10 @@ import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/Statistics/statFinanceSerializer'
 
-export const statFinanceOutDataFetchAction = () => {
+export const statFinanceOutDataFetchAction = (filter) => {
+    const params = serializers.expense(filter.getParams())
     const payload = axios()
-        .get(API.STAT_FINANCE_DATA, {params: {'type': 'expense'}})
+        .get(API.STAT_FINANCE_DATA, {params, type: 'expense'})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -20,9 +21,10 @@ export const statFinanceOutDataFetchAction = () => {
     }
 }
 
-export const statFinanceInDataFetchAction = () => {
+export const statFinanceInDataFetchAction = (filter) => {
+    const params = serializers.income(filter.getParams())
     const payload = axios()
-        .get(API.STAT_FINANCE_DATA, {params: {'type': 'income'}})
+        .get(API.STAT_FINANCE_DATA, {params, type: 'income'})
         .then((response) => {
             return _.get(response, 'data')
         })

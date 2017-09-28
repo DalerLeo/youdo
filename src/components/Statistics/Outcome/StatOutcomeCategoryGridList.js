@@ -6,19 +6,16 @@ import * as ROUTES from '../../../constants/routes'
 import Container from '../../Container/index'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import {reduxForm, Field} from 'redux-form'
-import DateToDateField from '../../ReduxForm/Basic/DateToDateField'
-import DivisionSearchField from '../../ReduxForm/DivisionSearchField'
+import {Field} from 'redux-form'
+import {DateToDateField} from '../../ReduxForm'
 import StatSideMenu from '../StatSideMenu'
-import Search from 'material-ui/svg-icons/action/search'
-import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
-import Excel from 'material-ui/svg-icons/av/equalizer'
 import LinearProgress from 'material-ui/LinearProgress'
 import Pagination from '../../GridList/GridListNavPagination/index'
 import numberFormat from '../../../helpers/numberFormat.js'
 import getConfig from '../../../helpers/getConfig'
 import NotFound from '../../Images/not-found.png'
+import {StatisticsFilterExcel} from '../../Statistics'
 
 export const STAT_OUTCOME_CATEGORY_FILTER_KEY = {
     DIVISION: 'division',
@@ -179,11 +176,7 @@ const enhance = compose(
                 color: '#999 !important'
             }
         }
-    }),
-    reduxForm({
-        form: 'StatOutcomeCategoryFilterForm',
-        enableReinitialize: true
-    }),
+    })
 )
 
 const StatOutcomeCategoryGridList = enhance((props) => {
@@ -192,7 +185,8 @@ const StatOutcomeCategoryGridList = enhance((props) => {
         listData,
         filter,
         handleSubmitFilterDialog,
-        getDocument
+        getDocument,
+        initialValues
     } = props
 
     const currentCurrency = getConfig('PRIMARY_CURRENCY')
@@ -202,18 +196,6 @@ const StatOutcomeCategoryGridList = enhance((props) => {
         backgroundColor: '#fff',
         fontWeight: '600',
         color: '#666'
-    }
-    const iconStyle = {
-        icon: {
-            color: '#5d6474',
-            width: 22,
-            height: 22
-        },
-        button: {
-            width: 40,
-            height: 40,
-            padding: 0
-        }
     }
 
     const headers = (
@@ -245,6 +227,17 @@ const StatOutcomeCategoryGridList = enhance((props) => {
         )
     })
 
+    const fields = (
+        <div>
+            <Field
+                className={classes.inputFieldCustom}
+                name="date"
+                component={DateToDateField}
+                label="Диапазон дат"
+                fullWidth={true}/>
+        </div>
+    )
+
     const page = (
         <div className={classes.mainWrapper}>
             <Row style={{margin: '0', height: '100%'}}>
@@ -253,48 +246,31 @@ const StatOutcomeCategoryGridList = enhance((props) => {
                 </div>
                 <div className={classes.rightPanel}>
                     <div className={classes.wrapper}>
-                        <form className={classes.form} onSubmit={handleSubmitFilterDialog}>
-                            <div className={classes.filter}>
-                                <Field
-                                    className={classes.inputFieldCustom}
-                                    name="date"
-                                    component={DateToDateField}
-                                    label="Диапазон дат"
-                                    fullWidth={true}/>
-                                <Field
-                                    name="division"
-                                    component={DivisionSearchField}
-                                    className={classes.inputFieldCustom}
-                                    label="Подразделение"
-                                    fullWidth={true}
-                                />
-
-                                <IconButton
-                                    className={classes.searchButton}
-                                    iconStyle={iconStyle.icon}
-                                    style={iconStyle.button}
-                                    type="submit">
-                                    <Search/>
-                                </IconButton>
-                            </div>
-                            <a className={classes.excel}
-                               onClick={getDocument.handleGetDocument}>
-                                <Excel color="#fff"/> <span>Excel</span>
-                            </a>
-                        </form>
+                        <StatisticsFilterExcel
+                            filter={filter}
+                            fields={fields}
+                            filterKeys={STAT_OUTCOME_CATEGORY_FILTER_KEY}
+                            handleSubmitFilterDialog={handleSubmitFilterDialog}
+                            initialValues={initialValues}
+                            handleGetDocument={getDocument.handleGetDocument}
+                        />
                         <Pagination filter={filter}/>
                         {listLoading
-                            ? <div className={classes.loader}>
-                                <CircularProgress size={40} thickness={4}/>
-                            </div>
-                            : (_.isEmpty(list) && !listLoading)
-                                ? <div className={classes.emptyQuery}>
-                                    <div>По вашему запросу ничего не найдено</div>
+                            ? <div className={classes.tableWrapper}>
+                                <div className={classes.loader}>
+                                    <CircularProgress thickness={4} size={40}/>
                                 </div>
-                                : <div className={classes.tableWrapper}>
-                                    {headers}
-                                    {list}
-                                </div>}
+                            </div>
+                            : <div className={classes.tableWrapper}>
+                                {_.isEmpty(list) && !listLoading
+                                    ? <div className={classes.emptyQuery}>
+                                        <div>По вашему запросу ничего не найдено</div>
+                                    </div>
+                                    : <div>
+                                        {headers}
+                                        {list}
+                                    </div>}
+                            </div>}
                     </div>
                 </div>
             </Row>

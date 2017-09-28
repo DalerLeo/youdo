@@ -25,9 +25,10 @@ const enhance = compose(
         const graphOutLoading = _.get(state, ['statFinance', 'dataOut', 'loading'])
         const list = _.get(state, ['statFinance', 'list', 'data'])
         const listLoading = _.get(state, ['statFinance', 'list', 'loading'])
-        const filterForm = _.get(state, ['form', 'StatFinanceFilterForm'])
+        const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
         const filter = filterHelper(list, pathname, query)
         return {
+            query,
             list,
             listLoading,
             graphIn,
@@ -43,24 +44,37 @@ const enhance = compose(
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
         dispatch(statFinanceListFetchAction(filter))
-        dispatch(statFinanceInDataFetchAction())
-        dispatch(statFinanceOutDataFetchAction())
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const except = {
+            page: null,
+            pageSize: null,
+            search: null
+        }
+        return (props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except))
+    }, ({dispatch, filter}) => {
+        dispatch(statFinanceInDataFetchAction(filter))
+        dispatch(statFinanceOutDataFetchAction(filter))
     }),
 
     withHandlers({
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
             const search = _.get(filterForm, ['values', 'search']) || null
-            const division = _.get(filterForm, ['values', 'division', 'value']) || null
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
+            const type = _.get(filterForm, ['values', 'type', 'value']) || null
+            const client = _.get(filterForm, ['values', 'client', 'value']) || null
+            const categoryExpense = _.get(filterForm, ['values', 'categoryExpense', 'value']) || null
 
             filter.filterBy({
                 [STAT_FINANCE_FILTER_KEY.SEARCH]: search,
-                [STAT_FINANCE_FILTER_KEY.DIVISION]: division,
                 [STAT_FINANCE_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
-                [STAT_FINANCE_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
-
+                [STAT_FINANCE_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD'),
+                [STAT_FINANCE_FILTER_KEY.TYPE]: type,
+                [STAT_FINANCE_FILTER_KEY.CLIENT]: client,
+                [STAT_FINANCE_FILTER_KEY.CATEGORY_EXPENSE]: categoryExpense
             })
         }
     })
@@ -81,6 +95,10 @@ const StatFinanceList = enhance((props) => {
     const firstDayOfMonth = _.get(location, ['query', 'fromDate']) || moment().format('YYYY-MM-01')
     const lastDay = moment().daysInMonth()
     const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
+    const type = !_.isNull(_.get(location, ['query', 'type'])) && _.toInteger(_.get(location, ['query', 'type']))
+    const client = !_.isNull(_.get(location, ['query', 'client'])) && _.toInteger(_.get(location, ['query', 'client']))
+    const categoryExpense = !_.isNull(_.get(location, ['query', 'categoryExpense'])) && _.toInteger(_.get(location, ['query', 'categoryExpense']))
+    const search = !_.isNull(_.get(location, ['query', 'search'])) ? _.get(location, ['query', 'search']) : null
 
     const graphData = {
         dataIn: graphIn,
@@ -94,6 +112,16 @@ const StatFinanceList = enhance((props) => {
     }
     const filterForm = {
         initialValues: {
+            search: search,
+            type: {
+                value: type
+            },
+            client: {
+                value: client
+            },
+            categoryExpense: {
+                value: categoryExpense
+            },
             date: {
                 fromDate: moment(firstDayOfMonth),
                 toDate: moment(lastDayOfMonth)

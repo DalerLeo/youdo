@@ -26,9 +26,10 @@ const enhance = compose(
         const detailLoading = _.get(state, ['return', 'item', 'loading'])
         const list = _.get(state, ['return', 'list', 'data'])
         const listLoading = _.get(state, ['return', 'list', 'loading'])
-        const filterForm = _.get(state, ['form', 'StatReturnFilterForm'])
+        const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
         const filter = filterHelper(list, pathname, query)
         return {
+            query,
             list,
             listLoading,
             detail,
@@ -43,6 +44,12 @@ const enhance = compose(
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
         dispatch(returnListFetchAction(filter))
+    }),
+    withPropsOnChange((props, nextProps) => {
+        return (props.query.fromDate !== nextProps.query.fromDate) ||
+            (props.query.toDate !== nextProps.query.toDate) ||
+            (props.query.division !== nextProps.query.division)
+    }, ({dispatch, filter}) => {
         dispatch(statReturnDataFetchAction(filter))
     }),
     withPropsOnChange((props, nextProps) => {
@@ -104,6 +111,7 @@ const StatReturnList = enhance((props) => {
     const firstDayOfMonth = _.get(location, ['query', 'fromDate']) || moment().format('YYYY-MM-01')
     const lastDay = moment().daysInMonth()
     const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
+    const division = !_.isNull(_.get(location, ['query', 'division'])) && _.toInteger(_.get(location, ['query', 'division']))
 
     const listData = {
         data: _.get(list, 'results') || {},
@@ -124,6 +132,9 @@ const StatReturnList = enhance((props) => {
 
     const filterForm = {
         initialValues: {
+            division: {
+                value: division
+            },
             date: {
                 fromDate: moment(firstDayOfMonth),
                 toDate: moment(lastDayOfMonth)
