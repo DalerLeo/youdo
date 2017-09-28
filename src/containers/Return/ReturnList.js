@@ -140,8 +140,9 @@ const enhance = compose(
         },
 
         handleClearFilterDialog: props => () => {
-            const {location: {pathname}} = props
+            const {location: {pathname}, dispatch} = props
             hashHistory.push({pathname, query: {}})
+            dispatch(reset('ReturnCreateForm'))
         },
 
         handleSubmitFilterDialog: props => () => {
