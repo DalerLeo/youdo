@@ -1,10 +1,17 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
 
-export const updateSerializer = (data) => {
+const ZERO = 0
+const TWO = 2
+export const updateSerializer = (data, detail, CLIENT_RETURN) => {
+    const type = _.toInteger(_.get(detail, 'type'))
+    const client = _.get(detail, ['client', 'id'])
     const comment = _.get(data, 'comment')
     const stock = _.get(data, ['stock', 'value'])
     const market = _.get(data, ['market', 'value'])
+    const status = _.get(detail, 'status')
+    const order = _.get(detail, 'order')
+    const paymentType = _.get(data, ['paymentType', 'value'])
     const returnedProducts = _.map(_.get(data, ['products']), (item) => {
         return {
             order_product: _.get(item, ['product', 'value', 'id']),
@@ -15,11 +22,30 @@ export const updateSerializer = (data) => {
             name: _.get(item, ['product', 'value', 'name'])
         }
     })
+    const clientReturnedProducts = _.map(_.get(data, ['products']), (item) => {
+        return {
+            amount: _.get(item, 'amount'),
+            cost: _.get(item, 'cost'),
+            product: _.get(item, ['product', 'value', 'productId'])
+        }
+    })
+    if (type === CLIENT_RETURN) {
+        return {
+            client,
+            stock,
+            comment,
+            products: clientReturnedProducts,
+            market,
+            payment_type: paymentType === TWO ? ZERO : paymentType
+        }
+    }
     return {
+        order,
         comment,
-        'returned_products': returnedProducts,
+        returned_products: returnedProducts,
         stock,
-        market
+        market,
+        status
     }
 }
 
