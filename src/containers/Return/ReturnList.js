@@ -23,11 +23,13 @@ import {
     returnItemFetchAction,
     returnListPrintFetchAction,
     returnCancelAction,
-    returnUpdateAction
+    returnUpdateAction,
+    clientReturnUpdateAction
 } from '../../actions/return'
 import {openSnackbarAction} from '../../actions/snackbar'
 
 const ZERO = 0
+const TWO = 2
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -211,10 +213,24 @@ const enhance = compose(
         },
 
         handleSubmitUpdateDialog: props => () => {
-            const {dispatch, updateForm, filter, location: {pathname}} = props
+            const {dispatch, updateForm, filter, location: {pathname}, detail} = props
+            const type = _.toInteger(_.get(detail, 'type'))
             const returnId = _.toInteger(_.get(props, ['params', 'returnId']))
 
-            return dispatch(returnUpdateAction(returnId, _.get(updateForm, ['values'])))
+            if (type === TWO) {
+                return dispatch(clientReturnUpdateAction(returnId, _.get(updateForm, ['values']), detail))
+                    .then(() => {
+                        return dispatch(returnItemFetchAction(returnId))
+                    })
+                    .then(() => {
+                        return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    })
+                    .then(() => {
+                        hashHistory.push({pathname, query: filter.getParams({[RETURN_UPDATE_DIALOG_OPEN]: false})})
+                        return dispatch(returnListFetchAction(filter))
+                    })
+            }
+            return dispatch(returnUpdateAction(returnId, _.get(updateForm, ['values']), detail))
                 .then(() => {
                     return dispatch(returnItemFetchAction(returnId))
                 })
@@ -223,7 +239,7 @@ const enhance = compose(
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[RETURN_UPDATE_DIALOG_OPEN]: false})})
-                    dispatch(returnListFetchAction(filter))
+                    return dispatch(returnListFetchAction(filter))
                 })
         },
 
@@ -347,6 +363,7 @@ const ReturnList = enhance((props) => {
                 product: {
                     value: {
                         id: _.get(item, 'id'),
+                        productId: _.get(item, ['product', 'id']),
                         price: _.get(item, 'price'),
                         name: _.get(item, ['product', 'name']),
                         measurement: {
@@ -363,8 +380,8 @@ const ReturnList = enhance((props) => {
                 value: {
                     id: _.get(item, 'orderProduct'),
                     price,
-                    name: _.get(item, ['product', 'name']),
                     product: {
+                        name: _.get(item, ['product', 'name']),
                         measurement: {
                             id: _.get(item, ['product', 'measurement', 'id']),
                             name: _.get(item, ['product', 'measurement', 'name'])

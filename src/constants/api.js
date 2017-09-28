@@ -95,6 +95,7 @@ export const TRANSACTION_PAYMENT_DELETE = 'sales/client_transaction/%d/cancel/'
 export const CLIENT_TRANSACTION = 'sales/client_transaction'
 export const CLIENT_TRANSACTION_CREATE = `/${CLIENT_TRANSACTION}/`
 export const CLIENT_TRANSACTION_RETURN = 'sales/order_return/from_client/'
+export const CLIENT_TRANSACTION_RETURN_UPDATE = 'sales/order_return/%d/from_client_update/'
 export const CLIENT_TRANSACTION_LIST = `/${CLIENT_TRANSACTION}/`
 export const CLIENT_TRANSACTION_ITEM = `/${CLIENT_TRANSACTION}/%d/`
 export const CLIENT_TRANSACTION_SEND = '/transfer/'
