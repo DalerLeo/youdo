@@ -143,7 +143,7 @@ const UsersCreateDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialogAddUser}
-            contentStyle={loading ? {width: '300px'} : {width: '600px'}}
+            contentStyle={loading ? {width: '400px'} : {width: '600px'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
                 <span>{isUpdate ? 'Изменить пользователя' : 'Добавить пользователя'}</span>
@@ -245,6 +245,7 @@ const UsersCreateDialog = enhance((props) => {
                                     <Field
                                         name='radioStock'
                                         stockList={_.get(stockListData, 'data')}
+                                        loading={loading}
                                         component={UserStockRadioButtonField}/>
                                 </div>
                         }

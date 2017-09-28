@@ -105,30 +105,3 @@ export const updateTransactionSerializer = (data, client) => {
         payment_type: paymentType === TWO ? ZERO : paymentType
     }
 }
-
-export const createReturnSerializer = (data, id) => {
-    const client = id
-    const stock = _.get(data, ['stock', 'value'])
-    const market = _.get(data, ['market', 'value'])
-    const comment = _.get(data, ['comment'])
-    const paymentType = _.get(data, ['paymentType', 'value'])
-    const products = _.map(_.get(data, ['products']), (item) => {
-        const amount = numberWithoutSpaces(_.get(item, 'amount'))
-        const cost = numberWithoutSpaces(_.get(item, 'cost'))
-        const product = _.get(item, ['product', 'value', 'id'])
-        return {
-            amount,
-            cost,
-            product
-        }
-    })
-
-    return {
-        client,
-        stock,
-        comment,
-        products,
-        market,
-        payment_type: paymentType === TWO ? ZERO : paymentType
-    }
-}

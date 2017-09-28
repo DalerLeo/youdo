@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import {compose, withReducer} from 'recompose'
 import injectSheet from 'react-jss'
 import {Field, Fields, reduxForm, SubmissionError} from 'redux-form'
+import {connect} from 'react-redux'
 import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
 import IconButton from 'material-ui/IconButton'
@@ -14,7 +15,8 @@ import {
     ClientBalanceReturnProductList,
     TextField,
     PaymentTypeSearchField,
-    ClientBalanceReturnTotalSum
+    ClientBalanceReturnTotalSum,
+    ClientSearchField
 } from '../ReduxForm'
 import MarketSearchField from '../ReduxForm/ClientBalance/MarketSearchField'
 import toCamelCase from '../../helpers/toCamelCase'
@@ -218,8 +220,14 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'ClientBalanceReturnForm',
+        form: 'ReturnCreateForm',
         enableReinitialize: true
+    }),
+    connect((state) => {
+        const clientId = _.get(state, ['form', 'ReturnCreateForm', 'values', 'client', 'value'])
+        return {
+            clientId
+        }
     }),
     withReducer('state', 'dispatch', (state, action) => {
         return {...state, ...action}
@@ -231,7 +239,7 @@ const customContentStyle = {
     maxWidth: 'none'
 }
 const SupplyCreateDialog = enhance((props) => {
-    const {open, handleSubmit, onClose, classes, name, clientId, isUpdate} = props
+    const {open, handleSubmit, onClose, classes, clientId, isUpdate, name} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     return (
         <Dialog
@@ -243,7 +251,7 @@ const SupplyCreateDialog = enhance((props) => {
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>Возврат от {name}</span>
+                <span>Возврат {isUpdate ? 'от ' + name : null}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
@@ -257,6 +265,14 @@ const SupplyCreateDialog = enhance((props) => {
                         <div className={classes.inContent} style={{minHeight: '350px'}}>
                             <div className={classes.leftOrderPart}>
                                 <div className={classes.subTitleOrder}>Детали</div>
+                                <div className={classes.condition}>
+                                    <Field
+                                        name="client"
+                                        component={ClientSearchField}
+                                        className={classes.searchFieldCustom}
+                                        label="Клиент"
+                                        fullWidth={true}/>
+                                </div>
                                 <div className={classes.condition}>
                                     <Field
                                         name="stock"
@@ -273,6 +289,7 @@ const SupplyCreateDialog = enhance((props) => {
                                         className={classes.searchFieldCustom}
                                         label="Магазин"
                                         clientId={clientId}
+                                        disabled={!clientId}
                                         fullWidth={true}/>
                                 </div>
                                 <div className={classes.condition}>
@@ -326,8 +343,5 @@ SupplyCreateDialog.propTyeps = {
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired
-}
-SupplyCreateDialog.defaultProps = {
-    isUpdate: false
 }
 export default SupplyCreateDialog
