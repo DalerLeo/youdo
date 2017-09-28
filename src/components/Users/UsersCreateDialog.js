@@ -245,6 +245,7 @@ const UsersCreateDialog = enhance((props) => {
                                     <Field
                                         name='radioStock'
                                         stockList={_.get(stockListData, 'data')}
+                                        loading={loading}
                                         component={UserStockRadioButtonField}/>
                                 </div>
                         }
