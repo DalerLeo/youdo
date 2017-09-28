@@ -180,7 +180,6 @@ const iconStyle = {
         padding: 0
     }
 }
-const ONE = 1
 const ReturnDetails = enhance((props) => {
     const {
         classes,
