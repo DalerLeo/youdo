@@ -214,7 +214,6 @@ const ReturnDetails = enhance((props) => {
     const CANCELLED = 3
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const totalPrice = numberFormat(_.get(data, 'totalPrice'), primaryCurrency)
-    const edit = PENDING === ZERO || IN_PROGRESS === ONE
 
     const products = _.get(data, 'returnedProducts')
     if (loading) {
