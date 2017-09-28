@@ -137,8 +137,8 @@ const filter = (data, pathname, query = {}, newKeys = {}) => {
 
     const hasPagination = () => pageCount > first
 
-    const filterRequest = () => {
-        return paramsToQueryUrl(_.assign({}, params, {
+    const filterRequest = (except) => {
+        const defaultExcept = {
             select: null,
             openFilterDialog: null,
             openCreateDialog: null,
@@ -211,7 +211,8 @@ const filter = (data, pathname, query = {}, newKeys = {}) => {
             deleteTransaction: null,
             openBindAgent: null,
             unbindAgent: null
-        }))
+        }
+        return paramsToQueryUrl(_.assign({}, params, _.merge(except, defaultExcept)))
     }
 
     const filterBy = (newParams) => {

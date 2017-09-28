@@ -84,7 +84,6 @@ const enhance = compose(
             borderBottom: '1px #efefef solid'
         },
         tableWrapper: {
-
             '& .row': {
                 '&:after': {
                     bottom: '-1px'
@@ -93,8 +92,12 @@ const enhance = compose(
                     display: 'flex',
                     height: '50px',
                     alignItems: 'center',
+                    '&:first-child': {
+                        paddingLeft: '0'
+                    },
                     '&:last-child': {
-                        justifyContent: 'flex-end'
+                        justifyContent: 'flex-end',
+                        paddingRight: '0'
                     }
                 }
             },
@@ -147,36 +150,6 @@ const enhance = compose(
             alignItems: 'center',
             justifyContent: 'space-between'
         },
-        form: {
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between'
-        },
-        filter: {
-            display: 'flex',
-            alignItems: 'center',
-            '& > div': {
-                width: '170px!important',
-                position: 'relative',
-                marginRight: '40px',
-                '&:last-child': {
-                    margin: '0'
-                },
-                '&:after': {
-                    content: '""',
-                    position: 'absolute',
-                    right: '-20px',
-                    height: '30px',
-                    width: '1px',
-                    top: '50%',
-                    marginTop: '-15px',
-                    background: '#efefef'
-                },
-                '&:last-child:after': {
-                    display: 'none'
-                }
-            }
-        },
         leftPanel: {
             backgroundColor: '#f2f5f8',
             flexBasis: '250px',
@@ -189,28 +162,14 @@ const enhance = compose(
             overflowY: 'auto',
             overflowX: 'hidden'
         },
-        searchButton: {
-            marginLeft: '-10px !important',
-            '& div': {
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-            }
-        },
-        excel: {
-            background: '#71ce87',
-            borderRadius: '2px',
-            color: '#fff',
-            fontWeight: '600',
-            display: 'flex',
-            alignItems: 'center',
-            padding: '5px 15px',
-            '& svg': {
-                width: '18px !important'
-            }
-        },
         diagram: {
-            marginTop: '20px'
+            marginTop: '20px',
+            '& > div:first-child': {
+                paddingLeft: '0'
+            },
+            '& > div:last-child': {
+                paddingRight: '0'
+            }
         },
         salesSummary: {
             '& > div:nth-child(odd)': {
@@ -228,12 +187,7 @@ const enhance = compose(
             padding: '200px 0 0',
             textAlign: 'center',
             fontSize: '13px',
-            color: '#666',
-            '& svg': {
-                width: '50px !important',
-                height: '50px !important',
-                color: '#999 !important'
-            }
+            color: '#666'
         }
     })
 )
@@ -272,7 +226,7 @@ const StatSalesGridList = enhance((props) => {
 
     const config = {
         chart: {
-            type: 'areaspline',
+            type: 'area',
             height: 180
         },
         title: {

@@ -4,11 +4,9 @@ import _ from 'lodash'
 import {Row, Col} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import {reduxForm, Field} from 'redux-form'
-import Search from 'material-ui/svg-icons/action/search'
+import {Field} from 'redux-form'
 import List from 'material-ui/svg-icons/action/list'
 import IconButton from 'material-ui/IconButton'
-import Excel from 'material-ui/svg-icons/av/equalizer'
 import CircularProgress from 'material-ui/CircularProgress'
 import ReactHighcharts from 'react-highcharts'
 import StatReturnDialog from './StatReturnDialog'
@@ -22,6 +20,7 @@ import * as ROUTES from '../../../constants/routes'
 import numberFormat from '../../../helpers/numberFormat'
 import dateFormat from '../../../helpers/dateFormat'
 import getConfig from '../../../helpers/getConfig'
+import {StatisticsFilterExcel} from '../../Statistics'
 
 export const STAT_RETURN_FILTER_KEY = {
     FROM_DATE: 'fromDate',
@@ -54,6 +53,12 @@ const enhance = compose(
             zIndex: '999',
             display: 'flex'
         },
+        graphLoader: {
+            extend: 'loader',
+            padding: '0',
+            height: '180px',
+            marginTop: '20px'
+        },
         pagination: {
             display: 'flex',
             alignItems: 'center',
@@ -62,7 +67,6 @@ const enhance = compose(
             borderBottom: '1px #efefef solid'
         },
         tableWrapper: {
-
             '& .row': {
                 '&:after': {
                     bottom: '-1px'
@@ -71,8 +75,12 @@ const enhance = compose(
                     display: 'flex',
                     height: '50px',
                     alignItems: 'center',
+                    '&:first-child': {
+                        paddingLeft: '0'
+                    },
                     '&:last-child': {
-                        justifyContent: 'flex-end'
+                        justifyContent: 'flex-end',
+                        paddingRight: '0'
                     }
                 }
             },
@@ -81,19 +89,6 @@ const enhance = compose(
                 '&:last-child:after': {
                     content: '""',
                     backgroundImage: 'none'
-                }
-            },
-            '& .personImage': {
-                borderRadius: '50%',
-                overflow: 'hidden',
-                height: '30px',
-                minWidth: '30px',
-                width: '30px',
-                marginRight: '10px',
-                '& img': {
-                    display: 'flex',
-                    height: '100%',
-                    width: '100%'
                 }
             }
         },
@@ -125,36 +120,6 @@ const enhance = compose(
             alignItems: 'center',
             justifyContent: 'space-between'
         },
-        form: {
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between'
-        },
-        filter: {
-            display: 'flex',
-            alignItems: 'center',
-            '& > div': {
-                width: '170px!important',
-                position: 'relative',
-                marginRight: '40px',
-                '&:last-child': {
-                    margin: '0'
-                },
-                '&:after': {
-                    content: '""',
-                    position: 'absolute',
-                    right: '-20px',
-                    height: '30px',
-                    width: '1px',
-                    top: '50%',
-                    marginTop: '-15px',
-                    background: '#efefef'
-                },
-                '&:last-child:after': {
-                    display: 'none'
-                }
-            }
-        },
         leftPanel: {
             backgroundColor: '#f2f5f8',
             flexBasis: '250px',
@@ -167,28 +132,14 @@ const enhance = compose(
             overflowY: 'auto',
             overflowX: 'hidden'
         },
-        searchButton: {
-            marginLeft: '-10px !important',
-            '& div': {
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-            }
-        },
-        excel: {
-            background: '#71ce87',
-            borderRadius: '2px',
-            color: '#fff',
-            fontWeight: '600',
-            display: 'flex',
-            alignItems: 'center',
-            padding: '5px 15px',
-            '& svg': {
-                width: '18px !important'
-            }
-        },
         diagram: {
-            marginTop: '20px'
+            marginTop: '20px',
+            '& > div:first-child': {
+                paddingLeft: '0'
+            },
+            '& > div:last-child': {
+                paddingRight: '0'
+            }
         },
         salesSummary: {
             '& > div:nth-child(odd)': {
@@ -213,11 +164,7 @@ const enhance = compose(
                 color: '#999 !important'
             }
         }
-    }),
-    reduxForm({
-        form: 'StatReturnFilterForm',
-        enableReinitialize: true
-    }),
+    })
 )
 
 const StatReturnGridList = enhance((props) => {
@@ -228,37 +175,25 @@ const StatReturnGridList = enhance((props) => {
         onSubmit,
         listData,
         statReturnDialog,
-        handleSubmit,
         detailData,
         handleGetDocument,
-        graphData
+        graphData,
+        initialValues
     } = props
 
     const loading = _.get(listData, 'listLoading')
+    const graphLoading = _.get(graphData, 'graphLoading')
     const headerStyle = {
         backgroundColor: '#fff',
         fontWeight: '600',
         color: '#666'
     }
 
-    const iconStyle = {
-        icon: {
-            color: '#5d6474',
-            width: 22,
-            height: 22
-        },
-        button: {
-            width: 40,
-            height: 40,
-            padding: 0
-        }
-    }
-
-    let returnSum = 0
-
+    const returnSum = _.sumBy(_.get(graphData, 'data'), (item) => {
+        return _.toNumber(_.get(item, 'returnAmount'))
+    })
     const returnedValue = _.map(_.get(graphData, 'data'), (item) => {
-        returnSum += _.toInteger(_.get(item, 'returnAmount'))
-        return _.toInteger(_.get(item, 'returnAmount'))
+        return _.toNumber(_.get(item, 'returnAmount'))
     })
 
     const valueName = _.map(_.get(graphData, 'data'), (item) => {
@@ -355,14 +290,14 @@ const StatReturnGridList = enhance((props) => {
 
     const headers = (
         <Row style={headerStyle} className="dottedList">
-            <Col xs={1}>Воз.</Col>
+            <Col xs={1}>№</Col>
             <Col xs={2}>От кого</Col>
             <Col xs={1}>Заказ</Col>
             <Col xs={2}>Склад</Col>
             <Col xs={2}>Добавил</Col>
-            <Col xs={1}>Дата возврата</Col>
-            <Col xs={2} style={{textAlign: 'right'}}>Сумма возврата</Col>
-            <Col xs={1} style={{textAlign: 'right'}}></Col>
+            <Col xs={1}>Дата</Col>
+            <Col xs={2} style={{justifyContent: 'flex-end'}}>Сумма возврата</Col>
+            <Col xs={1}>{null}</Col>
         </Row>
     )
 
@@ -382,12 +317,8 @@ const StatReturnGridList = enhance((props) => {
                 <Col xs={1}>{order}</Col>
                 <Col xs={2}>{stock}</Col>
                 <Col xs={2}>{user}</Col>
-                <Col xs={1}>{createdDate}</Col>
-                <Col xs={2}>
-                    <div style={{textAlign: 'right !important'}}>
-                        {totalPrice}
-                    </div>
-                </Col>
+                <Col xs={1} style={{whiteSpace: 'nowrap'}}>{createdDate}</Col>
+                <Col xs={2} style={{justifyContent: 'flex-end'}}>{totalPrice}</Col>
                 <Col xs={1}>
                     <IconButton
                     onTouchTap={() => {
@@ -400,6 +331,23 @@ const StatReturnGridList = enhance((props) => {
         )
     })
 
+    const fields = (
+        <div>
+            <Field
+                className={classes.inputFieldCustom}
+                name="date"
+                component={DateToDateField}
+                label="Диапазон дат"
+                fullWidth={true}/>
+            <Field
+                name="division"
+                component={DivisionSearchField}
+                className={classes.inputFieldCustom}
+                label="Подразделение"
+                fullWidth={true}/>
+        </div>
+    )
+
     const page = (
         <div className={classes.mainWrapper}>
             <Row style={{margin: '0', height: '100%'}}>
@@ -408,64 +356,47 @@ const StatReturnGridList = enhance((props) => {
                 </div>
                 <div className={classes.rightPanel}>
                     <div className={classes.wrapper}>
-                        <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
-                            <div className={classes.filter}>
-                                <Field
-                                    className={classes.inputFieldCustom}
-                                    name="date"
-                                    component={DateToDateField}
-                                    label="Диапазон дат"
-                                    fullWidth={true}/>
-                                <Field
-                                    name="division"
-                                    component={DivisionSearchField}
-                                    className={classes.inputFieldCustom}
-                                    label="Подразделение"
-                                    fullWidth={true}/>
-                                <IconButton
-                                    className={classes.searchButton}
-                                    iconStyle={iconStyle.icon}
-                                    style={iconStyle.button}
-                                    type="submit">
-                                    <Search/>
-                                </IconButton>
+                        <StatisticsFilterExcel
+                            filter={filter}
+                            fields={fields}
+                            handleGetDocument={handleGetDocument}
+                            handleSubmitFilterDialog={onSubmit}
+                            initialValues={initialValues}
+                            filterKeys={STAT_RETURN_FILTER_KEY}
+                        />
+                        {graphLoading
+                        ? <div className={classes.graphLoader}>
+                                <CircularProgress size={40} thickness={4}/>
                             </div>
-                            <a className={classes.excel} onClick={handleGetDocument}>
-                                <Excel color="#fff"/> <span>Excel</span>
-                            </a>
-                        </form>
+                        : <Row className={classes.diagram}>
+                            <Col xs={3} className={classes.salesSummary}>
+                                <div>Общая сумма возврата</div>
+                                <div>{numberFormat(returnSum, getConfig('PRIMARY_CURRENCY'))}</div>
+                            </Col>
+                            <Col xs={9}>
+                                <ReactHighcharts config={config} neverReflow={true} isPureConfig={true}/>
+                            </Col>
+                        </Row>}
+                        <div className={classes.pagination}>
+                            <div><b>История возврата</b></div>
+                            <Pagination filter={filter}/>
+                        </div>
                         {loading
-                            ? <div className={classes.loader}>
-                                <CircularProgress size={70} thickness={4}/>
+                        ? <div className={classes.tableWrapper}>
+                            <div className={classes.loader}>
+                                <CircularProgress thickness={4} size={40}/>
                             </div>
-                            : (_.isEmpty(list) && !loading)
+                        </div>
+                        : <div className={classes.tableWrapper}>
+                            {_.isEmpty(list) && !loading
                                 ? <div className={classes.emptyQuery}>
                                     <div>По вашему запросу ничего не найдено</div>
                                 </div>
                                 : <div>
-                                    <Row className={classes.diagram}>
-                                        <Col xs={3} className={classes.salesSummary}>
-                                            <div>Общая сумма возврата</div>
-                                            <div>{numberFormat(returnSum, getConfig('PRIMARY_CURRENCY'))}</div>
-                                        </Col>
-                                        <Col xs={9}>
-                                            {_.get(graphData, 'graphLoading') && <div className={classes.loader}>
-                                                <CircularProgress size={50} thickness={4}/>
-                                            </div>}
-                                            {!_.get(graphData, 'graphLoading') &&
-                                            <ReactHighcharts config={config} neverReflow={true} isPureConfig={true}/>}
-                                        </Col>
-                                    </Row>
-                                    <div className={classes.pagination}>
-                                        <div><b>История возврата</b></div>
-                                        <Pagination filter={filter}/>
-                                    </div>
-                                    <div className={classes.tableWrapper}>
-                                        {headers}
-                                        {list}
-                                    </div>
-                                </div>
-                        }
+                                    {headers}
+                                    {list}
+                                </div>}
+                        </div>}
                     </div>
                 </div>
             </Row>
