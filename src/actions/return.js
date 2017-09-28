@@ -103,3 +103,20 @@ export const clientReturnUpdateAction = (id, formValues, detail) => {
     }
 }
 
+export const clientReturnAction = (formValues, id) => {
+    const requestData = serializers.createReturnSerializer(formValues, id)
+    const payload = axios()
+        .post(API.CLIENT_TRANSACTION_RETURN, requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.CLIENT_TRANSACTION_RETURN,
+        payload
+    }
+}
+

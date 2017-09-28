@@ -18,7 +18,8 @@ import {
     ProductSearchField,
     ReturnStatusSearchField,
     ReturnTypeSearchField,
-    DivisionSearchField
+    DivisionSearchField,
+    PaymentTypeSearchField
 } from '../ReduxForm'
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
@@ -36,7 +37,8 @@ export const RETURN_FILTER_KEY = {
     PRODUCT: 'product',
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate',
-    DIVISION: 'division'
+    DIVISION: 'division',
+    PAYMENT_TYPE: 'paymentType'
 }
 
 const enhance = compose(
@@ -200,6 +202,7 @@ const ReturnFilterForm = enhance((props) => {
                         <Field className={classes.inputFieldCustom} name="order" component={TextField} label="№ Заказа"/>
                         <Field className={classes.inputFieldCustom} name="product" component={ProductSearchField} label="Продукт"/>
                         <Field className={classes.inputFieldCustom} name="division" component={DivisionSearchField} label="Подразделение"/>
+                        <Field className={classes.inputFieldCustom} name="paymentType" component={PaymentTypeSearchField} label="Тип оплаты"/>
                         <Field className={classes.inputFieldCustom} name="code" component={TextField} label="Код"/>
                         <Field className={classes.inputFieldCustom} name="status" component={ReturnStatusSearchField} label="Статус"/>
                         <Field className={classes.inputFieldCustom} name="type" component={ReturnTypeSearchField} label="Тип"/>

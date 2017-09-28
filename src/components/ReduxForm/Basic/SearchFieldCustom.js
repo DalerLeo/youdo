@@ -108,7 +108,8 @@ const SearchFieldCustom = enhance((props) => {
         label,
         getValue,
         state,
-        dispatch
+        dispatch,
+        disabled
     } = props
     return (
         <div className={classes.wrapper}>
@@ -123,6 +124,7 @@ const SearchFieldCustom = enhance((props) => {
                     noResultsText={'Не найдено'}
                     isLoading={state.loading}
                     labelKey={'text'}
+                    disabled={disabled}
                 />
             </div>
         </div>

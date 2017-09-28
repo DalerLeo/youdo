@@ -17,7 +17,6 @@ import {
     CLIENT_BALANCE_CREATE_DIALOG_OPEN,
     CLIENT_BALANCE_ADD_DIALOG_OPEN,
     CLIENT_BALANCE_SUPER_USER_OPEN,
-    CLIENT_BALANCE_RETURN_DIALOG_OPEN,
     ClientBalanceGridList
 } from '../../components/ClientBalance'
 import {
@@ -25,13 +24,11 @@ import {
     clientBalanceItemFetchAction,
     clientBalanceCreateExpenseAction,
     clientAddAction,
-    clientBalanceReturnAction,
     superUserAction
 } from '../../actions/clientBalance'
 import {openSnackbarAction} from '../../actions/snackbar'
 import {openErrorAction} from '../../actions/error'
 
-const MINUS_ONE = -1
 const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
@@ -218,14 +215,6 @@ const enhance = compose(
                     }))
                 })
         },
-        handleOpenClientReturnDialog: props => (id) => {
-            const {dispatch, location: {pathname}, filter} = props
-            dispatch(reset('ClientBalanceReturnForm'))
-            hashHistory.push({
-                pathname,
-                query: filter.getParams({[CLIENT_BALANCE_RETURN_DIALOG_OPEN]: id})
-            })
-        },
         handleSubmitSearch: props => () => {
             const {location: {pathname}, filter, searchForm} = props
             const term = _.get(searchForm, ['values', 'searching'])
@@ -233,37 +222,6 @@ const enhance = compose(
                 pathname, query: filter.getParams({search: term})
             })
         },
-        handleCloseClientReturnDialog: props => () => {
-            const {dispatch, location: {pathname}, filter} = props
-            dispatch(reset('ClientBalanceReturnForm'))
-            hashHistory.push({pathname, query: filter.getParams({[CLIENT_BALANCE_RETURN_DIALOG_OPEN]: MINUS_ONE})})
-        },
-        handleSubmitClientReturnDialog: props => () => {
-            const {location: {pathname}, dispatch, returnForm, filter} = props
-            const id = _.toInteger(_.get(props, ['location', 'query', 'openClientReturnDialog']))
-            return dispatch(clientBalanceReturnAction(_.get(returnForm, ['values']), id))
-                .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
-                })
-                .then(() => {
-                    hashHistory.push({
-                        pathname,
-                        query: filter.getParams({[CLIENT_BALANCE_RETURN_DIALOG_OPEN]: MINUS_ONE})
-                    })
-                    dispatch(clientBalanceListFetchAction(filter))
-                    dispatch(reset('ClientBalanceReturnForm'))
-                }).catch((error) => {
-                    const errorWhole = _.map(error, (item, index) => {
-                        return <p style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
-                    })
-                    dispatch(openErrorAction({
-                        message: <div style={{padding: '0 30px'}}>
-                            {errorWhole}
-                        </div>
-                    }))
-                })
-        },
-
         handleOpenSuperUserDialog: props => (id) => {
             const {filter, location: {pathname}} = props
             hashHistory.push({
@@ -332,7 +290,6 @@ const ClientBalanceList = enhance((props) => {
     const openAddDialog = toBoolean(_.get(location, ['query', CLIENT_BALANCE_ADD_DIALOG_OPEN]))
     const openSuperUser = _.toInteger(_.get(location, ['query', CLIENT_BALANCE_SUPER_USER_OPEN])) > ZERO
     const openInfoDialog = toBoolean(_.get(location, ['query', CLIENT_BALANCE_INFO_DIALOG_OPEN]))
-    const openClientReturnDialog = _.get(location, ['query', CLIENT_BALANCE_RETURN_DIALOG_OPEN])
     const division = _.toNumber(_.get(location, ['query', 'division']))
     const type = _.get(location, ['query', 'type'])
     const fromDate = filter.getParam(CLIENT_BALANCE_FILTER_KEY.FROM_DATE)
@@ -376,13 +333,6 @@ const ClientBalanceList = enhance((props) => {
         handleOpenAddDialog: props.handleOpenAddDialog,
         handleCloseAddDialog: props.handleCloseAddDialog,
         handleSubmitAddDialog: props.handleSubmitAddDialog
-    }
-
-    const clientReturnDialog = {
-        openClientReturnDialog,
-        handleOpenClientReturnDialog: props.handleOpenClientReturnDialog,
-        handleCloseClientReturnDialog: props.handleCloseClientReturnDialog,
-        handleSubmitClientReturnDialog: props.handleSubmitClientReturnDialog
     }
     const filterDialog = {
         initialValues: {
@@ -429,7 +379,6 @@ const ClientBalanceList = enhance((props) => {
                 createDialog={createDialog}
                 addDialog={addDialog}
                 filterDialog={filterDialog}
-                clientReturnDialog={clientReturnDialog}
                 superUser={superUser}
                 handleSubmitSearch={props.handleSubmitSearch}
             />

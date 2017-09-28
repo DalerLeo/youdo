@@ -1,15 +1,12 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Row, Col} from 'react-flexbox-grid'
 import * as ROUTES from '../../constants/routes'
-import GridList from '../GridList'
 import Container from '../Container'
 import ClientBalanceInfoDialog from './ClientBalanceInfoDialog'
 import ClientBalanceCreateDialog from './ClientBalanceCreateDialog'
 import ClientBalanceUpdateDialog from './ClientBalanceUpdateDialog'
 import CircularProgress from 'material-ui/CircularProgress'
-import ClientBalanceReturnDialog from './ClientBalanceReturnDialog'
 import {Field, reduxForm} from 'redux-form'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
@@ -19,7 +16,6 @@ import getConfig from '../../helpers/getConfig'
 import IconButton from 'material-ui/IconButton'
 import Cancel from 'material-ui/svg-icons/content/remove-circle'
 import Add from 'material-ui/svg-icons/content/add-circle'
-import ReturnIcon from 'material-ui/svg-icons/content/reply'
 import Tooltip from '../ToolTip'
 import Paper from 'material-ui/Paper'
 import SearchIcon from 'material-ui/svg-icons/action/search'
@@ -29,10 +25,6 @@ import Pagination from '../GridList/GridListNavPagination'
 
 let amountValues = []
 let head = []
-const DIVISION = {
-    SHAMPUN: 2,
-    KOSMETIKA: 1
-}
 
 const enhance = compose(
     injectSheet({
@@ -135,7 +127,7 @@ const enhance = compose(
             }
         },
         mainTableWrapper: {
-            width: 'calc(75% - 152px)',
+            width: 'calc(75% - 120px)',
             overflowX: 'auto',
             overflowY: 'hidden'
         },
@@ -145,7 +137,7 @@ const enhance = compose(
             boxShadow: 'none',
             borderLeft: '1px #efefef solid',
             borderRight: '1px #efefef solid',
-            width: '148px'
+            width: '120px'
         },
         buttonsWrapper: {
             padding: '0 30px',
@@ -228,7 +220,6 @@ const iconStyle = {
     }
 }
 
-const MINUS_ONE = -1
 const ZERO = 0
 const ClientBalanceGridList = enhance((props) => {
     const {
@@ -240,15 +231,12 @@ const ClientBalanceGridList = enhance((props) => {
         infoDialog,
         listData,
         detailData,
-        clientReturnDialog,
         superUser,
         currentItem,
         setItem,
         handleSubmit,
         handleSubmitSearch
     } = props
-    const name1 = _.get(listData, ['data', '0', 'division', '0', 'name'])
-    const name2 = _.get(listData, ['data', '0', 'division', '1', 'name'])
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
 
     const clients = (
@@ -270,18 +258,6 @@ const ClientBalanceGridList = enhance((props) => {
                 const id = _.get(item, 'id')
                 return (
                     <div key={id} className={classes.buttonsWrapper}>
-                        <Tooltip position="bottom" text="Возврат с клиента">
-                            <IconButton
-                                disableTouchRipple={true}
-                                iconStyle={iconStyle.icon}
-                                style={iconStyle.button}
-                                touch={true}
-                                onTouchTap={() => {
-                                    clientReturnDialog.handleOpenClientReturnDialog(id)
-                                }}>
-                                <ReturnIcon color="#666"/>
-                            </IconButton>
-                        </Tooltip>
                         <Tooltip position="bottom" text="Списать">
                             <IconButton
                                 disableTouchRipple={true}
@@ -363,131 +339,9 @@ const ClientBalanceGridList = enhance((props) => {
             {buttons}
         </div>
     )
-
-    const listHeader = [
-        {
-            sorting: false,
-            name: 'client',
-            title: 'Клиент',
-            xs: 3
-        },
-        {
-            sorting: true,
-            name: 'orders',
-            title: 'Кол-во заказов',
-            xs: 2
-        },
-        {
-            sorting: true,
-            alignRight: true,
-            name: 'cosmetics_balance',
-            title: name1,
-            xs: 2
-        },
-        {
-            sorting: true,
-            alignRight: true,
-            name: 'shampoo_balance',
-            title: name2,
-            xs: 2
-        },
-        {
-            sorting: true,
-            alignRight: true,
-            name: 'shampoo_bank',
-            title: 'Баланс шампунь переч.',
-            xs: 2
-        },
-        {
-            sorting: false,
-            title: '',
-            xs: 1
-        }
-    ]
     const isSuperUser = _.get(superUser, 'isSuperUser')
-    const clientBalanceDetail = (
-        <span>a</span>
-    )
-    const clientBalanceList = _.map(_.get(listData, 'data'), (item) => {
-        const id = _.get(item, 'id')
-        const cosmeticsBalance = _.toNumber(_.get(item, 'cosmeticsBalance'))
-        const shampooBalance = _.toNumber(_.get(item, 'shampooBalance'))
-        const shampooBank = _.toNumber(_.get(item, 'shampooBank'))
-        const currentCurrency = getConfig('PRIMARY_CURRENCY')
-        const orders = numberFormat(_.get(item, 'orders'))
-        const clientName = _.get(item, 'name')
-
-        return (
-            <Row key={id} className={classes.listRow}>
-                <Col xs={3}>{clientName}</Col>
-                <Col xs={2}>{orders}</Col>
-                <Col xs={2} className={classes.balance}>
-                    <span onClick={() => { infoDialog.handleOpenInfoDialog(id, DIVISION.KOSMETIKA) }}
-                          className={cosmeticsBalance > ZERO ? classes.green : (cosmeticsBalance < ZERO ? classes.red : classes.black)}>
-                        {numberFormat(cosmeticsBalance, currentCurrency)}
-                    </span>
-                </Col>
-                <Col xs={2} className={classes.balance}>
-                    <span onClick={() => { infoDialog.handleOpenInfoDialog(id, DIVISION.SHAMPUN, 'cash') }}
-                          className={shampooBalance > ZERO ? classes.green : (shampooBalance < ZERO ? classes.red : classes.black)}>
-                        {numberFormat(shampooBalance, currentCurrency)}
-                    </span>
-                </Col>
-                <Col xs={2} className={classes.balance}>
-                    <span onClick={() => { infoDialog.handleOpenInfoDialog(id, DIVISION.SHAMPUN, 'bank') }}
-                          className={shampooBank > ZERO ? classes.green : (shampooBank < ZERO ? classes.red : classes.black)}>
-                        {numberFormat(shampooBank, currentCurrency)}
-                    </span>
-                </Col>
-                <Col xs={1} className={classes.rightAlign}>
-                    <div style={{display: 'flex', justifyContent: 'flex-end'}}>
-                        <Tooltip position="bottom" text="Возврат с клиента">
-                            <IconButton
-                                iconStyle={iconStyle.icon}
-                                style={iconStyle.button}
-                                touch={true}
-                                onTouchTap={() => {
-                                    clientReturnDialog.handleOpenClientReturnDialog(id)
-                                }}>
-                                <ReturnIcon color="#666"/>
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip position="bottom" text="Списать">
-                            <IconButton
-                                iconStyle={iconStyle.icon}
-                                style={iconStyle.button}
-                                touch={true}
-                                onTouchTap={() => {
-                                    createDialog.handleOpenCreateDialog(id)
-                                }}>
-                                <Cancel color='#ff584b'/>
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip position="bottom" text="Добавить">
-                            <IconButton
-                                iconStyle={iconStyle.icon}
-                                style={iconStyle.button}
-                                touch={true}
-                                onTouchTap={() => {
-                                    addDialog.handleOpenAddDialog(id)
-                                }}>
-                                <Add color='#8dc572'/>
-                            </IconButton>
-                        </Tooltip>
-                    </div>
-                </Col>
-            </Row>
-        )
-    })
-
-    const list = {
-        header: listHeader,
-        list: clientBalanceList,
-        loading: _.get(listData, 'listLoading')
-    }
 
     const client = _.find(_.get(listData, 'data'), {'id': _.get(detailData, 'id')})
-    const clientName = _.find(_.get(listData, 'data'), {'id': _.toInteger(_.get(clientReturnDialog, 'openClientReturnDialog'))})
     const TWO = 2
 
     const amount = _.toNumber(_.get(currentItem, 'amount'))
@@ -530,17 +384,6 @@ const ClientBalanceGridList = enhance((props) => {
             <Pagination filter={filter}/>
         </div>
     )
-
-    const gridList = (
-        <GridList
-            filter={filter}
-            list={list}
-            detail={clientBalanceDetail}
-            loading={_.get(listData, 'listLoading')}
-        />
-    )
-
-    _.get(gridList, 'hello')
     return (
         <Container>
             <SubMenu url={ROUTES.CLIENT_BALANCE_LIST_URL}/>
@@ -592,13 +435,6 @@ const ClientBalanceGridList = enhance((props) => {
                 addDialog={true}
                 name={_.get(client, 'name')}
             />
-            <ClientBalanceReturnDialog
-                name={_.get(clientName, 'name')}
-                clientId={_.get(filter.getParams(), 'openClientReturnDialog')}
-                open={_.get(clientReturnDialog, 'openClientReturnDialog') ? _.toInteger(_.get(clientReturnDialog, 'openClientReturnDialog')) !== MINUS_ONE : false}
-                onClose={clientReturnDialog.handleCloseClientReturnDialog}
-                onSubmit={clientReturnDialog.handleSubmitClientReturnDialog}
-            />
         </Container>
     )
 })
@@ -620,11 +456,6 @@ ClientBalanceGridList.propTypes = {
         handleCloseCreateDialog: PropTypes.func.isRequired,
         handleSubmitCreateDialog: PropTypes.func.isRequired
     }).isRequired,
-    clientReturnDialog: PropTypes.shape({
-        handleOpenClientReturnDialog: PropTypes.func.isRequired,
-        handleCloseClientReturnDialog: PropTypes.func.isRequired,
-        handleSubmitClientReturnDialog: PropTypes.func.isRequired
-    }),
     superUser: PropTypes.shape({
         open: PropTypes.bool.isRequired,
         loading: PropTypes.bool.isRequired,

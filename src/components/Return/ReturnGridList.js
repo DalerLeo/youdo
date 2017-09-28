@@ -21,7 +21,9 @@ import DoneIcon from 'material-ui/svg-icons/action/done-all'
 import Canceled from 'material-ui/svg-icons/notification/do-not-disturb-alt'
 import dateFormat from '../../helpers/dateTimeFormat'
 import ReturnUpdateDialog from '../Order/OrderReturnDialog'
-import ClientReturnUpdateDialog from '../ClientBalance/ClientBalanceReturnDialog'
+import ReturnCreateDialog from './ReturnCreateDialog'
+import FloatingActionButton from 'material-ui/FloatingActionButton'
+import ContentAdd from 'material-ui/svg-icons/content/add'
 
 const listHeader = [
     {
@@ -125,6 +127,7 @@ const OrderGridList = enhance((props) => {
         printDialog,
         updateDialog,
         cancelReturnDialog,
+        createDialog,
         isAdmin
     } = props
 
@@ -221,7 +224,8 @@ const OrderGridList = enhance((props) => {
                                             touch={true}>
                                             <Canceled color='#e57373'/>
                                         </IconButton>
-                                    </Tooltip> : null}
+                                    </Tooltip> : null
+                        }
                     </div>
                 </div>
             </div>
@@ -237,6 +241,16 @@ const OrderGridList = enhance((props) => {
     return (
         <Container>
             <SubMenu url={ROUTES.RETURN_LIST_URL}/>
+            <div className={classes.addButtonWrapper}>
+                <Tooltip position="left" text="Возврат с клиента">
+                    <FloatingActionButton
+                        mini={true}
+                        className={classes.addButton}
+                        onTouchTap={() => createDialog.handleOpenCreateDialog()}>
+                        <ContentAdd />
+                    </FloatingActionButton>
+                </Tooltip>
+            </div>
 
             <GridList
                 filter={filter}
@@ -255,8 +269,13 @@ const OrderGridList = enhance((props) => {
                 onSubmit={confirmDialog.handleSendConfirmDialog}
                 open={confirmDialog.openConfirmDialog}
             />}
+            <ReturnCreateDialog
+                open={_.get(createDialog, 'openCreateDialog')}
+                onClose={createDialog.handleCloseCreateDialog}
+                onSubmit={createDialog.handleSubmitCreateDialog}
+            />
             {(returnType === CLIENT_RETURN)
-                ? (isAdmin && <ClientReturnUpdateDialog
+                ? (isAdmin && <ReturnCreateDialog
                     isUpdate={true}
                     name={_.get(detailData, ['data', 'client', 'name'])}
                     initialValues={updateDialog.initialValues}
@@ -309,6 +328,12 @@ OrderGridList.propTypes = {
         handleOpenCancelReturnDialog: PropTypes.func.isRequired,
         handleCloseCancelReturnDialog: PropTypes.func.isRequired,
         handleSubmitCancelReturnDialog: PropTypes.func.isRequired
+    }).isRequired,
+    createDialog: PropTypes.shape({
+        openCreateDialog: PropTypes.bool.isRequired,
+        handleOpenCreateDialog: PropTypes.func.isRequired,
+        handleCloseCreateDialog: PropTypes.func.isRequired,
+        handleSubmitCreateDialog: PropTypes.func.isRequired
     }).isRequired
 }
 

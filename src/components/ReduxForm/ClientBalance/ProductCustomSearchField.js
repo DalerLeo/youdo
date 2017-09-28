@@ -48,7 +48,7 @@ const ProductCustomSearchField = enhance((props) => {
     const test = (id) => {
         return getItem(id, dispatch)
     }
-    const type = _.get(state, ['form', 'ClientBalanceReturnForm', 'values', 'type', 'value'])
+    const type = _.get(state, ['form', 'ReturnCreateForm', 'values', 'type', 'value'])
     return (
         <SearchFieldCustom
             getValue={(value) => {

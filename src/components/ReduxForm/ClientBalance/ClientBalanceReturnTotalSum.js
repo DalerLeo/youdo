@@ -9,7 +9,7 @@ const ZERO = 0
 
 const enhance = compose(
     connect((state) => {
-        const products = _.get(state, ['form', 'ClientBalanceReturnForm', 'values', 'products'])
+        const products = _.get(state, ['form', 'ReturnCreateForm', 'values', 'products'])
         return {
             products
         }
