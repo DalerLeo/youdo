@@ -371,6 +371,7 @@ const ClientBalanceList = enhance((props) => {
     return (
         <Layout {...layout}>
             <ClientBalanceGridList
+                stat={true}
                 filter={filter}
                 filterItem={filterItem}
                 listData={listData}

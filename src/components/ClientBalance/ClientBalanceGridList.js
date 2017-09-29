@@ -9,6 +9,7 @@ import ClientBalanceUpdateDialog from './ClientBalanceUpdateDialog'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm} from 'redux-form'
 import SubMenu from '../SubMenu'
+import {Row} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
 import {compose, withState} from 'recompose'
 import numberFormat from '../../helpers/numberFormat'
@@ -19,9 +20,10 @@ import Add from 'material-ui/svg-icons/content/add-circle'
 import Tooltip from '../ToolTip'
 import Paper from 'material-ui/Paper'
 import SearchIcon from 'material-ui/svg-icons/action/search'
-
+import StatSideMenu from '../Statistics/StatSideMenu'
 import {TextField} from '../ReduxForm/index'
 import Pagination from '../GridList/GridListNavPagination'
+import NotFound from '../Images/not-found.png'
 
 let amountValues = []
 let head = []
@@ -36,6 +38,18 @@ const enhance = compose(
             zIndex: '999',
             justifyContent: 'center',
             display: 'flex'
+        },
+        wrapper: {
+            padding: '0 30px',
+            height: 'calc(100% - 40px)',
+            '& > div:nth-child(2)': {
+                marginTop: '10px',
+                borderTop: '1px #efefef solid',
+                borderBottom: '1px #efefef solid'
+            },
+            '& .row': {
+                margin: '0 !important'
+            }
         },
         listRow: {
             margin: '0 -30px !important',
@@ -95,7 +109,7 @@ const enhance = compose(
             overflow: 'hidden',
             marginBottom: '100px',
             marginLeft: '-30px',
-            paddingLeft: '30px'
+            paddingLeft: ({stat}) => stat ? '' : '30px'
         },
         leftTable: {
             display: 'table',
@@ -127,7 +141,6 @@ const enhance = compose(
             }
         },
         mainTableWrapper: {
-            width: 'calc(75% - 120px)',
             overflowX: 'auto',
             overflowY: 'hidden'
         },
@@ -184,10 +197,40 @@ const enhance = compose(
         },
         nav: {
             height: '55px',
-            padding: '0 30px',
+            padding: ({stat}) => stat ? '' : '0 30px',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center'
+        },
+        mainWrapper: {
+            background: '#fff',
+            margin: '0 -28px',
+            height: 'calc(100% + 28px)',
+            boxShadow: 'rgba(0, 0, 0, 0.09) 0px -1px 6px, rgba(0, 0, 0, 0.10) 0px -1px 4px'
+        },
+        leftPanel: {
+            backgroundColor: '#f2f5f8',
+            flexBasis: '250px',
+            maxWidth: '250px'
+
+        },
+        rightPanel: {
+            overflowY: 'auto',
+            flexBasis: 'calc(100% - 250px)',
+            maxWidth: 'calc(100% - 250px)'
+        },
+        emptyQuery: {
+            background: 'url(' + NotFound + ') no-repeat center center',
+            backgroundSize: '200px',
+            padding: '200px 0 0',
+            textAlign: 'center',
+            fontSize: '13px',
+            color: '#666',
+            '& svg': {
+                width: '50px !important',
+                height: '50px !important',
+                color: '#999 !important'
+            }
         }
     }),
     reduxForm({
@@ -235,10 +278,11 @@ const ClientBalanceGridList = enhance((props) => {
         currentItem,
         setItem,
         handleSubmit,
-        handleSubmitSearch
+        handleSubmitSearch,
+        stat
     } = props
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
-
+    const listLoading = _.get(listData, 'listLoading')
     const clients = (
         <div className={classes.leftTable}>
             <div><span>Клиент</span></div>
@@ -333,10 +377,10 @@ const ClientBalanceGridList = enhance((props) => {
     const lists = (
         <div className={classes.tableWrapper}>
             {clients}
-            <div className={classes.mainTableWrapper}>
+            <div className={classes.mainTableWrapper} style={stat ? {width: '75%'} : {width: 'calc(75% - 120px)'}}>
                 {tableList}
             </div>
-            {buttons}
+            {!stat && buttons}
         </div>
     )
     const isSuperUser = _.get(superUser, 'isSuperUser')
@@ -386,14 +430,47 @@ const ClientBalanceGridList = enhance((props) => {
     )
     return (
         <Container>
-            <SubMenu url={ROUTES.CLIENT_BALANCE_LIST_URL}/>
-            <Paper>
+
+            {stat &&
+            <div className={classes.mainWrapper}>
+                <Row style={{margin: '0', height: '100%'}}>
+                    <div className={classes.leftPanel}>
+                        <StatSideMenu currentUrl={ROUTES.STATISTICS_CLIENT_BALANCE_URL}/>
+                    </div>
+                    <div className={classes.rightPanel}>
+                        <div className={classes.wrapper}>
+                            {navigation}
+                            {listLoading
+                                ? <div className={classes.loader}>
+                                    <CircularProgress size={40} thickness={4} />
+                                </div>
+                                : (_.isEmpty(tableList) && !listLoading)
+                                    ? <div className={classes.emptyQuery}>
+                                        <div>По вашему запросу ничего не найдено</div>
+                                    </div>
+                                    : <div>
+                                        {lists}
+                                    </div>
+                            }
+                        </div>
+                    </div>
+                </Row>
+            </div>
+            }
+
+            {!stat && <SubMenu url={ROUTES.CLIENT_BALANCE_LIST_URL}/>}
+            {!stat && <Paper>
                 {navigation}
-                {_.get(listData, 'listLoading')
+                {listLoading
                     ? <div className={classes.loader}>
                         <CircularProgress size={40} thickness={4}/>
-                    </div> : lists}
-            </Paper>
+                    </div>
+                    : (_.isEmpty(tableList) && !listLoading)
+                        ? <div className={classes.emptyQuery}>
+                            <div>По вашему запросу ничего не найдено</div>
+                        </div>
+                        : lists}
+            </Paper>}
 
             <ClientBalanceInfoDialog
                 open={infoDialog.openInfoDialog}
