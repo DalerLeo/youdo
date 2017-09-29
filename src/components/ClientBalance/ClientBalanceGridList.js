@@ -11,6 +11,7 @@ import {Field, reduxForm} from 'redux-form'
 import SubMenu from '../SubMenu'
 import {Row} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
+import ordering from '../../helpers/ordering'
 import {compose, withState} from 'recompose'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
@@ -24,6 +25,8 @@ import StatSideMenu from '../Statistics/StatSideMenu'
 import {TextField} from '../ReduxForm/index'
 import Pagination from '../GridList/GridListNavPagination'
 import NotFound from '../Images/not-found.png'
+import ArrowUpIcon from 'material-ui/svg-icons/navigation/arrow-upward'
+import ArrowDownIcon from 'material-ui/svg-icons/navigation/arrow-downward'
 
 let amountValues = []
 let head = []
@@ -42,11 +45,6 @@ const enhance = compose(
         wrapper: {
             padding: '0 30px',
             height: 'calc(100% - 40px)',
-            '& > div:nth-child(2)': {
-                marginTop: '10px',
-                borderTop: '1px #efefef solid',
-                borderBottom: '1px #efefef solid'
-            },
             '& .row': {
                 margin: '0 !important'
             }
@@ -100,16 +98,16 @@ const enhance = compose(
                 borderRight: '1px #efefef solid',
                 textAlign: 'left'
             },
-            '&:nth-child(even)': {
+            '&:nth-child(odd)': {
                 backgroundColor: '#f4f4f4'
             }
         },
         tableWrapper: {
             display: 'flex',
             overflow: 'hidden',
-            marginBottom: '100px',
+            marginBottom: '50px',
             marginLeft: '-30px',
-            paddingLeft: ({stat}) => stat ? '' : '30px'
+            'padding-left': ({stat}) => stat ? '' : '30px'
         },
         leftTable: {
             display: 'table',
@@ -117,7 +115,7 @@ const enhance = compose(
             width: '25%',
             boxShadow: '5px 0 8px -3px #ccc',
             '& > div': {
-                '&:nth-child(even)': {
+                '&:nth-child(odd)': {
                     backgroundColor: '#f4f4f4'
                 },
                 display: 'table-row',
@@ -175,7 +173,7 @@ const enhance = compose(
         },
         mainTable: {
             width: '100%',
-            minWidth: '750px',
+            minWidth: '850px',
             color: '#666',
             borderCollapse: 'collapse',
             '& tr, td': {
@@ -231,6 +229,9 @@ const enhance = compose(
                 height: '50px !important',
                 color: '#999 !important'
             }
+        },
+        icon: {
+            height: '15px !important'
         }
     }),
     reduxForm({
@@ -281,6 +282,9 @@ const ClientBalanceGridList = enhance((props) => {
         handleSubmitSearch,
         stat
     } = props
+    const orderNoSorting = _.isNil(filter.getSortingType('order_no')) ? null
+        : filter.getSortingType('order_no') ? <ArrowUpIcon className={classes.icon}/>
+            : <ArrowDownIcon className={classes.icon}/>
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const listLoading = _.get(listData, 'listLoading')
     const clients = (
@@ -333,18 +337,31 @@ const ClientBalanceGridList = enhance((props) => {
     )
     head = []
     _.map(_.get(listData, ['data', '0', 'divisions']), (item) => {
-        head.push(item.name + ' нал.')
-        head.push(item.name + ' переч.')
+        head.push({name: item.name + ' нал.', id: item.id, type: 'cash'})
+        head.push({name: item.name + ' переч.', id: item.id, type: 'bank'})
     })
 
     const tableList = (
         <table className={classes.mainTable}>
             <tbody>
             <tr className={classes.title}>
-                <td>Кол-во заказов</td>
+                <td
+                    style={{cursor: 'pointer'}}
+                    onClick={() => ordering(filter, 'order_no')}>
+                    Кол-во заказов {orderNoSorting}
+                </td>
                 {_.map(head, (item, index) => {
+                    const sortingType = filter.getSortingType(item.type + '_' + item.id)
+                    const icon = _.isNil(sortingType) ? null
+                                                        : sortingType ? <ArrowUpIcon className={classes.icon}/>
+                                                                        : <ArrowDownIcon className={classes.icon}/>
                     return (
-                        <td key={index}>{item}</td>
+                        <td
+                            key={index}
+                            style={{cursor: 'pointer'}}
+                            onClick={() => ordering(filter, item.type + '_' + item.id)}>
+                            {item.name}{icon}
+                        </td>
                     )
                 })}
             </tr>
