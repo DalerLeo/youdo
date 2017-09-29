@@ -294,6 +294,10 @@ export const STATISTICS_PRODUCT_MOVE_ITEM_PATH = `/${STATISTICS_PRODUCT_MOVE}/%d
 export const STATISTICS_REPORT = 'statistics/report'
 export const STATISTICS_REPORT_URL = `/${STATISTICS_REPORT}`
 
+export const STATISTICS_CLIENT_BALANCE = 'statistics/clientBalance'
+export const STATISTICS_CLIENT_BALANCE_URL = `/${STATISTICS_CLIENT_BALANCE}`
+export const STATISTICS_CLIENT_BALANCE_ITEM_URL = `${STATISTICS_CLIENT_BALANCE}/:clientBalanceId`
+
 export const ACCESS_DENIED = 'access_denied'
 export const ACCESS_DENIED_URL = `/${ACCESS_DENIED}`
 
