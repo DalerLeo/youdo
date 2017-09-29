@@ -47,9 +47,14 @@ const enhance = compose(
         dispatch(orderListFetchAction(filter, ONE))
     }),
     withPropsOnChange((props, nextProps) => {
-        return props.list && (props.query.fromDate !== nextProps.query.fromDate || props.query.toDate !== nextProps.query.toDate)
+        const except = {
+            page: null,
+            pageSize: null,
+            STAT_SALES_DIALOG_OPEN: null
+        }
+        return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
-        dispatch(statSalesDataFetchAction(filter))
+        dispatch(statSalesDataFetchAction(filter, ONE))
     }),
     withPropsOnChange((props, nextProps) => {
         const saleId = _.get(nextProps, ['params', 'statSaleId'])

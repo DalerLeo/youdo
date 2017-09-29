@@ -226,7 +226,7 @@ const StatSalesGridList = enhance((props) => {
 
     const config = {
         chart: {
-            type: 'area',
+            type: 'areaspline',
             height: 180
         },
         title: {

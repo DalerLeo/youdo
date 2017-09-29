@@ -5,20 +5,18 @@ import {Row} from 'react-flexbox-grid'
 import CircularProgress from 'material-ui/CircularProgress'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
-import {reduxForm, Field} from 'redux-form'
+import {Field} from 'redux-form'
 import DateToDateField from '../../ReduxForm/Basic/DateToDateField'
-import DivisionSearchField from '../../ReduxForm/DivisionSearchField'
-import Search from 'material-ui/svg-icons/action/search'
-import IconButton from 'material-ui/IconButton'
-import Excel from 'material-ui/svg-icons/av/equalizer'
 import Back from 'material-ui/svg-icons/content/reply'
 import NotFound from '../../Images/not-found.png'
 import dateFormat from '../../../helpers/dateFormat'
 import ReactHighcharts from 'react-highcharts'
-import TransactionsList from '../../Transaction/TransactionsList'
+import TransactionsList from '../Finance/TransactionsList'
+import {StatisticsFilterExcel} from '../../Statistics'
 
 export const STAT_CASHBOX_DETAIL_FILTER_KEY = {
     DIVISION: 'division',
+    SEARCH: 'search',
     TO_DATE: 'toDate',
     FROM_DATE: 'fromDate'
 }
@@ -33,6 +31,11 @@ const enhance = compose(
             justifyContent: 'center',
             display: 'flex'
         },
+        graphLoader: {
+            extend: 'loader',
+            height: '160px',
+            marginTop: '20px'
+        },
         detailWrapper: {
             background: '#fff',
             position: 'absolute',
@@ -43,15 +46,10 @@ const enhance = compose(
             zIndex: '20'
         },
         wrapper: {
-            height: 'calc(100% - 40px)',
+            height: '100%',
             overflowY: 'auto',
             overflowX: 'hidden',
             padding: '20px 30px',
-            '& > div:nth-child(2)': {
-                marginTop: '10px',
-                borderTop: '1px #efefef solid',
-                borderBottom: '1px #efefef solid'
-            },
             '& .row': {
                 margin: '0 !important'
             }
@@ -141,12 +139,13 @@ const enhance = compose(
         },
         balances: {
             padding: '20px 0',
+            height: '160px',
             borderTop: '1px #efefef solid',
-            borderBottom: '1px #efefef solid'
+            marginTop: '20px'
         },
         sumItem: {
             '& > div:first-child': {
-                marginBottom: '20px'
+                marginBottom: '15px'
             },
             '& > div': {
                 '& span': {
@@ -154,7 +153,7 @@ const enhance = compose(
                     marginBottom: '5px'
                 },
                 '& div': {
-                    fontSize: '24px',
+                    fontSize: '20px',
                     fontWeight: '600'
                 }
             }
@@ -189,34 +188,22 @@ const enhance = compose(
         salesSummary: {
             width: '440px',
             display: 'flex'
-        },
-        listWrapper: {
-            '& > div': {
-                margin: '0 -30px'
-            }
         }
-    }),
-    reduxForm({
-        form: 'StatCashboxDetailFilterForm',
-        enableReinitialize: true
-    }),
+    })
 )
-let arr = []
-for (let i = 0, t = 20; i < t; i++) {
-    arr.push(Math.round(Math.random() * t))
-}
+
 const StatCashboxDetails = enhance((props) => {
     const {
         detailData,
         classes,
         filter,
-        handleSubmit,
         handleSubmitFilterDialog,
-        getDocument
+        getDocument,
+        initialValues
     } = props
-    const grapthLoading = _.get(detailData, 'itemGraphLoading')
+    const graphLoading = _.get(detailData, 'itemGraphLoading') || _.get(detailData, 'sumItemDataLoading')
     const graphAmount = _.map(_.get(detailData, ['itemGraph']), (item) => {
-        return _.toInteger(_.get(item, 'balance'))
+        return _.toNumber(_.get(item, 'balance'))
     })
     const date = _.map(_.get(detailData, ['itemGraph']), (item) => {
         return dateFormat(_.get(item, 'date'))
@@ -317,77 +304,51 @@ const StatCashboxDetails = enhance((props) => {
 
         }]
     }
-    const listLoading = _.get(detailData, 'sumItemDataLoading') || _.get(detailData, 'detailLoading') || _.get(detailData, 'itemGraphLoading') || _.get(detailData, 'transactionsLoading')
     const handleCloseDetail = _.get(detailData, 'handleCloseDetail')
     const startBalance = _.get(detailData, ['sumItemData', 'startBalance'])
     const endBalance = _.get(detailData, ['sumItemData', 'endBalance'])
     const income = _.get(detailData, ['sumItemData', 'income'])
     const expenses = _.get(detailData, ['sumItemData', 'expenses'])
     const currency = _.get(detailData, ['data', 'currency', 'name'])
-    const iconStyle = {
-        icon: {
-            color: '#5d6474',
-            width: 22,
-            height: 22
-        },
-        button: {
-            width: 40,
-            height: 40,
-            padding: 0
-        }
-    }
+
     const listData = {
-        listLoading: _.get(detailData, 'transactionsLoading'),
+        listLoading: _.get(detailData, 'transactionsLoading') || _.get(detailData, 'detailLoading'),
         data: _.get(detailData, 'transactionData')
     }
-    const cashboxData = {
-        data: _.get(detailData, 'cashboxList'),
-        cashboxId: _.get(detailData, ['data', 'id']),
-        listLoading: _.get(detailData, 'cashboxListLoading')
-    }
+
+    const fields = (
+        <Field
+            className={classes.inputFieldCustom}
+            name="date"
+            component={DateToDateField}
+            label="Диапазон дат"
+            fullWidth={true}/>
+    )
+
+    const extraButton = (
+        <a className={classes.closeDetail}
+           onClick={handleCloseDetail}>
+            <Back color="#fff"/> <span>Вернуться</span>
+        </a>
+    )
 
     return (
         <div className={classes.detailWrapper}>
-            {listLoading
-                ? <div className={classes.loader}>
-                    <CircularProgress size={40} thickness={4}/>
-                </div>
-                : <div className={classes.wrapper}>
-                    <form className={classes.form} onSubmit={handleSubmit(handleSubmitFilterDialog)}>
-                        <div className={classes.filter}>
-                            <Field
-                                className={classes.inputFieldCustom}
-                                name="date"
-                                component={DateToDateField}
-                                label="Диапазон дат"
-                                fullWidth={true}/>
-                            <Field
-                                name="division"
-                                component={DivisionSearchField}
-                                className={classes.inputFieldCustom}
-                                label="Подразделение"
-                                fullWidth={true}
-                            />
-                            <IconButton
-                                className={classes.searchButton}
-                                iconStyle={iconStyle.icon}
-                                style={iconStyle.button}
-                                type="submit">
-                                <Search/>
-                            </IconButton>
-                        </div>
-                        <div>
-                            <a className={classes.closeDetail}
-                               onClick={handleCloseDetail}>
-                                <Back color="#fff"/> <span>Вернуться</span>
-                            </a>
-                            <a className={classes.button}
-                               onClick={getDocument.handleGetDocument}>
-                                <Excel color="#fff"/> <span>Excel</span>
-                            </a>
-                        </div>
-                    </form>
-                    <div className={classes.balances}>
+                <div className={classes.wrapper}>
+                    <StatisticsFilterExcel
+                        filter={filter}
+                        fields={fields}
+                        filterKeys={STAT_CASHBOX_DETAIL_FILTER_KEY}
+                        initialValues={initialValues}
+                        handleSubmitFilterDialog={handleSubmitFilterDialog}
+                        handleGetDocument={getDocument.handleGetDocument}
+                        extraButton={extraButton}
+                    />
+                    {graphLoading
+                    ? <div className={classes.graphLoader}>
+                        <CircularProgress size={40} thickness={4}/>
+                    </div>
+                    : <div className={classes.balances}>
                         <Row className={classes.diagram}>
                             <div className={classes.salesSummary}>
                                 <div style={{marginRight: '40px'}} className={classes.sumItem}>
@@ -411,24 +372,18 @@ const StatCashboxDetails = enhance((props) => {
                                     </div>
                                 </div>
                             </div>
-                            <div style={{flexBasis: 'calc(100% - 440px)', maxWidth: 'calc(100% - 440px)'}}>
-                                {grapthLoading ? <div className={classes.loader}>
-                                        <CircularProgress size={40} thickness={4}/>
-                                    </div>
-                                    : <ReactHighcharts config={config} neverReflow={true} isPureConfig={true}/>
-                                }
+                            <div style={{width: 'calc(100% - 440px)'}}>
+                                <ReactHighcharts config={config} neverReflow={true} isPureConfig={true}/>
                             </div>
                         </Row>
-                    </div>
+                    </div>}
                     <div className={classes.listWrapper}>
                         <TransactionsList
+                            handleSubmitFilterDialog={handleSubmitFilterDialog}
                             listData={listData}
-                            listShadow={false}
-                            cashboxData={cashboxData}
-                            showOnlyList={true}
                             filter={filter}/>
                     </div>
-                </div>}
+                </div>
 
         </div>
     )

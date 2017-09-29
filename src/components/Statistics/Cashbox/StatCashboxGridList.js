@@ -1,4 +1,3 @@
-/* eslint-disable no-shadow */
 import _ from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -9,22 +8,17 @@ import CircularProgress from 'material-ui/CircularProgress'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import {reduxForm, Field} from 'redux-form'
-import {CashboxSearchField, DivisionSearchField} from '../../ReduxForm/index'
 import DateToDateField from '../../ReduxForm/Basic/DateToDateField'
 import StatSideMenu from '../StatSideMenu'
-import Search from 'material-ui/svg-icons/action/search'
-import IconButton from 'material-ui/IconButton'
-import Excel from 'material-ui/svg-icons/av/equalizer'
 import numberFormat from '../../../helpers/numberFormat.js'
 import NotFound from '../../Images/not-found.png'
 import CashboxDetails from './StatCashboxDetails'
 import getConfig from '../../../helpers/getConfig'
+import {StatisticsFilterExcel} from '../../Statistics'
 
 const BANK = 1
 const NEGATIVE = -1
 export const STAT_CASHBOX_FILTER_KEY = {
-    CASHBOX: 'cashbox',
-    DIVISION: 'division',
     TO_DATE: 'toDate',
     FROM_DATE: 'fromDate'
 }
@@ -276,8 +270,7 @@ const enhance = compose(
                 overflowY: 'hidden'
             }
         },
-        tableBody: {
-        },
+        tableBody: {},
         mainTable: {
             width: '100%',
             minWidth: '1200px',
@@ -299,7 +292,7 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'StatCashboxFilterForm',
+        form: 'StatisticsFilterForm',
         enableReinitialize: true
     }),
 )
@@ -310,13 +303,15 @@ for (let i = 0, t = 20; i < t; i++) {
 
 const StatCashboxGridList = enhance((props) => {
     const {
+        filter,
         filterDetail,
         listData,
         detailData,
         classes,
         getDocument,
         detailFilterForm,
-        handleSubmitFilterDialog
+        handleSubmitFilterDialog,
+        initialValues
     } = props
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const listLoading = _.get(listData, 'listLoading')
@@ -326,18 +321,6 @@ const StatCashboxGridList = enhance((props) => {
     const income = _.get(listData, ['sumData', 'income'])
     const expense = _.toNumber(_.get(listData, ['sumData', 'expenses'])) * NEGATIVE
 
-    const iconStyle = {
-        icon: {
-            color: '#5d6474',
-            width: 22,
-            height: 22
-        },
-        button: {
-            width: 40,
-            height: 40,
-            padding: 0
-        }
-    }
     const tableLeft = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name') || 'No'
@@ -354,9 +337,9 @@ const StatCashboxGridList = enhance((props) => {
         const type = _.toInteger(_.get(item, 'type')) === BANK ? 'банковский счет' : 'наличные'
         const currency = _.get(item, ['currency', 'name'])
 
-        const endBalance = numberFormat(_.get(item, 'endBalance'), primaryCurrency)
-        const startBalance = numberFormat(_.get(item, 'startBalance'), primaryCurrency)
-        const income = numberFormat(_.get(item, 'income'), primaryCurrency)
+        const tbEndBalance = numberFormat(_.get(item, 'endBalance'), primaryCurrency)
+        const tbStartBalance = numberFormat(_.get(item, 'startBalance'), primaryCurrency)
+        const tbIncome = numberFormat(_.get(item, 'income'), primaryCurrency)
         const expenses = numberFormat(_.get(item, 'expenses'), primaryCurrency)
 
         return (
@@ -364,14 +347,24 @@ const StatCashboxGridList = enhance((props) => {
                 <td>{cashier}</td>
                 <td>{type}</td>
                 <td>{currency}</td>
-                <td>{startBalance}</td>
-                <td>{income}</td>
+                <td>{tbStartBalance}</td>
+                <td>{tbIncome}</td>
                 <td>{expenses}</td>
-                <td>{endBalance}</td>
-
+                <td>{tbEndBalance}</td>
             </tr>
         )
     })
+
+    const fields = (
+        <div>
+            <Field
+                className={classes.inputFieldCustom}
+                name="date"
+                component={DateToDateField}
+                label="Диапазон дат"
+                fullWidth={true}/>
+        </div>
+    )
 
     const page = (
         <div className={classes.mainWrapper}>
@@ -380,92 +373,66 @@ const StatCashboxGridList = enhance((props) => {
                     <StatSideMenu currentUrl={ROUTES.STATISTICS_CASHBOX_URL}/>
                 </div>
                 <div className={classes.rightPanel}>
-                     <div className={classes.wrapper}>
-                            <form className={classes.form} onSubmit={handleSubmitFilterDialog}>
-                                <div className={classes.filter}>
-                                    <Field
-                                        className={classes.inputFieldCustom}
-                                        name="date"
-                                        component={DateToDateField}
-                                        label="Диапазон дат"
-                                        fullWidth={true}/>
-                                    <Field
-                                        name="division"
-                                        component={DivisionSearchField}
-                                        className={classes.inputFieldCustom}
-                                        label="Подразделение"
-                                        fullWidth={true}
-                                    />
-                                    <Field
-                                        className={classes.inputFieldCustom}
-                                        name="cashbox"
-                                        component={CashboxSearchField}
-                                        label="Кассы"
-                                        fullWidth={true}/>
-                                    <IconButton
-                                        className={classes.searchButton}
-                                        iconStyle={iconStyle.icon}
-                                        style={iconStyle.button}
-                                        type="submit">
-                                        <Search/>
-                                    </IconButton>
-                                </div>
-                                <a className={classes.excel}
-                                   onClick={getDocument.handleGetDocument}>
-                                    <Excel color="#fff"/> <span>Excel</span>
-                                </a>
-                            </form>
-                            {listLoading
+                    <div className={classes.wrapper}>
+                        <StatisticsFilterExcel
+                            filter={filter}
+                            fields={fields}
+                            filterKeys={STAT_CASHBOX_FILTER_KEY}
+                            handleSubmitFilterDialog={handleSubmitFilterDialog}
+                            handleGetDocument={getDocument.handleGetDocument}
+                            initialValues={initialValues}
+                        />
+                        {listLoading
                             ? <div className={classes.loader}>
-                                 <CircularProgress size={40} thickness={4}/>
-                              </div>
+                                <CircularProgress size={40} thickness={4}/>
+                            </div>
                             : _.isEmpty(tableList)
-                                 ? <div className={classes.emptyQuery}>
-                                     <div>По вашему запросу ничего не найдено</div>
-                                   </div>
-                                 : <div>
-                                     <Row className={classes.balances}>
-                                         <div className={classes.balanceItem}>
-                                             <span>Баланс на начало периода</span>
-                                             <div>{numberFormat(startBalance, primaryCurrency)}</div>
-                                         </div>
-                                         <div className={classes.balanceItem}>
-                                             <span>Расход за период</span>
-                                             <div>{numberFormat(expense, primaryCurrency)}</div>
-                                         </div>
-                                         <div className={classes.balanceItem}>
-                                             <span>Приход за период</span>
-                                             <div>{numberFormat(income, primaryCurrency)}</div>
-                                         </div>
-                                         <div className={classes.balanceItem}>
-                                             <span>Баланс на конец периода</span>
-                                             <div>{numberFormat(endBalance, primaryCurrency)}</div>
-                                         </div>
-                                     </Row>
-                                        <div className={classes.tableWrapper}>
-                                            <div className={classes.leftTable}>
-                                                <div><span>Касса</span></div>
-                                                {tableLeft}
-                                            </div>
-                                            <div>
-                                                <table className={classes.mainTable}>
-                                                    <tbody>
-                                                    <tr className={classes.title}>
-                                                        <td>Кассир</td>
-                                                        <td>Тип</td>
-                                                        <td>Валюта</td>
-                                                        <td>Баланс на начало периода</td>
-                                                        <td>Расход за период</td>
-                                                        <td>Приход за период</td>
-                                                        <td>Баланс на конец периода</td>
-                                                    </tr>
-                                                    {tableList}
-                                                    </tbody>
-                                                </table>
-                                            </div>
+                                ? <div className={classes.emptyQuery}>
+                                    <div>По вашему запросу ничего не найдено</div>
+                                </div>
+                                : <div>
+                                    <Row className={classes.balances}>
+                                        <div className={classes.balanceItem}>
+                                            <span>Баланс на начало периода</span>
+                                            <div>{numberFormat(startBalance, primaryCurrency)}</div>
                                         </div>
-                                 </div>}
-                        </div>
+                                        <div className={classes.balanceItem}>
+                                            <span>Расход за период</span>
+                                            <div>{numberFormat(expense, primaryCurrency)}</div>
+                                        </div>
+                                        <div className={classes.balanceItem}>
+                                            <span>Приход за период</span>
+                                            <div>{numberFormat(income, primaryCurrency)}</div>
+                                        </div>
+                                        <div className={classes.balanceItem}>
+                                            <span>Баланс на конец периода</span>
+                                            <div>{numberFormat(endBalance, primaryCurrency)}</div>
+                                        </div>
+                                    </Row>
+                                    <div className={classes.tableWrapper}>
+                                        <div className={classes.leftTable}>
+                                            <div><span>Касса</span></div>
+                                            {tableLeft}
+                                        </div>
+                                        <div>
+                                            <table className={classes.mainTable}>
+                                                <tbody>
+                                                <tr className={classes.title}>
+                                                    <td>Кассир</td>
+                                                    <td>Тип</td>
+                                                    <td>Валюта</td>
+                                                    <td>Баланс на начало периода</td>
+                                                    <td>Расход за период</td>
+                                                    <td>Приход за период</td>
+                                                    <td>Баланс на конец периода</td>
+                                                </tr>
+                                                {tableList}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>}
+                    </div>
 
                     {openDetails && <CashboxDetails
                         filter={filterDetail}
