@@ -51,6 +51,16 @@ const enhance = compose(
         return props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
         dispatch(statProductMoveListFetchAction(filter))
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const except = {
+            page: null,
+            pageSize: null,
+            search: null
+        }
+        return props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
+    }, ({dispatch, filter}) => {
         dispatch(statProductMoveSumFetchAction(filter))
     }),
 
