@@ -276,7 +276,7 @@ const TransactionsList = enhance((props) => {
                                     }}>
                                     {clientName}
                                 </Link>}
-                                </span>}
+                            </span>}
 
                     </div>}
                     {comment && <div><strong>Комментарий:</strong> {comment}</div>}
@@ -286,7 +286,7 @@ const TransactionsList = enhance((props) => {
                      className={type >= zero ? classes.green : classes.red}>
                     {amount} {currentCurrency}
                 </div>
-                <div style={{flexBasis: '5%', maxWidth: '5%', textAlign: 'right'}}>
+                <div style={{width: '5%', textAlign: 'right'}}>
                     <IconButton
                         className={classes.deleteBtn}
                         style={iconStyle.button}

@@ -101,9 +101,12 @@ const enhance = compose(
             background: '#fff',
             color: '#71ce87',
             border: '2px #71ce87 solid',
-            cursor: 'auto',
             whiteSpace: 'nowrap',
             width: 'auto'
+        },
+        buttons: {
+            display: 'flex',
+            alignItems: 'center'
         }
     }),
     reduxForm({
@@ -124,7 +127,8 @@ const StatisticsFilterExcel = enhance((props) => {
         openFilter,
         setOpenFilter,
         handleGetDocument,
-        withoutDate
+        withoutDate,
+        extraButton
     } = props
 
     const iconStyle = {
@@ -182,9 +186,12 @@ const StatisticsFilterExcel = enhance((props) => {
                 {!withoutDate && <span className={classes.date} style={filterCount > ZERO ? {left: 'calc(100% +' +
                 ' 30px)'} : {left: '100%'}}>{filterDate}</span>}
             </a>
-            <a className={classes.excel} onClick={handleGetDocument}>
-                <Excel color="#fff"/> <span>Excel</span>
-            </a>
+            <div className={classes.buttons}>
+                {extraButton || null}
+                <a className={classes.excel} onClick={handleGetDocument}>
+                    <Excel color="#fff"/> <span>Excel</span>
+                </a>
+            </div>
         </div>
     )
 })

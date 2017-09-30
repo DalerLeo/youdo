@@ -4,8 +4,8 @@ import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/Statistics/statSalesSerializer'
 
-export const statSalesDataFetchAction = (filter) => {
-    const params = serializers.listFilterSerializer(filter.getParams())
+export const statSalesDataFetchAction = (filter, withOrderReturn) => {
+    const params = serializers.listFilterSerializer(filter.getParams(), withOrderReturn)
     const payload = axios()
         .get(API.STAT_SALES_DATA, {params})
         .then((response) => {

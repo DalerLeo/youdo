@@ -12,20 +12,15 @@ import {
     DateToDateField,
     TransactionTypeSearchField,
     ExpensiveCategorySearchField,
-    ClientSearchField,
-    TextField
+    ClientSearchField
 } from '../../ReduxForm'
 import StatSideMenu from '../StatSideMenu'
-import Pagination from '../../GridList/GridListNavPagination/index'
 import getConfig from '../../../helpers/getConfig'
 import dateFormat from '../../../helpers/dateFormat'
 import numberFormat from '../../../helpers/numberFormat'
-import {formattedType, ORDER, INCOME_FROM_AGENT} from '../../../constants/transactionTypes'
 import CircularProgress from 'material-ui/CircularProgress'
 import {StatisticsFilterExcel} from '../../Statistics'
-import NotFound from '../../Images/not-found.png'
-import sprintf from 'sprintf'
-import {Link} from 'react-router'
+import TransactionsList from './TransactionsList'
 
 export const STAT_FINANCE_FILTER_KEY = {
     FROM_DATE: 'fromDate',
@@ -76,49 +71,6 @@ const enhance = compose(
             padding: '0',
             height: '160px',
             marginTop: '20px'
-        },
-        pagination: {
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            borderTop: '1px #efefef solid',
-            borderBottom: '1px #efefef solid'
-        },
-        tableWrapper: {
-            '& .row': {
-                '&:after': {
-                    bottom: '-1px'
-                },
-                '& > div': {
-                    '&:last-child': {
-                        textAlign: 'right'
-                    }
-                }
-            },
-            '& .dottedList': {
-                padding: '5px 0',
-                minHeight: '50px',
-                '&:last-child:after': {
-                    content: '""',
-                    backgroundImage: 'none'
-                },
-                '& a': {
-                    fontWeight: '600'
-                }
-            },
-            '& .personImage': {
-                borderRadius: '50%',
-                overflow: 'hidden',
-                height: '30px',
-                minWidth: '30px',
-                width: '30px',
-                marginRight: '10px',
-                '& img': {
-                    display: 'flex',
-                    height: '100%',
-                    width: '100%'
-                }
-            }
         },
         balanceInfo: {
             padding: '15px 0'
@@ -194,14 +146,6 @@ const enhance = compose(
             '& .highcharts-label': {
                 boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px !important'
             }
-        },
-        emptyQuery: {
-            background: 'url(' + NotFound + ') no-repeat center center',
-            backgroundSize: '200px',
-            padding: '200px 0 0',
-            textAlign: 'center',
-            fontSize: '13px',
-            color: '#666'
         }
     }),
     reduxForm({
@@ -215,13 +159,11 @@ const StatFinanceGridList = enhance((props) => {
         graphData,
         classes,
         filter,
-        handleSubmit,
         handleSubmitFilterDialog,
         listData,
         initialValues
     } = props
 
-    const loading = _.get(listData, 'listLoading')
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const sumIn = _.sumBy(_.get(graphData, 'dataIn'), (item) => {
         return _.toNumber(_.get(item, 'amount'))
@@ -332,71 +274,6 @@ const StatFinanceGridList = enhance((props) => {
         }]
     }
 
-    const headerStyle = {
-        backgroundColor: '#fff',
-        fontWeight: '600',
-        color: '#666'
-    }
-
-    const headers = (
-        <Row style={headerStyle} className="dottedList">
-            <Col xs={1}>№</Col>
-            <Col xs={2}>Касса</Col>
-            <Col xs={2}>Дата</Col>
-            <Col xs={4}>Описание</Col>
-            <Col xs={3}>Сумма</Col>
-        </Row>
-    )
-
-    const list = _.map(_.get(listData, 'data'), (item) => {
-        const id = _.get(item, 'id')
-        const date = dateFormat(_.get(item, 'createdDate'))
-        const amount = numberFormat(_.get(item, 'amount'), primaryCurrency)
-        const comment = _.get(item, 'comment')
-        const cashbox = _.get(item, ['cashbox', 'name'])
-        const order = _.get(item, 'order')
-        const transType = _.toInteger(_.get(item, 'type'))
-        const user = _.get(item, 'user')
-        const clientName = _.get(item, ['client', 'name'])
-        const clientId = _.get(item, ['client', 'id'])
-        const type = formattedType[transType]
-        return (
-            <Row key={id} className="dottedList">
-                <Col xs={1}>{id}</Col>
-                <Col xs={2}>{cashbox}</Col>
-                <Col xs={2}>{date}</Col>
-                <Col xs={4}>
-                    {transType === ORDER
-                    ? <Link target="_blank" to={{
-                        pathname: sprintf(ROUTES.ORDER_ITEM_PATH, order),
-                        query: {search: order}
-                    }}><span className={classes.clickable}> Оплата заказа № {order}</span>
-                    </Link>
-                    : transType === INCOME_FROM_AGENT
-                    ? <Link target="_blank" to={{
-                        pathname: ROUTES.TRANSACTION_LIST_URL,
-                        query: {openTransactionInfo: id}
-                    }}>{'Приемка наличных с  ' + user.firstName + ' ' + user.secondName}</Link>
-                    : <strong>{type}
-                        {clientName &&
-                        <Link
-                            target="_blank"
-                            className={classes.clickable}
-                            to={{
-                                pathname: ROUTES.CLIENT_BALANCE_LIST_URL,
-                                query: {search: clientId}
-                            }}>
-                        {clientName}
-                        </Link>}
-                    </strong>
-                    }
-                    {comment && <div><strong>Комментарий:</strong> {comment}</div>}
-                </Col>
-                <Col xs={3} style={{textAlign: 'right'}}>{amount}</Col>
-            </Row>
-        )
-    })
-
     const fields = (
         <div>
             <Field className={classes.inputFieldCustom} name="date" component={DateToDateField} label="Диапазон дат" fullWidth={true}/>
@@ -445,33 +322,11 @@ const StatFinanceGridList = enhance((props) => {
                                 <ReactHighcharts config={config} neverReflow={true} isPureConfig={true}/>
                             </Col>
                         </Row>}
-                        <div className={classes.pagination}>
-                            <div><b>Транзакции</b></div>
-                            <form onSubmit={handleSubmit(handleSubmitFilterDialog)}>
-                                <Field
-                                    className={classes.inputFieldCustom}
-                                    name="search"
-                                    component={TextField}
-                                    hintText="Поиск"/>
-                            </form>
-                            <Pagination filter={filter}/>
-                        </div>
-                        {loading
-                            ? <div className={classes.tableWrapper}>
-                                <div className={classes.loader}>
-                                    <CircularProgress thickness={4} size={40}/>
-                                </div>
-                            </div>
-                            : <div className={classes.tableWrapper}>
-                                {_.isEmpty(list) && !loading
-                                    ? <div className={classes.emptyQuery}>
-                                        <div>По вашему запросу ничего не найдено</div>
-                                    </div>
-                                    : <div>
-                                        {headers}
-                                        {list}
-                                    </div>}
-                            </div>}
+                        <TransactionsList
+                            filter={filter}
+                            handleSubmitFilterDialog={handleSubmitFilterDialog}
+                            listData={listData}
+                        />
                     </div>
                 </div>
             </Row>

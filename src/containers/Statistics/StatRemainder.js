@@ -33,7 +33,7 @@ const enhance = compose(
         const detailLoading = _.get(state, ['statRemainder', 'item', 'loading'])
         const list = _.get(state, ['statRemainder', 'list', 'data'])
         const listLoading = _.get(state, ['statRemainder', 'list', 'loading'])
-        const filterForm = _.get(state, ['form', 'StatRemainderFilterForm'])
+        const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
         const filter = filterHelper(list, pathname, query)
         const filterItem = filterHelper(detail, pathname, query, {'page': 'dPage', 'pageSize': 'dPageSize'})
         return {
@@ -83,16 +83,16 @@ const enhance = compose(
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
             const product = _.get(filterForm, ['values', 'product', 'value']) || null
-            const division = _.get(filterForm, ['values', 'division', 'value']) || null
             const search = _.get(filterForm, ['values', 'search']) || null
-            const type = _.get(filterForm, ['values', 'type', 'value']) || _.get(filterForm, ['values', 'typeParent', 'value']) || null
+            const type = _.get(filterForm, ['values', 'type', 'value']) || null
+            const typeParent = _.get(filterForm, ['values', 'typeParent', 'value']) || null
             const stock = _.get(filterForm, ['values', 'stock', 'value']) || null
 
             filter.filterBy({
                 [STAT_REMAINDER_FILTER_KEY.SEARCH]: search,
                 [STAT_REMAINDER_FILTER_KEY.PRODUCT]: product,
-                [STAT_REMAINDER_FILTER_KEY.DIVISION]: division,
                 [STAT_REMAINDER_FILTER_KEY.TYPE]: type,
+                [STAT_REMAINDER_FILTER_KEY.TYPE_PARENT]: typeParent,
                 [STAT_REMAINDER_FILTER_KEY.STOCK]: stock
 
             })
@@ -119,6 +119,11 @@ const StatRemainderList = enhance((props) => {
     } = props
     const openStatRemainderDialog = toBoolean(_.get(location, ['query', STAT_REMAINDER_DIALOG_OPEN]))
     const detailId = _.toInteger(_.get(params, 'statRemainderId'))
+    const search = !_.isNull(_.get(location, ['query', 'search'])) ? _.get(location, ['query', 'search']) : null
+    const stock = !_.isNull(_.get(location, ['query', 'stock'])) && _.toInteger(_.get(location, ['query', 'stock']))
+    const type = !_.isNull(_.get(location, ['query', 'type'])) && _.toInteger(_.get(location, ['query', 'type']))
+    const typeParent = !_.isNull(_.get(location, ['query', 'typeParent'])) && _.toInteger(_.get(location, ['query', 'typeParent']))
+
     const statRemainderDialog = {
         openStatRemainderDialog,
         handleCloseStatRemainderDialog: props.handleCloseStatRemainderDialog,
@@ -139,6 +144,22 @@ const StatRemainderList = enhance((props) => {
         handleCloseDetail: props.handleCloseDetail
 
     }
+
+    const filterForm = {
+        initialValues: {
+            search: search,
+            type: {
+                value: type
+            },
+            typeParent: {
+                value: typeParent
+            },
+            stock: {
+                value: stock
+            }
+        }
+    }
+
     const getDocument = {
         handleGetDocument: props.handleGetDocument
     }
@@ -153,6 +174,7 @@ const StatRemainderList = enhance((props) => {
                 statRemainderDialog={statRemainderDialog}
                 getDocument={getDocument}
                 filterItem={filterItem}
+                initialValues={filterForm.initialValues}
             />
         </Layout>
     )

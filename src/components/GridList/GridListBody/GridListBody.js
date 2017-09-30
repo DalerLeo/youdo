@@ -79,8 +79,8 @@ const enhance = compose(
         },
         emptyQuery: {
             background: 'url(' + NotFound + ') no-repeat center center',
-            backgroundSize: '225px',
-            padding: '260px 0 50px',
+            backgroundSize: '200px',
+            padding: '230px 0 30px',
             textAlign: 'center',
             fontSize: '13px',
             color: '#666 !important',

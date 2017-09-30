@@ -44,18 +44,12 @@ const fetchItem = (props, selectedItem) => {
 const enhance = compose(
     injectSheet({
         wrapper: {
-            position: 'relative',
             width: '100%',
             height: '45px',
             '& .is-focused:not(.is-open) > .Select-control': {
                 borderBottom: 'solid 2px #5d6474',
                 boxShadow: 'unset'
             }
-        },
-        icon: {
-            position: 'absolute',
-            right: '0',
-            top: '20px'
         },
         select: {
             '& .Select-menu': {
@@ -68,7 +62,8 @@ const enhance = compose(
                 zIndex: '6',
                 border: 'unset',
                 marginTop: '5px',
-                maxHeight: '200px'
+                maxHeight: '200px',
+                minWidth: '250px'
             },
             '& .Select-control': {
                 borderRadius: '0px',
@@ -85,6 +80,13 @@ const enhance = compose(
                 '& .Select-input': {
                     paddingLeft: '0'
                 }
+            },
+            '& .Select-input > input': {
+                width: '100% !important',
+                overflow: 'hidden'
+            },
+            '& .Select-option.is-focused, .Select-option.is-selected': {
+                background: '#f2f5f8'
             }
         }
     }),

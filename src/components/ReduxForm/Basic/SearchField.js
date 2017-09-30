@@ -56,6 +56,13 @@ const enhance = compose(
                 '& .Select-input': {
                     paddingLeft: '0'
                 }
+            },
+            '& .Select-input > input': {
+                width: '100% !important',
+                overflow: 'hidden'
+            },
+            '& .Select-option.is-focused, .Select-option.is-selected': {
+                background: '#f2f5f8'
             }
         }
     }),

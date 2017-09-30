@@ -33,7 +33,7 @@ const enhance = compose(
         const listLoading = _.get(state, ['statProductMove', 'list', 'loading'])
         const sumList = _.get(state, ['statProductMove', 'sum', 'data'])
         const sumListLoading = _.get(state, ['statProductMove', 'sum', 'loading'])
-        const filterForm = _.get(state, ['form', 'StatProductMoveFilterForm'])
+        const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
         const filter = filterHelper(list, pathname, query)
         return {
             list,
@@ -69,16 +69,17 @@ const enhance = compose(
             hashHistory.push({pathname: ROUTER.STATISTICS_LIST_URL, query: filter.getParams()})
         },
 
-        handleSubmitFilterDialog: props => (event) => {
-            event.preventDefault()
+        handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
 
             const stock = _.get(filterForm, ['values', 'stock', 'value']) || null
-            const type = _.get(filterForm, ['values', 'type', 'value']) || _.get(filterForm, ['values', 'typeParent', 'value']) || null
+            const type = _.get(filterForm, ['values', 'type', 'value']) || null
+            const typeParent = _.get(filterForm, ['values', 'typeParent', 'value']) || null
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
             filter.filterBy({
                 [STAT_PRODUCT_MOVE_FILTER_KEY.TYPE]: type,
+                [STAT_PRODUCT_MOVE_FILTER_KEY.TYPE_PARENT]: typeParent,
                 [STAT_PRODUCT_MOVE_FILTER_KEY.STOCK]: stock,
                 [STAT_PRODUCT_MOVE_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [STAT_PRODUCT_MOVE_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
@@ -114,6 +115,9 @@ const StatProductMoveList = enhance((props) => {
     const firstDayOfMonth = _.get(location, ['query', 'fromDate']) || moment().format('YYYY-MM-01')
     const lastDay = moment().daysInMonth()
     const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
+    const stock = !_.isNull(_.get(location, ['query', 'stock'])) && _.toInteger(_.get(location, ['query', 'stock']))
+    const type = !_.isNull(_.get(location, ['query', 'type'])) && _.toInteger(_.get(location, ['query', 'type']))
+    const typeParent = !_.isNull(_.get(location, ['query', 'typeParent'])) && _.toInteger(_.get(location, ['query', 'typeParent']))
 
     const statProductMoveDialog = {
         openStatProductMoveDialog,
@@ -150,6 +154,15 @@ const StatProductMoveList = enhance((props) => {
         handleGetDocument: props.handleGetDocument
     }
     const initialValues = {
+        type: {
+            value: type
+        },
+        typeParent: {
+            value: typeParent
+        },
+        stock: {
+            value: stock
+        },
         date: {
             fromDate: moment(firstDayOfMonth),
             toDate: moment(lastDayOfMonth)

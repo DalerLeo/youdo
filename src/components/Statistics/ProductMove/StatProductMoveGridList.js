@@ -6,23 +6,27 @@ import * as ROUTES from '../../../constants/routes'
 import Container from '../../Container/index'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import {reduxForm, Field} from 'redux-form'
+import {Field} from 'redux-form'
 import {connect} from 'react-redux'
-import {DateToDateField, StockSearchField, ProductTypeParentSearchField, ProductTypeChildSearchField} from '../../ReduxForm/index'
+import {
+    DateToDateField,
+    StockSearchField,
+    ProductTypeParentSearchField,
+    ProductTypeChildSearchField
+} from '../../ReduxForm/index'
 import StatSideMenu from '../StatSideMenu'
-import Search from 'material-ui/svg-icons/action/search'
-import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
-import Excel from 'material-ui/svg-icons/av/equalizer'
 import Pagination from '../../GridList/GridListNavPagination/index'
 import numberFormat from '../../../helpers/numberFormat.js'
 import getConfig from '../../../helpers/getConfig'
 import NotFound from '../../Images/not-found.png'
+import {StatisticsFilterExcel} from '../../Statistics'
 
 export const STAT_PRODUCT_MOVE_FILTER_KEY = {
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate',
     STOCK: 'stock',
+    TYPE_PARENT: 'typeParent',
     TYPE: 'type'
 }
 
@@ -63,11 +67,11 @@ const enhance = compose(
             paddingLeft: '30px',
             '& > div:first-child': {
                 zIndex: '20',
-                boxShadow: '5px 0 8px -3px #CCC',
+                boxShadow: '5px 0 8px -3px #ccc',
                 width: '400px'
             },
             '& > div:last-child': {
-                width: 'calc(100% - 400px)',
+                width: 'calc(100% - 370px)',
                 overflowX: 'auto',
                 overflowY: 'hidden'
             }
@@ -100,36 +104,6 @@ const enhance = compose(
             alignItems: 'center',
             justifyContent: 'space-between'
         },
-        form: {
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between'
-        },
-        filter: {
-            display: 'flex',
-            alignItems: 'center',
-            '& > div': {
-                width: '170px!important',
-                position: 'relative',
-                marginRight: '40px',
-                '&:last-child': {
-                    margin: '0'
-                },
-                '&:after': {
-                    content: '""',
-                    position: 'absolute',
-                    right: '-20px',
-                    height: '30px',
-                    width: '1px',
-                    top: '50%',
-                    marginTop: '-15px',
-                    background: '#efefef'
-                },
-                '&:last-child:after': {
-                    display: 'none'
-                }
-            }
-        },
         leftPanel: {
             backgroundColor: '#f2f5f8',
             flexBasis: '250px',
@@ -140,26 +114,6 @@ const enhance = compose(
             flexBasis: 'calc(100% - 250px)',
             maxWidth: 'calc(100% - 250px)',
             overflowY: 'auto'
-        },
-        searchButton: {
-            marginLeft: '-10px !important',
-            '& div': {
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-            }
-        },
-        excel: {
-            background: '#71ce87',
-            borderRadius: '2px',
-            color: '#fff',
-            fontWeight: '600',
-            display: 'flex',
-            alignItems: 'center',
-            padding: '5px 15px',
-            '& svg': {
-                width: '18px !important'
-            }
         },
         emptyQuery: {
             background: 'url(' + NotFound + ') no-repeat center center',
@@ -195,7 +149,7 @@ const enhance = compose(
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            '& div:first-child': {
+            '& > div:first-child': {
                 fontWeight: '600'
             }
         },
@@ -285,12 +239,8 @@ const enhance = compose(
         }
 
     }),
-    reduxForm({
-        form: 'StatProductMoveFilterForm',
-        enableReinitialize: true
-    }),
     connect((state) => {
-        const typeParent = _.get(state, ['form', 'StatProductMoveFilterForm', 'values', 'typeParent', 'value'])
+        const typeParent = _.get(state, ['form', 'StatisticsFilterForm', 'values', 'typeParent', 'value'])
         return {
             typeParent
         }
@@ -305,7 +255,8 @@ const StatProductMoveGridList = enhance((props) => {
         filter,
         handleSubmitFilterDialog,
         getDocument,
-        typeParent
+        typeParent,
+        initialValues
     } = props
 
     const listLoading = _.get(listData, 'listLoading')
@@ -317,19 +268,6 @@ const StatProductMoveGridList = enhance((props) => {
     const inBalance = numberFormat(_.get(sumData, ['data', 'inPriceSum']), primaryCurrency)
     const outBalance = numberFormat(_.get(sumData, ['data', 'outPriceSum']), primaryCurrency)
     const returnBalance = numberFormat(_.get(sumData, ['data', 'returnPriceSum']), primaryCurrency)
-
-    const iconStyle = {
-        icon: {
-            color: '#5d6474',
-            width: 22,
-            height: 22
-        },
-        button: {
-            width: 40,
-            height: 40,
-            padding: 0
-        }
-    }
 
     const tableLeft = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
@@ -371,6 +309,38 @@ const StatProductMoveGridList = enhance((props) => {
         )
     })
 
+    const fields = (
+        <div>
+            <Field
+                className={classes.inputFieldCustom}
+                name="date"
+                component={DateToDateField}
+                label="Диапазон дат"
+                fullWidth={true}/>
+            <Field
+                className={classes.inputFieldCustom}
+                name="stock"
+                component={StockSearchField}
+                label="Склад"
+                fullWidth={true}/>
+            <Field
+                name="typeParent"
+                className={classes.inputFieldCustom}
+                component={ProductTypeParentSearchField}
+                label="Тип продукта"
+                fullWidth={true}
+            />
+            {typeParent ? <Field
+                name="type"
+                className={classes.inputFieldCustom}
+                component={ProductTypeChildSearchField}
+                parentType={typeParent}
+                label="Подкатегория"
+                fullWidth={true}
+            /> : null}
+        </div>
+    )
+
     const page = (
         <div className={classes.mainWrapper}>
             <Row style={{margin: '0', height: '100%'}}>
@@ -379,49 +349,14 @@ const StatProductMoveGridList = enhance((props) => {
                 </div>
                 <div className={classes.rightPanel}>
                     <div className={classes.wrapper}>
-                            <form className={classes.form} onSubmit={handleSubmitFilterDialog}>
-                                <div className={classes.filter}>
-                                    <Field
-                                        className={classes.inputFieldCustom}
-                                        name="date"
-                                        component={DateToDateField}
-                                        label="Диапазон дат"
-                                        fullWidth={true}/>
-                                    <Field
-                                        className={classes.inputFieldCustom}
-                                        name="stock"
-                                        component={StockSearchField}
-                                        label="Склад"
-                                        fullWidth={true}/>
-                                    <Field
-                                        name="typeParent"
-                                        className={classes.inputFieldCustom}
-                                        component={ProductTypeParentSearchField}
-                                        label="Тип продукта"
-                                        fullWidth={true}
-                                    />
-                                    {typeParent ? <Field
-                                        name="type"
-                                        className={classes.inputFieldCustom}
-                                        component={ProductTypeChildSearchField}
-                                        parentType={typeParent}
-                                        label="Подкатегория"
-                                        fullWidth={true}
-                                    /> : null}
-
-                                    <IconButton
-                                        className={classes.searchButton}
-                                        iconStyle={iconStyle.icon}
-                                        style={iconStyle.button}
-                                        type="submit">
-                                        <Search/>
-                                    </IconButton>
-                                </div>
-                                <a className={classes.excel}
-                                   onClick={getDocument.handleGetDocument}>
-                                    <Excel color="#fff"/> <span>Excel</span>
-                                </a>
-                            </form>
+                        <StatisticsFilterExcel
+                            filter={filter}
+                            fields={fields}
+                            filterKeys={STAT_PRODUCT_MOVE_FILTER_KEY}
+                            initialValues={initialValues}
+                            handleGetDocument={getDocument.handleGetDocument}
+                            handleSubmitFilterDialog={handleSubmitFilterDialog}
+                        />
                         {listLoading
                             ? <div className={classes.loader}>
                                 <CircularProgress size={40} thickness={4}/>
@@ -492,8 +427,8 @@ const StatProductMoveGridList = enhance((props) => {
                                         </div>
                                     </div>
                                 </div>
-                            }
-                        </div>
+                        }
+                    </div>
                 </div>
             </Row>
         </div>

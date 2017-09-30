@@ -1,4 +1,3 @@
-/* eslint-disable no-shadow */
 import _ from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -8,23 +7,20 @@ import Container from '../../Container/index'
 import CircularProgress from 'material-ui/CircularProgress'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
-import {reduxForm, Field} from 'redux-form'
-import {CashboxSearchField, DivisionSearchField} from '../../ReduxForm/index'
+import {Field} from 'redux-form'
 import DateToDateField from '../../ReduxForm/Basic/DateToDateField'
 import StatSideMenu from '../StatSideMenu'
-import Search from 'material-ui/svg-icons/action/search'
-import IconButton from 'material-ui/IconButton'
-import Excel from 'material-ui/svg-icons/av/equalizer'
 import numberFormat from '../../../helpers/numberFormat.js'
 import NotFound from '../../Images/not-found.png'
 import CashboxDetails from './StatCashboxDetails'
 import getConfig from '../../../helpers/getConfig'
+import {StatisticsFilterExcel} from '../../Statistics'
+import CreditCard from 'material-ui/svg-icons/action/credit-card'
+import Cash from 'material-ui/svg-icons/maps/local-atm'
 
 const BANK = 1
 const NEGATIVE = -1
 export const STAT_CASHBOX_FILTER_KEY = {
-    CASHBOX: 'cashbox',
-    DIVISION: 'division',
     TO_DATE: 'toDate',
     FROM_DATE: 'fromDate'
 }
@@ -46,7 +42,7 @@ const enhance = compose(
             boxShadow: 'rgba(0, 0, 0, 0.09) 0px -1px 6px, rgba(0, 0, 0, 0.10) 0px -1px 4px'
         },
         wrapper: {
-            height: 'calc(100% - 40px)',
+            height: '100%',
             padding: '20px 30px',
             '& > div:nth-child(2)': {
                 marginTop: '10px',
@@ -54,62 +50,6 @@ const enhance = compose(
             },
             '& .row': {
                 margin: '0 !important'
-            }
-        },
-        cashboxWrapper: {
-            display: 'flex',
-            flexWrap: 'wrap',
-            marginTop: '45px'
-        },
-        cashbox: {
-            marginRight: '45px',
-            width: 'calc((100% / 3) - 30px)',
-            '&:nth-child(3n+3)': {
-                margin: '0'
-            }
-        },
-        cashboxTitle: {
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            paddingBottom: '5px',
-            borderBottom: '1px #efefef solid',
-            '& > div:first-child': {
-                fontWeight: 'bold',
-                '& a': {
-                    fontWeight: 'inherit',
-                    color: 'inherit'
-                }
-            },
-            '& > div:last-child': {
-                color: '#666'
-            }
-        },
-        cashboxFooter: {
-            extend: 'cashboxTitle',
-            '& > div': {
-                lineHeight: '15px'
-            },
-            '& > div:last-child': {
-                color: '#333 !important',
-                textAlign: 'right'
-            }
-        },
-        cashboxBalance: {
-            '& > div:first-child': {
-                color: '#666',
-                fontSize: '11px',
-                fontWeight: '600 !important'
-            }
-        },
-        avatar: {
-            width: '30px',
-            height: '30px',
-            borderRadius: '50%',
-            overflow: 'hidden',
-            '& img': {
-                width: '100%',
-                height: '100%'
             }
         },
         inputFieldCustom: {
@@ -125,47 +65,6 @@ const enhance = compose(
             },
             '& input': {
                 marginTop: '0 !important'
-            }
-        },
-        excel: {
-            background: '#71ce87',
-            borderRadius: '2px',
-            color: '#fff',
-            fontWeight: '600',
-            display: 'flex',
-            alignItems: 'center',
-            padding: '5px 15px',
-            '& svg': {
-                width: '18px !important'
-            }
-        },
-        form: {
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between'
-        },
-        filter: {
-            display: 'flex',
-            alignItems: 'center',
-            '& > div': {
-                width: '170px !important',
-                position: 'relative',
-                marginRight: '40px',
-                '&:after': {
-                    content: '""',
-                    position: 'absolute',
-                    right: '-20px',
-                    height: '30px',
-                    width: '1px',
-                    top: '50%',
-                    marginTop: '-15px',
-                    background: '#efefef'
-                },
-                '&:last-child': {
-                    '&:after': {
-                        display: 'none'
-                    }
-                }
             }
         },
         leftPanel: {
@@ -231,92 +130,78 @@ const enhance = compose(
                 backgroundColor: '#f9f9f9'
             }
         },
-        leftTable: {
-            display: 'table',
-            marginLeft: '-30px',
-            width: '100%',
+        tableWrapper: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap'
+        },
+        cashbox: {
+            cursor: 'pointer',
+            borderRadius: '2px',
+            border: '1px #efefef solid',
+            background: '#fff',
+            padding: '10px 15px',
+            width: 'calc(50% - 10px)',
+            marginBottom: '20px',
+            transition: 'all 100ms ease-out !important',
+            '& header': {
+                display: 'flex',
+                justifyContent: 'space-between'
+            },
+            '& section': {
+                marginTop: '15px',
+                '& > div': {
+                    display: 'flex',
+                    marginTop: '10px',
+                    justifyContent: 'space-between'
+                }
+            },
+            '&:hover': {
+                border: '1px transparent solid',
+                boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px'
+            }
+        },
+        info: {
+            textAlign: 'right',
             '& > div': {
-                '&:nth-child(even)': {
-                    backgroundColor: '#f9f9f9'
-                },
-                display: 'table-row',
-                height: '40px',
-                '&:nth-child(2)': {
-                    height: '39px'
-                },
-                '&:first-child': {
-                    backgroundColor: 'white',
-                    height: '41px',
-                    '& span': {
-
-                        padding: '10px 30px',
-                        borderTop: '1px #efefef solid',
-                        borderBottom: '1px #efefef solid'
-                    }
-                },
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'flex-end',
                 '& span': {
-                    display: 'table-cell',
-                    verticalAlign: 'middle',
-                    padding: '0 30px'
+                    fontWeight: '600'
+                },
+                '& svg': {
+                    marginRight: '3px',
+                    color: 'inherit !important'
                 }
             }
         },
-        tableWrapper: {
-            display: 'flex',
-            margin: '0 -30px',
-            paddingLeft: '30px',
-            '& > div:first-child': {
-                zIndex: '20',
-                boxShadow: '5px 0 8px -3px #CCC',
-                width: '255px'
+        cashboxBalance: {
+            '& span': {
+                display: 'block',
+                '&:last-child': {
+                    fontSize: '14px',
+                    fontWeight: '600'
+                }
             },
-            '& > div:last-child': {
-                width: 'calc(100% - 255px)',
-                overflowX: 'auto',
-                overflowY: 'hidden'
-            }
-        },
-        tableBody: {
-        },
-        mainTable: {
-            width: '100%',
-            minWidth: '1200px',
-            color: '#666',
-            borderCollapse: 'collapse',
-            '& tr, td': {
-                height: '40px'
-            },
-            '& td': {
-                padding: '0 20px',
-                minWidth: '140px'
-            }
-        },
-        title: {
-            fontWeight: '600',
-            '& tr, td': {
-                border: '1px #efefef solid'
+            '&:nth-child(even)': {
+                textAlign: 'right'
             }
         }
-    }),
-    reduxForm({
-        form: 'StatCashboxFilterForm',
-        enableReinitialize: true
-    }),
+    })
 )
-let arr = []
-for (let i = 0, t = 20; i < t; i++) {
-    arr.push(Math.round(Math.random() * t))
-}
 
 const StatCashboxGridList = enhance((props) => {
     const {
+        filter,
         filterDetail,
         listData,
         detailData,
         classes,
         getDocument,
         detailFilterForm,
-        handleSubmitFilterDialog
+        handleSubmitFilterDialog,
+        initialValues
     } = props
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const listLoading = _.get(listData, 'listLoading')
@@ -327,51 +212,73 @@ const StatCashboxGridList = enhance((props) => {
     const expense = _.toNumber(_.get(listData, ['sumData', 'expenses'])) * NEGATIVE
 
     const iconStyle = {
-        icon: {
-            color: '#5d6474',
-            width: 22,
-            height: 22
-        },
-        button: {
-            width: 40,
-            height: 40,
-            padding: 0
-        }
+        width: 20,
+        height: 20
     }
-    const tableLeft = _.map(_.get(listData, 'data'), (item) => {
-        const id = _.get(item, 'id')
-        const name = _.get(item, 'name') || 'No'
-        return (
-            <div key={id} style={{cursor: 'pointer'}} onClick={() => listData.handleOpenDetail(id)}><span>{name}</span></div>
-        )
-    })
 
-    const tableList = _.map(_.get(listData, 'data'), (item) => {
+    const cashboxes = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const cashierFirstName = _.get(item, ['cashier', 'firstName'])
-        const cashierSecondName = _.get(item, ['cashier', 'secondName'])
-        const cashier = cashierFirstName + ' ' + cashierSecondName
-        const type = _.toInteger(_.get(item, 'type')) === BANK ? 'банковский счет' : 'наличные'
+        const name = _.get(item, 'name')
+        const cashier = !_.isNil(_.get(item, 'cashier')) ? _.get(item, ['cashier', 'firstName']) + ' ' + _.get(item, ['cashier', 'secondName']) : 'Неизвестно'
+        const type = _.toInteger(_.get(item, 'type'))
+        const typeIcon = _.toInteger(_.get(item, 'type')) === BANK ? (<CreditCard style={iconStyle}/>) : (<Cash style={iconStyle}/>)
         const currency = _.get(item, ['currency', 'name'])
 
-        const endBalance = numberFormat(_.get(item, 'endBalance'), primaryCurrency)
-        const startBalance = numberFormat(_.get(item, 'startBalance'), primaryCurrency)
-        const income = numberFormat(_.get(item, 'income'), primaryCurrency)
-        const expenses = numberFormat(_.get(item, 'expenses'), primaryCurrency)
+        const cbStartBalance = numberFormat(_.get(item, 'startBalance'), primaryCurrency)
+        const cbEndBalance = numberFormat(_.get(item, 'endBalance'), primaryCurrency)
+        const cbIncome = numberFormat(_.get(item, 'income'), primaryCurrency)
+        const cbExpenses = numberFormat(_.get(item, 'expenses'), primaryCurrency)
 
         return (
-            <tr key={id} className={classes.tableRow}>
-                <td>{cashier}</td>
-                <td>{type}</td>
-                <td>{currency}</td>
-                <td>{startBalance}</td>
-                <td>{income}</td>
-                <td>{expenses}</td>
-                <td>{endBalance}</td>
-
-            </tr>
+            <div
+                key={id}
+                className={classes.cashbox}
+                onClick={() => listData.handleOpenDetail(id)}>
+                <header>
+                    <div>
+                        <h4>{name}</h4>
+                        <div>{cashier}</div>
+                    </div>
+                    <div className={classes.info}>
+                        <div style={type === BANK ? {color: '#6261b0'} : {color: '#12aaeb'}}>{typeIcon} <span>{currency}</span></div>
+                    </div>
+                </header>
+                <section>
+                    <div>
+                        <div className={classes.cashboxBalance}>
+                            <span>Баланс на начало периода</span>
+                            <span>{cbStartBalance}</span>
+                        </div>
+                        <div className={classes.cashboxBalance}>
+                            <span>Баланс на конец периода</span>
+                            <span>{cbEndBalance}</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div className={classes.cashboxBalance}>
+                            <span>Приход за период</span>
+                            <span>{cbIncome}</span>
+                        </div>
+                        <div className={classes.cashboxBalance}>
+                            <span>Расход за период</span>
+                            <span>{cbExpenses}</span>
+                        </div>
+                    </div>
+                </section>
+            </div>
         )
     })
+
+    const fields = (
+        <div>
+            <Field
+                className={classes.inputFieldCustom}
+                name="date"
+                component={DateToDateField}
+                label="Диапазон дат"
+                fullWidth={true}/>
+        </div>
+    )
 
     const page = (
         <div className={classes.mainWrapper}>
@@ -380,92 +287,47 @@ const StatCashboxGridList = enhance((props) => {
                     <StatSideMenu currentUrl={ROUTES.STATISTICS_CASHBOX_URL}/>
                 </div>
                 <div className={classes.rightPanel}>
-                     <div className={classes.wrapper}>
-                            <form className={classes.form} onSubmit={handleSubmitFilterDialog}>
-                                <div className={classes.filter}>
-                                    <Field
-                                        className={classes.inputFieldCustom}
-                                        name="date"
-                                        component={DateToDateField}
-                                        label="Диапазон дат"
-                                        fullWidth={true}/>
-                                    <Field
-                                        name="division"
-                                        component={DivisionSearchField}
-                                        className={classes.inputFieldCustom}
-                                        label="Подразделение"
-                                        fullWidth={true}
-                                    />
-                                    <Field
-                                        className={classes.inputFieldCustom}
-                                        name="cashbox"
-                                        component={CashboxSearchField}
-                                        label="Кассы"
-                                        fullWidth={true}/>
-                                    <IconButton
-                                        className={classes.searchButton}
-                                        iconStyle={iconStyle.icon}
-                                        style={iconStyle.button}
-                                        type="submit">
-                                        <Search/>
-                                    </IconButton>
-                                </div>
-                                <a className={classes.excel}
-                                   onClick={getDocument.handleGetDocument}>
-                                    <Excel color="#fff"/> <span>Excel</span>
-                                </a>
-                            </form>
-                            {listLoading
+                    <div className={classes.wrapper}>
+                        <StatisticsFilterExcel
+                            filter={filter}
+                            fields={fields}
+                            filterKeys={STAT_CASHBOX_FILTER_KEY}
+                            handleSubmitFilterDialog={handleSubmitFilterDialog}
+                            handleGetDocument={getDocument.handleGetDocument}
+                            initialValues={initialValues}
+                        />
+                        {listLoading
                             ? <div className={classes.loader}>
-                                 <CircularProgress size={40} thickness={4}/>
-                              </div>
-                            : _.isEmpty(tableList)
-                                 ? <div className={classes.emptyQuery}>
-                                     <div>По вашему запросу ничего не найдено</div>
-                                   </div>
-                                 : <div>
-                                     <Row className={classes.balances}>
-                                         <div className={classes.balanceItem}>
-                                             <span>Баланс на начало периода</span>
-                                             <div>{numberFormat(startBalance, primaryCurrency)}</div>
-                                         </div>
-                                         <div className={classes.balanceItem}>
-                                             <span>Расход за период</span>
-                                             <div>{numberFormat(expense, primaryCurrency)}</div>
-                                         </div>
-                                         <div className={classes.balanceItem}>
-                                             <span>Приход за период</span>
-                                             <div>{numberFormat(income, primaryCurrency)}</div>
-                                         </div>
-                                         <div className={classes.balanceItem}>
-                                             <span>Баланс на конец периода</span>
-                                             <div>{numberFormat(endBalance, primaryCurrency)}</div>
-                                         </div>
-                                     </Row>
-                                        <div className={classes.tableWrapper}>
-                                            <div className={classes.leftTable}>
-                                                <div><span>Касса</span></div>
-                                                {tableLeft}
-                                            </div>
-                                            <div>
-                                                <table className={classes.mainTable}>
-                                                    <tbody>
-                                                    <tr className={classes.title}>
-                                                        <td>Кассир</td>
-                                                        <td>Тип</td>
-                                                        <td>Валюта</td>
-                                                        <td>Баланс на начало периода</td>
-                                                        <td>Расход за период</td>
-                                                        <td>Приход за период</td>
-                                                        <td>Баланс на конец периода</td>
-                                                    </tr>
-                                                    {tableList}
-                                                    </tbody>
-                                                </table>
-                                            </div>
+                                <CircularProgress size={40} thickness={4}/>
+                            </div>
+                            : _.isEmpty(cashboxes)
+                                ? <div className={classes.emptyQuery}>
+                                    <div>По вашему запросу ничего не найдено</div>
+                                </div>
+                                : <div>
+                                    <Row className={classes.balances}>
+                                        <div className={classes.balanceItem}>
+                                            <span>Баланс на начало периода</span>
+                                            <div>{numberFormat(startBalance, primaryCurrency)}</div>
                                         </div>
-                                 </div>}
-                        </div>
+                                        <div className={classes.balanceItem}>
+                                            <span>Расход за период</span>
+                                            <div>{numberFormat(expense, primaryCurrency)}</div>
+                                        </div>
+                                        <div className={classes.balanceItem}>
+                                            <span>Приход за период</span>
+                                            <div>{numberFormat(income, primaryCurrency)}</div>
+                                        </div>
+                                        <div className={classes.balanceItem}>
+                                            <span>Баланс на конец периода</span>
+                                            <div>{numberFormat(endBalance, primaryCurrency)}</div>
+                                        </div>
+                                    </Row>
+                                    <div className={classes.tableWrapper}>
+                                        {cashboxes}
+                                    </div>
+                                </div>}
+                    </div>
 
                     {openDetails && <CashboxDetails
                         filter={filterDetail}

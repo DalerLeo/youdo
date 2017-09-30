@@ -11,7 +11,7 @@ export const listFilterSerializer = (data) => {
         'division': _.get(defaultData, 'division'),
         'page_size': _.get(defaultData, 'pageSize'),
         'ordering': ordering && orderingSnakeCase(ordering),
-        'type': _.get(defaultData, 'type'),
+        'type': _.get(defaultData, 'type') || _.get(defaultData, 'typeParent'),
         'product': _.get(defaultData, 'product'),
         'stock': _.get(defaultData, 'stock'),
         'with_price': ONE

@@ -7,7 +7,7 @@ const ONE = 1
 const TWO = 2
 const FIVE = 5
 
-export const listFilterSerializer = (data) => {
+export const listFilterSerializer = (data, withOrderReturn) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
     const maxDay = 90
@@ -18,10 +18,9 @@ export const listFilterSerializer = (data) => {
     const urlToDate = _.get(defaultData, 'toDate')
     const fromDay = moment(urlFromDate)
     const toDay = moment(urlToDate)
-    let type = 'day'
-    if ((_.toInteger(toDay.diff(fromDay, 'days'))) >= maxDay) {
-        type = 'month'
-    }
+    const debt = _.toInteger(_.get(defaultData, 'dept'))
+    const type = _.toInteger(toDay.diff(fromDay, 'days')) >= maxDay ? 'month' : 'day'
+    const status = _.get(defaultData, 'status') ? (_.toInteger(_.get(defaultData, 'status')) === FIVE ? ZERO : _.toInteger(_.get(defaultData, 'status'))) : null
 
     return {
         'search': _.get(defaultData, 'search'),
@@ -30,6 +29,18 @@ export const listFilterSerializer = (data) => {
         'ordering': ordering && orderingSnakeCase(ordering),
         'begin_date': urlFromDate || firstDayOfMonth,
         'end_date': urlToDate || lastDayOfMonth,
+        'client': _.get(defaultData, 'client'),
+        'division': _.get(defaultData, 'division'),
+        'zone': _.get(defaultData, 'zone'),
+        'user': _.get(defaultData, 'initiator'),
+        'debt': debt === ONE ? true : (debt === TWO ? false : null),
+        'market': _.get(defaultData, 'shop'),
+        'status': status,
+        'only_bonus': _.get(defaultData, 'onlyBonus') ? 'True' : null,
+        'exclude_cancelled': _.get(defaultData, 'exclude') ? 'True' : null,
+        'delivery_date_0': _.get(defaultData, 'deliveryFromDate'),
+        'delivery_date_1': _.get(defaultData, 'deliveryToDate') || _.get(defaultData, 'deliveryFromDate'),
+        'with_order_return': withOrderReturn,
         type
     }
 }
