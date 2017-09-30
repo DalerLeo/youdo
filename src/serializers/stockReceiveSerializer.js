@@ -11,6 +11,7 @@ export const acceptSerializer = (id, stock) => {
 
 export const createSerializer = (data, detail) => {
     const provider = _.get(detail, ['provider', 'id'])
+    console.log(data)
     const products = _.map(_.get(detail, 'products'), (item, index) => {
         const supplyProduct = _.get(item, 'id')
         return {

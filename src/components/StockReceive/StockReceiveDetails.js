@@ -163,6 +163,7 @@ const StockReceiveDetails = enhance((props) => {
         confirmDialog,
         createDialog,
         updateDialog,
+        repealDialog,
         history,
         popover
     } = props
@@ -289,7 +290,7 @@ const StockReceiveDetails = enhance((props) => {
                                         <IconButton
                                             iconStyle={iconStyle.icon}
                                             style={iconStyle.button}
-                                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(CANCEL) }}
+                                            onTouchTap={() => { repealDialog.handleOpenRepealDialog() }}
                                             touch={true}>
                                             <RemoveCircleIcon />
                                         </IconButton>

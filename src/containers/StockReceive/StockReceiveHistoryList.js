@@ -14,6 +14,7 @@ import {OrderPrint} from '../../components/Order'
 import {
     HISTORY_FILTER_OPEN,
     STOCK_CONFIRM_DIALOG_OPEN,
+    STOCK_REPEAL_HISTORY_DIALOG_OPEN,
     TAB,
     TAB_TRANSFER_FILTER_KEY
 } from '../../components/StockReceive'
@@ -26,7 +27,9 @@ import {
     stockReceiveItemReturnAction,
     stockReceiveDeliveryConfirmAction,
     stockTransferItemAcceptAction,
-    stockTransferListFetchAction
+    stockTransferListFetchAction,
+    stockTransferHistoryRepealAction,
+    stockTransferHistoryReturnAction
 } from '../../actions/stockReceive'
 import {
     orderListPintFetchAction
@@ -200,6 +203,35 @@ const enhance = compose(
                     dispatch(stockReceiveListFetchAction(filter))
                     return dispatch(openSnackbarAction({message: 'Успешно принять'}))
                 })
+        },
+        handleOpenRepealDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[STOCK_REPEAL_HISTORY_DIALOG_OPEN]: true})})
+        },
+
+        handleCloseRepealDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[STOCK_REPEAL_HISTORY_DIALOG_OPEN]: false})})
+        },
+        handleSubmitRepealDialog: props => () => {
+            const {location: {pathname}, filter, params, dispatch} = props
+            const orderId = _.toInteger(_.get(params, 'stockReceiveHistoryId'))
+            dispatch(stockTransferHistoryReturnAction(orderId))
+                .then(() => {
+                    hashHistory.push({pathname, query: filter.getParams({[STOCK_REPEAL_HISTORY_DIALOG_OPEN]: false})})
+                    return dispatch(openSnackbarAction({message: 'Успешно отменено'}))
+                })
+                .catch((error) => {
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
+                    })
+
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                            {errorWhole}
+                        </div>
+                    }))
+                })
         }
     })
 )
@@ -223,6 +255,7 @@ const StockReceiveHistoryList = enhance((props) => {
     const detailId = _.toInteger(_.get(params, 'stockReceiveHistoryId'))
     const openFilterDialog = toBoolean(_.get(location, ['query', HISTORY_FILTER_OPEN]))
     const openConfirmDialog = _.toInteger(_.get(location, ['query', STOCK_CONFIRM_DIALOG_OPEN]))
+    const openRepealDialog = toBoolean(_.get(location, ['query', STOCK_REPEAL_HISTORY_DIALOG_OPEN]))
     const stock = _.toInteger(filter.getParam(TAB_TRANSFER_FILTER_KEY.STOCK))
     const type = _.toInteger(filter.getParam(TAB_TRANSFER_FILTER_KEY.TYPE))
     const fromDate = filter.getParam(TAB_TRANSFER_FILTER_KEY.FROM_DATE)
@@ -238,12 +271,15 @@ const StockReceiveHistoryList = enhance((props) => {
         data: printList,
         printLoading
     }
-
+    const currentDetail = _.find(_.get(list, 'results'), (obj) => {
+        return _.get(obj, 'id') === detailId && _.get(obj, 'type') === detailType
+    })
     const detailData = {
         type: detailType,
         id: detailId,
         data: detail,
-        detailLoading
+        detailLoading,
+        currentDetail
     }
 
     const filterDialog = {
@@ -281,6 +317,12 @@ const StockReceiveHistoryList = enhance((props) => {
         handleSubmitOrderReturnDialog: props.handleSubmitOrderReturnDialog,
         handleSubmitReceiveDeliveryConfirmDialog: props.handleSubmitReceiveDeliveryConfirmDialog
     }
+    const repealDialog = {
+        openRepealDialog,
+        handleOpenRepealDialog: props.handleOpenRepealDialog,
+        handleCloseRepealDialog: props.handleCloseRepealDialog,
+        handleSubmitRepealDialog: props.handleSubmitRepealDialog
+    }
 
     if (openPrint) {
         document.getElementById('wrapper').style.height = 'auto'
@@ -294,6 +336,7 @@ const StockReceiveHistoryList = enhance((props) => {
     return (
         <Layout {...layout}>
             <TabReceive
+                repealDialog={repealDialog}
                 filter={filter}
                 listData={listData}
                 filterDialog={filterDialog}

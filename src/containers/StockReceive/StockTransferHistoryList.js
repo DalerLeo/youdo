@@ -160,9 +160,6 @@ const enhance = compose(
             const stockId = _.toInteger(_.get(location, ['query', 'openType']))
             dispatch(stockTransferHistoryRepealAction(orderId, stockId))
                 .then(() => {
-                    dispatch(stockTransferHistoryReturnAction(orderId))
-                })
-                .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[STOCK_REPEAL_DIALOG_OPEN]: false})})
                     return dispatch(openSnackbarAction({message: 'Успешно отменено'}))
                 })

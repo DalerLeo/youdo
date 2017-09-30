@@ -9,6 +9,7 @@ import StockReceiveTabList from '../../containers/StockReceive/StockReceiveTabLi
 import StockReceiveDetails from './StockReceiveDetails'
 import stockTypeFormat from '../../helpers/stockTypeFormat'
 import ConfirmDialog from '../ConfirmDialog'
+import CreateDialog from './StockReceiveCreateDialog'
 import TabTransferFilterForm from './TabTransferFilterForm'
 import GridList from '../GridList'
 import * as TAB from '../../constants/stockReceiveTab'
@@ -136,7 +137,12 @@ const StockTabReceive = enhance((props) => {
         confirmDialog,
         handleCloseDetail,
         filterDialog,
-        history
+        createDialog,
+        updateDialog,
+        history,
+        handleCheckedForm,
+        handleCheckedDefect,
+        repealDialog
     } = props
     const listLoading = _.get(listData, 'listLoading')
     const stockReceiveFilterDialog = (
@@ -153,6 +159,9 @@ const StockTabReceive = enhance((props) => {
             loading={_.get(detailData, 'detailLoading')}
             confirmDialog={confirmDialog}
             handleCloseDetail={handleCloseDetail}
+            createDialog={createDialog}
+            updateDialog={updateDialog}
+            repealDialog={repealDialog}
             history={history}
     />
     )
@@ -209,8 +218,34 @@ const StockTabReceive = enhance((props) => {
                                 : (confirmDialog.openConfirmDialog === DELIVERY)
                                     ? confirmDialog.handleSubmitReceiveDeliveryConfirmDialog
                                         : confirmDialog.handleSubmitReceiveConfirmDialog}
-                open={confirmDialog.openConfirmDialog > ZERO}
-            />
+                open={confirmDialog.openConfirmDialog > ZERO}/>
+
+            {history && <ConfirmDialog
+                type={'submit' }
+                message={'Запрос № ' + _.get(detailData, 'id')}
+                onClose={repealDialog.handleCloseRepealDialog}
+                onSubmit={repealDialog.handleSubmitRepealDialog}
+                open={repealDialog.openRepealDialog}
+            />}
+            {!history && <CreateDialog
+                loading={createDialog.createLoading}
+                open={createDialog.openCreateDialog}
+                detailProducts={_.get(detailData, 'data')}
+                listLoading={createDialog.detailLoading}
+                onClose={createDialog.handleCloseCreateDialog}
+                onSubmit={createDialog.handleSubmitCreateDialog}
+                handleCheckedForm={handleCheckedForm}/>}
+
+            {!history && <CreateDialog
+                loading={updateDialog.updateLoading}
+                open={updateDialog.openUpdateDialog}
+                detailProducts={_.get(detailData, 'data')}
+                listLoading={updateDialog.detailLoading}
+                onClose={updateDialog.handleCloseUpdateDialog}
+                onSubmit={updateDialog.handleSubmitUpdateDialog}
+                isUpdate={true}
+                initialValues={updateDialog.initialValues}
+                handleCheckedDefect={handleCheckedDefect}/>}
         </div>
     )
 })
