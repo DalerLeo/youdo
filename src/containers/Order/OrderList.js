@@ -217,6 +217,7 @@ const enhance = compose(
                 .then(() => {
                     setOpenConfirmDialog(false)
                     dispatch(orderListFetchAction(filter))
+                    dispatch(orderItemFetchAction(detail.id))
                     return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
                 })
                 .catch(() => {

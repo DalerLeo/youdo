@@ -147,7 +147,7 @@ const enhance = compose(
                 paddingRight: '20px'
             },
             '& .dottedList': {
-                padding: '8px 20px 8px 0px !important',
+                padding: '8px 20px 8px 0px !important'
             }
         }
     }),
