@@ -159,10 +159,10 @@ const PricesFilterForm = enhance((props) => {
                         <RaisedButton
                             type="submit"
                             primary={true}
-                            buttonStyle={{color: '#fff'}}>
                             labelStyle={{fontSize: '13px'}}
-                            Применить
-                        </RaisedButton>
+                            buttonStyle={{color: '#fff'}}
+                            label="Применить"
+                        />
                     </div>
                 </form>
             </Paper>
