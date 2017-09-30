@@ -13,7 +13,7 @@ import TabTransfer from '../../components/StockReceive/StockTabTransfer'
 import {OrderPrint} from '../../components/Order'
 import {
     STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN,
-    HISTORY_FILTER_OPEN,
+    TAB_TRANSFER_FILTER_OPEN,
     TAB,
     STOCK_CONFIRM_DIALOG_OPEN,
     TAB_TRANSFER_FILTER_KEY
@@ -34,6 +34,7 @@ import {openSnackbarAction} from '../../actions/snackbar'
 import {openErrorAction} from '../../actions/error'
 
 const TYPE = 'openType'
+const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -68,12 +69,14 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const prevId = _.toInteger(_.get(props, ['params', 'stockTransferId']))
-        const nextId = _.toInteger(_.get(nextProps, ['params', 'stockTransferId']))
-        return prevId !== nextId
+        const prevId = _.get(props, ['params', 'stockTransferId'])
+        const nextId = _.get(nextProps, ['params', 'stockTransferId'])
+        return nextId && prevId !== nextId
     }, ({dispatch, params}) => {
         const stockTransferId = _.toInteger(_.get(params, 'stockTransferId'))
-        dispatch(stockTransferItemFetchAction(stockTransferId))
+        if (stockTransferId > ZERO) {
+            dispatch(stockTransferItemFetchAction(stockTransferId))
+        }
     }),
 
     withState('openPrint', 'setOpenPrint', false),
@@ -95,12 +98,12 @@ const enhance = compose(
 
         handleOpenFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[HISTORY_FILTER_OPEN]: true})})
+            hashHistory.push({pathname, query: filter.getParams({[TAB_TRANSFER_FILTER_OPEN]: true})})
         },
 
         handleCloseFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[HISTORY_FILTER_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[TAB_TRANSFER_FILTER_OPEN]: false})})
         },
 
         handleClearFilterDialog: props => () => {
@@ -115,14 +118,10 @@ const enhance = compose(
             const type = _.get(filterForm, ['values', 'type', 'value']) || null
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
-            const acceptanceFromData = _.get(filterForm, ['values', 'acceptanceDate', 'fromDate']) || null
-            const acceptanceToDate = _.get(filterForm, ['values', 'acceptanceDate', 'toDate']) || null
             filter.filterBy({
-                [HISTORY_FILTER_OPEN]: false,
+                [TAB_TRANSFER_FILTER_OPEN]: false,
                 [TAB_TRANSFER_FILTER_KEY.STOCK]: stock,
                 [TAB_TRANSFER_FILTER_KEY.TYPE]: type,
-                [TAB_TRANSFER_FILTER_KEY.ACCEPTANCE_FROM_DATE]: acceptanceFromData && moment(acceptanceFromData).format('YYYY-MM-DD'),
-                [TAB_TRANSFER_FILTER_KEY.ACCEPTANCE_TO_DATE]: acceptanceToDate && moment(acceptanceToDate).format('YYYY-MM-DD'),
                 [TAB_TRANSFER_FILTER_KEY.FROM_DATE]: fromDate && moment(fromDate).format('YYYY-MM-DD'),
                 [TAB_TRANSFER_FILTER_KEY.TO_DATE]: toDate && moment(toDate).format('YYYY-MM-DD')
 
@@ -218,13 +217,11 @@ const StockTransferList = enhance((props) => {
     const detailId = _.toInteger(_.get(params, 'stockTransferId'))
     const detailType = _.get(location, ['query', TYPE])
     const openConfirmDialog = _.toInteger(_.get(location, ['query', STOCK_CONFIRM_DIALOG_OPEN]))
-    const openFilterDialog = toBoolean(_.get(location, ['query', HISTORY_FILTER_OPEN]))
+    const openFilterDialog = toBoolean(_.get(location, ['query', TAB_TRANSFER_FILTER_OPEN]))
     const stock = _.toInteger(filter.getParam(TAB_TRANSFER_FILTER_KEY.STOCK))
     const type = _.toInteger(filter.getParam(TAB_TRANSFER_FILTER_KEY.TYPE))
     const fromDate = filter.getParam(TAB_TRANSFER_FILTER_KEY.FROM_DATE)
     const toDate = filter.getParam(TAB_TRANSFER_FILTER_KEY.TO_DATE)
-    const acceptanceFromDate = filter.getParam(TAB_TRANSFER_FILTER_KEY.ACCEPTANCE_FROM_DATE)
-    const acceptanceToDate = filter.getParam(TAB_TRANSFER_FILTER_KEY.ACCEPTANCE_TO_DATE)
     const handleCloseDetail = _.get(props, 'handleCloseDetail')
 
     const transferData = {
@@ -241,10 +238,10 @@ const StockTransferList = enhance((props) => {
         openConfirmDialog,
         handleOpenConfirmDialog: props.handleOpenConfirmDialog,
         handleCloseConfirmDialog: props.handleCloseConfirmDialog,
-        handleSubmitTransferAcceptDialog: props.handleSubmitTransferAcceptDialog,
-        handleSubmitReceiveConfirmDialog: props.handleSubmitReceiveConfirmDialog,
-        handleSubmitOrderReturnDialog: props.handleSubmitOrderReturnDialog,
-        handleSubmitReceiveDeliveryConfirmDialog: props.handleSubmitReceiveDeliveryConfirmDialog
+        handleSubmitTransferAcceptDialog: props.handleSubmitTransferAcceptDialog
+        // handleSubmitReceiveConfirmDialog: props.handleSubmitReceiveConfirmDialog,
+        // handleSubmitOrderReturnDialog: props.handleSubmitOrderReturnDialog,
+        // handleSubmitReceiveDeliveryConfirmDialog: props.handleSubmitReceiveDeliveryConfirmDialog
     }
 
     const filterDialog = {
@@ -255,10 +252,6 @@ const StockTransferList = enhance((props) => {
             date: {
                 fromDate: fromDate && moment(fromDate),
                 toDate: toDate && moment(toDate)
-            },
-            acceptanceDate: {
-                fromDate: acceptanceFromDate && moment(acceptanceFromDate),
-                toDate: acceptanceToDate && moment(acceptanceToDate)
             },
             stock: {
                 value: stock

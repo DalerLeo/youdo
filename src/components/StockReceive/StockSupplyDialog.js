@@ -174,6 +174,7 @@ const StatSaleDialog = enhance((props) => {
                     loading={loading}
                     handleCloseDetail={onClose}
                     filter={filter}
+                    history={true}
                 />}
         </Dialog>
     )

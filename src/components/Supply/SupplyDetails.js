@@ -299,6 +299,7 @@ const SupplyDetails = enhance((props) => {
         confirmExpenseDialog,
         handleCloseDetail,
         filter,
+        history,
         isAdmin
     } = props
 
@@ -354,30 +355,32 @@ const SupplyDetails = enhance((props) => {
                 <div className={classes.closeDetail}
                      onClick={handleCloseDetail}>
                 </div>
-                <div className={classes.titleSupplier}>
-                    <a className={classes.dropdown} onMouseEnter={() => {
-                        setOpenDetails(true)
-                    }}>{provider}</a>
-                    {openDetails &&
-                    <div className="supplierDetails" onMouseLeave={() => {
-                        setOpenDetails(false)
-                    }}>
-                        <div className="detailsWrap">
-                            <Row className="detailsList">
-                                <Col xs={6}>Контактное лицо</Col>
-                                <Col xs={6}>{contactPerson}</Col>
-                            </Row>
-                            <Row className="detailsList">
-                                <Col xs={6}>Телефон</Col>
-                                <Col xs={6}>{contactPhone}</Col>
-                            </Row>
-                            <Row className="detailsList">
-                                <Col xs={6}>Email</Col>
-                                <Col xs={6}>{contactEmail}</Col>
-                            </Row>
+                <div style={history ? {position: 'absolute', left: 'calc(50% - 100px)', width: '200px'} : null}>
+                    <div className={classes.titleSupplier}>
+                        <a className={classes.dropdown} onMouseEnter={() => {
+                            setOpenDetails(true)
+                        }}>{provider}</a>
+                        {openDetails &&
+                        <div className="supplierDetails" onMouseLeave={() => {
+                            setOpenDetails(false)
+                        }}>
+                            <div className="detailsWrap">
+                                <Row className="detailsList">
+                                    <Col xs={6}>Контактное лицо</Col>
+                                    <Col xs={6}>{contactPerson}</Col>
+                                </Row>
+                                <Row className="detailsList">
+                                    <Col xs={6}>Телефон</Col>
+                                    <Col xs={6}>{contactPhone}</Col>
+                                </Row>
+                                <Row className="detailsList">
+                                    <Col xs={6}>Email</Col>
+                                    <Col xs={6}>{contactEmail}</Col>
+                                </Row>
+                            </div>
                         </div>
+                        }
                     </div>
-                    }
                 </div>
                 <div className={classes.titleButtons}>
                     {updateDialog && <Tooltip position="bottom" text="Изменить">
@@ -482,7 +485,7 @@ const SupplyDetails = enhance((props) => {
                 : <div className="summary">
                         <div>Сумма заказа <span style={{marginLeft: '40px'}}>{numberFormat(totalCost, currency)}</span></div>
                     </div>}
-                <div className="addExpenses">
+                {!history && <div className="addExpenses">
                     <div className="addExpense">
                         <div>Дополнительные расходы по заказу</div>
                         <div>
@@ -521,6 +524,7 @@ const SupplyDetails = enhance((props) => {
                         )
                     })}
                 </div>
+                }
                 {comment && <div className="comment">
                     <div className="personImage">
                         <img src={Person} alt=""/>

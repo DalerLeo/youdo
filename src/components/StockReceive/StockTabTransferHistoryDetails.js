@@ -141,65 +141,74 @@ const StockTransferDetails = enhance((props) => {
         repealDialog,
         loading
     } = props
-    const products = _.get(detailData, ['data', 'products'])
-    const comment = _.get(detailData, ['data', 'comment']) || 'Комментарий отсутствует'
+    const detail = _.get(detailData, 'data')
+    const products = _.get(detail, 'products')
+    const comment = _.get(detail, 'comment') || 'Комментарий не отсутствует'
     const id = _.get(detailData, 'id')
-    const dateRequest = dateFormat(_.get(detailData, ['currentTransferDetail', 'dateRequest']))
-    const dateDelivery = dateFormat(_.get(detailData, ['currentTransferDetail', 'dateDelivery']))
-    const receiver = _.get(detailData, ['currentTransferDetail', 'receiver'])
-    const detailType = _.toInteger(_.get(detailData, 'type'))
-    const stockName = _.get(detailData, ['currentTransferDetail', 'stock', 'name'])
+    const dateRequest = dateFormat(_.get(detailData, ['currentDetail', 'dateRequest']))
+    const dateDelivery = dateFormat(_.get(detailData, ['currentDetail', 'dateDelivery']))
+    const receiver = _.get(detailData, ['currentDetail', 'receiver'])
+    const stockName = _.get(detailData, ['currentDetail', 'stock', 'name'])
     const tooltipCancelText = 'Отменить Запрос №' + id
 
     if (_.isEmpty(products)) {
         return (
-            <div className={classes.wrapper} style={loading ? {padding: '0 30px', border: 'none', maxHeight: '2px'} : {maxHeight: '250px', overflowY: 'hidden', height: '100%'}}>
+            <div className={classes.wrapper} style={loading ? {padding: '0 30px', border: 'none', maxHeight: '2px'} : {
+                maxHeight: '250px',
+                overflowY: 'hidden',
+                height: '100%'
+            }}>
                 {loading ? <LinearProgress/>
-                : <div className={classes.emptyQuery}>
-                    <div>Товаров не найдено</div>
-                </div>}
+                    : <div className={classes.emptyQuery}>
+                        <div>Товаров не найдено</div>
+                    </div>}
             </div>
         )
     }
 
     return (
-        <div className={classes.wrapper} style={loading ? {padding: '0 30px', border: 'none', maxHeight: '2px'} : {maxHeight: 'unset'}}>
+        <div className={classes.wrapper}
+             style={loading ? {padding: '0 30px', border: 'none', maxHeight: '2px'} : {maxHeight: 'unset'}}>
             {loading ? <LinearProgress/>
                 : <div style={{width: '100%'}}>
-                  <div className={classes.header}>
-                      <div className={classes.closeDetail}
-                           onClick={handleCloseDetail}>
-                      </div>
-                    <Row className={classes.semibold}>
-                        <Col xs={2}>{id}</Col>
-                        <Col xs={2}>{dateRequest}</Col>
-                        <Col xs={2}>{stockName}</Col>
-                        <Col xs={3}>{receiver}</Col>
-                        <Col xs={2}>{dateDelivery}</Col>
-                        <div style={{marginLeft: '-10px'}}>
-                            <Tooltip position="right" text={tooltipCancelText}>
-                                <IconButton
-                                    iconStyle={iconStyle.icon}
-                                    style={iconStyle.button}
-                                    onTouchTap={() => { repealDialog.handleOpenRepealDialog(id) }}
-                                    touch={true}>
-                                    <RemoveCircleIcon />
-                                </IconButton>
-                            </Tooltip>
+                    <div className={classes.header}>
+                        <div className={classes.closeDetail}
+                             onClick={handleCloseDetail}>
                         </div>
-                        <div className={classes.printer}>
-                            <Tooltip position="bottom" text="Распечатать накладную">
-                                <IconButton
-                                    iconStyle={iconStyle.icon}
-                                    style={iconStyle.button}
-                                    onTouchTap={() => { handleOpenPrint(id) }}
-                                    touch={true}>
-                                    <PrintIcon />
-                                </IconButton>
-                            </Tooltip>
-                        </div>
-                    </Row>
-                </div>
+                        <Row className={classes.semibold}>
+                            <Col xs={2}>{id}</Col>
+                            <Col xs={2}>{dateRequest}</Col>
+                            <Col xs={2}>{stockName}</Col>
+                            <Col xs={3}>{receiver}</Col>
+                            <Col xs={2}>{dateDelivery}</Col>
+                            <div style={{marginLeft: '-10px'}}>
+                                <Tooltip position="right" text={tooltipCancelText}>
+                                    <IconButton
+                                        iconStyle={iconStyle.icon}
+                                        style={iconStyle.button}
+                                        onTouchTap={() => {
+                                            repealDialog.handleOpenRepealDialog(id)
+                                        }}
+                                        touch={true}>
+                                        <RemoveCircleIcon/>
+                                    </IconButton>
+                                </Tooltip>
+                            </div>
+                            <div className={classes.printer}>
+                                <Tooltip position="bottom" text="Распечатать накладную">
+                                    <IconButton
+                                        iconStyle={iconStyle.icon}
+                                        style={iconStyle.button}
+                                        onTouchTap={() => {
+                                            handleOpenPrint(id)
+                                        }}
+                                        touch={true}>
+                                        <PrintIcon/>
+                                    </IconButton>
+                                </Tooltip>
+                            </div>
+                        </Row>
+                    </div>
                     <div className={classes.content}>
                         <div className={classes.leftSide}>
                             <Row className='dottedList'>
@@ -212,17 +221,13 @@ const StockTransferDetails = enhance((props) => {
                                 const name = _.get(item, ['product', 'name'])
                                 const measurement = _.get(item, ['product', 'measurement', 'name'])
                                 const amount = numberformat(_.get(item, 'amount'), measurement)
-                                const stock = _.toInteger(_.get(item, ['stock', 'id']))
-                                if (stock === detailType) {
-                                    return (
-                                        <Row key={productId} className='dottedList'>
-                                            <Col xs={6}>{name}</Col>
-                                            <Col xs={4}>Стиральный порошек</Col>
-                                            <Col xs={2}>{amount}</Col>
-                                        </Row>
-                                    )
-                                }
-                                return null
+                                return (
+                                    <Row key={productId} className='dottedList'>
+                                        <Col xs={6}>{name}</Col>
+                                        <Col xs={4}>Стиральный порошек</Col>
+                                        <Col xs={2}>{amount}</Col>
+                                    </Row>
+                                )
                             })}
                         </div>
                         <div className={classes.rightSide}>

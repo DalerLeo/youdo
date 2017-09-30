@@ -24,7 +24,7 @@ import {
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
-export const HISTORY_FILTER_KEY = {
+export const OUT_HISTORY_FILTER_KEY = {
     PRODUCT: 'product',
     TYPE: 'type',
     STATUS: 'status',
@@ -124,9 +124,9 @@ const enhance = compose(
     withHandlers({
         getCount: props => () => {
             const {filter} = props
-            return _(HISTORY_FILTER_KEY)
+            return _(OUT_HISTORY_FILTER_KEY)
                 .values()
-                .filter(item => item !== HISTORY_FILTER_KEY.FROM_DATE)
+                .filter(item => item !== OUT_HISTORY_FILTER_KEY.FROM_DATE)
                 .filter(item => filter.getParam(item))
                 .value()
                 .length

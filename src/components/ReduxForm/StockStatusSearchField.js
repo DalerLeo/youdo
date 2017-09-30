@@ -3,8 +3,8 @@ import React from 'react'
 import SearchField from './Basic/SearchField'
 
 const Items = [
-    {id: 1, name: 'In'},
-    {id: 2, name: 'Out'}
+    {id: 'in', name: 'Приход'},
+    {id: 'out', name: 'Расход'}
 ]
 const getOptions = () => {
     return Promise.resolve(Items)

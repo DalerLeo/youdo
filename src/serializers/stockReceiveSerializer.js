@@ -11,7 +11,6 @@ export const acceptSerializer = (id, stock) => {
 
 export const createSerializer = (data, detail) => {
     const provider = _.get(detail, ['provider', 'id'])
-    console.log(data)
     const products = _.map(_.get(detail, 'products'), (item, index) => {
         const supplyProduct = _.get(item, 'id')
         return {
@@ -49,22 +48,20 @@ export const updateSerializer = (data, detail) => {
     })
     return products
 }
-export const listFilterSerializer = (data, history) => {
+export const listFilterSerializer = (data, history, outHistory) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
     return {
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),
         'search': _.get(defaultData, 'search'),
-        'type': _.get(defaultData, 'type'),
+        'content_type': outHistory ? _.get(defaultData, 'type') : null,
         'stock': _.get(defaultData, 'stock'),
-        'status': _.get(defaultData, 'status'),
+        'type': outHistory ? _.get(defaultData, 'status') : _.get(defaultData, 'type'),
         'product': _.get(defaultData, 'product'),
         'product_type': _.get(defaultData, 'typeChild'),
         'begin_date': _.get(defaultData, 'fromDate'),
         'end_date': _.get(defaultData, 'toDate'),
-        'acceptance_begin_date': _.get(defaultData, 'acceptanceFromDate'),
-        'acceptance_end_date': _.get(defaultData, 'acceptanceToDate'),
         'ordering': ordering && orderingSnakeCase(ordering),
         history
 

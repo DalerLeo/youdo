@@ -14,9 +14,9 @@ import moment from 'moment'
 import {OrderPrint} from '../../components/Order'
 import {
     STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN,
-    HISTORY_FILTER_OPEN,
-    HISTORY_FILTER_KEY,
-    SROCK_POPVER_DIALOG_OPEN,
+    TAB_RECEIVE_FILTER_OPEN,
+    TAB_RECEIVE_FILTER_KEY,
+    STOCK_POPVER_DIALOG_OPEN,
     STOCK_RECEIVE_CREATE_DIALOG_OPEN,
     STOCK_RECEIVE_UPDATE_DIALOG_OPEN,
     TAB,
@@ -53,7 +53,7 @@ const enhance = compose(
         const listLoading = _.get(state, ['stockReceive', 'list', 'loading'])
         const detail = _.get(state, ['stockReceive', 'item', 'data'])
         const detailLoading = _.get(state, ['stockReceive', 'item', 'loading'])
-        const filterForm = _.get(state, ['form', 'TabTransferFilterForm'])
+        const filterForm = _.get(state, ['form', 'TabReceiveFilterForm'])
         const printList = _.get(state, ['stockReceive', 'print', 'data'])
         const createForm = _.get(state, ['form', 'StockReceiveCreateForm'])
         const printLoading = _.get(state, ['stockReceive', 'print', 'loading'])
@@ -83,9 +83,9 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const prevId = _.toInteger(_.get(props, ['params', 'stockReceiveId']))
-        const nextId = _.toInteger(_.get(nextProps, ['params', 'stockReceiveId']))
-        return prevId !== nextId
+        const prevId = _.get(props, ['params', 'stockReceiveId'])
+        const nextId = _.get(nextProps, ['params', 'stockReceiveId'])
+        return nextId && prevId !== nextId
     }, ({dispatch, params, location}) => {
         const stockReceiveType = _.get(location, ['query', 'openType'])
         const stockReceiveId = _.toInteger(_.get(params, 'stockReceiveId'))
@@ -119,12 +119,12 @@ const enhance = compose(
 
         handleOpenFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[HISTORY_FILTER_OPEN]: true})})
+            hashHistory.push({pathname, query: filter.getParams({[TAB_RECEIVE_FILTER_OPEN]: true})})
         },
 
         handleCloseFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[HISTORY_FILTER_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[TAB_RECEIVE_FILTER_OPEN]: false})})
         },
 
         handleClearFilterDialog: props => () => {
@@ -139,14 +139,10 @@ const enhance = compose(
             const type = _.get(filterForm, ['values', 'type', 'value']) || null
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
-            const acceptanceFromData = _.get(filterForm, ['values', 'acceptanceDate', 'fromDate']) || null
-            const acceptanceToDate = _.get(filterForm, ['values', 'acceptanceDate', 'toDate']) || null
             filter.filterBy({
-                [HISTORY_FILTER_OPEN]: false,
+                [TAB_RECEIVE_FILTER_OPEN]: false,
                 [TAB_TRANSFER_FILTER_KEY.STOCK]: stock,
                 [TAB_TRANSFER_FILTER_KEY.TYPE]: type,
-                [TAB_TRANSFER_FILTER_KEY.ACCEPTANCE_FROM_DATE]: acceptanceFromData && moment(acceptanceFromData).format('YYYY-MM-DD'),
-                [TAB_TRANSFER_FILTER_KEY.ACCEPTANCE_TO_DATE]: acceptanceToDate && moment(acceptanceToDate).format('YYYY-MM-DD'),
                 [TAB_TRANSFER_FILTER_KEY.FROM_DATE]: fromDate && moment(fromDate).format('YYYY-MM-DD'),
                 [TAB_TRANSFER_FILTER_KEY.TO_DATE]: toDate && moment(toDate).format('YYYY-MM-DD')
 
@@ -225,7 +221,7 @@ const enhance = compose(
                     query: filter.getParams({
                         [TYPE]: type,
                         [STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN]: id,
-                        [SROCK_POPVER_DIALOG_OPEN]: id
+                        [STOCK_POPVER_DIALOG_OPEN]: id
                     })
                 })
             } else {
@@ -234,7 +230,7 @@ const enhance = compose(
                     query: filter.getParams({
                         [TYPE]: type,
                         [STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN]: false,
-                        [SROCK_POPVER_DIALOG_OPEN]: false
+                        [STOCK_POPVER_DIALOG_OPEN]: false
                     })
                 })
             }
@@ -346,11 +342,11 @@ const StockReceiveListContent = enhance((props) => {
     const openUpdateDialog = toBoolean(_.get(location, ['query', STOCK_RECEIVE_UPDATE_DIALOG_OPEN]))
     const detailId = _.toInteger(_.get(params, 'stockReceiveId'))
     const openConfirmDialog = _.toInteger(_.get(location, ['query', STOCK_CONFIRM_DIALOG_OPEN]))
-    const openFilterDialog = toBoolean(_.get(location, ['query', HISTORY_FILTER_OPEN]))
-    const stock = _.toInteger(filter.getParam(HISTORY_FILTER_KEY.STOCK))
-    const type = _.toInteger(filter.getParam(HISTORY_FILTER_KEY.TYPE))
-    const fromDate = filter.getParam(HISTORY_FILTER_KEY.FROM_DATE)
-    const toDate = filter.getParam(HISTORY_FILTER_KEY.TO_DATE)
+    const openFilterDialog = toBoolean(_.get(location, ['query', TAB_RECEIVE_FILTER_OPEN]))
+    const stock = _.toInteger(filter.getParam(TAB_RECEIVE_FILTER_KEY.STOCK))
+    const type = _.toInteger(filter.getParam(TAB_RECEIVE_FILTER_KEY.TYPE))
+    const fromDate = filter.getParam(TAB_RECEIVE_FILTER_KEY.FROM_DATE)
+    const toDate = filter.getParam(TAB_RECEIVE_FILTER_KEY.TO_DATE)
     const handleCloseDetail = _.get(props, 'handleCloseDetail')
 
     const listData = {

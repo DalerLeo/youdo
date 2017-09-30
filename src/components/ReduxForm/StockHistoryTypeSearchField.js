@@ -1,33 +1,41 @@
 import _ from 'lodash'
+import sprintf from 'sprintf'
 import React from 'react'
 import SearchField from './Basic/SearchField'
-
-const Items = [
-    {id: 1, name: 'Поставка'},
-    {id: 2, name: 'Передача'},
-    {id: 3, name: 'По заказу'},
-    {id: 4, name: 'Возврат'},
-    {id: 5, name: 'Cписание'},
-    {id: 6, name: 'Отсрочка доставки'}
-]
+import axios from '../../helpers/axios'
+import * as PATH from '../../constants/api'
+import toCamelCase from '../../helpers/toCamelCase'
 
 const getOptions = (search) => {
-    return Promise.resolve(Items)
+    return axios().get(`${PATH.CONTENT_TYPE_SEARCH}?search=${search || ''}`)
+        .then(({data}) => {
+            return Promise.resolve(toCamelCase(data))
+        })
 }
 
 const getItem = (id) => {
-    return Promise.resolve(
-        _.find(Items, (o) => { return o.id === _.toInteger(id) }))
+    return axios().get(sprintf(PATH.SHIFT_ITEM, id))
+        .then(({data}) => {
+            return Promise.resolve(toCamelCase(data))
+        })
+}
+
+const getRussianText = (obj) => {
+    const name = _.get(obj, 'name')
+    return name === 'order return accept' ? 'Возврат'
+            : (name === 'order transfer product' ? 'Заказ'
+            : (name === 'stock transfer product' ? 'Передача'
+            : (name === 'supply accept' ? 'Поставка' : name)))
 }
 
 const StockHistoryTypeSearchField = (props) => {
     return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
-            getText={SearchField.defaultGetText('name')}
+            getText={getRussianText}
             getOptions={getOptions}
             getItem={getItem}
-            getItemText={SearchField.defaultGetText('name')}
+            getItemText={getRussianText}
             {...props}
         />
     )

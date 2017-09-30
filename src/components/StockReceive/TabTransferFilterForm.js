@@ -21,9 +21,7 @@ export const TAB_TRANSFER_FILTER_KEY = {
     TYPE: 'type',
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate',
-    STOCK: 'stock',
-    ACCEPTANCE_FROM_DATE: 'acceptanceFromDate',
-    ACCEPTANCE_TO_DATE: 'acceptanceToDate'
+    STOCK: 'stock'
 }
 
 const enhance = compose(
@@ -118,7 +116,7 @@ const enhance = compose(
 )
 
 const TabTransferFilterForm = enhance((props) => {
-    const {classes, filterDialog, getCount, handleSubmit, transfer} = props
+    const {classes, filterDialog, getCount, handleSubmit} = props
     const filterCounts = getCount()
     if (!filterDialog.openFilterDialog) {
         if (filterCounts) {
@@ -182,14 +180,6 @@ const TabTransferFilterForm = enhance((props) => {
                             label="Дата передачи"
                             fullWidth={true}/>
                     </div>
-                    {transfer && <div>
-                        <Field
-                            className={classes.inputFieldCustom}
-                            name="acceptanceDate"
-                            component={DateToDateField}
-                            label="Дата приемки"
-                            fullWidth={true}/>
-                    </div>}
 
                     <RaisedButton
                         type="submit"

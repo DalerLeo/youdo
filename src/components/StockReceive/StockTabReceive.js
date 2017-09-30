@@ -10,7 +10,7 @@ import StockReceiveDetails from './StockReceiveDetails'
 import stockTypeFormat from '../../helpers/stockTypeFormat'
 import ConfirmDialog from '../ConfirmDialog'
 import CreateDialog from './StockReceiveCreateDialog'
-import TabTransferFilterForm from './TabTransferFilterForm'
+import TabReceiveFilterForm from './TabReceiveFilterForm'
 import GridList from '../GridList'
 import * as TAB from '../../constants/stockReceiveTab'
 
@@ -146,7 +146,7 @@ const StockTabReceive = enhance((props) => {
     } = props
     const listLoading = _.get(listData, 'listLoading')
     const stockReceiveFilterDialog = (
-        <TabTransferFilterForm
+        <TabReceiveFilterForm
             initialValues={filterDialog.initialValues}
             filter={filter}
             filterDialog={filterDialog}
@@ -221,7 +221,7 @@ const StockTabReceive = enhance((props) => {
                 open={confirmDialog.openConfirmDialog > ZERO}/>
 
             {history && <ConfirmDialog
-                type={'submit' }
+                type="submit"
                 message={'Запрос № ' + _.get(detailData, 'id')}
                 onClose={repealDialog.handleCloseRepealDialog}
                 onSubmit={repealDialog.handleSubmitRepealDialog}

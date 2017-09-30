@@ -72,7 +72,7 @@ export const stockReceiveItemFetchAction = (id) => {
 }
 
 export const stockHistoryListFetchAction = (filter) => {
-    const params = serializers.listFilterSerializer(filter.getParams())
+    const params = serializers.listFilterSerializer(filter.getParams(), null, true)
     const payload = axios()
         .get((API.STOCK_HISTORY_LIST), {params})
         .then((response) => {
@@ -282,7 +282,7 @@ export const stockReceiveTransferItemFetchAction = (id) => {
 }
 export const stockTransferHistoryRepealAction = (orderId, stockId) => {
     const payload = axios()
-        .delete(sprintf(API.STOCK_TRANSFER_HISTORY_REPEAL_URL, orderId), {'params': {'stock': stockId}})
+        .post(sprintf(API.STOCK_TRANSFER_HISTORY_REPEAL_URL, orderId), {'stock': stockId})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -297,7 +297,7 @@ export const stockTransferHistoryRepealAction = (orderId, stockId) => {
 }
 export const stockTransferHistoryReturnAction = (orderId) => {
     const payload = axios()
-        .delete(sprintf(API.STOCK_TRANSFER_HISTORY_RETURN_URL, orderId))
+        .post(sprintf(API.STOCK_TRANSFER_HISTORY_RETURN_URL, orderId))
         .then((response) => {
             return _.get(response, 'data')
         })

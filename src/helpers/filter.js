@@ -210,7 +210,9 @@ const filter = (data, pathname, query = {}, newKeys = {}) => {
             openTransactionEditPrice: null,
             deleteTransaction: null,
             openBindAgent: null,
-            unbindAgent: null
+            unbindAgent: null,
+            openRepealDialog: null,
+            openRepealHistoryDialog: null
         }
         return paramsToQueryUrl(_.assign({}, params, _.merge(except, defaultExcept)))
     }
