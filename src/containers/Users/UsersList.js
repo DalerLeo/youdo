@@ -333,7 +333,7 @@ const UsersList = enhance((props) => {
                 secondName: _.get(detail, 'secondName'),
                 phoneNumber: _.get(detail, 'phoneNumber'),
                 groups: isSelectedGroups,
-                radioStock: _.get(detail, ['stocks', '0', 'id']),
+                radioStock: _.get(_.find(_.get(detail, 'stocks')), 'id'),
                 stocks: isSelectedStocks,
                 types: isSelectedMarkets,
                 region: _.get(detail, 'region'),

@@ -5,6 +5,7 @@ import ReturnPrint from './ReturnPrint'
 const RETURN_DELETE_DIALOG_OPEN = 'openDeleteDialog'
 const CANCEL_RETURN_DIALOG_OPEN = 'openCancelDialog'
 const RETURN_UPDATE_DIALOG_OPEN = 'openUpdateDialog'
+const RETURN_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
 export {
     RETURN_DELETE_DIALOG_OPEN,
@@ -12,6 +13,7 @@ export {
     RETURN_FILTER_OPEN,
     CANCEL_RETURN_DIALOG_OPEN,
     RETURN_UPDATE_DIALOG_OPEN,
+    RETURN_CREATE_DIALOG_OPEN,
     ReturnGridList,
     ReturnPrint
 }

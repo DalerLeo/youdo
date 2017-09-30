@@ -5,6 +5,7 @@ import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/returnSerializer'
 
+const CLIENT_RETURN = 2
 export const returnCancelAction = (id) => {
     const payload = axios()
         .post(sprintf(API.RETURN_CANCEL, id), {})
@@ -70,8 +71,8 @@ export const returnItemFetchAction = (id) => {
     }
 }
 
-export const returnUpdateAction = (id, formValues) => {
-    const requestData = serializers.updateSerializer(formValues)
+export const returnUpdateAction = (id, formValues, detail) => {
+    const requestData = serializers.updateSerializer(formValues, detail, CLIENT_RETURN)
     const payload = axios()
         .put(sprintf(API.RETURN_ITEM, id), requestData)
         .then((response) => {
@@ -80,9 +81,41 @@ export const returnUpdateAction = (id, formValues) => {
         .catch((error) => {
             return Promise.reject(_.get(error, ['response', 'data']))
         })
-
     return {
         type: actionTypes.RETURN_UPDATE,
+        payload
+    }
+}
+
+export const clientReturnUpdateAction = (id, formValues, detail) => {
+    const requestData = serializers.updateSerializer(formValues, detail, CLIENT_RETURN)
+    const payload = axios()
+        .put(sprintf(API.CLIENT_TRANSACTION_RETURN_UPDATE, id), requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+    return {
+        type: actionTypes.RETURN_UPDATE_CLIENT,
+        payload
+    }
+}
+
+export const clientReturnAction = (formValues, id) => {
+    const requestData = serializers.createReturnSerializer(formValues, id)
+    const payload = axios()
+        .post(API.CLIENT_TRANSACTION_RETURN, requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.CLIENT_TRANSACTION_RETURN,
         payload
     }
 }

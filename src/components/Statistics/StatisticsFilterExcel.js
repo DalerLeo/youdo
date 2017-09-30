@@ -142,7 +142,7 @@ const StatisticsFilterExcel = enhance((props) => {
     const getFilterCount = () => {
         return _(filterKeys)
             .values()
-            .filter(item => item !== filterKeys.FROM_DATE)
+            .filter(item => item !== filterKeys.FROM_DATE && item !== filterKeys.SEARCH)
             .filter(item => filter.getParam(item))
             .value()
             .length
@@ -154,7 +154,7 @@ const StatisticsFilterExcel = enhance((props) => {
     return (
         <div className={classes.filterWrapper}>
             {openFilter && <Paper zDepth={2} className={classes.form}>
-                <form onSubmit={handleSubmit(handleSubmitFilterDialog)}>
+                <form onSubmit={ handleSubmit(handleSubmitFilterDialog) }>
                     <div className={classes.filter}>
                         <h3>Фильтр</h3>
                         <IconButton

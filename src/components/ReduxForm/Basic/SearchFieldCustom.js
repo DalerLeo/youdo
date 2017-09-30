@@ -94,7 +94,7 @@ const enhance = compose(
     }, {dataSource: [], text: '', loading: false}),
 
     withPropsOnChange((props, nextProps) => {
-        return _.get(props, ['state', 'text']) !== _.get(nextProps, ['state', 'text']) ||
+        return (_.get(props, ['state', 'text']) !== _.get(nextProps, ['state', 'text']) && _.get(nextProps, ['input', 'value'])) ||
             _.get(props, ['parent']) !== _.get(nextProps, ['parent'])
     }, (props) => {
         _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)
@@ -108,7 +108,8 @@ const SearchFieldCustom = enhance((props) => {
         label,
         getValue,
         state,
-        dispatch
+        dispatch,
+        disabled
     } = props
     return (
         <div className={classes.wrapper}>
@@ -118,11 +119,12 @@ const SearchFieldCustom = enhance((props) => {
                     options={state.dataSource}
                     value={getValue(_.get(input, ['value', 'value']))}
                     onInputChange={text => dispatch({text: text})}
-                    onChange={value => fetchItem(props, value)}
+                    onChange={value => { value ? fetchItem(props, value) : fetchList(props) }}
                     placeholder={label}
                     noResultsText={'Не найдено'}
                     isLoading={state.loading}
                     labelKey={'text'}
+                    disabled={disabled}
                 />
             </div>
         </div>

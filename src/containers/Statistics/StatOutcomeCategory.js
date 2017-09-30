@@ -23,7 +23,7 @@ const enhance = compose(
         const detailLoading = _.get(state, ['statOutcomeCategory', 'item', 'loading'])
         const list = _.get(state, ['statOutcomeCategory', 'list', 'data'])
         const listLoading = _.get(state, ['statOutcomeCategory', 'list', 'loading'])
-        const filterForm = _.get(state, ['form', 'StatOutcomeCategoryFilterForm'])
+        const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
         const filter = filterHelper(list, pathname, query)
         const filterItem = filterHelper(detail, pathname, query)
         return {
@@ -56,15 +56,12 @@ const enhance = compose(
     }),
 
     withHandlers({
-        handleSubmitFilterDialog: props => (event) => {
-            event.preventDefault()
+        handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
 
-            const division = _.get(filterForm, ['values', 'division', 'value']) || null
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
             filter.filterBy({
-                [STAT_OUTCOME_CATEGORY_FILTER_KEY.DIVISION]: division,
                 [STAT_OUTCOME_CATEGORY_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [STAT_OUTCOME_CATEGORY_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
 

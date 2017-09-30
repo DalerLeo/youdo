@@ -213,7 +213,6 @@ const ReturnDetails = enhance((props) => {
     const CANCELLED = 3
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const totalPrice = numberFormat(_.get(data, 'totalPrice'), primaryCurrency)
-    const edit = status === PENDING || status === IN_PROGRESS
 
     const products = _.get(data, 'returnedProducts')
     if (loading) {
@@ -246,9 +245,9 @@ const ReturnDetails = enhance((props) => {
                     </Tooltip>}
                     {isAdmin && <Tooltip position="bottom" text="Изменить">
                         <IconButton
+                            disabled={status !== IN_PROGRESS || status !== PENDING}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
-                            disabled={!edit}
                             touch={true}
                             onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
                             <Edit />

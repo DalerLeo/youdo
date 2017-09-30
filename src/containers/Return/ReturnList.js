@@ -2,6 +2,7 @@ import React from 'react'
 import _ from 'lodash'
 import moment from 'moment'
 import {connect} from 'react-redux'
+import {reset} from 'redux-form'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
@@ -13,6 +14,7 @@ import {openErrorAction} from '../../actions/error'
 import {
     RETURN_FILTER_KEY,
     RETURN_FILTER_OPEN,
+    RETURN_CREATE_DIALOG_OPEN,
     CANCEL_RETURN_DIALOG_OPEN,
     RETURN_UPDATE_DIALOG_OPEN,
     ReturnGridList,
@@ -23,11 +25,14 @@ import {
     returnItemFetchAction,
     returnListPrintFetchAction,
     returnCancelAction,
-    returnUpdateAction
+    returnUpdateAction,
+    clientReturnUpdateAction,
+    clientReturnAction
 } from '../../actions/return'
 import {openSnackbarAction} from '../../actions/snackbar'
 
 const ZERO = 0
+const TWO = 2
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -40,6 +45,7 @@ const enhance = compose(
         const listPrintLoading = _.get(state, ['return', 'listPrint', 'loading'])
         const listLoading = _.get(state, ['return', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'ReturnFilterForm'])
+        const createForm = _.get(state, ['form', 'ReturnCreateForm'])
         const filter = filterHelper(list, pathname, query)
         const updateForm = _.get(state, ['form', 'OrderReturnForm']) || _.get(state, ['form', 'ClientBalanceReturnForm'])
         const isAdmin = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
@@ -55,7 +61,8 @@ const enhance = compose(
             filter,
             filterForm,
             updateForm,
-            isAdmin
+            isAdmin,
+            createForm
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -133,8 +140,9 @@ const enhance = compose(
         },
 
         handleClearFilterDialog: props => () => {
-            const {location: {pathname}} = props
+            const {location: {pathname}, dispatch} = props
             hashHistory.push({pathname, query: {}})
+            dispatch(reset('ReturnCreateForm'))
         },
 
         handleSubmitFilterDialog: props => () => {
@@ -149,6 +157,7 @@ const enhance = compose(
             const initiator = _.get(filterForm, ['values', 'initiator', 'value']) || null
             const product = _.get(filterForm, ['values', 'product', 'value']) || null
             const division = _.get(filterForm, ['values', 'division', 'value']) || null
+            const paymentType = _.get(filterForm, ['values', 'paymentType', 'value']) || null
             const code = _.get(filterForm, ['values', 'code']) || null
 
             filter.filterBy({
@@ -161,6 +170,7 @@ const enhance = compose(
                 [RETURN_FILTER_KEY.MARKET]: market,
                 [RETURN_FILTER_KEY.PRODUCT]: product,
                 [RETURN_FILTER_KEY.DIVISION]: division,
+                [RETURN_FILTER_KEY.PAYMENT_TYPE]: paymentType,
                 [RETURN_FILTER_KEY.CODE]: code,
                 [RETURN_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [RETURN_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
@@ -211,10 +221,24 @@ const enhance = compose(
         },
 
         handleSubmitUpdateDialog: props => () => {
-            const {dispatch, updateForm, filter, location: {pathname}} = props
+            const {dispatch, updateForm, filter, location: {pathname}, detail} = props
+            const type = _.toInteger(_.get(detail, 'type'))
             const returnId = _.toInteger(_.get(props, ['params', 'returnId']))
 
-            return dispatch(returnUpdateAction(returnId, _.get(updateForm, ['values'])))
+            if (type === TWO) {
+                return dispatch(clientReturnUpdateAction(returnId, _.get(updateForm, ['values']), detail))
+                    .then(() => {
+                        return dispatch(returnItemFetchAction(returnId))
+                    })
+                    .then(() => {
+                        return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    })
+                    .then(() => {
+                        hashHistory.push({pathname, query: filter.getParams({[RETURN_UPDATE_DIALOG_OPEN]: false})})
+                        return dispatch(returnListFetchAction(filter))
+                    })
+            }
+            return dispatch(returnUpdateAction(returnId, _.get(updateForm, ['values']), detail))
                 .then(() => {
                     return dispatch(returnItemFetchAction(returnId))
                 })
@@ -223,10 +247,43 @@ const enhance = compose(
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[RETURN_UPDATE_DIALOG_OPEN]: false})})
-                    dispatch(returnListFetchAction(filter))
+                    return dispatch(returnListFetchAction(filter))
                 })
         },
+        handleOpenCreateDialog: props => () => {
+            const {dispatch, location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[RETURN_CREATE_DIALOG_OPEN]: true})})
+            dispatch(reset('ReturnCreateForm'))
+        },
 
+        handleCloseCreateDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[RETURN_CREATE_DIALOG_OPEN]: false})})
+        },
+        handleSubmitCreateDialog: props => () => {
+            const {location: {pathname}, dispatch, createForm, filter} = props
+            return dispatch(clientReturnAction(_.get(createForm, ['values'])))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                })
+                .then(() => {
+                    hashHistory.push({
+                        pathname,
+                        query: filter.getParams({[RETURN_CREATE_DIALOG_OPEN]: false})
+                    })
+                    dispatch(returnListFetchAction(filter))
+                    dispatch(reset('ReturnCreateForm'))
+                }).catch((error) => {
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
+                    })
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                            {errorWhole}
+                        </div>
+                    }))
+                })
+        },
         handleCloseDetail: props => () => {
             const {filter} = props
             hashHistory.push({pathname: ROUTER.RETURN_LIST_URL, query: filter.getParams()})
@@ -258,6 +315,7 @@ const ReturnList = enhance((props) => {
     const openFilterDialog = toBoolean(_.get(location, ['query', RETURN_FILTER_OPEN]))
     const openCancelDialog = _.toInteger(_.get(location, ['query', CANCEL_RETURN_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', RETURN_UPDATE_DIALOG_OPEN]))
+    const openCreateDialog = toBoolean(_.get(location, ['query', RETURN_CREATE_DIALOG_OPEN]))
     const client = _.toInteger(filter.getParam(RETURN_FILTER_KEY.CLIENT))
     const zone = _.toInteger(filter.getParam(RETURN_FILTER_KEY.ZONE))
     const division = _.toInteger(filter.getParam(RETURN_FILTER_KEY.DIVISION))
@@ -347,6 +405,7 @@ const ReturnList = enhance((props) => {
                 product: {
                     value: {
                         id: _.get(item, 'id'),
+                        productId: _.get(item, ['product', 'id']),
                         price: _.get(item, 'price'),
                         name: _.get(item, ['product', 'name']),
                         measurement: {
@@ -363,8 +422,8 @@ const ReturnList = enhance((props) => {
                 value: {
                     id: _.get(item, 'orderProduct'),
                     price,
-                    name: _.get(item, ['product', 'name']),
                     product: {
+                        name: _.get(item, ['product', 'name']),
                         measurement: {
                             id: _.get(item, ['product', 'measurement', 'id']),
                             name: _.get(item, ['product', 'measurement', 'name'])
@@ -375,6 +434,13 @@ const ReturnList = enhance((props) => {
             }
         }
     })
+
+    const createDialog = {
+        openCreateDialog,
+        handleOpenCreateDialog: props.handleOpenCreateDialog,
+        handleCloseCreateDialog: props.handleCloseCreateDialog,
+        handleSubmitCreateDialog: props.handleSubmitCreateDialog
+    }
 
     const updateDialog = {
         initialValues: (() => {
@@ -433,6 +499,7 @@ const ReturnList = enhance((props) => {
                 printDialog={printDialog}
                 cancelReturnDialog={cancelReturnDialog}
                 isAdmin={isAdmin}
+                createDialog={createDialog}
             />
         </Layout>
     )

@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import sprintf from 'sprintf'
 import React from 'react'
-import SearchField from '../Basic/SearchField'
+import SearchField from '../Basic/SearchFieldCustom'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
@@ -36,6 +36,7 @@ const MarketSearchField = (props) => {
             getItem={getItem}
             getItemText={SearchField.defaultGetText('name')}
             {...props}
+            parent={clientId}
         />
     )
 }
