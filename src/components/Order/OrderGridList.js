@@ -12,7 +12,7 @@ import OrderFilterForm from './OrderFilterForm'
 import OrderDetails from './OrderDetails'
 import OrderShortageDialog from './OrderShortage'
 import ConfirmDialog from '../ConfirmDialog'
-import ClientCreateDialog from '../Client/ClientCreateDialog'
+import {connect} from 'react-redux'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
@@ -149,7 +149,13 @@ const enhance = compose(
             left: '0',
             cursor: 'pointer'
         }
-    })
+    }),
+    connect((state) => {
+        const clientId = _.get(state, ['form', 'OrderCreateForm', 'values', 'client', 'value'])
+        return {
+            clientId
+        }
+    }),
 )
 
 const OrderGridList = enhance((props) => {
@@ -178,7 +184,8 @@ const OrderGridList = enhance((props) => {
         refreshAction,
         canChangeAnyPrice,
         handleSubmitDiscountDialog,
-        handleSubmitSetZeroDiscountDialog
+        handleSubmitSetZeroDiscountDialog,
+        clientId
     } = props
 
     const orderFilterDialog = (
@@ -205,6 +212,7 @@ const OrderGridList = enhance((props) => {
             key={_.get(detailData, 'id')}
             data={_.get(detailData, 'data') || {}}
             returnData={_.get(detailData, 'return')}
+            filter={filter}
             returnDataLoading={_.get(detailData, 'returnLoading')}
             transactionsDialog={transactionsDialog}
             tabData={tabData}
@@ -222,6 +230,7 @@ const OrderGridList = enhance((props) => {
             canChangeAnyPrice={canChangeAnyPrice}
             handleSubmitDiscountDialog={handleSubmitDiscountDialog}
             handleSubmitSetZeroDiscountDialog={handleSubmitSetZeroDiscountDialog}
+            clientId={clientId}
         />
     )
     const orderList = _.map(_.get(listData, 'data'), (item) => {
@@ -350,7 +359,7 @@ const OrderGridList = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.ORDER_LIST_URL}/>
 
-            {false && <div className={classes.addButtonWrapper}>
+            {<div className={classes.addButtonWrapper}>
                 <Tooltip position="left" text="Добавить заказ">
                     <FloatingActionButton
                         mini={true}
@@ -380,6 +389,8 @@ const OrderGridList = enhance((props) => {
                 onSubmit={createDialog.handleSubmitCreateDialog}
                 shortageDialog={shortageDialog}
                 products={products}
+                filter={filter}
+                clientId={clientId}
             />
 
             <OrderShortageDialog
@@ -388,14 +399,6 @@ const OrderGridList = enhance((props) => {
                 loading={shortageDialog.shortageLoading}
                 onClose={shortageDialog.handleCloseShortageDialog}
                 onSubmit={shortageDialog.handleSubmitShortageDialog}
-            />
-
-            <ClientCreateDialog
-                open={createClientDialog.openCreateClientDialog}
-                initialValues={createClientDialog.initialValues}
-                loading={createClientDialog.createClientLoading}
-                onClose={createClientDialog.handleCloseCreateClientDialog}
-                onSubmit={createClientDialog.handleSubmitCreateClientDialog}
             />
 
             {detailData.data && <ConfirmDialog
@@ -472,11 +475,7 @@ OrderGridList.propTypes = {
         handleSubmitFilterDialog: PropTypes.func.isRequired
     }).isRequired,
     createClientDialog: PropTypes.shape({
-        createClientLoading: PropTypes.bool.isRequired,
-        openCreateClientDialog: PropTypes.bool.isRequired,
-        handleOpenCreateClientDialog: PropTypes.func.isRequired,
-        handleCloseCreateClientDialog: PropTypes.func.isRequired,
-        handleSubmitCreateClientDialog: PropTypes.func.isRequired
+        handleOpenCreateClientDialog: PropTypes.func.isRequired
     }).isRequired,
     getDocument: PropTypes.shape({
         handleGetDocument: PropTypes.func.isRequired

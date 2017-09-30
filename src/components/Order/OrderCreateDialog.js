@@ -9,20 +9,23 @@ import CircularProgress from 'material-ui/CircularProgress'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import CloseIcon2 from '../CloseIcon2'
+import * as ROUTES from '../../constants/routes'
+import {Link} from 'react-router'
 import {
     ClientSearchField,
     OrderListProductField,
-    ClientContactsField,
     DateField,
-    MarketSearchField,
     UsersSearchField
 } from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 import OrderTotalSum from '../ReduxForm/Order/OrderTotalSum'
 import OrderDealTypeRadio from '../ReduxForm/Order/OrderDealTypeRadio'
 import OrderPaymentTypeRadio from '../ReduxForm/Order/OrderPaymentTypeRadio'
+import MarketSearchField from '../ReduxForm/ClientBalance/MarketSearchField'
 
 export const ORDER_CREATE_DIALOG_OPEN = 'openCreateDialog'
+const CLIENT_CREATE_DIALOG_OPEN = 'openCreateDialog'
+
 const validate = (data) => {
     const errors = toCamelCase(data)
     const nonFieldErrors = _.get(errors, 'nonFieldErrors')
@@ -36,15 +39,13 @@ const enhance = compose(
         loader: {
             position: 'absolute',
             width: '100%',
-            height: '100%',
+            height: '300px',
             background: '#fff',
-            top: '0',
-            left: '0',
             alignItems: 'center',
             zIndex: '999',
             textAlign: 'center',
             justifyContent: 'center',
-            display: ({loading}) => loading ? 'flex' : 'none'
+            display: 'flex'
         },
         popUp: {
             overflow: 'unset !important',
@@ -218,14 +219,17 @@ const OrderCreateDialog = enhance((props) => {
     const {
         open,
         handleSubmit,
+        initialValues,
         onClose,
         classes,
         shortageDialog,
         isUpdate,
-        createClientDialog,
         products,
         status,
-        canChangeAnyPrice
+        canChangeAnyPrice,
+        filter,
+        clientId,
+        loading
     } = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     let notEnough = false
@@ -261,20 +265,22 @@ const OrderCreateDialog = enhance((props) => {
             </div>
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit} scrolling="auto" className={classes.form}>
-                    <div className={classes.loader}>
+                    {loading ? <div className={classes.loader}>
                         <CircularProgress size={40} thickness={4}/>
                     </div>
-                    <div className={classes.innerWrap}>
+                    : <div className={classes.innerWrap}>
                         <div style={{minHeight: '470px', maxHeight: '75vh'}} className={classes.inContent}>
                             <div className={classes.leftOrderPart}>
 
-                                {!isUpdate && <div className={classes.subTitleOrder}>
+                                <div className={classes.subTitleOrder}>
                                     <span>Выбор клиента</span>
-                                    {!isUpdate && <a style={{color: '#12aaeb'}}
-                                                     onClick={createClientDialog.handleOpenCreateClientDialog}>+
-                                        добавить</a>}
-                                </div>}
-                                {!isUpdate && <div>
+                                    <Link style={{color: '#12aaeb'}}
+                                          to={{pathname: [ROUTES.SHOP_LIST_URL],
+                                              query: filter.getParams({[CLIENT_CREATE_DIALOG_OPEN]: true})}} >
+                                     + добавить
+                                    </Link>
+                                </div>
+                                <div>
                                     <Field
                                         name="client"
                                         component={ClientSearchField}
@@ -282,18 +288,17 @@ const OrderCreateDialog = enhance((props) => {
                                         label="Клиент"
                                         fullWidth={true}/>
                                     <Field
-                                        name="contact"
-                                        component={ClientContactsField}
-                                    />
-                                    <Field
                                         name="market"
                                         component={MarketSearchField}
                                         className={classes.inputFieldCustom}
                                         label="Название магазина"
+                                        clientId={clientId}
+                                        initialParent={_.get(initialValues, ['client', 'value'])}
+                                        disabled={!clientId}
                                         fullWidth={true}/>
-                                </div>}
+                                </div>
 
-                                {(!notEnough) ? <div className={classes.condition} style={isUpdate && {margin: '0'}}>
+                                {(!notEnough) ? <div className={classes.condition} style={isUpdate ? {margin: '0'} : {}}>
                                     <div className={classes.subTitleOrder} style={{padding: '0 !important'}}>Условия
                                         доставки
                                     </div>
@@ -343,7 +348,7 @@ const OrderCreateDialog = enhance((props) => {
                                 />
                             </div>
                         </div>
-                    </div>
+                    </div>}
                     <div className={classes.bottomButton}>
                         <div className={classes.commentField}>
                             Общая сумма заказа: <OrderTotalSum/>

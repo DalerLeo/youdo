@@ -8,9 +8,11 @@ import 'react-select/dist/react-select.css'
 
 const DELAY_FOR_TYPE_ATTACK = 300
 
-const fetchList = ({state, dispatch, getOptions, getText, getValue, input}) => {
+const fetchList = ({state, dispatch, getOptions, getText, getValue, input, initialParent, parent}) => {
     dispatch({loading: true})
-    input.onChange(null)
+    if (parent && parent !== initialParent) {
+        input.onChange(null)
+    }
     getOptions(state.text)
         .then((data) => {
             return _.map(data, (item) => {
