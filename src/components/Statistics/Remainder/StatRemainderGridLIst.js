@@ -15,17 +15,17 @@ import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
 import List from 'material-ui/svg-icons/action/list'
 import CircularProgress from 'material-ui/CircularProgress'
-import Excel from 'material-ui/svg-icons/av/equalizer'
 import Pagination from '../../GridList/GridListNavPagination/index'
 import numberFormat from '../../../helpers/numberFormat.js'
 import NotFound from '../../Images/not-found.png'
 import getConfig from '../../../helpers/getConfig'
 import Tooltip from '../../ToolTip/index'
-import OK from 'material-ui/svg-icons/action/done'
+import {StatisticsFilterExcel} from '../../Statistics'
 
 export const STAT_REMAINDER_FILTER_KEY = {
     STOCK: 'stock',
     TYPE: 'type',
+    TYPE_PARENT: 'typeParent',
     SEARCH: 'search',
     PRODUCT: 'product',
     DIVISION: 'division'
@@ -60,7 +60,6 @@ const enhance = compose(
             }
         },
         tableWrapper: {
-            borderTop: '1px solid #efefef',
             height: 'calc(100% - 118px)',
             '& .row': {
                 '&:after': {
@@ -185,16 +184,12 @@ const enhance = compose(
         },
         emptyQuery: {
             background: 'url(' + NotFound + ') no-repeat center center',
+            border: 'none !important',
             backgroundSize: '200px',
             padding: '200px 0 0',
             textAlign: 'center',
             fontSize: '13px',
-            color: '#666',
-            '& svg': {
-                width: '50px !important',
-                height: '50px !important',
-                color: '#999 !important'
-            }
+            color: '#666'
         },
         searchForm: {
             display: 'flex',
@@ -203,11 +198,11 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'StatRemainderFilterForm',
+        form: 'StatisticsFilterForm',
         enableReinitialize: true
     }),
     connect((state) => {
-        const typeParent = _.get(state, ['form', 'StatRemainderFilterForm', 'values', 'typeParent', 'value'])
+        const typeParent = _.get(state, ['form', 'StatisticsFilterForm', 'values', 'typeParent', 'value'])
         return {
             typeParent
         }
@@ -225,7 +220,8 @@ const StatRemainderGridList = enhance((props) => {
         handleSubmit,
         filterItem,
         onSubmit,
-        typeParent
+        typeParent,
+        initialValues
     } = props
 
     const listLoading = _.get(listData, 'listLoading')
@@ -276,13 +272,25 @@ const StatRemainderGridList = enhance((props) => {
                     <div>{product}</div>
                 </Col>
                 <Col xs={2}>{productType}</Col>
-                <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right', fontWeight: '600', whiteSpace: 'nowrap'}}>
+                <Col xs={2}
+                     style={{justifyContent: 'flex-end', textAlign: 'right', fontWeight: '600', whiteSpace: 'nowrap'}}>
                     <Tooltip position="top" text="Всего / Забронировано / Брак">
-                        {balance} / <span style={{color: '#90a4ae', margin: '0 3px'}}> {reserved} </span> / <span style={{color: '#e57373', margin: '0 3px'}}> {defects} </span>
+                        {balance} / <span style={{color: '#90a4ae', margin: '0 3px'}}> {reserved} </span> / <span
+                        style={{color: '#e57373', margin: '0 3px'}}> {defects} </span>
                     </Tooltip>
                 </Col>
-                <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right', fontWeight: '600', fontSize: '15px'}}>{available}</Col>
-                <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right', fontWeight: '600', fontSize: '15px'}}>{price}</Col>
+                <Col xs={2} style={{
+                    justifyContent: 'flex-end',
+                    textAlign: 'right',
+                    fontWeight: '600',
+                    fontSize: '15px'
+                }}>{available}</Col>
+                <Col xs={2} style={{
+                    justifyContent: 'flex-end',
+                    textAlign: 'right',
+                    fontWeight: '600',
+                    fontSize: '15px'
+                }}>{price}</Col>
                 <Col xs={1} style={{justifyContent: 'flex-end', textAlign: 'right', paddingRight: '0'}}>
                     <IconButton
                         onTouchTap={() => { statRemainderDialog.handleOpenStatRemainderDialog(id) }}>
@@ -293,6 +301,30 @@ const StatRemainderGridList = enhance((props) => {
         )
     })
 
+    const fields = (
+        <div>
+            <Field
+                className={classes.inputFieldCustom}
+                name="stock"
+                component={StockSearchField}
+                label="Склад"
+                fullWidth={true}/>
+            <Field
+                className={classes.inputFieldCustom}
+                name="typeParent"
+                component={ProductTypeParentSearchField}
+                label="Тип товара"
+                fullWidth={true}/>
+            {typeParent ? <Field
+                className={classes.inputFieldCustom}
+                name="type"
+                parentType={typeParent}
+                component={ProductTypeChildSearchField}
+                label="Подкатегория"
+                fullWidth={true}/> : null}
+        </div>
+    )
+
     const page = (
         <div className={classes.mainWrapper}>
             <Row style={{margin: '0', height: '100%'}}>
@@ -301,75 +333,49 @@ const StatRemainderGridList = enhance((props) => {
                 </div>
                 <div className={classes.rightPanel}>
                     <div className={classes.wrapper}>
-                        <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
-                            <div className={classes.filter}>
+                        <StatisticsFilterExcel
+                            filter={filter}
+                            fields={fields}
+                            filterKeys={STAT_REMAINDER_FILTER_KEY}
+                            handleSubmitFilterDialog={onSubmit}
+                            handleGetDocument={getDocument.handleGetDocument}
+                            withoutDate={true}
+                            initialValues={initialValues}
+                        />
+                        <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                            <form onSubmit={handleSubmit(onSubmit)} className={classes.searchForm}>
                                 <Field
                                     className={classes.inputFieldCustom}
-                                    name="stock"
-                                    component={StockSearchField}
-                                    label="Склад"
+                                    name="search"
+                                    component={TextField}
+                                    hintText="Поиск"
                                     fullWidth={true}/>
-                                <Field
-                                    className={classes.inputFieldCustom}
-                                    name="typeParent"
-                                    component={ProductTypeParentSearchField}
-                                    label="Тип товара"
-                                    fullWidth={true}/>
-                                {typeParent && <Field
-                                    className={classes.inputFieldCustom}
-                                    name="type"
-                                    parentType={typeParent}
-                                    component={ProductTypeChildSearchField}
-                                    label="Подкатегория"
-                                    fullWidth={true}/>}
-                                <Tooltip position="bottom" text="Применить">
-                                    <IconButton
-                                        className={classes.searchButton}
-                                        iconStyle={iconStyle.icon}
-                                        style={iconStyle.button}
-                                        type="submit">
-                                        <OK color="rgb(88, 190, 217)"/>
-                                    </IconButton>
-                                </Tooltip>
-                            </div>
-                            <a className={classes.excel}
-                               onClick = {getDocument.handleGetDocument}>
-                                <Excel color="#fff"/> <span>Excel</span>
-                            </a>
-                        </form>
-                        {listLoading
-                        ? <div className={classes.loader}>
-                            <CircularProgress size={40} thickness={4} />
+                                <IconButton
+                                    className={classes.searchButton}
+                                    iconStyle={iconStyle.icon}
+                                    style={iconStyle.button}
+                                    type="submit">
+                                    <Search/>
+                                </IconButton>
+                            </form>
+                            <Pagination filter={filter}/>
                         </div>
-                        : (_.isEmpty(list) && !listLoading)
-                            ? <div className={classes.emptyQuery}>
-                                <div>По вашему запросу ничего не найдено</div>
+                        {listLoading
+                            ? <div className={classes.tableWrapper}>
+                                <div className={classes.loader}>
+                                    <CircularProgress thickness={4} size={40}/>
+                                </div>
                             </div>
-                            : <div>
-                                <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                                    <form onSubmit={handleSubmit(onSubmit)} className={classes.searchForm}>
-                                        <Field
-                                            className={classes.inputFieldCustom}
-                                            name="search"
-                                            component={TextField}
-                                            label="Поиск"
-                                            fullWidth={true}/>
-                                        <IconButton
-                                            className={classes.searchButton}
-                                            iconStyle={iconStyle.icon}
-                                            style={iconStyle.button}
-                                            type="submit">
-                                            <Search/>
-                                        </IconButton>
-                                    </form>
-                                    <Pagination filter={filter}/>
-                                </div>
-                                <div className={classes.tableWrapper}>
-                                {headers}
-                                {list}
-                                </div>
-                              </div>
-                        }
+                            : <div className={classes.tableWrapper}>
+                                {_.isEmpty(list) && !listLoading
+                                    ? <div className={classes.emptyQuery}>
+                                        <div>По вашему запросу ничего не найдено</div>
+                                    </div>
+                                    : <div>
+                                        {headers}
+                                        {list}
+                                    </div>}
+                            </div>}
                     </div>
                 </div>
             </Row>

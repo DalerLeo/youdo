@@ -100,7 +100,6 @@ const ClientBalanceUpdateDialog = enhance((props) => {
                                     name="amount"
                                     component={TextField}
                                     label="Сумма"
-                                    normalize={normalizeNumber}
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
                                 <Field

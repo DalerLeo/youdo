@@ -66,9 +66,8 @@ const StatSideMenu = enhance((props) => {
         {
             section: 'Клиенты',
             childs: [
-                {name: 'Приход от клиента', url: ROUTES.STATISTICS_CLIENT_INCOME_URL},
-                {name: 'Задолжники', url: ROUTES.STATISTICS_DEBTORS_URL},
-                {name: 'Баланс клиентов', url: ROUTES.STATISTICS_CLIENT_BALANCE_URL}
+                {name: 'Оборот клиентов', url: ROUTES.STATISTICS_CLIENT_INCOME_URL},
+                {name: 'Баланс клиентов', url: ROUTES.STATISTICS_CLIENT_BALANCE_URL, query: {pageSize: 25}}
             ]
         },
         {

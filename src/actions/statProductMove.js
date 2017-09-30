@@ -24,7 +24,7 @@ export const statProductMoveListFetchAction = (filter) => {
 }
 
 export const statProductMoveSumFetchAction = (filter) => {
-    const params = serializers.listFilterSerializer(filter.getParams())
+    const params = serializers.diagramFilterSerializer(filter.getParams())
     const payload = axios()
         .get(API.STAT_PRODUCT_MOVE_SUM, {params})
         .then((response) => {

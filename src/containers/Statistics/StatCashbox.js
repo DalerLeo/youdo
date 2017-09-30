@@ -64,30 +64,41 @@ const enhance = compose(
         }
     }),
     withPropsOnChange((props, nextProps) => {
-        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
+        const except = {
+            page: null,
+            pageSize: null,
+            search: null
+        }
+        return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
         dispatch(statCashboxListFetchAction(filter))
         dispatch(statCashBoxSumDataFetchAction(filter))
     }),
     withPropsOnChange((props, nextProps) => {
-        return props.transactionsList && props.filterDetail.filterRequest() !== nextProps.filterDetail.filterRequest()
-    }, ({dispatch, filterDetail, params}) => {
-        const id = _.toInteger(_.get(params, 'cashboxId'))
-        dispatch(statCashboxItemFetchAction(id))
-        dispatch(transactionListFetchAction(filterDetail, id))
-        dispatch(statCashBoxItemDataFetchAction(filterDetail, id))
-        dispatch(statCashBoxItemSumDataFetchAction(filterDetail, id))
-    }),
-    withPropsOnChange((props, nextProps) => {
         const prevId = _.toInteger(_.get(props, ['params', 'cashboxId']))
         const nextId = _.toInteger(_.get(nextProps, ['params', 'cashboxId']))
-        return prevId !== nextId && nextId > ZERO
+        return props.filterDetail.filterRequest() !== nextProps.filterDetail.filterRequest() || (prevId !== nextId && nextId > ZERO)
     }, ({dispatch, params, filterDetail}) => {
         const id = _.toInteger(_.get(params, 'cashboxId'))
         if (id > ZERO) {
-            dispatch(statCashboxItemFetchAction(id))
             dispatch(transactionListFetchAction(filterDetail, id))
+        }
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const prevId = _.toInteger(_.get(props, ['params', 'cashboxId']))
+        const nextId = _.toInteger(_.get(nextProps, ['params', 'cashboxId']))
+        const except = {
+            page: null,
+            pageSize: null,
+            search: null
+        }
+        return props.filterDetail.filterRequest(except) !== nextProps.filterDetail.filterRequest(except) || (prevId !== nextId && nextId > ZERO)
+    }, ({dispatch, params, filterDetail}) => {
+        const id = _.toInteger(_.get(params, 'cashboxId'))
+        if (id > ZERO) {
             dispatch(statCashBoxItemDataFetchAction(filterDetail, id))
+            dispatch(statCashboxItemFetchAction(id))
             dispatch(statCashBoxItemSumDataFetchAction(filterDetail, id))
         }
     }),

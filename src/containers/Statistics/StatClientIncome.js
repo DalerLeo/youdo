@@ -10,7 +10,7 @@ import * as serializers from '../../serializers/Statistics/statClientIncomeSeria
 import * as API from '../../constants/api'
 
 import {ClientIncomeGridList} from '../../components/Statistics'
-import {CLIENT_INCOME_FILTER_KEY} from '../../components/Statistics/ClientIncome/ClientIncomeFilter'
+import {CLIENT_INCOME_FILTER_KEY} from '../../components/Statistics/ClientIncome/ClientIncomeGridList'
 
 import {
     clientIncomeInDataFetchAction,
@@ -28,7 +28,7 @@ const enhance = compose(
         const graphOutLoading = _.get(state, ['statClientIncome', 'dataOut', 'loading'])
         const list = _.get(state, ['statClientIncome', 'list', 'data'])
         const listLoading = _.get(state, ['statClientIncome', 'list', 'loading'])
-        const filterForm = _.get(state, ['form', 'ClientIncomeFilterForm'])
+        const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
         const filter = filterHelper(list, pathname, query)
         return {
             query,

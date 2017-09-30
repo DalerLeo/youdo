@@ -8,17 +8,23 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
 import ReactHighcharts from 'react-highcharts'
-import {TextField} from '../../ReduxForm'
 import StatSideMenu from '../StatSideMenu'
 import Pagination from '../../GridList/GridListNavPagination/index'
 import getConfig from '../../../helpers/getConfig'
 import dateFormat from '../../../helpers/dateFormat'
 import numberFormat from '../../../helpers/numberFormat'
+import {
+    TextField,
+    DateToDateField,
+    DivisionSearchField,
+    ClientSearchField,
+    ClientTransactionTypeSearchField
+} from '../../ReduxForm'
 import CircularProgress from 'material-ui/CircularProgress'
 import moment from 'moment'
 import {Link} from 'react-router'
 import sprintf from 'sprintf'
-import ClientIncomeFilter from './ClientIncomeFilter'
+import {StatisticsFilterExcel} from '../../Statistics'
 import NotFound from '../../Images/not-found.png'
 
 import {
@@ -34,6 +40,15 @@ import {
 } from '../../../constants/clientBalanceInfo'
 
 const NEGATIVE = -1
+
+export const CLIENT_INCOME_FILTER_KEY = {
+    FROM_DATE: 'fromDate',
+    TO_DATE: 'toDate',
+    SEARCH: 'search',
+    DIVISION: 'division',
+    TYPE: 'type',
+    CLIENT: 'client'
+}
 
 const enhance = compose(
     injectSheet({
@@ -390,6 +405,35 @@ const ClientIncomeGridList = enhance((props) => {
         )
     })
 
+    const fields = (
+        <div>
+            <Field
+                className={classes.inputFieldCustom}
+                name="date"
+                component={DateToDateField}
+                label="Диапазон дат"
+                fullWidth={true}/>
+            <Field
+                name="type"
+                component={ClientTransactionTypeSearchField}
+                className={classes.inputFieldCustom}
+                label="Тип транзакции"
+                fullWidth={true}/>
+            <Field
+                name="division"
+                component={DivisionSearchField}
+                className={classes.inputFieldCustom}
+                label="Подразделение"
+                fullWidth={true}/>
+            <Field
+                name="client"
+                component={ClientSearchField}
+                className={classes.inputFieldCustom}
+                label="Клиент"
+                fullWidth={true}/>
+        </div>
+    )
+
     const page = (
         <div className={classes.mainWrapper}>
             <Row style={{margin: '0', height: '100%'}}>
@@ -398,8 +442,10 @@ const ClientIncomeGridList = enhance((props) => {
                 </div>
                 <div className={classes.rightPanel}>
                     <div className={classes.wrapper}>
-                        <ClientIncomeFilter
+                        <StatisticsFilterExcel
                             filter={filter}
+                            filterKeys={CLIENT_INCOME_FILTER_KEY}
+                            fields={fields}
                             initialValues={initialValues}
                             handleGetDocument={handleGetDocument}
                             handleSubmitFilterDialog={handleSubmitFilterDialog}

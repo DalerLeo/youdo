@@ -274,6 +274,7 @@ const StatDebtorsGridList = enhance((props) => {
         detailData,
         handleSubmitFilterDialog,
         statDebtorsDialog,
+
         handleOpenCloseDetail,
         getDocument
     } = props
