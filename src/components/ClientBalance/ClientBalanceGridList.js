@@ -491,6 +491,7 @@ const ClientBalanceGridList = enhance((props) => {
             </Paper>}
 
             <ClientBalanceInfoDialog
+                stat={stat}
                 open={infoDialog.openInfoDialog}
                 detailData={detailData}
                 onClose={infoDialog.handleCloseInfoDialog}
@@ -502,34 +503,34 @@ const ClientBalanceGridList = enhance((props) => {
                 superUser={superUser}
                 setItem={setItem}
             />
-            <ClientBalanceCreateDialog
-                open={createDialog.openCreateDialog}
+            {!stat && <ClientBalanceCreateDialog
+                open={_.get(createDialog, 'openCreateDialog')}
                 listData={listData}
                 detailData={detailData}
-                loading={createDialog.createLoading}
-                onClose={createDialog.handleCloseCreateDialog}
-                onSubmit={createDialog.handleSubmitCreateDialog}
-                name={_.get(client, 'name')}
-            />
-            {isSuperUser && !_.isNull(currentItem) && <ClientBalanceUpdateDialog
-                initialValues={initialValues}
-                isUpdate={true}
-                open={superUser.open}
-                loading={superUser.loading}
-                onClose={superUser.handleCloseSuperUserDialog}
-                onSubmit={superUser.handleSubmitSuperUserDialog}
+                loading={_.get(createDialog, 'createLoading')}
+                onClose={_.get(createDialog, 'handleCloseCreateDialog')}
+                onSubmit={_.get(createDialog, 'handleSubmitCreateDialog')}
                 name={_.get(client, 'name')}
             />}
-            <ClientBalanceCreateDialog
-                open={addDialog.openAddDialog}
+            {!stat && isSuperUser && !_.isNull(currentItem) && <ClientBalanceUpdateDialog
+                initialValues={initialValues}
+                isUpdate={true}
+                open={_.get(superUser, 'open')}
+                loading={_.get(superUser, 'loading')}
+                onClose={_.get(superUser, 'handleCloseSuperUserDialog')}
+                onSubmit={_.get(superUser, 'handleSubmitSuperUserDialog')}
+                name={_.get(client, 'name')}
+            />}
+            {!stat && <ClientBalanceCreateDialog
+                open={_.get(addDialog, 'openAddDialog')}
                 listData={listData}
                 detailData={detailData}
-                loading={addDialog.addLoading}
-                onClose={addDialog.handleCloseAddDialog}
-                onSubmit={addDialog.handleSubmitAddDialog}
+                loading={_.get(addDialog, 'addLoading')}
+                onClose={_.get(addDialog, 'handleCloseAddDialog')}
+                onSubmit={_.get(addDialog, 'handleSubmitAddDialog')}
                 addDialog={true}
                 name={_.get(client, 'name')}
-            />
+            />}
         </Container>
     )
 })
@@ -545,18 +546,18 @@ ClientBalanceGridList.propTypes = {
         handleCloseInfoDialog: PropTypes.func.isRequired
     }).isRequired,
     createDialog: PropTypes.shape({
-        createLoading: PropTypes.bool.isRequired,
-        openCreateDialog: PropTypes.bool.isRequired,
-        handleOpenCreateDialog: PropTypes.func.isRequired,
-        handleCloseCreateDialog: PropTypes.func.isRequired,
-        handleSubmitCreateDialog: PropTypes.func.isRequired
-    }).isRequired,
+        createLoading: PropTypes.bool,
+        openCreateDialog: PropTypes.bool,
+        handleOpenCreateDialog: PropTypes.func,
+        handleCloseCreateDialog: PropTypes.func,
+        handleSubmitCreateDialog: PropTypes.func
+    }),
     superUser: PropTypes.shape({
-        open: PropTypes.bool.isRequired,
-        loading: PropTypes.bool.isRequired,
-        handleOpenSuperUserDialog: PropTypes.func.isRequired,
-        handleCloseSuperUserDialog: PropTypes.func.isRequired,
-        handleSubmitSuperUserDialog: PropTypes.func.isRequired
+        open: PropTypes.bool,
+        loading: PropTypes.bool,
+        handleOpenSuperUserDialog: PropTypes.func,
+        handleCloseSuperUserDialog: PropTypes.func,
+        handleSubmitSuperUserDialog: PropTypes.func
     })
 }
 
