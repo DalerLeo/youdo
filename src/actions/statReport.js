@@ -6,22 +6,6 @@ import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/Statistics/statReportSerializer'
 import fileDownload from 'react-file-download'
 
-export const statReportItemFetchAction = (filterItem, id) => {
-    const params = serializers.itemFilterSerializer(filterItem.getParams())
-    const payload = axios()
-        .get(sprintf(API.STAT_REPORT_ITEM, id), {params})
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.STAT_REPORT_ITEM,
-        payload
-    }
-}
 export const statReportListFetchAction = (filter) => {
     const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()

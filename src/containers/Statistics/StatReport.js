@@ -5,56 +5,30 @@ import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import filterHelper from '../../helpers/filter'
 import moment from 'moment'
-
-import {
-    StatReportGridList
-} from '../../components/Statistics'
-
+import {StatReportGridList} from '../../components/Statistics'
 import {STAT_REPORT_FILTER_KEY} from '../../components/Statistics/StatReportGridLIst'
-import {
-    statReportListFetchAction,
-    statReportItemFetchAction
-} from '../../actions/statReport'
-
-const ZERO = 0
+import {statReportListFetchAction} from '../../actions/statReport'
 
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
-        const detail = _.get(state, ['statReport', 'item', 'data'])
-        const detailLoading = _.get(state, ['statReport', 'item', 'loading'])
         const list = _.get(state, ['statReport', 'list', 'data'])
         const listLoading = _.get(state, ['statReport', 'list', 'loading'])
-        const filterForm = _.get(state, ['form', 'StatReportFilterForm'])
+        const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
         const filter = filterHelper(list, pathname, query)
-        const filterItem = filterHelper(detail, pathname, query, {'page': 'dPage', 'pageSize': 'dPageSize'})
         return {
             list,
             listLoading,
-            detail,
-            detailLoading,
             filter,
             query,
-            filterForm,
-            filterItem
+            filterForm
         }
     }),
     withPropsOnChange((props, nextProps) => {
         return props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
         dispatch(statReportListFetchAction(filter))
-    }),
-
-    withPropsOnChange((props, nextProps) => {
-        const statReportId = _.get(nextProps, ['params', 'statReportId']) || ZERO
-        return statReportId > ZERO && (_.get(props, ['params', 'statReportId']) !== statReportId ||
-            props.filterItem.filterRequest() !== nextProps.filterItem.filterRequest())
-    }, ({dispatch, params, filterItem}) => {
-        const statReportId = _.toInteger(_.get(params, 'statReportId'))
-        if (statReportId > ZERO) {
-            dispatch(statReportItemFetchAction(filterItem, statReportId))
-        }
     }),
 
     withHandlers({

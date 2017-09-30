@@ -5,16 +5,14 @@ import {Row} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
-import Search from 'material-ui/svg-icons/action/search'
-import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
-import Excel from 'material-ui/svg-icons/av/equalizer'
 import StatSideMenu from './StatSideMenu'
-import {DateToDateField, DivisionSearchField} from '../ReduxForm'
+import {DateToDateField} from '../ReduxForm'
 import Container from '../Container'
 import * as ROUTES from '../../constants/routes'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
+import {StatisticsFilterExcel} from '../Statistics'
 
 const enhance = compose(
     injectSheet({
@@ -38,13 +36,6 @@ const enhance = compose(
             height: '100%',
             overflowY: 'auto',
             overflowX: 'hidden'
-        },
-        form: {
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            borderBottom: '1px #efefef solid',
-            paddingBottom: '10px'
         },
         blocksWrapper: {
             display: 'flex',
@@ -95,31 +86,6 @@ const enhance = compose(
                 }
             }
         },
-        filter: {
-            display: 'flex',
-            alignItems: 'center',
-            '& > div': {
-                width: '140px!important',
-                position: 'relative',
-                marginRight: '40px',
-                '&:last-child': {
-                    margin: '0'
-                },
-                '&:after': {
-                    content: '""',
-                    position: 'absolute',
-                    right: '-20px',
-                    height: '30px',
-                    width: '1px',
-                    top: '50%',
-                    marginTop: '-15px',
-                    background: '#efefef'
-                },
-                '&:last-child:after': {
-                    display: 'none'
-                }
-            }
-        },
         leftPanel: {
             backgroundColor: '#f2f5f8',
             flexBasis: '250px',
@@ -130,26 +96,6 @@ const enhance = compose(
             flexBasis: 'calc(100% - 250px)',
             maxWidth: 'calc(100% - 250px)',
             overflow: 'hidden'
-        },
-        searchButton: {
-            marginLeft: '-10px !important',
-            '& div': {
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-            }
-        },
-        excel: {
-            background: '#71ce87',
-            borderRadius: '2px',
-            color: '#fff',
-            fontWeight: '600',
-            display: 'flex',
-            alignItems: 'center',
-            padding: '5px 15px',
-            '& svg': {
-                width: '18px !important'
-            }
         },
         inputFieldCustom: {
             fontSize: '13px !important',
@@ -182,25 +128,15 @@ export const STAT_REPORT_FILTER_KEY = {
 
 const StatReportGridList = enhance((props) => {
     const {
+        filter,
         classes,
         listData,
         getDocument,
         onSubmit,
-        handleSubmit
+        initialValues
     } = props
     const listLoading = _.get(listData, 'listLoading')
-    const iconStyle = {
-        icon: {
-            color: '#5d6474',
-            width: 22,
-            height: 22
-        },
-        button: {
-            width: 40,
-            height: 40,
-            padding: 0
-        }
-    }
+
     const currency = getConfig('PRIMARY_CURRENCY')
     const stockData = _.get(listData, ['data', 'stock'])
     const cashBoxesData = _.get(listData, ['data', 'cashboxes'])
@@ -327,6 +263,15 @@ const StatReportGridList = enhance((props) => {
         </div>
     )
 
+    const fields = (
+        <Field
+            className={classes.inputFieldCustom}
+            name="date"
+            component={DateToDateField}
+            label="Диапазон дат"
+            fullWidth={true}/>
+    )
+
     const page = (
         <div className={classes.mainWrapper}>
             <Row style={{margin: '0', height: '100%'}}>
@@ -334,40 +279,20 @@ const StatReportGridList = enhance((props) => {
                     <StatSideMenu currentUrl={ROUTES.STATISTICS_REPORT_URL}/>
                 </div>
                 <div className={classes.rightPanel}>
-                    {listLoading
-                        ? <div className={classes.loader}>
-                            <CircularProgress size={40} thickness={4}/>
-                        </div>
-                        : <div className={classes.wrapper}>
-                            <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
-                                <div className={classes.filter}>
-                                    <Field
-                                        className={classes.inputFieldCustom}
-                                        name="date"
-                                        component={DateToDateField}
-                                        label="Диапазон дат"
-                                        fullWidth={true}/>
-                                    <Field
-                                        name="division"
-                                        className={classes.inputFieldCustom}
-                                        component={DivisionSearchField}
-                                        label="Подразделение"
-                                        fullWidth={true}
-                                    />
-                                    <IconButton
-                                        className={classes.searchButton}
-                                        iconStyle={iconStyle.icon}
-                                        style={iconStyle.button}
-                                        type="submit">
-                                        <Search/>
-                                    </IconButton>
-                                </div>
-                                <a className={classes.excel}
-                                   onClick={getDocument.handleGetDocument}>
-                                    <Excel color="#fff"/> <span>Excel</span>
-                                </a>
-                            </form>
-                            <div className={classes.blocksWrapper}>
+                    <div className={classes.wrapper}>
+                        <StatisticsFilterExcel
+                            filter={filter}
+                            filterKeys={STAT_REPORT_FILTER_KEY}
+                            fields={fields}
+                            handleSubmitFilterDialog={onSubmit}
+                            handleGetDocument={getDocument.handleGetDocument}
+                            initialValues={initialValues}
+                        />
+                        {listLoading
+                            ? <div className={classes.loader}>
+                                <CircularProgress size={40} thickness={4}/>
+                            </div>
+                            : <div className={classes.blocksWrapper}>
                                 <div>
                                     {stock}
                                     {productRealisation}
@@ -377,8 +302,8 @@ const StatReportGridList = enhance((props) => {
                                     {cashboxReports}
                                     {debtors}
                                 </div>
-                            </div>
-                        </div>}
+                            </div>}
+                    </div>
                 </div>
             </Row>
         </div>
