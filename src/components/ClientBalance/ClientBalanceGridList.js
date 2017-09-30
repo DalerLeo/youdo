@@ -107,7 +107,8 @@ const enhance = compose(
             overflow: 'hidden',
             marginBottom: '50px',
             marginLeft: '-30px',
-            'padding-left': ({stat}) => stat ? '' : '30px'
+            'padding-left': ({stat}) => stat ? '0' : '30px',
+            'margin-right': ({stat}) => stat ? '-30px' : 'unset'
         },
         leftTable: {
             display: 'table',
@@ -195,7 +196,7 @@ const enhance = compose(
         },
         nav: {
             height: '55px',
-            padding: ({stat}) => stat ? '' : '0 30px',
+            padding: ({stat}) => stat ? 'unset' : '0 30px',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center'
