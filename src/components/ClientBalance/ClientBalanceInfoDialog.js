@@ -20,6 +20,7 @@ import * as ROUTES from '../../constants/routes'
 import Tooltip from '../ToolTip'
 import {Link} from 'react-router'
 import sprintf from 'sprintf'
+import NotFound from '../Images/not-found.png'
 
 import {
     PAYMENT,
@@ -127,6 +128,9 @@ const enhance = compose(
                 '&:hover > div:last-child': {
                     opacity: '1'
                 },
+                '& > div:last-child': {
+                    zIndex: ({stat}) => stat && '-1'
+                },
                 margin: '0',
                 padding: '15px 0',
                 alignItems: 'center',
@@ -153,17 +157,27 @@ const enhance = compose(
                 display: 'none'
             }
         },
-        dottedList: {
-            '&:hover > div:last-child': {
-                opacity: '1'
-            }
-        },
         iconBtn: {
             display: 'flex',
             position: 'absolute',
             right: '-15px',
             opacity: '0',
             transition: 'all 200ms ease-out'
+        },
+        emptyQuery: {
+            background: 'url(' + NotFound + ') no-repeat center center',
+            backgroundSize: '180px',
+            padding: '150px 0 0',
+            textAlign: 'center',
+            marginBottom: '20px',
+            fontSize: '13px',
+            fontWeight: '600',
+            color: '#666',
+            '& svg': {
+                width: '50px !important',
+                height: '50px !important',
+                color: '#999 !important'
+            }
         }
     })
 )
@@ -183,7 +197,7 @@ const iconStyle = {
 }
 const THREE = 3
 const ClientBalanceInfoDialog = enhance((props) => {
-    const {open, filterItem, onClose, classes, detailData, name, balance, paymentType, superUser, setItem} = props
+    const {open, filterItem, onClose, classes, detailData, name, balance, paymentType, superUser, setItem, stat} = props
     const isSuperUser = _.get(superUser, 'isSuperUser')
     const ZERO = 0
     const currentCurrency = getConfig('PRIMARY_CURRENCY')
@@ -241,7 +255,7 @@ const ClientBalanceInfoDialog = enhance((props) => {
                         <div>{numberFormat(internal, currentCurrency)} <span style={{fontSize: 11, color: '#666'}}>({customRate})</span></div>
                     </div>}
                 </div>
-                {(isSuperUser && (type === FIRST_BALANCE || type === NONE_TYPE)) &&
+                {(!stat && isSuperUser && (type === FIRST_BALANCE || type === NONE_TYPE)) &&
                     <div className={classes.iconBtn}>
                         <Tooltip position="bottom" text="Изменить">
                             <IconButton
@@ -305,7 +319,7 @@ const ClientBalanceInfoDialog = enhance((props) => {
                         </Row>
 
                         {!_.isEmpty(_.get(detailData, 'data')) ? detailList
-                            : <div style={{padding: '20px 30px', textAlign: 'center'}}>Пока транзакции нет</div>}
+                            : <div className={classes.emptyQuery}>Пока транзакции нет</div>}
                     </div>
                 </div>
             }
