@@ -327,10 +327,6 @@ export default class GoogleCustomMap extends React.Component {
         }
     }
 
-    componentWillUnmount () {
-        this.overlayView.setMap(null)
-    }
-
     render () {
         const {addZone, filter, updateZone, isOpenAddZone, isOpenUpdateZone, deleteZone} = this.props
         const GOOGLE_API_KEY = 'AIzaSyDnUkBg_uV1aa4e7pyEvv3bVxN3RfwNQEo'

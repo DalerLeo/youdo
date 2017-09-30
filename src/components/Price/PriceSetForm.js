@@ -63,11 +63,6 @@ const enhance = compose(
             },
             '& .row': {
                 padding: '0 !important',
-                '& > div:last-child': {
-                    '& > div > div:last-child': {
-                        top: '10px'
-                    }
-                },
                 '& > div:first-child': {
                     textAlign: 'left'
                 },
@@ -121,7 +116,14 @@ const enhance = compose(
         agentTableContent: {
             width: '100%',
             '& .row': {
-                fontWeight: 'normal !important'
+                fontWeight: 'normal !important',
+                '& > div:last-child': {
+                    display: 'flex',
+                    alignItems: 'flex-end',
+                    '& .Select-control': {
+                        paddingBottom: '3px'
+                    }
+                }
             }
         },
         agentPrices: {
