@@ -26,7 +26,7 @@ import {
     OrderGridList,
     OrderPrint
 } from '../../components/Order'
-const CLIENT_CREATE_DIALOG_OPEN = 'openClientCreate'
+const CLIENT_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const CANCEL_ORDER_RETURN_DIALOG_OPEN = 'openCancelConfirmDialog'
 import {
     orderCreateAction,
@@ -43,9 +43,6 @@ import {
     orderProductMobileAction,
     orderSetDiscountAction
 } from '../../actions/order'
-import {
-    clientCreateAction
-} from '../../actions/client'
 import {openSnackbarAction} from '../../actions/snackbar'
 
 const MINUS_ONE = -1
@@ -450,50 +447,10 @@ const enhance = compose(
                     }))
                 })
         },
-
         handleOpenCreateClientDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[CLIENT_CREATE_DIALOG_OPEN]: true})})
+            const {filter} = props
+            hashHistory.push({pathname: [ROUTER.SHOP_LIST_URL], query: filter.getParams({[CLIENT_CREATE_DIALOG_OPEN]: true})})
         },
-
-        handleCloseCreateClientDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[CLIENT_CREATE_DIALOG_OPEN]: false})})
-        },
-
-        handleSubmitCreateClientDialog: props => () => {
-            const {dispatch, clientCreateForm, filter} = props
-
-            return dispatch(clientCreateAction(_.get(clientCreateForm, ['values'])))
-                .then((data) => {
-                    const value = _.get(data, ['value', 'id'])
-                    dispatch({
-                        type: '@@redux-form/CHANGE',
-                        payload: {text: '', value: value},
-                        meta: {
-                            field: 'client',
-                            touch: false,
-                            form: 'OrderCreateForm',
-                            persistentSubmitErrors: false
-                        }
-                    })
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
-                })
-                .then(() => {
-                    hashHistory.push(filter.createURL({[CLIENT_CREATE_DIALOG_OPEN]: false}))
-                }).catch((error) => {
-                    const errorWhole = _.map(error, (item, index) => {
-                        return <p key={index} style={{marginBottom: '10px'}}><b style={{textTransform: 'uppercase'}}>{index}:</b> {item}</p>
-                    })
-
-                    dispatch(openErrorAction({
-                        message: <div style={{padding: '0 30px'}}>
-                            {errorWhole}
-                        </div>
-                    }))
-                })
-        },
-
         handleGetDocument: props => (id) => {
             const {dispatch, filter, setOpenPrint} = props
             setOpenPrint(true)
@@ -563,7 +520,6 @@ const OrderList = enhance((props) => {
         payment,
         detailLoading,
         createLoading,
-        createClientLoading,
         returnLoading,
         shortageLoading,
         updateLoading,
@@ -608,7 +564,6 @@ const OrderList = enhance((props) => {
     const detailId = _.toInteger(_.get(params, 'orderId'))
     const tab = _.get(location, ['query', TAB]) || ORDER_TAB.ORDER_DEFAULT_TAB
 
-    const openCreateClientDialog = toBoolean(_.get(location, ['query', CLIENT_CREATE_DIALOG_OPEN]))
     const createDialog = {
         createLoading,
         openCreateDialog,
@@ -663,16 +618,7 @@ const OrderList = enhance((props) => {
     }
 
     const createClientDialog = {
-        initialValues: (() => {
-            return {
-                contacts: [{}]
-            }
-        })(),
-        createClientLoading,
-        openCreateClientDialog,
-        handleOpenCreateClientDialog: props.handleOpenCreateClientDialog,
-        handleCloseCreateClientDialog: props.handleCloseCreateClientDialog,
-        handleSubmitCreateClientDialog: props.handleSubmitCreateClientDialog
+        handleOpenCreateClientDialog: props.handleOpenCreateClientDialog
     }
 
     const withoutBonusProducts = _.filter(_.get(detail, 'products'), {'isBonus': false})
@@ -716,7 +662,6 @@ const OrderList = enhance((props) => {
             }
             const dealType = _.toInteger(_.get(detail, 'dealType')) === ONE ? 'consignment' : 'standart'
             const paymentType = _.toInteger(_.get(detail, 'paymentType')) === ONE ? 'bank' : 'cash'
-
             return {
                 client: {
                     value: _.toInteger(_.get(detail, ['client', 'id']))
@@ -725,7 +670,7 @@ const OrderList = enhance((props) => {
                     value: _.toInteger(_.get(detail, ['contact', 'id']))
                 },
                 market: {
-                    value: _.toInteger(_.get(detail, ['market', 'id']))
+                    value: {id: _.toInteger(_.get(detail, ['market', 'id']))}
                 },
                 deliveryType: {
                     value: deliveryType,

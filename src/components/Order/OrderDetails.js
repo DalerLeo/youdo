@@ -216,7 +216,9 @@ const OrderDetails = enhance((props) => {
         setOpenDiscountDialog,
         handleSubmitDiscountDialog,
         handleSubmitSetZeroDiscountDialog,
-        stat
+        stat,
+        filter,
+        clientId
     } = props
     const id = _.get(data, 'id')
     const market = _.get(data, ['market', 'name'])
@@ -473,6 +475,8 @@ const OrderDetails = enhance((props) => {
                 loading={updateDialog.updateLoading}
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
+                filter={filter}
+                clientId={clientId}
             />}
 
         </div>
