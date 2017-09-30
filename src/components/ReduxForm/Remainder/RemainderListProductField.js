@@ -183,6 +183,9 @@ const enhance = compose(
             },
             '& button': {
                 marginTop: '10px !important'
+            },
+            '& .Select-control': {
+                paddingBottom: '4px'
             }
         },
         searchFieldCustom: {
