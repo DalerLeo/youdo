@@ -366,9 +366,10 @@ export const STOCK_TRANSFER_ACCEPT = '/stock/accept_outcome/'
 export const STOCK_RECEIVE_LIST = '/stock/income_tasks/'
 export const STOCK_RECEIVE_ITEM = `/${STOCK_RECEIVE}/%d/`
 export const STOCK_RECEIVE_TRANSFER_CHANGE_STATUS = 'stock/stock_transfer/%d/change_status/'
-export const STOCK_RECEIVE_DELIVERY_RETURN = 'stock/delivery_return_status'
+export const STOCK_RECEIVE_DELIVERY_RETURN = 'stock/delivery_return_status/'
 export const STOCK_RECEIVE_ACCEPT_ORDER_RETURN = 'stock/accept_order_return/'
 export const STOCK_RECEIVE_ORDER_ITEM = '/stock/stock_transfer/%d/'
+export const STOCK_RECEIVE_HISTORY_SUPPLY_URL = 'stock/supply/%d/cancel_accept/'
 
 export const STOCK_RECEIVE_CREATE = '/stock/supply/%d/accept_products/'
 export const STOCK_RECEIVE_UPDATE = '/stock/supply/%d/update_accept/'

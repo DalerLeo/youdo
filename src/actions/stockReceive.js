@@ -310,3 +310,18 @@ export const stockTransferHistoryReturnAction = (orderId) => {
         payload
     }
 }
+export const stockReceiveHistorySupplyAction = (orderId) => {
+    const payload = axios()
+        .post(sprintf(API.STOCK_RECEIVE_HISTORY_SUPPLY_URL, orderId))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STOCK_RECEIVE_ITEM,
+        payload
+    }
+}

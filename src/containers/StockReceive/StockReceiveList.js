@@ -197,9 +197,9 @@ const enhance = compose(
                 })
         },
         handleSubmitReceiveDeliveryConfirmDialog: props => () => {
-            const {dispatch, filter, location: {pathname}, params} = props
-            const id = _.toInteger(_.get(params, 'stockReceiveId'))
-            return dispatch(stockReceiveDeliveryConfirmAction(id, 'accept'))
+            const {dispatch, filter, location: {pathname}} = props
+            const id = _.toInteger(_.get(props, ['location', 'query', 'orderId']))
+            return dispatch(stockReceiveDeliveryConfirmAction(id, 'cancel'))
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[STOCK_CONFIRM_DIALOG_OPEN]: false})})
                     dispatch(stockReceiveListFetchAction(filter))
@@ -229,8 +229,7 @@ const enhance = compose(
                     pathname: sprintf(ROUTER.STOCK_RECEIVE_ITEM_PATH, id),
                     query: filter.getParams({
                         [TYPE]: type,
-                        [STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN]: false,
-                        [STOCK_POPVER_DIALOG_OPEN]: false
+                        orderId: typeOrg
                     })
                 })
             }

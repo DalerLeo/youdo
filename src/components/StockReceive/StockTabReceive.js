@@ -179,7 +179,7 @@ const StockTabReceive = enhance((props) => {
         return (
             <Row
                 key={key + '_' + type}
-                onClick={() => { listData.handleOpenDetail(key, type) }}
+                onClick={() => { listData.handleOpenDetail(key, type, id) }}
                 style={{cursor: 'pointer'}}>
                 <Col xs={2}>{key}</Col>
                 <Col xs={3}>{by}</Col>

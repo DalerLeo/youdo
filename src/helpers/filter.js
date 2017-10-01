@@ -212,6 +212,7 @@ const filter = (data, pathname, query = {}, newKeys = {}) => {
             openBindAgent: null,
             unbindAgent: null,
             openRepealDialog: null,
+            currentType: null,
             openRepealHistoryDialog: null
         }
         return paramsToQueryUrl(_.assign({}, params, _.merge(except, defaultExcept)))

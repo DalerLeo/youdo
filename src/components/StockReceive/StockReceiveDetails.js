@@ -21,6 +21,7 @@ const RETURN = 3
 const APPROVE = 1
 const CANCEL = 2
 const DELIVERY = 4
+const ONE = 1
 const TWO = 2
 const THREE = 3
 
@@ -165,18 +166,25 @@ const TransferDetail = enhance((props) => {
         confirmDialog,
         createDialog,
         updateDialog,
+        repealDialog,
         history,
+        transferHistory,
         popover
     } = props
 
-    const dateRequest = dateFormat(_.get(detailData, ['currentDetail', 'dateRequest']))
-    const dateDelivery = dateFormat(_.get(detailData, ['currentDetail', 'dateDelivery']))
-    const receiver = _.get(detailData, ['currentDetail', 'receiver'])
-    const stockNameCurrent = _.get(detailData, ['currentDetail', 'stock', 'name'])
+    const currentBy = _.get(detailData, ['currentDetail', 'by'])
+    const currentDate = dateFormat(_.get(detailData, ['currentDetail', 'date']))
+    const currentStock = _.get(detailData, ['currentDetail', 'stock', 'name'])
+
+    const currentDeliveryDate = _.get(detailData, ['currentDetail', 'dateDelivery'])
+    const currentRequestDate = _.get(detailData, ['currentDetail', 'dateRequest'])
+    const currentReceiver = _.get(detailData, ['currentDetail', 'receiver'])
+
     const useBarcode = toBoolean(getConfig('USE_BARCODE'))
     const onClose = _.get(detailData, 'onClose')
     const type = _.get(detailData, 'type')
     const by = _.get(detailData, ['data', 'fromStock', 'name'])
+
     const formattedType = stockTypeFormat(type)
     const finishedTime = dateFormat(_.get(detailData, ['data', 'finishedTime']), true)
     const acceptedTime = dateFormat(_.get(detailData, ['data', 'acceptedTime']), true)
@@ -217,11 +225,12 @@ const TransferDetail = enhance((props) => {
                         </div>
                         <Row className={classes.semibold} style={history ? {lineHeight: '48px'} : {}}>
                             <Col xs={2}>{id}</Col>
-                            <Col xs={history ? TWO : THREE}>{history ? dateRequest : by}</Col>
-                            <Col xs={2}>{history ? stockNameCurrent : formattedType}</Col>
-                            <Col xs={2}>{history ? receiver : date}</Col>
-                            <Col xs={2}>{history ? dateDelivery : stockName}</Col>
-                            <Col xs={1}>
+                            <Col xs={(history && transferHistory) ? TWO : THREE}>{(history && transferHistory) ? currentDeliveryDate : (history ? currentBy : by)}</Col>
+                            <Col xs={2}>{(history && transferHistory) ? currentStock : formattedType}</Col>
+                            <Col xs={2}>{(history && transferHistory) ? formattedType : (history ? currentDate : date)}</Col>
+                            <Col xs={2}>{(history && transferHistory) ? currentReceiver : (history ? currentStock : stockName)}</Col>
+                            <Col xs={(history && transferHistory) ? TWO : ONE}>
+                                {(history && transferHistory) && currentRequestDate}
                                 <div className={classes.titleButtons}>
                                     {!history && (type === 'transfer')
                                         ? <Tooltip position="right" text={tooltipText}>
@@ -283,6 +292,25 @@ const TransferDetail = enhance((props) => {
                                             iconStyle={iconStyle.icon}
                                             style={iconStyle.button}
                                             onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(CANCEL) }}
+                                            touch={true}>
+                                            <RemoveCircleIcon />
+                                        </IconButton>
+                                    </Tooltip>}
+                                    {!history && type === 'delivery_return' &&
+                                    <Tooltip position="right" text={tooltipCancelText}>
+                                        <IconButton
+                                            iconStyle={iconStyle.icon}
+                                            style={iconStyle.button}
+                                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(DELIVERY) }}
+                                            touch={true}>
+                                            <RemoveCircleIcon />
+                                        </IconButton>
+                                    </Tooltip>}
+                                    {history && type !== 'transfer' && type !== 'delivery_return' && <Tooltip position="right" text={tooltipCancelText}>
+                                        <IconButton
+                                            iconStyle={iconStyle.icon}
+                                            style={iconStyle.button}
+                                            onTouchTap={() => { repealDialog.handleOpenRepealDialog(id) }}
                                             touch={true}>
                                             <RemoveCircleIcon />
                                         </IconButton>
