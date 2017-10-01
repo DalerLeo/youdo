@@ -117,6 +117,7 @@ const StockTabTransferHistory = enhance((props) => {
             transferType={transferType}
             loading={_.get(detailData, 'detailLoading')}
             history={true}
+            transferHistory={true}
             popover={true}
         />)
 

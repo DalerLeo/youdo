@@ -133,10 +133,10 @@ const StockTransferDetails = enhance((props) => {
 
     const products = _.get(detailData, ['data', 'products'])
     const id = _.get(detailData, 'id')
-    const dateRequest = dateFormat(_.get(detailData, ['currentTransferDetail', 'dateRequest']))
-    const dateDelivery = dateFormat(_.get(detailData, ['currentTransferDetail', 'dateDelivery']))
-    const receiver = _.get(detailData, ['currentTransferDetail', 'receiver'])
-    const stockName = _.get(detailData, ['currentTransferDetail', 'stock', 'name'])
+    const dateRequest = dateFormat(_.get(detailData, ['currentDetail', 'dateRequest']))
+    const dateDelivery = dateFormat(_.get(detailData, ['currentDetail', 'dateDelivery']))
+    const receiver = _.get(detailData, ['currentDetail', 'receiver'])
+    const stockName = _.get(detailData, ['currentDetail', 'stock', 'name'])
     const detailType = _.toInteger(_.get(detailData, 'type'))
     const tooltipText = 'Подтвердить Запрос № ' + id
     if (loading) {

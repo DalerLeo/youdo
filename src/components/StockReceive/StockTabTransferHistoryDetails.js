@@ -12,6 +12,7 @@ import NotFound from '../Images/not-found.png'
 import Tooltip from '../ToolTip'
 import dateFormat from '../../helpers/dateFormat'
 import numberformat from '../../helpers/numberFormat'
+import stockTypeFormat from '../../helpers/stockTypeFormat'
 
 const colorBlue = '#12aaeb !important'
 const enhance = compose(
@@ -68,7 +69,7 @@ const enhance = compose(
         },
         header: {
             position: 'relative',
-            padding: '15px 30px',
+            padding: '15px 15px 15px 30px',
             width: '100%',
             '& .row': {
                 alignItems: 'center'
@@ -126,8 +127,8 @@ const iconStyle = {
         height: 25
     },
     button: {
-        width: 48,
-        height: 48,
+        width: 24,
+        height: 24,
         padding: 0
     }
 }
@@ -149,6 +150,7 @@ const StockTransferDetails = enhance((props) => {
     const dateDelivery = dateFormat(_.get(detailData, ['currentDetail', 'dateDelivery']))
     const receiver = _.get(detailData, ['currentDetail', 'receiver'])
     const stockName = _.get(detailData, ['currentDetail', 'stock', 'name'])
+    const type = stockTypeFormat(_.get(detailData, 'type'))
     const tooltipCancelText = 'Отменить Запрос №' + id
 
     if (_.isEmpty(products)) {
@@ -179,34 +181,36 @@ const StockTransferDetails = enhance((props) => {
                             <Col xs={2}>{id}</Col>
                             <Col xs={2}>{dateRequest}</Col>
                             <Col xs={2}>{stockName}</Col>
-                            <Col xs={3}>{receiver}</Col>
-                            <Col xs={2}>{dateDelivery}</Col>
-                            <div style={{marginLeft: '-10px'}}>
-                                <Tooltip position="right" text={tooltipCancelText}>
-                                    <IconButton
-                                        iconStyle={iconStyle.icon}
-                                        style={iconStyle.button}
-                                        onTouchTap={() => {
-                                            repealDialog.handleOpenRepealDialog(id)
-                                        }}
-                                        touch={true}>
-                                        <RemoveCircleIcon/>
-                                    </IconButton>
-                                </Tooltip>
-                            </div>
-                            <div className={classes.printer}>
-                                <Tooltip position="bottom" text="Распечатать накладную">
-                                    <IconButton
-                                        iconStyle={iconStyle.icon}
-                                        style={iconStyle.button}
-                                        onTouchTap={() => {
-                                            handleOpenPrint(id)
-                                        }}
-                                        touch={true}>
-                                        <PrintIcon/>
-                                    </IconButton>
-                                </Tooltip>
-                            </div>
+                            <Col xs={2}>{type}</Col>
+                            <Col xs={2}>{receiver}</Col>
+                            <Col xs={2}>{dateDelivery}
+                                <div style={{right: '0', display: 'flex', position: 'absolute', marginTop: '-20px'}}>
+                                    <Tooltip position="right" text={tooltipCancelText}>
+                                        <div style={{paddingRight: '10px'}}>
+                                            <IconButton
+                                                iconStyle={iconStyle.icon}
+                                                style={iconStyle.button}
+                                                onTouchTap={() => {
+                                                    repealDialog.handleOpenRepealDialog(id)
+                                                }}
+                                                touch={true}>
+                                                <RemoveCircleIcon/>
+                                            </IconButton>
+                                        </div>
+                                    </Tooltip>
+                                    <Tooltip position="bottom" text="Распечатать накладную">
+                                        <IconButton
+                                            iconStyle={iconStyle.icon}
+                                            style={iconStyle.button}
+                                            onTouchTap={() => {
+                                                handleOpenPrint(id)
+                                            }}
+                                            touch={true}>
+                                            <PrintIcon/>
+                                        </IconButton>
+                                    </Tooltip>
+                                </div>
+                            </Col>
                         </Row>
                     </div>
                     <div className={classes.content}>

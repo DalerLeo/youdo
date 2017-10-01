@@ -28,7 +28,8 @@ import {
     stockReceiveDeliveryConfirmAction,
     stockTransferItemAcceptAction,
     stockTransferListFetchAction,
-    stockTransferHistoryReturnAction
+    stockTransferHistoryReturnAction,
+    stockReceiveHistorySupplyAction
 } from '../../actions/stockReceive'
 import {
     orderListPintFetchAction
@@ -36,7 +37,7 @@ import {
 import {openErrorAction} from '../../actions/error'
 import {openSnackbarAction} from '../../actions/snackbar'
 
-const TYPE = 'openType'
+const TYPE = 'currentType'
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -78,7 +79,7 @@ const enhance = compose(
         const nextId = _.get(nextProps, ['params', 'stockReceiveHistoryId'])
         return nextId && prevId !== nextId
     }, ({dispatch, params, location}) => {
-        const stockReceiveType = _.get(location, ['query', 'openType'])
+        const stockReceiveType = _.get(location, ['query', 'currentType'])
         const stockReceiveHistoryId = _.toInteger(_.get(params, 'stockReceiveHistoryId'))
         if (stockReceiveType === 'supply') {
             dispatch(stockReceiveHistoryItemFetchAction(stockReceiveHistoryId))
@@ -138,21 +139,6 @@ const enhance = compose(
             })
         },
 
-        handleCloseDetail: props => () => {
-            const {filter} = props
-            hashHistory.push({
-                pathname: ROUTER.STOCK_RECEIVE_HISTORY_LIST_URL,
-                query: filter.getParams()
-            })
-        },
-        handleOpenDetail: props => (id, type) => {
-            const {filter} = props
-            hashHistory.push({
-                pathname: sprintf(ROUTER.STOCK_RECEIVE_HISTORY_ITEM_PATH, id),
-                query: filter.getParams({[TYPE]: type})
-            })
-        },
-
         handleOpenConfirmDialog: props => (status) => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[STOCK_CONFIRM_DIALOG_OPEN]: status})})
@@ -199,6 +185,22 @@ const enhance = compose(
                     return dispatch(openSnackbarAction({message: 'Успешно принять'}))
                 })
         },
+
+        handleCloseDetail: props => () => {
+            const {filter} = props
+            hashHistory.push({
+                pathname: ROUTER.STOCK_RECEIVE_HISTORY_LIST_URL,
+                query: filter.getParams()
+            })
+        },
+        handleOpenDetail: props => (id, type) => {
+            const {filter} = props
+            hashHistory.push({
+                pathname: sprintf(ROUTER.STOCK_RECEIVE_HISTORY_ITEM_PATH, id),
+                query: filter.getParams({[TYPE]: type})
+            })
+        },
+
         handleOpenRepealDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[STOCK_REPEAL_HISTORY_DIALOG_OPEN]: true})})
@@ -211,22 +213,45 @@ const enhance = compose(
         handleSubmitRepealDialog: props => () => {
             const {location: {pathname}, filter, params, dispatch} = props
             const orderId = _.toInteger(_.get(params, 'stockReceiveHistoryId'))
-            dispatch(stockTransferHistoryReturnAction(orderId))
-                .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[STOCK_REPEAL_HISTORY_DIALOG_OPEN]: false})})
-                    return dispatch(openSnackbarAction({message: 'Успешно отменено'}))
-                })
-                .catch((error) => {
-                    const errorWhole = _.map(error, (item, index) => {
-                        return <p style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
+            const currentType = _.get(props, ['location', 'query', 'currentType'])
+            const history = true
+            if (currentType === 'order_return') {
+                dispatch(stockTransferHistoryReturnAction(orderId))
+                    .then(() => {
+                        hashHistory.push({pathname, query: filter.getParams({[STOCK_REPEAL_HISTORY_DIALOG_OPEN]: false})})
+                        dispatch(stockReceiveListFetchAction(filter, history))
+                        return dispatch(openSnackbarAction({message: 'Успешно отменено'}))
                     })
+                    .catch((error) => {
+                        const errorWhole = _.map(error, (item, index) => {
+                            return <p style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
+                        })
 
-                    dispatch(openErrorAction({
-                        message: <div style={{padding: '0 30px'}}>
-                            {errorWhole}
-                        </div>
-                    }))
-                })
+                        dispatch(openErrorAction({
+                            message: <div style={{padding: '0 30px'}}>
+                                {errorWhole}
+                            </div>
+                        }))
+                    })
+            } else if (currentType === 'supply') {
+                dispatch(stockReceiveHistorySupplyAction(orderId))
+                    .then(() => {
+                        hashHistory.push({pathname, query: filter.getParams({[STOCK_REPEAL_HISTORY_DIALOG_OPEN]: false})})
+                        dispatch(stockReceiveListFetchAction(filter, history))
+                        return dispatch(openSnackbarAction({message: 'Успешно отменено'}))
+                    })
+                    .catch((error) => {
+                        const errorWhole = _.map(error, (item, index) => {
+                            return <p style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
+                        })
+
+                        dispatch(openErrorAction({
+                            message: <div style={{padding: '0 30px'}}>
+                                {errorWhole}
+                            </div>
+                        }))
+                    })
+            }
         }
     })
 )
@@ -246,7 +271,7 @@ const StockReceiveHistoryList = enhance((props) => {
         params
     } = props
 
-    const detailType = _.get(location, ['query', TYPE])
+    const currentType = _.get(location, ['query', TYPE])
     const detailId = _.toInteger(_.get(params, 'stockReceiveHistoryId'))
     const openFilterDialog = toBoolean(_.get(location, ['query', TAB_RECEIVE_HISTORY_FILTER_OPEN]))
     const openConfirmDialog = _.toInteger(_.get(location, ['query', STOCK_CONFIRM_DIALOG_OPEN]))
@@ -267,10 +292,10 @@ const StockReceiveHistoryList = enhance((props) => {
         printLoading
     }
     const currentDetail = _.find(_.get(list, 'results'), (obj) => {
-        return _.get(obj, 'id') === detailId && _.get(obj, 'type') === detailType
+        return _.get(obj, 'id') === detailId && _.get(obj, 'type') === currentType
     })
     const detailData = {
-        type: detailType,
+        type: currentType,
         id: detailId,
         data: detail,
         detailLoading,

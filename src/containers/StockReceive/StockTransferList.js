@@ -224,7 +224,7 @@ const StockTransferList = enhance((props) => {
     const toDate = filter.getParam(TAB_TRANSFER_FILTER_KEY.TO_DATE)
     const handleCloseDetail = _.get(props, 'handleCloseDetail')
 
-    const transferData = {
+    const listData = {
         handleOpenDetail: props.handleOpenDetail,
         data: _.get(list, 'results'),
         listLoading
@@ -239,9 +239,6 @@ const StockTransferList = enhance((props) => {
         handleOpenConfirmDialog: props.handleOpenConfirmDialog,
         handleCloseConfirmDialog: props.handleCloseConfirmDialog,
         handleSubmitTransferAcceptDialog: props.handleSubmitTransferAcceptDialog
-        // handleSubmitReceiveConfirmDialog: props.handleSubmitReceiveConfirmDialog,
-        // handleSubmitOrderReturnDialog: props.handleSubmitOrderReturnDialog,
-        // handleSubmitReceiveDeliveryConfirmDialog: props.handleSubmitReceiveDeliveryConfirmDialog
     }
 
     const filterDialog = {
@@ -270,12 +267,13 @@ const StockTransferList = enhance((props) => {
         handleOpenPrintDialog: props.handleOpenPrintDialog,
         handleClosePrintDialog: props.handleClosePrintDialog
     }
-
+    const currentDetail = _.find(_.get(listData, 'data'), {'id': _.toInteger(detailId)})
     const detailData = {
         type: detailType,
         id: detailId,
         data: detail,
-        detailLoading
+        detailLoading,
+        currentDetail
     }
 
     if (openPrint) {
@@ -291,7 +289,7 @@ const StockTransferList = enhance((props) => {
         <Layout {...layout}>
             <TabTransfer
                 filter={filter}
-                listData={transferData}
+                listData={listData}
                 detailData={detailData}
                 handleCloseDetail={handleCloseDetail}
                 confirmDialog={confirmDialog}
