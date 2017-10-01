@@ -21,6 +21,8 @@ const RETURN = 3
 const APPROVE = 1
 const CANCEL = 2
 const DELIVERY = 4
+const TWO = 2
+const THREE = 3
 
 const colorBlue = '#12aaeb !important'
 const enhance = compose(
@@ -155,7 +157,7 @@ const iconStyle = {
     }
 }
 
-const StockReceiveDetails = enhance((props) => {
+const TransferDetail = enhance((props) => {
     const {
         classes,
         detailData,
@@ -167,17 +169,20 @@ const StockReceiveDetails = enhance((props) => {
         popover
     } = props
 
+    const dateRequest = dateFormat(_.get(detailData, ['currentDetail', 'dateRequest']))
+    const dateDelivery = dateFormat(_.get(detailData, ['currentDetail', 'dateDelivery']))
+    const receiver = _.get(detailData, ['currentDetail', 'receiver'])
+    const stockNameCurrent = _.get(detailData, ['currentDetail', 'stock', 'name'])
     const useBarcode = toBoolean(getConfig('USE_BARCODE'))
     const onClose = _.get(detailData, 'onClose')
     const type = _.get(detailData, 'type')
-    const by = _.get(detailData, ['currentDetail', 'by']) || _.get(detailData, ['data', 'fromStock', 'name'])
+    const by = _.get(detailData, ['data', 'fromStock', 'name'])
     const formattedType = stockTypeFormat(type)
     const finishedTime = dateFormat(_.get(detailData, ['data', 'finishedTime']), true)
     const acceptedTime = dateFormat(_.get(detailData, ['data', 'acceptedTime']), true)
     const acceptedBy = _.get(detailData, ['data', 'acceptedBy']) && (_.get(detailData, ['data', 'acceptedBy', 'firstName']) + ' ' + _.get(detailData, ['data', 'acceptedBy', 'firstName']))
-    const date = _.get(detailData, ['currentDetail', 'date']) ? dateFormat(_.get(detailData, ['currentDetail', 'date']))
-        : (_.get(detailData, ['data', 'createdDate']) ? dateFormat(_.get(detailData, ['data', 'createdDate'])) : 'Не указана')
-    const stockName = _.get(detailData, ['currentDetail', 'stock', 'name']) || _.get(detailData, ['data', 'toStock', 'name'])
+    const date = (_.get(detailData, ['data', 'createdDate']) ? dateFormat(_.get(detailData, ['data', 'createdDate'])) : 'Не указана')
+    const stockName = _.get(detailData, ['data', 'toStock', 'name'])
     const id = _.get(detailData, 'id') || _.get(detailData, ['data', 'id'])
     const tooltipText = 'Подтвердить Запрос №' + id
     const tooltipCancelText = 'Отменить Запрос №' + id
@@ -199,7 +204,6 @@ const StockReceiveDetails = enhance((props) => {
             </div>
         )
     }
-
     return (
         <div className={classes.wrapper}>
             {detailLoading
@@ -213,10 +217,10 @@ const StockReceiveDetails = enhance((props) => {
                         </div>
                         <Row className={classes.semibold} style={history ? {lineHeight: '48px'} : {}}>
                             <Col xs={2}>{id}</Col>
-                            {by ? <Col xs={3}>{by}</Col> : null}
-                            <Col xs={2}>{formattedType}</Col>
-                            <Col xs={2}>{date}</Col>
-                            <Col xs={2}>{stockName}</Col>
+                            <Col xs={history ? TWO : THREE}>{history ? dateRequest : by}</Col>
+                            <Col xs={2}>{history ? stockNameCurrent : formattedType}</Col>
+                            <Col xs={2}>{history ? receiver : date}</Col>
+                            <Col xs={2}>{history ? dateDelivery : stockName}</Col>
                             <Col xs={1}>
                                 <div className={classes.titleButtons}>
                                     {!history && (type === 'transfer')
@@ -282,24 +286,10 @@ const StockReceiveDetails = enhance((props) => {
                                             touch={true}>
                                             <RemoveCircleIcon />
                                         </IconButton>
-                                    </Tooltip>
-                                    }
-                                    {history && type !== 'transfer' &&
-                                    <Tooltip position="right" text={tooltipCancelText}>
-                                        <IconButton
-                                            iconStyle={iconStyle.icon}
-                                            style={iconStyle.button}
-                                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(CANCEL) }}
-                                            touch={true}>
-                                            <RemoveCircleIcon />
-                                        </IconButton>
-                                    </Tooltip>
-                                    }
-                                    {
-                                        popover && <IconButton onTouchTap={onClose}>
+                                    </Tooltip>}
+                                    {popover && !history && <IconButton onTouchTap={onClose}>
                                             <CloseIcon2 color="#666666"/>
-                                        </IconButton>
-                                    }
+                                        </IconButton>}
                                 </div>
                             </Col>
 
@@ -350,8 +340,8 @@ const StockReceiveDetails = enhance((props) => {
     )
 })
 
-StockReceiveDetails.propTypes = {
+TransferDetail.propTypes = {
     detailData: PropTypes.object.isRequired
 }
 
-export default StockReceiveDetails
+export default TransferDetail

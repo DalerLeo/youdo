@@ -5,6 +5,39 @@ import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/stockReceiveSerializer'
 
+export const stockReceiveCreateAction = (formValues, supplyId, detail) => {
+    const requestData = serializers.createSerializer(formValues, detail)
+    const payload = axios()
+        .post(sprintf(API.STOCK_RECEIVE_CREATE, supplyId), requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STOCK_RECEIVE_CREATE,
+        payload
+    }
+}
+
+export const stockReceiveUpdateAction = (formValues, supplyId, detail) => {
+    const requestData = serializers.updateSerializer(formValues, detail)
+    const payload = axios()
+        .post(sprintf(API.STOCK_RECEIVE_UPDATE, supplyId), requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STOCK_RECEIVE_UPDATE,
+        payload
+    }
+}
 export const stockReceiveListFetchAction = (filter, history) => {
     const params = serializers.listFilterSerializer(filter.getParams(), history)
     const payload = axios()
@@ -39,7 +72,7 @@ export const stockReceiveItemFetchAction = (id) => {
 }
 
 export const stockHistoryListFetchAction = (filter) => {
-    const params = serializers.listFilterSerializer(filter.getParams())
+    const params = serializers.listFilterSerializer(filter.getParams(), null, true)
     const payload = axios()
         .get((API.STOCK_HISTORY_LIST), {params})
         .then((response) => {
@@ -249,7 +282,7 @@ export const stockReceiveTransferItemFetchAction = (id) => {
 }
 export const stockTransferHistoryRepealAction = (orderId, stockId) => {
     const payload = axios()
-        .delete(sprintf(API.STOCK_TRANSFER_HISTORY_REPEAL_URL, orderId), {'params': {'stock': stockId}})
+        .post(sprintf(API.STOCK_TRANSFER_HISTORY_REPEAL_URL, orderId), {'stock': stockId})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -264,7 +297,7 @@ export const stockTransferHistoryRepealAction = (orderId, stockId) => {
 }
 export const stockTransferHistoryReturnAction = (orderId) => {
     const payload = axios()
-        .delete(sprintf(API.STOCK_TRANSFER_HISTORY_RETURN_URL, orderId))
+        .post(sprintf(API.STOCK_TRANSFER_HISTORY_RETURN_URL, orderId))
         .then((response) => {
             return _.get(response, 'data')
         })

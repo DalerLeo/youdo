@@ -10,13 +10,12 @@ import moment from 'moment'
 import {OrderPrint} from '../../components/Order'
 import {
     STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN,
-    HISTORY_FILTER_OPEN,
-    HISTORY_FILTER_KEY,
+    OUT_HISTORY_FILTER_OPEN,
+    OUT_HISTORY_FILTER_KEY,
     STOCK_RETURN_DIALOG_OPEN,
     STOCK_SUPPLY_DIALOG_OPEN,
-    SROCK_POPVER_DIALOG_OPEN,
-    TAB,
-    TAB_TRANSFER_FILTER_KEY
+    STOCK_POPVER_DIALOG_OPEN,
+    TAB
 } from '../../components/StockReceive'
 import {
     stockHistoryListFetchAction,
@@ -96,7 +95,7 @@ const enhance = compose(
             (prevReturnDialog !== nextReturnDialog && nextReturnDialog !== 'false') ||
             (prevSupplyDialog !== nextSupplyDialog && nextSupplyDialog !== 'false')
     }, ({dispatch, location}) => {
-        const popoverDialog = _.get(location, ['query', SROCK_POPVER_DIALOG_OPEN])
+        const popoverDialog = _.get(location, ['query', STOCK_POPVER_DIALOG_OPEN])
         const dialog = _.get(location, ['query', STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN])
         const returnDialog = _.get(location, ['query', STOCK_RETURN_DIALOG_OPEN])
         const stockDialog = _.get(location, ['query', STOCK_SUPPLY_DIALOG_OPEN])
@@ -109,11 +108,11 @@ const enhance = compose(
         }
     }),
     withPropsOnChange((props, nextProps) => {
-        const nextPopoverDialog = _.get(nextProps, ['location', 'query', SROCK_POPVER_DIALOG_OPEN])
-        const prevPopoverDialog = _.get(props, ['location', 'query', SROCK_POPVER_DIALOG_OPEN])
+        const nextPopoverDialog = _.get(nextProps, ['location', 'query', STOCK_POPVER_DIALOG_OPEN])
+        const prevPopoverDialog = _.get(props, ['location', 'query', STOCK_POPVER_DIALOG_OPEN])
         return prevPopoverDialog !== nextPopoverDialog && nextPopoverDialog !== 'false'
     }, ({dispatch, location}) => {
-        const dialog = _.toNumber(_.get(location, ['query', SROCK_POPVER_DIALOG_OPEN]))
+        const dialog = _.toNumber(_.get(location, ['query', STOCK_POPVER_DIALOG_OPEN]))
         const open = _.get(location, ['query', STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN])
         const popoverType = (_.get(location, ['query', POP_TYPE]))
         if (dialog !== 'false' && dialog) {
@@ -155,12 +154,12 @@ const enhance = compose(
 
         handleOpenFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[HISTORY_FILTER_OPEN]: true})})
+            hashHistory.push({pathname, query: filter.getParams({[OUT_HISTORY_FILTER_OPEN]: true})})
         },
 
         handleCloseFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[HISTORY_FILTER_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[OUT_HISTORY_FILTER_OPEN]: false})})
         },
 
         handleClearFilterDialog: props => () => {
@@ -179,37 +178,18 @@ const enhance = compose(
             const typeChild = _.get(historyFilterForm, ['values', 'typeChild', 'value']) || null
 
             filter.filterBy({
-                [HISTORY_FILTER_OPEN]: false,
-                [HISTORY_FILTER_KEY.STOCK]: stock,
-                [HISTORY_FILTER_KEY.TYPE]: type,
-                [HISTORY_FILTER_KEY.STATUS]: status,
-                [HISTORY_FILTER_KEY.PRODUCT]: product,
-                [HISTORY_FILTER_KEY.TYPE_CHILD]: typeChild,
-                [HISTORY_FILTER_KEY.FROM_DATE]: fromDate && moment(fromDate).format('YYYY-MM-DD'),
-                [HISTORY_FILTER_KEY.TO_DATE]: toDate && moment(toDate).format('YYYY-MM-DD')
+                [OUT_HISTORY_FILTER_OPEN]: false,
+                [OUT_HISTORY_FILTER_KEY.STOCK]: stock,
+                [OUT_HISTORY_FILTER_KEY.TYPE]: type,
+                [OUT_HISTORY_FILTER_KEY.STATUS]: status,
+                [OUT_HISTORY_FILTER_KEY.PRODUCT]: product,
+                [OUT_HISTORY_FILTER_KEY.TYPE_CHILD]: typeChild,
+                [OUT_HISTORY_FILTER_KEY.FROM_DATE]: fromDate && moment(fromDate).format('YYYY-MM-DD'),
+                [OUT_HISTORY_FILTER_KEY.TO_DATE]: toDate && moment(toDate).format('YYYY-MM-DD')
 
             })
         },
 
-        handleSubmitTabReceiveFilterDialog: props => () => {
-            const {filter, tabTransferFilterForm} = props
-            const stock = _.get(tabTransferFilterForm, ['values', 'stock', 'value']) || null
-            const type = _.get(tabTransferFilterForm, ['values', 'type', 'value']) || null
-            const fromDate = _.get(tabTransferFilterForm, ['values', 'date', 'fromDate']) || null
-            const toDate = _.get(tabTransferFilterForm, ['values', 'date', 'toDate']) || null
-            const acceptanceFromData = _.get(tabTransferFilterForm, ['values', 'acceptanceDate', 'fromDate']) || null
-            const acceptanceToDate = _.get(tabTransferFilterForm, ['values', 'acceptanceDate', 'toDate']) || null
-            filter.filterBy({
-                [HISTORY_FILTER_OPEN]: false,
-                [TAB_TRANSFER_FILTER_KEY.STOCK]: stock,
-                [TAB_TRANSFER_FILTER_KEY.TYPE]: type,
-                [TAB_TRANSFER_FILTER_KEY.ACCEPTANCE_FROM_DATE]: acceptanceFromData && moment(acceptanceFromData).format('YYYY-MM-DD'),
-                [TAB_TRANSFER_FILTER_KEY.ACCEPTANCE_TO_DATE]: acceptanceToDate && moment(acceptanceToDate).format('YYYY-MM-DD'),
-                [TAB_TRANSFER_FILTER_KEY.FROM_DATE]: fromDate && moment(fromDate).format('YYYY-MM-DD'),
-                [TAB_TRANSFER_FILTER_KEY.TO_DATE]: toDate && moment(toDate).format('YYYY-MM-DD')
-
-            })
-        },
         handleOpenHistoryDialog: props => (id) => {
             const {filter, location: {pathname}} = props
             hashHistory.push({pathname, query: filter.getParams({[STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN]: id})})
@@ -243,13 +223,13 @@ const enhance = compose(
 
         handleOpenPopoverDialog: props => (id, type) => {
             const {location: {pathname}, filter, setType} = props
-            hashHistory.push({pathname, query: filter.getParams({[SROCK_POPVER_DIALOG_OPEN]: id, [POP_TYPE]: type})})
+            hashHistory.push({pathname, query: filter.getParams({[STOCK_POPVER_DIALOG_OPEN]: id, [POP_TYPE]: type})})
             setType(type)
         },
 
         handleClosePopoverDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[SROCK_POPVER_DIALOG_OPEN]: false, [POP_TYPE]: null})})
+            hashHistory.push({pathname, query: filter.getParams({[STOCK_POPVER_DIALOG_OPEN]: false, [POP_TYPE]: null})})
         }
     })
 )
@@ -277,19 +257,19 @@ const StockOutHistoryList = enhance((props) => {
         stockDeliveryReturnDialogDataLoading
     } = props
 
-    const openFilterDialog = toBoolean(_.get(location, ['query', HISTORY_FILTER_OPEN]))
+    const openFilterDialog = toBoolean(_.get(location, ['query', OUT_HISTORY_FILTER_OPEN]))
     const openHistoryInfoDialog = _.toNumber(_.get(location, ['query', STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN]))
-    const brand = _.toInteger(filter.getParam(HISTORY_FILTER_KEY.BRAND))
-    const stock = _.toInteger(filter.getParam(HISTORY_FILTER_KEY.STOCK))
-    const type = _.toInteger(filter.getParam(HISTORY_FILTER_KEY.TYPE))
-    const productType = _.toInteger(filter.getParam(HISTORY_FILTER_KEY.PRODUCT_TYPE))
-    const product = _.toInteger(filter.getParam(HISTORY_FILTER_KEY.PRODUCT))
-    const fromDate = filter.getParam(HISTORY_FILTER_KEY.FROM_DATE)
-    const toDate = filter.getParam(HISTORY_FILTER_KEY.TO_DATE)
+    const brand = _.toInteger(filter.getParam(OUT_HISTORY_FILTER_KEY.BRAND))
+    const stock = _.toInteger(filter.getParam(OUT_HISTORY_FILTER_KEY.STOCK))
+    const type = _.toInteger(filter.getParam(OUT_HISTORY_FILTER_KEY.TYPE))
+    const productType = _.toInteger(filter.getParam(OUT_HISTORY_FILTER_KEY.PRODUCT_TYPE))
+    const product = _.toInteger(filter.getParam(OUT_HISTORY_FILTER_KEY.PRODUCT))
+    const fromDate = filter.getParam(OUT_HISTORY_FILTER_KEY.FROM_DATE)
+    const toDate = filter.getParam(OUT_HISTORY_FILTER_KEY.TO_DATE)
 
     const returnDialogDataOpen = _.toNumber(_.get(location, ['query', STOCK_RETURN_DIALOG_OPEN]))
     const supplyDialogOpen = _.toNumber(_.get(location, ['query', STOCK_SUPPLY_DIALOG_OPEN]) || '0')
-    const popoverDialogOpen = _.toNumber(_.get(location, ['query', SROCK_POPVER_DIALOG_OPEN]))
+    const popoverDialogOpen = _.toNumber(_.get(location, ['query', STOCK_POPVER_DIALOG_OPEN]))
     const popoverType = _.get(location, ['query', 'popType'])
 
     const historyDialog = {
@@ -338,8 +318,7 @@ const StockOutHistoryList = enhance((props) => {
         handleOpenFilterDialog: props.handleOpenFilterDialog,
         handleCloseFilterDialog: props.handleCloseFilterDialog,
         handleClearFilterDialog: props.handleClearFilterDialog,
-        handleSubmitFilterDialog: props.handleSubmitFilterDialog,
-        handleSubmitTabReceiveFilterDialog: props.handleSubmitTabReceiveFilterDialog
+        handleSubmitFilterDialog: props.handleSubmitFilterDialog
     }
 
     const printDialog = {

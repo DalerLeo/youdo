@@ -352,6 +352,7 @@ export const STAT_REMAINDER_GET_DOCUMENT = '/stock/stock/to_excel/'
 export const STATISTICS_CASHBOX_LIST = `/${CASHBOX}/`
 export const STATISTICS_CASHBOX_ITEM = `/${CASHBOX}/%d/`
 
+export const CONTENT_TYPE_SEARCH = 'stock/barcode_history/types/'
 export const STOCK_RECEIVE = 'stock/supply'
 export const STOCK_HISTORY = 'stock/barcode_history'
 export const STOCK_HISTORY_LIST = `/${STOCK_HISTORY}/`

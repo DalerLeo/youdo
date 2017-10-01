@@ -73,9 +73,11 @@ import UserStockRadioButtonField from './UserStockRadioButtonField'
 import PermissionTimeSearchField from './PermissionTimeSearchField'
 import AgentSearchField from './AgentSearchField'
 import ClientTransactionTypeSearchField from './ClientTransactionTypeSearchField'
+import StockReceiveTypeSearchFiled from './StockReceiveTypeSearchFiled'
 
 export {
     StockHistoryTypeSearchField,
+    StockReceiveTypeSearchFiled,
     ReturnStatusSearchField,
     ReturnTypeSearchField,
     ZoneSearchField,

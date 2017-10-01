@@ -1,6 +1,7 @@
 import React from 'react'
 import _ from 'lodash'
 import {connect} from 'react-redux'
+import {change} from 'redux-form'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers, withState} from 'recompose'
@@ -13,9 +14,11 @@ import moment from 'moment'
 import {OrderPrint} from '../../components/Order'
 import {
     STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN,
-    HISTORY_FILTER_OPEN,
-    HISTORY_FILTER_KEY,
-    SROCK_POPVER_DIALOG_OPEN,
+    TAB_RECEIVE_FILTER_OPEN,
+    TAB_RECEIVE_FILTER_KEY,
+    STOCK_POPVER_DIALOG_OPEN,
+    STOCK_RECEIVE_CREATE_DIALOG_OPEN,
+    STOCK_RECEIVE_UPDATE_DIALOG_OPEN,
     TAB,
     STOCK_CONFIRM_DIALOG_OPEN,
     TAB_TRANSFER_FILTER_KEY
@@ -30,7 +33,9 @@ import {
     stockTransferItemAcceptAction,
     stockReceiveItemConfirmAction,
     stockReceiveItemReturnAction,
-    stockReceiveDeliveryConfirmAction
+    stockReceiveDeliveryConfirmAction,
+    stockReceiveCreateAction,
+    stockReceiveUpdateAction
 } from '../../actions/stockReceive'
 import {
     orderListPintFetchAction
@@ -38,6 +43,7 @@ import {
 import {openSnackbarAction} from '../../actions/snackbar'
 import {openErrorAction} from '../../actions/error'
 
+const ZERO = 0
 const TYPE = 'openType'
 const enhance = compose(
     connect((state, props) => {
@@ -46,10 +52,10 @@ const enhance = compose(
         const list = _.get(state, ['stockReceive', 'list', 'data'])
         const listLoading = _.get(state, ['stockReceive', 'list', 'loading'])
         const detail = _.get(state, ['stockReceive', 'item', 'data'])
-        const detailProducts = _.get(state, ['stockReceive', 'item', 'data'])
         const detailLoading = _.get(state, ['stockReceive', 'item', 'loading'])
-        const filterForm = _.get(state, ['form', 'TabTransferFilterForm'])
+        const filterForm = _.get(state, ['form', 'TabReceiveFilterForm'])
         const printList = _.get(state, ['stockReceive', 'print', 'data'])
+        const createForm = _.get(state, ['form', 'StockReceiveCreateForm'])
         const printLoading = _.get(state, ['stockReceive', 'print', 'loading'])
         const isDefect = _.get(state, ['form', 'StockReceiveCreateForm', 'values', 'isDefect'])
         const filter = filterHelper(list, pathname, query)
@@ -58,12 +64,12 @@ const enhance = compose(
             list,
             listLoading,
             detail,
-            detailProducts,
             detailLoading,
             filter,
             isDefect,
             filterForm,
             printList,
+            createForm,
             printLoading
         }
     }),
@@ -77,9 +83,9 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const prevId = _.toInteger(_.get(props, ['params', 'stockReceiveId']))
-        const nextId = _.toInteger(_.get(nextProps, ['params', 'stockReceiveId']))
-        return prevId !== nextId
+        const prevId = _.get(props, ['params', 'stockReceiveId'])
+        const nextId = _.get(nextProps, ['params', 'stockReceiveId'])
+        return nextId && prevId !== nextId
     }, ({dispatch, params, location}) => {
         const stockReceiveType = _.get(location, ['query', 'openType'])
         const stockReceiveId = _.toInteger(_.get(params, 'stockReceiveId'))
@@ -113,12 +119,12 @@ const enhance = compose(
 
         handleOpenFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[HISTORY_FILTER_OPEN]: true})})
+            hashHistory.push({pathname, query: filter.getParams({[TAB_RECEIVE_FILTER_OPEN]: true})})
         },
 
         handleCloseFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[HISTORY_FILTER_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[TAB_RECEIVE_FILTER_OPEN]: false})})
         },
 
         handleClearFilterDialog: props => () => {
@@ -133,14 +139,10 @@ const enhance = compose(
             const type = _.get(filterForm, ['values', 'type', 'value']) || null
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
-            const acceptanceFromData = _.get(filterForm, ['values', 'acceptanceDate', 'fromDate']) || null
-            const acceptanceToDate = _.get(filterForm, ['values', 'acceptanceDate', 'toDate']) || null
             filter.filterBy({
-                [HISTORY_FILTER_OPEN]: false,
+                [TAB_RECEIVE_FILTER_OPEN]: false,
                 [TAB_TRANSFER_FILTER_KEY.STOCK]: stock,
                 [TAB_TRANSFER_FILTER_KEY.TYPE]: type,
-                [TAB_TRANSFER_FILTER_KEY.ACCEPTANCE_FROM_DATE]: acceptanceFromData && moment(acceptanceFromData).format('YYYY-MM-DD'),
-                [TAB_TRANSFER_FILTER_KEY.ACCEPTANCE_TO_DATE]: acceptanceToDate && moment(acceptanceToDate).format('YYYY-MM-DD'),
                 [TAB_TRANSFER_FILTER_KEY.FROM_DATE]: fromDate && moment(fromDate).format('YYYY-MM-DD'),
                 [TAB_TRANSFER_FILTER_KEY.TO_DATE]: toDate && moment(toDate).format('YYYY-MM-DD')
 
@@ -219,7 +221,7 @@ const enhance = compose(
                     query: filter.getParams({
                         [TYPE]: type,
                         [STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN]: id,
-                        [SROCK_POPVER_DIALOG_OPEN]: id
+                        [STOCK_POPVER_DIALOG_OPEN]: id
                     })
                 })
             } else {
@@ -228,10 +230,91 @@ const enhance = compose(
                     query: filter.getParams({
                         [TYPE]: type,
                         [STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN]: false,
-                        [SROCK_POPVER_DIALOG_OPEN]: false
+                        [STOCK_POPVER_DIALOG_OPEN]: false
                     })
                 })
             }
+        },
+
+        handleOpenCreateDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[STOCK_RECEIVE_CREATE_DIALOG_OPEN]: true})})
+        },
+
+        handleCloseCreateDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[STOCK_RECEIVE_CREATE_DIALOG_OPEN]: false})})
+        },
+
+        handleSubmitCreateDialog: props => () => {
+            const {dispatch, createForm, filter, location: {pathname}, params, detail} = props
+            const formValues = _.get(createForm, ['values'])
+            const supplyId = _.toInteger(_.get(params, 'stockReceiveId'))
+
+            return dispatch(stockReceiveCreateAction(formValues, supplyId, detail))
+                .then(() => {
+                    hashHistory.push({pathname, query: filter.getParams({[STOCK_RECEIVE_CREATE_DIALOG_OPEN]: false})})
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                })
+                .then(() => {
+                    dispatch(stockReceiveListFetchAction(filter))
+                })
+                .catch((error) => {
+                    const comment = _.map(error, (item, index) => {
+                        return (
+                            <div key={index}>
+                                <p>{_.get(item, 'amount')}</p>
+                                {_.get(item, 'amount or defect_amount') ||
+                                <p>{_.get(item, 'amount or defect_amount')}</p>}
+                            </div>
+                        )
+                    })
+                    return dispatch(openErrorAction({message: comment}))
+                })
+        },
+        handleOpenUpdateDialog: props => () => {
+            const {filter, location: {pathname}} = props
+            hashHistory.push({pathname, query: filter.getParams({[STOCK_RECEIVE_UPDATE_DIALOG_OPEN]: true})})
+        },
+
+        handleCloseUpdateDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[STOCK_RECEIVE_UPDATE_DIALOG_OPEN]: false})})
+        },
+
+        handleSubmitUpdateDialog: props => () => {
+            const {dispatch, createForm, filter, location: {pathname}, params, detail} = props
+            const formValues = _.get(createForm, ['values'])
+            const supplyId = _.toInteger(_.get(params, 'stockReceiveId'))
+            const history = true
+            return dispatch(stockReceiveUpdateAction(formValues, supplyId, detail))
+                .then(() => {
+                    hashHistory.push({pathname, query: filter.getParams({[STOCK_RECEIVE_UPDATE_DIALOG_OPEN]: false})})
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                })
+                .then(() => {
+                    dispatch(stockReceiveListFetchAction(filter, history))
+                })
+                .catch((error) => {
+                    const comment = _.map(error, (item) => {
+                        return (<p>{_.get(item, 'amount')}</p>)
+                    })
+                    return dispatch(openErrorAction({message: comment}))
+                })
+        },
+        handleCheckedForm: props => (index, value, selected) => {
+            const {dispatch} = props
+            const val = !selected ? value : ''
+            const form = 'StockReceiveCreateForm'
+            dispatch(change(form, 'product[' + index + '][accepted]', val))
+        },
+        handleCheckedDefect: props => (index, value) => {
+            const {dispatch} = props
+            const zero = 0
+            const val = _.toNumber(value)
+            const form = 'StockReceiveCreateForm'
+            dispatch(change(form, 'product[' + index + '][accepted]', val))
+            dispatch(change(form, 'product[' + index + '][defected]', zero))
         }
     })
 )
@@ -248,17 +331,22 @@ const StockReceiveListContent = enhance((props) => {
         openPrint,
         printList,
         printLoading,
-        params
+        isDefect,
+        params,
+        createLoading,
+        detailProducts
     } = props
 
     const detailType = _.get(location, ['query', TYPE])
+    const openCreateDialog = toBoolean(_.get(location, ['query', STOCK_RECEIVE_CREATE_DIALOG_OPEN]))
+    const openUpdateDialog = toBoolean(_.get(location, ['query', STOCK_RECEIVE_UPDATE_DIALOG_OPEN]))
     const detailId = _.toInteger(_.get(params, 'stockReceiveId'))
     const openConfirmDialog = _.toInteger(_.get(location, ['query', STOCK_CONFIRM_DIALOG_OPEN]))
-    const openFilterDialog = toBoolean(_.get(location, ['query', HISTORY_FILTER_OPEN]))
-    const stock = _.toInteger(filter.getParam(HISTORY_FILTER_KEY.STOCK))
-    const type = _.toInteger(filter.getParam(HISTORY_FILTER_KEY.TYPE))
-    const fromDate = filter.getParam(HISTORY_FILTER_KEY.FROM_DATE)
-    const toDate = filter.getParam(HISTORY_FILTER_KEY.TO_DATE)
+    const openFilterDialog = toBoolean(_.get(location, ['query', TAB_RECEIVE_FILTER_OPEN]))
+    const stock = _.toInteger(filter.getParam(TAB_RECEIVE_FILTER_KEY.STOCK))
+    const type = _.toInteger(filter.getParam(TAB_RECEIVE_FILTER_KEY.TYPE))
+    const fromDate = filter.getParam(TAB_RECEIVE_FILTER_KEY.FROM_DATE)
+    const toDate = filter.getParam(TAB_RECEIVE_FILTER_KEY.TO_DATE)
     const handleCloseDetail = _.get(props, 'handleCloseDetail')
 
     const listData = {
@@ -292,7 +380,40 @@ const StockReceiveListContent = enhance((props) => {
         handleSubmitOrderReturnDialog: props.handleSubmitOrderReturnDialog,
         handleSubmitReceiveDeliveryConfirmDialog: props.handleSubmitReceiveDeliveryConfirmDialog
     }
-
+    const createDialog = {
+        createLoading,
+        openCreateDialog,
+        isDefect,
+        detailProducts: detailProducts || {},
+        detailLoading,
+        handleOpenCreateDialog: props.handleOpenCreateDialog,
+        handleCloseCreateDialog: props.handleCloseCreateDialog,
+        handleSubmitCreateDialog: props.handleSubmitCreateDialog
+    }
+    const updateDialog = {
+        detailProducts: detailProducts || {},
+        updateLoading: detailLoading,
+        openUpdateDialog,
+        handleOpenUpdateDialog: props.handleOpenUpdateDialog,
+        handleCloseUpdateDialog: props.handleCloseUpdateDialog,
+        handleSubmitUpdateDialog: props.handleSubmitUpdateDialog,
+        initialValues: (() => {
+            if (!detail || openCreateDialog) {
+                return {}
+            }
+            return {
+                product: _.map(_.get(detail, 'products'), (item) => {
+                    const MINUS_ONE = -1
+                    const posted = _.toNumber(_.get(item, 'postedAmount')) < ZERO ? (_.toNumber(_.get(item, 'postedAmount')) * MINUS_ONE) : _.toNumber(_.get(item, 'postedAmount'))
+                    const defected = _.toNumber(_.get(item, 'defectAmount')) < ZERO ? (_.toNumber(_.get(item, 'defectAmount')) * MINUS_ONE) : _.toNumber(_.get(item, 'defectAmount'))
+                    return {
+                        accepted: posted,
+                        defected: defected
+                    }
+                })
+            }
+        })()
+    }
     const filterDialog = {
         initialValues: {
             type: {
@@ -339,6 +460,10 @@ const StockReceiveListContent = enhance((props) => {
                 confirmDialog={confirmDialog}
                 handleCloseDetail={handleCloseDetail}
                 filterDialog={filterDialog}
+                createDialog={createDialog}
+                updateDialog={updateDialog}
+                handleCheckedForm={props.handleCheckedForm}
+                handleCheckedDefect={props.handleCheckedDefect}
                 history={false}/>
         </Layout>
     )

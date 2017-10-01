@@ -12,12 +12,12 @@ import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import {
     DateToDateField,
     StockSearchField,
-    OrderTransferTypeSearchField
+    StockReceiveTypeSearchFiled
 } from '../ReduxForm'
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
-export const TAB_TRANSFER_FILTER_KEY = {
+export const TAB_RECEIVE_FILTER_KEY = {
     TYPE: 'type',
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate',
@@ -99,15 +99,15 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'TabTransferFilterForm',
+        form: 'TabReceiveFilterForm',
         enableReinitialize: true
     }),
     withHandlers({
         getCount: props => () => {
             const {filter} = props
-            return _(TAB_TRANSFER_FILTER_KEY)
+            return _(TAB_RECEIVE_FILTER_KEY)
                 .values()
-                .filter(item => item !== TAB_TRANSFER_FILTER_KEY.FROM_DATE)
+                .filter(item => item !== TAB_RECEIVE_FILTER_KEY.FROM_DATE)
                 .filter(item => filter.getParam(item))
                 .value()
                 .length
@@ -115,7 +115,7 @@ const enhance = compose(
     })
 )
 
-const TabTransferFilterForm = enhance((props) => {
+const TabReceiveFilterForm = enhance((props) => {
     const {classes, filterDialog, getCount, handleSubmit} = props
     const filterCounts = getCount()
     if (!filterDialog.openFilterDialog) {
@@ -168,7 +168,7 @@ const TabTransferFilterForm = enhance((props) => {
                         <Field
                             className={classes.inputFieldCustom}
                             name="type"
-                            component={OrderTransferTypeSearchField}
+                            component={StockReceiveTypeSearchFiled}
                             label="Тип"
                             fullWidth={true}/>
                     </div>
@@ -177,7 +177,7 @@ const TabTransferFilterForm = enhance((props) => {
                             className={classes.inputFieldCustom}
                             name="date"
                             component={DateToDateField}
-                            label="Дата передачи"
+                            label="Дата приемки"
                             fullWidth={true}/>
                     </div>
 
@@ -195,7 +195,7 @@ const TabTransferFilterForm = enhance((props) => {
     )
 })
 
-TabTransferFilterForm.propTypes = {
+TabReceiveFilterForm.propTypes = {
     filter: PropTypes.object.isRequired,
     filterDialog: PropTypes.shape({
         filterLoading: PropTypes.bool.isRequired,
@@ -206,4 +206,4 @@ TabTransferFilterForm.propTypes = {
     })
 }
 
-export default TabTransferFilterForm
+export default TabReceiveFilterForm

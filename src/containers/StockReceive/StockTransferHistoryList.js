@@ -13,24 +13,23 @@ import TabTransferHistory from '../../components/StockReceive/StockTabTransferHi
 import {OrderPrint} from '../../components/Order'
 import {
     STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN,
-    HISTORY_FILTER_OPEN,
+    TAB_TRANSFER_FILTER_OPEN,
     STOCK_REPEAL_DIALOG_OPEN,
-    TAB,
     TAB_TRANSFER_FILTER_KEY
 } from '../../components/StockReceive'
 import {
     stockTransferListFetchAction,
     stockTransferItemFetchAction,
     stockReceiveOrderItemFetchAction,
-    stockTransferHistoryRepealAction,
-    stockTransferHistoryReturnAction
+    stockTransferHistoryRepealAction
 } from '../../actions/stockReceive'
 import {orderListPintFetchAction} from '../../actions/order'
 import {openErrorAction} from '../../actions/error'
 import {openSnackbarAction} from '../../actions/snackbar'
 
-const TYPE = 'openType'
-const TRANSFER_TYPE = 'transferType'
+const STOCK_ID = 'stockId'
+const TYPE = 'currentType'
+const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -64,15 +63,15 @@ const enhance = compose(
         dispatch(stockTransferListFetchAction(filter, true))
     }),
     withPropsOnChange((props, nextProps) => {
-        const prevId = _.toInteger(_.get(props, ['params', 'stockTransferHistoryId']))
-        const nextId = _.toInteger(_.get(nextProps, ['params', 'stockTransferHistoryId']))
-        return prevId !== nextId
+        const prevId = _.get(props, ['params', 'stockTransferHistoryId'])
+        const nextId = _.get(nextProps, ['params', 'stockTransferHistoryId'])
+        return prevId !== nextId && nextId
     }, ({dispatch, params, location}) => {
         const stockTransferHistoryId = _.toInteger(_.get(params, 'stockTransferHistoryId'))
-        const type = _.get(location, ['query', 'transferType'])
-        if (type === 'transfer') {
+        const type = _.get(location, ['query', 'currentType'])
+        if (type === 'transfer' && stockTransferHistoryId > ZERO) {
             dispatch(stockReceiveOrderItemFetchAction(stockTransferHistoryId))
-        } else {
+        } else if (stockTransferHistoryId > ZERO) {
             dispatch(stockTransferItemFetchAction(stockTransferHistoryId))
         }
     }),
@@ -97,18 +96,17 @@ const enhance = compose(
 
         handleOpenFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[HISTORY_FILTER_OPEN]: true})})
+            hashHistory.push({pathname, query: filter.getParams({[TAB_TRANSFER_FILTER_OPEN]: true})})
         },
 
         handleCloseFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[HISTORY_FILTER_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[TAB_TRANSFER_FILTER_OPEN]: false})})
         },
 
         handleClearFilterDialog: props => () => {
-            const {location: {pathname, query}} = props
-            const currentTab = _.get(query, 'tab') || 'receive'
-            hashHistory.push({pathname, query: {[TAB]: currentTab}})
+            const {location: {pathname}} = props
+            hashHistory.push({pathname, query: {}})
         },
 
         handleSubmitTabReceiveFilterDialog: props => () => {
@@ -117,14 +115,10 @@ const enhance = compose(
             const type = _.get(tabTransferFilterForm, ['values', 'type', 'value']) || null
             const fromDate = _.get(tabTransferFilterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(tabTransferFilterForm, ['values', 'date', 'toDate']) || null
-            const acceptanceFromData = _.get(tabTransferFilterForm, ['values', 'acceptanceDate', 'fromDate']) || null
-            const acceptanceToDate = _.get(tabTransferFilterForm, ['values', 'acceptanceDate', 'toDate']) || null
             filter.filterBy({
-                [HISTORY_FILTER_OPEN]: false,
+                [TAB_TRANSFER_FILTER_OPEN]: false,
                 [TAB_TRANSFER_FILTER_KEY.STOCK]: stock,
                 [TAB_TRANSFER_FILTER_KEY.TYPE]: type,
-                [TAB_TRANSFER_FILTER_KEY.ACCEPTANCE_FROM_DATE]: acceptanceFromData && moment(acceptanceFromData).format('YYYY-MM-DD'),
-                [TAB_TRANSFER_FILTER_KEY.ACCEPTANCE_TO_DATE]: acceptanceToDate && moment(acceptanceToDate).format('YYYY-MM-DD'),
                 [TAB_TRANSFER_FILTER_KEY.FROM_DATE]: fromDate && moment(fromDate).format('YYYY-MM-DD'),
                 [TAB_TRANSFER_FILTER_KEY.TO_DATE]: toDate && moment(toDate).format('YYYY-MM-DD')
 
@@ -138,11 +132,11 @@ const enhance = compose(
                 query: filter.getParams({[STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN]: false})
             })
         },
-        handleOpenDetail: props => (id, type, typeOrg) => {
+        handleOpenDetail: props => (id, stockId, typeOrg) => {
             const {filter} = props
             hashHistory.push({
                 pathname: sprintf(ROUTER.STOCK_TRANSFER_HISTORY_ITEM_PATH, id),
-                query: filter.getParams({[TYPE]: type, [TRANSFER_TYPE]: typeOrg})
+                query: filter.getParams({[STOCK_ID]: stockId, [TYPE]: typeOrg})
             })
         },
         handleOpenRepealDialog: props => (id) => {
@@ -157,13 +151,11 @@ const enhance = compose(
         handleSubmitRepealDialog: props => () => {
             const {location: {pathname}, location, filter, params, dispatch} = props
             const orderId = _.toInteger(_.get(params, 'stockTransferHistoryId'))
-            const stockId = _.toInteger(_.get(location, ['query', 'openType']))
+            const stockId = _.toInteger(_.get(location, ['query', 'stockId']))
             dispatch(stockTransferHistoryRepealAction(orderId, stockId))
                 .then(() => {
-                    dispatch(stockTransferHistoryReturnAction(orderId))
-                })
-                .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[STOCK_REPEAL_DIALOG_OPEN]: false})})
+                    hashHistory.push({pathname: ROUTER.STOCK_TRANSFER_HISTORY_LIST_URL, query: filter.getParams({[STOCK_REPEAL_DIALOG_OPEN]: false})})
+                    dispatch(stockTransferListFetchAction(filter, true))
                     return dispatch(openSnackbarAction({message: 'Успешно отменено'}))
                 })
                 .catch((error) => {
@@ -199,9 +191,9 @@ const StockTransferHistoryList = enhance((props) => {
 
     const openRepealDialog = _.toInteger(_.get(location, ['query', STOCK_REPEAL_DIALOG_OPEN]))
     const detailId = _.toInteger(_.get(params, 'stockTransferHistoryId'))
-    const transferType = _.get(location, ['query', 'transferType'])
-    const openFilterDialog = toBoolean(_.get(location, ['query', HISTORY_FILTER_OPEN]))
-    const detailType = _.get(location, ['query', TYPE])
+    const transferType = _.get(location, ['query', 'currentType'])
+    const stockId = _.get(location, ['query', STOCK_ID])
+    const openFilterDialog = toBoolean(_.get(location, ['query', TAB_TRANSFER_FILTER_OPEN]))
     const stock = _.toInteger(filter.getParam(TAB_TRANSFER_FILTER_KEY.STOCK))
     const type = _.toInteger(filter.getParam(TAB_TRANSFER_FILTER_KEY.TYPE))
     const fromDate = filter.getParam(TAB_TRANSFER_FILTER_KEY.FROM_DATE)
@@ -217,11 +209,14 @@ const StockTransferHistoryList = enhance((props) => {
         data: printList,
         printLoading
     }
+    const currentDetail = _.find(_.get(listData, 'data'), {'id': _.toInteger(detailId)})
     const detailData = {
-        type: detailType,
+        stockId: stockId,
         id: detailId,
         data: detail,
-        detailLoading
+        detailLoading,
+        type: transferType,
+        currentDetail
     }
 
     const filterDialog = {

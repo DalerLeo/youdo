@@ -3,10 +3,13 @@ import React from 'react'
 import SearchField from './Basic/SearchField'
 
 const Items = [
-    {id: 'in', name: 'Приход'},
-    {id: 'out', name: 'Расход'}
+    {id: 'supplies', name: 'Поставка'},
+    {id: 'transfers', name: 'Передача'},
+    {id: 'returns', name: 'Возврат'},
+    {id: 'delivery_returns', name: 'Отсроченные доставки'}
 ]
-const getOptions = () => {
+
+const getOptions = (search) => {
     return Promise.resolve(Items)
 }
 
@@ -15,7 +18,7 @@ const getItem = (id) => {
         _.find(Items, (o) => { return o.id === _.toInteger(id) }))
 }
 
-const StockStatusSearchField = (props) => {
+const OrderTransferTypeSearchField = (props) => {
     return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
@@ -28,4 +31,4 @@ const StockStatusSearchField = (props) => {
     )
 }
 
-export default StockStatusSearchField
+export default OrderTransferTypeSearchField

@@ -12,10 +12,11 @@ import toBoolean from '../../helpers/toBoolean'
 import TabReceive from '../../components/StockReceive/StockTabReceive'
 import {OrderPrint} from '../../components/Order'
 import {
-    HISTORY_FILTER_OPEN,
+    TAB_RECEIVE_HISTORY_FILTER_OPEN,
     STOCK_CONFIRM_DIALOG_OPEN,
+    STOCK_REPEAL_HISTORY_DIALOG_OPEN,
     TAB,
-    TAB_TRANSFER_FILTER_KEY
+    TAB_RECEIVE_FILTER_KEY
 } from '../../components/StockReceive'
 import {
     stockReceiveListFetchAction,
@@ -26,7 +27,8 @@ import {
     stockReceiveItemReturnAction,
     stockReceiveDeliveryConfirmAction,
     stockTransferItemAcceptAction,
-    stockTransferListFetchAction
+    stockTransferListFetchAction,
+    stockTransferHistoryReturnAction
 } from '../../actions/stockReceive'
 import {
     orderListPintFetchAction
@@ -46,7 +48,7 @@ const enhance = compose(
         const listLoading = _.get(state, ['stockReceiveHistory', 'list', 'loading'])
         const printList = _.get(state, ['stockReceive', 'print', 'data'])
         const printLoading = _.get(state, ['stockReceive', 'print', 'loading'])
-        const filterForm = _.get(state, ['form', 'TabTransferFilterForm'])
+        const filterForm = _.get(state, ['form', 'TabReceiveFilterForm'])
         const filter = filterHelper(list, pathname, query)
 
         return {
@@ -72,9 +74,9 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const prevId = _.toInteger(_.get(props, ['params', 'stockReceiveHistoryId']))
-        const nextId = _.toInteger(_.get(nextProps, ['params', 'stockReceiveHistoryId']))
-        return prevId !== nextId
+        const prevId = _.get(props, ['params', 'stockReceiveHistoryId'])
+        const nextId = _.get(nextProps, ['params', 'stockReceiveHistoryId'])
+        return nextId && prevId !== nextId
     }, ({dispatch, params, location}) => {
         const stockReceiveType = _.get(location, ['query', 'openType'])
         const stockReceiveHistoryId = _.toInteger(_.get(params, 'stockReceiveHistoryId'))
@@ -106,12 +108,12 @@ const enhance = compose(
         },
         handleOpenFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[HISTORY_FILTER_OPEN]: true})})
+            hashHistory.push({pathname, query: filter.getParams({[TAB_RECEIVE_HISTORY_FILTER_OPEN]: true})})
         },
 
         handleCloseFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[HISTORY_FILTER_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[TAB_RECEIVE_HISTORY_FILTER_OPEN]: false})})
         },
 
         handleClearFilterDialog: props => () => {
@@ -126,16 +128,12 @@ const enhance = compose(
             const type = _.get(filterForm, ['values', 'type', 'value']) || null
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
-            const acceptanceFromData = _.get(filterForm, ['values', 'acceptanceDate', 'fromDate']) || null
-            const acceptanceToDate = _.get(filterForm, ['values', 'acceptanceDate', 'toDate']) || null
             filter.filterBy({
-                [HISTORY_FILTER_OPEN]: false,
-                [TAB_TRANSFER_FILTER_KEY.STOCK]: stock,
-                [TAB_TRANSFER_FILTER_KEY.TYPE]: type,
-                [TAB_TRANSFER_FILTER_KEY.ACCEPTANCE_FROM_DATE]: acceptanceFromData && moment(acceptanceFromData).format('YYYY-MM-DD'),
-                [TAB_TRANSFER_FILTER_KEY.ACCEPTANCE_TO_DATE]: acceptanceToDate && moment(acceptanceToDate).format('YYYY-MM-DD'),
-                [TAB_TRANSFER_FILTER_KEY.FROM_DATE]: fromDate && moment(fromDate).format('YYYY-MM-DD'),
-                [TAB_TRANSFER_FILTER_KEY.TO_DATE]: toDate && moment(toDate).format('YYYY-MM-DD')
+                [TAB_RECEIVE_HISTORY_FILTER_OPEN]: false,
+                [TAB_RECEIVE_FILTER_KEY.STOCK]: stock,
+                [TAB_RECEIVE_FILTER_KEY.TYPE]: type,
+                [TAB_RECEIVE_FILTER_KEY.FROM_DATE]: fromDate && moment(fromDate).format('YYYY-MM-DD'),
+                [TAB_RECEIVE_FILTER_KEY.TO_DATE]: toDate && moment(toDate).format('YYYY-MM-DD')
 
             })
         },
@@ -200,6 +198,35 @@ const enhance = compose(
                     dispatch(stockReceiveListFetchAction(filter))
                     return dispatch(openSnackbarAction({message: 'Успешно принять'}))
                 })
+        },
+        handleOpenRepealDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[STOCK_REPEAL_HISTORY_DIALOG_OPEN]: true})})
+        },
+
+        handleCloseRepealDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[STOCK_REPEAL_HISTORY_DIALOG_OPEN]: false})})
+        },
+        handleSubmitRepealDialog: props => () => {
+            const {location: {pathname}, filter, params, dispatch} = props
+            const orderId = _.toInteger(_.get(params, 'stockReceiveHistoryId'))
+            dispatch(stockTransferHistoryReturnAction(orderId))
+                .then(() => {
+                    hashHistory.push({pathname, query: filter.getParams({[STOCK_REPEAL_HISTORY_DIALOG_OPEN]: false})})
+                    return dispatch(openSnackbarAction({message: 'Успешно отменено'}))
+                })
+                .catch((error) => {
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
+                    })
+
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                            {errorWhole}
+                        </div>
+                    }))
+                })
         }
     })
 )
@@ -221,12 +248,13 @@ const StockReceiveHistoryList = enhance((props) => {
 
     const detailType = _.get(location, ['query', TYPE])
     const detailId = _.toInteger(_.get(params, 'stockReceiveHistoryId'))
-    const openFilterDialog = toBoolean(_.get(location, ['query', HISTORY_FILTER_OPEN]))
+    const openFilterDialog = toBoolean(_.get(location, ['query', TAB_RECEIVE_HISTORY_FILTER_OPEN]))
     const openConfirmDialog = _.toInteger(_.get(location, ['query', STOCK_CONFIRM_DIALOG_OPEN]))
-    const stock = _.toInteger(filter.getParam(TAB_TRANSFER_FILTER_KEY.STOCK))
-    const type = _.toInteger(filter.getParam(TAB_TRANSFER_FILTER_KEY.TYPE))
-    const fromDate = filter.getParam(TAB_TRANSFER_FILTER_KEY.FROM_DATE)
-    const toDate = filter.getParam(TAB_TRANSFER_FILTER_KEY.TO_DATE)
+    const openRepealDialog = toBoolean(_.get(location, ['query', STOCK_REPEAL_HISTORY_DIALOG_OPEN]))
+    const stock = _.toInteger(filter.getParam(TAB_RECEIVE_FILTER_KEY.STOCK))
+    const type = _.toInteger(filter.getParam(TAB_RECEIVE_FILTER_KEY.TYPE))
+    const fromDate = filter.getParam(TAB_RECEIVE_FILTER_KEY.FROM_DATE)
+    const toDate = filter.getParam(TAB_RECEIVE_FILTER_KEY.TO_DATE)
     const handleCloseDetail = _.get(props, 'handleCloseDetail')
 
     const listData = {
@@ -238,12 +266,15 @@ const StockReceiveHistoryList = enhance((props) => {
         data: printList,
         printLoading
     }
-
+    const currentDetail = _.find(_.get(list, 'results'), (obj) => {
+        return _.get(obj, 'id') === detailId && _.get(obj, 'type') === detailType
+    })
     const detailData = {
         type: detailType,
         id: detailId,
         data: detail,
-        detailLoading
+        detailLoading,
+        currentDetail
     }
 
     const filterDialog = {
@@ -281,6 +312,12 @@ const StockReceiveHistoryList = enhance((props) => {
         handleSubmitOrderReturnDialog: props.handleSubmitOrderReturnDialog,
         handleSubmitReceiveDeliveryConfirmDialog: props.handleSubmitReceiveDeliveryConfirmDialog
     }
+    const repealDialog = {
+        openRepealDialog,
+        handleOpenRepealDialog: props.handleOpenRepealDialog,
+        handleCloseRepealDialog: props.handleCloseRepealDialog,
+        handleSubmitRepealDialog: props.handleSubmitRepealDialog
+    }
 
     if (openPrint) {
         document.getElementById('wrapper').style.height = 'auto'
@@ -294,6 +331,7 @@ const StockReceiveHistoryList = enhance((props) => {
     return (
         <Layout {...layout}>
             <TabReceive
+                repealDialog={repealDialog}
                 filter={filter}
                 listData={listData}
                 filterDialog={filterDialog}

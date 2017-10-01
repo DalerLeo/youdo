@@ -7,8 +7,8 @@ import TabTransferFilterForm from './TabTransferFilterForm'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import moment from 'moment'
-import Details from './StockTabTransferHistoryDetails'
-import StockReceiveDetails from './StockReceiveDetails'
+import TransferHistoryOrderDetail from './StockTabTransferHistoryDetails'
+import TransferHistoryTransferDetail from './StockReceiveDetails'
 import * as TAB from '../../constants/stockReceiveTab'
 import ConfirmDialog from '../ConfirmDialog'
 import StockReceiveTabList from '../../containers/StockReceive/StockReceiveTabList'
@@ -99,8 +99,8 @@ const StockTabTransferHistory = enhance((props) => {
             transfer={true}
         />
     )
-    const historyDetail = (
-        <Details
+    const historyOrderDetail = (
+        <TransferHistoryOrderDetail
             detailData={detailData || {}}
             key={_.get(detailData, 'id') + '_' + _.get(detailData, 'type')}
             handleCloseDetail={handleCloseDetail}
@@ -110,10 +110,11 @@ const StockTabTransferHistory = enhance((props) => {
             repealDialog={repealDialog}/>
     )
     const historyTransferDetail = (
-        <StockReceiveDetails
+        <TransferHistoryTransferDetail
             key={_.get(detailData, 'id') + '_' + _.get(detailData, 'type')}
             handleCloseDetail={handleCloseDetail}
             detailData={detailData}
+            transferType={transferType}
             loading={_.get(detailData, 'detailLoading')}
             history={true}
             popover={true}
@@ -130,7 +131,7 @@ const StockTabTransferHistory = enhance((props) => {
         const stockName = _.get(item, ['stock', 'name'])
         return (
             <Row
-                key={id + '_' + stockId}
+                key={id + '_' + typeOrg}
                 style={{position: 'relative', cursor: 'pointer'}}
                 onClick={() => { listData.handleOpenDetail(id, stockId, typeOrg) }}>
                 <Col xs={2} >{id}</Col>
@@ -154,7 +155,7 @@ const StockTabTransferHistory = enhance((props) => {
             <GridList
                 filter={filter}
                 list={list}
-                detail={transferType === 'transfer' ? historyTransferDetail : historyDetail}
+                detail={transferType === 'transfer' ? historyTransferDetail : historyOrderDetail}
                 filterDialog={usersFilterDialog}
             />
             <ConfirmDialog

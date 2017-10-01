@@ -245,7 +245,7 @@ const OrderReturnDialog = enhance((props) => {
                     <div className={classes.bottomButton}>
                         <div className={classes.summary}>Общая сумма возврата: <OrderReturnTotalSum/></div>
                         <FlatButton
-                            label="Возврат"
+                            label="Изменить"
                             className={classes.actionButton}
                             primary={true}
                             type="submit"
