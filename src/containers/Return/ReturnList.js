@@ -450,6 +450,7 @@ const ReturnList = enhance((props) => {
                 return {}
             } else if (type === CLIENT_RETURN) {
                 return {
+                    client: {value: _.get(detail, ['client', 'id'])},
                     stock: {value: _.get(detail, ['stock', 'id'])},
                     market: {value: _.get(detail, ['market', 'id'])},
                     comment: _.get(detail, 'comment'),

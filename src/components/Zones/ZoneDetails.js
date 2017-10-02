@@ -14,6 +14,7 @@ import Tooltip from '../ToolTip'
 import CloseIcon2 from '../CloseIcon2'
 import Person from '../Images/person.png'
 import NoShop from '../Images/no-shop.svg'
+import Pagination from '../ReduxForm/Pagination'
 
 const enhance = compose(
     injectSheet({
@@ -176,6 +177,14 @@ const enhance = compose(
                 '&:last-child:after': {
                     display: 'none'
                 }
+            },
+            '& a': {
+                color: '#333',
+                fontWeight: '400',
+                '&:hover': {
+                    color: '#12aaeb',
+                    fontWeight: '600'
+                }
             }
         },
         addZoneWrapper: {
@@ -240,6 +249,7 @@ const ZoneDetails = enhance((props) => {
     const {
         classes,
         filter,
+        shopFilter,
         detailData,
         bindAgent,
         unbindAgent
@@ -314,6 +324,7 @@ const ZoneDetails = enhance((props) => {
                 <div className={classes.stores}>
                     <div className="dottedList">
                         <span>Магазины в зоне</span>
+                        <Pagination filter={shopFilter}/>
                     </div>
 
                     {_.map(_.get(detailData, ['shop', 'data']), (item) => {

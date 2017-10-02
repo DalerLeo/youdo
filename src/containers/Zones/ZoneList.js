@@ -62,7 +62,11 @@ const enhance = compose(
         }
     }),
     withPropsOnChange((props, nextProps) => {
-        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
+        const except = {
+            page: null,
+            openInfo: null
+        }
+        return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
         dispatch(zoneListFetchAction(filter))
         dispatch(zoneStatisticsFetchAction(filter))
@@ -76,14 +80,26 @@ const enhance = compose(
         const zoneId = _.toInteger(_.get(params, 'zoneId'))
         if (zoneId > ZERO) {
             dispatch(zoneItemFetchAction(zoneId))
-            dispatch(shopListFetchAction(zoneId))
         }
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const prevSearch = _.get(props, ['query', 'search'])
-        const nextSearch = _.get(nextProps, ['query', 'search'])
-        return prevSearch !== nextSearch
+        const prevId = _.get(props, ['params', 'zoneId'])
+        const nextId = _.get(nextProps, ['params', 'zoneId'])
+        const prevPage = _.get(props, ['location', 'query', 'page'])
+        const nextPage = _.get(nextProps, ['location', 'query', 'page'])
+        return (prevId !== nextId) || (prevPage !== nextPage)
+    }, ({dispatch, params, shopFilter}) => {
+        const zoneId = _.toInteger(_.get(params, 'zoneId'))
+        if (zoneId > ZERO) {
+            dispatch(shopListFetchAction(zoneId, shopFilter))
+        }
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const prevId = _.get(props, ['params', 'zoneId'])
+        const nextId = _.get(nextProps, ['params', 'zoneId'])
+        return prevId !== nextId
     }, ({dispatch, query}) => {
         const search = _.get(query, 'search')
         dispatch(zoneListSearchFetchAction(search))
