@@ -259,6 +259,9 @@ const OrderDetails = enhance((props) => {
             </div>
         )
     }
+    const totalReturned = _.sumBy(_.get(data, 'products'), (item) => {
+        return _.toNumber(_.get(item, 'returnAmount'))
+    })
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     return (
         <div className={classes.wrapper}>
@@ -310,7 +313,7 @@ const OrderDetails = enhance((props) => {
                     </Tooltip>
                     <Tooltip position="bottom" text="Скидка">
                         <IconButton
-                            disabled={(status === CANCELED)}
+                            disabled={(status === CANCELED) || (totalReturned > zero)}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}

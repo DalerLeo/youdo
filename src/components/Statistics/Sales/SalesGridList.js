@@ -385,7 +385,7 @@ const StatSalesGridList = enhance((props) => {
             <div className={classes.mainWrapper}>
                 <Row style={{margin: '0', height: '100%'}}>
                     <div className={classes.leftPanel}>
-                        <StatSideMenu currentUrl={ROUTES.STATISTICS_SALES_URL}/>
+                        <StatSideMenu currentUrl={ROUTES.STATISTICS_SALES_URL} filter={filter}/>
                     </div>
                     <div className={classes.rightPanel}>
                         <div className={classes.wrapper}>

@@ -236,6 +236,7 @@ const ReturnDetails = enhance((props) => {
                 <div className={classes.titleButtons}>
                     {getDocument && !stat && <Tooltip position="bottom" text="Распечатать накладную">
                         <IconButton
+                            disabled={status === CANCELLED}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}

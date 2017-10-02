@@ -50,10 +50,15 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
-        return props.list && (props.query.fromDate !== nextProps.query.fromDate || props.query.toDate !== nextProps.query.toDate)
-    }, ({dispatch}) => {
-        dispatch(clientIncomeInDataFetchAction())
-        dispatch(clientIncomeOutDataFetchAction())
+        const except = {
+            page: null,
+            pageSize: null,
+            search: null
+        }
+        return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
+    }, ({dispatch, filter}) => {
+        dispatch(clientIncomeInDataFetchAction(filter))
+        dispatch(clientIncomeOutDataFetchAction(filter))
     }),
 
     withHandlers({

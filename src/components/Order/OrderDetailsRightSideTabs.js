@@ -154,8 +154,10 @@ const OrderDetailsRightSideTabs = enhance((props) => {
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const firstType = _.get(products, ['0', 'product', 'productType', 'id'])
     const firstMeasurement = _.get(products, ['0', 'product', 'measurement', 'name'])
-    let totalProductPrice = _.toNumber('0')
-    let wholeAmount = _.sumBy(products, (o) => {
+    const totalProductPrice = _.sumBy(products, (item) => {
+        return _.toNumber(_.get(item, 'totalPrice'))
+    })
+    const wholeAmount = _.sumBy(products, (o) => {
         return _.toNumber(_.get(o, 'amount'))
     })
     let commonMeasurement = false
@@ -191,7 +193,6 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                 const measurement = _.get(product, ['measurement', 'name'])
                                 const discount = numberFormat(_.toNumber(_.get(item, 'discountPrice')) * _.toNumber(amount))
                                 const tooltipText = 'Количество возврата'
-                                totalProductPrice += _.toNumber(productTotal)
                                 if (type === firstType) {
                                     commonMeasurement = true
                                 }
