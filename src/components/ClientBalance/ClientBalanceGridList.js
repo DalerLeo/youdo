@@ -27,6 +27,7 @@ import Pagination from '../GridList/GridListNavPagination'
 import NotFound from '../Images/not-found.png'
 import ArrowUpIcon from 'material-ui/svg-icons/navigation/arrow-upward'
 import ArrowDownIcon from 'material-ui/svg-icons/navigation/arrow-downward'
+import Excel from 'material-ui/svg-icons/av/equalizer'
 
 let amountValues = []
 let head = []
@@ -44,7 +45,7 @@ const enhance = compose(
         },
         wrapper: {
             padding: '0 30px',
-            height: 'calc(100% - 40px)',
+            height: '100%',
             '& .row': {
                 margin: '0 !important'
             }
@@ -105,7 +106,6 @@ const enhance = compose(
         tableWrapper: {
             display: 'flex',
             overflow: 'hidden',
-            marginBottom: '50px',
             marginLeft: '-30px',
             'padding-left': ({stat}) => stat ? '0' : '30px',
             'margin-right': ({stat}) => stat ? '-30px' : 'unset'
@@ -233,6 +233,22 @@ const enhance = compose(
         },
         icon: {
             height: '15px !important'
+        },
+        getDocument: {
+            display: 'flex',
+            justifyContent: 'flex-end'
+        },
+        excel: {
+            background: '#71ce87',
+            borderRadius: '2px',
+            color: '#fff',
+            fontWeight: '600',
+            display: 'flex',
+            alignItems: 'center',
+            padding: '5px 15px',
+            '& svg': {
+                width: '18px !important'
+            }
         }
     }),
     reduxForm({
@@ -281,6 +297,7 @@ const ClientBalanceGridList = enhance((props) => {
         setItem,
         handleSubmit,
         handleSubmitSearch,
+        handleGetDocument,
         stat
     } = props
     const orderNoSorting = _.isNil(filter.getSortingType('order_no')) ? null
@@ -444,6 +461,11 @@ const ClientBalanceGridList = enhance((props) => {
                 </IconButton>
             </form>
             <Pagination filter={filter}/>
+            <div className={classes.getDocument}>
+                <a className={classes.excel} onClick={handleGetDocument}>
+                    <Excel color="#fff"/> <span>Excel</span>
+                </a>
+            </div>
         </div>
     )
     return (
