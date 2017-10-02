@@ -13,8 +13,8 @@ export const graphSerializer = (data) => {
         'division': _.get(defaultData, 'division'),
         'type': _.get(defaultData, 'type'),
         'client': _.get(defaultData, 'client'),
-        'created_date_0': _.get(defaultData, 'fromDate') || firstDayOfMonth,
-        'created_date_1': _.get(defaultData, 'toDate') || lastDayOfMonth
+        'begin_date': _.get(defaultData, 'fromDate') || firstDayOfMonth,
+        'end_date': _.get(defaultData, 'toDate') || lastDayOfMonth
     }
 }
 

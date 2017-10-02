@@ -69,7 +69,8 @@ const enhance = compose(
         },
         header: {
             position: 'relative',
-            padding: '15px 15px 15px 30px',
+            height: '48px',
+            padding: '0 15px 0 30px',
             width: '100%',
             '& .row': {
                 alignItems: 'center'
@@ -114,6 +115,14 @@ const enhance = compose(
             bottom: '0',
             cursor: 'pointer',
             zIndex: '1'
+        },
+        flex: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            '& > div': {
+                display: 'flex'
+            }
         }
 
     }),
@@ -123,13 +132,13 @@ const enhance = compose(
 const iconStyle = {
     icon: {
         color: '#666',
-        width: 25,
-        height: 25
+        width: 22,
+        height: 22
     },
     button: {
-        width: 24,
-        height: 24,
-        padding: 0
+        width: 36,
+        height: 36,
+        padding: 7
     }
 }
 
@@ -183,8 +192,19 @@ const StockTransferDetails = enhance((props) => {
                             <Col xs={2}>{stockName}</Col>
                             <Col xs={2}>{type}</Col>
                             <Col xs={2}>{receiver}</Col>
-                            <Col xs={2}>{dateDelivery}
-                                <div style={{right: '0', display: 'flex', position: 'absolute', marginTop: '-20px'}}>
+                            <Col xs={2} className={classes.flex}><span>{dateDelivery}</span>
+                                <div>
+                                    <Tooltip position="bottom" text="Распечатать накладную">
+                                        <IconButton
+                                            iconStyle={iconStyle.icon}
+                                            style={iconStyle.button}
+                                            onTouchTap={() => {
+                                                handleOpenPrint(id)
+                                            }}
+                                            touch={true}>
+                                            <PrintIcon/>
+                                        </IconButton>
+                                    </Tooltip>
                                     <Tooltip position="right" text={tooltipCancelText}>
                                         <div style={{paddingRight: '10px'}}>
                                             <IconButton
@@ -197,17 +217,6 @@ const StockTransferDetails = enhance((props) => {
                                                 <RemoveCircleIcon/>
                                             </IconButton>
                                         </div>
-                                    </Tooltip>
-                                    <Tooltip position="bottom" text="Распечатать накладную">
-                                        <IconButton
-                                            iconStyle={iconStyle.icon}
-                                            style={iconStyle.button}
-                                            onTouchTap={() => {
-                                                handleOpenPrint(id)
-                                            }}
-                                            touch={true}>
-                                            <PrintIcon/>
-                                        </IconButton>
                                     </Tooltip>
                                 </div>
                             </Col>

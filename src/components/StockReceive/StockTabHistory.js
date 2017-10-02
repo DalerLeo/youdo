@@ -8,6 +8,7 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import moment from 'moment'
 import numberFormat from '../../helpers/numberFormat'
+import dateTimeFormat from '../../helpers/dateTimeFormat'
 import ArrowUp from 'material-ui/svg-icons/navigation/arrow-upward'
 import ArrowDown from 'material-ui/svg-icons/navigation/arrow-downward'
 import StockReturnDialog from '../StockReceive/StockReturnDialog'
@@ -114,7 +115,7 @@ const StockTabHistory = enhance((props) => {
         const stock = _.get(item, ['stock', 'name'])
         const amount = numberFormat(_.get(item, 'amount'))
         const measurement = _.get(item, ['product', 'measurement', 'name'])
-        const date = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY HH:mm')
+        const date = dateTimeFormat(_.get(item, 'createdDate'))
         const parent = _.get(item, 'dParentId')
         const genericType = stockTypeFormat(_.get(item, ['generic', 'type']))
         const genericTypeUse = _.get(item, ['generic', 'type'])

@@ -96,22 +96,18 @@ const enhance = compose(
             position: 'relative'
         },
         count: {
+            marginLeft: '5px'
+        },
+        date: {
             extend: 'excel',
+            background: 'transparent',
+            height: '100%',
             padding: '0 10px',
             justifyContent: 'center',
             position: 'absolute',
             left: '100%',
-            marginLeft: '2px',
-            height: '100%',
-            width: '28px'
-        },
-        date: {
-            extend: 'count',
-            background: '#fff',
-            color: '#71ce87',
-            border: '2px #71ce87 solid',
-            whiteSpace: 'nowrap',
-            width: 'auto'
+            color: '#12aaeb',
+            whiteSpace: 'nowrap'
         },
         buttons: {
             display: 'flex',
@@ -192,9 +188,8 @@ const StatisticsFilterExcel = enhance((props) => {
             </Paper>}
             <a className={classes.filterBtn} onClick={() => { setOpenFilter(true) }}>
                 <Filter color="#fff"/> <span>Фильтр</span>
-                {filterCount > ZERO && <span className={classes.count}>{filterCount}</span>}
-                {!withoutDate && <span className={classes.date} style={filterCount > ZERO ? {left: 'calc(100% +' +
-                ' 30px)'} : {left: '100%'}}>{filterDate}</span>}
+                {filterCount > ZERO && <span className={classes.count}>/ {filterCount}</span>}
+                {!withoutDate && <span className={classes.date}>{filterDate}</span>}
             </a>
             <div className={classes.buttons}>
                 {extraButton || null}

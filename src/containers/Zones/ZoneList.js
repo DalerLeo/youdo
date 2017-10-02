@@ -40,6 +40,7 @@ const enhance = compose(
         const zoneBindForm = _.get(state, ['form', 'ZoneBindAgentForm', 'values'])
         const bindAgentLoading = _.get(state, ['zone', 'bindAgent', 'loading'])
         const filter = filterHelper(list, pathname, query)
+        const shopFilter = filterHelper(shopList, pathname, query)
         return {
             query,
             pathname,
@@ -56,7 +57,8 @@ const enhance = compose(
             createForm,
             zoneBindForm,
             bindAgentLoading,
-            filter
+            filter,
+            shopFilter
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -228,6 +230,7 @@ const enhance = compose(
 const Zones = enhance((props) => {
     const {
         filter,
+        shopFilter,
         list,
         listLoading,
         createLoading,
@@ -334,6 +337,7 @@ const Zones = enhance((props) => {
         <Layout {...layout}>
             <ZonesWrapper
                 filter={filter}
+                shopFilter={shopFilter}
                 listData={listData}
                 statData={statData}
                 addZone={addZone}
