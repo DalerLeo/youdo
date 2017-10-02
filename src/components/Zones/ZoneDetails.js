@@ -240,7 +240,6 @@ const ZoneDetails = enhance((props) => {
     const {
         classes,
         filter,
-        shopFilter,
         detailData,
         bindAgent,
         unbindAgent

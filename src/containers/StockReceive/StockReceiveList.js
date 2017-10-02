@@ -362,7 +362,6 @@ const StockReceiveListContent = enhance((props) => {
         printLoading
     }
 
-    console.warn(_.get(list, 'results'))
     const currentDetail = _.find(_.get(list, 'results'), (obj) => {
         return _.get(obj, 'id') === detailId && _.get(obj, 'type') === detailType
     })
