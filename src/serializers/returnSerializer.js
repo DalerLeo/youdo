@@ -9,7 +9,7 @@ export const updateSerializer = (data, detail, CLIENT_RETURN) => {
     const client = _.get(detail, ['client', 'id'])
     const comment = _.get(data, 'comment')
     const stock = _.get(data, ['stock', 'value'])
-    const market = _.get(data, ['market', 'value'])
+    const market = _.get(data, ['market', 'value', 'id'])
     const status = _.get(detail, 'status')
     const order = _.get(detail, 'order')
     const paymentType = _.get(data, ['paymentType', 'value'])

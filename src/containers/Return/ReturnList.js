@@ -47,7 +47,8 @@ const enhance = compose(
         const filterForm = _.get(state, ['form', 'ReturnFilterForm'])
         const createForm = _.get(state, ['form', 'ReturnCreateForm'])
         const filter = filterHelper(list, pathname, query)
-        const updateForm = _.get(state, ['form', 'OrderReturnForm']) || _.get(state, ['form', 'ClientBalanceReturnForm'])
+        const updateForm = _.get(state, ['form', 'OrderReturnForm'])
+        const updateClientForm = _.get(state, ['form', 'ReturnCreateForm'])
         const isAdmin = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
 
         return {
@@ -61,6 +62,7 @@ const enhance = compose(
             filter,
             filterForm,
             updateForm,
+            updateClientForm,
             isAdmin,
             createForm
         }
@@ -221,12 +223,12 @@ const enhance = compose(
         },
 
         handleSubmitUpdateDialog: props => () => {
-            const {dispatch, updateForm, filter, location: {pathname}, detail} = props
+            const {dispatch, updateForm, updateClientForm, filter, location: {pathname}, detail} = props
             const type = _.toInteger(_.get(detail, 'type'))
             const returnId = _.toInteger(_.get(props, ['params', 'returnId']))
 
             if (type === TWO) {
-                return dispatch(clientReturnUpdateAction(returnId, _.get(updateForm, ['values']), detail))
+                return dispatch(clientReturnUpdateAction(returnId, _.get(updateClientForm, ['values']), detail))
                     .then(() => {
                         return dispatch(returnItemFetchAction(returnId))
                     })

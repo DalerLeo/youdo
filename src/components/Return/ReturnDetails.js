@@ -246,11 +246,11 @@ const ReturnDetails = enhance((props) => {
                     </Tooltip>}
                     {isAdmin && <Tooltip position="bottom" text="Изменить">
                         <IconButton
-                            disabled={status !== IN_PROGRESS || status !== PENDING}
+                            disabled={status !== IN_PROGRESS && status !== PENDING}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
-                            onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
+                            onTouchTap={() => { updateDialog.handleOpenUpdateDialog() }}>
                             <Edit />
                         </IconButton>
                     </Tooltip>}
