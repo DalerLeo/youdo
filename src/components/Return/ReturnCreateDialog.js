@@ -239,7 +239,7 @@ const customContentStyle = {
     maxWidth: 'none'
 }
 const SupplyCreateDialog = enhance((props) => {
-    const {open, handleSubmit, onClose, classes, clientId, isUpdate, name, editOnlyCost} = props
+    const {open, handleSubmit, onClose, classes, clientId, isUpdate, name, editOnlyCost, initialValues} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     return (
         <Dialog
@@ -289,6 +289,7 @@ const SupplyCreateDialog = enhance((props) => {
                                         className={classes.searchFieldCustom}
                                         label="Магазин"
                                         clientId={clientId}
+                                        initialParent={_.get(initialValues, ['client', 'value'])}
                                         disabled={!clientId}
                                         fullWidth={true}/>
                                 </div>

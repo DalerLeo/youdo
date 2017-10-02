@@ -10,7 +10,7 @@ import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import {openErrorAction} from '../../actions/error'
-
+const ONE = 1
 import {
     RETURN_FILTER_KEY,
     RETURN_FILTER_OPEN,
@@ -453,6 +453,7 @@ const ReturnList = enhance((props) => {
                     client: {value: _.get(detail, ['client', 'id'])},
                     stock: {value: _.get(detail, ['stock', 'id'])},
                     market: {value: _.get(detail, ['market', 'id'])},
+                    paymentType: {value: _.toNumber(_.get(detail, ['paymentType'])) + ONE},
                     comment: _.get(detail, 'comment'),
                     products: forUpdateProducts
                 }
