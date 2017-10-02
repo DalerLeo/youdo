@@ -180,9 +180,10 @@ export const zoneCustomUpdateAction = (id, title, points) => {
     }
 }
 
-export const shopListFetchAction = (zoneId) => {
+export const shopListFetchAction = (zoneId, filter) => {
+    const page = _.toInteger(_.get(filter.getParams(), 'page'))
     const payload = axios()
-        .get(API.SHOP_LIST, {params: {border: zoneId}})
+        .get(API.SHOP_LIST, {params: {border: zoneId, page: page}})
         .then((response) => {
             return _.get(response, 'data')
         })
