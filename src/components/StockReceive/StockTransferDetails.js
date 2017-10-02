@@ -111,13 +111,13 @@ const enhance = compose(
 const iconStyle = {
     icon: {
         color: '#666',
-        width: 25,
-        height: 25
+        width: 22,
+        height: 22
     },
     button: {
         width: 48,
         height: 48,
-        padding: 0
+        padding: 13
     }
 }
 

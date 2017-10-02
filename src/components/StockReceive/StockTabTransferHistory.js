@@ -6,12 +6,12 @@ import GridList from '../GridList'
 import TabTransferFilterForm from './TabTransferFilterForm'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import moment from 'moment'
 import TransferHistoryOrderDetail from './StockTabTransferHistoryDetails'
 import TransferHistoryTransferDetail from './StockReceiveDetails'
 import * as TAB from '../../constants/stockReceiveTab'
 import ConfirmDialog from '../ConfirmDialog'
 import StockReceiveTabList from '../../containers/StockReceive/StockReceiveTabList'
+import dateFormat from '../../helpers/dateFormat'
 
 const listHeader = [
     {
@@ -123,8 +123,8 @@ const StockTabTransferHistory = enhance((props) => {
 
     const historyList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const dateRequest = moment(_.get(item, 'dateRequest')).format('DD.MM.YYYY')
-        const dateDelivery = moment(_.get(item, 'dateDelivery')).format('DD.MM.YYYY')
+        const dateRequest = dateFormat(_.get(item, 'dateRequest'))
+        const dateDelivery = dateFormat(_.get(item, 'dateDelivery'))
         const receiver = _.get(item, ['receiver'])
         const stockId = _.get(item, ['stock', 'id'])
         const typeOrg = _.get(item, 'type')

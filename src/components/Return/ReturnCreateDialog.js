@@ -327,7 +327,7 @@ const SupplyCreateDialog = enhance((props) => {
                     <div className={classes.bottomButton}>
                     <div>Общая сумма возврата: <ClientBalanceReturnTotalSum/></div>
                         <FlatButton
-                            label="Оформить возврат"
+                            label={isUpdate ? 'Изменить возврат' : 'Оформить возврат'}
                             className={classes.actionButton}
                             primary={true}
                             type="submit"

@@ -400,8 +400,9 @@ const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, h
                 : <div className={classes.imagePlaceholder}>
                     <div style={{textAlign: 'center', color: '#adadad'}}>
                         <img src={Groceries} alt=""/>
-                        <div>Вы еще не выбрали ни одного товара. <br/> <a onClick={() => dispatch({open: !state.open})}>Добавить</a> товар?
-                        </div>
+                        {isUpdate
+                            ? <div>Список возвращаемого товара пуст.</div>
+                            : <div>Вы еще не выбрали ни одного товара. <br/> <a onClick={() => dispatch({open: !state.open})}>Добавить</a> товар?</div>}
                     </div>
                 </div>
             }

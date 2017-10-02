@@ -3,11 +3,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
-import moment from 'moment'
 import {compose} from 'recompose'
 import StockReceiveTabList from '../../containers/StockReceive/StockReceiveTabList'
 import StockReceiveDetails from './StockReceiveDetails'
 import stockTypeFormat from '../../helpers/stockTypeFormat'
+import dateFormat from '../../helpers/dateFormat'
 import ConfirmDialog from '../ConfirmDialog'
 import CreateDialog from './StockReceiveCreateDialog'
 import TabReceiveFilterForm from './TabReceiveFilterForm'
@@ -172,7 +172,7 @@ const StockTabReceive = enhance((props) => {
         const by = _.get(item, 'by')
         const type = _.get(item, 'type')
         const formattedType = stockTypeFormat(type)
-        const date = _.get(item, 'date') ? moment(_.get(item, 'date')).format('DD.MM.YYYY') : 'Не указана'
+        const date = _.get(item, 'date') ? dateFormat(_.get(item, 'date')) : 'Не указана'
         const stockName = _.get(item, ['stock', 'name'])
         const key = (type === 'delivery_return') ? orderId : id
 

@@ -172,25 +172,23 @@ const TransferDetail = enhance((props) => {
         popover
     } = props
 
-    const currentBy = _.get(detailData, ['currentDetail', 'by'])
+    const currentBy = _.get(detailData, ['currentDetail', 'by']) || _.get(detailData, ['data', 'acceptedBy', 'firstName']) + ' ' + _.get(detailData, ['data', 'acceptedBy', 'secondName'])
     const currentDate = dateFormat(_.get(detailData, ['currentDetail', 'date']))
     const currentStock = _.get(detailData, ['currentDetail', 'stock', 'name'])
 
-    const currentDeliveryDate = _.get(detailData, ['currentDetail', 'dateDelivery'])
     const currentRequestDate = _.get(detailData, ['currentDetail', 'dateRequest'])
     const currentReceiver = _.get(detailData, ['currentDetail', 'receiver'])
 
     const useBarcode = toBoolean(getConfig('USE_BARCODE'))
     const onClose = _.get(detailData, 'onClose')
     const type = _.get(detailData, 'type')
-    const by = _.get(detailData, ['data', 'fromStock', 'name'])
 
     const formattedType = stockTypeFormat(type)
     const finishedTime = dateFormat(_.get(detailData, ['data', 'finishedTime']), true)
     const acceptedTime = dateFormat(_.get(detailData, ['data', 'acceptedTime']), true)
     const acceptedBy = _.get(detailData, ['data', 'acceptedBy']) && (_.get(detailData, ['data', 'acceptedBy', 'firstName']) + ' ' + _.get(detailData, ['data', 'acceptedBy', 'firstName']))
-    const date = (_.get(detailData, ['data', 'createdDate']) ? dateFormat(_.get(detailData, ['data', 'createdDate'])) : 'Не указана')
-    const stockName = _.get(detailData, ['data', 'toStock', 'name'])
+    const date = (_.get(detailData, ['data', 'createdDate']) ? dateFormat(_.get(detailData, ['data', 'createdDate'])) : dateFormat(_.get(detailData, ['currentDetail', 'date'])))
+    const stockName = _.get(detailData, ['data', 'toStock', 'name']) || _.get(detailData, ['currentDetail', 'stock', 'name'])
     const id = _.get(detailData, 'id') || _.get(detailData, ['data', 'id'])
     const tooltipText = 'Подтвердить Запрос №' + id
     const tooltipCancelText = 'Отменить Запрос №' + id
@@ -225,7 +223,7 @@ const TransferDetail = enhance((props) => {
                         </div>
                         <Row className={classes.semibold} style={history ? {lineHeight: '48px'} : {}}>
                             <Col xs={2}>{id}</Col>
-                            <Col xs={(history && transferHistory) ? TWO : THREE}>{(history && transferHistory) ? currentDeliveryDate : (history ? currentBy : by)}</Col>
+                            <Col xs={(history && transferHistory) ? TWO : THREE}>{currentBy}</Col>
                             <Col xs={2}>{(history && transferHistory) ? currentStock : formattedType}</Col>
                             <Col xs={2}>{(history && transferHistory) ? formattedType : (history ? currentDate : date)}</Col>
                             <Col xs={2}>{(history && transferHistory) ? currentReceiver : (history ? currentStock : stockName)}</Col>
