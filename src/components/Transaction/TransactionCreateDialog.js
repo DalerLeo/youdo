@@ -116,6 +116,8 @@ const TransactionCreateDialog = enhance((props) => {
 
     const onSubmit = handleSubmit(() => props.onSubmit().catch(props.validate))
     const cashbox = _.find(_.get(cashboxData, 'data'), {'id': _.get(cashboxData, 'cashboxId')})
+    const currency = _.get(cashbox, ['currency', 'name'])
+    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const convert = convertCurrency(amount, rate)
 
     const hasDivisions = toBoolean(getConfig('DIVISIONS'))
@@ -150,14 +152,14 @@ const TransactionCreateDialog = enhance((props) => {
                                         className={classes.checkbox}
                                         component={CheckBox}
                                         label="Снять со счета клиента"/>
-                                    {showClients && <div>
+                                    {showClients ? <div>
                                         <Field
                                             name="client"
                                             component={ClientSearchField}
                                             label="Клиент"
                                             className={classes.inputFieldCustom}
                                             fullWidth={true}/>
-                                    </div>}
+                                    </div> : null}
                                     <Field
                                         name="expanseCategory"
                                         component={ExpensiveCategorySearchField}
@@ -173,21 +175,22 @@ const TransactionCreateDialog = enhance((props) => {
                                             normalize={normalizeNumber}
                                             className={classes.inputFieldCustom}
                                             fullWidth={true}/>
-                                        <div>{_.get(cashbox, ['currency', 'name'])}</div>
+                                        <div>{currency}</div>
                                     </div>
-                                    {(showClients || showIncomeClients) &&
-                                    <div className={classes.flex} style={{alignItems: 'baseline', width: '48%'}}>
-                                        <Field
-                                            name="custom_rate"
-                                            component={TextField}
-                                            label="Курс"
-                                            className={classes.inputFieldCustom}
-                                            normalize={normalizeNumber}
-                                            fullWidth={true}/>
-                                    </div>}
+                                    {(showClients || showIncomeClients)
+                                    ? <div className={classes.flex} style={{alignItems: 'baseline', width: '48%'}}>
+                                            {primaryCurrency !== currency &&
+                                            <Field
+                                                name="custom_rate"
+                                                component={TextField}
+                                                hintText={'Курс ' + primaryCurrency}
+                                                className={classes.inputFieldCustom}
+                                                normalize={normalizeNumber}
+                                                fullWidth={true}/>}
+                                    </div> : null}
                                 </div>
-                                {(convert && showClients) &&
-                                <div className={classes.convert}>После конвертации: <strong>{convert}</strong></div>}
+                                {(convert && showClients)
+                                ? <div className={classes.convert}>После конвертации: <strong>{convert}</strong></div> : null}
                                 {hasDivisions && <Field
                                     name="division"
                                     component={DivisionSearchField}
@@ -236,23 +239,24 @@ const TransactionCreateDialog = enhance((props) => {
                                     </div>
                                     {(showClients || showIncomeClients) &&
                                     <div className={classes.flex} style={{alignItems: 'baseline', width: '48%'}}>
+                                        {primaryCurrency !== currency &&
                                         <Field
                                             name="custom_rate"
                                             component={TextField}
-                                            label="Курс"
+                                            hintText={'Курс ' + primaryCurrency}
                                             className={classes.inputFieldCustom}
                                             normalize={normalizeNumber}
-                                            fullWidth={true}/>
+                                            fullWidth={true}/>}
                                     </div>}
                                 </div>
-                                {(convert && showClients) &&
-                                <div className={classes.convert}>После конвертации: <strong>{convert}</strong></div>}
-                                {hasDivisions && <Field
+                                {(convert && showClients)
+                                ? <div className={classes.convert}>После конвертации: <strong>{convert}</strong></div> : null}
+                                {hasDivisions ? <Field
                                     name="division"
                                     component={DivisionSearchField}
                                     label="Подразделение"
                                     className={classes.inputFieldCustom}
-                                    fullWidth={true}/>}
+                                    fullWidth={true}/> : null}
                                 <Field
                                     name="comment"
                                     style={{top: '-20px', lineHeight: '20px', fontSize: '13px'}}

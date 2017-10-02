@@ -45,6 +45,15 @@ const enhance = compose(
             background: '#fff',
             zIndex: '50'
         },
+        overlay: {
+            background: 'rgba(0, 0, 0, 0.1)',
+            position: 'fixed',
+            top: '0',
+            left: '0',
+            right: '0',
+            bottom: '0',
+            zIndex: '49'
+        },
         filter: {
             display: 'flex',
             width: '100%',
@@ -157,6 +166,7 @@ const StatisticsFilterExcel = enhance((props) => {
         : moment(_.get(props, ['initialValues', 'date', 'fromDate'])).format('DD.MM.YYYY') + ' - ' + moment(_.get(props, ['initialValues', 'date', 'toDate'])).format('DD.MM.YYYY')
     return (
         <div className={classes.filterWrapper}>
+            {openFilter && <div className={classes.overlay}></div>}
             {openFilter && <Paper zDepth={2} className={classes.form}>
                 <form onSubmit={ handleSubmit(handleSubmitFilterDialog) }>
                     <div className={classes.filter}>
