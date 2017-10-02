@@ -239,7 +239,7 @@ const customContentStyle = {
     maxWidth: 'none'
 }
 const SupplyCreateDialog = enhance((props) => {
-    const {open, handleSubmit, onClose, classes, clientId, isUpdate, name} = props
+    const {open, handleSubmit, onClose, classes, clientId, isUpdate, name, editOnlyCost} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     return (
         <Dialog
@@ -317,6 +317,7 @@ const SupplyCreateDialog = enhance((props) => {
                             <div className={classes.rightOrderPart}>
                                 <Fields
                                     isUpdate={isUpdate}
+                                    editOnlyCost={editOnlyCost}
                                     names={['products', 'product', 'amount', 'cost', 'editAmount', 'editCost', 'type']}
                                     component={ClientBalanceReturnProductList}
                                 />
@@ -327,7 +328,7 @@ const SupplyCreateDialog = enhance((props) => {
                     <div className={classes.bottomButton}>
                     <div>Общая сумма возврата: <ClientBalanceReturnTotalSum/></div>
                         <FlatButton
-                            label="Оформить возврат"
+                            label={isUpdate ? 'Изменить возврат' : 'Оформить возврат'}
                             className={classes.actionButton}
                             primary={true}
                             type="submit"

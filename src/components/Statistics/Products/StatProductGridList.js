@@ -52,7 +52,7 @@ const enhance = compose(
             height: '100%',
             overflowX: 'hidden',
             overflowY: 'auto',
-            padding: '20px 30px',
+            padding: '20px 30px 0',
             '& > div:nth-child(2)': {
                 marginTop: '10px',
                 borderTop: '1px #efefef solid'
@@ -353,7 +353,7 @@ const StatProductGridList = enhance((props) => {
         <div className={classes.mainWrapper}>
             <Row style={{margin: '0', height: '100%'}}>
                 <div className={classes.leftPanel}>
-                    <StatSideMenu currentUrl={ROUTES.STATISTICS_PRODUCT_URL}/>
+                    <StatSideMenu currentUrl={ROUTES.STATISTICS_PRODUCT_URL} filter={filter}/>
                 </div>
                 <div className={classes.rightPanel}>
                     <div className={classes.wrapper}>

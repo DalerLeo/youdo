@@ -52,6 +52,7 @@ const enhance = compose(
                     paddingLeft: '0'
                 },
                 '& .Select-placeholder': {
+                    color: 'rgba(0,0,0,0.3)',
                     paddingLeft: '0'
                 },
                 '& .Select-input': {

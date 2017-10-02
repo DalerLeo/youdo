@@ -66,9 +66,12 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
+        const except = {
+            openReceiveHisFilter: null
+        }
         const prevTab = _.get(props, ['location', 'query', 'tab']) || 'receive'
         const nextTab = _.get(nextProps, ['location', 'query', 'tab']) || 'receive'
-        return (props.filter.filterRequest() !== nextProps.filter.filterRequest()) || (prevTab !== nextTab)
+        return (props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)) || (prevTab !== nextTab)
     }, ({dispatch, filter}) => {
         const history = true
         dispatch(stockReceiveListFetchAction(filter, history))

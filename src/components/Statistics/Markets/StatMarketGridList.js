@@ -169,14 +169,21 @@ const enhance = compose(
             color: '#666'
         },
         summary: {
+            display: 'flex',
             borderTop: 'solid 1px #efefef',
             borderBottom: 'solid 1px #efefef',
             padding: '14px 0',
             color: '#666',
             '& > div': {
-                fontSize: '24px',
-                color: '#333',
-                fontWeigh: '600'
+                marginRight: '60px',
+                '& div': {
+                    fontSize: '20px',
+                    color: '#333',
+                    fontWeight: '600'
+                },
+                '& span': {
+                    display: 'block'
+                }
 
             }
         },
@@ -210,7 +217,9 @@ const StatMarketGridList = enhance((props) => {
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const listLoading = _.get(listData, 'listLoading')
     const graphLoading = _.get(detailData, ['sumLoading'])
-    const sumData = _.get(listData, ['sumData', 'income'])
+    const sumIncome = _.get(listData, ['sumData', 'income'])
+    const sumFact = _.get(listData, ['sumData', 'fact'])
+    const sumReturn = _.get(listData, ['sumData', 'returnSum'])
     const headerStyle = {
         backgroundColor: '#fff',
         fontWeight: '600',
@@ -389,7 +398,7 @@ const StatMarketGridList = enhance((props) => {
         <div className={classes.mainWrapper}>
             <Row style={{margin: '0', height: '100%'}}>
                 <div className={classes.leftPanel}>
-                    <StatSideMenu currentUrl={ROUTES.STATISTICS_MARKET_URL}/>
+                    <StatSideMenu currentUrl={ROUTES.STATISTICS_MARKET_URL} filter={filter}/>
                 </div>
                 <div className={classes.rightPanel}>
                      <div className={classes.wrapper}>
@@ -408,8 +417,18 @@ const StatMarketGridList = enhance((props) => {
                          </div>
                          : <div>
                             <div className={classes.summary}>
-                                Сумма от продаж
-                                <div>{numberFormat(sumData, primaryCurrency)}</div>
+                                <div>
+                                    <span>Сумма от продаж</span>
+                                    <div>{numberFormat(sumIncome, primaryCurrency)}</div>
+                                </div>
+                                <div>
+                                    <span>Фактические продажи</span>
+                                    <div>{numberFormat(sumFact, primaryCurrency)}</div>
+                                </div>
+                                <div>
+                                    <span>Сумма возвратов</span>
+                                    <div>{numberFormat(sumReturn, primaryCurrency)}</div>
+                                </div>
                             </div>
                             <div className={classes.pagination}>
                                 <div>Продажи по магазинам в зоне</div>

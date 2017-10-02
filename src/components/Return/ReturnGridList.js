@@ -165,6 +165,12 @@ const OrderGridList = enhance((props) => {
     )
     const CLIENT_RETURN = 2
     const returnType = _.toInteger(_.get(detailData, ['data', 'type']))
+    const detStatus = _.toInteger(_.get(detailData, ['data', 'status']))
+
+    const PENDING = 0
+    const IN_PROGRESS = 1
+    const COMPLETED = 2
+    const CANCELLED = 3
     const orderList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const client = _.get(item, ['client', 'name']) || '-'
@@ -175,10 +181,7 @@ const OrderGridList = enhance((props) => {
         const createdDate = dateFormat(_.get(item, 'createdDate'))
         const totalPrice = numberFormat(_.get(item, 'totalPrice'), currentCurrency)
         const status = _.toInteger(_.get(item, 'status'))
-        const PENDING = 0
-        const IN_PROGRESS = 1
-        const COMPLETED = 2
-        const CANCELLED = 3
+
         return (
             <div className={classes.listWrapper} key={id}>
                 <div style={{width: '10%'}}>{id}</div>
@@ -277,6 +280,7 @@ const OrderGridList = enhance((props) => {
             {(returnType === CLIENT_RETURN)
                 ? (isAdmin && <ReturnCreateDialog
                     isUpdate={true}
+                    editOnlyCost={detStatus === COMPLETED}
                     name={_.get(detailData, ['data', 'client', 'name'])}
                     initialValues={updateDialog.initialValues}
                     loading={updateDialog.updateLoading}

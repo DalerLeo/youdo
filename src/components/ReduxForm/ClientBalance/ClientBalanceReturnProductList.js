@@ -233,7 +233,7 @@ const iconStyle = {
     }
 }
 
-const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, handleEdit, handleRemove, editItem, setEditItem, measurement, isUpdate, ...defaultProps}) => {
+const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, handleEdit, handleRemove, editItem, setEditItem, measurement, isUpdate, editOnlyCost, ...defaultProps}) => {
     const currency = getConfig('PRIMARY_CURRENCY')
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
     const error = _.get(defaultProps, ['products', 'meta', 'error'])
@@ -337,7 +337,7 @@ const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, h
                             const cost = _.toNumber(_.get(item, 'cost'))
                             const amount = _.toNumber(_.get(item, 'amount'))
 
-                            if (editItem === index) {
+                            if (editItem === index && !editOnlyCost) {
                                 return (
                                     <TableRow key={index} className={classes.tableRow}>
                                         <TableRowColumn>
@@ -351,6 +351,30 @@ const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, h
                                                 {..._.get(defaultProps, 'editAmount')}
                                             />
                                         </TableRowColumn>
+                                        <TableRowColumn>
+                                            <TextField
+                                                hintText={cost}
+                                                className={classes.inputFieldCustom}
+                                                fullWidth={true}
+                                                {..._.get(defaultProps, 'editCost')}
+                                            />
+                                        </TableRowColumn>
+                                        <TableRowColumn>{numberFormat(cost * amount, currency)}</TableRowColumn>
+                                        <TableRowColumn style={{textAlign: 'right'}}>
+                                            <IconButton
+                                                onTouchTap={() => { handleEdit(index) }}>
+                                                <Check color="#12aaeb"/>
+                                            </IconButton>
+                                        </TableRowColumn>
+                                    </TableRow>
+                                )
+                            } else if (editItem === index && editOnlyCost) {
+                                return (
+                                    <TableRow key={index} className={classes.tableRow}>
+                                        <TableRowColumn>
+                                            {product}
+                                        </TableRowColumn>
+                                        <TableRowColumn>{amount} {itemMeasurement}</TableRowColumn>
                                         <TableRowColumn>
                                             <TextField
                                                 hintText={cost}
@@ -385,6 +409,7 @@ const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, h
                                             <EditIcon color="#666666"/>
                                         </IconButton>
                                         <IconButton
+                                            disabled={editOnlyCost}
                                             onTouchTap={() => handleRemove(index)}
                                             style={iconStyle.button}
                                             iconStyle={iconStyle.icon}>
@@ -400,8 +425,9 @@ const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, h
                 : <div className={classes.imagePlaceholder}>
                     <div style={{textAlign: 'center', color: '#adadad'}}>
                         <img src={Groceries} alt=""/>
-                        <div>Вы еще не выбрали ни одного товара. <br/> <a onClick={() => dispatch({open: !state.open})}>Добавить</a> товар?
-                        </div>
+                        {isUpdate
+                            ? <div>Список возвращаемого товара пуст.</div>
+                            : <div>Вы еще не выбрали ни одного товара. <br/> <a onClick={() => dispatch({open: !state.open})}>Добавить</a> товар?</div>}
                     </div>
                 </div>
             }

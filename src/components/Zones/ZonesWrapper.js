@@ -293,6 +293,7 @@ const iconStyle = {
 const ZonesWrapper = enhance((props) => {
     const {
         filter,
+        shopFilter,
         listData,
         statData,
         classes,
@@ -449,6 +450,7 @@ const ZonesWrapper = enhance((props) => {
                 </div>
             </div>
             : <ZoneDetails
+                    shopFilter={shopFilter}
                     detailData={detailData}
                     bindAgent={bindAgent}
                     unbindAgent={unbindAgent}

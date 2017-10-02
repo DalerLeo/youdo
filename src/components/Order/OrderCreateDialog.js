@@ -144,7 +144,10 @@ const enhance = compose(
         leftOrderPart: {
             flexBasis: '25%',
             padding: '20px 30px',
-            borderRight: '1px #efefef solid'
+            borderRight: '1px #efefef solid',
+            '& .Select-menu-outer': {
+                minWidth: 'unset !important'
+            }
         },
         rightOrderPart: {
             flexBasis: '75%',
@@ -274,8 +277,9 @@ const OrderCreateDialog = enhance((props) => {
                                 <div className={classes.subTitleOrder}>
                                     <span>Выбор клиента</span>
                                     <Link style={{color: '#12aaeb'}}
+                                          target="_blank"
                                           to={{pathname: [ROUTES.SHOP_LIST_URL],
-                                              query: filter.getParams({[CLIENT_CREATE_DIALOG_OPEN]: true})}} >
+                                              query: filter.getParams({[CLIENT_CREATE_DIALOG_OPEN]: true})}}>
                                      + добавить
                                     </Link>
                                 </div>

@@ -91,8 +91,12 @@ const OrderStatDetailsRightSide = enhance((props) => {
 
     const products = _.get(data, 'products')
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
-    let totalProductPrice = _.toNumber('0')
-    let totalDiscount = _.toNumber('0')
+    const totalProductPrice = _.sumBy(products, (item) => {
+        return _.toNumber(_.get(item, 'totalPrice'))
+    })
+    const totalDiscount = _.sumBy(products, (item) => {
+        return _.toNumber(_.get(item, 'discountPrice'))
+    })
     return (
         <div className={classes.rightSide}>
             <div className={classes.tabContent}>
@@ -113,9 +117,7 @@ const OrderStatDetailsRightSide = enhance((props) => {
                         const productTotal = _.get(item, 'totalPrice')
                         const amount = _.get(item, 'amount')
                         const measurement = _.get(product, ['measurement', 'name'])
-                        totalProductPrice += _.toNumber(productTotal)
-                        const discount = numberFormat(_.get(item, 'discountPrice'))
-                        totalDiscount += _.toNumber(discount)
+                        const discount = _.get(item, 'discountPrice')
 
                         return (
                             <Row className="dottedList" key={index}>
@@ -123,8 +125,7 @@ const OrderStatDetailsRightSide = enhance((props) => {
                                 <Col xs={2}>{numberFormat(amount)} {measurement}</Col>
                                 <Col xs={2}>{numberFormat(price)}</Col>
                                 <Col xs={2}>{numberFormat(productTotal)}</Col>
-                                <Col xs={2}>{numberFormat(totalDiscount)}</Col>
-
+                                <Col xs={2}>{numberFormat(discount)}</Col>
                             </Row>
                         )
                     })}

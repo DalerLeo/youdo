@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {hashHistory} from 'react-router'
-import {compose, withHandlers} from 'recompose'
+import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import IconButton from 'material-ui/IconButton'
 import ArrowLeftIcon from '../GridList/GridListNavPagination/ArrowLeftIcon'
@@ -47,17 +47,9 @@ const enhance = compose(
                 padding: '0 5px 0 10px !important'
             }
         }
-    }),
-    withHandlers({
-        onChange: props => (event, index, value) => {
-            const {filter} = props
-            event.preventDefault()
-
-            hashHistory.push(filter.createURL({pageSize: value, page: 1}))
-        }
     })
 )
-const Pagination = enhance(({classes, onChange, filter, customPagination}) => {
+const Pagination = enhance(({classes, filter, customPagination}) => {
     const prev = filter.prevPage()
     const next = filter.nextPage()
     const firstPage = 1

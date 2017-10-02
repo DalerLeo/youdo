@@ -57,3 +57,10 @@ export const bindAgentSerializer = (data) => {
     }
 }
 
+export const shopListSerializer = (page, zoneId) => {
+    return {
+        border: zoneId,
+        page: page
+    }
+}
+

@@ -5,9 +5,11 @@ import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/Statistics/statClientIncomeSerializer'
 
-export const clientIncomeOutDataFetchAction = () => {
+export const clientIncomeOutDataFetchAction = (filter) => {
+    const type = {amount_type: 'expense'}
+    const params = serializers.graphSerializer(filter.getParams())
     const payload = axios()
-        .get(API.STAT_CLIENT_INCOME_LIST, {params: {'type': 'expense'}})
+        .get(API.STAT_CLIENT_INCOME_LIST, {params: _.merge(type, params)})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -21,9 +23,11 @@ export const clientIncomeOutDataFetchAction = () => {
     }
 }
 
-export const clientIncomeInDataFetchAction = () => {
+export const clientIncomeInDataFetchAction = (filter) => {
+    const type = {amount_type: 'income'}
+    const params = serializers.graphSerializer(filter.getParams())
     const payload = axios()
-        .get(API.STAT_CLIENT_INCOME_LIST, {params: {'type': 'income'}})
+        .get(API.STAT_CLIENT_INCOME_LIST, {params: _.merge(type, params)})
         .then((response) => {
             return _.get(response, 'data')
         })
