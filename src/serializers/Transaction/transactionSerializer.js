@@ -77,23 +77,16 @@ export const createExpenseSerializer = (data, cashboxId) => {
 }
 
 export const createSendSerializer = (data, cashboxId) => {
-    const amount = _.get(data, 'amount') < ZERO ? _.get(data, 'amount') * MINUS_ONE : _.get(data, 'amount')
+    const amountFrom = _.toNumber(numberWithoutSpaces(_.get(data, 'amountFrom')))
+    const amountTo = _.toNumber(numberWithoutSpaces(_.get(data, 'amountTo')))
     const toCashbox = _.get(data, ['categoryId', 'value'])
     const comment = _.get(data, 'comment')
-    const customRate = _.get(data, 'custom_rate')
-    if (customRate) {
-        return {
-            amount: numberWithoutSpaces(amount),
-            'from_cashbox': cashboxId,
-            'to_cashbox': toCashbox,
-            'custom_rate': numberWithoutSpaces(customRate),
-            comment
-        }
-    }
+    const customRate = amountFrom / amountTo
     return {
-        amount: numberWithoutSpaces(amount),
-        'from_cashbox': cashboxId,
-        'to_cashbox': toCashbox,
+        amount: amountFrom,
+        from_cashbox: _.toInteger(cashboxId),
+        to_cashbox: _.toInteger(toCashbox),
+        rate: customRate,
         comment
     }
 }

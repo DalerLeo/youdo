@@ -462,7 +462,7 @@ const ClientBalanceGridList = enhance((props) => {
             </form>
             <Pagination filter={filter}/>
             {stat && <div className={classes.getDocument}>
-                <a className={classes.excel} onClick={handleGetDocument}>
+                <a className={classes.excel} onClick={getDocument.handleGetDocument}>
                     <Excel color="#fff"/> <span>Excel</span>
                 </a>
             </div>}
