@@ -371,7 +371,7 @@ const TrackingWrapper = enhance((props) => {
                     })}
                 </div>
                 <TrackingAgentSearch filter={filter} handleSearch={handleSearch}/>
-                <div className={classes.content}>
+                <div className={classes.content} style={listLoading ? {overflow: 'hidden'} : {overflowY: 'auto'}}>
                     {listLoading
                         ? <div className={classes.loader}>
                             <div>
