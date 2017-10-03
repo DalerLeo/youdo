@@ -132,6 +132,7 @@ const SearchField = enhance((props) => {
                 isLoading={state.loading}
                 valueRenderer={valueRenderer}
                 labelKey={'text'}
+                filterOptions={options => options}
             />
         </div>
     )

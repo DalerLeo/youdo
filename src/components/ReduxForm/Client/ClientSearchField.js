@@ -12,13 +12,6 @@ const getOptions = (search) => {
     return axios().get(`${PATH.CLIENT_LIST}?search=${search || ''}`)
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
-        }).then((data) => {
-            return {options: _.map(data, (item) => {
-                return {
-                    label: item.name,
-                    value: item.id
-                }
-            })}
         })
 }
 

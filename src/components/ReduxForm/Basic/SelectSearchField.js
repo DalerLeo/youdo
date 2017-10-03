@@ -83,6 +83,7 @@ const SearchField = enhance((props) => {
                 valueRenderer={valueRenderer}
                 loadingPlaceholder="Загрузка..."
                 cache={false}
+                filterOptions={options => options}
             />
         </div>
     )

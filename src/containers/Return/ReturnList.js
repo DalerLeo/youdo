@@ -446,7 +446,7 @@ const ReturnList = enhance((props) => {
 
     const updateDialog = {
         initialValues: (() => {
-            if (!detail) {
+            if (!detail || openCreateDialog) {
                 return {}
             } else if (type === CLIENT_RETURN) {
                 return {
