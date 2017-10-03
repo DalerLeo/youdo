@@ -248,7 +248,7 @@ const ReturnDetails = enhance((props) => {
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
-                            disabled={status === CANCELLED}
+                            disabled={status === CANCELLED || (order && status === COMPLETED)}
                             touch={true}
                             onTouchTap={() => { updateDialog.handleOpenUpdateDialog() }}>
                             <Edit />
