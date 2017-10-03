@@ -138,6 +138,7 @@ const SearchFieldCustom = enhance((props) => {
                     isLoading={state.loading}
                     labelKey={'text'}
                     disabled={disabled}
+                    filterOptions={options => options}
                 />
             </div>
         </div>
