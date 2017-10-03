@@ -9,6 +9,7 @@ import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
+import * as API from '../../constants/api'
 import {
     CLIENT_BALANCE_INFO_DIALOG_OPEN,
     CLIENT_BALANCE_FILTER_KEY,
@@ -19,6 +20,8 @@ import {
     clientBalanceListFetchAction,
     clientBalanceItemFetchAction
 } from '../../actions/clientBalance'
+import * as serializers from '../../serializers/clientBalanceSerializer'
+import getDocuments from '../../helpers/getDocument'
 
 const enhance = compose(
     connect((state, props) => {
@@ -125,6 +128,11 @@ const enhance = compose(
             hashHistory.push({
                 pathname, query: filter.getParams({search: term})
             })
+        },
+        handleGetDocument: props => () => {
+            const {filter} = props
+            const params = serializers.listFilterSerializer(filter.getParams())
+            getDocuments(API.CLIENT_BALANCE_GET_DOCUMENT, params)
         }
     })
 )
@@ -199,7 +207,9 @@ const ClientBalanceList = enhance((props) => {
         data: _.get(detail, 'results'),
         detailLoading
     }
-
+    const getDocument = {
+        handleGetDocument: props.handleGetDocument
+    }
     return (
         <Layout {...layout}>
             <ClientBalanceGridList
@@ -211,6 +221,7 @@ const ClientBalanceList = enhance((props) => {
                 infoDialog={infoDialog}
                 filterDialog={filterDialog}
                 handleSubmitSearch={props.handleSubmitSearch}
+                getDocument={getDocument}
             />
         </Layout>
     )
