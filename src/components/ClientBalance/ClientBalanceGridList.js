@@ -297,7 +297,7 @@ const ClientBalanceGridList = enhance((props) => {
         setItem,
         handleSubmit,
         handleSubmitSearch,
-        handleGetDocument,
+        getDocument,
         stat
     } = props
     const orderNoSorting = _.isNil(filter.getSortingType('order_no')) ? null
@@ -462,8 +462,8 @@ const ClientBalanceGridList = enhance((props) => {
             </form>
             <Pagination filter={filter}/>
             <div className={classes.getDocument}>
-                <a className={classes.excel} onClick={handleGetDocument}>
-                    <Excel color="#fff"/> <span>Excel</span>
+                <a className={classes.excel} onClick={getDocument.handleGetDocument}>
+                    <Excel color="#fff"/><span>Excel</span>
                 </a>
             </div>
         </div>

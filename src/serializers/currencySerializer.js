@@ -22,7 +22,7 @@ export const createSerializer = (data) => {
 
 export const itemSerializer = (data, id) => {
     const {...defaultData} = data
-    const ordering = _.get(data, 'ordering')
+    const ordering = '-id'
     return {
         'currency': id,
         'page': _.get(defaultData, 'page'),
