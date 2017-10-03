@@ -8,11 +8,9 @@ import 'react-select/dist/react-select.css'
 
 const DELAY_FOR_TYPE_ATTACK = 300
 
-const fetchList = ({state, dispatch, getOptions, getText, getValue, input, initialParent, parent}) => {
+const fetchList = ({state, dispatch, getOptions, getText, getValue, input}) => {
     dispatch({loading: true})
-    if (parent && parent !== initialParent) {
-        input.onChange(null)
-    }
+    input.onChange(null)
     getOptions(state.text)
         .then((data) => {
             return _.map(data, (item) => {
@@ -25,6 +23,15 @@ const fetchList = ({state, dispatch, getOptions, getText, getValue, input, initi
         .then((data) => {
             dispatch({dataSource: data, loading: false})
         })
+}
+
+const initialFunc = (props) => {
+    const {initialVal, state: {iniValue}, parent} = props
+
+    if (_.isNull(iniValue) || !parent) {
+        return null
+    }
+    return initialVal
 }
 
 const fetchItem = (props, selectedItem) => {
@@ -96,7 +103,7 @@ const enhance = compose(
 
     withReducer('state', 'dispatch', (state, action) => {
         return {...state, ...action}
-    }, {dataSource: [], text: '', loading: false}),
+    }, {dataSource: [], text: '', loading: false, iniValue: ''}),
 
     withPropsOnChange((props, nextProps) => {
         return (_.get(props, ['state', 'text']) !== _.get(nextProps, ['state', 'text']) && _.get(nextProps, ['input', 'value'])) ||
@@ -122,9 +129,12 @@ const SearchFieldCustom = enhance((props) => {
                 <Select
                     className={classes.select}
                     options={state.dataSource}
-                    value={getValue(_.get(input, ['value', 'value']))}
+                    value={getValue(_.get(input, ['value', 'value'])) || initialFunc(props)}
                     onInputChange={text => dispatch({text: text})}
-                    onChange={value => { value ? fetchItem(props, value) : fetchList(props) }}
+                    onChange={value => {
+                        dispatch({iniValue: value})
+                        value ? fetchItem(props, value) : fetchList(props)
+                    }}
                     placeholder={label}
                     noResultsText={'Не найдено'}
                     isLoading={state.loading}

@@ -310,7 +310,7 @@ const OrderCreateDialog = enhance((props) => {
                                         className={classes.inputFieldCustom}
                                         label="Название магазина"
                                         clientId={clientId}
-                                        initialParent={_.get(initialValues, ['client', 'value'])}
+                                        initialVal={_.get(initialValues, ['market', 'value', 'id'])}
                                         disabled={!clientId}
                                         fullWidth={true}/>
                                 </div>

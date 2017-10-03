@@ -289,7 +289,7 @@ const SupplyCreateDialog = enhance((props) => {
                                         className={classes.searchFieldCustom}
                                         label="Магазин"
                                         clientId={clientId}
-                                        initialParent={_.get(initialValues, ['client', 'value'])}
+                                        initialVal={_.get(initialValues, ['market', 'value'])}
                                         disabled={!clientId}
                                         fullWidth={true}/>
                                 </div>

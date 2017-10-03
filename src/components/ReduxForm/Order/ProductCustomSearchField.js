@@ -2,7 +2,7 @@ import sprintf from 'sprintf'
 import _ from 'lodash'
 import React from 'react'
 import {compose} from 'recompose'
-import SearchFieldCustom from '../Basic/SelectSearchField'
+import SearchFieldCustom from '../Basic/SearchFieldCustom'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
@@ -10,16 +10,9 @@ import * as actionTypes from '../../../constants/actionTypes'
 import {connect} from 'react-redux'
 
 const getOptions = (search, type) => {
-    return axios().get(`${PATH.PRODUCT_FOR_SELECT_LIST}?type=${type || ''}&page_size=10&search=${search || ''}`)
+    return axios().get(`${PATH.PRODUCT_FOR_SELECT_LIST}?type=${type || ''}&page_size=100&search=${search || ''}`)
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
-        }).then((data) => {
-            return {options: _.map(data, (item) => {
-                return {
-                    label: item.name,
-                    value: item.id
-                }
-            })}
         })
 }
 

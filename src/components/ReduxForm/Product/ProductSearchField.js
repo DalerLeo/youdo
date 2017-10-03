@@ -1,7 +1,7 @@
 import sprintf from 'sprintf'
 import _ from 'lodash'
 import React from 'react'
-import SearchField from '../Basic/SelectSearchField'
+import SearchField from '../Basic/SearchField'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
@@ -12,13 +12,6 @@ const getOptions = (search) => {
     return axios().get(`${PATH.PRODUCT_LIST}?search=${search || ''}`)
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
-        }).then((data) => {
-            return {options: _.map(data, (item) => {
-                return {
-                    label: item.name,
-                    value: item.id
-                }
-            })}
         })
 }
 
