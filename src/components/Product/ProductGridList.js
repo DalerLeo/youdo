@@ -59,11 +59,6 @@ const listHeader = [
 
 const enhance = compose(
     injectSheet({
-        addButton: {
-            '& button': {
-                backgroundColor: '#12aaeb !important'
-            }
-        },
         addButtonWrapper: {
             position: 'absolute',
             top: '10px',
@@ -174,7 +169,7 @@ const ProductGridList = enhance((props) => {
                     <FloatingActionButton
                         mini={true}
                         zDepth={1}
-                        className={classes.addButton}
+                        backgroundColor="#12aaeb"
                         onTouchTap={createDialog.handleOpenCreateDialog}>
                         <ContentAdd />
                     </FloatingActionButton>

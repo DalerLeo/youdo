@@ -10,7 +10,7 @@ import CircularProgress from 'material-ui/CircularProgress'
 import SettingsPower from 'material-ui/svg-icons/action/settings-power'
 import ToolTip from '../ToolTip'
 import {getMenus} from './MenuItems'
-import Logo from '../Images/logo.png'
+import Logo from '../Images/logo.svg'
 import CustomBadge from '../CustomBadge/CustomBadge'
 import ArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 import ArrowUp from 'material-ui/svg-icons/hardware/keyboard-arrow-up'
@@ -157,7 +157,7 @@ const SideBarMenu = enhance((props) => {
             </div>
             : <div className={classes.items} ref="items">
                 <div className={classes.logo}>
-                    <img src={Logo}/>
+                    <div></div>
                 </div>
                 <div className={classes.notifications}>
                     <CustomBadge
@@ -278,8 +278,10 @@ export default injectSheet({
 
     logo: {
         padding: '20px 10px 30px',
-        '& img': {
-            width: '100%'
+        '& > div': {
+            background: 'url(' + Logo + ') no-repeat center center',
+            backgroundSize: '100%',
+            height: '66px'
         }
     },
 

@@ -333,8 +333,8 @@ const StatSalesGridList = enhance((props) => {
             <Col xs={2}>Дата</Col>
             <Col xs={3}>Магазин</Col>
             <Col xs={2}>Агент</Col>
-            <Col xs={2}>Возврат</Col>
-            <Col xs={2} style={{textAlign: 'right'}}>Сумма</Col>
+            <Col xs={2} style={{justifyContent: 'flex-end'}}>Возврат</Col>
+            <Col xs={2} style={{justifyContent: 'flex-end'}}>Сумма</Col>
         </Row>
     )
 
@@ -357,8 +357,8 @@ const StatSalesGridList = enhance((props) => {
                     <Col xs={2}>
                         <div>{firstName} {secondName}</div>
                     </Col>
-                    <Col xs={2}>{numberFormat(returnPrice, currentCurrency)}</Col>
-                    <Col xs={2} style={{textAlign: 'right'}}>{numberFormat(totalPrice, currentCurrency)}</Col>
+                    <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(returnPrice, currentCurrency)}</Col>
+                    <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(totalPrice, currentCurrency)}</Col>
                 </Row>
             )
         })

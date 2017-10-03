@@ -69,6 +69,16 @@ const enhance = compose(
         return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
         dispatch(zoneListFetchAction(filter))
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const except = {
+            page: null,
+            openInfo: null,
+            search: null
+        }
+        return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
+    }, ({dispatch, filter}) => {
         dispatch(zoneStatisticsFetchAction(filter))
     }),
 
@@ -97,9 +107,9 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const prevId = _.get(props, ['params', 'zoneId'])
-        const nextId = _.get(nextProps, ['params', 'zoneId'])
-        return prevId !== nextId
+        const prevSearch = _.get(props, ['locatioin', 'query', 'search'])
+        const nextSearch = _.get(nextProps, ['locatioin', 'query', 'search'])
+        return prevSearch !== nextSearch
     }, ({dispatch, query}) => {
         const search = _.get(query, 'search')
         dispatch(zoneListSearchFetchAction(search))
