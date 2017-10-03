@@ -7,15 +7,13 @@ import Container from '../../Container/index'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import {Field} from 'redux-form'
-import ReactHighcharts from 'react-highcharts'
 import StatSideMenu from '../StatSideMenu'
 import Pagination from '../../GridList/GridListNavPagination'
 import numberFormat from '../../../helpers/numberFormat'
 import StatSaleDialog from './SalesDialog'
-import {StatisticsFilterExcel} from '../../Statistics'
+import {StatisticsFilterExcel, StatisticsChart} from '../../Statistics'
 import moment from 'moment'
 import CircularProgress from 'material-ui/CircularProgress'
-import dateFormat from '../../../helpers/dateFormat'
 import getConfig from '../../../helpers/getConfig'
 import NotFound from '../../Images/not-found.png'
 import {
@@ -221,105 +219,8 @@ const StatSalesGridList = enhance((props) => {
         return _.toNumber(_.get(item, 'returnAmount'))
     })
     const valueName = _.map(_.get(graphData, 'data'), (item) => {
-        return dateFormat(_.get(item, 'date'))
+        return _.get(item, 'date')
     })
-
-    const config = {
-        chart: {
-            type: 'areaspline',
-            height: 180
-        },
-        title: {
-            text: '',
-            style: {
-                display: 'none'
-            }
-        },
-        legend: {
-            enabled: false
-        },
-        credits: {
-            enabled: false
-        },
-        yAxis: {
-            title: {
-                text: '',
-                style: {
-                    display: 'none'
-                }
-            },
-            gridLineColor: '#fff',
-            plotLines: [{
-                value: 0,
-                width: 1,
-                color: 'transparent'
-            }],
-            labels: {
-                enabled: false
-            },
-            lineWidth: 0,
-            minorGridLineWidth: 0,
-            lineColor: 'transparent',
-            minorTickLength: 0,
-            tickLength: 0
-        },
-        xAxis: {
-            categories: valueName,
-            lineWidth: 0,
-            minorGridLineWidth: 0,
-            lineColor: 'transparent',
-            minorTickLength: 0,
-            tickLength: 0,
-            labels: {
-                enabled: false
-            }
-        },
-        plotOptions: {
-            series: {
-                lineWidth: 0,
-                pointPlacement: 'on'
-            },
-            areaspline: {
-                fillOpacity: 0.7
-            }
-        },
-        tooltip: {
-            shared: true,
-            valueSuffix: ' ' + getConfig('PRIMARY_CURRENCY'),
-            backgroundColor: '#363636',
-            style: {
-                color: '#fff'
-            },
-            borderRadius: 2,
-            borderWidth: 0,
-            enabled: true,
-            shadow: true,
-            useHTML: true,
-            crosshairs: true,
-            pointFormat: '<div class="diagramTooltip">' +
-                                '{series.name}: {point.y}' +
-                        '</div>'
-        },
-        series: [{
-            marker: {
-                enabled: false,
-                symbol: 'circle'
-            },
-            name: 'Продажа',
-            data: value,
-            color: '#6cc6de'
-
-        },
-        {
-            marker: {
-                enabled: false,
-                symbol: 'circle'
-            },
-            name: 'Возврат',
-            data: returnedValue,
-            color: '#EB9696'
-        }]
-    }
 
     const headerStyle = {
         backgroundColor: '#fff',
@@ -333,8 +234,8 @@ const StatSalesGridList = enhance((props) => {
             <Col xs={2}>Дата</Col>
             <Col xs={3}>Магазин</Col>
             <Col xs={2}>Агент</Col>
-            <Col xs={2}>Возврат</Col>
-            <Col xs={2} style={{textAlign: 'right'}}>Сумма</Col>
+            <Col xs={2} style={{justifyContent: 'flex-end'}}>Возврат</Col>
+            <Col xs={2} style={{justifyContent: 'flex-end'}}>Сумма</Col>
         </Row>
     )
 
@@ -357,8 +258,8 @@ const StatSalesGridList = enhance((props) => {
                     <Col xs={2}>
                         <div>{firstName} {secondName}</div>
                     </Col>
-                    <Col xs={2}>{numberFormat(returnPrice, currentCurrency)}</Col>
-                    <Col xs={2} style={{textAlign: 'right'}}>{numberFormat(totalPrice, currentCurrency)}</Col>
+                    <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(returnPrice, currentCurrency)}</Col>
+                    <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(totalPrice, currentCurrency)}</Col>
                 </Row>
             )
         })
@@ -412,7 +313,14 @@ const StatSalesGridList = enhance((props) => {
                                         <div>{numberFormat(sum - returnSum, getConfig('PRIMARY_CURRENCY'))}</div>
                                     </Col>
                                     <Col xs={9}>
-                                        <ReactHighcharts config={config} neverReflow={true} isPureConfig={true}/>
+                                        <StatisticsChart
+                                            primaryValues={value}
+                                            secondaryValues={returnedValue}
+                                            tooltipTitle={valueName}
+                                            primaryText="Продажа"
+                                            secondaryText="Возврат"
+                                             height={180}
+                                        />
                                     </Col>
                                 </Row>}
                                 <div className={classes.pagination}>

@@ -53,7 +53,7 @@ const enhance = compose(
         },
         wrapper: {
             WebkitTransition: 'all 500ms ease',
-            padding: '20px 30px',
+            padding: '20px 30px 0',
             display: 'flex',
             flexDirection: 'column',
             '& > div:nth-child(3)': {
@@ -428,7 +428,6 @@ const StatProductMoveGridList = enhance((props) => {
                                     <div>По вашему запросу ничего не найдено</div>
                                 </div>}
                     </div>
-                    }
                 </div>
             </Row>
         </div>

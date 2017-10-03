@@ -48,11 +48,6 @@ const listHeader = [
 const colorBlue = '#12aaeb !important'
 const enhance = compose(
     injectSheet({
-        addButton: {
-            '& button': {
-                backgroundColor: '#275482 !important'
-            }
-        },
         addButtonWrapper: {
             position: 'absolute',
             top: '10px',
@@ -205,7 +200,8 @@ const ClientGridList = enhance((props) => {
                 <Tooltip position="left" text="Добавить клиента">
                     <FloatingActionButton
                         mini={true}
-                        className={classes.addButton}
+                        zDepth={1}
+                        backgroundColor="#12aaeb"
                         onTouchTap={createDialog.handleOpenCreateDialog}>
                         <ContentAdd />
                     </FloatingActionButton>

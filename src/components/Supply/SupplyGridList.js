@@ -23,6 +23,7 @@ import ContentAdd from 'material-ui/svg-icons/content/add'
 import SupplyExpenseCreateDialog from './SupplyExpenseCreateDialog'
 import Tooltip from '../ToolTip'
 import numberFormat from '../../helpers/numberFormat'
+import dateFormat from '../../helpers/dateFormat'
 import {connect} from 'react-redux'
 
 const listHeader = [
@@ -53,6 +54,7 @@ const listHeader = [
     {
         sorting: true,
         name: 'totalCost',
+        alignRight: true,
         title: 'Цена заказа',
         xs: 2
     },
@@ -65,12 +67,14 @@ const listHeader = [
     {
         sorting: true,
         name: 'acceptedCost',
+        alignRight: true,
         title: 'Принято',
         xs: 1
     },
     {
         sorting: true,
         name: 'defectedCost',
+        alignRight: true,
         title: 'Браковано',
         xs: 1
     }
@@ -78,11 +82,6 @@ const listHeader = [
 
 const enhance = compose(
     injectSheet({
-        addButton: {
-            '& button': {
-                backgroundColor: '#275482 !important'
-            }
-        },
         addButtonWrapper: {
             position: 'absolute',
             top: '10px',
@@ -207,7 +206,7 @@ const SupplyGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const name = _.get(_.get(item, 'provider'), 'name')
         const stock = _.get(_.get(item, 'stock'), 'name') || 'N/A'
-        const dateDelivery = _.get(item, 'dateDelivery') || 'Не указано'
+        const dateDelivery = _.get(item, 'dateDelivery') ? dateFormat(_.get(item, 'dateDelivery')) : 'Не указано'
         const totalCost = numberFormat(_.get(item, 'totalCost'), _.get(item, ['currency', 'name']))
         const acceptedCost = numberFormat(_.get(item, 'acceptedCost'), _.get(item, ['currency', 'name']))
         const defectedCost = numberFormat(_.get(item, 'defectedCost'), _.get(item, ['currency', 'name']))
@@ -224,13 +223,13 @@ const SupplyGridList = enhance((props) => {
                 <Col xs={2}>{name}</Col>
                 <Col xs={2}>{stock}</Col>
                 <Col xs={2}>{dateDelivery}</Col>
-                <Col xs={2}>{totalCost}</Col>
+                <Col xs={2} style={{textAlign: 'right'}}>{totalCost}</Col>
                 <Col xs={1}>{status === PENDING ? (<span><i className={classes.waiting}/> ожидает</span>)
                     : ((status === IN_PROGRESS) ? (<span><i className={classes.begin}/> начался</span>)
                         : (status === COMPLETED) ? (<span><i className={classes.success}/> принято</span>)
                             : (<span><i className={classes.error}/> отменен</span>))}</Col>
-                <Col xs={1}>{acceptedCost}</Col>
-                <Col xs={1}>{defectedCost}</Col>
+                <Col xs={1} style={{textAlign: 'right'}}>{acceptedCost}</Col>
+                <Col xs={1} style={{textAlign: 'right'}}>{defectedCost}</Col>
             </Row>
         )
     })
@@ -252,7 +251,8 @@ const SupplyGridList = enhance((props) => {
                 <Tooltip position="left" text="Добавить поставку">
                     <FloatingActionButton
                         mini={true}
-                        className={classes.addButton}
+                        zDepth={1}
+                        backgroundColor="#12aaeb"
                         onTouchTap={createDialog.handleOpenCreateDialog}>
                         <ContentAdd/>
                     </FloatingActionButton>

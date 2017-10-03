@@ -7,7 +7,6 @@ import Container from '../../Container/index'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
-import ReactHighcharts from 'react-highcharts'
 import {
     DateToDateField,
     TransactionTypeSearchField,
@@ -16,10 +15,9 @@ import {
 } from '../../ReduxForm'
 import StatSideMenu from '../StatSideMenu'
 import getConfig from '../../../helpers/getConfig'
-import dateFormat from '../../../helpers/dateFormat'
 import numberFormat from '../../../helpers/numberFormat'
 import CircularProgress from 'material-ui/CircularProgress'
-import {StatisticsFilterExcel} from '../../Statistics'
+import {StatisticsFilterExcel, StatisticsChart} from '../../Statistics'
 import TransactionsList from './TransactionsList'
 
 export const STAT_FINANCE_FILTER_KEY = {
@@ -178,101 +176,14 @@ const StatFinanceGridList = enhance((props) => {
         return _.toNumber(_.get(item, 'amount')) * NEGATIVE
     })
     const valueInName = _.map(_.get(graphData, 'dataIn'), (item) => {
-        return dateFormat(_.get(item, 'date'))
+        return _.get(item, 'date')
     })
+    const valueOutName = _.map(_.get(graphData, 'dataOut'), (item) => {
+        return _.get(item, 'date')
+    })
+    const tooltipDate = valueInName.length < valueOutName.length ? valueOutName : valueInName
     const graphLoading = _.get(graphData, 'graphInLoading') || _.get(graphData, 'graphOutLoading')
     const profit = sumIn - sumOut
-    const config = {
-        chart: {
-            type: 'areaspline',
-            height: 160
-        },
-        title: {
-            text: '',
-            style: {
-                display: 'none'
-            }
-        },
-        legend: {
-            enabled: false
-        },
-        credits: {
-            enabled: false
-        },
-        xAxis: {
-            categories: valueInName,
-            tickmarkPlacement: 'on',
-            title: {
-                text: '',
-                style: {
-                    display: 'none'
-                }
-            }
-        },
-        yAxis: {
-            title: {
-                text: '',
-                style: {
-                    display: 'none'
-                }
-            },
-            gridLineColor: '#efefef',
-            plotLines: [{
-                value: 0,
-                width: 1,
-                color: '#808080'
-            }]
-        },
-        plotOptions: {
-            series: {
-                lineWidth: 0,
-                pointPlacement: 'on'
-            },
-            areaspline: {
-                fillOpacity: 0.7
-            }
-        },
-        tooltip: {
-            shared: true,
-            valueSuffix: ' ' + primaryCurrency,
-            backgroundColor: '#fff',
-            style: {
-                color: '#666',
-                fontFamily: 'Open Sans',
-                fontWeight: '600'
-            },
-            borderRadius: 0,
-            borderWidth: 0,
-            enabled: true,
-            shadow: true,
-            useHTML: true,
-            crosshairs: true,
-            pointFormat:
-            '<div class="diagramTooltip">' +
-            '{series.name}: {point.y}' +
-            '</div>'
-        },
-        series: [{
-            marker: {
-                enabled: false,
-                symbol: 'circle'
-            },
-            name: 'Доход',
-            data: valueIn,
-            color: '#6cc6de'
-
-        },
-        {
-            marker: {
-                enabled: false,
-                symbol: 'circle'
-            },
-            name: 'Расход',
-            data: valueOut,
-            color: '#EB9696'
-
-        }]
-    }
 
     const fields = (
         <div>
@@ -319,7 +230,14 @@ const StatFinanceGridList = enhance((props) => {
                                 </div>
                             </Col>
                             <Col xs={9} className={classes.chart}>
-                                <ReactHighcharts config={config} neverReflow={true} isPureConfig={true}/>
+                                <StatisticsChart
+                                    primaryText="Доход"
+                                    secondaryText="Расход"
+                                    primaryValues={valueIn}
+                                    secondaryValues={valueOut}
+                                    tooltipTitle={tooltipDate}
+                                    height={160}
+                                />
                             </Col>
                         </Row>}
                         <TransactionsList
