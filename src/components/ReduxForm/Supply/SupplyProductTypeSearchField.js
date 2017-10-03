@@ -1,7 +1,7 @@
 import sprintf from 'sprintf'
 import _ from 'lodash'
 import React from 'react'
-import SearchFieldCustom from './SupplySelectSearchField'
+import SearchFieldCustom from '../Basic/ParentSearchField'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'

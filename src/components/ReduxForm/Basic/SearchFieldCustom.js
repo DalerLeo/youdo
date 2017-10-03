@@ -70,9 +70,7 @@ const enhance = compose(
                 overflowY: 'unset',
                 zIndex: '6',
                 border: 'unset',
-                marginTop: '5px',
-                maxHeight: '200px',
-                minWidth: '250px'
+                marginTop: '5px'
             },
             '& .Select-control': {
                 borderRadius: '0px',

@@ -40,7 +40,7 @@ const enhance = compose(
             },
             '& .Select-menu-outer': {
                 maxHeight: '200px',
-                zIndex: '9999',
+                zIndex: '99',
                 boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px 3px, rgba(0, 0, 0, 0.12) 0px 1px 4px'
             },
             '& .Select-control': {
