@@ -47,6 +47,7 @@ const enhance = compose(
                 borderRadius: '0px',
                 border: '0',
                 borderBottom: '1px solid #e8e8e8',
+                backgroundColor: 'unset',
                 '& .Select-value': {
                     paddingLeft: '0'
                 },
@@ -63,7 +64,7 @@ const enhance = compose(
                 overflow: 'hidden'
             },
             '& .Select-option.is-focused, .Select-option.is-selected': {
-                background: '#f2f5f8'
+                background: 'unset'
             }
         }
     }),

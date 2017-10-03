@@ -274,7 +274,6 @@ const OrderCreateDialog = enhance((props) => {
                     : <div className={classes.innerWrap}>
                         <div style={{minHeight: '470px', maxHeight: '75vh'}} className={classes.inContent}>
                             <div className={classes.leftOrderPart}>
-
                                 <div className={classes.subTitleOrder}>
                                     <span>Выбор клиента</span>
                                     <Link style={{color: '#12aaeb'}}
@@ -349,6 +348,7 @@ const OrderCreateDialog = enhance((props) => {
                                     editOnlyCost={status === DELIVERED || status === GIVEN}
                                     canChangeAnyPrice={canChangeAnyPrice}
                                     component={OrderListProductField}
+                                    isUpdate={isUpdate}
                                 />
                             </div>
                         </div>

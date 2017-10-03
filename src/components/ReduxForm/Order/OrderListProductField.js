@@ -278,20 +278,24 @@ const enhance = compose(
 
     lifecycle({
         componentDidMount () {
-            const cancelBtn = ReactDOM.findDOMNode(this.refs.cancel)
-            const confirmBtn = ReactDOM.findDOMNode(this.refs.confirm)
-            const confirmDialog = ReactDOM.findDOMNode(this.refs.confirmDialog)
-            cancelBtn.addEventListener('click', () => {
-                confirmDialog.style.zIndex = '-10'
-            })
-            confirmBtn.addEventListener('click', () => {
-                confirmDialog.style.zIndex = '-10'
-            })
+            if (_.get(this.props, 'isUpdate')) {
+                const cancelBtn = ReactDOM.findDOMNode(this.refs.cancel)
+                const confirmBtn = ReactDOM.findDOMNode(this.refs.confirm)
+                const confirmDialog = ReactDOM.findDOMNode(this.refs.confirmDialog)
+                cancelBtn.addEventListener('click', () => {
+                    confirmDialog.style.zIndex = '-10'
+                })
+                confirmBtn.addEventListener('click', () => {
+                    confirmDialog.style.zIndex = '-10'
+                })
+            }
         },
         componentWillReceiveProps (props) {
-            const confirmDialog = ReactDOM.findDOMNode(this.refs.confirmDialog)
-            if (props.paymentType !== initialPaymentType) {
-                confirmDialog.style.zIndex = '10'
+            if (_.get(props, 'isUpdate')) {
+                const confirmDialog = ReactDOM.findDOMNode(this.refs.confirmDialog)
+                if (props.paymentType !== initialPaymentType) {
+                    confirmDialog.style.zIndex = '10'
+                }
             }
         }
     })
@@ -329,7 +333,8 @@ const OrderListProductField = enhance((props) => {
         measurement,
         customPrice,
         paymentType,
-        handleChangePT
+        handleChangePT,
+        isUpdate
     } = props
     const ONE = 1
     const editOnlyCost = _.get(props, 'editOnlyCost')
@@ -341,7 +346,7 @@ const OrderListProductField = enhance((props) => {
 
     return (
         <div className={classes.wrapper}>
-            <div ref="confirmDialog" className={classes.confirm} style={(paymentType !== initialPaymentType) ? {zIndex: 10} : {zIndex: -10}}>
+            {isUpdate && <div ref="confirmDialog" className={classes.confirm} style={(paymentType !== initialPaymentType) ? {zIndex: 10} : {zIndex: -10}}>
                 <div className={classes.confirmButtons}>
                     <div>Цены товаров будут изменены на {(paymentType === 'cash' ? 'наличные' : 'банковский счет')}</div>
                     <FlatButton
@@ -360,7 +365,7 @@ const OrderListProductField = enhance((props) => {
                         onTouchTap={handleChangePT}
                     />
                 </div>
-            </div>
+            </div>}
             <div>
                 <div className={classes.headers} style={{marginTop: '-10px'}}>
                     <div className={classes.title}>Список товаров</div>
