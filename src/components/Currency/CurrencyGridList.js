@@ -177,6 +177,7 @@ const enhance = compose(
             margin: '0 -30px !important',
             width: 'auto !important',
             padding: '0 30px',
+            cursor: 'pointer',
             '&:hover > div:last-child > div ': {
                 opacity: '1'
             }
@@ -238,9 +239,9 @@ const CurrencyGridList = enhance((props) => {
         const createdDate = moment(_.get(_.find(_.get(detailData, ['data', 'results']), {'currency': id}), 'createdDate')).format('DD.MM.YYYY')
         if (name !== currentCurrency) {
             return (
-                <Row key={id} className={classes.listRow}>
+                <Row key={id} className={classes.listRow} onClick={() => { listData.handleCurrencyClick(id) }}>
                     <Col xs={1}>{id}</Col>
-                    <Col xs={3} className={classes.cursor} onClick={() => { listData.handleCurrencyClick(id) }}>{name}</Col>
+                    <Col xs={3} className={classes.cursor}>{name}</Col>
                     <Col xs={4}>1 {reversedRate ? name : currentCurrency} = {rate} {reversedRate ? currentCurrency : name}</Col>
                     <Col xs={3}>{createdDate}</Col>
                     <Col xs={1} style={{textAlign: 'right'}}>

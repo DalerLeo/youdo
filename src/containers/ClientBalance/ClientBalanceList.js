@@ -10,6 +10,7 @@ import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
+import getDocuments from '../../helpers/getDocument'
 import {
     CLIENT_BALANCE_INFO_DIALOG_OPEN,
     CLIENT_BALANCE_FILTER_KEY,
@@ -26,8 +27,10 @@ import {
     clientAddAction,
     superUserAction
 } from '../../actions/clientBalance'
+import * as API from '../../constants/api'
 import {openSnackbarAction} from '../../actions/snackbar'
 import {openErrorAction} from '../../actions/error'
+import * as serializers from '../../serializers/clientBalanceSerializer'
 
 const ZERO = 0
 const enhance = compose(
@@ -264,6 +267,11 @@ const enhance = compose(
                         </div>
                     }))
                 })
+        },
+        handleGetDocument: props => () => {
+            const {filter} = props
+            const params = serializers.listFilterSerializer(filter.getParams())
+            getDocuments(API.CLIENT_BALANCE_GET_DOCUMENT, params)
         }
     })
 )
@@ -367,7 +375,9 @@ const ClientBalanceList = enhance((props) => {
         handleCloseSuperUserDialog: props.handleCloseSuperUserDialog,
         handleSubmitSuperUserDialog: props.handleSubmitSuperUserDialog
     }
-
+    const getDocument = {
+        handleGetDocument: props.handleGetDocument
+    }
     return (
         <Layout {...layout}>
             <ClientBalanceGridList
@@ -381,6 +391,7 @@ const ClientBalanceList = enhance((props) => {
                 filterDialog={filterDialog}
                 superUser={superUser}
                 handleSubmitSearch={props.handleSubmitSearch}
+                getDocument={getDocument}
             />
         </Layout>
     )
