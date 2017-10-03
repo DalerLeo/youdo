@@ -8,7 +8,6 @@ import {Field} from 'redux-form'
 import List from 'material-ui/svg-icons/action/list'
 import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
-import ReactHighcharts from 'react-highcharts'
 import StatReturnDialog from './StatReturnDialog'
 import StatSideMenu from '../StatSideMenu'
 import DateToDateField from '../../ReduxForm/Basic/DateToDateField'
@@ -20,7 +19,7 @@ import * as ROUTES from '../../../constants/routes'
 import numberFormat from '../../../helpers/numberFormat'
 import dateFormat from '../../../helpers/dateFormat'
 import getConfig from '../../../helpers/getConfig'
-import {StatisticsFilterExcel} from '../../Statistics'
+import {StatisticsFilterExcel, StatisticsChart} from '../../Statistics'
 
 export const STAT_RETURN_FILTER_KEY = {
     FROM_DATE: 'fromDate',
@@ -197,96 +196,8 @@ const StatReturnGridList = enhance((props) => {
     })
 
     const valueName = _.map(_.get(graphData, 'data'), (item) => {
-        return dateFormat(_.get(item, 'date'))
+        return _.get(item, 'date')
     })
-
-    const config = {
-        chart: {
-            type: 'areaspline',
-            height: 180
-        },
-        title: {
-            text: '',
-            style: {
-                display: 'none'
-            }
-        },
-        legend: {
-            enabled: false
-        },
-        credits: {
-            enabled: false
-        },
-        yAxis: {
-            title: {
-                text: '',
-                style: {
-                    display: 'none'
-                }
-            },
-            gridLineColor: '#fff',
-            plotLines: [{
-                value: 0,
-                width: 1,
-                color: 'transparent'
-            }],
-            labels: {
-                enabled: false
-            },
-            lineWidth: 0,
-            minorGridLineWidth: 0,
-            lineColor: 'transparent',
-            minorTickLength: 0,
-            tickLength: 0
-        },
-        xAxis: {
-            categories: valueName,
-            lineWidth: 0,
-            minorGridLineWidth: 0,
-            lineColor: 'transparent',
-            minorTickLength: 0,
-            tickLength: 0,
-            labels: {
-                enabled: false
-            }
-        },
-        plotOptions: {
-            series: {
-                lineWidth: 0,
-                pointPlacement: 'on'
-            },
-            areaspline: {
-                fillOpacity: 0.7
-            }
-        },
-        tooltip: {
-            shared: true,
-            valueSuffix: ' ' + getConfig('PRIMARY_CURRENCY'),
-            backgroundColor: '#363636',
-            style: {
-                color: '#fff'
-            },
-            borderRadius: 2,
-            borderWidth: 0,
-            enabled: true,
-            shadow: true,
-            useHTML: true,
-            crosshairs: true,
-            pointFormat: '<div class="diagramTooltip">' +
-            '{series.name}: {point.y}' +
-            '</div>'
-        },
-        series: [{
-            marker: {
-                enabled: false,
-                symbol: 'circle'
-            },
-            name: 'Возврат',
-            data: returnedValue,
-            color: '#6cc6de'
-
-        }]
-    }
 
     const headers = (
         <Row style={headerStyle} className="dottedList">
@@ -374,7 +285,12 @@ const StatReturnGridList = enhance((props) => {
                                 <div>{numberFormat(returnSum, getConfig('PRIMARY_CURRENCY'))}</div>
                             </Col>
                             <Col xs={9}>
-                                <ReactHighcharts config={config} neverReflow={true} isPureConfig={true}/>
+                                <StatisticsChart
+                                    primaryText="Возврат"
+                                    primaryValues={returnedValue}
+                                    tooltipTitle={valueName}
+                                    height={180}
+                                />
                             </Col>
                         </Row>}
                         <div className={classes.pagination}>

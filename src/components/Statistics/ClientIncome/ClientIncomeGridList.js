@@ -7,7 +7,6 @@ import Container from '../../Container/index'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
-import ReactHighcharts from 'react-highcharts'
 import StatSideMenu from '../StatSideMenu'
 import Pagination from '../../GridList/GridListNavPagination/index'
 import getConfig from '../../../helpers/getConfig'
@@ -24,7 +23,7 @@ import CircularProgress from 'material-ui/CircularProgress'
 import moment from 'moment'
 import {Link} from 'react-router'
 import sprintf from 'sprintf'
-import {StatisticsFilterExcel} from '../../Statistics'
+import {StatisticsFilterExcel, StatisticsChart} from '../../Statistics'
 import NotFound from '../../Images/not-found.png'
 
 import {
@@ -101,8 +100,12 @@ const enhance = compose(
                     bottom: '-1px'
                 },
                 '& > div': {
+                    '&:first-child': {
+                        paddingLeft: '0'
+                    },
                     '&:last-child': {
-                        textAlign: 'right'
+                        textAlign: 'right',
+                        paddingRight: '0'
                     }
                 }
             },
@@ -171,7 +174,13 @@ const enhance = compose(
             overflow: 'hidden'
         },
         diagram: {
-            marginTop: '30px'
+            marginTop: '20px',
+            '& > div:first-child': {
+                paddingLeft: '0'
+            },
+            '& > div:last-child': {
+                paddingRight: '0'
+            }
         },
         summaryTitle: {
             color: '#666'
@@ -234,8 +243,12 @@ const ClientIncomeGridList = enhance((props) => {
         return _.toNumber(_.get(item, 'amount'))
     })
     const valueInName = _.map(_.get(graphData, 'dataIn'), (item) => {
-        return dateFormat(_.get(item, 'date'))
+        return _.get(item, 'date')
     })
+    const valueOutName = _.map(_.get(graphData, 'dataOut'), (item) => {
+        return _.get(item, 'date')
+    })
+    const tooltipDate = valueInName.length < valueOutName.length ? valueOutName : valueInName
 
     const sumOut = _.sumBy(_.get(graphData, 'dataOut'), (item) => {
         return _.toNumber(_.get(item, 'amount')) * NEGATIVE
@@ -246,97 +259,6 @@ const ClientIncomeGridList = enhance((props) => {
     const valueOut = _.map(_.get(graphData, 'dataOut'), (item) => {
         return _.toNumber(_.get(item, 'amount')) * NEGATIVE
     })
-    const config = {
-        chart: {
-            type: 'areaspline',
-            height: 160
-        },
-        title: {
-            text: '',
-            style: {
-                display: 'none'
-            }
-        },
-        legend: {
-            enabled: false
-        },
-        credits: {
-            enabled: false
-        },
-        xAxis: {
-            categories: valueInName,
-            tickmarkPlacement: 'on',
-            title: {
-                text: '',
-                style: {
-                    display: 'none'
-                }
-            }
-        },
-        yAxis: {
-            title: {
-                text: '',
-                style: {
-                    display: 'none'
-                }
-            },
-            gridLineColor: '#efefef',
-            plotLines: [{
-                value: 0,
-                width: 1,
-                color: '#808080'
-            }]
-        },
-        plotOptions: {
-            series: {
-                lineWidth: 0,
-                pointPlacement: 'on'
-            },
-            areaspline: {
-                fillOpacity: 0.7
-            }
-        },
-        tooltip: {
-            shared: true,
-            valueSuffix: ' ' + primaryCurrency,
-            backgroundColor: '#fff',
-            style: {
-                color: '#666',
-                fontFamily: 'Open Sans',
-                fontWeight: '600'
-            },
-            borderRadius: 0,
-            borderWidth: 0,
-            enabled: true,
-            shadow: true,
-            useHTML: true,
-            crosshairs: true,
-            pointFormat:
-            '<div class="diagramTooltip">' +
-            '{series.name}: {point.y}' +
-            '</div>'
-        },
-        series: [{
-            marker: {
-                enabled: false,
-                symbol: 'circle'
-            },
-            name: 'Доход',
-            data: valueIn,
-            color: '#81c784'
-
-        },
-        {
-            marker: {
-                enabled: false,
-                symbol: 'circle'
-            },
-            name: 'Расход',
-            data: valueOut,
-            color: '#EB9696'
-
-        }]
-    }
 
     const headerStyle = {
         backgroundColor: '#fff',
@@ -377,7 +299,7 @@ const ClientIncomeGridList = enhance((props) => {
                 <Col xs={2}>{client}</Col>
                 <Col xs={2}>{userName}</Col>
                 <Col xs={3}>
-                    {type && <div><strong>Тип:</strong> <span>{type === PAYMENT ? 'Оплата'
+                    {type && <div><span>{type === PAYMENT ? 'Оплата'
                         : type === CANCEL ? 'Отмена'
                             : type === CANCEL_ORDER ? 'Отмена заказа №' + id
                                 : type === CANCEL_ORDER_RETURN ? 'Отмена возврата №' + id
@@ -458,14 +380,21 @@ const ClientIncomeGridList = enhance((props) => {
                                 <Col xs={3} className={classes.salesSummary}>
                                     <div className={classes.secondarySummary}>
                                         <span className={classes.summaryTitle}>Приход за период</span>
-                                        <div className={classes.summaryValue} style={{color: '#81c784 '}}>{numberFormat(sumIn)} {primaryCurrency}</div>
+                                        <div className={classes.summaryValue} style={{color: '#5ecdea'}}>{numberFormat(sumIn)} {primaryCurrency}</div>
                                         <div style={{margin: '10px 0'}}>{null}</div>
                                         <span className={classes.summaryTitle}>Расход за период</span>
                                         <div className={classes.summaryValue} style={{color: '#EB9696'}}>{numberFormat(sumOut)} {primaryCurrency}</div>
                                     </div>
                                 </Col>
                                 <Col xs={9} className={classes.chart}>
-                                    <ReactHighcharts config={config} neverReflow={true} isPureConfig={true}/>
+                                    <StatisticsChart
+                                        tooltipTitle={tooltipDate}
+                                        primaryValues={valueIn}
+                                        secondaryValues={valueOut}
+                                        primaryText="Приход"
+                                        secondaryText="Расход"
+                                        height={160}
+                                    />
                                 </Col>
                             </Row>}
                         <div className={classes.pagination}>
