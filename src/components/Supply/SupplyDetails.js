@@ -13,8 +13,9 @@ import Person from '../Images/person.png'
 import Dot from '../Images/dot.png'
 import CloseIcon from '../CloseIcon'
 import numberFormat from '../../helpers/numberFormat'
+import dateTimeFormat from '../../helpers/dateTimeFormat'
+import dateFormat from '../../helpers/dateFormat'
 import Tooltip from '../ToolTip'
-import moment from 'moment'
 import Pagination from '../GridList/GridListNavPagination'
 
 const colorBlue = '#12aaeb'
@@ -189,7 +190,9 @@ const enhance = compose(
                     paddingBottom: '20px',
                     width: '100%',
                     justifyContent: 'space-between',
-                    fontWeight: 'bold',
+                    '& > div:first-child': {
+                        fontWeight: 'bold'
+                    },
                     '& .expenseButton > div > span ': {
                         color: '#12aaeb !important',
                         textTransform: 'inherit !important'
@@ -313,9 +316,9 @@ const SupplyDetails = enhance((props) => {
     const contactPerson = _.get(contact, 'name')
     const contactEmail = _.get(contact, 'email')
     const contactPhone = _.get(contact, 'phone')
-    const dateDelivery = _.get(data, 'dateDelivery') || 'Не указано'
-    const acceptedTime = (_.get(data, 'acceptedTime')) ? moment(_.get(data, 'acceptedTime')).format('DD.MM.YYYY HH:mm:ss') : 'Не началась'
-    const finishedTime = (_.get(data, 'finishedTime')) ? moment(_.get(data, 'finishedTime')).format('DD.MM.YYYY HH:mm:ss') : 'Не закончилась'
+    const dateDelivery = _.get(data, 'dateDelivery') ? dateFormat(_.get(data, 'dateDelivery')) : 'Не указано'
+    const acceptedTime = (_.get(data, 'acceptedTime')) ? dateTimeFormat(_.get(data, 'acceptedTime')) : 'Не началась'
+    const finishedTime = (_.get(data, 'finishedTime')) ? dateTimeFormat(_.get(data, 'finishedTime')) : 'Не закончилась'
     const totalCost = _.get(data, 'totalCost')
     const comment = _.get(data, 'comment')
     const IN_PROGRESS = 1

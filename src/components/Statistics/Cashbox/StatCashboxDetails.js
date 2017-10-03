@@ -9,10 +9,8 @@ import {Field} from 'redux-form'
 import DateToDateField from '../../ReduxForm/Basic/DateToDateField'
 import Back from 'material-ui/svg-icons/content/reply'
 import NotFound from '../../Images/not-found.png'
-import dateFormat from '../../../helpers/dateFormat'
-import ReactHighcharts from 'react-highcharts'
 import TransactionsList from '../Finance/TransactionsList'
-import {StatisticsFilterExcel} from '../../Statistics'
+import {StatisticsFilterExcel, StatisticsChart} from '../../Statistics'
 
 export const STAT_CASHBOX_DETAIL_FILTER_KEY = {
     DIVISION: 'division',
@@ -206,104 +204,9 @@ const StatCashboxDetails = enhance((props) => {
         return _.toNumber(_.get(item, 'balance'))
     })
     const date = _.map(_.get(detailData, ['itemGraph']), (item) => {
-        return dateFormat(_.get(item, 'date'))
+        return _.get(item, 'date')
     })
 
-    const ZERO = 0
-    const TEN = 10
-    const config = {
-        chart: {
-            type: 'area',
-            height: 120,
-            showAxes: false,
-            spacing: [ZERO, TEN, ZERO, TEN]
-        },
-        title: {
-            text: '',
-            style: {
-                display: 'none'
-            }
-        },
-        legend: {
-            enabled: false
-        },
-        credits: {
-            enabled: false
-        },
-        yAxis: {
-            title: {
-                text: '',
-                style: {
-                    display: 'none'
-                }
-            },
-            gridLineColor: '#fff',
-            plotLines: [{
-                value: 0,
-                width: 1,
-                color: 'transparent'
-            }],
-            labels: {
-                enabled: false
-            },
-            lineWidth: 0,
-            minorGridLineWidth: 0,
-            lineColor: 'transparent',
-            minorTickLength: 0,
-            tickLength: 0
-        },
-        xAxis: {
-            categories: date,
-            lineWidth: 0,
-            minorGridLineWidth: 0,
-            lineColor: 'transparent',
-            minorTickLength: 0,
-            tickLength: 0,
-            labels: {
-                enabled: false
-            }
-        },
-        plotOptions: {
-            series: {
-                lineWidth: 0,
-                pointPlacement: 'on'
-            },
-            area: {
-                fillColor: '#bfebf7',
-                lineColor: '#3aa8c6'
-            }
-        },
-        tooltip: {
-            shared: true,
-            valueSuffix: 'USD',
-            backgroundColor: '#fff',
-            borderColor: '#ccc',
-            style: {
-                color: '#333',
-                fontFamily: 'Open Sans',
-                fontSize: '11px'
-            },
-            borderRadius: 0,
-            borderWidth: 1,
-            enabled: true,
-            shadow: false,
-            useHTML: true,
-            crosshairs: false,
-            pointFormat: '{series.name}: <strong>{point.y}</strong>'
-        },
-        series: [{
-            marker: {
-                enabled: false,
-                symbol: 'circle',
-                fillColor: '#3aa8c6',
-                radius: 2
-            },
-            name: 'Баланс',
-            data: graphAmount,
-            color: '#3aa8c6'
-
-        }]
-    }
     const handleCloseDetail = _.get(detailData, 'handleCloseDetail')
     const startBalance = _.get(detailData, ['sumItemData', 'startBalance'])
     const endBalance = _.get(detailData, ['sumItemData', 'endBalance'])
@@ -373,7 +276,12 @@ const StatCashboxDetails = enhance((props) => {
                                 </div>
                             </div>
                             <div style={{width: 'calc(100% - 440px)'}}>
-                                <ReactHighcharts config={config} neverReflow={true} isPureConfig={true}/>
+                                <StatisticsChart
+                                    primaryText="Баланс"
+                                    primaryValues={graphAmount}
+                                    tooltipTitle={date}
+                                    height={120}
+                                />
                             </div>
                         </Row>
                     </div>}

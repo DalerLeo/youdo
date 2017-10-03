@@ -10,11 +10,11 @@ import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {convertTransfer} from '../../helpers/convertCurrency'
 import {TextField, CashboxTypeSearchField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import MainStyles from '../Styles/MainStyles'
 import normalizeNumber from '../ReduxForm/normalizers/normalizeNumber'
+import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -72,25 +72,25 @@ const enhance = compose(
     }),
     connect((state) => {
         const chosenCashbox = _.get(state, ['form', 'TransactionCreateForm', 'values', 'categoryId', 'value'])
-        const amount = _.get(state, ['form', 'TransactionCreateForm', 'values', 'amount'])
-        const rate = _.get(state, ['form', 'TransactionCreateForm', 'values', 'custom_rate'])
+        const amountFrom = _.get(state, ['form', 'TransactionCreateForm', 'values', 'amountFrom'])
+        const amountTo = _.get(state, ['form', 'TransactionCreateForm', 'values', 'amountTo'])
         return {
             chosenCashbox,
-            amount,
-            rate
+            amountFrom,
+            amountTo
         }
     })
 )
 
 const TransactionSendDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, cashboxData, chosenCashbox, amount, rate} = props
+    const {open, loading, handleSubmit, onClose, classes, cashboxData, chosenCashbox, amountFrom, amountTo} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const cashbox = _.find(_.get(cashboxData, 'data'), {'id': _.get(cashboxData, 'cashboxId')})
     const chosenCurrencyId = _.get(_.find(_.get(cashboxData, 'data'), {'id': chosenCashbox}), ['currency', 'id'])
-    const currentCurrencyId = _.get(_.find(_.get(cashboxData, 'data'), {'id': _.get(cashboxData, 'cashboxId')}), ['currency', 'id'])
     const currentCurrencyName = _.get(_.find(_.get(cashboxData, 'data'), {'id': _.get(cashboxData, 'cashboxId')}), ['currency', 'name'])
     const chosenCurrencyName = _.get(_.find(_.get(cashboxData, 'data'), {'id': chosenCashbox}), ['currency', 'name'])
-    const convertAmount = convertTransfer(amount, rate)
+    const customRate = _.toNumber(numberWithoutSpaces(amountFrom)) / _.toNumber(numberWithoutSpaces(amountTo))
+    const ROUND_VAL = 5
 
     return (
         <Dialog
@@ -125,28 +125,32 @@ const TransactionSendDialog = enhance((props) => {
                                 label="Касса получатель"
                                 fullWidth={true}/>
                             <div className={classes.flex} style={{justifyContent: 'space-between'}}>
-                                <div style={{display: 'flex', alignItems: 'baseline', width: '49%'}}>
+                                <div style={{display: 'flex', alignItems: 'baseline', width: '48%'}}>
                                     {cashbox && <Field
-                                        name="amount"
+                                        name="amountFrom"
                                         className={classes.inputFieldCustom}
                                         component={TextField}
-                                        label="Сумма"
+                                        label="Сумма с кассы"
                                         normalize={normalizeNumber}
                                         fullWidth={true}/>}
-                                    <span style={{marginLeft: '10px'}}>{_.get(cashbox, ['currency', 'name'])}</span>
+                                    <span style={{marginLeft: '10px'}}>{currentCurrencyName}</span>
                                 </div>
-                                {(chosenCurrencyId !== currentCurrencyId && chosenCurrencyId) &&
-                                <div style={{width: '47%'}}>
+                                {chosenCurrencyId &&
+                                <div style={{display: 'flex', alignItems: 'baseline', width: '48%'}}>
                                     <Field
-                                        name="custom_rate"
+                                        name="amountTo"
                                         className={classes.inputFieldCustom}
                                         component={TextField}
-                                        label="Курс"
+                                        label="Сумма в кассу"
+                                        normalize={normalizeNumber}
                                         fullWidth={true}/>
+                                    <span style={{marginLeft: '10px'}}>{chosenCurrencyName}</span>
                                 </div>}
                             </div>
-                            {(rate && chosenCurrencyId !== currentCurrencyId && chosenCurrencyId) && <div style={{padding: '10px 0'}}>1{currentCurrencyName} = {rate} {chosenCurrencyName}</div>}
-                            {(amount && rate) && <div style={{padding: '10px 0'}}>После конвертации: <strong>{convertAmount} {chosenCurrencyName}</strong></div>}
+                            {(amountFrom && amountTo) &&
+                            <div style={{padding: '10px 0'}}>
+                                Курс: <strong>{chosenCurrencyName}</strong> к <strong>{currentCurrencyName}</strong> = {_.round(customRate, ROUND_VAL)}
+                            </div>}
                             <Field
                                 name="comment"
                                 className={classes.inputFieldCustom}

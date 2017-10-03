@@ -204,7 +204,7 @@ const actionIconStyle = {
         width: 30,
         height: 30,
         padding: 0,
-        backgroundColor: '#275482'
+        backgroundColor: '#12aaeb'
 
     }
 }
@@ -315,7 +315,8 @@ const RemainderGridList = enhance((props) => {
 
             <div className="sendButtonWrapper">
                 <FloatingActionButton
-                    className={classes.sendButton}
+                    zDepth={1}
+                    backgroundColor="#12aaeb"
                     mini={true}>
                     <MoreHortIcon />
                 </FloatingActionButton>
@@ -324,6 +325,7 @@ const RemainderGridList = enhance((props) => {
                     <li style={{left: '60px'}}>
                         <Tooltip position="bottom" text="Списание товара">
                             <FloatingActionButton
+                                zDepth={1}
                                 iconStyle={actionIconStyle.icon}
                                 style={actionIconStyle.button}
                                 onTouchTap={discardDialog.handleOpenDiscardDialog}>
@@ -335,6 +337,7 @@ const RemainderGridList = enhance((props) => {
                     <li style={{left: '70px'}}>
                         <Tooltip position="bottom" text="Передача товаров">
                             <FloatingActionButton
+                                zDepth={1}
                                 iconStyle={actionIconStyle.icon}
                                 style={actionIconStyle.button}
                                 onTouchTap={transferDialog.handleOpenTransferDialog}>
