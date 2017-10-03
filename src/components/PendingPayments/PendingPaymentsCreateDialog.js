@@ -206,7 +206,9 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                                             fullWidth={true}
                                             className={classes.inputFieldCustom}
                                             name="customRate"/>
-                                    </div> : null}
+                                    </div> : (currency && currency !== primaryCurrency)
+                                                ? <div className={classes.customCurrency}>Курс :{numberformat(currentRate, currency)}</div>
+                                                    : null}
 
                             </div>
                         </div>
