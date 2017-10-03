@@ -11,6 +11,7 @@ import FlatButton from 'material-ui/FlatButton'
 import CloseIcon2 from '../CloseIcon2'
 import * as ROUTES from '../../constants/routes'
 import {Link} from 'react-router'
+import {connect} from 'react-redux'
 import {
     ClientSearchField,
     OrderListProductField,
@@ -18,7 +19,8 @@ import {
     UsersSearchField
 } from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
-import OrderTotalSum from '../ReduxForm/Order/OrderTotalSum'
+import numberFormat from '../../helpers/numberFormat'
+import getConfig from '../../helpers/getConfig'
 import OrderDealTypeRadio from '../ReduxForm/Order/OrderDealTypeRadio'
 import OrderPaymentTypeRadio from '../ReduxForm/Order/OrderPaymentTypeRadio'
 import MarketSearchField from '../ReduxForm/ClientBalance/MarketSearchField'
@@ -211,7 +213,13 @@ const enhance = compose(
     reduxForm({
         form: 'OrderCreateForm',
         enableReinitialize: true
-    })
+    }),
+    connect((state) => {
+        const orderProducts = _.get(state, ['form', 'OrderCreateForm', 'values', 'products'])
+        return {
+            orderProducts
+        }
+    }),
 )
 
 const customContentStyle = {
@@ -232,9 +240,15 @@ const OrderCreateDialog = enhance((props) => {
         canChangeAnyPrice,
         filter,
         clientId,
-        loading
+        loading,
+        orderProducts
     } = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+    const totalCost = _.sumBy(orderProducts, (item) => {
+        const amount = _.toNumber(_.get(item, 'amount'))
+        const cost = _.toNumber(_.get(item, 'cost'))
+        return (amount * cost)
+    })
     let notEnough = false
     _.map(products, (item) => {
         const amount = _.toNumber(_.get(item, 'amount'))
@@ -355,7 +369,7 @@ const OrderCreateDialog = enhance((props) => {
                     </div>}
                     <div className={classes.bottomButton}>
                         <div className={classes.commentField}>
-                            Общая сумма заказа: <OrderTotalSum/>
+                            Общая сумма заказа: <b>{numberFormat(totalCost, getConfig('PRIMARY_CURRENCY'))}</b>
                         </div>
                         {(notEnough) ? <FlatButton
                             label="Далее"

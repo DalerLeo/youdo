@@ -161,13 +161,16 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_DELETE_DIALOG_OPEN]: false})})
         },
         handleExpenseConfirmDialog: props => () => {
-            const {dispatch, filter, location: {pathname}, cashboxId, params} = props
+            const {dispatch, filter, filterCashbox, location: {pathname}, cashboxId, params} = props
             const transId = _.toInteger(_.get(params, 'transactionId'))
             dispatch(transactionDeleteAction(transId))
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_DELETE_DIALOG_OPEN]: false})})
                     dispatch(transactionListFetchAction(filter, cashboxId))
                     return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
+                })
+                .then(() => {
+                    dispatch(cashboxListFetchAction(filterCashbox))
                 })
                 .catch(() => {
                     return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
