@@ -29,9 +29,7 @@ export const listFilterSerializer = (data) => {
 export const itemFilterSerializer = (data, id, division, type) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
-    const CASH = 0
-    const BANK = 1
-    const paymentType = (type === 'cash') ? CASH : (type === 'bank') ? BANK : null
+    const paymentType = type || null
     return {
         'client': id,
         'division': division,
@@ -43,10 +41,7 @@ export const itemFilterSerializer = (data, id, division, type) => {
 }
 
 const ZERO = 0
-const CASH = 0
-const BANK = 1
 const MINUS_ONE = -1
-const TWO = 2
 
 export const createExpenseSerializer = (data, client) => {
     const amount = numberWithoutSpaces(_.get(data, 'amount'))
@@ -63,7 +58,7 @@ export const createExpenseSerializer = (data, client) => {
         currency,
         division,
         type: 9,
-        payment_type: paymentType === TWO ? ZERO : paymentType
+        payment_type: paymentType
     }
 }
 export const createAddSerializer = (data, client) => {
@@ -81,7 +76,7 @@ export const createAddSerializer = (data, client) => {
         currency,
         division,
         type: 9,
-        payment_type: paymentType === 'cash' ? CASH : BANK
+        payment_type: paymentType
     }
 }
 
@@ -103,6 +98,6 @@ export const updateTransactionSerializer = (data, client) => {
         division,
         user,
         type: 9,
-        payment_type: paymentType === 'cash' ? CASH : BANK
+        payment_type: paymentType
     }
 }

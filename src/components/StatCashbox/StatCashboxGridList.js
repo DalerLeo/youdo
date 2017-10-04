@@ -214,10 +214,9 @@ const StatCashboxGridList = enhance((props) => {
     const manufactureList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const cashbox = _.get(item, 'name')
-        const type = _.toInteger(_.get(item, 'type'))
+        const type = _.get(item, 'type')
         const balance = numberFormat((_.get(item, 'balance')))
         const currency = _.get(item, ['currency', 'name'])
-        const BANK_ID = 1
         return (
         <div key={id} className={classes.activeTab} style={ detailId === id ? {backgroundColor: '#f2f5f8'} : {}}>
             <Paper key={id} zDepth={1} className={classes.tab}>
@@ -229,7 +228,7 @@ const StatCashboxGridList = enhance((props) => {
                     <div className={classes.tabContent}>
                         <div className={classes.tabTitle}>
                             {cashbox}
-                            {type === BANK_ID
+                            {type === 'bank'
                                 ? <span>банковский счет</span>
                                 : <span>наличные</span>
                             }
