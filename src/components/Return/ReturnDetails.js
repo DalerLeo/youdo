@@ -196,6 +196,7 @@ const ReturnDetails = enhance((props) => {
     } = props
 
     const id = _.get(data, 'id')
+    const CASH = 0;
     const user = _.get(data, ['createdBy', 'firstName']) + ' ' + _.get(data, ['createdBy', 'secondName'])
     const createdDate = dateTimeFormat(_.get(data, 'createdDate'))
     const finishedTime = _.get(data, 'acceptedTime') ? dateTimeFormat(_.get(data, 'finishedTime'), true) : 'Не установлена'
@@ -211,6 +212,7 @@ const ReturnDetails = enhance((props) => {
     const IN_PROGRESS = 1
     const COMPLETED = 2
     const CANCELLED = 3
+    const paymentType = _.toInteger(_.get(data, 'paymentType')) === CASH ? 'Наличными' : 'Перечислением'
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const totalPrice = numberFormat(_.get(data, 'totalPrice'), primaryCurrency)
 
@@ -282,6 +284,10 @@ const ReturnDetails = enhance((props) => {
                                 <li>
                                     <span>Склад:</span>
                                     <span>{stock}</span>
+                                </li>
+                                <li>
+                                    <span>Тип оплаты</span>
+                                    <span>{paymentType}</span>
                                 </li>
                                 <li>
                                     <span>Начало приемки:</span>
