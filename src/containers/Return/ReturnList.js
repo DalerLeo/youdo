@@ -340,6 +340,7 @@ const ReturnList = enhance((props) => {
     const zone = _.toInteger(filter.getParam(RETURN_FILTER_KEY.ZONE))
     const division = _.toInteger(filter.getParam(RETURN_FILTER_KEY.DIVISION))
     const returnStatus = _.toInteger(filter.getParam(RETURN_FILTER_KEY.STATUS))
+    const paymentType = _.toInteger(filter.getParam(RETURN_FILTER_KEY.PAYMENT_TYPE))
     const fromDate = filter.getParam(RETURN_FILTER_KEY.FROM_DATE)
     const deliveryFromDate = filter.getParam(RETURN_FILTER_KEY.DELIVERY_FROM_DATE)
     const toDate = filter.getParam(RETURN_FILTER_KEY.TO_DATE)
@@ -369,7 +370,10 @@ const ReturnList = enhance((props) => {
             client: {
                 value: client
             },
-            returnStatus: {
+            paymentType: {
+                value: paymentType
+            },
+            status: {
                 value: returnStatus
             },
             zone: {
