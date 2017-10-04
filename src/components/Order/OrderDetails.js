@@ -383,7 +383,7 @@ const OrderDetails = enhance((props) => {
                                 </li>
                                 <li>
                                     <span>Тип оплаты:</span>
-                                    <span>{(paymentType === '0') ? 'Наличными' : 'Перечислением'}</span>
+                                    <span>{(paymentType === 'cash') ? 'Наличными' : 'Перечислением'}</span>
                                 </li>
                                 <li>
                                     <span>Общая стоимость</span>

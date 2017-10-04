@@ -661,7 +661,7 @@ const OrderList = enhance((props) => {
                 deliveryTypeText = 'Самовывоз'
             }
             const dealType = _.toInteger(_.get(detail, 'dealType')) === ONE ? 'consignment' : 'standart'
-            const paymentType = _.toInteger(_.get(detail, 'paymentType')) === ONE ? 'bank' : 'cash'
+            const paymentType = _.get(detail, 'paymentType')
             return {
                 client: {
                     value: _.toInteger(_.get(detail, ['client', 'id']))

@@ -18,7 +18,6 @@ import {StatisticsFilterExcel} from '../../Statistics'
 import CreditCard from 'material-ui/svg-icons/action/credit-card'
 import Cash from 'material-ui/svg-icons/maps/local-atm'
 
-const BANK = 1
 const NEGATIVE = -1
 export const STAT_CASHBOX_FILTER_KEY = {
     TO_DATE: 'toDate',
@@ -220,8 +219,8 @@ const StatCashboxGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const cashier = !_.isNil(_.get(item, 'cashier')) ? _.get(item, ['cashier', 'firstName']) + ' ' + _.get(item, ['cashier', 'secondName']) : 'Неизвестно'
-        const type = _.toInteger(_.get(item, 'type'))
-        const typeIcon = _.toInteger(_.get(item, 'type')) === BANK ? (<CreditCard style={iconStyle}/>) : (<Cash style={iconStyle}/>)
+        const type = _.get(item, 'type')
+        const typeIcon = _.get(item, 'type') === 'bank' ? (<CreditCard style={iconStyle}/>) : (<Cash style={iconStyle}/>)
         const currency = _.get(item, ['currency', 'name'])
 
         const cbStartBalance = numberFormat(_.get(item, 'startBalance'), primaryCurrency)
@@ -240,7 +239,7 @@ const StatCashboxGridList = enhance((props) => {
                         <div>{cashier}</div>
                     </div>
                     <div className={classes.info}>
-                        <div style={type === BANK ? {color: '#6261b0'} : {color: '#12aaeb'}}>{typeIcon} <span>{currency}</span></div>
+                        <div style={type === 'bank' ? {color: '#6261b0'} : {color: '#12aaeb'}}>{typeIcon} <span>{currency}</span></div>
                     </div>
                 </header>
                 <section>
