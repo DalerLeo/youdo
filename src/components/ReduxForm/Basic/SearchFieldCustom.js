@@ -25,15 +25,6 @@ const fetchList = ({state, dispatch, getOptions, getText, getValue, input}) => {
         })
 }
 
-const initialFunc = (props) => {
-    const {initialVal, state: {iniValue}, parent} = props
-
-    if (_.isNull(iniValue) || !parent) {
-        return null
-    }
-    return initialVal
-}
-
 const fetchItem = (props, selectedItem) => {
     const {getItem, input, dispatch} = props
     dispatch({loading: true})
@@ -104,7 +95,7 @@ const enhance = compose(
     }, {dataSource: [], text: '', loading: false, iniValue: ''}),
 
     withPropsOnChange((props, nextProps) => {
-        return (_.get(props, ['state', 'text']) !== _.get(nextProps, ['state', 'text']) && _.get(nextProps, ['input', 'value'])) ||
+        return (_.get(props, ['state', 'text']) !== _.get(nextProps, ['state', 'text']) && _.get(nextProps, ['state', 'text']) !== '') ||
             _.get(props, ['parent']) !== _.get(nextProps, ['parent'])
     }, (props) => {
         _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)
@@ -127,10 +118,9 @@ const SearchFieldCustom = enhance((props) => {
                 <Select
                     className={classes.select}
                     options={state.dataSource}
-                    value={getValue(_.get(input, ['value', 'value'])) || initialFunc(props)}
-                    onInputChange={text => dispatch({text: text})}
+                    value={getValue(_.get(input, ['value', 'value']))}
+                    onInputChange={text => { dispatch({text: text}) }}
                     onChange={value => {
-                        dispatch({iniValue: value})
                         value ? fetchItem(props, value) : fetchList(props)
                     }}
                     placeholder={label}

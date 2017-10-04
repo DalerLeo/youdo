@@ -77,7 +77,6 @@ const SearchField = enhance((props) => {
                 noResultsText={'Не найдено'}
                 valueRenderer={valueRenderer}
                 loadingPlaceholder="Загрузка..."
-                filterOptions={options => options}
             />
         </div>
     )
