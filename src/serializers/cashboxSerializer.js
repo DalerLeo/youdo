@@ -1,6 +1,8 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
 
+const CASH = 0
+const BANK = 1
 export const createSerializer = (data) => {
     const name = _.get(data, ['name'])
     const currency = _.get(data, ['currency', 'value'])
@@ -13,7 +15,7 @@ export const createSerializer = (data) => {
         currency,
         cashier,
         division,
-        type
+        type: type === 'cash' ? CASH : BANK
     }
 }
 
