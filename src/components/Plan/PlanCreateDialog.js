@@ -121,6 +121,11 @@ const enhance = compose(
             height: '40px',
             borderTop: '1px #efefef solid'
         },
+        zoneTitle: {
+            extend: 'zone',
+            cursor: 'default',
+            fontWeight: '600'
+        },
         activeZone: {
             extend: 'zone',
             background: '#f2f5f8',
@@ -344,6 +349,10 @@ const PlanCreateDialog = enhance((props) => {
                             <div className={classes.scroll}>
                                 <PlanAddCalendar calendar={calendar} />
                                 <div className={classes.zonesList}>
+                                    <div className={classes.zoneTitle}>
+                                        <span>Зоны</span>
+                                        <span>Магазины</span>
+                                    </div>
                                     {zonesLoading
                                         ? <div className={classes.loader}>
                                             <CircularProgress size={40} thickness={4}/>

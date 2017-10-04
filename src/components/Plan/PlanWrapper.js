@@ -314,7 +314,7 @@ const PlanWrapper = enhance((props) => {
                         <IconButton
                             key={group}
                             disableTouchRipple={true}
-                            className={(group === groupId) && classes.activeTab}
+                            className={(group === groupId) ? classes.activeTab : ''}
                             onTouchTap={() => { handleClickTab(group) }}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}>

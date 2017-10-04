@@ -48,7 +48,6 @@ const GoogleMap = (props) => {
 }
 
 GoogleMap.propTypes = {
-    center: PropTypes.object.isRequired,
     onMapLoad: PropTypes.func
 }
 
