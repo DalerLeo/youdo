@@ -153,10 +153,9 @@ const TransactionGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const currency = _.get(item, ['currency', 'name'])
-        const type = _.toInteger(_.get(item, 'type'))
+        const type = _.get(item, 'type')
         const balance = _.toInteger(_.get(item, 'balance'))
         const isActive = item.id === _.get(cashboxData, 'cashboxId')
-        const BANK_ID = 1
         const ZERO_NUM = 0
         return (
             <div key={id} className={classes.list} onClick={() => {
@@ -166,7 +165,7 @@ const TransactionGridList = enhance((props) => {
                 <div>
                     <div className={classes.title}>{name}</div>
                     <div className={item.id === cashboxData.cashboxId}>
-                        {type === BANK_ID
+                        {type === 'bank'
                             ? <div className={classes.flex}>
                                 <BankPayment style={{height: '14px', width: '14px', color: '#6261b0'}}/>
                                 <span style={{marginLeft: '5px', color: '#6261b0'}}>банковский счет</span>

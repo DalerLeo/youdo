@@ -2,8 +2,6 @@ import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
 import numberWithoutSpaces from '../helpers/numberWithoutSpaces'
 
-const BANK = 1
-const CASH = 0
 export const updateSerializer = (data, detail, CLIENT_RETURN) => {
     const type = _.toInteger(_.get(detail, 'type'))
     const client = _.get(detail, ['client', 'id'])
@@ -39,7 +37,7 @@ export const updateSerializer = (data, detail, CLIENT_RETURN) => {
             comment,
             products: clientReturnedProducts,
             market,
-            payment_type: paymentType === 'cash' ? CASH : BANK
+            payment_type: paymentType
         }
     }
     return {
@@ -105,7 +103,7 @@ export const createReturnSerializer = (data, id) => {
         comment,
         products,
         market,
-        payment_type: paymentType === 'cash' ? CASH : BANK
+        payment_type: paymentType
     }
 }
 
