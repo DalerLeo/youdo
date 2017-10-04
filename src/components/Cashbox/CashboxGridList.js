@@ -151,13 +151,12 @@ const CashboxGridList = enhance((props) => {
     const cashboxDetail = (
         <span>a</span>
     )
-    const bank = 1
     const cashboxList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const currency = _.get(item, ['currency', 'name']) || 'N/A'
         const cashier = _.get(item, ['cashier', 'firstName']) + ' ' + _.get(item, ['cashier', 'secondName'])
-        const type = _.toInteger(_.get(item, 'type')) === bank ? 'банковский счет' : 'наличный'
+        const type = _.get(item, 'type') === 'bank' ? 'банковский счет' : 'наличный'
         return (
             <Row key={id} className={classes.listRow}>
                 <Col xs={1}>{id}</Col>
