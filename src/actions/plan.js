@@ -101,3 +101,34 @@ export const planZonesListFetchAction = () => {
     }
 }
 
+export const planZonesItemFetchAction = (id) => {
+    const payload = axios()
+        .get(sprintf(API.ZONE_ITEM, id))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+    return {
+        type: actionTypes.ZONE_ITEM,
+        payload
+    }
+}
+
+export const marketsLocationAction = (zone) => {
+    const payload = axios()
+        .get(API.MARKETS_LOCATION, {params: {border: zone}})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.MARKETS_LOCATION,
+        payload
+    }
+}
+
