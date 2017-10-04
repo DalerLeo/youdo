@@ -238,6 +238,15 @@ const enhance = compose(
                     .then(() => {
                         hashHistory.push({pathname, query: filter.getParams({[RETURN_UPDATE_DIALOG_OPEN]: false})})
                         return dispatch(returnListFetchAction(filter))
+                    }).catch((error) => {
+                        const errorWhole = _.map(error, (item, index) => {
+                            return <p key={index} style={{marginBottom: '10px'}}><b style={{textTransform: 'uppercase'}}>{index}:</b> {item}</p>
+                        })
+                        dispatch(openErrorAction({
+                            message: <div style={{padding: '0 30px'}}>
+                                {errorWhole}
+                            </div>
+                        }))
                     })
             }
             return dispatch(returnUpdateAction(returnId, _.get(updateForm, ['values']), detail))
@@ -250,6 +259,15 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[RETURN_UPDATE_DIALOG_OPEN]: false})})
                     return dispatch(returnListFetchAction(filter))
+                }).catch((error) => {
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p key={index} style={{marginBottom: '10px'}}><b style={{textTransform: 'uppercase'}}>{index}:</b> {item}</p>
+                    })
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                            {errorWhole}
+                        </div>
+                    }))
                 })
         },
         handleOpenCreateDialog: props => () => {

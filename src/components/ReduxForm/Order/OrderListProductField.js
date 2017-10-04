@@ -140,6 +140,10 @@ const enhance = compose(
             backgroundColor: '#f1f5f8',
             position: 'relative',
             zIndex: '2',
+            '& .Select-menu-outer': {
+                maxHeight: '200px',
+                minWidth: '250px'
+            },
             '& > div': {
                 marginTop: '-2px !important'
             },
