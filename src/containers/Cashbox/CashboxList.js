@@ -219,7 +219,7 @@ const CashboxList = enhance((props) => {
                 return {}
             }
             const CASH = 2
-            const type = _.toInteger(_.get(detail, 'type'))
+            const type = _.get(detail, 'type')
 
             return {
                 name: _.get(detail, 'name'),
@@ -230,7 +230,7 @@ const CashboxList = enhance((props) => {
                     value: _.get(detail, 'cashier')
                 },
                 type: {
-                    value: type === CASH ? 'cash' : 'bank'
+                    value: type
                 }
             }
         })(),

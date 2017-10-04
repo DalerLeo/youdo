@@ -25,8 +25,6 @@ import {
 import {openErrorAction} from '../../actions/error'
 import {openSnackbarAction} from '../../actions/snackbar'
 
-const CASH = 0
-const BANK = 1
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -88,12 +86,11 @@ const enhance = compose(
 
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
-            const PT = _.get(filterForm, ['values', 'paymentType', 'value'])
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
             const client = _.get(filterForm, ['values', 'client', 'value']) || null
             const market = _.get(filterForm, ['values', 'market', 'value']) || null
-            const paymentType = PT === 'cash' ? CASH : PT === 'bank' ? BANK : null
+            const paymentType = _.get(filterForm, ['values', 'paymentType', 'value']) || null
 
             filter.filterBy({
                 [PENDING_PAYMENTS_FILTER_OPEN]: false,

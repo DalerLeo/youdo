@@ -4,8 +4,6 @@ import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
 
 const ZERO = 0
 const MINUS_ONE = -1
-const CASH = 0
-const BANK = 1
 
 export const createIncomeSerializer = (data, cashboxId) => {
     const amount = _.get(data, 'amount') < ZERO ? _.get(data, 'amount') * MINUS_ONE : _.get(data, 'amount')
@@ -41,7 +39,7 @@ export const updateTransactionSerializer = (data, client) => {
         division,
         user,
         type: 1,
-        payment_type: paymentType === 'cash' ? CASH : BANK
+        payment_type: paymentType
     }
 }
 
