@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {compose, withReducer, withState} from 'recompose'
+import {compose, withReducer} from 'recompose'
 import injectSheet from 'react-jss'
 import {reduxForm, SubmissionError} from 'redux-form'
 import Dialog from 'material-ui/Dialog'
@@ -32,6 +32,11 @@ const enhance = compose(
             zIndex: '999',
             justifyContent: 'center',
             display: 'flex'
+        },
+        agentsLoader: {
+            extend: 'loader',
+            height: 'auto',
+            padding: '0 30px'
         },
         podlojkaScroll: {
             overflowY: 'auto !important',
@@ -121,28 +126,14 @@ const enhance = compose(
             height: '40px',
             borderTop: '1px #efefef solid'
         },
+        zoneTitle: {
+            extend: 'zone',
+            cursor: 'default',
+            fontWeight: '600'
+        },
         activeZone: {
             extend: 'zone',
-            background: '#f2f5f8',
-            position: 'relative',
-            '&:before': {
-                content: '""',
-                position: 'absolute',
-                right: '-13px',
-                borderTop: '10px solid transparent',
-                borderLeft: '12px solid #efefef',
-                borderBottom: '10px solid transparent',
-                zIndex: '10'
-            },
-            '&:after': {
-                content: '""',
-                position: 'absolute',
-                right: '-12px',
-                borderTop: '10px solid transparent',
-                borderLeft: '12px solid #f2f5f8',
-                borderBottom: '10px solid transparent',
-                zIndex: '10'
-            }
+            background: '#f2f5f8'
         },
         rightSide: {
             width: 'calc(100% - 300px)',
@@ -181,6 +172,10 @@ const enhance = compose(
             fontWeight: 'bold',
             paddingRight: '15px',
             borderRight: '1px #efefef solid'
+        },
+        chooseZone: {
+            fontWeight: '600',
+            textAlign: 'center'
         },
         agentItem: {
             background: '#fff',
@@ -227,8 +222,8 @@ const enhance = compose(
             '&:after': {
                 content: '""',
                 position: 'absolute',
-                top: '-11px',
-                bottom: '-10px',
+                top: '-10px',
+                bottom: '-11px',
                 left: '-15px',
                 right: '-15px',
                 background: '#f3f6f9',
@@ -284,8 +279,7 @@ const enhance = compose(
     }),
     withReducer('state', 'dispatch', (state, action) => {
         return {...state, ...action}
-    }, {open: false}),
-    withState('isActiveAgent', 'setActiveAgent', false)
+    }, {open: false})
 )
 
 const customContentStyle = {
@@ -301,9 +295,13 @@ const PlanCreateDialog = enhance((props) => {
         isUpdate,
         zonesList,
         zonesLoading,
-        isActiveAgent,
-        setActiveAgent,
-        calendar
+        calendar,
+        zonesItem,
+        zonesItemLoading,
+        handleChooseZone,
+        handleChooseAgent,
+        selectedAgent,
+        marketsLocation
     } = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const agentIcon = {
@@ -311,14 +309,41 @@ const PlanCreateDialog = enhance((props) => {
         width: 20,
         height: 20
     }
+    const ZERO = 0
+    const isAgentChosen = selectedAgent > ZERO
+    const chosenZone = _.get(zonesItem, 'id')
     const zones = _.map(zonesList, (item) => {
         const id = _.get(item, 'id')
         const title = _.get(item, 'title')
 
         return (
-            <div key={id} className={classes.zone}>
+            <div key={id} className={(id === chosenZone) ? classes.activeZone : classes.zone}
+                 onClick={() => { handleChooseZone(id) }}>
                 <span>{title}</span>
                 <span>50 / 100</span>
+            </div>
+        )
+    })
+    const colors = [
+        '#62d6a0',
+        '#eeab21',
+        '#fd4641'
+    ]
+    const agents = _.map(_.get(zonesItem, ['properties', 'agents']), (agent, index) => {
+        const id = _.get(agent, 'id')
+        const username = _.get(agent, 'username')
+        return (
+            <div key={id} className={(id === selectedAgent) ? classes.agentItemActive : classes.agentItem}
+                 onClick={() => { handleChooseAgent(id) }} style={{color: _.get(colors, index)}}>
+                <div>
+                    <div className={classes.imgPlace}>
+                        <Person style={agentIcon}/>
+                    </div>
+                    <div>
+                        <span>{username}</span>
+                        <span>15 магазинов</span>
+                    </div>
+                </div>
             </div>
         )
     })
@@ -342,8 +367,12 @@ const PlanCreateDialog = enhance((props) => {
                                 </IconButton>
                             </div>
                             <div className={classes.scroll}>
-                                <PlanAddCalendar calendar={calendar} />
+                                <PlanAddCalendar calendar={calendar}/>
                                 <div className={classes.zonesList}>
+                                    <div className={classes.zoneTitle}>
+                                        <span>Зоны</span>
+                                        <span>Магазины</span>
+                                    </div>
                                     {zonesLoading
                                         ? <div className={classes.loader}>
                                             <CircularProgress size={40} thickness={4}/>
@@ -353,37 +382,31 @@ const PlanCreateDialog = enhance((props) => {
                             </div>
                         </Paper>
                         <div className={classes.rightSide}>
-                            <div onClick={() => { isActiveAgent ? setActiveAgent(false) : setActiveAgent(true) }} className={isActiveAgent ? classes.agentsActive : classes.agents}>
-                                <Paper zDepth={2} className={classes.agentsWrapper}>
-                                    <div className={classes.chooseAgent}>
-                                        <span>Выберите <br/>агента</span>
-                                    </div>
-                                    <div className={classes.agentItem} style={{color: '#62d6a0'}}>
-                                        <div>
-                                            <div className={classes.imgPlace}>
-                                                <Person style={agentIcon}/>
-                                            </div>
-                                            <div>
-                                                <span>Бекзод Азизжанов</span>
-                                                <span>15 магазинов</span>
-                                            </div>
+                            <div className={isAgentChosen ? classes.agentsActive : classes.agents}>
+                                {!_.isEmpty(agents)
+                                    ? <Paper zDepth={2} className={classes.agentsWrapper}>
+                                        <div className={classes.chooseAgent}>
+                                            <span>Выберите <br/>агента</span>
                                         </div>
-                                    </div>
-                                    <div className={classes.agentItemActive} style={{color: '#eeab21'}}>
-                                        <div>
-                                            <div className={classes.imgPlace}>
-                                                <Person style={agentIcon}/>
+                                        {zonesItemLoading
+                                            ? <div className={classes.agentsLoader}>
+                                                <CircularProgress size={35} thickness={3.5}/>
                                             </div>
-                                            <div>
-                                                <span>Бекзод Азизжанов</span>
-                                                <span>15 магазинов</span>
+                                            : agents}
+                                    </Paper>
+                                    : (!zonesItemLoading ? <Paper zDepth={2} className={classes.agentsWrapper}>
+                                            <div className={classes.chooseZone}>
+                                                <div>Для составления плана <br/> выберите зону</div>
                                             </div>
-                                        </div>
-                                    </div>
-                                </Paper>
+                                        </Paper>
+                                        : <Paper zDepth={2} className={classes.agentsWrapper}>
+                                            <div className={classes.agentsLoader}>
+                                                <CircularProgress size={35} thickness={3.5}/>
+                                            </div>
+                                        </Paper>)}
                             </div>
-                            <div className={isActiveAgent ? classes.map : classes.mapBlurred}>
-                                <GoogleMap/>
+                            <div className={isAgentChosen ? classes.map : classes.mapBlurred}>
+                                <GoogleMap marketsLocation={marketsLocation}/>
                             </div>
                         </div>
                     </div>

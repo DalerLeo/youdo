@@ -71,7 +71,8 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         const except = {
             showMarkets: null,
-            showZones: null
+            showZones: null,
+            openShop: null
         }
         return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
