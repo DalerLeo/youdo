@@ -61,7 +61,6 @@ import RemainderProductTypeSearchField from './Remainder/RemainderProductTypeSea
 import PositionSearchField from './PositionSearchField'
 import DivisionSearchField from './DivisionSearchField'
 import Pagination from './Pagination'
-import ClientBalanceReturnTotalSum from './ClientBalance/ClientBalanceReturnTotalSum'
 import ClientBalanceReturnProductList from './ClientBalance/ClientBalanceReturnProductList'
 import ReturnStatusSearchField from './ReturnStatusSearchField'
 import ReturnTypeSearchField from './ReturnTypeSearchField'
@@ -143,7 +142,6 @@ export {
     PositionSearchField,
     DivisionSearchField,
     Pagination,
-    ClientBalanceReturnTotalSum,
     ClientBalanceReturnProductList,
     ChipField,
     CustomChipField,
