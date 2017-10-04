@@ -11,7 +11,7 @@ export const updateSerializer = (data, detail, CLIENT_RETURN) => {
     const market = _.get(data, ['market', 'value', 'id'])
     const status = _.get(detail, 'status')
     const order = _.get(detail, 'order')
-    const paymentType = _.get(data, ['paymentType', 'value'])
+    const paymentType = _.toNumber(_.get(data, ['paymentType', 'value']))
     const returnedProducts = _.map(_.get(data, ['products']), (item) => {
         return {
             order_product: _.get(item, ['product', 'value', 'id']),
@@ -24,11 +24,16 @@ export const updateSerializer = (data, detail, CLIENT_RETURN) => {
     })
     const clientReturnedProducts = _.map(_.get(data, ['products']), (item) => {
         return {
+            id: _.get(item, 'id'),
             amount: _.get(item, 'amount'),
             cost: _.get(item, 'cost'),
             product: _.get(item, ['product', 'value', 'productId'])
         }
     })
+    const SECOND = 2
+    const BANK = 1
+    const CASH = 0
+
     if (type === CLIENT_RETURN) {
         return {
             client,
@@ -36,7 +41,7 @@ export const updateSerializer = (data, detail, CLIENT_RETURN) => {
             comment,
             products: clientReturnedProducts,
             market,
-            payment_type: paymentType - ONE
+            payment_type: paymentType === SECOND ? CASH : BANK
         }
     }
     return {

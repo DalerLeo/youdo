@@ -419,12 +419,13 @@ const ReturnList = enhance((props) => {
         const price = _.toNumber(_.get(item, 'price'))
         if (type === CLIENT_RETURN) {
             return {
+                id: _.get(item, 'id'),
                 amount,
                 cost: price,
                 measurement: _.get(item, ['product', 'measurement', 'name']),
                 product: {
                     value: {
-                        id: _.get(item, 'id'),
+                        id: _.get(item, ['product', 'id']),
                         productId: _.get(item, ['product', 'id']),
                         price: _.get(item, 'price'),
                         name: _.get(item, ['product', 'name']),
@@ -437,6 +438,7 @@ const ReturnList = enhance((props) => {
             }
         }
         return {
+            id: _.get(item, 'id'),
             amount,
             product: {
                 value: {
@@ -461,6 +463,9 @@ const ReturnList = enhance((props) => {
         handleCloseCreateDialog: props.handleCloseCreateDialog,
         handleSubmitCreateDialog: props.handleSubmitCreateDialog
     }
+    const SECOND = 2
+    const BANK = 1
+    const CASH = 0
 
     const updateDialog = {
         initialValues: (() => {
@@ -471,7 +476,7 @@ const ReturnList = enhance((props) => {
                     client: {value: _.get(detail, ['client', 'id'])},
                     stock: {value: _.get(detail, ['stock', 'id'])},
                     market: {value: _.get(detail, ['market', 'id'])},
-                    paymentType: {value: _.toNumber(_.get(detail, ['paymentType'])) + ONE},
+                    paymentType: {value: _.toNumber(_.get(detail, ['paymentType'])) === CASH ? SECOND : BANK},
                     comment: _.get(detail, 'comment'),
                     products: forUpdateProducts
                 }
