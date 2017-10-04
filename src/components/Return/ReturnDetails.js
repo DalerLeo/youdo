@@ -273,6 +273,11 @@ const ReturnDetails = enhance((props) => {
                     <div className={classes.subBlock}>
                         <div className={classes.dataBox}>
                             <ul>
+
+                                <li>
+                                    <span>Тип оплаты</span>
+                                    <span>{paymentType}</span>
+                                </li>
                                 <li>
                                     <span>Добавил:</span>
                                     <span>{user}</span>
@@ -284,10 +289,6 @@ const ReturnDetails = enhance((props) => {
                                 <li>
                                     <span>Склад:</span>
                                     <span>{stock}</span>
-                                </li>
-                                <li>
-                                    <span>Тип оплаты</span>
-                                    <span>{paymentType}</span>
                                 </li>
                                 <li>
                                     <span>Начало приемки:</span>
