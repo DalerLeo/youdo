@@ -212,7 +212,6 @@ const TransactionCashDialog = enhance((props) => {
         currentItem
     } = props
     const ZERO = 0
-    const TWO = 2
     const openEditDialog = (thisItem) => {
         superUser.handleOpenSuperUserDialog(thisItem.id)
         setItem(thisItem)
@@ -230,7 +229,7 @@ const TransactionCashDialog = enhance((props) => {
                     value: _.get(currentItem, ['division', 'id'])
                 },
                 paymentType: {
-                    value: _.toInteger(_.get(currentItem, 'paymentType')) === ZERO ? TWO : _.toInteger(_.get(currentItem, 'paymentType'))
+                    value: _.toInteger(_.get(currentItem, 'paymentType')) === ZERO ? 'cash' : 'bank'
                 },
                 currency: {
                     value: _.get(currentItem, ['currency', 'id'])

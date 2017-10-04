@@ -16,6 +16,7 @@ import dateTimeFormat from '../../helpers/dateTimeFormat'
 import getConfig from '../../helpers/getConfig'
 
 const ZERO = 0
+const CASH = 0
 
 const enhance = compose(
     injectSheet({
@@ -207,6 +208,7 @@ const ReturnDetails = enhance((props) => {
     const client = _.get(data, ['client', 'name'])
     const market = _.get(data, 'market')
     const status = _.toInteger(_.get(data, 'status'))
+    const paymentType = _.toInteger(_.get(data, 'paymentType')) === CASH ? 'Наличными' : 'Перечислением'
     const PENDING = 0
     const IN_PROGRESS = 1
     const COMPLETED = 2
@@ -279,6 +281,10 @@ const ReturnDetails = enhance((props) => {
                                     <span>Заказ №:</span>
                                     <span>{order}</span>
                                 </li>}
+                                <li>
+                                    <span>Тип оплаты</span>
+                                    <span>{paymentType}</span>
+                                </li>
                                 <li>
                                     <span>Склад:</span>
                                     <span>{stock}</span>

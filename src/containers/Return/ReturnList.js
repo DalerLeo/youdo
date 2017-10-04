@@ -10,7 +10,6 @@ import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import {openErrorAction} from '../../actions/error'
-const ONE = 1
 import {
     RETURN_FILTER_KEY,
     RETURN_FILTER_OPEN,
@@ -33,6 +32,9 @@ import {openSnackbarAction} from '../../actions/snackbar'
 
 const ZERO = 0
 const TWO = 2
+const CASH = 0
+const BANK = 1
+
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -149,6 +151,7 @@ const enhance = compose(
 
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
+            const PT = _.get(filterForm, ['values', 'paymentType', 'value'])
             const fromDate = _.get(filterForm, ['values', 'data', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'data', 'toDate']) || null
             const type = _.get(filterForm, ['values', 'type', 'value']) || null
@@ -159,7 +162,7 @@ const enhance = compose(
             const initiator = _.get(filterForm, ['values', 'initiator', 'value']) || null
             const product = _.get(filterForm, ['values', 'product', 'value']) || null
             const division = _.get(filterForm, ['values', 'division', 'value']) || null
-            const paymentType = _.get(filterForm, ['values', 'paymentType', 'value']) || null
+            const paymentType = PT === 'cash' ? CASH : PT === 'bank' ? BANK : null
             const code = _.get(filterForm, ['values', 'code']) || null
 
             filter.filterBy({
@@ -463,9 +466,6 @@ const ReturnList = enhance((props) => {
         handleCloseCreateDialog: props.handleCloseCreateDialog,
         handleSubmitCreateDialog: props.handleSubmitCreateDialog
     }
-    const SECOND = 2
-    const BANK = 1
-    const CASH = 0
 
     const updateDialog = {
         initialValues: (() => {
@@ -476,7 +476,7 @@ const ReturnList = enhance((props) => {
                     client: {value: _.get(detail, ['client', 'id'])},
                     stock: {value: _.get(detail, ['stock', 'id'])},
                     market: {value: _.get(detail, ['market', 'id'])},
-                    paymentType: {value: _.toNumber(_.get(detail, ['paymentType'])) === CASH ? SECOND : BANK},
+                    paymentType: {value: _.toInteger(_.get(detail, ['paymentType'])) === CASH ? 'cash' : 'bank'},
                     comment: _.get(detail, 'comment'),
                     products: forUpdateProducts
                 }
