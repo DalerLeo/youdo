@@ -16,7 +16,6 @@ import dateTimeFormat from '../../helpers/dateTimeFormat'
 import getConfig from '../../helpers/getConfig'
 
 const ZERO = 0
-const CASH = 0
 
 const enhance = compose(
     injectSheet({
@@ -197,7 +196,7 @@ const ReturnDetails = enhance((props) => {
     } = props
 
     const id = _.get(data, 'id')
-    const CASH = 0;
+    const CASH = 0
     const user = _.get(data, ['createdBy', 'firstName']) + ' ' + _.get(data, ['createdBy', 'secondName'])
     const createdDate = dateTimeFormat(_.get(data, 'createdDate'))
     const finishedTime = _.get(data, 'acceptedTime') ? dateTimeFormat(_.get(data, 'finishedTime'), true) : 'Не установлена'
@@ -214,7 +213,6 @@ const ReturnDetails = enhance((props) => {
     const IN_PROGRESS = 1
     const COMPLETED = 2
     const CANCELLED = 3
-    const paymentType = _.toInteger(_.get(data, 'paymentType')) === CASH ? 'Наличными' : 'Перечислением'
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const totalPrice = numberFormat(_.get(data, 'totalPrice'), primaryCurrency)
 
