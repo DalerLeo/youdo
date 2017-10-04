@@ -10,7 +10,7 @@ const FIVE = 5
 
 export const createSerializer = (data) => {
     const client = _.get(data, ['client', 'value'])
-    const paymentType = _.get(data, ['paymentType']) === 'cash' ? ZERO : ONE
+    const paymentType = _.get(data, ['paymentType'])
     const paymentTerm = 1
     const paymentDate = moment(_.get(data, ['paymentDate'])).format('YYYY-MM-DD')
     const deliveryDate = moment(_.get(data, ['deliveryDate'])).format('YYYY-MM-DD')
