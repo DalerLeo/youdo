@@ -32,7 +32,6 @@ import {openSnackbarAction} from '../../actions/snackbar'
 
 const ZERO = 0
 const TWO = 2
-const CASH = 0
 
 const enhance = compose(
     connect((state, props) => {

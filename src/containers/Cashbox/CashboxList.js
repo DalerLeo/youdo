@@ -218,7 +218,6 @@ const CashboxList = enhance((props) => {
             if (!detail || openCreateDialog) {
                 return {}
             }
-            const CASH = 2
             const type = _.get(detail, 'type')
 
             return {
