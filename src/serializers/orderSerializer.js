@@ -29,7 +29,7 @@ export const createSerializer = (data) => {
     return {
         client,
         'date_delivery': deliveryDate,
-        'request_dedline': requestDeadline,
+        'request_deadline': requestDeadline,
         'payment_date': paymentDate,
         'payment_type': paymentType,
         'payment_term': paymentTerm,
