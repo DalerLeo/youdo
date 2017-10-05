@@ -2,12 +2,13 @@ import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
 import numberWithoutSpaces from '../helpers/numberWithoutSpaces'
 
+const ONE = 1
 export const updateSerializer = (data, detail, CLIENT_RETURN) => {
     const type = _.toInteger(_.get(detail, 'type'))
     const client = _.get(detail, ['client', 'id'])
     const comment = _.get(data, 'comment')
     const stock = _.get(data, ['stock', 'value'])
-    const market = _.get(data, ['market', 'value', 'id'])
+    const market = _.get(data, ['market', 'value'])
     const status = _.get(detail, 'status')
     const order = _.get(detail, 'order')
     const paymentType = _.get(data, ['paymentType', 'value'])
@@ -70,7 +71,7 @@ export const listFilterSerializer = (data, id) => {
         'order': _.get(defaultData, 'order'),
         'created_by': _.get(defaultData, 'initiator'),
         'payment_type': _.get(defaultData, 'paymentType'),
-        'status': _.get(defaultData, 'status'),
+        'status': _.get(defaultData, 'status') && _.toNumber(_.get(defaultData, 'status')) - ONE,
         'created_date_0': _.get(defaultData, 'fromDate'),
         'created_date_1': _.get(defaultData, 'toDate') || _.get(defaultData, 'fromDate'),
         'search': _.get(defaultData, 'search'),
