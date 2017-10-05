@@ -4,7 +4,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
-import CircularProgress from 'material-ui/CircularProgress'
+import LinearProgress from '../LinearProgress'
 import Edit from 'material-ui/svg-icons/image/edit'
 import IconButton from 'material-ui/IconButton'
 import {Row, Col} from 'react-flexbox-grid'
@@ -138,7 +138,7 @@ const ProviderDetails = enhance((props) => {
         return (
             <div className={classes.loader}>
                 <div>
-                    <CircularProgress size={40} thickness={4}/>
+                    <LinearProgress/>
                 </div>
             </div>
         )

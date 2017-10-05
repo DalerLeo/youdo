@@ -3,7 +3,7 @@ import _ from 'lodash'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import PropTypes from 'prop-types'
-import CircularProgress from 'material-ui/CircularProgress'
+import LinearProgress from '../LinearProgress'
 import Edit from 'material-ui/svg-icons/image/edit'
 import IconButton from 'material-ui/IconButton'
 import CloseIcon2 from '../CloseIcon2'
@@ -183,7 +183,7 @@ const PriceDetails = enhance((props) => {
         return (
             <div className={classes.loader}>
                 <div>
-                    <CircularProgress size={40} thickness={4}/>
+                    <LinearProgress/>
                 </div>
             </div>
         )

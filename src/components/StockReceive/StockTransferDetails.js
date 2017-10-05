@@ -10,7 +10,7 @@ import NotFound from '../Images/not-found.png'
 import PrintIcon from 'material-ui/svg-icons/action/print'
 import Tooltip from '../ToolTip'
 import IconButton from 'material-ui/IconButton'
-import CircularProgress from 'material-ui/CircularProgress'
+import LinearProgress from '../LinearProgress'
 import CheckCircleIcon from 'material-ui/svg-icons/action/check-circle'
 const ACCEPT = 1
 
@@ -142,7 +142,7 @@ const StockTransferDetails = enhance((props) => {
     if (loading) {
         return (
             <div className={classes.loader}>
-                <CircularProgress size={40} thickness={4} />
+                <LinearProgress/>
             </div>
         )
     }

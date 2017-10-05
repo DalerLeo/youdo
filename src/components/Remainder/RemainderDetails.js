@@ -8,7 +8,7 @@ import Pagination from '../GridList/GridListNavPagination'
 import numberFormat from '../../helpers/numberFormat'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
 import NotFound from '../Images/not-found.png'
-import CircularProgress from 'material-ui/CircularProgress'
+import LinearProgress from '../LinearProgress'
 
 const enhance = compose(
     injectSheet({
@@ -130,7 +130,7 @@ const RemainderDetails = enhance((props) => {
     if (isLoading) {
         return (
             <div className={classes.loader}>
-                <CircularProgress size={40} thickness={4}/>
+                <LinearProgress/>
             </div>
         )
     }
