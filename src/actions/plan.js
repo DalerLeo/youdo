@@ -5,8 +5,8 @@ import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/planSerializer'
 
-export const planCreateAction = (formValues) => {
-    const requestData = serializers.createSerializer(formValues)
+export const planCreateAction = (formValues, query) => {
+    const requestData = serializers.createSerializer(formValues, query)
     const payload = axios()
         .post(API.PLAN_CREATE, requestData)
         .then((response) => {
