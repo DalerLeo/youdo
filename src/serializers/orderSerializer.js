@@ -16,7 +16,7 @@ export const createSerializer = (data) => {
     const deliveryDate = moment(_.get(data, ['deliveryDate'])).format('YYYY-MM-DD')
     const requestDeadline = moment(_.get(data, ['request_dedline'])).format('YYYY-MM-DD')
     const dealType = _.get(data, ['dealType']) === 'standart' ? ZERO : ONE
-    const market = _.get(data, ['market', 'value', 'id'])
+    const market = _.get(data, ['market', 'value'])
     const user = _.get(data, ['user', 'value'])
     const products = _.map(_.get(data, ['products']), (item) => {
         return {
