@@ -5,6 +5,7 @@ const OPEN_PLAN_SALES = 'openPlanSales'
 const DATE = 'date'
 const ZONE = 'zone'
 const AGENT = 'agent'
+const MARKET = 'market'
 
 export {
     ADD_PLAN,
@@ -13,5 +14,6 @@ export {
     DATE,
     ZONE,
     AGENT,
+    MARKET,
     PlanWrapper
 }

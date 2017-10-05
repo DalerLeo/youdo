@@ -15,7 +15,8 @@ import {
     OPEN_PLAN_SALES,
     DATE,
     ZONE,
-    AGENT
+    AGENT,
+    MARKET
 } from '../../components/Plan'
 import {
     planCreateAction,
@@ -145,12 +146,12 @@ const enhance = compose(
         handleSubmitAddPlan: props => () => {
             const {location: {pathname}, dispatch, createForm, filter} = props
 
-            return dispatch(planCreateAction(createForm))
+            return dispatch(planCreateAction(createForm, filter.getParams()))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Зона успешно добавлена'}))
                 })
                 .then(() => {
-                    hashHistory.push({pathname, query: {[ADD_PLAN]: false}})
+                    hashHistory.push({pathname, query: {[MARKET]: ZERO}})
                     dispatch(planAgentsListFetchAction(filter))
                 })
         },
@@ -209,6 +210,11 @@ const enhance = compose(
         handleChooseAgent: props => (agent) => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[AGENT]: agent})})
+        },
+
+        handleChooseMarket: props => (market) => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[MARKET]: market})})
         }
     })
 )
@@ -244,6 +250,7 @@ const PlanList = enhance((props) => {
     const detailId = _.toInteger(_.get(params, 'agentId'))
     const selectedDate = _.get(location, ['query', DATE]) || currentDate
     const selectedAgent = _.toInteger(_.get(location, ['query', AGENT]))
+    const selectedMarket = _.toInteger(_.get(location, ['query', MARKET]))
 
     const addPlan = {
         openAddPlan,
@@ -252,9 +259,11 @@ const PlanList = enhance((props) => {
         zonesItem,
         zonesItemLoading,
         selectedAgent,
+        selectedMarket,
         marketsLocation,
         handleChooseZone: props.handleChooseZone,
         handleChooseAgent: props.handleChooseAgent,
+        handleChooseMarket: props.handleChooseMarket,
         handleOpenAddPlan: props.handleOpenAddPlan,
         handleCloseAddPlan: props.handleCloseAddPlan,
         handleSubmitAddPlan: props.handleSubmitAddPlan

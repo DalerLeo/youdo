@@ -1,32 +1,24 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {compose, withReducer} from 'recompose'
+import {compose} from 'recompose'
 import injectSheet from 'react-jss'
-import {reduxForm, SubmissionError} from 'redux-form'
+import {reduxForm} from 'redux-form'
 import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
 import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import CloseIcon2 from '../CloseIcon2'
 import Person from 'material-ui/svg-icons/social/person'
-import toCamelCase from '../../helpers/toCamelCase'
 import GoogleMap from '../GoogleMap'
 import PlanAddCalendar from './PlanAddCalendar'
+import PlanWeekDayForm from './PlanWeekDayForm'
 
-const validate = (data) => {
-    const errors = toCamelCase(data)
-    const nonFieldErrors = _.get(errors, 'nonFieldErrors')
-    throw new SubmissionError({
-        ...errors,
-        _error: nonFieldErrors
-    })
-}
 const enhance = compose(
     injectSheet({
         loader: {
             width: '100%',
-            height: '250px',
+            padding: '100px 0',
             background: '#fff',
             alignItems: 'center',
             zIndex: '999',
@@ -271,20 +263,60 @@ const enhance = compose(
             '& div:first-child': {
                 height: '45px !important'
             }
+        },
+        weeks: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginTop: '20px',
+            padding: '0 30px'
+        },
+        weekItem: {
+            color: '#666',
+            width: '32px',
+            height: '32px',
+            display: 'flex',
+            background: '#eaeaea',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer'
+        },
+        weekItemActive: {
+            extend: 'weekItem',
+            background: '#8de2b3',
+            color: '#fff',
+            fontWeight: '600'
+        },
+        addPlan: {
+            position: 'absolute',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            top: '0',
+            bottom: '0',
+            left: '0',
+            right: '0',
+            background: 'rgba(0,0,0, 0.3)',
+            zIndex: '999',
+            '& form': {
+                background: '#fff'
+            }
         }
     }),
     reduxForm({
         form: 'PlanCreateForm',
         enableReinitialize: true
-    }),
-    withReducer('state', 'dispatch', (state, action) => {
-        return {...state, ...action}
-    }, {open: false})
+    })
 )
 
 const customContentStyle = {
     width: '100%',
     maxWidth: 'none'
+}
+const agentIcon = {
+    color: '#fff',
+    width: 20,
+    height: 20
 }
 const PlanCreateDialog = enhance((props) => {
     const {
@@ -300,15 +332,12 @@ const PlanCreateDialog = enhance((props) => {
         zonesItemLoading,
         handleChooseZone,
         handleChooseAgent,
+        handleChooseMarket,
         selectedAgent,
+        selectedMarket,
         marketsLocation
     } = props
-    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
-    const agentIcon = {
-        color: '#fff',
-        width: 20,
-        height: 20
-    }
+    const onSubmit = handleSubmit(() => props.onSubmit())
     const ZERO = 0
     const isAgentChosen = selectedAgent > ZERO
     const chosenZone = _.get(zonesItem, 'id')
@@ -357,60 +386,65 @@ const PlanCreateDialog = enhance((props) => {
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.bodyContent}>
-                <form onSubmit={onSubmit} scrolling="auto" className={classes.form}>
-                    <div className={classes.inContent}>
-                        <Paper zDepth={2} className={classes.leftSide}>
-                            <div className={classes.titleContent}>
-                                <span>{isUpdate ? 'Изменение плана' : 'Составление плана'}</span>
-                                <IconButton onTouchTap={onClose}>
-                                    <CloseIcon2 color="#666666"/>
-                                </IconButton>
-                            </div>
-                            <div className={classes.scroll}>
-                                <PlanAddCalendar calendar={calendar}/>
-                                <div className={classes.zonesList}>
-                                    <div className={classes.zoneTitle}>
-                                        <span>Зоны</span>
-                                        <span>Магазины</span>
-                                    </div>
-                                    {zonesLoading
-                                        ? <div className={classes.loader}>
-                                            <CircularProgress size={40} thickness={4}/>
-                                        </div>
-                                        : zones}
+                <div className={classes.inContent}>
+                    <Paper zDepth={2} className={classes.leftSide}>
+                        <div className={classes.titleContent}>
+                            <span>{isUpdate ? 'Изменение плана' : 'Составление плана'}</span>
+                            <IconButton onTouchTap={onClose}>
+                                <CloseIcon2 color="#666666"/>
+                            </IconButton>
+                        </div>
+                        <div className={classes.scroll}>
+                            <PlanAddCalendar calendar={calendar}/>
+                            <div className={classes.zonesList}>
+                                <div className={classes.zoneTitle}>
+                                    <span>Зоны</span>
+                                    <span>Магазины</span>
                                 </div>
-                            </div>
-                        </Paper>
-                        <div className={classes.rightSide}>
-                            <div className={isAgentChosen ? classes.agentsActive : classes.agents}>
-                                {!_.isEmpty(agents)
-                                    ? <Paper zDepth={2} className={classes.agentsWrapper}>
-                                        <div className={classes.chooseAgent}>
-                                            <span>Выберите <br/>агента</span>
-                                        </div>
-                                        {zonesItemLoading
-                                            ? <div className={classes.agentsLoader}>
-                                                <CircularProgress size={35} thickness={3.5}/>
-                                            </div>
-                                            : agents}
-                                    </Paper>
-                                    : (!zonesItemLoading ? <Paper zDepth={2} className={classes.agentsWrapper}>
-                                            <div className={classes.chooseZone}>
-                                                <div>Для составления плана <br/> выберите зону</div>
-                                            </div>
-                                        </Paper>
-                                        : <Paper zDepth={2} className={classes.agentsWrapper}>
-                                            <div className={classes.agentsLoader}>
-                                                <CircularProgress size={35} thickness={3.5}/>
-                                            </div>
-                                        </Paper>)}
-                            </div>
-                            <div className={isAgentChosen ? classes.map : classes.mapBlurred}>
-                                <GoogleMap marketsLocation={marketsLocation}/>
+                                {zonesLoading
+                                    ? <div className={classes.loader}>
+                                        <CircularProgress size={40} thickness={4}/>
+                                    </div>
+                                    : zones}
                             </div>
                         </div>
+                    </Paper>
+                    <div className={classes.rightSide}>
+                        <div className={isAgentChosen ? classes.agentsActive : classes.agents}>
+                            {!_.isEmpty(agents)
+                                ? <Paper zDepth={2} className={classes.agentsWrapper}>
+                                    <div className={classes.chooseAgent}>
+                                        <span>Выберите <br/>агента</span>
+                                    </div>
+                                    {zonesItemLoading
+                                        ? <div className={classes.agentsLoader}>
+                                            <CircularProgress size={35} thickness={3.5}/>
+                                        </div>
+                                        : agents}
+                                </Paper>
+                                : (!zonesItemLoading ? <Paper zDepth={2} className={classes.agentsWrapper}>
+                                        <div className={classes.chooseZone}>
+                                            <div>Для составления плана <br/> выберите зону</div>
+                                        </div>
+                                    </Paper>
+                                    : <Paper zDepth={2} className={classes.agentsWrapper}>
+                                        <div className={classes.agentsLoader}>
+                                            <CircularProgress size={35} thickness={3.5}/>
+                                        </div>
+                                    </Paper>)}
+                        </div>
+                        {selectedMarket > ZERO && <div className={classes.addPlan}>
+                            <PlanWeekDayForm onSubmit={onSubmit}/>
+                        </div>}
+                        <div className={isAgentChosen ? classes.map : classes.mapBlurred}>
+                            <GoogleMap
+                                marketsLocation={marketsLocation}
+                                selectedMarket={selectedMarket}
+                                handleChooseMarket={handleChooseMarket}
+                            />
+                        </div>
                     </div>
-                </form>
+                </div>
             </div>
         </Dialog>
     )
