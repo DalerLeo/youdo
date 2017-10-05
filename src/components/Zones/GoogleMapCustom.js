@@ -31,7 +31,8 @@ export default class GoogleCustomMap extends React.Component {
             zone: [],
             points: null,
             isDrawing: false,
-            overlay: null
+            overlay: null,
+            child: []
         }
 
         this.handleClearDrawing = this.handleClearDrawing.bind(this)
@@ -131,6 +132,7 @@ export default class GoogleCustomMap extends React.Component {
             const meanLng = _.mean(_.map(_.get(item, ['coordinates', 'coordinates', '0']), (p) => {
                 return _.get(p, '1')
             }))
+
             const existingZone = new google.maps.Polygon({
                 paths: point,
                 fillColor: '#199ee0',
@@ -142,7 +144,7 @@ export default class GoogleCustomMap extends React.Component {
                 zIndex: 1
             })
             zones.push({zone: existingZone, id, title})
-
+            this.createOverlays(meanLat, meanLng, id)
             existingZone.setMap(this.map)
         })
 
@@ -174,7 +176,7 @@ export default class GoogleCustomMap extends React.Component {
         })
     }
 
-    createOverlays (meanLat, meanLng, title) {
+    createOverlays (meanLat, meanLng, id) {
         this.overlayView = new google.maps.OverlayView()
         this.overlayView.setMap(this.map)
         this.overlayView.onAdd = () => {
@@ -182,12 +184,12 @@ export default class GoogleCustomMap extends React.Component {
             containerElement.style.borderStyle = 'none'
             containerElement.style.borderWidth = '0px'
             containerElement.style.position = 'absolute'
-
             return containerElement
         }
         this.overlayView.draw = () => {
             let overlayEl = this.overlayView
             let mapPanes = overlayEl.getPanes()
+
             let mapCanvasProjection = overlayEl.getProjection()
             const bounds = new google.maps.LatLngBounds(
                 new google.maps.LatLng(meanLat, meanLng))
@@ -195,8 +197,10 @@ export default class GoogleCustomMap extends React.Component {
             let div = overlayEl.onAdd()
             div.style.left = sw.x + 'px'
             div.style.top = sw.y + 'px'
-            div.style.color = 'red'
-            div.innerHTML = title
+            div.style.color = '#000'
+            div.style.fontSize = '20px'
+            div.style.fontWeight = '700'
+            div.innerHTML = 'Z-' + id
             let mapPaneName = 'overlayLayer'
             mapPanes[mapPaneName].appendChild(div)
         }
