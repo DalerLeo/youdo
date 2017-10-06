@@ -20,6 +20,7 @@ import {
     zoneUnbindAgentAction,
     shopListFetchAction
 } from '../../actions/zones'
+import {marketsLocationFetchAction} from '../../actions/tracking'
 import {openSnackbarAction} from '../../actions/snackbar'
 const ZERO = 0
 const enhance = compose(
@@ -28,6 +29,8 @@ const enhance = compose(
         const pathname = _.get(props, ['location', 'pathname'])
         const list = _.get(state, ['zone', 'list', 'data'])
         const listLoading = _.get(state, ['zone', 'list', 'loading'])
+        const marketsLocation = _.get(state, ['tracking', 'markets', 'data'])
+        const marketsLocationLoading = _.get(state, ['tracking', 'markets', 'loading'])
         const createLoading = _.get(state, ['zone', 'create', 'loading'])
         const updateLoading = _.get(state, ['zone', 'update', 'loading'])
         const detail = _.get(state, ['zone', 'item', 'data'])
@@ -58,7 +61,9 @@ const enhance = compose(
             zoneBindForm,
             bindAgentLoading,
             filter,
-            shopFilter
+            shopFilter,
+            marketsLocation,
+            marketsLocationLoading
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -69,6 +74,7 @@ const enhance = compose(
         return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
         dispatch(zoneListFetchAction(filter))
+        dispatch(marketsLocationFetchAction(filter))
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -270,7 +276,9 @@ const Zones = enhance((props) => {
         detailLoading,
         bindAgentLoading,
         shopList,
-        shopListLoading
+        shopListLoading,
+        marketsLocation,
+        marketsLocationLoading
     } = props
 
     const openAddZone = toBoolean(_.get(location, ['query', ADD_ZONE]))
@@ -334,6 +342,10 @@ const Zones = enhance((props) => {
         data: _.get(list, 'results'),
         listLoading
     }
+    const marketsData = {
+        data: marketsLocation,
+        marketsLocationLoading
+    }
 
     const statData = {
         data: stat,
@@ -373,6 +385,7 @@ const Zones = enhance((props) => {
                 bindAgent={bindAgent}
                 unbindAgent={unbindAgent}
                 deleteZone={deleteZone}
+                marketsData={marketsData}
             />
         </Layout>
     )
