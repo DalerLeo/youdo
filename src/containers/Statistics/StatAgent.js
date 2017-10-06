@@ -63,7 +63,7 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         const statAgentId = _.get(nextProps, ['params', 'statAgentId']) || ZERO
         return statAgentId > ZERO && _.get(props, ['params', 'statAgentId']) !== statAgentId
-    }, ({dispatch, params, filter, filterItem, location: {query}}) => {
+    }, ({dispatch, params, filter, filterItem}) => {
         const statAgentId = _.toInteger(_.get(params, 'statAgentId'))
         if (statAgentId > ZERO) {
             dispatch(statAgentItemFetchAction(filter, filterItem, statAgentId))

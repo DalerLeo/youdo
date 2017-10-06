@@ -141,7 +141,7 @@ const StatAgentDialog = enhance((props) => {
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const agentName = _.get(detailData, ['agentDetail', '0', 'name'])
     const income = numberFormat(_.get(detailData, ['agentDetail', '0', 'income']), primaryCurrency)
-    const selectedDate = moment(_.get(detailData, 'selectedDate')).locale('ru').format('MMMM YYYY')
+    const selectedDate = moment(_.get(detailData, 'selectedDate')).locale('ru').format('MMM YYYY')
     const orderList = _.map(_.get(detailData, ['data', 'results']), (item) => {
         const id = _.get(item, 'id')
         const market = _.get(item, ['market', 'name'])
