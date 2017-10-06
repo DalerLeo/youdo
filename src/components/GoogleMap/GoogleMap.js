@@ -67,7 +67,8 @@ const GoogleMapWrapper = enhance(({classes, onMapLoad, marketsLocation, handleCh
                             icon: {
                                 url: MarketAdd,
                                 size: {width: 34, height: 34},
-                                scaledSize: {width: 34, height: 34}
+                                scaledSize: {width: 34, height: 34},
+                                anchor: {x: 17, y: 17}
                             }
                         }}>
                     </Marker>
@@ -95,7 +96,8 @@ const GoogleMapWrapper = enhance(({classes, onMapLoad, marketsLocation, handleCh
                     icon: {
                         url: Market,
                         size: {width: 24, height: 24},
-                        scaledSize: {width: 24, height: 24}
+                        scaledSize: {width: 24, height: 24},
+                        anchor: {x: 12, y: 12}
                     }
                 }}>
             </Marker>

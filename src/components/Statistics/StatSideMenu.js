@@ -67,7 +67,7 @@ const StatSideMenu = enhance((props) => {
             section: 'Финансы',
             childs: [
                 {name: 'Оборот', url: ROUTES.STATISTICS_FINANCE_URL, query: {fromDate: fromDate, toDate: toDate}},
-                {name: 'Расходы', url: ROUTES.STATISTICS_OUTCOME_CATEGORY_URL, query: {fromDate: fromDate, toDate: toDate}},
+                {name: 'Расходы по категориям', url: ROUTES.STATISTICS_OUTCOME_CATEGORY_URL, query: {fromDate: fromDate, toDate: toDate}},
                 {name: 'Кассы', url: ROUTES.STATISTICS_CASHBOX_URL, query: {fromDate: fromDate, toDate: toDate}}
             ]
         },

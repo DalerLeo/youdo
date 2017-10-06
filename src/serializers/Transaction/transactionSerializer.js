@@ -1,25 +1,11 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../../helpers/serializer'
 import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
+import getConfig from '../../helpers/getConfig'
+import moment from 'moment'
 
 const ZERO = 0
 const MINUS_ONE = -1
-
-export const createIncomeSerializer = (data, cashboxId) => {
-    const amount = _.get(data, 'amount') < ZERO ? _.get(data, 'amount') * MINUS_ONE : _.get(data, 'amount')
-    const comment = _.get(data, 'comment')
-    const clientId = _.get(data, ['client', 'value'])
-    const customRate = numberWithoutSpaces(_.get(data, 'custom_rate'))
-    const division = _.get(data, ['division', 'value'])
-    return {
-        'amount': numberWithoutSpaces(amount),
-        comment,
-        'cashbox': cashboxId,
-        'client': clientId,
-        'custom_rate': customRate,
-        'division': division && division
-    }
-}
 
 export const updateTransactionSerializer = (data, client) => {
     const amount = numberWithoutSpaces(_.get(data, 'amount'))
@@ -43,6 +29,34 @@ export const updateTransactionSerializer = (data, client) => {
     }
 }
 
+export const createIncomeSerializer = (data, cashboxId) => {
+    const amount = _.get(data, 'amount') < ZERO ? _.get(data, 'amount') * MINUS_ONE : _.get(data, 'amount')
+    const comment = _.get(data, 'comment')
+    const showClients = _.get(data, 'showClients')
+    const clientId = _.get(data, ['client', 'value'])
+    const customRate = numberWithoutSpaces(_.get(data, 'custom_rate'))
+    const division = _.get(data, ['division', 'value'])
+    const cashbox = _.get(data, ['cashbox', 'value'])
+    const createdDate = moment(_.get(data, 'date')).format('YYYY-MM-DD')
+    return (showClients)
+    ? {
+        'amount': numberWithoutSpaces(amount),
+        comment,
+        'cashbox': _.toInteger(cashboxId) === ZERO ? cashbox : cashboxId,
+        'client': clientId,
+        'custom_rate': customRate,
+        'division': division,
+        'created_date': createdDate
+    }
+    : {
+        'amount': numberWithoutSpaces(amount),
+        comment,
+        'cashbox': _.toInteger(cashboxId) === ZERO ? cashbox : cashboxId,
+        'custom_rate': customRate,
+        'created_date': createdDate
+    }
+}
+
 export const createExpenseSerializer = (data, cashboxId) => {
     let amount = numberWithoutSpaces(_.get(data, 'amount'))
     if (amount > ZERO) {
@@ -54,25 +68,26 @@ export const createExpenseSerializer = (data, cashboxId) => {
     const clientId = _.get(data, ['client', 'value'])
     const customRate = numberWithoutSpaces(_.get(data, 'custom_rate'))
     const division = _.get(data, ['division', 'value'])
-    if (showClients) {
-        return {
+    const cashbox = _.get(data, ['cashbox', 'value'])
+    const createdDate = moment(_.get(data, 'date')).format('YYYY-MM-DD')
+    return (showClients)
+        ? {
+            amount: amount,
+            comment,
+            'cashbox': _.toInteger(cashboxId) === ZERO ? cashbox : cashboxId,
+            'expanse_category': objectId,
+            'client': clientId,
+            'custom_rate': customRate,
+            'division': division,
+            'created_date': createdDate
+        }
+        : {
             amount: amount,
             comment,
             'cashbox': cashboxId,
             'expanse_category': objectId,
-            'client': clientId,
-            'custom_rate': customRate,
-            'division': division && division
+            'custom_rate': customRate
         }
-    }
-    return {
-        amount: amount,
-        comment,
-        'cashbox': cashboxId,
-        'expanse_category': objectId,
-        'custom_rate': customRate,
-        'division': division && division
-    }
 }
 
 export const createSendSerializer = (data, cashboxId) => {
@@ -80,13 +95,24 @@ export const createSendSerializer = (data, cashboxId) => {
     const amountTo = _.toNumber(numberWithoutSpaces(_.get(data, 'amountTo')))
     const toCashbox = _.get(data, ['categoryId', 'value'])
     const comment = _.get(data, 'comment')
+    const cashbox = _.get(data, ['cashbox', 'value'])
     const customRate = amountFrom / amountTo
     return {
-        amount: amountFrom,
-        from_cashbox: _.toInteger(cashboxId),
+        amount: amountFrom > ZERO ? amountFrom : null,
+        from_cashbox: _.toInteger(cashboxId) === ZERO ? cashbox : cashboxId,
         to_cashbox: _.toInteger(toCashbox),
         rate: customRate,
         comment
+    }
+}
+
+export const convertSerializer = (date, currency) => {
+    const toCurrency = _.toInteger(getConfig('PRIMARY_CURRENCY_ID'))
+    return {
+        'from_currency': toCurrency,
+        'to_currency': currency,
+        'amount': '1',
+        'date': moment(date).format('YYYY-MM-DD HH:mm:ss')
     }
 }
 

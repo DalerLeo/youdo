@@ -25,7 +25,7 @@ const enhance = compose(
             width: '32px',
             height: '32px',
             display: 'flex',
-            background: '#eaeaea',
+            background: '#efefef',
             alignItems: 'center',
             justifyContent: 'center',
             cursor: 'pointer',

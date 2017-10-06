@@ -13,7 +13,16 @@ import toCamelCase from '../../helpers/toCamelCase'
 import getConfig from '../../helpers/getConfig'
 import toBoolean from '../../helpers/toBoolean'
 import {convertCurrency} from '../../helpers/convertCurrency'
-import {TextField, ExpensiveCategorySearchField, CheckBox, ClientSearchField, normalizeNumber, DivisionSearchField} from '../ReduxForm'
+import {
+    TextField,
+    ExpensiveCategorySearchField,
+    CheckBox,
+    ClientSearchField,
+    normalizeNumber,
+    DivisionSearchField,
+    CashboxSearchField,
+    DateField
+} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import MainStyles from '../Styles/MainStyles'
 import {openErrorAction} from '../../actions/error'
@@ -56,6 +65,24 @@ const enhance = compose(
                 marginTop: '0 !important'
             }
         },
+        inputDateCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            },
+            '& div:first-child': {
+                height: '45px !important'
+            }
+        },
         nav: {
             fontSize: '18px',
             fontWeight: 'bold',
@@ -91,10 +118,14 @@ const enhance = compose(
         const showClients = _.get(state, ['form', 'TransactionCreateForm', 'values', 'showClients'])
         const rate = _.get(state, ['form', 'TransactionCreateForm', 'values', 'custom_rate'])
         const amount = _.get(state, ['form', 'TransactionCreateForm', 'values', 'amount'])
+        const chosenCashbox = _.get(state, ['form', 'TransactionCreateForm', 'values', 'cashbox', 'value'])
+        const date = _.get(state, ['form', 'TransactionCreateForm', 'values', 'date'])
         return {
             showClients,
             rate,
-            amount
+            amount,
+            chosenCashbox,
+            date
         }
     }),
     withHandlers({
@@ -112,10 +143,25 @@ const enhance = compose(
     })
 )
 const TransactionCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, cashboxData, isExpense, showClients, showIncomeClients, rate, amount} = props
+    const {
+        open,
+        loading,
+        handleSubmit,
+        onClose,
+        classes,
+        cashboxData,
+        isExpense,
+        showClients,
+        rate,
+        amount,
+        noCashbox,
+        chosenCashbox,
+        date
+    } = props
 
     const onSubmit = handleSubmit(() => props.onSubmit().catch(props.validate))
-    const cashbox = _.find(_.get(cashboxData, 'data'), {'id': _.get(cashboxData, 'cashboxId')})
+    const cashboxId = noCashbox ? chosenCashbox : _.get(cashboxData, 'cashboxId')
+    const cashbox = _.find(_.get(cashboxData, 'data'), {'id': cashboxId})
     const currency = _.get(cashbox, ['currency', 'name'])
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const convert = convertCurrency(amount, rate)
@@ -135,37 +181,58 @@ const TransactionCreateDialog = enhance((props) => {
                     <CloseIcon2 color="#666666"/>
                 </IconButton>
             </div>
-            <div className={classes.bodyContent} style={{minHeight: '420px'}}>
+            <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit} className={classes.form}>
-                    <div className={classes.inContent} style={{minHeight: '420px'}}>
+                    <div className={classes.inContent} style={{minHeight: 'unset', display: 'block'}}>
                         <div className={classes.loader}>
                             <CircularProgress size={40} thickness={4}/>
                         </div>
+                        {noCashbox
+                            ? <div style={{marginTop: '15px'}}>
+                                <Field
+                                    name="cashbox"
+                                    className={classes.inputFieldCustom}
+                                    component={CashboxSearchField}
+                                    label="Касса"/>
+                            </div>
+                            : <div className={classes.itemList}>
+                                <div className={classes.label}>Касса:</div>
+                                <div style={{fontWeight: '600', marginBottom: '5px'}}>{_.get(cashbox, 'name')}</div>
+                            </div>}
+                        <Field
+                            name="date"
+                            className={classes.inputDateCustom}
+                            component={DateField}
+                            fullWidth={true}
+                            container="inline"
+                            label="Дата создания"/>
                         {isExpense
                             ? <div className={classes.field}>
-                                <div className={classes.itemList}>
-                                    <div className={classes.label}>Касса:</div>
-                                    <div style={{fontWeight: '600', marginBottom: '5px'}}>{_.get(cashbox, 'name')}</div>
-                                </div>
+                                <Field
+                                    name="showClients"
+                                    className={classes.checkbox}
+                                    component={CheckBox}
+                                    label="Снять со счета клиента"/>
+                                {showClients ? <div>
                                     <Field
-                                        name="showClients"
-                                        className={classes.checkbox}
-                                        component={CheckBox}
-                                        label="Снять со счета клиента"/>
-                                    {showClients ? <div>
-                                        <Field
-                                            name="client"
-                                            component={ClientSearchField}
-                                            label="Клиент"
-                                            className={classes.inputFieldCustom}
-                                            fullWidth={true}/>
-                                    </div> : null}
-                                    <Field
-                                        name="expanseCategory"
-                                        component={ExpensiveCategorySearchField}
-                                        label="Категория расхода"
+                                        name="client"
+                                        component={ClientSearchField}
+                                        label="Клиент"
                                         className={classes.inputFieldCustom}
                                         fullWidth={true}/>
+                                    {hasDivisions ? <Field
+                                        name="division"
+                                        component={DivisionSearchField}
+                                        label="Подразделение"
+                                        className={classes.inputFieldCustom}
+                                        fullWidth={true}/> : null}
+                                </div> : null}
+                                <Field
+                                    name="expanseCategory"
+                                    component={ExpensiveCategorySearchField}
+                                    label="Категория расхода"
+                                    className={classes.inputFieldCustom}
+                                    fullWidth={true}/>
                                 <div className={classes.flex} style={{justifyContent: 'space-between'}}>
                                     <div className={classes.flex} style={{alignItems: 'baseline', width: '48%'}}>
                                         <Field
@@ -177,26 +244,20 @@ const TransactionCreateDialog = enhance((props) => {
                                             fullWidth={true}/>
                                         <div>{currency}</div>
                                     </div>
-                                    {(showClients || showIncomeClients)
-                                    ? <div className={classes.flex} style={{alignItems: 'baseline', width: '48%'}}>
-                                            {primaryCurrency !== currency &&
+                                        <div className={classes.flex} style={{alignItems: 'baseline', width: '48%'}}>
+                                            {(primaryCurrency !== currency && currency && date) &&
                                             <Field
                                                 name="custom_rate"
                                                 component={TextField}
-                                                hintText={'Курс ' + primaryCurrency}
+                                                label={'Курс ' + primaryCurrency}
                                                 className={classes.inputFieldCustom}
                                                 normalize={normalizeNumber}
                                                 fullWidth={true}/>}
-                                    </div> : null}
+                                        </div>
                                 </div>
-                                {(convert && showClients)
-                                ? <div className={classes.convert}>После конвертации: <strong>{convert}</strong></div> : null}
-                                {hasDivisions && <Field
-                                    name="division"
-                                    component={DivisionSearchField}
-                                    label="Подразделение"
-                                    className={classes.inputFieldCustom}
-                                    fullWidth={true}/>}
+                                {(convert)
+                                    ? <div className={classes.convert}>После конвертации: <strong>{convert} {primaryCurrency}</strong>
+                                    </div> : null}
                                 <Field
                                     name="comment"
                                     style={{top: '-20px', lineHeight: '20px', fontSize: '13px'}}
@@ -207,11 +268,7 @@ const TransactionCreateDialog = enhance((props) => {
                                     rowsMax={2}
                                     fullWidth={true}/>
                             </div>
-                        : <div className={classes.field}>
-                                <div className={classes.itemList}>
-                                    <div className={classes.label}>Касса:</div>
-                                    <div style={{fontWeight: '600', marginBottom: '5px'}}>{_.get(cashbox, 'name')}</div>
-                                </div>
+                            : <div className={classes.field}>
                                 <Field
                                     name="showClients"
                                     className={classes.checkbox}
@@ -224,6 +281,12 @@ const TransactionCreateDialog = enhance((props) => {
                                         label="Клиент"
                                         className={classes.inputFieldCustom}
                                         fullWidth={true}/>
+                                    {hasDivisions ? <Field
+                                        name="division"
+                                        component={DivisionSearchField}
+                                        label="Подразделение"
+                                        className={classes.inputFieldCustom}
+                                        fullWidth={true}/> : null}
                                 </div>
                                 }
                                 <div className={classes.flex} style={{justifyContent: 'space-between'}}>
@@ -237,26 +300,20 @@ const TransactionCreateDialog = enhance((props) => {
                                             fullWidth={true}/>
                                         <div>{_.get(cashbox, ['currency', 'name'])}</div>
                                     </div>
-                                    {(showClients || showIncomeClients) &&
                                     <div className={classes.flex} style={{alignItems: 'baseline', width: '48%'}}>
-                                        {primaryCurrency !== currency &&
-                                        <Field
+                                        {(primaryCurrency !== currency && currency && date)
+                                        ? <Field
                                             name="custom_rate"
                                             component={TextField}
-                                            hintText={'Курс ' + primaryCurrency}
+                                            label={'Курс ' + primaryCurrency}
                                             className={classes.inputFieldCustom}
                                             normalize={normalizeNumber}
-                                            fullWidth={true}/>}
-                                    </div>}
+                                            fullWidth={true}/> : null}
+                                    </div>
                                 </div>
-                                {(convert && showClients)
-                                ? <div className={classes.convert}>После конвертации: <strong>{convert}</strong></div> : null}
-                                {hasDivisions ? <Field
-                                    name="division"
-                                    component={DivisionSearchField}
-                                    label="Подразделение"
-                                    className={classes.inputFieldCustom}
-                                    fullWidth={true}/> : null}
+                                {(convert)
+                                    ? <div className={classes.convert}>После конвертации: <strong>{convert} {primaryCurrency}</strong>
+                                    </div> : null}
                                 <Field
                                     name="comment"
                                     style={{top: '-20px', lineHeight: '20px', fontSize: '13px'}}
@@ -268,7 +325,7 @@ const TransactionCreateDialog = enhance((props) => {
                                     fullWidth={true}/>
                             </div>}
                     </div>
-                    <div className={classes.bottomButton} style={{position: 'absolute'}}>
+                    <div className={classes.bottomButton}>
                         <FlatButton
                             label="Сохранить"
                             className={classes.actionButton}

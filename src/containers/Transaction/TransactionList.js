@@ -2,7 +2,7 @@ import React from 'react'
 import _ from 'lodash'
 import sprintf from 'sprintf'
 import moment from 'moment'
-import {reset} from 'redux-form'
+import {reset, change} from 'redux-form'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
@@ -40,7 +40,8 @@ import {
     pendingTransactionFetchAction,
     transactionInfoFetchAction,
     transactionEditPaymentAction,
-    deleteTransactionAction
+    deleteTransactionAction,
+    transactionConvertAction
 } from '../../actions/transaction'
 import {
     cashboxListFetchAction
@@ -76,6 +77,10 @@ const enhance = compose(
         const cashboxId = _.get(props, ['location', 'query', 'cashboxId'])
         const isSuperUser = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
 
+        const date = _.get(state, ['form', 'TransactionCreateForm', 'values', 'date'])
+        const cashbox = _.get(state, ['form', 'TransactionCreateForm', 'values', 'cashbox', 'value'])
+        const convertAmount = _.get(state, ['pendingPayments', 'convert', 'data', 'amount'])
+
         const filter = filterHelper(list, pathname, query)
         const filterItem = filterHelper(payment, pathname, query, {'page': 'dPage'})
         return {
@@ -102,14 +107,34 @@ const enhance = compose(
             transactionInfo,
             transactionInfoLoading,
             isSuperUser,
-            updateForm
+            updateForm,
+            date,
+            cashbox,
+            convertAmount
         }
     }),
-
     withPropsOnChange((props, nextProps) => {
         return !nextProps.cashboxListLoading && _.isNil(nextProps.cashboxList)
     }, ({dispatch, filterCashbox}) => {
         dispatch(cashboxListFetchAction(filterCashbox))
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        return (props.date !== nextProps.date && nextProps.date) || (props.cashbox !== nextProps.cashbox && nextProps.cashbox)
+    }, ({dispatch, date, cashbox, cashboxList}) => {
+        const currency = _.get(_.find(_.get(cashboxList, 'results'), {'id': cashbox}), ['currency', 'id'])
+        if (date && cashbox) {
+            dispatch(transactionConvertAction(date, currency))
+        }
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        return props.convertAmount !== nextProps.convertAmount && nextProps.convertAmount
+    }, ({dispatch, convertAmount}) => {
+        if (convertAmount) {
+            const form = 'TransactionCreateForm'
+            dispatch(change(form, 'custom_rate', convertAmount))
+        }
     }),
 
     withPropsOnChange((props, nextProps) => {

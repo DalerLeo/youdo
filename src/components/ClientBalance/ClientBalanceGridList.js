@@ -113,7 +113,7 @@ const enhance = compose(
         leftTable: {
             display: 'table',
             zIndex: '4',
-            width: '25%',
+            width: '350px',
             boxShadow: '5px 0 8px -3px #ccc',
             '& > div': {
                 '&:nth-child(odd)': {
@@ -190,6 +190,9 @@ const enhance = compose(
         },
         title: {
             fontWeight: '600',
+            '& > td': {
+                verticalAlign: 'middle'
+            },
             '& tr, td': {
                 border: '1px #efefef solid'
             }
@@ -232,6 +235,7 @@ const enhance = compose(
             }
         },
         icon: {
+            color: '#666 !important',
             height: '15px !important'
         },
         getDocument: {
@@ -412,7 +416,9 @@ const ClientBalanceGridList = enhance((props) => {
     const lists = (
         <div className={classes.tableWrapper}>
             {clients}
-            <div className={classes.mainTableWrapper} style={stat ? {width: '75%'} : {width: 'calc(75% - 120px)'}}>
+            <div className={classes.mainTableWrapper} style={stat
+                ? {width: 'cacl(100% - 350px)'}
+                : {width: 'calc(100% - 350px - 120px)'}}>
                 {tableList}
             </div>
             {!stat && buttons}

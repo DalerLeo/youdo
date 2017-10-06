@@ -376,10 +376,11 @@ const PlanWrapper = enhance((props) => {
                 handleChooseMarket={addPlan.handleChooseMarket}
                 selectedAgent={addPlan.selectedAgent}
                 selectedMarket={addPlan.selectedMarket}
+                selectedZone={addPlan.selectedZone}
                 zonesList={addPlan.zonesList}
                 zonesLoading={addPlan.zonesLoading}
-                zonesItem={addPlan.zonesItem}
-                zonesItemLoading={addPlan.zonesItemLoading}
+                zoneAgents={addPlan.zoneAgents}
+                zoneAgentsLoading={addPlan.zoneAgentsLoading}
                 calendar={calendar}
                 marketsLocation={addPlan.marketsLocation}
             />
@@ -402,8 +403,8 @@ PlanWrapper.PropTypes = {
         openAddPlan: PropTypes.bool.isRequired,
         zonesList: PropTypes.object.isRequired,
         zonesLoading: PropTypes.bool.isRequired,
-        zonesItem: PropTypes.object.isRequired,
-        zonesItemLoading: PropTypes.bool.isRequired,
+        zoneAgents: PropTypes.object.isRequired,
+        zoneAgentsLoading: PropTypes.bool.isRequired,
         handleChooseZone: PropTypes.func.isRequired,
         handleChooseAgent: PropTypes.func.isRequired,
         handleChooseMarket: PropTypes.func.isRequired,
