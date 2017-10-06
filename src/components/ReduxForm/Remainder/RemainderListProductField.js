@@ -52,7 +52,13 @@ const enhance = compose(
             padding: '10px 30px !important',
             maxHeight: '200px',
             minHeight: '200px',
-            overflowY: 'auto'
+            overflowY: 'auto',
+            '& > div': {
+                overflow: 'unset !important',
+                '& > div:nth-child(2)': {
+                    overflow: 'unset !important'
+                }
+            }
         },
         tableRowHead: {
             height: '50px !important',
@@ -114,7 +120,8 @@ const enhance = compose(
             '& td': {
                 height: '40px !important',
                 padding: '0 10px !important',
-                width: '85px'
+                width: '85px',
+                overflow: 'unset !important'
             },
             '& th:first-child': {
                 width: '80%',
@@ -353,7 +360,7 @@ const RemainderListProductField = ({classes, handleAdd, handleRemove, measuremen
                         stripedRows={false}>
                         {_.map(products, (item, index) => {
                             const product = _.get(item, ['product', 'value', 'name'])
-                            const isDefect = _.get(item, ['isDefect', 'text'])
+                            const isDefect = _.get(item, ['isDefect', 'value', 'name'])
                             const amount = _.get(item, 'amount')
                             const proMeasurement = _.get(item, ['product', 'value', 'measurement', 'name'])
 

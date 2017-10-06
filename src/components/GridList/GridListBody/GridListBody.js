@@ -4,10 +4,10 @@ import {hashHistory} from 'react-router'
 import {compose, withHandlers} from 'recompose'
 import injectSheet from 'react-jss'
 import Checkbox from 'material-ui/Checkbox'
-import CircularProgress from 'material-ui/CircularProgress'
 import Dot from '../../Images/dot.png'
 import NotFound from '../../Images/not-found.png'
 import Paper from 'material-ui/Paper'
+import Loader from '../../Loader'
 
 const enhance = compose(
     injectSheet({
@@ -160,7 +160,7 @@ const GridListBody = enhance((props) => {
                         className={transparentLoading ? classes.transparentLoading : classes.loader}
                         style={!listShadow ? {boxShadow: 'none'} : {}}
                         transitionEnabled={false}>
-                        <CircularProgress size={40} thickness={4}/>
+                        <Loader/>
                     </Paper>
                     : <Paper
                         zDepth={1}

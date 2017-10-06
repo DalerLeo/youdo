@@ -37,7 +37,7 @@ export const transferSerializer = (data) => {
         return {
             amount: item.amount,
             product: item.product.value.id,
-            'is_defect': _.toInteger(_.get(item, ['isDefect', 'value'])) === DEFECT
+            'is_defect': _.toInteger(_.get(item, ['isDefect', 'value', 'id'])) === DEFECT
         }
     })
 
@@ -57,7 +57,7 @@ export const discardSerializer = (data) => {
         return {
             amount: item.amount,
             product: item.product.value.id,
-            'is_defect': _.toInteger(_.get(item, ['isDefect', 'value'])) === DEFECT
+            'is_defect': _.toInteger(_.get(item, ['isDefect', 'value', 'id'])) === DEFECT
         }
     })
 

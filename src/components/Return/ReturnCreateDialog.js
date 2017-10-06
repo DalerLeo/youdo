@@ -15,11 +15,12 @@ import {
     ClientBalanceReturnProductList,
     TextField,
     PaymentTypeSearchField,
-    ClientBalanceReturnTotalSum,
     ClientSearchField
 } from '../ReduxForm'
 import MarketSearchField from '../ReduxForm/ClientBalance/MarketSearchField'
 import toCamelCase from '../../helpers/toCamelCase'
+import numberFormat from '../../helpers/numberFormat'
+import getConfig from '../../helpers/getConfig'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -225,8 +226,10 @@ const enhance = compose(
     }),
     connect((state) => {
         const clientId = _.get(state, ['form', 'ReturnCreateForm', 'values', 'client', 'value'])
+        const returnedProducts = _.get(state, ['form', 'ReturnCreateForm', 'values', 'products'])
         return {
-            clientId
+            clientId,
+            returnedProducts
         }
     }),
     withReducer('state', 'dispatch', (state, action) => {
@@ -239,8 +242,13 @@ const customContentStyle = {
     maxWidth: 'none'
 }
 const SupplyCreateDialog = enhance((props) => {
-    const {open, handleSubmit, onClose, classes, clientId, isUpdate, name, editOnlyCost, initialValues} = props
+    const {open, handleSubmit, onClose, classes, clientId, isUpdate, name, editOnlyCost, returnedProducts, initialValues} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+    const totalCost = _.sumBy(returnedProducts, (item) => {
+        const itemCost = _.toNumber(_.get(item, 'cost'))
+        const itemAmount = _.toNumber(_.get(item, 'amount'))
+        return (itemAmount * itemCost)
+    })
     return (
         <Dialog
             modal={true}
@@ -319,15 +327,14 @@ const SupplyCreateDialog = enhance((props) => {
                                 <Fields
                                     isUpdate={isUpdate}
                                     editOnlyCost={editOnlyCost}
-                                    names={['products', 'product', 'amount', 'cost', 'editAmount', 'editCost', 'type']}
+                                    names={['products', 'product', 'amount', 'cost', 'editAmount', 'editCost']}
                                     component={ClientBalanceReturnProductList}
                                 />
-
                             </div>
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
-                    <div>Общая сумма возврата: <ClientBalanceReturnTotalSum/></div>
+                    <div>Общая сумма возврата: <b>{numberFormat(totalCost, getConfig('PRIMARY_CURRENCY'))}</b></div>
                         <FlatButton
                             label={isUpdate ? 'Изменить возврат' : 'Оформить возврат'}
                             className={classes.actionButton}

@@ -302,6 +302,10 @@ const PlanWrapper = enhance((props) => {
         }
     ]
 
+    const initialValues = {
+        planType: 'week'
+    }
+
     const leftSide = (
         <div className={classes.leftSide}>
             <PlanMonthFilter calendar={calendar}/>
@@ -314,7 +318,7 @@ const PlanWrapper = enhance((props) => {
                         <IconButton
                             key={group}
                             disableTouchRipple={true}
-                            className={(group === groupId) && classes.activeTab}
+                            className={(group === groupId) ? classes.activeTab : ''}
                             onTouchTap={() => { handleClickTab(group) }}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}>
@@ -363,12 +367,21 @@ const PlanWrapper = enhance((props) => {
             </div>
 
             <PlanCreateDialog
+                initialValues={initialValues}
                 open={addPlan.openAddPlan}
                 onClose={addPlan.handleCloseAddPlan}
                 onSubmit={addPlan.handleSubmitAddPlan}
+                handleChooseZone={addPlan.handleChooseZone}
+                handleChooseAgent={addPlan.handleChooseAgent}
+                handleChooseMarket={addPlan.handleChooseMarket}
+                selectedAgent={addPlan.selectedAgent}
+                selectedMarket={addPlan.selectedMarket}
                 zonesList={addPlan.zonesList}
                 zonesLoading={addPlan.zonesLoading}
+                zonesItem={addPlan.zonesItem}
+                zonesItemLoading={addPlan.zonesItemLoading}
                 calendar={calendar}
+                marketsLocation={addPlan.marketsLocation}
             />
 
             <PlanSalesDialog
@@ -387,6 +400,13 @@ PlanWrapper.PropTypes = {
     detailData: PropTypes.object,
     addPlan: PropTypes.shape({
         openAddPlan: PropTypes.bool.isRequired,
+        zonesList: PropTypes.object.isRequired,
+        zonesLoading: PropTypes.bool.isRequired,
+        zonesItem: PropTypes.object.isRequired,
+        zonesItemLoading: PropTypes.bool.isRequired,
+        handleChooseZone: PropTypes.func.isRequired,
+        handleChooseAgent: PropTypes.func.isRequired,
+        handleChooseMarket: PropTypes.func.isRequired,
         handleOpenAddPlan: PropTypes.func.isRequired,
         handleCloseAddPlan: PropTypes.func.isRequired,
         handleSubmitAddPlan: PropTypes.func.isRequired

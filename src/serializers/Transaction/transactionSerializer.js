@@ -20,7 +20,6 @@ export const createIncomeSerializer = (data, cashboxId) => {
         'division': division && division
     }
 }
-const TWO = 2
 
 export const updateTransactionSerializer = (data, client) => {
     const amount = numberWithoutSpaces(_.get(data, 'amount'))
@@ -40,7 +39,7 @@ export const updateTransactionSerializer = (data, client) => {
         division,
         user,
         type: 1,
-        payment_type: paymentType === TWO ? ZERO : paymentType
+        payment_type: paymentType
     }
 }
 

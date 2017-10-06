@@ -10,13 +10,13 @@ const FIVE = 5
 
 export const createSerializer = (data) => {
     const client = _.get(data, ['client', 'value'])
-    const paymentType = _.get(data, ['paymentType']) === 'cash' ? ZERO : ONE
+    const paymentType = _.get(data, ['paymentType'])
     const paymentTerm = 1
     const paymentDate = moment(_.get(data, ['paymentDate'])).format('YYYY-MM-DD')
     const deliveryDate = moment(_.get(data, ['deliveryDate'])).format('YYYY-MM-DD')
     const requestDeadline = moment(_.get(data, ['request_dedline'])).format('YYYY-MM-DD')
     const dealType = _.get(data, ['dealType']) === 'standart' ? ZERO : ONE
-    const market = _.get(data, ['market', 'value', 'id'])
+    const market = _.get(data, ['market', 'value'])
     const user = _.get(data, ['user', 'value'])
     const products = _.map(_.get(data, ['products']), (item) => {
         return {
@@ -29,7 +29,7 @@ export const createSerializer = (data) => {
     return {
         client,
         'date_delivery': deliveryDate,
-        'request_dedline': requestDeadline,
+        'request_deadline': requestDeadline,
         'payment_date': paymentDate,
         'payment_type': paymentType,
         'payment_term': paymentTerm,

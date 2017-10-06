@@ -9,3 +9,4 @@ export const DEFAULT_LOCATION = {
     lat: 41.31115127095392,
     lng: 69.2797140777111
 }
+export const FLOATPANE = 'floatPane'

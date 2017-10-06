@@ -13,7 +13,7 @@ export const createSerializer = (data) => {
         currency,
         cashier,
         division,
-        type
+        type: type
     }
 }
 

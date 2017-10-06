@@ -3,7 +3,7 @@ import {compose} from 'recompose'
 import React from 'react'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../../Loader'
 import Paper from 'material-ui/Paper'
 import GridListNav from '../GridListNav'
 import GridListHeader from '../GridListHeader'
@@ -67,7 +67,7 @@ const GridList = enhance((props) => {
         if (listLoading && !transparentLoading) {
             return (
                 <Paper zDepth={1} className={classes.loader} style={!listShadow ? {boxShadow: 'none'} : {} }>
-                    <CircularProgress size={40} thickness={4} />
+                    <Loader/>
                 </Paper>
             )
         }
@@ -113,7 +113,7 @@ const GridList = enhance((props) => {
             {loaderOrList(loading)}
             {(transparentLoading && loading) &&
             <Paper zDepth={1} className={classes.transparentLoading} style={!listShadow ? {boxShadow: 'none'} : {} }>
-                <CircularProgress size={40} thickness={4}/>
+                <Loader/>
             </Paper>}
         </div>
     )

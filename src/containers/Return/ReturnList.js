@@ -10,7 +10,6 @@ import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import {openErrorAction} from '../../actions/error'
-const ONE = 1
 import {
     RETURN_FILTER_KEY,
     RETURN_FILTER_OPEN,
@@ -31,8 +30,8 @@ import {
 } from '../../actions/return'
 import {openSnackbarAction} from '../../actions/snackbar'
 
-const ZERO = 0
 const TWO = 2
+
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -154,7 +153,7 @@ const enhance = compose(
             const type = _.get(filterForm, ['values', 'type', 'value']) || null
             const order = _.get(filterForm, ['values', 'order']) || null
             const client = _.get(filterForm, ['values', 'client', 'value']) || null
-            const status = _.get(filterForm, ['values', 'status', 'value']) === ZERO ? '0' : _.get(filterForm, ['values', 'status', 'value']) || null
+            const status = _.get(filterForm, ['values', 'status', 'value']) || null
             const market = _.get(filterForm, ['values', 'market', 'value']) || null
             const initiator = _.get(filterForm, ['values', 'initiator', 'value']) || null
             const product = _.get(filterForm, ['values', 'product', 'value']) || null
@@ -238,6 +237,15 @@ const enhance = compose(
                     .then(() => {
                         hashHistory.push({pathname, query: filter.getParams({[RETURN_UPDATE_DIALOG_OPEN]: false})})
                         return dispatch(returnListFetchAction(filter))
+                    }).catch((error) => {
+                        const errorWhole = _.map(error, (item, index) => {
+                            return <p key={index} style={{marginBottom: '10px'}}><b style={{textTransform: 'uppercase'}}>{index}:</b> {item}</p>
+                        })
+                        dispatch(openErrorAction({
+                            message: <div style={{padding: '0 30px'}}>
+                                {errorWhole}
+                            </div>
+                        }))
                     })
             }
             return dispatch(returnUpdateAction(returnId, _.get(updateForm, ['values']), detail))
@@ -250,6 +258,15 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[RETURN_UPDATE_DIALOG_OPEN]: false})})
                     return dispatch(returnListFetchAction(filter))
+                }).catch((error) => {
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p key={index} style={{marginBottom: '10px'}}><b style={{textTransform: 'uppercase'}}>{index}:</b> {item}</p>
+                    })
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                            {errorWhole}
+                        </div>
+                    }))
                 })
         },
         handleOpenCreateDialog: props => () => {
@@ -322,6 +339,7 @@ const ReturnList = enhance((props) => {
     const zone = _.toInteger(filter.getParam(RETURN_FILTER_KEY.ZONE))
     const division = _.toInteger(filter.getParam(RETURN_FILTER_KEY.DIVISION))
     const returnStatus = _.toInteger(filter.getParam(RETURN_FILTER_KEY.STATUS))
+    const paymentType = _.toInteger(filter.getParam(RETURN_FILTER_KEY.PAYMENT_TYPE))
     const fromDate = filter.getParam(RETURN_FILTER_KEY.FROM_DATE)
     const deliveryFromDate = filter.getParam(RETURN_FILTER_KEY.DELIVERY_FROM_DATE)
     const toDate = filter.getParam(RETURN_FILTER_KEY.TO_DATE)
@@ -351,7 +369,10 @@ const ReturnList = enhance((props) => {
             client: {
                 value: client
             },
-            returnStatus: {
+            paymentType: {
+                value: paymentType
+            },
+            status: {
                 value: returnStatus
             },
             zone: {
@@ -401,12 +422,13 @@ const ReturnList = enhance((props) => {
         const price = _.toNumber(_.get(item, 'price'))
         if (type === CLIENT_RETURN) {
             return {
+                id: _.get(item, 'id'),
                 amount,
                 cost: price,
                 measurement: _.get(item, ['product', 'measurement', 'name']),
                 product: {
                     value: {
-                        id: _.get(item, 'id'),
+                        id: _.get(item, ['product', 'id']),
                         productId: _.get(item, ['product', 'id']),
                         price: _.get(item, 'price'),
                         name: _.get(item, ['product', 'name']),
@@ -419,6 +441,7 @@ const ReturnList = enhance((props) => {
             }
         }
         return {
+            id: _.get(item, 'id'),
             amount,
             product: {
                 value: {
@@ -453,7 +476,7 @@ const ReturnList = enhance((props) => {
                     client: {value: _.get(detail, ['client', 'id'])},
                     stock: {value: _.get(detail, ['stock', 'id'])},
                     market: {value: _.get(detail, ['market', 'id'])},
-                    paymentType: {value: _.toNumber(_.get(detail, ['paymentType'])) + ONE},
+                    paymentType: {value: _.get(detail, ['paymentType'])},
                     comment: _.get(detail, 'comment'),
                     products: forUpdateProducts
                 }

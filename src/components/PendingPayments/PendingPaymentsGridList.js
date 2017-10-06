@@ -95,7 +95,6 @@ const iconStyle = {
         padding: 0
     }
 }
-const ZERO = 0
 const PendingPaymentsGridList = enhance((props) => {
     const {
         filter,
@@ -119,7 +118,7 @@ const PendingPaymentsGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const client = _.get(item, 'client')
         const market = _.get(item, ['market', 'name'])
-        const paymentType = _.toNumber(_.get(item, 'paymentType')) === ZERO ? 'наличный' : 'банковский счет'
+        const paymentType = _.get(item, 'paymentType') === 'cash' ? 'наличный' : 'банковский счет'
         const clientName = _.get(client, 'name')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
         const totalPrice = numberFormat(_.get(item, 'totalPrice'), getConfig('PRIMARY_CURRENCY'))

@@ -1,6 +1,7 @@
 /* eslint no-undef: 0 */
 /* eslint no-new: 0 */
 /* eslint no-unused-vars: 0 */
+/* eslint dot-notation: 0 */
 
 import React from 'react'
 import Script from 'react-load-script'
@@ -26,12 +27,10 @@ export default class GoogleCustomMap extends React.Component {
     constructor (props) {
         super(props)
         this.state = {
-            center: null,
             drawing: null,
             zone: [],
             points: null,
-            isDrawing: false,
-            overlay: null
+            isDrawing: false
         }
 
         this.handleClearDrawing = this.handleClearDrawing.bind(this)
@@ -131,6 +130,7 @@ export default class GoogleCustomMap extends React.Component {
             const meanLng = _.mean(_.map(_.get(item, ['coordinates', 'coordinates', '0']), (p) => {
                 return _.get(p, '1')
             }))
+
             const existingZone = new google.maps.Polygon({
                 paths: point,
                 fillColor: '#199ee0',
@@ -142,7 +142,7 @@ export default class GoogleCustomMap extends React.Component {
                 zIndex: 1
             })
             zones.push({zone: existingZone, id, title})
-
+            this.createOverlays(meanLat, meanLng, id)
             existingZone.setMap(this.map)
         })
 
@@ -174,20 +174,20 @@ export default class GoogleCustomMap extends React.Component {
         })
     }
 
-    createOverlays (meanLat, meanLng, title) {
+    createOverlays (meanLat, meanLng, id) {
         this.overlayView = new google.maps.OverlayView()
         this.overlayView.setMap(this.map)
         this.overlayView.onAdd = () => {
-            let containerElement = document.createElement('div')
-            containerElement.style.borderStyle = 'none'
-            containerElement.style.borderWidth = '0px'
-            containerElement.style.position = 'absolute'
-
-            return containerElement
+            this.containerElement = document.createElement('div')
+            this.containerElement.style.borderStyle = 'none'
+            this.containerElement.style.borderWidth = '0px'
+            this.containerElement.style.position = 'absolute'
+            return this.containerElement
         }
         this.overlayView.draw = () => {
             let overlayEl = this.overlayView
             let mapPanes = overlayEl.getPanes()
+
             let mapCanvasProjection = overlayEl.getProjection()
             const bounds = new google.maps.LatLngBounds(
                 new google.maps.LatLng(meanLat, meanLng))
@@ -195,14 +195,15 @@ export default class GoogleCustomMap extends React.Component {
             let div = overlayEl.onAdd()
             div.style.left = sw.x + 'px'
             div.style.top = sw.y + 'px'
-            div.style.color = 'red'
-            div.innerHTML = title
-            let mapPaneName = 'overlayLayer'
-            mapPanes[mapPaneName].appendChild(div)
+            div.style.color = '#000'
+            div.style.fontSize = '20px'
+            div.style.fontWeight = '700'
+            div.innerHTML = 'Z-' + id
+            mapPanes[GOOGLE_MAP.FLOATPANE].appendChild(div)
         }
 
         this.overlayView.onRemove = () => {
-            this.overlayView.setMap(null)
+            this.containerElement = null
         }
     }
 
@@ -327,7 +328,24 @@ export default class GoogleCustomMap extends React.Component {
         }
     }
 
+    componentWillUnmount () {
+        this.overlayView.setMap(null)
+        this.state.drawing.setMap(null)
+        this.setState({
+            zone: null,
+            drawing: null,
+            points: null,
+            isDrawing: null
+        })
+    }
+
     render () {
+        if (this.map && this.overlayView) {
+            this.map.addListener('zoom_changed', () => {
+                let mapPane1 = this.overlayView.getPanes()
+                mapPane1[GOOGLE_MAP.FLOATPANE].innerHTML = ''
+            })
+        }
         const {addZone, filter, updateZone, isOpenAddZone, isOpenUpdateZone, deleteZone} = this.props
         const GOOGLE_API_KEY = 'AIzaSyDnUkBg_uV1aa4e7pyEvv3bVxN3RfwNQEo'
         const url = 'http://maps.googleapis.com/maps/api/js?key=' + GOOGLE_API_KEY + '&libraries=drawing'

@@ -129,6 +129,10 @@ const enhance = compose(
             backgroundColor: '#f1f5f8',
             position: 'relative',
             zIndex: '2',
+            '& .Select-menu-outer': {
+                maxHeight: '200px',
+                minWidth: '250px'
+            },
             '& > button > div > span': {
                 padding: '0 !important'
             },

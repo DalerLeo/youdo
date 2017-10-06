@@ -13,7 +13,10 @@ import {
     PlanWrapper,
     USER_GROUP,
     OPEN_PLAN_SALES,
-    DATE
+    DATE,
+    ZONE,
+    AGENT,
+    MARKET
 } from '../../components/Plan'
 import {
     planCreateAction,
@@ -21,10 +24,13 @@ import {
     planItemFetchAction,
     planZonesListFetchAction,
     planMonthlySetAction,
-    agentMonthlyPlanAction
+    agentMonthlyPlanAction,
+    planZonesItemFetchAction,
+    marketsLocationAction
 } from '../../actions/plan'
 import {openSnackbarAction} from '../../actions/snackbar'
 
+const ZERO = 0
 const ONE = 1
 const defaultDate = moment().format('YYYY-MM-DD')
 const enhance = compose(
@@ -37,6 +43,8 @@ const enhance = compose(
         const detailLoading = _.get(state, ['users', 'item', 'loading'])
         const zones = _.get(state, ['zone', 'list', 'data'])
         const zonesLoading = _.get(state, ['zone', 'list', 'loading'])
+        const zonesItem = _.get(state, ['zone', 'item', 'data'])
+        const zonesItemLoading = _.get(state, ['zone', 'item', 'loading'])
         const stat = _.get(state, ['plan', 'statistics', 'data'])
         const statLoading = _.get(state, ['plan', 'statistics', 'loading'])
         const plan = _.get(state, ['plan', 'agentPlan', 'data'])
@@ -46,6 +54,7 @@ const enhance = compose(
         const monthlyPlanForm = _.get(state, ['form', 'PlanSalesForm', 'values'])
         const selectedDate = _.get(query, DATE) || defaultDate
         const selectedDay = _.get(query, 'day') || moment().format('DD')
+        const marketsLocation = _.get(state, ['tracking', 'markets', 'data'])
         const filter = filterHelper(usersList, pathname, query)
         return {
             query,
@@ -58,6 +67,8 @@ const enhance = compose(
             detailLoading,
             zones,
             zonesLoading,
+            zonesItem,
+            zonesItemLoading,
             createForm,
             selectedDate,
             selectedDay,
@@ -65,6 +76,7 @@ const enhance = compose(
             monthlyPlanCreateLoading,
             plan,
             planLoading,
+            marketsLocation,
             filter
         }
     }),
@@ -103,6 +115,18 @@ const enhance = compose(
         dispatch(planZonesListFetchAction())
     }),
 
+    withPropsOnChange((props, nextProps) => {
+        const prevZone = _.toInteger(_.get(props, ['query', ZONE]))
+        const nextZone = _.toInteger(_.get(nextProps, ['query', ZONE]))
+        return prevZone !== nextZone && nextZone > ZERO
+    }, ({dispatch, location}) => {
+        const zone = _.toInteger(_.get(location, ['query', ZONE]))
+        if (zone > ZERO) {
+            dispatch(planZonesItemFetchAction(zone))
+            dispatch(marketsLocationAction(zone))
+        }
+    }),
+
     withHandlers({
         handleClickTab: props => (id) => {
             const {location: {pathname}, filter} = props
@@ -122,12 +146,12 @@ const enhance = compose(
         handleSubmitAddPlan: props => () => {
             const {location: {pathname}, dispatch, createForm, filter} = props
 
-            return dispatch(planCreateAction(createForm))
+            return dispatch(planCreateAction(createForm, filter.getParams()))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Зона успешно добавлена'}))
                 })
                 .then(() => {
-                    hashHistory.push({pathname, query: {[ADD_PLAN]: false}})
+                    hashHistory.push({pathname, query: {[MARKET]: ZERO}})
                     dispatch(planAgentsListFetchAction(filter))
                 })
         },
@@ -176,6 +200,21 @@ const enhance = compose(
         handleChooseDay: props => (day) => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({'day': day})})
+        },
+
+        handleChooseZone: props => (zone) => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[ZONE]: zone, [AGENT]: ZERO})})
+        },
+
+        handleChooseAgent: props => (agent) => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[AGENT]: agent})})
+        },
+
+        handleChooseMarket: props => (market) => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[MARKET]: market})})
         }
     })
 )
@@ -194,11 +233,14 @@ const PlanList = enhance((props) => {
         detailLoading,
         zones,
         zonesLoading,
+        zonesItem,
+        zonesItemLoading,
         monthlyPlanCreateLoading,
         plan,
         planLoading,
         currentDate,
-        selectedDay
+        selectedDay,
+        marketsLocation
     } = props
 
     const openAddPlan = toBoolean(_.get(location, ['query', ADD_PLAN]))
@@ -207,11 +249,21 @@ const PlanList = enhance((props) => {
     const openDetail = !_.isEmpty(_.get(params, 'agentId'))
     const detailId = _.toInteger(_.get(params, 'agentId'))
     const selectedDate = _.get(location, ['query', DATE]) || currentDate
+    const selectedAgent = _.toInteger(_.get(location, ['query', AGENT]))
+    const selectedMarket = _.toInteger(_.get(location, ['query', MARKET]))
 
     const addPlan = {
         openAddPlan,
         zonesList: _.get(zones, 'results'),
         zonesLoading,
+        zonesItem,
+        zonesItemLoading,
+        selectedAgent,
+        selectedMarket,
+        marketsLocation,
+        handleChooseZone: props.handleChooseZone,
+        handleChooseAgent: props.handleChooseAgent,
+        handleChooseMarket: props.handleChooseMarket,
         handleOpenAddPlan: props.handleOpenAddPlan,
         handleCloseAddPlan: props.handleCloseAddPlan,
         handleSubmitAddPlan: props.handleSubmitAddPlan

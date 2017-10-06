@@ -207,6 +207,7 @@ const ReturnDetails = enhance((props) => {
     const client = _.get(data, ['client', 'name'])
     const market = _.get(data, 'market')
     const status = _.toInteger(_.get(data, 'status'))
+    const paymentType = _.get(data, 'paymentType') === 'cash' ? 'Наличными' : 'Перечислением'
     const PENDING = 0
     const IN_PROGRESS = 1
     const COMPLETED = 2
@@ -248,6 +249,7 @@ const ReturnDetails = enhance((props) => {
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
+                            disabled={status === CANCELLED || (order && status === COMPLETED)}
                             touch={true}
                             onTouchTap={() => { updateDialog.handleOpenUpdateDialog() }}>
                             <Edit />
@@ -270,6 +272,11 @@ const ReturnDetails = enhance((props) => {
                     <div className={classes.subBlock}>
                         <div className={classes.dataBox}>
                             <ul>
+
+                                <li>
+                                    <span>Тип оплаты</span>
+                                    <span>{paymentType}</span>
+                                </li>
                                 <li>
                                     <span>Добавил:</span>
                                     <span>{user}</span>
@@ -278,6 +285,10 @@ const ReturnDetails = enhance((props) => {
                                     <span>Заказ №:</span>
                                     <span>{order}</span>
                                 </li>}
+                                <li>
+                                    <span>Тип оплаты</span>
+                                    <span>{paymentType}</span>
+                                </li>
                                 <li>
                                     <span>Склад:</span>
                                     <span>{stock}</span>

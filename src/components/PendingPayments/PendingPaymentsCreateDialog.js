@@ -112,13 +112,12 @@ const PendingPaymentsCreateDialog = enhance((props) => {
     const {open, loading, handleSubmit, onClose, detailData, classes, currencyRate, convert, amountValue, customRate, currency} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const ZERO = 0
-    const ONE = 1
     const id = _.get(detailData, 'id')
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const client = _.get(detailData, ['data', 'client'])
     const marketName = _.get(detailData, ['data', 'market', 'name'])
-    const paymentType = _.toInteger(_.get(detailData, ['data', 'paymentType']))
-    const paymentTypeOutput = (Number(_.get(detailData, ['data', 'paymentType'])) === ONE) ? 'банковский счет' : 'наличный'
+    const paymentType = _.get(detailData, ['data', 'paymentType'])
+    const paymentTypeOutput = paymentType === 'bank' ? 'банковский счет' : 'наличный'
     const totalBalance = numberformat(_.get(detailData, ['data', 'totalBalance']), primaryCurrency)
     const totalPrice = numberformat(_.get(detailData, ['data', 'totalPrice']), primaryCurrency)
     const clientName = _.get(client, 'name')
@@ -160,7 +159,7 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                                 </div>
                             </div>
                             <div className={classes.cashbox}>
-                                {(paymentType === ONE)
+                                {(paymentType === 'bank')
                                 ? <Field
                                     name="cashbox"
                                     className={classes.inputFieldCustom}
@@ -206,7 +205,9 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                                             fullWidth={true}
                                             className={classes.inputFieldCustom}
                                             name="customRate"/>
-                                    </div> : null}
+                                    </div> : (currency && currency !== primaryCurrency)
+                                                ? <div className={classes.customCurrency}>Курс :{numberformat(currentRate, currency)}</div>
+                                                    : null}
 
                             </div>
                         </div>

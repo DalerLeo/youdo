@@ -5,8 +5,8 @@ import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/planSerializer'
 
-export const planCreateAction = (formValues) => {
-    const requestData = serializers.createSerializer(formValues)
+export const planCreateAction = (formValues, query) => {
+    const requestData = serializers.createSerializer(formValues, query)
     const payload = axios()
         .post(API.PLAN_CREATE, requestData)
         .then((response) => {
@@ -97,6 +97,37 @@ export const planZonesListFetchAction = () => {
         })
     return {
         type: actionTypes.ZONE_LIST,
+        payload
+    }
+}
+
+export const planZonesItemFetchAction = (id) => {
+    const payload = axios()
+        .get(sprintf(API.ZONE_ITEM, id))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+    return {
+        type: actionTypes.ZONE_ITEM,
+        payload
+    }
+}
+
+export const marketsLocationAction = (zone) => {
+    const payload = axios()
+        .get(API.MARKETS_LOCATION, {params: {border: zone}})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.MARKETS_LOCATION,
         payload
     }
 }

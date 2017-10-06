@@ -25,15 +25,6 @@ const fetchList = ({state, dispatch, getOptions, getText, getValue, input}) => {
         })
 }
 
-const initialFunc = (props) => {
-    const {initialVal, state: {iniValue}, parent} = props
-
-    if (_.isNull(iniValue) || !parent) {
-        return null
-    }
-    return initialVal
-}
-
 const fetchItem = (props, selectedItem) => {
     const {getItem, input, dispatch} = props
     dispatch({loading: true})
@@ -70,9 +61,7 @@ const enhance = compose(
                 overflowY: 'unset',
                 zIndex: '6',
                 border: 'unset',
-                marginTop: '5px',
-                maxHeight: '200px',
-                minWidth: '250px'
+                marginTop: '5px'
             },
             '& .Select-control': {
                 borderRadius: '0px',
@@ -106,7 +95,7 @@ const enhance = compose(
     }, {dataSource: [], text: '', loading: false, iniValue: ''}),
 
     withPropsOnChange((props, nextProps) => {
-        return (_.get(props, ['state', 'text']) !== _.get(nextProps, ['state', 'text']) && _.get(nextProps, ['input', 'value'])) ||
+        return (_.get(props, ['state', 'text']) !== _.get(nextProps, ['state', 'text']) && _.get(nextProps, ['state', 'text']) !== '') ||
             _.get(props, ['parent']) !== _.get(nextProps, ['parent'])
     }, (props) => {
         _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)
@@ -129,10 +118,9 @@ const SearchFieldCustom = enhance((props) => {
                 <Select
                     className={classes.select}
                     options={state.dataSource}
-                    value={getValue(_.get(input, ['value', 'value'])) || initialFunc(props)}
-                    onInputChange={text => dispatch({text: text})}
+                    value={getValue(_.get(input, ['value', 'value']))}
+                    onInputChange={text => { dispatch({text: text}) }}
                     onChange={value => {
-                        dispatch({iniValue: value})
                         value ? fetchItem(props, value) : fetchList(props)
                     }}
                     placeholder={label}
@@ -140,6 +128,7 @@ const SearchFieldCustom = enhance((props) => {
                     isLoading={state.loading}
                     labelKey={'text'}
                     disabled={disabled}
+                    filterOptions={options => options}
                 />
             </div>
         </div>

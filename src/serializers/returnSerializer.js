@@ -8,7 +8,7 @@ export const updateSerializer = (data, detail, CLIENT_RETURN) => {
     const client = _.get(detail, ['client', 'id'])
     const comment = _.get(data, 'comment')
     const stock = _.get(data, ['stock', 'value'])
-    const market = _.get(data, ['market', 'value', 'id'])
+    const market = _.get(data, ['market', 'value'])
     const status = _.get(detail, 'status')
     const order = _.get(detail, 'order')
     const paymentType = _.get(data, ['paymentType', 'value'])
@@ -24,11 +24,13 @@ export const updateSerializer = (data, detail, CLIENT_RETURN) => {
     })
     const clientReturnedProducts = _.map(_.get(data, ['products']), (item) => {
         return {
+            id: _.get(item, 'id'),
             amount: _.get(item, 'amount'),
             cost: _.get(item, 'cost'),
             product: _.get(item, ['product', 'value', 'productId'])
         }
     })
+
     if (type === CLIENT_RETURN) {
         return {
             client,
@@ -36,7 +38,7 @@ export const updateSerializer = (data, detail, CLIENT_RETURN) => {
             comment,
             products: clientReturnedProducts,
             market,
-            payment_type: paymentType - ONE
+            payment_type: paymentType
         }
     }
     return {
@@ -69,7 +71,7 @@ export const listFilterSerializer = (data, id) => {
         'order': _.get(defaultData, 'order'),
         'created_by': _.get(defaultData, 'initiator'),
         'payment_type': _.get(defaultData, 'paymentType'),
-        'status': _.get(defaultData, 'status'),
+        'status': _.get(defaultData, 'status') && _.toNumber(_.get(defaultData, 'status')) - ONE,
         'created_date_0': _.get(defaultData, 'fromDate'),
         'created_date_1': _.get(defaultData, 'toDate') || _.get(defaultData, 'fromDate'),
         'search': _.get(defaultData, 'search'),
@@ -82,7 +84,7 @@ export const listFilterSerializer = (data, id) => {
 export const createReturnSerializer = (data, id) => {
     const client = _.get(data, ['client', 'value'])
     const stock = _.get(data, ['stock', 'value'])
-    const market = _.get(data, ['market', 'value', 'id'])
+    const market = _.get(data, ['market', 'value'])
     const comment = _.get(data, ['comment'])
     const paymentType = _.get(data, ['paymentType', 'value'])
     const products = _.map(_.get(data, ['products']), (item) => {
@@ -102,7 +104,7 @@ export const createReturnSerializer = (data, id) => {
         comment,
         products,
         market,
-        payment_type: paymentType - ONE
+        payment_type: paymentType
     }
 }
 

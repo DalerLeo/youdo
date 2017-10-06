@@ -421,7 +421,6 @@ const ClientBalanceGridList = enhance((props) => {
     const isSuperUser = _.get(superUser, 'isSuperUser')
 
     const client = _.find(_.get(listData, 'data'), {'id': _.get(detailData, 'id')})
-    const TWO = 2
 
     const amount = _.toNumber(_.get(currentItem, 'amount'))
     const internal = _.toNumber(_.get(currentItem, 'internal'))
@@ -431,7 +430,7 @@ const ClientBalanceGridList = enhance((props) => {
         },
         custom_rate: !_.isNil(_.get(currentItem, 'customRate')) ? _.get(currentItem, 'customRate') : _.toInteger(amount / internal),
         paymentType: {
-            value: _.toInteger(_.get(currentItem, 'paymentType')) === ZERO ? TWO : _.toInteger(_.get(currentItem, 'paymentType'))
+            value: _.get(currentItem, 'paymentType')
         },
         amount: _.get(currentItem, 'amount'),
         division: {
