@@ -5,22 +5,6 @@ import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
 const ZERO = 0
 const MINUS_ONE = -1
 
-export const createIncomeSerializer = (data, cashboxId) => {
-    const amount = _.get(data, 'amount') < ZERO ? _.get(data, 'amount') * MINUS_ONE : _.get(data, 'amount')
-    const comment = _.get(data, 'comment')
-    const clientId = _.get(data, ['client', 'value'])
-    const customRate = numberWithoutSpaces(_.get(data, 'custom_rate'))
-    const division = _.get(data, ['division', 'value'])
-    return {
-        'amount': numberWithoutSpaces(amount),
-        comment,
-        'cashbox': cashboxId,
-        'client': clientId,
-        'custom_rate': customRate,
-        'division': division && division
-    }
-}
-
 export const updateTransactionSerializer = (data, client) => {
     const amount = numberWithoutSpaces(_.get(data, 'amount'))
     const newAmount = amount > ZERO ? amount : amount * MINUS_ONE
@@ -43,6 +27,23 @@ export const updateTransactionSerializer = (data, client) => {
     }
 }
 
+export const createIncomeSerializer = (data, cashboxId) => {
+    const amount = _.get(data, 'amount') < ZERO ? _.get(data, 'amount') * MINUS_ONE : _.get(data, 'amount')
+    const comment = _.get(data, 'comment')
+    const clientId = _.get(data, ['client', 'value'])
+    const customRate = numberWithoutSpaces(_.get(data, 'custom_rate'))
+    const division = _.get(data, ['division', 'value'])
+    const cashbox = _.get(data, ['cashbox', 'value'])
+    return {
+        'amount': numberWithoutSpaces(amount),
+        comment,
+        'cashbox': cashboxId === '0' ? cashbox : cashboxId,
+        'client': clientId,
+        'custom_rate': customRate,
+        'division': division && division
+    }
+}
+
 export const createExpenseSerializer = (data, cashboxId) => {
     let amount = numberWithoutSpaces(_.get(data, 'amount'))
     if (amount > ZERO) {
@@ -54,11 +55,12 @@ export const createExpenseSerializer = (data, cashboxId) => {
     const clientId = _.get(data, ['client', 'value'])
     const customRate = numberWithoutSpaces(_.get(data, 'custom_rate'))
     const division = _.get(data, ['division', 'value'])
+    const cashbox = _.get(data, ['cashbox', 'value'])
     if (showClients) {
         return {
             amount: amount,
             comment,
-            'cashbox': cashboxId,
+            'cashbox': cashboxId === '0' ? cashbox : cashboxId,
             'expanse_category': objectId,
             'client': clientId,
             'custom_rate': customRate,
@@ -80,10 +82,11 @@ export const createSendSerializer = (data, cashboxId) => {
     const amountTo = _.toNumber(numberWithoutSpaces(_.get(data, 'amountTo')))
     const toCashbox = _.get(data, ['categoryId', 'value'])
     const comment = _.get(data, 'comment')
+    const cashbox = _.get(data, ['cashbox', 'value'])
     const customRate = amountFrom / amountTo
     return {
-        amount: amountFrom,
-        from_cashbox: _.toInteger(cashboxId),
+        amount: amountFrom > ZERO ? amountFrom : null,
+        from_cashbox: cashboxId === '0' ? cashbox : cashboxId,
         to_cashbox: _.toInteger(toCashbox),
         rate: customRate,
         comment

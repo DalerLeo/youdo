@@ -6,7 +6,6 @@ import IconButton from 'material-ui/IconButton'
 import {Link} from 'react-router'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
-import Tooltip from '../ToolTip'
 import GridList from '../GridList'
 import TransactionFilterForm from './TransactionFilterForm'
 import TransactionCreateDialog from './TransactionCreateDialog'
@@ -145,8 +144,6 @@ const TransactionsList = enhance((props) => {
         filterItem,
         createExpenseDialog,
         createIncomeDialog,
-        updateExpenseDialog,
-        updateIncomeDialog,
         createSendDialog,
         filterDialog,
         cashboxData,
@@ -175,10 +172,9 @@ const TransactionsList = enhance((props) => {
         <span>a</span>
     )
     const AllCashboxId = 0
-    const selectedCashbox = _.find(_.get(cashboxData, 'data'),
-        (o) => {
-            return _.toInteger(o.id) === _.toInteger(_.get(cashboxData, 'cashboxId'))
-        })
+    const selectedCashbox = _.find(_.get(cashboxData, 'data'), (o) => {
+        return _.toInteger(o.id) === _.toInteger(_.get(cashboxData, 'cashboxId'))
+    })
     const cashboxName = _.get(cashboxData, 'cashboxId') === AllCashboxId ? 'Общий объем' : _.get(selectedCashbox, 'name')
     const currentCashbox = _.get(cashboxData, 'cashboxId')
     const showCashbox = !toBoolean(currentCashbox && currentCashbox !== ZERO)
@@ -258,7 +254,7 @@ const TransactionsList = enhance((props) => {
                         ? <div><span className={classes.label}>Категория: </span> {expanseCategory}</div> : ''}
                     {transType &&
                     <div>
-                        <span style={{fontWeight: '600'}}>Тип:</span> {transType === ORDER
+                        {transType === ORDER
                         ? <Link to={{
                             pathname: sprintf(ROUTES.ORDER_ITEM_PATH, order),
                             query: {search: order}
@@ -311,24 +307,12 @@ const TransactionsList = enhance((props) => {
                 <div className={classes.outerTitle}>
                     <div className={classes.buttons}>
                         <a onClick={acceptCashDialog.handleOpenCashDialog} className={classes.btnSend}>Принять наличные</a>
-
-                        {_.get(cashboxData, 'cashboxId') === AllCashboxId &&
-                        <Tooltip position="bottom" text="Пожалуйста, выберите кассу">
-                            <div className={classes.actionButtons}>
-                                <a onClick={createSendDialog.handleOpenDialog} className={classes.btnSend}>Перевод</a>
-                                <a onClick={createIncomeDialog.handleOpenDialog} className={classes.btnAdd}>Доход</a>
-                                <a onClick={createExpenseDialog.handleOpenDialog} className={classes.btnRemove}>Расход</a>
-                            </div>
-                        </Tooltip>
-                        }
-                        {_.get(cashboxData, 'cashboxId') !== AllCashboxId &&
                         <div>
                             <a onClick={createSendDialog.handleOpenDialog}
                                className={classes.btnSend}>Перевод</a>
                             <a onClick={createIncomeDialog.handleOpenDialog} className={classes.btnAdd}>Приход</a>
                             <a onClick={createExpenseDialog.handleOpenDialog} className={classes.btnRemove}>Расход</a>
                         </div>
-                        }
                     </div>
                 </div>
             </div>}
@@ -355,6 +339,7 @@ const TransactionsList = enhance((props) => {
             {!showOnlyList && <section>
                 <TransactionCreateDialog
                     isExpense={true}
+                    noCashbox={_.get(cashboxData, 'cashboxId') === ZERO}
                     cashboxData={cashboxData}
                     open={createExpenseDialog.open}
                     loading={createExpenseDialog.loading}
@@ -363,6 +348,7 @@ const TransactionsList = enhance((props) => {
                 />
 
                 <TransactionCreateDialog
+                    noCashbox={_.get(cashboxData, 'cashboxId') === ZERO}
                     cashboxData={cashboxData}
                     open={createIncomeDialog.open}
                     loading={createIncomeDialog.loading}
@@ -370,28 +356,8 @@ const TransactionsList = enhance((props) => {
                     onSubmit={createIncomeDialog.handleSubmitDialog}
                 />
 
-                <TransactionCreateDialog
-                    initialValues={updateExpenseDialog.initialValues}
-                    isUpdate={true}
-                    isExpense={true}
-                    cashboxData={cashboxData}
-                    open={updateExpenseDialog.open}
-                    loading={updateExpenseDialog.loading}
-                    onClose={updateExpenseDialog.handleCloseUpdateDialog}
-                    onSubmit={updateExpenseDialog.handleSubmitUpdateDialog}
-                />
-
-                <TransactionCreateDialog
-                    initialValues={updateIncomeDialog.initialValues}
-                    isUpdate={true}
-                    cashboxData={cashboxData}
-                    open={updateIncomeDialog.open}
-                    loading={updateIncomeDialog.loading}
-                    onClose={updateIncomeDialog.handleCloseUpdateDialog}
-                    onSubmit={updateIncomeDialog.handleSubmitUpdateDialog}
-                />
-
                 <TransactionSendDialog
+                    noCashbox={_.get(cashboxData, 'cashboxId') === ZERO}
                     cashboxData={cashboxData}
                     open={createSendDialog.open}
                     loading={createSendDialog.loading}
