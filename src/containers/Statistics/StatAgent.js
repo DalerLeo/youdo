@@ -130,7 +130,6 @@ const StatAgentList = enhance((props) => {
         filter,
         layout,
         filterItem,
-        filterForm,
         currentDate,
         params
     } = props
@@ -155,11 +154,6 @@ const StatAgentList = enhance((props) => {
     const agentDetail = _.filter(_.get(list, 'results'), (item) => {
         return _.get(item, 'id') === detailId
     })
-    const filterDateRange = (_.get(filterForm, ['values', 'date', 'fromDate']) && _.get(filterForm, ['values', 'date', 'toDate'])) ? {
-        'fromDate': _.get(filterForm, ['values', 'date', 'fromDate']),
-        'toDate': _.get(filterForm, ['values', 'date', 'toDate'])
-    } : {}
-
     const detailData = {
         filter: filterItem,
         id: detailId,
@@ -167,7 +161,7 @@ const StatAgentList = enhance((props) => {
         agentDetail,
         detailLoading,
         handleCloseDetail: props.handleCloseDetail,
-        filterDateRange
+        selectedDate
 
     }
     const getDocument = {

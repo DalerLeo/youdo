@@ -306,7 +306,8 @@ const ZonesWrapper = enhance((props) => {
         setSearch,
         onSubmit,
         bindAgent,
-        unbindAgent
+        unbindAgent,
+        marketsData
     } = props
 
     const ZERO = 0
@@ -488,6 +489,7 @@ const ZonesWrapper = enhance((props) => {
                     zoneId={_.get(detailData, 'zoneId')}
                     deleteId={_.get(deleteZone, 'openDeleteZone')}
                     deleteZone={deleteZone}
+                    marketsData={marketsData}
                 />
 
                 <BindAgentDialog

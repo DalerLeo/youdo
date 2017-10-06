@@ -1,6 +1,6 @@
 /* eslint no-undef: 0 */
 /* eslint no-new: 0 */
-/* eslint no-unused-vars: 0 */
+
 /* eslint dot-notation: 0 */
 
 import React from 'react'
@@ -11,7 +11,12 @@ import CircularProgress from 'material-ui/CircularProgress'
 import AddZonePopup from './AddZonePopup'
 import ZoneDeleteDialog from './ZoneDeleteDialog'
 import {googleMapStyle} from '../../constants/googleMapsStyle'
+import Location from '../Images/market-green.png'
+import MarketOff from '../Images/market-red.png'
+const MARKER_SIZE = 30
 const ZERO = 0
+const ANCHOR = 4
+const SCALED = 18
 const classes = {
     loader: {
         width: '100%',
@@ -82,19 +87,59 @@ export default class GoogleCustomMap extends React.Component {
         }
     }
 
-    getMarkers () {
-        let locations = [
-            {lat: -31.563910, lng: 147.154312},
-            {lat: -33.718234, lng: 150.363181},
-            {lat: -43.999792, lng: 170.463352}
-        ]
-        let labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-        let markers = locations.map((location, i) => {
-            return new google.maps.Marker({
-                position: location,
-                label: labels[i % labels.length],
+    getMarkers (data) {
+        let list = []
+        _.map(data, (item) => {
+            if (_.get(item, ['location', 'coordinates', '0']) && _.get(item, ['location', 'coordinates', '1'])) {
+                list.push(
+                    {
+                        location: {
+                            lat: _.get(item, ['location', 'coordinates', '0']),
+                            lng: _.get(item, ['location', 'coordinates', '1'])
+                        },
+                        name: item.name,
+                        id: item.id,
+                        isActive: item.isActive
+                    }
+                )
+            }
+        })
+
+        const marketOn = {
+            url: Location,
+            size: new google.maps.Size(MARKER_SIZE, MARKER_SIZE),
+            origin: new google.maps.Point(ZERO, ZERO),
+            anchor: new google.maps.Point(ANCHOR, ANCHOR),
+            scaledSize: new google.maps.Size(SCALED, SCALED)
+        }
+        const marketOff = {
+            url: MarketOff,
+            size: new google.maps.Size(MARKER_SIZE, MARKER_SIZE),
+            origin: new google.maps.Point(ZERO, ZERO),
+            anchor: new google.maps.Point(ANCHOR, ANCHOR),
+            scaledSize: new google.maps.Size(SCALED, SCALED)
+        }
+
+        const markers = list.map((item) => {
+            const marker = new google.maps.Marker({
+                position: item.location,
+                icon: item.isActive ? marketOn : marketOff,
+                animation: google.maps.Animation.DROP,
                 map: this.map
             })
+            const info = '<div>' + item.name + '</div>'
+            const infoWindow = new google.maps.InfoWindow({
+                content: info
+            })
+
+            marker.addListener('mouseover', () => {
+                infoWindow.open(this.map, marker)
+            })
+            marker.addListener('mouseout', () => {
+                infoWindow.close()
+            })
+
+            return marker
         })
 
         new MarkerClusterer(this.map, markers,
@@ -144,11 +189,6 @@ export default class GoogleCustomMap extends React.Component {
             zones.push({zone: existingZone, id, title})
             this.createOverlays(meanLat, meanLng, id)
             existingZone.setMap(this.map)
-        })
-
-        new google.maps.Marker({
-            position: GOOGLE_MAP.DEFAULT_LOCATION,
-            map: this.map
         })
 
         this.setState({
@@ -325,6 +365,7 @@ export default class GoogleCustomMap extends React.Component {
                 this.setEditableFalse()
             }
             this.createCustomZone(nextState)
+            this.getMarkers(nextProps.marketsData.data)
         }
     }
 
