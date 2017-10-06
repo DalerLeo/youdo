@@ -29,7 +29,7 @@ const enhance = compose(
         enableReinitialize: true
     }),
     connect((state) => {
-        const planType = _.get(state, ['form', 'PlanCreateForm', 'values', 'planType'])
+        const planType = _.get(state, ['form', 'PlanCreateForm', 'values', 'planType']) || 'week'
         return {
             planType
         }

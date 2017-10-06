@@ -13,6 +13,10 @@ import Person from 'material-ui/svg-icons/social/person'
 import GoogleMap from '../GoogleMap'
 import PlanAddCalendar from './PlanAddCalendar'
 import PlanWeekDayForm from './PlanWeekDayForm'
+import {Link} from 'react-router'
+import * as ROUTES from '../../constants/routes'
+import {TOGGLE_INFO, BIND_AGENT} from '../Zones'
+import sprintf from 'sprintf'
 
 const enhance = compose(
     injectSheet({
@@ -125,6 +129,7 @@ const enhance = compose(
         },
         activeZone: {
             extend: 'zone',
+            cursor: 'default',
             background: '#f2f5f8'
         },
         rightSide: {
@@ -167,7 +172,10 @@ const enhance = compose(
         },
         chooseZone: {
             fontWeight: '600',
-            textAlign: 'center'
+            textAlign: 'center',
+            '& a': {
+                marginTop: '5px'
+            }
         },
         agentItem: {
             background: '#fff',
@@ -328,11 +336,12 @@ const PlanCreateDialog = enhance((props) => {
         zonesList,
         zonesLoading,
         calendar,
-        zonesItem,
-        zonesItemLoading,
+        zoneAgents,
+        zoneAgentsLoading,
         handleChooseZone,
         handleChooseAgent,
         handleChooseMarket,
+        selectedZone,
         selectedAgent,
         selectedMarket,
         marketsLocation
@@ -340,27 +349,37 @@ const PlanCreateDialog = enhance((props) => {
     const onSubmit = handleSubmit(() => props.onSubmit())
     const ZERO = 0
     const isAgentChosen = selectedAgent > ZERO
-    const chosenZone = _.get(zonesItem, 'id')
     const zones = _.map(zonesList, (item) => {
         const id = _.get(item, 'id')
         const title = _.get(item, 'title')
+        const marketsCount = _.get(item, 'marketsCount')
+        const marketsWithoutPlan = _.get(item, 'marketsWithoutPlan')
+        const marketsWithPlan = marketsCount - marketsWithoutPlan
 
-        return (
-            <div key={id} className={(id === chosenZone) ? classes.activeZone : classes.zone}
-                 onClick={() => { handleChooseZone(id) }}>
-                <span>{title}</span>
-                <span>50 / 100</span>
-            </div>
-        )
+        return (id === selectedZone)
+            ? (
+                <div key={id} className={classes.activeZone}>
+                    <span>{title}</span>
+                    <span>{marketsWithPlan} / {marketsCount}</span>
+                </div>
+            )
+            : (
+                <div key={id} className={classes.zone}
+                     onClick={() => { handleChooseZone(id) }}>
+                    <span>{title}</span>
+                    <span>{marketsWithPlan} / {marketsCount}</span>
+                </div>
+            )
     })
     const colors = [
         '#62d6a0',
         '#eeab21',
         '#fd4641'
     ]
-    const agents = _.map(_.get(zonesItem, ['properties', 'agents']), (agent, index) => {
+    const agents = _.map(zoneAgents, (agent, index) => {
         const id = _.get(agent, 'id')
-        const username = _.get(agent, 'username')
+        const firstName = _.get(agent, 'firstName')
+        const secondName = _.get(agent, 'secondName')
         return (
             <div key={id} className={(id === selectedAgent) ? classes.agentItemActive : classes.agentItem}
                  onClick={() => { handleChooseAgent(id) }} style={{color: _.get(colors, index)}}>
@@ -369,7 +388,7 @@ const PlanCreateDialog = enhance((props) => {
                         <Person style={agentIcon}/>
                     </div>
                     <div>
-                        <span>{username}</span>
+                        <span>{firstName} {secondName}</span>
                         <span>15 магазинов</span>
                     </div>
                 </div>
@@ -411,27 +430,33 @@ const PlanCreateDialog = enhance((props) => {
                     </Paper>
                     <div className={classes.rightSide}>
                         <div className={isAgentChosen ? classes.agentsActive : classes.agents}>
-                            {!_.isEmpty(agents)
+                            {zoneAgentsLoading
                                 ? <Paper zDepth={2} className={classes.agentsWrapper}>
-                                    <div className={classes.chooseAgent}>
-                                        <span>Выберите <br/>агента</span>
+                                    <div className={classes.agentsLoader}>
+                                        <CircularProgress size={35} thickness={3.5}/>
                                     </div>
-                                    {zonesItemLoading
-                                        ? <div className={classes.agentsLoader}>
-                                            <CircularProgress size={35} thickness={3.5}/>
-                                        </div>
-                                        : agents}
                                 </Paper>
-                                : (!zonesItemLoading ? <Paper zDepth={2} className={classes.agentsWrapper}>
+                                : (selectedZone === ZERO)
+                                    ? <Paper zDepth={2} className={classes.agentsWrapper}>
                                         <div className={classes.chooseZone}>
-                                            <div>Для составления плана <br/> выберите зону</div>
+                                            <span>Для составления плана <br/>выберите зону</span>
                                         </div>
                                     </Paper>
-                                    : <Paper zDepth={2} className={classes.agentsWrapper}>
-                                        <div className={classes.agentsLoader}>
-                                            <CircularProgress size={35} thickness={3.5}/>
-                                        </div>
-                                    </Paper>)}
+                                    : (!_.isEmpty(agents)) ? <Paper zDepth={2} className={classes.agentsWrapper}>
+                                            <div className={classes.chooseAgent}>
+                                                <span>Выберите <br/>агента</span>
+                                            </div>
+                                            {agents}
+                                        </Paper>
+                                        : <Paper zDepth={2} className={classes.agentsWrapper}>
+                                            <div className={classes.chooseZone}>
+                                                <div>В этой зоне не закреплено агентов</div>
+                                                <Link target="_blank" to={{
+                                                    pathname: sprintf(ROUTES.ZONES_ITEM_PATH, selectedZone),
+                                                    query: {[TOGGLE_INFO]: true, [BIND_AGENT]: true}
+                                                }}>Добавить агентов?</Link>
+                                            </div>
+                                        </Paper>}
                         </div>
                         {selectedMarket > ZERO && <div className={classes.addPlan}>
                             <PlanWeekDayForm onSubmit={onSubmit}/>

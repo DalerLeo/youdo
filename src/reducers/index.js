@@ -407,7 +407,8 @@ const rootReducer = combineReducers({
     plan: combineReducers({
         monthlyPlan: createThunkReducer(actionTypes.PLAN_MONTHLY),
         agentsList: createThunkReducer(actionTypes.PLAN_AGENT_LIST),
-        agentPlan: createThunkReducer(actionTypes.PLAN_AGENT_MONTHLY)
+        agentPlan: createThunkReducer(actionTypes.PLAN_AGENT_MONTHLY),
+        agentsPlan: createThunkReducer(actionTypes.PLAN_AGENTS)
     }),
     join: combineReducers({
         joinMarkets: createThunkReducer(actionTypes.JOIN_MARKETS),

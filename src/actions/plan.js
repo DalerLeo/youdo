@@ -88,7 +88,7 @@ export const agentMonthlyPlanAction = (filter, user) => {
 
 export const planZonesListFetchAction = () => {
     const payload = axios()
-        .get(API.ZONE_LIST)
+        .get(API.ZONE_LIST, {params: {without_plan: 1}})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -101,9 +101,9 @@ export const planZonesListFetchAction = () => {
     }
 }
 
-export const planZonesItemFetchAction = (id) => {
+export const planZonesItemFetchAction = (id, date) => {
     const payload = axios()
-        .get(sprintf(API.ZONE_ITEM, id))
+        .get(API.PLAN_AGENTS, {params: {border: id, date: date}})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -111,7 +111,7 @@ export const planZonesItemFetchAction = (id) => {
             return Promise.reject(_.get(error, ['response', 'data']))
         })
     return {
-        type: actionTypes.ZONE_ITEM,
+        type: actionTypes.PLAN_AGENTS,
         payload
     }
 }
