@@ -56,7 +56,7 @@ const listHeader = [
         width: '10%'
     },
     {
-        sorting: false,
+        sorting: true,
         name: 'totalPrice',
         alignRight: true,
         title: 'Сумма заказа',

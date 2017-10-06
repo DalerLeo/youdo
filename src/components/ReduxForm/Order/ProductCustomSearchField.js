@@ -36,7 +36,7 @@ const getItem = (id, dispatch, market) => {
 const enhance = compose(
     connect((state, props) => {
         const dispatch = _.get(props, 'dispatch')
-        const market = _.get(state, ['form', 'OrderCreateForm', 'values', 'market', 'value'])
+        const market = _.get(state, ['form', 'OrderCreateForm', 'values', 'market', 'value', 'id'])
         return {
             state,
             dispatch,

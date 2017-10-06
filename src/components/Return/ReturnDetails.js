@@ -3,7 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
-import CircularProgress from 'material-ui/CircularProgress'
+import LinearProgress from '../LinearProgress'
 import {Row, Col} from 'react-flexbox-grid'
 import Delete from 'material-ui/svg-icons/action/delete'
 import Edit from 'material-ui/svg-icons/editor/mode-edit'
@@ -221,7 +221,7 @@ const ReturnDetails = enhance((props) => {
             <div className={classes.wrapper} style={loading && {maxHeight: '200px'}}>
                 <div className={classes.loader}>
                     <div>
-                        <CircularProgress size={40} thickness={4}/>
+                        <LinearProgress/>
                     </div>
                 </div>
             </div>

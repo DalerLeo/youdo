@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import {Col} from 'react-flexbox-grid'
-import CircularProgress from 'material-ui/CircularProgress'
+import LinearProgress from '../LinearProgress'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
@@ -142,7 +142,7 @@ const ManufactureDetails = enhance((props) => {
         return (
             <div className={classes.loader}>
                 <div>
-                    <CircularProgress size={40} thickness={4}/>
+                    <LinearProgress/>
                 </div>
             </div>
         )

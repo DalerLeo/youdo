@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import IconButton from 'material-ui/IconButton'
-import CircularProgress from 'material-ui/CircularProgress'
+import LinearProgress from '../LinearProgress'
 import CheckCircleIcon from 'material-ui/svg-icons/action/check-circle'
 import RemoveCircleIcon from 'material-ui/svg-icons/content/remove-circle'
 import EditIcon from 'material-ui/svg-icons/image/edit'
@@ -213,9 +213,7 @@ const TransferDetail = enhance((props) => {
     return (
         <div className={classes.wrapper}>
             {detailLoading
-                ? <div className={classes.loader}>
-                    <CircularProgress thickness={4} size={40}/>
-                </div>
+                ? <LinearProgress/>
                 : <div style={{width: '100%'}}>
                     <div className={classes.header}>
                         <div className={classes.closeDetail}

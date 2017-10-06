@@ -5,7 +5,7 @@ import {compose, withState} from 'recompose'
 import sprintf from 'sprintf'
 import * as ROUTES from '../../constants/routes'
 import injectSheet from 'react-jss'
-import Loader from '../Loader'
+import LinearProgress from '../LinearProgress'
 import Edit from 'material-ui/svg-icons/image/edit'
 import Delete from 'material-ui/svg-icons/action/delete'
 import OrderTransactionsDialog from './OrderTransactionsDialog'
@@ -252,7 +252,9 @@ const OrderDetails = enhance((props) => {
         return (
             <div className={classes.wrapper} style={loading && {maxHeight: '200px'}}>
                 <div className={classes.loader}>
-                    <Loader/>
+                    <div>
+                        <LinearProgress/>
+                    </div>
                 </div>
             </div>
         )

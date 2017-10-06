@@ -3,7 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
-import CircularProgress from 'material-ui/CircularProgress'
+import LinearProgress from '../LinearProgress'
 import {Row, Col} from 'react-flexbox-grid'
 import Dot from '../Images/dot.png'
 
@@ -228,7 +228,7 @@ const StatCashboxOrderDetails = enhance((props) => {
         return (
             <div className={classes.loader}>
                 <div>
-                    <CircularProgress size={40} thickness={4}/>
+                    <LinearProgress/>
                 </div>
             </div>
         )
