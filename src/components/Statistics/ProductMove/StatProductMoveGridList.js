@@ -8,6 +8,7 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import {Field} from 'redux-form'
 import {connect} from 'react-redux'
+import ordering from '../../../helpers/ordering'
 import {
     DateToDateField,
     StockSearchField,
@@ -21,6 +22,8 @@ import numberFormat from '../../../helpers/numberFormat.js'
 import getConfig from '../../../helpers/getConfig'
 import NotFound from '../../Images/not-found.png'
 import {StatisticsFilterExcel} from '../../Statistics'
+import ArrowUpIcon from 'material-ui/svg-icons/navigation/arrow-upward'
+import ArrowDownIcon from 'material-ui/svg-icons/navigation/arrow-downward'
 
 export const STAT_PRODUCT_MOVE_FILTER_KEY = {
     FROM_DATE: 'fromDate',
@@ -72,10 +75,10 @@ const enhance = compose(
             '& > div:first-child': {
                 zIndex: '20',
                 boxShadow: '5px 0 8px -3px #ccc',
-                width: '400px'
+                width: '350px'
             },
             '& > div:last-child': {
-                width: 'calc(100% - 370px)',
+                width: 'calc(100% - 320px)',
                 overflowX: 'auto',
                 overflowY: 'hidden'
             }
@@ -186,6 +189,10 @@ const enhance = compose(
                 border: '1px #efefef solid'
             }
         },
+        icon: {
+            color: '#666 !important',
+            height: '15px !important'
+        },
         subTitle: {
             extend: 'title',
             '& td:nth-child(odd)': {
@@ -194,6 +201,9 @@ const enhance = compose(
             '& td:nth-child(even)': {
                 borderLeft: 'none',
                 textAlign: 'right'
+            },
+            '& > td': {
+                cursor: 'pointer'
             }
         },
         leftTable: {
@@ -342,6 +352,21 @@ const StatProductMoveGridList = enhance((props) => {
             /> : null}
         </div>
     )
+    const amount = 'Кол-во'
+    const cost = 'Стоимость'
+
+    const subtitle = [
+        {sort: 'startRemainderAmount', name: amount},
+        {sort: 'startRemainderCost', name: cost},
+        {sort: 'receivedAmount', name: amount},
+        {sort: 'receivedCost', name: cost},
+        {sort: 'returnAmount', name: amount},
+        {sort: 'returnCost', name: cost},
+        {sort: 'issuedAmount', name: amount},
+        {sort: 'issuedCost', name: cost},
+        {sort: 'endRemainderAmount', name: amount},
+        {sort: 'endRemainderCost', name: cost}
+    ]
 
     const page = (
         <div className={classes.mainWrapper}>
@@ -401,6 +426,7 @@ const StatProductMoveGridList = enhance((props) => {
                                             <tbody className={classes.tableBody}>
                                             <tr className={classes.title}>
                                                 <td rowSpan={2}>Код товара</td>
+
                                                 <td colSpan={2}>Остаток на начало периода</td>
                                                 <td colSpan={2}>Поступивший товара за период</td>
                                                 <td colSpan={2}>Возврат</td>
@@ -408,16 +434,18 @@ const StatProductMoveGridList = enhance((props) => {
                                                 <td colSpan={2}>Остаток на конец</td>
                                             </tr>
                                             <tr className={classes.subTitle}>
-                                                <td>Кол-во</td>
-                                                <td>Стоимость</td>
-                                                <td>Кол-во</td>
-                                                <td>Стоимость</td>
-                                                <td>Кол-во</td>
-                                                <td>Стоимость</td>
-                                                <td>Кол-во</td>
-                                                <td>Стоимость</td>
-                                                <td>Кол-во</td>
-                                                <td>Стоимость</td>
+                                                {_.map(subtitle, (item, index) => {
+                                                    const sortingType = filter.getSortingType(item.sort)
+                                                    const icon = _.isNil(sortingType) ? null
+                                                        : sortingType ? <ArrowUpIcon className={classes.icon}/>
+                                                            : <ArrowDownIcon className={classes.icon}/>
+                                                    return (
+                                                        <td key={index} onClick={() => { ordering(filter, item.sort) }}>
+                                                            {item.name}
+                                                            {icon}
+                                                        </td>
+                                                    )
+                                                })}
                                             </tr>
                                             {tableList}
                                             </tbody>
