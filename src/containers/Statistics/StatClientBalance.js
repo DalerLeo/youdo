@@ -34,7 +34,6 @@ const enhance = compose(
         const filterForm = _.get(state, ['form', 'ClientBalanceFilterForm'])
         const searchForm = _.get(state, ['form', 'ClientBalanceForm'])
         const isSuperUser = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
-
         const filter = filterHelper(list, pathname, query)
         const filterItem = filterHelper(detail, pathname, query, {'page': 'dPage', 'pageSize': 'dPageSize'})
 

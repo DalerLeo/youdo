@@ -139,14 +139,27 @@ const enhance = compose(
         summaryWrapper: {
             width: '100%',
             display: 'flex',
+            justifyContent: 'space-between',
             '& > div': {
-                fontWeight: '400',
-                flexBasis: '25%',
-                maxWidth: '25%',
-                '& div': {
+                '& div:nth-child(2)': {
                     fontSize: '17px',
                     marginTop: '2px',
-                    fontWeight: '600'
+                    fontWeight: '600',
+                    marginBottom: '10px',
+                    '& > span': {
+                        fontWeight: '500',
+                        fontSize: '13px'
+
+                    }
+                },
+                '& div:nth-child(4)': {
+                    fontSize: '17px',
+                    marginTop: '2px',
+                    fontWeight: '600',
+                    '& > span': {
+                        fontSize: '13px',
+                        fontWeight: '500'
+                    }
                 }
             }
         },
@@ -390,20 +403,23 @@ const StatProductMoveGridList = enhance((props) => {
                                     <CircularProgress size={40} thickness={4}/>
                                 </div>
                                 : <div className={classes.summaryWrapper}>
-                                    <div>Остаток на начало периода
-                                        <div>{beginBalance}</div>
+                                    <div>
+                                        <div>Остаток на начало периода</div>
+                                        <div>{beginBalance} <span>(2000 шт)</span> </div>
+                                        <div>Остаток на конец периода</div>
+                                        <div>{endBalance} <span>(50 шт)</span></div>
                                     </div>
-                                    <div>Поступило товара на сумму
-                                        <div>{inBalance}</div>
+                                    <div>
+                                        <div>Поступило товара на сумму</div>
+                                        <div>{inBalance} <span>(2000 шт)</span></div>
+                                        <div>Возврат за период</div>
+                                        <div>{returnBalance} <span>(200 шт)</span></div>
                                     </div>
-                                    <div>Возврат за период
-                                        <div>{returnBalance}</div>
-                                    </div>
-                                    <div>Выдано товара на сумму
-                                        <div>{outBalance}</div>
-                                    </div>
-                                    <div>Остаток на конец периода
-                                        <div>{endBalance}</div>
+                                    <div>
+                                        <div>Выдано товара на сумму</div>
+                                        <div>{outBalance} <span>(2000 шт)</span></div>
+                                        <div>Cписано за период</div>
+                                        <div>{returnBalance} <span>(200 шт)</span></div>
                                     </div>
                                 </div>}
                         </div>
