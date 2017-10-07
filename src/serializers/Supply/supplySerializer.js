@@ -9,6 +9,7 @@ export const createSerializer = (data) => {
     const currency = _.get(data, ['currency', 'value'])
     const comment = _.get(data, ['comment'])
     const contact = _.get(data, ['contact'])
+    const contract = _.get(data, ['contract'])
     const products = _.map(_.get(data, ['products']), (item) => {
         const amount = numberWithoutSpaces(_.get(item, 'amount'))
         const itemCost = numberWithoutSpaces(_.get(item, 'cost'))
@@ -25,6 +26,7 @@ export const createSerializer = (data) => {
         provider,
         stock,
         contact,
+        contract,
         comment,
         'date_delivery': moment(_.get(data, ['date_delivery'])).format('YYYY-MM-DD'),
         currency,
@@ -70,6 +72,7 @@ export const listFilterSerializer = (data) => {
         'provider': _.get(defaultData, 'provider'),
         'product': _.get(defaultData, 'product'),
         'stock': _.get(defaultData, 'stock'),
+        'contract': _.get(defaultData, 'contract'),
         'date_delivery_0': _.get(defaultData, 'deliveryFromDate'),
         'date_delivery_1': _.get(defaultData, 'deliveryToDate'),
         'created_date_0': _.get(defaultData, 'createdFromDate'),

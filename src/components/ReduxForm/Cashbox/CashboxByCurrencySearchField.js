@@ -6,7 +6,7 @@ import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
 import _ from 'lodash'
 const getOptions = (search, currency) => {
-    return axios().get(`${PATH.CASHBOX_LIST}?search=${search || ''}`, {params: {currency}})
+    return axios().get(`${PATH.CASHBOX_LIST}?search=${search || ''}&page_size=100`, {params: {currency}})
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
         })
