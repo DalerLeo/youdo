@@ -6,6 +6,11 @@ const DATE = 'date'
 const ZONE = 'zone'
 const AGENT = 'agent'
 const MARKET = 'market'
+const AGENT_COLORS = [
+    '#62d6a0',
+    '#eeab21',
+    '#fd4641'
+]
 
 export {
     ADD_PLAN,
@@ -15,5 +20,6 @@ export {
     ZONE,
     AGENT,
     MARKET,
+    AGENT_COLORS,
     PlanWrapper
 }

@@ -6,17 +6,26 @@ import CircularProgress from 'material-ui/CircularProgress'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import {Field} from 'redux-form'
-import DateToDateField from '../../ReduxForm/Basic/DateToDateField'
 import Back from 'material-ui/svg-icons/content/reply'
 import NotFound from '../../Images/not-found.png'
 import TransactionsList from '../Finance/TransactionsList'
 import {StatisticsFilterExcel, StatisticsChart} from '../../Statistics'
+import {
+    DateToDateField,
+    TransactionTypeSearchField,
+    ExpensiveCategorySearchField,
+    ClientSearchField
+} from '../../ReduxForm'
 
 export const STAT_CASHBOX_DETAIL_FILTER_KEY = {
     DIVISION: 'division',
     SEARCH: 'search',
     TO_DATE: 'toDate',
-    FROM_DATE: 'fromDate'
+    FROM_DATE: 'fromDate',
+    TYPE: 'type',
+    CATEGORY_EXPENSE: 'categoryExpense',
+    CLIENT: 'client'
+
 }
 const enhance = compose(
     injectSheet({
@@ -220,12 +229,12 @@ const StatCashboxDetails = enhance((props) => {
     }
 
     const fields = (
-        <Field
-            className={classes.inputFieldCustom}
-            name="date"
-            component={DateToDateField}
-            label="Диапазон дат"
-            fullWidth={true}/>
+        <div>
+            <Field className={classes.inputFieldCustom} name="date" component={DateToDateField} label="Диапазон дат" fullWidth={true}/>
+            <Field className={classes.inputFieldCustom} name="categoryExpense" component={ExpensiveCategorySearchField} label="Категории расходов" fullWidth={true}/>
+            <Field className={classes.inputFieldCustom} name="type" component={TransactionTypeSearchField} label="Тип" fullWidth={true}/>
+            <Field className={classes.inputFieldCustom} name="client" component={ClientSearchField} label="Клиент" fullWidth={true}/>
+        </div>
     )
 
     const extraButton = (

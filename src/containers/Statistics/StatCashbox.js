@@ -113,7 +113,6 @@ const enhance = compose(
             filter.filterBy({
                 [STAT_CASHBOX_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [STAT_CASHBOX_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
-
             })
         },
         handleSubmitDetailFilterDialog: props => () => {
@@ -123,13 +122,18 @@ const enhance = compose(
             const fromDate = _.get(detailFilterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(detailFilterForm, ['values', 'date', 'toDate']) || null
             const search = _.get(detailFilterForm, ['values', 'search']) || null
+            const type = _.get(detailFilterForm, ['values', 'type', 'value']) || null
+            const client = _.get(detailFilterForm, ['values', 'client', 'value']) || null
+            const categoryExpense = _.get(detailFilterForm, ['values', 'categoryExpense', 'value']) || null
 
             filterDetail.filterBy({
                 [STAT_CASHBOX_DETAIL_FILTER_KEY.SEARCH]: search,
                 [STAT_CASHBOX_DETAIL_FILTER_KEY.DIVISION]: division,
                 [STAT_CASHBOX_DETAIL_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
-                [STAT_CASHBOX_DETAIL_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
-
+                [STAT_CASHBOX_DETAIL_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD'),
+                [STAT_CASHBOX_DETAIL_FILTER_KEY.TYPE]: type,
+                [STAT_CASHBOX_DETAIL_FILTER_KEY.CLIENT]: client,
+                [STAT_CASHBOX_DETAIL_FILTER_KEY.CATEGORY_EXPENSE]: categoryExpense
             })
         },
         handleCloseDetail: props => () => {
@@ -184,6 +188,9 @@ const StatCashboxList = enhance((props) => {
     const lastDay = moment().daysInMonth()
     const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
     const search = !_.isNull(_.get(location, ['query', 'search'])) ? _.get(location, ['query', 'search']) : null
+    const type = !_.isNull(_.get(location, ['query', 'type'])) && _.toInteger(_.get(location, ['query', 'type']))
+    const client = !_.isNull(_.get(location, ['query', 'client'])) && _.toInteger(_.get(location, ['query', 'client']))
+    const categoryExpense = !_.isNull(_.get(location, ['query', 'categoryExpense'])) && _.toInteger(_.get(location, ['query', 'categoryExpense']))
 
     const openDetails = detailId > ZERO
 
@@ -228,6 +235,15 @@ const StatCashboxList = enhance((props) => {
     const detailFilterForm = {
         initialValues: {
             search: search,
+            type: {
+                value: type
+            },
+            client: {
+                value: client
+            },
+            categoryExpense: {
+                value: categoryExpense
+            },
             date: {
                 fromDate: moment(firstDayOfMonth),
                 toDate: moment(lastDayOfMonth)

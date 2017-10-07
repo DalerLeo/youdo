@@ -21,10 +21,13 @@ export const listFilterSerializer = (data, id) => {
         'name': _.get(defaultData, 'name'),
         'division': _.get(defaultData, 'division'),
         'search': _.get(defaultData, 'search'),
+        'type': _.get(defaultData, 'type'),
         'page': _.get(defaultData, 'page'),
+        'expanse_category': _.get(data, 'categoryExpense'),
         'page_size': _.get(defaultData, 'pageSize'),
         'ordering': ordering && orderingSnakeCase(ordering),
         'begin_date': _.get(defaultData, 'fromDate') || firstDayOfMonth,
+        'client': _.get(defaultData, 'client'),
         'end_date': _.get(defaultData, 'toDate') || lastDayOfMonth
     }
 }

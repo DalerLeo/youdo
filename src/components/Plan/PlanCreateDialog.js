@@ -10,12 +10,13 @@ import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import CloseIcon2 from '../CloseIcon2'
 import Person from 'material-ui/svg-icons/social/person'
-import GoogleMap from '../GoogleMap'
+import PlanMap from './PlanMap'
 import PlanAddCalendar from './PlanAddCalendar'
 import PlanWeekDayForm from './PlanWeekDayForm'
 import {Link} from 'react-router'
 import * as ROUTES from '../../constants/routes'
 import {TOGGLE_INFO, BIND_AGENT} from '../Zones'
+import {AGENT_COLORS} from '../Plan'
 import sprintf from 'sprintf'
 
 const enhance = compose(
@@ -35,7 +36,6 @@ const enhance = compose(
             padding: '0 30px'
         },
         podlojkaScroll: {
-            overflowY: 'auto !important',
             padding: '0 !important',
             '& > div:first-child > div:first-child': {
                 transform: 'translate(0px, 0px) !important'
@@ -59,7 +59,6 @@ const enhance = compose(
             padding: '0 !important',
             overflowX: 'hidden',
             height: '100%',
-            minHeight: '700px',
             maxHeight: 'inherit !important'
         },
         titleContent: {
@@ -111,7 +110,8 @@ const enhance = compose(
             zIndex: '10'
         },
         scroll: {
-            height: '100%'
+            height: '100%',
+            overflowY: 'auto'
         },
         zone: {
             display: 'flex',
@@ -329,6 +329,7 @@ const agentIcon = {
 const PlanCreateDialog = enhance((props) => {
     const {
         open,
+        filter,
         handleSubmit,
         onClose,
         classes,
@@ -371,29 +372,45 @@ const PlanCreateDialog = enhance((props) => {
                 </div>
             )
     })
-    const colors = [
-        '#62d6a0',
-        '#eeab21',
-        '#fd4641'
-    ]
     const agents = _.map(zoneAgents, (agent, index) => {
         const id = _.get(agent, 'id')
         const firstName = _.get(agent, 'firstName')
         const secondName = _.get(agent, 'secondName')
+        const plansCount = _.get(agent, 'plans').length
         return (
             <div key={id} className={(id === selectedAgent) ? classes.agentItemActive : classes.agentItem}
-                 onClick={() => { handleChooseAgent(id) }} style={{color: _.get(colors, index)}}>
+                 onClick={() => { handleChooseAgent(id) }} style={{color: _.get(AGENT_COLORS, index)}}>
                 <div>
                     <div className={classes.imgPlace}>
                         <Person style={agentIcon}/>
                     </div>
                     <div>
                         <span>{firstName} {secondName}</span>
-                        <span>15 магазинов</span>
+                        <span>{plansCount} магазинов</span>
                     </div>
                 </div>
             </div>
         )
+    })
+    const plans = _.map(zoneAgents, (plan) => {
+        return _.map(_.get(plan, 'plans'), (m) => {
+            return {
+                id: _.get(m, ['market', 'id']),
+                location: {
+                    lat: _.get(m, ['market', 'location', 'coordinates', '0']),
+                    lng: _.get(m, ['market', 'location', 'coordinates', '1'])
+                }
+            }
+        })
+    })
+    const plansPaths = _.map(zoneAgents, (plan) => {
+        return _.map(_.get(plan, 'plans'), (m) => {
+            return {
+                lat: _.get(m, ['market', 'location', 'coordinates', '0']),
+                lng: _.get(m, ['market', 'location', 'coordinates', '1']),
+                marketId: _.get(m, ['market', 'id'])
+            }
+        })
     })
     return (
         <Dialog
@@ -459,10 +476,14 @@ const PlanCreateDialog = enhance((props) => {
                                         </Paper>}
                         </div>
                         {selectedMarket > ZERO && <div className={classes.addPlan}>
-                            <PlanWeekDayForm onSubmit={onSubmit}/>
+                            <PlanWeekDayForm onSubmit={onSubmit} filter={filter}/>
                         </div>}
                         <div className={isAgentChosen ? classes.map : classes.mapBlurred}>
-                            <GoogleMap
+                            <PlanMap
+                                plans={plans}
+                                plansPaths={plansPaths}
+                                zoneAgents={zoneAgents}
+                                selectedAgent={selectedAgent}
                                 marketsLocation={marketsLocation}
                                 selectedMarket={selectedMarket}
                                 handleChooseMarket={handleChooseMarket}

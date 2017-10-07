@@ -15,7 +15,8 @@ import Location from '../Images/market-green.png'
 import MarketOff from '../Images/market-red.png'
 const MARKER_SIZE = 30
 const ZERO = 0
-const ANCHOR = 4
+const MINUS_FIVE = -5
+const ANCHOR = 8
 const SCALED = 18
 const classes = {
     loader: {
@@ -35,7 +36,8 @@ export default class GoogleCustomMap extends React.Component {
             drawing: null,
             zone: [],
             points: null,
-            isDrawing: false
+            isDrawing: false,
+            initial: true
         }
 
         this.handleClearDrawing = this.handleClearDrawing.bind(this)
@@ -129,7 +131,8 @@ export default class GoogleCustomMap extends React.Component {
             })
             const info = '<div>' + item.name + '</div>'
             const infoWindow = new google.maps.InfoWindow({
-                content: info
+                content: info,
+                pixelOffset: new google.maps.Size(MINUS_FIVE, ZERO)
             })
 
             marker.addListener('mouseover', () => {
@@ -151,7 +154,13 @@ export default class GoogleCustomMap extends React.Component {
             zoom: 13,
             center: GOOGLE_MAP.DEFAULT_LOCATION,
             mapTypeId: 'terrain',
-            styles: googleMapStyle
+            styles: googleMapStyle,
+            mapTypeControl: false,
+            panControl: false,
+            streetViewControl: false,
+            zoomControl: false,
+            scaleControl: false,
+            fullscreenControl: false
         }
         const googl = new google.maps.Map(this.refs.mapping, mapOptions)
         this.map = googl
@@ -365,7 +374,9 @@ export default class GoogleCustomMap extends React.Component {
                 this.setEditableFalse()
             }
             this.createCustomZone(nextState)
-            this.getMarkers(nextProps.marketsData.data)
+            if (nextProps.marketsData.data !== this.props.marketsData.data) {
+                this.getMarkers(nextProps.marketsData.data)
+            }
         }
     }
 

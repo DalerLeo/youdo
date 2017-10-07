@@ -110,9 +110,24 @@ const ClientIncomeList = enhance((props) => {
     const type = !_.isNull(_.get(location, ['query', 'type'])) && _.toInteger(_.get(location, ['query', 'type']))
     const client = !_.isNull(_.get(location, ['query', 'client'])) && _.toInteger(_.get(location, ['query', 'client']))
 
+    let mergedGraph = {}
+
+    _.map(graphIn, (item) => {
+        mergedGraph[item.date] = {'in': item.amount, date: item.date}
+    })
+
+    _.map(graphOut, (item) => {
+        if (mergedGraph[item.date]) {
+            mergedGraph[item.date] = {'in': mergedGraph[item.date].in, 'out': item.amount, date: item.date}
+        } else {
+            mergedGraph[item.date] = {'in': 0, 'out': item.amount, date: item.date}
+        }
+    })
+
     const graphData = {
         dataIn: graphIn,
         dataOut: graphOut,
+        mergedGraph: _.sortBy(mergedGraph, ['date']),
         graphOutLoading,
         graphInLoading
     }
