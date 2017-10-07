@@ -161,8 +161,7 @@ const TransactionSendDialog = enhance((props) => {
                             </div>
                             {(amountFrom && amountTo) &&
                             <div style={{padding: '10px 0'}}>
-                                Курс: <strong>{chosenCurrencyName}</strong> к <strong>{currentCurrencyName}</strong>
-                                = {_.round(customRate, ROUND_VAL)}
+                                Курс: <strong>1 {chosenCurrencyName}</strong> = {_.round(customRate, ROUND_VAL)} <strong>{currentCurrencyName}</strong>
                             </div>}
                             <Field
                                 name="comment"
