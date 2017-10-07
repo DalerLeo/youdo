@@ -78,8 +78,8 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const prevId = _.get(props, ['params', 'stockReceiveHistoryId'])
-        const nextId = _.get(nextProps, ['params', 'stockReceiveHistoryId'])
+        const prevId = _.toNumber(_.get(props, ['params', 'stockReceiveHistoryId']))
+        const nextId = _.toNumber(_.get(nextProps, ['params', 'stockReceiveHistoryId']))
         return nextId && prevId !== nextId
     }, ({dispatch, params, location}) => {
         const stockReceiveType = _.get(location, ['query', 'currentType'])
