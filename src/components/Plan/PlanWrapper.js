@@ -367,6 +367,7 @@ const PlanWrapper = enhance((props) => {
             </div>
 
             <PlanCreateDialog
+                filter={filter}
                 initialValues={initialValues}
                 open={addPlan.openAddPlan}
                 onClose={addPlan.handleCloseAddPlan}

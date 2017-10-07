@@ -4,13 +4,13 @@ import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 
 const weeks = [
-    {id: 0, name: 'Пн', active: false},
-    {id: 1, name: 'Вт', active: false},
-    {id: 2, name: 'Ср', active: false},
-    {id: 3, name: 'Чт', active: false},
-    {id: 4, name: 'Пт', active: false},
-    {id: 5, name: 'Сб', active: false},
-    {id: 6, name: 'Вс', active: false}
+    {id: 1, name: 'Пн', active: false},
+    {id: 2, name: 'Вт', active: false},
+    {id: 3, name: 'Ср', active: false},
+    {id: 4, name: 'Чт', active: false},
+    {id: 5, name: 'Пт', active: false},
+    {id: 6, name: 'Сб', active: false},
+    {id: 0, name: 'Вс', active: false}
 ]
 const enhance = compose(
     injectSheet({

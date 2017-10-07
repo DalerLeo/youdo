@@ -118,12 +118,24 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         const prevZone = _.toInteger(_.get(props, ['query', ZONE]))
         const nextZone = _.toInteger(_.get(nextProps, ['query', ZONE]))
-        return prevZone !== nextZone && nextZone > ZERO
+        return (prevZone !== nextZone && nextZone > ZERO) ||
+            (props.selectedDate !== nextProps.selectedDate && nextZone > ZERO) ||
+            (props.selectedDay !== nextProps.selectedDay && nextZone > ZERO)
     }, ({dispatch, location, selectedDate, selectedDay}) => {
         const zone = _.toInteger(_.get(location, ['query', ZONE]))
         const date = selectedDate + '-' + selectedDay
         if (zone > ZERO) {
             dispatch(planZonesItemFetchAction(zone, date))
+        }
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const prevZone = _.toInteger(_.get(props, ['query', ZONE]))
+        const nextZone = _.toInteger(_.get(nextProps, ['query', ZONE]))
+        return prevZone !== nextZone && nextZone > ZERO
+    }, ({dispatch, location}) => {
+        const zone = _.toInteger(_.get(location, ['query', ZONE]))
+        if (zone > ZERO) {
             dispatch(marketsLocationAction(zone))
         }
     }),
@@ -147,7 +159,9 @@ const enhance = compose(
         },
 
         handleSubmitAddPlan: props => () => {
-            const {location: {pathname}, dispatch, createForm, filter} = props
+            const {location: {pathname, query}, dispatch, createForm, filter, selectedDate, selectedDay} = props
+            const zone = _.get(query, ZONE)
+            const date = selectedDate + '-' + selectedDay
 
             return dispatch(planCreateAction(createForm, filter.getParams()))
                 .then(() => {
@@ -155,7 +169,8 @@ const enhance = compose(
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[MARKET]: ZERO})})
-                    dispatch(reset('PlanCreateForm'))
+                    dispatch(planZonesListFetchAction())
+                    dispatch(planZonesItemFetchAction(zone, date))
                     dispatch(planAgentsListFetchAction(filter))
                 })
         },
@@ -208,7 +223,7 @@ const enhance = compose(
 
         handleChooseZone: props => (zone) => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[ZONE]: zone, [AGENT]: ZERO, [MARKET]: ZERO})})
+            hashHistory.push({pathname, query: filter.getParams({[ZONE]: zone, [AGENT]: null, [MARKET]: null})})
         },
 
         handleChooseAgent: props => (agent) => {
