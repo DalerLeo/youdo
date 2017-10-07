@@ -260,6 +260,7 @@ const ClientIncomeGridList = enhance((props) => {
         return _.toNumber(_.get(item, 'amount')) * NEGATIVE
     })
 
+    const diff = sumIn - sumOut
     const headerStyle = {
         backgroundColor: '#fff',
         fontWeight: '600',
@@ -384,6 +385,9 @@ const ClientIncomeGridList = enhance((props) => {
                                         <div style={{margin: '10px 0'}}>{null}</div>
                                         <span className={classes.summaryTitle}>Расход за период</span>
                                         <div className={classes.summaryValue} style={{color: '#EB9696'}}>{numberFormat(sumOut)} {primaryCurrency}</div>
+                                        <div style={{margin: '10px 0'}}>{null}</div>
+                                        <span className={classes.summaryTitle}>Разница</span>
+                                        <div className={classes.summaryValue} style={diff >= ZERO ? {color: '#71ce87'} : {color: '#EB9696'}}>{numberFormat(diff)} {primaryCurrency}</div>
                                     </div>
                                 </Col>
                                 <Col xs={9} className={classes.chart}>
@@ -391,9 +395,11 @@ const ClientIncomeGridList = enhance((props) => {
                                         tooltipTitle={tooltipDate}
                                         primaryValues={valueIn}
                                         secondaryValues={valueOut}
+                                        mergedGraph={_.get(graphData, 'mergedGraph')}
                                         primaryText="Приход"
                                         secondaryText="Расход"
                                         height={160}
+                                        clentIncome={true}
                                     />
                                 </Col>
                             </Row>}

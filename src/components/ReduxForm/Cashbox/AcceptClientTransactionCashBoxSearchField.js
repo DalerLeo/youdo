@@ -5,7 +5,7 @@ import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
 import _ from 'lodash'
-const CASH = 2
+const CASH = 'cash'
 const getOptions = (search, currency) => {
     return axios().get(`${PATH.CASHBOX_LIST}?search=${search || ''}`, {params: {currency, type: CASH}})
         .then(({data}) => {
