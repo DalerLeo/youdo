@@ -291,7 +291,7 @@ export const stockTransferHistoryRepealAction = (orderId, stockId) => {
         })
 
     return {
-        type: actionTypes.STOCK_RECEIVE_ITEM,
+        type: actionTypes.STOCK_RECEIVE_ITEM_REPEAL,
         payload
     }
 }
@@ -306,7 +306,7 @@ export const stockTransferHistoryReturnAction = (orderId) => {
         })
 
     return {
-        type: actionTypes.STOCK_RECEIVE_ITEM,
+        type: actionTypes.STOCK_RECEIVE_ITEM_REPEAL,
         payload
     }
 }
@@ -321,7 +321,7 @@ export const stockReceiveHistorySupplyAction = (orderId) => {
         })
 
     return {
-        type: actionTypes.STOCK_RECEIVE_ITEM,
+        type: actionTypes.STOCK_RECEIVE_ITEM_REPEAL,
         payload
     }
 }

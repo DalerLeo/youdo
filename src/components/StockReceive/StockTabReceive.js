@@ -156,7 +156,6 @@ const StockTabReceive = enhance((props) => {
         <StockReceiveDetails
             key={_.get(detailData, 'id') + '_' + _.get(detailData, 'type')}
             detailData={detailData}
-            loading={_.get(detailData, 'detailLoading')}
             confirmDialog={confirmDialog}
             handleCloseDetail={handleCloseDetail}
             createDialog={createDialog}

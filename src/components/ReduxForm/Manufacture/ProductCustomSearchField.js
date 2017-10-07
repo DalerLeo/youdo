@@ -26,7 +26,7 @@ const setExtraData = (data, loading) => {
 
 const getItem = (id, dispatch, market) => {
     dispatch(setExtraData(null, true))
-    return axios().get(sprintf(PATH.PRODUCT_MOBILE_ITEM, _.get(id, 'id')), {'params': {'market': market}})
+    return axios().get(sprintf(PATH.PRODUCT_MOBILE_ITEM, id), {'params': {'market': market}})
         .then(({data}) => {
             dispatch(setExtraData(data, false))
             return Promise.resolve(toCamelCase(data))
@@ -54,7 +54,7 @@ const ProductCustomSearchField = enhance((props) => {
     return (
         <SearchFieldCustom
             getValue={(value) => {
-                return value
+                return _.get(value, 'id')
             }}
             getText={(value) => {
                 return _.get(value, ['name'])

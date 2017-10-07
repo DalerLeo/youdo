@@ -146,10 +146,7 @@ const enhance = compose(
         addRaw: {
             alignItems: 'flex-end',
             justifyContent: 'space-between',
-            margin: '5px -7px',
-            '& > div:first-child > div:first-child': {
-                overflow: 'hidden'
-            }
+            margin: '5px -7px'
         }
     }),
     withState('openAddMaterials', 'setOpenAddMaterials', false),
@@ -175,7 +172,7 @@ const enhance = compose(
             if (!_.isEmpty(ingredient) && !_.isEmpty(amount)) {
                 let has = false
                 _.map(ingredients, (item) => {
-                    if (_.get(item, 'ingredient') === ingredient || product === ingredient) {
+                    if (_.get(item, 'ingredient') === _.get(ingredient, ['value', 'id']) || product === ingredient) {
                         has = true
                     }
                 })
@@ -185,7 +182,7 @@ const enhance = compose(
                     newChange(null)
                 }
 
-                if (!has) {
+                if (!has && product !== _.get(ingredient, ['value', 'id'])) {
                     let newArray = [{ingredient, amount, measurement}]
                     _.map(ingredients, (obj) => {
                         newArray.push(obj)
@@ -255,8 +252,10 @@ const ManufactureListMaterialField = ({classes, measurementName, handleAdd, prod
             {openAddMaterials && <div className={classes.addMaterials}>
                 <Row className={classes.addRaw}>
                     <Col xs={7}>
-                        <ProductCustomSearchField
+                        <Field
+                            component={ProductCustomSearchField}
                             label="Наименование товара"
+                            name="ingredient"
                             className={classes.searchFieldCustom}
                             fullWidth={true}
                             {..._.get(defaultProps, 'ingredient')}
@@ -305,7 +304,7 @@ const ManufactureListMaterialField = ({classes, measurementName, handleAdd, prod
                             showRowHover={false}
                             stripedRows={false}>
                             {_.map(ingredients, (item, index) => {
-                                const ingredient = _.get(item, ['ingredient', 'text'])
+                                const ingredient = _.get(item, ['ingredient', 'value', 'name'])
                                 const amount = _.get(item, 'amount')
                                 const itemMeasurement = _.get(item, 'measurement')
                                 if (editItem === index) {
