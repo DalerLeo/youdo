@@ -288,6 +288,17 @@ const enhance = compose(
                     dispatch(transactionListFetchAction(filter, cashboxId))
                     dispatch(cashboxListFetchAction(filterCashbox))
                 })
+                .catch((error) => {
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p style={{marginBottom: '10px'}}>{(index !== 'non_field_errors') &&
+                        <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
+                    })
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                            {errorWhole}
+                        </div>
+                    }))
+                })
         },
 
         handleOpenCreateIncomeDialog: props => () => {
@@ -314,6 +325,17 @@ const enhance = compose(
                     })
                     dispatch(transactionListFetchAction(filter, cashboxId))
                     dispatch(cashboxListFetchAction(filterCashbox))
+                })
+                .catch((error) => {
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p style={{marginBottom: '10px'}}>{(index !== 'non_field_errors') &&
+                        <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
+                    })
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                            {errorWhole}
+                        </div>
+                    }))
                 })
         },
 
@@ -342,6 +364,17 @@ const enhance = compose(
                     })
                     dispatch(transactionListFetchAction(filter, cashboxId))
                     dispatch(cashboxListFetchAction(filterCashbox))
+                })
+                .catch((error) => {
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p style={{marginBottom: '10px'}}>{(index !== 'non_field_errors') &&
+                        <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
+                    })
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                            {errorWhole}
+                        </div>
+                    }))
                 })
         },
 
@@ -386,6 +419,17 @@ const enhance = compose(
                     hashHistory.push(filter.createURL({[TRANSACTION_UPDATE_EXPENSE_DIALOG_OPEN]: false}))
                     dispatch(transactionListFetchAction(filter, cashboxId))
                 })
+                .catch((error) => {
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p style={{marginBottom: '10px'}}>{(index !== 'non_field_errors') &&
+                        <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
+                    })
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                            {errorWhole}
+                        </div>
+                    }))
+                })
         },
 
         handleCloseUpdateIncomeDialog: props => () => {
@@ -406,6 +450,17 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push(filter.createURL({[TRANSACTION_UPDATE_INCOME_DIALOG_OPEN]: false}))
                     dispatch(transactionListFetchAction(filter, cashboxId))
+                })
+                .catch((error) => {
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p style={{marginBottom: '10px'}}>{(index !== 'non_field_errors') &&
+                        <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
+                    })
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                            {errorWhole}
+                        </div>
+                    }))
                 })
         },
 

@@ -250,7 +250,7 @@ const TransactionCashDialog = enhance((props) => {
                 const currency = _.get(item, ['currency', 'name'])
                 const division = _.get(item, ['division', 'name'])
                 const order = _.get(item, ['order']) ? '№' + _.get(item, ['order']) : '-'
-                const createdDate = dateFormat(_.get(item, ['createdDate'])) + ' ' + moment(_.get(item, ['createdDate'])).format('HH:mm')
+                const createdDate = dateFormat(_.get(item, ['date'])) + ' ' + moment(_.get(item, ['date'])).format('HH:mm')
                 const internal = _.toNumber(_.get(item, 'internal'))
                 const amount = _.toNumber(_.get(item, 'amount'))
                 const customRate = _.get(item, ['customRate']) ? _.toNumber(_.get(item, ['customRate'])) : _.toInteger(amount / internal)

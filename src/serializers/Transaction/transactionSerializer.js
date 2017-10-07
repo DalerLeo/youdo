@@ -37,7 +37,7 @@ export const createIncomeSerializer = (data, cashboxId) => {
     const customRate = numberWithoutSpaces(_.get(data, 'custom_rate'))
     const division = _.get(data, ['division', 'value'])
     const cashbox = _.get(data, ['cashbox', 'value'])
-    const createdDate = moment(_.get(data, 'date')).format('YYYY-MM-DD')
+    const date = moment(_.get(data, 'date')).format('YYYY-MM-DD HH:00:00')
     return (showClients)
     ? {
         'amount': numberWithoutSpaces(amount),
@@ -46,14 +46,14 @@ export const createIncomeSerializer = (data, cashboxId) => {
         'client': clientId,
         'custom_rate': customRate,
         'division': division,
-        'created_date': createdDate
+        'date': date
     }
     : {
         'amount': numberWithoutSpaces(amount),
         comment,
         'cashbox': _.toInteger(cashboxId) === ZERO ? cashbox : cashboxId,
         'custom_rate': customRate,
-        'created_date': createdDate
+        'date': date
     }
 }
 
@@ -69,7 +69,7 @@ export const createExpenseSerializer = (data, cashboxId) => {
     const customRate = numberWithoutSpaces(_.get(data, 'custom_rate'))
     const division = _.get(data, ['division', 'value'])
     const cashbox = _.get(data, ['cashbox', 'value'])
-    const createdDate = moment(_.get(data, 'date')).format('YYYY-MM-DD')
+    const date = moment(_.get(data, 'date')).format('YYYY-MM-DD HH:00:00')
     return (showClients)
         ? {
             amount: amount,
@@ -79,7 +79,7 @@ export const createExpenseSerializer = (data, cashboxId) => {
             'client': clientId,
             'custom_rate': customRate,
             'division': division,
-            'created_date': createdDate
+            'date': date
         }
         : {
             amount: amount,
