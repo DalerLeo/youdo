@@ -10,7 +10,7 @@ import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
-import {ProviderSearchField, StockSearchField, ProductSearchField} from '../ReduxForm'
+import {ProviderSearchField, StockSearchField, ProductSearchField, TextField} from '../ReduxForm'
 import CloseIcon from '../CloseIcon'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
 
@@ -20,6 +20,7 @@ export const SUPPLY_FILTER_KEY = {
     PROVIDER: 'provider',
     PRODUCT: 'product',
     STOCK: 'stock',
+    CONTRACT: 'contract',
     DELIVERY_FROM_DATE: 'deliveryFromDate',
     DELIVERY_TO_DATE: 'deliveryToDate',
     CREATED_FROM_DATE: 'createdFromDate',
@@ -163,6 +164,7 @@ const SupplyFilterForm = enhance((props) => {
                         <Field className={classes.inputFieldCustom} name="provider" component={ProviderSearchField} label="Поставщик"/>
                         <Field className={classes.inputFieldCustom} name="stock" component={StockSearchField} label="Склад"/>
                         <Field className={classes.inputFieldCustom} name="product" component={ProductSearchField} label="Товар"/>
+                        <Field className={classes.inputFieldCustom} name="contract" component={TextField} label="Номер договора"/>
                     </div>
                     <div>
                         <Field className={classes.inputFieldCustom} name="dateDelivery" component={DateToDateField} label="Дата поставки" fullWidth={true}/>

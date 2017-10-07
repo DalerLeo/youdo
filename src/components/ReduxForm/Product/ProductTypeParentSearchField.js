@@ -6,7 +6,7 @@ import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
 
 const getOptions = (search) => {
-    return axios().get(`${PATH.PRODUCT_TYPE_LIST}?search=${search || ''}`, {'params': {'parent': 0}})
+    return axios().get(`${PATH.PRODUCT_TYPE_LIST}?search=${search || ''}&page_size=100`, {'params': {'parent': 0}})
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
         })

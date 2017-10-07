@@ -53,10 +53,16 @@ const listHeader = [
     },
     {
         sorting: true,
+        name: 'contract',
+        title: 'Номер договора',
+        xs: 1
+    },
+    {
+        sorting: true,
         name: 'totalCost',
         alignRight: true,
         title: 'Цена заказа',
-        xs: 2
+        xs: 1
     },
     {
         sorting: true,
@@ -156,7 +162,6 @@ const SupplyGridList = enhance((props) => {
         detailData,
         classes,
         isAdmin,
-
         supplyExpenseCreateDialog,
         supplyListData
     } = props
@@ -211,6 +216,7 @@ const SupplyGridList = enhance((props) => {
         const acceptedCost = numberFormat(_.get(item, 'acceptedCost'), _.get(item, ['currency', 'name']))
         const defectedCost = numberFormat(_.get(item, 'defectedCost'), _.get(item, ['currency', 'name']))
         const status = _.toNumber(_.get(item, 'status'))
+        const contract = _.get(item, 'contract')
 
         return (
             <Row key={id} className={classes.listRow}>
@@ -223,7 +229,8 @@ const SupplyGridList = enhance((props) => {
                 <Col xs={2}>{name}</Col>
                 <Col xs={2}>{stock}</Col>
                 <Col xs={2}>{dateDelivery}</Col>
-                <Col xs={2} style={{textAlign: 'right'}}>{totalCost}</Col>
+                <Col xs={1}>{contract}</Col>
+                <Col xs={1} style={{textAlign: 'right'}}>{totalCost}</Col>
                 <Col xs={1}>{status === PENDING ? (<span><i className={classes.waiting}/> ожидает</span>)
                     : ((status === IN_PROGRESS) ? (<span><i className={classes.begin}/> начался</span>)
                         : (status === COMPLETED) ? (<span><i className={classes.success}/> принято</span>)

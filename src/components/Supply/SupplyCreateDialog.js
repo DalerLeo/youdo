@@ -176,7 +176,6 @@ const enhance = compose(
         inputFieldCustom: {
             fontSize: '13px !important',
             height: '45px !important',
-            marginTop: '7px',
             '& div': {
                 fontSize: '13px !important'
             },
@@ -293,6 +292,12 @@ const SupplyCreateDialog = enhance((props) => {
                                         component={CurrencySearchField}
                                         className={classes.searchFieldCustom}
                                         label="Валюта оплаты"
+                                        fullWidth={true}/>
+                                    <Field
+                                        name="contract"
+                                        component={TextField}
+                                        className={classes.inputFieldCustom}
+                                        label="Номер договора"
                                         fullWidth={true}/>
                                 </div>
                                 <div className={classes.commentFieldSupply}>

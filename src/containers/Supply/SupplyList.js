@@ -186,12 +186,14 @@ const enhance = compose(
             const provider = _.get(filterForm, ['values', 'provider', 'value']) || null
             const product = _.get(filterForm, ['values', 'product', 'value']) || null
             const stock = _.get(filterForm, ['values', 'stock', 'value']) || null
+            const contract = _.get(filterForm, ['values', 'contract']) || null
 
             filter.filterBy({
                 [SUPPLY_FILTER_OPEN]: false,
                 [SUPPLY_FILTER_KEY.PROVIDER]: provider,
                 [SUPPLY_FILTER_KEY.PRODUCT]: product,
                 [SUPPLY_FILTER_KEY.STOCK]: stock,
+                [SUPPLY_FILTER_KEY.CONTRACT]: contract,
                 [SUPPLY_FILTER_KEY.DELIVERY_FROM_DATE]: deliveryFromDate && deliveryFromDate.format('YYYY-MM-DD'),
                 [SUPPLY_FILTER_KEY.DELIVERY_TO_DATE]: deliveryToDate && deliveryToDate.format('YYYY-MM-DD'),
                 [SUPPLY_FILTER_KEY.CREATED_FROM_DATE]: createdFromDate && createdFromDate.format('YYYY-MM-DD'),
@@ -340,6 +342,7 @@ const SupplyList = enhance((props) => {
     const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
     const provider = _.toInteger(filter.getParam(SUPPLY_FILTER_KEY.PROVIDER))
     const stock = _.toInteger(filter.getParam(SUPPLY_FILTER_KEY.STOCK))
+    const contract = filter.getParam(SUPPLY_FILTER_KEY.CONTRACT)
     const deliveryFromDate = filter.getParam(SUPPLY_FILTER_KEY.DELIVERY_FROM_DATE)
     const deliveryToDate = filter.getParam(SUPPLY_FILTER_KEY.DELIVERY_TO_DATE)
     const createdFromDate = filter.getParam(SUPPLY_FILTER_KEY.CREATED_FROM_DATE)
@@ -412,6 +415,7 @@ const SupplyList = enhance((props) => {
                 provider: {
                     value: _.get(detail, ['provider', 'id'])
                 },
+                contract: _.get(detail, 'contract'),
                 stock: {
                     value: _.get(detail, ['stock', 'id'])
                 },
@@ -439,6 +443,7 @@ const SupplyList = enhance((props) => {
             stock: {
                 value: stock
             },
+            contract: contract,
             dateDelivery: {
                 fromDate: deliveryFromDate && moment(deliveryFromDate, 'YYYY-MM-DD'),
                 toDate: deliveryToDate && moment(deliveryToDate, 'YYYY-MM-DD')

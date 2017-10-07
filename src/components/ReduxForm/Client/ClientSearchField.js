@@ -9,7 +9,7 @@ import * as actionTypes from '../../../constants/actionTypes'
 import {connect} from 'react-redux'
 
 const getOptions = (search) => {
-    return axios().get(`${PATH.CLIENT_LIST}?search=${search || ''}`)
+    return axios().get(`${PATH.CLIENT_LIST}?search=${search || ''}&page_size=100`)
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
         })

@@ -315,6 +315,7 @@ const SupplyDetails = enhance((props) => {
     const contact = _.get(data, 'contact')
     const contactPerson = _.get(contact, 'name')
     const contactEmail = _.get(contact, 'email')
+    const contract = _.get(data, 'contract')
     const contactPhone = _.get(contact, 'phone')
     const dateDelivery = _.get(data, 'dateDelivery') ? dateFormat(_.get(data, 'dateDelivery')) : 'Не указано'
     const acceptedTime = (_.get(data, 'acceptedTime')) ? dateTimeFormat(_.get(data, 'acceptedTime')) : 'Не началась'
@@ -415,6 +416,8 @@ const SupplyDetails = enhance((props) => {
                         style={{color: '#999', fontWeight: 'bold'}}>{stock}</span></div>
                     <div style={{marginLeft: '45px'}}>Дата поставки: <span
                         style={{color: '#e57373', fontWeight: 'bold'}}>{dateDelivery}</span></div>
+                    <div style={{marginLeft: '45px'}}>Номер договора: <span
+                        style={{color: '#999', fontWeight: 'bold'}}>{contract}</span></div>
                 </div>
                 <div className={classes.dateInfo}>
                     <div>Начало приемки: <span style={{fontWeight: '600'}}>{acceptedTime}</span></div>
