@@ -73,8 +73,10 @@ import PermissionTimeSearchField from './PermissionTimeSearchField'
 import AgentSearchField from './AgentSearchField'
 import ClientTransactionTypeSearchField from './ClientTransactionTypeSearchField'
 import StockReceiveTypeSearchFiled from './StockReceiveTypeSearchFiled'
+import SupplyTypeSearchFiled from './Supply/SupplyTypeSearchFiled'
 
 export {
+    SupplyTypeSearchFiled,
     StockHistoryTypeSearchField,
     StockReceiveTypeSearchFiled,
     ReturnStatusSearchField,
