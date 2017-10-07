@@ -234,7 +234,7 @@ const TransactionsList = enhance((props) => {
         const user = _.get(item, 'user')
         const order = _.get(item, 'order')
         const amount = numberFormat(_.get(item, 'amount')) || 'N/A'
-        const createdDate = dateFormat(_.get(item, 'createdDate'), true)
+        const date = dateFormat(_.get(item, 'date'), true)
         const currentCurrency = _.get(_.find(_.get(cashboxData, 'data'), {'id': cashbox}), ['currency', 'name'])
         const client = showCashbox ? _.get(_.find(_.get(cashboxData, 'data'), {'id': cashbox}), 'name') : null
         const clientName = _.get(item, ['client', 'name'])
@@ -277,7 +277,7 @@ const TransactionsList = enhance((props) => {
                     </div>}
                     {comment && <div><strong>Комментарий:</strong> {comment}</div>}
                 </div>
-                <div style={{flexBasis: '18%', maxWidth: '18%'}}>{createdDate}</div>
+                <div style={{flexBasis: '18%', maxWidth: '18%'}}>{date}</div>
                 <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}
                      className={type >= zero ? classes.green : classes.red}>
                     {amount} {currentCurrency}

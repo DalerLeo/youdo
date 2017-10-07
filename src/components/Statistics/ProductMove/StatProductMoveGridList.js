@@ -258,6 +258,48 @@ const enhance = compose(
         }
     })
 )
+const listHeader = [
+    {
+        sorting: true,
+        name: 'startRemainderAmount',
+        title: 'Кол-во'
+    },
+    {
+        sorting: true,
+        name: 'startRemainderCost',
+        title: 'Стоимость'
+    },
+    {
+        sorting: true,
+        name: 'receivedAmount',
+        title: 'Кол-во'
+    },
+    {
+        sorting: true,
+        name: 'receivedCost',
+        title: 'Стоимость'
+    },
+    {
+        sorting: true,
+        name: 'issuedAmount',
+        title: 'Кол-во'
+    },
+    {
+        sorting: true,
+        name: 'issuedCost',
+        title: 'Стоимость'
+    },
+    {
+        sorting: true,
+        name: 'endRemainderAmount',
+        title: 'Кол-во'
+    },
+    {
+        sorting: true,
+        name: 'endRemainderCost',
+        title: 'Стоимость'
+    }
+]
 
 const StatProductMoveGridList = enhance((props) => {
     const {
@@ -352,21 +394,6 @@ const StatProductMoveGridList = enhance((props) => {
             /> : null}
         </div>
     )
-    const amount = 'Кол-во'
-    const cost = 'Стоимость'
-
-    const subtitle = [
-        {sort: 'startRemainderAmount', name: amount},
-        {sort: 'startRemainderCost', name: cost},
-        {sort: 'receivedAmount', name: amount},
-        {sort: 'receivedCost', name: cost},
-        {sort: 'returnAmount', name: amount},
-        {sort: 'returnCost', name: cost},
-        {sort: 'issuedAmount', name: amount},
-        {sort: 'issuedCost', name: cost},
-        {sort: 'endRemainderAmount', name: amount},
-        {sort: 'endRemainderCost', name: cost}
-    ]
 
     const page = (
         <div className={classes.mainWrapper}>
@@ -434,17 +461,14 @@ const StatProductMoveGridList = enhance((props) => {
                                                 <td colSpan={2}>Остаток на конец</td>
                                             </tr>
                                             <tr className={classes.subTitle}>
-                                                {_.map(subtitle, (item, index) => {
-                                                    const sortingType = filter.getSortingType(item.sort)
-                                                    const icon = _.isNil(sortingType) ? null
-                                                        : sortingType ? <ArrowUpIcon className={classes.icon}/>
-                                                            : <ArrowDownIcon className={classes.icon}/>
-                                                    return (
-                                                        <td key={index} onClick={() => { ordering(filter, item.sort) }}>
-                                                            {item.name}
-                                                            {icon}
-                                                        </td>
-                                                    )
+                                                {_.map(listHeader, (header, index) => {
+                                                    const sortingType = filter.getSortingType(header.name)
+                                                    const icon = _.isNil(sortingType) ? null : sortingType ? <ArrowUpIcon className={classes.icon}/> : <ArrowDownIcon className={classes.icon}/>
+
+                                                    if (!header.sorting) {
+                                                        return <td>{header.title}</td>
+                                                    }
+                                                    return <td key={index} style={{cursor: 'pointer'}} onClick={ () => ordering(filter, header.name)}>{header.title}{icon}</td>
                                                 })}
                                             </tr>
                                             {tableList}
