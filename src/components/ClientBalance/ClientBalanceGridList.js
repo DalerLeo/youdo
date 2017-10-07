@@ -198,6 +198,7 @@ const enhance = compose(
             }
         },
         nav: {
+            borderTop: '1px solid #efefef',
             height: '55px',
             padding: ({stat}) => stat ? 'unset' : '0 30px',
             display: 'flex',
@@ -252,6 +253,23 @@ const enhance = compose(
             padding: '5px 15px',
             '& svg': {
                 width: '18px !important'
+            }
+        },
+        summary: {
+            padding: '20px 0'
+        },
+        summaryWrapper: {
+            width: '100%',
+            display: 'flex',
+            '& > div': {
+                fontWeight: '400',
+                flexBasis: '25%',
+                maxWidth: '25%',
+                '& div': {
+                    fontSize: '17px',
+                    marginTop: '2px',
+                    fontWeight: '600'
+                }
             }
         }
     }),
@@ -417,7 +435,7 @@ const ClientBalanceGridList = enhance((props) => {
         <div className={classes.tableWrapper}>
             {clients}
             <div className={classes.mainTableWrapper} style={stat
-                ? {width: 'cacl(100% - 350px)'}
+                ? {width: 'calc(100% - 350px)'}
                 : {width: 'calc(100% - 350px - 120px)'}}>
                 {tableList}
             </div>
@@ -484,6 +502,26 @@ const ClientBalanceGridList = enhance((props) => {
                     </div>
                     <div className={classes.rightPanel}>
                         <div className={classes.wrapper}>
+                            <div className={classes.summary}>
+                                {listLoading
+                                    ? <div className={classes.summaryLoader}>
+                                        <CircularProgress size={40} thickness={4}/>
+                                    </div>
+                                    : <div className={classes.summaryWrapper}>
+                                        <div>Задолжники нал. - 10
+                                            <div>{'2000000 UZS'}</div>
+                                        </div>
+                                        <div>Задолжники переч. - 10
+                                            <div>{'2000000 UZS'}</div>
+                                        </div>
+                                        <div>Закладчики нал. - 30
+                                            <div>{'2000000 UZS'}</div>
+                                        </div>
+                                        <div>Закладчики нал. - 20
+                                            <div>{'2000000 UZS'}</div>
+                                        </div>
+                                    </div>}
+                            </div>
                             {navigation}
                             {listLoading
                                 ? <div className={classes.loader}>
