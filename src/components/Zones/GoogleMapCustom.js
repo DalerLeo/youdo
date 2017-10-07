@@ -35,7 +35,8 @@ export default class GoogleCustomMap extends React.Component {
             drawing: null,
             zone: [],
             points: null,
-            isDrawing: false
+            isDrawing: false,
+            initial: true
         }
 
         this.handleClearDrawing = this.handleClearDrawing.bind(this)
@@ -365,7 +366,9 @@ export default class GoogleCustomMap extends React.Component {
                 this.setEditableFalse()
             }
             this.createCustomZone(nextState)
-            this.getMarkers(nextProps.marketsData.data)
+            if (nextProps.marketsData.data !== this.props.marketsData.data) {
+                this.getMarkers(nextProps.marketsData.data)
+            }
         }
     }
 
