@@ -36,7 +36,6 @@ const enhance = compose(
             padding: '0 30px'
         },
         podlojkaScroll: {
-            overflowY: 'auto !important',
             padding: '0 !important',
             '& > div:first-child > div:first-child': {
                 transform: 'translate(0px, 0px) !important'
@@ -60,7 +59,6 @@ const enhance = compose(
             padding: '0 !important',
             overflowX: 'hidden',
             height: '100%',
-            minHeight: '700px',
             maxHeight: 'inherit !important'
         },
         titleContent: {
@@ -112,7 +110,8 @@ const enhance = compose(
             zIndex: '10'
         },
         scroll: {
-            height: '100%'
+            height: '100%',
+            overflowY: 'auto'
         },
         zone: {
             display: 'flex',
@@ -483,6 +482,8 @@ const PlanCreateDialog = enhance((props) => {
                             <PlanMap
                                 plans={plans}
                                 plansPaths={plansPaths}
+                                zoneAgents={zoneAgents}
+                                selectedAgent={selectedAgent}
                                 marketsLocation={marketsLocation}
                                 selectedMarket={selectedMarket}
                                 handleChooseMarket={handleChooseMarket}

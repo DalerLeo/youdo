@@ -42,8 +42,10 @@ const enhance = compose(
     withState('market', 'updateMarket', null)
 )
 
+const ZERO = 0
 const ONE = 1
 const TWO = 2
+const OPACITY = 0.4
 const GoogleMapWrapper = enhance((
     {
         classes,
@@ -55,8 +57,13 @@ const GoogleMapWrapper = enhance((
         updateMarket,
         plansPaths,
         plans,
+        zoneAgents,
+        selectedAgent,
         ...props
     }) => {
+    const indexOfSelectedAgent = _.findIndex(zoneAgents, (o) => {
+        return o.id === selectedAgent
+    })
     const marketForOverlay = _.find(marketsLocation, {'id': market})
     const hoverMarker = (marketId) => {
         updateMarket(marketId)
@@ -71,9 +78,16 @@ const GoogleMapWrapper = enhance((
         return obj.length > ONE
     })
     const planTracks = _.map(filteredPlanTracks, (path, index) => {
-        const polyLineOptions = {
+        const polyLineOptions = (index === indexOfSelectedAgent)
+        ? {
             strokeColor: _.get(AGENT_COLORS, index),
-            strokeOpacity: 1,
+            strokeOpacity: ONE,
+            strokeWeight: 4,
+            zIndex: 10
+        }
+        : {
+            strokeColor: _.get(AGENT_COLORS, index),
+            strokeOpacity: OPACITY,
             strokeWeight: 4
         }
         return (
@@ -91,6 +105,7 @@ const GoogleMapWrapper = enhance((
             return (
                 <Marker
                     key={i}
+                    opacity={(index === indexOfSelectedAgent) ? ONE : OPACITY}
                     onMouseOver={() => { hoverMarker(marketId) }}
                     onMouseOut={mouseOutMarker}
                     position={{lat: dot.lat, lng: dot.lng}}
@@ -178,14 +193,17 @@ const GoogleMapWrapper = enhance((
     return (
         <DefaultGoogleMap ref={onMapLoad} {...props}>
             {markets}
-            {planTracks}
-            {planAgentTracks}
+            {selectedAgent > ZERO && planTracks}
+            {selectedAgent > ZERO && planAgentTracks}
             {props.children}
             {market && (selectedMarket !== market) && <OverlayView
                 mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
                 getPixelPositionOffset={getPixelPositionOffset}
                 position={{lat: _.get(marketForOverlay, ['location', 'coordinates', '0']), lng: _.get(marketForOverlay, ['location', 'coordinates', '1'])}}>
-                <div className={classes.marketName}>{_.get(marketForOverlay, 'name')}</div>
+                <div className={classes.marketName}>
+                    <div><strong>Магазин:</strong> {_.get(marketForOverlay, 'name')}</div>
+                    <div><strong>Адрес:</strong> {_.get(marketForOverlay, 'address')}</div>
+                </div>
             </OverlayView>}
         </DefaultGoogleMap>
     )
@@ -203,8 +221,19 @@ const PlanMap = (props) => {
         selectedMarket,
         plansPaths,
         plans,
+        zoneAgents,
+        selectedAgent,
         ...defaultProps
     } = props
+    const mapOptions = {
+        styles: googleMapStyle,
+        mapTypeControl: false,
+        panControl: false,
+        streetViewControl: false,
+        zoomControl: false,
+        scaleControl: false,
+        fullscreenControl: false
+    }
     const defaultCenter = {
         lat: 41.311141,
         lng: 69.279716
@@ -218,12 +247,14 @@ const PlanMap = (props) => {
             mapElement={<div style={{height: '100%'}} />}
             defaultZoom={15}
             radius="500"
-            defaultOptions={{styles: googleMapStyle}}
+            options={mapOptions}
             marketsLocation={marketsLocation}
             handleChooseMarket={handleChooseMarket}
             selectedMarket={selectedMarket}
             plans={plans}
             plansPaths={plansPaths}
+            zoneAgents={zoneAgents}
+            selectedAgent={selectedAgent}
             {...defaultProps}>
             {props.children}
         </GoogleMapWrapper>

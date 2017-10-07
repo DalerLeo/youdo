@@ -151,7 +151,13 @@ export default class GoogleCustomMap extends React.Component {
             zoom: 13,
             center: GOOGLE_MAP.DEFAULT_LOCATION,
             mapTypeId: 'terrain',
-            styles: googleMapStyle
+            styles: googleMapStyle,
+            mapTypeControl: false,
+            panControl: false,
+            streetViewControl: false,
+            zoomControl: false,
+            scaleControl: false,
+            fullscreenControl: false
         }
         const googl = new google.maps.Map(this.refs.mapping, mapOptions)
         this.map = googl
