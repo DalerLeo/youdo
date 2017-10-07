@@ -15,7 +15,8 @@ import Location from '../Images/market-green.png'
 import MarketOff from '../Images/market-red.png'
 const MARKER_SIZE = 30
 const ZERO = 0
-const ANCHOR = 4
+const MINUS_FIVE = -5
+const ANCHOR = 8
 const SCALED = 18
 const classes = {
     loader: {
@@ -130,7 +131,8 @@ export default class GoogleCustomMap extends React.Component {
             })
             const info = '<div>' + item.name + '</div>'
             const infoWindow = new google.maps.InfoWindow({
-                content: info
+                content: info,
+                pixelOffset: new google.maps.Size(MINUS_FIVE, ZERO)
             })
 
             marker.addListener('mouseover', () => {
