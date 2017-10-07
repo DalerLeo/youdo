@@ -63,18 +63,16 @@ const GoogleMapWrapper = enhance(({
         const regDate = _.toInteger(moment(_.get(o, 'registeredDate')).format('x'))
         return regDate <= filterDate
     })
-    const agentCoordinates = [
-        _.map(filterAgentLocation, (item) => {
-            const lat = _.get(item, ['point', 'lat'])
-            const lng = _.get(item, ['point', 'lon'])
-            const registeredDate = _.get(item, 'registeredDate')
-            return {
-                lat: lat,
-                lng: lng,
-                date: moment(registeredDate).format('HH:mm:ss')
-            }
-        })
-    ]
+    const agentCoordinates = _.map(filterAgentLocation, (item) => {
+        const lat = _.get(item, ['point', 'lat'])
+        const lng = _.get(item, ['point', 'lon'])
+        const registeredDate = _.get(item, 'registeredDate')
+        return {
+            lat: lat,
+            lng: lng,
+            date: moment(registeredDate).format('HH:mm:ss')
+        }
+    })
     const polyLineOptions = {
         strokeColor: 'rgba(25, 103, 126, 0.85)',
         strokeOpacity: 1,
@@ -173,11 +171,11 @@ const GoogleMapWrapper = enhance(({
                                 </Marker>
 
                                 <Polyline
-                                    path={_.get(agentCoordinates, '0')}
+                                    path={agentCoordinates}
                                     geodesic={true}
                                     options={polyLineOptions}
                                 />
-                                {_.map(_.get(agentCoordinates, '0'), (point, index) => {
+                                {_.map(agentCoordinates, (point, index) => {
                                     const trackLat = _.get(point, 'lat')
                                     const trackLng = _.get(point, 'lng')
                                     const regDate = _.get(point, 'date')

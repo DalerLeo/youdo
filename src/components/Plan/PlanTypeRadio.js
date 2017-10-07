@@ -27,12 +27,12 @@ const PlanTypeRadio = enhance((props) => {
             <RadioButton
                 value='week'
                 style={{width: '150px'}}
-                label="Недельный"
+                label="На неделю"
             />
             <RadioButton
                 value='month'
                 style={{width: '150px'}}
-                label="Месячный"
+                label="На месяц"
             />
         </RadioButtonGroup>
     )

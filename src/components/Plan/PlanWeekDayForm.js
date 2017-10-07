@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React from 'react'
 import {compose} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
@@ -8,13 +9,26 @@ import Paper from 'material-ui/Paper'
 import FlatButton from 'material-ui/FlatButton'
 import injectSheet from 'react-jss'
 import {connect} from 'react-redux'
-import _ from 'lodash'
+import {hashHistory} from 'react-router'
+import Close from 'material-ui/svg-icons/navigation/close'
 
 const enhance = compose(
     injectSheet({
         form: {
             width: '350px',
-            padding: '20px 30px'
+            padding: '20px 30px',
+            position: 'relative'
+        },
+        closeIcon: {
+            position: 'absolute',
+            top: '12px',
+            right: '12px',
+            '& svg': {
+                color: '#666 !important',
+                width: '18px !important',
+                height: '18px !important',
+                cursor: 'pointer'
+            }
         },
         title: {
             fontWeight: '600',
@@ -37,9 +51,15 @@ const enhance = compose(
 )
 
 const PlanWeekDayForm = enhance((props) => {
-    const {classes, onSubmit, planType} = props
+    const {classes, onSubmit, planType, filter} = props
+    const closeForm = () => {
+        hashHistory.push(filter.createURL({'market': null}))
+    }
     return (
         <Paper zDepth={1} className={classes.form}>
+            <div className={classes.closeIcon}>
+                <Close onClick={closeForm}/>
+            </div>
             <form onSubmit={onSubmit}>
                 <div className={classes.title}>Выберите дни</div>
                 {planType === 'week'
