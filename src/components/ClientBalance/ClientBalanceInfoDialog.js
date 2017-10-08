@@ -31,8 +31,11 @@ import {
     EXPENSE,
     FIRST_BALANCE,
     ORDER,
+    ORDER_EDIT,
+    ORDER_DISCOUNT,
     NONE_TYPE
 } from '../../constants/clientBalanceInfo'
+
 const enhance = compose(
     injectSheet({
         loader: {
@@ -234,40 +237,45 @@ const ClientBalanceInfoDialog = enhance((props) => {
                     {type && <div>Тип: <span>{type === PAYMENT ? 'Оплата'
                         : type === CANCEL ? 'Отмена'
                             : type === CANCEL_ORDER ? 'Отмена заказа'
-                                : type === CANCEL_ORDER_RETURN ? 'Отмена возврата'
-                                    : type === ORDER ? <Link to={{
-                                        pathname: sprintf(ROUTES.ORDER_ITEM_PATH, id),
-                                        query: {search: id}
-                                    }} target="_blank">Заказ {id}</Link>
-                                        : type === EXPENSE ? 'Расход'
-                                            : type === ORDER_RETURN ? <Link to={{
-                                                pathname: sprintf(ROUTES.RETURN_ITEM_PATH, id),
+                                : type === ORDER_EDIT ? 'Изменить заказа'
+                                    : type === ORDER_DISCOUNT ? 'Скидка на заказу'
+                                        : type === CANCEL_ORDER_RETURN ? 'Отмена возврата'
+                                            : type === ORDER ? <Link to={{
+                                                pathname: sprintf(ROUTES.ORDER_ITEM_PATH, id),
                                                 query: {search: id}
-                                            }} target="_blank">Возврат {id}</Link>
-                                                : type === FIRST_BALANCE ? 'Первый баланс'
-                                                    : type === NONE_TYPE ? 'Произвольный' : null }</span>
+                                            }} target="_blank">Заказ {id}</Link>
+                                                : type === EXPENSE ? 'Расход'
+                                                    : type === ORDER_RETURN ? <Link to={{
+                                                        pathname: sprintf(ROUTES.RETURN_ITEM_PATH, id),
+                                                        query: {search: id}
+                                                    }} target="_blank">Возврат {id}</Link>
+                                                        : type === FIRST_BALANCE ? 'Первый баланс'
+                                                            : type === NONE_TYPE ? 'Произвольный' : null}</span>
                     </div>}
                 </div>
                 <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>
                     <div>{numberFormat(amount, currency)}</div>
                     {currencyId !== currentCurrencyId &&
                     <div>
-                        <div>{numberFormat(internal, currentCurrency)} <span style={{fontSize: 11, color: '#666'}}>({customRate})</span></div>
+                        <div>{numberFormat(internal, currentCurrency)} <span
+                            style={{fontSize: 11, color: '#666'}}>({customRate})</span></div>
                     </div>}
                 </div>
                 {(!stat && isSuperUser && (type === FIRST_BALANCE || type === NONE_TYPE)) &&
-                    <div className={classes.iconBtn}>
-                        <Tooltip position="bottom" text="Изменить">
-                            <IconButton
-                                iconStyle={iconStyle.icon}
-                                style={iconStyle.button}
-                                disableTouchRipple={true}
-                                touch={true}
-                                onTouchTap={() => { openEditDialog(item) }}>
-                                <Edit />
-                            </IconButton>
-                        </Tooltip>
-                    </div>}
+                <div className={classes.iconBtn}>
+                    <Tooltip position="bottom" text="Изменить">
+                        <IconButton
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            disableTouchRipple={true}
+                            touch={true}
+                            onTouchTap={() => {
+                                openEditDialog(item)
+                            }}>
+                            <Edit/>
+                        </IconButton>
+                    </Tooltip>
+                </div>}
             </Row>)
     })
 
@@ -290,8 +298,8 @@ const ClientBalanceInfoDialog = enhance((props) => {
                 </IconButton>
             </div>
             {loading ? <div className={classes.loader}>
-                <CircularProgress size={40} thickness={4}/>
-            </div>
+                    <CircularProgress size={40} thickness={4}/>
+                </div>
                 : <div className={classes.bodyContent}>
                     <div className={classes.infoBlock}>
                         <div className={classes.info}>
