@@ -237,7 +237,7 @@ const ClientBalanceInfoDialog = enhance((props) => {
                     {type && <div>Тип: <span>{type === PAYMENT ? 'Оплата'
                         : type === CANCEL ? 'Отмена'
                             : type === CANCEL_ORDER ? 'Отмена заказа'
-                                : type === ORDER_EDIT ? 'Изменить заказа'
+                                : type === ORDER_EDIT ? 'Изменения заказа'
                                     : type === ORDER_DISCOUNT ? 'Скидка на заказу'
                                         : type === CANCEL_ORDER_RETURN ? 'Отмена возврата'
                                             : type === ORDER ? <Link to={{

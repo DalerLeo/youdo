@@ -84,7 +84,7 @@ export const createExpenseSerializer = (data, cashboxId) => {
         : {
             amount: amount,
             comment,
-            'cashbox': cashboxId,
+            'cashbox':  _.toInteger(cashboxId) === ZERO ? cashbox : cashboxId,
             'expanse_category': objectId,
             'custom_rate': customRate
         }
