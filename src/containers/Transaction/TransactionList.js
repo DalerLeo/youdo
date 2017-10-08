@@ -668,14 +668,27 @@ const TransactionList = enhance((props) => {
     const userId = _.toInteger(filter.getParam('openUser'))
 
     const createExpenseDialog = {
+        initialValues: (() => {
+            return {
+                date: {
+                    value: moment().format('YYYY-MM-DD')
+                }
+            }
+        })(),
         loading: createLoading,
         open: openCreateExpenseDialog,
         handleOpenDialog: props.handleOpenCreateExpenseDialog,
         handleCloseDialog: props.handleCloseCreateExpenseDialog,
         handleSubmitDialog: props.handleSubmitCreateExpenseDialog
     }
-
     const createIncomeDialog = {
+        initialValues: (() => {
+            return {
+                date: {
+                    value: moment().format('YYYY-MM-DD')
+                }
+            }
+        })(),
         loading: createLoading,
         open: openCreateIncomeDialog,
         handleOpenDialog: props.handleOpenCreateIncomeDialog,
