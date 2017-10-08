@@ -238,7 +238,7 @@ const ClientBalanceInfoDialog = enhance((props) => {
                         : type === CANCEL ? 'Отмена'
                             : type === CANCEL_ORDER ? 'Отмена заказа'
                                 : type === ORDER_EDIT ? 'Изменения заказа'
-                                    : type === ORDER_DISCOUNT ? 'Скидка на заказу'
+                                    : type === ORDER_DISCOUNT ? 'Скидка на заказ'
                                         : type === CANCEL_ORDER_RETURN ? 'Отмена возврата'
                                             : type === ORDER ? <Link to={{
                                                 pathname: sprintf(ROUTES.ORDER_ITEM_PATH, id),
