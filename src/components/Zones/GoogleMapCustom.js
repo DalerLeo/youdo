@@ -14,6 +14,7 @@ import {googleMapStyle} from '../../constants/googleMapsStyle'
 import Location from '../Images/market-green.png'
 import MarketOff from '../Images/market-red.png'
 const MARKER_SIZE = 30
+const MARKER_TIME = 1500
 const ZERO = 0
 const INFO_WINDOW_OFFSET = -7
 const ANCHOR = 7
@@ -37,7 +38,8 @@ export default class GoogleCustomMap extends React.Component {
             zone: [],
             points: null,
             isDrawing: false,
-            initial: true
+            initial: true,
+            currentOverlay: null
         }
 
         this.handleClearDrawing = this.handleClearDrawing.bind(this)
@@ -67,8 +69,11 @@ export default class GoogleCustomMap extends React.Component {
     }
 
     handleClearDrawing () {
-        google.maps.event.clearInstanceListeners(this.state.drawing)
-        this.state.drawing.setMap(null)
+        if (this.state.drawing) {
+            this.state.drawing.map && this.state.drawing.setMap(null)
+            // Clear newly drawn overlay from map
+            this.state.currentOverlay.map && this.state.currentOverlay.setMap(null)
+        }
     }
 
     handleDrawing () {
@@ -81,7 +86,7 @@ export default class GoogleCustomMap extends React.Component {
     }
 
     handleEdit () {
-        if (this.state.drawing) {
+        if (this.state.drawing && this.state.drawing.map) {
             this.state.drawing.setMap(null)
             this.setState({
                 isDrawing: false
@@ -247,6 +252,7 @@ export default class GoogleCustomMap extends React.Component {
             div.style.color = '#333'
             div.style.fontSize = '20px'
             div.style.fontWeight = '700'
+            div.style.whiteSpace = 'nowrap'
             div.innerHTML = title
             mapPanes[GOOGLE_MAP.FLOATPANE].appendChild(div)
         }
@@ -258,7 +264,21 @@ export default class GoogleCustomMap extends React.Component {
 
     createCustomZone (nextState) {
         google.maps.event.addListener(nextState.drawing, 'overlaycomplete', (event) => {
+            // Disable drawing manager from map
             this.handleEdit()
+            // Getting currentOverlay for clearing it if not needed
+            this.setState({
+                currentOverlay: event.overlay
+            })
+            // Make zone editable after overlay is drawn
+            event.overlay.setOptions({
+                editable: true,
+                fillColor: '#4de03a',
+                fillOpacity: 0.3,
+                strokeWeight: 2,
+                strokeColor: '#236406'
+            })
+            // Get points when its edited
             const coordinates = event.overlay.getPath().getArray()
             event.overlay.getPaths().forEach((path) => {
                 this.getPoints = () => {
@@ -314,10 +334,10 @@ export default class GoogleCustomMap extends React.Component {
     }
 
     editZone (nextProps, nextState) {
+        // Find selected zone with ID, then make it editable
         const selectedZone = _.get(_.filter(nextState.zone, (item) => {
             return nextProps.zoneId === item.id
         }), ['0', 'zone'])
-
         selectedZone.setOptions({
             editable: true,
             fillColor: '#4de03a',
@@ -327,6 +347,7 @@ export default class GoogleCustomMap extends React.Component {
         })
         const coordinates = selectedZone.getPath().getArray()
         selectedZone.getPaths().forEach(() => {
+            // Save changed coordinates in this for future calls
             this.getChangedPoints = {
                 points: _.map(coordinates, (p) => {
                     const polyLat = p.lat()
@@ -353,6 +374,7 @@ export default class GoogleCustomMap extends React.Component {
                     })
                 }
             })
+            // Save title of updating zone to this for passing in handleUpdate
             this.getChangedPoints.title = _.get(selectedZone, 'title')
             return this.getChangedPoints
         }
@@ -370,12 +392,14 @@ export default class GoogleCustomMap extends React.Component {
         if (nextState.drawing) {
             if (_.get(nextProps, 'zoneId')) {
                 this.editZone(nextProps, nextState)
-            } else {
+            } else
+            if (_.get(this, ['props', 'zoneId']) !== _.get(nextProps, 'zoneId')) {
                 this.setEditableFalse()
             }
             this.createCustomZone(nextState)
-            if (nextProps.marketsData.data !== this.props.marketsData.data) {
-                this.getMarkers(nextProps.marketsData.data)
+            const {marketsData: {data}, listData} = this.props
+            if (nextProps.marketsData.data !== data || nextProps.listData.data.length !== listData.data.length) {
+                setTimeout(() => this.getMarkers(nextProps.marketsData.data), MARKER_TIME)
             }
         }
     }

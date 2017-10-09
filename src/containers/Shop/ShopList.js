@@ -209,6 +209,7 @@ const enhance = compose(
             const {dispatch, location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[SHOP_CREATE_DIALOG_OPEN]: true})})
             dispatch(reset('ShopCreateForm'))
+            dispatch(reset('ShopMapForm'))
         },
 
         handleCloseCreateDialog: props => () => {
@@ -499,7 +500,7 @@ const ShopList = enhance((props) => {
 
     const updateMapDialog = {
         initialValues: (() => {
-            if (!mapLocation) {
+            if (!mapLocation || openCreateDialog) {
                 return {}
             }
             return {
