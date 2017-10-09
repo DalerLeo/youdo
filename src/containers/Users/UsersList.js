@@ -323,7 +323,8 @@ const UsersList = enhance((props) => {
                 return {
                     groups: isSelectedGroups,
                     stocks: isSelectedStocks,
-                    types: isSelectedMarkets
+                    types: isSelectedMarkets,
+                    isActive: true
                 }
             }
 

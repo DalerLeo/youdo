@@ -2,9 +2,10 @@ import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
 
 const ONE = 1
-export const createSerializer = (data, location, image) => {
+export const createSerializer = (data, location, newClient) => {
     const name = _.get(data, 'name')
-    const client = _.get(data, ['client', 'value'])
+    const client = !newClient ? _.get(data, ['client', 'value']) : null
+    const newClientName = newClient ? _.get(data, ['newClientName']) : null
     const marketType = _.get(data, ['marketType', 'value'])
     const address = _.get(data, 'address')
     const guide = _.get(data, 'guide')
@@ -32,7 +33,8 @@ export const createSerializer = (data, location, image) => {
             'lat': lat,
             'lon': lon
         },
-        'is_active': isActive
+        'is_active': isActive,
+        'new_client_name': newClientName
     }
 }
 
