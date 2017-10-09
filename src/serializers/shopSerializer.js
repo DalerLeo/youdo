@@ -1,11 +1,10 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
-
 const ONE = 1
 export const createSerializer = (data, location, newClient) => {
     const name = _.get(data, 'name')
     const client = !newClient ? _.get(data, ['client', 'value']) : null
-    const newClientName = newClient ? _.get(data, ['newClientName']) : null
+    const newClientName = newClient ? _.get(data, ['newClientName']) : _.get(data, 'undefined')
     const marketType = _.get(data, ['marketType', 'value'])
     const address = _.get(data, 'address')
     const guide = _.get(data, 'guide')
