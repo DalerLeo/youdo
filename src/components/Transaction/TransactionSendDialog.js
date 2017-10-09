@@ -10,7 +10,7 @@ import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, CashboxTypeSearchField, CashboxSearchField} from '../ReduxForm'
+import {TextField, TransitionSendCashboxTypeSearchField as CashboxTypeSearchField, TransitionSendCashboxSearchField as CashboxSearchField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import MainStyles from '../Styles/MainStyles'
 import normalizeNumber from '../ReduxForm/normalizers/normalizeNumber'
@@ -87,11 +87,11 @@ const enhance = compose(
 const TransactionSendDialog = enhance((props) => {
     const {open, loading, handleSubmit, onClose, classes, cashboxData, chosenCashbox, amountFrom, amountTo, noCashbox, currentCashbox} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
-    const cashboxId = noCashbox ? currentCashbox : _.get(cashboxData, 'cashboxId')
+    const cashboxId = noCashbox ? _.get(currentCashbox, 'id') : _.get(cashboxData, 'cashboxId')
     const cashbox = _.find(_.get(cashboxData, 'data'), {'id': cashboxId})
-    const chosenCurrencyId = _.get(_.find(_.get(cashboxData, 'data'), {'id': chosenCashbox}), ['currency', 'id'])
+    const chosenCurrencyId = _.get(_.find(_.get(cashboxData, 'data'), {'id': _.get(chosenCashbox, 'id')}), ['currency', 'id'])
     const currentCurrencyName = _.get(_.find(_.get(cashboxData, 'data'), {'id': cashboxId}), ['currency', 'name'])
-    const chosenCurrencyName = _.get(_.find(_.get(cashboxData, 'data'), {'id': chosenCashbox}), ['currency', 'name'])
+    const chosenCurrencyName = _.get(_.find(_.get(cashboxData, 'data'), {'id': _.get(chosenCashbox, 'id')}), ['currency', 'name'])
     const customRate = _.toNumber(numberWithoutSpaces(amountFrom)) / _.toNumber(numberWithoutSpaces(amountTo))
     const ROUND_VAL = 5
 
@@ -159,8 +159,40 @@ const TransactionSendDialog = enhance((props) => {
                                     <span style={{marginLeft: '10px'}}>{chosenCurrencyName}</span>
                                 </div>}
                             </div>
-                            {(amountFrom && amountTo) &&
+                            {(_.get(chosenCashbox, 'type') !== _.get(currentCashbox, 'type')) &&
+                            _.get(chosenCashbox, ['currency', 'name']) === _.get(currentCashbox, ['currency', 'name']) &&
                             <div style={{padding: '10px 0'}}>
+                                Coefficient: <strong>1 {chosenCurrencyName}</strong> = {_.round(customRate, ROUND_VAL)} <strong>{currentCurrencyName}</strong>
+                            </div>
+                            }
+                            {(_.get(chosenCashbox, 'type') === _.get(currentCashbox, 'type')) === 'cash' &&
+                            _.get(chosenCashbox, ['currency', 'name']) === _.get(currentCashbox, ['currency', 'name']) &&
+                            <div style={{padding: '10px 0'}}>
+                                <div style={{display: 'flex', alignItems: 'baseline', width: '48%'}}>
+                                    <Field
+                                        name="convertedAmount"
+                                        className={classes.inputFieldCustom}
+                                        component={TextField}
+                                        label="Сумма в кассу"
+                                        normalize={normalizeNumber}
+                                        fullWidth={true}/>
+                                    <span style={{marginLeft: '10px'}}>{chosenCurrencyName}</span>
+                                </div>
+                                Курс: <strong>1 {chosenCurrencyName}</strong> = {_.round(customRate, ROUND_VAL)} <strong>{currentCurrencyName}</strong>
+                            </div>
+                            }
+                            {(amountFrom) &&
+                            <div style={{padding: '10px 0'}}>
+                                <div style={{display: 'flex', alignItems: 'baseline', width: '48%'}}>
+                                    <Field
+                                        name="convertedAmount"
+                                        className={classes.inputFieldCustom}
+                                        component={TextField}
+                                        label="Сумма в кассу"
+                                        normalize={normalizeNumber}
+                                        fullWidth={true}/>
+                                    <span style={{marginLeft: '10px'}}>{chosenCurrencyName}</span>
+                                </div>
                                 Курс: <strong>1 {chosenCurrencyName}</strong> = {_.round(customRate, ROUND_VAL)} <strong>{currentCurrencyName}</strong>
                             </div>}
                             <Field
