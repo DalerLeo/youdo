@@ -345,7 +345,8 @@ const PlanCreateDialog = enhance((props) => {
         selectedZone,
         selectedAgent,
         selectedMarket,
-        marketsLocation
+        marketsLocation,
+        toggleDaysState
     } = props
     const onSubmit = handleSubmit(() => props.onSubmit())
     const ZERO = 0
@@ -397,8 +398,8 @@ const PlanCreateDialog = enhance((props) => {
             return {
                 id: _.get(m, ['market', 'id']),
                 location: {
-                    lat: _.get(m, ['market', 'location', 'coordinates', '0']),
-                    lng: _.get(m, ['market', 'location', 'coordinates', '1'])
+                    lat: _.get(m, ['market', 'location', 'lat']),
+                    lng: _.get(m, ['market', 'location', 'lon'])
                 }
             }
         })
@@ -406,8 +407,8 @@ const PlanCreateDialog = enhance((props) => {
     const plansPaths = _.map(zoneAgents, (plan) => {
         return _.map(_.get(plan, 'plans'), (m) => {
             return {
-                lat: _.get(m, ['market', 'location', 'coordinates', '0']),
-                lng: _.get(m, ['market', 'location', 'coordinates', '1']),
+                lat: _.get(m, ['market', 'location', 'lat']),
+                lng: _.get(m, ['market', 'location', 'lon']),
                 marketId: _.get(m, ['market', 'id'])
             }
         })
@@ -476,7 +477,10 @@ const PlanCreateDialog = enhance((props) => {
                                         </Paper>}
                         </div>
                         {selectedMarket > ZERO && <div className={classes.addPlan}>
-                            <PlanWeekDayForm onSubmit={onSubmit} filter={filter}/>
+                            <PlanWeekDayForm
+                                onSubmit={onSubmit}
+                                filter={filter}
+                                toggleDaysState={toggleDaysState}/>
                         </div>}
                         <div className={isAgentChosen ? classes.map : classes.mapBlurred}>
                             <PlanMap
