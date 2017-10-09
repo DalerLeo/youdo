@@ -1,17 +1,9 @@
 import _ from 'lodash'
 import React from 'react'
-import {compose, withState} from 'recompose'
+import {compose} from 'recompose'
 import injectSheet from 'react-jss'
+import {weeks} from '../../containers/Plan/PlanList'
 
-const weeks = [
-    {id: 1, name: 'Пн', active: false},
-    {id: 2, name: 'Вт', active: false},
-    {id: 3, name: 'Ср', active: false},
-    {id: 4, name: 'Чт', active: false},
-    {id: 5, name: 'Пт', active: false},
-    {id: 6, name: 'Сб', active: false},
-    {id: 0, name: 'Вс', active: false}
-]
 const enhance = compose(
     injectSheet({
         weeks: {
@@ -37,8 +29,7 @@ const enhance = compose(
             color: '#fff',
             fontWeight: '600'
         }
-    }),
-    withState('activeWeeks', 'updateWeeks', weeks)
+    })
 )
 
 const PlanChooseWeekday = enhance((props) => {

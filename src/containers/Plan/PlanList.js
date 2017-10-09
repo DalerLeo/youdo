@@ -1,7 +1,7 @@
 import React from 'react'
 import _ from 'lodash'
 import moment from 'moment'
-import {compose, withPropsOnChange, withHandlers} from 'recompose'
+import {compose, withPropsOnChange, withHandlers, withState} from 'recompose'
 import {connect} from 'react-redux'
 import {reset} from 'redux-form'
 import Layout from '../../components/Layout'
@@ -32,7 +32,25 @@ import {openSnackbarAction} from '../../actions/snackbar'
 
 const ZERO = 0
 const ONE = 1
+const LAST_DAY = 31
 const defaultDate = moment().format('YYYY-MM')
+
+export const weeks = [
+    {id: 1, name: 'Пн', active: false},
+    {id: 2, name: 'Вт', active: false},
+    {id: 3, name: 'Ср', active: false},
+    {id: 4, name: 'Чт', active: false},
+    {id: 5, name: 'Пт', active: false},
+    {id: 6, name: 'Сб', active: false},
+    {id: 0, name: 'Вс', active: false}
+]
+export let days = []
+for (let i = ONE; i <= LAST_DAY; i++) {
+    const obj = {id: i, name: i, active: false}
+    days.push(obj)
+}
+days.push('', '', '', '')
+
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -80,6 +98,8 @@ const enhance = compose(
             filter
         }
     }),
+    withState('activeWeeks', 'updateWeeks', weeks),
+    withState('activeDays', 'updateDays', days),
 
     withPropsOnChange((props, nextProps) => {
         const prevTab = _.get(props, ['query', 'group'])
@@ -153,13 +173,15 @@ const enhance = compose(
         },
 
         handleCloseAddPlan: props => () => {
-            const {dispatch, location: {pathname}} = props
+            const {dispatch, location: {pathname}, updateWeeks, updateDays} = props
             dispatch(reset('PlanCreateForm'))
             hashHistory.push({pathname, query: {[ADD_PLAN]: false}})
+            updateWeeks(weeks)
+            updateDays(days)
         },
 
         handleSubmitAddPlan: props => () => {
-            const {location: {pathname, query}, dispatch, createForm, filter, selectedDate, selectedDay} = props
+            const {location: {pathname, query}, dispatch, createForm, filter, selectedDate, selectedDay, activeWeeks, activeDays} = props
             const zone = _.get(query, ZONE)
             const date = selectedDate + '-' + selectedDay
 
@@ -172,6 +194,14 @@ const enhance = compose(
                     dispatch(planZonesListFetchAction())
                     dispatch(planZonesItemFetchAction(zone, date))
                     dispatch(planAgentsListFetchAction(filter))
+                })
+                .then(() => {
+                    _.map(activeWeeks, (obj) => {
+                        obj.active = false
+                    })
+                    _.map(activeDays, (obj) => {
+                        obj.active = false
+                    })
                 })
         },
 
@@ -282,6 +312,12 @@ const PlanList = enhance((props) => {
         selectedMarket,
         selectedZone,
         marketsLocation,
+        toggleDaysState: {
+            activeWeeks: props.activeWeeks,
+            updateWeeks: props.updateWeeks,
+            activeDays: props.activeDays,
+            updateDays: props.updateDays
+        },
         handleChooseZone: props.handleChooseZone,
         handleChooseAgent: props.handleChooseAgent,
         handleChooseMarket: props.handleChooseMarket,

@@ -8,7 +8,6 @@ import CircularProgress from 'material-ui/CircularProgress'
 import Paper from 'material-ui/Paper'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
-import InfiniteScroll from 'react-infinite-scroller'
 import Info from 'material-ui/svg-icons/action/info-outline'
 import Tooltip from '../ToolTip'
 
@@ -163,9 +162,6 @@ const ActivityPayment = enhance((props) => {
             </div>
         )
     }
-    const loadMore = () => {
-        return true
-    }
 
     return (
         <div className={classes.block}>
@@ -176,15 +172,7 @@ const ActivityPayment = enhance((props) => {
                 </Tooltip>
             </div>
             <div className={classes.blockItems}>
-                <InfiniteScroll
-                    pageStart={500}
-                    hasMore={true}
-                    loadMore={loadMore}
-                    loader={<div className={classes.infiniteLoader}><CircularProgress size={30} thickness={3}/></div>}
-                    useWindow={false}
-                    threshold={500}>
-                    {paymentList}
-                </InfiniteScroll>
+                {paymentList}
             </div>
         </div>
     )

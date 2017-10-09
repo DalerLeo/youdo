@@ -46,6 +46,7 @@ export const agentMonthlyPlanSerializer = (query, user) => {
 
 export const createSerializer = (data, query) => {
     const type = _.get(data, ['planType']) || 'week'
+    const priority = _.get(data, ['priority', 'value'])
     const recurrences = _.map(_.get(data, 'weekday'), (item) => {
         if (type === 'month') {
             return {
@@ -61,9 +62,9 @@ export const createSerializer = (data, query) => {
 
     return {
         agent: _.get(query, 'agent'),
-        priority: 1,
         market: _.get(query, 'market'),
-        recurrences
+        recurrences,
+        priority
     }
 }
 

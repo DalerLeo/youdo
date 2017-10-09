@@ -74,10 +74,7 @@ const GoogleMapWrapper = enhance((
     const getPixelPositionOffset = (width, height) => ({
         x: -(width / TWO)
     })
-    const filteredPlanTracks = _.filter(plansPaths, (obj) => {
-        return obj.length > ONE
-    })
-    const planTracks = _.map(filteredPlanTracks, (path, index) => {
+    const planTracks = _.map(plansPaths, (path, index) => {
         const polyLineOptions = (index === indexOfSelectedAgent)
         ? {
             strokeColor: _.get(AGENT_COLORS, index),
@@ -140,8 +137,8 @@ const GoogleMapWrapper = enhance((
     const markets = _.map(remainMarkets, (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const lat = _.get(item, ['location', 'coordinates', '0'])
-        const lng = _.get(item, ['location', 'coordinates', '1'])
+        const lat = _.get(item, ['location', 'lat'])
+        const lng = _.get(item, ['location', 'lon'])
 
         if (id === selectedMarket) {
             return (
@@ -199,7 +196,7 @@ const GoogleMapWrapper = enhance((
             {market && (selectedMarket !== market) && <OverlayView
                 mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
                 getPixelPositionOffset={getPixelPositionOffset}
-                position={{lat: _.get(marketForOverlay, ['location', 'coordinates', '0']), lng: _.get(marketForOverlay, ['location', 'coordinates', '1'])}}>
+                position={{lat: _.get(marketForOverlay, ['location', 'lat']), lng: _.get(marketForOverlay, ['location', 'lon'])}}>
                 <div className={classes.marketName}>
                     <div><strong>Магазин:</strong> {_.get(marketForOverlay, 'name')}</div>
                     <div><strong>Адрес:</strong> {_.get(marketForOverlay, 'address')}</div>

@@ -11,6 +11,7 @@ import injectSheet from 'react-jss'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Close from 'material-ui/svg-icons/navigation/close'
+import PlanAddPrioritySearchField from '../ReduxForm/PlanAddPrioritySearchField'
 
 const enhance = compose(
     injectSheet({
@@ -51,7 +52,7 @@ const enhance = compose(
 )
 
 const PlanWeekDayForm = enhance((props) => {
-    const {classes, onSubmit, planType, filter} = props
+    const {classes, onSubmit, planType, filter, toggleDaysState} = props
     const closeForm = () => {
         hashHistory.push(filter.createURL({'market': null}))
     }
@@ -65,10 +66,19 @@ const PlanWeekDayForm = enhance((props) => {
                 {planType === 'week'
                 ? <Field
                         name="weekday"
+                        activeWeeks={toggleDaysState.activeWeeks}
+                        updateWeeks={toggleDaysState.updateWeeks}
                         component={PlanChooseWeekday}/>
                 : <Field
                         name="weekday"
+                        activeDays={toggleDaysState.activeDays}
+                        updateDays={toggleDaysState.updateDays}
                         component={PlanChooseMonthDay}/>}
+                <div className={classes.title}>Приоритет</div>
+                <Field
+                    name="priority"
+                    label="1...100"
+                    component={PlanAddPrioritySearchField}/>
                 <div className={classes.title}>Тип плана</div>
                 <Field
                     name="planType"

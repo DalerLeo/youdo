@@ -141,8 +141,8 @@ const GoogleMapWrapper = enhance(({
                     const id = _.get(item, 'id')
                     const name = _.get(item, 'name')
                     const isActive = _.get(item, 'isActive')
-                    const lat = _.get(item, ['location', 'coordinates', '0'])
-                    const lng = _.get(item, ['location', 'coordinates', '1'])
+                    const lat = _.get(item, ['location', 'lat'])
+                    const lng = _.get(item, ['location', 'lon'])
 
                     const marker = (
                         <Marker

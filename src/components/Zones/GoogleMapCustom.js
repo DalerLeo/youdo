@@ -15,9 +15,9 @@ import Location from '../Images/market-green.png'
 import MarketOff from '../Images/market-red.png'
 const MARKER_SIZE = 30
 const ZERO = 0
-const MINUS_FIVE = -5
-const ANCHOR = 8
-const SCALED = 18
+const INFO_WINDOW_OFFSET = -7
+const ANCHOR = 7
+const SCALED = 14
 const classes = {
     loader: {
         width: '100%',
@@ -92,12 +92,12 @@ export default class GoogleCustomMap extends React.Component {
     getMarkers (data) {
         let list = []
         _.map(data, (item) => {
-            if (_.get(item, ['location', 'coordinates', '0']) && _.get(item, ['location', 'coordinates', '1'])) {
+            if (_.get(item, ['location', 'lat']) && _.get(item, ['location', 'lon'])) {
                 list.push(
                     {
                         location: {
-                            lat: _.get(item, ['location', 'coordinates', '0']),
-                            lng: _.get(item, ['location', 'coordinates', '1'])
+                            lat: _.get(item, ['location', 'lat']),
+                            lng: _.get(item, ['location', 'lon'])
                         },
                         name: item.name,
                         id: item.id,
@@ -132,7 +132,7 @@ export default class GoogleCustomMap extends React.Component {
             const info = '<div>' + item.name + '</div>'
             const infoWindow = new google.maps.InfoWindow({
                 content: info,
-                pixelOffset: new google.maps.Size(MINUS_FIVE, ZERO)
+                pixelOffset: new google.maps.Size(INFO_WINDOW_OFFSET, ZERO)
             })
 
             marker.addListener('mouseover', () => {
@@ -196,7 +196,7 @@ export default class GoogleCustomMap extends React.Component {
                 zIndex: 1
             })
             zones.push({zone: existingZone, id, title})
-            this.createOverlays(meanLat, meanLng, id)
+            this.createOverlays(meanLat, meanLng, title)
             existingZone.setMap(this.map)
         })
 
@@ -223,7 +223,7 @@ export default class GoogleCustomMap extends React.Component {
         })
     }
 
-    createOverlays (meanLat, meanLng, id) {
+    createOverlays (meanLat, meanLng, title) {
         this.overlayView = new google.maps.OverlayView()
         this.overlayView.setMap(this.map)
         this.overlayView.onAdd = () => {
@@ -244,10 +244,10 @@ export default class GoogleCustomMap extends React.Component {
             let div = overlayEl.onAdd()
             div.style.left = sw.x + 'px'
             div.style.top = sw.y + 'px'
-            div.style.color = '#000'
+            div.style.color = '#333'
             div.style.fontSize = '20px'
             div.style.fontWeight = '700'
-            div.innerHTML = 'Z-' + id
+            div.innerHTML = title
             mapPanes[GOOGLE_MAP.FLOATPANE].appendChild(div)
         }
 
