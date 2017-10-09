@@ -216,9 +216,9 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[SHOP_CREATE_DIALOG_OPEN]: false})})
         },
 
-        handleSubmitCreateDialog: props => () => {
+        handleSubmitCreateDialog: props => (newClient) => {
             const {location: {pathname}, dispatch, createForm, mapLocation, filter} = props
-            return dispatch(shopCreateAction(_.get(createForm, ['values']), mapLocation))
+            return dispatch(shopCreateAction(_.get(createForm, ['values']), mapLocation, newClient))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
