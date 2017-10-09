@@ -23,14 +23,14 @@ const PlanTypeRadio = enhance((props) => {
             name="planType"
             style={radioButtonGroupStyle}
             onChange={input.onChange}
-            defaultSelected="week">
+            defaultSelected={input.value || 'week'}>
             <RadioButton
-                value='week'
+                value={'week'}
                 style={{width: '150px'}}
                 label="На неделю"
             />
             <RadioButton
-                value='month'
+                value={'month'}
                 style={{width: '150px'}}
                 label="На месяц"
             />

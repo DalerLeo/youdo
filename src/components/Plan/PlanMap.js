@@ -59,6 +59,7 @@ const GoogleMapWrapper = enhance((
         plans,
         zoneAgents,
         selectedAgent,
+        handleUpdateAgentPlan,
         ...props
     }) => {
     const indexOfSelectedAgent = _.findIndex(zoneAgents, (o) => {
@@ -85,7 +86,8 @@ const GoogleMapWrapper = enhance((
         : {
             strokeColor: _.get(AGENT_COLORS, index),
             strokeOpacity: OPACITY,
-            strokeWeight: 4
+            strokeWeight: 4,
+            zIndex: 9
         }
         return (
             <Polyline
@@ -99,10 +101,13 @@ const GoogleMapWrapper = enhance((
     const planAgentTracks = _.map(plansPaths, (obj, index) => {
         const dots = _.map(obj, (dot, i) => {
             const marketId = _.get(dot, 'marketId')
+            const agentId = _.get(dot, 'agentId')
+            const planId = _.get(dot, 'planId')
             return (
                 <Marker
                     key={i}
                     opacity={(index === indexOfSelectedAgent) ? ONE : OPACITY}
+                    onClick={() => { handleUpdateAgentPlan(planId, agentId, marketId) }}
                     onMouseOver={() => { hoverMarker(marketId) }}
                     onMouseOut={mouseOutMarker}
                     position={{lat: dot.lat, lng: dot.lng}}
@@ -220,6 +225,7 @@ const PlanMap = (props) => {
         plans,
         zoneAgents,
         selectedAgent,
+        handleUpdateAgentPlan,
         ...defaultProps
     } = props
     const mapOptions = {
@@ -252,6 +258,7 @@ const PlanMap = (props) => {
             plansPaths={plansPaths}
             zoneAgents={zoneAgents}
             selectedAgent={selectedAgent}
+            handleUpdateAgentPlan={handleUpdateAgentPlan}
             {...defaultProps}>
             {props.children}
         </GoogleMapWrapper>

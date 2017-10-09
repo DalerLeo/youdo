@@ -2,6 +2,7 @@ import PlanWrapper from './PlanWrapper'
 const ADD_PLAN = 'openAddPlan'
 const USER_GROUP = 'group'
 const OPEN_PLAN_SALES = 'openPlanSales'
+const UPDATE_PLAN = 'updatePlan'
 const DATE = 'date'
 const ZONE = 'zone'
 const AGENT = 'agent'
@@ -21,5 +22,6 @@ export {
     AGENT,
     MARKET,
     AGENT_COLORS,
+    UPDATE_PLAN,
     PlanWrapper
 }
