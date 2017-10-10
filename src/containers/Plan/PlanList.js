@@ -1,7 +1,7 @@
 import React from 'react'
 import _ from 'lodash'
 import moment from 'moment'
-import {compose, withPropsOnChange, withHandlers} from 'recompose'
+import {compose, withPropsOnChange, withHandlers, withState} from 'recompose'
 import {connect} from 'react-redux'
 import {reset} from 'redux-form'
 import Layout from '../../components/Layout'
@@ -13,6 +13,7 @@ import {
     PlanWrapper,
     USER_GROUP,
     OPEN_PLAN_SALES,
+    UPDATE_PLAN,
     DATE,
     ZONE,
     AGENT,
@@ -26,13 +27,32 @@ import {
     planMonthlySetAction,
     agentMonthlyPlanAction,
     planZonesItemFetchAction,
-    marketsLocationAction
+    marketsLocationAction,
+    planUpdateDialogAction
 } from '../../actions/plan'
 import {openSnackbarAction} from '../../actions/snackbar'
 
 const ZERO = 0
 const ONE = 1
+const LAST_DAY = 31
 const defaultDate = moment().format('YYYY-MM')
+
+export const weeks = [
+    {id: 1, name: 'Пн', active: false},
+    {id: 2, name: 'Вт', active: false},
+    {id: 3, name: 'Ср', active: false},
+    {id: 4, name: 'Чт', active: false},
+    {id: 5, name: 'Пт', active: false},
+    {id: 6, name: 'Сб', active: false},
+    {id: 0, name: 'Вс', active: false}
+]
+export let days = []
+for (let i = ONE; i <= LAST_DAY; i++) {
+    const obj = {id: i, name: i, active: false}
+    days.push(obj)
+}
+days.push('', '', '', '')
+
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -55,6 +75,7 @@ const enhance = compose(
         const selectedDate = _.get(query, DATE) || defaultDate
         const selectedDay = _.get(query, 'day') || moment().format('DD')
         const marketsLocation = _.get(state, ['tracking', 'markets', 'data'])
+        const planDetails = _.get(state, ['plan', 'update', 'data'])
         const filter = filterHelper(usersList, pathname, query)
         return {
             query,
@@ -77,9 +98,12 @@ const enhance = compose(
             plan,
             planLoading,
             marketsLocation,
+            planDetails,
             filter
         }
     }),
+    withState('activeWeeks', 'updateWeeks', weeks),
+    withState('activeDays', 'updateDays', days),
 
     withPropsOnChange((props, nextProps) => {
         const prevTab = _.get(props, ['query', 'group'])
@@ -140,6 +164,17 @@ const enhance = compose(
         }
     }),
 
+    withPropsOnChange((props, nextProps) => {
+        const prevUpdate = _.toInteger(_.get(props, ['query', UPDATE_PLAN]))
+        const nextUpdate = _.toInteger(_.get(nextProps, ['query', UPDATE_PLAN]))
+        return prevUpdate !== nextUpdate && nextUpdate > ZERO
+    }, ({dispatch, location}) => {
+        const planId = _.toInteger(_.get(location, ['query', UPDATE_PLAN]))
+        if (planId > ZERO) {
+            dispatch(planUpdateDialogAction(planId))
+        }
+    }),
+
     withHandlers({
         handleClickTab: props => (id) => {
             const {location: {pathname}, filter} = props
@@ -153,13 +188,15 @@ const enhance = compose(
         },
 
         handleCloseAddPlan: props => () => {
-            const {dispatch, location: {pathname}} = props
+            const {dispatch, location: {pathname}, updateWeeks, updateDays} = props
             dispatch(reset('PlanCreateForm'))
             hashHistory.push({pathname, query: {[ADD_PLAN]: false}})
+            updateWeeks(weeks)
+            updateDays(days)
         },
 
         handleSubmitAddPlan: props => () => {
-            const {location: {pathname, query}, dispatch, createForm, filter, selectedDate, selectedDay} = props
+            const {location: {pathname, query}, dispatch, createForm, filter, selectedDate, selectedDay, activeWeeks, activeDays} = props
             const zone = _.get(query, ZONE)
             const date = selectedDate + '-' + selectedDay
 
@@ -173,6 +210,19 @@ const enhance = compose(
                     dispatch(planZonesItemFetchAction(zone, date))
                     dispatch(planAgentsListFetchAction(filter))
                 })
+                .then(() => {
+                    _.map(activeWeeks, (obj) => {
+                        obj.active = false
+                    })
+                    _.map(activeDays, (obj) => {
+                        obj.active = false
+                    })
+                })
+        },
+
+        handleUpdateAgentPlan: props => (plan, agent, market) => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[UPDATE_PLAN]: plan, [AGENT]: agent, [MARKET]: market})})
         },
 
         handleOpenPlanSales: props => () => {
@@ -259,11 +309,15 @@ const PlanList = enhance((props) => {
         planLoading,
         currentDate,
         selectedDay,
-        marketsLocation
+        activeWeeks,
+        activeDays,
+        marketsLocation,
+        planDetails
     } = props
 
     const openAddPlan = toBoolean(_.get(location, ['query', ADD_PLAN]))
     const openPlanSales = toBoolean(_.get(location, ['query', OPEN_PLAN_SALES]))
+    const openUpdatePlan = _.toInteger(_.get(location, ['query', UPDATE_PLAN])) > ZERO
     const groupId = _.toInteger(_.get(location, ['query', USER_GROUP]) || ONE)
     const openDetail = !_.isEmpty(_.get(params, 'agentId'))
     const detailId = _.toInteger(_.get(params, 'agentId'))
@@ -282,12 +336,70 @@ const PlanList = enhance((props) => {
         selectedMarket,
         selectedZone,
         marketsLocation,
+        toggleDaysState: {
+            activeWeeks: props.activeWeeks,
+            updateWeeks: props.updateWeeks,
+            activeDays: props.activeDays,
+            updateDays: props.updateDays
+        },
         handleChooseZone: props.handleChooseZone,
         handleChooseAgent: props.handleChooseAgent,
         handleChooseMarket: props.handleChooseMarket,
         handleOpenAddPlan: props.handleOpenAddPlan,
         handleCloseAddPlan: props.handleCloseAddPlan,
         handleSubmitAddPlan: props.handleSubmitAddPlan
+    }
+
+    const updatePlan = {
+        initialValues: (() => {
+            const planType = _.get(planDetails, ['recurrences', '0', 'type'])
+            const priority = _.get(planDetails, 'priority')
+            const weekday = _.map(_.get(planDetails, 'recurrences'), (item) => {
+                const type = _.get(item, 'type')
+                if (type === 'week') {
+                    const filteredWeeks = _.filter(weeks, (w) => {
+                        return w.id === item.weekDay
+                    })
+                    _.map(filteredWeeks, (w) => {
+                        w.active = true
+                    })
+                } else {
+                    const filteredDays = _.filter(days, (d) => {
+                        return d.id === item.monthDay
+                    })
+                    _.map(filteredDays, (d) => {
+                        d.active = true
+                    })
+                }
+                return {
+                    id: _.get(item, 'weekDay') || _.get(item, 'monthDay'),
+                    active: true
+                }
+            })
+            if (!planDetails) {
+                return {}
+            }
+            return {
+                priority: {
+                    value: priority
+                },
+                planType: planType,
+                weekday: weekday
+            }
+        })(),
+        openUpdatePlan,
+        handleUpdateAgentPlan: props.handleUpdateAgentPlan
+    }
+
+    if (!openUpdatePlan) {
+        _.map(activeWeeks, (obj) => {
+            obj.active = false
+        })
+        _.map(activeDays, (obj) => {
+            if (obj.id) {
+                obj.active = false
+            }
+        })
     }
 
     const planSalesDialog = {
@@ -335,6 +447,7 @@ const PlanList = enhance((props) => {
                 usersList={listData}
                 statData={statData}
                 addPlan={addPlan}
+                updatePlan={updatePlan}
                 planSalesDialog={planSalesDialog}
                 handleClickTab={props.handleClickTab}
                 groupId={groupId}

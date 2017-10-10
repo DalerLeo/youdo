@@ -222,7 +222,7 @@ const ShopCreateDialog = enhance((props) => {
         updateMapDialog,
         mapLocation
     } = props
-    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+    const onSubmit = handleSubmit(() => props.onSubmit(openClient).catch(validate))
     const lat = _.get(mapLocation, 'lat')
     const lng = _.get(mapLocation, 'lng')
 
@@ -270,6 +270,9 @@ const ShopCreateDialog = enhance((props) => {
                                     {!openClient && !isUpdate && <a onClick={() => {
                                         setOpenClient(true)
                                     }}>+ добавить клиента</a>}
+                                    {openClient && !isUpdate && <a onClick={() => {
+                                        setOpenClient(false)
+                                    }}>+ выбрат клиента</a>}
                                 </div>
                             </div>
                             <div className={classes.divider}>

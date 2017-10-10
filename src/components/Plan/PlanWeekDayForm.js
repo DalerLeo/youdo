@@ -11,6 +11,8 @@ import injectSheet from 'react-jss'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Close from 'material-ui/svg-icons/navigation/close'
+import PlanAddPrioritySearchField from '../ReduxForm/PlanAddPrioritySearchField'
+import {MARKET, UPDATE_PLAN} from '../Plan'
 
 const enhance = compose(
     injectSheet({
@@ -51,24 +53,36 @@ const enhance = compose(
 )
 
 const PlanWeekDayForm = enhance((props) => {
-    const {classes, onSubmit, planType, filter} = props
+    const {classes, onSubmit, isUpdate, planType, filter, toggleDaysState} = props
     const closeForm = () => {
-        hashHistory.push(filter.createURL({'market': null}))
+        hashHistory.push(filter.createURL({[MARKET]: null}))
+    }
+    const closeUpdateForm = () => {
+        hashHistory.push(filter.createURL({[MARKET]: null, [UPDATE_PLAN]: false}))
     }
     return (
         <Paper zDepth={1} className={classes.form}>
             <div className={classes.closeIcon}>
-                <Close onClick={closeForm}/>
+                <Close onClick={isUpdate ? closeUpdateForm : closeForm}/>
             </div>
             <form onSubmit={onSubmit}>
                 <div className={classes.title}>Выберите дни</div>
                 {planType === 'week'
                 ? <Field
                         name="weekday"
+                        activeWeeks={toggleDaysState.activeWeeks}
+                        updateWeeks={toggleDaysState.updateWeeks}
                         component={PlanChooseWeekday}/>
                 : <Field
                         name="weekday"
+                        activeDays={toggleDaysState.activeDays}
+                        updateDays={toggleDaysState.updateDays}
                         component={PlanChooseMonthDay}/>}
+                <div className={classes.title}>Приоритет</div>
+                <Field
+                    name="priority"
+                    label="1...100"
+                    component={PlanAddPrioritySearchField}/>
                 <div className={classes.title}>Тип плана</div>
                 <Field
                     name="planType"
@@ -93,5 +107,9 @@ const PlanWeekDayForm = enhance((props) => {
         </Paper>
     )
 })
+
+PlanWeekDayForm.defaultProps = {
+    isUpdate: false
+}
 
 export default PlanWeekDayForm

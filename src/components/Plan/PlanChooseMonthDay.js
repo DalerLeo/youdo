@@ -1,16 +1,9 @@
 import _ from 'lodash'
 import React from 'react'
-import {compose, withState} from 'recompose'
+import {compose} from 'recompose'
 import injectSheet from 'react-jss'
+import {days} from '../../containers/Plan/PlanList'
 
-let days = []
-const FIRST_DAY = 1
-const LAST_DAY = 31
-for (let i = FIRST_DAY; i <= LAST_DAY; i++) {
-    const obj = {id: i, name: i, active: false}
-    days.push(obj)
-}
-days.push('', '', '', '')
 const enhance = compose(
     injectSheet({
         weeks: {
@@ -48,8 +41,7 @@ const enhance = compose(
             color: '#fff',
             fontWeight: '600'
         }
-    }),
-    withState('activeDays', 'updateDays', days)
+    })
 )
 
 const PlanChooseMonthDay = enhance((props) => {

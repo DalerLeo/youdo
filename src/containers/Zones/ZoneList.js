@@ -18,9 +18,9 @@ import {
     zoneItemFetchAction,
     zoneBindAgentAction,
     zoneUnbindAgentAction,
-    shopListFetchAction
+    shopListFetchAction,
+    marketsLocationFetchAction
 } from '../../actions/zones'
-import {marketsLocationFetchAction} from '../../actions/tracking'
 import {openSnackbarAction} from '../../actions/snackbar'
 const ZERO = 0
 const enhance = compose(
@@ -284,7 +284,7 @@ const Zones = enhance((props) => {
     const openAddZone = toBoolean(_.get(location, ['query', ADD_ZONE]))
     const openUpdateZone = toBoolean(_.get(location, ['query', UPDATE_ZONE]))
     const openBindAgent = toBoolean(_.get(location, ['query', BIND_AGENT]))
-    const zoneId = _.toNumber(_.get(location, ['query', ZONE_ID]))
+    const zoneId = _.get(location, ['query', ZONE_ID]) ? _.toNumber(_.get(location, ['query', ZONE_ID])) : ZERO
     const openDeleteZone = _.toInteger(_.get(location, ['query', DELETE_ZONE]) || ZERO) > ZERO
     const openToggle = toBoolean(_.get(location, ['query', TOGGLE_INFO]))
     const openConfirmDialog = _.toInteger(_.get(location, ['query', CONFIRM_DIALOG]) || ZERO) > ZERO

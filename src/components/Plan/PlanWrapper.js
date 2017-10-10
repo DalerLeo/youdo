@@ -230,6 +230,7 @@ const PlanWrapper = enhance((props) => {
         detailData,
         classes,
         addPlan,
+        updatePlan,
         planSalesDialog,
         handleClickTab,
         groupId,
@@ -384,6 +385,8 @@ const PlanWrapper = enhance((props) => {
                 zoneAgentsLoading={addPlan.zoneAgentsLoading}
                 calendar={calendar}
                 marketsLocation={addPlan.marketsLocation}
+                toggleDaysState={addPlan.toggleDaysState}
+                updatePlan={updatePlan}
             />
 
             <PlanSalesDialog
@@ -405,6 +408,7 @@ PlanWrapper.PropTypes = {
         zonesList: PropTypes.object.isRequired,
         zonesLoading: PropTypes.bool.isRequired,
         zoneAgents: PropTypes.object.isRequired,
+        toggleDaysState: PropTypes.object.isRequired,
         zoneAgentsLoading: PropTypes.bool.isRequired,
         handleChooseZone: PropTypes.func.isRequired,
         handleChooseAgent: PropTypes.func.isRequired,

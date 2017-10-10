@@ -11,7 +11,7 @@ export const createSerializer = (data) => {
     const phoneNumber = _.get(data, 'phoneNumber')
     const image = _.get(data, 'image')
     const password = _.get(data, 'password')
-    const isActive = !_.isUndefined(_.get(data, 'isActive'))
+    const isActive = _.get(data, 'isActive')
     const position = _.get(data, ['position', 'value'])
     const stocks = _.filter(_.get(data, ['stocks']), (o) => {
         return _.get(o, 'selected')
