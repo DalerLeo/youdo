@@ -187,13 +187,13 @@ const TransactionsList = enhance((props) => {
             width: '10%'
         },
         {
-            sorting: true,
+            sorting: false,
             name: 'client',
             title: showCashbox ? 'Касса' : 'Клиент',
             width: '22%'
         },
         {
-            sorting: true,
+            sorting: false,
             name: 'comment',
             title: 'Описание',
             width: '30%'
