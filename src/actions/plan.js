@@ -22,6 +22,22 @@ export const planCreateAction = (formValues, query) => {
     }
 }
 
+export const planUpdateDialogAction = (id) => {
+    const payload = axios()
+        .get(sprintf(API.PLAN_UPDATE, id))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.PLAN_UPDATE,
+        payload
+    }
+}
+
 export const planMonthlySetAction = (data, filter, user) => {
     const requestData = serializers.monthlyPlanSerializer(data, filter.getParams(), user)
     const payload = axios()

@@ -13,6 +13,7 @@ import {
     PlanWrapper,
     USER_GROUP,
     OPEN_PLAN_SALES,
+    UPDATE_PLAN,
     DATE,
     ZONE,
     AGENT,
@@ -26,7 +27,8 @@ import {
     planMonthlySetAction,
     agentMonthlyPlanAction,
     planZonesItemFetchAction,
-    marketsLocationAction
+    marketsLocationAction,
+    planUpdateDialogAction
 } from '../../actions/plan'
 import {openSnackbarAction} from '../../actions/snackbar'
 
@@ -73,6 +75,7 @@ const enhance = compose(
         const selectedDate = _.get(query, DATE) || defaultDate
         const selectedDay = _.get(query, 'day') || moment().format('DD')
         const marketsLocation = _.get(state, ['tracking', 'markets', 'data'])
+        const planDetails = _.get(state, ['plan', 'update', 'data'])
         const filter = filterHelper(usersList, pathname, query)
         return {
             query,
@@ -95,6 +98,7 @@ const enhance = compose(
             plan,
             planLoading,
             marketsLocation,
+            planDetails,
             filter
         }
     }),
@@ -160,6 +164,17 @@ const enhance = compose(
         }
     }),
 
+    withPropsOnChange((props, nextProps) => {
+        const prevUpdate = _.toInteger(_.get(props, ['query', UPDATE_PLAN]))
+        const nextUpdate = _.toInteger(_.get(nextProps, ['query', UPDATE_PLAN]))
+        return prevUpdate !== nextUpdate && nextUpdate > ZERO
+    }, ({dispatch, location}) => {
+        const planId = _.toInteger(_.get(location, ['query', UPDATE_PLAN]))
+        if (planId > ZERO) {
+            dispatch(planUpdateDialogAction(planId))
+        }
+    }),
+
     withHandlers({
         handleClickTab: props => (id) => {
             const {location: {pathname}, filter} = props
@@ -203,6 +218,11 @@ const enhance = compose(
                         obj.active = false
                     })
                 })
+        },
+
+        handleUpdateAgentPlan: props => (plan, agent, market) => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[UPDATE_PLAN]: plan, [AGENT]: agent, [MARKET]: market})})
         },
 
         handleOpenPlanSales: props => () => {
@@ -289,11 +309,15 @@ const PlanList = enhance((props) => {
         planLoading,
         currentDate,
         selectedDay,
-        marketsLocation
+        activeWeeks,
+        activeDays,
+        marketsLocation,
+        planDetails
     } = props
 
     const openAddPlan = toBoolean(_.get(location, ['query', ADD_PLAN]))
     const openPlanSales = toBoolean(_.get(location, ['query', OPEN_PLAN_SALES]))
+    const openUpdatePlan = _.toInteger(_.get(location, ['query', UPDATE_PLAN])) > ZERO
     const groupId = _.toInteger(_.get(location, ['query', USER_GROUP]) || ONE)
     const openDetail = !_.isEmpty(_.get(params, 'agentId'))
     const detailId = _.toInteger(_.get(params, 'agentId'))
@@ -324,6 +348,58 @@ const PlanList = enhance((props) => {
         handleOpenAddPlan: props.handleOpenAddPlan,
         handleCloseAddPlan: props.handleCloseAddPlan,
         handleSubmitAddPlan: props.handleSubmitAddPlan
+    }
+
+    const updatePlan = {
+        initialValues: (() => {
+            const planType = _.get(planDetails, ['recurrences', '0', 'type'])
+            const priority = _.get(planDetails, 'priority')
+            const weekday = _.map(_.get(planDetails, 'recurrences'), (item) => {
+                const type = _.get(item, 'type')
+                if (type === 'week') {
+                    const filteredWeeks = _.filter(weeks, (w) => {
+                        return w.id === item.weekDay
+                    })
+                    _.map(filteredWeeks, (w) => {
+                        w.active = true
+                    })
+                } else {
+                    const filteredDays = _.filter(days, (d) => {
+                        return d.id === item.monthDay
+                    })
+                    _.map(filteredDays, (d) => {
+                        d.active = true
+                    })
+                }
+                return {
+                    id: _.get(item, 'weekDay') || _.get(item, 'monthDay'),
+                    active: true
+                }
+            })
+            if (!planDetails) {
+                return {}
+            }
+            return {
+                priority: {
+                    value: priority
+                },
+                planType: planType,
+                weekday: weekday
+            }
+        })(),
+        openUpdatePlan,
+        handleUpdateAgentPlan: props.handleUpdateAgentPlan
+    }
+
+    if (!openUpdatePlan) {
+        _.map(activeWeeks, (obj) => {
+            obj.active = false
+        })
+        _.map(activeDays, (obj) => {
+            if (obj.id) {
+                obj.active = false
+            }
+        })
     }
 
     const planSalesDialog = {
@@ -371,6 +447,7 @@ const PlanList = enhance((props) => {
                 usersList={listData}
                 statData={statData}
                 addPlan={addPlan}
+                updatePlan={updatePlan}
                 planSalesDialog={planSalesDialog}
                 handleClickTab={props.handleClickTab}
                 groupId={groupId}
