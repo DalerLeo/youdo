@@ -1,8 +1,17 @@
 import _ from 'lodash'
 import React from 'react'
-import {compose} from 'recompose'
+import {compose, withPropsOnChange, withState} from 'recompose'
 import injectSheet from 'react-jss'
-import {weeks} from '../../containers/Plan/PlanList'
+
+const weeks = [
+    {id: 1, name: 'Пн', active: false},
+    {id: 2, name: 'Вт', active: false},
+    {id: 3, name: 'Ср', active: false},
+    {id: 4, name: 'Чт', active: false},
+    {id: 5, name: 'Пт', active: false},
+    {id: 6, name: 'Сб', active: false},
+    {id: 0, name: 'Вс', active: false}
+]
 
 const enhance = compose(
     injectSheet({
@@ -29,11 +38,27 @@ const enhance = compose(
             color: '#fff',
             fontWeight: '600'
         }
-    })
+    }),
+    withState('activeWeeks', 'updateWeeks', weeks),
+    withPropsOnChange((props, nextProps) => {
+        return (_.get(props, ['input', 'value']) !== _.get(nextProps, ['input', 'value']))
+    }, (props) => {
+        _.map(weeks, (item) => {
+            item.active = false
+        })
+        _.map(_.get(props, ['input', 'value']), (obj) => {
+            _.map(weeks, (item) => {
+                if (obj.id === item.id) {
+                    item.active = true
+                }
+            })
+        })
+    }),
 )
 
 const PlanChooseWeekday = enhance((props) => {
     const {
+        // SelectedWeekDay,
         activeWeeks,
         updateWeeks,
         classes,
@@ -41,10 +66,10 @@ const PlanChooseWeekday = enhance((props) => {
     } = props
 
     const func = (day) => {
-        const weekToActive = _.find(weeks, {'id': day})
+        const weekToActive = _.find(activeWeeks, {'id': day})
         weekToActive.active = !weekToActive.active
         updateWeeks(weeks)
-        input.onChange(_.filter(weeks, (w) => {
+        input.onChange(_.filter(activeWeeks, (w) => {
             return w.active === true
         }))
     }
