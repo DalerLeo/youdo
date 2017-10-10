@@ -66,6 +66,10 @@ const PlanWeekDayForm = enhance((props) => {
                 <Close onClick={isUpdate ? closeUpdateForm : closeForm}/>
             </div>
             <form onSubmit={onSubmit}>
+                <div className={classes.title}>Тип плана</div>
+                <Field
+                    name="planType"
+                    component={PlanTypeRadio}/>
                 <div className={classes.title}>Выберите дни</div>
                 {planType === 'week'
                 ? <Field
@@ -83,10 +87,6 @@ const PlanWeekDayForm = enhance((props) => {
                     name="priority"
                     label="1...100"
                     component={PlanAddPrioritySearchField}/>
-                <div className={classes.title}>Тип плана</div>
-                <Field
-                    name="planType"
-                    component={PlanTypeRadio}/>
                 <div className={classes.submitBtn}>
                     <FlatButton
                         label="Добавить в план агента"

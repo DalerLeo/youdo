@@ -145,7 +145,15 @@ const enhance = compose(
         return (prevZone !== nextZone && nextZone > ZERO) ||
             (props.selectedDate !== nextProps.selectedDate && nextZone > ZERO) ||
             (props.selectedDay !== nextProps.selectedDay && nextZone > ZERO)
-    }, ({dispatch, location, selectedDate, selectedDay}) => {
+    }, ({dispatch, location, selectedDate, selectedDay, activeWeeks, activeDays}) => {
+        _.map(activeWeeks, (w) => {
+            w.active = false
+        })
+        _.map(activeDays, (d) => {
+            if (d.id) {
+                d.active = false
+            }
+        })
         const zone = _.toInteger(_.get(location, ['query', ZONE]))
         const date = selectedDate + '-' + selectedDay
         if (zone > ZERO) {
@@ -309,10 +317,10 @@ const PlanList = enhance((props) => {
         planLoading,
         currentDate,
         selectedDay,
-        activeWeeks,
-        activeDays,
         marketsLocation,
-        planDetails
+        planDetails,
+        activeWeeks,
+        activeDays
     } = props
 
     const openAddPlan = toBoolean(_.get(location, ['query', ADD_PLAN]))
@@ -357,26 +365,36 @@ const PlanList = enhance((props) => {
             const weekday = _.map(_.get(planDetails, 'recurrences'), (item) => {
                 const type = _.get(item, 'type')
                 if (type === 'week') {
-                    const filteredWeeks = _.filter(weeks, (w) => {
+                    const filteredWeeks = _.filter(activeWeeks, (w) => {
                         return w.id === item.weekDay
                     })
                     _.map(filteredWeeks, (w) => {
                         w.active = true
                     })
+                    console.warn(activeWeeks)
                 } else {
-                    const filteredDays = _.filter(days, (d) => {
+                    const filteredDays = _.filter(activeDays, (d) => {
                         return d.id === item.monthDay
                     })
                     _.map(filteredDays, (d) => {
                         d.active = true
                     })
+                    console.warn(activeDays)
                 }
                 return {
                     id: _.get(item, 'weekDay') || _.get(item, 'monthDay'),
                     active: true
                 }
             })
-            if (!planDetails) {
+            if (!openUpdatePlan) {
+                _.map(activeWeeks, (w) => {
+                    w.active = false
+                })
+                _.map(activeDays, (d) => {
+                    if (d.id) {
+                        d.active = false
+                    }
+                })
                 return {}
             }
             return {
@@ -389,17 +407,6 @@ const PlanList = enhance((props) => {
         })(),
         openUpdatePlan,
         handleUpdateAgentPlan: props.handleUpdateAgentPlan
-    }
-
-    if (!openUpdatePlan) {
-        _.map(activeWeeks, (obj) => {
-            obj.active = false
-        })
-        _.map(activeDays, (obj) => {
-            if (obj.id) {
-                obj.active = false
-            }
-        })
     }
 
     const planSalesDialog = {
