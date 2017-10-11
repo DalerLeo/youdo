@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {compose, withHandlers} from 'recompose'

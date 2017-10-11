@@ -670,9 +670,7 @@ const TransactionList = enhance((props) => {
     const createExpenseDialog = {
         initialValues: (() => {
             return {
-                date: {
-                    value: moment().format('YYYY-MM-DD')
-                }
+                // date: moment(_.get(detail, ['dateDelivery'])).toDate()
             }
         })(),
         loading: createLoading,
@@ -681,12 +679,11 @@ const TransactionList = enhance((props) => {
         handleCloseDialog: props.handleCloseCreateExpenseDialog,
         handleSubmitDialog: props.handleSubmitCreateExpenseDialog
     }
+    console.log(moment(_.get(detail, ['dateDelivery'])).toDate())
     const createIncomeDialog = {
         initialValues: (() => {
             return {
-                date: {
-                    value: moment().format('YYYY-MM-DD')
-                }
+                // date: moment(_.get(detail, ['dateDelivery'])).toDate()
             }
         })(),
         loading: createLoading,
