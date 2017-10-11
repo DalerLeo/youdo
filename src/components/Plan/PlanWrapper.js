@@ -132,6 +132,7 @@ const enhance = compose(
             position: 'relative',
             padding: '0 30px 0 45px',
             cursor: 'pointer',
+            width: '100%',
             '& a': {
                 position: 'absolute',
                 top: '0',
@@ -235,7 +236,8 @@ const PlanWrapper = enhance((props) => {
         handleClickTab,
         groupId,
         calendar,
-        monthlyPlan
+        monthlyPlan,
+        selectedWeekDay
     } = props
 
     const ZERO = 0
@@ -385,8 +387,9 @@ const PlanWrapper = enhance((props) => {
                 zoneAgentsLoading={addPlan.zoneAgentsLoading}
                 calendar={calendar}
                 marketsLocation={addPlan.marketsLocation}
-                toggleDaysState={addPlan.toggleDaysState}
                 updatePlan={updatePlan}
+                createPlanLoading={addPlan.createPlanLoading}
+                selectedWeekDay={selectedWeekDay}
             />
 
             <PlanSalesDialog
@@ -408,8 +411,8 @@ PlanWrapper.PropTypes = {
         zonesList: PropTypes.object.isRequired,
         zonesLoading: PropTypes.bool.isRequired,
         zoneAgents: PropTypes.object.isRequired,
-        toggleDaysState: PropTypes.object.isRequired,
         zoneAgentsLoading: PropTypes.bool.isRequired,
+        createPlanLoading: PropTypes.bool.isRequired,
         handleChooseZone: PropTypes.func.isRequired,
         handleChooseAgent: PropTypes.func.isRequired,
         handleChooseMarket: PropTypes.func.isRequired,

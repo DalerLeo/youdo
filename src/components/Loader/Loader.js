@@ -13,10 +13,15 @@ const enhance = compose(
         }
     })
 )
+const ONE = 1
 const Loader = enhance((props) => {
-    const {classes} = props
+    const {classes, size} = props
+    const customScale = size || ONE
+    const customStyles = {
+        transform: 'scale(' + customScale + ')'
+    }
     return (
-        <div className={classes.loader}>
+        <div className={classes.loader} style={customStyles}>
         </div>
     )
 })
