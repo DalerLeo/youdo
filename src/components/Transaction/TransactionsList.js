@@ -339,6 +339,7 @@ const TransactionsList = enhance((props) => {
             {!showOnlyList && <section>
                 <TransactionCreateDialog
                     isExpense={true}
+                    initialValues={createExpenseDialog.initialValues}
                     noCashbox={_.get(cashboxData, 'cashboxId') === ZERO}
                     cashboxData={cashboxData}
                     open={createExpenseDialog.open}
@@ -348,6 +349,7 @@ const TransactionsList = enhance((props) => {
                 />
 
                 <TransactionCreateDialog
+                    initialValues={createIncomeDialog.initialValues}
                     noCashbox={_.get(cashboxData, 'cashboxId') === ZERO}
                     cashboxData={cashboxData}
                     open={createIncomeDialog.open}

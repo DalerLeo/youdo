@@ -33,9 +33,8 @@ import {
     CANCEL_ORDER,
     CANCEL_ORDER_RETURN,
     EXPENSE,
-    FIRST_BALANCE,
     ORDER,
-    NONE_TYPE
+    formattedType
 } from '../../../constants/clientBalanceInfo'
 
 const NEGATIVE = -1
@@ -290,7 +289,7 @@ const ClientIncomeGridList = enhance((props) => {
         const date = dateFormat(_.get(item, 'createdDate')) + ' ' + moment(_.get(item, 'createdDate')).format('HH:mm')
         const amount = _.toNumber(_.get(item, 'amount'))
         const internal = _.toNumber(_.get(item, 'internal'))
-        const customRate = _.get(item, 'customRate') ? _.get(item, 'customRate') : _.toInteger(amount / internal)
+        const customRate = _.get(item, 'customRate') ? _.toInteger(_.get(item, 'customRate')) : _.toInteger(amount / internal)
         const type = _.get(item, 'type')
         const id = _.toInteger(type) === THREE ? _.get(item, 'orderReturn') : (_.get(item, 'order') || _.get(item, 'transaction'))
         return (
@@ -302,10 +301,16 @@ const ClientIncomeGridList = enhance((props) => {
                 <Col xs={3}>
                     {type && <div><span>{type === PAYMENT ? 'Оплата'
                         : type === CANCEL ? 'Отмена'
-                            : type === CANCEL_ORDER ? 'Отмена заказа №' + id
-                                : type === CANCEL_ORDER_RETURN ? 'Отмена возврата №' + id
+                            : type === CANCEL_ORDER ? <Link to={{
+                                pathname: sprintf(ROUTES.ORDER_ITEM_PATH, id),
+                                query: {search: id}
+                            }} target="_blank">Отмена заказа № + {id}</Link>
+                                : type === CANCEL_ORDER_RETURN ? <Link to={{
+                                    pathname: sprintf(ROUTES.ORDER_ITEM_PATH, id),
+                                    query: {search: id}
+                                }} target="_blank">Отмена возврата № + {id}</Link>
                                     : type === ORDER ? <Link to={{
-                                        pathname: sprintf(ROUTES.ORDER_ITEM_PATH, id),
+                                        pathname: sprintf(ROUTES.RETURN_ITEM_PATH, id),
                                         query: {search: id}
                                     }} target="_blank">Заказ {id}</Link>
                                         : type === EXPENSE ? 'Расход'
@@ -313,15 +318,15 @@ const ClientIncomeGridList = enhance((props) => {
                                                 pathname: sprintf(ROUTES.RETURN_ITEM_PATH, id),
                                                 query: {search: id}
                                             }} target="_blank">Возврат {id}</Link>
-                                                : type === FIRST_BALANCE ? 'Первый баланс'
-                                                    : type === NONE_TYPE ? 'Произвольный' : null }</span>
+                                                : formattedType[type] + ' ' + (!_.isNull(id) ? id : '')}</span>
                     </div>}
                     {comment && <div><strong>Комментарий:</strong> {comment}</div>}
                 </Col>
                 <Col xs={2} style={{textAlign: 'right'}}>
                     <div className={amount > ZERO ? 'greenFont' : (amount === ZERO ? '' : 'redFont')}>
                         <span>{numberFormat(amount, currency)}</span>
-                        {primaryCurrency !== currency && <div>{numberFormat(internal, primaryCurrency)} <span style={{fontSize: 11, color: '#666', fontWeight: 600}}>({customRate})</span></div>}
+                        {primaryCurrency !== currency && <div>{numberFormat(internal, primaryCurrency)} <span
+                            style={{fontSize: 11, color: '#666', fontWeight: 600}}>({customRate})</span></div>}
                     </div>
                 </Col>
             </Row>
@@ -381,13 +386,16 @@ const ClientIncomeGridList = enhance((props) => {
                                 <Col xs={3} className={classes.salesSummary}>
                                     <div className={classes.secondarySummary}>
                                         <span className={classes.summaryTitle}>Приход за период</span>
-                                        <div className={classes.summaryValue} style={{color: '#5ecdea'}}>{numberFormat(sumIn)} {primaryCurrency}</div>
+                                        <div className={classes.summaryValue}
+                                             style={{color: '#5ecdea'}}>{numberFormat(sumIn)} {primaryCurrency}</div>
                                         <div style={{margin: '10px 0'}}>{null}</div>
                                         <span className={classes.summaryTitle}>Расход за период</span>
-                                        <div className={classes.summaryValue} style={{color: '#EB9696'}}>{numberFormat(sumOut)} {primaryCurrency}</div>
+                                        <div className={classes.summaryValue}
+                                             style={{color: '#EB9696'}}>{numberFormat(sumOut)} {primaryCurrency}</div>
                                         <div style={{margin: '10px 0'}}>{null}</div>
                                         <span className={classes.summaryTitle}>Разница</span>
-                                        <div className={classes.summaryValue} style={diff >= ZERO ? {color: '#71ce87'} : {color: '#EB9696'}}>{numberFormat(diff)} {primaryCurrency}</div>
+                                        <div className={classes.summaryValue}
+                                             style={diff >= ZERO ? {color: '#71ce87'} : {color: '#EB9696'}}>{numberFormat(diff)} {primaryCurrency}</div>
                                     </div>
                                 </Col>
                                 <Col xs={9} className={classes.chart}>
@@ -416,21 +424,21 @@ const ClientIncomeGridList = enhance((props) => {
                             <Pagination filter={filter}/>
                         </div>
                         {loading
-                        ? <div className={classes.tableWrapper}>
-                            <div className={classes.loader}>
-                                <CircularProgress thickness={4} size={40}/>
-                            </div>
-                        </div>
-                        : <div className={classes.tableWrapper}>
-                            {_.isEmpty(list) && !loading
-                                ? <div className={classes.emptyQuery}>
-                                    <div>По вашему запросу ничего не найдено</div>
+                            ? <div className={classes.tableWrapper}>
+                                <div className={classes.loader}>
+                                    <CircularProgress thickness={4} size={40}/>
                                 </div>
-                                : <div>
-                                    {headers}
-                                    {list}
-                                </div>}
-                        </div>}
+                            </div>
+                            : <div className={classes.tableWrapper}>
+                                {_.isEmpty(list) && !loading
+                                    ? <div className={classes.emptyQuery}>
+                                        <div>По вашему запросу ничего не найдено</div>
+                                    </div>
+                                    : <div>
+                                        {headers}
+                                        {list}
+                                    </div>}
+                            </div>}
                     </div>
                 </div>
             </Row>
