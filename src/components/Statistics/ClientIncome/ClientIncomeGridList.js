@@ -33,9 +33,8 @@ import {
     CANCEL_ORDER,
     CANCEL_ORDER_RETURN,
     EXPENSE,
-    FIRST_BALANCE,
     ORDER,
-    NONE_TYPE
+    formattedType
 } from '../../../constants/clientBalanceInfo'
 
 const NEGATIVE = -1
@@ -290,7 +289,7 @@ const ClientIncomeGridList = enhance((props) => {
         const date = dateFormat(_.get(item, 'createdDate')) + ' ' + moment(_.get(item, 'createdDate')).format('HH:mm')
         const amount = _.toNumber(_.get(item, 'amount'))
         const internal = _.toNumber(_.get(item, 'internal'))
-        const customRate = _.get(item, 'customRate') ? _.get(item, 'customRate') : _.toInteger(amount / internal)
+        const customRate = _.get(item, 'customRate') ? _.toInteger(_.get(item, 'customRate')) : _.toInteger(amount / internal)
         const type = _.get(item, 'type')
         const id = _.toInteger(type) === THREE ? _.get(item, 'orderReturn') : (_.get(item, 'order') || _.get(item, 'transaction'))
         return (
@@ -311,7 +310,7 @@ const ClientIncomeGridList = enhance((props) => {
                                     query: {search: id}
                                 }} target="_blank">Отмена возврата № + {id}</Link>
                                     : type === ORDER ? <Link to={{
-                                        pathname: sprintf(ROUTES.ORDER_ITEM_PATH, id),
+                                        pathname: sprintf(ROUTES.RETURN_ITEM_PATH, id),
                                         query: {search: id}
                                     }} target="_blank">Заказ {id}</Link>
                                         : type === EXPENSE ? 'Расход'
@@ -319,8 +318,7 @@ const ClientIncomeGridList = enhance((props) => {
                                                 pathname: sprintf(ROUTES.RETURN_ITEM_PATH, id),
                                                 query: {search: id}
                                             }} target="_blank">Возврат {id}</Link>
-                                                : type === FIRST_BALANCE ? 'Первый баланс'
-                                                    : type === NONE_TYPE ? 'Произвольный' : null}</span>
+                                                : formattedType[type] + ' ' + (!_.isNull(id) ? id : '')}</span>
                     </div>}
                     {comment && <div><strong>Комментарий:</strong> {comment}</div>}
                 </Col>
