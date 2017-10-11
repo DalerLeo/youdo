@@ -53,12 +53,11 @@ const enhance = compose(
                 }
             })
         })
-    }),
+    })
 )
 
 const PlanChooseWeekday = enhance((props) => {
     const {
-        // SelectedWeekDay,
         activeWeeks,
         updateWeeks,
         classes,

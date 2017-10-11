@@ -40,7 +40,9 @@ const enhance = compose(
         wrapper: {
             display: 'flex',
             height: 'calc(100% - 32px)',
-            margin: '0 -28px'
+            margin: '0 -28px',
+            overflow: 'hidden',
+            borderTop: '1px #e0e0e0 solid'
         },
         padding: {
             padding: '20px 30px'
@@ -143,25 +145,7 @@ const enhance = compose(
         },
         activeAgent: {
             extend: 'agent',
-            background: '#f2f5f8',
-            '&:before': {
-                content: '""',
-                background: 'rgba(0,0,0, 0.45)',
-                position: 'absolute',
-                right: '0',
-                height: '14px',
-                width: '7px',
-                filter: 'blur(6px)'
-            },
-            '&:after': {
-                content: '""',
-                position: 'absolute',
-                right: '0',
-                borderTop: '10px solid transparent',
-                borderRight: '12px solid #f4f4f4',
-                borderBottom: '10px solid transparent',
-                zIndex: '3'
-            }
+            background: '#f2f5f8'
         },
         line: {
             background: '#999',
@@ -305,10 +289,6 @@ const PlanWrapper = enhance((props) => {
         }
     ]
 
-    const initialValues = {
-        planType: 'week'
-    }
-
     const leftSide = (
         <div className={classes.leftSide}>
             <PlanMonthFilter calendar={calendar}/>
@@ -371,7 +351,6 @@ const PlanWrapper = enhance((props) => {
 
             <PlanCreateDialog
                 filter={filter}
-                initialValues={initialValues}
                 open={addPlan.openAddPlan}
                 onClose={addPlan.handleCloseAddPlan}
                 onSubmit={addPlan.handleSubmitAddPlan}
