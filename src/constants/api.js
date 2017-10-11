@@ -322,6 +322,7 @@ export const STAT_MARKET_SUM = '/stats/orders/sum/'
 
 export const STAT_FINANCE_LIST = 'finance/transaction/'
 export const STAT_FINANCE_DATA = 'stats/transactions/'
+export const STAT_FINANCE_GET_DOCUMENT = '/finance/transaction/export/'
 
 export const STAT_INCOME_DATA = 'stats/transactions/'
 export const STAT_INCOME_LIST = 'finance/transaction/'
@@ -420,7 +421,7 @@ export const STAT_PRODUCT_MOVE_GET_DOCUMENT = '/stats/stock/products/export/'
 
 export const STAT_REPORT_LIST = 'stats/general/'
 export const STAT_REPORT_ITEM = 'sales/order/'
-export const STAT_REPORT_GET_DOCUMENT = '/stats/agents/export/'
+export const STAT_REPORT_GET_DOCUMENT = '/stats/general/excel/'
 
 export const DIVISION = 'main/division'
 export const DIVISION_LIST = `${DIVISION}/`

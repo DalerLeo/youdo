@@ -1,13 +1,16 @@
 import React from 'react'
 import _ from 'lodash'
 import {connect} from 'react-redux'
-import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
-import filterHelper from '../../helpers/filter'
 import moment from 'moment'
+import * as serializers from '../../serializers/Statistics/statReportSerializer'
 import {StatReportGridList} from '../../components/Statistics'
+import Layout from '../../components/Layout'
 import {STAT_REPORT_FILTER_KEY} from '../../components/Statistics/StatReportGridLIst'
+import getDocuments from '../../helpers/getDocument'
 import {statReportListFetchAction} from '../../actions/statReport'
+import * as API from '../../constants/api'
+import filterHelper from '../../helpers/filter'
 
 const enhance = compose(
     connect((state, props) => {
@@ -43,6 +46,11 @@ const enhance = compose(
                 [STAT_REPORT_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [STAT_REPORT_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
             })
+        },
+        handleGetDocument: props => () => {
+            const {filter} = props
+            const params = serializers.listFilterSerializer(filter.getParams())
+            getDocuments(API.STAT_REPORT_GET_DOCUMENT, params)
         }
     })
 )
