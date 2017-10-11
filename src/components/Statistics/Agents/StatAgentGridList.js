@@ -77,6 +77,12 @@ const enhance = compose(
                 height: '50px',
                 '&:last-child:after': {
                     display: 'none'
+                },
+                '&:hover': {
+                    '& > div:first-child': {
+                        fontWeight: '600',
+                        color: '#12aaeb'
+                    }
                 }
             },
             '& .personImage': {
@@ -253,7 +259,7 @@ const listHeader = [
         xs: 2
     },
     {
-        sorting: false,
+        sorting: true,
         name: 'monthlyPlanAmount',
         alignRight: true,
         title: 'План',
@@ -304,6 +310,7 @@ const StatAgentGridList = enhance((props) => {
     } = props
 
     const listLoading = _.get(listData, 'listLoading')
+    const salesSummary = numberFormat(_.get(_.find(_.get(listData, 'data'), {'id': _.get(detailData, 'id')}), 'ordersTotalPrice'))
 
     const list = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
@@ -416,6 +423,7 @@ const StatAgentGridList = enhance((props) => {
             <StatAgentDialog
                 loading={_.get(detailData.detailLoading)}
                 detailData={detailData}
+                salesSummary={salesSummary}
                 open={statAgentDialog.openStatAgentDialog}
                 onClose={statAgentDialog.handleCloseStatAgentDialog}
                 filter={filter}/>

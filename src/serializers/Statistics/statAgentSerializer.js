@@ -23,13 +23,14 @@ export const listFilterSerializer = (query) => {
 
 export const itemSerializer = (data, filterItem, id) => {
     const {...defaultData} = data
-    const end = _.get(defaultData, 'date')
-                        ? _.get(defaultData, 'date') + '-' + moment(_.get(defaultData, 'date')).daysInMonth() : null
-    const begin = _.get(defaultData, 'date') ? moment(_.get(defaultData, 'date')).format('YYYY-MM-01') : null
+    const daysInMonth = moment(_.get(defaultData, 'date')).daysInMonth()
+    const begin = _.get(defaultData, 'date') ? moment(_.get(defaultData, 'date')).format('YYYY-MM-01') : moment().format('YYYY-MM-01')
+    const end = _.get(defaultData, 'date') ? _.get(defaultData, 'date') + '-' + daysInMonth : moment().format('YYYY-MM-' + daysInMonth)
+
     return {
         'user': id,
-        'page': _.get(filterItem, 'page'),
-        'page_size': _.get(filterItem, 'pageSize'),
+        'page': _.get(filterItem, 'dPage'),
+        'page_size': _.get(filterItem, 'dPageSize'),
         'created_date_0': begin,
         'created_date_1': end
     }
