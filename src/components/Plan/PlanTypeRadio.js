@@ -1,29 +1,23 @@
 import React from 'react'
-import {compose} from 'recompose'
-import _ from 'lodash'
-import {connect} from 'react-redux'
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton'
 
-const enhance = compose(
-    connect((state) => {
-        const dealType = _.get(state, ['form', 'OrderCreateForm', 'values', 'dealType'])
-        return {
-            dealType
-        }
-    }),
-)
 const radioButtonGroupStyle = {
     display: 'flex',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    marginBottom: '20px'
 }
-const PlanTypeRadio = enhance((props) => {
-    const {input} = props
+
+const PlanTypeRadio = (props) => {
+    const {input, isUpdate} = props
+    if (!input.value && isUpdate) {
+        return null
+    }
     return (
         <RadioButtonGroup
             name="planType"
             style={radioButtonGroupStyle}
             onChange={input.onChange}
-            defaultSelected={input.value || 'week'}>
+            defaultSelected={input.value}>
             <RadioButton
                 value={'week'}
                 style={{width: '150px'}}
@@ -36,6 +30,6 @@ const PlanTypeRadio = enhance((props) => {
             />
         </RadioButtonGroup>
     )
-})
+}
 
 export default PlanTypeRadio

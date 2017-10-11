@@ -309,6 +309,10 @@ const enhance = compose(
             '& form': {
                 background: '#fff'
             }
+        },
+        addPlanHidden: {
+            extend: 'addPlan',
+            zIndex: '-9999'
         }
     }),
     reduxForm({
@@ -347,9 +351,13 @@ const PlanCreateDialog = enhance((props) => {
         selectedMarket,
         marketsLocation,
         toggleDaysState,
-        updatePlan
+        createPlanLoading,
+        updatePlan,
+        selectedWeekDay
     } = props
     const onSubmit = handleSubmit(() => props.onSubmit())
+    const onUpdateSubmit = handleSubmit(updatePlan.handleSubmitUpdateAgentPlan)
+    const submitDelete = handleSubmit(updatePlan.handleDeleteAgentPlan)
     const openUpdatePlan = _.get(updatePlan, 'openUpdatePlan')
     const ZERO = 0
     const isAgentChosen = selectedAgent > ZERO
@@ -482,20 +490,26 @@ const PlanCreateDialog = enhance((props) => {
                                             </div>
                                         </Paper>}
                         </div>
-                        {(selectedMarket > ZERO && !openUpdatePlan) && <div className={classes.addPlan}>
+                        <div className={(selectedMarket > ZERO && !openUpdatePlan) ? classes.addPlan : classes.addPlanHidden}>
                             <PlanWeekDayForm
+                                selectedWeekDay={selectedWeekDay}
+                                createLoading={createPlanLoading}
                                 onSubmit={onSubmit}
                                 filter={filter}
                                 toggleDaysState={toggleDaysState}/>
-                        </div>}
-                        {(selectedMarket > ZERO && openUpdatePlan) && <div className={classes.addPlan}>
+                        </div>
+                        <div className={(selectedMarket > ZERO && openUpdatePlan) ? classes.addPlan : classes.addPlanHidden}>
                             <PlanWeekDayForm
+                                updateLoading={updatePlan.updatePlanLoading}
+                                openConfirmDialog={updatePlan.openConfirmDialog}
+                                setOpenConfirmDialog={updatePlan.setOpenConfirmDialog}
                                 isUpdate={true}
-                                onSubmit={onSubmit}
+                                onSubmit={onUpdateSubmit}
+                                submitDelete={submitDelete}
                                 filter={filter}
                                 initialValues={updatePlan.initialValues}
                                 toggleDaysState={toggleDaysState}/>
-                        </div>}
+                        </div>
                         <div className={isAgentChosen ? classes.map : classes.mapBlurred}>
                             <PlanMap
                                 plans={plans}
