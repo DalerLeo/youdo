@@ -2,13 +2,14 @@ import _ from 'lodash'
 import {orderingSnakeCase} from '../../helpers/serializer'
 import moment from 'moment'
 
+const firstDayOfMonth = moment().format('YYYY-MM-01')
+const lastDay = moment().daysInMonth()
+const lastDayOfMonth = moment().format('YYYY-MM-' + lastDay)
+
 export const listFilterSerializer = (data) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
     const maxDay = 90
-    const firstDayOfMonth = moment().format('YYYY-MM-01')
-    const lastDay = moment().daysInMonth()
-    const lastDayOfMonth = moment().format('YYYY-MM-' + lastDay)
     const urlFromDate = _.get(defaultData, 'fromDate')
     const urlToDate = _.get(defaultData, 'toDate')
     const fromDay = moment(urlFromDate)
@@ -32,9 +33,6 @@ export const listFilterSerializer = (data) => {
 export const orderListFilterSerializer = (data, withOrderReturn) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
-    const firstDayOfMonth = moment().format('YYYY-MM-01')
-    const lastDay = moment().daysInMonth()
-    const lastDayOfMonth = moment().format('YYYY-MM-' + lastDay)
     return {
         'client': _.get(defaultData, 'client'),
         'division': _.get(defaultData, 'division'),
@@ -52,5 +50,17 @@ export const orderListFilterSerializer = (data, withOrderReturn) => {
         'page_size': _.get(defaultData, 'pageSize'),
         'with_order_return': withOrderReturn,
         'ordering': ordering && orderingSnakeCase(ordering)
+    }
+}
+
+export const returnGraphSerializer = (data) => {
+    const {...defaultData} = data
+    const urlFromDate = _.get(defaultData, 'fromDate')
+    const urlToDate = _.get(defaultData, 'toDate')
+
+    return {
+        'begin_date': urlFromDate || firstDayOfMonth,
+        'end_date': urlToDate || lastDayOfMonth,
+        'division': _.get(defaultData, 'division')
     }
 }

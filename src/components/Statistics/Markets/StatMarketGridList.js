@@ -40,6 +40,11 @@ const enhance = compose(
             justifyContent: 'center',
             display: 'flex'
         },
+        sumLoader: {
+            extend: 'loader',
+            padding: '0',
+            height: '75px'
+        },
         mainWrapper: {
             background: '#fff',
             margin: '0 -28px',
@@ -220,6 +225,7 @@ const StatMarketGridList = enhance((props) => {
     const sumIncome = _.get(listData, ['sumData', 'income'])
     const sumFact = _.get(listData, ['sumData', 'fact'])
     const sumReturn = _.get(listData, ['sumData', 'returnSum'])
+    const sumLoading = _.get(listData, 'sumLoading')
     const headerStyle = {
         backgroundColor: '#fff',
         fontWeight: '600',
@@ -349,9 +355,9 @@ const StatMarketGridList = enhance((props) => {
                     </Row>
                     {graphLoading ? <div style={{position: 'relative'}}><LinearLoading/></div>
                         : <ReactHighcharts
-                        config={config}
-                        neverReflow={true}
-                        isPureConfig={true}
+                            config={config}
+                            neverReflow={true}
+                            isPureConfig={true}
                         />}
                 </div>
             )
@@ -401,22 +407,20 @@ const StatMarketGridList = enhance((props) => {
                     <StatSideMenu currentUrl={ROUTES.STATISTICS_MARKET_URL} filter={filter}/>
                 </div>
                 <div className={classes.rightPanel}>
-                     <div className={classes.wrapper}>
-                         <StatisticsFilterExcel
+                    <div className={classes.wrapper}>
+                        <StatisticsFilterExcel
                             filter={filter}
                             filterKeys={STAT_MARKET_FILTER_KEY}
                             handleSubmitFilterDialog={handleSubmitFilterDialog}
                             fields={fields}
                             initialValues={initialValues}
                             handleGetDocument={getDocument.handleGetDocument}
-                         />
-
-                        {listLoading
-                         ? <div className={classes.loader}>
-                             <CircularProgress size={40} thickness={4}/>
-                         </div>
-                         : <div>
-                            <div className={classes.summary}>
+                        />
+                        {sumLoading
+                            ? <div className={classes.sumLoader}>
+                                <CircularProgress size={40} thickness={4}/>
+                            </div>
+                            : <div className={classes.summary}>
                                 <div>
                                     <span>Сумма от продаж</span>
                                     <div>{numberFormat(sumIncome, primaryCurrency)}</div>
@@ -429,30 +433,35 @@ const StatMarketGridList = enhance((props) => {
                                     <span>Сумма возвратов</span>
                                     <div>{numberFormat(sumReturn, primaryCurrency)}</div>
                                 </div>
-                            </div>
-                            <div className={classes.pagination}>
-                                <div>Продажи по магазинам в зоне</div>
-                                <form onSubmit={handleSubmit(handleSubmitFilterDialog)}>
-                                    <Field
-                                        className={classes.inputFieldCustom}
-                                        name="search"
-                                        component={TextField}
-                                        hintText="Магазин"/>
-                                </form>
-                                <Pagination filter={filter}/>
-                            </div>
-                            {!_.isEmpty(list)
-                                ? <div className={classes.tableWrapper}>
-                                    {headers}
-                                    {list}
+                            </div>}
+                        <div className={classes.pagination}>
+                            <div>Продажи по магазинам в зоне</div>
+                            <form onSubmit={handleSubmit(handleSubmitFilterDialog)}>
+                                <Field
+                                    className={classes.inputFieldCustom}
+                                    name="search"
+                                    component={TextField}
+                                    hintText="Магазин"/>
+                            </form>
+                            <Pagination filter={filter}/>
+                        </div>
+                        {listLoading
+                            ? <div className={classes.tableWrapper}>
+                                <div className={classes.loader}>
+                                    <CircularProgress thickness={4} size={40}/>
                                 </div>
-                                : <div className={classes.tableWrapper}>
-                                    <div className={classes.emptyQuery}>
+                            </div>
+                            : <div className={classes.tableWrapper}>
+                                {_.isEmpty(list) && !listLoading
+                                    ? <div className={classes.emptyQuery}>
                                         <div>По вашему запросу ничего не найдено</div>
                                     </div>
-                                </div>}
+                                    : <div>
+                                        {headers}
+                                        {list}
+                                    </div>}
                             </div>}
-                     </div>
+                    </div>
                 </div>
             </Row>
         </div>

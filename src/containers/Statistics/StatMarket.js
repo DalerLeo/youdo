@@ -49,6 +49,16 @@ const enhance = compose(
         return (props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest())
     }, ({dispatch, filter}) => {
         dispatch(statMarketListFetchAction(filter))
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const except = {
+            page: null,
+            pageSize: null,
+            search: null
+        }
+        return (props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except))
+    }, ({dispatch, filter}) => {
         dispatch(statMarketSumFetchAction(filter))
     }),
 

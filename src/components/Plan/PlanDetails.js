@@ -37,10 +37,10 @@ const enhance = compose(
         },
         wrapper: {
             background: '#f4f4f4 !important',
+            borderLeft: '1px #e0e0e0 solid',
             width: 'calc(100% - 330px)',
             extend: 'padding',
             zIndex: '2',
-            boxShadow: '-3px -2px 12px 0px rgba(0, 0, 0, 0.07), -4px -4px 16px 0px rgba(0, 0, 0, 0.08)',
             '& > div': {
                 height: '100%'
             }

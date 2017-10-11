@@ -232,6 +232,7 @@ const TrackingWrapper = enhance((props) => {
         agentLocation,
         agentLocationLoading,
         marketsLocation,
+        zonesLocation,
         isOpenMarkets,
         initialValues,
         tabData,
@@ -437,6 +438,7 @@ const TrackingWrapper = enhance((props) => {
                     handleOpenDetails={handleOpenDetails}
                     agentLocation={agentLocation}
                     marketsLocation={marketsLocation}
+                    zonesLocation={zonesLocation}
                     isOpenMarkets={isOpenMarkets}
                     shopDetails={shopDetails}
                     sliderValue={sliderValue}
