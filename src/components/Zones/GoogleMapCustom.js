@@ -14,10 +14,11 @@ import {googleMapStyle} from '../../constants/googleMapsStyle'
 import Location from '../Images/market-green.png'
 import MarketOff from '../Images/market-red.png'
 const MARKER_SIZE = 30
+const MARKER_TIME = 1500
 const ZERO = 0
-const MINUS_FIVE = -5
-const ANCHOR = 8
-const SCALED = 18
+const INFO_WINDOW_OFFSET = -7
+const ANCHOR = 7
+const SCALED = 14
 const classes = {
     loader: {
         width: '100%',
@@ -37,7 +38,8 @@ export default class GoogleCustomMap extends React.Component {
             zone: [],
             points: null,
             isDrawing: false,
-            initial: true
+            initial: true,
+            currentOverlay: null
         }
 
         this.handleClearDrawing = this.handleClearDrawing.bind(this)
@@ -67,8 +69,11 @@ export default class GoogleCustomMap extends React.Component {
     }
 
     handleClearDrawing () {
-        google.maps.event.clearInstanceListeners(this.state.drawing)
-        this.state.drawing.setMap(null)
+        if (this.state.drawing) {
+            this.state.drawing.map && this.state.drawing.setMap(null)
+            // Clear newly drawn overlay from map
+            this.state.currentOverlay.map && this.state.currentOverlay.setMap(null)
+        }
     }
 
     handleDrawing () {
@@ -81,7 +86,7 @@ export default class GoogleCustomMap extends React.Component {
     }
 
     handleEdit () {
-        if (this.state.drawing) {
+        if (this.state.drawing && this.state.drawing.map) {
             this.state.drawing.setMap(null)
             this.setState({
                 isDrawing: false
@@ -92,12 +97,12 @@ export default class GoogleCustomMap extends React.Component {
     getMarkers (data) {
         let list = []
         _.map(data, (item) => {
-            if (_.get(item, ['location', 'coordinates', '0']) && _.get(item, ['location', 'coordinates', '1'])) {
+            if (_.get(item, ['location', 'lat']) && _.get(item, ['location', 'lon'])) {
                 list.push(
                     {
                         location: {
-                            lat: _.get(item, ['location', 'coordinates', '0']),
-                            lng: _.get(item, ['location', 'coordinates', '1'])
+                            lat: _.get(item, ['location', 'lat']),
+                            lng: _.get(item, ['location', 'lon'])
                         },
                         name: item.name,
                         id: item.id,
@@ -132,7 +137,7 @@ export default class GoogleCustomMap extends React.Component {
             const info = '<div>' + item.name + '</div>'
             const infoWindow = new google.maps.InfoWindow({
                 content: info,
-                pixelOffset: new google.maps.Size(MINUS_FIVE, ZERO)
+                pixelOffset: new google.maps.Size(INFO_WINDOW_OFFSET, ZERO)
             })
 
             marker.addListener('mouseover', () => {
@@ -196,7 +201,7 @@ export default class GoogleCustomMap extends React.Component {
                 zIndex: 1
             })
             zones.push({zone: existingZone, id, title})
-            this.createOverlays(meanLat, meanLng, id)
+            this.createOverlays(meanLat, meanLng, title)
             existingZone.setMap(this.map)
         })
 
@@ -223,7 +228,7 @@ export default class GoogleCustomMap extends React.Component {
         })
     }
 
-    createOverlays (meanLat, meanLng, id) {
+    createOverlays (meanLat, meanLng, title) {
         this.overlayView = new google.maps.OverlayView()
         this.overlayView.setMap(this.map)
         this.overlayView.onAdd = () => {
@@ -244,10 +249,11 @@ export default class GoogleCustomMap extends React.Component {
             let div = overlayEl.onAdd()
             div.style.left = sw.x + 'px'
             div.style.top = sw.y + 'px'
-            div.style.color = '#000'
+            div.style.color = '#333'
             div.style.fontSize = '20px'
             div.style.fontWeight = '700'
-            div.innerHTML = 'Z-' + id
+            div.style.whiteSpace = 'nowrap'
+            div.innerHTML = title
             mapPanes[GOOGLE_MAP.FLOATPANE].appendChild(div)
         }
 
@@ -258,7 +264,21 @@ export default class GoogleCustomMap extends React.Component {
 
     createCustomZone (nextState) {
         google.maps.event.addListener(nextState.drawing, 'overlaycomplete', (event) => {
+            // Disable drawing manager from map
             this.handleEdit()
+            // Getting currentOverlay for clearing it if not needed
+            this.setState({
+                currentOverlay: event.overlay
+            })
+            // Make zone editable after overlay is drawn
+            event.overlay.setOptions({
+                editable: true,
+                fillColor: '#4de03a',
+                fillOpacity: 0.3,
+                strokeWeight: 2,
+                strokeColor: '#236406'
+            })
+            // Get points when its edited
             const coordinates = event.overlay.getPath().getArray()
             event.overlay.getPaths().forEach((path) => {
                 this.getPoints = () => {
@@ -314,10 +334,10 @@ export default class GoogleCustomMap extends React.Component {
     }
 
     editZone (nextProps, nextState) {
+        // Find selected zone with ID, then make it editable
         const selectedZone = _.get(_.filter(nextState.zone, (item) => {
             return nextProps.zoneId === item.id
         }), ['0', 'zone'])
-
         selectedZone.setOptions({
             editable: true,
             fillColor: '#4de03a',
@@ -327,6 +347,7 @@ export default class GoogleCustomMap extends React.Component {
         })
         const coordinates = selectedZone.getPath().getArray()
         selectedZone.getPaths().forEach(() => {
+            // Save changed coordinates in this for future calls
             this.getChangedPoints = {
                 points: _.map(coordinates, (p) => {
                     const polyLat = p.lat()
@@ -353,6 +374,7 @@ export default class GoogleCustomMap extends React.Component {
                     })
                 }
             })
+            // Save title of updating zone to this for passing in handleUpdate
             this.getChangedPoints.title = _.get(selectedZone, 'title')
             return this.getChangedPoints
         }
@@ -370,12 +392,14 @@ export default class GoogleCustomMap extends React.Component {
         if (nextState.drawing) {
             if (_.get(nextProps, 'zoneId')) {
                 this.editZone(nextProps, nextState)
-            } else {
+            } else
+            if (_.get(this, ['props', 'zoneId']) !== _.get(nextProps, 'zoneId')) {
                 this.setEditableFalse()
             }
             this.createCustomZone(nextState)
-            if (nextProps.marketsData.data !== this.props.marketsData.data) {
-                this.getMarkers(nextProps.marketsData.data)
+            const {marketsData: {data}, listData} = this.props
+            if (nextProps.marketsData.data !== data || nextProps.listData.data.length !== listData.data.length) {
+                setTimeout(() => this.getMarkers(nextProps.marketsData.data), MARKER_TIME)
             }
         }
     }

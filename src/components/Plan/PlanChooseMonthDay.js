@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
-import {compose, withState} from 'recompose'
+import {compose, withState, withPropsOnChange} from 'recompose'
 import injectSheet from 'react-jss'
 
 let days = []
@@ -49,7 +49,23 @@ const enhance = compose(
             fontWeight: '600'
         }
     }),
-    withState('activeDays', 'updateDays', days)
+    withState('activeDays', 'updateDays', days),
+    withPropsOnChange((props, nextProps) => {
+        return _.get(props, ['input', 'value']) !== _.get(nextProps, ['input', 'value'])
+    }, (props) => {
+        _.map(days, (item) => {
+            if (item.id) {
+                item.active = false
+            }
+        })
+        _.map(_.get(props, ['input', 'value']), (obj) => {
+            _.map(days, (item) => {
+                if (obj.id === item.id) {
+                    item.active = true
+                }
+            })
+        })
+    }),
 )
 
 const PlanChooseMonthDay = enhance((props) => {
@@ -61,10 +77,10 @@ const PlanChooseMonthDay = enhance((props) => {
     } = props
 
     const func = (day) => {
-        const weekToActive = _.find(days, {'id': day})
+        const weekToActive = _.find(activeDays, {'id': day})
         weekToActive.active = !weekToActive.active
         updateDays(days)
-        input.onChange(_.filter(days, (d) => {
+        input.onChange(_.filter(activeDays, (d) => {
             return d.active === true
         }))
     }

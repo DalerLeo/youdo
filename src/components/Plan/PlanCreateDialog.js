@@ -309,6 +309,10 @@ const enhance = compose(
             '& form': {
                 background: '#fff'
             }
+        },
+        addPlanHidden: {
+            extend: 'addPlan',
+            zIndex: '-9999'
         }
     }),
     reduxForm({
@@ -345,9 +349,16 @@ const PlanCreateDialog = enhance((props) => {
         selectedZone,
         selectedAgent,
         selectedMarket,
-        marketsLocation
+        marketsLocation,
+        toggleDaysState,
+        createPlanLoading,
+        updatePlan,
+        selectedWeekDay
     } = props
     const onSubmit = handleSubmit(() => props.onSubmit())
+    const onUpdateSubmit = handleSubmit(updatePlan.handleSubmitUpdateAgentPlan)
+    const submitDelete = handleSubmit(updatePlan.handleDeleteAgentPlan)
+    const openUpdatePlan = _.get(updatePlan, 'openUpdatePlan')
     const ZERO = 0
     const isAgentChosen = selectedAgent > ZERO
     const zones = _.map(zonesList, (item) => {
@@ -397,18 +408,22 @@ const PlanCreateDialog = enhance((props) => {
             return {
                 id: _.get(m, ['market', 'id']),
                 location: {
-                    lat: _.get(m, ['market', 'location', 'coordinates', '0']),
-                    lng: _.get(m, ['market', 'location', 'coordinates', '1'])
+                    lat: _.get(m, ['market', 'location', 'lat']),
+                    lng: _.get(m, ['market', 'location', 'lon'])
                 }
             }
         })
     })
     const plansPaths = _.map(zoneAgents, (plan) => {
-        return _.map(_.get(plan, 'plans'), (m) => {
+        const sortedPlan = _.sortBy(_.get(plan, 'plans'), 'priority')
+        const agentId = _.get(plan, 'id')
+        return _.map(sortedPlan, (m) => {
             return {
-                lat: _.get(m, ['market', 'location', 'coordinates', '0']),
-                lng: _.get(m, ['market', 'location', 'coordinates', '1']),
-                marketId: _.get(m, ['market', 'id'])
+                lat: _.get(m, ['market', 'location', 'lat']),
+                lng: _.get(m, ['market', 'location', 'lon']),
+                agentId: agentId,
+                marketId: _.get(m, ['market', 'id']),
+                planId: _.get(m, 'id')
             }
         })
     })
@@ -475,9 +490,26 @@ const PlanCreateDialog = enhance((props) => {
                                             </div>
                                         </Paper>}
                         </div>
-                        {selectedMarket > ZERO && <div className={classes.addPlan}>
-                            <PlanWeekDayForm onSubmit={onSubmit} filter={filter}/>
-                        </div>}
+                        <div className={(selectedMarket > ZERO && !openUpdatePlan) ? classes.addPlan : classes.addPlanHidden}>
+                            <PlanWeekDayForm
+                                selectedWeekDay={selectedWeekDay}
+                                createLoading={createPlanLoading}
+                                onSubmit={onSubmit}
+                                filter={filter}
+                                toggleDaysState={toggleDaysState}/>
+                        </div>
+                        <div className={(selectedMarket > ZERO && openUpdatePlan) ? classes.addPlan : classes.addPlanHidden}>
+                            <PlanWeekDayForm
+                                updateLoading={updatePlan.updatePlanLoading}
+                                openConfirmDialog={updatePlan.openConfirmDialog}
+                                setOpenConfirmDialog={updatePlan.setOpenConfirmDialog}
+                                isUpdate={true}
+                                onSubmit={onUpdateSubmit}
+                                submitDelete={submitDelete}
+                                filter={filter}
+                                initialValues={updatePlan.initialValues}
+                                toggleDaysState={toggleDaysState}/>
+                        </div>
                         <div className={isAgentChosen ? classes.map : classes.mapBlurred}>
                             <PlanMap
                                 plans={plans}
@@ -487,6 +519,7 @@ const PlanCreateDialog = enhance((props) => {
                                 marketsLocation={marketsLocation}
                                 selectedMarket={selectedMarket}
                                 handleChooseMarket={handleChooseMarket}
+                                handleUpdateAgentPlan={updatePlan.handleUpdateAgentPlan}
                             />
                         </div>
                     </div>

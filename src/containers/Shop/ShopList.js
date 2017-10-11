@@ -209,6 +209,7 @@ const enhance = compose(
             const {dispatch, location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[SHOP_CREATE_DIALOG_OPEN]: true})})
             dispatch(reset('ShopCreateForm'))
+            dispatch(reset('ShopMapForm'))
         },
 
         handleCloseCreateDialog: props => () => {
@@ -216,9 +217,9 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[SHOP_CREATE_DIALOG_OPEN]: false})})
         },
 
-        handleSubmitCreateDialog: props => () => {
+        handleSubmitCreateDialog: props => (newClient) => {
             const {location: {pathname}, dispatch, createForm, mapLocation, filter} = props
-            return dispatch(shopCreateAction(_.get(createForm, ['values']), mapLocation))
+            return dispatch(shopCreateAction(_.get(createForm, ['values']), mapLocation, newClient))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
@@ -499,7 +500,7 @@ const ShopList = enhance((props) => {
 
     const updateMapDialog = {
         initialValues: (() => {
-            if (!mapLocation) {
+            if (!mapLocation || openCreateDialog) {
                 return {}
             }
             return {

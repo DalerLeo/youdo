@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
-import {compose, withState} from 'recompose'
+import {compose, withPropsOnChange, withState} from 'recompose'
 import injectSheet from 'react-jss'
 
 const weeks = [
@@ -12,6 +12,7 @@ const weeks = [
     {id: 6, name: 'Сб', active: false},
     {id: 0, name: 'Вс', active: false}
 ]
+
 const enhance = compose(
     injectSheet({
         weeks: {
@@ -38,11 +39,26 @@ const enhance = compose(
             fontWeight: '600'
         }
     }),
-    withState('activeWeeks', 'updateWeeks', weeks)
+    withState('activeWeeks', 'updateWeeks', weeks),
+    withPropsOnChange((props, nextProps) => {
+        return (_.get(props, ['input', 'value']) !== _.get(nextProps, ['input', 'value']))
+    }, (props) => {
+        _.map(weeks, (item) => {
+            item.active = false
+        })
+        _.map(_.get(props, ['input', 'value']), (obj) => {
+            _.map(weeks, (item) => {
+                if (obj.id === item.id) {
+                    item.active = true
+                }
+            })
+        })
+    }),
 )
 
 const PlanChooseWeekday = enhance((props) => {
     const {
+        // SelectedWeekDay,
         activeWeeks,
         updateWeeks,
         classes,
@@ -50,10 +66,10 @@ const PlanChooseWeekday = enhance((props) => {
     } = props
 
     const func = (day) => {
-        const weekToActive = _.find(weeks, {'id': day})
+        const weekToActive = _.find(activeWeeks, {'id': day})
         weekToActive.active = !weekToActive.active
         updateWeeks(weeks)
-        input.onChange(_.filter(weeks, (w) => {
+        input.onChange(_.filter(activeWeeks, (w) => {
             return w.active === true
         }))
     }

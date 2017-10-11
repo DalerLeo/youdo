@@ -383,7 +383,10 @@ export const CLIENT_BALANCE_UPDATE = `/${CLIENT_BALANCE}/%d/`
 export const CLIENT_BALANCE_SUPER_USER = '/sales/client_transaction/%d/'
 export const CLIENT_BALANCE_GET_DOCUMENT = '/sales/client_balances/export/'
 
-export const PLAN_CREATE = 'market/plan/'
+export const PLAN = 'market/plan'
+export const PLAN_CREATE = `${PLAN}/`
+export const PLAN_UPDATE = `${PLAN}/%d/`
+export const PLAN_DELETE = `${PLAN}/%d/`
 export const PLAN_AGENT_ITEM = `${STAT_AGENT_LIST}/%d/`
 export const PLAN_MONTHLY = 'sales/monthly_plan/'
 export const PLAN_AGENT_MONTHLY = 'stats/agents/statistics/'

@@ -196,3 +196,19 @@ export const shopListFetchAction = (zoneId, filter) => {
         payload
     }
 }
+
+export const marketsLocationFetchAction = () => {
+    const payload = axios()
+        .get(API.MARKETS_LOCATION, {params: {null_location: false}})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.MARKETS_LOCATION,
+        payload
+    }
+}

@@ -405,10 +405,13 @@ const rootReducer = combineReducers({
         listPrint: createThunkReducer(actionTypes.RETURN_PRINT)
     }),
     plan: combineReducers({
+        createPlan: createThunkReducer(actionTypes.PLAN_CREATE_SUBMIT),
+        updatePlan: createThunkReducer(actionTypes.PLAN_UPDATE_SUBMIT),
         monthlyPlan: createThunkReducer(actionTypes.PLAN_MONTHLY),
         agentsList: createThunkReducer(actionTypes.PLAN_AGENT_LIST),
         agentPlan: createThunkReducer(actionTypes.PLAN_AGENT_MONTHLY),
-        agentsPlan: createThunkReducer(actionTypes.PLAN_AGENTS)
+        agentsPlan: createThunkReducer(actionTypes.PLAN_AGENTS),
+        update: createThunkReducer(actionTypes.PLAN_UPDATE)
     }),
     join: combineReducers({
         joinMarkets: createThunkReducer(actionTypes.JOIN_MARKETS),

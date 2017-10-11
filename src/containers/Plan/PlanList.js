@@ -1,9 +1,9 @@
 import React from 'react'
 import _ from 'lodash'
 import moment from 'moment'
-import {compose, withPropsOnChange, withHandlers} from 'recompose'
+import {compose, withPropsOnChange, withHandlers, withState} from 'recompose'
 import {connect} from 'react-redux'
-import {reset} from 'redux-form'
+import {reset, change} from 'redux-form'
 import Layout from '../../components/Layout'
 import {hashHistory} from 'react-router'
 import filterHelper from '../../helpers/filter'
@@ -13,6 +13,7 @@ import {
     PlanWrapper,
     USER_GROUP,
     OPEN_PLAN_SALES,
+    UPDATE_PLAN,
     DATE,
     ZONE,
     AGENT,
@@ -20,19 +21,23 @@ import {
 } from '../../components/Plan'
 import {
     planCreateAction,
+    planUpdateAction,
+    planDeleteAction,
     planAgentsListFetchAction,
     planItemFetchAction,
     planZonesListFetchAction,
     planMonthlySetAction,
     agentMonthlyPlanAction,
     planZonesItemFetchAction,
-    marketsLocationAction
+    marketsLocationAction,
+    planUpdateDialogAction
 } from '../../actions/plan'
 import {openSnackbarAction} from '../../actions/snackbar'
 
 const ZERO = 0
 const ONE = 1
 const defaultDate = moment().format('YYYY-MM')
+
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -49,13 +54,17 @@ const enhance = compose(
         const statLoading = _.get(state, ['plan', 'statistics', 'loading'])
         const plan = _.get(state, ['plan', 'agentPlan', 'data'])
         const planLoading = _.get(state, ['plan', 'agentPlan', 'loading'])
+        const createPlanLoading = _.get(state, ['plan', 'createPlan', 'loading'])
+        const updatePlanLoading = _.get(state, ['plan', 'update', 'loading'])
         const monthlyPlanCreateLoading = _.get(state, ['plan', 'monthlyPlan', 'loading'])
         const createForm = _.get(state, ['form', 'PlanCreateForm', 'values'])
         const monthlyPlanForm = _.get(state, ['form', 'PlanSalesForm', 'values'])
         const selectedDate = _.get(query, DATE) || defaultDate
         const selectedDay = _.get(query, 'day') || moment().format('DD')
         const marketsLocation = _.get(state, ['tracking', 'markets', 'data'])
+        const planDetails = _.get(state, ['plan', 'update', 'data'])
         const filter = filterHelper(usersList, pathname, query)
+        const selectedWeekDay = _.toInteger(moment(selectedDate + '-' + selectedDay).format('e'))
         return {
             query,
             pathname,
@@ -72,14 +81,20 @@ const enhance = compose(
             createForm,
             selectedDate,
             selectedDay,
+            selectedWeekDay,
             monthlyPlanForm,
             monthlyPlanCreateLoading,
             plan,
             planLoading,
             marketsLocation,
+            planDetails,
+            createPlanLoading,
+            updatePlanLoading,
             filter
         }
     }),
+
+    withState('openConfirmDialog', 'setOpenConfirmDialog', false),
 
     withPropsOnChange((props, nextProps) => {
         const prevTab = _.get(props, ['query', 'group'])
@@ -121,7 +136,15 @@ const enhance = compose(
         return (prevZone !== nextZone && nextZone > ZERO) ||
             (props.selectedDate !== nextProps.selectedDate && nextZone > ZERO) ||
             (props.selectedDay !== nextProps.selectedDay && nextZone > ZERO)
-    }, ({dispatch, location, selectedDate, selectedDay}) => {
+    }, ({dispatch, location, selectedDate, selectedDay, activeWeeks, activeDays}) => {
+        _.map(activeWeeks, (w) => {
+            w.active = false
+        })
+        _.map(activeDays, (d) => {
+            if (d.id) {
+                d.active = false
+            }
+        })
         const zone = _.toInteger(_.get(location, ['query', ZONE]))
         const date = selectedDate + '-' + selectedDay
         if (zone > ZERO) {
@@ -140,6 +163,17 @@ const enhance = compose(
         }
     }),
 
+    withPropsOnChange((props, nextProps) => {
+        const prevUpdate = _.toInteger(_.get(props, ['query', UPDATE_PLAN]))
+        const nextUpdate = _.toInteger(_.get(nextProps, ['query', UPDATE_PLAN]))
+        return prevUpdate !== nextUpdate && nextUpdate > ZERO
+    }, ({dispatch, location}) => {
+        const planId = _.toInteger(_.get(location, ['query', UPDATE_PLAN]))
+        if (planId > ZERO) {
+            dispatch(planUpdateDialogAction(planId))
+        }
+    }),
+
     withHandlers({
         handleClickTab: props => (id) => {
             const {location: {pathname}, filter} = props
@@ -148,18 +182,18 @@ const enhance = compose(
 
         handleOpenAddPlan: props => () => {
             const {dispatch, location: {pathname}} = props
-            dispatch(reset('PlanCreateForm'))
+            dispatch(change('PlanCreateForm', 'weekday', null))
             hashHistory.push({pathname, query: {[ADD_PLAN]: true}})
         },
 
         handleCloseAddPlan: props => () => {
             const {dispatch, location: {pathname}} = props
-            dispatch(reset('PlanCreateForm'))
+            dispatch(change('PlanCreateForm', 'weekday', null))
             hashHistory.push({pathname, query: {[ADD_PLAN]: false}})
         },
 
         handleSubmitAddPlan: props => () => {
-            const {location: {pathname, query}, dispatch, createForm, filter, selectedDate, selectedDay} = props
+            const {location: {pathname, query}, dispatch, createForm, filter, selectedDate, selectedDay, activeWeeks, activeDays} = props
             const zone = _.get(query, ZONE)
             const date = selectedDate + '-' + selectedDay
 
@@ -168,7 +202,57 @@ const enhance = compose(
                     return dispatch(openSnackbarAction({message: 'План успешно составлен'}))
                 })
                 .then(() => {
+                    dispatch(change('PlanCreateForm', 'weekday', null))
                     hashHistory.push({pathname, query: filter.getParams({[MARKET]: ZERO})})
+                    dispatch(planZonesListFetchAction())
+                    dispatch(planZonesItemFetchAction(zone, date))
+                    dispatch(planAgentsListFetchAction(filter))
+                })
+                .then(() => {
+                    _.map(activeWeeks, (obj) => {
+                        obj.active = false
+                    })
+                    _.map(activeDays, (obj) => {
+                        obj.active = false
+                    })
+                })
+        },
+
+        handleUpdateAgentPlan: props => (plan, agent, market) => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[UPDATE_PLAN]: plan, [AGENT]: agent, [MARKET]: market})})
+        },
+
+        handleSubmitUpdateAgentPlan: props => () => {
+            const {dispatch, location: {pathname, query}, filter, createForm, selectedDate, selectedDay} = props
+            const zone = _.get(query, ZONE)
+            const date = selectedDate + '-' + selectedDay
+            const planId = _.toInteger(_.get(query, UPDATE_PLAN))
+            return dispatch(planUpdateAction(createForm, filter.getParams(), planId))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'План успешно изменен'}))
+                })
+                .then(() => {
+                    dispatch(change('PlanCreateForm', 'weekday', null))
+                    hashHistory.push({pathname, query: filter.getParams({[UPDATE_PLAN]: false, [MARKET]: ZERO})})
+                    dispatch(planZonesListFetchAction())
+                    dispatch(planZonesItemFetchAction(zone, date))
+                    dispatch(planAgentsListFetchAction(filter))
+                })
+        },
+
+        handleDeleteAgentPlan: props => () => {
+            const {dispatch, location: {pathname, query}, filter, selectedDate, selectedDay, setOpenConfirmDialog} = props
+            const zone = _.get(query, ZONE)
+            const date = selectedDate + '-' + selectedDay
+            const planId = _.toInteger(_.get(query, UPDATE_PLAN))
+            return dispatch(planDeleteAction(planId))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'План успешно удален'}))
+                })
+                .then(() => {
+                    setOpenConfirmDialog(false)
+                    hashHistory.push({pathname, query: filter.getParams({[UPDATE_PLAN]: false, [MARKET]: ZERO})})
                     dispatch(planZonesListFetchAction())
                     dispatch(planZonesItemFetchAction(zone, date))
                     dispatch(planAgentsListFetchAction(filter))
@@ -259,11 +343,18 @@ const PlanList = enhance((props) => {
         planLoading,
         currentDate,
         selectedDay,
-        marketsLocation
+        selectedWeekDay,
+        marketsLocation,
+        planDetails,
+        createPlanLoading,
+        updatePlanLoading,
+        openConfirmDialog,
+        setOpenConfirmDialog
     } = props
 
     const openAddPlan = toBoolean(_.get(location, ['query', ADD_PLAN]))
     const openPlanSales = toBoolean(_.get(location, ['query', OPEN_PLAN_SALES]))
+    const openUpdatePlan = _.toInteger(_.get(location, ['query', UPDATE_PLAN])) > ZERO
     const groupId = _.toInteger(_.get(location, ['query', USER_GROUP]) || ONE)
     const openDetail = !_.isEmpty(_.get(params, 'agentId'))
     const detailId = _.toInteger(_.get(params, 'agentId'))
@@ -282,12 +373,43 @@ const PlanList = enhance((props) => {
         selectedMarket,
         selectedZone,
         marketsLocation,
+        createPlanLoading,
         handleChooseZone: props.handleChooseZone,
         handleChooseAgent: props.handleChooseAgent,
         handleChooseMarket: props.handleChooseMarket,
         handleOpenAddPlan: props.handleOpenAddPlan,
         handleCloseAddPlan: props.handleCloseAddPlan,
         handleSubmitAddPlan: props.handleSubmitAddPlan
+    }
+
+    const updatePlan = {
+        initialValues: (() => {
+            const planType = _.get(planDetails, ['recurrences', '0', 'type'])
+            const priority = _.get(planDetails, 'priority')
+            const weekday = _.map(_.get(planDetails, 'recurrences'), (item) => {
+                return {
+                    id: _.get(item, 'weekDay') || _.get(item, 'monthDay'),
+                    active: true
+                }
+            })
+            if (!openUpdatePlan) {
+                return {}
+            }
+            return {
+                priority: {
+                    value: priority
+                },
+                planType: planType,
+                weekday: weekday
+            }
+        })(),
+        openUpdatePlan,
+        updatePlanLoading,
+        openConfirmDialog,
+        setOpenConfirmDialog,
+        handleSubmitUpdateAgentPlan: props.handleSubmitUpdateAgentPlan,
+        handleDeleteAgentPlan: props.handleDeleteAgentPlan,
+        handleUpdateAgentPlan: props.handleUpdateAgentPlan
     }
 
     const planSalesDialog = {
@@ -335,12 +457,14 @@ const PlanList = enhance((props) => {
                 usersList={listData}
                 statData={statData}
                 addPlan={addPlan}
+                updatePlan={updatePlan}
                 planSalesDialog={planSalesDialog}
                 handleClickTab={props.handleClickTab}
                 groupId={groupId}
                 calendar={calendar}
                 detailData={detailData}
                 monthlyPlan={monthlyPlan}
+                selectedWeekDay={selectedWeekDay}
             />
         </Layout>
     )

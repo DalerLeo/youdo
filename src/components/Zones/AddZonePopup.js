@@ -148,10 +148,9 @@ const AddZonePopup = enhance((props) => {
                         </Tooltip>
 
                         <Tooltip text="Очистить" position="bottom">
-                            <IconButton
-                                disableTouchRipple={true}>
+                            <IconButton>
                                 <DeleteIcon color="#666"
-                                onTouchTap={(event) => { handleClearDrawing(event) }}
+                                onTouchTap={() => { handleClearDrawing() }}
                                 />
                             </IconButton>
                         </Tooltip>

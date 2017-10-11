@@ -17,7 +17,55 @@ export const planCreateAction = (formValues, query) => {
         })
 
     return {
-        type: actionTypes.PLAN_CREATE,
+        type: actionTypes.PLAN_CREATE_SUBMIT,
+        payload
+    }
+}
+
+export const planUpdateAction = (formValues, query, id) => {
+    const requestData = serializers.createSerializer(formValues, query)
+    const payload = axios()
+        .put(sprintf(API.PLAN_UPDATE, id), requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.PLAN_UPDATE_SUBMIT,
+        payload
+    }
+}
+
+export const planDeleteAction = (id) => {
+    const payload = axios()
+        .delete(sprintf(API.PLAN_DELETE, id))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        payload
+    }
+}
+
+export const planUpdateDialogAction = (id) => {
+    const payload = axios()
+        .get(sprintf(API.PLAN_UPDATE, id))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.PLAN_UPDATE,
         payload
     }
 }
