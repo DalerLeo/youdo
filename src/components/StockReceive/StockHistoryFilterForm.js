@@ -29,7 +29,7 @@ export const OUT_HISTORY_FILTER_KEY = {
     TYPE: 'type',
     STATUS: 'status',
     TYPE_CHILD: 'typeChild',
-    PRODUCT_TYPE: 'productType',
+    TYPE_PARENT: 'typeParent',
     BRAND: 'brand',
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate',

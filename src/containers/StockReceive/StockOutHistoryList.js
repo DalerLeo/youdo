@@ -179,6 +179,7 @@ const enhance = compose(
             const fromDate = _.get(historyFilterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(historyFilterForm, ['values', 'date', 'toDate']) || null
             const typeChild = _.get(historyFilterForm, ['values', 'typeChild', 'value']) || null
+            const typeParent = _.get(historyFilterForm, ['values', 'typeParent', 'value']) || null
 
             filter.filterBy({
                 [OUT_HISTORY_FILTER_OPEN]: false,
@@ -187,6 +188,7 @@ const enhance = compose(
                 [OUT_HISTORY_FILTER_KEY.STATUS]: status,
                 [OUT_HISTORY_FILTER_KEY.PRODUCT]: product,
                 [OUT_HISTORY_FILTER_KEY.TYPE_CHILD]: typeChild,
+                [OUT_HISTORY_FILTER_KEY.TYPE_PARENT]: typeParent,
                 [OUT_HISTORY_FILTER_KEY.FROM_DATE]: fromDate && moment(fromDate).format('YYYY-MM-DD'),
                 [OUT_HISTORY_FILTER_KEY.TO_DATE]: toDate && moment(toDate).format('YYYY-MM-DD')
 
@@ -265,7 +267,8 @@ const StockOutHistoryList = enhance((props) => {
     const brand = _.toInteger(filter.getParam(OUT_HISTORY_FILTER_KEY.BRAND))
     const stock = _.toInteger(filter.getParam(OUT_HISTORY_FILTER_KEY.STOCK))
     const type = _.toInteger(filter.getParam(OUT_HISTORY_FILTER_KEY.TYPE))
-    const productType = _.toInteger(filter.getParam(OUT_HISTORY_FILTER_KEY.PRODUCT_TYPE))
+    const typeParent = _.toInteger(filter.getParam(OUT_HISTORY_FILTER_KEY.TYPE_PARENT))
+    const typeChild = _.toInteger(filter.getParam(OUT_HISTORY_FILTER_KEY.TYPE_CHILD))
     const product = _.toInteger(filter.getParam(OUT_HISTORY_FILTER_KEY.PRODUCT))
     const fromDate = filter.getParam(OUT_HISTORY_FILTER_KEY.FROM_DATE)
     const toDate = filter.getParam(OUT_HISTORY_FILTER_KEY.TO_DATE)
@@ -309,8 +312,11 @@ const StockOutHistoryList = enhance((props) => {
                 fromDate: fromDate && moment(fromDate),
                 toDate: toDate && moment(toDate)
             },
-            productType: {
-                value: productType
+            typeParent: {
+                value: typeParent
+            },
+            typeChild: {
+                value: typeChild
             },
             stock: {
                 value: stock
