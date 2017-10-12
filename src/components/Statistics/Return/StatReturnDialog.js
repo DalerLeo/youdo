@@ -44,14 +44,9 @@ const enhance = compose(
                 border: 'none',
                 padding: '0',
                 maxHeight: '573px',
-                '& > div > div:last-child > div > div:first-child': {
-                    maxHeight: '465px',
-                    overflowY: 'auto',
-                    margin: '0 -30px',
-                    padding: '10px 30px'
-                },
                 '& > div > div:last-child > div > div': {
-                    padding: '10px 0'
+                    padding: '10px 0',
+                    minHeight: '50px'
                 }
             }
         },
@@ -85,18 +80,12 @@ const enhance = compose(
         titleContent: {
             background: '#fff',
             color: '#333',
-            fontWeight: 'bold',
-            textTransform: 'uppercase',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            borderBottom: '1px solid #efefef',
-            padding: '0 30px',
-            height: '59px',
             zIndex: '999',
             '& button': {
-                right: '13px',
-                position: 'absolute !important'
+                right: '10px',
+                top: '8px',
+                position: 'absolute !important',
+                zIndex: '4 !important'
             },
             '& div': {
                 display: 'flex',
@@ -147,7 +136,6 @@ const StatReturnDialog = enhance((props) => {
         detailData,
         loading
     } = props
-    const id = _.get(detailData, 'id')
     return (
         <Dialog
             modal={true}
@@ -162,9 +150,6 @@ const StatReturnDialog = enhance((props) => {
             </div>
                 : <div>
                     <div className={classes.titleContent}>
-                        <div>
-                            <div>Заказ №{id}</div>
-                        </div>
                         <IconButton onTouchTap={onClose}>
                             <CloseIcon2 color="#666666"/>
                         </IconButton>

@@ -6,8 +6,7 @@ import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import sprintf from 'sprintf'
 import * as ROUTER from '../../constants/routes'
-import TrackingWrapper from '../../components/Tracking/TrackingWrapper'
-import {OPEN_SHOP_DETAILS, USER_GROUP, DATE} from '../../components/Tracking'
+import {OPEN_SHOP_DETAILS, USER_GROUP, DATE, TrackingWrapper} from '../../components/Tracking'
 import toBoolean from '../../helpers/toBoolean'
 import filterHelper from '../../helpers/filter'
 import moment from 'moment'
@@ -17,6 +16,7 @@ import {
     marketsLocationFetchAction
 } from '../../actions/tracking'
 import {shopItemFetchAction} from '../../actions/shop'
+import {zoneListFetchAction} from '../../actions/zones'
 
 const TRACKING_FILTER_KEY = {
     DATE: 'date',
@@ -40,6 +40,7 @@ const enhance = compose(
         const agentLocation = _.get(state, ['tracking', 'location', 'data'])
         const agentLocationLoading = _.get(state, ['tracking', 'location', 'loading'])
         const marketsLocation = _.get(state, ['tracking', 'markets', 'data'])
+        const zonesLocation = _.get(state, ['zone', 'list', 'data', 'results'])
         const filterForm = _.get(state, ['form', 'TrackingFilterForm'])
         const filter = filterHelper(list, pathname, query)
         const isOpenTrack = toBoolean(_.get(query, 'agentTrack'))
@@ -59,6 +60,7 @@ const enhance = compose(
             agentLocation,
             agentLocationLoading,
             marketsLocation,
+            zonesLocation,
             filterForm,
             isOpenTrack,
             isOpenMarkets,
@@ -103,6 +105,14 @@ const enhance = compose(
         return prevMarket !== nextMarket && nextMarket === true
     }, ({dispatch}) => {
         dispatch(marketsLocationFetchAction())
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const prevZone = toBoolean(_.get(props, ['query', 'showZones']))
+        const nextZone = toBoolean(_.get(nextProps, ['query', 'showZones']))
+        return prevZone !== nextZone && nextZone === true
+    }, ({dispatch}) => {
+        dispatch(zoneListFetchAction())
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -190,6 +200,7 @@ const Tracking = enhance((props) => {
         agentLocation,
         agentLocationLoading,
         marketsLocation,
+        zonesLocation,
         isOpenTrack,
         isOpenMarkets,
         marketData,
@@ -267,6 +278,7 @@ const Tracking = enhance((props) => {
                 calendar={calendar}
                 initialValues={filterForm.initialValues}
                 marketsLocation={marketsLocation}
+                zonesLocation={zonesLocation}
                 handleOpenDetails={props.handleOpenDetails}
                 isOpenTrack={isOpenTrack}
                 isOpenMarkets={isOpenMarkets}

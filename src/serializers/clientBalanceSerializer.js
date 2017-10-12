@@ -26,6 +26,14 @@ export const listFilterSerializer = (data) => {
         'ordering': ordering && orderingSnakeCase(ordering)
     }
 }
+export const sumFilterSerializer = (data) => {
+    const {...defaultData} = data
+
+    return {
+        'created_date_0': _.get(defaultData, 'fromDate'),
+        'created_date_1': _.get(defaultData, 'toDate')
+    }
+}
 export const itemFilterSerializer = (data, id, division, type) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')

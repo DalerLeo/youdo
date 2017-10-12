@@ -63,6 +63,7 @@ const enhance = compose(
         const selectedDay = _.get(query, 'day') || moment().format('DD')
         const marketsLocation = _.get(state, ['tracking', 'markets', 'data'])
         const planDetails = _.get(state, ['plan', 'update', 'data'])
+        const defaultPriority = _.get(state, ['form', 'PlanCreateForm', 'values', 'priority', 'value'])
         const filter = filterHelper(usersList, pathname, query)
         const selectedWeekDay = _.toInteger(moment(selectedDate + '-' + selectedDay).format('e'))
         return {
@@ -90,6 +91,7 @@ const enhance = compose(
             planDetails,
             createPlanLoading,
             updatePlanLoading,
+            defaultPriority,
             filter
         }
     }),
@@ -193,7 +195,8 @@ const enhance = compose(
         },
 
         handleSubmitAddPlan: props => () => {
-            const {location: {pathname, query}, dispatch, createForm, filter, selectedDate, selectedDay, activeWeeks, activeDays} = props
+            const {location: {pathname, query}, dispatch, createForm, filter, selectedDate, selectedDay, activeWeeks, activeDays, defaultPriority} = props
+            const HUNDRED = 100
             const zone = _.get(query, ZONE)
             const date = selectedDate + '-' + selectedDay
 
@@ -202,7 +205,17 @@ const enhance = compose(
                     return dispatch(openSnackbarAction({message: 'План успешно составлен'}))
                 })
                 .then(() => {
-                    dispatch(change('PlanCreateForm', 'weekday', null))
+                    if (defaultPriority === HUNDRED) {
+                        dispatch(change('PlanCreateForm', 'priority', {
+                            text: defaultPriority,
+                            value: defaultPriority
+                        }))
+                    } else {
+                        dispatch(change('PlanCreateForm', 'priority', {
+                            text: defaultPriority + ONE,
+                            value: defaultPriority + ONE
+                        }))
+                    }
                     hashHistory.push({pathname, query: filter.getParams({[MARKET]: ZERO})})
                     dispatch(planZonesListFetchAction())
                     dispatch(planZonesItemFetchAction(zone, date))
@@ -393,7 +406,15 @@ const PlanList = enhance((props) => {
                 }
             })
             if (!openUpdatePlan) {
-                return {}
+                return {
+                    planType: 'week',
+                    weekday: [
+                        {
+                            id: selectedWeekDay,
+                            active: true
+                        }
+                    ]
+                }
             }
             return {
                 priority: {

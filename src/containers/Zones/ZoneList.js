@@ -21,6 +21,8 @@ import {
     shopListFetchAction,
     marketsLocationFetchAction
 } from '../../actions/zones'
+
+import {shopItemFetchAction} from '../../actions/shop'
 import {openSnackbarAction} from '../../actions/snackbar'
 const ZERO = 0
 const enhance = compose(
@@ -37,6 +39,8 @@ const enhance = compose(
         const detailLoading = _.get(state, ['zone', 'item', 'loading'])
         const shopList = _.get(state, ['shop', 'list', 'data'])
         const shopListLoading = _.get(state, ['shop', 'list', 'loading'])
+        const shopItem = _.get(state, ['shop', 'item', 'data'])
+        const shopItemLoading = _.get(state, ['shop', 'item', 'loading'])
         const stat = _.get(state, ['zone', 'statistics', 'data'])
         const statLoading = _.get(state, ['zone', 'statistics', 'loading'])
         const createForm = _.get(state, ['form', 'ZoneCreateForm', 'values'])
@@ -63,13 +67,16 @@ const enhance = compose(
             filter,
             shopFilter,
             marketsLocation,
-            marketsLocationLoading
+            marketsLocationLoading,
+            shopItem,
+            shopItemLoading
         }
     }),
     withPropsOnChange((props, nextProps) => {
         const except = {
             page: null,
-            openInfo: null
+            openInfo: null,
+            marketId: null
         }
         return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
@@ -81,7 +88,8 @@ const enhance = compose(
         const except = {
             page: null,
             openInfo: null,
-            search: null
+            search: null,
+            marketId: null
         }
         return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
@@ -96,6 +104,16 @@ const enhance = compose(
         const zoneId = _.toInteger(_.get(params, 'zoneId'))
         if (zoneId > ZERO) {
             dispatch(zoneItemFetchAction(zoneId))
+        }
+    }),
+    withPropsOnChange((props, nextProps) => {
+        const prevMarket = _.toNumber(_.get(props, ['query', 'marketId']))
+        const nextMarket = _.toNumber(_.get(nextProps, ['query', 'marketId']))
+        return prevMarket !== nextMarket && nextMarket
+    }, ({dispatch, query}) => {
+        const zoneId = _.toInteger(_.get(query, 'marketId'))
+        if (zoneId > ZERO) {
+            dispatch(shopItemFetchAction(zoneId))
         }
     }),
 
@@ -277,6 +295,8 @@ const Zones = enhance((props) => {
         bindAgentLoading,
         shopList,
         shopListLoading,
+        shopItem,
+        shopItemLoading,
         marketsLocation,
         marketsLocationLoading
     } = props
@@ -346,6 +366,10 @@ const Zones = enhance((props) => {
         data: marketsLocation,
         marketsLocationLoading
     }
+    const shopDetail = {
+        data: shopItem,
+        loading: shopItemLoading
+    }
 
     const statData = {
         data: stat,
@@ -386,6 +410,9 @@ const Zones = enhance((props) => {
                 unbindAgent={unbindAgent}
                 deleteZone={deleteZone}
                 marketsData={marketsData}
+                pathname={props.pathname}
+                shopDetail={shopDetail}
+
             />
         </Layout>
     )

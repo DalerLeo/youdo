@@ -15,7 +15,6 @@ import Person from '../../Images/person.png'
 import Pagination from '../../GridList/GridListNavPagination/index'
 import * as ROUTES from '../../../constants/routes'
 import getConfig from '../../../helpers/getConfig'
-import numberFormat from '../../../helpers/numberFormat.js'
 
 const enhance = compose(
     injectSheet({
@@ -135,12 +134,12 @@ const StatAgentDialog = enhance((props) => {
         open,
         onClose,
         classes,
+        salesSummary,
         detailData
     } = props
     const loading = _.get(detailData, 'detailLoading')
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const agentName = _.get(detailData, ['agentDetail', '0', 'name'])
-    const income = numberFormat(_.get(detailData, ['agentDetail', '0', 'income']), primaryCurrency)
     const selectedDate = moment(_.get(detailData, 'selectedDate')).locale('ru').format('MMM YYYY')
     const orderList = _.map(_.get(detailData, ['data', 'results']), (item) => {
         const id = _.get(item, 'id')
@@ -189,7 +188,7 @@ const StatAgentDialog = enhance((props) => {
                     <div className={classes.content}>
                         <div className={classes.titleSummary}>
                             <div>Период: <strong>{selectedDate}</strong></div>
-                            <div>Сумма: <strong>{income}</strong></div>
+                            <div>Сумма: <strong>{salesSummary}</strong></div>
                         </div>
                         <div className={classes.tableWrapper}>
                             <Row className="dottedList">

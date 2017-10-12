@@ -3,7 +3,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
-import {reduxForm} from 'redux-form'
 import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
 import Paper from 'material-ui/Paper'
@@ -314,10 +313,6 @@ const enhance = compose(
             extend: 'addPlan',
             zIndex: '-9999'
         }
-    }),
-    reduxForm({
-        form: 'PlanCreateForm',
-        enableReinitialize: true
     })
 )
 
@@ -334,8 +329,8 @@ const PlanCreateDialog = enhance((props) => {
     const {
         open,
         filter,
-        handleSubmit,
         onClose,
+        onSubmit,
         classes,
         isUpdate,
         zonesList,
@@ -355,9 +350,8 @@ const PlanCreateDialog = enhance((props) => {
         updatePlan,
         selectedWeekDay
     } = props
-    const onSubmit = handleSubmit(() => props.onSubmit())
-    const onUpdateSubmit = handleSubmit(updatePlan.handleSubmitUpdateAgentPlan)
-    const submitDelete = handleSubmit(updatePlan.handleDeleteAgentPlan)
+    const onUpdateSubmit = updatePlan.handleSubmitUpdateAgentPlan
+    const submitDelete = updatePlan.handleDeleteAgentPlan
     const openUpdatePlan = _.get(updatePlan, 'openUpdatePlan')
     const ZERO = 0
     const isAgentChosen = selectedAgent > ZERO
@@ -492,6 +486,7 @@ const PlanCreateDialog = enhance((props) => {
                         </div>
                         <div className={(selectedMarket > ZERO && !openUpdatePlan) ? classes.addPlan : classes.addPlanHidden}>
                             <PlanWeekDayForm
+                                initialValues={updatePlan.initialValues}
                                 selectedWeekDay={selectedWeekDay}
                                 createLoading={createPlanLoading}
                                 onSubmit={onSubmit}

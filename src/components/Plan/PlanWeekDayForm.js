@@ -17,12 +17,6 @@ import Loader from '../Loader'
 
 const enhance = compose(
     injectSheet({
-        loader: {
-            width: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-        },
         form: {
             width: '350px',
             padding: '20px 30px',
@@ -39,6 +33,10 @@ const enhance = compose(
             left: '0',
             right: '0',
             bottom: '0'
+        },
+        loader: {
+            extend: 'confirmDialog',
+            zIndex: '1000'
         },
         confirmWrapper: {
             '& h4': {
@@ -92,28 +90,32 @@ const confirmLabelStyle = {
 }
 
 const PlanWeekDayForm = enhance((props) => {
-    const {classes, onSubmit, isUpdate, planType, filter, createLoading, updateLoading, submitDelete, openConfirmDialog, setOpenConfirmDialog, selectedWeekDay} = props
+    const {
+        classes,
+        handleSubmit,
+        onSubmit,
+        isUpdate,
+        planType,
+        filter,
+        createLoading,
+        updateLoading,
+        submitDelete,
+        openConfirmDialog,
+        setOpenConfirmDialog,
+        selectedWeekDay
+    } = props
     const closeForm = () => {
         hashHistory.push(filter.createURL({[MARKET]: null}))
     }
     const closeUpdateForm = () => {
         hashHistory.push(filter.createURL({[MARKET]: null, [UPDATE_PLAN]: false}))
     }
-    if (createLoading || updateLoading) {
-        return (
-            <Paper zDepth={1} className={classes.form}>
-                <div className={classes.loader}>
-                    <Loader size={0.8}/>
-                </div>
-            </Paper>
-        )
-    }
     return (
         <Paper zDepth={1} className={classes.form}>
             <div className={classes.closeIcon}>
                 <Close onClick={isUpdate ? closeUpdateForm : closeForm}/>
             </div>
-            <form onSubmit={onSubmit}>
+            <form onSubmit={handleSubmit(onSubmit)}>
                 <div className={classes.title}>Тип плана</div>
                 <Field
                     name="planType"
@@ -146,9 +148,9 @@ const PlanWeekDayForm = enhance((props) => {
                     {isUpdate && <FlatButton
                         onTouchTap={() => { setOpenConfirmDialog(true) }}
                         label="Удалить план"
-                        backgroundColor="#fd4641"
+                        backgroundColor="#ff5b57"
                         style={{marginTop: '5px'}}
-                        hoverColor="#fd4641"
+                        hoverColor="#ff5b57"
                         rippleColor="#fff"
                         fullWidth={true}
                         labelStyle={buttonLabelStyle}
@@ -167,9 +169,12 @@ const PlanWeekDayForm = enhance((props) => {
                             label="Да"
                             hoverColor="#efefef"
                             labelStyle={confirmLabelStyle}
-                            onTouchTap={submitDelete}
+                            onTouchTap={handleSubmit(submitDelete)}
                         />
                     </div>
+                </div>}
+                {(createLoading || updateLoading) && <div className={classes.loader}>
+                    <Loader size={0.8}/>
                 </div>}
             </form>
         </Paper>

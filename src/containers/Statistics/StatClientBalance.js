@@ -18,7 +18,8 @@ import {
 } from '../../components/ClientBalance'
 import {
     clientBalanceListFetchAction,
-    clientBalanceItemFetchAction
+    clientBalanceItemFetchAction,
+    clientBalanceSumFetchAction
 } from '../../actions/clientBalance'
 import * as serializers from '../../serializers/clientBalanceSerializer'
 import getDocuments from '../../helpers/getDocument'
@@ -31,6 +32,8 @@ const enhance = compose(
         const detailLoading = _.get(state, ['clientBalance', 'item', 'loading'])
         const list = _.get(state, ['clientBalance', 'list', 'data'])
         const listLoading = _.get(state, ['clientBalance', 'list', 'loading'])
+        const sum = _.get(state, ['clientBalance', 'sum', 'data'])
+        const sumLoading = _.get(state, ['clientBalance', 'sum', 'loading'])
         const filterForm = _.get(state, ['form', 'ClientBalanceFilterForm'])
         const searchForm = _.get(state, ['form', 'ClientBalanceForm'])
         const isSuperUser = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
@@ -47,7 +50,9 @@ const enhance = compose(
             filterItem,
             filterForm,
             isSuperUser,
-            searchForm
+            searchForm,
+            sum,
+            sumLoading
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -55,6 +60,7 @@ const enhance = compose(
             toBoolean(_.get(nextProps, ['location', 'query', CLIENT_BALANCE_INFO_DIALOG_OPEN])) === false
     }, ({dispatch, filter}) => {
         dispatch(clientBalanceListFetchAction(filter))
+        dispatch(clientBalanceSumFetchAction(filter))
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -146,7 +152,9 @@ const ClientBalanceList = enhance((props) => {
         filter,
         filterItem,
         layout,
-        params
+        params,
+        sum,
+        sumLoading
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', CLIENT_BALANCE_FILTER_OPEN]))
@@ -209,6 +217,10 @@ const ClientBalanceList = enhance((props) => {
     const getDocument = {
         handleGetDocument: props.handleGetDocument
     }
+    const sumData = {
+        sum,
+        sumLoading
+    }
     return (
         <Layout {...layout}>
             <ClientBalanceGridList
@@ -221,6 +233,7 @@ const ClientBalanceList = enhance((props) => {
                 filterDialog={filterDialog}
                 handleSubmitSearch={props.handleSubmitSearch}
                 getDocument={getDocument}
+                sumData={sumData}
             />
         </Layout>
     )
