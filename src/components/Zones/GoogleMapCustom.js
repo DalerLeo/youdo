@@ -6,6 +6,7 @@
 import React from 'react'
 import Script from 'react-load-script'
 import _ from 'lodash'
+import {hashHistory} from 'react-router'
 import * as GOOGLE_MAP from '../../constants/googleMaps'
 import CircularProgress from 'material-ui/CircularProgress'
 import AddZonePopup from './AddZonePopup'
@@ -106,7 +107,8 @@ export default class GoogleCustomMap extends React.Component {
                         },
                         name: item.name,
                         id: item.id,
-                        isActive: item.isActive
+                        isActive: item.isActive,
+                        address: item.address
                     }
                 )
             }
@@ -134,12 +136,24 @@ export default class GoogleCustomMap extends React.Component {
                 animation: google.maps.Animation.DROP,
                 map: this.map
             })
-            const info = '<div>' + item.name + '</div>'
+
+            const detailInfo = '<div>' + item.address + '</div>'
+            const detailMoreInfo = '<div>' + this.props.shopDetail.data.phone + '</div>'
+
+            const detailWindow = new google.maps.InfoWindow({
+                content: this.props.shopDetail.loading ? detailInfo : detailMoreInfo,
+                pixelOffset: new google.maps.Size(INFO_WINDOW_OFFSET, ZERO)
+            })
+
+            const info = '<div><p><b>Названия:</b> ' + item.name + '</p><p><b>Адрес:</b> ' + item.address + '</p></div>'
             const infoWindow = new google.maps.InfoWindow({
                 content: info,
                 pixelOffset: new google.maps.Size(INFO_WINDOW_OFFSET, ZERO)
             })
-
+            marker.addListener('click', () => {
+                hashHistory.push({pathname: this.props.pathname, query: this.props.filter.getParams({'marketId': item.id})})
+                detailWindow.open(this.map, marker)
+            })
             marker.addListener('mouseover', () => {
                 infoWindow.open(this.map, marker)
             })
@@ -153,7 +167,6 @@ export default class GoogleCustomMap extends React.Component {
         new MarkerClusterer(this.map, markers,
             {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'})
     }
-
     createMap () {
         const mapOptions = {
             zoom: 13,

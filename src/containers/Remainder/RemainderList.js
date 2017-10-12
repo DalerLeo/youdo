@@ -110,7 +110,7 @@ const enhance = compose(
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
             const stock = _.get(filterForm, ['values', 'stock', 'value']) || null
-            const typeParent = _.get(filterForm, ['values', 'typeChild', 'value']) || null
+            const typeParent = _.get(filterForm, ['values', 'typeParent', 'value']) || null
             const typeChild = _.get(filterForm, ['values', 'typeChild', 'value']) || null
             const measurement = _.get(filterForm, ['values', 'measurement', 'value']) || null
             const brand = _.get(filterForm, ['values', 'brand', 'value']) || null
