@@ -182,6 +182,7 @@ const enhance = compose(
         const measurement = _.get(state, ['product', 'extra', 'data', 'measurement', 'name'])
         const customPrice = _.get(state, ['product', 'extra', 'data', 'custom_price'])
         const cashPrice = _.get(state, ['product', 'extra', 'data', 'cash_price'])
+        const isAdmin = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
         const paymentType = _.get(state, ['form', 'OrderCreateForm', 'values', 'paymentType'])
         const updateProducts = _.get(state, ['order', 'updateProducts', 'data', 'results'])
         return {
@@ -189,7 +190,8 @@ const enhance = compose(
             customPrice,
             cashPrice,
             paymentType,
-            updateProducts
+            updateProducts,
+            isAdmin
         }
     }),
     withReducer('state', 'dispatch', (state, action) => {
@@ -338,7 +340,8 @@ const OrderListProductField = enhance((props) => {
         customPrice,
         paymentType,
         handleChangePT,
-        isUpdate
+        isUpdate,
+        isAdmin
     } = props
     const ONE = 1
     const editOnlyCost = _.get(props, 'editOnlyCost')
@@ -419,11 +422,10 @@ const OrderListProductField = enhance((props) => {
                         </div>
                     </Col>
                     <Col xs={2}>
-                        {customPrice && <Field
+                        {(customPrice || isAdmin) && <Field
                             component={TextField}
                             label="Сумма за ед"
                             name="cost"
-                            disabled={!customPrice && true}
                             className={classes.inputFieldCustom}
                             fullWidth={true}
                             normalize={normalizeNumber}

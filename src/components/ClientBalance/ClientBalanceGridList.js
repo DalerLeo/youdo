@@ -320,8 +320,21 @@ const ClientBalanceGridList = enhance((props) => {
         handleSubmit,
         handleSubmitSearch,
         getDocument,
-        stat
+        stat,
+        sumData
     } = props
+
+    // This constants for Statistics
+
+    const borrowersBank = _.get(sumData.sum, 'borrowersSumBank')
+    const borrowersBankCount = _.get(sumData.sum, 'borrowersCountBank')
+    const borrowersCash = _.get(sumData.sum, 'borrowersSumCash')
+    const borrowersCashCount = _.get(sumData.sum, 'borrowersCountCash')
+    const loanersBank = _.get(sumData.sum, 'loanersSumBank')
+    const loanersBankCount = _.get(sumData.sum, 'loanersCountBank')
+    const loanersCash = _.get(sumData.sum, 'loanersSumCash')
+    const loanersCashCount = _.get(sumData.sum, 'loanersCountCash')
+
     const orderNoSorting = _.isNil(filter.getSortingType('order_no')) ? null
         : filter.getSortingType('order_no') ? <ArrowUpIcon className={classes.icon}/>
             : <ArrowDownIcon className={classes.icon}/>
@@ -508,17 +521,17 @@ const ClientBalanceGridList = enhance((props) => {
                                         <CircularProgress size={40} thickness={4}/>
                                     </div>
                                     : <div className={classes.summaryWrapper}>
-                                        <div>Задолжники нал. - 10
-                                            <div>{'2000000 UZS'}</div>
+                                        <div>Задолжники нал. - {borrowersCashCount}
+                                            <div>{borrowersCash}</div>
                                         </div>
-                                        <div>Задолжники переч. - 10
-                                            <div>{'2000000 UZS'}</div>
+                                        <div>Задолжники переч. - {borrowersBankCount}
+                                            <div>{borrowersBank}</div>
                                         </div>
-                                        <div>Закладчики нал. - 30
-                                            <div>{'2000000 UZS'}</div>
+                                        <div>Закладчики нал. - {loanersCashCount}
+                                            <div>{loanersCash}</div>
                                         </div>
-                                        <div>Закладчики нал. - 20
-                                            <div>{'2000000 UZS'}</div>
+                                        <div>Закладчики нал. - {loanersBankCount}
+                                            <div>{loanersBank} USD</div>
                                         </div>
                                     </div>}
                             </div>
