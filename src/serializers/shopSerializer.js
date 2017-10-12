@@ -3,7 +3,7 @@ import {orderingSnakeCase} from '../helpers/serializer'
 const ONE = 1
 export const createSerializer = (data, location, newClient) => {
     const name = _.get(data, 'name')
-    const client = !newClient ? _.get(data, ['client', 'value']) : null
+    const client = !newClient ? _.get(data, ['client', 'value']) : _.get(data, 'undefined')
     const newClientName = newClient ? _.get(data, ['newClientName']) : _.get(data, 'undefined')
     const marketType = _.get(data, ['marketType', 'value'])
     const address = _.get(data, 'address')

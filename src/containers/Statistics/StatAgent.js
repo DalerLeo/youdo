@@ -37,7 +37,7 @@ const enhance = compose(
         const listLoading = _.get(state, ['statAgent', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
         const filter = filterHelper(list, pathname, query)
-        const filterItem = filterHelper(detail, pathname, query)
+        const filterItem = filterHelper(detail, pathname, query, {'page': 'dPage', 'pageSize': 'dPageSize'})
         const selectedDate = _.get(query, DATE) || defaultDate
 
         return {
@@ -53,16 +53,22 @@ const enhance = compose(
         }
     }),
     withPropsOnChange((props, nextProps) => {
-        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest() &&
-            (!_.get(props, ['params', 'statAgentId'])) &&
-            (!_.get(nextProps, ['params', 'statAgentId']))
+        const except = {
+            openStatAgentDialog: null,
+            dPage: null,
+            dPageSize: null
+        }
+        return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
         dispatch(statAgentListFetchAction(filter))
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const statAgentId = _.get(nextProps, ['params', 'statAgentId']) || ZERO
-        return statAgentId > ZERO && _.get(props, ['params', 'statAgentId']) !== statAgentId
+        const except = {
+            page: null,
+            pageSize: null
+        }
+        return props.list && props.filterItem.filterRequest(except) !== nextProps.filterItem.filterRequest(except)
     }, ({dispatch, params, filter, filterItem}) => {
         const statAgentId = _.toInteger(_.get(params, 'statAgentId'))
         if (statAgentId > ZERO) {
@@ -141,6 +147,7 @@ const StatAgentList = enhance((props) => {
     const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
     const selectedDate = _.get(location, ['query', DATE]) || currentDate
     const zone = !_.isNull(_.get(location, ['query', 'zone'])) && _.toInteger(_.get(location, ['query', 'zone']))
+    const search = !_.isNull(_.get(location, ['query', 'search'])) ? _.get(location, ['query', 'search']) : null
 
     const statAgentDialog = {
         openStatAgentDialog,
@@ -168,6 +175,7 @@ const StatAgentList = enhance((props) => {
         handleGetDocument: props.handleGetDocument
     }
     const initialValues = {
+        search: search,
         zone: {
             value: zone
         },

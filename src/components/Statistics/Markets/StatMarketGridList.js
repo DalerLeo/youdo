@@ -13,14 +13,12 @@ import StatSideMenu from '../StatSideMenu'
 import LinearLoading from '../../LinearProgress/index'
 import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
-import List from 'material-ui/svg-icons/action/list'
+import Chart from 'material-ui/svg-icons/action/timeline'
 import Pagination from '../../GridList/GridListNavPagination/index'
 import numberFormat from '../../../helpers/numberFormat'
 import getConfig from '../../../helpers/getConfig'
-import ReactHighcharts from 'react-highcharts'
 import NotFound from '../../Images/not-found.png'
-import dateFormat from '../../../helpers/dateFormat'
-import {StatisticsFilterExcel} from '../../Statistics'
+import {StatisticsFilterExcel, StatisticsChart} from '../../Statistics'
 
 export const STAT_MARKET_FILTER_KEY = {
     SEARCH: 'search',
@@ -40,6 +38,19 @@ const enhance = compose(
             justifyContent: 'center',
             display: 'flex'
         },
+        graphLoader: {
+            padding: '50px 0',
+            margin: '0 -30px',
+            position: 'relative',
+            '& > div': {
+                background: 'transparent'
+            }
+        },
+        sumLoader: {
+            extend: 'loader',
+            padding: '0',
+            height: '75px'
+        },
         mainWrapper: {
             background: '#fff',
             margin: '0 -28px',
@@ -57,7 +68,8 @@ const enhance = compose(
             }
         },
         tableWrapper: {
-            height: 'calc(100% - 140px)',
+            padding: '0 30px',
+            margin: '0 -30px',
             '& .row': {
                 '&:after': {
                     bottom: '-1px'
@@ -66,6 +78,12 @@ const enhance = compose(
                     display: 'flex',
                     height: '50px',
                     alignItems: 'center',
+                    '&:first-child': {
+                        paddingLeft: '0'
+                    },
+                    '&:last-child': {
+                        paddingRight: '0'
+                    },
                     '& img': {
                         width: '35px',
                         height: '35px',
@@ -75,7 +93,16 @@ const enhance = compose(
                 }
             },
             '& .dottedList': {
-                padding: '0',
+                padding: '0 30px',
+                margin: '0 -30px !important',
+                '& button': {
+                    opacity: '0'
+                },
+                '&:hover': {
+                    '& button': {
+                        opacity: '1 !important'
+                    }
+                },
                 '&:last-child:after': {
                     content: '""',
                     backgroundImage: 'none'
@@ -194,6 +221,43 @@ const enhance = compose(
             '& > div:first-child': {
                 fontWeight: '600'
             }
+        },
+        details: {
+            background: '#fefefe',
+            position: 'relative',
+            margin: '0 -30px',
+            padding: '0 30px',
+            '&:before': {
+                content: '""',
+                position: 'absolute',
+                top: '-1px',
+                left: '0',
+                right: '0',
+                background: '#efefef',
+                height: '2px',
+                zIndex: '9'
+            },
+            '&:after': {
+                content: '""',
+                position: 'absolute',
+                bottom: '-1px',
+                left: '0',
+                right: '0',
+                background: '#efefef',
+                height: '2px',
+                zIndex: '9'
+            },
+            '& .row': {
+                position: 'relative'
+            }
+        },
+        closeDetail: {
+            position: 'absolute',
+            cursor: 'pointer',
+            top: '0',
+            left: '-30px',
+            right: '-30px',
+            bottom: '0'
         }
     }),
     reduxForm({
@@ -216,100 +280,27 @@ const StatMarketGridList = enhance((props) => {
 
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const listLoading = _.get(listData, 'listLoading')
-    const graphLoading = _.get(detailData, ['sumLoading'])
+    const graphLoading = _.get(detailData, ['graphLoading'])
     const sumIncome = _.get(listData, ['sumData', 'income'])
     const sumFact = _.get(listData, ['sumData', 'fact'])
     const sumReturn = _.get(listData, ['sumData', 'returnSum'])
+    const sumLoading = _.get(listData, 'sumLoading')
     const headerStyle = {
         backgroundColor: '#fff',
         fontWeight: '600',
         color: '#666'
     }
 
-    const value = _.map(_.get(detailData, ['graphList']), (item) => {
+    const amountValue = _.map(_.get(detailData, ['graphList']), (item) => {
         return _.toInteger(_.get(item, 'amount'))
+    })
+    const returnAmountValue = _.map(_.get(detailData, ['graphList']), (item) => {
+        return _.toInteger(_.get(item, 'returnAmount'))
     })
 
     const valueName = _.map(_.get(detailData, ['graphList']), (item) => {
-        return dateFormat(_.get(item, 'date'))
+        return _.get(item, 'date')
     })
-
-    const config = {
-        chart: {
-            type: 'areaspline',
-            height: 160
-        },
-        title: {
-            text: '',
-            style: {
-                display: 'none'
-            }
-        },
-        legend: {
-            enabled: false
-        },
-        credits: {
-            enabled: false
-        },
-        xAxis: {
-            categories: valueName,
-            tickmarkPlacement: 'on',
-            title: {
-                text: '',
-                style: {
-                    display: 'none'
-                }
-            }
-        },
-        yAxis: {
-            title: {
-                text: '',
-                style: {
-                    display: 'none'
-                }
-            },
-            gridLineColor: '#efefef',
-            plotLines: [{
-                value: 0,
-                width: 1,
-                color: '#808080'
-            }]
-        },
-        plotOptions: {
-            series: {
-                lineWidth: 0,
-                pointPlacement: 'on'
-            },
-            column: {
-                fillOpacity: 0.7
-            }
-        },
-        tooltip: {
-            shared: true,
-            valueSuffix: ' ' + primaryCurrency,
-            backgroundColor: '#363636',
-            style: {
-                color: '#fff'
-            },
-            borderRadius: 2,
-            borderWidth: 0,
-            enabled: true,
-            shadow: false,
-            useHTML: true,
-            crosshairs: true,
-            pointFormat: '{series.name}: <b>{point.y}</b>'
-        },
-        series: [{
-            marker: {
-                enabled: false,
-                symbol: 'circle'
-            },
-            name: 'Сумма',
-            data: value,
-            color: '#378ca2'
-
-        }]
-    }
 
     const headers = (
         <Row style={headerStyle} className="dottedList">
@@ -318,6 +309,7 @@ const StatMarketGridList = enhance((props) => {
             <Col xs={2} style={{justifyContent: 'flex-end'}}>Продажи</Col>
             <Col xs={2} style={{justifyContent: 'flex-end'}}>Возвраты</Col>
             <Col xs={2} style={{justifyContent: 'flex-end'}}>Фактически</Col>
+            <Col xs={1}>{null}</Col>
         </Row>
     )
 
@@ -331,7 +323,7 @@ const StatMarketGridList = enhance((props) => {
 
         if (id === _.get(detailData, 'id')) {
             return (
-                <div key={index}>
+                <div key={index} className={classes.details}>
                     <Row>
                         <Col xs={3}>
                             <span>{name}</span>
@@ -340,19 +332,20 @@ const StatMarketGridList = enhance((props) => {
                         <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(income, primaryCurrency)}</Col>
                         <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(returns, primaryCurrency)}</Col>
                         <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(actual, primaryCurrency)}</Col>
-                        <Col xs={1} style={{justifyContent: 'flex-end', paddingRight: '0'}}>
-                            <IconButton
-                                onTouchTap={() => { detailData.handleCloseDetail() }}>
-                                <List color="#12aaeb"/>
-                            </IconButton>
-                        </Col>
+                        <div className={classes.closeDetail} onClick={detailData.handleCloseDetail}>{null}</div>
+                        <Col xs={1}>{null}</Col>
                     </Row>
-                    {graphLoading ? <div style={{position: 'relative'}}><LinearLoading/></div>
-                        : <ReactHighcharts
-                        config={config}
-                        neverReflow={true}
-                        isPureConfig={true}
-                        />}
+                    {graphLoading
+                        ? <div className={classes.graphLoader}><LinearLoading/></div>
+                        : <StatisticsChart
+                            primaryValues={amountValue}
+                            secondaryValues={returnAmountValue}
+                            tooltipTitle={valueName}
+                            primaryText="Продажи"
+                            secondaryText="Возвраты"
+                            height={180}
+                        />
+                    }
                 </div>
             )
         }
@@ -369,7 +362,7 @@ const StatMarketGridList = enhance((props) => {
                 <Col xs={1} style={{justifyContent: 'flex-end', paddingRight: '0'}}>
                     <IconButton
                         onTouchTap={() => { detailData.handleOpenDetail(id) }}>
-                        <List color="#12aaeb"/>
+                        <Chart color="#12aaeb"/>
                     </IconButton>
                 </Col>
             </Row>
@@ -401,22 +394,20 @@ const StatMarketGridList = enhance((props) => {
                     <StatSideMenu currentUrl={ROUTES.STATISTICS_MARKET_URL} filter={filter}/>
                 </div>
                 <div className={classes.rightPanel}>
-                     <div className={classes.wrapper}>
-                         <StatisticsFilterExcel
+                    <div className={classes.wrapper}>
+                        <StatisticsFilterExcel
                             filter={filter}
                             filterKeys={STAT_MARKET_FILTER_KEY}
                             handleSubmitFilterDialog={handleSubmitFilterDialog}
                             fields={fields}
                             initialValues={initialValues}
                             handleGetDocument={getDocument.handleGetDocument}
-                         />
-
-                        {listLoading
-                         ? <div className={classes.loader}>
-                             <CircularProgress size={40} thickness={4}/>
-                         </div>
-                         : <div>
-                            <div className={classes.summary}>
+                        />
+                        {sumLoading
+                            ? <div className={classes.sumLoader}>
+                                <CircularProgress size={40} thickness={4}/>
+                            </div>
+                            : <div className={classes.summary}>
                                 <div>
                                     <span>Сумма от продаж</span>
                                     <div>{numberFormat(sumIncome, primaryCurrency)}</div>
@@ -429,30 +420,35 @@ const StatMarketGridList = enhance((props) => {
                                     <span>Сумма возвратов</span>
                                     <div>{numberFormat(sumReturn, primaryCurrency)}</div>
                                 </div>
-                            </div>
-                            <div className={classes.pagination}>
-                                <div>Продажи по магазинам в зоне</div>
-                                <form onSubmit={handleSubmit(handleSubmitFilterDialog)}>
-                                    <Field
-                                        className={classes.inputFieldCustom}
-                                        name="search"
-                                        component={TextField}
-                                        hintText="Магазин"/>
-                                </form>
-                                <Pagination filter={filter}/>
-                            </div>
-                            {!_.isEmpty(list)
-                                ? <div className={classes.tableWrapper}>
-                                    {headers}
-                                    {list}
+                            </div>}
+                        <div className={classes.pagination}>
+                            <div>Продажи по магазинам в зоне</div>
+                            <form onSubmit={handleSubmit(handleSubmitFilterDialog)}>
+                                <Field
+                                    className={classes.inputFieldCustom}
+                                    name="search"
+                                    component={TextField}
+                                    hintText="Магазин"/>
+                            </form>
+                            <Pagination filter={filter}/>
+                        </div>
+                        {listLoading
+                            ? <div className={classes.tableWrapper}>
+                                <div className={classes.loader}>
+                                    <CircularProgress thickness={4} size={40}/>
                                 </div>
-                                : <div className={classes.tableWrapper}>
-                                    <div className={classes.emptyQuery}>
+                            </div>
+                            : <div className={classes.tableWrapper}>
+                                {_.isEmpty(list) && !listLoading
+                                    ? <div className={classes.emptyQuery}>
                                         <div>По вашему запросу ничего не найдено</div>
                                     </div>
-                                </div>}
+                                    : <div>
+                                        {headers}
+                                        {list}
+                                    </div>}
                             </div>}
-                     </div>
+                    </div>
                 </div>
             </Row>
         </div>

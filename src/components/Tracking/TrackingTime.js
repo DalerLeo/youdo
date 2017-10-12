@@ -19,12 +19,11 @@ const enhance = compose(
             position: 'absolute',
             padding: '8px 20px 5px',
             left: '-28px',
-            right: '322px',
             bottom: '-28px',
             borderTop: '1px #efefef  solid',
             zIndex: '4',
             overflow: 'hidden',
-            transition: 'all 400ms ease'
+            transition: 'all 300ms ease'
         },
         wrapper: {
             display: 'flex',
@@ -79,7 +78,8 @@ const TrackingTime = enhance((props) => {
         classes,
         openDetail,
         sliderValue,
-        setSliderValue
+        setSliderValue,
+        openAgentsInfo
     } = props
 
     const handleSlider = (event, value) => {
@@ -106,7 +106,9 @@ const TrackingTime = enhance((props) => {
     }
 
     return (
-        <div className={classes.detailWrap} style={openDetail ? {opacity: '1'} : {opacity: '0'}}>
+        <div className={classes.detailWrap} style={openDetail
+            ? (openAgentsInfo ? {right: 322, opacity: 1} : {right: -28, opacity: 1})
+            : (openAgentsInfo ? {right: 322, opacity: 0} : {right: -28, opacity: 0})}>
             <div className={classes.wrapper}>
                 <div className={classes.time}>{hour}:{minute}</div>
                 <div className={classes.slider}>

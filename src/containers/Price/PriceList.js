@@ -186,6 +186,9 @@ const PriceList = enhance((props) => {
     const openFilterDialog = toBoolean(_.get(location, ['query', PRICE_FILTER_OPEN]))
     const openPriceSupplyDialog = _.toInteger(_.get(location, ['query', PRICE_SUPPLY_DIALOG_OPEN]))
     const openPriceSetForm = toBoolean(_.get(location, ['query', PRICE_SET_FORM_OPEN]))
+    const typeParent = _.toNumber(_.get(location, ['query', PRICE_FILTER_KEY.TYPE_PARENT]))
+    const typeChild = _.toNumber(_.get(location, ['query', PRICE_FILTER_KEY.TYPE_CHILD]))
+    const measurement = _.toNumber(_.get(location, ['query', PRICE_FILTER_KEY.MEASUREMENT]))
     const detailId = _.toInteger(_.get(params, 'priceId'))
     const priceSupplyDialog = {
         openPriceSupplyDialog,
@@ -194,6 +197,15 @@ const PriceList = enhance((props) => {
     }
     const filterDialog = {
         initialValues: {
+            typeParent: {
+                value: typeParent
+            },
+            typeChild: {
+                value: typeChild
+            },
+            measurement: {
+                value: measurement
+            }
         },
         filterLoading: false,
         openFilterDialog,

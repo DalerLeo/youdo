@@ -443,7 +443,7 @@ const StatProductMoveGridList = enhance((props) => {
                                         <div>{returnBalance} <span>(200 шт)</span></div>
                                     </div>
                                     <div>
-                                        <div>Выдано товара на сумму</div>
+                                        <div>Выдано по заказу</div>
                                         <div>{outBalance} <span>(2000 шт)</span></div>
                                         <div>Cписано за период</div>
                                         <div>{returnBalance} <span>(200 шт)</span></div>

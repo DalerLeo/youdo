@@ -6,6 +6,7 @@ import {
     GoogleMap as DefaultGoogleMap,
     Marker,
     Polyline,
+    Polygon,
     OverlayView
 } from 'react-google-maps'
 import MarkerClusterer from 'react-google-maps/lib/addons/MarkerClusterer'
@@ -45,6 +46,13 @@ const enhance = compose(
                 fontWeight: '600',
                 fontSize: '13px'
             }
+        },
+        zoneName: {
+            extend: 'marketName',
+            zIndex: '50',
+            fontSize: '15px',
+            boxShadow: 'none',
+            border: '1px #dadada solid'
         }
     }),
     withScriptjs,
@@ -68,6 +76,7 @@ const GoogleMapWrapper = enhance(({
         handleOpenDetails,
         agentLocation,
         marketsLocation,
+        zonesLocation,
         openMarketInfo,
         openAgentInfo,
         setOpenMarketInfo,
@@ -78,6 +87,19 @@ const GoogleMapWrapper = enhance(({
         filter,
         ...props
     }) => {
+    const polygonOptions = {
+        fillColor: '#199ee0',
+        fillOpacity: 0.2,
+        strokeWeight: 2,
+        strokeColor: '#113460'
+    }
+    const overlayZonesOffset = (width, height) => {
+        return {
+            x: -(width / TWO),
+            y: -(height / TWO)
+        }
+    }
+
     const minutePerHour = 60
     const TEN = 10
     let hour = _.floor(sliderValue / minutePerHour) || ZERO
@@ -104,6 +126,39 @@ const GoogleMapWrapper = enhance(({
             date: moment(registeredDate).format('HH:mm:ss')
         }
     })
+    const zones = _.map(zonesLocation, (item) => {
+        const id = _.get(item, 'id')
+        const title = _.get(item, 'title')
+        const point = _.map(_.get(item, ['coordinates', 'coordinates', '0']), (p) => {
+            const lat = _.get(p, '0')
+            const lng = _.get(p, '1')
+
+            return {lat: lat, lng: lng}
+        })
+
+        const meanLat = _.mean(_.map(_.get(item, ['coordinates', 'coordinates', '0']), (p) => {
+            return _.get(p, '0')
+        }))
+        const meanLng = _.mean(_.map(_.get(item, ['coordinates', 'coordinates', '0']), (p) => {
+            return _.get(p, '1')
+        }))
+        return (
+            <div key={id}>
+                <Polygon
+                    paths={point}
+                    options={polygonOptions}
+                />
+                <OverlayView
+                    position={{lat: meanLat, lng: meanLng}}
+                    getPixelPositionOffset={overlayZonesOffset}
+                    mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}>
+                    <div style={{textAlign: 'center'}}>
+                        <div className={classes.zoneName}>{title}</div>
+                    </div>
+                </OverlayView>
+            </div>
+        )
+    })
     const polyLineOptions = {
         strokeColor: 'rgba(25, 103, 126, 0.85)',
         strokeOpacity: 1,
@@ -128,6 +183,7 @@ const GoogleMapWrapper = enhance(({
     })
 
     const showMarkets = toBoolean(_.get(filter.getParams(), 'showMarkets')) || false
+    const showZones = toBoolean(_.get(filter.getParams(), 'showZones')) || false
     return (
         <DefaultGoogleMap
             ref={onMapLoad}
@@ -194,9 +250,8 @@ const GoogleMapWrapper = enhance(({
                 const lastLon = _.get(_.last(filterAgentLocation), ['point', 'lon'])
                 if (id === agentId) {
                     return (
-                        <div>
+                        <div key={id}>
                             <Marker
-                                key={id}
                                 onClick={() => { handleOpenDetails(id) }}
                                 onMouseOver={() => { hoverAgent(id) }}
                                 onMouseOut={mouseOutAgent}
@@ -268,9 +323,8 @@ const GoogleMapWrapper = enhance(({
                     }
                     if (id !== agentId) {
                         return (
-                            <div>
+                            <div key={id}>
                                 <Marker
-                                    key={id}
                                     onClick={() => { handleOpenDetails(id) }}
                                     onMouseOver={() => { hoverAgent(id) }}
                                     onMouseOut={mouseOutAgent}
@@ -299,6 +353,7 @@ const GoogleMapWrapper = enhance(({
                     return false
                 })}
             </MarkerClusterer>
+            {(showZones && agentId === ZERO) ? zones : null}
             {props.children}
         </DefaultGoogleMap>
     )
@@ -317,6 +372,7 @@ const GoogleMap = (props) => {
         handleOpenDetails,
         agentLocation,
         marketsLocation,
+        zonesLocation,
         shopDetails,
         sliderValue,
         ...defaultProps
@@ -348,6 +404,7 @@ const GoogleMap = (props) => {
             handleOpenDetails={handleOpenDetails}
             agentLocation={agentLocation}
             marketsLocation={marketsLocation}
+            zonesLocation={zonesLocation}
             shopDetails={shopDetails}
             sliderValue={sliderValue}
             {...defaultProps}>
