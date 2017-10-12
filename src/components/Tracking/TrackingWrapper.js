@@ -96,7 +96,7 @@ const enhance = compose(
             border: '1px #efefef solid',
             borderRight: 'none',
             left: '-20px',
-            top: '20px'
+            top: '55px'
         },
         trackingInfoTitle: {
             display: 'flex',
