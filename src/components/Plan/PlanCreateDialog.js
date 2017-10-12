@@ -335,6 +335,7 @@ const PlanCreateDialog = enhance((props) => {
         isUpdate,
         zonesList,
         zonesLoading,
+        zoneDetails,
         calendar,
         zoneAgents,
         zoneAgentsLoading,
@@ -350,6 +351,23 @@ const PlanCreateDialog = enhance((props) => {
         updatePlan,
         selectedWeekDay
     } = props
+    const zoneLoading = _.get(zoneDetails, 'loading')
+    const zoneCoordinates = _.map(_.get(zoneDetails, ['data', 'geometry', 'coordinates', '0']), (point) => {
+        return {
+            lat: _.get(point, '0'),
+            lng: _.get(point, '1')
+        }
+    })
+    const meanLat = _.meanBy(_.get(zoneDetails, ['data', 'geometry', 'coordinates', '0']), (item) => {
+        return _.get(item, '0')
+    })
+    const meanLng = _.meanBy(_.get(zoneDetails, ['data', 'geometry', 'coordinates', '0']), (item) => {
+        return _.get(item, '1')
+    })
+    const meanCenter = {
+        lat: meanLat,
+        lng: meanLng
+    }
     const onUpdateSubmit = updatePlan.handleSubmitUpdateAgentPlan
     const submitDelete = updatePlan.handleDeleteAgentPlan
     const openUpdatePlan = _.get(updatePlan, 'openUpdatePlan')
@@ -484,7 +502,8 @@ const PlanCreateDialog = enhance((props) => {
                                             </div>
                                         </Paper>}
                         </div>
-                        <div className={(selectedMarket > ZERO && !openUpdatePlan) ? classes.addPlan : classes.addPlanHidden}>
+                        <div
+                            className={(selectedMarket > ZERO && !openUpdatePlan) ? classes.addPlan : classes.addPlanHidden}>
                             <PlanWeekDayForm
                                 initialValues={updatePlan.initialValues}
                                 selectedWeekDay={selectedWeekDay}
@@ -493,7 +512,8 @@ const PlanCreateDialog = enhance((props) => {
                                 filter={filter}
                                 toggleDaysState={toggleDaysState}/>
                         </div>
-                        <div className={(selectedMarket > ZERO && openUpdatePlan) ? classes.addPlan : classes.addPlanHidden}>
+                        <div
+                            className={(selectedMarket > ZERO && openUpdatePlan) ? classes.addPlan : classes.addPlanHidden}>
                             <PlanWeekDayForm
                                 updateLoading={updatePlan.updatePlanLoading}
                                 openConfirmDialog={updatePlan.openConfirmDialog}
@@ -506,16 +526,22 @@ const PlanCreateDialog = enhance((props) => {
                                 toggleDaysState={toggleDaysState}/>
                         </div>
                         <div className={isAgentChosen ? classes.map : classes.mapBlurred}>
-                            <PlanMap
-                                plans={plans}
-                                plansPaths={plansPaths}
-                                zoneAgents={zoneAgents}
-                                selectedAgent={selectedAgent}
-                                marketsLocation={marketsLocation}
-                                selectedMarket={selectedMarket}
-                                handleChooseMarket={handleChooseMarket}
-                                handleUpdateAgentPlan={updatePlan.handleUpdateAgentPlan}
-                            />
+                            {zoneLoading
+                                ? <div>{null}</div>
+                                : selectedZone > ZERO
+                                    ? <PlanMap
+                                        plans={plans}
+                                        meanCenter={meanCenter}
+                                        plansPaths={plansPaths}
+                                        zoneAgents={zoneAgents}
+                                        zoneCoordinates={zoneCoordinates}
+                                        selectedAgent={selectedAgent}
+                                        marketsLocation={marketsLocation}
+                                        selectedMarket={selectedMarket}
+                                        handleChooseMarket={handleChooseMarket}
+                                        handleUpdateAgentPlan={updatePlan.handleUpdateAgentPlan}
+                                    />
+                                    : <div></div>}
                         </div>
                     </div>
                 </div>

@@ -216,6 +216,7 @@ const PlanWrapper = enhance((props) => {
         classes,
         addPlan,
         updatePlan,
+        zoneDetails,
         planSalesDialog,
         handleClickTab,
         groupId,
@@ -369,6 +370,7 @@ const PlanWrapper = enhance((props) => {
                 updatePlan={updatePlan}
                 createPlanLoading={addPlan.createPlanLoading}
                 selectedWeekDay={selectedWeekDay}
+                zoneDetails={zoneDetails}
             />
 
             <PlanSalesDialog
