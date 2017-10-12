@@ -25,6 +25,8 @@ import Van from 'material-ui/svg-icons/maps/local-shipping'
 import Money from 'material-ui/svg-icons/maps/local-atm'
 import ToolTip from '../ToolTip'
 import NotFound from '../Images/not-found.png'
+import LeftArrow from 'material-ui/svg-icons/navigation/chevron-left'
+import RightArrow from 'material-ui/svg-icons/navigation/chevron-right'
 
 const minutePerHour = 60
 const current = (_.toInteger(moment().format('H')) * minutePerHour) + _.toInteger(moment().format('m'))
@@ -47,7 +49,6 @@ const enhance = compose(
             position: 'absolute',
             left: '-28px',
             top: '60px',
-            right: '322px',
             bottom: '-28px',
             zIndex: '2'
         },
@@ -88,6 +89,14 @@ const enhance = compose(
             borderLeft: '1px #efefef solid',
             transition: 'all 0.3s ease',
             zIndex: '6'
+        },
+        toggleButton: {
+            background: '#fff',
+            position: 'absolute',
+            border: '1px #efefef solid',
+            borderRight: 'none',
+            left: '-20px',
+            top: '20px'
         },
         trackingInfoTitle: {
             display: 'flex',
@@ -217,7 +226,8 @@ const enhance = compose(
         }
     }),
     withState('sliderValue', 'setSliderValue', current),
-    withState('searchQuery', 'setSearchQuery', '')
+    withState('searchQuery', 'setSearchQuery', ''),
+    withState('openAgentsInfo', 'toggleAgentsInfo', true)
 )
 
 const TrackingWrapper = enhance((props) => {
@@ -242,7 +252,9 @@ const TrackingWrapper = enhance((props) => {
         sliderValue,
         setSliderValue,
         searchQuery,
-        setSearchQuery
+        setSearchQuery,
+        openAgentsInfo,
+        toggleAgentsInfo
     } = props
 
     const listLoading = _.get(listData, 'listLoading')
@@ -269,6 +281,18 @@ const TrackingWrapper = enhance((props) => {
             padding: 0,
             display: 'flex',
             margin: '0 10px'
+        }
+    }
+    const buttonStyle = {
+        icon: {
+            color: '#666',
+            width: 20,
+            height: 20
+        },
+        button: {
+            height: 38,
+            width: 20,
+            padding: 0
         }
     }
     const buttons = [
@@ -314,7 +338,16 @@ const TrackingWrapper = enhance((props) => {
     })
 
     const zoneInfoToggle = (
-        <div className={classes.trackingInfo}>
+        <div className={classes.trackingInfo} style={openAgentsInfo ? {right: -28} : {right: (-378)}}>
+            <div className={classes.toggleButton}>
+                <IconButton
+                    onTouchTap={() => { toggleAgentsInfo(!openAgentsInfo) }}
+                    iconStyle={buttonStyle.icon}
+                    style={buttonStyle.button}
+                    disableTouchRipple={true}>
+                    {openAgentsInfo ? <RightArrow/> : <LeftArrow/>}
+                </IconButton>
+            </div>
             <div className={classes.wrapper}>
                 {openDetail && <TrackingDatePicker
                     filter={filter}
@@ -425,7 +458,7 @@ const TrackingWrapper = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.TRACKING_LIST_URL} opacity={true}/>
             {(listLoading || agentLocationLoading) &&
-            <div className={classes.mapLoader}>
+            <div className={classes.mapLoader} style={openAgentsInfo ? {right: 322} : {right: -28}}>
                 <div>
                     <CircularProgress size={40} thickness={4}/>
                 </div>
@@ -449,8 +482,10 @@ const TrackingWrapper = enhance((props) => {
                 filter={filter}
                 filterForm={filterForm}
                 agentId={agentId}
+                openAgentsInfo={openAgentsInfo}
                 openDetail={openDetail}/>
             <TrackingTime
+                openAgentsInfo={openAgentsInfo}
                 sliderValue={sliderValue}
                 setSliderValue={setSliderValue}
                 initialValues={initialValues}

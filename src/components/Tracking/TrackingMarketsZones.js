@@ -36,7 +36,7 @@ const enhance = compose(
             width: wrapperWidth + 'px',
             zIndex: '5',
             opacity: '0.7',
-            transition: 'all 400ms ease',
+            transition: 'all 300ms ease',
             '& form > div': {
                 margin: '10px 0'
             },
@@ -103,14 +103,35 @@ const enhance = compose(
         }
     }),
 )
+
 const TrackingMarketsZones = enhance((props) => {
     const {
         filter,
         classes,
         openCheck,
         setOpenCheck,
-        openDetail
+        openDetail,
+        openAgentsInfo
     } = props
+
+    const styles = {
+        openCheck_openDetails: {
+            right: openAgentsInfo ? '320px' : 'calc(320px - 350px)',
+            bottom: '20px'
+        },
+        openCheck_closedDetails: {
+            right: openAgentsInfo ? '320px' : 'calc(320px - 350px)',
+            bottom: '-28px'
+        },
+        closedCheck_openDetails: {
+            right: openAgentsInfo ? '172px' : 'calc(172px - 350px)',
+            bottom: '20px'
+        },
+        closedCheck_closedDetails: {
+            right: openAgentsInfo ? '172px' : 'calc(172px - 350px)',
+            bottom: '-28px'
+        }
+    }
 
     const showMarkets = toBoolean(_.get(filter.getParams(), 'showMarkets')) || false
     const showZones = toBoolean(_.get(filter.getParams(), 'showZones')) || false
@@ -124,8 +145,8 @@ const TrackingMarketsZones = enhance((props) => {
     return (
         <div className={classes.detailWrap}
              style={openCheck
-                 ? (openDetail ? {right: '320px', bottom: '20px'} : {right: '320px', bottom: '-28px'})
-                 : (openDetail ? {right: '172px', bottom: '20px'} : {right: '172px', bottom: '-28px'})}>
+                 ? (openDetail ? styles.openCheck_openDetails : styles.openCheck_closedDetails)
+                 : (openDetail ? styles.closedCheck_openDetails : styles.closedCheck_closedDetails)}>
             <div className={classes.button}>
                 <IconButton
                     onTouchTap={() => { setOpenCheck(!openCheck) }}
