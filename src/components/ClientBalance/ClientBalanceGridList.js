@@ -326,7 +326,7 @@ const ClientBalanceGridList = enhance((props) => {
 
     // This constants for Statistics
     const borrowersBank = _.get(sumData, ['sum', 'borrowersSumBank'])
-    const borrowersBankCount = _.get(sumData, ['sum','borrowersCountBank'])
+    const borrowersBankCount = _.get(sumData, ['sum', 'borrowersCountBank'])
     const borrowersCash = _.get(sumData, ['sum', 'borrowersSumCash'])
     const borrowersCashCount = _.get(sumData, ['sum', 'borrowersCountCash'])
     const loanersBank = _.get(sumData, ['sum', 'loanersSumBank'])

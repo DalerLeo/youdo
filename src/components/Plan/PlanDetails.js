@@ -48,17 +48,8 @@ const enhance = compose(
         agentInfo: {
             border: '1px #e9e9e9 solid',
             position: 'relative',
-            '&:after': {
-                content: '""',
-                position: 'absolute',
-                background: 'linear-gradient(to bottom, rgba(244,244,244,1) 0%,rgba(244,244,244,0.75)' +
-                ' 50%,rgba(244,244,244,0) 100%)',
-                bottom: '-32px',
-                left: '0',
-                right: '0',
-                height: '31px',
-                zIndex: '10'
-            },
+            boxShadow: '0px 8px 20px 10px #f4f4f4',
+            zIndex: '10',
             '& > div': {
                 padding: '15px 20px'
             }
