@@ -10,7 +10,6 @@ import Dialog from 'material-ui/Dialog'
 import CloseIcon2 from '../CloseIcon2'
 import {ShiftSearchField, UsersSearchField} from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
-import toBoolean from '../../helpers/toBoolean'
 
 export const OPEN_USER_CREATE_DIALOG = 'openCreateDialog'
 
@@ -134,8 +133,7 @@ const ManufactureAddStaffDialog = enhance((props) => {
         loading,
         onClose,
         handleSubmit,
-        classes,
-        isUpdate
+        classes
     } = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     return (
