@@ -325,15 +325,14 @@ const ClientBalanceGridList = enhance((props) => {
     } = props
 
     // This constants for Statistics
-
-    const borrowersBank = _.get(sumData.sum, 'borrowersSumBank')
-    const borrowersBankCount = _.get(sumData.sum, 'borrowersCountBank')
-    const borrowersCash = _.get(sumData.sum, 'borrowersSumCash')
-    const borrowersCashCount = _.get(sumData.sum, 'borrowersCountCash')
-    const loanersBank = _.get(sumData.sum, 'loanersSumBank')
-    const loanersBankCount = _.get(sumData.sum, 'loanersCountBank')
-    const loanersCash = _.get(sumData.sum, 'loanersSumCash')
-    const loanersCashCount = _.get(sumData.sum, 'loanersCountCash')
+    const borrowersBank = _.get(sumData, ['sum', 'borrowersSumBank'])
+    const borrowersBankCount = _.get(sumData, ['sum','borrowersCountBank'])
+    const borrowersCash = _.get(sumData, ['sum', 'borrowersSumCash'])
+    const borrowersCashCount = _.get(sumData, ['sum', 'borrowersCountCash'])
+    const loanersBank = _.get(sumData, ['sum', 'loanersSumBank'])
+    const loanersBankCount = _.get(sumData, ['sum', 'loanersCountBank'])
+    const loanersCash = _.get(sumData, ['sum', 'loanersSumCash'])
+    const loanersCashCount = _.get(sumData, ['sum', 'loanersCountCash'])
 
     const orderNoSorting = _.isNil(filter.getSortingType('order_no')) ? null
         : filter.getSortingType('order_no') ? <ArrowUpIcon className={classes.icon}/>
