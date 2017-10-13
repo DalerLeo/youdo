@@ -167,9 +167,9 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         return (props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest() && _.isNil(nextProps.query.dPage || nextProps.query.dPageSize || props.query.dPage || props.query.dPageSize)) ||
             (_.get(props, ['location', 'query', 'cashboxId']) !== _.get(nextProps, ['location', 'query', 'cashboxId']))
-    }, ({dispatch, filter, location}) => {
+    }, ({dispatch, filter, location, isSuperUser}) => {
         const cashboxId = _.get(location, ['query', 'cashboxId'])
-        dispatch(transactionListFetchAction(filter, cashboxId))
+        dispatch(transactionListFetchAction(filter, cashboxId, isSuperUser))
     }),
 
     withHandlers({

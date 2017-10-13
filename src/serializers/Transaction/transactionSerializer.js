@@ -116,7 +116,8 @@ export const convertSerializer = (date, currency) => {
     }
 }
 
-export const listFilterSerializer = (data, cashbox) => {
+const THREE = 3
+export const listFilterSerializer = (data, cashbox, isSuperUser) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
     const newCashbox = (cashbox && cashbox > ZERO) ? cashbox : null
@@ -126,7 +127,7 @@ export const listFilterSerializer = (data, cashbox) => {
         'created_date_0': _.get(defaultData, 'fromDate'),
         'created_date_1': _.get(defaultData, 'toDate'),
         'type': type,
-        'cashbox': newCashbox,
+        'cashbox': isSuperUser ? newCashbox : THREE,
         'search': _.get(defaultData, 'search'),
         'page': _.get(defaultData, 'page'),
         'client': _.get(defaultData, 'client'),
