@@ -208,6 +208,7 @@ const ClientBalanceInfoDialog = enhance((props) => {
     const loading = _.get(detailData, 'detailLoading')
     const detailList = _.map(_.get(detailData, 'data'), (item, index) => {
         const createdDate = dateFormat(_.get(item, 'createdDate')) + ' ' + moment(_.get(item, 'createdDate')).format('HH:MM')
+        const comment = _.get(item, 'comment')
         const currency = _.get(item, ['currency', 'name'])
         const currencyId = _.get(item, ['currency', 'id'])
         const market = _.get(item, ['market', 'name'])
@@ -232,6 +233,7 @@ const ClientBalanceInfoDialog = enhance((props) => {
                 <div style={{flexBasis: '20%', maxWidth: '20%'}}>{user}</div>
                 <div style={{flexBasis: '40%', maxWidth: '40%'}}>
                     {market && <div>Магазин: <span>{market}</span></div>}
+                    {comment && <div>Комментарии: <span>{comment}</span></div>}
                     {type && <div>Тип: <span>{type === PAYMENT ? 'Оплата'
                         : type === CANCEL ? 'Отмена'
                             : type === CANCEL_ORDER ? 'Отмена заказа'
