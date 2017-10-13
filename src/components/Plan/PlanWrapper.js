@@ -9,7 +9,7 @@ import {Link} from 'react-router'
 import sprintf from 'sprintf'
 import Tooltip from '../ToolTip'
 import Search from './PlanSearch'
-import PlanMonthFilter from './PlanMonthFilter'
+import PlanDatePicker from './PlanDatePicker'
 import Details from './PlanDetails'
 import PlanCreateDialog from './PlanCreateDialog'
 import PlanSalesDialog from './PlanSalesDialog'
@@ -222,7 +222,8 @@ const PlanWrapper = enhance((props) => {
         groupId,
         calendar,
         monthlyPlan,
-        selectedWeekDay
+        selectedWeekDay,
+        agentPlans
     } = props
 
     const ZERO = 0
@@ -292,7 +293,7 @@ const PlanWrapper = enhance((props) => {
 
     const leftSide = (
         <div className={classes.leftSide}>
-            <PlanMonthFilter calendar={calendar}/>
+            <PlanDatePicker calendar={calendar} filter={filter}/>
             <div className={classes.titleTabs}>
                 {_.map(buttons, (item) => {
                     const group = _.get(item, 'group')
@@ -343,6 +344,7 @@ const PlanWrapper = enhance((props) => {
             <div className={classes.wrapper}>
                 {leftSide}
                 <Details
+                    agentPlans={agentPlans}
                     calendar={calendar}
                     detailData={detailData}
                     planSalesDialog={planSalesDialog}

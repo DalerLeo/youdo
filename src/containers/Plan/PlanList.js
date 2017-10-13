@@ -31,13 +31,14 @@ import {
     agentMonthlyPlanAction,
     planZonesItemFetchAction,
     marketsLocationAction,
-    planUpdateDialogAction
+    planUpdateDialogAction,
+    agentPlansAction
 } from '../../actions/plan'
 import {openSnackbarAction} from '../../actions/snackbar'
 
 const ZERO = 0
 const ONE = 1
-const defaultDate = moment().format('YYYY-MM')
+const defaultDate = moment().format('YYYY-MM-DD')
 
 const enhance = compose(
     connect((state, props) => {
@@ -69,6 +70,8 @@ const enhance = compose(
         const defaultPriority = _.get(state, ['form', 'PlanCreateForm', 'values', 'priority', 'value'])
         const filter = filterHelper(usersList, pathname, query)
         const selectedWeekDay = _.toInteger(moment(selectedDate + '-' + selectedDay).format('e'))
+        const agentPlansData = _.get(state, ['plan', 'agentPlansItem', 'data'])
+        const agentPlansLoading = _.get(state, ['plan', 'agentPlansItem', 'loading'])
         return {
             query,
             pathname,
@@ -97,6 +100,8 @@ const enhance = compose(
             createPlanLoading,
             updatePlanLoading,
             defaultPriority,
+            agentPlansData,
+            agentPlansLoading,
             filter
         }
     }),
@@ -121,10 +126,11 @@ const enhance = compose(
         const date = _.get(nextProps, ['query', 'date'])
         const prevDate = _.get(props, ['query', 'date'])
         return (agentId && _.get(props, ['params', 'agentId']) !== agentId) || (date !== prevDate)
-    }, ({dispatch, params, filter}) => {
+    }, ({dispatch, params, filter, selectedDate}) => {
         const agentId = _.toInteger(_.get(params, 'agentId'))
         if (agentId) {
             dispatch(planItemFetchAction(agentId))
+            dispatch(agentPlansAction(agentId, selectedDate))
             dispatch(agentMonthlyPlanAction(filter, agentId))
         }
     }),
@@ -305,17 +311,17 @@ const enhance = compose(
                 })
         },
 
-        handlePrevMonth: props => () => {
+        handlePrevDay: props => () => {
             const {location: {pathname}, filter, selectedDate} = props
-            const prevMonth = moment(selectedDate).subtract(ONE, 'month')
-            const dateForURL = prevMonth.format('YYYY-MM')
+            const prevDay = moment(selectedDate).subtract(ONE, 'day')
+            const dateForURL = prevDay.format('YYYY-MM-DD')
             hashHistory.push({pathname, query: filter.getParams({[DATE]: dateForURL})})
         },
 
-        handleNextMonth: props => () => {
+        handleNextDay: props => () => {
             const {location: {pathname}, filter, selectedDate} = props
-            const nextMonth = moment(selectedDate).add(ONE, 'month')
-            const dateForURL = nextMonth.format('YYYY-MM')
+            const nextDay = moment(selectedDate).add(ONE, 'day')
+            const dateForURL = nextDay.format('YYYY-MM-DD')
             hashHistory.push({pathname, query: filter.getParams({[DATE]: dateForURL})})
         },
 
@@ -370,7 +376,9 @@ const PlanList = enhance((props) => {
         createPlanLoading,
         updatePlanLoading,
         openConfirmDialog,
-        setOpenConfirmDialog
+        setOpenConfirmDialog,
+        agentPlansData,
+        agentPlansLoading
     } = props
 
     const openAddPlan = toBoolean(_.get(location, ['query', ADD_PLAN]))
@@ -475,13 +483,19 @@ const PlanList = enhance((props) => {
         selectedDay,
         selectedDate: selectedDate,
         handleChooseDay: props.handleChooseDay,
-        handlePrevMonth: props.handlePrevMonth,
-        handleNextMonth: props.handleNextMonth
+        handlePrevDay: props.handlePrevDay,
+        handleNextDay: props.handleNextDay
     }
 
     const monthlyPlan = {
         data: plan,
         planLoading
+    }
+
+    const agentPlans = {
+        data: agentPlansData,
+        loading: agentPlansLoading,
+        getNewPlans: props.handleGetAgentPlans
     }
 
     return (
@@ -500,6 +514,7 @@ const PlanList = enhance((props) => {
                 detailData={detailData}
                 monthlyPlan={monthlyPlan}
                 selectedWeekDay={selectedWeekDay}
+                agentPlans={agentPlans}
             />
         </Layout>
     )
