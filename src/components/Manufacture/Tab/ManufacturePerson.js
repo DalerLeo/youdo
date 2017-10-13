@@ -122,6 +122,7 @@ const ManufacturePerson = enhance((props) => {
         const id = _.get(item, 'id')
         const name = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName'])
         const shift = _.get(item, 'name')
+        const position = _.get(item, 'position')
         const beginTime = moment(moment().format('YYYY-MM-DD ' + _.get(item, 'beginTime'))).format('HH:mm')
         const endTime = moment(moment().format('YYYY-MM-DD ' + _.get(item, 'endTime'))).format('HH:mm')
         const iconButton = (
@@ -132,7 +133,8 @@ const ManufacturePerson = enhance((props) => {
         return (
             <Row key={id}>
                 <Col xs={4}>{name}</Col>
-                <Col xs={3}>{shift}</Col>
+                <Col xs={3}>{position}</Col>
+                <Col xs={2}>{shift}</Col>
                 <Col xs={2}>{beginTime} - {endTime}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
                     <IconMenu

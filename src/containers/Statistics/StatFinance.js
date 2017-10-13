@@ -5,7 +5,9 @@ import {connect} from 'react-redux'
 import Layout from '../../components/Layout'
 import {compose, withHandlers, withPropsOnChange} from 'recompose'
 import filterHelper from '../../helpers/filter'
-
+import getDocuments from '../../helpers/getDocument'
+import * as API from '../../constants/api'
+import * as serializers from '../../serializers/Statistics/statFinanceSerializer'
 import {StatFinanceGridList} from '../../components/Statistics'
 import {STAT_FINANCE_FILTER_KEY} from '../../components/Statistics/Finance/StatFinanceGridList'
 
@@ -76,6 +78,11 @@ const enhance = compose(
                 [STAT_FINANCE_FILTER_KEY.CLIENT]: client,
                 [STAT_FINANCE_FILTER_KEY.CATEGORY_EXPENSE]: categoryExpense
             })
+        },
+        handleGetDocument: props => () => {
+            const {filter} = props
+            const params = serializers.listFilterSerializer(filter.getParams())
+            getDocuments(API.STAT_FINANCE_GET_DOCUMENT, params)
         }
     })
 )
@@ -128,6 +135,9 @@ const StatFinanceList = enhance((props) => {
             }
         }
     }
+    const getDocument = {
+        handleGetDocument: props.handleGetDocument
+    }
 
     return (
         <Layout {...layout}>
@@ -135,6 +145,7 @@ const StatFinanceList = enhance((props) => {
                 filter={filter}
                 listData={listData}
                 graphData={graphData}
+                getDocument={getDocument}
                 handleSubmitFilterDialog={props.handleSubmitFilterDialog}
                 initialValues={filterForm.initialValues}
                 filterForm={filterForm}

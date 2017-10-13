@@ -159,7 +159,8 @@ const StatFinanceGridList = enhance((props) => {
         filter,
         handleSubmitFilterDialog,
         listData,
-        initialValues
+        initialValues,
+        getDocument
     } = props
 
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
@@ -206,6 +207,7 @@ const StatFinanceGridList = enhance((props) => {
                             filter={filter}
                             filterKeys={STAT_FINANCE_FILTER_KEY}
                             fields={fields}
+                            handleGetDocument={getDocument.handleGetDocument}
                             handleSubmitFilterDialog={handleSubmitFilterDialog}
                             initialValues={initialValues}
                         />

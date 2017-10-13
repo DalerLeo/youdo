@@ -172,7 +172,7 @@ const enhance = compose(
             if (!_.isEmpty(ingredient) && !_.isEmpty(amount)) {
                 let has = false
                 _.map(ingredients, (item) => {
-                    if (_.get(item, 'ingredient') === _.get(ingredient, ['value', 'id']) || product === ingredient) {
+                    if (_.get(item, ['ingredient', 'value', 'id']) === _.get(ingredient, ['value', 'id']) || product === ingredient) {
                         has = true
                     }
                 })

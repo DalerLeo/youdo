@@ -133,8 +133,7 @@ const ManufactureAddStaffDialog = enhance((props) => {
         loading,
         onClose,
         handleSubmit,
-        classes,
-        isUpdate
+        classes
     } = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     return (
@@ -159,7 +158,7 @@ const ManufactureAddStaffDialog = enhance((props) => {
                                 name="user"
                                 component={UsersSearchField}
                                 className={classes.inputFieldCustom}
-                                disabled={Boolean(isUpdate)}
+                                disabled={true}
                                 label="Сотрудник"
                                 fullWidth={true}/>
                             <Field
