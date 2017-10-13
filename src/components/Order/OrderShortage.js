@@ -164,16 +164,17 @@ const ZERO = 0
 const OrderShortageDialog = enhance((props) => {
     const {open, loading, handleSubmit, onClose, classes, products} = props
     const productsList = _.map(products, (item, index) => {
-        const name = _.get(item, ['product', 'text'])
-        const shortage = _.get(item, 'amount') - _.get(item, ['extra', 'balance'])
+        const name = _.get(item, ['product', 'value', 'name'])
+        const shortage = _.get(item, 'amount') - _.toNumber(_.get(item, ['product', 'value', 'balance']))
         const firstname = _.get(item, ['extra', 'supply_manager', 'first_name'])
         const lastname = _.get(item, ['extra', 'supply_manager', 'second_name'])
+        const measurement = _.get(item, ['product', 'value', 'measurement', 'name'])
 
         if (shortage > ZERO) {
             return (
                 <li key={index} className="dottedList">
                     <Col xs={6}>{name}</Col>
-                    <Col xs={3}>{numberFormat(shortage)}</Col>
+                    <Col xs={3}>{numberFormat(shortage, measurement)}</Col>
                     <Col xs={3}>{firstname} {lastname}</Col>
                 </li>
             )

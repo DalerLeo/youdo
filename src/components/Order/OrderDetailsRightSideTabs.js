@@ -185,6 +185,7 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                 const product = _.get(item, 'product')
                                 const productName = _.get(product, 'name')
                                 const type = _.get(product, ['productType', 'id'])
+                                const stock = _.get(item, ['stock', 'name'])
                                 const price = _.get(item, 'price')
                                 const productTotal = _.get(item, 'totalPrice')
                                 const amount = _.toNumber(_.get(item, 'amount'))
@@ -201,7 +202,7 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                     <Row className="dottedList" key={index}>
                                         <Col xs={4}>
                                             <span style={{marginRight: 10, fontWeight: 600}}>{index + ONE}</span>
-                                            <span>{productName} {isBonus && <strong className="greenFont">(бонус)</strong>}</span>
+                                            <span>{productName} {stock ? ' ( ' + stock + ' ) ' : null} {isBonus && <strong className="greenFont">(бонус)</strong>}</span>
                                         </Col>
                                         <Col xs={2}>
                                             {numberFormat(amount)}
