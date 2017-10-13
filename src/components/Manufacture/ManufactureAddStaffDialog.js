@@ -158,7 +158,7 @@ const ManufactureAddStaffDialog = enhance((props) => {
                                 name="user"
                                 component={UsersSearchField}
                                 className={classes.inputFieldCustom}
-                                disabled={true}
+                                disabled={isUpdate}
                                 label="Сотрудник"
                                 fullWidth={true}/>
                             <Field

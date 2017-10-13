@@ -117,7 +117,8 @@ const SearchField = enhance((props) => {
         state,
         dispatch,
         valueRenderer,
-        input
+        input,
+        disabled
     } = props
     return (
         <div className={classes.wrapper}>
@@ -132,6 +133,7 @@ const SearchField = enhance((props) => {
                 isLoading={state.loading}
                 valueRenderer={valueRenderer}
                 labelKey={'text'}
+                disabled={disabled}
                 filterOptions={options => options}
             />
         </div>
