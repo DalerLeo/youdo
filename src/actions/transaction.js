@@ -209,8 +209,8 @@ export const transactionUpdateIncomeAction = (id, formValues, cashboxId) => {
     }
 }
 
-export const transactionListFetchAction = (filter, cashboxId) => {
-    const params = serializers.listFilterSerializer(filter.getParams(), cashboxId)
+export const transactionListFetchAction = (filter, cashboxId, isSuperUser) => {
+    const params = serializers.listFilterSerializer(filter.getParams(), cashboxId, isSuperUser)
     const payload = axios()
         .get(API.TRANSACTION_LIST, {params})
         .then((response) => {
