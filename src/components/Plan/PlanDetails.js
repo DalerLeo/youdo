@@ -16,6 +16,19 @@ import CheckOutline from 'material-ui/svg-icons/toggle/check-box-outline-blank'
 import Agent from '../Images/agent.png'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
+import {Link} from 'react-router'
+import * as ROUTE from '../../constants/routes'
+import sprintf from 'sprintf'
+
+const ORDER = 2
+const formattedType = {
+    1: 'Посещение магазина',
+    2: 'Оформление заказа',
+    3: 'Отправить отчет',
+    4: 'Возврат заказа',
+    5: 'Оплата',
+    6: 'Доставить товар'
+}
 
 const timelineColor = '#22a6c6'
 const enhance = compose(
@@ -340,7 +353,14 @@ const enhance = compose(
                 lineHeight: '25px',
                 display: 'flex',
                 alignItems: 'center',
+                fontWeight: '600',
                 justifyContent: 'flex-end',
+                '& span': {
+                    marginLeft: '5px'
+                },
+                '& a': {
+                    fontWeight: 'inherit'
+                },
                 '& svg': {
                     width: '20px !important',
                     height: '20px !important',
@@ -388,7 +408,7 @@ const enhance = compose(
 )
 
 const PlanDetails = enhance((props) => {
-    const {classes, detailData, planSalesDialog, calendar, monthlyPlan} = props
+    const {classes, detailData, planSalesDialog, calendar, monthlyPlan, agentPlans} = props
     const loading = _.get(detailData, 'detailLoading')
     const isOpenDetails = _.get(detailData, 'openDetail')
     const firstName = _.get(detailData, ['data', 'firstName'])
@@ -487,6 +507,43 @@ const PlanDetails = enhance((props) => {
                             <div className={classes.timeline}>
                                 <div className={classes.timelineDate}>22 Апр, 2017</div>
                                 <div className={classes.timelineBlockWrapper}>
+                                    {_.map(_.get(agentPlans, 'data'), (item) => {
+                                        const id = _.get(item, 'id')
+                                        const market = _.get(item, ['market', 'name'])
+                                        const planTasks = _.get(item, 'planTasks')
+                                        const hasPlanTasks = !_.isEmpty(planTasks)
+                                        const time = moment(_.get(_.head(planTasks), 'completedDate')).format('HH:mm')
+                                        const tasks = _.map(planTasks, (task, index) => {
+                                            const type = _.get(task, 'type')
+                                            const orderInfo = _.get(task, 'order')
+                                            const info = type === ORDER
+                                                ? <span>(<Link target="_blank" to={{
+                                                    pathname: sprintf(ROUTE.ORDER_ITEM_PATH, orderInfo.id),
+                                                    query: {search: orderInfo.id}
+                                                }}>№{orderInfo.id}</Link> - {numberFormat(orderInfo.totalPrice, primaryCurrency)})</span>
+                                                : <span></span>
+                                            return (
+                                                <li key={index}>{formattedType[type]} {info} <Checked color="#92ce95"/></li>
+                                            )
+                                        })
+
+                                        return (
+                                            <div key={id} className={classes.timelineBlock}>
+                                                <div className={classes.timelineDot}>
+                                                </div>
+
+                                                <Paper className={classes.timelineContent}>
+                                                    <h2>{market}</h2>
+                                                    {hasPlanTasks
+                                                        ? <ul>
+                                                            {tasks}
+                                                        </ul>
+                                                        : <div>Пока не выполнено заданий</div>}
+                                                    {hasPlanTasks && <span className={classes.date}>{time}</span>}
+                                                </Paper>
+                                            </div>
+                                        )
+                                    })}
                                     <div className={classes.timelineBlock}>
                                         <div className={classes.timelineDot}>
                                         </div>

@@ -5,11 +5,12 @@ import SearchField from './Basic/SearchField'
 const ONE = 1
 const HUNDRED = 100
 
-let Items = []
-for (let i = ONE; i <= HUNDRED; i++) {
-    const obj = {id: i, name: i}
-    Items.push(obj)
-}
+const Items = _.map(_.range(ONE, HUNDRED + ONE), (item) => {
+    return {
+        id: item,
+        name: item
+    }
+})
 
 const getOptions = () => {
     return Promise.resolve(Items)

@@ -1,61 +1,82 @@
 import React from 'react'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import Calendar from 'material-ui/svg-icons/action/today'
 import {Field, reduxForm} from 'redux-form'
-import PlanDateToDateField from '../ReduxForm/TrackingDateField'
+import TrackingDateField from '../ReduxForm/TrackingDateField'
+import IconButton from 'material-ui/IconButton'
+import LeftArrow from 'material-ui/svg-icons/navigation/chevron-left'
+import RightArrow from 'material-ui/svg-icons/navigation/chevron-right'
 
 const enhance = compose(
     injectSheet({
-        padding: {
-            padding: '20px 30px'
-        },
         titleDate: {
             display: 'flex',
             alignItems: 'center',
-            extend: 'padding',
-            '& svg': {
-                minWidth: '32px',
-                width: '32px !important',
-                height: '32px !important',
-                marginRight: '10px'
-            },
-            '& a': {
-                fontWeight: '600'
+            justifyContent: 'space-between',
+            height: '55px',
+            minHeight: '55px',
+            padding: '0px 30px',
+            position: 'relative',
+            '& nav': {
+                height: '34px',
+                position: 'absolute'
             }
         },
-        datePicker: {
-            background: '#fff',
-            padding: '10px 0 20px',
-            position: 'absolute',
-            top: '0',
-            left: '0',
-            right: '0',
-            bottom: '0',
-            zIndex: '2',
-            '& > div': {
-                textAlign: 'center'
-            }
+        prev: {
+            left: '30px'
+        },
+        next: {
+            right: '30px'
         }
     }),
     reduxForm({
-        form: 'PlanDatePicker',
+        form: 'PlanFilterForm',
         enableReinitialize: true
     }),
 )
 
+const navArrow = {
+    icon: {
+        color: '#666',
+        width: 34,
+        height: 34
+    },
+    button: {
+        width: 34,
+        height: 34,
+        padding: 0
+    }
+}
+
 const PlanDatePicker = enhance((props) => {
-    const {classes, PlanDateInitialValues} = props
+    const {classes, filter, calendar} = props
     return (
         <div className={classes.titleDate}>
-            <Calendar color="#666"/>
+            <nav className={classes.prev}>
+                <IconButton
+                    onTouchTap={calendar.handlePrevDay}
+                    iconStyle={navArrow.icon}
+                    style={navArrow.button}
+                    disableTouchRipple={true}>
+                    <LeftArrow/>
+                </IconButton>
+            </nav>
             <Field
-                name="period"
+                name="date"
                 className={classes.inputDateCustom}
-                component={PlanDateToDateField}
-                initialValues={PlanDateInitialValues.initialValues}
+                filter={filter}
+                component={TrackingDateField}
                 fullWidth={true}
-                />
+            />
+            <nav className={classes.next}>
+                <IconButton
+                    onTouchTap={calendar.handleNextDay}
+                    iconStyle={navArrow.icon}
+                    style={navArrow.button}
+                    disableTouchRipple={true}>
+                    <RightArrow/>
+                </IconButton>
+            </nav>
         </div>
     )
 })

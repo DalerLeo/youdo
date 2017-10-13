@@ -446,7 +446,7 @@ const ClientBalanceGridList = enhance((props) => {
     const isSuperUser = _.get(superUser, 'isSuperUser')
 
     const lists = (
-        <div className={classes.tableWrapper}>
+        <div className={classes.tableWrapper} style={!stat ? {marginBottom: 30} : {}}>
             {clients}
             <div className={classes.mainTableWrapper} style={stat
                 ? {width: 'calc(100% - 350px)'}
@@ -506,7 +506,6 @@ const ClientBalanceGridList = enhance((props) => {
     )
     return (
         <Container>
-
             {stat &&
             <div className={classes.mainWrapper}>
                 <Row style={{margin: '0', height: '100%'}}>
@@ -522,16 +521,16 @@ const ClientBalanceGridList = enhance((props) => {
                                     </div>
                                     : <div className={classes.summaryWrapper}>
                                         <div>Задолжники нал. - {borrowersCashCount}
-                                            <div>{borrowersCash}</div>
+                                            <div>{numberFormat(borrowersCash, primaryCurrency)}</div>
                                         </div>
                                         <div>Задолжники переч. - {borrowersBankCount}
-                                            <div>{borrowersBank}</div>
+                                            <div>{numberFormat(borrowersBank, primaryCurrency)}</div>
                                         </div>
                                         <div>Закладчики нал. - {loanersCashCount}
-                                            <div>{loanersCash}</div>
+                                            <div>{numberFormat(loanersCash, primaryCurrency)}</div>
                                         </div>
-                                        <div>Закладчики нал. - {loanersBankCount}
-                                            <div>{loanersBank} USD</div>
+                                        <div>Закладчики переч. - {loanersBankCount}
+                                            <div>{numberFormat(loanersBank, primaryCurrency)}</div>
                                         </div>
                                     </div>}
                             </div>

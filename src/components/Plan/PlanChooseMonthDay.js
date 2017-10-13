@@ -3,13 +3,15 @@ import React from 'react'
 import {compose, withState, withPropsOnChange} from 'recompose'
 import injectSheet from 'react-jss'
 
-let days = []
 const FIRST_DAY = 1
 const LAST_DAY = 31
-for (let i = FIRST_DAY; i <= LAST_DAY; i++) {
-    const obj = {id: i, name: i, active: false}
-    days.push(obj)
-}
+const days = _.map(_.range(FIRST_DAY, LAST_DAY + FIRST_DAY), (item) => {
+    return {
+        id: item,
+        name: item,
+        active: false
+    }
+})
 days.push('', '', '', '')
 const enhance = compose(
     injectSheet({

@@ -406,6 +406,7 @@ const rootReducer = combineReducers({
         listPrint: createThunkReducer(actionTypes.RETURN_PRINT)
     }),
     plan: combineReducers({
+        agentPlansItem: createThunkReducer(actionTypes.PLAN_AGENTS_ITEM),
         createPlan: createThunkReducer(actionTypes.PLAN_CREATE_SUBMIT),
         updatePlan: createThunkReducer(actionTypes.PLAN_UPDATE_SUBMIT),
         monthlyPlan: createThunkReducer(actionTypes.PLAN_MONTHLY),
