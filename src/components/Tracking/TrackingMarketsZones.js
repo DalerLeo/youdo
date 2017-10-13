@@ -24,7 +24,7 @@ const buttonStyle = {
     button: {
         height: 38,
         width: 20,
-        padding: 0
+        padding: '9px 0'
     }
 }
 const enhance = compose(

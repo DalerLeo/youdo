@@ -26,6 +26,7 @@ import {
     planAgentsListFetchAction,
     planItemFetchAction,
     planZonesListFetchAction,
+    planZoneItemFetchAction,
     planMonthlySetAction,
     agentMonthlyPlanAction,
     planZonesItemFetchAction,
@@ -48,6 +49,8 @@ const enhance = compose(
         const detailLoading = _.get(state, ['users', 'item', 'loading'])
         const zones = _.get(state, ['zone', 'list', 'data'])
         const zonesLoading = _.get(state, ['zone', 'list', 'loading'])
+        const zoneDetail = _.get(state, ['zone', 'item', 'data'])
+        const zoneDetailLoading = _.get(state, ['zone', 'item', 'loading'])
         const zoneAgents = _.get(state, ['plan', 'agentsPlan', 'data'])
         const zoneAgentsLoading = _.get(state, ['plan', 'agentsPlan', 'loading'])
         const stat = _.get(state, ['plan', 'statistics', 'data'])
@@ -77,6 +80,8 @@ const enhance = compose(
             detailLoading,
             zones,
             zonesLoading,
+            zoneDetail,
+            zoneDetailLoading,
             zoneAgents,
             zoneAgentsLoading,
             createForm,
@@ -162,6 +167,7 @@ const enhance = compose(
         const zone = _.toInteger(_.get(location, ['query', ZONE]))
         if (zone > ZERO) {
             dispatch(marketsLocationAction(zone))
+            dispatch(planZoneItemFetchAction(zone))
         }
     }),
 
@@ -349,6 +355,8 @@ const PlanList = enhance((props) => {
         detailLoading,
         zones,
         zonesLoading,
+        zoneDetail,
+        zoneDetailLoading,
         zoneAgents,
         zoneAgentsLoading,
         monthlyPlanCreateLoading,
@@ -393,6 +401,11 @@ const PlanList = enhance((props) => {
         handleOpenAddPlan: props.handleOpenAddPlan,
         handleCloseAddPlan: props.handleCloseAddPlan,
         handleSubmitAddPlan: props.handleSubmitAddPlan
+    }
+
+    const zoneDetails = {
+        data: zoneDetail,
+        loading: zoneDetailLoading
     }
 
     const updatePlan = {
@@ -478,6 +491,7 @@ const PlanList = enhance((props) => {
                 usersList={listData}
                 statData={statData}
                 addPlan={addPlan}
+                zoneDetails={zoneDetails}
                 updatePlan={updatePlan}
                 planSalesDialog={planSalesDialog}
                 handleClickTab={props.handleClickTab}
