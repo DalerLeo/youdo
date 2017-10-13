@@ -443,6 +443,8 @@ const ClientBalanceGridList = enhance((props) => {
             </tbody>
         </table>
     )
+    const isSuperUser = _.get(superUser, 'isSuperUser')
+
     const lists = (
         <div className={classes.tableWrapper}>
             {clients}
@@ -451,10 +453,9 @@ const ClientBalanceGridList = enhance((props) => {
                 : {width: 'calc(100% - 350px - 120px)'}}>
                 {tableList}
             </div>
-            {!stat && buttons}
+            {!stat && isSuperUser && buttons}
         </div>
     )
-    const isSuperUser = _.get(superUser, 'isSuperUser')
 
     const client = _.find(_.get(listData, 'data'), {'id': _.get(detailData, 'id')})
 

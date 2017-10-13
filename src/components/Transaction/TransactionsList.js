@@ -157,7 +157,8 @@ const TransactionsList = enhance((props) => {
         transactionInfoDialog,
         superUser,
         showOnlyList,
-        listShadow
+        listShadow,
+        hasRightCashbox
     } = props
 
     const transactionFilterDialog = showOnlyList
@@ -306,7 +307,7 @@ const TransactionsList = enhance((props) => {
                 <div className={classes.outerTitle}>{cashboxName}</div>
                 <div className={classes.outerTitle}>
                     <div className={classes.buttons}>
-                        <a onClick={acceptCashDialog.handleOpenCashDialog} className={classes.btnSend}>Принять наличные</a>
+                        {hasRightCashbox && <a onClick={acceptCashDialog.handleOpenCashDialog} className={classes.btnSend}>Принять наличные</a>}
                         <div>
                             <a onClick={createSendDialog.handleOpenDialog}
                                className={classes.btnSend}>Перевод</a>

@@ -852,6 +852,7 @@ const TransactionList = enhance((props) => {
         handleSubmitDeleteTransaction: props.handleSubmitDeleteTransaction
     }
 
+    const hasRightCashbox = _.find(_.get(cashboxList, 'results'), {'type': 'cash'})
     return (
         <Layout {...layout}>
             <TransactionGridList
@@ -873,6 +874,7 @@ const TransactionList = enhance((props) => {
                 acceptCashDialog={acceptCashDialog}
                 transactionInfoDialog={transactionInfoDialog}
                 superUser={superUser}
+                hasRightCashbox={hasRightCashbox}
             />
         </Layout>
     )

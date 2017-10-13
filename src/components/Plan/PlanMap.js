@@ -2,7 +2,7 @@ import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {compose, withState} from 'recompose'
-import {withGoogleMap, GoogleMap as DefaultGoogleMap, Marker, OverlayView, Polyline} from 'react-google-maps'
+import {withGoogleMap, GoogleMap as DefaultGoogleMap, Marker, OverlayView, Polyline, Polygon} from 'react-google-maps'
 import withScriptjs from 'react-google-maps/lib/async/withScriptjs'
 import CircularProgress from 'material-ui/CircularProgress'
 import * as GOOGLE_MAP from '../../constants/googleMaps'
@@ -46,6 +46,13 @@ const ZERO = 0
 const ONE = 1
 const TWO = 2
 const OPACITY = 0.4
+
+const zoneOptions = {
+    fillColor: 'transparent',
+    strokeWeight: 2,
+    strokeColor: '#607d8b'
+}
+
 const GoogleMapWrapper = enhance((
     {
         classes,
@@ -60,6 +67,7 @@ const GoogleMapWrapper = enhance((
         zoneAgents,
         selectedAgent,
         handleUpdateAgentPlan,
+        zoneCoordinates,
         ...props
     }) => {
     const indexOfSelectedAgent = _.findIndex(zoneAgents, (o) => {
@@ -192,9 +200,16 @@ const GoogleMapWrapper = enhance((
             </Marker>
         )
     })
+    const selectedZone = (
+        <Polygon
+            paths={zoneCoordinates}
+            options={zoneOptions}
+        />
+    )
     return (
         <DefaultGoogleMap ref={onMapLoad} {...props}>
             {markets}
+            {selectedZone}
             {selectedAgent > ZERO && planTracks}
             {selectedAgent > ZERO && planAgentTracks}
             {props.children}
@@ -218,6 +233,7 @@ const Loader = () =>
 
 const PlanMap = (props) => {
     const {
+        meanCenter,
         marketsLocation,
         handleChooseMarket,
         selectedMarket,
@@ -226,8 +242,10 @@ const PlanMap = (props) => {
         zoneAgents,
         selectedAgent,
         handleUpdateAgentPlan,
+        zoneCoordinates,
         ...defaultProps
     } = props
+
     const mapOptions = {
         styles: googleMapStyle,
         mapTypeControl: false,
@@ -237,18 +255,15 @@ const PlanMap = (props) => {
         scaleControl: false,
         fullscreenControl: false
     }
-    const defaultCenter = {
-        lat: 41.311141,
-        lng: 69.279716
-    }
+
     return (
         <GoogleMapWrapper
-            defaultCenter={defaultCenter}
+            defaultCenter={meanCenter}
             googleMapURL={GOOGLE_MAP.GOOGLE_API_URL}
             loadingElement={<Loader />}
             containerElement={<div style={{height: '100%'}} />}
             mapElement={<div style={{height: '100%'}} />}
-            defaultZoom={15}
+            defaultZoom={13}
             radius="500"
             options={mapOptions}
             marketsLocation={marketsLocation}
@@ -259,6 +274,7 @@ const PlanMap = (props) => {
             zoneAgents={zoneAgents}
             selectedAgent={selectedAgent}
             handleUpdateAgentPlan={handleUpdateAgentPlan}
+            zoneCoordinates={zoneCoordinates}
             {...defaultProps}>
             {props.children}
         </GoogleMapWrapper>

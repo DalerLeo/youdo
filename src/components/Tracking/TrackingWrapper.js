@@ -95,7 +95,7 @@ const enhance = compose(
             position: 'absolute',
             border: '1px #efefef solid',
             borderRight: 'none',
-            left: '-20px',
+            left: '-21px',
             top: '55px'
         },
         trackingInfoTitle: {
@@ -292,7 +292,7 @@ const TrackingWrapper = enhance((props) => {
         button: {
             height: 38,
             width: 20,
-            padding: 0
+            padding: '9px 0'
         }
     }
     const buttons = [

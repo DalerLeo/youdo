@@ -149,6 +149,21 @@ export const planZonesListFetchAction = () => {
     }
 }
 
+export const planZoneItemFetchAction = (id) => {
+    const payload = axios()
+        .get(sprintf(API.ZONE_ITEM, id))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+    return {
+        type: actionTypes.ZONE_ITEM,
+        payload
+    }
+}
+
 export const planZonesItemFetchAction = (id, date) => {
     const payload = axios()
         .get(API.PLAN_AGENTS, {params: {border: id, date: date}})
