@@ -318,7 +318,7 @@ const StatAgentGridList = enhance((props) => {
         const plan = numberFormat(_.get(item, 'monthlyPlanAmount'), getConfig('PRIMARY_CURRENCY'))
         const factPrice = numberFormat(_.get(item, 'factPrice'))
         const orderTotalPrice = numberFormat(_.get(item, 'ordersTotalPrice'))
-        const orderReturnTotalPrice = numberFormat(_.get(item, 'ordersReturnTotalPrice'))
+        const orderReturnTotalPrice = numberFormat(_.get(item, 'ordersReturnedTotalPrice'))
         const orderLeftTotalPrice = numberFormat(_.get(item, 'ordersLeftTotalPrice'), getConfig('PRIMARY_CURRENCY'))
         const totalPaid = numberFormat(_.get(item, 'totalPaid'), getConfig('PRIMARY_CURRENCY'))
         const monthlyPlanLeft = numberFormat(_.get(item, 'monthlyPlanLeft'), getConfig('PRIMARY_CURRENCY'))
