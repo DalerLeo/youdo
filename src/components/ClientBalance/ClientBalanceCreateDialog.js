@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
-import {Row, Col} from 'react-flexbox-grid'
 import FlatButton from 'material-ui/FlatButton'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
@@ -55,9 +54,11 @@ const enhance = compose(
             }
         },
         red: {
+            padding: '0 5px',
             fontWeight: '600'
         },
         green: {
+            padding: '0 5px',
             fontWeight: '600'
         }
     })),
@@ -82,12 +83,10 @@ const ClientBalanceCreateDialog = enhance((props) => {
         const amount = _.get(balance, 'amount')
         const type = _.get(balance, 'type')
         return (
-            <Row key={index} style={{padding: '10px 30px'}}>
-                <Col xs={6}>{balanceName + ' ' + type}</Col>
-                <Col xs={6}>
+            <div key={index} style={{padding: '5px 25px'}}>
+                    <span>{balanceName + ' ' + type}</span>
                     <span className={(amount <= ZERO) ? classes.red : classes.green}>{numberFormat(amount, currency)}</span>
-                </Col>
-            </Row>
+            </div>
         )
     })
 
@@ -98,7 +97,7 @@ const ClientBalanceCreateDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '400px'} : {width: '400px'}}
+            contentStyle={loading ? {width: '500px'} : {width: '500px'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
                 <span>{addDialog ? 'Добавить приход клиенту' : 'Добавить расход клиенту'}</span>
@@ -112,7 +111,7 @@ const ClientBalanceCreateDialog = enhance((props) => {
                 </div>
                 : <div className={classes.bodyContent}>
                     <div style={{padding: '10px 30px'}}>Клиент: <strong>{name}</strong></div>
-                    {!superUser && <div>
+                    {!superUser && <div style={{display: 'flex', flexWrap: 'wrap'}}>
                         {balanceInfo}
                     </div>}
                     <form onSubmit={onSubmit} className={classes.form}>

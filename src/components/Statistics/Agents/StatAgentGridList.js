@@ -307,9 +307,7 @@ const StatAgentGridList = enhance((props) => {
         getDocument,
         calendar,
         initialValues,
-        handleSubmit,
-        setOpenFilter,
-        openFilter
+        handleSubmit
     } = props
 
     const listLoading = _.get(listData, 'listLoading')
@@ -389,8 +387,6 @@ const StatAgentGridList = enhance((props) => {
                             handleSubmitFilterDialog={handleSubmitFilterDialog}
                             handleGetDocument={getDocument.handleGetDocument}
                             withoutDate={true}
-                            setOpenFilter={setOpenFilter}
-                            openFilter={openFilter}
                         />
                         <div className={classes.filters}>
                             <PlanMonthFilter calendar={calendar}/>

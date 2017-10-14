@@ -1,11 +1,10 @@
 import React from 'react'
 import _ from 'lodash'
-import {reset} from 'redux-form'
 import sprintf from 'sprintf'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
-import {compose, withPropsOnChange, withHandlers, withState} from 'recompose'
+import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
@@ -53,7 +52,6 @@ const enhance = compose(
             selectedDate
         }
     }),
-    withState('openFilter', 'setOpenFilter', false),
     withPropsOnChange((props, nextProps) => {
         const except = {
             openStatAgentDialog: null,
@@ -100,7 +98,7 @@ const enhance = compose(
         },
 
         handleSubmitFilterDialog: props => () => {
-            const {filter, filterForm, setOpenFilter, dispatch} = props
+            const {filter, filterForm} = props
             const search = _.get(filterForm, ['values', 'search']) || null
             const zone = _.get(filterForm, ['values', 'zone', 'value']) || null
             const division = _.get(filterForm, ['values', 'division', 'value']) || null
@@ -114,8 +112,6 @@ const enhance = compose(
                 [STAT_AGENT_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
 
             })
-            setOpenFilter(false)
-            dispatch(reset('StatisticsFilterForm'))
         },
         handleGetDocument: props => () => {
             const {filter} = props
@@ -149,9 +145,7 @@ const StatAgentList = enhance((props) => {
         layout,
         filterItem,
         currentDate,
-        params,
-        openFilter,
-        setOpenFilter
+        params
     } = props
 
     const openStatAgentDialog = toBoolean(_.get(location, ['query', STAT_AGENT_DIALOG_OPEN]))
@@ -215,8 +209,6 @@ const StatAgentList = enhance((props) => {
                 getDocument={getDocument}
                 calendar={calendar}
                 initialValues={initialValues}
-                openFilter={openFilter}
-                setOpenFilter={setOpenFilter}
             />
         </Layout>
     )

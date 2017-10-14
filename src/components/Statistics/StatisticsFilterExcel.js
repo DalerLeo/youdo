@@ -117,7 +117,8 @@ const enhance = compose(
     reduxForm({
         form: 'StatisticsFilterForm',
         enableReinitialize: true
-    })
+    }),
+    withState('openFilter', 'setOpenFilter', false)
 )
 
 const StatisticsFilterExcel = enhance((props) => {
