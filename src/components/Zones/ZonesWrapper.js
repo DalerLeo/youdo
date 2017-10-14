@@ -28,6 +28,7 @@ import BindAgentDialog from './ZoneBindAgentDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import ZoneDetails from './ZoneDetails'
 import NotFound from '../Images/not-found.png'
+import ShopDetail from '../Tracking/TrackingShopDetails'
 
 const enhance = compose(
     injectSheet({
@@ -320,7 +321,7 @@ const ZonesWrapper = enhance((props) => {
     const isListEmpty = _.isEmpty(_.get(listData, 'data'))
 
     const openDetail = (_.get(detailData, 'openDetail') > ZERO)
-
+    const openShopDetail = (_.get(shopDetail, 'openShopDetail') > ZERO)
     const isLoadingStat = _.get(statData, 'statLoading')
     const activeZones = _.get(statData, ['data', 'activeBorders'])
     const boundMarkets = _.get(statData, ['data', 'boundMarkets'])
@@ -346,118 +347,122 @@ const ZonesWrapper = enhance((props) => {
                 {isOpenToggle ? <div className={classes.expanded} onClick={toggle.handleCollapseInfo}><Arrow/></div>
                     : <div className={classes.collapsed} onClick={toggle.handleExpandInfo}><Arrow/></div>}
             </div>
-            {!openDetail ? <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%'}}>
-                <div className={classes.zonesInfoTitle}>
-                    {isLoadingStat &&
-                    <div className={classes.loader}>
-                        <CircularProgress size={25} thickness={3}/>
-                    </div>}
-                    <div>
-                        <big>{activeZones}</big>
-                        <span>{(activeZones === ONE) ? 'активная' : 'активных'} <br/> {(activeZones === ONE) ? 'зона' : 'зон'}</span>
-                    </div>
-                    <div>
-                        <big>{boundMarkets}</big>
-                        <span>магазинов <br/> в зонах</span>
-                    </div>
-                </div>
-
-                <div className={classes.list}>
-                    <div className={classes.listTitle}>
-                        <span>Зоны</span>
-                        <div className={classes.searchField}>
-                            <form onSubmit={onSubmit}>
-                                <div className={classes.search}>
-                                    <TextFieldSearch
-                                        fullWidth={true}
-                                        hintText="Поиск"
-                                        className={classes.searchField}
-                                        value={search}
-                                        onChange={(event) => setSearch(event.target.value)}
-                                    />
-                                    <IconButton
-                                        iconStyle={{color: '#ccc'}}
-                                        className={classes.searchButton}
-                                        disableTouchRipple={true}>
-                                        <SearchIcon />
-                                    </IconButton>
-                                </div>
-                            </form>
+            {openDetail
+            ? <ZoneDetails
+                shopFilter={shopFilter}
+                detailData={detailData}
+                bindAgent={bindAgent}
+                unbindAgent={unbindAgent}
+                filter={filter}
+            />
+            : openShopDetail
+                ? <ShopDetail
+                        shopDetails={shopDetail}/>
+            : <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%'}}>
+                    <div className={classes.zonesInfoTitle}>
+                        {isLoadingStat &&
+                        <div className={classes.loader}>
+                            <CircularProgress size={25} thickness={3}/>
+                        </div>}
+                        <div>
+                            <big>{activeZones}</big>
+                            <span>{(activeZones === ONE) ? 'активная' : 'активных'} <br/> {(activeZones === ONE) ? 'зона' : 'зон'}</span>
+                        </div>
+                        <div>
+                            <big>{boundMarkets}</big>
+                            <span>магазинов <br/> в зонах</span>
                         </div>
                     </div>
-                    <Row className={classes.listHeader}>
-                        <Col xs={2}>ID</Col>
-                        <Col xs={6}>Наименование зоны</Col>
-                        <Col xs={2}>Магазины</Col>
-                    </Row>
-                    <div className={classes.itemList}>
-                        {isLoadingList &&
-                        <div className={classes.loader}>
-                            <CircularProgress size={40} thickness={4}/>
-                        </div>}
-                        {!isListEmpty ? _.map(_.get(listData, 'data'), (item) => {
-                            const id = _.get(item, 'id')
-                            const marketsCount = _.get(item, 'marketsCount')
-                            const name = _.get(item, 'title')
-                            return (
-                                <Row key={id}>
-                                    <Col xs={2} style={{color: '#237bde'}}>Z-{id}</Col>
-                                    <Col xs={6}>
-                                        <Link to={{
-                                            pathname: sprintf(ROUTES.ZONES_ITEM_PATH, id),
-                                            query: filter.getParams()
-                                        }}>{name}</Link>
-                                    </Col>
-                                    <Col xs={2}>{marketsCount}</Col>
-                                    <Col xs={2} style={{textAlign: 'right'}}>
-                                        <IconMenu
-                                            iconButtonElement={iconButton}
-                                            menuItemStyle={{fontSize: '13px'}}
-                                            anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                                            targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                                            <MenuItem
-                                                primaryText="Изменить"
-                                                onTouchTap={() => { updateZone.handleOpenUpdateZone(id) }}
-                                                leftIcon={<Edit />}
-                                            />
-                                            <MenuItem
-                                                primaryText="Удалить"
-                                                onTouchTap={() => { deleteZone.handleOpenDeleteZone(id) }}
-                                                leftIcon={<DeleteIcon />}
-                                            />
-                                        </IconMenu>
-                                    </Col>
-                                </Row>
-                            )
-                        })
-                        : <div className={classes.emptyQuery}>
-                                <div>По вашему запросу ничего не найдено</div>
-                            </div>}
-                    </div>
-                </div>
 
-                <div className={classes.zonesInfoFooter}>
-                    {isLoadingStat &&
-                    <div className={classes.loader}>
-                        <CircularProgress size={25} thickness={3}/>
-                    </div>}
-                    <div>
-                        <big>{passiveMarkets}</big>
-                        <span>магазинов <br/> не распределено</span>
+                    <div className={classes.list}>
+                        <div className={classes.listTitle}>
+                            <span>Зоны</span>
+                            <div className={classes.searchField}>
+                                <form onSubmit={onSubmit}>
+                                    <div className={classes.search}>
+                                        <TextFieldSearch
+                                            fullWidth={true}
+                                            hintText="Поиск"
+                                            className={classes.searchField}
+                                            value={search}
+                                            onChange={(event) => setSearch(event.target.value)}
+                                        />
+                                        <IconButton
+                                            iconStyle={{color: '#ccc'}}
+                                            className={classes.searchButton}
+                                            disableTouchRipple={true}>
+                                            <SearchIcon />
+                                        </IconButton>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <Row className={classes.listHeader}>
+                            <Col xs={2}>ID</Col>
+                            <Col xs={6}>Наименование зоны</Col>
+                            <Col xs={2}>Магазины</Col>
+                        </Row>
+                        <div className={classes.itemList}>
+                            {isLoadingList &&
+                            <div className={classes.loader}>
+                                <CircularProgress size={40} thickness={4}/>
+                            </div>}
+                            {!isListEmpty ? _.map(_.get(listData, 'data'), (item) => {
+                                const id = _.get(item, 'id')
+                                const marketsCount = _.get(item, 'marketsCount')
+                                const name = _.get(item, 'title')
+                                return (
+                                    <Row key={id}>
+                                        <Col xs={2} style={{color: '#237bde'}}>Z-{id}</Col>
+                                        <Col xs={6}>
+                                            <Link to={{
+                                                pathname: sprintf(ROUTES.ZONES_ITEM_PATH, id),
+                                                query: filter.getParams()
+                                            }}>{name}</Link>
+                                        </Col>
+                                        <Col xs={2}>{marketsCount}</Col>
+                                        <Col xs={2} style={{textAlign: 'right'}}>
+                                            <IconMenu
+                                                iconButtonElement={iconButton}
+                                                menuItemStyle={{fontSize: '13px'}}
+                                                anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                                                targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+                                                <MenuItem
+                                                    primaryText="Изменить"
+                                                    onTouchTap={() => { updateZone.handleOpenUpdateZone(id) }}
+                                                    leftIcon={<Edit />}
+                                                />
+                                                <MenuItem
+                                                    primaryText="Удалить"
+                                                    onTouchTap={() => { deleteZone.handleOpenDeleteZone(id) }}
+                                                    leftIcon={<DeleteIcon />}
+                                                />
+                                            </IconMenu>
+                                        </Col>
+                                    </Row>
+                                )
+                            })
+                                : <div className={classes.emptyQuery}>
+                                    <div>По вашему запросу ничего не найдено</div>
+                                </div>}
+                        </div>
                     </div>
-                    <div>
-                        <big>{passiveAgents}</big>
-                        <span>агентов <br/> не распределено</span>
+
+                    <div className={classes.zonesInfoFooter}>
+                        {isLoadingStat &&
+                        <div className={classes.loader}>
+                            <CircularProgress size={25} thickness={3}/>
+                        </div>}
+                        <div>
+                            <big>{passiveMarkets}</big>
+                            <span>магазинов <br/> не распределено</span>
+                        </div>
+                        <div>
+                            <big>{passiveAgents}</big>
+                            <span>агентов <br/> не распределено</span>
+                        </div>
                     </div>
-                </div>
-            </div>
-            : <ZoneDetails
-                    shopFilter={shopFilter}
-                    detailData={detailData}
-                    bindAgent={bindAgent}
-                    unbindAgent={unbindAgent}
-                    filter={filter}
-                />}
+                </div>}
         </div>
     )
 
@@ -492,7 +497,7 @@ const ZonesWrapper = enhance((props) => {
                     deleteZone={deleteZone}
                     marketsData={marketsData}
                     pathname={props.pathname}
-                    shopDetail={shopDetail}
+                    handleOpenShopDetails={shopDetail.handleOpenShopDetails}
                 />
 
                 <BindAgentDialog

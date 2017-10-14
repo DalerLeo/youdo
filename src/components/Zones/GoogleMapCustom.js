@@ -6,7 +6,6 @@
 import React from 'react'
 import Script from 'react-load-script'
 import _ from 'lodash'
-import {hashHistory} from 'react-router'
 import * as GOOGLE_MAP from '../../constants/googleMaps'
 import CircularProgress from 'material-ui/CircularProgress'
 import AddZonePopup from './AddZonePopup'
@@ -136,23 +135,13 @@ export default class GoogleCustomMap extends React.Component {
                 animation: google.maps.Animation.DROP,
                 map: this.map
             })
-
-            const detailInfo = '<div>' + item.address + '</div>'
-            const detailMoreInfo = '<div>' + this.props.shopDetail.data.phone + '</div>'
-
-            const detailWindow = new google.maps.InfoWindow({
-                content: this.props.shopDetail.loading ? detailInfo : detailMoreInfo,
-                pixelOffset: new google.maps.Size(INFO_WINDOW_OFFSET, ZERO)
-            })
-
             const info = '<div><p><b>Названия:</b> ' + item.name + '</p><p><b>Адрес:</b> ' + item.address + '</p></div>'
             const infoWindow = new google.maps.InfoWindow({
                 content: info,
                 pixelOffset: new google.maps.Size(INFO_WINDOW_OFFSET, ZERO)
             })
             marker.addListener('click', () => {
-                hashHistory.push({pathname: this.props.pathname, query: this.props.filter.getParams({'marketId': item.id})})
-                detailWindow.open(this.map, marker)
+                this.props.handleOpenShopDetails(item.id)
             })
             marker.addListener('mouseover', () => {
                 infoWindow.open(this.map, marker)
@@ -398,6 +387,7 @@ export default class GoogleCustomMap extends React.Component {
         const selectedZone = _.get(_.filter(this.state.zone, (item) => {
             return _.toNumber(id) === item.id
         }), ['0', 'zone'])
+        // Removes zone from map
         selectedZone.setMap(null)
     }
 

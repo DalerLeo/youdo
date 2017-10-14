@@ -2,6 +2,7 @@ import ZonesWrapper from './ZonesWrapper'
 const ADD_ZONE = 'openAddZone'
 const UPDATE_ZONE = 'openUpdateZone'
 const BIND_AGENT = 'openBindAgent'
+const SHOP_DETAIL = 'openShopDetail'
 const TOGGLE_INFO = 'openInfo'
 const CONFIRM_DIALOG = 'unbindAgent'
 const DELETE_ZONE = 'deleteZone'
@@ -15,5 +16,6 @@ export {
     BIND_AGENT,
     CONFIRM_DIALOG,
     ZONE_ID,
-    ZonesWrapper
+    ZonesWrapper,
+    SHOP_DETAIL
 }
