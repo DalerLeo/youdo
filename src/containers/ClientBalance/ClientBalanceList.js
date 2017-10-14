@@ -1,5 +1,4 @@
 import React from 'react'
-import moment from 'moment'
 import _ from 'lodash'
 import sprintf from 'sprintf'
 import {connect} from 'react-redux'
@@ -25,7 +24,8 @@ import {
     clientBalanceItemFetchAction,
     clientBalanceCreateExpenseAction,
     clientAddAction,
-    superUserAction
+    superUserAction,
+    clientBalanceSumFetchAction
 } from '../../actions/clientBalance'
 import * as API from '../../constants/api'
 import {openSnackbarAction} from '../../actions/snackbar'
@@ -50,6 +50,8 @@ const enhance = compose(
         const updateForm = _.get(state, ['form', 'ClientBalanceUpdateForm'])
         const returnForm = _.get(state, ['form', 'ClientBalanceReturnForm'])
         const isSuperUser = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
+        const sum = _.get(state, ['clientBalance', 'sum', 'data'])
+        const sumLoading = _.get(state, ['clientBalance', 'sum', 'loading'])
 
         const filter = filterHelper(list, pathname, query)
         const filterItem = filterHelper(detail, pathname, query, {'page': 'dPage', 'pageSize': 'dPageSize'})
@@ -70,7 +72,9 @@ const enhance = compose(
             returnForm,
             isSuperUser,
             updateTransactionLoading,
-            searchForm
+            searchForm,
+            sum,
+            sumLoading
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -78,6 +82,7 @@ const enhance = compose(
             toBoolean(_.get(nextProps, ['location', 'query', CLIENT_BALANCE_INFO_DIALOG_OPEN])) === false
     }, ({dispatch, filter}) => {
         dispatch(clientBalanceListFetchAction(filter))
+        dispatch(clientBalanceSumFetchAction(filter))
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -111,13 +116,13 @@ const enhance = compose(
 
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
-            const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
-            const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
+            const paymentType = _.get(filterForm, ['values', 'paymentType', 'value']) || null
+            const balanceType = _.get(filterForm, ['values', 'balanceType', 'value']) || null
 
             filter.filterBy({
                 [CLIENT_BALANCE_FILTER_OPEN]: false,
-                [CLIENT_BALANCE_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
-                [CLIENT_BALANCE_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
+                [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: paymentType,
+                [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: balanceType
             })
         },
 
@@ -290,7 +295,9 @@ const ClientBalanceList = enhance((props) => {
         layout,
         params,
         isSuperUser,
-        updateTransactionLoading
+        updateTransactionLoading,
+        sum,
+        sumLoading
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', CLIENT_BALANCE_FILTER_OPEN]))
@@ -300,8 +307,8 @@ const ClientBalanceList = enhance((props) => {
     const openInfoDialog = toBoolean(_.get(location, ['query', CLIENT_BALANCE_INFO_DIALOG_OPEN]))
     const division = _.toNumber(_.get(location, ['query', 'division']))
     const type = _.get(location, ['query', 'type'])
-    const fromDate = filter.getParam(CLIENT_BALANCE_FILTER_KEY.FROM_DATE)
-    const toDate = filter.getParam(CLIENT_BALANCE_FILTER_KEY.TO_DATE)
+    const paymentType = filter.getParam(CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE)
+    const balanceType = Number(filter.getParam(CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE))
     const detailId = _.toInteger(_.get(params, 'clientBalanceId'))
 
     const divisionInfo = _.find(_.get(list, ['results', '0', 'divisions']), (item) => {
@@ -344,9 +351,11 @@ const ClientBalanceList = enhance((props) => {
     }
     const filterDialog = {
         initialValues: {
-            date: {
-                fromDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),
-                toDate: toDate && moment(toDate, 'YYYY-MM-DD')
+            paymentType: {
+                value: paymentType
+            },
+            balanceType: {
+                value: balanceType
             }
         },
         filterLoading: false,
@@ -378,6 +387,10 @@ const ClientBalanceList = enhance((props) => {
     const getDocument = {
         handleGetDocument: props.handleGetDocument
     }
+    const sumData = {
+        sum,
+        sumLoading
+    }
     return (
         <Layout {...layout}>
             <ClientBalanceGridList
@@ -389,9 +402,11 @@ const ClientBalanceList = enhance((props) => {
                 createDialog={createDialog}
                 addDialog={addDialog}
                 filterDialog={filterDialog}
+                onSubmit={props.handleSubmitFilterDialog}
                 superUser={superUser}
                 handleSubmitSearch={props.handleSubmitSearch}
                 getDocument={getDocument}
+                sumData={sumData}
             />
         </Layout>
     )
