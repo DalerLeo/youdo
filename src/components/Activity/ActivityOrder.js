@@ -2,7 +2,7 @@ import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
-import {compose} from 'recompose'
+import {compose, withState} from 'recompose'
 import moment from 'moment'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
@@ -12,6 +12,8 @@ import Paper from 'material-ui/Paper'
 import Info from 'material-ui/svg-icons/action/info-outline'
 import Tooltip from '../ToolTip'
 
+const ONE = 1
+const TWO = 2
 const enhance = compose(
     injectSheet({
         loader: {
@@ -42,7 +44,15 @@ const enhance = compose(
         blockItems: {
             overflowY: 'auto',
             height: 'calc(100% - 80px)',
-            paddingRight: '10px'
+            paddingRight: '10px',
+            '& a': {
+                fontWeight: '600',
+                display: 'block',
+                textAlign: 'center',
+                '&:hover': {
+                    textDecoration: 'underline'
+                }
+            }
         },
         tube: {
             padding: '20px 15px',
@@ -115,7 +125,8 @@ const enhance = compose(
             marginTop: '10px',
             lineHeight: '15px'
         }
-    })
+    }),
+    withState('defaultPage', 'updateDefaultPage', TWO)
 )
 
 const dateFormat = (date, defaultText) => {
@@ -129,9 +140,15 @@ const ActivityOrder = enhance((props) => {
         classes,
         orderDetails,
         summary,
-        summaryLoading
+        summaryLoading,
+        handleLoadMoreItems,
+        defaultPage,
+        updateDefaultPage,
     } = props
 
+    const type = _.meanBy(_.get(orderlistData, 'data'), (o) => {
+        return _.get(o, 'type')
+    })
     const orderlistLoading = _.get(orderlistData, 'orderListLoading')
     const countSummary = _.get(summary, 'count')
     const cashSummary = numberFormat(_.get(summary, 'cash'), currentCurrency)
@@ -178,6 +195,10 @@ const ActivityOrder = enhance((props) => {
             </div>
             <div className={classes.blockItems}>
                 {orderList}
+                <a onClick={() => {
+                    handleLoadMoreItems(type, defaultPage)
+                    updateDefaultPage(defaultPage + ONE)
+                }}>Загрузить еще...</a>
             </div>
         </div>
     )

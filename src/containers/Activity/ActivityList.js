@@ -1,6 +1,6 @@
 import React from 'react'
 import _ from 'lodash'
-import {compose, withPropsOnChange, withHandlers} from 'recompose'
+import {compose, withPropsOnChange, withHandlers, withState} from 'recompose'
 import moment from 'moment'
 import {connect} from 'react-redux'
 import Layout from '../../components/Layout'
@@ -8,6 +8,12 @@ import {hashHistory} from 'react-router'
 import filterHelper from '../../helpers/filter'
 import {ORDER_DETAILS, ActivityWrapper, DAY, DATE, IMAGE} from '../../components/Activity'
 import {
+    VISIT,
+    ORDER,
+    REPORT,
+    ORDER_RETURN,
+    PAYMENT,
+    DELIVERY,
     activityOrderListFetchAction,
     activityOrderItemFetchAction,
     activityVisitListFetchAction,
@@ -28,19 +34,19 @@ const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
-        const orderList = _.get(state, ['activity', 'orderList', 'data'])
+        const orderList = _.get(state, ['activity', 'orderList', 'data', 'results'])
         const orderListLoading = _.get(state, ['activity', 'orderList', 'loading'])
-        const visitList = _.get(state, ['activity', 'visitList', 'data'])
+        const visitList = _.get(state, ['activity', 'visitList', 'data', 'results'])
         const visitListLoading = _.get(state, ['activity', 'visitList', 'loading'])
-        const reportList = _.get(state, ['activity', 'reportList', 'data'])
+        const reportList = _.get(state, ['activity', 'reportList', 'data', 'results'])
         const reportListLoading = _.get(state, ['activity', 'reportList', 'loading'])
         const reportImage = _.get(state, ['activity', 'reportImage', 'data'])
         const reportImageLoading = _.get(state, ['activity', 'reportImage', 'loading'])
-        const returnList = _.get(state, ['activity', 'returnList', 'data'])
+        const returnList = _.get(state, ['activity', 'returnList', 'data', 'results'])
         const returnListLoading = _.get(state, ['activity', 'returnList', 'loading'])
-        const paymentList = _.get(state, ['activity', 'paymentList', 'data'])
+        const paymentList = _.get(state, ['activity', 'paymentList', 'data', 'results'])
         const paymentListLoading = _.get(state, ['activity', 'paymentList', 'loading'])
-        const deliveryList = _.get(state, ['activity', 'deliveryList', 'data'])
+        const deliveryList = _.get(state, ['activity', 'deliveryList', 'data', 'results'])
         const deliveryListLoading = _.get(state, ['activity', 'deliveryList', 'loading'])
         const summaryList = _.get(state, ['activity', 'summary', 'data'])
         const summaryListLoading = _.get(state, ['activity', 'summary', 'loading'])
@@ -75,18 +81,44 @@ const enhance = compose(
             curDate
         }
     }),
+    withState('orderData', 'updateOrderData', []),
+    withState('visitData', 'updateVisitData', []),
+    withState('reportData', 'updateReportData', []),
+    withState('returnData', 'updateReturnData', []),
+    withState('paymentData', 'updatePaymentData', []),
+    withState('deliveryData', 'updateDeliveryData', []),
 
     withPropsOnChange((props, nextProps) => {
         const prevDay = _.get(props, ['location', 'query', DAY])
         const nextDay = _.get(nextProps, ['location', 'query', DAY])
         return (props.curDate !== nextProps.curDate) || (prevDay !== nextDay)
-    }, ({dispatch, filter}) => {
+    }, ({dispatch, filter,
+          updateOrderData, updateVisitData, updateReportData, updateReturnData, updatePaymentData, updateDeliveryData,
+          orderList, visitList, reportList, returnList, paymentList, deliveryList}) => {
         dispatch(activityOrderListFetchAction(filter))
+            .then(() => {
+                updateOrderData(orderList)
+            })
         dispatch(activityVisitListFetchAction(filter))
+            .then(() => {
+                updateVisitData(visitList)
+            })
         dispatch(activityReportListFetchAction(filter))
+            .then(() => {
+                updateReportData(reportList)
+            })
         dispatch(activityReturnListFetchAction(filter))
+            .then(() => {
+                updateReturnData(returnList)
+            })
         dispatch(activityPaymentListFetchAction(filter))
+            .then(() => {
+                updatePaymentData(paymentList)
+            })
         dispatch(activityDeliveryListFetchAction(filter))
+            .then(() => {
+                updateDeliveryData(deliveryList)
+            })
         dispatch(activitySummaryListFetchAction(filter))
     }),
 
@@ -151,6 +183,23 @@ const enhance = compose(
         handleCloseReportImage: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[IMAGE]: ZERO})})
+        },
+
+        handleLoadMoreItems: props => (type, page) => {
+            const {dispatch, filter} = props
+            return (type === VISIT)
+                ? dispatch(activityVisitListFetchAction(filter, page))
+                : (type === ORDER)
+                    ? dispatch(activityOrderListFetchAction(filter, page))
+                    : (type === REPORT)
+                        ? dispatch(activityReportListFetchAction(filter, page))
+                        : (type === ORDER_RETURN)
+                            ? dispatch(activityReturnListFetchAction(filter, page))
+                            : (type === PAYMENT)
+                                ? dispatch(activityPaymentListFetchAction(filter, page))
+                                : (type === DELIVERY)
+                                    ? dispatch(activityDeliveryListFetchAction(filter, page))
+                                    : null
         }
     })
 )
@@ -211,32 +260,38 @@ const ActivityList = enhance((props) => {
     }
 
     const orderlistData = {
-        data: _.get(orderList, 'results'),
+        data: orderList,
+        handleLoadMoreItems: props.handleLoadMoreItems,
         orderListLoading
     }
 
     const visitlistData = {
-        data: _.get(visitList, 'results'),
+        data: visitList,
+        handleLoadMoreItems: props.handleLoadMoreItems,
         visitListLoading
     }
 
     const reportlistData = {
-        data: _.get(reportList, 'results'),
+        data: reportList,
+        handleLoadMoreItems: props.handleLoadMoreItems,
         reportListLoading
     }
 
     const returnlistData = {
-        data: _.get(returnList, 'results'),
+        data: returnList,
+        handleLoadMoreItems: props.handleLoadMoreItems,
         returnListLoading
     }
 
     const paymentlistData = {
-        data: _.get(paymentList, 'results'),
+        data: paymentList,
+        handleLoadMoreItems: props.handleLoadMoreItems,
         paymentListLoading
     }
 
     const deliverylistData = {
-        data: _.get(deliveryList, 'results'),
+        data: deliveryList,
+        handleLoadMoreItems: props.handleLoadMoreItems,
         deliveryListLoading
     }
 

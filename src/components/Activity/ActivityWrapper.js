@@ -116,28 +116,34 @@ const ActivityWrapper = enhance((props) => {
         <div className={classes.tubeWrapper}>
             <div className={classes.horizontal}>
                 <ActivityOrder
+                    handleLoadMoreItems={_.get(orderlistData, 'handleLoadMoreItems')}
                     summary={_.get(summaryData, ['data', ORDER])}
                     summaryLoading={_.get(summaryData, 'summaryListLoading')}
                     orderlistData={orderlistData}
                     orderDetails={orderDetails}/>
                 <ActivityVisit
+                    handleLoadMoreItems={_.get(visitlistData, 'handleLoadMoreItems')}
                     summary={_.get(summaryData, ['data', VISIT])}
                     summaryLoading={_.get(summaryData, 'summaryListLoading')}
                     visitlistData={visitlistData}/>
                 <ActivityReport
+                    handleLoadMoreItems={_.get(reportlistData, 'handleLoadMoreItems')}
                     summary={_.get(summaryData, ['data', REPORT])}
                     summaryLoading={_.get(summaryData, 'summaryListLoading')}
                     reportImageData={reportImageData}
                     reportlistData={reportlistData}/>
                 <ActivityReturn
+                    handleLoadMoreItems={_.get(returnlistData, 'handleLoadMoreItems')}
                     summary={_.get(summaryData, ['data', ORDER_RETURN])}
                     summaryLoading={_.get(summaryData, 'summaryListLoading')}
                     returnListData={returnlistData}/>
                 <ActivityPayment
+                    handleLoadMoreItems={_.get(paymentlistData, 'handleLoadMoreItems')}
                     summary={_.get(summaryData, ['data', PAYMENT])}
                     summaryLoading={_.get(summaryData, 'summaryListLoading')}
                     paymentlistData={paymentlistData}/>
                 <ActivityDelivery
+                    handleLoadMoreItems={_.get(deliverylistData, 'handleLoadMoreItems')}
                     summary={_.get(summaryData, ['data', DELIVERY])}
                     summaryLoading={_.get(summaryData, 'summaryListLoading')}
                     deliverylistData={deliverylistData}/>
