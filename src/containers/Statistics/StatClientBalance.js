@@ -34,7 +34,7 @@ const enhance = compose(
         const listLoading = _.get(state, ['clientBalance', 'list', 'loading'])
         const sum = _.get(state, ['clientBalance', 'sum', 'data'])
         const sumLoading = _.get(state, ['clientBalance', 'sum', 'loading'])
-        const filterForm = _.get(state, ['form', 'ClientBalanceFilterForm'])
+        const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
         const searchForm = _.get(state, ['form', 'ClientBalanceForm'])
         const isSuperUser = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
         const filter = filterHelper(list, pathname, query)
@@ -94,13 +94,13 @@ const enhance = compose(
 
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
-            const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
-            const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
+            const paymentType = _.get(filterForm, ['values', 'paymentType', 'value']) || null
+            const balanceType = _.get(filterForm, ['values', 'balanceType', 'value']) || null
 
             filter.filterBy({
                 [CLIENT_BALANCE_FILTER_OPEN]: false,
-                [CLIENT_BALANCE_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
-                [CLIENT_BALANCE_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
+                [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: paymentType,
+                [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: balanceType
             })
         },
 
@@ -234,6 +234,7 @@ const ClientBalanceList = enhance((props) => {
                 handleSubmitSearch={props.handleSubmitSearch}
                 getDocument={getDocument}
                 sumData={sumData}
+                onSubmit={props.handleSubmitFilterDialog}
             />
         </Layout>
     )

@@ -414,12 +414,14 @@ export default class GoogleCustomMap extends React.Component {
             zone: null,
             drawing: null,
             points: null,
-            isDrawing: null
+            isDrawing: null,
+            currentOverlay: null
         })
         this.overlayView.onAdd = null
         this.overlayView.draw = null
         this.overlayView.onRemove = null
         this.overlayView = null
+        this.map = null
     }
 
     render () {
@@ -440,7 +442,6 @@ export default class GoogleCustomMap extends React.Component {
                 </div>
             )
         }
-
         return (
             <div style={{height: '100%', width: '100%'}}>
                 <div className='GMap-canvas' id="mappingGoogleCustom" ref='mapping'

@@ -9,16 +9,15 @@ import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
-import DateToDateField from '../ReduxForm/Basic/DateToDateField'
-
+import {ClientBalanceTypeSearchField, PaymentTypeSearchField} from '../ReduxForm'
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
 export const CLIENT_BALANCE_FILTER_OPEN = 'openFilterDialog'
 
 export const CLIENT_BALANCE_FILTER_KEY = {
-    FROM_DATE: 'fromDate',
-    TO_DATE: 'toDate'
+    PAYMENT_TYPE: 'paymentType',
+    BALANCE_TYPE: 'balanceType'
 }
 
 const enhance = compose(
@@ -34,6 +33,7 @@ const enhance = compose(
             padding: '10px 20px 10px 20px'
         },
         afterFilter: {
+            width: '260px',
             alignItems: 'center',
             display: 'flex',
             backgroundColor: '#efefef',
@@ -134,7 +134,7 @@ const ClientBalanceFilterForm = enhance((props) => {
         }
 
         return (
-            <div>
+            <div style={{width: '260px'}}>
                 <Link
                     className={classes.arrow}
                     onTouchTap={filterDialog.handleOpenFilterDialog}>
@@ -145,7 +145,7 @@ const ClientBalanceFilterForm = enhance((props) => {
     }
 
     return (
-        <div>
+        <div style={{width: '260px'}}>
             <Paper className={classes.wrapper} zDepth={2}>
                 <div className={classes.header}>
                     <span className={classes.title}>Фильтр</span>
@@ -155,7 +155,18 @@ const ClientBalanceFilterForm = enhance((props) => {
                 </div>
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
                     <div>
-                        <Field className={classes.inputFieldCustom} name="date" component={DateToDateField} label="Диапазон дат" fullWidth={true}/>
+                        <Field
+                            className={classes.inputFieldCustom}
+                            name="balanceType"
+                            component={ClientBalanceTypeSearchField}
+                            label="Тип баланса"
+                            fullWidth={true}/>
+                        <Field
+                            className={classes.inputFieldCustom}
+                            name="paymentType"
+                            component={PaymentTypeSearchField}
+                            label="Тип оплаты"
+                            fullWidth={true}/>
                     </div>
                     <RaisedButton
                         type="submit"

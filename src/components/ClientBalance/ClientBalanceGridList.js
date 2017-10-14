@@ -6,6 +6,7 @@ import Container from '../Container'
 import ClientBalanceInfoDialog from './ClientBalanceInfoDialog'
 import ClientBalanceCreateDialog from './ClientBalanceCreateDialog'
 import ClientBalanceUpdateDialog from './ClientBalanceUpdateDialog'
+import ClientBalanceFilterForm from './ClientBalanceFilterForm'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm} from 'redux-form'
 import SubMenu from '../SubMenu'
@@ -22,12 +23,13 @@ import Tooltip from '../ToolTip'
 import Paper from 'material-ui/Paper'
 import SearchIcon from 'material-ui/svg-icons/action/search'
 import StatSideMenu from '../Statistics/StatSideMenu'
-import {TextField} from '../ReduxForm/index'
+import {TextField, ClientBalanceTypeSearchField, PaymentTypeSearchField} from '../ReduxForm/index'
 import Pagination from '../GridList/GridListNavPagination'
 import NotFound from '../Images/not-found.png'
 import ArrowUpIcon from 'material-ui/svg-icons/navigation/arrow-upward'
 import ArrowDownIcon from 'material-ui/svg-icons/navigation/arrow-downward'
-import Excel from 'material-ui/svg-icons/av/equalizer'
+import {StatisticsFilterExcel} from '../Statistics'
+import {CLIENT_BALANCE_FILTER_KEY} from './index'
 
 let amountValues = []
 let head = []
@@ -37,6 +39,14 @@ const enhance = compose(
         loader: {
             width: '100%',
             height: '300px',
+            background: '#fff',
+            alignItems: 'center',
+            zIndex: '999',
+            justifyContent: 'center',
+            display: 'flex'
+        },
+        sumLoader: {
+            width: '100%',
             background: '#fff',
             alignItems: 'center',
             zIndex: '999',
@@ -203,7 +213,8 @@ const enhance = compose(
             padding: ({stat}) => stat ? 'unset' : '0 30px',
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'center'
+            alignItems: 'center',
+            position: 'relative'
         },
         mainWrapper: {
             background: '#fff',
@@ -261,10 +272,9 @@ const enhance = compose(
         summaryWrapper: {
             width: '100%',
             display: 'flex',
+            justifyContent: 'space-between',
             '& > div': {
                 fontWeight: '400',
-                flexBasis: '25%',
-                maxWidth: '25%',
                 '& div': {
                     fontSize: '17px',
                     marginTop: '2px',
@@ -321,7 +331,9 @@ const ClientBalanceGridList = enhance((props) => {
         handleSubmitSearch,
         getDocument,
         stat,
-        sumData
+        sumData,
+        filterDialog,
+        onSubmit
     } = props
 
     // This constants for Statistics
@@ -333,6 +345,7 @@ const ClientBalanceGridList = enhance((props) => {
     const loanersBankCount = _.get(sumData, ['sum', 'loanersCountBank'])
     const loanersCash = _.get(sumData, ['sum', 'loanersSumCash'])
     const loanersCashCount = _.get(sumData, ['sum', 'loanersCountCash'])
+    const sumLoading = _.get(sumData, ['sumLoading'])
 
     const orderNoSorting = _.isNil(filter.getSortingType('order_no')) ? null
         : filter.getSortingType('order_no') ? <ArrowUpIcon className={classes.icon}/>
@@ -479,8 +492,29 @@ const ClientBalanceGridList = enhance((props) => {
         }
     }
 
+    const fields = (
+        <div>
+            <Field
+                className={classes.inputFieldCustom}
+                name="balanceType"
+                component={ClientBalanceTypeSearchField}
+                label="Тип баланса"
+                fullWidth={true}/>
+            <Field
+                className={classes.inputFieldCustom}
+                name="paymentType"
+                component={PaymentTypeSearchField}
+                label="Тип оплаты"
+                fullWidth={true}/>
+        </div>
+    )
+
     const navigation = (
         <div className={classes.nav}>
+            {!stat && <ClientBalanceFilterForm
+                initialValues={filterDialog.initialValues}
+                filter={filter}
+                filterDialog={filterDialog}/>}
             <form style={{display: 'flex', alignItems: 'center'}} onSubmit={handleSubmit(handleSubmitSearch)}>
                 <Field
                     className={classes.inputFieldCustom}
@@ -497,11 +531,26 @@ const ClientBalanceGridList = enhance((props) => {
                 </IconButton>
             </form>
             <Pagination filter={filter}/>
-            {stat && <div className={classes.getDocument}>
-                <a className={classes.excel} onClick={getDocument.handleGetDocument}>
-                    <Excel color="#fff"/> <span>Excel</span>
-                </a>
-            </div>}
+        </div>
+    )
+    const summary = (
+        sumLoading
+        ? <div className={classes.sumLoader}>
+            <CircularProgress size={40} thickness={4}/>
+        </div>
+        : <div className={classes.summaryWrapper}>
+            <div>Задолжники нал. - {borrowersCashCount}
+                <div>{numberFormat(borrowersCash, primaryCurrency)}</div>
+            </div>
+            <div>Задолжники переч. - {borrowersBankCount}
+                <div>{numberFormat(borrowersBank, primaryCurrency)}</div>
+            </div>
+            <div>Закладчики нал. - {loanersCashCount}
+                <div>{numberFormat(loanersCash, primaryCurrency)}</div>
+            </div>
+            <div>Закладчики переч. - {loanersBankCount}
+                <div>{numberFormat(loanersBank, primaryCurrency)}</div>
+            </div>
         </div>
     )
     return (
@@ -514,25 +563,19 @@ const ClientBalanceGridList = enhance((props) => {
                     </div>
                     <div className={classes.rightPanel}>
                         <div className={classes.wrapper}>
+                            <div style={{marginTop: '20px'}}>
+                                <StatisticsFilterExcel
+                                    filter={filter}
+                                    fields={fields}
+                                    filterKeys={CLIENT_BALANCE_FILTER_KEY}
+                                    handleGetDocument={getDocument.handleGetDocument}
+                                    handleSubmitFilterDialog={onSubmit}
+                                    withoutDate={true}
+                                    initialValues={initialValues}
+                                />
+                            </div>
                             <div className={classes.summary}>
-                                {listLoading
-                                    ? <div className={classes.summaryLoader}>
-                                        <CircularProgress size={40} thickness={4}/>
-                                    </div>
-                                    : <div className={classes.summaryWrapper}>
-                                        <div>Задолжники нал. - {borrowersCashCount}
-                                            <div>{numberFormat(borrowersCash, primaryCurrency)}</div>
-                                        </div>
-                                        <div>Задолжники переч. - {borrowersBankCount}
-                                            <div>{numberFormat(borrowersBank, primaryCurrency)}</div>
-                                        </div>
-                                        <div>Закладчики нал. - {loanersCashCount}
-                                            <div>{numberFormat(loanersCash, primaryCurrency)}</div>
-                                        </div>
-                                        <div>Закладчики переч. - {loanersBankCount}
-                                            <div>{numberFormat(loanersBank, primaryCurrency)}</div>
-                                        </div>
-                                    </div>}
+                                {summary}
                             </div>
                             {navigation}
                             {listLoading
@@ -552,8 +595,8 @@ const ClientBalanceGridList = enhance((props) => {
                 </Row>
             </div>
             }
-
             {!stat && <SubMenu url={ROUTES.CLIENT_BALANCE_LIST_URL}/>}
+            {!stat && <Paper style={{marginBottom: '15px', padding: '10px 30px'}}>{summary}</Paper>}
             {!stat && <Paper>
                 {navigation}
                 {listLoading
