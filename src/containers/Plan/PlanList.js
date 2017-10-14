@@ -126,11 +126,14 @@ const enhance = compose(
         const date = _.get(nextProps, ['query', 'date'])
         const prevDate = _.get(props, ['query', 'date'])
         return (agentId && _.get(props, ['params', 'agentId']) !== agentId) || (date !== prevDate)
-    }, ({dispatch, params, filter, selectedDate}) => {
+    }, ({dispatch, params, filter, selectedDate, query}) => {
         const agentId = _.toInteger(_.get(params, 'agentId'))
+        const openCreatePlan = toBoolean(_.get(query, ADD_PLAN))
         if (agentId) {
+            if (!openCreatePlan) {
+                dispatch(agentPlansAction(agentId, selectedDate))
+            }
             dispatch(planItemFetchAction(agentId))
-            dispatch(agentPlansAction(agentId, selectedDate))
             dispatch(agentMonthlyPlanAction(filter, agentId))
         }
     }),
@@ -159,7 +162,7 @@ const enhance = compose(
             }
         })
         const zone = _.toInteger(_.get(location, ['query', ZONE]))
-        const date = selectedDate + '-' + selectedDay
+        const date = moment(selectedDate).format('YYYY-MM-' + selectedDay)
         if (zone > ZERO) {
             dispatch(planZonesItemFetchAction(zone, date))
         }
@@ -311,6 +314,20 @@ const enhance = compose(
                 })
         },
 
+        handlePrevMonth: props => () => {
+            const {location: {pathname}, filter, selectedDate} = props
+            const prevMonth = moment(selectedDate).subtract(ONE, 'month')
+            const dateForURL = prevMonth.format('YYYY-MM')
+            hashHistory.push({pathname, query: filter.getParams({[DATE]: dateForURL})})
+        },
+
+        handleNextMonth: props => () => {
+            const {location: {pathname}, filter, selectedDate} = props
+            const nextMonth = moment(selectedDate).add(ONE, 'month')
+            const dateForURL = nextMonth.format('YYYY-MM')
+            hashHistory.push({pathname, query: filter.getParams({[DATE]: dateForURL})})
+        },
+
         handlePrevDay: props => () => {
             const {location: {pathname}, filter, selectedDate} = props
             const prevDay = moment(selectedDate).subtract(ONE, 'day')
@@ -368,7 +385,7 @@ const PlanList = enhance((props) => {
         monthlyPlanCreateLoading,
         plan,
         planLoading,
-        currentDate,
+        selectedDate,
         selectedDay,
         selectedWeekDay,
         marketsLocation,
@@ -387,7 +404,6 @@ const PlanList = enhance((props) => {
     const groupId = _.toInteger(_.get(location, ['query', USER_GROUP]) || ONE)
     const openDetail = !_.isEmpty(_.get(params, 'agentId'))
     const detailId = _.toInteger(_.get(params, 'agentId'))
-    const selectedDate = _.get(location, ['query', DATE]) || currentDate
     const selectedAgent = _.toInteger(_.get(location, ['query', AGENT]))
     const selectedZone = _.toInteger(_.get(location, ['query', ZONE]))
     const selectedMarket = _.toInteger(_.get(location, ['query', MARKET]))
@@ -481,8 +497,10 @@ const PlanList = enhance((props) => {
 
     const calendar = {
         selectedDay,
-        selectedDate: selectedDate,
+        selectedDate,
         handleChooseDay: props.handleChooseDay,
+        handlePrevMonth: props.handlePrevMonth,
+        handleNextMonth: props.handleNextMonth,
         handlePrevDay: props.handlePrevDay,
         handleNextDay: props.handleNextDay
     }
@@ -494,8 +512,7 @@ const PlanList = enhance((props) => {
 
     const agentPlans = {
         data: agentPlansData,
-        loading: agentPlansLoading,
-        getNewPlans: props.handleGetAgentPlans
+        loading: agentPlansLoading
     }
 
     return (

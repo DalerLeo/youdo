@@ -5,17 +5,19 @@ import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import moment from 'moment'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 import Person from '../Images/person.png'
 import Place from 'material-ui/svg-icons/maps/place'
 import Assignment from 'material-ui/svg-icons/action/assignment'
 import Money from 'material-ui/svg-icons/editor/attach-money'
 import Checked from 'material-ui/svg-icons/toggle/check-box'
-import Indeterminate from 'material-ui/svg-icons/toggle/indeterminate-check-box'
-import CheckOutline from 'material-ui/svg-icons/toggle/check-box-outline-blank'
+// Uncomment it when needed ... import Indeterminate from 'material-ui/svg-icons/toggle/indeterminate-check-box'
+// Uncomment it when needed ... import CheckOutline from 'material-ui/svg-icons/toggle/check-box-outline-blank'
 import Agent from '../Images/agent.png'
+import NotFound from '../Images/not-found.png'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
+import dateFormat from '../../helpers/dateFormat'
 import {Link} from 'react-router'
 import * as ROUTE from '../../constants/routes'
 import sprintf from 'sprintf'
@@ -48,6 +50,21 @@ const enhance = compose(
             justifyContent: 'center',
             display: 'flex'
         },
+        headerLoader: {
+            background: '#fff',
+            border: '1px #e9e9e9 solid',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '100%',
+            height: '132px'
+        },
+        plansLoader: {
+            extend: 'loader',
+            background: '#fff',
+            border: '1px #e9e9e9 solid',
+            height: '210px'
+        },
         wrapper: {
             background: '#f4f4f4 !important',
             borderLeft: '1px #e0e0e0 solid',
@@ -64,7 +81,8 @@ const enhance = compose(
             boxShadow: '0px 8px 20px 10px #f4f4f4',
             zIndex: '10',
             '& > div': {
-                padding: '15px 20px'
+                padding: '15px 20px',
+                height: '65px'
             }
         },
         header: {
@@ -403,20 +421,39 @@ const enhance = compose(
                 fontSize: '17px !important',
                 marginTop: '10px'
             }
+        },
+        emptyQuery: {
+            background: '#fff url(' + NotFound + ') no-repeat center 20px',
+            backgroundSize: '200px',
+            border: '1px #e9e9e9 solid',
+            padding: '170px 0 20px',
+            textAlign: 'center',
+            fontSize: '13px',
+            color: '#666'
         }
     })
 )
 
 const PlanDetails = enhance((props) => {
-    const {classes, detailData, planSalesDialog, calendar, monthlyPlan, agentPlans} = props
-    const loading = _.get(detailData, 'detailLoading')
+    const {
+        classes,
+        detailData,
+        planSalesDialog,
+        calendar,
+        monthlyPlan,
+        agentPlans
+    } = props
+    const plansLoading = _.get(agentPlans, 'loading')
+    const agentLoading = _.get(detailData, 'detailLoading')
     const isOpenDetails = _.get(detailData, 'openDetail')
     const firstName = _.get(detailData, ['data', 'firstName'])
     const secondName = _.get(detailData, ['data', 'secondName'])
+    const position = _.get(detailData, ['data', 'position', 'name'])
 
     const monthFormat = (date, defaultText) => {
         return (date) ? moment(date).locale('ru').format('MMMM') : defaultText
     }
+    const selectedDate = dateFormat(_.get(calendar, 'selectedDate'))
     const selectedMonth = moment(_.get(calendar, 'selectedDate'))
     const selectedYear = moment(_.get(calendar, 'selectedDate')).format('YYYY')
 
@@ -440,16 +477,15 @@ const PlanDetails = enhance((props) => {
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const factSales = _.get(monthlyPlan, ['data', 'factPrice']) && _.toNumber(_.get(monthlyPlan, ['data', 'factPrice']))
     const planAmount = _.get(monthlyPlan, ['data', 'monthlyPlanAmount']) && _.toNumber(_.get(monthlyPlan, ['data', 'monthlyPlanAmount']))
-
     return (
         <div className={classes.wrapper}>
-            {loading
-                ? <div className={classes.loader}>
-                    <CircularProgress size={40} thickness={4}/>
-                </div>
-                : (isOpenDetails
-                    ? <div>
-                        <div className={classes.agentInfo}>
+            {isOpenDetails
+                ? <div>
+                    {agentLoading
+                        ? <div className={classes.headerLoader}>
+                            <Loader size={0.75}/>
+                        </div>
+                        : <div className={classes.agentInfo}>
                             <div className={classes.header}>
                                 <div className={classes.info}>
                                     <span>Данные за</span>
@@ -461,7 +497,7 @@ const PlanDetails = enhance((props) => {
                                     <div>{secondName} <br/> {firstName}</div>
                                 </div>
                                 <div className={classes.infoAgent}>
-                                    <span>Агент</span>
+                                    <span>{position}</span>
                                     <span>Наименование зоны</span>
                                 </div>
                             </div>
@@ -491,155 +527,82 @@ const PlanDetails = enhance((props) => {
                                         </div>
                                     </div>
                                     <div className={classes.slash}>
-                                        <div></div>
+                                        <div>{null}</div>
                                     </div>
                                     <div>
                                         <span>план продаж</span>
                                         {planAmount
-                                            ? <a className={classes.link} onClick={planSalesDialog.handleOpenPlanSales}><big>{numberFormat(planAmount)}</big> {primaryCurrency}</a>
-                                            : <a className={classes.link} onClick={planSalesDialog.handleOpenPlanSales}>добавить</a>}
+                                            ? <a className={classes.link}
+                                                 onClick={planSalesDialog.handleOpenPlanSales}><big>{numberFormat(planAmount)}</big> {primaryCurrency}
+                                            </a>
+                                            : <a className={classes.link}
+                                                 onClick={planSalesDialog.handleOpenPlanSales}>добавить</a>}
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div>}
 
-                        <div className={classes.timelineWrapper}>
-                            <div className={classes.timeline}>
-                                <div className={classes.timelineDate}>22 Апр, 2017</div>
-                                <div className={classes.timelineBlockWrapper}>
-                                    {_.map(_.get(agentPlans, 'data'), (item) => {
-                                        const id = _.get(item, 'id')
-                                        const market = _.get(item, ['market', 'name'])
-                                        const planTasks = _.get(item, 'planTasks')
-                                        const hasPlanTasks = !_.isEmpty(planTasks)
-                                        const time = moment(_.get(_.head(planTasks), 'completedDate')).format('HH:mm')
-                                        const tasks = _.map(planTasks, (task, index) => {
-                                            const type = _.get(task, 'type')
-                                            const orderInfo = _.get(task, 'order')
-                                            const info = type === ORDER
-                                                ? <span>(<Link target="_blank" to={{
-                                                    pathname: sprintf(ROUTE.ORDER_ITEM_PATH, orderInfo.id),
-                                                    query: {search: orderInfo.id}
-                                                }}>№{orderInfo.id}</Link> - {numberFormat(orderInfo.totalPrice, primaryCurrency)})</span>
-                                                : <span></span>
+                    <div className={classes.timelineWrapper}>
+                        {plansLoading
+                            ? <div className={classes.plansLoader}>
+                                <Loader size={0.75}/>
+                            </div>
+                            : (!_.isEmpty(agentPlans.data))
+                                ? <div className={classes.timeline}>
+                                    <div className={classes.timelineDate}>{selectedDate}</div>
+                                    <div className={classes.timelineBlockWrapper}>
+                                        {_.map(_.get(agentPlans, 'data'), (item) => {
+                                            const id = _.get(item, 'id')
+                                            const market = _.get(item, ['market', 'name'])
+                                            const planTasks = _.get(item, 'planTasks')
+                                            const hasPlanTasks = !_.isEmpty(planTasks)
+                                            const time = moment(_.get(_.head(planTasks), 'completedDate')).format('HH:mm')
+                                            const tasks = _.map(planTasks, (task, index) => {
+                                                const type = _.get(task, 'type')
+                                                const orderInfo = _.get(task, 'order')
+                                                const info = type === ORDER
+                                                    ? <span>(<Link target="_blank" to={{
+                                                        pathname: sprintf(ROUTE.ORDER_ITEM_PATH, orderInfo.id),
+                                                        query: {search: orderInfo.id}
+                                                    }}>№{orderInfo.id}</Link> - {numberFormat(orderInfo.totalPrice, primaryCurrency)})</span>
+                                                    : <span></span>
+                                                return (
+                                                    <li key={index}>{formattedType[type]} {info} <Checked
+                                                        color="#92ce95"/>
+                                                    </li>
+                                                )
+                                            })
+
                                             return (
-                                                <li key={index}>{formattedType[type]} {info} <Checked color="#92ce95"/></li>
-                                            )
-                                        })
+                                                <div key={id} className={classes.timelineBlock}>
+                                                    <div className={classes.timelineDot}>
+                                                    </div>
 
-                                        return (
-                                            <div key={id} className={classes.timelineBlock}>
-                                                <div className={classes.timelineDot}>
+                                                    <Paper className={classes.timelineContent}>
+                                                        <h2>{market}</h2>
+                                                        {hasPlanTasks
+                                                            ? <ul>
+                                                                {tasks}
+                                                            </ul>
+                                                            : <div>Пока не выполнено заданий</div>}
+                                                        {hasPlanTasks && <span className={classes.date}>{time}</span>}
+                                                    </Paper>
                                                 </div>
-
-                                                <Paper className={classes.timelineContent}>
-                                                    <h2>{market}</h2>
-                                                    {hasPlanTasks
-                                                        ? <ul>
-                                                            {tasks}
-                                                        </ul>
-                                                        : <div>Пока не выполнено заданий</div>}
-                                                    {hasPlanTasks && <span className={classes.date}>{time}</span>}
-                                                </Paper>
-                                            </div>
-                                        )
-                                    })}
-                                    <div className={classes.timelineBlock}>
-                                        <div className={classes.timelineDot}>
-                                        </div>
-
-                                        <Paper className={classes.timelineContent}>
-                                            <h2>Title of section 1</h2>
-                                            <ul>
-                                                <li>Посещение магазина <Checked color="#92ce95"/></li>
-                                                <li>Заключение сделки <Checked color="#92ce95"/></li>
-                                                <li>Посещение магазина <Checked color="#92ce95"/></li>
-
-                                            </ul>
-                                            <span className={classes.date}>10:56</span>
-                                        </Paper>
-                                    </div>
-
-                                    <div className={classes.timelineBlock}>
-                                        <div className={classes.timelineDot}>
-                                        </div>
-
-                                        <Paper className={classes.timelineContent}>
-                                            <h2>Title of section 2</h2>
-                                            <ul>
-                                                <li>Посещение магазина <Checked color="#92ce95"/></li>
-                                                <li>Заключение сделки <Indeterminate color="#e57373"/></li>
-                                                <li>Посещение магазина <CheckOutline color="#999"/></li>
-                                            </ul>
-                                            <span className={classes.date}>11:42</span>
-                                        </Paper>
-                                    </div>
-
-                                    <div className={classes.timelineBlockPassive}>
-                                        <div className={classes.timelineDot}>
-                                        </div>
-
-                                        <Paper className={classes.timelineContent}>
-                                            <h2>Title of section 1</h2>
-                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iusto, optio,
-                                                dolorum provident rerum aut hic quasi placeat iure tempora
-                                                laudantium ipsa ad debitis unde? Iste voluptatibus minus veritatis qui
-                                                ut.</p>
-                                        </Paper>
+                                            )
+                                        })}
                                     </div>
                                 </div>
-                            </div>
-                            <div className={classes.timeline}>
-                                <div className={classes.timelineDatePassive}>22 Апр, 2017</div>
-                                <div className={classes.timelineBlockWrapper}>
-                                    <div className={classes.timelineBlockPassive}>
-                                        <div className={classes.timelineDot}>
-                                        </div>
-
-                                        <Paper className={classes.timelineContent}>
-                                            <h2>Title of section 1</h2>
-                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iusto, optio,
-                                                dolorum provident rerum aut hic quasi placeat iure tempora
-                                                laudantium ipsa ad debitis unde? Iste voluptatibus minus veritatis qui
-                                                ut.</p>
-                                            <span className={classes.date}>10:56</span>
-                                        </Paper>
-                                    </div>
-
-                                    <div className={classes.timelineBlockPassive}>
-                                        <div className={classes.timelineDot}>
-                                        </div>
-
-                                        <Paper className={classes.timelineContent}>
-                                            <h2>Title of section 2</h2>
-                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iusto, optio,
-                                                dolorum provident rerum aut?</p>
-                                            <span className={classes.date}>11:42</span>
-                                        </Paper>
-                                    </div>
-
-                                    <div className={classes.timelineBlockPassive}>
-                                        <div className={classes.timelineDot}>
-                                        </div>
-
-                                        <Paper className={classes.timelineContent}>
-                                            <h2>Title of section 1</h2>
-                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iusto, optio,
-                                                dolorum provident rerum aut hic quasi placeat iure tempora
-                                                laudantium ipsa ad debitis unde? Iste voluptatibus minus veritatis qui
-                                                ut.</p>
-                                        </Paper>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                                : <div className={classes.emptyQuery}>
+                                    <div>Для выбранного агента в эту дату не найдено планов</div>
+                                </div>}
                     </div>
-                    : <div className={classes.noAgent}>
-                        <div>
-                            <img src={Agent} alt=""/>
-                            <span>Для отображения статистики <br/> выберите агента</span>
-                        </div>
-                    </div>)}
+                </div>
+                : <div className={classes.noAgent}>
+                    <div>
+                        <img src={Agent} alt=""/>
+                        <span>Для отображения статистики <br/> выберите агента</span>
+                    </div>
+                </div>}
         </div>
     )
 })
