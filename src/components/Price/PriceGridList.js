@@ -23,6 +23,7 @@ import DoneIcon from 'material-ui/svg-icons/action/done'
 import Person from 'material-ui/svg-icons/social/person'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import toCamelCase from '../../helpers/toCamelCase'
+import Excel from 'material-ui/svg-icons/av/equalizer'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -102,7 +103,7 @@ const enhance = compose(
                 height: '30px'
             }
         },
-        pricePercent: {
+        excelButton: {
             position: 'absolute',
             top: '0',
             right: 0,
@@ -146,6 +147,18 @@ const enhance = compose(
                 width: '22px',
                 marginLeft: 'auto'
             }
+        },
+        excel: {
+            background: '#71ce87',
+            borderRadius: '2px',
+            color: '#fff',
+            fontWeight: '600',
+            display: 'flex',
+            alignItems: 'center',
+            padding: '5px 15px',
+            '& svg': {
+                width: '18px !important'
+            }
         }
     }),
     withState('globalPrice', 'setGlobalPrice', true),
@@ -166,9 +179,9 @@ const PriceGridList = enhance((props) => {
         priceSetForm,
         listData,
         detailData,
-        handleSubmit
+        handleSubmit,
+        getDocument
     } = props
-    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const expenseList = _.get(detailData, 'priceItemExpenseList')
     const expenseLoading = _.get(detailData, 'priceItemExpenseLoading')
     const priceFilterDialog = (
@@ -195,38 +208,11 @@ const PriceGridList = enhance((props) => {
     )
 
     const pricePercent = (
-        <form onSubmit={onSubmit} className={classes.pricePercent}>
-            <div>
-                <div>
-                    {globalPrice && <Field
-                        name='globalPrice'
-                        className={classes.inputFieldCustom}
-                        component={TextField}
-                        fullWidth={true}
-                    />}
-                    {!globalPrice && <Link onClick={() => { setGlobalPrice(true) }}>10 %</Link>}
-                </div>
-            </div>
-            <div>
-                {globalPrice &&
-                <Tooltip position="bottom" text="">
-                    <FloatingActionButton
-                        mini={true}
-                        type="submit"
-                        zDepth={1}
-                        backgroundColor="#12aaeb"
-                        className={classes.addButton}
-                        onTouchTap={() => {
-                            onSubmit().then(() => {
-                                setGlobalPrice(false)
-                            })
-                        }}>
-
-                        <DoneIcon/>
-                    </FloatingActionButton>
-                </Tooltip>}
-            </div>
-        </form>
+        <div className={classes.excelButton}>
+                <a className={classes.excel} onClick={getDocument}>
+                    <Excel color="#fff"/> <span>Excel</span>
+                </a>
+        </div>
     )
     const priceList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
