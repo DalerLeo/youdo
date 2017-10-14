@@ -32,6 +32,11 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.CASHBOX_UPDATE),
         pending: createThunkReducer(actionTypes.ORDER_TRANSACTION)
     }),
+    notification: combineReducers({
+        list: createThunkReducer(actionTypes.NOTIFICATION_LIST),
+        item: createThunkReducer(actionTypes.NOTIFICATION_ITEM),
+        update: createThunkReducer(actionTypes.NOTIFICATION_UPDATE)
+    }),
     shipment: combineReducers({
         list: createThunkReducer(actionTypes.SHIPMENT_LIST),
         item: createThunkReducer(actionTypes.SHIPMENT_ITEM)
@@ -194,7 +199,7 @@ const rootReducer = combineReducers({
     }),
     notifications: combineReducers({
         list: createThunkReducer(actionTypes.NOTIFICATIONS_LIST),
-        item: createThunkReducer(actionTypes.NOTIFICATIONS_ITEM),
+        item: createThunkReducer(actionTypes.NOTIFICATFIONS_ITEM),
         timeInterval: createThunkReducer((actionTypes.NOTIFICATIONS_TIME_INTERVAL))
     }),
     pendingExpenses: combineReducers({
