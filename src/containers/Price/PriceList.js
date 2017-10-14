@@ -8,6 +8,10 @@ import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import numberFormat from '../../helpers/numberFormat'
+import * as API from '../../constants/api'
+import * as serializers from '../../serializers/priceSerializer'
+import getDocuments from '../../helpers/getDocument'
+
 import {reset} from 'redux-form'
 import {
     PRICE_FILTER_KEY,
@@ -153,13 +157,14 @@ const enhance = compose(
                     }))
                 })
         },
-        handleSubmitGlobalPriceForm: props => () => {
-            const {globalForm} = props
-            return _.get(globalForm, ['values', 'globalPrice'])
-        },
         handleCloseDetail: props => () => {
             const {filter} = props
             hashHistory.push({pathname: ROUTER.PRICE_LIST_URL, query: filter.getParams()})
+        },
+        handleGetDocument: props => () => {
+            const {filter} = props
+            const params = serializers.listFilterSerializer(filter.getParams())
+            getDocuments(API.PRICE_GET_DOCUMENT, params)
         }
     })
 )
@@ -190,6 +195,7 @@ const PriceList = enhance((props) => {
     const typeChild = _.toNumber(_.get(location, ['query', PRICE_FILTER_KEY.TYPE_CHILD]))
     const measurement = _.toNumber(_.get(location, ['query', PRICE_FILTER_KEY.MEASUREMENT]))
     const detailId = _.toInteger(_.get(params, 'priceId'))
+
     const priceSupplyDialog = {
         openPriceSupplyDialog,
         handleOpenSupplyDialog: props.handleOpenSupplyDialog,
@@ -309,7 +315,7 @@ const PriceList = enhance((props) => {
                 priceSupplyDialog={priceSupplyDialog}
                 priceSetForm={priceSetForm}
                 filterDialog={filterDialog}
-                onSubmit={props.handleSubmitGlobalPriceForm}
+                getDocument={props.handleGetDocument}
             />
         </Layout>
     )

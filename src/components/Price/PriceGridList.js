@@ -7,33 +7,18 @@ import React from 'react'
 import {Row, Col} from 'react-flexbox-grid'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
-import {Field, reduxForm, SubmissionError} from 'redux-form'
-import {TextField} from '../ReduxForm'
 import Tooltip from '../ToolTip'
 import Container from '../Container'
 import PriceFilterForm from './PriceFilterForm'
 import PriceSupplyDialog from './PriceSupplyDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
-import {compose, withState} from 'recompose'
+import {compose} from 'recompose'
 import PriceDetails from './PriceDetails'
 import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat'
-import DoneIcon from 'material-ui/svg-icons/action/done'
 import Person from 'material-ui/svg-icons/social/person'
-import FloatingActionButton from 'material-ui/FloatingActionButton'
-import toCamelCase from '../../helpers/toCamelCase'
-
-const validate = (data) => {
-    const errors = toCamelCase(data)
-    const nonFieldErrors = _.get(errors, 'nonFieldErrors')
-    const latLng = (_.get(errors, 'lat') || _.get(errors, 'lon')) && 'Location is required.'
-    throw new SubmissionError({
-        ...errors,
-        latLng,
-        _error: nonFieldErrors
-    })
-}
+import Excel from 'material-ui/svg-icons/av/equalizer'
 
 const listHeader = [
     {
@@ -102,7 +87,7 @@ const enhance = compose(
                 height: '30px'
             }
         },
-        pricePercent: {
+        excelButton: {
             position: 'absolute',
             top: '0',
             right: 0,
@@ -146,29 +131,32 @@ const enhance = compose(
                 width: '22px',
                 marginLeft: 'auto'
             }
+        },
+        excel: {
+            background: '#71ce87',
+            borderRadius: '2px',
+            color: '#fff',
+            fontWeight: '600',
+            display: 'flex',
+            alignItems: 'center',
+            padding: '5px 15px',
+            '& svg': {
+                width: '18px !important'
+            }
         }
-    }),
-    withState('globalPrice', 'setGlobalPrice', true),
-
-    reduxForm({
-        form: 'PriceGlobalForm',
-        enableReinitialize: true
     })
 )
 const PriceGridList = enhance((props) => {
     const {
         classes,
         filter,
-        globalPrice,
-        setGlobalPrice,
         filterDialog,
         priceSupplyDialog,
         priceSetForm,
         listData,
         detailData,
-        handleSubmit
+        getDocument
     } = props
-    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const expenseList = _.get(detailData, 'priceItemExpenseList')
     const expenseLoading = _.get(detailData, 'priceItemExpenseLoading')
     const priceFilterDialog = (
@@ -194,39 +182,12 @@ const PriceGridList = enhance((props) => {
         </PriceDetails>
     )
 
-    const pricePercent = (
-        <form onSubmit={onSubmit} className={classes.pricePercent}>
-            <div>
-                <div>
-                    {globalPrice && <Field
-                        name='globalPrice'
-                        className={classes.inputFieldCustom}
-                        component={TextField}
-                        fullWidth={true}
-                    />}
-                    {!globalPrice && <Link onClick={() => { setGlobalPrice(true) }}>10 %</Link>}
-                </div>
-            </div>
-            <div>
-                {globalPrice &&
-                <Tooltip position="bottom" text="">
-                    <FloatingActionButton
-                        mini={true}
-                        type="submit"
-                        zDepth={1}
-                        backgroundColor="#12aaeb"
-                        className={classes.addButton}
-                        onTouchTap={() => {
-                            onSubmit().then(() => {
-                                setGlobalPrice(false)
-                            })
-                        }}>
-
-                        <DoneIcon/>
-                    </FloatingActionButton>
-                </Tooltip>}
-            </div>
-        </form>
+    const excelButton = (
+        <div className={classes.excelButton}>
+                <a className={classes.excel} onClick={getDocument}>
+                    <Excel color="#fff"/> <span>Excel</span>
+                </a>
+        </div>
     )
     const priceList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
@@ -278,7 +239,7 @@ const PriceGridList = enhance((props) => {
     return (
         <Container>
             <SubMenu url={ROUTES.PRICE_LIST_URL}/>
-            {pricePercent}
+            {excelButton}
             <GridList
                 filter={filter}
                 list={list}
