@@ -11,10 +11,12 @@ import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Row, Col} from 'react-flexbox-grid'
 import sprintf from 'sprintf'
-import Person from '../../Images/person.png'
 import Pagination from '../../GridList/GridListNavPagination/index'
 import * as ROUTES from '../../../constants/routes'
 import getConfig from '../../../helpers/getConfig'
+import numberFormat from '../../../helpers/numberFormat'
+import dateTimeFormat from '../../../helpers/dateTimeFormat'
+import NotFound from '../../Images/not-found.png'
 
 const enhance = compose(
     injectSheet({
@@ -48,7 +50,8 @@ const enhance = compose(
         titleSummary: {
             padding: '20px 30px',
             display: 'flex',
-            justifyContent: 'space-between'
+            justifyContent: 'space-between',
+            borderBottom: '1px solid #efefef'
         },
         downBlock: {
             padding: '20px 30px',
@@ -125,6 +128,20 @@ const enhance = compose(
                     display: 'none'
                 }
             }
+        },
+        emptyQuery: {
+            marginBottom: '15px',
+            background: 'url(' + NotFound + ') no-repeat center center',
+            backgroundSize: '200px',
+            padding: '200px 0 0',
+            textAlign: 'center',
+            fontSize: '13px',
+            color: '#666',
+            '& svg': {
+                width: '50px !important',
+                height: '50px !important',
+                color: '#999 !important'
+            }
         }
     }),
 )
@@ -145,7 +162,8 @@ const StatAgentDialog = enhance((props) => {
         const id = _.get(item, 'id')
         const market = _.get(item, ['market', 'name'])
         const totalPrice = _.get(item, 'totalPrice')
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+        const paymentType = _.get(item, 'paymentType') === 'cash' ? 'Наличные' : 'Перечисление'
+        const createdDate = dateTimeFormat(_.get(item, 'createdDate'))
 
         return (
             <Row key={id} className="dottedList">
@@ -154,9 +172,10 @@ const StatAgentDialog = enhance((props) => {
                         pathname: sprintf(ROUTES.ORDER_ITEM_PATH, id),
                         query: {search: id}
                     }} target="_blank">Заказ {id}</Link></Col>
-                <Col xs={6}>{market}</Col>
+                <Col xs={4}>{market}</Col>
                 <Col xs={2}>{createdDate}</Col>
-                <Col xs={2}>{totalPrice} {primaryCurrency}</Col>
+                <Col xs={2} style={{textAlign: 'right'}}>{paymentType}</Col>
+                <Col xs={2}>{numberFormat(totalPrice, primaryCurrency)}</Col>
             </Row>
         )
     })
@@ -167,7 +186,7 @@ const StatAgentDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '400px'} : {width: '700px'}}
+            contentStyle={loading ? {width: '600px'} : {width: '900px', maxWidth: 'unset'}}
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             {loading ? <div className={classes.loader}>
@@ -176,9 +195,6 @@ const StatAgentDialog = enhance((props) => {
             : <div>
                     <div className={classes.titleContent}>
                         <div>
-                            <div className="personImage">
-                                <img src={Person} alt=""/>
-                            </div>
                             <div>{agentName}</div>
                         </div>
                         <IconButton onTouchTap={onClose}>
@@ -193,11 +209,16 @@ const StatAgentDialog = enhance((props) => {
                         <div className={classes.tableWrapper}>
                             <Row className="dottedList">
                                 <Col xs={2}>№ заказа</Col>
-                                <Col xs={6}>Магазин</Col>
+                                <Col xs={4}>Магазин</Col>
                                 <Col xs={2}>Дата</Col>
+                                <Col xs={2} style={{textAlign: 'right'}}>Тип оплаты</Col>
                                 <Col xs={2}>Сумма</Col>
                             </Row>
-                            {orderList}
+                            {_.isEmpty(orderList)
+                                ? <div className={classes.emptyQuery}>
+                                    <div>У данного агента в этом периоде нет заказов</div>
+                                </div>
+                                : orderList}
                         </div>
                         <Pagination filter={_.get(detailData, 'filter')}/>
                     </div>

@@ -7,7 +7,19 @@ import Layout from '../../components/Layout'
 import {hashHistory} from 'react-router'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
-import {ZonesWrapper, ADD_ZONE, UPDATE_ZONE, DELETE_ZONE, TOGGLE_INFO, BIND_AGENT, CONFIRM_DIALOG, ZONE_ID} from '../../components/Zones'
+import * as ROUTES from '../../constants/routes'
+import sprintf from 'sprintf'
+import {
+    ZonesWrapper,
+    ADD_ZONE,
+    UPDATE_ZONE,
+    DELETE_ZONE,
+    TOGGLE_INFO,
+    BIND_AGENT,
+    CONFIRM_DIALOG,
+    ZONE_ID,
+    SHOP_DETAIL
+} from '../../components/Zones'
 import {
     zoneCustomCreateAction,
     zoneCustomUpdateAction,
@@ -76,7 +88,7 @@ const enhance = compose(
         const except = {
             page: null,
             openInfo: null,
-            marketId: null
+            openShopDetail: null
         }
         return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
@@ -89,7 +101,7 @@ const enhance = compose(
             page: null,
             openInfo: null,
             search: null,
-            marketId: null
+            openShopDetail: null
         }
         return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
@@ -107,11 +119,11 @@ const enhance = compose(
         }
     }),
     withPropsOnChange((props, nextProps) => {
-        const prevMarket = _.toNumber(_.get(props, ['query', 'marketId']))
-        const nextMarket = _.toNumber(_.get(nextProps, ['query', 'marketId']))
+        const prevMarket = _.toNumber(_.get(props, ['query', SHOP_DETAIL]))
+        const nextMarket = _.toNumber(_.get(nextProps, ['query', SHOP_DETAIL]))
         return prevMarket !== nextMarket && nextMarket
     }, ({dispatch, query}) => {
-        const zoneId = _.toInteger(_.get(query, 'marketId'))
+        const zoneId = _.toInteger(_.get(query, SHOP_DETAIL))
         if (zoneId > ZERO) {
             dispatch(shopItemFetchAction(zoneId))
         }
@@ -273,6 +285,15 @@ const enhance = compose(
                     hashHistory.push({pathname, query: filter.getParams({[BIND_AGENT]: false})})
                     dispatch(zoneItemFetchAction(zoneId))
                 })
+        },
+        handleOpenShopDetails: props => (id) => {
+            const {filter} = props
+            hashHistory.push({pathname: sprintf(ROUTES.ZONES_LIST_URL), query: filter.getParams({[SHOP_DETAIL]: id})})
+        },
+
+        handleCloseShopDetails: props => () => {
+            const {filter, location: {pathname}} = props
+            hashHistory.push({pathname, query: filter.getParams({[SHOP_DETAIL]: ZERO})})
         }
     })
 )
@@ -307,6 +328,7 @@ const Zones = enhance((props) => {
     const zoneId = _.get(location, ['query', ZONE_ID]) ? _.toNumber(_.get(location, ['query', ZONE_ID])) : ZERO
     const openDeleteZone = _.toInteger(_.get(location, ['query', DELETE_ZONE]) || ZERO) > ZERO
     const openToggle = toBoolean(_.get(location, ['query', TOGGLE_INFO]))
+    const openShopDetail = Number(_.get(location, ['query', SHOP_DETAIL]))
     const openConfirmDialog = _.toInteger(_.get(location, ['query', CONFIRM_DIALOG]) || ZERO) > ZERO
     const openDetail = _.toInteger(_.get(params, 'zoneId'))
     const detailId = _.toInteger(_.get(params, 'zoneId'))
@@ -367,8 +389,11 @@ const Zones = enhance((props) => {
         marketsLocationLoading
     }
     const shopDetail = {
-        data: shopItem,
-        loading: shopItemLoading
+        openShopDetail,
+        handleOpenShopDetails: props.handleOpenShopDetails,
+        handleCloseShopDetails: props.handleCloseShopDetails,
+        marketData: shopItem,
+        marketDataLoading: shopItemLoading
     }
 
     const statData = {
