@@ -304,6 +304,16 @@ const listHeader = [
     },
     {
         sorting: true,
+        name: 'writeoffAmount',
+        title: 'Кол-во'
+    },
+    {
+        sorting: true,
+        name: 'writeoffCost',
+        title: 'Стоимость'
+    },
+    {
+        sorting: true,
         name: 'endRemainderAmount',
         title: 'Кол-во'
     },
@@ -326,6 +336,7 @@ const StatProductMoveGridList = enhance((props) => {
         initialValues
     } = props
 
+    const summaryMeasurement = 'шт'
     const listLoading = _.get(listData, 'listLoading')
     const sumListLoading = _.get(sumData, 'sumListLoading')
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
@@ -335,6 +346,15 @@ const StatProductMoveGridList = enhance((props) => {
     const inBalance = numberFormat(_.get(sumData, ['data', 'inPriceSum']), primaryCurrency)
     const outBalance = numberFormat(_.get(sumData, ['data', 'outPriceSum']), primaryCurrency)
     const returnBalance = numberFormat(_.get(sumData, ['data', 'returnPriceSum']), primaryCurrency)
+    const writeoffBalance = numberFormat(_.get(sumData, ['data', 'writeoffPriceSum']), primaryCurrency)
+
+    // Amounts
+    const beginAmount = numberFormat(_.get(sumData, ['data', 'beginBalanceSum']))
+    const endAmount = numberFormat(_.get(sumData, ['data', 'endBalanceSum']))
+    const inAmount = numberFormat(_.get(sumData, ['data', 'inBalanceSum']))
+    const outAmount = numberFormat(_.get(sumData, ['data', 'outBalanceSum']))
+    const returnAmount = numberFormat(_.get(sumData, ['data', 'returnBalanceSum']))
+    const writeoffAmount = numberFormat(_.get(sumData, ['data', 'writeoffBalanceSum']))
 
     const tableLeft = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
@@ -359,6 +379,9 @@ const StatProductMoveGridList = enhance((props) => {
 
         const endBalancePr = numberFormat(_.get(item, 'endBalance'), measurement)
         const endPricePr = numberFormat(_.get(item, 'endPrice'), primaryCurrency)
+
+        const writeoffBalancePr = numberFormat(_.get(item, 'writeoffBalance'), measurement)
+        const writeoffPricePr = numberFormat(_.get(item, 'writeoffPrice'), primaryCurrency)
         return (
             <tr key={id} className={classes.tableRow}>
                 <td>{code}</td>
@@ -372,6 +395,8 @@ const StatProductMoveGridList = enhance((props) => {
                 <td>{outPricePr}</td>
                 <td>{endBalancePr}</td>
                 <td>{endPricePr}</td>
+                <td>{writeoffBalancePr}</td>
+                <td>{writeoffPricePr}</td>
             </tr>
         )
     })
@@ -432,21 +457,21 @@ const StatProductMoveGridList = enhance((props) => {
                                 : <div className={classes.summaryWrapper}>
                                     <div>
                                         <div>Остаток на начало периода</div>
-                                        <div>{beginBalance} <span>(2000 шт)</span> </div>
+                                        <div>{beginBalance} <span>({beginAmount} {summaryMeasurement})</span> </div>
                                         <div>Остаток на конец периода</div>
-                                        <div>{endBalance} <span>(50 шт)</span></div>
+                                        <div>{endBalance} <span>({endAmount} {summaryMeasurement})</span></div>
                                     </div>
                                     <div>
                                         <div>Поступило товара на сумму</div>
-                                        <div>{inBalance} <span>(2000 шт)</span></div>
+                                        <div>{inBalance} <span>({inAmount} {summaryMeasurement})</span></div>
                                         <div>Возврат за период</div>
-                                        <div>{returnBalance} <span>(200 шт)</span></div>
+                                        <div>{returnBalance} <span>({outAmount} {summaryMeasurement})</span></div>
                                     </div>
                                     <div>
                                         <div>Выдано по заказу</div>
-                                        <div>{outBalance} <span>(2000 шт)</span></div>
+                                        <div>{outBalance} <span>({returnAmount} {summaryMeasurement})</span></div>
                                         <div>Cписано за период</div>
-                                        <div>{returnBalance} <span>(200 шт)</span></div>
+                                        <div>{writeoffBalance} <span>({writeoffAmount} {summaryMeasurement})</span></div>
                                     </div>
                                 </div>}
                         </div>
@@ -473,7 +498,8 @@ const StatProductMoveGridList = enhance((props) => {
                                                 <td colSpan={2}>Остаток на начало периода</td>
                                                 <td colSpan={2}>Поступивший товара за период</td>
                                                 <td colSpan={2}>Возврат</td>
-                                                <td colSpan={2}>Выданный товара за период</td>
+                                                <td colSpan={2}>Выдано по заказу</td>
+                                                <td colSpan={2}>Списано за период</td>
                                                 <td colSpan={2}>Остаток на конец</td>
                                             </tr>
                                             <tr className={classes.subTitle}>
