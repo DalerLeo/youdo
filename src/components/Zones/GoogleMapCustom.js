@@ -416,6 +416,10 @@ export default class GoogleCustomMap extends React.Component {
             points: null,
             isDrawing: null
         })
+        this.overlayView.onAdd = null
+        this.overlayView.draw = null
+        this.overlayView.onRemove = null
+        this.overlayView = null
     }
 
     render () {
