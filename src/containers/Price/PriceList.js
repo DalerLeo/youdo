@@ -157,10 +157,6 @@ const enhance = compose(
                     }))
                 })
         },
-        handleSubmitGlobalPriceForm: props => () => {
-            const {globalForm} = props
-            return _.get(globalForm, ['values', 'globalPrice'])
-        },
         handleCloseDetail: props => () => {
             const {filter} = props
             hashHistory.push({pathname: ROUTER.PRICE_LIST_URL, query: filter.getParams()})
@@ -319,7 +315,6 @@ const PriceList = enhance((props) => {
                 priceSupplyDialog={priceSupplyDialog}
                 priceSetForm={priceSetForm}
                 filterDialog={filterDialog}
-                onSubmit={props.handleSubmitGlobalPriceForm}
                 getDocument={props.handleGetDocument}
             />
         </Layout>

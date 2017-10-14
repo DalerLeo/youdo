@@ -7,34 +7,18 @@ import React from 'react'
 import {Row, Col} from 'react-flexbox-grid'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
-import {Field, reduxForm, SubmissionError} from 'redux-form'
-import {TextField} from '../ReduxForm'
 import Tooltip from '../ToolTip'
 import Container from '../Container'
 import PriceFilterForm from './PriceFilterForm'
 import PriceSupplyDialog from './PriceSupplyDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
-import {compose, withState} from 'recompose'
+import {compose} from 'recompose'
 import PriceDetails from './PriceDetails'
 import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat'
-import DoneIcon from 'material-ui/svg-icons/action/done'
 import Person from 'material-ui/svg-icons/social/person'
-import FloatingActionButton from 'material-ui/FloatingActionButton'
-import toCamelCase from '../../helpers/toCamelCase'
 import Excel from 'material-ui/svg-icons/av/equalizer'
-
-const validate = (data) => {
-    const errors = toCamelCase(data)
-    const nonFieldErrors = _.get(errors, 'nonFieldErrors')
-    const latLng = (_.get(errors, 'lat') || _.get(errors, 'lon')) && 'Location is required.'
-    throw new SubmissionError({
-        ...errors,
-        latLng,
-        _error: nonFieldErrors
-    })
-}
 
 const listHeader = [
     {
@@ -160,26 +144,17 @@ const enhance = compose(
                 width: '18px !important'
             }
         }
-    }),
-    withState('globalPrice', 'setGlobalPrice', true),
-
-    reduxForm({
-        form: 'PriceGlobalForm',
-        enableReinitialize: true
     })
 )
 const PriceGridList = enhance((props) => {
     const {
         classes,
         filter,
-        globalPrice,
-        setGlobalPrice,
         filterDialog,
         priceSupplyDialog,
         priceSetForm,
         listData,
         detailData,
-        handleSubmit,
         getDocument
     } = props
     const expenseList = _.get(detailData, 'priceItemExpenseList')
@@ -207,7 +182,7 @@ const PriceGridList = enhance((props) => {
         </PriceDetails>
     )
 
-    const pricePercent = (
+    const excelButton = (
         <div className={classes.excelButton}>
                 <a className={classes.excel} onClick={getDocument}>
                     <Excel color="#fff"/> <span>Excel</span>
@@ -264,7 +239,7 @@ const PriceGridList = enhance((props) => {
     return (
         <Container>
             <SubMenu url={ROUTES.PRICE_LIST_URL}/>
-            {pricePercent}
+            {excelButton}
             <GridList
                 filter={filter}
                 list={list}
