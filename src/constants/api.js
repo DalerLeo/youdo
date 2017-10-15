@@ -83,6 +83,10 @@ export const CASHBOX_LIST = `/${CASHBOX}/`
 export const CASHBOX_ITEM = `/${CASHBOX}/%d/`
 export const CASHBOX_DELETE = `/${CASHBOX}/%d/`
 
+export const NOTIFICATION = 'notification/notification_template'
+export const NOTIFICATION_LIST = `/${NOTIFICATION}/`
+export const NOTIFICATION_ITEM = `/${NOTIFICATION}/%d/`
+
 export const TRANSACTION = 'finance/transaction'
 export const TRANSACTION_ACCEPT_CASH = 'finance/accept_cash_list/'
 export const TRANSACTION_CREATE = `/${TRANSACTION}/`
