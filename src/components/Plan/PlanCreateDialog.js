@@ -336,7 +336,7 @@ const PlanCreateDialog = enhance((props) => {
         zonesList,
         zonesLoading,
         zoneDetails,
-        calendar,
+        addPlanCalendar,
         zoneAgents,
         zoneAgentsLoading,
         handleChooseZone,
@@ -458,7 +458,7 @@ const PlanCreateDialog = enhance((props) => {
                             </IconButton>
                         </div>
                         <div className={classes.scroll}>
-                            <PlanAddCalendar calendar={calendar}/>
+                            <PlanAddCalendar calendar={addPlanCalendar}/>
                             <div className={classes.zonesList}>
                                 <div className={classes.zoneTitle}>
                                     <span>Зоны</span>

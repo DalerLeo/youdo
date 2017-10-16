@@ -221,6 +221,7 @@ const PlanWrapper = enhance((props) => {
         handleClickTab,
         groupId,
         calendar,
+        addPlanCalendar,
         monthlyPlan,
         selectedWeekDay,
         agentPlans
@@ -367,7 +368,7 @@ const PlanWrapper = enhance((props) => {
                 zonesLoading={addPlan.zonesLoading}
                 zoneAgents={addPlan.zoneAgents}
                 zoneAgentsLoading={addPlan.zoneAgentsLoading}
-                calendar={calendar}
+                addPlanCalendar={addPlanCalendar}
                 marketsLocation={addPlan.marketsLocation}
                 updatePlan={updatePlan}
                 createPlanLoading={addPlan.createPlanLoading}

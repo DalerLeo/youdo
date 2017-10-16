@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import moment from 'moment'
 
-export const listFilterSerializer = (data, type, thumbnailType) => {
+export const listFilterSerializer = (data, type, page, thumbnailType) => {
     const TEN = 10
     const date = _.get(data, 'date') || moment().format('YYYY-MM')
     let day = _.get(data, 'day') || moment().format('D')
@@ -11,6 +11,7 @@ export const listFilterSerializer = (data, type, thumbnailType) => {
     const fullDate = date + '-' + day
 
     return {
+        page,
         'date': fullDate,
         'type': type,
         'thumbnail_type': thumbnailType

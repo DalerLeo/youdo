@@ -4,6 +4,7 @@ const USER_GROUP = 'group'
 const OPEN_PLAN_SALES = 'openPlanSales'
 const UPDATE_PLAN = 'updatePlan'
 const DATE = 'date'
+const CREATE_DATE = 'create_date'
 const ZONE = 'zone'
 const AGENT = 'agent'
 const MARKET = 'market'
@@ -17,6 +18,7 @@ export {
     ADD_PLAN,
     USER_GROUP,
     OPEN_PLAN_SALES,
+    CREATE_DATE,
     DATE,
     ZONE,
     AGENT,

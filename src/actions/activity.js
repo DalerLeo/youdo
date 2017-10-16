@@ -5,19 +5,19 @@ import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/activitySerializer'
 
-const VISIT = 1
-const ORDER = 2
-const REPORT = 3
-const ORDER_RETURN = 4
-const PAYMENT = 5
-const DELIVERY = 6
+export const VISIT = 1
+export const ORDER = 2
+export const REPORT = 3
+export const ORDER_RETURN = 4
+export const PAYMENT = 5
+export const DELIVERY = 6
 
 const thumbnailType = 'medium'
 
 // ORDER
 
-export const activityOrderListFetchAction = (filter) => {
-    const params = serializers.listFilterSerializer(filter.getParams(), ORDER)
+export const activityOrderListFetchAction = (filter, page) => {
+    const params = serializers.listFilterSerializer(filter.getParams(), ORDER, page)
     const payload = axios()
         .get(API.ACTIVITY_ORDER_LIST, {params})
         .then((response) => {
@@ -50,8 +50,8 @@ export const activityOrderItemFetchAction = (id) => {
 
 // VISIT
 
-export const activityVisitListFetchAction = (filter) => {
-    const params = serializers.listFilterSerializer(filter.getParams(), VISIT)
+export const activityVisitListFetchAction = (filter, page) => {
+    const params = serializers.listFilterSerializer(filter.getParams(), VISIT, page)
     const payload = axios()
         .get(API.ACTIVITY_VISIT_LIST, {params})
         .then((response) => {
@@ -68,8 +68,8 @@ export const activityVisitListFetchAction = (filter) => {
 
 // REPORT
 
-export const activityReportListFetchAction = (filter) => {
-    const params = serializers.listFilterSerializer(filter.getParams(), REPORT, thumbnailType)
+export const activityReportListFetchAction = (filter, page) => {
+    const params = serializers.listFilterSerializer(filter.getParams(), REPORT, page, thumbnailType)
     const payload = axios()
         .get(API.ACTIVITY_REPORT_LIST, {params})
         .then((response) => {
@@ -102,8 +102,8 @@ export const activityReportShowImageAction = (id) => {
 
 // ORDER_RETURN
 
-export const activityReturnListFetchAction = (filter) => {
-    const params = serializers.listFilterSerializer(filter.getParams(), ORDER_RETURN)
+export const activityReturnListFetchAction = (filter, page) => {
+    const params = serializers.listFilterSerializer(filter.getParams(), ORDER_RETURN, page)
     const payload = axios()
         .get(API.ACTIVITY_ORDER_RETURN_LIST, {params})
         .then((response) => {
@@ -120,8 +120,8 @@ export const activityReturnListFetchAction = (filter) => {
 
 // PAYMENT
 
-export const activityPaymentListFetchAction = (filter) => {
-    const params = serializers.listFilterSerializer(filter.getParams(), PAYMENT)
+export const activityPaymentListFetchAction = (filter, page) => {
+    const params = serializers.listFilterSerializer(filter.getParams(), PAYMENT, page)
     const payload = axios()
         .get(API.ACTIVITY_REPORT_LIST, {params})
         .then((response) => {
@@ -138,8 +138,8 @@ export const activityPaymentListFetchAction = (filter) => {
 
 // DELIVERY
 
-export const activityDeliveryListFetchAction = (filter) => {
-    const params = serializers.listFilterSerializer(filter.getParams(), DELIVERY)
+export const activityDeliveryListFetchAction = (filter, page) => {
+    const params = serializers.listFilterSerializer(filter.getParams(), DELIVERY, page)
     const payload = axios()
         .get(API.ACTIVITY_REPORT_LIST, {params})
         .then((response) => {
@@ -171,4 +171,3 @@ export const activitySummaryListFetchAction = (filter) => {
         payload
     }
 }
-

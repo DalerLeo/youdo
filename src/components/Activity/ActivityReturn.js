@@ -2,25 +2,31 @@ import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
-import {compose} from 'recompose'
+import {compose, withState} from 'recompose'
 import moment from 'moment'
-import CircularProgress from 'material-ui/CircularProgress'
+import LinearProgress from '../LinearProgress'
 import Paper from 'material-ui/Paper'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
 import Info from 'material-ui/svg-icons/action/info-outline'
 import Tooltip from '../ToolTip'
 
+const ONE = 1
+const TWO = 2
+const TEN = 10
 const enhance = compose(
     injectSheet({
         loader: {
-            minWidth: '300px',
-            height: '300px',
-            marginRight: '30px',
+            width: '100%',
+            position: 'relative',
+            margin: '15px 0',
             alignItems: 'center',
             zIndex: '999',
             justifyContent: 'center',
-            display: 'flex'
+            display: 'flex',
+            '& > div': {
+                background: 'transparent'
+            }
         },
         padding: {
             padding: '20px 30px'
@@ -41,7 +47,15 @@ const enhance = compose(
         blockItems: {
             overflowY: 'auto',
             height: 'calc(100% - 80px)',
-            paddingRight: '10px'
+            paddingRight: '10px',
+            '& a': {
+                fontWeight: '600',
+                display: 'block',
+                textAlign: 'center',
+                '&:hover': {
+                    textDecoration: 'underline'
+                }
+            }
         },
         tube: {
             padding: '20px 15px',
@@ -109,7 +123,8 @@ const enhance = compose(
             marginTop: '10px',
             lineHeight: '15px'
         }
-    })
+    }),
+    withState('defaultPage', 'updateDefaultPage', TWO)
 )
 
 const dateFormat = (date, defaultText) => {
@@ -122,9 +137,15 @@ const ActivityReturn = enhance((props) => {
         returnListData,
         classes,
         summary,
-        summaryLoading
+        summaryLoading,
+        handleLoadMoreItems,
+        defaultPage,
+        updateDefaultPage
     } = props
 
+    const type = _.meanBy(_.get(returnListData, 'data'), (o) => {
+        return _.get(o, 'type')
+    })
     const returnlistLoading = _.get(returnListData, 'returnListLoading')
     const summaryCount = _.get(summary, 'count')
     const summaryPrice = numberFormat(_.get(summary, 'totalPrice'), currentCurrency)
@@ -149,12 +170,6 @@ const ActivityReturn = enhance((props) => {
 
     if (_.isEmpty(returnList)) {
         return false
-    } else if (returnlistLoading || summaryLoading) {
-        return (
-            <div className={classes.loader}>
-                <CircularProgress size={40} thickness={4}/>
-            </div>
-        )
     }
 
     return (
@@ -167,6 +182,14 @@ const ActivityReturn = enhance((props) => {
             </div>
             <div className={classes.blockItems}>
                 {returnList}
+                {(returnlistLoading || summaryLoading)
+                    ? <div className={classes.loader}>
+                        <LinearProgress/>
+                    </div>
+                    : (summaryCount > TEN) && (returnListData.data.length < summaryCount) && <a onClick={() => {
+                        handleLoadMoreItems(type, defaultPage)
+                        updateDefaultPage(defaultPage + ONE)
+                    }}>Загрузить еще...</a>}
             </div>
         </div>
     )
