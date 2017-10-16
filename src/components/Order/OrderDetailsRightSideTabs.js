@@ -202,7 +202,8 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                     <Row className="dottedList" key={index}>
                                         <Col xs={4}>
                                             <span style={{marginRight: 10, fontWeight: 600}}>{index + ONE}</span>
-                                            <span>{productName} {stock ? ' ( ' + stock + ' ) ' : null} {isBonus && <strong className="greenFont">(бонус)</strong>}</span>
+                                            <span>{productName} {stock ? <strong>( {stock} )</strong> : null}
+                                            {isBonus && <strong className="greenFont">(бонус)</strong>}</span>
                                         </Col>
                                         <Col xs={2}>
                                             {numberFormat(amount)}
