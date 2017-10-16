@@ -24,7 +24,7 @@ import {
     INCOME_FROM_AGENT,
     formattedType
 } from '../../constants/transactionTypes'
-
+const currentDay = new Date()
 const enhance = compose(
     injectSheet({
         wrap: {
@@ -348,9 +348,8 @@ const TransactionsList = enhance((props) => {
                     onClose={createExpenseDialog.handleCloseDialog}
                     onSubmit={createExpenseDialog.handleSubmitDialog}
                 />
-
                 <TransactionCreateDialog
-                    initialValues={createIncomeDialog.initialValues}
+                    initialValues={{date: currentDay}}
                     noCashbox={_.get(cashboxData, 'cashboxId') === ZERO}
                     cashboxData={cashboxData}
                     open={createIncomeDialog.open}

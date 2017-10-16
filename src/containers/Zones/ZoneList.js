@@ -288,7 +288,7 @@ const enhance = compose(
         },
         handleOpenShopDetails: props => (id) => {
             const {filter} = props
-            hashHistory.push({pathname: sprintf(ROUTES.ZONES_LIST_URL), query: filter.getParams({[SHOP_DETAIL]: id})})
+            hashHistory.push({pathname: sprintf(ROUTES.ZONES_LIST_URL), query: filter.getParams({[TOGGLE_INFO]: true, [SHOP_DETAIL]: id})})
         },
 
         handleCloseShopDetails: props => () => {

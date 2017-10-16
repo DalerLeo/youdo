@@ -82,6 +82,11 @@ const enhance = compose(
             toBoolean(_.get(nextProps, ['location', 'query', CLIENT_BALANCE_INFO_DIALOG_OPEN])) === false
     }, ({dispatch, filter}) => {
         dispatch(clientBalanceListFetchAction(filter))
+    }),
+    withPropsOnChange((props, nextProps) => {
+        return props.sum && !_.isEqual(props.sum, nextProps.sum) &&
+            toBoolean(_.get(nextProps, ['location', 'query', CLIENT_BALANCE_INFO_DIALOG_OPEN])) === false
+    }, ({dispatch, filter}) => {
         dispatch(clientBalanceSumFetchAction(filter))
     }),
 
@@ -111,7 +116,7 @@ const enhance = compose(
 
         handleClearFilterDialog: props => () => {
             const {location: {pathname}} = props
-            hashHistory.push({pathname, query: {}})
+            hashHistory.push({pathname, query: {pageSize: '25'}})
         },
 
         handleSubmitFilterDialog: props => () => {
@@ -407,6 +412,7 @@ const ClientBalanceList = enhance((props) => {
                 handleSubmitSearch={props.handleSubmitSearch}
                 getDocument={getDocument}
                 sumData={sumData}
+                pathname={location.pathname}
             />
         </Layout>
     )

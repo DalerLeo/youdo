@@ -55,7 +55,7 @@ const StatSideMenu = enhance((props) => {
         {
             section: 'Продажи',
             url: ROUTES.STATISTICS_SALES_URL,
-            query: {fromDate: fromDate, toDate: toDate},
+            query: {fromDate: fromDate, toDate: toDate, exclude: true},
             childs: [
                 {name: 'Агенты', url: ROUTES.STATISTICS_AGENT_URL, query: {fromDate: fromDate, toDate: toDate}},
                 {name: 'Товары', url: ROUTES.STATISTICS_PRODUCT_URL, query: {pageSize: 25, fromDate: fromDate, toDate: toDate}},

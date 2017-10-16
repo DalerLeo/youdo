@@ -242,6 +242,7 @@ const StatSalesGridList = enhance((props) => {
     const currentCurrency = getConfig('PRIMARY_CURRENCY')
     const list = (
         _.map(_.get(listData, 'data'), (item) => {
+            const status = _.get(item, 'status')
             const marketName = _.get(item, ['market', 'name'])
             const id = _.get(item, 'id')
             const createdDate = moment(_.get(item, 'createdDate')).locale('ru').format('DD MMM YYYY HH:MM')
@@ -251,7 +252,7 @@ const StatSalesGridList = enhance((props) => {
             const returnPrice = _.get(item, 'totalReturnedPrice')
 
             return (
-                <Row key={id} className="dottedList">
+                <Row key={id} className="dottedList" style={status === '4' ? {color: '#999'} : {}}>
                     <Col xs={1}><a onClick={() => { statSaleDialog.handleOpenStatSaleDialog(id) }}>{id}</a></Col>
                     <Col xs={2}>{createdDate}</Col>
                     <Col xs={3}>{marketName}</Col>

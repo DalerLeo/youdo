@@ -10,6 +10,7 @@ import ClientBalanceFilterForm from './ClientBalanceFilterForm'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm} from 'redux-form'
 import SubMenu from '../SubMenu'
+import {hashHistory} from 'react-router'
 import {Row} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
 import ordering from '../../helpers/ordering'
@@ -274,6 +275,7 @@ const enhance = compose(
             display: 'flex',
             justifyContent: 'space-between',
             '& > div': {
+                cursor: 'pointer',
                 fontWeight: '400',
                 '& div': {
                     fontSize: '17px',
@@ -539,16 +541,36 @@ const ClientBalanceGridList = enhance((props) => {
             <CircularProgress size={40} thickness={4}/>
         </div>
         : <div className={classes.summaryWrapper}>
-            <div>Задолжники нал. - {borrowersCashCount}
+            <div
+                onClick={() => hashHistory.push({
+                    pathname: props.pathname,
+                    query: filter.getParams({[CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: 'cash', [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: '1'})
+                })}>
+                Задолжники нал. - {borrowersCashCount}
                 <div>{numberFormat(borrowersCash, primaryCurrency)}</div>
             </div>
-            <div>Задолжники переч. - {borrowersBankCount}
+            <div
+                onClick={() => hashHistory.push({
+                    pathname: props.pathname,
+                    query: filter.getParams({[CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: 'bank', [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: '1'})
+                })}>
+                Задолжники переч. - {borrowersBankCount}
                 <div>{numberFormat(borrowersBank, primaryCurrency)}</div>
             </div>
-            <div>Закладчики нал. - {loanersCashCount}
+            <div
+                onClick={() => hashHistory.push({
+                    pathname: props.pathname,
+                    query: filter.getParams({[CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: 'cash', [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: '2'})
+                })}>
+                Закладчики нал. - {loanersCashCount}
                 <div>{numberFormat(loanersCash, primaryCurrency)}</div>
             </div>
-            <div>Закладчики переч. - {loanersBankCount}
+            <div
+                onClick={() => hashHistory.push({
+                    pathname: props.pathname,
+                    query: filter.getParams({[CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: 'bank', [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: '2'})
+                })}>
+                Закладчики переч. - {loanersBankCount}
                 <div>{numberFormat(loanersBank, primaryCurrency)}</div>
             </div>
         </div>
