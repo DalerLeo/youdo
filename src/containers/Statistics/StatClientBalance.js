@@ -60,6 +60,11 @@ const enhance = compose(
             toBoolean(_.get(nextProps, ['location', 'query', CLIENT_BALANCE_INFO_DIALOG_OPEN])) === false
     }, ({dispatch, filter}) => {
         dispatch(clientBalanceListFetchAction(filter))
+    }),
+    withPropsOnChange((props, nextProps) => {
+        return props.sum && !_.isEqual(props.sum, nextProps.sum) &&
+            toBoolean(_.get(nextProps, ['location', 'query', CLIENT_BALANCE_INFO_DIALOG_OPEN])) === false
+    }, ({dispatch, filter}) => {
         dispatch(clientBalanceSumFetchAction(filter))
     }),
 
@@ -235,6 +240,7 @@ const ClientBalanceList = enhance((props) => {
                 getDocument={getDocument}
                 sumData={sumData}
                 onSubmit={props.handleSubmitFilterDialog}
+                pathname={location.pathname}
             />
         </Layout>
     )

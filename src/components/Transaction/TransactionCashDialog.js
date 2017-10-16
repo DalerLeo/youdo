@@ -19,8 +19,7 @@ import Pagination from '../ReduxForm/Pagination'
 import TransactionUpdatePriceDialog from './TransactionUpdatePriceDialog'
 import Edit from 'material-ui/svg-icons/editor/mode-edit'
 import Delete from 'material-ui/svg-icons/action/delete-forever'
-import dateFormat from '../../helpers/dateFormat'
-import moment from 'moment'
+import dateFormat from '../../helpers/dateTimeFormat'
 
 const enhance = compose(
     injectSheet({
@@ -250,7 +249,7 @@ const TransactionCashDialog = enhance((props) => {
                 const currency = _.get(item, ['currency', 'name'])
                 const division = _.get(item, ['division', 'name'])
                 const order = _.get(item, ['order']) ? '№' + _.get(item, ['order']) : '-'
-                const createdDate = dateFormat(_.get(item, ['date'])) + ' ' + moment(_.get(item, ['date'])).format('HH:mm')
+                const createdDate = dateFormat(_.get(item, ['createdDate']), true)
                 const internal = _.toNumber(_.get(item, 'internal'))
                 const amount = _.toNumber(_.get(item, 'amount'))
                 const customRate = _.get(item, ['customRate']) ? _.toNumber(_.get(item, ['customRate'])) : _.toInteger(amount / internal)
