@@ -28,8 +28,14 @@ const listHeader = [
     {
         sorting: true,
         name: 'name',
-        xs: 9,
+        xs: 5,
         title: 'Наименование'
+    },
+    {
+        sorting: false,
+        name: 'type',
+        xs: 4,
+        title: 'Тип'
     },
     {
         sorting: false,
@@ -136,11 +142,13 @@ const DivisionGridList = enhance((props) => {
     const divisionList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
+        const type = _.get(item, 'type')
 
         return (
             <Row key={id} className={classes.listRow}>
                 <Col xs={2}>{id}</Col>
-                <Col xs={9}>{name}</Col>
+                <Col xs={5}>{name}</Col>
+                <Col xs={4}>{type}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
                     <div className={classes.iconBtn}>
                         <Tooltip position="bottom" text="Изменить">

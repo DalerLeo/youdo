@@ -74,6 +74,7 @@ import AgentSearchField from './AgentSearchField'
 import ClientTransactionTypeSearchField from './ClientTransactionTypeSearchField'
 import StockReceiveTypeSearchFiled from './StockReceiveTypeSearchFiled'
 import SupplyTypeSearchFiled from './Supply/SupplyTypeSearchFiled'
+import ClientBalanceTypeSearchField from './ClientBalance/ClientBalanceTypeSearchField'
 
 export {
     SupplyTypeSearchFiled,
@@ -151,5 +152,6 @@ export {
     UserStockRadioButtonField,
     PermissionTimeSearchField,
     AgentSearchField,
-    ClientTransactionTypeSearchField
+    ClientTransactionTypeSearchField,
+    ClientBalanceTypeSearchField
 }

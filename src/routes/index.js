@@ -71,6 +71,7 @@ import {ActivityList} from '../containers/Activity'
 import {DivisionList} from '../containers/Division'
 import {JoinList} from '../containers/Join'
 import {PermissionList} from '../containers/Permission'
+import {NotificationList} from '../containers/Notification'
 
 const userIsAdminChain = compose(userIsAuth, visibleOnlyAdmin)
 
@@ -121,6 +122,17 @@ export default {
                 {
                     path: ROUTES.USERS_ITEM_URL,
                     component: userIsAuth(UsersList)
+                }
+            ]
+        },
+        // Notification
+        {
+            path: ROUTES.NOTIFICATION_LIST_URL,
+            component: userIsAdminChain(NotificationList),
+            childRoutes: [
+                {
+                    path: ROUTES.NOTIFICATION_ITEM_URL,
+                    component: userIsAuth(NotificationList)
                 }
             ]
         },

@@ -108,6 +108,11 @@ export const CLIENT_LIST_URL = `/${CLIENT}`
 export const CLIENT_ITEM_URL = `${CLIENT_LIST_URL}/:clientId`
 export const CLIENT_ITEM_PATH = `${CLIENT}/%d`
 
+export const NOTIFICATION = 'notification'
+export const NOTIFICATION_LIST_URL = `/${NOTIFICATION}`
+export const NOTIFICATION_ITEM_URL = `${NOTIFICATION_LIST_URL}/:notificationId`
+export const NOTIFICATION_ITEM_PATH = `${NOTIFICATION}/%d`
+
 export const MANUFACT = 'manufact'
 export const MANUFACT_PRODUCT = 'manufact/product'
 export const MANUFACT_PERSON = 'manufact/person'

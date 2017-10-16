@@ -7,7 +7,7 @@ import Container from '../../Container/index'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
-import {TextField, ZoneSearchField} from '../../ReduxForm'
+import {TextField, ZoneSearchField, DivisionSearchField} from '../../ReduxForm'
 import StatAgentDialog from './StatAgentDialog'
 import StatSideMenu from '../StatSideMenu'
 import CircularProgress from 'material-ui/CircularProgress'
@@ -24,6 +24,7 @@ export const STAT_AGENT_FILTER_KEY = {
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate',
     ZONE: 'zone',
+    DIVISION: 'division',
     SEARCH: 'search'
 }
 const enhance = compose(
@@ -353,12 +354,21 @@ const StatAgentGridList = enhance((props) => {
         )
     })
     const fields = (
-        <Field
-            className={classes.inputFieldCustom}
-            name="zone"
-            component={ZoneSearchField}
-            label="Зона"
-            fullWidth={true}/>
+        <div>
+            <Field
+                className={classes.inputFieldCustom}
+                name="zone"
+                component={ZoneSearchField}
+                label="Зона"
+                fullWidth={true}/>
+            <Field
+                className={classes.inputFieldCustom}
+                name="division"
+                component={DivisionSearchField}
+                label="Подразделение"
+                fullWidth={true}/>
+        </div>
+
     )
     const listIds = _.map(list, item => _.toInteger(_.get(item, 'key')))
     const page = (

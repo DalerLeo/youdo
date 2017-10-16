@@ -83,6 +83,10 @@ export const CASHBOX_LIST = `/${CASHBOX}/`
 export const CASHBOX_ITEM = `/${CASHBOX}/%d/`
 export const CASHBOX_DELETE = `/${CASHBOX}/%d/`
 
+export const NOTIFICATION = 'notification/notification_template'
+export const NOTIFICATION_LIST = `/${NOTIFICATION}/`
+export const NOTIFICATION_ITEM = `/${NOTIFICATION}/%d/`
+
 export const TRANSACTION = 'finance/transaction'
 export const TRANSACTION_ACCEPT_CASH = 'finance/accept_cash_list/'
 export const TRANSACTION_CREATE = `/${TRANSACTION}/`
@@ -290,6 +294,7 @@ export const PRICE_CREATE = `/${PRICE}/`
 export const PRICE_LIST = `/${PRICE}/`
 export const PRICE_ITEM = 'main/product_mobile/%d/get_custom_price/'
 export const PRICE_DELETE = `/${PRICE}/%d/`
+export const PRICE_GET_DOCUMENT = '/sales/product_price_list/export/'
 
 export const PRICE_LIST_ITEM = 'sales/price_list_item'
 export const PRICE_LIST_ITEM_HISTORY = 'stock/supply_product_history/%d/'

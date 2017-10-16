@@ -21,6 +21,8 @@ export const listFilterSerializer = (data) => {
         'created_date_0': _.get(defaultData, 'fromDate'),
         'created_date_1': _.get(defaultData, 'toDate'),
         'search': _.get(defaultData, 'search'),
+        'balance_type': _.get(defaultData, 'balanceType'),
+        'payment_type': _.get(defaultData, 'paymentType'),
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),
         'ordering': ordering && orderingSnakeCase(ordering)
