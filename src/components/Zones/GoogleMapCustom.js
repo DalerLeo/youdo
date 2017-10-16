@@ -408,7 +408,9 @@ export default class GoogleCustomMap extends React.Component {
     }
 
     componentWillUnmount () {
-        this.overlayView.setMap(null)
+        if (this.overlayView) {
+            this.overlayView.setMap(null)
+        }
         this.state.drawing.setMap(null)
         this.setState({
             zone: null,

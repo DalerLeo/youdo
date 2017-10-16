@@ -78,7 +78,7 @@ const enhance = compose(
         const isSuperUser = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
 
         const date = _.get(state, ['form', 'TransactionCreateForm', 'values', 'date'])
-        const cashbox = _.get(state, ['form', 'TransactionCreateForm', 'values', 'cashbox', 'value'])
+        const cashbox = _.get(state, ['form', 'TransactionCreateForm', 'values', 'cashbox', 'value', 'id'])
         const convertAmount = _.get(state, ['pendingPayments', 'convert', 'data', 'amount'])
 
         const filter = filterHelper(list, pathname, query)
@@ -674,6 +674,7 @@ const TransactionList = enhance((props) => {
         handleCloseDialog: props.handleCloseCreateExpenseDialog,
         handleSubmitDialog: props.handleSubmitCreateExpenseDialog
     }
+
     const createIncomeDialog = {
         loading: createLoading,
         open: openCreateIncomeDialog,
@@ -743,7 +744,9 @@ const TransactionList = enhance((props) => {
             const client = _.get(detail, ['clientTransaction', 'client', 'id'])
             const showIncomeClients = _.toInteger(client || ZERO) > ZERO
             if (!detailId || openCreateIncomeDialog) {
-                return {}
+                return {
+                    date: moment()
+                }
             }
 
             return {
