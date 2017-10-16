@@ -7,23 +7,27 @@ import moment from 'moment'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
 import paymentTypeFormat from '../../helpers/paymentTypeFormat'
-import CircularProgress from 'material-ui/CircularProgress'
+import LinearProgress from '../LinearProgress'
 import Paper from 'material-ui/Paper'
 import Info from 'material-ui/svg-icons/action/info-outline'
 import Tooltip from '../ToolTip'
 
 const ONE = 1
 const TWO = 2
+const TEN = 10
 const enhance = compose(
     injectSheet({
         loader: {
-            minWidth: '300px',
-            height: '300px',
-            marginRight: '30px',
+            width: '100%',
+            position: 'relative',
+            margin: '15px 0',
             alignItems: 'center',
             zIndex: '999',
             justifyContent: 'center',
-            display: 'flex'
+            display: 'flex',
+            '& > div': {
+                background: 'transparent'
+            }
         },
         padding: {
             padding: '20px 30px'
@@ -143,7 +147,7 @@ const ActivityOrder = enhance((props) => {
         summaryLoading,
         handleLoadMoreItems,
         defaultPage,
-        updateDefaultPage,
+        updateDefaultPage
     } = props
 
     const type = _.meanBy(_.get(orderlistData, 'data'), (o) => {
@@ -176,13 +180,7 @@ const ActivityOrder = enhance((props) => {
     })
 
     if (_.isEmpty(orderList)) {
-        return false
-    } else if (orderlistLoading || summaryLoading) {
-        return (
-            <div className={classes.loader}>
-                <CircularProgress size={40} thickness={4}/>
-            </div>
-        )
+        return null
     }
 
     return (
@@ -195,10 +193,14 @@ const ActivityOrder = enhance((props) => {
             </div>
             <div className={classes.blockItems}>
                 {orderList}
-                <a onClick={() => {
+                {(orderlistLoading || summaryLoading)
+                ? <div className={classes.loader}>
+                    <LinearProgress/>
+                </div>
+                : (countSummary > TEN) && (orderlistData.data.length < countSummary) && <a onClick={() => {
                     handleLoadMoreItems(type, defaultPage)
                     updateDefaultPage(defaultPage + ONE)
-                }}>Загрузить еще...</a>
+                }}>Загрузить еще...</a>}
             </div>
         </div>
     )

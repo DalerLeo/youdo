@@ -18,19 +18,3 @@ export const listFilterSerializer = (data, type, page, thumbnailType) => {
     }
 }
 
-export const loadMoreSerializer = (data, type, page) => {
-    const TEN = 10
-    const date = _.get(data, 'date') || moment().format('YYYY-MM')
-    let day = _.get(data, 'day') || moment().format('D')
-    if (_.toInteger(day) < TEN) {
-        day = '0' + day
-    }
-    const fullDate = date + '-' + day
-
-    return {
-        'date': fullDate,
-        'type': type,
-        page
-    }
-}
-

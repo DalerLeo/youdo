@@ -125,8 +125,8 @@ const PlanAddCalendar = enhance((props) => {
         return (date) ? moment(date).locale('ru').format('MMMM') : defaultText
     }
     const selectedDay = _.get(calendar, 'selectedDay')
-    const selectedMonth = moment(_.get(calendar, 'selectedDate'))
-    const selectedYear = moment(_.get(calendar, 'selectedDate')).format('YYYY')
+    const selectedMonth = moment(_.get(calendar, 'selectedCreateDate'))
+    const selectedYear = moment(_.get(calendar, 'selectedCreateDate')).format('YYYY')
 
     // Calendar
 

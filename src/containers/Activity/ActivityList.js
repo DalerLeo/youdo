@@ -92,34 +92,69 @@ const enhance = compose(
         const prevDay = _.get(props, ['location', 'query', DAY])
         const nextDay = _.get(nextProps, ['location', 'query', DAY])
         return (props.curDate !== nextProps.curDate) || (prevDay !== nextDay)
-    }, ({dispatch, filter,
-          updateOrderData, updateVisitData, updateReportData, updateReturnData, updatePaymentData, updateDeliveryData,
-          orderList, visitList, reportList, returnList, paymentList, deliveryList}) => {
+    }, ({dispatch, filter, updateOrderData, updateVisitData, updateReportData, updateReturnData, updatePaymentData, updateDeliveryData}) => {
+        updateOrderData([])
+        updateVisitData([])
+        updateReportData([])
+        updateReturnData([])
+        updatePaymentData([])
+        updateDeliveryData([])
         dispatch(activityOrderListFetchAction(filter))
-            .then(() => {
-                updateOrderData(orderList)
-            })
         dispatch(activityVisitListFetchAction(filter))
-            .then(() => {
-                updateVisitData(visitList)
-            })
         dispatch(activityReportListFetchAction(filter))
-            .then(() => {
-                updateReportData(reportList)
-            })
         dispatch(activityReturnListFetchAction(filter))
-            .then(() => {
-                updateReturnData(returnList)
-            })
         dispatch(activityPaymentListFetchAction(filter))
-            .then(() => {
-                updatePaymentData(paymentList)
-            })
         dispatch(activityDeliveryListFetchAction(filter))
-            .then(() => {
-                updateDeliveryData(deliveryList)
-            })
         dispatch(activitySummaryListFetchAction(filter))
+    }),
+
+    // ORDER LIST
+    withPropsOnChange((props, nextProps) => {
+        const prevLoading = _.get(props, 'orderListLoading')
+        const nextLoading = _.get(nextProps, 'orderListLoading')
+        return prevLoading !== nextLoading && nextLoading === false
+    }, ({orderData, orderList, updateOrderData}) => {
+        updateOrderData(_.union(orderData, orderList))
+    }),
+    // VISIT LIST
+    withPropsOnChange((props, nextProps) => {
+        const prevLoading = _.get(props, 'visitListLoading')
+        const nextLoading = _.get(nextProps, 'visitListLoading')
+        return prevLoading !== nextLoading && nextLoading === false
+    }, ({visitData, visitList, updateVisitData}) => {
+        updateVisitData(_.union(visitData, visitList))
+    }),
+    // REPORT LIST
+    withPropsOnChange((props, nextProps) => {
+        const prevLoading = _.get(props, 'reportListLoading')
+        const nextLoading = _.get(nextProps, 'reportListLoading')
+        return prevLoading !== nextLoading && nextLoading === false
+    }, ({reportData, reportList, updateReportData}) => {
+        updateReportData(_.union(reportData, reportList))
+    }),
+    // RETURN LIST
+    withPropsOnChange((props, nextProps) => {
+        const prevLoading = _.get(props, 'returnListLoading')
+        const nextLoading = _.get(nextProps, 'returnListLoading')
+        return prevLoading !== nextLoading && nextLoading === false
+    }, ({returnData, returnList, updateReturnData}) => {
+        updateReturnData(_.union(returnData, returnList))
+    }),
+    // PAYMENT LIST
+    withPropsOnChange((props, nextProps) => {
+        const prevLoading = _.get(props, 'paymentListLoading')
+        const nextLoading = _.get(nextProps, 'paymentListLoading')
+        return prevLoading !== nextLoading && nextLoading === false
+    }, ({paymentData, paymentList, updatePaymentData}) => {
+        updatePaymentData(_.union(paymentData, paymentList))
+    }),
+    // DELIVERY LIST
+    withPropsOnChange((props, nextProps) => {
+        const prevLoading = _.get(props, 'deliveryListLoading')
+        const nextLoading = _.get(nextProps, 'deliveryListLoading')
+        return prevLoading !== nextLoading && nextLoading === false
+    }, ({deliveryData, deliveryList, updateDeliveryData}) => {
+        updateDeliveryData(_.union(deliveryData, deliveryList))
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -187,19 +222,21 @@ const enhance = compose(
 
         handleLoadMoreItems: props => (type, page) => {
             const {dispatch, filter} = props
-            return (type === VISIT)
-                ? dispatch(activityVisitListFetchAction(filter, page))
-                : (type === ORDER)
-                    ? dispatch(activityOrderListFetchAction(filter, page))
-                    : (type === REPORT)
-                        ? dispatch(activityReportListFetchAction(filter, page))
-                        : (type === ORDER_RETURN)
-                            ? dispatch(activityReturnListFetchAction(filter, page))
-                            : (type === PAYMENT)
-                                ? dispatch(activityPaymentListFetchAction(filter, page))
-                                : (type === DELIVERY)
-                                    ? dispatch(activityDeliveryListFetchAction(filter, page))
-                                    : null
+            switch (type) {
+                case VISIT: dispatch(activityVisitListFetchAction(filter, page))
+                    break
+                case ORDER: dispatch(activityOrderListFetchAction(filter, page))
+                    break
+                case REPORT: dispatch(activityReportListFetchAction(filter, page))
+                    break
+                case ORDER_RETURN: dispatch(activityReturnListFetchAction(filter, page))
+                    break
+                case PAYMENT: dispatch(activityPaymentListFetchAction(filter, page))
+                    break
+                case DELIVERY: dispatch(activityDeliveryListFetchAction(filter, page))
+                    break
+                default: dispatch(null)
+            }
         }
     })
 )
@@ -207,21 +244,15 @@ const enhance = compose(
 const ActivityList = enhance((props) => {
     const {
         filter,
-        orderList,
         orderListLoading,
         orderItem,
         orderItemLoading,
-        visitList,
         visitListLoading,
-        reportList,
         reportListLoading,
         reportImage,
         reportImageLoading,
-        returnList,
         returnListLoading,
-        paymentList,
         paymentListLoading,
-        deliveryList,
         deliveryListLoading,
         summaryList,
         summaryListLoading,
@@ -260,37 +291,37 @@ const ActivityList = enhance((props) => {
     }
 
     const orderlistData = {
-        data: orderList,
+        data: _.get(props, 'orderData'),
         handleLoadMoreItems: props.handleLoadMoreItems,
         orderListLoading
     }
 
     const visitlistData = {
-        data: visitList,
+        data: _.get(props, 'visitData'),
         handleLoadMoreItems: props.handleLoadMoreItems,
         visitListLoading
     }
 
     const reportlistData = {
-        data: reportList,
+        data: _.get(props, 'reportData'),
         handleLoadMoreItems: props.handleLoadMoreItems,
         reportListLoading
     }
 
     const returnlistData = {
-        data: returnList,
+        data: _.get(props, 'returnData'),
         handleLoadMoreItems: props.handleLoadMoreItems,
         returnListLoading
     }
 
     const paymentlistData = {
-        data: paymentList,
+        data: _.get(props, 'paymentData'),
         handleLoadMoreItems: props.handleLoadMoreItems,
         paymentListLoading
     }
 
     const deliverylistData = {
-        data: deliveryList,
+        data: _.get(props, 'deliveryData'),
         handleLoadMoreItems: props.handleLoadMoreItems,
         deliveryListLoading
     }
@@ -301,7 +332,6 @@ const ActivityList = enhance((props) => {
         handlePrevMonth: props.handlePrevMonth,
         handleNextMonth: props.handleNextMonth
     }
-
     return (
         <Layout {...layout}>
             <ActivityWrapper

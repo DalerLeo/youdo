@@ -2,21 +2,27 @@ import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
-import {compose} from 'recompose'
+import {compose, withState} from 'recompose'
 import moment from 'moment'
-import CircularProgress from 'material-ui/CircularProgress'
+import LinearProgress from '../LinearProgress'
 import Paper from 'material-ui/Paper'
 
+const ONE = 1
+const TWO = 2
+const TEN = 10
 const enhance = compose(
     injectSheet({
         loader: {
-            minWidth: '300px',
-            height: '300px',
-            marginRight: '30px',
+            width: '100%',
+            position: 'relative',
+            margin: '15px 0',
             alignItems: 'center',
             zIndex: '999',
             justifyContent: 'center',
-            display: 'flex'
+            display: 'flex',
+            '& > div': {
+                background: 'transparent'
+            }
         },
         padding: {
             padding: '20px 30px'
@@ -31,7 +37,15 @@ const enhance = compose(
         blockItems: {
             overflowY: 'auto',
             height: 'calc(100% - 80px)',
-            paddingRight: '10px'
+            paddingRight: '10px',
+            '& a': {
+                fontWeight: '600',
+                display: 'block',
+                textAlign: 'center',
+                '&:hover': {
+                    textDecoration: 'underline'
+                }
+            }
         },
         tube: {
             padding: '20px 15px',
@@ -99,7 +113,8 @@ const enhance = compose(
             marginTop: '10px',
             lineHeight: '15px'
         }
-    })
+    }),
+    withState('defaultPage', 'updateDefaultPage', TWO)
 )
 
 const dateFormat = (date, defaultText) => {
@@ -112,9 +127,15 @@ const ActivityReport = enhance((props) => {
         reportImageData,
         classes,
         summary,
-        summaryLoading
+        summaryLoading,
+        handleLoadMoreItems,
+        defaultPage,
+        updateDefaultPage
     } = props
 
+    const type = _.meanBy(_.get(reportlistData, 'data'), (o) => {
+        return _.get(o, 'type')
+    })
     const reportlistLoading = _.get(reportlistData, 'reportListLoading')
     const summaryCount = _.get(summary, 'count')
     const reportList = _.map(_.get(reportlistData, 'data'), (item) => {
@@ -149,12 +170,6 @@ const ActivityReport = enhance((props) => {
 
     if (_.isEmpty(reportList)) {
         return false
-    } else if (reportlistLoading || summaryLoading) {
-        return (
-            <div className={classes.loader}>
-                <CircularProgress size={40} thickness={4}/>
-            </div>
-        )
     }
 
     return (
@@ -162,6 +177,14 @@ const ActivityReport = enhance((props) => {
             <div className={classes.blockTitle}>Отчеты ({summaryCount})</div>
             <div className={classes.blockItems}>
                 {reportList}
+                {(reportlistLoading || summaryLoading)
+                    ? <div className={classes.loader}>
+                        <LinearProgress/>
+                    </div>
+                    : (summaryCount > TEN) && (reportlistData.data.length < summaryCount) && <a onClick={() => {
+                        handleLoadMoreItems(type, defaultPage)
+                        updateDefaultPage(defaultPage + ONE)
+                    }}>Загрузить еще...</a>}
             </div>
         </div>
     )

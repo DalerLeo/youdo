@@ -2,21 +2,27 @@ import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
-import {compose} from 'recompose'
+import {compose, withState} from 'recompose'
 import moment from 'moment'
-import CircularProgress from 'material-ui/CircularProgress'
+import LinearProgress from '../LinearProgress'
 import Paper from 'material-ui/Paper'
 
+const ONE = 1
+const TWO = 2
+const TEN = 10
 const enhance = compose(
     injectSheet({
         loader: {
-            minWidth: '300px',
-            height: '300px',
-            marginRight: '30px',
+            width: '100%',
+            position: 'relative',
+            margin: '15px 0',
             alignItems: 'center',
             zIndex: '999',
             justifyContent: 'center',
-            display: 'flex'
+            display: 'flex',
+            '& > div': {
+                background: 'transparent'
+            }
         },
         padding: {
             padding: '20px 30px'
@@ -31,7 +37,15 @@ const enhance = compose(
         blockItems: {
             overflowY: 'auto',
             height: 'calc(100% - 80px)',
-            paddingRight: '10px'
+            paddingRight: '10px',
+            '& a': {
+                fontWeight: '600',
+                display: 'block',
+                textAlign: 'center',
+                '&:hover': {
+                    textDecoration: 'underline'
+                }
+            }
         },
         tube: {
             padding: '20px 15px',
@@ -99,7 +113,8 @@ const enhance = compose(
             marginTop: '10px',
             lineHeight: '15px'
         }
-    })
+    }),
+    withState('defaultPage', 'updateDefaultPage', TWO)
 )
 
 const dateFormat = (date, defaultText) => {
@@ -111,9 +126,15 @@ const ActivityVisit = enhance((props) => {
         visitlistData,
         classes,
         summary,
-        summaryLoading
+        summaryLoading,
+        handleLoadMoreItems,
+        defaultPage,
+        updateDefaultPage
     } = props
 
+    const type = _.meanBy(_.get(visitlistData, 'data'), (o) => {
+        return _.get(o, 'type')
+    })
     const visitlistLoading = _.get(visitlistData, 'visitListLoading')
     const countSummary = _.get(summary, 'count')
     const visitList = _.map(_.get(visitlistData, 'data'), (item) => {
@@ -149,6 +170,14 @@ const ActivityVisit = enhance((props) => {
             <div className={classes.blockTitle}>Визиты ({countSummary})</div>
             <div className={classes.blockItems}>
                 {visitList}
+                {(visitlistLoading || summaryLoading)
+                    ? <div className={classes.loader}>
+                        <LinearProgress/>
+                    </div>
+                    : (countSummary > TEN) && (visitlistData.data.length < countSummary) && <a onClick={() => {
+                        handleLoadMoreItems(type, defaultPage)
+                        updateDefaultPage(defaultPage + ONE)
+                    }}>Загрузить еще...</a>}
             </div>
         </div>
     )
