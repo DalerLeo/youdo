@@ -33,6 +33,7 @@ import {
     planZonesItemFetchAction,
     marketsLocationAction,
     planUpdateDialogAction,
+    planCombinationAction,
     agentPlansAction
 } from '../../actions/plan'
 import {openSnackbarAction} from '../../actions/snackbar'
@@ -70,6 +71,7 @@ const enhance = compose(
         const selectedDay = _.get(query, 'day') || moment().format('DD')
         const marketsLocation = _.get(state, ['tracking', 'markets', 'data'])
         const planDetails = _.get(state, ['plan', 'update', 'data'])
+        const combinationDetails = _.get(state, ['plan', 'combination', 'data'])
         const defaultPriority = _.get(state, ['form', 'PlanCreateForm', 'values', 'priority', 'value'])
         const filter = filterHelper(usersList, pathname, query)
         const selectedWeekDay = moment(selectedCreateDate + '-' + selectedDay).format('e')
@@ -101,6 +103,7 @@ const enhance = compose(
             planLoading,
             marketsLocation,
             planDetails,
+            combinationDetails,
             createPlanLoading,
             updatePlanLoading,
             defaultPriority,
@@ -111,6 +114,20 @@ const enhance = compose(
     }),
 
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
+
+    withPropsOnChange((props, nextProps) => {
+        const prevMarket = _.toInteger(_.get(props, ['query', MARKET]))
+        const nextMarket = _.toInteger(_.get(nextProps, ['query', MARKET]))
+        return prevMarket !== nextMarket && nextMarket > ZERO
+    }, ({dispatch, marketsLocation, query}) => {
+        const market = _.toInteger(_.get(query, MARKET))
+        const agent = _.toInteger(_.get(query, AGENT))
+        const marketData = _.find(marketsLocation, {'id': market})
+        const hasPlan = _.get(marketData, 'hasPlan')
+        if (hasPlan) {
+            dispatch(planCombinationAction(agent, market))
+        }
+    }),
 
     withPropsOnChange((props, nextProps) => {
         const prevTab = _.get(props, ['query', 'group'])
@@ -256,10 +273,12 @@ const enhance = compose(
         },
 
         handleSubmitUpdateAgentPlan: props => () => {
-            const {dispatch, location: {pathname, query}, filter, createForm, selectedDate, selectedDay} = props
-            const zone = _.get(query, ZONE)
-            const date = selectedDate + '-' + selectedDay
-            const planId = _.toInteger(_.get(query, UPDATE_PLAN))
+            const {dispatch, location: {pathname, query}, filter, createForm, selectedCreateDate, selectedDay, combinationDetails} = props
+            const zone = _.toInteger(_.get(query, ZONE))
+            const openUpdatePlan = _.get(query, UPDATE_PLAN)
+            const date = selectedCreateDate + '-' + selectedDay
+            const comboPlanId = _.get(combinationDetails, 'id')
+            const planId = openUpdatePlan === 'combo' ? comboPlanId : _.toInteger(_.get(query, UPDATE_PLAN))
             return dispatch(planUpdateAction(createForm, filter.getParams(), planId))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'План успешно изменен'}))
@@ -269,15 +288,16 @@ const enhance = compose(
                     hashHistory.push({pathname, query: filter.getParams({[UPDATE_PLAN]: false, [MARKET]: ZERO})})
                     dispatch(planZonesListFetchAction())
                     dispatch(planZonesItemFetchAction(zone, date))
-                    dispatch(planAgentsListFetchAction(filter))
                 })
         },
 
         handleDeleteAgentPlan: props => () => {
-            const {dispatch, location: {pathname, query}, filter, selectedCreateDate, selectedDay, setOpenConfirmDialog} = props
-            const zone = _.get(query, ZONE)
+            const {dispatch, location: {pathname, query}, filter, selectedCreateDate, selectedDay, setOpenConfirmDialog, combinationDetails} = props
+            const zone = _.toInteger(_.get(query, ZONE))
+            const openUpdatePlan = _.get(query, UPDATE_PLAN)
             const date = selectedCreateDate + '-' + selectedDay
-            const planId = _.toInteger(_.get(query, UPDATE_PLAN))
+            const comboPlanId = _.get(combinationDetails, 'id')
+            const planId = openUpdatePlan === 'combo' ? comboPlanId : _.toInteger(_.get(query, UPDATE_PLAN))
             return dispatch(planDeleteAction(planId))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'План успешно удален'}))
@@ -285,9 +305,9 @@ const enhance = compose(
                 .then(() => {
                     setOpenConfirmDialog(false)
                     hashHistory.push({pathname, query: filter.getParams({[UPDATE_PLAN]: false, [MARKET]: ZERO})})
+                    dispatch(marketsLocationAction(zone))
                     dispatch(planZonesListFetchAction())
                     dispatch(planZonesItemFetchAction(zone, date))
-                    dispatch(planAgentsListFetchAction(filter))
                 })
         },
 
@@ -395,6 +415,7 @@ const PlanList = enhance((props) => {
         selectedWeekDay,
         marketsLocation,
         planDetails,
+        combinationDetails,
         createPlanLoading,
         updatePlanLoading,
         openConfirmDialog,
@@ -405,7 +426,7 @@ const PlanList = enhance((props) => {
 
     const openAddPlan = toBoolean(_.get(location, ['query', ADD_PLAN]))
     const openPlanSales = toBoolean(_.get(location, ['query', OPEN_PLAN_SALES]))
-    const openUpdatePlan = _.toInteger(_.get(location, ['query', UPDATE_PLAN])) > ZERO
+    const openUpdatePlan = _.get(location, ['query', UPDATE_PLAN]) === 'combo' ? 'combo' : _.toInteger(_.get(location, ['query', UPDATE_PLAN])) > ZERO
     const groupId = _.toInteger(_.get(location, ['query', USER_GROUP]) || ONE)
     const openDetail = !_.isEmpty(_.get(params, 'agentId'))
     const detailId = _.toInteger(_.get(params, 'agentId'))
@@ -447,6 +468,14 @@ const PlanList = enhance((props) => {
                     active: true
                 }
             })
+            const planTypeCombo = _.get(combinationDetails, ['recurrences', '0', 'type'])
+            const priorityCombo = _.get(combinationDetails, 'priority')
+            const weekdayCombo = _.map(_.get(combinationDetails, 'recurrences'), (item) => {
+                return {
+                    id: _.toString(_.get(item, 'weekDay')) || _.toString(_.get(item, 'monthDay')),
+                    active: true
+                }
+            })
             if (!openUpdatePlan) {
                 return {
                     planType: 'week',
@@ -458,7 +487,15 @@ const PlanList = enhance((props) => {
                     ]
                 }
             }
-            return {
+            return (openUpdatePlan === 'combo')
+            ? {
+                priority: {
+                    value: priorityCombo
+                },
+                planType: planTypeCombo,
+                weekday: weekdayCombo
+            }
+            : {
                 priority: {
                     value: priority
                 },
