@@ -389,7 +389,7 @@ const ShopList = enhance((props) => {
     const openAddPhotoDialog = toBoolean(_.get(location, ['query', ADD_PHOTO_DIALOG_OPEN]))
     const openSlideShowDialog = _.toInteger(_.get(location, ['query', SHOP_SLIDESHOW_DIALOG_OPEN]) || MINUS_ONE) > MINUS_ONE
     const client = _.toInteger(filter.getParam(SHOP_FILTER_KEY.CLIENT))
-    const marketType = filter.getParam(SHOP_FILTER_KEY.MARKET_TYPE)
+    const marketType = _.toInteger(filter.getParam(SHOP_FILTER_KEY.MARKET_TYPE))
     const detailId = _.toInteger(_.get(params, 'shopId'))
 
     const createDialog = {
