@@ -40,6 +40,7 @@ const enhance = compose(
         componentDidMount () {
             const show = '0'
             const hide = '-50px'
+            const addToItemsHeight = 65
 
             const menu = ReactDOM.findDOMNode(this.refs.menuWrapper)
             const items = ReactDOM.findDOMNode(this.refs.items)
@@ -47,6 +48,10 @@ const enhance = compose(
             const downBlur = ReactDOM.findDOMNode(this.refs.down_blur)
             const upBlur = ReactDOM.findDOMNode(this.refs.up_blur)
             const buttonHeight = logout.clientHeight
+            const itemChildsHeight = _.sumBy(items.childNodes, (o) => {
+                return o.clientHeight
+            })
+            items.style.minHeight = itemChildsHeight + addToItemsHeight + 'px'
             let sidebarHeight = items.clientHeight
             let defaultWindowHeight = window.innerHeight
 
@@ -288,7 +293,6 @@ export default injectSheet({
     items: {
         position: 'relative',
         width: '100%',
-        minHeight: '800px',
         height: '100%',
         display: 'flex',
         flexDirection: 'column'
