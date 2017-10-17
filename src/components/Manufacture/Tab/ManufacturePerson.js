@@ -67,8 +67,7 @@ const enhance = compose(
                 width: '33%',
                 margin: '1px'
             },
-            height: '390px',
-            overflowY: 'scroll'
+            height: '390px'
         },
         cursor: {
             cursor: 'pointer'

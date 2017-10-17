@@ -183,8 +183,8 @@ const TransactionsList = enhance((props) => {
     const listHeader = [
         {
             sorting: true,
-            name: '№',
-            title: 'Id',
+            name: 'id',
+            title: '№',
             width: '10%'
         },
         {

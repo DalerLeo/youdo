@@ -55,11 +55,9 @@ const enhance = compose(
             }
         },
         popUp: {
-            overflowY: 'hidden !important',
             fontSize: '13px !important',
             position: 'relative',
             padding: '0 !important',
-            overflowX: 'hidden',
             height: '100%',
             marginBottom: '64px'
         },
@@ -84,7 +82,6 @@ const enhance = compose(
             display: 'flex',
             maxHeight: '50vh',
             minHeight: '140px',
-            overflow: 'auto',
             padding: '0 30px',
             color: '#333'
         },
