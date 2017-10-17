@@ -33,7 +33,7 @@ import {
     shopListFetchAction,
     marketsLocationFetchAction
 } from '../../actions/zones'
-
+import {openErrorAction} from '../../actions/error'
 import {shopItemFetchAction} from '../../actions/shop'
 import {openSnackbarAction} from '../../actions/snackbar'
 const ZERO = 0
@@ -231,6 +231,15 @@ const enhance = compose(
                     hashHistory.push({pathname, query: filter.getParams({[ADD_ZONE]: false, [TOGGLE_INFO]: true, [ZONE_ID]: null})})
                     dispatch(zoneListFetchAction(filter))
                     dispatch(zoneStatisticsFetchAction(filter))
+                }).catch((error) => {
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p key={index} style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
+                    })
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                            {errorWhole}
+                        </div>
+                    }))
                 })
         },
 
@@ -259,6 +268,15 @@ const enhance = compose(
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[UPDATE_ZONE]: false, [TOGGLE_INFO]: true, [ZONE_ID]: null})})
+                }).catch((error) => {
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p key={index} style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
+                    })
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                            {errorWhole}
+                        </div>
+                    }))
                 })
         },
 
@@ -340,7 +358,6 @@ const Zones = enhance((props) => {
         handleCloseAddZone: props.handleCloseAddZone,
         handleSubmitAddZone: props.handleSubmitAddZone
     }
-
     const updateZone = {
         initialValues: (() => {
             if (!detail || openAddZone) {

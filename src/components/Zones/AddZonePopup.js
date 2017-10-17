@@ -115,7 +115,8 @@ const AddZonePopup = enhance((props) => {
         draw,
         edit,
         data,
-        isDrawing
+        isDrawing,
+        update
     } = props
     const submitZone = handleSubmit(() => props.onSubmit(data()).catch(validate))
     return (
@@ -147,13 +148,13 @@ const AddZonePopup = enhance((props) => {
                             </IconButton>
                         </Tooltip>
 
-                        <Tooltip text="Очистить" position="bottom">
+                        {!update && <Tooltip text="Очистить" position="bottom">
                             <IconButton>
                                 <DeleteIcon color="#666"
                                 onTouchTap={() => { handleClearDrawing() }}
                                 />
                             </IconButton>
-                        </Tooltip>
+                        </Tooltip>}
                     </div>
                     <FlatButton
                         label="Сохранить"

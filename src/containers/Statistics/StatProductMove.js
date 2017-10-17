@@ -54,13 +54,7 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const except = {
-            page: null,
-            pageSize: null,
-            search: null,
-            ordering: null
-        }
-        return props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
+        return props.sumList && !_.isEqual(props.sumList, nextProps.sumList)
     }, ({dispatch, filter}) => {
         dispatch(statProductMoveSumFetchAction(filter))
     }),
@@ -88,7 +82,9 @@ const enhance = compose(
             const typeParent = _.get(filterForm, ['values', 'typeParent', 'value']) || null
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
+            const search = _.get(filterForm, ['values', 'search']) || null
             filter.filterBy({
+                [STAT_PRODUCT_MOVE_FILTER_KEY.SEARCH]: search,
                 [STAT_PRODUCT_MOVE_FILTER_KEY.TYPE]: type,
                 [STAT_PRODUCT_MOVE_FILTER_KEY.TYPE_PARENT]: typeParent,
                 [STAT_PRODUCT_MOVE_FILTER_KEY.STOCK]: stock,
@@ -129,6 +125,7 @@ const StatProductMoveList = enhance((props) => {
     const stock = !_.isNull(_.get(location, ['query', 'stock'])) && _.toInteger(_.get(location, ['query', 'stock']))
     const type = !_.isNull(_.get(location, ['query', 'type'])) && _.toInteger(_.get(location, ['query', 'type']))
     const typeParent = !_.isNull(_.get(location, ['query', 'typeParent'])) && _.toInteger(_.get(location, ['query', 'typeParent']))
+    const search = !_.isNull(_.get(location, ['query', 'search'])) ? _.get(location, ['query', 'search']) : null
 
     const statProductMoveDialog = {
         openStatProductMoveDialog,
@@ -165,6 +162,7 @@ const StatProductMoveList = enhance((props) => {
         handleGetDocument: props.handleGetDocument
     }
     const initialValues = {
+        search: search,
         type: {
             value: type
         },
