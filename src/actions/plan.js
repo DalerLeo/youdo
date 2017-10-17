@@ -195,6 +195,22 @@ export const marketsLocationAction = (zone) => {
     }
 }
 
+export const planCombinationAction = (agent, market) => {
+    const payload = axios()
+        .get(API.PLAN_COMBINATION, {params: {agent: agent, market: market}})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.PLAN_COMBINATION,
+        payload
+    }
+}
+
 export const agentPlansAction = (agent, date) => {
     const payload = axios()
         .get(sprintf(API.PLAN_AGENTS_ITEM, agent), {params: {date: date}})
