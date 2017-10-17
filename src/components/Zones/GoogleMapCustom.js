@@ -71,6 +71,8 @@ export default class GoogleCustomMap extends React.Component {
     handleClearDrawing () {
         if (this.state.drawing) {
             this.state.drawing.map && this.state.drawing.setMap(null)
+        }
+        if (this.state.currentOverlay) {
             // Clear newly drawn overlay from map
             this.state.currentOverlay.map && this.state.currentOverlay.setMap(null)
         }
@@ -324,8 +326,13 @@ export default class GoogleCustomMap extends React.Component {
         })
     }
 
-    setEditableFalse () {
-        _.map(this.state.zone, (item) => {
+    editZone (nextProps, nextState) {
+        // Find not selected zones
+        const otherZones = _.filter(nextState.zone, (item) => {
+            return nextProps.zoneId !== item.id
+        })
+        // Disable editable of not selected zones
+        _.map(otherZones, (item) => {
             _.get(item, 'zone').setOptions({
                 fillColor: '#199ee0',
                 fillOpacity: 0.2,
@@ -333,31 +340,31 @@ export default class GoogleCustomMap extends React.Component {
                 editable: false
             })
         })
-    }
 
-    editZone (nextProps, nextState) {
         // Find selected zone with ID, then make it editable
-        const selectedZone = _.get(_.filter(nextState.zone, (item) => {
-            return nextProps.zoneId === item.id
-        }), ['0', 'zone'])
-        selectedZone.setOptions({
-            editable: true,
-            fillColor: '#4de03a',
-            fillOpacity: 0.3,
-            strokeWeight: 2,
-            strokeColor: '#236406'
-        })
-        const coordinates = selectedZone.getPath().getArray()
-        selectedZone.getPaths().forEach(() => {
-            // Save changed coordinates in this for future calls
-            this.getChangedPoints = {
-                points: _.map(coordinates, (p) => {
-                    const polyLat = p.lat()
-                    const polyLng = p.lng()
-                    return {lat: polyLat, lng: polyLng}
-                })
-            }
-        })
+        if (nextProps.zoneId) {
+            const selectedZone = _.get(_.filter(nextState.zone, (item) => {
+                return nextProps.zoneId === item.id
+            }), ['0', 'zone'])
+            selectedZone.setOptions({
+                editable: true,
+                fillColor: '#4de03a',
+                fillOpacity: 0.3,
+                strokeWeight: 2,
+                strokeColor: '#236406'
+            })
+            const coordinates = selectedZone.getPath().getArray()
+            selectedZone.getPaths().forEach(() => {
+                // Save changed coordinates in this for future calls
+                this.getChangedPoints = {
+                    points: _.map(coordinates, (p) => {
+                        const polyLat = p.lat()
+                        const polyLng = p.lng()
+                        return {lat: polyLat, lng: polyLng}
+                    })
+                }
+            })
+        }
     }
 
     getUpdatedZone () {
@@ -393,16 +400,21 @@ export default class GoogleCustomMap extends React.Component {
 
     componentWillUpdate (nextProps, nextState) {
         if (nextState.drawing) {
-            if (_.get(nextProps, 'zoneId')) {
+            if (!_.isEmpty(nextState.zone) &&
+                _.get(this, ['props', 'zoneId']) !== _.get(nextProps, 'zoneId')) {
                 this.editZone(nextProps, nextState)
-            } else
-            if (_.get(this, ['props', 'zoneId']) !== _.get(nextProps, 'zoneId')) {
-                this.setEditableFalse()
             }
-            this.createCustomZone(nextState)
+            _.get(nextProps, ['addZone', 'openAddZone']) && this.createCustomZone(nextState)
             const {marketsData: {data}, listData} = this.props
-            if (nextProps.marketsData.data !== data || nextProps.listData.data.length !== listData.data.length) {
+            if (nextProps.marketsData.data !== data ||
+                (listData.data && nextProps.listData.data.length !== listData.data.length)) {
                 setTimeout(() => this.getMarkers(nextProps.marketsData.data), MARKER_TIME)
+            }
+
+            if (_.get(nextState, 'currentOverlay') &&
+                !_.get(nextProps, ['addZone', 'openAddZone']) &&
+                _.get(nextProps, ['addZone', 'openAddZone']) !== _.get(this, ['props', 'addZone', 'openAddZone'])) {
+                this.handleClearDrawing()
             }
         }
     }
@@ -468,19 +480,22 @@ export default class GoogleCustomMap extends React.Component {
                     }}
                     isDrawing={this.state.isDrawing}
                 />}
+
                 {isOpenUpdateZone && <AddZonePopup
+                    update={true}
                     filter={filter}
                     handleClearDrawing={this.handleClearDrawing.bind(this)}
                     onClose={updateZone.handleCloseUpdateZone}
                     draw={this.handleDrawing.bind(this)}
                     edit={this.handleEdit.bind(this)}
                     onSubmit={updateZone.handleSubmitUpdateZone}
-                    initialValues={updateZone.initialValues}
+                    initialValues={ {zoneName: _.get(this.getUpdatedZone(), 'title')} }
                     data={() => {
                         return this.getUpdatedZone()
                     }}
                     isDrawing={this.state.isDrawing}
                 />}
+
                 <ZoneDeleteDialog
                     open={deleteZone.openDeleteZone}
                     onClose={deleteZone.handleCloseDeleteZone}
