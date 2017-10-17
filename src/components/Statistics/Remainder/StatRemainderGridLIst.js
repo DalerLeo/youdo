@@ -50,11 +50,6 @@ const enhance = compose(
         wrapper: {
             padding: '20px 30px',
             height: 'calc(100% - 40px)',
-            '& > div:nth-child(2)': {
-                marginTop: '10px',
-                borderTop: '1px #efefef solid',
-                borderBottom: '1px #efefef solid'
-            },
             '& .row': {
                 margin: '0 !important'
             }
@@ -68,7 +63,13 @@ const enhance = compose(
                 '& > div': {
                     display: 'flex',
                     height: '50px',
-                    alignItems: 'center'
+                    alignItems: 'center',
+                    '&:first-child': {
+                        paddingLeft: '0'
+                    },
+                    '&:last-child': {
+                        paddingRight: '0'
+                    }
                 }
             },
             '& .dottedList': {
@@ -104,6 +105,30 @@ const enhance = compose(
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between'
+        },
+        summary: {
+            display: 'flex',
+            borderTop: 'solid 1px #efefef',
+            borderBottom: 'solid 1px #efefef',
+            marginTop: '10px',
+            padding: '14px 0',
+            color: '#666',
+            '& > div': {
+                marginRight: '60px',
+                '& > div': {
+                    fontSize: '20px',
+                    color: '#333',
+                    fontWeight: '600',
+                    '& span': {
+                        fontSize: '13px',
+                        fontWeight: '400'
+                    }
+                },
+                '& > span': {
+                    display: 'block'
+                }
+
+            }
         },
         form: {
             display: 'flex',
@@ -225,6 +250,12 @@ const StatRemainderGridList = enhance((props) => {
     } = props
 
     const listLoading = _.get(listData, 'listLoading')
+    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
+
+    const sumAll = 10000
+    const sumReserve = 5000
+    const sumAvailable = 1220
+    const sumDefect = 3650
 
     const headerStyle = {
         backgroundColor: '#fff',
@@ -261,7 +292,7 @@ const StatRemainderGridList = enhance((props) => {
         const product = _.get(item, 'title')
         const measurement = _.get(item, ['measurement', 'name'])
         const defects = numberFormat(_.get(item, 'defects'), measurement)
-        const price = numberFormat(_.get(item, 'price'), getConfig('PRIMARY_CURRENCY'))
+        const price = numberFormat(_.get(item, 'price'), primaryCurrency)
         const balance = numberFormat(Number(_.get(item, 'balance')) + Number(_.get(item, 'defects')), measurement)
         const reserved = numberFormat(Number(_.get(item, 'reserved')), measurement)
         const available = numberFormat(Number(_.get(item, 'balance')) - Number(_.get(item, 'reserved')), measurement)
@@ -342,6 +373,24 @@ const StatRemainderGridList = enhance((props) => {
                             withoutDate={true}
                             initialValues={initialValues}
                         />
+                        <div className={classes.summary}>
+                            <div>
+                                <span>Общая сумма</span>
+                                <div>{numberFormat(sumAll, primaryCurrency)} <span>(120 шт)</span></div>
+                            </div>
+                            <div>
+                                <span>Сумма забронированных</span>
+                                <div>{numberFormat(sumReserve, primaryCurrency)} <span>(60 шт)</span></div>
+                            </div>
+                            <div>
+                                <span>Сумма забракованных</span>
+                                <div>{numberFormat(sumDefect, primaryCurrency)} <span>(10 шт)</span></div>
+                            </div>
+                            <div>
+                                <span>Сумма доступных</span>
+                                <div>{numberFormat(sumAvailable, primaryCurrency)} <span>(50 шт)</span></div>
+                            </div>
+                        </div>
                         <div style={{display: 'flex', justifyContent: 'space-between'}}>
                             <form onSubmit={handleSubmit(onSubmit)} className={classes.searchForm}>
                                 <Field
