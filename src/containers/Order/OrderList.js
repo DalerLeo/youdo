@@ -77,6 +77,7 @@ const enhance = compose(
         const editProducts = _.get(state, ['order', 'updateProducts', 'data', 'results'])
         const filter = filterHelper(list, pathname, query)
         const userGroups = _.get(state, ['authConfirm', 'data', 'groups'])
+        const defaultUser = _.get(state, ['authConfirm', 'data', 'id'])
 
         return {
             list,
@@ -104,7 +105,8 @@ const enhance = compose(
             products,
             editProducts,
             userGroups,
-            discountCreateForm
+            discountCreateForm,
+            defaultUser
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -533,7 +535,8 @@ const OrderList = enhance((props) => {
         params,
         listPrint,
         listPrintLoading,
-        userGroups
+        userGroups,
+        defaultUser
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', ORDER_FILTER_OPEN]))
@@ -647,7 +650,11 @@ const OrderList = enhance((props) => {
     const updateDialog = {
         initialValues: (() => {
             if (!detail || openCreateDialog) {
-                return {}
+                return {
+                    user: {
+                        value: defaultUser
+                    }
+                }
             }
             const ONE = 1
             const HUND = 100
