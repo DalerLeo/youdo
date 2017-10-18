@@ -593,7 +593,7 @@ const ClientBalanceGridList = enhance((props) => {
                                     handleGetDocument={getDocument.handleGetDocument}
                                     handleSubmitFilterDialog={onSubmit}
                                     withoutDate={true}
-                                    initialValues={initialValues}
+                                    initialValues={filterDialog.initialValues}
                                 />
                             </div>
                             <div className={classes.summary}>

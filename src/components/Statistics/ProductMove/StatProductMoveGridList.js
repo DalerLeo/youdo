@@ -349,7 +349,8 @@ const StatProductMoveGridList = enhance((props) => {
         handleSubmitFilterDialog,
         getDocument,
         typeParent,
-        initialValues
+        initialValues,
+        handleSubmit
     } = props
 
     const summaryMeasurement = 'шт'
@@ -503,7 +504,7 @@ const StatProductMoveGridList = enhance((props) => {
                         </div>
                         <div className={classes.pagination}>
                             <div>Движение товаров на складе</div>
-                            <form onSubmit={handleSubmitFilterDialog}>
+                            <form onSubmit={handleSubmit(handleSubmitFilterDialog)}>
                                 <Field
                                     className={classes.inputFieldCustom}
                                     name="search"
