@@ -55,6 +55,7 @@ const TransactionUpdatePriceDialog = enhance((props) => {
     const {classes, open, onClose, handleSubmit, loading, client, chosenCurrency} = props
     const onSubmit = handleSubmit(() => props.onSubmit(_.get(client, 'id')))
     const primaryCurrency = _.toInteger(getConfig('PRIMARY_CURRENCY_ID'))
+    const divisionStatus = getConfig('DIVISION')
     return (
         <Dialog
             modal={true}
@@ -97,12 +98,12 @@ const TransactionUpdatePriceDialog = enhance((props) => {
                                     normalize={normalizeNumber}
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
-                                <Field
+                                {divisionStatus && <Field
                                     name="division"
                                     component={DivisionSearchField}
                                     label="Подразделение"
                                     className={classes.inputFieldCustom}
-                                    fullWidth={true}/>
+                                    fullWidth={true}/>}
                                 <Field
                                     name="currency"
                                     component={CurrencySearchField}

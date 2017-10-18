@@ -23,7 +23,7 @@ import {
 import OrderStatusSearchField from '../ReduxForm/Order/OrderStatusSearchField'
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
-
+import getConfig from '../../helpers/getConfig'
 export const ORDER_FILTER_OPEN = 'openFilterDialog'
 
 export const ORDER_FILTER_KEY = {
@@ -161,6 +161,7 @@ const enhance = compose(
 const OrderFilterForm = enhance((props) => {
     const {classes, filterDialog, getCount} = props
     const filterCounts = getCount()
+    const divisionStatus = getConfig('DIVISION')
 
     if (!filterDialog.openFilterDialog) {
         if (filterCounts) {
@@ -205,7 +206,7 @@ const OrderFilterForm = enhance((props) => {
                         <Field className={classes.inputFieldCustom} name="product" component={ProductSearchField} label="Товар"/>
                         <Field className={classes.inputFieldCustom} name="status" component={OrderStatusSearchField} label="Статус"/>
                         <Field className={classes.inputFieldCustom} name="shop" component={MarketSearchField} label="Магазин"/>
-                        <Field className={classes.inputFieldCustom} name="division" component={DivisionSearchField} label="Подразделение"/>
+                        {divisionStatus && <Field className={classes.inputFieldCustom} name="division" component={DivisionSearchField} label="Подразделение"/>}
                         <Field className={classes.inputFieldCustom} name="initiator" component={UsersSearchField} label="Инициатор "/>
                         <Field className={classes.inputFieldCustom} name="dept" component={DeptSearchField} label="Оплаченный "/>
                         <Field className={classes.inputFieldCustom} name="zone" component={ZoneSearchField} label="Зона"/>
