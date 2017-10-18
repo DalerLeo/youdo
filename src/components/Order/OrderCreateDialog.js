@@ -286,7 +286,7 @@ const OrderCreateDialog = enhance((props) => {
                         <CircularProgress size={40} thickness={4}/>
                     </div>
                     : <div className={classes.innerWrap}>
-                        <div style={{minHeight: '470px', maxHeight: '75vh'}} className={classes.inContent}>
+                        <div style={{minHeight: '470px'}} className={classes.inContent}>
                             <div className={classes.leftOrderPart}>
                                 <div className={classes.subTitleOrder}>
                                     <span>Выбор клиента</span>
@@ -341,18 +341,18 @@ const OrderCreateDialog = enhance((props) => {
                                         component={OrderPaymentTypeRadio}
                                     />
                                     <Field
-                                        name="paymentDate"
-                                        component={DateField}
-                                        className={classes.inputDateCustom}
-                                        floatingLabelText="Дата оплаты"
-                                        container="inline"
-                                        fullWidth={true}/>
-                                    <Field
                                         name="user"
                                         component={UsersSearchField}
                                         className={classes.inputFieldCustom}
                                         label="Агент"
                                         selectFieldScroll={selectFieldScroll}
+                                        fullWidth={true}/>
+                                    <Field
+                                        name="paymentDate"
+                                        component={DateField}
+                                        className={classes.inputDateCustom}
+                                        floatingLabelText="Дата оплаты"
+                                        container="inline"
                                         fullWidth={true}/>
                                 </div>
                             </div>

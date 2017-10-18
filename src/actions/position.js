@@ -104,9 +104,9 @@ export const positionItemFetchAction = (filter, id) => {
     }
 }
 
-export const positionPermissionListFetchAction = (filter) => {
+export const positionPermissionListFetchAction = () => {
     const payload = axios()
-        .get(API.POSITION_PERMISSION)
+        .get(API.POSITION_PERMISSION, {params: {page_size: 100}})
         .then((response) => {
             return _.get(response, 'data')
         })

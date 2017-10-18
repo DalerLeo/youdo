@@ -10,7 +10,8 @@ const groups = {
     'changeRate': 'Может менять курс',
     'change_price': 'Может менять цену',
     'change_rate': 'Может менять курс',
-    'change_any_price': 'Может менять все цены'
+    'change_any_price': 'Может менять все цены',
+    'manufacture': 'Производство'
 }
 
 const userGroupFormat = (key) => {
