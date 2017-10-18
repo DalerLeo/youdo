@@ -3,6 +3,7 @@ import {orderingSnakeCase} from '../helpers/serializer'
 
 export const createSerializer = (data, manufactureId) => {
     const product = _.get(data, ['product', 'value'])
+    const equipment = _.get(data, ['equipment', 'value'])
     const manufacture = manufactureId
     const ingredients = _.map(_.get(data, ['ingredients']), (item) => {
         return {
@@ -12,6 +13,7 @@ export const createSerializer = (data, manufactureId) => {
     })
 
     return {
+        equipment,
         manufacture,
         product,
         ingredients

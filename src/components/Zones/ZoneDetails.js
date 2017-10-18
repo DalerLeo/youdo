@@ -294,10 +294,11 @@ const ZoneDetails = enhance((props) => {
                     <div className={classes.personalWrap}>
                         {_.map(_.get(detailData, ['data', 'properties', 'agents']), (item) => {
                             const agentId = _.get(item, 'id')
-                            const username = _.get(item, 'username')
+                            const username = _.get(item, 'firstName') + ' ' + _.get(item, 'secondName')
+                            const position = _.get(item, 'position')
 
                             return (
-                                <Tooltip key={agentId} position="top" text={username}>
+                                <Tooltip key={agentId} position="top" text={username + '<br>' + position}>
                                     <div className={classes.person}>
                                         <img src={Person} alt=""/>
                                         <div className={classes.deletePers}>
