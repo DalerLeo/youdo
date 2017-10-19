@@ -181,7 +181,7 @@ export const planZonesItemFetchAction = (id, date) => {
 
 export const marketsLocationAction = (zone) => {
     const payload = axios()
-        .get(API.MARKETS_LOCATION, {params: {border: zone}})
+        .get(API.MARKETS_LOCATION, {params: {border: zone, with_plan: true}})
         .then((response) => {
             return _.get(response, 'data')
         })

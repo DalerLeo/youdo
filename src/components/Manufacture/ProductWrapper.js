@@ -82,6 +82,7 @@ const ManufactureProductWrapper = enhance((props) => {
 
             />
             <ManufactureAddProductDialog
+                manufacture={_.get(detailData, 'id')}
                 open={productCreate.open}
                 onClose={productCreate.handleCloseCreateDialog}
                 onSubmit={productCreate.handleSubmitCreateDialog}

@@ -143,7 +143,6 @@ const StatSalesList = enhance((props) => {
     const deliveryFromDate = filter.getParam(STAT_SALES_FILTER_KEY.DELIVERY_FROM_DATE)
     const deliveryToDate = filter.getParam(STAT_SALES_FILTER_KEY.DELIVERY_TO_DATE)
     const onlyBonus = filter.getParam(STAT_SALES_FILTER_KEY.ONLY_BONUS)
-    const exclude = filter.getParam(STAT_SALES_FILTER_KEY.EXCLUDE)
     const firstDayOfMonth = _.get(location, ['query', 'fromDate']) || moment().format('YYYY-MM-01')
     const lastDay = moment().daysInMonth()
     const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
@@ -196,7 +195,7 @@ const StatSalesList = enhance((props) => {
                 toDate: deliveryToDate && moment(deliveryToDate, 'YYYY-MM-DD')
             },
             onlyBonus: onlyBonus,
-            exclude: exclude,
+            exclude: true,
             date: {
                 fromDate: moment(firstDayOfMonth),
                 toDate: moment(lastDayOfMonth)

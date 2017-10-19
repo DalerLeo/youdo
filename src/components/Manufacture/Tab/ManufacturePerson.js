@@ -69,6 +69,12 @@ const enhance = compose(
             },
             height: '390px'
         },
+        addButton: {
+            '& svg': {
+                width: '14px !important',
+                height: '14px !important'
+            }
+        },
         cursor: {
             cursor: 'pointer'
         },
@@ -121,7 +127,7 @@ const ManufacturePerson = enhance((props) => {
         const id = _.get(item, 'id')
         const name = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName'])
         const shift = _.get(item, 'name')
-        const position = _.get(item, 'position')
+        const position = _.get(item, ['user', 'position', 'name'])
         const beginTime = moment(moment().format('YYYY-MM-DD ' + _.get(item, 'beginTime'))).format('HH:mm')
         const endTime = moment(moment().format('YYYY-MM-DD ' + _.get(item, 'endTime'))).format('HH:mm')
         const iconButton = (
@@ -183,10 +189,12 @@ const ManufacturePerson = enhance((props) => {
         <div>
             <div style={{padding: '10px 0', textAlign: 'right'}}>
                 <FlatButton
-                    label="Добавить сотрудников"
+                    labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb'}}
+                    className={classes.addButton}
+                    label="добавить сотрудников"
                     onClick={userCreate.handleOpenDialog}
-                    labelStyle={{color: '#12aaeb', fontSize: '13px', textTransform: 'normal'}}
-                    icon={<ContentAdd style={{width: 13, height: 13, fill: '#12aaeb'}}/>}/>
+                    icon={<ContentAdd color="#12aaeb"/>}>
+                </FlatButton>
             </div>
             <GridList
                 filter={filter}

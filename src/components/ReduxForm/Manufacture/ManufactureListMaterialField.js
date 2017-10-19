@@ -44,9 +44,7 @@ const enhance = compose(
             }
         },
         table: {
-            margin: '20px 0 10px',
-            maxHeight: '300px',
-            overflow: 'auto'
+            margin: '20px 0 10px'
         },
         tableTitle: {
             fontWeight: '600',

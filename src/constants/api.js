@@ -258,6 +258,7 @@ export const STAT_CASHBOX_LIST = `/${STAT_CASHBOX}/`
 export const STAT_CASHBOX_ITEM = `/${STAT_CASHBOX}/%d/`
 export const STAT_CASHBOX_DELETE = `/${STAT_CASHBOX}/%d/`
 export const STAT_CASHBOX_DATA_ITEM = 'stats/cashbox/%d/'
+export const STAT_CASHBOX_GET_DOCUMENT = '/stats/cashboxes_export/'
 
 export const STAT_CLIENT_INCOME = 'stats/client_transactions'
 export const STAT_CLIENT_INCOME_LIST = `/${STAT_CLIENT_INCOME}/`
