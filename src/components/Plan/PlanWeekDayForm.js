@@ -95,6 +95,7 @@ const PlanWeekDayForm = enhance((props) => {
         handleSubmit,
         onSubmit,
         isUpdate,
+        // Uncomment this shit // combo,
         planType,
         filter,
         createLoading,
@@ -182,7 +183,8 @@ const PlanWeekDayForm = enhance((props) => {
 })
 
 PlanWeekDayForm.defaultProps = {
-    isUpdate: false
+    isUpdate: false,
+    combo: false
 }
 
 export default PlanWeekDayForm

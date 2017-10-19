@@ -7,7 +7,7 @@ const FIRST_DAY = 1
 const LAST_DAY = 31
 const days = _.map(_.range(FIRST_DAY, LAST_DAY + FIRST_DAY), (item) => {
     return {
-        id: item,
+        id: _.toString(item),
         name: item,
         active: false
     }
@@ -53,7 +53,9 @@ const enhance = compose(
     }),
     withState('activeDays', 'updateDays', days),
     withPropsOnChange((props, nextProps) => {
-        return _.get(props, ['input', 'value']) !== _.get(nextProps, ['input', 'value'])
+        const value = _.get(props, ['input', 'value'])
+        const nextValue = _.get(nextProps, ['input', 'value'])
+        return value !== nextValue
     }, (props) => {
         _.map(days, (item) => {
             if (item.id) {

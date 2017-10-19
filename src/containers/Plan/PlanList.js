@@ -121,11 +121,10 @@ const enhance = compose(
         return prevMarket !== nextMarket && nextMarket > ZERO
     }, ({dispatch, marketsLocation, query}) => {
         const market = _.toInteger(_.get(query, MARKET))
-        const agent = _.toInteger(_.get(query, AGENT))
         const marketData = _.find(marketsLocation, {'id': market})
         const hasPlan = _.get(marketData, 'hasPlan')
         if (hasPlan) {
-            dispatch(planCombinationAction(agent, market))
+            dispatch(planCombinationAction(market))
         }
     }),
 
@@ -425,6 +424,7 @@ const PlanList = enhance((props) => {
     } = props
 
     const openAddPlan = toBoolean(_.get(location, ['query', ADD_PLAN]))
+    const openComboPlan = _.get(location, ['query', UPDATE_PLAN]) === 'combo'
     const openPlanSales = toBoolean(_.get(location, ['query', OPEN_PLAN_SALES]))
     const openUpdatePlan = _.get(location, ['query', UPDATE_PLAN]) === 'combo' ? 'combo' : _.toInteger(_.get(location, ['query', UPDATE_PLAN])) > ZERO
     const groupId = _.toInteger(_.get(location, ['query', USER_GROUP]) || ONE)
@@ -458,19 +458,43 @@ const PlanList = enhance((props) => {
         loading: zoneDetailLoading
     }
 
-    const updatePlan = {
+    const comboPlan = {
         initialValues: (() => {
-            const planType = _.get(planDetails, ['recurrences', '0', 'type'])
-            const priority = _.get(planDetails, 'priority')
-            const weekday = _.map(_.get(planDetails, 'recurrences'), (item) => {
+            const planTypeCombo = _.get(combinationDetails, ['recurrences', '0', 'type'])
+            const priorityCombo = _.get(combinationDetails, 'priority')
+            const weekdayCombo = _.map(_.get(combinationDetails, 'recurrences'), (item) => {
                 return {
                     id: _.toString(_.get(item, 'weekDay')) || _.toString(_.get(item, 'monthDay')),
                     active: true
                 }
             })
-            const planTypeCombo = _.get(combinationDetails, ['recurrences', '0', 'type'])
-            const priorityCombo = _.get(combinationDetails, 'priority')
-            const weekdayCombo = _.map(_.get(combinationDetails, 'recurrences'), (item) => {
+            if (!openComboPlan) {
+                return {
+                    planType: 'week',
+                    weekday: [
+                        {
+                            id: selectedWeekDay,
+                            active: true
+                        }
+                    ]
+                }
+            }
+            return {
+                priority: {
+                    value: priorityCombo
+                },
+                planType: planTypeCombo,
+                weekday: weekdayCombo
+            }
+        })(),
+        openComboPlan
+    }
+
+    const updatePlan = {
+        initialValues: (() => {
+            const planType = _.get(planDetails, ['recurrences', '0', 'type'])
+            const priority = _.get(planDetails, 'priority')
+            const weekday = _.map(_.get(planDetails, 'recurrences'), (item) => {
                 return {
                     id: _.toString(_.get(item, 'weekDay')) || _.toString(_.get(item, 'monthDay')),
                     active: true
@@ -487,15 +511,7 @@ const PlanList = enhance((props) => {
                     ]
                 }
             }
-            return (openUpdatePlan === 'combo')
-            ? {
-                priority: {
-                    value: priorityCombo
-                },
-                planType: planTypeCombo,
-                weekday: weekdayCombo
-            }
-            : {
+            return {
                 priority: {
                     value: priority
                 },
@@ -570,6 +586,7 @@ const PlanList = enhance((props) => {
                 addPlan={addPlan}
                 zoneDetails={zoneDetails}
                 updatePlan={updatePlan}
+                comboPlan={comboPlan}
                 planSalesDialog={planSalesDialog}
                 handleClickTab={props.handleClickTab}
                 groupId={groupId}

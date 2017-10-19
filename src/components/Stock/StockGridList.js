@@ -152,13 +152,13 @@ const StockGridList = enhance((props) => {
         <span>a</span>
     )
 
-    const main = 1
+    const BASIC_STOCK = 'basic'
 
     const stockList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const manager = _.get(item, ['manager', 'firstName']) + ' ' + _.get(item, ['manager', 'secondName'])
-        const stockType = _.toInteger(_.get(item, 'stockType')) === main ? 'Производственный' : 'Основной'
+        const stockType = _.get(item, 'stockType') === BASIC_STOCK ? 'Основной' : 'Производственный'
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
         return (
             <Row key={id} className={classes.listRow}>
