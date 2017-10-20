@@ -390,6 +390,10 @@ const ShopList = enhance((props) => {
     const openSlideShowDialog = _.toInteger(_.get(location, ['query', SHOP_SLIDESHOW_DIALOG_OPEN]) || MINUS_ONE) > MINUS_ONE
     const client = _.toInteger(filter.getParam(SHOP_FILTER_KEY.CLIENT))
     const marketType = _.toInteger(filter.getParam(SHOP_FILTER_KEY.MARKET_TYPE))
+    const status = _.toInteger(filter.getParam(SHOP_FILTER_KEY.STATUS))
+    const frequency = _.toInteger(filter.getParam(SHOP_FILTER_KEY.FREQUENCY))
+    const zone = _.toInteger(filter.getParam(SHOP_FILTER_KEY.ZONE))
+    const createdBy = _.toInteger(filter.getParam(SHOP_FILTER_KEY.CREATED_BY))
     const detailId = _.toInteger(_.get(params, 'shopId'))
 
     const createDialog = {
@@ -463,9 +467,9 @@ const ShopList = enhance((props) => {
             if (!detail || openCreateDialog) {
                 return {}
             }
-            const status = _.get(detail, 'status')
+            const statusCur = _.get(detail, 'status')
             let isActive = 1
-            if (status === false) {
+            if (statusCur === false) {
                 isActive = NOT_ACTIVE
             }
             return {
@@ -523,6 +527,18 @@ const ShopList = enhance((props) => {
             },
             marketType: {
                 value: marketType
+            },
+            status: {
+                value: status
+            },
+            frequency: {
+                value: frequency
+            },
+            zone: {
+                value: zone
+            },
+            createdBy: {
+                value: createdBy
             }
         },
         filterLoading: false,

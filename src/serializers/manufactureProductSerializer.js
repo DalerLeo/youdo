@@ -36,8 +36,10 @@ export const listFilterSerializer = (data) => {
 
 export const changeManufacture = (data) => {
     const manufacture = _.get(data, ['manufacture', 'value'])
+    const equipment = _.get(data, ['equipment', 'value'])
 
     return {
-        'manufacture': manufacture
+        'manufacture': manufacture,
+        equipment
     }
 }

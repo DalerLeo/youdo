@@ -35,11 +35,9 @@ const enhance = compose(
             display: ({loading}) => loading ? 'flex' : 'none'
         },
         popUp: {
-            overflowY: 'hidden !important',
             fontSize: '13px !important',
             position: 'relative',
             padding: '0 !important',
-            overflowX: 'hidden',
             height: '100%',
             marginBottom: '64px'
         },
@@ -64,7 +62,6 @@ const enhance = compose(
             display: 'flex',
             maxHeight: '50vh',
             minHeight: '220px',
-            overflow: 'auto',
             padding: '0 30px',
             color: '#333'
         },
@@ -262,7 +259,7 @@ const ManufactureEditProductDialog = enhance((props) => {
                                     <Col xs={3}>
                                         <Field
                                             name="amount"
-                                            style={{textAlign: 'right'}}
+                                            style={{textAlign: 'right', marginTop: '-2px'}}
                                             label="Кол-во"
                                             component={TextField}
                                             className={classes.inputFieldCustom}

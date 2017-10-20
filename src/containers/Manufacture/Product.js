@@ -79,7 +79,7 @@ const enhance = compose(
         const manufactureId = _.get(props, ['params', 'manufactureId'])
         const nextManufactureId = _.get(nextProps, ['params', 'manufactureId'])
         return (manufactureId !== nextManufactureId && nextManufactureId) ||
-            (props.filterProduct.filterRequest() !== nextProps.filterProduct.filterRequest() && nextManufactureId > ZERO)
+            (props.listLoading && props.filterProduct.filterRequest() !== nextProps.filterProduct.filterRequest() && nextManufactureId > ZERO)
     }, ({dispatch, filterProduct, params}) => {
         const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
         if (manufactureId > ZERO) {

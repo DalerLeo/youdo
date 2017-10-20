@@ -33,8 +33,7 @@ const enhance = compose(
         productionRightSide: {
             width: 'calc(100% - 280px)',
             marginTop: '-20px',
-            padding: '20px 30px',
-            overflowY: 'auto'
+            padding: '20px 30px'
         },
         productList: {
             width: '100%',
