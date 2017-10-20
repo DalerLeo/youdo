@@ -155,7 +155,8 @@ const enhance = compose(
             flexBasis: '75%',
             maxWidth: '75%',
             padding: '20px 30px',
-            overflowY: 'auto'
+            overflowY: 'auto',
+            maxHeight: '800px'
         },
         inputFieldCustom: {
             fontSize: '13px !important',
