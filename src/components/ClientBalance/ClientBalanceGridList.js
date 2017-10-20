@@ -35,6 +35,12 @@ import {CLIENT_BALANCE_FILTER_KEY} from './index'
 let amountValues = []
 let head = []
 
+const types = {
+    cash: 'cash',
+    bank: 'bank',
+    debtor: 'debtor',
+    loaner: 'loaner'
+}
 const enhance = compose(
     injectSheet({
         loader: {
@@ -544,7 +550,9 @@ const ClientBalanceGridList = enhance((props) => {
             <div
                 onClick={() => hashHistory.push({
                     pathname: props.pathname,
-                    query: filter.getParams({[CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: 'cash', [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: '1'})
+                    query: filter.getParams({
+                        [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: types.cash,
+                        [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: types.debtor})
                 })}>
                 Задолжники нал. - {borrowersCashCount}
                 <div>{numberFormat(borrowersCash, primaryCurrency)}</div>
@@ -552,7 +560,9 @@ const ClientBalanceGridList = enhance((props) => {
             <div
                 onClick={() => hashHistory.push({
                     pathname: props.pathname,
-                    query: filter.getParams({[CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: 'bank', [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: '1'})
+                    query: filter.getParams({
+                        [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: types.bank,
+                        [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: types.debtor})
                 })}>
                 Задолжники переч. - {borrowersBankCount}
                 <div>{numberFormat(borrowersBank, primaryCurrency)}</div>
@@ -560,7 +570,9 @@ const ClientBalanceGridList = enhance((props) => {
             <div
                 onClick={() => hashHistory.push({
                     pathname: props.pathname,
-                    query: filter.getParams({[CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: 'cash', [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: '2'})
+                    query: filter.getParams({
+                        [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: types.cash,
+                        [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: types.loaner})
                 })}>
                 Закладчики нал. - {loanersCashCount}
                 <div>{numberFormat(loanersCash, primaryCurrency)}</div>
@@ -568,7 +580,9 @@ const ClientBalanceGridList = enhance((props) => {
             <div
                 onClick={() => hashHistory.push({
                     pathname: props.pathname,
-                    query: filter.getParams({[CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: 'bank', [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: '2'})
+                    query: filter.getParams({
+                        [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: types.bank,
+                        [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: types.loaner})
                 })}>
                 Закладчики переч. - {loanersBankCount}
                 <div>{numberFormat(loanersBank, primaryCurrency)}</div>
@@ -585,7 +599,7 @@ const ClientBalanceGridList = enhance((props) => {
                     </div>
                     <div className={classes.rightPanel}>
                         <div className={classes.wrapper}>
-                            <div style={{marginTop: '20px'}}>
+                            <div style  ={{marginTop: '20px'}}>
                                 <StatisticsFilterExcel
                                     filter={filter}
                                     fields={fields}

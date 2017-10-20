@@ -313,7 +313,7 @@ const ClientBalanceList = enhance((props) => {
     const division = _.toNumber(_.get(location, ['query', 'division']))
     const type = _.get(location, ['query', 'type'])
     const paymentType = filter.getParam(CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE)
-    const balanceType = Number(filter.getParam(CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE))
+    const balanceType = filter.getParam(CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE)
     const detailId = _.toInteger(_.get(params, 'clientBalanceId'))
 
     const divisionInfo = _.find(_.get(list, ['results', '0', 'divisions']), (item) => {

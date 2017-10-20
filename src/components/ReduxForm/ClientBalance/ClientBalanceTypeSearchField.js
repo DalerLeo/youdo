@@ -3,8 +3,8 @@ import React from 'react'
 import SearchField from '../Basic/SearchField'
 
 const Items = [
-    {id: 1, name: 'Задолжники'},
-    {id: 2, name: 'Закладчики'}
+    {value: 'debtor', name: 'Задолжники'},
+    {value: 'loaner', name: 'Закладчики'}
 ]
 const getOptions = () => {
     return Promise.resolve(Items)
@@ -15,10 +15,10 @@ const getItem = (id) => {
         _.find(Items, (o) => { return o.id === _.toInteger(id) }))
 }
 
-const ClientBalanceTypeSearchField = (props) => {
+const   ClientBalanceTypeSearchField = (props) => {
     return (
         <SearchField
-            getValue={SearchField.defaultGetValue('id')}
+            getValue={SearchField.defaultGetValue('value')}
             getText={SearchField.defaultGetText('name')}
             getOptions={getOptions}
             getItem={getItem}
