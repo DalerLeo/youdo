@@ -2,7 +2,7 @@ import React from 'react'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import {Field, reduxForm} from 'redux-form'
-import TrackingDateField from '../ReduxForm/TrackingDateField'
+import PlanDateField from '../ReduxForm/PlanDateField'
 import IconButton from 'material-ui/IconButton'
 import LeftArrow from 'material-ui/svg-icons/navigation/chevron-left'
 import RightArrow from 'material-ui/svg-icons/navigation/chevron-right'
@@ -65,7 +65,7 @@ const PlanDatePicker = enhance((props) => {
                 name="date"
                 className={classes.inputDateCustom}
                 filter={filter}
-                component={TrackingDateField}
+                component={PlanDateField}
                 fullWidth={true}
             />
             <nav className={classes.next}>

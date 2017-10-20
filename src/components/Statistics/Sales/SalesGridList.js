@@ -204,6 +204,7 @@ const StatSalesGridList = enhance((props) => {
     } = props
 
     const graphLoading = _.get(graphData, 'graphLoading')
+    const divisionStatus = _.get('DIVISION')
 
     const loading = _.get(listData, 'listLoading')
     const value = _.map(_.get(graphData, 'data'), (item) => {
@@ -273,7 +274,7 @@ const StatSalesGridList = enhance((props) => {
             <Field name="client" className={classes.inputFieldCustom} component={ClientSearchField} fullWidth={true} label="Клиент"/>
             <Field name="status" className={classes.inputFieldCustom} component={OrderStatusSearchField} fullWidth={true} label="Статус"/>
             <Field name="shop" className={classes.inputFieldCustom} component={MarketSearchField} fullWidth={true} label="Магазин"/>
-            <Field name="division" className={classes.inputFieldCustom} component={DivisionSearchField} fullWidth={true} label="Подразделение"/>
+            {divisionStatus && <Field name="division" className={classes.inputFieldCustom} component={DivisionSearchField} fullWidth={true} label="Подразделение"/>}
             <Field name="initiator" className={classes.inputFieldCustom} component={UsersSearchField} fullWidth={true} label="Инициатор "/>
             <Field name="dept" className={classes.inputFieldCustom} component={DeptSearchField} fullWidth={true} label="Оплаченный "/>
             <Field name="zone" className={classes.inputFieldCustom} component={ZoneSearchField} fullWidth={true} label="Зона"/>

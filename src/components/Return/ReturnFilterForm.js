@@ -159,6 +159,7 @@ const enhance = compose(
 const ReturnFilterForm = enhance((props) => {
     const {classes, filterDialog, getCount, handleSubmit} = props
     const filterCounts = getCount()
+    const divisionStatus = getCount('DIVISION')
 
     if (!filterDialog.openFilterDialog) {
         if (filterCounts) {
@@ -201,7 +202,7 @@ const ReturnFilterForm = enhance((props) => {
                     <div>
                         <Field className={classes.inputFieldCustom} name="order" component={TextField} label="№ Заказа"/>
                         <Field className={classes.inputFieldCustom} name="product" component={ProductSearchField} label="Продукт"/>
-                        <Field className={classes.inputFieldCustom} name="division" component={DivisionSearchField} label="Подразделение"/>
+                        {divisionStatus && <Field className={classes.inputFieldCustom} name="division" component={DivisionSearchField} label="Подразделение"/>}
                         <Field className={classes.inputFieldCustom} name="paymentType" component={PaymentTypeSearchField} label="Тип оплаты"/>
                         <Field className={classes.inputFieldCustom} name="status" component={ReturnStatusSearchField} label="Статус"/>
                         <Field className={classes.inputFieldCustom} name="type" component={ReturnTypeSearchField} label="Тип"/>

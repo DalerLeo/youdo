@@ -291,6 +291,7 @@ const StatDebtorsGridList = enhance((props) => {
             padding: 0
         }
     }
+    const divisionStatus = getConfig('DIVISION')
 
     const listLoading = _.get(listData, 'listLoading')
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
@@ -396,13 +397,13 @@ const StatDebtorsGridList = enhance((props) => {
                     <div className={classes.wrapper}>
                         <form className={classes.form} onSubmit={handleSubmitFilterDialog}>
                             <div className={classes.filter}>
-                                <Field
+                                {divisionStatus && <Field
                                     name="division"
                                     component={DivisionSearchField}
                                     className={classes.inputFieldCustom}
                                     label="Подразделение"
                                     fullWidth={true}
-                                />
+                                />}
                                 <Field
                                     className={classes.inputFieldCustom}
                                     name="search"

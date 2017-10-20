@@ -13,6 +13,7 @@ import DateToDateField from '../ReduxForm/Basic/DateToDateField'
 import {TransactionTypeSearchField, ExpensiveCategorySearchField, ClientSearchField, DivisionSearchField} from '../ReduxForm'
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
+import getConfig from '../../helpers'
 
 export const TRANSACTION_FILTER_OPEN = 'openFilterDialog'
 
@@ -161,7 +162,7 @@ const TransactionFilterForm = enhance((props) => {
                     <Field className={classes.inputFieldCustom} name="categoryExpense" component={ExpensiveCategorySearchField} label="Категории расходов"/>
                     <Field className={classes.inputFieldCustom} name="type" component={TransactionTypeSearchField} label="Тип"/>
                     <Field className={classes.inputFieldCustom} name="client" component={ClientSearchField} label="Клиент" fullWidth={true}/>
-                    <Field className={classes.inputFieldCustom} name="division" component={DivisionSearchField} label="Подразделение" fullWidth={true}/>
+                    {getConfig && <Field className={classes.inputFieldCustom} name="division" component={DivisionSearchField} label="Подразделение" fullWidth={true}/>}
                     <Field className={classes.inputFieldCustom} name="date" component={DateToDateField} label="Диапазон дат" fullWidth={true}/>
 
                     <RaisedButton
