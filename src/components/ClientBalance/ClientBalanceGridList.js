@@ -599,7 +599,7 @@ const ClientBalanceGridList = enhance((props) => {
                     </div>
                     <div className={classes.rightPanel}>
                         <div className={classes.wrapper}>
-                            <div style  ={{marginTop: '20px'}}>
+                            <div style={{marginTop: '20px'}}>
                                 <StatisticsFilterExcel
                                     filter={filter}
                                     fields={fields}
