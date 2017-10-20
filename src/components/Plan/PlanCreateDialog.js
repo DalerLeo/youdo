@@ -349,6 +349,7 @@ const PlanCreateDialog = enhance((props) => {
         toggleDaysState,
         createPlanLoading,
         updatePlan,
+        comboPlan,
         selectedWeekDay
     } = props
     const zoneLoading = _.get(zoneDetails, 'loading')
@@ -371,6 +372,7 @@ const PlanCreateDialog = enhance((props) => {
     const onUpdateSubmit = updatePlan.handleSubmitUpdateAgentPlan
     const submitDelete = updatePlan.handleDeleteAgentPlan
     const openUpdatePlan = _.get(updatePlan, 'openUpdatePlan')
+    const openComboPlan = _.get(comboPlan, 'openComboPlan')
     const ZERO = 0
     const isAgentChosen = selectedAgent > ZERO
     const zones = _.map(zonesList, (item) => {
@@ -502,7 +504,8 @@ const PlanCreateDialog = enhance((props) => {
                                             </div>
                                         </Paper>}
                         </div>
-                        <div className={(selectedMarket > ZERO && !openUpdatePlan) ? classes.addPlan : classes.addPlanHidden}>
+
+                        <div className={(selectedMarket > ZERO && !openUpdatePlan && !openComboPlan) ? classes.addPlan : classes.addPlanHidden}>
                             <PlanWeekDayForm
                                 initialValues={updatePlan.initialValues}
                                 selectedWeekDay={selectedWeekDay}
@@ -521,6 +524,16 @@ const PlanCreateDialog = enhance((props) => {
                                 submitDelete={submitDelete}
                                 filter={filter}
                                 initialValues={updatePlan.initialValues}
+                                toggleDaysState={toggleDaysState}/>
+                        </div>
+                        <div className={(selectedMarket > ZERO && openComboPlan) ? classes.addPlan : classes.addPlanHidden}>
+                            <PlanWeekDayForm
+                                combo={true}
+                                initialValues={comboPlan.initialValues}
+                                selectedWeekDay={selectedWeekDay}
+                                createLoading={createPlanLoading}
+                                onSubmit={onSubmit}
+                                filter={filter}
                                 toggleDaysState={toggleDaysState}/>
                         </div>
                         <div className={isAgentChosen ? classes.map : classes.mapBlurred}>

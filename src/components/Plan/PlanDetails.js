@@ -7,14 +7,19 @@ import {compose} from 'recompose'
 import moment from 'moment'
 import Loader from '../Loader'
 import Person from '../Images/person.png'
-import Place from 'material-ui/svg-icons/maps/place'
-import Assignment from 'material-ui/svg-icons/action/assignment'
+import Deals from 'material-ui/svg-icons/social/whatshot'
+import Returns from 'material-ui/svg-icons/content/reply-all'
+import Visits from 'material-ui/svg-icons/maps/place'
+import Reports from 'material-ui/svg-icons/action/assignment'
+import Payments from 'material-ui/svg-icons/editor/monetization-on'
+import Delivery from 'material-ui/svg-icons/maps/local-shipping'
 import Money from 'material-ui/svg-icons/editor/attach-money'
 import Checked from 'material-ui/svg-icons/toggle/check-box'
 // Uncomment it when needed ... import Indeterminate from 'material-ui/svg-icons/toggle/indeterminate-check-box'
 // Uncomment it when needed ... import CheckOutline from 'material-ui/svg-icons/toggle/check-box-outline-blank'
 import Agent from '../Images/agent.png'
 import NotFound from '../Images/not-found.png'
+import Tooltip from '../ToolTip'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
 import dateFormat from '../../helpers/dateFormat'
@@ -40,7 +45,10 @@ const enhance = compose(
         },
         link: {
             fontWeight: '600',
-            borderBottom: '1px dashed'
+            borderBottom: '1px dashed',
+            '&:hover': {
+                border: 'none'
+            }
         },
         loader: {
             width: '100%',
@@ -97,8 +105,8 @@ const enhance = compose(
         },
         info: {
             '& > span': {
+                textAlign: 'right',
                 display: 'block',
-                lineHeight: '1.2',
                 '&:last-child': {
                     fontWeight: '600'
                 }
@@ -106,7 +114,6 @@ const enhance = compose(
         },
         infoAgent: {
             '& > span': {
-                lineHeight: '1.2',
                 display: 'block',
                 textAlign: 'right'
             }
@@ -126,7 +133,6 @@ const enhance = compose(
         salesSummary: {
             '& span': {
                 display: 'inline-block',
-                lineHeight: '1.2',
                 '&:last-child': {
                     marginLeft: '10px',
                     textAlign: 'right'
@@ -137,20 +143,24 @@ const enhance = compose(
             extend: 'header',
             background: '#fff'
         },
-        done: {
+        subAchieves: {
             display: 'flex',
             alignItems: 'center',
             '& > div': {
                 display: 'flex',
                 alignItems: 'center',
-                marginRight: '50px',
+                lineHeight: '1',
+                userSelect: 'none',
+                marginRight: '30px',
                 '& span': {
                     display: 'block',
-                    lineHeight: '1',
                     color: '#666',
                     fontWeight: '600',
                     '&:first-child': {
                         fontSize: '18px !important'
+                    },
+                    '& small': {
+                        fontSize: '13px'
                     }
                 },
                 '&:last-child': {
@@ -169,7 +179,6 @@ const enhance = compose(
                 },
                 '& span': {
                     display: 'block',
-                    lineHeight: '1',
                     color: '#666',
                     fontWeight: '600',
                     '&:first-child': {
@@ -179,9 +188,6 @@ const enhance = compose(
                         fontSize: '18px',
                         fontWeight: '600'
                     }
-                },
-                '& a': {
-                    lineHeight: '1'
                 }
             }
         },
@@ -465,18 +471,18 @@ const PlanDetails = enhance((props) => {
             height: 32,
             marginRight: 5
         },
-        error: {
+        sales: {
             width: 32,
             minWidth: 32,
             height: 32,
-            marginRight: 5,
-            color: '#ef5350'
+            color: '#999'
         }
     }
 
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const factSales = _.get(monthlyPlan, ['data', 'factPrice']) && _.toNumber(_.get(monthlyPlan, ['data', 'factPrice']))
     const planAmount = _.get(monthlyPlan, ['data', 'monthlyPlanAmount']) && _.toNumber(_.get(monthlyPlan, ['data', 'monthlyPlanAmount']))
+    const agentHoverText = position + '<br> Наименование зоны'
     return (
         <div className={classes.wrapper}>
             {isOpenDetails
@@ -487,37 +493,12 @@ const PlanDetails = enhance((props) => {
                         </div>
                         : <div className={classes.agentInfo}>
                             <div className={classes.header}>
-                                <div className={classes.info}>
-                                    <span>Данные за</span>
-                                    <span
-                                        style={{textTransform: 'capitalize'}}>{monthFormat(selectedMonth)} {selectedYear}г.</span>
-                                </div>
-                                <div className={classes.agent}>
-                                    <img src={Person} alt=""/>
-                                    <div>{secondName} <br/> {firstName}</div>
-                                </div>
-                                <div className={classes.infoAgent}>
-                                    <span>{position}</span>
-                                    <span>Наименование зоны</span>
-                                </div>
-                            </div>
-                            <div className={classes.achieves}>
-                                <div className={classes.done}>
-                                    <div>
-                                        <Place style={achieveIcon.basic}/>
-                                        <div>
-                                            <span>10 / 20</span>
-                                            <span>посещено</span>
-                                        </div>
+                                <Tooltip position="bottom" text={agentHoverText}>
+                                    <div className={classes.agent}>
+                                        <img src={Person} alt=""/>
+                                        <div>{secondName} <br/> {firstName}</div>
                                     </div>
-                                    <div>
-                                        <Assignment style={achieveIcon.basic}/>
-                                        <div>
-                                            <span>3 / 3</span>
-                                            <span>отчеты</span>
-                                        </div>
-                                    </div>
-                                </div>
+                                </Tooltip>
                                 <div className={classes.warning}>
                                     <div>
                                         <Money style={achieveIcon.basic}/>
@@ -536,7 +517,61 @@ const PlanDetails = enhance((props) => {
                                                  onClick={planSalesDialog.handleOpenPlanSales}><big>{numberFormat(planAmount)}</big> {primaryCurrency}
                                             </a>
                                             : <a className={classes.link}
-                                                 onClick={planSalesDialog.handleOpenPlanSales}>добавить</a>}
+                                                 onClick={planSalesDialog.handleOpenPlanSales}>добавить
+                                            </a>
+                                        }
+                                    </div>
+                                </div>
+                                <div className={classes.info}>
+                                    <span>Данные за</span>
+                                    <span style={{textTransform: 'capitalize'}}>{monthFormat(selectedMonth)} {selectedYear}г.</span>
+                                </div>
+                            </div>
+                            <div className={classes.achieves}>
+                                <div className={classes.subAchieves}>
+                                    <Tooltip position="bottom" text={'нал: 7 800 USD <br> пер: 2 200 USD'}>
+                                        <Deals style={achieveIcon.basic}/>
+                                        <div>
+                                            <span>10 000 <small>USD</small></span>
+                                            <span>сделки</span>
+                                        </div>
+                                    </Tooltip>
+                                    <Tooltip position="bottom" text={'нал: 8 000 USD <br> пер: 4 000 USD'}>
+                                        <Payments style={achieveIcon.basic}/>
+                                        <div>
+                                            <span>12 000 <small>USD</small></span>
+                                            <span>оплаты</span>
+                                        </div>
+                                    </Tooltip>
+                                </div>
+                                <div className={classes.subAchieves}>
+                                    <div>
+                                        <Visits style={achieveIcon.basic}/>
+                                        <div>
+                                            <span>16 / 42</span>
+                                            <span>посещено</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <Reports style={achieveIcon.basic}/>
+                                        <div>
+                                            <span>3 / 3</span>
+                                            <span>отчеты</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <Delivery style={achieveIcon.basic}/>
+                                        <div>
+                                            <span>4 / 12</span>
+                                            <span>доставки</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <Returns style={achieveIcon.basic}/>
+                                        <div>
+                                            <span>3</span>
+                                            <span>возвраты</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
