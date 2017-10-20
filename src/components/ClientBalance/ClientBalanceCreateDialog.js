@@ -73,6 +73,7 @@ const ClientBalanceCreateDialog = enhance((props) => {
     const data = _.find(_.get(listData, 'data'), {'id': _.get(detailData, 'id')})
     let balanceArr = []
     const currency = getConfig('PRIMARY_CURRENCY')
+    const divisionStatus = getConfig('DIVISION')
 
     _.map(_.get(data, 'divisions'), (item) => {
         balanceArr.push({amount: _.get(item, 'cash'), name: _.get(item, 'name'), type: 'нал.'})
@@ -130,12 +131,12 @@ const ClientBalanceCreateDialog = enhance((props) => {
                                     normalize={normalizeNumber}
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
-                                <Field
+                                {divisionStatus && <Field
                                     name="division"
                                     component={DivisionSearchField}
                                     label="Подразделение"
                                     className={classes.inputFieldCustom}
-                                    fullWidth={true}/>
+                                    fullWidth={true}/>}
                                 <Field
                                     name="comment"
                                     style={{top: '-20px', lineHeight: '20px', fontSize: '13px'}}

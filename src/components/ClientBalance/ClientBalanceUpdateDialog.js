@@ -61,6 +61,7 @@ const ClientBalanceUpdateDialog = enhance((props) => {
 
     const onSubmit = handleSubmit(() => props.onSubmit())
     const primaryCurrency = _.toInteger(getConfig('PRIMARY_CURRENCY_ID'))
+    const divisionStatus = getConfig('DIVISION')
     return (
         <Dialog
             modal={true}
@@ -116,12 +117,12 @@ const ClientBalanceUpdateDialog = enhance((props) => {
                                     normalize={normalizeNumber}
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>}
-                                <Field
+                                {divisionStatus && <Field
                                     name="division"
                                     component={DivisionSearchField}
                                     label="Подразделение"
                                     className={classes.inputFieldCustom}
-                                    fullWidth={true}/>
+                                    fullWidth={true}/>}
                                 <Field
                                     name="comment"
                                     style={{top: '-20px', lineHeight: '20px', fontSize: '13px'}}

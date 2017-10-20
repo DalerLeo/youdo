@@ -164,6 +164,7 @@ const TransactionCreateDialog = enhance((props) => {
     const cashbox = _.find(_.get(cashboxData, 'data'), {'id': cashboxId})
     const currency = _.get(cashbox, ['currency', 'name'])
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
+    const divisionStatus = getConfig('DIVISION')
     const convert = convertCurrency(amount, rate)
 
     const hasDivisions = toBoolean(getConfig('DIVISIONS'))
@@ -220,12 +221,12 @@ const TransactionCreateDialog = enhance((props) => {
                                         label="Клиент"
                                         className={classes.inputFieldCustom}
                                         fullWidth={true}/>
-                                    {hasDivisions ? <Field
+                                    {hasDivisions && divisionStatus && <Field
                                         name="division"
                                         component={DivisionSearchField}
                                         label="Подразделение"
                                         className={classes.inputFieldCustom}
-                                        fullWidth={true}/> : null}
+                                        fullWidth={true}/>}
                                 </div> : null}
                                 <Field
                                     name="expanseCategory"

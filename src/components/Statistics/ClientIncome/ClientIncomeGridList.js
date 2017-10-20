@@ -235,6 +235,7 @@ const ClientIncomeGridList = enhance((props) => {
         listData
     } = props
 
+    const divisionStatus = getConfig('DIVISION')
     const graphLoading = _.get(graphData, 'graphInLoading') || _.get(graphData, 'graphOutLoading')
     const loading = _.get(listData, 'listLoading')
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
@@ -347,12 +348,12 @@ const ClientIncomeGridList = enhance((props) => {
                 className={classes.inputFieldCustom}
                 label="Тип транзакции"
                 fullWidth={true}/>
-            <Field
+            {divisionStatus && <Field
                 name="division"
                 component={DivisionSearchField}
                 className={classes.inputFieldCustom}
                 label="Подразделение"
-                fullWidth={true}/>
+                fullWidth={true}/>}
             <Field
                 name="client"
                 component={ClientSearchField}

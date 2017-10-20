@@ -312,6 +312,7 @@ const StatAgentGridList = enhance((props) => {
 
     const listLoading = _.get(listData, 'listLoading')
     const salesSummary = numberFormat(_.get(_.find(_.get(listData, 'data'), {'id': _.get(detailData, 'id')}), 'ordersTotalPrice'))
+    const divisionStatus = getConfig('DIVISION')
 
     const list = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
@@ -361,12 +362,12 @@ const StatAgentGridList = enhance((props) => {
                 component={ZoneSearchField}
                 label="Зона"
                 fullWidth={true}/>
-            <Field
+            {divisionStatus && <Field
                 className={classes.inputFieldCustom}
                 name="division"
                 component={DivisionSearchField}
                 label="Подразделение"
-                fullWidth={true}/>
+                fullWidth={true}/>}
         </div>
 
     )

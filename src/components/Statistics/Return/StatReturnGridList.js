@@ -182,6 +182,7 @@ const StatReturnGridList = enhance((props) => {
 
     const loading = _.get(listData, 'listLoading')
     const graphLoading = _.get(graphData, 'graphLoading')
+    const divisionStatus = getConfig('DIVISION')
     const headerStyle = {
         backgroundColor: '#fff',
         fontWeight: '600',
@@ -250,12 +251,12 @@ const StatReturnGridList = enhance((props) => {
                 component={DateToDateField}
                 label="Диапазон дат"
                 fullWidth={true}/>
-            <Field
+            {divisionStatus && <Field
                 name="division"
                 component={DivisionSearchField}
                 className={classes.inputFieldCustom}
                 label="Подразделение"
-                fullWidth={true}/>
+                fullWidth={true}/>}
         </div>
     )
 
