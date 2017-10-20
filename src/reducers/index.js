@@ -353,7 +353,8 @@ const rootReducer = combineReducers({
     }),
     statRemainder: combineReducers({
         list: createThunkReducer(actionTypes.STAT_REMAINDER_LIST),
-        item: createThunkReducer(actionTypes.STAT_REMAINDER_ITEM)
+        item: createThunkReducer(actionTypes.STAT_REMAINDER_ITEM),
+        sum: createThunkReducer(actionTypes.STAT_REMAINDER_SUM)
     }),
     statClientIncome: combineReducers({
         dataIn: createThunkReducer(actionTypes.STAT_CLIENT_INCOME_IN),

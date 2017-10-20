@@ -355,6 +355,7 @@ export const STAT_OUTCOME_CATEGORY_ITEM = 'sales/order/'
 export const STAT_OUTCOME_CATEGORY_GET_DOCUMENT = 'stats/agents/export/'
 export const STAT_REMAINDER_LIST = `/${REMAINDER}/all_balances/`
 export const STAT_REMAINDER_ITEM = `/${REMAINDER}/balances_by_product/%d/`
+export const STAT_REMAINDER_SUM = '/stats/stock/balances_sum/'
 export const STAT_REMAINDER_GET_DOCUMENT = '/stock/stock/to_excel/'
 export const STATISTICS_CASHBOX_LIST = `/${CASHBOX}/`
 export const STATISTICS_CASHBOX_ITEM = `/${CASHBOX}/%d/`
