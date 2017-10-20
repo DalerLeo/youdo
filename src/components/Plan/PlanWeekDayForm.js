@@ -5,6 +5,7 @@ import {reduxForm, Field} from 'redux-form'
 import PlanChooseWeekday from './PlanChooseWeekday'
 import PlanChooseMonthDay from './PlanChooseMonthDay'
 import PlanTypeRadio from './PlanTypeRadio'
+import PlanChooseAgentsRadio from './PlanChooseAgentsRadio'
 import Paper from 'material-ui/Paper'
 import FlatButton from 'material-ui/FlatButton'
 import injectSheet from 'react-jss'
@@ -95,7 +96,8 @@ const PlanWeekDayForm = enhance((props) => {
         handleSubmit,
         onSubmit,
         isUpdate,
-        // Uncomment this shit // combo,
+        comboPlan,
+        combo,
         planType,
         filter,
         createLoading,
@@ -111,10 +113,12 @@ const PlanWeekDayForm = enhance((props) => {
     const closeUpdateForm = () => {
         hashHistory.push(filter.createURL({[MARKET]: null, [UPDATE_PLAN]: false}))
     }
+    const comboLoading = _.get(comboPlan, 'combinationLoading')
+    const agents = _.get(comboPlan, 'agents')
     return (
         <Paper zDepth={1} className={classes.form}>
             <div className={classes.closeIcon}>
-                <Close onClick={isUpdate ? closeUpdateForm : closeForm}/>
+                <Close onClick={(isUpdate || combo) ? closeUpdateForm : closeForm}/>
             </div>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className={classes.title}>Тип плана</div>
@@ -122,13 +126,23 @@ const PlanWeekDayForm = enhance((props) => {
                     name="planType"
                     isUpdate={isUpdate}
                     component={PlanTypeRadio}/>
+                {combo &&
+                <div>
+                    <div className={classes.title}>Закрепленные агенты</div>
+                    <Field
+                        name="agents"
+                        agents={agents}
+                        data={comboPlan.combinationDetails}
+                        component={PlanChooseAgentsRadio}
+                    />
+                </div>}
                 <div className={classes.title}>Выберите дни</div>
                 {planType === 'week'
-                ? <Field
+                    ? <Field
                         name="weekday"
                         selectedWeekDay={!isUpdate ? selectedWeekDay : null}
                         component={PlanChooseWeekday}/>
-                : <Field
+                    : <Field
                         name="weekday"
                         component={PlanChooseMonthDay}/>}
                 <div className={classes.title}>Приоритет</div>
@@ -174,7 +188,7 @@ const PlanWeekDayForm = enhance((props) => {
                         />
                     </div>
                 </div>}
-                {(createLoading || updateLoading) && <div className={classes.loader}>
+                {(createLoading || updateLoading || comboLoading) && <div className={classes.loader}>
                     <Loader size={0.8}/>
                 </div>}
             </form>
