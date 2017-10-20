@@ -502,8 +502,7 @@ const PlanCreateDialog = enhance((props) => {
                                             </div>
                                         </Paper>}
                         </div>
-                        <div
-                            className={(selectedMarket > ZERO && !openUpdatePlan) ? classes.addPlan : classes.addPlanHidden}>
+                        <div className={(selectedMarket > ZERO && !openUpdatePlan) ? classes.addPlan : classes.addPlanHidden}>
                             <PlanWeekDayForm
                                 initialValues={updatePlan.initialValues}
                                 selectedWeekDay={selectedWeekDay}
@@ -512,8 +511,7 @@ const PlanCreateDialog = enhance((props) => {
                                 filter={filter}
                                 toggleDaysState={toggleDaysState}/>
                         </div>
-                        <div
-                            className={(selectedMarket > ZERO && openUpdatePlan) ? classes.addPlan : classes.addPlanHidden}>
+                        <div className={(selectedMarket > ZERO && openUpdatePlan) ? classes.addPlan : classes.addPlanHidden}>
                             <PlanWeekDayForm
                                 updateLoading={updatePlan.updatePlanLoading}
                                 openConfirmDialog={updatePlan.openConfirmDialog}
