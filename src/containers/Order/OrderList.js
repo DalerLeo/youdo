@@ -2,7 +2,7 @@ import React from 'react'
 import _ from 'lodash'
 import moment from 'moment'
 import {connect} from 'react-redux'
-import {reset} from 'redux-form'
+import {reset, change} from 'redux-form'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
@@ -78,6 +78,8 @@ const enhance = compose(
         const filter = filterHelper(list, pathname, query)
         const userGroups = _.get(state, ['authConfirm', 'data', 'groups'])
         const defaultUser = _.get(state, ['authConfirm', 'data', 'id'])
+        const selectedProduct = _.get(state, ['form', 'OrderCreateForm', 'values', 'product', 'value'])
+        const paymentType = _.get(state, ['form', 'OrderCreateForm', 'values', 'paymentType'])
 
         return {
             list,
@@ -106,13 +108,25 @@ const enhance = compose(
             editProducts,
             userGroups,
             discountCreateForm,
-            defaultUser
+            defaultUser,
+            selectedProduct,
+            paymentType
         }
     }),
     withPropsOnChange((props, nextProps) => {
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
         dispatch(orderListFetchAction(filter))
+    }),
+    withPropsOnChange((props, nextProps) => {
+        return (_.get(props, ['selectedProduct', 'id']) !== _.get(nextProps, ['selectedProduct', 'id']) && _.get(nextProps, ['selectedProduct', 'id'])) ||
+            (_.get(props, 'paymentType') !== _.get(nextProps, 'paymentType'))
+    }, ({dispatch, selectedProduct, paymentType}) => {
+        const customPrice = _.get(selectedProduct, 'customPrice')
+        if (selectedProduct && !customPrice && paymentType) {
+            const price = paymentType === 'cash' ? _.toNumber(_.get(selectedProduct, 'cashPrice')) : _.toNumber(_.get(selectedProduct, 'transferPrice'))
+            dispatch(change('OrderCreateForm', 'cost', price))
+        }
     }),
     withPropsOnChange((props, nextProps) => {
         const prevTransaction = toBoolean(_.get(props, ['location', 'query', 'openTransactionsDialog']))
