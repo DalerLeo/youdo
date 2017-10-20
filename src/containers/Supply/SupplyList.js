@@ -186,7 +186,7 @@ const enhance = compose(
             const provider = _.get(filterForm, ['values', 'provider', 'value']) || null
             const product = _.get(filterForm, ['values', 'product', 'value']) || null
             const stock = _.get(filterForm, ['values', 'stock', 'value']) || null
-            const type = _.get(filterForm, ['values', 'type', 'value']) || null
+            const status = _.get(filterForm, ['values', 'status', 'value']) || null
             const contract = _.get(filterForm, ['values', 'contract']) || null
 
             filter.filterBy({
@@ -194,7 +194,7 @@ const enhance = compose(
                 [SUPPLY_FILTER_KEY.PROVIDER]: provider,
                 [SUPPLY_FILTER_KEY.PRODUCT]: product,
                 [SUPPLY_FILTER_KEY.STOCK]: stock,
-                [SUPPLY_FILTER_KEY.TYPE]: type,
+                [SUPPLY_FILTER_KEY.STATUS]: status,
                 [SUPPLY_FILTER_KEY.CONTRACT]: contract,
                 [SUPPLY_FILTER_KEY.DELIVERY_FROM_DATE]: deliveryFromDate && deliveryFromDate.format('YYYY-MM-DD'),
                 [SUPPLY_FILTER_KEY.DELIVERY_TO_DATE]: deliveryToDate && deliveryToDate.format('YYYY-MM-DD'),
@@ -344,7 +344,7 @@ const SupplyList = enhance((props) => {
     const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
     const provider = _.toInteger(filter.getParam(SUPPLY_FILTER_KEY.PROVIDER))
     const stock = _.toInteger(filter.getParam(SUPPLY_FILTER_KEY.STOCK))
-    const type = _.toInteger(filter.getParam(SUPPLY_FILTER_KEY.TYPE))
+    const status = _.toInteger(filter.getParam(SUPPLY_FILTER_KEY.STATUS))
     const contract = filter.getParam(SUPPLY_FILTER_KEY.CONTRACT)
     const deliveryFromDate = filter.getParam(SUPPLY_FILTER_KEY.DELIVERY_FROM_DATE)
     const deliveryToDate = filter.getParam(SUPPLY_FILTER_KEY.DELIVERY_TO_DATE)
@@ -446,8 +446,8 @@ const SupplyList = enhance((props) => {
             stock: {
                 value: stock
             },
-            type: {
-                value: type
+            status: {
+                value: status
             },
             contract: contract,
             dateDelivery: {
