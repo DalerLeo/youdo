@@ -9,6 +9,7 @@ import * as GOOGLE_MAP from '../../constants/googleMaps'
 import injectSheet from 'react-jss'
 import {googleMapStyle} from '../../constants/googleMapsStyle'
 import Market from '../Images/plan-market.png'
+import MarketHasPlan from '../Images/plan-market-has.png'
 import MarketAdd from '../Images/plan-market-add.png'
 import AgentPath1 from '../Images/agent-path-1.png'
 import AgentPath2 from '../Images/agent-path-2.png'
@@ -35,6 +36,10 @@ const enhance = compose(
                 fontWeight: '600',
                 fontSize: '13px'
             }
+        },
+        hasPlan: {
+            color: '#f2d472',
+            textAlign: 'center'
         }
     }),
     withScriptjs,
@@ -150,6 +155,7 @@ const GoogleMapWrapper = enhance((
     const markets = _.map(remainMarkets, (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
+        const hasPlan = _.get(item, 'hasPlan')
         const lat = _.get(item, ['location', 'lat'])
         const lng = _.get(item, ['location', 'lon'])
 
@@ -181,17 +187,18 @@ const GoogleMapWrapper = enhance((
                 </div>
             )
         }
-        return (
+        return (hasPlan)
+            ? (
             <Marker
                 key={id}
                 onMouseOver={() => { hoverMarker(id) }}
                 onMouseOut={mouseOutMarker}
                 position={{lat: lat, lng: lng}}
-                onClick={() => { handleChooseMarket(id) }}
+                onClick={() => { handleUpdateAgentPlan('combo', selectedAgent, id) }}
                 options={
                 {
                     icon: {
-                        url: Market,
+                        url: MarketHasPlan,
                         size: {width: 24, height: 24},
                         scaledSize: {width: 24, height: 24},
                         anchor: {x: 12, y: 12}
@@ -199,6 +206,24 @@ const GoogleMapWrapper = enhance((
                 }}>
             </Marker>
         )
+            : (
+                <Marker
+                    key={id}
+                    onMouseOver={() => { hoverMarker(id) }}
+                    onMouseOut={mouseOutMarker}
+                    position={{lat: lat, lng: lng}}
+                    onClick={() => { handleChooseMarket(id) }}
+                    options={
+                    {
+                        icon: {
+                            url: Market,
+                            size: {width: 24, height: 24},
+                            scaledSize: {width: 24, height: 24},
+                            anchor: {x: 12, y: 12}
+                        }
+                    }}>
+                </Marker>
+            )
     })
     const selectedZone = (
         <Polygon
@@ -220,6 +245,7 @@ const GoogleMapWrapper = enhance((
                 <div className={classes.marketName}>
                     <div><strong>Магазин:</strong> {_.get(marketForOverlay, 'name')}</div>
                     <div><strong>Адрес:</strong> {_.get(marketForOverlay, 'address')}</div>
+                    {_.get(marketForOverlay, 'hasPlan') && <div className={classes.hasPlan}><strong>Есть план</strong></div>}
                 </div>
             </OverlayView>}
         </DefaultGoogleMap>

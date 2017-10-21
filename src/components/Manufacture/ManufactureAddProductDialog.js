@@ -6,6 +6,7 @@ import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import {Field, reduxForm, Fields} from 'redux-form'
 import {ManufactureListMaterialField, ProductSearchField} from '../ReduxForm'
+import EquipmentSearchField from '../ReduxForm/EquipmentSearchField'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 import validate from '../../helpers/validate'
@@ -14,6 +15,9 @@ export const MANUFACTURE_ADD_PRODUCT_DIALOG_OPEN = 'addProduct'
 
 const enhance = compose(
     injectSheet({
+        dialog: {
+            overflowY: 'auto !important'
+        },
         loader: {
             position: 'absolute',
             width: '100%',
@@ -27,12 +31,11 @@ const enhance = compose(
             display: ({loading}) => loading ? 'flex' : 'none'
         },
         popUp: {
-            overflowY: 'hidden !important',
             fontSize: '13px !important',
             position: 'relative',
             padding: '0 !important',
-            overflowX: 'hidden',
             height: '100%',
+            maxHeight: 'unset !important',
             marginBottom: '64px'
         },
         titleContent: {
@@ -219,7 +222,7 @@ const enhance = compose(
 )
 
 const ManufactureAddProductDialog = enhance((props) => {
-    const {open, handleSubmit, loading, onClose, classes, error} = props
+    const {open, handleSubmit, loading, onClose, classes, error, manufacture} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
     return (
@@ -247,6 +250,13 @@ const ManufactureAddProductDialog = enhance((props) => {
                                 className={classes.inputFieldCustom}
                                 component={ProductSearchField}
                                 fullWidth={true}/>
+                            {manufacture && <Field
+                                name="equipment"
+                                label="Оборудование"
+                                data-manufacture={manufacture}
+                                className={classes.inputFieldCustom}
+                                component={EquipmentSearchField}
+                                fullWidth={true}/>}
                             <Fields
                                 names={['ingredients', 'ingredient', 'amount', 'editAmount']}
                                 component={ManufactureListMaterialField}

@@ -14,7 +14,7 @@ import StatSideMenu from '../StatSideMenu'
 import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
 import List from 'material-ui/svg-icons/action/list'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../../Loader'
 import Pagination from '../../GridList/GridListNavPagination/index'
 import numberFormat from '../../../helpers/numberFormat.js'
 import NotFound from '../../Images/not-found.png'
@@ -38,6 +38,9 @@ const enhance = compose(
             height: 'calc(100% + 28px)',
             boxShadow: 'rgba(0, 0, 0, 0.09) 0px -1px 6px, rgba(0, 0, 0, 0.10) 0px -1px 4px'
         },
+        block: {
+            display: 'block'
+        },
         loader: {
             width: '100%',
             padding: '100px 0',
@@ -50,11 +53,6 @@ const enhance = compose(
         wrapper: {
             padding: '20px 30px',
             height: 'calc(100% - 40px)',
-            '& > div:nth-child(2)': {
-                marginTop: '10px',
-                borderTop: '1px #efefef solid',
-                borderBottom: '1px #efefef solid'
-            },
             '& .row': {
                 margin: '0 !important'
             }
@@ -68,7 +66,13 @@ const enhance = compose(
                 '& > div': {
                     display: 'flex',
                     height: '50px',
-                    alignItems: 'center'
+                    alignItems: 'center',
+                    '&:first-child': {
+                        paddingLeft: '0'
+                    },
+                    '&:last-child': {
+                        paddingRight: '0'
+                    }
                 }
             },
             '& .dottedList': {
@@ -104,6 +108,43 @@ const enhance = compose(
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between'
+        },
+        summary: {
+            display: 'flex',
+            position: 'relative',
+            justifyContent: 'space-between',
+            borderTop: 'solid 1px #efefef',
+            borderBottom: 'solid 1px #efefef',
+            marginTop: '10px',
+            padding: '14px 0',
+            color: '#666',
+            '& > div': {
+                '& > div': {
+                    fontSize: '20px',
+                    color: '#333',
+                    fontWeight: '600',
+                    '& span': {
+                        fontSize: '13px',
+                        fontWeight: '400'
+                    }
+                },
+                '& > span': {
+                    display: 'block'
+                }
+
+            }
+        },
+        summaryLoader: {
+            background: '#fff',
+            position: 'absolute',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            top: '0',
+            left: '0',
+            right: '0',
+            bottom: '0',
+            zIndex: '4'
         },
         form: {
             display: 'flex',
@@ -225,6 +266,19 @@ const StatRemainderGridList = enhance((props) => {
     } = props
 
     const listLoading = _.get(listData, 'listLoading')
+    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
+    const summary = _.get(listData, 'summary')
+    const summaryLoading = _.get(listData, 'summaryLoading')
+
+    const sumAll = _.toNumber(_.get(summary, ['total', 'price']))
+    const sumReserve = _.toNumber(_.get(summary, ['reserved', 'price']))
+    const sumDefect = _.toNumber(_.get(summary, ['defected', 'price']))
+    const sumAvailable = _.toNumber(_.get(summary, ['available', 'price']))
+
+    const countAll = _.toNumber(_.get(summary, ['total', 'count']))
+    const countReserve = _.toNumber(_.get(summary, ['reserved', 'count']))
+    const countDefect = _.toNumber(_.get(summary, ['defected', 'count']))
+    const countAvailable = _.toNumber(_.get(summary, ['available', 'count']))
 
     const headerStyle = {
         backgroundColor: '#fff',
@@ -251,7 +305,6 @@ const StatRemainderGridList = enhance((props) => {
             <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right'}}>Доступно</Col>
             <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right'}}>Цена</Col>
             <Col xs={1} style={{display: 'none'}}>|</Col>
-
         </Row>
     )
 
@@ -261,7 +314,7 @@ const StatRemainderGridList = enhance((props) => {
         const product = _.get(item, 'title')
         const measurement = _.get(item, ['measurement', 'name'])
         const defects = numberFormat(_.get(item, 'defects'), measurement)
-        const price = numberFormat(_.get(item, 'price'), getConfig('PRIMARY_CURRENCY'))
+        const price = numberFormat(_.get(item, 'price'), primaryCurrency)
         const balance = numberFormat(Number(_.get(item, 'balance')) + Number(_.get(item, 'defects')), measurement)
         const reserved = numberFormat(Number(_.get(item, 'reserved')), measurement)
         const available = numberFormat(Number(_.get(item, 'balance')) - Number(_.get(item, 'reserved')), measurement)
@@ -342,6 +395,27 @@ const StatRemainderGridList = enhance((props) => {
                             withoutDate={true}
                             initialValues={initialValues}
                         />
+                        <div className={classes.summary}>
+                            {summaryLoading && <div className={classes.summaryLoader}>
+                                <Loader size={0.75}/>
+                            </div>}
+                            <div>
+                                <span>Общая сумма</span>
+                                <div>{numberFormat(sumAll, primaryCurrency)} <span className={classes.block}>({numberFormat(countAll, 'шт')})</span></div>
+                            </div>
+                            <div>
+                                <span>Сумма забронированных</span>
+                                <div>{numberFormat(sumReserve, primaryCurrency)} <span className={classes.block}>({numberFormat(countReserve, 'шт')})</span></div>
+                            </div>
+                            <div>
+                                <span>Сумма забракованных</span>
+                                <div>{numberFormat(sumDefect, primaryCurrency)} <span className={classes.block}>({numberFormat(countDefect, 'шт')})</span></div>
+                            </div>
+                            <div>
+                                <span>Сумма доступных</span>
+                                <div>{numberFormat(sumAvailable, primaryCurrency)} <span className={classes.block}>({numberFormat(countAvailable, 'шт')})</span></div>
+                            </div>
+                        </div>
                         <div style={{display: 'flex', justifyContent: 'space-between'}}>
                             <form onSubmit={handleSubmit(onSubmit)} className={classes.searchForm}>
                                 <Field
@@ -363,7 +437,7 @@ const StatRemainderGridList = enhance((props) => {
                         {listLoading
                             ? <div className={classes.tableWrapper}>
                                 <div className={classes.loader}>
-                                    <CircularProgress thickness={4} size={40}/>
+                                    <Loader size={0.75}/>
                                 </div>
                             </div>
                             : <div className={classes.tableWrapper}>

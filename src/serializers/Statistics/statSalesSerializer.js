@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../../helpers/serializer'
+import toBoolean from '../../helpers/toBoolean'
 import moment from 'moment'
 
 const ZERO = 0
@@ -21,6 +22,7 @@ export const listFilterSerializer = (data, withOrderReturn) => {
     const debt = _.toInteger(_.get(defaultData, 'dept'))
     const type = _.toInteger(toDay.diff(fromDay, 'days')) >= maxDay ? 'month' : 'day'
     const status = _.get(defaultData, 'status') ? (_.toInteger(_.get(defaultData, 'status')) === FIVE ? ZERO : _.toInteger(_.get(defaultData, 'status'))) : null
+    const excludeCanceled = !_.isUndefined(_.get(defaultData, 'exclude')) ? toBoolean(_.get(defaultData, 'exclude')) : true
 
     return {
         'search': _.get(defaultData, 'search'),
@@ -37,7 +39,7 @@ export const listFilterSerializer = (data, withOrderReturn) => {
         'market': _.get(defaultData, 'shop'),
         'status': status,
         'only_bonus': _.get(defaultData, 'onlyBonus') ? 'True' : null,
-        'exclude_cancelled': _.get(defaultData, 'exclude') ? 'True' : null,
+        'exclude_cancelled': excludeCanceled ? 'True' : null,
         'delivery_date_0': _.get(defaultData, 'deliveryFromDate'),
         'delivery_date_1': _.get(defaultData, 'deliveryToDate') || _.get(defaultData, 'deliveryFromDate'),
         'with_order_return': withOrderReturn,
@@ -53,6 +55,7 @@ export const orderListFilterSerializer = (data, withOrderReturn) => {
     const lastDayOfMonth = moment().format('YYYY-MM-' + lastDay)
     const debt = _.toInteger(_.get(defaultData, 'dept'))
     const status = _.get(defaultData, 'status') ? (_.toInteger(_.get(defaultData, 'status')) === FIVE ? ZERO : _.toInteger(_.get(defaultData, 'status'))) : null
+    const excludeCanceled = !_.isUndefined(_.get(defaultData, 'exclude')) ? toBoolean(_.get(defaultData, 'exclude')) : true
     return {
         'client': _.get(defaultData, 'client'),
         'division': _.get(defaultData, 'division'),
@@ -62,7 +65,7 @@ export const orderListFilterSerializer = (data, withOrderReturn) => {
         'market': _.get(defaultData, 'shop'),
         'status': status,
         'only_bonus': _.get(defaultData, 'onlyBonus') ? 'True' : null,
-        'exclude_cancelled': _.get(defaultData, 'exclude') ? 'True' : null,
+        'exclude_cancelled': excludeCanceled ? 'True' : null,
         'delivery_date_0': _.get(defaultData, 'deliveryFromDate'),
         'delivery_date_1': _.get(defaultData, 'deliveryToDate') || _.get(defaultData, 'deliveryFromDate'),
         'with_order_return': withOrderReturn,

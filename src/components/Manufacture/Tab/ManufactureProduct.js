@@ -24,8 +24,8 @@ const listHeader = [
     },
     {
         sorting: false,
-        name: 'description',
-        title: 'Описание',
+        name: 'type',
+        title: 'Тип товара',
         xs: 4
     },
     {
@@ -50,6 +50,12 @@ const enhance = compose(
             },
             height: '390px',
             overflowY: 'scroll'
+        },
+        addButton: {
+            '& svg': {
+                width: '14px !important',
+                height: '14px !important'
+            }
         },
         cursor: {
             cursor: 'pointer'
@@ -137,10 +143,12 @@ const ManufactureProduct = enhance((props) => {
         <div>
             <div style={{padding: '10px 0', textAlign: 'right'}}>
                 <FlatButton
-                    label="Добавить продукцию"
+                    labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb'}}
+                    className={classes.addButton}
+                    label="добавить продукцию"
                     onClick={createDialog.handleOpenCreateDialog}
-                    labelStyle={{color: '#12aaeb', fontSize: '13px', textTransform: 'normal'}}
-                    icon={<ContentAdd style={{width: 13, height: 13, fill: '#12aaeb'}}/>}/>
+                    icon={<ContentAdd color="#12aaeb"/>}>
+                </FlatButton>
             </div>
             <GridList
                 filter={filter}

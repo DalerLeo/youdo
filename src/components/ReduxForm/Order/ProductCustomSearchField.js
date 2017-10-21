@@ -24,9 +24,9 @@ const setExtraData = (data, loading) => {
     }
 }
 
-const getItem = (id, dispatch, market) => {
+const getItem = (id, dispatch, market, selectedMarket) => {
     dispatch(setExtraData(null, true))
-    return axios().get(sprintf(PATH.PRODUCT_MOBILE_ITEM, id), {'params': {'market': market}})
+    return axios().get(sprintf(PATH.PRODUCT_MOBILE_ITEM, id), {'params': {'market': market || selectedMarket}})
         .then(({data}) => {
             dispatch(setExtraData(data, false))
             return Promise.resolve(toCamelCase(data))
@@ -47,8 +47,9 @@ const enhance = compose(
 
 const ProductCustomSearchField = enhance((props) => {
     const {dispatch, state, market, ...defaultProps} = props
+    const selectedMarket = _.get(props, 'data-market')
     const test = (id) => {
-        return getItem(id, dispatch, market)
+        return getItem(id, dispatch, market, selectedMarket)
     }
     const type = _.get(state, ['form', 'OrderCreateForm', 'values', 'type', 'value'])
     return (

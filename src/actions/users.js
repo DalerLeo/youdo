@@ -90,7 +90,7 @@ export const usersItemFetchAction = (id) => {
 
 export const userGroupListFetchAction = () => {
     const payload = axios()
-        .get(API.USERS_GROUP)
+        .get(API.USERS_GROUP, {params: {pageSize: 50}})
         .then((response) => {
             return _.get(response, 'data')
         })

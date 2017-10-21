@@ -305,11 +305,11 @@ const ClientIncomeGridList = enhance((props) => {
                             : type === CANCEL_ORDER ? <Link to={{
                                 pathname: sprintf(ROUTES.ORDER_ITEM_PATH, id),
                                 query: {search: id}
-                            }} target="_blank">Отмена заказа № + {id}</Link>
+                            }} target="_blank">Отмена заказа №{id}</Link>
                                 : type === CANCEL_ORDER_RETURN ? <Link to={{
                                     pathname: sprintf(ROUTES.ORDER_ITEM_PATH, id),
                                     query: {search: id}
-                                }} target="_blank">Отмена возврата № + {id}</Link>
+                                }} target="_blank">Отмена возврата №{id}</Link>
                                     : type === ORDER ? <Link to={{
                                         pathname: sprintf(ROUTES.RETURN_ITEM_PATH, id),
                                         query: {search: id}
@@ -318,7 +318,7 @@ const ClientIncomeGridList = enhance((props) => {
                                             : type === ORDER_RETURN ? <Link to={{
                                                 pathname: sprintf(ROUTES.RETURN_ITEM_PATH, id),
                                                 query: {search: id}
-                                            }} target="_blank">Возврат {id}</Link>
+                                            }} target="_blank">Возврат №{id}</Link>
                                                 : formattedType[type] + ' ' + (!_.isNull(id) ? id : '')}</span>
                     </div>}
                     {comment && <div><strong>Комментарий:</strong> {comment}</div>}

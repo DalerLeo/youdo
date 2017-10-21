@@ -154,6 +154,11 @@ const enhance = compose(
             const params = serializers.listFilterSerializer(filter.getParams())
             getDocuments(API.STAT_CASHBOX_GET_DOCUMENT, params)
         },
+        handleDetailGetDocument: props => () => {
+            const {filter} = props
+            const params = serializers.listFilterSerializer(filter.getParams())
+            getDocuments(API.STAT_FINANCE_GET_DOCUMENT, params)
+        },
         handleGetDataItem: props => (id) => {
             const {filter, dispatch} = props
             dispatch(statCashBoxItemDataFetchAction(filter, id))
@@ -222,7 +227,8 @@ const StatCashboxList = enhance((props) => {
         handleSubmitDetailFilterDialog: props.handleSubmitDetailFilterDialog
     }
     const getDocument = {
-        handleGetDocument: props.handleGetDocument
+        handleGetDocument: props.handleGetDocument,
+        handleDetailGetDocument: props.handleDetailGetDocument
     }
     const filterForm = {
         initialValues: {

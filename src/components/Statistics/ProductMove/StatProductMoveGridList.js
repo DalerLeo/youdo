@@ -6,14 +6,15 @@ import * as ROUTES from '../../../constants/routes'
 import Container from '../../Container/index'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import {Field} from 'redux-form'
+import {Field, reduxForm} from 'redux-form'
 import {connect} from 'react-redux'
 import ordering from '../../../helpers/ordering'
 import {
     DateToDateField,
     StockSearchField,
     ProductTypeParentSearchField,
-    ProductTypeChildSearchField
+    ProductTypeChildSearchField,
+    TextField
 } from '../../ReduxForm/index'
 import StatSideMenu from '../StatSideMenu'
 import CircularProgress from 'material-ui/CircularProgress'
@@ -30,7 +31,8 @@ export const STAT_PRODUCT_MOVE_FILTER_KEY = {
     TO_DATE: 'toDate',
     STOCK: 'stock',
     TYPE_PARENT: 'typeParent',
-    TYPE: 'type'
+    TYPE: 'type',
+    SEARCH: 'search'
 }
 
 const enhance = compose(
@@ -264,6 +266,10 @@ const enhance = compose(
         }
 
     }),
+    reduxForm({
+        form: 'StatisticsFilterForm',
+        enableReinitialize: true
+    }),
     connect((state) => {
         const typeParent = _.get(state, ['form', 'StatisticsFilterForm', 'values', 'typeParent', 'value'])
         return {
@@ -321,6 +327,16 @@ const listHeader = [
         sorting: true,
         name: 'endRemainderCost',
         title: 'Стоимость'
+    },
+    {
+        sorting: true,
+        name: 'returnAmount',
+        title: 'Кол-во'
+    },
+    {
+        sorting: true,
+        name: 'returnCost',
+        title: 'Стоимость'
     }
 ]
 
@@ -333,7 +349,8 @@ const StatProductMoveGridList = enhance((props) => {
         handleSubmitFilterDialog,
         getDocument,
         typeParent,
-        initialValues
+        initialValues,
+        handleSubmit
     } = props
 
     const summaryMeasurement = 'шт'
@@ -368,6 +385,7 @@ const StatProductMoveGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const measurement = _.get(item, ['measurement', 'name'])
         const code = _.get(item, 'code') || 'неизвестно'
+
         const beginBalancePr = numberFormat(_.get(item, 'beginBalance'), measurement)
         const beginPricePr = numberFormat(_.get(item, 'beginPrice'), primaryCurrency)
 
@@ -380,23 +398,32 @@ const StatProductMoveGridList = enhance((props) => {
         const endBalancePr = numberFormat(_.get(item, 'endBalance'), measurement)
         const endPricePr = numberFormat(_.get(item, 'endPrice'), primaryCurrency)
 
+        const returnBalancePr = numberFormat(_.get(item, 'returnBalance'), measurement)
+        const returnPricePr = numberFormat(_.get(item, 'returnPrice'), primaryCurrency)
+
         const writeoffBalancePr = numberFormat(_.get(item, 'writeoffBalance'), measurement)
         const writeoffPricePr = numberFormat(_.get(item, 'writeoffPrice'), primaryCurrency)
         return (
             <tr key={id} className={classes.tableRow}>
                 <td>{code}</td>
+
                 <td>{beginBalancePr}</td>
                 <td>{beginPricePr}</td>
+
                 <td>{inBalancePr}</td>
                 <td>{inPricePr}</td>
-                <td>{inBalancePr}</td>
-                <td>{inPricePr}</td>
+
+                <td>{returnBalancePr}</td>
+                <td>{returnPricePr}</td>
+
                 <td>{outBalancePr}</td>
                 <td>{outPricePr}</td>
-                <td>{endBalancePr}</td>
-                <td>{endPricePr}</td>
+
                 <td>{writeoffBalancePr}</td>
                 <td>{writeoffPricePr}</td>
+
+                <td>{endBalancePr}</td>
+                <td>{endPricePr}</td>
             </tr>
         )
     })
@@ -477,6 +504,13 @@ const StatProductMoveGridList = enhance((props) => {
                         </div>
                         <div className={classes.pagination}>
                             <div>Движение товаров на складе</div>
+                            <form onSubmit={handleSubmit(handleSubmitFilterDialog)}>
+                                <Field
+                                    className={classes.inputFieldCustom}
+                                    name="search"
+                                    component={TextField}
+                                    hintText="Поиск"/>
+                            </form>
                             <Pagination filter={filter}/>
                         </div>
                         {listLoading

@@ -41,7 +41,9 @@ const enhance = compose(
     }),
     withState('activeWeeks', 'updateWeeks', weeks),
     withPropsOnChange((props, nextProps) => {
-        return (_.get(props, ['input', 'value']) !== _.get(nextProps, ['input', 'value']))
+        const value = _.get(props, ['input', 'value'])
+        const nextValue = _.get(nextProps, ['input', 'value'])
+        return value !== nextValue
     }, (props) => {
         _.map(weeks, (item) => {
             item.active = false

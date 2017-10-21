@@ -258,6 +258,7 @@ export const STAT_CASHBOX_LIST = `/${STAT_CASHBOX}/`
 export const STAT_CASHBOX_ITEM = `/${STAT_CASHBOX}/%d/`
 export const STAT_CASHBOX_DELETE = `/${STAT_CASHBOX}/%d/`
 export const STAT_CASHBOX_DATA_ITEM = 'stats/cashbox/%d/'
+export const STAT_CASHBOX_GET_DOCUMENT = '/stats/cashboxes_export/'
 
 export const STAT_CLIENT_INCOME = 'stats/client_transactions'
 export const STAT_CLIENT_INCOME_LIST = `/${STAT_CLIENT_INCOME}/`
@@ -354,6 +355,7 @@ export const STAT_OUTCOME_CATEGORY_ITEM = 'sales/order/'
 export const STAT_OUTCOME_CATEGORY_GET_DOCUMENT = 'stats/agents/export/'
 export const STAT_REMAINDER_LIST = `/${REMAINDER}/all_balances/`
 export const STAT_REMAINDER_ITEM = `/${REMAINDER}/balances_by_product/%d/`
+export const STAT_REMAINDER_SUM = '/stats/stock/balances_sum/'
 export const STAT_REMAINDER_GET_DOCUMENT = '/stock/stock/to_excel/'
 export const STATISTICS_CASHBOX_LIST = `/${CASHBOX}/`
 export const STATISTICS_CASHBOX_ITEM = `/${CASHBOX}/%d/`
@@ -400,6 +402,7 @@ export const PLAN_AGENT_MONTHLY = 'stats/agents/statistics/'
 export const PLAN_AGENT_LIST = 'stats/agents/statistics/all/'
 export const PLAN_AGENTS = 'market/agent_plans/'
 export const PLAN_AGENTS_ITEM = 'market/agent_plans/%d/'
+export const PLAN_COMBINATION = `${PLAN}/combination/`
 
 export const POSITION = 'main/position'
 export const POSITION_COURSE_CREATE = 'finance/currency_rate/'

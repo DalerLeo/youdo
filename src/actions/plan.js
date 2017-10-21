@@ -181,7 +181,7 @@ export const planZonesItemFetchAction = (id, date) => {
 
 export const marketsLocationAction = (zone) => {
     const payload = axios()
-        .get(API.MARKETS_LOCATION, {params: {border: zone}})
+        .get(API.MARKETS_LOCATION, {params: {border: zone, with_plan: true}})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -191,6 +191,22 @@ export const marketsLocationAction = (zone) => {
 
     return {
         type: actionTypes.MARKETS_LOCATION,
+        payload
+    }
+}
+
+export const planCombinationAction = (market) => {
+    const payload = axios()
+        .get(API.PLAN_COMBINATION, {params: {market: market}})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.PLAN_COMBINATION,
         payload
     }
 }

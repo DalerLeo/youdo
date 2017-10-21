@@ -20,7 +20,8 @@ import {
 import {STAT_REMAINDER_FILTER_KEY} from '../../components/Statistics/Remainder/StatRemainderGridLIst'
 import {
     statRemainderListFetchAction,
-    statRemainderItemFetchAction
+    statRemainderItemFetchAction,
+    statRemainderSumFetchAction
 } from '../../actions/statRemainder'
 
 const ZERO = 0
@@ -31,6 +32,8 @@ const enhance = compose(
         const pathname = _.get(props, ['location', 'pathname'])
         const detail = _.get(state, ['statRemainder', 'item', 'data'])
         const detailLoading = _.get(state, ['statRemainder', 'item', 'loading'])
+        const summary = _.get(state, ['statRemainder', 'sum', 'data'])
+        const summaryLoading = _.get(state, ['statRemainder', 'sum', 'loading'])
         const list = _.get(state, ['statRemainder', 'list', 'data'])
         const listLoading = _.get(state, ['statRemainder', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
@@ -41,6 +44,8 @@ const enhance = compose(
             listLoading,
             detail,
             detailLoading,
+            summary,
+            summaryLoading,
             filter,
             query,
             filterForm,
@@ -53,6 +58,21 @@ const enhance = compose(
             (!_.get(nextProps, ['params', 'statRemainderId']))
     }, ({dispatch, filter}) => {
         dispatch(statRemainderListFetchAction(filter))
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const except = {
+            page: null,
+            pageSize: null,
+            search: null,
+            dPage: null,
+            dPageSize: null
+        }
+        return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except) &&
+            (!_.get(props, ['params', 'statRemainderId'])) &&
+            (!_.get(nextProps, ['params', 'statRemainderId']))
+    }, ({dispatch, filter}) => {
+        dispatch(statRemainderSumFetchAction(filter))
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -112,6 +132,8 @@ const StatRemainderList = enhance((props) => {
         listLoading,
         detail,
         detailLoading,
+        summary,
+        summaryLoading,
         filter,
         layout,
         filterItem,
@@ -131,7 +153,9 @@ const StatRemainderList = enhance((props) => {
     }
     const listData = {
         data: _.get(list, 'results'),
-        listLoading
+        listLoading,
+        summary,
+        summaryLoading
     }
     const rowDetail = _.filter(_.get(list, 'results'), (item) => {
         return _.get(item, 'id') === detailId

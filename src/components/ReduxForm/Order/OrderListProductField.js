@@ -8,6 +8,7 @@ import {Field} from 'redux-form'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import Groceries from '../../Images/groceries.svg'
+import Tooltip from '../../ToolTip'
 import {connect} from 'react-redux'
 import numberFormat from '../../../helpers/numberFormat'
 import getConfig from '../../../helpers/getConfig'
@@ -185,13 +186,15 @@ const enhance = compose(
         const isAdmin = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
         const paymentType = _.get(state, ['form', 'OrderCreateForm', 'values', 'paymentType'])
         const updateProducts = _.get(state, ['order', 'updateProducts', 'data', 'results'])
+        const selectedMarket = _.get(state, ['form', 'OrderCreateForm', 'values', 'market', 'value'])
         return {
             measurement,
             customPrice,
             cashPrice,
             paymentType,
             updateProducts,
-            isAdmin
+            isAdmin,
+            selectedMarket
         }
     }),
     withReducer('state', 'dispatch', (state, action) => {
@@ -341,7 +344,8 @@ const OrderListProductField = enhance((props) => {
         paymentType,
         handleChangePT,
         isUpdate,
-        isAdmin
+        isAdmin,
+        selectedMarket
     } = props
     const ONE = 1
     const editOnlyCost = _.get(props, 'editOnlyCost')
@@ -376,13 +380,21 @@ const OrderListProductField = enhance((props) => {
             <div>
                 <div className={classes.headers} style={{marginTop: '-10px'}}>
                     <div className={classes.title}>Список товаров</div>
-                    {!editOnlyCost && <FlatButton
+                    {!editOnlyCost && selectedMarket && <FlatButton
                         label="+ добавить товар"
-                        style={{color: '#12aaeb'}}
-                        labelStyle={{fontSize: '13px'}}
+                        labelStyle={{fontSize: '13px', color: '#12aaeb'}}
                         className={classes.span}
                         onTouchTap={() => dispatch({open: !state.open})}
                     />}
+                    {!editOnlyCost && !selectedMarket &&
+                    <Tooltip position="bottom" text="Выберите магазин">
+                        <FlatButton
+                            label="+ добавить товар"
+                            disabled={true}
+                            labelStyle={{fontSize: '13px', color: '#999'}}
+                            className={classes.span}
+                        />
+                    </Tooltip>}
                 </div>
                 {state.open && <Row className={classes.background}>
                     <Col xs={3}>
@@ -399,6 +411,7 @@ const OrderListProductField = enhance((props) => {
                         <ProductCustomSearchField
                             name="product"
                             label="Наименование"
+                            data-market={selectedMarket}
                             className={classes.searchFieldCustom}
                             fullWidth={true}
                             {..._.get(props, 'product')}

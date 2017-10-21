@@ -32,6 +32,7 @@ export const itemSerializer = (data, filterItem, id) => {
         'exclude_cancelled': 'True',
         'page': _.get(filterItem, 'dPage'),
         'page_size': _.get(filterItem, 'dPageSize'),
+        'division': _.get(filterItem, 'division'),
         'created_date_0': begin,
         'created_date_1': end
     }

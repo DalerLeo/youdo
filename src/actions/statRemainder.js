@@ -22,6 +22,7 @@ export const statRemainderItemFetchAction = (filterItem, id) => {
         payload
     }
 }
+
 export const statRemainderListFetchAction = (filter) => {
     const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
@@ -38,6 +39,24 @@ export const statRemainderListFetchAction = (filter) => {
         payload
     }
 }
+
+export const statRemainderSumFetchAction = (filter) => {
+    const params = serializers.graphSerializer(filter.getParams())
+    const payload = axios()
+        .get((API.STAT_REMAINDER_SUM), {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STAT_REMAINDER_SUM,
+        payload
+    }
+}
+
 export const getDocumentAction = () => {
     const payload = axios()
         .get(sprintf(API.STAT_OUTCOME_GET_DOCUMENT))

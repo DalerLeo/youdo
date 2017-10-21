@@ -295,8 +295,7 @@ ShopGridList.propTypes = {
         handleSendDeleteImageDialog: PropTypes.func.isRequired
     }).isRequired,
     deleteDialog: PropTypes.shape({
-        openDeleteDialog: PropTypes.bool.isRequired,
-        handleCloseDeleteDialog: PropTypes.func.isRequired
+        openDeleteDialog: PropTypes.bool.isRequired
     }).isRequired,
     updateDialog: PropTypes.shape({
         updateLoading: PropTypes.bool.isRequired,

@@ -169,7 +169,8 @@ const ClientBalanceList = enhance((props) => {
     const fromDate = filter.getParam(CLIENT_BALANCE_FILTER_KEY.FROM_DATE)
     const toDate = filter.getParam(CLIENT_BALANCE_FILTER_KEY.TO_DATE)
     const detailId = _.toInteger(_.get(params, 'clientBalanceId'))
-
+    const paymentType = filter.getParam(CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE)
+    const balanceType = Number(filter.getParam(CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE))
     const divisionInfo = _.find(_.get(list, ['results', '0', 'divisions']), (item) => {
         return _.get(item, 'id') === division
     })
@@ -196,6 +197,12 @@ const ClientBalanceList = enhance((props) => {
 
     const filterDialog = {
         initialValues: {
+            paymentType: {
+                value: paymentType
+            },
+            balanceType: {
+                value: balanceType
+            },
             date: {
                 fromDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),
                 toDate: toDate && moment(toDate, 'YYYY-MM-DD')
