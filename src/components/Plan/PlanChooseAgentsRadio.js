@@ -10,29 +10,49 @@ const radioButtonGroupStyle = {
 }
 const styles = {
     active: {
-        color: '#12aaeb',
-        fill: '#12aaeb'
+        color: '#455a64',
+        fontWeight: '600',
+        fill: '#455a64'
     },
     default: {
-        color: '#333'
+        color: '#757575',
+        fill: '#757575'
     }
 }
 
 const PlanChooseAgentsRadio = (props) => {
     const {input, data, agents} = props
-    const radioButtons = _.map(agents, (item) => {
-        return _.map(data, (obj) => {
-            return (
-                <RadioButton
-                    key={item.id}
-                    value={item.id}
-                    labelStyle={obj.agent.id === item.id ? styles.active : styles.default}
-                    iconStyle={obj.agent.id === item.id ? styles.active : styles.default}
-                    style={{width: 140, marginBottom: 10}}
-                    label={item.firstName}
-                />
-            )
-        })
+    const activeAgents = _.map(data, (obj) => {
+        return {
+            id: _.get(obj, ['agent', 'id']),
+            firstName: _.get(obj, ['agent', 'firstName']),
+            secondName: _.get(obj, ['agent', 'firstName'])
+        }
+    })
+    const remainAgents = _.differenceBy(agents, activeAgents, 'id')
+    const activeRadioButtons = _.map(activeAgents, (item) => {
+        return (
+            <RadioButton
+                key={item.id}
+                value={item.id}
+                labelStyle={styles.active}
+                iconStyle={styles.active}
+                style={{width: 140, marginBottom: 10}}
+                label={item.firstName}
+            />
+        )
+    })
+    const defaultRadioButtons = _.map(remainAgents, (item) => {
+        return (
+            <RadioButton
+                key={item.id}
+                value={item.id}
+                labelStyle={styles.default}
+                iconStyle={styles.default}
+                style={{width: 140, marginBottom: 10}}
+                label={item.firstName}
+            />
+        )
     })
 
     return (
@@ -41,7 +61,8 @@ const PlanChooseAgentsRadio = (props) => {
             style={radioButtonGroupStyle}
             onChange={input.onChange}
             defaultSelected={input.value}>
-            {radioButtons}
+            {activeRadioButtons}
+            {defaultRadioButtons}
         </RadioButtonGroup>
     )
 }

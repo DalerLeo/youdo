@@ -44,7 +44,7 @@ export const agentMonthlyPlanSerializer = (query, user) => {
     }
 }
 
-export const createSerializer = (data, query) => {
+export const createSerializer = (data, query, comboChosenAgent) => {
     const type = _.get(data, ['planType']) || 'week'
     const priority = _.get(data, ['priority', 'value'])
     const recurrences = _.map(_.get(data, 'weekday'), (item) => {
@@ -61,7 +61,31 @@ export const createSerializer = (data, query) => {
     })
 
     return {
-        agent: _.get(query, 'agent'),
+        agent: comboChosenAgent || _.get(query, 'agent'),
+        market: _.get(query, 'market'),
+        recurrences,
+        priority
+    }
+}
+
+export const comboSerializer = (data, query) => {
+    const type = _.get(data, ['planType']) || 'week'
+    const priority = _.get(data, ['priority', 'value'])
+    const recurrences = _.map(_.get(data, 'weekday'), (item) => {
+        if (type === 'month') {
+            return {
+                type: type,
+                month_day: _.get(item, 'id')
+            }
+        }
+        return {
+            type: type,
+            week_day: _.get(item, 'id')
+        }
+    })
+
+    return {
+        agent: _.get(data, 'agents'),
         market: _.get(query, 'market'),
         recurrences,
         priority
