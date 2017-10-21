@@ -3,6 +3,8 @@ import {orderingSnakeCase} from '../../helpers/serializer'
 import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
 import moment from 'moment'
 
+const ZERO = 0
+const ONE = 1
 export const createSerializer = (data) => {
     const provider = _.get(data, ['provider', 'value'])
     const stock = _.get(data, ['stock', 'value'])
@@ -72,7 +74,7 @@ export const listFilterSerializer = (data) => {
         'provider': _.get(defaultData, 'provider'),
         'product': _.get(defaultData, 'product'),
         'stock': _.get(defaultData, 'stock'),
-        'type': _.get(defaultData, 'type'),
+        'status': _.toNumber(_.get(defaultData, 'status')) === ONE ? ZERO : _.get(defaultData, 'status'),
         'contract': _.get(defaultData, 'contract'),
         'date_delivery_0': _.get(defaultData, 'deliveryFromDate'),
         'date_delivery_1': _.get(defaultData, 'deliveryToDate'),

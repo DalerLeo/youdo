@@ -235,7 +235,7 @@ const StatSalesGridList = enhance((props) => {
             <Col xs={2}>Дата</Col>
             <Col xs={3}>Магазин</Col>
             <Col xs={2}>Агент</Col>
-            <Col xs={2} style={{justifyContent: 'flex-end'}}>Возврат</Col>
+            <Col xs={2} style={{justifyContent: 'flex-end'}}>Тип оплаты</Col>
             <Col xs={2} style={{justifyContent: 'flex-end'}}>Сумма</Col>
         </Row>
     )
@@ -250,8 +250,7 @@ const StatSalesGridList = enhance((props) => {
             const firstName = _.get(item, ['user', 'firstName'])
             const secondName = _.get(item, ['user', 'secondName '])
             const totalPrice = _.get(item, 'totalPrice')
-            const returnPrice = _.get(item, 'totalReturnedPrice')
-
+            const paymentType = _.get(item, 'paymentType') === 'cash' ? 'наличный' : 'банковский счет'
             return (
                 <Row key={id} className="dottedList" style={status === '4' ? {color: '#999'} : {}}>
                     <Col xs={1}><a onClick={() => { statSaleDialog.handleOpenStatSaleDialog(id) }}>{id}</a></Col>
@@ -260,7 +259,7 @@ const StatSalesGridList = enhance((props) => {
                     <Col xs={2}>
                         <div>{firstName} {secondName}</div>
                     </Col>
-                    <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(returnPrice, currentCurrency)}</Col>
+                    <Col xs={2} style={{justifyContent: 'flex-end'}}>{paymentType}</Col>
                     <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(totalPrice, currentCurrency)}</Col>
                 </Row>
             )
