@@ -175,7 +175,7 @@ const OrderPrint = enhance((props) => {
                     <div key={id} className="printItem">
                         <div className={classes.title}>
                             <span>Заказ № {id}</span>
-                            {toBoolean(getConfig('DIVISIONS')) && <div className={classes.kerasys}>KeraSys</div>}
+                            {toBoolean(getConfig('DIVISION')) && <div className={classes.kerasys}>KeraSys</div>}
                             <div>Добавлено: {createdDate}</div>
                         </div>
                         <div className={classes.info}>

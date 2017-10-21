@@ -146,7 +146,8 @@ const TransactionGridList = enhance((props) => {
         paymentData,
         transactionInfoDialog,
         superUser,
-        hasRightCashbox
+        hasRightCashbox,
+        updateTransactionDialog
     } = props
 
     const AllCashboxId = 0
@@ -235,6 +236,7 @@ const TransactionGridList = enhance((props) => {
                     transactionInfoDialog={transactionInfoDialog}
                     superUser={superUser}
                     hasRightCashbox={hasRightCashbox}
+                    updateTransactionDialog={updateTransactionDialog}
                 />
             </div>
         </Container>
