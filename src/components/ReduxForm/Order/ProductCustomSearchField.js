@@ -47,7 +47,7 @@ const enhance = compose(
 
 const ProductCustomSearchField = enhance((props) => {
     const {dispatch, state, market, ...defaultProps} = props
-    const selectedMarket = _.get(state, ['form', 'OrderCreateForm', 'values', 'market', 'value'])
+    const selectedMarket = _.get(props, 'data-market')
     const test = (id) => {
         return getItem(id, dispatch, market, selectedMarket)
     }

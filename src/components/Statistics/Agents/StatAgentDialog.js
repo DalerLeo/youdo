@@ -146,6 +146,7 @@ const enhance = compose(
     }),
 )
 
+const CANCELED = 4
 const StatAgentDialog = enhance((props) => {
     const {
         open,
@@ -158,7 +159,11 @@ const StatAgentDialog = enhance((props) => {
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const agentName = _.get(detailData, ['agentDetail', '0', 'name'])
     const selectedDate = moment(_.get(detailData, 'selectedDate')).locale('ru').format('MMM YYYY')
-    const orderList = _.map(_.get(detailData, ['data', 'results']), (item) => {
+    const filteredData = _.filter(_.get(detailData, ['data', 'results']), (item) => {
+        const status = _.toInteger(_.get(item, 'status'))
+        return status !== CANCELED
+    })
+    const orderList = _.map(filteredData, (item) => {
         const id = _.get(item, 'id')
         const market = _.get(item, ['market', 'name'])
         const totalPrice = _.get(item, 'totalPrice')

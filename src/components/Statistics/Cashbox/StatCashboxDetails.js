@@ -8,6 +8,7 @@ import injectSheet from 'react-jss'
 import {Field} from 'redux-form'
 import Back from 'material-ui/svg-icons/content/reply'
 import NotFound from '../../Images/not-found.png'
+import numberFormat from '../../../helpers/numberFormat'
 import TransactionsList from '../Finance/TransactionsList'
 import {StatisticsFilterExcel, StatisticsChart} from '../../Statistics'
 import {
@@ -29,6 +30,12 @@ export const STAT_CASHBOX_DETAIL_FILTER_KEY = {
 }
 const enhance = compose(
     injectSheet({
+        green: {
+            color: '#81c784'
+        },
+        red: {
+            color: '#e57373'
+        },
         loader: {
             width: '100%',
             height: '100%',
@@ -208,6 +215,7 @@ const StatCashboxDetails = enhance((props) => {
         getDocument,
         initialValues
     } = props
+    const ZERO = 0
     const graphLoading = _.get(detailData, 'itemGraphLoading') || _.get(detailData, 'sumItemDataLoading')
     const graphAmount = _.map(_.get(detailData, ['itemGraph']), (item) => {
         return _.toNumber(_.get(item, 'balance'))
@@ -217,10 +225,10 @@ const StatCashboxDetails = enhance((props) => {
     })
 
     const handleCloseDetail = _.get(detailData, 'handleCloseDetail')
-    const startBalance = _.get(detailData, ['sumItemData', 'startBalance'])
-    const endBalance = _.get(detailData, ['sumItemData', 'endBalance'])
-    const income = _.get(detailData, ['sumItemData', 'income'])
-    const expenses = _.get(detailData, ['sumItemData', 'expenses'])
+    const startBalance = _.toNumber(_.get(detailData, ['sumItemData', 'startBalance']))
+    const endBalance = _.toNumber(_.get(detailData, ['sumItemData', 'endBalance']))
+    const income = _.toNumber(_.get(detailData, ['sumItemData', 'income']))
+    const expenses = _.toNumber(_.get(detailData, ['sumItemData', 'expenses']))
     const currency = _.get(detailData, ['data', 'currency', 'name'])
 
     const listData = {
@@ -253,7 +261,7 @@ const StatCashboxDetails = enhance((props) => {
                         filterKeys={STAT_CASHBOX_DETAIL_FILTER_KEY}
                         initialValues={initialValues}
                         handleSubmitFilterDialog={handleSubmitFilterDialog}
-                        handleGetDocument={getDocument.handleGetDocument}
+                        handleGetDocument={getDocument.handleDetailGetDocument}
                         extraButton={extraButton}
                     />
                     {graphLoading
@@ -266,21 +274,21 @@ const StatCashboxDetails = enhance((props) => {
                                 <div style={{marginRight: '40px'}} className={classes.sumItem}>
                                     <div className={classes.balanceItem}>
                                         <span>Баланс на начало периода</span>
-                                        <div>{startBalance} {currency}</div>
+                                        <div className={(startBalance > ZERO) ? classes.green : (startBalance < ZERO) ? classes.red : ''}>{numberFormat(startBalance, currency)}</div>
                                     </div>
                                     <div className={classes.balanceItem}>
                                         <span>Баланс на конец периода</span>
-                                        <div>{endBalance} {currency}</div>
+                                        <div className={(endBalance > ZERO) ? classes.green : (endBalance < ZERO) ? classes.red : ''}>{numberFormat(endBalance, currency)}</div>
                                     </div>
                                 </div>
                                 <div className={classes.sumItem}>
                                     <div className={classes.balanceItem}>
                                         <span>Доход за период</span>
-                                        <div>{income} {currency}</div>
+                                        <div className={(income > ZERO) ? classes.green : (income < ZERO) ? classes.red : ''}>{numberFormat(income, currency)}</div>
                                     </div>
                                     <div className={classes.balanceItem}>
                                         <span>Расход за период</span>
-                                        <div>{expenses} {currency}</div>
+                                        <div className={(expenses > ZERO) ? classes.red : ''}>{numberFormat(expenses, currency)}</div>
                                     </div>
                                 </div>
                             </div>

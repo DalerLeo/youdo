@@ -155,6 +155,7 @@ const StatAgentList = enhance((props) => {
     const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
     const selectedDate = _.get(location, ['query', DATE]) || currentDate
     const zone = !_.isNull(_.get(location, ['query', 'zone'])) && _.toInteger(_.get(location, ['query', 'zone']))
+    const division = !_.isNull(_.get(location, ['query', 'zone'])) && _.toInteger(_.get(location, ['query', 'division']))
     const search = !_.isNull(_.get(location, ['query', 'search'])) ? _.get(location, ['query', 'search']) : null
 
     const statAgentDialog = {
@@ -186,6 +187,9 @@ const StatAgentList = enhance((props) => {
         search: search,
         zone: {
             value: zone
+        },
+        division: {
+            value: division
         },
         date: {
             fromDate: moment(firstDayOfMonth),
