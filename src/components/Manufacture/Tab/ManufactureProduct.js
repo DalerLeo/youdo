@@ -31,7 +31,7 @@ const listHeader = [
     {
         sorting: false,
         name: 'bom',
-        title: 'BoM',
+        title: 'Оборудование',
         xs: 3
     }
 ]

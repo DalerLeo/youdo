@@ -5,7 +5,7 @@ import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import {Field, reduxForm} from 'redux-form'
-import {ManufactureSearchField} from '../ReduxForm'
+import {ManufactureSearchField, EquipmentSearchField} from '../ReduxForm'
 import CloseIcon2 from '../CloseIcon2'
 import IconButton from 'material-ui/IconButton'
 
@@ -25,11 +25,9 @@ const enhance = compose(
         },
         popUp: {
             color: '#333 !important',
-            overflowY: 'hidden !important',
             fontSize: '13px !important',
             position: 'relative',
             padding: '0 !important',
-            overflowX: 'hidden',
             height: '100%',
             maxHeight: 'none !important',
             marginBottom: '64px'
@@ -52,9 +50,7 @@ const enhance = compose(
             }
         },
         inContent: {
-            display: 'flex',
             minHeight: '100px',
-            overflow: 'auto',
             padding: '10px 30px 0',
             color: '#333'
         },
@@ -124,13 +120,23 @@ const ManufactureChange = enhance((props) => {
                 </div>
                 {error && <div className={classes.error}>Ошибка: {error}</div>}
                 <div className={classes.inContent}>
-                    <Field
-                        name="manufacture"
-                        label="Производство"
-                        className={classes.inputFieldCustom}
-                        component={ManufactureSearchField}
-                        fullWidth={true}/>
-                </div>
+                    <div>
+                        <Field
+                            name="manufacture"
+                            label="Производство"
+                            className={classes.inputFieldCustom}
+                            component={ManufactureSearchField}
+                            fullWidth={true}/>
+                    </div>
+                    <div>
+                        <Field
+                            name="equipment"
+                            label="Оборудование"
+                            className={classes.inputFieldCustom}
+                            component={EquipmentSearchField}
+                            fullWidth={true}/>
+                    </div>
+                    </div>
                 <div className={classes.bottomButton}>
                     <FlatButton
                         label="Сохранить"

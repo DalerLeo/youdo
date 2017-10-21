@@ -467,9 +467,9 @@ const ShopList = enhance((props) => {
             if (!detail || openCreateDialog) {
                 return {}
             }
-            const status = _.get(detail, 'status')
+            const statusCur = _.get(detail, 'status')
             let isActive = 1
-            if (status === false) {
+            if (statusCur === false) {
                 isActive = NOT_ACTIVE
             }
             return {
