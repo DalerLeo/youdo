@@ -276,10 +276,9 @@ const StatSalesGridList = enhance((props) => {
             const secondName = _.get(item, ['user', 'secondName '])
             const totalPrice = _.get(item, 'totalPrice')
             const returnPrice = _.get(item, 'totalReturnedPrice')
-            const paymentDate = moment(_.get(item, 'paymentDate'))
             const totalBalance = _.toNumber(_.get(item, 'totalBalance'))
-            const balanceTooltip = numberFormat(totalBalance, currentCurrency)
 
+            const REQUESTED = 0
             const READY = 1
             const GIVEN = 2
             const DELIVERED = 3
