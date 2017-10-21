@@ -251,8 +251,6 @@ const StatSalesGridList = enhance((props) => {
             const secondName = _.get(item, ['user', 'secondName '])
             const totalPrice = _.get(item, 'totalPrice')
             const paymentType = _.get(item, 'paymentType') === 'cash' ? 'наличный' : 'банковский счет'
-
-
             return (
                 <Row key={id} className="dottedList" style={status === '4' ? {color: '#999'} : {}}>
                     <Col xs={1}><a onClick={() => { statSaleDialog.handleOpenStatSaleDialog(id) }}>{id}</a></Col>

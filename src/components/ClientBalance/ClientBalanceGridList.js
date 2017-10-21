@@ -128,15 +128,19 @@ const enhance = compose(
             'margin-right': ({stat}) => stat ? '-30px' : 'unset'
         },
         leftTable: {
-            display: 'table',
             zIndex: '4',
             width: '350px',
             boxShadow: '5px 0 8px -3px #ccc',
             '& > div': {
+                '&:hover': {
+                    '& > div': {
+                        opacity: '1'
+                    }
+                },
+                position: 'relative',
                 '&:nth-child(odd)': {
                     backgroundColor: '#f4f4f4'
                 },
-                display: 'table-row',
                 height: '40px',
                 '&:nth-child(2)': {
                     height: '39px'
@@ -144,15 +148,12 @@ const enhance = compose(
                 '&:first-child': {
                     backgroundColor: 'white',
                     height: '41px',
-                    '& span': {
-                        borderTop: '1px #efefef solid',
-                        borderBottom: '1px #efefef solid'
-                    }
+                    borderTop: '1px #efefef solid',
+                    borderBottom: '1px #efefef solid'
                 },
                 '& span': {
-                    display: 'table-cell',
-                    verticalAlign: 'middle',
-                    padding: '0 10px 0 30px'
+                    lineHeight: '40px',
+                    paddingLeft: '30px'
                 }
             }
         },
@@ -169,10 +170,14 @@ const enhance = compose(
             width: '120px'
         },
         buttonsWrapper: {
-            padding: '0 30px',
+            opacity: '0',
+            padding: '0 8px',
             display: 'flex !important',
             justifyContent: 'flex-end',
-            alignItems: 'center'
+            alignItems: 'center',
+            position: 'absolute',
+            top: '5px',
+            right: '0'
         },
         inputFieldCustom: {
             fontSize: '13px !important',
@@ -233,7 +238,6 @@ const enhance = compose(
             backgroundColor: '#f2f5f8',
             flexBasis: '250px',
             maxWidth: '250px'
-
         },
         rightPanel: {
             overflowY: 'auto',
@@ -360,6 +364,7 @@ const ClientBalanceGridList = enhance((props) => {
             : <ArrowDownIcon className={classes.icon}/>
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const listLoading = _.get(listData, 'listLoading')
+    const isSuperUser = _.get(superUser, 'isSuperUser')
     const clients = (
         <div className={classes.leftTable}>
             <div><span>Клиент</span></div>
@@ -367,42 +372,33 @@ const ClientBalanceGridList = enhance((props) => {
                 const id = _.get(item, 'id')
                 const name = _.get(item, 'name') || 'No'
                 return (
-                    <div key={id}><span>{name}</span></div>
-                )
-            })}
-        </div>
-    )
-    const buttons = (
-        <div className={classes.rightTable}>
-            <div><span> </span></div>
-            {_.map(_.get(listData, 'data'), (item) => {
-                const id = _.get(item, 'id')
-                return (
-                    <div key={id} className={classes.buttonsWrapper}>
-                        <Tooltip position="bottom" text="Списать">
-                            <IconButton
-                                disableTouchRipple={true}
-                                iconStyle={iconStyle.icon}
-                                style={iconStyle.button}
-                                touch={true}
-                                onTouchTap={() => {
-                                    createDialog.handleOpenCreateDialog(id)
-                                }}>
-                                <Cancel color='#ff584b'/>
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip position="bottom" text="Добавить">
-                            <IconButton
-                                disableTouchRipple={true}
-                                iconStyle={iconStyle.icon}
-                                style={iconStyle.button}
-                                touch={true}
-                                onTouchTap={() => {
-                                    addDialog.handleOpenAddDialog(id)
-                                }}>
-                                <Add color='#8dc572'/>
-                            </IconButton>
-                        </Tooltip>
+                    <div key={id}><span>{name}</span>
+                        {!stat && isSuperUser && <div key={id} className={classes.buttonsWrapper}>
+                            <Tooltip position="bottom" text="Списать">
+                                <IconButton
+                                    disableTouchRipple={true}
+                                    iconStyle={iconStyle.icon}
+                                    style={iconStyle.button}
+                                    touch={true}
+                                    onTouchTap={() => {
+                                        createDialog.handleOpenCreateDialog(id)
+                                    }}>
+                                    <Cancel color='#ff584b'/>
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip position="bottom" text="Добавить">
+                                <IconButton
+                                    disableTouchRipple={true}
+                                    iconStyle={iconStyle.icon}
+                                    style={iconStyle.button}
+                                    touch={true}
+                                    onTouchTap={() => {
+                                        addDialog.handleOpenAddDialog(id)
+                                    }}>
+                                    <Add color='#8dc572'/>
+                                </IconButton>
+                            </Tooltip>
+                        </div>}
                     </div>
                 )
             })}
@@ -464,17 +460,15 @@ const ClientBalanceGridList = enhance((props) => {
             </tbody>
         </table>
     )
-    const isSuperUser = _.get(superUser, 'isSuperUser')
 
     const lists = (
         <div className={classes.tableWrapper} style={!stat ? {marginBottom: 30} : {}}>
             {clients}
             <div className={classes.mainTableWrapper} style={stat
                 ? {width: 'calc(100% - 350px)'}
-                : {width: 'calc(100% - 350px - 120px)'}}>
+                : {width: 'calc(100% - 350px)'}}>
                 {tableList}
             </div>
-            {!stat && isSuperUser && buttons}
         </div>
     )
 
