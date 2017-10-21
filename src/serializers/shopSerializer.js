@@ -79,7 +79,7 @@ export const imageSerializer = (image) => {
         'is_primary': false
     }
 }
-
+const TWO = 2
 export const listFilterSerializer = (data) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
@@ -87,7 +87,7 @@ export const listFilterSerializer = (data) => {
     return {
         'client': _.get(defaultData, 'client'),
         'created_by': _.get(defaultData, 'createdBy'),
-        'is_active': _.get(defaultData, 'isActive'),
+        'is_active': _.toNumber(_.get(defaultData, 'isActive')) === TWO ? false : _.get(defaultData, 'isActive'),
         'frequency': _.get(defaultData, 'frequency'),
         'border': _.get(defaultData, 'zone'),
         'market_type': _.get(defaultData, 'marketType'),

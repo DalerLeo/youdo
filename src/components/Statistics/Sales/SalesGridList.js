@@ -2,6 +2,12 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import _ from 'lodash'
 import {Row, Col} from 'react-flexbox-grid'
+import IconButton from 'material-ui/IconButton'
+import Delivered from 'material-ui/svg-icons/action/done-all'
+import Available from 'material-ui/svg-icons/av/playlist-add-check'
+import Canceled from 'material-ui/svg-icons/notification/do-not-disturb-alt'
+import Transfered from 'material-ui/svg-icons/action/motorcycle'
+import InProcess from 'material-ui/svg-icons/action/cached'
 import * as ROUTES from '../../../constants/routes'
 import Container from '../../Container/index'
 import injectSheet from 'react-jss'
@@ -16,6 +22,7 @@ import moment from 'moment'
 import CircularProgress from 'material-ui/CircularProgress'
 import getConfig from '../../../helpers/getConfig'
 import NotFound from '../../Images/not-found.png'
+import Tooltip from '../../ToolTip'
 import {
     DateToDateField,
     ClientSearchField,
@@ -186,9 +193,26 @@ const enhance = compose(
             textAlign: 'center',
             fontSize: '13px',
             color: '#666'
+        },
+        buttons: {
+            display: 'flex',
+            justifyContent: 'space-around'
         }
     })
 )
+const iconStyle = {
+    icon: {
+        color: '#666',
+        width: 20,
+        height: 20
+    },
+    button: {
+        width: 30,
+        height: 30,
+        padding: 0,
+        zIndex: 0
+    }
+}
 
 const StatSalesGridList = enhance((props) => {
     const {
@@ -237,6 +261,7 @@ const StatSalesGridList = enhance((props) => {
             <Col xs={2}>Агент</Col>
             <Col xs={2} style={{justifyContent: 'flex-end'}}>Возврат</Col>
             <Col xs={2} style={{justifyContent: 'flex-end'}}>Сумма</Col>
+            <Col xs={1} style={{justifyContent: 'flex-end'}}>Cтатус</Col>
         </Row>
     )
 
@@ -251,17 +276,75 @@ const StatSalesGridList = enhance((props) => {
             const secondName = _.get(item, ['user', 'secondName '])
             const totalPrice = _.get(item, 'totalPrice')
             const returnPrice = _.get(item, 'totalReturnedPrice')
+            const paymentDate = moment(_.get(item, 'paymentDate'))
+            const totalBalance = _.toNumber(_.get(item, 'totalBalance'))
+            const balanceTooltip = numberFormat(totalBalance, currentCurrency)
+
+            const READY = 1
+            const GIVEN = 2
+            const DELIVERED = 3
 
             return (
                 <Row key={id} className="dottedList" style={status === '4' ? {color: '#999'} : {}}>
                     <Col xs={1}><a onClick={() => { statSaleDialog.handleOpenStatSaleDialog(id) }}>{id}</a></Col>
                     <Col xs={2}>{createdDate}</Col>
-                    <Col xs={3}>{marketName}</Col>
+                    <Col xs={2}>{marketName}</Col>
                     <Col xs={2}>
                         <div>{firstName} {secondName}</div>
                     </Col>
                     <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(returnPrice, currentCurrency)}</Col>
                     <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(totalPrice, currentCurrency)}</Col>
+                    <Col xs={1} style={{justifyContent: 'flex-end'}}>
+                        <div className={classes.buttons}>
+                            {(status === REQUESTED) ? <Tooltip position="bottom" text="В процессе">
+                                    <IconButton
+                                        disableTouchRipple={true}
+                                        iconStyle={iconStyle.icon}
+                                        style={iconStyle.button}
+                                        touch={true}>
+                                        <InProcess color="#f0ad4e"/>
+                                    </IconButton>
+                                </Tooltip>
+                                : (status === READY) ? <Tooltip position="bottom" text="Есть на складе">
+                                        <IconButton
+                                            disableTouchRipple={true}
+                                            iconStyle={iconStyle.icon}
+                                            style={iconStyle.button}
+                                            touch={true}>
+                                            <Available color="#f0ad4e"/>
+                                        </IconButton>
+                                    </Tooltip>
+
+                                    : (status === DELIVERED) ? <Tooltip position="bottom" text="Доставлен">
+                                            <IconButton
+                                                disableTouchRipple={true}
+                                                iconStyle={iconStyle.icon}
+                                                style={iconStyle.button}
+                                                touch={true}>
+                                                <Delivered color="#81c784"/>
+                                            </IconButton>
+                                        </Tooltip>
+                                        : (status === GIVEN) ? <Tooltip position="bottom" text="Передан доставщику">
+                                                <IconButton
+                                                    disableTouchRipple={true}
+                                                    iconStyle={iconStyle.icon}
+                                                    style={iconStyle.button}
+                                                    touch={true}>
+                                                    <Transfered color="#f0ad4e"/>
+                                                </IconButton>
+                                            </Tooltip>
+                                            : <Tooltip position="bottom" text="Заказ отменен">
+                                                <IconButton
+                                                    disableTouchRipple={true}
+                                                    iconStyle={iconStyle.icon}
+                                                    style={iconStyle.button}
+                                                    touch={true}>
+                                                    <Canceled color='#e57373'/>
+                                                </IconButton>
+                                            </Tooltip>
+                            }
+                        </div>
+                    </Col>
                 </Row>
             )
         })

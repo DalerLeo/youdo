@@ -36,7 +36,8 @@ const enhance = compose(
             padding: '0 !important',
             height: '100%',
             maxHeight: 'unset !important',
-            marginBottom: '64px'
+            marginBottom: '64px',
+            overflowY: 'unset !important'
         },
         titleContent: {
             background: '#fff',
@@ -181,6 +182,7 @@ const enhance = compose(
             fontSize: '13px !important',
             height: '45px !important',
             marginTop: '7px',
+            overflowY: 'unset !important',
             '& div': {
                 fontSize: '13px !important'
             },
@@ -231,7 +233,7 @@ const ManufactureAddProductDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '135px'} : {width: '600px'}}
+            contentStyle={loading ? {width: '135px'} : {width: '600px', overflowY: 'unset !important'}}
             bodyClassName={classes.popUp}>
             <form onSubmit={onSubmit} className={classes.form}>
                 <div className={classes.titleContent}>

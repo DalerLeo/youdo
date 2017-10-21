@@ -5,9 +5,11 @@ import {Row, Col} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import {Field} from 'redux-form'
-import List from 'material-ui/svg-icons/action/list'
 import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
+import InProcess from 'material-ui/svg-icons/action/cached'
+import DoneIcon from 'material-ui/svg-icons/action/done-all'
+import Canceled from 'material-ui/svg-icons/notification/do-not-disturb-alt'
 import StatReturnDialog from './StatReturnDialog'
 import StatSideMenu from '../StatSideMenu'
 import DateToDateField from '../../ReduxForm/Basic/DateToDateField'
@@ -20,6 +22,7 @@ import numberFormat from '../../../helpers/numberFormat'
 import dateFormat from '../../../helpers/dateFormat'
 import getConfig from '../../../helpers/getConfig'
 import {StatisticsFilterExcel, StatisticsChart} from '../../Statistics'
+import Tooltip from '../../ToolTip'
 
 export const STAT_RETURN_FILTER_KEY = {
     FROM_DATE: 'fromDate',
@@ -165,7 +168,24 @@ const enhance = compose(
         }
     })
 )
+const iconStyle = {
+    icon: {
+        color: '#666',
+        width: 20,
+        height: 20
+    },
+    button: {
+        width: 30,
+        height: 30,
+        padding: 0,
+        zIndex: 0
+    }
+}
 
+const PENDING = 0
+const IN_PROGRESS = 1
+const COMPLETED = 2
+const CANCELLED = 3
 const StatReturnGridList = enhance((props) => {
     const {
         classes,
@@ -209,7 +229,7 @@ const StatReturnGridList = enhance((props) => {
             <Col xs={2}>Добавил</Col>
             <Col xs={1}>Дата</Col>
             <Col xs={2} style={{justifyContent: 'flex-end'}}>Сумма возврата</Col>
-            <Col xs={1}>{null}</Col>
+            <Col xs={1}>Статус</Col>
         </Row>
     )
 
@@ -222,8 +242,12 @@ const StatReturnGridList = enhance((props) => {
         const user = _.get(item, ['createdBy', 'firstName']) + ' ' + _.get(item, ['createdBy', 'secondName']) || 'N/A'
         const createdDate = dateFormat(_.get(item, 'createdDate'))
         const totalPrice = numberFormat(_.get(item, 'totalPrice'), currentCurrency)
+        const status = _.toInteger(_.get(item, 'status'))
+
         return (
-            <Row className={classes.listWrapper} key={id}>
+            <Row className={classes.listWrapper} style={{cursor: 'pointer'}} key={id} onTouchTap={() => {
+                statReturnDialog.handleOpenStatReturnDialog(id)
+            }}>
                 <Col xs={1}>{id}</Col>
                 <Col xs={2}>{client}</Col>
                 <Col xs={1}>{order}</Col>
@@ -232,12 +256,39 @@ const StatReturnGridList = enhance((props) => {
                 <Col xs={1} style={{whiteSpace: 'nowrap'}}>{createdDate}</Col>
                 <Col xs={2} style={{justifyContent: 'flex-end'}}>{totalPrice}</Col>
                 <Col xs={1}>
-                    <IconButton
-                    onTouchTap={() => {
-                        statReturnDialog.handleOpenStatReturnDialog(id)
-                    }}>
-                    <List color="#12aaeb"/>
-                </IconButton>
+                    <div className={classes.buttons}>
+                        {(status === PENDING || status === IN_PROGRESS)
+                            ? <Tooltip position="bottom" text="Ожидает">
+                                <IconButton
+                                    disableTouchRipple={true}
+                                    iconStyle={iconStyle.icon}
+                                    style={iconStyle.button}
+                                    touch={true}>
+                                    <InProcess color="#f0ad4e"/>
+                                </IconButton>
+                            </Tooltip>
+                            : (status === COMPLETED)
+                                ? <Tooltip position="bottom" text="Завершен">
+                                    <IconButton
+                                        disableTouchRipple={true}
+                                        iconStyle={iconStyle.icon}
+                                        style={iconStyle.button}
+                                        touch={true}>
+                                        <DoneIcon color="#81c784"/>
+                                    </IconButton>
+                                </Tooltip>
+                                : (status === CANCELLED)
+                                    ? <Tooltip position="bottom" text="Отменен">
+                                        <IconButton
+                                            disableTouchRipple={true}
+                                            iconStyle={iconStyle.icon}
+                                            style={iconStyle.button}
+                                            touch={true}>
+                                            <Canceled color='#e57373'/>
+                                        </IconButton>
+                                    </Tooltip> : null
+                        }
+                    </div>
                 </Col>
             </Row>
         )
