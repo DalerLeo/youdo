@@ -542,18 +542,6 @@ const ShopList = enhance((props) => {
             },
             marketType: {
                 value: marketType
-            },
-            status: {
-                value: status
-            },
-            frequency: {
-                value: frequency
-            },
-            zone: {
-                value: zone
-            },
-            createdBy: {
-                value: createdBy
             }
         },
         filterLoading: false,
