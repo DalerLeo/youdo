@@ -51,6 +51,7 @@ import {openErrorAction} from '../../actions/error'
 
 const ZERO = 0
 const DELETE_TRANSACTION = 'deleteTransaction'
+const UPDATE_TRANSACTION = 'updateTransaction'
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -155,9 +156,12 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
+        const except = {
+            updateTransaction: null
+        }
         const prevCashDetails = (_.get(props, ['location', 'query', TRANSACTION_ACCEPT_CASH_DETAIL_OPEN]))
         const nextCashDetails = (_.get(nextProps, ['location', 'query', TRANSACTION_ACCEPT_CASH_DETAIL_OPEN]))
-        return (prevCashDetails !== nextCashDetails || ((props.filterItem.filterRequest() !== nextProps.filterItem.filterRequest()))) && nextCashDetails !== 'false'
+        return (prevCashDetails !== nextCashDetails || ((props.filterItem.filterRequest(except) !== nextProps.filterItem.filterRequest(except)))) && nextCashDetails !== 'false'
     }, ({dispatch, location, filterItem}) => {
         const cashDetails = (_.get(location, ['query', TRANSACTION_ACCEPT_CASH_DETAIL_OPEN]))
         const user = _.get(location, ['query', 'openUser'])
@@ -165,7 +169,10 @@ const enhance = compose(
         cashDetails && dispatch(pendingTransactionFetchAction(user, currency, filterItem))
     }),
     withPropsOnChange((props, nextProps) => {
-        return (props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest() && _.isNil(nextProps.query.dPage || nextProps.query.dPageSize || props.query.dPage || props.query.dPageSize)) ||
+        const except = {
+            updateTransaction: null
+        }
+        return (props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except) && _.isNil(nextProps.query.dPage || nextProps.query.dPageSize || props.query.dPage || props.query.dPageSize)) ||
             (_.get(props, ['location', 'query', 'cashboxId']) !== _.get(nextProps, ['location', 'query', 'cashboxId']))
     }, ({dispatch, filter, location, isSuperUser}) => {
         const cashboxId = _.get(location, ['query', 'cashboxId'])
@@ -227,7 +234,6 @@ const enhance = compose(
                     return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
                 })
         },
-
         handleOpenFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_FILTER_OPEN]: true})})
@@ -404,71 +410,14 @@ const enhance = compose(
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_UPDATE_EXPENSE_DIALOG_OPEN]: false})})
         },
-
-        handleSubmitUpdateExpenseDialog: props => () => {
-            const {dispatch, createForm, filter, cashboxId} = props
-            const transactionId = _.toInteger(_.get(props, ['params', 'transactionId']))
-            return dispatch(transactionUpdateExpenseAction(transactionId, _.get(createForm, ['values']), cashboxId))
-                .then(() => {
-                    return dispatch(transactionItemFetchAction(transactionId))
-                })
-                .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
-                })
-                .then(() => {
-                    hashHistory.push(filter.createURL({[TRANSACTION_UPDATE_EXPENSE_DIALOG_OPEN]: false}))
-                    dispatch(transactionListFetchAction(filter, cashboxId))
-                })
-                .catch((error) => {
-                    const errorWhole = _.map(error, (item, index) => {
-                        return <p style={{marginBottom: '10px'}}>{(index !== 'non_field_errors') &&
-                        <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
-                    })
-                    dispatch(openErrorAction({
-                        message: <div style={{padding: '0 30px'}}>
-                            {errorWhole}
-                        </div>
-                    }))
-                })
-        },
-
         handleCloseUpdateIncomeDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_UPDATE_INCOME_DIALOG_OPEN]: false})})
         },
-
-        handleSubmitUpdateIncomeDialog: props => () => {
-            const {dispatch, createForm, filter, cashboxId} = props
-            const transactionId = _.toInteger(_.get(props, ['params', 'transactionId']))
-            return dispatch(transactionUpdateIncomeAction(transactionId, _.get(createForm, ['values']), cashboxId))
-                .then(() => {
-                    return dispatch(transactionItemFetchAction(transactionId))
-                })
-                .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
-                })
-                .then(() => {
-                    hashHistory.push(filter.createURL({[TRANSACTION_UPDATE_INCOME_DIALOG_OPEN]: false}))
-                    dispatch(transactionListFetchAction(filter, cashboxId))
-                })
-                .catch((error) => {
-                    const errorWhole = _.map(error, (item, index) => {
-                        return <p style={{marginBottom: '10px'}}>{(index !== 'non_field_errors') &&
-                        <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
-                    })
-                    dispatch(openErrorAction({
-                        message: <div style={{padding: '0 30px'}}>
-                            {errorWhole}
-                        </div>
-                    }))
-                })
-        },
-
         handleOpenCashDialog: props => () => {
             const {location: {pathname}, filterItem} = props
             hashHistory.push({pathname, query: filterItem.getParams({[TRANSACTION_CASH_DIALOG_OPEN]: true})})
         },
-
         handleCloseCashDialog: props => () => {
             const {location: {pathname}, filterItem} = props
             hashHistory.push({
@@ -580,7 +529,7 @@ const enhance = compose(
                 query: filter.getParams({[TRANSACTION_EDIT_PRICE_OPEN]: id})
             })
         },
-        handleCloseSuperUserDialog: props => (id) => {
+        handleCloseSuperUserDialog: props => () => {
             const {dispatch, location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_EDIT_PRICE_OPEN]: false})})
             dispatch(reset('ClientBalanceCreateForm'))
@@ -608,6 +557,66 @@ const enhance = compose(
                     const errorWhole = _.map(error, (item, index) => {
                         return <p key={index}
                                   style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) &&
+                        <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
+                    })
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                            {errorWhole}
+                        </div>
+                    }))
+                })
+        },
+
+        handleOpenUpdateTransaction: props => (id) => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname: pathname, query: filter.getParams({[UPDATE_TRANSACTION]: id})})
+        },
+
+        handleCloseUpdateTransaction: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[UPDATE_TRANSACTION]: false})})
+        },
+        handleSubmitUpdateExpenseDialog: props => () => {
+            const {dispatch, createForm, filter, cashboxId, location: {query}} = props
+            const transactionId = _.toInteger(_.get(query, UPDATE_TRANSACTION))
+            return dispatch(transactionUpdateExpenseAction(transactionId, _.get(createForm, ['values']), cashboxId))
+                .then(() => {
+                    return dispatch(transactionItemFetchAction(transactionId))
+                })
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                })
+                .then(() => {
+                    hashHistory.push(filter.createURL({[UPDATE_TRANSACTION]: false}))
+                    dispatch(transactionListFetchAction(filter, cashboxId))
+                })
+                .catch((error) => {
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p style={{marginBottom: '10px'}}>{(index !== 'non_field_errors') &&
+                        <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
+                    })
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                            {errorWhole}
+                        </div>
+                    }))
+                })
+        },
+        handleSubmitUpdateIncomeDialog: props => () => {
+            const {dispatch, createForm, filter, cashboxId, location: {query, pathname}, filterCashbox} = props
+            const transactionId = _.toInteger(_.get(query, UPDATE_TRANSACTION))
+            return dispatch(transactionUpdateIncomeAction(transactionId, _.get(createForm, ['values']), cashboxId))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                })
+                .then(() => {
+                    hashHistory.push({pathname, query: filter.getParams({[UPDATE_TRANSACTION]: false})})
+                    dispatch(transactionListFetchAction(filter, cashboxId))
+                    dispatch(cashboxListFetchAction(filterCashbox))
+                })
+                .catch((error) => {
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p style={{marginBottom: '10px'}}>{(index !== 'non_field_errors') &&
                         <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
                     })
                     dispatch(openErrorAction({
@@ -659,6 +668,7 @@ const TransactionList = enhance((props) => {
     const openTransactionInfo = _.toInteger(_.get(location, ['query', TRANSACTION_INFO_OPEN]))
     const openSuperUser = _.toInteger(_.get(location, ['query', TRANSACTION_EDIT_PRICE_OPEN])) > ZERO
     const openDeleteTransaction = _.toInteger(_.get(location, ['query', DELETE_TRANSACTION])) > ZERO
+    const openUpdateTransaction = _.toInteger(_.get(location, ['query', UPDATE_TRANSACTION]))
     const categoryExpense = _.toInteger(filter.getParam(TRANSACTION_FILTER_KEY.CATEGORY_EXPENSE))
     const type = _.toInteger(filter.getParam(TRANSACTION_FILTER_KEY.TYPE))
     const fromDate = filter.getParam(TRANSACTION_FILTER_KEY.FROM_DATE)
@@ -673,6 +683,13 @@ const TransactionList = enhance((props) => {
         handleOpenDialog: props.handleOpenCreateExpenseDialog,
         handleCloseDialog: props.handleCloseCreateExpenseDialog,
         handleSubmitDialog: props.handleSubmitCreateExpenseDialog
+    }
+    const updateTransactionDialog = {
+        open: openUpdateTransaction,
+        handleOpenDialog: props.handleOpenUpdateTransaction,
+        handleCloseDialog: props.handleCloseUpdateTransaction,
+        handleIncomeSubmit: props.handleSubmitUpdateIncomeDialog,
+        handleExpenseSumbit: props.handleSubmitUpdateExpenseDialog
     }
 
     const createIncomeDialog = {
@@ -878,6 +895,7 @@ const TransactionList = enhance((props) => {
                 transactionInfoDialog={transactionInfoDialog}
                 superUser={superUser}
                 hasRightCashbox={hasRightCashbox}
+                updateTransactionDialog={updateTransactionDialog}
             />
         </Layout>
     )

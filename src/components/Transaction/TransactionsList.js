@@ -5,6 +5,7 @@ import {Row} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import {Link} from 'react-router'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
+import EditIcon from 'material-ui/svg-icons/editor/mode-edit'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import TransactionFilterForm from './TransactionFilterForm'
@@ -158,9 +159,9 @@ const TransactionsList = enhance((props) => {
         superUser,
         showOnlyList,
         listShadow,
-        hasRightCashbox
+        hasRightCashbox,
+        updateTransactionDialog
     } = props
-
     const transactionFilterDialog = showOnlyList
         ? (<div></div>)
         : (<TransactionFilterForm
@@ -176,6 +177,7 @@ const TransactionsList = enhance((props) => {
     const selectedCashbox = _.find(_.get(cashboxData, 'data'), (o) => {
         return _.toInteger(o.id) === _.toInteger(_.get(cashboxData, 'cashboxId'))
     })
+
     const cashboxName = _.get(cashboxData, 'cashboxId') === AllCashboxId ? 'Общий объем' : _.get(selectedCashbox, 'name')
     const currentCashbox = _.get(cashboxData, 'cashboxId')
     const showCashbox = !toBoolean(currentCashbox && currentCashbox !== ZERO)
@@ -225,6 +227,27 @@ const TransactionsList = enhance((props) => {
             height: 22
         }
     }
+
+    /* Getting currentItem for update purpose from openUpdateTransaction in URL */
+    const currentItem = _.find(listData.data, {'id': updateTransactionDialog.open})
+
+    /* Forming initial value in order to Update Transaction */
+    const TransactionInitialValues = updateTransactionDialog.open ? {
+        cashbox: {
+            value: _.get(currentItem, ['cashbox', 'id'])
+        },
+        amount: _.get(currentItem, 'amount'),
+        date: _.get(currentItem, 'createdDate') ? new Date(_.get(currentItem, 'createdDate')) : null,
+        client: {
+            value: _.get(currentItem, ['client', 'id'])
+        },
+        showClients: _.get(currentItem, ['client']) && true,
+        'custom_rate': _.get(currentItem, 'customRate'),
+        comment: _.get(currentItem, 'comment'),
+        expanseCategory: {
+            value: _.get(currentItem, ['expanseCategory', 'id'])
+        }
+    } : null
 
     const transactionList = _.map(_.get(listData, 'data'), (item) => {
         const zero = 0
@@ -283,13 +306,20 @@ const TransactionsList = enhance((props) => {
                      className={type >= zero ? classes.green : classes.red}>
                     {amount} {currentCurrency}
                 </div>
-                <div style={{width: '5%', textAlign: 'right'}}>
+                <div style={{width: '5%', textAlign: 'right', display: 'flex'}}>
                     <IconButton
                         className={classes.deleteBtn}
                         style={iconStyle.button}
                         iconStyle={iconStyle.icon}
                         onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}>
                         <DeleteIcon/>
+                    </IconButton>
+                    <IconButton
+                        className={classes.deleteBtn}
+                        style={iconStyle.button}
+                        iconStyle={iconStyle.icon}
+                        onTouchTap={() => { updateTransactionDialog.handleOpenDialog(id) }}>
+                        <EditIcon/>
                     </IconButton>
                 </div>
             </Row>
@@ -356,6 +386,20 @@ const TransactionsList = enhance((props) => {
                     loading={createIncomeDialog.loading}
                     onClose={createIncomeDialog.handleCloseDialog}
                     onSubmit={createIncomeDialog.handleSubmitDialog}
+                />
+                <TransactionCreateDialog
+                    isUpdate={true}
+                    initialValues={TransactionInitialValues}
+                    isExpense={Number(_.get(currentItem, 'amount')) < ZERO}
+                    noCashbox={_.get(cashboxData, 'cashboxId') === ZERO}
+                    cashboxData={cashboxData}
+                    open={updateTransactionDialog.open > ZERO}
+                    onClose={updateTransactionDialog.handleCloseDialog}
+                    onSubmit={
+                        Number(_.get(currentItem, 'amount')) < ZERO
+                        ? updateTransactionDialog.handleExpenseSumbit
+                        : updateTransactionDialog.handleIncomeSubmit
+                    }
                 />
 
                 <TransactionSendDialog
