@@ -126,6 +126,10 @@ const filter = (data, pathname, query = {}, newKeys = {}) => {
 
         return createURL({ordering})
     }
+    const clearOrdering = () => {
+        const empty = ''
+        return createURL({'ordering': empty})
+    }
 
     const getCounts = () => itemsCount
 
@@ -245,7 +249,8 @@ const filter = (data, pathname, query = {}, newKeys = {}) => {
         prevPage,
         nextPage,
         pageItemList,
-        hasPagination
+        hasPagination,
+        clearOrdering
     }
 }
 

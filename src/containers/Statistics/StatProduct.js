@@ -28,14 +28,17 @@ const enhance = compose(
         const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
         const searchForm = _.get(state, ['form', 'StatProductForm'])
         const filter = filterHelper(list, pathname, query)
+        const filterItem = filterHelper(list, pathname, query)
         return {
             list,
             listLoading,
             detail,
             detailLoading,
             filter,
+            filterItem,
             filterForm,
-            searchForm
+            searchForm,
+            pathname
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -137,6 +140,7 @@ const StatProductList = enhance((props) => {
                 getDocument={getDocument}
                 filterForm={filterForm}
                 searchSubmit={props.handleSubmitSearch}
+                pathname={_.get(location, 'pathname')}
             />
         </Layout>
     )

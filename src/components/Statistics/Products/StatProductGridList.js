@@ -272,7 +272,8 @@ const StatProductGridList = enhance((props) => {
         getDocument,
         filterForm,
         handleSubmit,
-        searchSubmit
+        searchSubmit,
+        pathname
     } = props
 
     const iconStyle = {
@@ -411,7 +412,8 @@ const StatProductGridList = enhance((props) => {
                                                 if (!header.sorting) {
                                                     return <td>{header.title}</td>
                                                 }
-                                                return <td key={index} style={{cursor: 'pointer'}} onClick={ () => ordering(filter, header.name)}>{header.title}{icon}</td>
+                                                return <td key={index} style={{cursor: 'pointer'}} onClick={ () =>
+                                                    ordering(filter, header.name, pathname)}>{header.title}{icon}</td>
                                             })}
                                         </tr>
                                         {tableList}
