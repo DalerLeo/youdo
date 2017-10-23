@@ -114,6 +114,7 @@ const PlanWeekDayForm = enhance((props) => {
         hashHistory.push(filter.createURL({[MARKET]: null, [UPDATE_PLAN]: false}))
     }
     const comboLoading = _.get(comboPlan, 'combinationLoading')
+    const comboPlanId = _.get(comboPlan, 'comboPlanId')
     const agents = _.get(comboPlan, 'agents')
     return (
         <Paper zDepth={1} className={classes.form}>
@@ -121,11 +122,6 @@ const PlanWeekDayForm = enhance((props) => {
                 <Close onClick={(isUpdate || combo) ? closeUpdateForm : closeForm}/>
             </div>
             <form onSubmit={handleSubmit(onSubmit)}>
-                <div className={classes.title}>Тип плана</div>
-                <Field
-                    name="planType"
-                    isUpdate={isUpdate}
-                    component={PlanTypeRadio}/>
                 {combo &&
                 <div>
                     <div className={classes.title}>Закрепленные агенты</div>
@@ -136,6 +132,11 @@ const PlanWeekDayForm = enhance((props) => {
                         component={PlanChooseAgentsRadio}
                     />
                 </div>}
+                <div className={classes.title}>Тип плана</div>
+                <Field
+                    name="planType"
+                    isUpdate={isUpdate}
+                    component={PlanTypeRadio}/>
                 <div className={classes.title}>Выберите дни</div>
                 {planType === 'week'
                     ? <Field
@@ -152,7 +153,7 @@ const PlanWeekDayForm = enhance((props) => {
                     component={PlanAddPrioritySearchField}/>
                 <div className={classes.submitBtn}>
                     <FlatButton
-                        label={isUpdate ? 'Изменить план' : 'Добавить в план агента'}
+                        label={(isUpdate || comboPlanId) ? 'Изменить план' : 'Добавить в план агента'}
                         backgroundColor="#12aaeb"
                         hoverColor="#12aaeb"
                         type="submit"
@@ -160,7 +161,7 @@ const PlanWeekDayForm = enhance((props) => {
                         fullWidth={true}
                         labelStyle={buttonLabelStyle}
                     />
-                    {isUpdate && <FlatButton
+                    {(isUpdate || comboPlanId) && <FlatButton
                         onTouchTap={() => { setOpenConfirmDialog(true) }}
                         label="Удалить план"
                         backgroundColor="#ff5b57"

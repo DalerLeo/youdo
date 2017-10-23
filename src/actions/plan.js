@@ -5,8 +5,8 @@ import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/planSerializer'
 
-export const planCreateAction = (formValues, query) => {
-    const requestData = serializers.createSerializer(formValues, query)
+export const planCreateAction = (formValues, query, comboChosenAgent) => {
+    const requestData = serializers.createSerializer(formValues, query, comboChosenAgent)
     const payload = axios()
         .post(API.PLAN_CREATE, requestData)
         .then((response) => {
@@ -24,6 +24,23 @@ export const planCreateAction = (formValues, query) => {
 
 export const planUpdateAction = (formValues, query, id) => {
     const requestData = serializers.createSerializer(formValues, query)
+    const payload = axios()
+        .put(sprintf(API.PLAN_UPDATE, id), requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.PLAN_UPDATE_SUBMIT,
+        payload
+    }
+}
+
+export const planComboAction = (formValues, query, id) => {
+    const requestData = serializers.comboSerializer(formValues, query)
     const payload = axios()
         .put(sprintf(API.PLAN_UPDATE, id), requestData)
         .then((response) => {

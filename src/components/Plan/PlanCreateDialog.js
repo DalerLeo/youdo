@@ -506,16 +506,15 @@ const PlanCreateDialog = enhance((props) => {
                                         </Paper>}
                         </div>
 
-                        {(selectedMarket > ZERO && !openUpdatePlan && !openComboPlan) && <div className={(selectedMarket > ZERO && !openUpdatePlan && !openComboPlan) ? classes.addPlan : classes.addPlanHidden}>
+                        <div className={(selectedMarket > ZERO && !openUpdatePlan && !openComboPlan) ? classes.addPlan : classes.addPlanHidden}>
                             <PlanWeekDayForm
-                                initialValues={updatePlan.initialValues}
                                 selectedWeekDay={selectedWeekDay}
                                 createLoading={createPlanLoading}
                                 onSubmit={onSubmit}
                                 filter={filter}
                                 toggleDaysState={toggleDaysState}/>
-                        </div>}
-                        {(selectedMarket > ZERO && openUpdatePlan) && <div className={(selectedMarket > ZERO && openUpdatePlan) ? classes.addPlan : classes.addPlanHidden}>
+                        </div>
+                        <div className={(selectedMarket > ZERO && openUpdatePlan) ? classes.addPlan : classes.addPlanHidden}>
                             <PlanWeekDayForm
                                 updateLoading={updatePlan.updatePlanLoading}
                                 openConfirmDialog={updatePlan.openConfirmDialog}
@@ -524,20 +523,21 @@ const PlanCreateDialog = enhance((props) => {
                                 onSubmit={onUpdateSubmit}
                                 submitDelete={submitDelete}
                                 filter={filter}
-                                initialValues={updatePlan.initialValues}
                                 toggleDaysState={toggleDaysState}/>
-                        </div>}
-                        {(selectedMarket > ZERO && openComboPlan) && <div className={(selectedMarket > ZERO && openComboPlan) ? classes.addPlan : classes.addPlanHidden}>
+                        </div>
+                        <div className={(selectedMarket > ZERO && openComboPlan) ? classes.addPlan : classes.addPlanHidden}>
                             <PlanWeekDayForm
                                 combo={true}
                                 comboPlan={comboPlan}
-                                initialValues={comboPlan.initialValues}
+                                submitDelete={submitDelete}
+                                setOpenConfirmDialog={updatePlan.setOpenConfirmDialog}
+                                openConfirmDialog={updatePlan.openConfirmDialog}
                                 selectedWeekDay={selectedWeekDay}
                                 createLoading={createPlanLoading}
                                 onSubmit={onComboSubmit}
                                 filter={filter}
                                 toggleDaysState={toggleDaysState}/>
-                        </div>}
+                        </div>
                         <div className={isAgentChosen ? classes.map : classes.mapBlurred}>
                             {zoneLoading
                                 ? <div>{null}</div>

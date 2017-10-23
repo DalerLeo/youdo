@@ -11,7 +11,6 @@ import {Field, reduxForm, SubmissionError} from 'redux-form'
 import {connect} from 'react-redux'
 import toCamelCase from '../../helpers/toCamelCase'
 import getConfig from '../../helpers/getConfig'
-import toBoolean from '../../helpers/toBoolean'
 import {convertCurrency} from '../../helpers/convertCurrency'
 import {
     TextField,
@@ -20,9 +19,10 @@ import {
     ClientSearchField,
     normalizeNumber,
     DivisionSearchField,
-    CashboxSearchField,
     DateField
 } from '../ReduxForm'
+
+import CashboxSearchField from '../ReduxForm/Cashbox/CashBoxSimpleSearch'
 import CloseIcon2 from '../CloseIcon2'
 import MainStyles from '../Styles/MainStyles'
 import {openErrorAction} from '../../actions/error'
@@ -158,7 +158,6 @@ const TransactionCreateDialog = enhance((props) => {
         chosenCashbox,
         date
     } = props
-
     const onSubmit = handleSubmit(() => props.onSubmit().catch(props.validate))
     const cashboxId = noCashbox ? chosenCashbox : _.get(cashboxData, 'cashboxId')
     const cashbox = _.find(_.get(cashboxData, 'data'), {'id': cashboxId})
@@ -166,8 +165,6 @@ const TransactionCreateDialog = enhance((props) => {
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const divisionStatus = getConfig('DIVISION')
     const convert = convertCurrency(amount, rate)
-
-    const hasDivisions = toBoolean(getConfig('DIVISIONS'))
     return (
         <Dialog
             modal={true}
@@ -221,7 +218,7 @@ const TransactionCreateDialog = enhance((props) => {
                                         label="Клиент"
                                         className={classes.inputFieldCustom}
                                         fullWidth={true}/>
-                                    {hasDivisions && divisionStatus && <Field
+                                    {divisionStatus && <Field
                                         name="division"
                                         component={DivisionSearchField}
                                         label="Подразделение"
@@ -256,7 +253,7 @@ const TransactionCreateDialog = enhance((props) => {
                                                 fullWidth={true}/>}
                                         </div>
                                 </div>
-                                {(convert)
+                                {(convert && rate && primaryCurrency !== currency)
                                     ? <div className={classes.convert}>После конвертации: <strong>{convert} {primaryCurrency}</strong>
                                     </div> : null}
                                 <Field
@@ -282,7 +279,7 @@ const TransactionCreateDialog = enhance((props) => {
                                         label="Клиент"
                                         className={classes.inputFieldCustom}
                                         fullWidth={true}/>
-                                    {hasDivisions ? <Field
+                                    {divisionStatus ? <Field
                                         name="division"
                                         component={DivisionSearchField}
                                         label="Подразделение"
@@ -312,7 +309,7 @@ const TransactionCreateDialog = enhance((props) => {
                                             fullWidth={true}/> : null}
                                     </div>
                                 </div>
-                                {(convert)
+                                {(convert && rate && primaryCurrency !== currency)
                                     ? <div className={classes.convert}>После конвертации: <strong>{convert} {primaryCurrency}</strong>
                                     </div> : null}
                                 <Field
