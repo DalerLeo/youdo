@@ -605,9 +605,11 @@ const OrderListProductField = enhance((props) => {
                 : <div className={classes.imagePlaceholder}>
                     <div style={{textAlign: 'center', color: '#adadad'}}>
                         <img src={Groceries} alt=""/>
-                        <div>Вы еще не выбрали ни одного товара. <br/> <a onClick={() => dispatch({open: !state.open})}>Добавить</a>
+                        {selectedMarket
+                        ? <div>Вы еще не выбрали ни одного товара. <br/> <a onClick={() => dispatch({open: !state.open})}>Добавить</a>
                             товар?
                         </div>
+                        : <div>Для добавления товаров, <br/> выберите магазин</div>}
                     </div>
                 </div>
             }

@@ -104,7 +104,7 @@ const enhance = compose(
             top: '0',
             left: '0',
             bottom: '0',
-            zIndex: '6'
+            zIndex: '100'
         },
         content: {
             background: '#f2f5f8',
@@ -310,7 +310,7 @@ const Layout = enhance((props) => {
     })
     return (
         <div className={classes.wrapper}>
-            <div className={classes.notifications} style={openNotifications ? {opacity: '1', zIndex: '4'} : {opacity: '0', zIndex: '-99'}}>
+            <div className={classes.notifications} style={openNotifications ? {opacity: '1', zIndex: '100'} : {opacity: '0', zIndex: '-99'}}>
                 <Paper className={classes.notificationsWrapper} zDepth={4}>
                     <div className={classes.header}>
                         <div>Уведомления</div>

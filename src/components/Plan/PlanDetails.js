@@ -44,11 +44,7 @@ const enhance = compose(
             padding: '20px 30px'
         },
         link: {
-            fontWeight: '600',
-            borderBottom: '1px dashed',
-            '&:hover': {
-                border: 'none'
-            }
+            fontWeight: '600'
         },
         loader: {
             width: '100%',
@@ -483,6 +479,7 @@ const PlanDetails = enhance((props) => {
     const factSales = _.get(monthlyPlan, ['data', 'factPrice']) && _.toNumber(_.get(monthlyPlan, ['data', 'factPrice']))
     const planAmount = _.get(monthlyPlan, ['data', 'monthlyPlanAmount']) && _.toNumber(_.get(monthlyPlan, ['data', 'monthlyPlanAmount']))
     const agentHoverText = position + '<br> Наименование зоны'
+    const monthlyPlanTooltip = 'Косметика - 30 000 USD <br> Косметика - 30 000 USD <br> Luna - 12 000 USD <br> Медикаменты - 5 000 USD'
     return (
         <div className={classes.wrapper}>
             {isOpenDetails
@@ -513,12 +510,10 @@ const PlanDetails = enhance((props) => {
                                     <div>
                                         <span>план продаж</span>
                                         {planAmount
-                                            ? <a className={classes.link}
-                                                 onClick={planSalesDialog.handleOpenPlanSales}><big>{numberFormat(planAmount)}</big> {primaryCurrency}
-                                            </a>
-                                            : <a className={classes.link}
-                                                 onClick={planSalesDialog.handleOpenPlanSales}>добавить
-                                            </a>
+                                            ? <Tooltip position="bottom" text={monthlyPlanTooltip}>
+                                                <a className={classes.link} onClick={planSalesDialog.handleOpenPlanSales}><big>{numberFormat(planAmount)}</big> {primaryCurrency}</a>
+                                            </Tooltip>
+                                            : <a className={classes.link} onClick={planSalesDialog.handleOpenPlanSales}>добавить</a>
                                         }
                                     </div>
                                 </div>
