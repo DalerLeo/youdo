@@ -1,5 +1,22 @@
+import _ from 'lodash'
 import React from 'react'
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton'
+import {compose, withPropsOnChange, lifecycle} from 'recompose'
+
+const enhance = compose(
+    withPropsOnChange((props, nextProps) => {
+        const value = _.get(props, ['input', 'value'])
+        const nextValue = _.get(nextProps, ['input', 'value'])
+        return value !== nextValue && nextValue
+    }, () => {
+        return false
+    }),
+    lifecycle({
+        componentWillReceiveProps (nextProps) {
+            return nextProps
+        }
+    })
+)
 
 const radioButtonGroupStyle = {
     display: 'flex',
@@ -7,7 +24,7 @@ const radioButtonGroupStyle = {
     marginBottom: '20px'
 }
 
-const PlanTypeRadio = (props) => {
+const PlanTypeRadio = enhance((props) => {
     const {input, isUpdate} = props
     if (!input.value && isUpdate) {
         return null
@@ -30,6 +47,6 @@ const PlanTypeRadio = (props) => {
             />
         </RadioButtonGroup>
     )
-}
+})
 
 export default PlanTypeRadio
