@@ -188,10 +188,11 @@ const enhance = compose(
 
     // CHANGE FORM VALUES ON TOGGLE AGENTS (COMBO PLAN EDIT)
     withPropsOnChange((props, nextProps) => {
-        const prevAgent = !_.isEmpty(_.get(props, 'combinationDetails'))
-        const nextAgent = !_.isEmpty(_.get(nextProps, 'combinationDetails'))
-
-        return prevAgent !== nextAgent && nextAgent === true
+        const prevAgent = _.get(props, 'comboChosenAgent')
+        const nextAgent = _.get(nextProps, 'comboChosenAgent')
+        const details = _.get(props, 'combinationLoading')
+        const nextDetails = _.get(nextProps, 'combinationLoading')
+        return (prevAgent !== nextAgent && nextAgent > ZERO) || (details !== nextDetails && nextDetails === false)
     }, ({dispatch, combinationDetails, comboChosenAgent, selectedWeekDay}) => {
         const weekdayByAgent = _.find(combinationDetails, (obj) => {
             return obj.agent.id === comboChosenAgent

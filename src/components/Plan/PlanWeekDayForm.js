@@ -116,27 +116,32 @@ const PlanWeekDayForm = enhance((props) => {
     const comboLoading = _.get(comboPlan, 'combinationLoading')
     const comboPlanId = _.get(comboPlan, 'comboPlanId')
     const agents = _.get(comboPlan, 'agents')
+    const loading = createLoading || updateLoading || comboLoading
     return (
         <Paper zDepth={1} className={classes.form}>
             <div className={classes.closeIcon}>
                 <Close onClick={(isUpdate || combo) ? closeUpdateForm : closeForm}/>
             </div>
             <form onSubmit={handleSubmit(onSubmit)}>
-                {combo &&
-                <div>
-                    <div className={classes.title}>Закрепленные агенты</div>
-                    <Field
-                        name="agents"
-                        agents={agents}
-                        data={comboPlan.combinationDetails}
-                        component={PlanChooseAgentsRadio}
-                    />
-                </div>}
+                {combo && comboLoading
+                    ? <div></div>
+                    : combo && !comboLoading &&
+                    <div>
+                        <div className={classes.title}>Закрепленные агенты</div>
+                        <Field
+                            name="agents"
+                            agents={agents}
+                            data={comboPlan.combinationDetails}
+                            component={PlanChooseAgentsRadio}
+                        />
+                    </div>}
                 <div className={classes.title}>Тип плана</div>
-                <Field
+                {loading
+                ? <div>{null}</div>
+                : <Field
                     name="planType"
                     isUpdate={isUpdate}
-                    component={PlanTypeRadio}/>
+                    component={PlanTypeRadio}/>}
                 <div className={classes.title}>Выберите дни</div>
                 {planType === 'week'
                     ? <Field
@@ -189,7 +194,7 @@ const PlanWeekDayForm = enhance((props) => {
                         />
                     </div>
                 </div>}
-                {(createLoading || updateLoading || comboLoading) && <div className={classes.loader}>
+                {loading && <div className={classes.loader}>
                     <Loader size={0.8}/>
                 </div>}
             </form>
