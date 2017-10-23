@@ -37,6 +37,7 @@ import {
     planCombinationAction,
     agentPlansAction
 } from '../../actions/plan'
+import  {divisionListFetchAction} from '../../actions/division'
 import {openSnackbarAction} from '../../actions/snackbar'
 
 const ZERO = 0
@@ -250,8 +251,11 @@ const enhance = compose(
         const prevDialog = toBoolean(_.get(props, ['query', ADD_PLAN]))
         const nextDialog = toBoolean(_.get(nextProps, ['query', ADD_PLAN]))
         return prevDialog !== nextDialog && nextDialog === true
-    }, ({dispatch}) => {
-        dispatch(planZonesListFetchAction())
+    }, ({dispatch, location}) => {
+        const openCreateDialog = toBoolean(_.get(location, ['query', ADD_PLAN]))
+        if (openCreateDialog) {
+            dispatch(planZonesListFetchAction())
+        }
     }),
 
     withPropsOnChange((props, nextProps) => {
