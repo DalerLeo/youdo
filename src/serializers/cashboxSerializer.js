@@ -23,6 +23,7 @@ export const listFilterSerializer = (data) => {
 
     return {
         'name': _.get(defaultData, 'name'),
+        'exclude': _.get(defaultData, 'exclude'),
         'cashier': _.get(defaultData, 'cashier'),
         'type': _.get(defaultData, 'type'),
         'created_date_0': _.get(defaultData, 'fromDate'),
