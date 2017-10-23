@@ -151,7 +151,7 @@ const enhance = compose(
         enableReinitialize: true
     }),
 )
-
+const ZERO = 0
 const StatFinanceGridList = enhance((props) => {
     const {
         graphData,
@@ -188,10 +188,14 @@ const StatFinanceGridList = enhance((props) => {
 
     const fields = (
         <div>
-            <Field className={classes.inputFieldCustom} name="date" component={DateToDateField} label="Диапазон дат" fullWidth={true}/>
-            <Field className={classes.inputFieldCustom} name="categoryExpense" component={ExpensiveCategorySearchField} label="Категории расходов" fullWidth={true}/>
-            <Field className={classes.inputFieldCustom} name="type" component={TransactionTypeSearchField} label="Тип" fullWidth={true}/>
-            <Field className={classes.inputFieldCustom} name="client" component={ClientSearchField} label="Клиент" fullWidth={true}/>
+            <Field className={classes.inputFieldCustom} name="date" component={DateToDateField} label="Диапазон дат"
+                   fullWidth={true}/>
+            <Field className={classes.inputFieldCustom} name="categoryExpense" component={ExpensiveCategorySearchField}
+                   label="Категории расходов" fullWidth={true}/>
+            <Field className={classes.inputFieldCustom} name="type" component={TransactionTypeSearchField} label="Тип"
+                   fullWidth={true}/>
+            <Field className={classes.inputFieldCustom} name="client" component={ClientSearchField} label="Клиент"
+                   fullWidth={true}/>
         </div>
     )
 
@@ -212,36 +216,36 @@ const StatFinanceGridList = enhance((props) => {
                             initialValues={initialValues}
                         />
                         {graphLoading
-                        ? <div className={classes.graphLoader}>
+                            ? <div className={classes.graphLoader}>
                                 <CircularProgress size={40} thickness={4}/>
                             </div>
-                        : <Row className={classes.diagram}>
-                            <Col xs={3} className={classes.salesSummary}>
-                                <div className={classes.mainSummary}>
-                                    <div className={classes.summaryTitle}>Прибыль за период</div>
-                                    <div className={classes.summaryValue}>{numberFormat(profit, primaryCurrency)}</div>
-                                </div>
-                                <div className={classes.secondarySummary}>
-                                    <span className={classes.summaryTitle}>Доход</span>
-                                    <div
-                                        className={classes.summaryValue + ' ' + classes.green}>{numberFormat(sumIn)} {primaryCurrency}</div>
-                                    <div style={{margin: '5px 0'}}> </div>
-                                    <span className={classes.summaryTitle}>Расход</span>
-                                    <div
-                                        className={classes.summaryValue + ' ' + classes.red}>{numberFormat(sumOut)} {primaryCurrency}</div>
-                                </div>
-                            </Col>
-                            <Col xs={9} className={classes.chart}>
-                                <StatisticsChart
-                                    primaryText="Доход"
-                                    secondaryText="Расход"
-                                    primaryValues={valueIn}
-                                    secondaryValues={valueOut}
-                                    tooltipTitle={tooltipDate}
-                                    height={160}
-                                />
-                            </Col>
-                        </Row>}
+                            : <Row className={classes.diagram}>
+                                <Col xs={3} className={classes.salesSummary}>
+                                    <div className={classes.secondarySummary}>
+                                        <span className={classes.summaryTitle}>Приход за период</span>
+                                        <div className={classes.summaryValue}
+                                             style={{color: '#5ecdea'}}>{numberFormat(sumIn)} {primaryCurrency}</div>
+                                        <div style={{margin: '10px 0'}}>{null}</div>
+                                        <span className={classes.summaryTitle}>Расход за период</span>
+                                        <div className={classes.summaryValue}
+                                             style={{color: '#EB9696'}}>{numberFormat(sumOut)} {primaryCurrency}</div>
+                                        <div style={{margin: '10px 0'}}>{null}</div>
+                                        <span className={classes.summaryTitle}>Разница</span>
+                                        <div className={classes.summaryValue}
+                                             style={profit >= ZERO ? {color: '#71ce87'} : {color: '#EB9696'}}>{numberFormat(profit)} {primaryCurrency}</div>
+                                    </div>
+                                </Col>
+                                <Col xs={9} className={classes.chart}>
+                                    <StatisticsChart
+                                        primaryText="Доход"
+                                        secondaryText="Расход"
+                                        primaryValues={valueIn}
+                                        secondaryValues={valueOut}
+                                        tooltipTitle={tooltipDate}
+                                        height={160}
+                                    />
+                                </Col>
+                            </Row>}
                         <TransactionsList
                             filter={filter}
                             handleSubmitFilterDialog={handleSubmitFilterDialog}

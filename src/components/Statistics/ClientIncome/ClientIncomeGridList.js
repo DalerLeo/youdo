@@ -390,7 +390,7 @@ const ClientIncomeGridList = enhance((props) => {
                                         <div className={classes.summaryValue}
                                              style={{color: '#5ecdea'}}>{numberFormat(sumIn)} {primaryCurrency}</div>
                                         <div style={{margin: '10px 0'}}>{null}</div>
-                                        <span className={classes.summaryTitle}>Расход за период</span>
+                                        <span className={classes.summaryTitle}>Продажа за период</span>
                                         <div className={classes.summaryValue}
                                              style={{color: '#EB9696'}}>{numberFormat(sumOut)} {primaryCurrency}</div>
                                         <div style={{margin: '10px 0'}}>{null}</div>

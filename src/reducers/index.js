@@ -197,10 +197,11 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.USER_SHIFT_UPDATE),
         item: createThunkReducer(actionTypes.USER_SHIFT_ITEM)
     }),
-    notifications: combineReducers({
-        list: createThunkReducer(actionTypes.NOTIFICATIONS_LIST),
-        item: createThunkReducer(actionTypes.NOTIFICATFIONS_ITEM),
-        timeInterval: createThunkReducer((actionTypes.NOTIFICATIONS_TIME_INTERVAL))
+    notificationTemplate: combineReducers({
+        list: createThunkReducer(actionTypes.NOTIFICATION_TEMPLATE_LIST),
+        item: createThunkReducer(actionTypes.NOTIFICATION_TEMPLATE_ITEM),
+        update: createThunkReducer(actionTypes.NOTIFICATION_TEMPLATE_UPDATE),
+        timeInterval: createThunkReducer((actionTypes.NOTIFICATION_TEMPLATE_TIME_INTERVAL))
     }),
     pendingExpenses: combineReducers({
         create: createThunkReducer(actionTypes.PENDING_EXPENSES_CREATE),

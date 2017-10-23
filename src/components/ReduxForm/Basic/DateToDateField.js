@@ -18,6 +18,7 @@ const x = new Date()
 const TODAY = x.getDate()
 const MONTH = x.getMonth()
 const ZERO = 0
+const ONE = 1
 const TWO = 2
 const FOUR = 4
 const SIX = 6
@@ -56,6 +57,14 @@ const range = {
         }
     },
 
+    'Текущий месяц': {
+        startDate: (now) => {
+            return now.add((TODAY * MINUS_ONE) + ONE, 'days')
+        },
+        endDate: (now) => {
+            return now
+        }
+    },
     'Последние 30 дней': {
         startDate: (now) => {
             return now.add(MINUS_THIRTY, 'days')

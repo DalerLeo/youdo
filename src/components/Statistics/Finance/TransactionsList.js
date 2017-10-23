@@ -92,6 +92,7 @@ const enhance = compose(
     }),
 )
 
+const ZERO = 0
 const TransactionsList = enhance((props) => {
     const {
         classes,
@@ -123,7 +124,10 @@ const TransactionsList = enhance((props) => {
     const list = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const date = dateFormat(_.get(item, 'createdDate'))
-        const amount = numberFormat(_.get(item, 'amount'), primaryCurrency)
+        const amount = _.get(item, 'amount')
+        const currency = _.get(item, 'currency')
+        const internal = _.toNumber(_.get(item, 'internal'))
+        const customRate = _.get(item, 'customRate') ? _.toInteger(_.get(item, 'customRate')) : _.toInteger(amount / internal)
         const comment = _.get(item, 'comment')
         const cashbox = _.get(item, ['cashbox', 'name'])
         const order = _.get(item, 'order')
@@ -164,7 +168,13 @@ const TransactionsList = enhance((props) => {
                     }
                     {comment && <div><strong>Комментарий:</strong> {comment}</div>}
                 </Col>
-                <Col xs={3} style={{textAlign: 'right'}}>{amount}</Col>
+                <Col xs={3} style={{textAlign: 'right'}}>
+                    <div className={amount > ZERO ? 'greenFont' : (amount === ZERO ? '' : 'redFont')}>
+                        <span>{numberFormat(amount, currency)}</span>
+                        {primaryCurrency !== currency && <div>{numberFormat(internal, primaryCurrency)} <span
+                            style={{fontSize: 11, color: '#666', fontWeight: 600}}>({customRate})</span></div>}
+                    </div>
+                </Col>
             </Row>
         )
     })

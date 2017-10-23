@@ -284,6 +284,8 @@ const StatMarketGridList = enhance((props) => {
     const sumIncome = _.get(listData, ['sumData', 'income'])
     const sumFact = _.get(listData, ['sumData', 'fact'])
     const sumReturn = _.get(listData, ['sumData', 'returnSum'])
+    const paid = _.get(listData, ['sumData', 'paid']) || ''
+    const dept = _.get(listData, ['sumData', 'dept'])
     const sumLoading = _.get(listData, 'sumLoading')
     const headerStyle = {
         backgroundColor: '#fff',
@@ -304,11 +306,13 @@ const StatMarketGridList = enhance((props) => {
 
     const headers = (
         <Row style={headerStyle} className="dottedList">
-            <Col xs={3}>Магазины</Col>
+            <Col xs={2}>Магазины</Col>
             <Col xs={2}>Клиенты</Col>
             <Col xs={2} style={{justifyContent: 'flex-end'}}>Продажи</Col>
             <Col xs={2} style={{justifyContent: 'flex-end'}}>Возвраты</Col>
-            <Col xs={2} style={{justifyContent: 'flex-end'}}>Фактически</Col>
+            <Col xs={1} style={{justifyContent: 'flex-end'}}>Фактически</Col>
+            <Col xs={1} style={{justifyContent: 'flex-end'}}>Оплачено</Col>
+            <Col xs={1} style={{justifyContent: 'flex-end'}}>Долг</Col>
             <Col xs={1}>{null}</Col>
         </Row>
     )
@@ -318,6 +322,8 @@ const StatMarketGridList = enhance((props) => {
         const name = _.get(item, 'name')
         const income = _.toNumber(_.get(item, 'income'))
         const actual = _.toNumber(_.get(item, 'actualSales'))
+        const paidItem = _.get(item, 'paid') || '0 USD'
+        const deptItem = _.get(item, 'dept') || '0 USD'
         const returns = _.toNumber(_.get(item, 'orderReturns'))
         const clientName = _.get(item, 'clientName')
 
@@ -325,13 +331,13 @@ const StatMarketGridList = enhance((props) => {
             return (
                 <div key={index} className={classes.details}>
                     <Row>
-                        <Col xs={3}>
-                            <span>{name}</span>
-                        </Col>
+                        <Col xs={2}>{name}</Col>
                         <Col xs={2}>{clientName}</Col>
                         <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(income, primaryCurrency)}</Col>
                         <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(returns, primaryCurrency)}</Col>
-                        <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(actual, primaryCurrency)}</Col>
+                        <Col xs={1} style={{justifyContent: 'flex-end'}}>{numberFormat(actual, primaryCurrency)}</Col>
+                        <Col xs={1} style={{justifyContent: 'flex-end'}}>{numberFormat(paidItem, primaryCurrency)}</Col>
+                        <Col xs={1} style={{justifyContent: 'flex-end'}}>{numberFormat(deptItem, primaryCurrency)}</Col>
                         <div className={classes.closeDetail} onClick={detailData.handleCloseDetail}>{null}</div>
                         <Col xs={1}>{null}</Col>
                     </Row>
@@ -352,13 +358,15 @@ const StatMarketGridList = enhance((props) => {
 
         return (
             <Row key={index} className="dottedList">
-                <Col xs={3}>
+                <Col xs={2}>
                     <span>{name}</span>
                 </Col>
                 <Col xs={2}>{clientName}</Col>
                 <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(income, primaryCurrency)}</Col>
                 <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(returns, primaryCurrency)}</Col>
-                <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(actual, primaryCurrency)}</Col>
+                <Col xs={1} style={{justifyContent: 'flex-end'}}>{numberFormat(actual, primaryCurrency)}</Col>
+                <Col xs={1} style={{justifyContent: 'flex-end'}}>{numberFormat(paid, primaryCurrency)}</Col>
+                <Col xs={1} style={{justifyContent: 'flex-end'}}>{numberFormat(dept, primaryCurrency)}</Col>
                 <Col xs={1} style={{justifyContent: 'flex-end', paddingRight: '0'}}>
                     <IconButton
                         onTouchTap={() => { detailData.handleOpenDetail(id) }}>
@@ -419,6 +427,14 @@ const StatMarketGridList = enhance((props) => {
                                 <div>
                                     <span>Сумма возвратов</span>
                                     <div>{numberFormat(sumReturn, primaryCurrency)}</div>
+                                </div>
+                                <div>
+                                    <span>Оплачено</span>
+                                    <div>{numberFormat(paid, primaryCurrency)}</div>
+                                </div>
+                                <div>
+                                    <span>Долг</span>
+                                    <div>{numberFormat(dept, primaryCurrency)}</div>
                                 </div>
                             </div>}
                         <div className={classes.pagination}>

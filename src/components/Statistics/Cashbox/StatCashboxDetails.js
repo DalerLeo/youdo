@@ -283,7 +283,7 @@ const StatCashboxDetails = enhance((props) => {
                                 </div>
                                 <div className={classes.sumItem}>
                                     <div className={classes.balanceItem}>
-                                        <span>Доход за период</span>
+                                        <span>Приход за период</span>
                                         <div className={(income > ZERO) ? classes.green : (income < ZERO) ? classes.red : ''}>{numberFormat(income, currency)}</div>
                                     </div>
                                     <div className={classes.balanceItem}>
