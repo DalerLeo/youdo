@@ -77,7 +77,7 @@ const SettingSideMenu = enhance((props) => {
                 {name: 'Подразделение', url: ROUTES.DIVISION_LIST_URL},
                 {name: 'Объединение', url: ROUTES.JOIN_LIST_URL},
                 {name: 'Доступы', url: ROUTES.PERMISSION_LIST_URL},
-                {name: 'Уведомление', url: ROUTES.NOTIFICATION_LIST_URL}
+                {name: 'Уведомление', url: ROUTES.NOTIFICATION_TEMPLATE_LIST_URL}
 
             ]
         }

@@ -202,11 +202,6 @@ const enhance = compose(
                     }
                 }
             })
-            const fields = ['editAmount']
-            for (let i = 0; i < fields.length; i++) {
-                let newChange = _.get(props, [fields[i], 'input', 'onChange'])
-                props.dispatch(newChange(null))
-            }
             setEditItem(null)
         },
 
