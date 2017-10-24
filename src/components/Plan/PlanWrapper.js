@@ -379,6 +379,8 @@ const PlanWrapper = enhance((props) => {
             />
 
             <PlanSalesDialog
+                divisions={planSalesDialog.divisions}
+                divisionsLoading={planSalesDialog.divisionsLoading}
                 loading={planSalesDialog.monthlyPlanCreateLoading}
                 open={planSalesDialog.openPlanSales}
                 onClose={planSalesDialog.handleClosePlanSales}
@@ -407,6 +409,8 @@ PlanWrapper.PropTypes = {
         handleSubmitAddPlan: PropTypes.func.isRequired
     }).isRequired,
     planSalesDialog: PropTypes.shape({
+        divisions: PropTypes.array,
+        divisionsLoading: PropTypes.bool,
         openPlanSales: PropTypes.bool.isRequired,
         monthlyPlanCreateLoading: PropTypes.bool.isRequired,
         handleOpenPlanSales: PropTypes.func.isRequired,

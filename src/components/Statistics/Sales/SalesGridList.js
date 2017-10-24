@@ -257,9 +257,9 @@ const StatSalesGridList = enhance((props) => {
         <Row style={headerStyle} className="dottedList">
             <Col xs={1}>№ Сделки</Col>
             <Col xs={2}>Дата</Col>
-            <Col xs={3}>Магазин</Col>
+            <Col xs={2}>Магазин</Col>
             <Col xs={2}>Агент</Col>
-            <Col xs={2} style={{justifyContent: 'flex-end'}}>Тип оплаты</Col>
+            <Col xs={2}>Тип оплаты</Col>
             <Col xs={2} style={{justifyContent: 'flex-end'}}>Сумма</Col>
             <Col xs={1} style={{justifyContent: 'flex-end'}}>Cтатус</Col>
         </Row>
@@ -268,7 +268,7 @@ const StatSalesGridList = enhance((props) => {
     const currentCurrency = getConfig('PRIMARY_CURRENCY')
     const list = (
         _.map(_.get(listData, 'data'), (item) => {
-            const status = _.get(item, 'status')
+            const status = _.toInteger(_.get(item, 'status'))
             const marketName = _.get(item, ['market', 'name'])
             const id = _.get(item, 'id')
             const createdDate = moment(_.get(item, 'createdDate')).locale('ru').format('DD MMM YYYY HH:MM')
@@ -279,16 +279,17 @@ const StatSalesGridList = enhance((props) => {
             const READY = 1
             const GIVEN = 2
             const DELIVERED = 3
+            const CANCELED = 4
             const paymentType = _.get(item, 'paymentType') === 'cash' ? 'наличный' : 'банковский счет'
             return (
-                <Row key={id} className="dottedList" style={status === '4' ? {color: '#999'} : {}}>
+                <Row key={id} className="dottedList" style={status === CANCELED ? {color: '#999'} : {}}>
                     <Col xs={1}><a onClick={() => { statSaleDialog.handleOpenStatSaleDialog(id) }}>{id}</a></Col>
                     <Col xs={2}>{createdDate}</Col>
                     <Col xs={2}>{marketName}</Col>
                     <Col xs={2}>
                         <div>{firstName} {secondName}</div>
                     </Col>
-                    <Col xs={2} style={{justifyContent: 'flex-end'}}>{paymentType}</Col>
+                    <Col xs={2}>{paymentType}</Col>
                     <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(totalPrice, currentCurrency)}</Col>
                     <Col xs={1} style={{justifyContent: 'flex-end'}}>
                         <div className={classes.buttons}>

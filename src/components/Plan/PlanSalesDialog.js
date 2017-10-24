@@ -5,7 +5,7 @@ import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import getConfig from '../../helpers/getConfig'
@@ -112,6 +112,15 @@ const enhance = compose(
                 }
             }
         },
+        division: {
+            display: 'flex',
+            alignItems: 'baseline',
+            justifyContent: 'space-between',
+            '& > div:first-child': {
+                width: '50%',
+                fontWeight: '600'
+            }
+        },
         list: {
             '& .row': {
                 padding: '10px 0',
@@ -187,7 +196,7 @@ const inputStyle = {
 }
 
 const PlanSalesDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes} = props
+    const {open, loading, handleSubmit, onClose, classes, divisions, divisionsLoading} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     return (
@@ -196,7 +205,7 @@ const PlanSalesDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '300px'} : {width: '360px'}}
+            contentStyle={(loading || divisionsLoading) ? {width: '300px'} : {width: '400px'}}
             bodyStyle={{minHeight: '100px !important'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
@@ -208,24 +217,28 @@ const PlanSalesDialog = enhance((props) => {
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit} className={classes.form} style={{minHeight: 'auto'}}>
                     <div className={classes.loader}>
-                        <CircularProgress size={40} thickness={4}/>
+                        <Loader size={0.75}/>
                     </div>
                     <div className={classes.inContent} style={{minHeight: '120px'}}>
-                        <div className={classes.flexInline}>
-                            <span>Сумма плана продаж</span>
-                            <Field
-                                name="amount"
-                                component={TextField}
-                                className={classes.inputFieldSimple}
-                                style={{width: '100px'}}
-                                normalize={normalizeNumber}
-                                hintText="0.00"
-                                hintStyle={inputStyle.hint}
-                                inputStyle={inputStyle.input}
-                            />
-                            <span>{primaryCurrency}</span>
-                        </div>
-
+                        {_.map(divisions, (item) => {
+                            const id = _.get(item, 'id')
+                            const name = _.get(item, 'name')
+                            return (
+                                <div key={id} className={classes.division}>
+                                    <div>{name}</div>
+                                    <Field
+                                        name={'divisions[' + id + '][amount]'}
+                                        component={TextField}
+                                        className={classes.inputFieldSimple}
+                                        style={{width: '100px'}}
+                                        normalize={normalizeNumber}
+                                        hintText="0.00"
+                                        hintStyle={inputStyle.hint}
+                                        inputStyle={inputStyle.input}/>
+                                    <div>{primaryCurrency}</div>
+                                </div>
+                            )
+                        })}
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton

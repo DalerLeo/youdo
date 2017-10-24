@@ -37,6 +37,7 @@ import {
     planCombinationAction,
     agentPlansAction
 } from '../../actions/plan'
+import {divisionListFetchAction} from '../../actions/division'
 import {openSnackbarAction} from '../../actions/snackbar'
 
 const ZERO = 0
@@ -55,6 +56,8 @@ const enhance = compose(
         const detailLoading = _.get(state, ['users', 'item', 'loading'])
         const zones = _.get(state, ['zone', 'list', 'data'])
         const zonesLoading = _.get(state, ['zone', 'list', 'loading'])
+        const divisions = _.get(state, ['division', 'list', 'data', 'results'])
+        const divisionsLoading = _.get(state, ['division', 'list', 'loading'])
         const zoneDetail = _.get(state, ['zone', 'item', 'data'])
         const zoneDetailLoading = _.get(state, ['zone', 'item', 'loading'])
         const zoneAgents = _.get(state, ['plan', 'agentsPlan', 'data'])
@@ -95,6 +98,8 @@ const enhance = compose(
             detailLoading,
             zones,
             zonesLoading,
+            divisions,
+            divisionsLoading,
             zoneDetail,
             zoneDetailLoading,
             zoneAgents,
@@ -137,6 +142,19 @@ const enhance = compose(
         const hasPlan = _.get(marketData, 'hasPlan')
         if (hasPlan) {
             dispatch(planCombinationAction(market))
+        }
+    }),
+
+    // DIVISIONS LIST
+    withPropsOnChange((props, nextProps) => {
+        const prevSalesDialog = toBoolean(_.get(props, ['query', OPEN_PLAN_SALES]))
+        const nextSalesDialog = toBoolean(_.get(nextProps, ['query', OPEN_PLAN_SALES]))
+
+        return prevSalesDialog !== nextSalesDialog && nextSalesDialog === true
+    }, ({dispatch, filter, location}) => {
+        const openSalesDialog = toBoolean(_.get(location, ['query', OPEN_PLAN_SALES]))
+        if (openSalesDialog) {
+            dispatch(divisionListFetchAction(filter))
         }
     }),
 
@@ -250,8 +268,11 @@ const enhance = compose(
         const prevDialog = toBoolean(_.get(props, ['query', ADD_PLAN]))
         const nextDialog = toBoolean(_.get(nextProps, ['query', ADD_PLAN]))
         return prevDialog !== nextDialog && nextDialog === true
-    }, ({dispatch}) => {
-        dispatch(planZonesListFetchAction())
+    }, ({dispatch, location}) => {
+        const openCreateDialog = toBoolean(_.get(location, ['query', ADD_PLAN]))
+        if (openCreateDialog) {
+            dispatch(planZonesListFetchAction())
+        }
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -503,6 +524,8 @@ const PlanList = enhance((props) => {
         statLoading,
         detail,
         detailLoading,
+        divisions,
+        divisionsLoading,
         zones,
         zonesLoading,
         zoneDetail,
@@ -624,6 +647,8 @@ const PlanList = enhance((props) => {
     }
 
     const planSalesDialog = {
+        divisions,
+        divisionsLoading,
         openPlanSales,
         monthlyPlanCreateLoading,
         handleOpenPlanSales: props.handleOpenPlanSales,
