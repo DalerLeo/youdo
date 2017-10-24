@@ -294,6 +294,7 @@ const ShopCreateDialog = enhance((props) => {
                                 <div className={classes.inputHalfWrap}>
                                     <Field
                                         name="frequency"
+                                        label="Выберите"
                                         component={VisitFrequencySearchField}
                                         className={classes.inputFieldCustom}
                                         hintText="Ежедневно"
@@ -305,6 +306,7 @@ const ShopCreateDialog = enhance((props) => {
                                 <div className={classes.inputHalfWrap}>
                                     <Field
                                         name="status"
+                                        label="Выберите"
                                         component={ShopStatusSearchField}
                                         className={classes.inputFieldCustom}
                                         hintText="Активен"

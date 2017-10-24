@@ -243,7 +243,8 @@ const OrderCreateDialog = enhance((props) => {
         filter,
         clientId,
         loading,
-        orderProducts
+        orderProducts,
+        isSuperUser
     } = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const totalCost = _.sumBy(orderProducts, (item) => {
@@ -342,13 +343,13 @@ const OrderCreateDialog = enhance((props) => {
                                         name="paymentType"
                                         component={OrderPaymentTypeRadio}
                                     />
-                                    <Field
+                                    {isSuperUser && <Field
                                         name="user"
                                         component={UsersSearchField}
                                         className={classes.inputFieldCustom}
                                         label="Агент"
                                         selectFieldScroll={selectFieldScroll}
-                                        fullWidth={true}/>
+                                        fullWidth={true}/>}
                                     <Field
                                         name="paymentDate"
                                         component={DateField}

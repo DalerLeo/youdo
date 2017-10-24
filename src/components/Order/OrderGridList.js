@@ -180,7 +180,8 @@ const OrderGridList = enhance((props) => {
         canChangeAnyPrice,
         handleSubmitDiscountDialog,
         handleSubmitSetZeroDiscountDialog,
-        clientId
+        clientId,
+        isSuperUser
     } = props
 
     const orderFilterDialog = (
@@ -387,6 +388,7 @@ const OrderGridList = enhance((props) => {
                 products={products}
                 filter={filter}
                 clientId={clientId}
+                isSuperUser={isSuperUser}
             />
 
             <OrderShortageDialog

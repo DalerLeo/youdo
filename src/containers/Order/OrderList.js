@@ -80,6 +80,7 @@ const enhance = compose(
         const defaultUser = _.get(state, ['authConfirm', 'data', 'id'])
         const selectedProduct = _.get(state, ['form', 'OrderCreateForm', 'values', 'product', 'value'])
         const paymentType = _.get(state, ['form', 'OrderCreateForm', 'values', 'paymentType'])
+        const isSuperUser = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
 
         return {
             list,
@@ -110,7 +111,8 @@ const enhance = compose(
             discountCreateForm,
             defaultUser,
             selectedProduct,
-            paymentType
+            paymentType,
+            isSuperUser
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -560,7 +562,8 @@ const OrderList = enhance((props) => {
         listPrint,
         listPrintLoading,
         userGroups,
-        defaultUser
+        defaultUser,
+        isSuperUser
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', ORDER_FILTER_OPEN]))
@@ -850,6 +853,7 @@ const OrderList = enhance((props) => {
                 canChangeAnyPrice={canChangeAnyPrice}
                 handleSubmitDiscountDialog={props.handleSubmitDiscountDialog}
                 handleSubmitSetZeroDiscountDialog={props.handleSubmitSetZeroDiscountDialog}
+                isSuperUser={isSuperUser}
             />
         </Layout>
     )
