@@ -21,6 +21,23 @@ export const statSalesDataFetchAction = (filter, withOrderReturn) => {
     }
 }
 
+export const statSalesReturnDataFetchAction = (filter) => {
+    const params = serializers.returnGraphSerializer(filter.getParams())
+    const payload = axios()
+        .get(API.STAT_RETURN_LIST, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STAT_RETURN_LIST,
+        payload
+    }
+}
+
 export const orderListFetchAction = (filter, withOrderReturn) => {
     const params = serializers.orderListFilterSerializer(filter.getParams(), withOrderReturn)
     const payload = axios()

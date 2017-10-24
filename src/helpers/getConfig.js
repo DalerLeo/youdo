@@ -15,18 +15,18 @@ const setConfigs = (configs) => {
 }
 
 const getConfig = (text) => {
-    if (getStorage(false).getItem(text)) {
-        return getStorage(false).getItem(text)
+    const value = getStorage(false).getItem(text)
+    if (_.isEmpty(value)) {
+        axios()
+            .get(API.CONFIG)
+            .then((response) => {
+                setConfigs(_.get(response, 'data'))
+            })
+            .catch((error) => {
+                return Promise.reject(_.get(error, ['response', 'data']))
+            })
     }
-    axios()
-        .get(API.CONFIG)
-        .then((response) => {
-            setConfigs(_.get(response, 'data'))
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-    return getStorage(false).getItem(text)
+    return value
 }
 
 export default getConfig

@@ -14,15 +14,15 @@ import getDocuments from '../../helpers/getDocument'
 import {StatReturnGridList, STAT_RETURN_DIALOG_OPEN} from '../../components/Statistics'
 import {STAT_RETURN_FILTER_KEY} from '../../components/Statistics/Return/StatReturnGridList'
 import * as API from '../../constants/api'
-import {statReturnDataFetchAction} from '../../actions/statReturn'
+import {returnDataSumFetchAction} from '../../actions/statReturn'
 import {returnListFetchAction, returnItemFetchAction} from '../../actions/return'
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
         const detail = _.get(state, ['return', 'item', 'data'])
-        const graphList = _.get(state, ['statReturn', 'data', 'data'])
-        const graphLoading = _.get(state, ['statReturn', 'data', 'loading'])
+        const graphList = _.get(state, ['statReturn', 'list', 'data'])
+        const graphLoading = _.get(state, ['statReturn', 'list', 'loading'])
         const detailLoading = _.get(state, ['return', 'item', 'loading'])
         const list = _.get(state, ['return', 'list', 'data'])
         const listLoading = _.get(state, ['return', 'list', 'loading'])
@@ -50,7 +50,7 @@ const enhance = compose(
             (props.query.toDate !== nextProps.query.toDate) ||
             (props.query.division !== nextProps.query.division)
     }, ({dispatch, filter}) => {
-        dispatch(statReturnDataFetchAction(filter))
+        dispatch(returnDataSumFetchAction(filter))
     }),
     withPropsOnChange((props, nextProps) => {
         const returnId = _.get(nextProps, ['params', 'statReturnId'])

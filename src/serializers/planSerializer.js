@@ -38,6 +38,16 @@ export const monthlyPlanSerializer = (data, query, user) => {
     })
 }
 
+export const monthlyPlanItemSerializer = (query, user) => {
+    const year = moment(_.get(query, 'date')).format('YYYY') || moment().format('YYYY')
+    const month = moment(_.get(query, 'date')).format('M') || moment().format('M')
+    return {
+        user,
+        year,
+        month
+    }
+}
+
 export const agentMonthlyPlanSerializer = (query, user) => {
     const year = moment(_.get(query, 'date')).format('YYYY') || moment().format('YYYY')
     const month = moment(_.get(query, 'date')).format('M') || moment().format('M')

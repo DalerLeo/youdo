@@ -16,7 +16,8 @@ import moment from 'moment'
 import {
     StatAgentGridList,
     STAT_AGENT_DIALOG_OPEN,
-    DATE
+    BEGIN_DATE,
+    END_DATE
 } from '../../components/Statistics'
 import {STAT_AGENT_FILTER_KEY} from '../../components/Statistics/Agents/StatAgentGridList'
 import {
@@ -38,7 +39,8 @@ const enhance = compose(
         const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
         const filter = filterHelper(list, pathname, query)
         const filterItem = filterHelper(detail, pathname, query, {'page': 'dPage', 'pageSize': 'dPageSize'})
-        const selectedDate = _.get(query, DATE) || defaultDate
+        const beginDate = _.get(query, BEGIN_DATE) || defaultDate
+        const endDate = _.get(query, END_DATE) || defaultDate
 
         return {
             list,
@@ -49,7 +51,8 @@ const enhance = compose(
             query,
             filterForm,
             filterItem,
-            selectedDate
+            beginDate,
+            endDate
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -118,18 +121,32 @@ const enhance = compose(
             const params = serializers.listFilterSerializer(filter.getParams())
             getDocuments(API.STAT_AGENT_GET_DOCUMENT, params)
         },
-        handlePrevMonth: props => () => {
-            const {location: {pathname}, filter, selectedDate} = props
-            const prevMonth = moment(selectedDate).subtract(ONE, 'month')
+        handlePrevMonthBegin: props => () => {
+            const {location: {pathname}, filter, beginDate} = props
+            const prevMonth = moment(beginDate).subtract(ONE, 'month')
             const dateForURL = prevMonth.format('YYYY-MM')
-            hashHistory.push({pathname, query: filter.getParams({[DATE]: dateForURL})})
+            hashHistory.push({pathname, query: filter.getParams({[BEGIN_DATE]: dateForURL})})
         },
 
-        handleNextMonth: props => () => {
-            const {location: {pathname}, filter, selectedDate} = props
-            const nextMonth = moment(selectedDate).add(ONE, 'month')
+        handleNextMonthBegin: props => () => {
+            const {location: {pathname}, filter, beginDate} = props
+            const nextMonth = moment(beginDate).add(ONE, 'month')
             const dateForURL = nextMonth.format('YYYY-MM')
-            hashHistory.push({pathname, query: filter.getParams({[DATE]: dateForURL})})
+            hashHistory.push({pathname, query: filter.getParams({[BEGIN_DATE]: dateForURL})})
+        },
+
+        handlePrevMonthEnd: props => () => {
+            const {location: {pathname}, filter, endDate} = props
+            const prevMonth = moment(endDate).subtract(ONE, 'month')
+            const dateForURL = prevMonth.format('YYYY-MM')
+            hashHistory.push({pathname, query: filter.getParams({[END_DATE]: dateForURL})})
+        },
+
+        handleNextMonthEnd: props => () => {
+            const {location: {pathname}, filter, endDate} = props
+            const nextMonth = moment(endDate).add(ONE, 'month')
+            const dateForURL = nextMonth.format('YYYY-MM')
+            hashHistory.push({pathname, query: filter.getParams({[END_DATE]: dateForURL})})
         }
     })
 )
@@ -144,7 +161,8 @@ const StatAgentList = enhance((props) => {
         filter,
         layout,
         filterItem,
-        currentDate,
+        beginDate,
+        endDate,
         params
     } = props
 
@@ -153,7 +171,6 @@ const StatAgentList = enhance((props) => {
     const firstDayOfMonth = _.get(location, ['query', 'fromDate']) || moment().format('YYYY-MM-01')
     const lastDay = moment().daysInMonth()
     const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
-    const selectedDate = _.get(location, ['query', DATE]) || currentDate
     const zone = !_.isNull(_.get(location, ['query', 'zone'])) && _.toInteger(_.get(location, ['query', 'zone']))
     const division = !_.isNull(_.get(location, ['query', 'zone'])) && _.toInteger(_.get(location, ['query', 'division']))
     const search = !_.isNull(_.get(location, ['query', 'search'])) ? _.get(location, ['query', 'search']) : null
@@ -177,7 +194,8 @@ const StatAgentList = enhance((props) => {
         agentDetail,
         detailLoading,
         handleCloseDetail: props.handleCloseDetail,
-        selectedDate
+        beginDate,
+        endDate
 
     }
     const getDocument = {
@@ -196,10 +214,15 @@ const StatAgentList = enhance((props) => {
             toDate: moment(lastDayOfMonth)
         }
     }
-    const calendar = {
-        selectedDate: selectedDate,
-        handlePrevMonth: props.handlePrevMonth,
-        handleNextMonth: props.handleNextMonth
+    const calendarBegin = {
+        selectedDate: beginDate,
+        handlePrevMonthBegin: props.handlePrevMonthBegin,
+        handleNextMonthBegin: props.handleNextMonthBegin
+    }
+    const calendarEnd = {
+        selectedDate: endDate,
+        handlePrevMonthEnd: props.handlePrevMonthEnd,
+        handleNextMonthEnd: props.handleNextMonthEnd
     }
 
     return (
@@ -211,7 +234,8 @@ const StatAgentList = enhance((props) => {
                 detailData={detailData}
                 statAgentDialog={statAgentDialog}
                 getDocument={getDocument}
-                calendar={calendar}
+                calendarBegin={calendarBegin}
+                calendarEnd={calendarEnd}
                 initialValues={initialValues}
             />
         </Layout>

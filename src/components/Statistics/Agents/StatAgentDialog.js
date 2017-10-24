@@ -51,7 +51,8 @@ const enhance = compose(
             padding: '20px 30px',
             display: 'flex',
             justifyContent: 'space-between',
-            borderBottom: '1px solid #efefef'
+            borderBottom: '1px solid #efefef',
+            textTransform: 'capitalize'
         },
         downBlock: {
             padding: '20px 30px',
@@ -158,7 +159,8 @@ const StatAgentDialog = enhance((props) => {
     const loading = _.get(detailData, 'detailLoading')
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const agentName = _.get(detailData, ['agentDetail', '0', 'name'])
-    const selectedDate = moment(_.get(detailData, 'selectedDate')).locale('ru').format('MMM YYYY')
+    const beginDate = moment(_.get(detailData, 'beginDate')).locale('ru').format('MMMM YYYY')
+    const endDate = moment(_.get(detailData, 'endDate')).locale('ru').format('MMMM YYYY')
     const filteredData = _.filter(_.get(detailData, ['data', 'results']), (item) => {
         const status = _.toInteger(_.get(item, 'status'))
         return status !== CANCELED
@@ -208,7 +210,7 @@ const StatAgentDialog = enhance((props) => {
                     </div>
                     <div className={classes.content}>
                         <div className={classes.titleSummary}>
-                            <div>Период: <strong>{selectedDate}</strong></div>
+                            <div>Период: <strong>{beginDate} - {endDate}</strong></div>
                             <div>Сумма: <strong>{salesSummary}</strong></div>
                         </div>
                         <div className={classes.tableWrapper}>

@@ -202,7 +202,7 @@ const StatReturnGridList = enhance((props) => {
 
     const loading = _.get(listData, 'listLoading')
     const graphLoading = _.get(graphData, 'graphLoading')
-    const divisionStatus = getConfig('DIVISION')
+    const divisionStatus = getConfig('DIVISIONS')
     const headerStyle = {
         backgroundColor: '#fff',
         fontWeight: '600',
@@ -210,10 +210,10 @@ const StatReturnGridList = enhance((props) => {
     }
 
     const returnSum = _.sumBy(_.get(graphData, 'data'), (item) => {
-        return _.toNumber(_.get(item, 'returnAmount'))
+        return _.toNumber(_.get(item, 'totalAmount'))
     })
     const returnedValue = _.map(_.get(graphData, 'data'), (item) => {
-        return _.toNumber(_.get(item, 'returnAmount'))
+        return _.toNumber(_.get(item, 'totalAmount'))
     })
 
     const valueName = _.map(_.get(graphData, 'data'), (item) => {

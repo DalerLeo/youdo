@@ -8,13 +8,14 @@ const ONE = 1
 const TWO = 2
 const FIVE = 5
 
+const firstDayOfMonth = moment().format('YYYY-MM-01')
+const lastDay = moment().daysInMonth()
+const lastDayOfMonth = moment().format('YYYY-MM-' + lastDay)
+
 export const listFilterSerializer = (data, withOrderReturn) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
     const maxDay = 90
-    const firstDayOfMonth = moment().format('YYYY-MM-01')
-    const lastDay = moment().daysInMonth()
-    const lastDayOfMonth = moment().format('YYYY-MM-' + lastDay)
     const urlFromDate = _.get(defaultData, 'fromDate')
     const urlToDate = _.get(defaultData, 'toDate')
     const fromDay = moment(urlFromDate)
@@ -50,9 +51,6 @@ export const listFilterSerializer = (data, withOrderReturn) => {
 export const orderListFilterSerializer = (data, withOrderReturn) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
-    const firstDayOfMonth = moment().format('YYYY-MM-01')
-    const lastDay = moment().daysInMonth()
-    const lastDayOfMonth = moment().format('YYYY-MM-' + lastDay)
     const debt = _.toInteger(_.get(defaultData, 'dept'))
     const status = _.get(defaultData, 'status') ? (_.toInteger(_.get(defaultData, 'status')) === FIVE ? ZERO : _.toInteger(_.get(defaultData, 'status'))) : null
     const excludeCanceled = !_.isUndefined(_.get(defaultData, 'exclude')) ? toBoolean(_.get(defaultData, 'exclude')) : true
@@ -79,5 +77,17 @@ export const orderListFilterSerializer = (data, withOrderReturn) => {
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),
         'ordering': ordering && orderingSnakeCase(ordering)
+    }
+}
+
+export const returnGraphSerializer = (data) => {
+    const {...defaultData} = data
+    const urlFromDate = _.get(defaultData, 'fromDate')
+    const urlToDate = _.get(defaultData, 'toDate')
+
+    return {
+        'begin_date': urlFromDate || firstDayOfMonth,
+        'end_date': urlToDate || lastDayOfMonth,
+        'division': _.get(defaultData, 'division')
     }
 }

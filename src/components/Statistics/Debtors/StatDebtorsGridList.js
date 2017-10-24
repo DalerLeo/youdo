@@ -291,7 +291,7 @@ const StatDebtorsGridList = enhance((props) => {
             padding: 0
         }
     }
-    const divisionStatus = getConfig('DIVISION')
+    const divisionStatus = getConfig('DIVISIONS')
 
     const listLoading = _.get(listData, 'listLoading')
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')

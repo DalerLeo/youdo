@@ -348,6 +348,7 @@ export const STAT_SALES_GET_DOCUMENT = '/sales/order/export/'
 export const STAT_PRODUCT_LIST = 'stats/products/'
 export const STAT_PRODUCT_GET_DOCUMENT = '/stats/products/export'
 
+export const STAT_RETURN_LIST = '/stats/order_returns/'
 export const STAT_RETURN_GET_DOCUMENT = '/sales/order_return/excel/'
 
 export const STAT_OUTCOME_CATEGORY_LIST = 'stats/expenses/'
@@ -397,7 +398,10 @@ export const PLAN_CREATE = `${PLAN}/`
 export const PLAN_UPDATE = `${PLAN}/%d/`
 export const PLAN_DELETE = `${PLAN}/%d/`
 export const PLAN_AGENT_ITEM = `${STAT_AGENT_LIST}/%d/`
-export const PLAN_MONTHLY = 'sales/monthly_plan/'
+export const PLAN_MONTHLY = 'sales/monthly_plan'
+export const PLAN_MONTHLY_CREATE = `${PLAN_MONTHLY}/`
+export const PLAN_MONTHLY_LIST = `${PLAN_MONTHLY}/`
+export const PLAN_MONTHLY_ITEM = `${PLAN_MONTHLY}/%d/`
 export const PLAN_AGENT_MONTHLY = 'stats/agents/statistics/'
 export const PLAN_AGENT_LIST = 'stats/agents/statistics/all/'
 export const PLAN_AGENTS = 'market/agent_plans/'

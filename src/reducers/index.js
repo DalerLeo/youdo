@@ -373,10 +373,11 @@ const rootReducer = combineReducers({
     }),
 
     statSales: combineReducers({
-        data: createThunkReducer(actionTypes.STAT_SALES_DATA)
+        data: createThunkReducer(actionTypes.STAT_SALES_DATA),
+        returnList: createThunkReducer(actionTypes.STAT_RETURN_LIST)
     }),
     statReturn: combineReducers({
-        data: createThunkReducer(actionTypes.STAT_RETURN_DATA)
+        list: createThunkReducer(actionTypes.STAT_RETURN_LIST)
     }),
     statFinance: combineReducers({
         dataIn: createThunkReducer(actionTypes.STAT_FINANCE_DATA_IN),
@@ -416,7 +417,8 @@ const rootReducer = combineReducers({
         agentPlansItem: createThunkReducer(actionTypes.PLAN_AGENTS_ITEM),
         createPlan: createThunkReducer(actionTypes.PLAN_CREATE_SUBMIT),
         updatePlan: createThunkReducer(actionTypes.PLAN_UPDATE_SUBMIT),
-        monthlyPlan: createThunkReducer(actionTypes.PLAN_MONTHLY),
+        monthlyPlan: createThunkReducer(actionTypes.PLAN_MONTHLY_CREATE),
+        monthlyPlanItem: createThunkReducer(actionTypes.PLAN_MONTHLY_ITEM),
         agentsList: createThunkReducer(actionTypes.PLAN_AGENT_LIST),
         agentPlan: createThunkReducer(actionTypes.PLAN_AGENT_MONTHLY),
         agentsPlan: createThunkReducer(actionTypes.PLAN_AGENTS),

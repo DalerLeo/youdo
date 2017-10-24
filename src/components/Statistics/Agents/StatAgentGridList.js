@@ -6,6 +6,7 @@ import * as ROUTES from '../../../constants/routes'
 import Container from '../../Container/index'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
+import moment from 'moment'
 import {reduxForm, Field} from 'redux-form'
 import {TextField, ZoneSearchField, DivisionSearchField} from '../../ReduxForm'
 import StatAgentDialog from './StatAgentDialog'
@@ -16,7 +17,7 @@ import numberFormat from '../../../helpers/numberFormat.js'
 import getConfig from '../../../helpers/getConfig'
 import NotFound from '../../Images/not-found.png'
 import GridListHeader from '../../GridList/GridListHeader/index'
-import PlanMonthFilter from '../../../components/Plan/PlanMonthFilter'
+import DateFilter from './DateFilter'
 import Tooltip from '../../ToolTip'
 import {StatisticsFilterExcel} from '../../Statistics'
 
@@ -214,30 +215,7 @@ const enhance = compose(
         },
         filters: {
             display: 'flex',
-            justifyContent: 'space-between',
-            '& > div:first-child': {
-                padding: '0',
-                height: '55px',
-                fontSize: '15px',
-                '& > div': {
-                    width: '120px',
-                    justifyContent: 'center'
-                },
-                '& > nav': {
-                    height: '30px',
-                    '& button': {
-                        display: 'flex !important',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        height: '30px !important',
-                        width: '30px !important'
-                    },
-                    '& svg': {
-                        height: '24px !important',
-                        width: '24px !important'
-                    }
-                }
-            }
+            justifyContent: 'space-between'
         },
         opacity: {
             '& span': {
@@ -305,14 +283,15 @@ const StatAgentGridList = enhance((props) => {
         handleSubmitFilterDialog,
         detailData,
         getDocument,
-        calendar,
+        calendarBegin,
+        calendarEnd,
         initialValues,
         handleSubmit
     } = props
 
     const listLoading = _.get(listData, 'listLoading')
     const salesSummary = numberFormat(_.get(_.find(_.get(listData, 'data'), {'id': _.get(detailData, 'id')}), 'ordersTotalPrice'))
-    const divisionStatus = getConfig('DIVISION')
+    const divisionStatus = getConfig('DIVISIONS')
 
     const list = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
@@ -395,7 +374,22 @@ const StatAgentGridList = enhance((props) => {
                             withoutDate={true}
                         />
                         <div className={classes.filters}>
-                            <PlanMonthFilter calendar={calendar}/>
+                            <DateFilter
+                                type={'begin'}
+                                beginDate={_.toInteger(moment(calendarBegin.selectedDate).format('x'))}
+                                endDate={_.toInteger(moment(calendarEnd.selectedDate).format('x'))}
+                                handlePrevMonth={calendarBegin.handlePrevMonthBegin}
+                                handleNextMonth={calendarBegin.handleNextMonthBegin}
+                                selectedDate={calendarBegin.selectedDate}/>
+                            <DateFilter
+                                type={'end'}
+                                beginDate={_.toInteger(moment(calendarBegin.selectedDate).format('x'))}
+                                endDate={_.toInteger(moment(calendarEnd.selectedDate).format('x'))}
+                                handlePrevMonth={calendarEnd.handlePrevMonthEnd}
+                                handleNextMonth={calendarEnd.handleNextMonthEnd}
+                                selectedDate={calendarEnd.selectedDate}/>
+                        </div>
+                        <div className={classes.filters}>
                             <form onSubmit={handleSubmit(handleSubmitFilterDialog)}>
                                 <Field
                                     className={classes.inputFieldCustom}
