@@ -90,7 +90,7 @@ export const planUpdateDialogAction = (id) => {
 export const planMonthlySetAction = (data, filter, user) => {
     const requestData = serializers.monthlyPlanSerializer(data, filter.getParams(), user)
     const payload = axios()
-        .post(API.PLAN_MONTHLY, requestData)
+        .post(API.PLAN_MONTHLY_CREATE, requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -99,7 +99,24 @@ export const planMonthlySetAction = (data, filter, user) => {
         })
 
     return {
-        type: actionTypes.PLAN_MONTHLY,
+        type: actionTypes.PLAN_MONTHLY_CREATE,
+        payload
+    }
+}
+
+export const planMonthlyItemAction = (filter, user) => {
+    const params = serializers.monthlyPlanItemSerializer(filter.getParams(), user)
+    const payload = axios()
+        .get(API.PLAN_MONTHLY_LIST, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.PLAN_MONTHLY_ITEM,
         payload
     }
 }

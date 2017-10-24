@@ -30,6 +30,7 @@ import {
     planZonesListFetchAction,
     planZoneItemFetchAction,
     planMonthlySetAction,
+    planMonthlyItemAction,
     agentMonthlyPlanAction,
     planZonesItemFetchAction,
     marketsLocationAction,
@@ -69,6 +70,8 @@ const enhance = compose(
         const createPlanLoading = _.get(state, ['plan', 'createPlan', 'loading'])
         const updatePlanLoading = _.get(state, ['plan', 'update', 'loading'])
         const monthlyPlanCreateLoading = _.get(state, ['plan', 'monthlyPlan', 'loading'])
+        const monthlyPlanItem = _.get(state, ['plan', 'monthlyPlanItem', 'data', 'results'])
+        const monthlyPlanItemLoading = _.get(state, ['plan', 'monthlyPlanItem', 'loading'])
         const createForm = _.get(state, ['form', 'PlanCreateForm', 'values'])
         const monthlyPlanForm = _.get(state, ['form', 'PlanSalesForm', 'values'])
         const selectedDate = _.get(query, DATE) || defaultDate
@@ -100,6 +103,8 @@ const enhance = compose(
             zonesLoading,
             divisions,
             divisionsLoading,
+            monthlyPlanItem,
+            monthlyPlanItemLoading,
             zoneDetail,
             zoneDetailLoading,
             zoneAgents,
@@ -261,6 +266,7 @@ const enhance = compose(
             }
             dispatch(planItemFetchAction(agentId))
             dispatch(agentMonthlyPlanAction(filter, agentId))
+            dispatch(planMonthlyItemAction(filter, agentId))
         }
     }),
 
@@ -459,6 +465,7 @@ const enhance = compose(
                     dispatch(planAgentsListFetchAction(filter))
                     dispatch(planItemFetchAction(user))
                     dispatch(agentMonthlyPlanAction(filter, user))
+                    dispatch(planMonthlyItemAction(filter, user))
                 })
         },
 
@@ -530,6 +537,8 @@ const PlanList = enhance((props) => {
         zonesLoading,
         zoneDetail,
         zoneDetailLoading,
+        monthlyPlanItem,
+        monthlyPlanItemLoading,
         zoneAgents,
         zoneAgentsLoading,
         monthlyPlanCreateLoading,
@@ -689,7 +698,9 @@ const PlanList = enhance((props) => {
 
     const monthlyPlan = {
         data: plan,
-        planLoading
+        planLoading,
+        monthlyPlanItem,
+        monthlyPlanItemLoading
     }
 
     const agentPlans = {

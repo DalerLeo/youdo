@@ -26,7 +26,8 @@ const STAT_INCOME_DIALOG_OPEN = 'openStatIncomeDialog'
 const STAT_DEBTORS_DIALOG_OPEN = 'openStatDebtorsDialog'
 const STAT_OUTCOME_DIALOG_OPEN = 'openStatOutcomeDialog'
 const STAT_PRODUCT_MOVE_DIALOG_OPEN = 'openStatProductMoveDialog'
-const DATE = 'date'
+const BEGIN_DATE = 'begin_date'
+const END_DATE = 'end_date'
 
 export {
     StatReturnGridList,
@@ -46,7 +47,8 @@ export {
     ClientIncomeGridList,
     StatisticsFilterExcel,
     StatisticsChart,
-    DATE,
+    BEGIN_DATE,
+    END_DATE,
     STAT_AGENT_DIALOG_OPEN,
     STAT_MARKET_DIALOG_OPEN,
     STAT_FINANCE_DIALOG_OPEN,

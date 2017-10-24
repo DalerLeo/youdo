@@ -19,6 +19,7 @@ import {compose} from 'recompose'
 import numberFormat from '../../helpers/numberFormat'
 import dateFormat from '../../helpers/dateFormat'
 import toBoolean from '../../helpers/toBoolean'
+import getConfig from '../../helpers/getConfig'
 import sprintf from 'sprintf'
 import {
     ORDER,
@@ -163,6 +164,7 @@ const TransactionsList = enhance((props) => {
         hasRightCashbox,
         updateTransactionDialog
     } = props
+    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const transactionFilterDialog = showOnlyList
         ? (<div></div>)
         : (<TransactionFilterForm
@@ -258,7 +260,8 @@ const TransactionsList = enhance((props) => {
         const cashbox = _.get(item, ['cashbox', 'id']) || 'N/A'
         const user = _.get(item, 'user')
         const order = _.get(item, 'order')
-        const amount = numberFormat(_.get(item, 'amount')) || 'N/A'
+        const amount = _.toNumber(_.get(item, 'amount'))
+        const internal = _.toNumber(_.get(item, 'internalAmount'))
         const date = dateFormat(_.get(item, 'date'), true)
         const currentCurrency = _.get(_.find(_.get(cashboxData, 'data'), {'id': cashbox}), ['currency', 'name'])
         const client = showCashbox ? _.get(_.find(_.get(cashboxData, 'data'), {'id': cashbox}), 'name') : null
@@ -266,6 +269,7 @@ const TransactionsList = enhance((props) => {
         const clientId = _.get(item, ['client', 'id'])
         const expanseCategory = _.get(item, ['expanseCategory', 'name'])
         const transType = _.get(item, ['type'])
+        const rate = _.toInteger(amount / internal)
 
         return (
             <Row key={id} className={classes.rows}>
@@ -303,9 +307,9 @@ const TransactionsList = enhance((props) => {
                     {comment && <div><strong>Комментарий:</strong> {comment}</div>}
                 </div>
                 <div style={{flexBasis: '18%', maxWidth: '18%'}}>{date}</div>
-                <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}
-                     className={type >= zero ? classes.green : classes.red}>
+                <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}} className={type >= zero ? classes.green : classes.red}>
                     {amount} {currentCurrency}
+                    {currentCurrency !== primaryCurrency && <div>{numberFormat(internal, primaryCurrency)} <span style={{fontSize: 11, color: '#333', fontWeight: 600}}>({rate})</span></div>}
                 </div>
                 <div style={{width: '5%', textAlign: 'right', display: 'flex'}}>
                     <IconButton

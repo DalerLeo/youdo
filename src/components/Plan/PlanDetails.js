@@ -445,8 +445,11 @@ const PlanDetails = enhance((props) => {
         monthlyPlan,
         agentPlans
     } = props
+
+    const ZERO = 0
     const plansLoading = _.get(agentPlans, 'loading')
     const agentLoading = _.get(detailData, 'detailLoading')
+    const monthlyPlanLoading = _.get(monthlyPlan, 'monthlyPlanLoading')
     const isOpenDetails = _.get(detailData, 'openDetail')
     const firstName = _.get(detailData, ['data', 'firstName'])
     const secondName = _.get(detailData, ['data', 'secondName'])
@@ -477,14 +480,20 @@ const PlanDetails = enhance((props) => {
 
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const factSales = _.get(monthlyPlan, ['data', 'factPrice']) && _.toNumber(_.get(monthlyPlan, ['data', 'factPrice']))
-    const planAmount = _.get(monthlyPlan, ['data', 'monthlyPlanAmount']) && _.toNumber(_.get(monthlyPlan, ['data', 'monthlyPlanAmount']))
+    const planAmount = _.sumBy(_.get(monthlyPlan, 'monthlyPlanItem'), (item) => {
+        return _.toNumber(_.get(item, 'amount'))
+    })
     const agentHoverText = position + '<br> Наименование зоны'
-    const monthlyPlanTooltip = 'Косметика - 30 000 USD <br> Косметика - 30 000 USD <br> Luna - 12 000 USD <br> Медикаменты - 5 000 USD'
+    const monthlyPlanTooltip = _.join(_.map(_.get(monthlyPlan, 'monthlyPlanItem'), (item) => {
+        const division = _.get(item, ['division', 'name'])
+        const amount = numberFormat(_.get(item, 'amount'), primaryCurrency)
+        return '<div>' + division + ' - ' + amount + '</div>'
+    }), ' ')
     return (
         <div className={classes.wrapper}>
             {isOpenDetails
                 ? <div>
-                    {agentLoading
+                    {(agentLoading || monthlyPlanLoading)
                         ? <div className={classes.headerLoader}>
                             <Loader size={0.75}/>
                         </div>
@@ -509,7 +518,7 @@ const PlanDetails = enhance((props) => {
                                     </div>
                                     <div>
                                         <span>план продаж</span>
-                                        {planAmount
+                                        {planAmount > ZERO
                                             ? <Tooltip position="bottom" text={monthlyPlanTooltip}>
                                                 <a className={classes.link} onClick={planSalesDialog.handleOpenPlanSales}><big>{numberFormat(planAmount)}</big> {primaryCurrency}</a>
                                             </Tooltip>

@@ -161,7 +161,7 @@ const enhance = compose(
 const OrderFilterForm = enhance((props) => {
     const {classes, filterDialog, getCount} = props
     const filterCounts = getCount()
-    const divisionStatus = getConfig('DIVISION')
+    const divisionStatus = getConfig('DIVISIONS')
 
     if (!filterDialog.openFilterDialog) {
         if (filterCounts) {

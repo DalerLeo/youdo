@@ -13,6 +13,7 @@ const dateFormat = (date, time, defaultText) => {
 }
 
 const MINUS_ONE = -1
+const ZERO = 0
 const enhance = compose(
     injectSheet({
 
@@ -28,16 +29,19 @@ const StatisticsChart = enhance((props) => {
         secondaryText,
         height,
         mergedGraph,
-        clientIncome
+        merged
     } = props
 
     let clientIn = []
     let clientOut = []
     let clientDate = []
     _.map(mergedGraph, (item) => {
-        clientIn.push(_.toNumber(item.in))
-        clientOut.push(_.toNumber(item.out) * MINUS_ONE)
-        clientDate.push(dateFormat(item.date))
+        const dataIn = _.toNumber(_.get(item, 'in'))
+        const dataOut = _.toNumber(_.get(item, 'out')) < ZERO ? _.toNumber(_.get(item, 'out')) * MINUS_ONE : _.toNumber(_.get(item, 'out'))
+        const date = dateFormat(_.get(item, 'date'))
+        clientIn.push(dataIn)
+        clientOut.push(dataOut)
+        clientDate.push(date)
     })
 
     const tooltipDate = _.map(tooltipTitle, (item) => {
@@ -63,7 +67,7 @@ const StatisticsChart = enhance((props) => {
             enabled: false
         },
         xAxis: {
-            categories: clientIncome ? clientDate : tooltipDate,
+            categories: merged ? clientDate : tooltipDate,
             tickmarkPlacement: 'on',
             title: {
                 text: '',
@@ -121,7 +125,7 @@ const StatisticsChart = enhance((props) => {
                 symbol: 'circle'
             },
             name: primaryText,
-            data: clientIncome ? clientIn : primaryValues,
+            data: merged ? clientIn : primaryValues,
             color: '#58bed9'
 
         },
@@ -131,7 +135,7 @@ const StatisticsChart = enhance((props) => {
                 symbol: 'circle'
             },
             name: secondaryText,
-            data: clientIncome ? clientOut : secondaryValues,
+            data: merged ? clientOut : secondaryValues,
             color: '#e37676'
 
         }]
@@ -144,8 +148,8 @@ const StatisticsChart = enhance((props) => {
 
 StatisticsChart.propTypes = {
     tooltipTitle: PropTypes.any.isRequired,
-    primaryValues: PropTypes.object.isRequired,
-    primaryText: PropTypes.object.isRequired,
+    primaryValues: PropTypes.array.isRequired,
+    primaryText: PropTypes.string.isRequired,
     height: PropTypes.number.isRequired
 }
 

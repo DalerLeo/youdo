@@ -61,7 +61,7 @@ const ClientBalanceUpdateDialog = enhance((props) => {
 
     const onSubmit = handleSubmit(() => props.onSubmit())
     const primaryCurrency = _.toInteger(getConfig('PRIMARY_CURRENCY_ID'))
-    const divisionStatus = getConfig('DIVISION')
+    const divisionStatus = getConfig('DIVISIONS')
     return (
         <Dialog
             modal={true}

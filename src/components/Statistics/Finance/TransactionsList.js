@@ -125,7 +125,7 @@ const TransactionsList = enhance((props) => {
         const id = _.get(item, 'id')
         const date = dateFormat(_.get(item, 'createdDate'))
         const amount = _.get(item, 'amount')
-        const currency = _.get(item, 'currency')
+        const currency = _.get(item, ['currency', 'name'])
         const internal = _.toNumber(_.get(item, 'internal'))
         const customRate = _.get(item, 'customRate') ? _.toInteger(_.get(item, 'customRate')) : _.toInteger(amount / internal)
         const comment = _.get(item, 'comment')

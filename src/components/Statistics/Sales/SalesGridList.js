@@ -176,14 +176,26 @@ const enhance = compose(
                 paddingRight: '0'
             }
         },
-        salesSummary: {
+        mainSummary: {
+            paddingBottom: '10px',
+            marginBottom: '10px',
+            borderBottom: '1px #efefef solid',
             '& > div:nth-child(odd)': {
                 color: '#666'
             },
             '& > div:nth-child(even)': {
                 fontSize: '20px',
+                fontWeight: '600'
+            }
+        },
+        secondarySummary: {
+            '& > div:nth-child(odd)': {
+                color: '#666'
+            },
+            '& > div:nth-child(even)': {
+                fontSize: '16px',
                 fontWeight: '600',
-                marginBottom: '15px'
+                marginBottom: '10px'
             }
         },
         emptyQuery: {
@@ -226,7 +238,6 @@ const StatSalesGridList = enhance((props) => {
         handleGetDocument,
         initialValues
     } = props
-
     const graphLoading = _.get(graphData, 'graphLoading')
     const divisionStatus = _.get('DIVISION')
 
@@ -237,11 +248,11 @@ const StatSalesGridList = enhance((props) => {
     const sum = _.sumBy(_.get(graphData, 'data'), (item) => {
         return _.toNumber(_.get(item, 'amount'))
     })
-    const returnedValue = _.map(_.get(graphData, 'data'), (item) => {
-        return _.toNumber(_.get(item, 'returnAmount'))
+    const returnedValue = _.map(_.get(graphData, 'graphReturnList'), (item) => {
+        return _.toNumber(_.get(item, 'totalAmount'))
     })
-    const returnSum = _.sumBy(_.get(graphData, 'data'), (item) => {
-        return _.toNumber(_.get(item, 'returnAmount'))
+    const returnSum = _.sumBy(_.get(graphData, 'graphReturnList'), (item) => {
+        return _.toNumber(_.get(item, 'totalAmount'))
     })
     const valueName = _.map(_.get(graphData, 'data'), (item) => {
         return _.get(item, 'date')
@@ -387,21 +398,27 @@ const StatSalesGridList = enhance((props) => {
                                 </div>
                                 : <Row className={classes.diagram}>
                                     <Col xs={3} className={classes.salesSummary}>
-                                        <div>Сумма продаж за период</div>
-                                        <div>{numberFormat(sum, getConfig('PRIMARY_CURRENCY'))}</div>
-                                        <div>Сумма возврата за период</div>
-                                        <div>{numberFormat(returnSum, getConfig('PRIMARY_CURRENCY'))}</div>
-                                        <div>Фактическая сумма продаж</div>
-                                        <div>{numberFormat(sum - returnSum, getConfig('PRIMARY_CURRENCY'))}</div>
+                                        <div className={classes.mainSummary}>
+                                            <div>Разница</div>
+                                            <div>{numberFormat(sum - returnSum, getConfig('PRIMARY_CURRENCY'))}</div>
+                                        </div>
+                                        <div className={classes.secondarySummary}>
+                                            <div>Сумма продаж за период</div>
+                                            <div style={{color: '#5ecdea'}}>{numberFormat(sum, getConfig('PRIMARY_CURRENCY'))}</div>
+                                            <div>Сумма возврата за период</div>
+                                            <div style={{color: '#EB9696'}}>{numberFormat(returnSum, getConfig('PRIMARY_CURRENCY'))}</div>
+                                        </div>
                                     </Col>
                                     <Col xs={9}>
                                         <StatisticsChart
+                                            merged={true}
                                             primaryValues={value}
                                             secondaryValues={returnedValue}
+                                            mergedGraph={_.get(graphData, 'mergedGraph')}
                                             tooltipTitle={valueName}
                                             primaryText="Продажа"
                                             secondaryText="Возврат"
-                                             height={180}
+                                            height={180}
                                         />
                                     </Col>
                                 </Row>}

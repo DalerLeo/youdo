@@ -163,7 +163,7 @@ const TransactionCreateDialog = enhance((props) => {
     const cashbox = _.find(_.get(cashboxData, 'data'), {'id': cashboxId})
     const currency = _.get(cashbox, ['currency', 'name'])
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
-    const divisionStatus = getConfig('DIVISION')
+    const divisionStatus = getConfig('DIVISIONS')
     const convert = convertCurrency(amount, rate)
     return (
         <Dialog

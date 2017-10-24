@@ -55,7 +55,7 @@ const TransactionUpdatePriceDialog = enhance((props) => {
     const {classes, open, onClose, handleSubmit, loading, client, chosenCurrency} = props
     const onSubmit = handleSubmit(() => props.onSubmit(_.get(client, 'id')))
     const primaryCurrency = _.toInteger(getConfig('PRIMARY_CURRENCY_ID'))
-    const divisionStatus = getConfig('DIVISION')
+    const divisionStatus = getConfig('DIVISIONS')
     return (
         <Dialog
             modal={true}

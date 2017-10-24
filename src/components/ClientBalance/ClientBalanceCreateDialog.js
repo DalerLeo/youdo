@@ -73,7 +73,7 @@ const ClientBalanceCreateDialog = enhance((props) => {
     const data = _.find(_.get(listData, 'data'), {'id': _.get(detailData, 'id')})
     let balanceArr = []
     const currency = getConfig('PRIMARY_CURRENCY')
-    const divisionStatus = getConfig('DIVISION')
+    const divisionStatus = getConfig('DIVISIONS')
 
     _.map(_.get(data, 'divisions'), (item) => {
         balanceArr.push({amount: _.get(item, 'cash'), name: _.get(item, 'name'), type: 'нал.'})

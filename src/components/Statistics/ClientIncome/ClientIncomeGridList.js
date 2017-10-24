@@ -185,8 +185,12 @@ const enhance = compose(
             color: '#666'
         },
         summaryValue: {
-            fontSize: '22px',
-            fontWeight: '600'
+            fontWeight: '600',
+            fontSize: '16px',
+            marginBottom: '10px',
+            '&:last-child': {
+                margin: '0'
+            }
         },
         mainSummary: {
             '& > div:last-child': {
@@ -235,7 +239,7 @@ const ClientIncomeGridList = enhance((props) => {
         listData
     } = props
 
-    const divisionStatus = getConfig('DIVISION')
+    const divisionStatus = getConfig('DIVISIONS')
     const graphLoading = _.get(graphData, 'graphInLoading') || _.get(graphData, 'graphOutLoading')
     const loading = _.get(listData, 'listLoading')
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
@@ -387,16 +391,11 @@ const ClientIncomeGridList = enhance((props) => {
                                 <Col xs={3} className={classes.salesSummary}>
                                     <div className={classes.secondarySummary}>
                                         <span className={classes.summaryTitle}>Приход за период</span>
-                                        <div className={classes.summaryValue}
-                                             style={{color: '#5ecdea'}}>{numberFormat(sumIn)} {primaryCurrency}</div>
-                                        <div style={{margin: '10px 0'}}>{null}</div>
+                                        <div className={classes.summaryValue} style={{color: '#5ecdea'}}>{numberFormat(sumIn)} {primaryCurrency}</div>
                                         <span className={classes.summaryTitle}>Продажа за период</span>
-                                        <div className={classes.summaryValue}
-                                             style={{color: '#EB9696'}}>{numberFormat(sumOut)} {primaryCurrency}</div>
-                                        <div style={{margin: '10px 0'}}>{null}</div>
+                                        <div className={classes.summaryValue} style={{color: '#EB9696'}}>{numberFormat(sumOut)} {primaryCurrency}</div>
                                         <span className={classes.summaryTitle}>Разница</span>
-                                        <div className={classes.summaryValue}
-                                             style={diff >= ZERO ? {color: '#71ce87'} : {color: '#EB9696'}}>{numberFormat(diff)} {primaryCurrency}</div>
+                                        <div className={classes.summaryValue} style={diff >= ZERO ? {color: '#71ce87'} : {color: '#EB9696'}}>{numberFormat(diff)} {primaryCurrency}</div>
                                     </div>
                                 </Col>
                                 <Col xs={9} className={classes.chart}>
@@ -408,7 +407,7 @@ const ClientIncomeGridList = enhance((props) => {
                                         primaryText="Приход"
                                         secondaryText="Расход"
                                         height={160}
-                                        clentIncome={true}
+                                        merged={true}
                                     />
                                 </Col>
                             </Row>}

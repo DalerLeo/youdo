@@ -6,12 +6,16 @@ export const listFilterSerializer = (query) => {
     const {...defaultData} = query
     const ordering = _.get(query, 'ordering')
 
-    const year = moment(_.get(query, 'date')).format('YYYY') || moment().format('YYYY')
-    const month = moment(_.get(query, 'date')).format('M') || moment().format('M')
+    const beginYear = moment(_.get(query, 'begin_date')).format('YYYY') || moment().format('YYYY')
+    const beginMonth = moment(_.get(query, 'begin_date')).format('M') || moment().format('M')
+    const endYear = moment(_.get(query, 'end_date')).format('YYYY') || moment().format('YYYY')
+    const endMonth = moment(_.get(query, 'end_date')).format('M') || moment().format('M')
 
     return {
-        month,
-        year,
+        begin_month: beginMonth,
+        begin_year: beginYear,
+        end_month: endMonth,
+        end_year: endYear,
         'search': _.get(defaultData, 'search'),
         'zone': _.get(defaultData, 'zone'),
         'division': _.get(defaultData, 'division'),
@@ -23,9 +27,9 @@ export const listFilterSerializer = (query) => {
 
 export const itemSerializer = (data, filterItem, id) => {
     const {...defaultData} = data
-    const daysInMonth = moment(_.get(defaultData, 'date')).daysInMonth()
-    const begin = _.get(defaultData, 'date') ? moment(_.get(defaultData, 'date')).format('YYYY-MM-01') : moment().format('YYYY-MM-01')
-    const end = _.get(defaultData, 'date') ? _.get(defaultData, 'date') + '-' + daysInMonth : moment().format('YYYY-MM-' + daysInMonth)
+    const daysInMonth = moment(_.get(defaultData, 'end_date')).daysInMonth()
+    const begin = _.get(defaultData, 'begin_date') ? moment(_.get(defaultData, 'begin_date')).format('YYYY-MM-01') : moment().format('YYYY-MM-01')
+    const end = _.get(defaultData, 'end_date') ? _.get(defaultData, 'end_date') + '-' + daysInMonth : moment().format('YYYY-MM-' + daysInMonth)
 
     return {
         'user': id,
