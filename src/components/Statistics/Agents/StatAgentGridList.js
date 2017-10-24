@@ -322,10 +322,11 @@ const StatAgentGridList = enhance((props) => {
         const orderTotalPrice = numberFormat(_.get(item, 'ordersTotalPrice'))
         const orderReturnTotalPrice = numberFormat(_.get(item, 'ordersReturnedTotalPrice'))
         const orderLeftTotalPrice = numberFormat(_.get(item, 'ordersLeftTotalPrice'), getConfig('PRIMARY_CURRENCY'))
-        const totalPaid = numberFormat(_.get(item, 'totalPaid'), getConfig('PRIMARY_CURRENCY'))
+        const totalPaid = _.get(item, 'totalPaid')
         const monthlyPlanLeft = numberFormat(_.get(item, 'monthlyPlanLeft'), getConfig('PRIMARY_CURRENCY'))
 
         const tooltipText = '<div>Продажи / Возвраты / Фактически</div>'
+        const tooltipPaid = '<div>Всего/ Для текущий заказов/ Остальное</div>'
 
         return (
             <Row key={id} className="dottedList">
@@ -342,8 +343,12 @@ const StatAgentGridList = enhance((props) => {
                         </div>
                     </Tooltip>
                 </Col>
-                <Col xs={2} className={classes.alignRightFlex}>
-                    <div>{totalPaid}</div>
+                <Col xs={2} style={{display: 'flex', justifyContent: 'flex-end'}}>
+                    <Tooltip position="bottom" text={tooltipPaid}>
+                        <div className={classes.opacity}>
+                            <span>{totalPaid}</span> / <span>1 000</span> / <strong>5 000</strong> {getConfig('PRIMARY_CURRENCY')}
+                        </div>
+                    </Tooltip>
                 </Col>
                 <Col xs={2} className={classes.alignRightFlex}>
                     <div>{orderLeftTotalPrice}</div>

@@ -10,7 +10,7 @@ import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
-import {TransactionTypeSearchField, ExpensiveCategorySearchField, ClientSearchField, DivisionSearchField} from '../ReduxForm'
+import {TransactionTypeSearchField, ExpensiveCategorySearchField, ClientSearchField, DivisionSearchField, CheckBox} from '../ReduxForm'
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 import getConfig from '../../helpers'
@@ -19,6 +19,7 @@ export const TRANSACTION_FILTER_OPEN = 'openFilterDialog'
 
 export const TRANSACTION_FILTER_KEY = {
     TYPE: 'type',
+    EXCLUDE: 'exclude',
     CATEGORY_EXPENSE: 'categoryExpense',
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate',
@@ -164,6 +165,7 @@ const TransactionFilterForm = enhance((props) => {
                     <Field className={classes.inputFieldCustom} name="client" component={ClientSearchField} label="Клиент" fullWidth={true}/>
                     {getConfig && <Field className={classes.inputFieldCustom} name="division" component={DivisionSearchField} label="Подразделение" fullWidth={true}/>}
                     <Field className={classes.inputFieldCustom} name="date" component={DateToDateField} label="Диапазон дат" fullWidth={true}/>
+                    <Field name="exclude" component={CheckBox} defaultChecked = {true} label="Исключить удаление трансакции"/>
 
                     <RaisedButton
                         type="submit"

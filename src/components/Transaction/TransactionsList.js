@@ -138,7 +138,8 @@ const enhance = compose(
     }),
 )
 
-const ZERO = 0
+const
+    ZERO = 0
 const TransactionsList = enhance((props) => {
     const {
         filter,
