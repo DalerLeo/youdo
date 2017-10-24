@@ -316,7 +316,7 @@ const SupplyDetails = enhance((props) => {
     const contact = _.get(data, 'contact')
     const contactPerson = _.get(contact, 'name')
     const contactEmail = _.get(contact, 'email')
-    const contract = _.get(data, 'contract')
+    const contract = _.get(data, 'contract') || 'Не указана'
     const contactPhone = _.get(contact, 'phone')
     const dateDelivery = _.get(data, 'dateDelivery') ? dateFormat(_.get(data, 'dateDelivery')) : 'Не указано'
     const acceptedTime = (_.get(data, 'acceptedTime')) ? dateTimeFormat(_.get(data, 'acceptedTime')) : 'Не началась'
@@ -494,7 +494,7 @@ const SupplyDetails = enhance((props) => {
                     </div>}
                 {!history && <div className="addExpenses">
                     <div className="addExpense">
-                        <div>Дополнительные расходы по заказу</div>
+                        <div>Дополнительные расходы по поставке</div>
                         <div>
                             <FlatButton
                                 onTouchTap={() => { handleSupplyExpenseOpenCreateDialog(id) }}
