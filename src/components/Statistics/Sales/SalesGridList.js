@@ -19,7 +19,7 @@ import numberFormat from '../../../helpers/numberFormat'
 import StatSaleDialog from './SalesDialog'
 import {StatisticsFilterExcel, StatisticsChart} from '../../Statistics'
 import moment from 'moment'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../../Loader'
 import getConfig from '../../../helpers/getConfig'
 import NotFound from '../../Images/not-found.png'
 import Tooltip from '../../ToolTip'
@@ -394,19 +394,19 @@ const StatSalesGridList = enhance((props) => {
                             <div>
                                 {graphLoading
                                 ? <div className={classes.graphLoader}>
-                                    <CircularProgress size={40} thickness={4} />
+                                    <Loader size={0.75}/>
                                 </div>
                                 : <Row className={classes.diagram}>
                                     <Col xs={3} className={classes.salesSummary}>
                                         <div className={classes.mainSummary}>
-                                            <div>Разница</div>
+                                            <div>Фактические продажи</div>
                                             <div>{numberFormat(sum - returnSum, getConfig('PRIMARY_CURRENCY'))}</div>
                                         </div>
                                         <div className={classes.secondarySummary}>
                                             <div>Сумма продаж за период</div>
-                                            <div style={{color: '#5ecdea'}}>{numberFormat(sum, getConfig('PRIMARY_CURRENCY'))}</div>
+                                            <div>{numberFormat(sum, getConfig('PRIMARY_CURRENCY'))}</div>
                                             <div>Сумма возврата за период</div>
-                                            <div style={{color: '#EB9696'}}>{numberFormat(returnSum, getConfig('PRIMARY_CURRENCY'))}</div>
+                                            <div>{numberFormat(returnSum, getConfig('PRIMARY_CURRENCY'))}</div>
                                         </div>
                                     </Col>
                                     <Col xs={9}>
@@ -429,7 +429,7 @@ const StatSalesGridList = enhance((props) => {
                                 {loading
                                     ? <div className={classes.tableWrapper}>
                                         <div className={classes.loader}>
-                                            <CircularProgress thickness={4} size={40}/>
+                                            <Loader size={0.75}/>
                                         </div>
                                     </div>
                                     : <div className={classes.tableWrapper}>

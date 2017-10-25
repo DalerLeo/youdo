@@ -4,7 +4,7 @@ import React from 'react'
 import {Row} from 'react-flexbox-grid'
 import * as ROUTES from '../../../constants/routes'
 import Container from '../../Container/index'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../../Loader'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import StatSideMenu from '../StatSideMenu'
@@ -386,7 +386,7 @@ const StatProductGridList = enhance((props) => {
                         </div>
                         {listLoading
                         ? <div className={classes.loader}>
-                            <CircularProgress size={40} thickness={4} />
+                            <Loader size={0.75}/>
                         </div>
                         : _.isEmpty(tableList) ? <div className={classes.emptyQuery}>
                             <div>По вашему запросу ничего не найдено</div>

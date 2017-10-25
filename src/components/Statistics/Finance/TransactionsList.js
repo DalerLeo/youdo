@@ -5,7 +5,7 @@ import {compose} from 'recompose'
 import _ from 'lodash'
 import injectSheet from 'react-jss'
 import sprintf from 'sprintf'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../../Loader'
 import {Link} from 'react-router'
 import {reduxForm, Field} from 'redux-form'
 import {TextField} from '../../ReduxForm'
@@ -195,7 +195,7 @@ const TransactionsList = enhance((props) => {
             {loading
             ? <div className={classes.tableWrapper}>
                 <div className={classes.loader}>
-                    <CircularProgress thickness={4} size={40}/>
+                    <Loader size={0.75}/>
                 </div>
             </div>
             : <div className={classes.tableWrapper}>
