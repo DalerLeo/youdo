@@ -293,7 +293,8 @@ const StatAgentGridList = enhance((props) => {
         calendarBegin,
         calendarEnd,
         initialValues,
-        handleSubmit
+        handleSubmit,
+        filterOpen
     } = props
 
     const listLoading = _.get(listData, 'listLoading')
@@ -317,7 +318,9 @@ const StatAgentGridList = enhance((props) => {
         return (
             <Row key={id} className="dottedList">
                 <Col xs={2}>
-                    <div className={classes.pointer} onClick={() => { statAgentDialog.handleOpenStatAgentDialog(id) }}>{name}</div>
+                    <div className={classes.pointer} onClick={() => {
+                        statAgentDialog.handleOpenStatAgentDialog(id)
+                    }}>{name}</div>
                 </Col>
                 <Col xs={1}>
                     <div>{plan}</div>
@@ -325,14 +328,16 @@ const StatAgentGridList = enhance((props) => {
                 <Col xs={3} style={{display: 'flex', justifyContent: 'flex-end'}}>
                     <Tooltip position="bottom" text={tooltipText}>
                         <div className={classes.opacity}>
-                            <span>{orderTotalPrice}</span> / <span>{orderReturnTotalPrice}</span> / <strong>{factPrice}</strong> {getConfig('PRIMARY_CURRENCY')}
+                            <span>{orderTotalPrice}</span> / <span>{orderReturnTotalPrice}</span> /
+                            <strong>{factPrice}</strong> {getConfig('PRIMARY_CURRENCY')}
                         </div>
                     </Tooltip>
                 </Col>
                 <Col xs={2} style={{display: 'flex', justifyContent: 'flex-end'}}>
                     <Tooltip position="bottom" text={tooltipPaid}>
                         <div className={classes.opacity}>
-                            <span>{totalPaid}</span> / <span>1 000</span> / <strong>5 000</strong> {getConfig('PRIMARY_CURRENCY')}
+                            <span>{totalPaid}</span> / <span>1 000</span> / <strong>5
+                            000</strong> {getConfig('PRIMARY_CURRENCY')}
                         </div>
                     </Tooltip>
                 </Col>
@@ -367,12 +372,13 @@ const StatAgentGridList = enhance((props) => {
         <div className={classes.mainWrapper}>
             <Row style={{margin: '0', height: '100%'}}>
                 <div className={classes.leftPanel}>
-                     <StatSideMenu currentUrl={ROUTES.STATISTICS_AGENT_URL} filter={filter}/>
+                    <StatSideMenu currentUrl={ROUTES.STATISTICS_AGENT_URL} filter={filter}/>
                 </div>
                 <div className={classes.rightPanel}>
                     <div className={classes.wrapper}>
                         <StatisticsFilterExcel
                             filter={filter}
+                            filterOpen={filterOpen}
                             fields={fields}
                             filterKeys={STAT_AGENT_FILTER_KEY}
                             initialValues={initialValues}
@@ -418,15 +424,15 @@ const StatAgentGridList = enhance((props) => {
                                 className={classes.header}
                                 statistics={true}
                             />
-                    {listLoading
-                        ? <div className={classes.loader}>
-                            <Loader size={0.75}/>
-                        </div>
-                        : (_.isEmpty(list))
-                            ? <div className={classes.emptyQuery}>
-                                <div>По вашему запросу ничего не найдено</div>
-                            </div>
-                            : <div>{list}</div>
+                            {listLoading
+                                ? <div className={classes.loader}>
+                                    <Loader size={0.75}/>
+                                </div>
+                                : (_.isEmpty(list))
+                                    ? <div className={classes.emptyQuery}>
+                                        <div>По вашему запросу ничего не найдено</div>
+                                    </div>
+                                    : <div>{list}</div>
                             }
                         </div>
                     </div>

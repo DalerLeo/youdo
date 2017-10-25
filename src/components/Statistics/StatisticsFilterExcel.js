@@ -119,7 +119,7 @@ const enhance = compose(
         form: 'StatisticsFilterForm',
         enableReinitialize: true
     }),
-    withState('openFilter', 'setOpenFilter', false)
+    withState('openFilter', 'setOpenFilter', false),
 )
 
 const StatisticsFilterExcel = enhance((props) => {
@@ -128,10 +128,9 @@ const StatisticsFilterExcel = enhance((props) => {
         classes,
         filterKeys,
         fields,
-        handleSubmit,
         handleSubmitFilterDialog,
-        openFilter,
         setOpenFilter,
+        openFilter,
         handleGetDocument,
         withoutDate,
         extraButton
@@ -167,7 +166,10 @@ const StatisticsFilterExcel = enhance((props) => {
                 className={classes.overlay}
                 onClick={() => { setOpenFilter(false) }}> </div>}
             {openFilter && <Paper zDepth={2} className={classes.form}>
-                <form onSubmit={ handleSubmit(handleSubmitFilterDialog) }>
+                <form onSubmit={() => {
+                    handleSubmitFilterDialog()
+                    setOpenFilter(false)
+                }}>
                     <div className={classes.filter}>
                         <h3>Фильтр</h3>
                         <IconButton
@@ -210,7 +212,8 @@ StatisticsFilterExcel.propTypes = {
     initialValues: PropTypes.object.isRequired,
     fields: PropTypes.node.isRequired,
     handleSubmitFilterDialog: PropTypes.func.isRequired,
-    handleGetDocument: PropTypes.func.isRequired
+    handleGetDocument: PropTypes.func.isRequired,
+    setOpenFilter: PropTypes.func.isRequired
 }
 
 export default StatisticsFilterExcel
