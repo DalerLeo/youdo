@@ -6,7 +6,7 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import {Field} from 'redux-form'
 import IconButton from 'material-ui/IconButton'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../../Loader'
 import InProcess from 'material-ui/svg-icons/action/cached'
 import DoneIcon from 'material-ui/svg-icons/action/done-all'
 import Canceled from 'material-ui/svg-icons/notification/do-not-disturb-alt'
@@ -329,7 +329,7 @@ const StatReturnGridList = enhance((props) => {
                         />
                         {graphLoading
                         ? <div className={classes.graphLoader}>
-                                <CircularProgress size={40} thickness={4}/>
+                                <Loader size={0.75}/>
                             </div>
                         : <Row className={classes.diagram}>
                             <Col xs={3} className={classes.salesSummary}>
@@ -352,7 +352,7 @@ const StatReturnGridList = enhance((props) => {
                         {loading
                         ? <div className={classes.tableWrapper}>
                             <div className={classes.loader}>
-                                <CircularProgress thickness={4} size={40}/>
+                                <Loader size={0.75}/>
                             </div>
                         </div>
                         : <div className={classes.tableWrapper}>

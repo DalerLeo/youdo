@@ -17,7 +17,7 @@ import {
     TextField
 } from '../../ReduxForm/index'
 import StatSideMenu from '../StatSideMenu'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../../Loader'
 import Pagination from '../../GridList/GridListNavPagination/index'
 import numberFormat from '../../../helpers/numberFormat.js'
 import getConfig from '../../../helpers/getConfig'
@@ -61,10 +61,6 @@ const enhance = compose(
             padding: '20px 30px 0',
             display: 'flex',
             flexDirection: 'column',
-            '& > div:nth-child(3)': {
-                marginTop: '10px',
-                borderTop: '1px #efefef solid'
-            },
             '& .row': {
                 margin: '0 !important'
             }
@@ -143,9 +139,11 @@ const enhance = compose(
             display: 'flex',
             justifyContent: 'space-between',
             '& > div': {
-                '& div:nth-child(2)': {
+                '& > div:nth-child(odd)': {
+                    color: '#666'
+                },
+                '& > div:nth-child(even)': {
                     fontSize: '17px',
-                    marginTop: '2px',
                     fontWeight: '600',
                     marginBottom: '10px',
                     '& > span': {
@@ -154,20 +152,20 @@ const enhance = compose(
 
                     }
                 },
-                '& div:nth-child(4)': {
-                    fontSize: '17px',
-                    marginTop: '2px',
-                    fontWeight: '600',
-                    '& > span': {
-                        fontSize: '13px',
-                        fontWeight: '500'
-                    }
+                '& > div:last-child': {
+                    marginBottom: '0'
+                },
+                '&:last-child': {
+                    textAlign: 'right'
                 }
             }
         },
         pagination: {
             display: 'flex',
             justifyContent: 'space-between',
+            margin: '10px -30px 0',
+            padding: '0 30px',
+            borderTop: '1px #efefef solid',
             alignItems: 'center',
             '& > div:first-child': {
                 fontWeight: '600'
@@ -479,7 +477,7 @@ const StatProductMoveGridList = enhance((props) => {
                         <div className={classes.summary}>
                             {sumListLoading
                                 ? <div className={classes.summaryLoader}>
-                                    <CircularProgress size={40} thickness={4}/>
+                                    <Loader size={0.75}/>
                                 </div>
                                 : <div className={classes.summaryWrapper}>
                                     <div>
@@ -515,7 +513,7 @@ const StatProductMoveGridList = enhance((props) => {
                         </div>
                         {listLoading
                             ? <div className={classes.loader}>
-                                <CircularProgress size={40} thickness={4}/>
+                                <Loader size={0.75}/>
                             </div>
                             : !_.isEmpty(tableList) && !listLoading
                                 ? <div className={classes.tableWrapper}>

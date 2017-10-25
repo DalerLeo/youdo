@@ -9,7 +9,7 @@ import {compose} from 'recompose'
 import {Field} from 'redux-form'
 import {DateToDateField} from '../../ReduxForm'
 import StatSideMenu from '../StatSideMenu'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../../Loader'
 import LinearProgress from 'material-ui/LinearProgress'
 import Pagination from '../../GridList/GridListNavPagination/index'
 import numberFormat from '../../../helpers/numberFormat.js'
@@ -258,7 +258,7 @@ const StatOutcomeCategoryGridList = enhance((props) => {
                         {listLoading
                             ? <div className={classes.tableWrapper}>
                                 <div className={classes.loader}>
-                                    <CircularProgress thickness={4} size={40}/>
+                                    <Loader size={0.75}/>
                                 </div>
                             </div>
                             : <div className={classes.tableWrapper}>

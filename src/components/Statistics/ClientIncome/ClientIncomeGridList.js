@@ -19,7 +19,7 @@ import {
     ClientSearchField,
     ClientTransactionTypeSearchField
 } from '../../ReduxForm'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../../Loader'
 import moment from 'moment'
 import {Link} from 'react-router'
 import sprintf from 'sprintf'
@@ -385,7 +385,7 @@ const ClientIncomeGridList = enhance((props) => {
                         />
                         {graphLoading
                             ? <div className={classes.graphLoader}>
-                                <CircularProgress thickness={4} size={40}/>
+                                <Loader size={0.75}/>
                             </div>
                             : <Row className={classes.diagram}>
                                 <Col xs={3} className={classes.salesSummary}>
@@ -426,7 +426,7 @@ const ClientIncomeGridList = enhance((props) => {
                         {loading
                             ? <div className={classes.tableWrapper}>
                                 <div className={classes.loader}>
-                                    <CircularProgress thickness={4} size={40}/>
+                                    <Loader size={0.75}/>
                                 </div>
                             </div>
                             : <div className={classes.tableWrapper}>

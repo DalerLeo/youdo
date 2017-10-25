@@ -5,7 +5,7 @@ import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import IconButton from 'material-ui/IconButton'
 import Dialog from 'material-ui/Dialog'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../../Loader'
 import CloseIcon2 from '../../CloseIcon2/index'
 import ReturnDetails from '../../Return/ReturnDetails'
 
@@ -146,7 +146,7 @@ const StatReturnDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             {loading ? <div className={classes.loader}>
-                <CircularProgress/>
+                <Loader size={0.75}/>
             </div>
                 : <div>
                     <div className={classes.titleContent}>

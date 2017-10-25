@@ -130,6 +130,9 @@ const enhance = compose(
                 },
                 '& > span': {
                     display: 'block'
+                },
+                '&:last-child': {
+                    textAlign: 'right'
                 }
 
             }

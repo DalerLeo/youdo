@@ -4,7 +4,7 @@ import React from 'react'
 import {Row} from 'react-flexbox-grid'
 import * as ROUTES from '../../../constants/routes'
 import Container from '../../Container/index'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../../Loader'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import {Field} from 'redux-form'
@@ -87,21 +87,21 @@ const enhance = compose(
             }
         },
         balances: {
-            padding: '20px 0'
-        },
-        balanceItem: {
-            flexBasis: '25%',
-            maxWidth: '25%',
-            '& span': {
-                color: '#666',
-                marginBottom: '5px'
-            },
-            '& div': {
-                fontSize: '20px',
-                fontWeight: '600'
-            },
-            '&:last-child': {
-                marginRight: '0'
+            padding: '20px 0',
+            display: 'flex',
+            justifyContent: 'space-between',
+            '& > div': {
+                '& span': {
+                    color: '#666',
+                    marginBottom: '5px'
+                },
+                '& div': {
+                    fontSize: '20px',
+                    fontWeight: '600'
+                },
+                '&:last-child': {
+                    textAlign: 'right'
+                }
             }
         },
         emptyQuery: {
@@ -229,10 +229,7 @@ const StatCashboxGridList = enhance((props) => {
         const cbExpenses = numberFormat(_.get(item, 'expenses'), primaryCurrency)
 
         return (
-            <div
-                key={id}
-                className={classes.cashbox}
-                onClick={() => listData.handleOpenDetail(id)}>
+            <div key={id} className={classes.cashbox} onClick={() => listData.handleOpenDetail(id)}>
                 <header>
                     <div>
                         <h4>{name}</h4>
@@ -297,7 +294,7 @@ const StatCashboxGridList = enhance((props) => {
                         />
                         {listLoading
                             ? <div className={classes.loader}>
-                                <CircularProgress size={40} thickness={4}/>
+                                <Loader size={0.75}/>
                             </div>
                             : _.isEmpty(cashboxes)
                                 ? <div className={classes.emptyQuery}>

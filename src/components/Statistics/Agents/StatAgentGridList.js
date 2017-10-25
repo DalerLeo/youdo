@@ -11,7 +11,7 @@ import {reduxForm, Field} from 'redux-form'
 import {TextField, ZoneSearchField, DivisionSearchField} from '../../ReduxForm'
 import StatAgentDialog from './StatAgentDialog'
 import StatSideMenu from '../StatSideMenu'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../../Loader'
 import Pagination from '../../GridList/GridListNavPagination/index'
 import numberFormat from '../../../helpers/numberFormat.js'
 import getConfig from '../../../helpers/getConfig'
@@ -157,6 +157,13 @@ const enhance = compose(
                 '&:last-child:after': {
                     display: 'none'
                 }
+            }
+        },
+        dateFilter: {
+            display: 'flex',
+            alignItems: 'center',
+            '& span': {
+                fontWeight: '600'
             }
         },
         leftPanel: {
@@ -374,22 +381,6 @@ const StatAgentGridList = enhance((props) => {
                             withoutDate={true}
                         />
                         <div className={classes.filters}>
-                            <DateFilter
-                                type={'begin'}
-                                beginDate={_.toInteger(moment(calendarBegin.selectedDate).format('x'))}
-                                endDate={_.toInteger(moment(calendarEnd.selectedDate).format('x'))}
-                                handlePrevMonth={calendarBegin.handlePrevMonthBegin}
-                                handleNextMonth={calendarBegin.handleNextMonthBegin}
-                                selectedDate={calendarBegin.selectedDate}/>
-                            <DateFilter
-                                type={'end'}
-                                beginDate={_.toInteger(moment(calendarBegin.selectedDate).format('x'))}
-                                endDate={_.toInteger(moment(calendarEnd.selectedDate).format('x'))}
-                                handlePrevMonth={calendarEnd.handlePrevMonthEnd}
-                                handleNextMonth={calendarEnd.handleNextMonthEnd}
-                                selectedDate={calendarEnd.selectedDate}/>
-                        </div>
-                        <div className={classes.filters}>
                             <form onSubmit={handleSubmit(handleSubmitFilterDialog)}>
                                 <Field
                                     className={classes.inputFieldCustom}
@@ -397,6 +388,23 @@ const StatAgentGridList = enhance((props) => {
                                     component={TextField}
                                     hintText="Поиск"/>
                             </form>
+                            <div className={classes.dateFilter}>
+                                <DateFilter
+                                    type={'begin'}
+                                    beginDate={_.toInteger(moment(calendarBegin.selectedDate).format('x'))}
+                                    endDate={_.toInteger(moment(calendarEnd.selectedDate).format('x'))}
+                                    handlePrevMonth={calendarBegin.handlePrevMonthBegin}
+                                    handleNextMonth={calendarBegin.handleNextMonthBegin}
+                                    selectedDate={calendarBegin.selectedDate}/>
+                                <span>Период</span>
+                                <DateFilter
+                                    type={'end'}
+                                    beginDate={_.toInteger(moment(calendarBegin.selectedDate).format('x'))}
+                                    endDate={_.toInteger(moment(calendarEnd.selectedDate).format('x'))}
+                                    handlePrevMonth={calendarEnd.handlePrevMonthEnd}
+                                    handleNextMonth={calendarEnd.handleNextMonthEnd}
+                                    selectedDate={calendarEnd.selectedDate}/>
+                            </div>
                             <Pagination filter={filter}/>
                         </div>
                         <div className={classes.tableWrapper}>
@@ -412,7 +420,7 @@ const StatAgentGridList = enhance((props) => {
                             />
                     {listLoading
                         ? <div className={classes.loader}>
-                            <CircularProgress size={40} thickness={4}/>
+                            <Loader size={0.75}/>
                         </div>
                         : (_.isEmpty(list))
                             ? <div className={classes.emptyQuery}>

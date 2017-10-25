@@ -12,7 +12,7 @@ import DateToDateField from '../../ReduxForm/Basic/DateToDateField'
 import StatSideMenu from '../StatSideMenu'
 import LinearLoading from '../../LinearProgress/index'
 import IconButton from 'material-ui/IconButton'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../../Loader'
 import Chart from 'material-ui/svg-icons/action/timeline'
 import Pagination from '../../GridList/GridListNavPagination/index'
 import numberFormat from '../../../helpers/numberFormat'
@@ -197,12 +197,12 @@ const enhance = compose(
         },
         summary: {
             display: 'flex',
+            justifyContent: 'space-between',
             borderTop: 'solid 1px #efefef',
             borderBottom: 'solid 1px #efefef',
             padding: '14px 0',
             color: '#666',
             '& > div': {
-                marginRight: '60px',
                 '& div': {
                     fontSize: '20px',
                     color: '#333',
@@ -210,6 +210,9 @@ const enhance = compose(
                 },
                 '& span': {
                     display: 'block'
+                },
+                '&:last-child': {
+                    textAlign: 'right'
                 }
 
             }
@@ -310,7 +313,7 @@ const StatMarketGridList = enhance((props) => {
             <Col xs={2}>Клиенты</Col>
             <Col xs={2} style={{justifyContent: 'flex-end'}}>Продажи</Col>
             <Col xs={2} style={{justifyContent: 'flex-end'}}>Возвраты</Col>
-            <Col xs={1} style={{justifyContent: 'flex-end'}}>Фактически</Col>
+            <Col xs={1} style={{justifyContent: 'flex-end'}}>Факт.</Col>
             <Col xs={1} style={{justifyContent: 'flex-end'}}>Оплачено</Col>
             <Col xs={1} style={{justifyContent: 'flex-end'}}>Долг</Col>
             <Col xs={1}>{null}</Col>
@@ -333,11 +336,11 @@ const StatMarketGridList = enhance((props) => {
                     <Row>
                         <Col xs={2}>{name}</Col>
                         <Col xs={2}>{clientName}</Col>
-                        <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(income, primaryCurrency)}</Col>
-                        <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(returns, primaryCurrency)}</Col>
-                        <Col xs={1} style={{justifyContent: 'flex-end'}}>{numberFormat(actual, primaryCurrency)}</Col>
-                        <Col xs={1} style={{justifyContent: 'flex-end'}}>{numberFormat(paidItem, primaryCurrency)}</Col>
-                        <Col xs={1} style={{justifyContent: 'flex-end'}}>{numberFormat(deptItem, primaryCurrency)}</Col>
+                        <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right'}}>{numberFormat(income, primaryCurrency)}</Col>
+                        <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right'}}>{numberFormat(returns, primaryCurrency)}</Col>
+                        <Col xs={1} style={{justifyContent: 'flex-end', textAlign: 'right'}}>{numberFormat(actual, primaryCurrency)}</Col>
+                        <Col xs={1} style={{justifyContent: 'flex-end', textAlign: 'right'}}>{numberFormat(paidItem, primaryCurrency)}</Col>
+                        <Col xs={1} style={{justifyContent: 'flex-end', textAlign: 'right'}}>{numberFormat(deptItem, primaryCurrency)}</Col>
                         <div className={classes.closeDetail} onClick={detailData.handleCloseDetail}>{null}</div>
                         <Col xs={1}>{null}</Col>
                     </Row>
@@ -413,7 +416,7 @@ const StatMarketGridList = enhance((props) => {
                         />
                         {sumLoading
                             ? <div className={classes.sumLoader}>
-                                <CircularProgress size={40} thickness={4}/>
+                                <Loader size={0.75}/>
                             </div>
                             : <div className={classes.summary}>
                                 <div>
@@ -451,7 +454,7 @@ const StatMarketGridList = enhance((props) => {
                         {listLoading
                             ? <div className={classes.tableWrapper}>
                                 <div className={classes.loader}>
-                                    <CircularProgress thickness={4} size={40}/>
+                                    <Loader size={0.75}/>
                                 </div>
                             </div>
                             : <div className={classes.tableWrapper}>

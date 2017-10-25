@@ -5,7 +5,7 @@ import {Row} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 import StatSideMenu from './StatSideMenu'
 import {DateToDateField} from '../ReduxForm'
 import Container from '../Container'
@@ -290,7 +290,7 @@ const StatReportGridList = enhance((props) => {
                         />
                         {listLoading
                             ? <div className={classes.loader}>
-                                <CircularProgress size={40} thickness={4}/>
+                                <Loader size={0.75}/>
                             </div>
                             : <div className={classes.blocksWrapper}>
                                 <div>

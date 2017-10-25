@@ -222,7 +222,8 @@ const enhance = compose(
         nav: {
             borderTop: '1px solid #efefef',
             height: '55px',
-            padding: ({stat}) => stat ? 'unset' : '0 30px',
+            padding: '0 30px',
+            margin: ({stat}) => stat ? '0 -30px' : 'unset',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
@@ -291,6 +292,9 @@ const enhance = compose(
                     fontSize: '17px',
                     marginTop: '2px',
                     fontWeight: '600'
+                },
+                '&:last-child': {
+                    textAlign: 'right'
                 }
             }
         }
@@ -308,9 +312,9 @@ const searchIconStyle = {
         height: 24
     },
     button: {
-        width: 30,
-        height: 30,
-        padding: 0
+        width: 36,
+        height: 36,
+        padding: 6
     }
 }
 const iconStyle = {

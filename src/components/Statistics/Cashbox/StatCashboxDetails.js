@@ -2,7 +2,7 @@ import _ from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
 import {Row} from 'react-flexbox-grid'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../../Loader'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import {Field} from 'redux-form'
@@ -167,7 +167,7 @@ const enhance = compose(
                     marginBottom: '5px'
                 },
                 '& div': {
-                    fontSize: '20px',
+                    fontSize: '18px',
                     fontWeight: '600'
                 }
             }
@@ -266,7 +266,7 @@ const StatCashboxDetails = enhance((props) => {
                     />
                     {graphLoading
                     ? <div className={classes.graphLoader}>
-                        <CircularProgress size={40} thickness={4}/>
+                        <Loader size={0.75}/>
                     </div>
                     : <div className={classes.balances}>
                         <Row className={classes.diagram}>

@@ -16,7 +16,7 @@ import {
 import StatSideMenu from '../StatSideMenu'
 import getConfig from '../../../helpers/getConfig'
 import numberFormat from '../../../helpers/numberFormat'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../../Loader'
 import {StatisticsFilterExcel, StatisticsChart} from '../../Statistics'
 import TransactionsList from './TransactionsList'
 
@@ -132,6 +132,7 @@ const enhance = compose(
         mainSummary: {
             '& > div:last-child': {
                 borderBottom: '1px #efefef solid',
+                fontSize: '20px',
                 paddingBottom: '10px'
             }
         },
@@ -155,7 +156,6 @@ const enhance = compose(
         enableReinitialize: true
     }),
 )
-const ZERO = 0
 const StatFinanceGridList = enhance((props) => {
     const {
         graphData,
@@ -217,17 +217,19 @@ const StatFinanceGridList = enhance((props) => {
                         />
                         {graphLoading
                             ? <div className={classes.graphLoader}>
-                                <CircularProgress size={40} thickness={4}/>
+                                <Loader size={0.75}/>
                             </div>
                             : <Row className={classes.diagram}>
                                 <Col xs={3} className={classes.salesSummary}>
+                                    <div className={classes.mainSummary}>
+                                        <span className={classes.summaryTitle}>Разница</span>
+                                        <div className={classes.summaryValue}>{numberFormat(profit)} {primaryCurrency}</div>
+                                    </div>
                                     <div className={classes.secondarySummary}>
                                         <span className={classes.summaryTitle}>Приход за период</span>
-                                        <div className={classes.summaryValue} style={{color: '#5ecdea'}}>{numberFormat(sumIn)} {primaryCurrency}</div>
+                                        <div className={classes.summaryValue}>{numberFormat(sumIn)} {primaryCurrency}</div>
                                         <span className={classes.summaryTitle}>Расход за период</span>
-                                        <div className={classes.summaryValue} style={{color: '#EB9696'}}>{numberFormat(sumOut)} {primaryCurrency}</div>
-                                        <span className={classes.summaryTitle}>Разница</span>
-                                        <div className={classes.summaryValue} style={profit >= ZERO ? {color: '#71ce87'} : {color: '#EB9696'}}>{numberFormat(profit)} {primaryCurrency}</div>
+                                        <div className={classes.summaryValue}>{numberFormat(sumOut)} {primaryCurrency}</div>
                                     </div>
                                 </Col>
                                 <Col xs={9} className={classes.chart}>
