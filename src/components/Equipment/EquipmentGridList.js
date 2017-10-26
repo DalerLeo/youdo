@@ -13,7 +13,7 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import FlatButton from 'material-ui/FlatButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
-import SettingSideMenu from '../Setting/SettingSideMenu'
+import SettingSideMenu from '../Settings/SettingsSideMenu'
 import Edit from 'material-ui/svg-icons/image/edit'
 import Tooltip from '../ToolTip'
 

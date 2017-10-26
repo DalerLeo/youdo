@@ -137,7 +137,7 @@ export default class GoogleCustomMap extends React.Component {
                 animation: google.maps.Animation.DROP,
                 map: this.map
             })
-            const info = '<div><p><b>Названия:</b> ' + item.name + '</p><p><b>Адрес:</b> ' + item.address + '</p></div>'
+            const info = '<div><p><b>Название:</b> ' + item.name + '</p><p><b>Адрес:</b> ' + item.address + '</p></div>'
             const infoWindow = new google.maps.InfoWindow({
                 content: info,
                 pixelOffset: new google.maps.Size(INFO_WINDOW_OFFSET, ZERO)

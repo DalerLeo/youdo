@@ -6,6 +6,9 @@ import {compose} from 'recompose'
 import {Link} from 'react-router'
 import PropTypes from 'prop-types'
 import moment from 'moment'
+import {connect} from 'react-redux'
+import {permissions} from '../SidebarMenu/SidebarMenu'
+import {getMenus} from '../SidebarMenu/MenuItems'
 
 const enhance = compose(
     injectSheet({
@@ -41,6 +44,12 @@ const enhance = compose(
             color: '#333 !important'
         }
     }),
+    connect((state) => {
+        const isAdmin = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
+        return {
+            isAdmin
+        }
+    })
 )
 
 const lastDay = moment().daysInMonth()
@@ -48,9 +57,11 @@ const firstDayOfMonth = moment().format('YYYY-MM-01')
 const lastDayOfMonth = moment().format('YYYY-MM-' + lastDay)
 
 const StatSideMenu = enhance((props) => {
-    const {classes, currentUrl, filter} = props
+    const {classes, currentUrl, filter, isAdmin} = props
     const fromDate = filter ? _.get(filter.getParams(), 'fromDate') : firstDayOfMonth
     const toDate = filter ? _.get(filter.getParams(), 'toDate') : lastDayOfMonth
+    const MenuItems = _.find(getMenus(permissions, isAdmin), {'section': 'Statistics'})
+    const sortedMenu = _.groupBy(MenuItems.childs, 'section')
     const statMenus = [
         {
             section: 'Продажи',
@@ -92,24 +103,23 @@ const StatSideMenu = enhance((props) => {
             childs: []
         }
     ]
+    statMenus.push('sd')
+    // Remove this
 
     return (
         <div className={classes.wrapper}>
-            {_.map(statMenus, (item, index) => {
+            {_.map(sortedMenu, (item, index) => {
                 return (
                     <ul key={index}>
-                        {item.url
-                            ? <Link to={{pathname: item.url, query: item.query}} className={(item.url === currentUrl) && classes.active}>{item.section}</Link>
-                            : <span>{item.section}</span>}
-                        {_.map(item.childs, (object, i) => {
+                        {index}
+                        {_.map(item, (object, i) => {
                             return (
                                 <li key={i}>
-                                    {object.url ? <Link to={{pathname: object.url, query: object.query}}>
-                                         <span className={object.url === currentUrl ? classes.active : classes.simple}>
-                                             {object.name}
-                                         </span>
-                                     </Link>
-                                    : <span>{object.name}</span>}
+                                    <Link to={{pathname: object.url, query: object.query}}>
+                                        <span className={object.url === currentUrl ? classes.active : classes.simple}>
+                                            {object.name}
+                                        </span>
+                                    </Link>
                                 </li>
                             )
                         })}

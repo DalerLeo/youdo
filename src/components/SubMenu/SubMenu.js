@@ -5,8 +5,10 @@ import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import HardwareKeyboardArrowRight from 'material-ui/svg-icons/hardware/keyboard-arrow-right'
-import {MenuItems} from '../SidebarMenu/MenuItems'
+import {getMenus} from '../SidebarMenu/MenuItems'
+import {permissions} from '../SidebarMenu/SidebarMenu'
 import ToolTip from '../ToolTip'
+import {connect} from 'react-redux'
 
 const NOT_FOUND = -1
 
@@ -50,11 +52,18 @@ const enhance = compose(
                 fill: 'rgb(93, 100, 116) !important'
             }
         }
-    })
+    }),
+    connect((state) => {
+        const isAdmin = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
+        return {
+            isAdmin
+        }
+    }),
 )
 
 const SubMenu = enhance((props) => {
-    const {classes, url, opacity} = props
+    const {classes, url, opacity, isAdmin} = props
+    const MenuItems = getMenus(permissions, isAdmin)
 
     const parent = _
         .chain(MenuItems)

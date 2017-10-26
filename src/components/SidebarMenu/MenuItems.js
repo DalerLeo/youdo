@@ -12,12 +12,22 @@ import Supply from 'material-ui/svg-icons/action/swap-horiz'
 import Products from 'material-ui/svg-icons/device/widgets'
 
 const NOT_FOUND = -1
-// .. const permissions = ['frontend_orders', 'frontend_clients', 'frontend_products', 'frontend_stat_sales', 'frontend_stat_agents']
+
+const SETTINGS_STAFF = 'Персонал'
+const SETTINGS_FINANCE = 'Финансы'
+const SETTINGS_PRODUCTS = 'Продукты'
+const SETTINGS_MISC = 'Другие'
+
+const STATS_SALES = 'Продажи'
+const STATS_FINANCE = 'Финансы'
+const STATS_CLIENTS = 'Клиенты'
+const STATS_STOCK = 'Склад'
+const STATS_OVERALL = 'Общее'
 
 export const MenuItems = [
     {
         name: 'Продажи',
-        icon: (<AttachMoney />),
+        icon: (<AttachMoney/>),
         url: ROUTES.ORDER_LIST_URL,
         childs: [
             {name: 'Заказы', url: ROUTES.ORDER_LIST_URL, permission: 'frontend_orders'},
@@ -32,7 +42,7 @@ export const MenuItems = [
     },
     {
         name: 'Клиенты',
-        icon: (<Person />),
+        icon: (<Person/>),
         url: ROUTES.CLIENT_LIST_URL,
         childs: [
             {name: 'Клиенты', url: ROUTES.CLIENT_LIST_URL, permission: 'frontend_clients'},
@@ -41,7 +51,7 @@ export const MenuItems = [
     },
     {
         name: 'Продукты',
-        icon: (<Products />),
+        icon: (<Products/>),
         url: ROUTES.PRODUCT_LIST_URL,
         childs: [
             {name: 'Продукты', url: ROUTES.PRODUCT_LIST_URL, permission: 'frontend_products'}
@@ -49,7 +59,7 @@ export const MenuItems = [
     },
     {
         name: 'Склад',
-        icon: (<Store />),
+        icon: (<Store/>),
         url: ROUTES.REMAINDER_LIST_URL,
         childs: [
             {name: 'Остаток', url: ROUTES.REMAINDER_LIST_URL, permission: 'frontend_remainder'},
@@ -58,7 +68,7 @@ export const MenuItems = [
     },
     {
         name: 'Поставки',
-        icon: (<Supply />),
+        icon: (<Supply/>),
         url: ROUTES.SUPPLY_LIST_URL,
         childs: [
             {name: 'Поставщики', url: ROUTES.PROVIDER_LIST_URL, permission: 'frontend_suppliers'},
@@ -67,7 +77,7 @@ export const MenuItems = [
     },
     {
         name: 'Финансы',
-        icon: (<Finance />),
+        icon: (<Finance/>),
         url: ROUTES.TRANSACTION_LIST_URL,
         childs: [
             {name: 'Транзакции', url: ROUTES.TRANSACTION_LIST_URL, permission: 'frontend_transactions'},
@@ -78,7 +88,7 @@ export const MenuItems = [
     },
     {
         name: 'Производство',
-        icon: (<Map />),
+        icon: (<Map/>),
         url: ROUTES.MANUFACTURE_LIST_URL,
         childs: [
             {name: 'Производство', url: ROUTES.MANUFACTURE_LIST_URL, permission: 'frontend_manufacture'}
@@ -86,130 +96,97 @@ export const MenuItems = [
     },
     {
         name: 'Статистика',
-        icon: (<Statistics />),
+        icon: (<Statistics/>),
+        section: 'Statistics',
         url: ROUTES.STATISTICS_LIST_URL,
         childs: [
-            {name: 'Продажи', url: ROUTES.STATISTICS_SALES_URL, permission: 'frontend_stat_sales'},
-            {name: 'Агенты', url: ROUTES.STATISTICS_AGENT_URL, permission: 'frontend_stat_agents'},
-            {name: 'Магазины', url: ROUTES.STATISTICS_MARKET_URL, permission: 'frontend_stat_markets'},
-            {name: 'Возврат', url: ROUTES.STATISTICS_RETURN_URL, permission: 'frontend_stat_order_returns'},
-            {name: 'Оборот', url: ROUTES.STATISTICS_FINANCE_URL, permission: 'frontend_stat_finance'},
-            {name: 'Расходы по категориям', url: ROUTES.STATISTICS_OUTCOME_CATEGORY_URL, permission: 'frontend_stat_outcome_category'},
-            {name: 'Кассы', url: ROUTES.STATISTICS_CASHBOX_URL, permission: 'frontend_stat_cashbox'},
-            {name: 'Оборот клиентов', url: ROUTES.STATISTICS_CLIENT_INCOME_URL, permission: 'frontend_stat_client_income'},
-            {name: 'Баланс клиентов', url: ROUTES.STATISTICS_CLIENT_BALANCE_URL, permission: 'frontend_stat_client_balance'},
-            {name: 'Склад. Остаток', url: ROUTES.STATISTICS_REMAINDER_URL, permission: 'frontend_stat_remainder'},
-            {name: 'Движение товаров', url: ROUTES.STATISTICS_PRODUCT_MOVE_URL, permission: 'frontend_stat_product_move'},
-            {name: 'Генеральный отчет', url: ROUTES.STATISTICS_REPORT_URL, permission: 'frontend_stat_report'}
+            {section: STATS_SALES, name: 'Оборот', url: ROUTES.STATISTICS_SALES_URL, permission: 'frontend_stat_sales'},
+            {section: STATS_SALES, name: 'Агенты', url: ROUTES.STATISTICS_AGENT_URL, permission: 'frontend_stat_agents'},
+            {section: STATS_SALES, name: 'Товары', url: ROUTES.STATISTICS_PRODUCT_URL, permission: 'frontend_stat_product', query: {pageSize: 25}},
+            {section: STATS_SALES, name: 'Магазины', url: ROUTES.STATISTICS_MARKET_URL, permission: 'frontend_stat_markets'},
+            {section: STATS_SALES, name: 'Возврат', url: ROUTES.STATISTICS_RETURN_URL, permission: 'frontend_stat_order_returns'},
+            {section: STATS_FINANCE, name: 'Оборот', url: ROUTES.STATISTICS_FINANCE_URL, permission: 'frontend_stat_finance'},
+            {section: STATS_FINANCE, name: 'Расходы по категориям', url: ROUTES.STATISTICS_OUTCOME_CATEGORY_URL, permission: 'frontend_stat_outcome_category'},
+            {section: STATS_FINANCE, name: 'Кассы', url: ROUTES.STATISTICS_CASHBOX_URL, permission: 'frontend_stat_cashbox'},
+            {section: STATS_CLIENTS, name: 'Оборот клиентов', url: ROUTES.STATISTICS_CLIENT_INCOME_URL, permission: 'frontend_stat_client_income'},
+            {section: STATS_CLIENTS, name: 'Баланс клиентов', url: ROUTES.STATISTICS_CLIENT_BALANCE_URL, permission: 'frontend_stat_client_balance', query: {pageSize: 25}},
+            {section: STATS_STOCK, name: 'Склад. Остаток', url: ROUTES.STATISTICS_REMAINDER_URL, permission: 'frontend_stat_remainder', query: {pageSize: 25}},
+            {section: STATS_STOCK, name: 'Движение товаров', url: ROUTES.STATISTICS_PRODUCT_MOVE_URL, permission: 'frontend_stat_product_move', query: {pageSize: 25}},
+            {section: STATS_OVERALL, name: 'Генеральный отчет', url: ROUTES.STATISTICS_REPORT_URL, permission: 'frontend_stat_report'}
         ]
     },
     {
         name: 'Настройки',
-        icon: (<Settings />),
+        icon: (<Settings/>),
+        section: 'Settings',
         url: ROUTES.USERS_LIST_URL,
         bottom: true,
         childs: [
-            {name: 'Склады', url: ROUTES.STOCK_LIST_URL, permission: 'frontend_settings_stock'},
-            {name: 'Валюты', url: ROUTES.CURRENCY_LIST_URL, permission: 'frontend_settings_currency'},
-            {name: 'Кассы', url: ROUTES.CASHBOX_LIST_URL, permission: 'frontend_settings_cashbox'},
-            {name: 'Категории расходов', url: ROUTES.EXPENSIVE_CATEGORY_LIST_URL, permission: 'frontend_settings_expense_category'},
-            {name: 'Типы продуктов', url: ROUTES.PRODUCT_TYPE_LIST_URL, permission: 'frontend_settings_product_type'},
-            {name: 'Пользователи', url: ROUTES.USERS_LIST_URL, permission: 'frontend_settings_users'},
-            {name: 'Измерения', url: ROUTES.MEASUREMENT_LIST_URL, permission: 'frontend_settings_measurement'},
-            {name: 'Оборудование', url: ROUTES.EQUIPMENT_LIST_URL, permission: 'frontend_settings_equipment'},
-            {name: 'Смена', url: ROUTES.SHIFT_LIST_URL, permission: 'frontend_settings_shift'},
-            {name: 'Тип магазина', url: ROUTES.MARKET_TYPE_LIST_URL, permission: 'frontend_settings_market_type'},
-            {name: 'Должности', url: ROUTES.POSITION_LIST_URL, permission: 'frontend_settings_position'},
-            {name: 'Объединение', url: ROUTES.JOIN_LIST_URL, permission: 'frontend_settings_join'}
+            {section: SETTINGS_STAFF, name: 'Пользователи', url: ROUTES.USERS_LIST_URL, permission: 'frontend_settings_users'},
+            {section: SETTINGS_STAFF, name: 'Смена', url: ROUTES.SHIFT_LIST_URL, permission: 'frontend_settings_shift'},
+            {section: SETTINGS_STAFF, name: 'Должности', url: ROUTES.POSITION_LIST_URL, permission: 'frontend_settings_position'},
+            {section: SETTINGS_FINANCE, name: 'Валюты', url: ROUTES.CURRENCY_LIST_URL, permission: 'frontend_settings_currency'},
+            {section: SETTINGS_FINANCE, name: 'Кассы', url: ROUTES.CASHBOX_LIST_URL, permission: 'frontend_settings_cashbox'},
+            {section: SETTINGS_FINANCE, name: 'Категории расходов', url: ROUTES.EXPENSIVE_CATEGORY_LIST_URL, permission: 'frontend_settings_expense_category'},
+            {section: SETTINGS_PRODUCTS, name: 'Типы продуктов', url: ROUTES.PRODUCT_TYPE_LIST_URL, permission: 'frontend_settings_product_type'},
+            {section: SETTINGS_PRODUCTS, name: 'Измерения', url: ROUTES.MEASUREMENT_LIST_URL, permission: 'frontend_settings_measurement'},
+            {section: SETTINGS_PRODUCTS, name: 'Тип магазина', url: ROUTES.MARKET_TYPE_LIST_URL, permission: 'frontend_settings_market_type'},
+            {section: SETTINGS_MISC, name: 'Склады', url: ROUTES.STOCK_LIST_URL, permission: 'frontend_settings_stock'},
+            {section: SETTINGS_MISC, name: 'Оборудование', url: ROUTES.EQUIPMENT_LIST_URL, permission: 'frontend_settings_equipment'},
+            {section: SETTINGS_MISC, name: 'Подразделение', url: ROUTES.JOIN_LIST_URL, permission: 'frontend_settings_division'},
+            {section: SETTINGS_MISC, name: 'Объединение', url: ROUTES.JOIN_LIST_URL, permission: 'frontend_settings_join'},
+            {section: SETTINGS_MISC, name: 'Доступы', url: ROUTES.JOIN_LIST_URL, permission: 'frontend_settings_permissions'},
+            {section: SETTINGS_MISC, name: 'Уведомление', url: ROUTES.JOIN_LIST_URL, permission: 'frontend_settings_notifications'}
         ]
     }
 ]
 
-export const groups = [
-    {
-        id: 1,
-        name: 'SupDir',
-        urls: [
-            ROUTES.REMAINDER_LIST_URL,
-            ROUTES.STOCK_RECEIVE_LIST_URL
-        ]
-    },
-    {
-        id: 2,
-        name: 'delivery',
-        urls: []
-    },
-    {
-        id: 3,
-        name: 'agent',
-        urls: []
-    },
-    {
-        id: 4,
-        name: 'merch',
-        urls: []
-    },
-    {
-        id: 5,
-        name: 'collector',
-        urls: []
-    },
-    {
-        id: 6,
-        name: 'cashier',
-        urls: [
-            ROUTES.TRANSACTION_LIST_URL,
-            ROUTES.PENDING_EXPENSES_LIST_URL,
-            ROUTES.PENDING_PAYMENTS_LIST_URL,
-            ROUTES.CLIENT_BALANCE_LIST_URL
-        ]
-    },
-    {
-        id: 7,
-        name: 'supervisor',
-        urls: []
-    }
-]
-
-const getLinksByGroup = (groupId) => {
-    return _.get(_.find(groups, {'id': _.toInteger(groupId)}), 'urls')
-}
-
-export const getNeedMenu = (sessionGroups) => {
-    let menus = []
-    _.map(sessionGroups, (item) => {
-        const links = getLinksByGroup(item)
-        _.map(links, (link) => {
-            const parent = _
-                .chain(MenuItems)
-                .find((obj) => {
-                    return (_.findIndex(obj.childs,
-                        (ch) => ch.url === link) > NOT_FOUND)
+export const getNeedMenu = (userPermissions) => {
+    const menus = []
+    _.map(userPermissions, (perm) => {
+        const parent = _
+            .chain(MenuItems)
+            .find((obj) => {
+                const filteredChilds = _.filter(obj.childs, (child) => {
+                    return child.permission === perm
                 })
-                .value()
-            let hasIn = false
-            _.map(menus, (menu) => {
-                if (menu.url === link) {
+                return (_.findIndex(filteredChilds, (ch) => {
+                    return ch.permission === perm
+                }) > NOT_FOUND)
+            })
+            .value()
+        let hasIn = false
+        _.map(menus, (menu) => {
+            _.map(menu.childs, (child) => {
+                if (child.permission === perm) {
                     hasIn = true
                 }
-                _.map(menu.childs, (child) => {
-                    if (child.url === link) {
-                        hasIn = true
-                    }
-                })
             })
-            if (!hasIn) {
-                menus.push(parent)
-            }
         })
+        const filteredChilds = _.filter(parent.childs, (child) => {
+            return child.permission === perm
+        })
+        if (!hasIn) {
+            const newParent = {
+                name: parent.name,
+                icon: parent.icon,
+                section: parent.section || '',
+                bottom: parent.name === 'Настройки',
+                childs: _.filter(parent.childs, (ch) => {
+                    return _.includes(userPermissions, ch.permission)
+                }),
+                url: _.get(_.first(filteredChilds), 'url')
+            }
+            menus.push(newParent)
+        }
     })
-    return menus
+    return _.uniqBy(menus, 'url')
 }
 
-export const getMenus = (sessionGroups, isAdmin) => {
+export const getMenus = (userPermissions, isAdmin) => {
     if (isAdmin) {
         return MenuItems
     }
-    return getNeedMenu(sessionGroups)
+    return getNeedMenu(userPermissions)
 }
 

@@ -8,7 +8,7 @@ import {Tabs, Tab} from 'material-ui/Tabs'
 import * as TAB from '../../constants/joinTab'
 import TabClients from './JoinTabClients'
 import TabMarkets from './JoinTabMarkets'
-import SettingSideMenu from '../Setting/SettingSideMenu'
+import SettingSideMenu from '../Settings/SettingsSideMenu'
 
 const enhance = compose(
     injectSheet({

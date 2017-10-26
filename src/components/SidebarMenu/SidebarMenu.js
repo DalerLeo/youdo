@@ -15,6 +15,22 @@ import CustomBadge from '../CustomBadge/CustomBadge'
 import ArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 import ArrowUp from 'material-ui/svg-icons/hardware/keyboard-arrow-up'
 
+export const permissions = [
+    'frontend_orders',
+    'frontend_plan',
+    'frontend_activity',
+    'frontend_clients',
+    'frontend_products',
+    'frontend_stat_sales',
+    'frontend_stat_agents',
+    'frontend_settings_currency',
+    'frontend_settings_expense_category',
+    'frontend_settings_shift',
+    'frontend_settings_equipment',
+    'frontend_settings_join',
+    'frontend_stat_outcome_category',
+    'frontend_stat_report'
+]
 const style = {
     style: {
         width: 84,
@@ -114,8 +130,8 @@ const enhance = compose(
 )
 
 const SideBarMenu = enhance((props) => {
-    const {classes, handleSignOut, handleOpenNotificationBar, sessionGroups, isAdmin, loading} = props
-    const menu = getMenus(sessionGroups, isAdmin)
+    const {classes, handleSignOut, handleOpenNotificationBar, isAdmin, loading} = props
+    const menu = getMenus(permissions, isAdmin)
     const items = _.map(menu, (item, index) => {
         const atBottom = _.get(item, 'bottom')
         if (atBottom) {
