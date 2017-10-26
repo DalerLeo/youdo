@@ -101,7 +101,7 @@ const enhance = compose(
         },
 
         handleSubmitFilterDialog: props => () => {
-            const {filter, filterForm} = props
+            const {filter, filterForm, setOpenFilter} = props
             const search = _.get(filterForm, ['values', 'search']) || null
             const zone = _.get(filterForm, ['values', 'zone', 'value']) || null
             const division = _.get(filterForm, ['values', 'division', 'value']) || null
@@ -115,6 +115,7 @@ const enhance = compose(
                 [STAT_AGENT_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
 
             })
+            setOpenFilter(false)
         },
         handleGetDocument: props => () => {
             const {filter} = props
