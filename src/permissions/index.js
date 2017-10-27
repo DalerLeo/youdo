@@ -20,8 +20,8 @@ export const visibleOnlyAdmin = connectedRouterRedirect({
         const permissions = _.map(_.get(state, ['authConfirm', 'data', 'permissions']), (item) => {
             return _.get(item, 'codename')
         })
-        const menus = getMenus(permissions)
         const isSuperUser = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
+        const menus = getMenus(permissions, isSuperUser)
         if (isSuperUser) {
             return isSuperUser
         }

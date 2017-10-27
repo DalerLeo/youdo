@@ -53,13 +53,15 @@ const enhance = compose(
                 }
             }
         },
+        default: {
+            fontWeight: '600',
+            padding: '0 5px'
+        },
         red: {
-            padding: '0 5px',
-            fontWeight: '600'
+            extend: 'default'
         },
         green: {
-            padding: '0 5px',
-            fontWeight: '600'
+            extend: 'default'
         }
     })),
     reduxForm({
@@ -81,12 +83,12 @@ const ClientBalanceCreateDialog = enhance((props) => {
     })
     const balanceInfo = _.map(balanceArr, (balance, index) => {
         const balanceName = _.get(balance, 'name')
-        const amount = _.get(balance, 'amount')
+        const amount = _.toNumber(_.get(balance, 'amount'))
         const type = _.get(balance, 'type')
         return (
-            <div key={index} style={{padding: '5px 25px'}}>
+            <div key={index} style={{padding: '5px 30px'}}>
                     <span>{balanceName + ' ' + type}</span>
-                    <span className={(amount <= ZERO) ? classes.red : classes.green}>{numberFormat(amount, currency)}</span>
+                    <span className={(amount < ZERO) ? classes.red : (amount > ZERO) ? classes.green : classes.default}>{numberFormat(amount, currency)}</span>
             </div>
         )
     })
