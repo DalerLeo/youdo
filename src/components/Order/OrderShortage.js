@@ -8,7 +8,7 @@ import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
-import CloseIcon2 from '../CloseIcon2'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import {DateField} from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 import {Col} from 'react-flexbox-grid'
@@ -193,7 +193,7 @@ const OrderShortageDialog = enhance((props) => {
             <div className={classes.titleContent}>
                 <span>Добавление заказа / недостающие товары</span>
                 <IconButton onTouchTap={onClose}>
-                    <CloseIcon2 color="#666666"/>
+                    <CloseIcon color="#666666"/>
                 </IconButton>
             </div>
             <div className={classes.bodyContent}>

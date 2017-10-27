@@ -8,8 +8,8 @@ import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import Paper from 'material-ui/Paper'
-import CashPayment from '../CashPayment'
-import BankPayment from '../BankPayment'
+import CashPayment from 'material-ui/svg-icons/maps/local-atm'
+import BankPayment from 'material-ui/svg-icons/action/credit-card'
 import CircularProgress from 'material-ui/CircularProgress'
 import numberFormat from '../../helpers/numberFormat'
 
@@ -169,11 +169,11 @@ const TransactionGridList = enhance((props) => {
                     <div className={item.id === cashboxData.cashboxId}>
                         {type === 'bank'
                             ? <div className={classes.flex}>
-                                <BankPayment style={{height: '14px', width: '14px', color: '#6261b0'}}/>
+                                <BankPayment style={{height: '16px', width: '16px', color: '#6261b0'}}/>
                                 <span style={{marginLeft: '5px', color: '#6261b0'}}>банковский счет</span>
                             </div>
                             : <div className={classes.flex}>
-                                <CashPayment style={{height: '14px', width: '14px', color: '#12aaeb'}}/>
+                                <CashPayment style={{height: '16px', width: '16px', color: '#12aaeb'}}/>
                                 <span style={{marginLeft: '5px', color: '#12aaeb'}}>наличные</span>
                             </div>
                         }

@@ -11,7 +11,7 @@ import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 import {ProviderSearchField, StockSearchField, ProductSearchField, TextField, SupplyTypeSearchFiled} from '../ReduxForm'
-import CloseIcon from '../CloseIcon'
+import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
 
 export const SUPPLY_FILTER_OPEN = 'openFilterDialog'

@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
-import CloseIcon2 from '../../CloseIcon2/index'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import Paper from 'material-ui/Paper'
 import {Row, Col} from 'react-flexbox-grid'
@@ -155,7 +155,7 @@ const StatDebtorsDialog = enhance((props) => {
             <div className={classes.titleContent}>
                 <span>Детализация задолжности</span>
                 <IconButton onTouchTap={onClose}>
-                    <CloseIcon2 color="#666666"/>
+                    <CloseIcon color="#666666"/>
                 </IconButton>
             </div>
             {loading ? <div style={{textAlign: 'center'}}>

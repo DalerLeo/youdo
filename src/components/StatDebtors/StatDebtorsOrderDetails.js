@@ -8,7 +8,7 @@ import {Row, Col} from 'react-flexbox-grid'
 import Dot from '../Images/dot.png'
 import Dialog from 'material-ui/Dialog'
 import MainStyles from '../Styles/MainStyles'
-import CloseIcon2 from '../CloseIcon2'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 
 export const STAT_DEBTORS_ORDER_D = 'statDebtors'
@@ -282,7 +282,7 @@ const StatDebtorsOrderDetails = enhance((props) => {
                         }
                     </div>
                     <IconButton onTouchTap={close}>
-                        <CloseIcon2 color="#666666"/>
+                        <CloseIcon color="#666666"/>
                     </IconButton>
                 </div>
                 <div className={classes.wrapper}>

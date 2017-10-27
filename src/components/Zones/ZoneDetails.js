@@ -11,7 +11,7 @@ import FloatingActionButton from 'material-ui/FloatingActionButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
-import CloseIcon2 from '../CloseIcon2'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import Person from '../Images/person.png'
 import NoShop from '../Images/no-shop.svg'
 import Pagination from '../ReduxForm/Pagination'
@@ -274,7 +274,7 @@ const ZoneDetails = enhance((props) => {
                     query: filter.getParams()
                 }}>
                     <IconButton>
-                        <CloseIcon2 color="#666666"/>
+                        <CloseIcon color="#666666"/>
                     </IconButton>
                 </Link>
             </div>
@@ -302,7 +302,7 @@ const ZoneDetails = enhance((props) => {
                                     <div className={classes.person}>
                                         <img src={Person} alt=""/>
                                         <div className={classes.deletePers}>
-                                            <CloseIcon2
+                                            <CloseIcon
                                                 onClick={() => { unbindAgent.handleOpenConfirmDialog(agentId) }}
                                                 color="#fff"/>
                                         </div>

@@ -312,7 +312,7 @@ const StatAgentGridList = enhance((props) => {
         const monthlyPlanLeft = numberFormat(_.get(item, 'monthlyPlanLeft'), getConfig('PRIMARY_CURRENCY'))
 
         const tooltipText = '<div>Продажи / Возвраты / Фактически</div>'
-        const tooltipPaid = '<div>Всего/ Для текущий заказов/ Остальное</div>'
+        const tooltipPaid = '<div>Всего / Для текущих заказов / Остальное</div>'
 
         return (
             <Row key={id} className="dottedList">

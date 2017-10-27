@@ -9,7 +9,7 @@ import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
-import CloseIcon2 from '../CloseIcon2'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import * as ROUTES from '../../constants/routes'
 import {Link} from 'react-router'
 import {connect} from 'react-redux'
@@ -280,7 +280,7 @@ const OrderCreateDialog = enhance((props) => {
             <div className={classes.titleContent}>
                 <span>{isUpdate ? 'Изменение заказа' : 'Добавление заказа'}</span>
                 <IconButton onTouchTap={onClose}>
-                    <CloseIcon2 color="#666666"/>
+                    <CloseIcon color="#666666"/>
                 </IconButton>
             </div>
             <div className={classes.bodyContent}>

@@ -159,8 +159,7 @@ const ActivityWrapper = enhance((props) => {
             <div className={classes.wrapper}>
                 <ActivityCalendar
                     calendar={calendar}
-                    handleClickDay={handleClickDay}
-                />
+                    handleClickDay={handleClickDay}/>
                 {megaLoading
                     ? <div className={classes.loader}>
                         <CircularProgress size={40} thickness={4}/>

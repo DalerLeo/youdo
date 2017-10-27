@@ -6,7 +6,7 @@ import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
 import IconButton from 'material-ui/IconButton'
-import CloseIcon2 from '../../CloseIcon2/index'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import OrderDetails from '../../Order/OrderDetails'
 
 const enhance = compose(
@@ -166,7 +166,7 @@ const StatSaleDialog = enhance((props) => {
                             <div>Заказ №{id}</div>
                         </div>
                         <IconButton onTouchTap={onClose}>
-                            <CloseIcon2 color="#666666"/>
+                            <CloseIcon color="#666666"/>
                         </IconButton>
                     </div>
                     <div className={classes.content}>

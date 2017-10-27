@@ -15,7 +15,7 @@ import {
     ProductTypeChildSearchField,
     ProductTypeParentSearchField
 } from '../ReduxForm'
-import CloseIcon from '../CloseIcon'
+import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
 export const PRICE_FILTER_OPEN = 'openFilterDialog'

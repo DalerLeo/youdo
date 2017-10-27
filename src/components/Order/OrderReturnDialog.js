@@ -8,7 +8,7 @@ import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
-import CloseIcon2 from '../CloseIcon2'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import {TextField, OrderListReturnField, StockSearchField} from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 import OrderReturnTotalSum from '../ReduxForm/Order/OrderReturnTotalSum'
@@ -205,7 +205,7 @@ const OrderReturnDialog = enhance((props) => {
             <div className={classes.titleContent}>
                 <span>{isUpdate ? 'Изменение возврата №' + returnId : 'Возврат товаров заказа №' + returnId}</span>
                 <IconButton onTouchTap={onClose}>
-                    <CloseIcon2 color="#666666"/>
+                    <CloseIcon color="#666666"/>
                 </IconButton>
             </div>
             <div className={classes.bodyContent}>

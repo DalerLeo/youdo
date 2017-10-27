@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
-import CloseIcon2 from '../../CloseIcon2/index'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Row, Col} from 'react-flexbox-grid'
@@ -183,7 +183,7 @@ const StatProductMove = enhance((props) => {
                             <div>{agentName}</div>
                         </div>
                         <IconButton onTouchTap={onClose}>
-                            <CloseIcon2 color="#666666"/>
+                            <CloseIcon color="#666666"/>
                         </IconButton>
                     </div>
                     <div className={classes.content}>

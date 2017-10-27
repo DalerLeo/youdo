@@ -7,7 +7,7 @@ import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
 import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
-import CloseIcon2 from '../CloseIcon2'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import Person from 'material-ui/svg-icons/social/person'
 import PlanMap from './PlanMap'
 import PlanAddCalendar from './PlanAddCalendar'
@@ -457,7 +457,7 @@ const PlanCreateDialog = enhance((props) => {
                         <div className={classes.titleContent}>
                             <span>{isUpdate ? 'Изменение плана' : 'Составление плана'}</span>
                             <IconButton onTouchTap={onClose}>
-                                <CloseIcon2 color="#666666"/>
+                                <CloseIcon color="#666666"/>
                             </IconButton>
                         </div>
                         <div className={classes.scroll}>

@@ -9,7 +9,7 @@ import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import getConfig from '../../helpers/getConfig'
 import {TextField, PriceMainRadioButton, CurrencySearchField, CheckBox} from '../ReduxForm'
-import CloseIcon2 from '../CloseIcon2'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import {Row, Col} from 'react-flexbox-grid'
 import Tooltip from '../ToolTip'
@@ -211,7 +211,7 @@ const PriceSetForm = enhance((props) => {
                                 style={iconStyle.button}
                                 touch={true}
                                 onTouchTap={onClose}>
-                                <CloseIcon2 color="#666666"/>
+                                <CloseIcon color="#666666"/>
                             </IconButton>
                         </Tooltip>
                     </div>

@@ -13,7 +13,7 @@ import StockSearchField from '../ReduxForm/Stock/StockSearchField'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import {Link} from 'react-router'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
-import CloseIcon from '../CloseIcon'
+import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 export const REMAINDER_FILTER_OPEN = 'openFilterDialog'
 
 export const REMAINDER_FILTER_KEY = {

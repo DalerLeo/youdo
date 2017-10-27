@@ -10,7 +10,7 @@ import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Row, Col} from 'react-flexbox-grid'
 import NotFound from '../Images/not-found.png'
-import CloseIcon2 from '../CloseIcon2'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import numberFormat from '../../helpers/numberFormat'
 import * as ROUTES from '../../constants/routes'
 import Pagination from '../ReduxForm/Pagination'
@@ -188,7 +188,7 @@ const RemainderReservedDialog = enhance((props) => {
                     <div className={classes.titleContent}>
                         <div>{agentName}</div>
                         <IconButton onTouchTap={onClose}>
-                            <CloseIcon2 color="#666666"/>
+                            <CloseIcon color="#666666"/>
                         </IconButton>
                     </div>
                     {_.isEmpty(data)

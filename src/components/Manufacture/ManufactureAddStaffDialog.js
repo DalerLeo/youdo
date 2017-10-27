@@ -7,7 +7,7 @@ import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
-import CloseIcon2 from '../CloseIcon2'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import {ShiftSearchField, UsersSearchField} from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 
@@ -146,7 +146,7 @@ const ManufactureAddStaffDialog = enhance((props) => {
                 <div className={classes.titleContent}>
                     <span>Производство клея: персонал</span>
                     <IconButton onTouchTap={onClose}>
-                        <CloseIcon2 color="#666666"/>
+                        <CloseIcon color="#666666"/>
                     </IconButton>
                 </div>
                 <div className={classes.bodyContent}>

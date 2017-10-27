@@ -143,7 +143,7 @@ const OrderStatDetailsRightSide = enhance((props) => {
 })
 
 OrderStatDetailsRightSide.propTypes = {
-    data: PropTypes.object.isRequired
+    data: PropTypes.any.isRequired
 
 }
 

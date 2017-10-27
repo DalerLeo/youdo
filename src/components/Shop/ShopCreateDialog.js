@@ -16,8 +16,8 @@ import {
     ShopStatusSearchField
 } from '../ReduxForm'
 import IconButton from 'material-ui/IconButton'
-import CloseIcon2 from '../CloseIcon2'
-import Place from '../AddPlace'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
+import Place from '../CustomIcons/AddPlace'
 import Dot from '../Images/dot.png'
 
 export const SHOP_CREATE_DIALOG_OPEN = 'openCreateDialog'
@@ -242,7 +242,7 @@ const ShopCreateDialog = enhance((props) => {
                     <div className={classes.titleContent}>
                         <span>{isUpdate ? 'Изменение магазина' : 'Добавление магазина'}</span>
                         <IconButton onTouchTap={onClose}>
-                            <CloseIcon2 color="#666666"/>
+                            <CloseIcon color="#666666"/>
                         </IconButton>
                     </div>
                     <div className={classes.inContent}>

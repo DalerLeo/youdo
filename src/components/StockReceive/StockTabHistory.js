@@ -200,8 +200,7 @@ StockTabHistory.propTypes = {
         filterLoading: PropTypes.bool,
         openFilterDialog: PropTypes.bool.isRequired,
         handleOpenFilterDialog: PropTypes.func.isRequired,
-        handleCloseFilterDialog: PropTypes.func.isRequired,
-        handleSubmitFilterDialog: PropTypes.func.isRequired
+        handleCloseFilterDialog: PropTypes.func.isRequired
     }).isRequired,
     historyDialog: PropTypes.shape({
         openHistoryInfoDialog: PropTypes.number.isRequired,

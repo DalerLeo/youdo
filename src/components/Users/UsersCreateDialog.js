@@ -9,7 +9,7 @@ import FlatButton from 'material-ui/FlatButton'
 import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
-import CloseIcon2 from '../CloseIcon2'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import toCamelCase from '../../helpers/toCamelCase'
 import {TextField, ImageUploadField, CheckBox, PositionSearchField, UserStockRadioButtonField} from '../ReduxForm'
 import MainStyles from '../Styles/MainStyles'
@@ -148,7 +148,7 @@ const UsersCreateDialog = enhance((props) => {
             <div className={classes.titleContent}>
                 <span>{isUpdate ? 'Изменить пользователя' : 'Добавить пользователя'}</span>
                 <IconButton onTouchTap={onClose}>
-                    <CloseIcon2 color="#666666"/>
+                    <CloseIcon color="#666666"/>
                 </IconButton>
             </div>
             <div className={classes.bodyContent}>

@@ -9,7 +9,7 @@ import SnakeBar from '../Snackbar'
 import {connect} from 'react-redux'
 import ConfirmDialog from '../ConfirmDialog'
 import ErrorDialog from '../ErrorDialog'
-import CloseIcon2 from '../CloseIcon2'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import Paper from 'material-ui/Paper'
 import Money from 'material-ui/svg-icons/editor/attach-money'
@@ -321,7 +321,7 @@ const Layout = enhance((props) => {
                                 onTouchTap={() => {
                                     notificationData.handleOpenNotificationBar(false)
                                 }}>
-                                <CloseIcon2 color="#fff"/>
+                                <CloseIcon color="#fff"/>
                             </IconButton>
                         </div>
                     </div>
