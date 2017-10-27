@@ -3,7 +3,6 @@ import {routerActions} from 'react-router-redux'
 import {connectedRouterRedirect} from 'redux-auth-wrapper/history3/redirect'
 import * as ROUTES from '../constants/routes'
 import {getMenus} from '../components/SidebarMenu/MenuItems'
-import {permissions} from '../components/SidebarMenu/SidebarMenu'
 
 export const userIsAuth = connectedRouterRedirect({
     authenticatedSelector: state => {
@@ -18,6 +17,9 @@ export const userIsAuth = connectedRouterRedirect({
 export const visibleOnlyAdmin = connectedRouterRedirect({
     authenticatedSelector: (state, ownProps) => {
         const currentPath = _.get(ownProps, ['location', 'pathname'])
+        const permissions = _.map(_.get(state, ['authConfirm', 'data', 'permissions']), (item) => {
+            return _.get(item, 'codename')
+        })
         const menus = getMenus(permissions)
         const isSuperUser = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
         if (isSuperUser) {

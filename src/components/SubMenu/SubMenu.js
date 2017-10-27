@@ -6,7 +6,6 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import HardwareKeyboardArrowRight from 'material-ui/svg-icons/hardware/keyboard-arrow-right'
 import {getMenus} from '../SidebarMenu/MenuItems'
-import {permissions} from '../SidebarMenu/SidebarMenu'
 import ToolTip from '../ToolTip'
 import {connect} from 'react-redux'
 
@@ -54,15 +53,19 @@ const enhance = compose(
         }
     }),
     connect((state) => {
+        const permissions = _.map(_.get(state, ['authConfirm', 'data', 'permissions']), (item) => {
+            return _.get(item, 'codename')
+        })
         const isAdmin = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
         return {
+            permissions,
             isAdmin
         }
     }),
 )
 
 const SubMenu = enhance((props) => {
-    const {classes, url, opacity, isAdmin} = props
+    const {classes, url, opacity, permissions, isAdmin} = props
     const MenuItems = getMenus(permissions, isAdmin)
 
     const parent = _

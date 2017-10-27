@@ -15,22 +15,6 @@ import CustomBadge from '../CustomBadge/CustomBadge'
 import ArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 import ArrowUp from 'material-ui/svg-icons/hardware/keyboard-arrow-up'
 
-export const permissions = [
-    'frontend_orders',
-    'frontend_plan',
-    'frontend_activity',
-    'frontend_clients',
-    'frontend_products',
-    'frontend_stat_sales',
-    'frontend_stat_agents',
-    'frontend_settings_currency',
-    'frontend_settings_expense_category',
-    'frontend_settings_shift',
-    'frontend_settings_equipment',
-    'frontend_settings_join',
-    'frontend_stat_outcome_category',
-    'frontend_stat_report'
-]
 const style = {
     style: {
         width: 84,
@@ -41,14 +25,14 @@ const style = {
 
 const enhance = compose(
     connect((state) => {
-        const sessionGroups = _.map(_.get(state, ['authConfirm', 'data', 'groups']), (item) => {
-            return _.get(item, 'id')
+        const permissions = _.map(_.get(state, ['authConfirm', 'data', 'permissions']), (item) => {
+            return _.get(item, 'codename')
         })
         const isAdmin = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
         const loading = _.get(state, ['authConfirm', 'loading'])
         return {
             isAdmin,
-            sessionGroups,
+            permissions,
             loading
         }
     }),
@@ -130,7 +114,7 @@ const enhance = compose(
 )
 
 const SideBarMenu = enhance((props) => {
-    const {classes, handleSignOut, handleOpenNotificationBar, isAdmin, loading} = props
+    const {classes, handleSignOut, handleOpenNotificationBar, permissions, isAdmin, loading} = props
     const menu = getMenus(permissions, isAdmin)
     const items = _.map(menu, (item, index) => {
         const atBottom = _.get(item, 'bottom')

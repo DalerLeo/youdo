@@ -5,7 +5,6 @@ import {compose} from 'recompose'
 import {Link} from 'react-router'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
-import {permissions} from '../SidebarMenu/SidebarMenu'
 import {getMenus} from '../SidebarMenu/MenuItems'
 
 const enhance = compose(
@@ -39,15 +38,19 @@ const enhance = compose(
         }
     }),
     connect((state) => {
+        const permissions = _.map(_.get(state, ['authConfirm', 'data', 'permissions']), (item) => {
+            return _.get(item, 'codename')
+        })
         const isAdmin = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
         return {
+            permissions,
             isAdmin
         }
     })
 )
 
 const SettingsSideMenu = enhance((props) => {
-    const {classes, currentUrl, isAdmin} = props
+    const {classes, currentUrl, permissions, isAdmin} = props
     const MenuItems = _.find(getMenus(permissions, isAdmin), {'section': 'Settings'})
     const sortedMenu = _.groupBy(MenuItems.childs, 'section')
 
