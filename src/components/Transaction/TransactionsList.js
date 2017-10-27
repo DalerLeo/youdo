@@ -309,7 +309,9 @@ const TransactionsList = enhance((props) => {
                 <div style={{flexBasis: '18%', maxWidth: '18%'}}>{date}</div>
                 <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}} className={type >= zero ? classes.green : classes.red}>
                     {amount} {currentCurrency}
-                    {currentCurrency !== primaryCurrency && <div>{numberFormat(internal, primaryCurrency)} <span style={{fontSize: 11, color: '#333', fontWeight: 600}}>({rate})</span></div>}
+                    {(currentCurrency !== primaryCurrency) && <div>{numberFormat(internal, primaryCurrency)}
+                    {internal !== ZERO &&
+                    <span style={{fontSize: 11, color: '#333', fontWeight: 600}}>({rate})</span>}</div>}
                 </div>
                 <div style={{width: '5%', textAlign: 'right', display: 'flex'}}>
                     <IconButton

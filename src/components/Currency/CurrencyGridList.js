@@ -22,7 +22,7 @@ import Container from '../Container'
 import Tooltip from '../ToolTip'
 import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat'
-import SettingSideMenu from '../Setting/SettingSideMenu'
+import SettingSideMenu from '../Settings/SettingsSideMenu'
 
 const listHeader = [
     {

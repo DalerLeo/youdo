@@ -118,10 +118,11 @@ const OrderStatDetailsRightSide = enhance((props) => {
                         const amount = _.get(item, 'amount')
                         const measurement = _.get(product, ['measurement', 'name'])
                         const discount = _.get(item, 'discountPrice')
+                        const isBonus = _.get(item, 'isBonus')
 
                         return (
                             <Row className="dottedList" key={index}>
-                                <Col xs={4}>{productName}</Col>
+                                <Col xs={4}>{productName} {isBonus && <strong className="greenFont">(бонус)</strong>}</Col>
                                 <Col xs={2}>{numberFormat(amount)} {measurement}</Col>
                                 <Col xs={2}>{numberFormat(price)}</Col>
                                 <Col xs={2}>{numberFormat(productTotal)}</Col>

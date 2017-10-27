@@ -25,14 +25,14 @@ const style = {
 
 const enhance = compose(
     connect((state) => {
-        const sessionGroups = _.map(_.get(state, ['authConfirm', 'data', 'groups']), (item) => {
-            return _.get(item, 'id')
+        const permissions = _.map(_.get(state, ['authConfirm', 'data', 'permissions']), (item) => {
+            return _.get(item, 'codename')
         })
         const isAdmin = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
         const loading = _.get(state, ['authConfirm', 'loading'])
         return {
             isAdmin,
-            sessionGroups,
+            permissions,
             loading
         }
     }),
@@ -114,8 +114,8 @@ const enhance = compose(
 )
 
 const SideBarMenu = enhance((props) => {
-    const {classes, handleSignOut, handleOpenNotificationBar, sessionGroups, isAdmin, loading} = props
-    const menu = getMenus(sessionGroups, isAdmin)
+    const {classes, handleSignOut, handleOpenNotificationBar, permissions, isAdmin, loading} = props
+    const menu = getMenus(permissions, isAdmin)
     const items = _.map(menu, (item, index) => {
         const atBottom = _.get(item, 'bottom')
         if (atBottom) {

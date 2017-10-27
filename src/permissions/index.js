@@ -17,11 +17,11 @@ export const userIsAuth = connectedRouterRedirect({
 export const visibleOnlyAdmin = connectedRouterRedirect({
     authenticatedSelector: (state, ownProps) => {
         const currentPath = _.get(ownProps, ['location', 'pathname'])
-        const groups = _.map(_.get(state, ['authConfirm', 'data', 'groups']), (item) => {
-            return _.get(item, 'id')
+        const permissions = _.map(_.get(state, ['authConfirm', 'data', 'permissions']), (item) => {
+            return _.get(item, 'codename')
         })
-        const menus = getMenus(groups)
         const isSuperUser = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
+        const menus = getMenus(permissions, isSuperUser)
         if (isSuperUser) {
             return isSuperUser
         }

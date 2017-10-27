@@ -19,7 +19,7 @@ import GridList from '../GridList'
 import Container from '../Container'
 import ProductTypeCreateDialog from './ProductTypeCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
-import SettingSideMenu from '../Setting/SettingSideMenu'
+import SettingSideMenu from '../Settings/SettingsSideMenu'
 import Tooltip from '../ToolTip'
 import Dot from '../Images/dot.png'
 

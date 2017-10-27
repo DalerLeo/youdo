@@ -16,7 +16,7 @@ import GridList from '../GridList'
 import Container from '../Container'
 import MarketTypeCreateDialog from './MarketTypeCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
-import SettingSideMenu from '../Setting/SettingSideMenu'
+import SettingSideMenu from '../Settings/SettingsSideMenu'
 import Tooltip from '../ToolTip'
 
 const listHeader = [
