@@ -1,39 +1,11 @@
 import _ from 'lodash'
-import moment from 'moment'
 import React from 'react'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
-import {Row, Col} from 'react-flexbox-grid'
-import GridList from '../../GridList'
+import Loader from '../../Loader'
 import NotFound from '../../Images/not-found.png'
 import numberFormat from '../../../helpers/numberFormat'
-
-const listHeader = [
-    {
-        sorting: true,
-        name: 'barcode',
-        title: 'Штрих-код',
-        xs: 3
-    },
-    {
-        sorting: true,
-        name: 'productName',
-        title: 'Наименование товара',
-        xs: 3
-    },
-    {
-        sorting: true,
-        name: 'amount',
-        title: 'Количество',
-        xs: 3
-    },
-    {
-        sorting: true,
-        name: 'date',
-        title: 'Время',
-        xs: 3
-    }
-]
+import dateTimeFormat from '../../../helpers/dateTimeFormat'
 
 const enhance = compose(
     injectSheet({
@@ -41,12 +13,13 @@ const enhance = compose(
             padding: '20px 0'
         },
         wrapper: {
-            width: '100%'
+            width: '100%',
+            alignSelf: 'flex-start'
         },
         loader: {
             width: '100%',
             background: '#fff',
-            height: '200px',
+            height: '100%',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center'
@@ -62,33 +35,40 @@ const enhance = compose(
         titleLabel: {
             fontSize: '18px',
             color: '#333',
-            fontWeight: '700'
+            fontWeight: '600',
+            '& span': {
+                fontSize: '11px',
+                fontWeight: 'normal'
+            }
         },
-        materialsList: {
-            padding: '0 30px'
+        details: {
+            display: 'flex',
+            width: '100%'
         },
-        rawMaterials: {
-            '& .dottedList': {
-                padding: '10px 0'
+        leftSide: {
+            width: '50%',
+            padding: '20px 30px',
+            borderRight: '1px #efefef solid'
+        },
+        rightSide: {
+            width: '50%'
+        },
+        productsBlock: {
+            padding: '20px 30px',
+            borderBottom: '1px #efefef solid',
+            '& h4': {
+                fontWeight: '600',
+                marginBottom: '5px',
+                fontSize: '13px'
             },
-            '& .dottedList:last-child:after': {
-                backgroundImage: 'none'
+            '&:last-child': {
+                border: 'none'
             }
         },
-        titleButtons: {
+        product: {
             display: 'flex',
-            justifyContent: 'flex-end',
-            '& svg': {
-                color: '#fff !important'
-            }
-        },
-        listButtons: {
-            display: 'flex',
-            justifyContent: 'flex-end',
-            '& button': {
-                height: '20px !important',
-                width: '25px !important'
-            }
+            padding: '5px 0',
+            justifyContent: 'space-between'
         },
         emptyQuery: {
             background: 'url(' + NotFound + ') no-repeat center center',
@@ -105,48 +85,69 @@ const enhance = compose(
         }
     }),
 )
-const actions = (<div></div>)
 
 const ManufactureShipmentDetail = enhance((props) => {
     const {
-        filter,
+        classes,
         detailData
     } = props
 
     const loading = _.get(detailData, 'loading')
-    const detailList = _.map(_.get(detailData, ['data', 'results']), (item) => {
-        const id = _.get(item, 'id')
-        const barcode = _.get(item, 'barcode')
-        const amount = numberFormat(_.get(item, 'amount'))
-        const productName = _.get(item, ['product', 'name'])
-        const measurement = _.get(item, ['product', 'measurement', 'name'])
-        const createdDate = moment(_.get(item, 'createDate')).format('DD.MM.YYYY HH.mm')
-
+    const productsLoading = _.get(detailData, 'productsLoading')
+    const materialsLoading = _.get(detailData, 'materialsLoading')
+    const userName = _.get(detailData, ['data', 'user', 'firstName']) + ' ' + _.get(detailData, ['data', 'user', 'secondName'])
+    const openedTime = _.get(detailData, ['data', 'openedTime']) ? dateTimeFormat(_.get(detailData, ['data', 'openedTime'])) : 'Не началась'
+    const closedTime = _.get(detailData, ['data', 'closedTime']) ? dateTimeFormat(_.get(detailData, ['data', 'closedTime'])) : 'Не закончилась'
+    const producs = _.map(_.get(detailData, 'products'), (item, index) => {
+        const measurement = _.get(item, ['measurement', 'name'])
+        const product = _.get(item, ['product', 'name'])
+        const amount = _.get(item, 'totalAmount')
         return (
-            <Row key={id}>
-                <Col xs={3}>{barcode}</Col>
-                <Col xs={3}>{productName}</Col>
-                <Col xs={3}>{amount} {measurement}</Col>
-                <Col xs={2}>{createdDate}</Col>
-            </Row>
+            <div key={index} className={classes.product}>
+                <span>{product}</span>
+                <span>{numberFormat(amount, measurement)}</span>
+            </div>
         )
     })
-
-    const detailDialog = <span></span>
-
-    const list = {
-        header: listHeader,
-        list: detailList,
-        loading: loading
+    const materials = _.map(_.get(detailData, 'materials'), (item, index) => {
+        const measurement = _.get(item, ['measurement', 'name'])
+        const product = _.get(item, ['product', 'name'])
+        const amount = _.get(item, 'totalAmount')
+        return (
+            <div key={index} className={classes.product}>
+                <span>{product}</span>
+                <span>{numberFormat(amount, measurement)}</span>
+            </div>
+        )
+    })
+    if (loading || productsLoading || materialsLoading) {
+        return (
+            <div className={classes.loader}>
+                <Loader size={0.75}/>
+            </div>
+        )
     }
-
     return (
-        <GridList
-            filter={filter}
-            list={list}
-            detail={detailDialog}
-            actionsDialog={actions}
-        />
+        <div className={classes.wrapper}>
+            <div className={classes.title}>
+                <div className={classes.titleLabel}>{userName} <span>({openedTime} - {closedTime})</span></div>
+            </div>
+            <div className={classes.details}>
+                <div className={classes.leftSide}>
+                    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+                </div>
+                <div className={classes.rightSide}>
+                    <div className={classes.productsBlock}>
+                        <h4>Произведенная продукция</h4>
+                        {producs}
+                    </div>
+                    <div className={classes.productsBlock}>
+                        <h4>Затраченное сырье</h4>
+                        {materials}
+                    </div>
+                </div>
+            </div>
+        </div>
     )
 })
 

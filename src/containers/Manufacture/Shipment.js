@@ -10,7 +10,9 @@ import filterHelper from '../../helpers/filter'
 import {ManufactureShipmentWrapper} from '../../components/Manufacture'
 import {
     shipmentListFetchAction,
-    shipmentItemFetchAction
+    shipmentItemFetchAction,
+    shipmentProductsListFetchAction,
+    shipmentMaterialsListFetchAction
 } from '../../actions/shipment'
 import ManufactureWrapper from './Wrapper'
 
@@ -27,6 +29,10 @@ const enhance = compose(
         const shipmentListLoading = _.get(state, ['shipment', 'list', 'loading'])
         const shipmentDetail = _.get(state, ['shipment', 'item', 'data'])
         const shipmentDetailLoading = _.get(state, ['shipment', 'item', 'loading'])
+        const shipmentProducts = _.get(state, ['shipment', 'products', 'data'])
+        const shipmentProductsLoading = _.get(state, ['shipment', 'products', 'loading'])
+        const shipmentMaterials = _.get(state, ['shipment', 'materials', 'data'])
+        const shipmentMaterialsLoading = _.get(state, ['shipment', 'materials', 'loading'])
         const filterShipment = filterHelper(shipmentList, pathname, query)
 
         return {
@@ -39,6 +45,10 @@ const enhance = compose(
             shipmentListLoading,
             shipmentDetail,
             shipmentDetailLoading,
+            shipmentProducts,
+            shipmentProductsLoading,
+            shipmentMaterials,
+            shipmentMaterialsLoading,
             filterShipment
         }
     }),
@@ -56,6 +66,18 @@ const enhance = compose(
                 dispatch(shipmentItemFetchAction(shipmentId))
             }
             dispatch(shipmentListFetchAction(filterShipment, manufactureId))
+        }
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const shipmentId = _.toInteger(_.get(props, ['location', 'query', 'shipmentId']))
+        const nextShipmentId = _.toInteger(_.get(nextProps, ['location', 'query', 'shipmentId']))
+        return shipmentId !== nextShipmentId && nextShipmentId > ZERO
+    }, ({dispatch, location}) => {
+        const shipmentId = _.toInteger(_.get(location, ['query', 'shipmentId']))
+        if (shipmentId > ZERO) {
+            dispatch(shipmentProductsListFetchAction(shipmentId))
+            dispatch(shipmentMaterialsListFetchAction(shipmentId))
         }
     }),
 
@@ -85,6 +107,10 @@ const ManufactureShipmentList = enhance((props) => {
         shipmentListLoading,
         shipmentDetail,
         shipmentDetailLoading,
+        shipmentProducts,
+        shipmentProductsLoading,
+        shipmentMaterials,
+        shipmentMaterialsLoading,
         filterShipment,
         params,
         layout
@@ -107,7 +133,11 @@ const ManufactureShipmentList = enhance((props) => {
     const shipmentDetailData = {
         id: shipmentId,
         data: shipmentDetail,
-        loading: shipmentDetailLoading
+        loading: shipmentDetailLoading,
+        products: shipmentProducts,
+        productsLoading: shipmentProductsLoading,
+        materials: shipmentMaterials,
+        materialsLoading: shipmentMaterialsLoading
     }
 
     const shipmentData = {

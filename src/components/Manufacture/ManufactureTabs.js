@@ -47,7 +47,7 @@ const tabs = [
         url: ROUTES.MANUFACTURE_EQUIPMENT_LIST_URL
     },
     {
-        title: 'Партия',
+        title: 'Активность',
         url: ROUTES.MANUFACTURE_SHIPMENT_LIST_URL
     }
 ]

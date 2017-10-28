@@ -107,6 +107,7 @@ const enhance = compose(
             zIndex: '100'
         },
         content: {
+            position: 'relative',
             background: '#f2f5f8',
             width: 'calc(100% - 84px)',
             marginLeft: '84px',

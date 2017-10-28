@@ -270,9 +270,11 @@ export const MANUFACTURE_PRODUCT_LIST = `/${MANUFACTURE_PRODUCT}/`
 export const MANUFACTURE_PRODUCT_DELETE = 'manufacture/delete_ingredient/%d/'
 export const MANUFACTURE_PRODUCT_CHANGE = '/main/product/%d/change_manufacture/'
 
-export const SHIPMENT = 'manufacture/shipment_statistics/'
+export const SHIPMENT = 'staff/personal_rotation'
 export const SHIPMENT_LIST = `/${SHIPMENT}/`
-export const SHIPMENT_ITEM = 'manufacture/shipment_details/%d/'
+export const SHIPMENT_ITEM = `/${SHIPMENT}/%d/`
+export const SHIPMENT_PRODUCTS_LIST = '/manufacture/manufacture_return/review/'
+export const SHIPMENT_MATERIALS_LIST = '/manufacture/manufacture_writeoff/review/'
 
 export const MARKET_TYPE = 'market/market_type'
 export const MARKET_TYPE_CREATE = `/${MARKET_TYPE}/`
