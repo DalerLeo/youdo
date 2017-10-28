@@ -76,8 +76,10 @@ import StockReceiveTypeSearchFiled from './StockReceiveTypeSearchFiled'
 import SupplyTypeSearchFiled from './Supply/SupplyTypeSearchFiled'
 import ClientBalanceTypeSearchField from './ClientBalance/ClientBalanceTypeSearchField'
 import EquipmentSearchField from './EquipmentSearchField'
+import PendingExpensesTypeSearchField from './PendingExpensesTypeSearchField'
 
 export {
+    PendingExpensesTypeSearchField,
     EquipmentSearchField,
     SupplyTypeSearchFiled,
     StockHistoryTypeSearchField,

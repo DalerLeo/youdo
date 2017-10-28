@@ -208,7 +208,7 @@ export const USER_SHIFT_DELETE = `/${USER_SHIFT}/%d/`
 
 export const PENDING_EXPENSES = 'stock/supply_expanse'
 export const PENDING_EXPENSES_UPDATE = '/finance/expanse_cashbox/'
-export const PENDING_EXPENSES_LIST = `/${PENDING_EXPENSES}/`
+export const PENDING_EXPENSES_LIST = 'finance/pending_payments/'
 export const PENDING_EXPENSES_ITEM = `/${PENDING_EXPENSES}/%d/`
 
 export const STATSTOCK = 'stock/stock'

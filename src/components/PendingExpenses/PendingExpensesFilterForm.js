@@ -9,7 +9,7 @@ import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
-import DateToDateField from '../ReduxForm/Basic/DateToDateField'
+import {DateToDateField, ProviderSearchField, PendingExpensesTypeSearchField}from '../ReduxForm'
 
 import CloseIcon from '../CloseIcon'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
@@ -18,7 +18,9 @@ export const PENDING_EXPENSES_FILTER_OPEN = 'openFilterDialog'
 
 export const PENDING_EXPENSES_FILTER_KEY = {
     FROM_DATE: 'fromDate',
-    TO_DATE: 'toDate'
+    TO_DATE: 'toDate',
+    PROVIDER: 'provider',
+    TYPE: 'type'
 }
 
 const enhance = compose(
@@ -155,7 +157,21 @@ const PendingExpensesFilterForm = enhance((props) => {
                 </div>
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
                     <div>
-                        <Field className={classes.inputFieldCustom} name="date" component={DateToDateField} label="Диапазон дат" fullWidth={true}/>
+                        <Field className={classes.inputFieldCustom}
+                               name="date"
+                               component={DateToDateField}
+                               label="Диапазон дат"
+                               fullWidth={true}/>
+                        <Field className={classes.inputFieldCustom}
+                               name="type"
+                               component={PendingExpensesTypeSearchField}
+                               label="Тип"
+                               fullWidth={true}/>
+                        <Field className={classes.inputFieldCustom}
+                               name="provider"
+                               component={ProviderSearchField}
+                               label="Поставщик"
+                               fullWidth={true}/>
                     </div>
                     <RaisedButton
                         type="submit"

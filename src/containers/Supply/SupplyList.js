@@ -7,6 +7,7 @@ import {hashHistory} from 'react-router'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import Layout from '../../components/Layout'
 import * as ROUTER from '../../constants/routes'
+import * as SUPPLY_TAB from '../../constants/supplyTab'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
@@ -18,7 +19,8 @@ import {
     SUPPLY_FILTER_OPEN,
     SUPPLY_EXPENSE_CREATE_DIALOG_OPEN,
     SUPPLY_DEFECT_DIALOG_OPEN,
-    SupplyGridList
+    SupplyGridList,
+    TAB
 } from '../../components/Supply'
 import {
     supplyCreateAction,
@@ -98,10 +100,22 @@ const enhance = compose(
         const supplyId = _.get(nextProps, ['params', 'supplyId'])
         return supplyId && (_.get(props, ['params', 'supplyId']) !== supplyId ||
             props.filterItem.filterRequest() !== nextProps.filterItem.filterRequest())
-    }, ({dispatch, params, filterItem}) => {
+    }, ({dispatch, params}) => {
         const supplyId = _.toInteger(_.get(params, 'supplyId'))
         supplyId && dispatch(supplyItemFetchAction(supplyId))
-        supplyId && dispatch(supplyExpenseListFetchAction(supplyId, filterItem))
+    }),
+    withPropsOnChange((props, nextProps) => {
+        const prevSupplyId = _.get(props, ['params', 'supplyId'])
+        const nextSupplyId = _.get(nextProps, ['params', 'supplyId'])
+        const prevTab = _.get(props, ['location', 'query', 'tab'])
+        const nextTab = _.get(nextProps, ['location', 'query', 'tab'])
+        return prevSupplyId !== nextSupplyId || prevTab !== nextTab
+    }, ({dispatch, params, location, filterItem}) => {
+        const currentTab = _.get(location, ['query', TAB])
+        const supplyId = _.toInteger(_.get(params, 'supplyId'))
+        if (supplyId > ZERO && currentTab === SUPPLY_TAB.SUPPLY_TAB_EXPENSES) {
+            supplyId && dispatch(supplyExpenseListFetchAction(supplyId, filterItem))
+        }
     }),
 
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
@@ -287,6 +301,13 @@ const enhance = compose(
         handleCloseDetail: props => () => {
             const {filter} = props
             hashHistory.push({pathname: ROUTER.SUPPLY_LIST_URL, query: filter.getParams()})
+        },
+        handleTabChange: props => (tab) => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({
+                pathname: pathname,
+                query: filter.getParams({[TAB]: tab})
+            })
         }
     }),
 
@@ -351,6 +372,7 @@ const SupplyList = enhance((props) => {
     const createdFromDate = filter.getParam(SUPPLY_FILTER_KEY.CREATED_FROM_DATE)
     const createdToDate = filter.getParam(SUPPLY_FILTER_KEY.CREATED_TO_DATE)
     const detailId = _.toInteger(_.get(params, 'supplyId'))
+    const tab = _.get(location, ['query', TAB]) || SUPPLY_TAB.SUPPLY_DEFAULT_TAB
 
     const actionsDialog = {
         handleActionEdit: props.handleActionEdit,
@@ -497,10 +519,14 @@ const SupplyList = enhance((props) => {
         handleSupplyExpenseCloseCreateDialog: props.handleSupplyExpenseCloseCreateDialog,
         handleSupplyExpenseSubmitCreateDialog: props.handleSupplyExpenseSubmitCreateDialog
     }
-
+    const tabData = {
+        tab,
+        handleTabChange: props.handleTabChange
+    }
     return (
         <Layout {...layout}>
             <SupplyGridList
+                tabData={tabData}
                 filter={filter}
                 filterItem={filterItem}
                 listData={listData}
