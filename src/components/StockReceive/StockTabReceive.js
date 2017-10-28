@@ -258,7 +258,6 @@ StockTabReceive.propTypes = {
         openConfirmDialog: PropTypes.number.isRequired,
         handleOpenConfirmDialog: PropTypes.func.isRequired,
         handleCloseConfirmDialog: PropTypes.func.isRequired,
-        handleSubmitReceiveConfirmDialog: PropTypes.func.isRequired,
         handleSubmitOrderReturnDialog: PropTypes.func.isRequired
     }).isRequired
 }

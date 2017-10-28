@@ -7,7 +7,7 @@ import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
-import CloseIcon2 from '../CloseIcon2'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import ConfirmDialog from '../ConfirmDialog'
 import LinearProgress from '../LinearProgress'
 import numberFormat from '../../helpers/numberFormat'
@@ -311,7 +311,7 @@ const TransactionCashDialog = enhance((props) => {
             <div className={classes.titleContent}>
                 <span>Принять наличные</span>
                 <IconButton onTouchTap={onClose}>
-                    <CloseIcon2 color="#666666"/>
+                    <CloseIcon color="#666666"/>
                 </IconButton>
             </div>
             <div className={classes.bodyContent}>

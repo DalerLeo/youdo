@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
-import CloseIcon2 from '../CloseIcon2'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Row, Col} from 'react-flexbox-grid'
@@ -153,10 +153,9 @@ const HistoryListDialog = enhance((props) => {
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
         const rate = numberFormat(_.get(item, 'rate')) || 'N/A'
         return (
-            <Row key={id} className={classes.dottedList}>
+            <Row key={id} className="dottedList">
                 <Col xs={2}>{id}</Col>
-                <Col xs={5}>1 {reversedRate ? currency : currentCurrency}
-                    = {rate} {reversedRate ? currentCurrency : currency}</Col>
+                <Col xs={5}>1 {reversedRate ? currency : currentCurrency} = {rate} {reversedRate ? currentCurrency : currency}</Col>
                 <Col xs={5}>{createdDate}</Col>
             </Row>
         )
@@ -176,14 +175,14 @@ const HistoryListDialog = enhance((props) => {
                 </div>
                 : <div>
                     <div className={classes.titleContent}>
-                        <div>Список истории</div>
+                        <div>История обновления курса</div>
                         <IconButton onTouchTap={onClose}>
-                            <CloseIcon2 color="#666666"/>
+                            <CloseIcon color="#666666"/>
                         </IconButton>
                     </div>
                     <div className={classes.content}>
                         <div className={classes.tableWrapper}>
-                            <Row className={classes.dottedList}>
+                            <Row className="dottedList">
                                 <Col xs={2}>№</Col>
                                 <Col xs={5}>Курс</Col>
                                 <Col xs={5}>Дата</Col>

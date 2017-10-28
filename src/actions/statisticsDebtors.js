@@ -4,7 +4,6 @@ import axios from '../helpers/axios'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/Statistics/statDebtorsSerializer'
-import fileDownload from 'react-file-download'
 
 export const statDebtorsListFetchAction = (filter) => {
     const params = serializers.listFilterSerializer(filter.getParams())
@@ -68,22 +67,6 @@ export const statDebtorsOrderItemFetchAction = (id) => {
 
     return {
         type: actionTypes.ORDER_ITEM,
-        payload
-    }
-}
-export const getDocumentAction = () => {
-    const payload = axios()
-        .get(sprintf(API.STAT_DEBTORS_GET_DOCUMENT))
-        .then((response) => {
-            fileDownload(response.data, 'договор.xls')
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.STAT_DEBTORS_GET_DOCUMENT,
         payload
     }
 }

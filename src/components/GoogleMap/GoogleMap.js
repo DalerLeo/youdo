@@ -31,6 +31,15 @@ const GoogleMap = (props) => {
         lat: 41.311141,
         lng: 69.279716
     }
+    const mapOptions = {
+        styles: googleMapStyle,
+        mapTypeControl: false,
+        panControl: false,
+        streetViewControl: false,
+        zoomControl: false,
+        scaleControl: false,
+        fullscreenControl: false
+    }
     return (
         <GoogleMapWrapper
             defaultCenter={defaultCenter}
@@ -40,7 +49,7 @@ const GoogleMap = (props) => {
             mapElement={<div style={{height: '100%'}} />}
             defaultZoom={15}
             radius="500"
-            defaultOptions={{styles: googleMapStyle}}
+            options={mapOptions}
             marketsLocation={marketsLocation}
             handleChooseMarket={handleChooseMarket}
             selectedMarket={selectedMarket}

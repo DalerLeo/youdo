@@ -7,7 +7,7 @@ import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import {Field, reduxForm} from 'redux-form'
 import TextField from '../ReduxForm/Basic/TextField'
-import CloseIcon2 from '../CloseIcon2'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 import normalizeNumber from '../ReduxForm/normalizers/normalizeNumber'
@@ -67,7 +67,7 @@ const TransactionUpdatePriceDialog = enhance((props) => {
             <div className={classes.titleContent}>
                 <span>Изменение транзакции</span>
                 <IconButton onTouchTap={onClose}>
-                    <CloseIcon2 color="#666666"/>
+                    <CloseIcon color="#666666"/>
                 </IconButton>
             </div>
             {loading

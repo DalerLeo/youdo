@@ -10,7 +10,7 @@ import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import getConfig from '../../helpers/getConfig'
 import {TextField, normalizeNumber} from '../ReduxForm'
-import CloseIcon2 from '../CloseIcon2'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 
 const validate = (data) => {
@@ -211,7 +211,7 @@ const PlanSalesDialog = enhance((props) => {
             <div className={classes.titleContent}>
                 <span>План продаж</span>
                 <IconButton onTouchTap={onClose}>
-                    <CloseIcon2 color="#666666"/>
+                    <CloseIcon color="#666666"/>
                 </IconButton>
             </div>
             <div className={classes.bodyContent}>

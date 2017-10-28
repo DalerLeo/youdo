@@ -5,7 +5,7 @@ import injectSheet from 'react-jss'
 import {connect} from 'react-redux'
 import Dialog from 'material-ui/Dialog'
 import IconButton from 'material-ui/IconButton'
-import CloseIcon2 from '../CloseIcon2'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import Error from 'material-ui/svg-icons/alert/error-outline'
 import {closeErrorAction} from '../../actions/error'
 
@@ -81,7 +81,7 @@ const ErrorDialog = ({dispatch, message, open, classes, arrMessage, ...defaultPr
             {...defaultProps}>
             <div className={classes.bodyContent}>
                 <IconButton onTouchTap={close}>
-                    <CloseIcon2 color="#fff"/>
+                    <CloseIcon color="#fff"/>
                 </IconButton>
                 <div className={classes.inContent}>
                     <Error color="#fff" style={{width: '55px', height: '55px'}}/>

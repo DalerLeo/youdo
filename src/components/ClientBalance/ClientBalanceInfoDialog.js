@@ -7,7 +7,7 @@ import {Row} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
-import CloseIcon2 from '../CloseIcon2'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import ArrowUpIcon from 'material-ui/svg-icons/navigation/arrow-upward'
 import ArrowDownIcon from 'material-ui/svg-icons/navigation/arrow-downward'
@@ -294,7 +294,7 @@ const ClientBalanceInfoDialog = enhance((props) => {
                     iconStyle={iconStyle.icon}
                     style={iconStyle.button}
                     onTouchTap={onClose}>
-                    <CloseIcon2/>
+                    <CloseIcon/>
                 </IconButton>
             </div>
             {loading ? <div className={classes.loader}>

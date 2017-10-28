@@ -36,7 +36,7 @@ const DownloadDialog = enhance((props) => {
         <Modal className="tiny" dimmer={dimmer} open={open} onClose={onClose}>
             <Modal.Content image>
                 <Dimmer active={loading} inverted={true}>
-                    <Loader />
+                    <Loader/>
                 </Dimmer>
                 <Modal.Description>
                     <a download={filename} href={downloadFile} onClick={onClose}>

@@ -6,7 +6,7 @@ import {connect} from 'react-redux'
 import injectSheet from 'react-jss'
 import {signInAction, authConfirmAction} from '../../actions/signIn'
 import SignInForm from '../../components/SignInForm'
-import {getConfig} from '../../actions/primeryCurrency'
+import {getConfig} from '../../actions/primaryCurrency'
 import * as ROUTES from '../../constants/routes'
 
 const enhance = compose(

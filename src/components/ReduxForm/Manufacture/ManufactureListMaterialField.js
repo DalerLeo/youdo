@@ -14,7 +14,7 @@ import {
     TableRow,
     TableRowColumn
 } from 'material-ui/Table'
-import ImageCheck from '../../Icons/check'
+import ImageCheck from 'material-ui/svg-icons/navigation/check'
 import DeleteIcon from 'material-ui/svg-icons/action/delete-forever'
 import EditIcon from 'material-ui/svg-icons/editor/mode-edit'
 import ContentAdd from 'material-ui/svg-icons/content/add'

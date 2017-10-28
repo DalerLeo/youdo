@@ -6,7 +6,7 @@ import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import {Field, reduxForm} from 'redux-form'
 import {ManufactureSearchField, EquipmentSearchField} from '../ReduxForm'
-import CloseIcon2 from '../CloseIcon2'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 
 const enhance = compose(
@@ -115,7 +115,7 @@ const ManufactureChange = enhance((props) => {
                 <div className={classes.titleContent}>
                     <span>Изменение производства</span>
                     <IconButton onTouchTap={onClose}>
-                        <CloseIcon2 color="#666666"/>
+                        <CloseIcon color="#666666"/>
                     </IconButton>
                 </div>
                 {error && <div className={classes.error}>Ошибка: {error}</div>}

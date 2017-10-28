@@ -6,7 +6,7 @@ import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
-import CloseIcon2 from '../../CloseIcon2/index'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import {Row, Col} from 'react-flexbox-grid'
 import Pagination from '../../ReduxForm/Pagination'
@@ -164,7 +164,7 @@ const StatMarketDialog = enhance((props) => {
                     <div className={classes.titleContent} style={{textTransform: 'capitalize'}}>
                         <span>{marketName}</span>
                         <IconButton onTouchTap={onClose}>
-                            <CloseIcon2 color="#666666"/>
+                            <CloseIcon color="#666666"/>
                         </IconButton>
                     </div>
                     <div className={classes.content}>

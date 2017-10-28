@@ -10,7 +10,7 @@ import {
     statDebtorsItemFetchAction,
     statDebtorsOrderItemFetchAction,
     getDocumentAction
-} from '../../actions/statisticsDeptors'
+} from '../../actions/statisticsDebtors'
 import filterHelper from '../../helpers/filter'
 import {StatDebtorsGridList} from '../../components/Statistics'
 import {STAT_DEBTORS_FILTER_KEY} from '../../components/Statistics/Debtors/StatDebtorsGridList'
