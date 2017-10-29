@@ -1,6 +1,5 @@
 import _ from 'lodash'
 import axios from '../helpers/axios'
-import fileDownload from 'react-file-download'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/Statistics/statClientIncomeSerializer'
@@ -54,22 +53,6 @@ export const clientIncomeListFetchAction = (filter) => {
 
     return {
         type: actionTypes.STAT_CLIENT_INCOME_LIST,
-        payload
-    }
-}
-
-export const getDocumentAction = () => {
-    const payload = axios()
-        .get(API.STAT_CLIENT_INCOME_GET_DOCUMENT)
-        .then((response) => {
-            fileDownload(response.data, 'transactions.xlsx')
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
         payload
     }
 }

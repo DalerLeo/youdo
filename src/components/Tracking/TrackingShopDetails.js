@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import CircularProgress from 'material-ui/CircularProgress'
-import CloseIcon2 from '../CloseIcon2'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import Dot from 'material-ui/svg-icons/av/fiber-manual-record'
 
 const enhance = compose(
@@ -130,7 +130,7 @@ const TrackingShopDetails = enhance((props) => {
                 <span>{name}</span>
                 <IconButton
                     onTouchTap={shopDetails.handleCloseShopDetails}>
-                    <CloseIcon2 color="#666666"/>
+                    <CloseIcon color="#666666"/>
                 </IconButton>
             </div>
             <div className={classes.content}>

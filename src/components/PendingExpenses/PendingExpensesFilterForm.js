@@ -11,7 +11,7 @@ import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import {DateToDateField, ProviderSearchField, PendingExpensesTypeSearchField}from '../ReduxForm'
 
-import CloseIcon from '../CloseIcon'
+import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
 export const PENDING_EXPENSES_FILTER_OPEN = 'openFilterDialog'

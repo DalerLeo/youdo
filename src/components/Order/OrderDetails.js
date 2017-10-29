@@ -493,7 +493,7 @@ OrderDetails.propTypes = {
         tab: PropTypes.string,
         handleTabChange: PropTypes.func
     }),
-    data: PropTypes.object.isRequired,
+    data: PropTypes.any.isRequired,
     returnData: PropTypes.array,
     loading: PropTypes.bool,
     returnDialog: PropTypes.shape({
@@ -526,7 +526,7 @@ OrderDetails.propTypes = {
         handleOpenUpdateDialog: PropTypes.func.isRequired,
         handleCloseUpdateDialog: PropTypes.func.isRequired,
         handleSubmitUpdateDialog: PropTypes.func.isRequired
-    }).isRequired
+    })
 }
 
 export default OrderDetails

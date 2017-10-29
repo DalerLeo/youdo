@@ -11,7 +11,7 @@ import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import {TextField, CashboxTypeSearchField, CashboxSearchField} from '../ReduxForm'
-import CloseIcon2 from '../CloseIcon2'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import MainStyles from '../Styles/MainStyles'
 import normalizeNumber from '../ReduxForm/normalizers/normalizeNumber'
 import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
@@ -106,7 +106,7 @@ const TransactionSendDialog = enhance((props) => {
             <div className={classes.titleContent}>
                 <span>Перевод</span>
                 <IconButton onTouchTap={onClose}>
-                    <CloseIcon2 color="#666666"/>
+                    <CloseIcon color="#666666"/>
                 </IconButton>
             </div>
             <div className={classes.bodyContent}>

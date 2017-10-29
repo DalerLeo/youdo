@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 import LinearProgress from '../LinearProgress'
 import Edit from 'material-ui/svg-icons/image/edit'
 import IconButton from 'material-ui/IconButton'
-import CloseIcon2 from '../CloseIcon2'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import {Row, Col} from 'react-flexbox-grid'
 import Tooltip from '../ToolTip'
 import PriceSetForm from './PriceSetForm'
@@ -203,7 +203,7 @@ const PriceDetails = enhance((props) => {
                             disableTouchRipple={true}
                             touch={true}
                             onTouchTap={handleCloseDetail}>
-                            <CloseIcon2 />
+                            <CloseIcon />
                         </IconButton>
                     </Tooltip>}
                 </div>

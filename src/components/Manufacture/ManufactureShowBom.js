@@ -7,7 +7,7 @@ import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import {Field, reduxForm} from 'redux-form'
 import {TextField} from '../ReduxForm'
-import CloseIcon2 from '../CloseIcon2'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import MainStyles from '../Styles/MainStyles'
@@ -15,7 +15,7 @@ import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
 import IconButton from 'material-ui/IconButton'
 import Edit from 'material-ui/svg-icons/image/edit'
-import ImageCheck from '../Icons/check'
+import ImageCheck from 'material-ui/svg-icons/navigation/check'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 
 export const MANUFACTURE_SHOW_BOM_DIALOG_OPEN = 'showBom'
@@ -157,7 +157,7 @@ const ManufactureShowBom = enhance((props) => {
             <div className={classes.titleContent}>
                 <span>BoM</span>
                 <IconButton onTouchTap={onClose}>
-                    <CloseIcon2 color="#666666"/>
+                    <CloseIcon color="#666666"/>
                 </IconButton>
             </div>
             <div className={classes.bodyContent}>

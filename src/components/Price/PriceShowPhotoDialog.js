@@ -6,7 +6,7 @@ import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
-import CloseIcon2 from '../CloseIcon2'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 
 export const PRICE_SHOW_PHOTO_OPEN = 'openShowBigImg'
 
@@ -121,7 +121,7 @@ const PriceShowPhotoDialog = enhance((props) => {
 
             <div className={classes.imgWrapper}>
                 <IconButton onTouchTap={onClose} style={{color: '#fff'}} className={classes.closeBtn}>
-                    <CloseIcon2 color="#fff"/>
+                    <CloseIcon color="#fff"/>
                 </IconButton>
                 <img src={image}/>
             </div>

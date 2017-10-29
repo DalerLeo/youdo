@@ -14,7 +14,7 @@ import {
     StockSearchField,
     StockReceiveTypeSearchFiled
 } from '../ReduxForm'
-import CloseIcon from '../CloseIcon'
+import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
 export const TAB_RECEIVE_FILTER_KEY = {
@@ -202,7 +202,7 @@ TabReceiveFilterForm.propTypes = {
         openFilterDialog: PropTypes.bool.isRequired,
         handleOpenFilterDialog: PropTypes.func.isRequired,
         handleCloseFilterDialog: PropTypes.func.isRequired,
-        handleSubmitFilterDialog: PropTypes.func.isRequired
+        handleSubmitTabReceiveFilterDialog: PropTypes.func.isRequired
     })
 }
 

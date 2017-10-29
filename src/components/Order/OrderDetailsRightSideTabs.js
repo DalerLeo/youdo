@@ -206,7 +206,7 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                             {isBonus && <strong className="greenFont"> (бонус)</strong>}</span>
                                         </Col>
                                         <Col xs={2}>
-                                            {numberFormat(amount)}
+                                            {numberFormat(amount)}&nbsp;
                                             {(returnAmount > ZERO) &&
                                             <span className="redFont">
                                                     <Tooltip position="bottom"

@@ -311,7 +311,7 @@ const TransactionsList = enhance((props) => {
                     {amount} {currentCurrency}
                     {(currentCurrency !== primaryCurrency) && <div>{numberFormat(internal, primaryCurrency)}
                     {internal !== ZERO &&
-                    <span style={{fontSize: 11, color: '#333', fontWeight: 600}}>({rate})</span>}</div>}
+                    <span style={{fontSize: 11, color: '#333', fontWeight: 600}}> ({rate})</span>}</div>}
                 </div>
                 <div style={{width: '5%', textAlign: 'right', display: 'flex'}}>
                     <IconButton

@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
@@ -6,23 +5,10 @@ import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import CircularProgress from 'material-ui/CircularProgress'
-import {Field, reduxForm, SubmissionError} from 'redux-form'
-import toCamelCase from '../../helpers/toCamelCase'
+import {Field, reduxForm} from 'redux-form'
 import {LocationField} from '../ReduxForm'
 import IconButton from 'material-ui/IconButton'
-import CloseIcon2 from '../CloseIcon2'
-
-const validate = (data) => {
-    const errors = toCamelCase(data)
-    const nonFieldErrors = _.get(errors, 'nonFieldErrors')
-    const latLng = (_.get(errors, 'lat') || _.get(errors, 'lon')) && 'Location is required.'
-
-    throw new SubmissionError({
-        ...errors,
-        latLng,
-        _error: nonFieldErrors
-    })
-}
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 
 const enhance = compose(
     injectSheet({
@@ -109,7 +95,7 @@ const enhance = compose(
 )
 const ShopMapDialog = enhance((props) => {
     const {open, loading, handleSubmit, onClose, classes} = props
-    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+    const onSubmit = handleSubmit(() => props.onSubmit())
     return (
         <Dialog
             modal={true}
@@ -126,7 +112,7 @@ const ShopMapDialog = enhance((props) => {
                     <div className={classes.inContent}>
                         <div className={classes.titleContent}>
                             <IconButton onTouchTap={onClose}>
-                                <CloseIcon2 color="#333"/>
+                                <CloseIcon color="#333"/>
                             </IconButton>
                         </div>
                         <Field

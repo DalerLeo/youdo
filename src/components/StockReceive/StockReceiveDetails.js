@@ -15,7 +15,7 @@ import stockTypeFormat from '../../helpers/stockTypeFormat'
 import dateFormat from '../../helpers/dateFormat'
 import toBoolean from '../../helpers/toBoolean'
 import Tooltip from '../ToolTip'
-import CloseIcon2 from '../CloseIcon2'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import getConfig from '../../helpers/getConfig'
 const RETURN = 3
 const APPROVE = 1
@@ -312,7 +312,7 @@ const TransferDetail = enhance((props) => {
                                         </IconButton>
                                     </Tooltip>}
                                     {popover && !history && <IconButton onTouchTap={onClose}>
-                                            <CloseIcon2 color="#666666"/>
+                                            <CloseIcon color="#666666"/>
                                         </IconButton>}
                                 </div>
                             </Col>

@@ -16,7 +16,7 @@ import {
     MeasurementSearchField,
     ImageUploadField
 } from '../ReduxForm'
-import CloseIcon2 from '../CloseIcon2'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 
@@ -76,7 +76,7 @@ const ProductCreateDialog = enhance((props) => {
             <div className={classes.titleContent}>
                 <span>{isUpdate ? 'Изменить продукт' : 'Добавить продукт'}</span>
                 <IconButton onTouchTap={onClose}>
-                    <CloseIcon2 color="#666666"/>
+                    <CloseIcon color="#666666"/>
                 </IconButton>
             </div>
             <div className={classes.bodyContent}>

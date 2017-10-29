@@ -1,10 +1,8 @@
 import _ from 'lodash'
-import sprintf from 'sprintf'
 import axios from '../helpers/axios'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/statStockSerializer'
-import fileDownload from 'react-file-download'
 
 export const statStockListFetchAction = (filter) => {
     const params = serializers.listFilterSerializer(filter.getParams())
@@ -36,23 +34,6 @@ export const statStockDataFetchAction = (id) => {
 
     return {
         type: actionTypes.STATSTOCK_DATA,
-        payload
-    }
-}
-
-export const getDocumentAction = () => {
-    const payload = axios()
-        .get(sprintf(API.STATSTOCK_GET_DOCUMENT))
-        .then((response) => {
-            fileDownload(response.data, 'договор.xls')
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.STATSTOCK_GET_DOCUMENT,
         payload
     }
 }

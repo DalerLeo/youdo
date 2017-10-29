@@ -12,7 +12,7 @@ import injectSheet from 'react-jss'
 import {compose, withHandlers} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import Tooltip from '../ToolTip'
-import CloseIcon2 from '../CloseIcon2'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import Draw from 'material-ui/svg-icons/action/timeline'
 import Touch from 'material-ui/svg-icons/action/touch-app'
 import {hashHistory} from 'react-router'
@@ -175,7 +175,7 @@ const AddZonePopup = enhance((props) => {
                             onClose()
                             edit()
                         } }>
-                        <CloseIcon2/>
+                        <CloseIcon/>
                     </FloatingActionButton>
                 </Tooltip>
             </div>

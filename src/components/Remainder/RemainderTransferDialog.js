@@ -7,7 +7,7 @@ import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import {Field, Fields, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import CloseIcon2 from '../CloseIcon2'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import StockSearchField from '../ReduxForm/Stock/StockSearchField'
 import DateField from '../ReduxForm/Basic/DateField'
@@ -175,7 +175,7 @@ const RemainderTransferDialog = enhance((props) => {
             <div className={classes.title}>
                 <span>передача товаров</span>
                 <IconButton onTouchTap={onClose}>
-                    <CloseIcon2 color="#666666"/>
+                    <CloseIcon color="#666666"/>
                 </IconButton>
             </div>
             <form onSubmit={onSubmit} className={classes.form} style={{minHeight: 'auto'}}>

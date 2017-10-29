@@ -3,7 +3,7 @@ import React from 'react'
 import {Marker} from 'react-google-maps'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
-import GoogleMap from '../../GoogleMap/index'
+import GoogleMap from '../../GoogleMap'
 import {DEFAULT_LOCATION} from '../../../constants/googleMaps'
 
 const enhance = compose(

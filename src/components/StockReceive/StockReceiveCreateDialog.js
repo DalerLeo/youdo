@@ -10,7 +10,7 @@ import {connect} from 'react-redux'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
-import CloseIcon2 from '../CloseIcon2'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import {TextField, CheckBox} from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 import numberFormat from '../../helpers/numberFormat'
@@ -219,7 +219,7 @@ const OrderCreateDialog = enhance((props) => {
             <div className={classes.titleContent}>
                 <span>{isUpdate ? `ИЗМЕНИТЬ ПРИЕМКА ТОВАРА (Заказ № ${supplyId})` : `ПРИЕМКА ТОВАРА (Заказ № ${supplyId})`}</span>
                 <IconButton onTouchTap={onClose}>
-                    <CloseIcon2 color="#666666"/>
+                    <CloseIcon color="#666666"/>
                 </IconButton>
             </div>
             <div className={classes.bodyContent}>

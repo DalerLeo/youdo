@@ -7,7 +7,7 @@ import FlatButton from 'material-ui/FlatButton'
 import {Field, reduxForm, Fields} from 'redux-form'
 import {ManufactureListMaterialField, ProductSearchField} from '../ReduxForm'
 import EquipmentSearchField from '../ReduxForm/EquipmentSearchField'
-import CloseIcon2 from '../CloseIcon2'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import validate from '../../helpers/validate'
 
@@ -239,7 +239,7 @@ const ManufactureAddProductDialog = enhance((props) => {
                 <div className={classes.titleContent}>
                     <span>Добавление продукта</span>
                     <IconButton onTouchTap={onClose}>
-                        <CloseIcon2 color="#666666"/>
+                        <CloseIcon color="#666666"/>
                     </IconButton>
                 </div>
                 {error && <div className={classes.error}>Ошибка: {error}</div>}

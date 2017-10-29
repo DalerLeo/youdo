@@ -55,22 +55,6 @@ export const stockReceiveListFetchAction = (filter, history) => {
     }
 }
 
-export const stockReceiveItemFetchAction = (id) => {
-    const payload = axios()
-        .get(sprintf(API.STOCK_RECEIVE_ITEM, id))
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.STOCK_RECEIVE_ITEM,
-        payload
-    }
-}
-
 export const stockHistoryListFetchAction = (filter) => {
     const params = serializers.listFilterSerializer(filter.getParams(), null, true)
     const payload = axios()
@@ -291,7 +275,6 @@ export const stockTransferHistoryRepealAction = (orderId, stockId) => {
         })
 
     return {
-        type: actionTypes.STOCK_RECEIVE_ITEM_REPEAL,
         payload
     }
 }
@@ -306,7 +289,6 @@ export const stockTransferHistoryReturnAction = (orderId) => {
         })
 
     return {
-        type: actionTypes.STOCK_RECEIVE_ITEM_REPEAL,
         payload
     }
 }
@@ -321,7 +303,6 @@ export const stockReceiveHistorySupplyAction = (orderId) => {
         })
 
     return {
-        type: actionTypes.STOCK_RECEIVE_ITEM_REPEAL,
         payload
     }
 }

@@ -5,7 +5,7 @@ import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import {reduxForm} from 'redux-form'
-import CloseIcon2 from '../CloseIcon2'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import {Row} from 'react-flexbox-grid'
 import getConfig from '../../helpers/getConfig'
@@ -122,7 +122,7 @@ const PriceSupplyDialog = enhance((props) => {
             <div className={classes.titleContent}>
                 <div>Поставка № {supplyId}</div>
                 <IconButton onTouchTap={onClose}>
-                    <CloseIcon2 color="#666666"/>
+                    <CloseIcon color="#666666"/>
                 </IconButton>
             </div>
             {loading ? <div className={classes.loader}>

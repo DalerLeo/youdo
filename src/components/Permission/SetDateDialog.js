@@ -10,7 +10,7 @@ import IconButton from 'material-ui/IconButton'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import {TimeField, PermissionTimeSearchField} from '../ReduxForm'
-import CloseIcon2 from '../CloseIcon2'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import MainStyles from '../Styles/MainStyles'
 import {
     ON_TIME,
@@ -94,7 +94,7 @@ const SetDateDialog = enhance((props) => {
             <div className={classes.titleContent}>
                 <span>Время работы</span>
                 <IconButton onTouchTap={onClose}>
-                    <CloseIcon2 color="#666666"/>
+                    <CloseIcon color="#666666"/>
                 </IconButton>
             </div>
             <div className={classes.bodyContent}>
