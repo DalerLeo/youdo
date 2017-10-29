@@ -358,10 +358,13 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_CREATE_SEND_DIALOG_OPEN]: false})})
         },
 
-        handleSubmitCreateSendDialog: props => () => {
-            const {dispatch, createForm, filter, location: {pathname}, filterCashbox} = props
+        handleSubmitCreateSendDialog: props => (amountFromPersent) => {
+            const {dispatch, createForm, filter, location: {pathname}, filterCashbox, cashboxList} = props
             const cashboxId = _.get(props, ['location', 'query', 'cashboxId'])
-            return dispatch(transactionCreateSendAction(_.get(createForm, ['values']), cashboxId))
+            const cashbox = _.find(_.get(cashboxData, 'data'), {'id': cashboxId})
+            const withPersent = _.get(cashbox, ['currency', 'name']) === _.get(chosenCashbox, ['currency', 'name'])
+                && _.get(cashbox, 'type') !== _.get(chosenCashbox, 'type')
+            return dispatch(transactionCreateSendAction(_.get(createForm, ['values']), cashboxId, amountFromPersent))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
@@ -654,7 +657,8 @@ const TransactionList = enhance((props) => {
         paymentLoading,
         transactionInfoLoading,
         transactionInfo,
-        isSuperUser
+        isSuperUser,
+        createForm
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', TRANSACTION_FILTER_OPEN]))

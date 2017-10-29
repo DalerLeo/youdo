@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React from 'react'
 import {compose, withState} from 'recompose'
 import PropTypes from 'prop-types'
