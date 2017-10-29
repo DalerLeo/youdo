@@ -89,10 +89,8 @@ export const createExpenseSerializer = (data, cashboxId) => {
             'custom_rate': customRate
         }
 }
-
-export const createSendSerializer = (data, cashboxId) => {
-    const withPersent = _.get(data, 'withPersent')
-    console.log(withPersent)
+const HUNDRED = 100
+export const createSendSerializer = (data, cashboxId, withPersent) => {
     const amountFrom = _.toNumber(numberWithoutSpaces(_.get(data, 'amountFrom')))
     const amountTo = _.toNumber(numberWithoutSpaces(_.get(data, 'amountTo')))
     const amountFromPersent = _.toNumber(numberWithoutSpaces(_.get(data, 'amountFromPersent')))
@@ -102,7 +100,7 @@ export const createSendSerializer = (data, cashboxId) => {
     const cashbox = _.get(data, ['cashbox', 'value'])
     return {
         amountFrom: withPersent ? amountFromPersent : amountFrom,
-        amountTo: withPersent ? amountFromPersent * amountToPersent /100 : amountTo,
+        amountTo: withPersent ? amountFromPersent * amountToPersent / HUNDRED : amountTo,
         from_cashbox: _.toInteger(cashboxId) === ZERO ? cashbox : cashboxId,
         to_cashbox: _.toInteger(toCashbox),
         comment

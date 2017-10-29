@@ -8,9 +8,10 @@ import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, TransitionSendCashboxTypeSearchField as CashboxTypeSearchField, TransitionSendCashboxSearchField as CashboxSearchField} from '../ReduxForm'
+import {TextField, CashboxTypeSearchField, CashboxSearchField} from '../ReduxForm'
 import MainStyles from '../Styles/MainStyles'
 import normalizeNumber from '../ReduxForm/normalizers/normalizeNumber'
 import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
@@ -87,20 +88,19 @@ const enhance = compose(
     })
 )
 
+const HUNDRED = 100
 const TransactionSendDialog = enhance((props) => {
     const {open, loading, handleSubmit, onClose, classes, cashboxData, chosenCashboxId, amountFrom, amountTo, amountFromPersent, amountToPersent, noCashbox, currentCashbox} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const cashboxId = noCashbox ? _.get(currentCashbox, 'id') : _.get(cashboxData, 'cashboxId')
     const cashbox = _.find(_.get(cashboxData, 'data'), {'id': cashboxId})
     const chosenCashbox = _.find(_.get(cashboxData, 'data'), {'id': _.toInteger(chosenCashboxId)})
-    const courseOrPersent = _.get(cashbox, ['currency', 'name']) === _.get(chosenCashbox, ['currency', 'name'])
-        && _.get(cashbox, 'type') !== _.get(chosenCashbox, 'type')
-    console.log(cashbox, chosenCashbox, courseOrPersent, 'asdasdasd')
+    const courseOrPersent = _.get(cashbox, ['currency', 'name']) === _.get(chosenCashbox, ['currency', 'name']) && _.get(cashbox, 'type') !== _.get(chosenCashbox, 'type')
     const chosenCurrencyId = _.get(chosenCashbox, ['currency', 'id'])
     const currentCurrencyName = _.get(cashbox, ['currency', 'name'])
     const chosenCurrencyName = _.get(chosenCashbox, ['currency', 'name'])
     const customRate = _.toNumber(numberWithoutSpaces(amountFrom)) / _.toNumber(numberWithoutSpaces(amountTo))
-    const customRatePersent = _.toNumber(numberWithoutSpaces(amountFromPersent)) * _.toNumber(numberWithoutSpaces(amountToPersent)) / 100
+    const customRatePersent = _.toNumber(numberWithoutSpaces(amountFromPersent)) * _.toNumber(numberWithoutSpaces(amountToPersent)) / HUNDRED
     const ROUND_VAL = 5
 
     return (
