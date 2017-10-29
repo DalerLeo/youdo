@@ -10,8 +10,7 @@ import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, CashboxTypeSearchField, CashboxSearchField} from '../ReduxForm'
-import CloseIcon from 'material-ui/svg-icons/navigation/close'
+import {TextField, TransitionSendCashboxTypeSearchField as CashboxTypeSearchField, TransitionSendCashboxSearchField as CashboxSearchField} from '../ReduxForm'
 import MainStyles from '../Styles/MainStyles'
 import normalizeNumber from '../ReduxForm/normalizers/normalizeNumber'
 import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
@@ -91,7 +90,7 @@ const enhance = compose(
 const TransactionSendDialog = enhance((props) => {
     const {open, loading, handleSubmit, onClose, classes, cashboxData, chosenCashboxId, amountFrom, amountTo, amountFromPersent, amountToPersent, noCashbox, currentCashbox} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
-    const cashboxId = noCashbox ? currentCashbox : _.get(cashboxData, 'cashboxId')
+    const cashboxId = noCashbox ? _.get(currentCashbox, 'id') : _.get(cashboxData, 'cashboxId')
     const cashbox = _.find(_.get(cashboxData, 'data'), {'id': cashboxId})
     const chosenCashbox = _.find(_.get(cashboxData, 'data'), {'id': _.toInteger(chosenCashboxId)})
     const courseOrPersent = _.get(cashbox, ['currency', 'name']) === _.get(chosenCashbox, ['currency', 'name'])
