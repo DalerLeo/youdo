@@ -14,6 +14,7 @@ import {
     ProviderSearchField,
     ProviderContactsField,
     StockSearchField,
+    PaymentTypeSearchField,
     SupplyListProductField,
     TextField,
     DateField
@@ -292,6 +293,12 @@ const SupplyCreateDialog = enhance((props) => {
                                         component={CurrencySearchField}
                                         className={classes.searchFieldCustom}
                                         label="Валюта оплаты"
+                                        fullWidth={true}/>
+                                    <Field
+                                        name="paymentType"
+                                        component={PaymentTypeSearchField}
+                                        className={classes.searchFieldCustom}
+                                        label="Тип оплаты"
                                         fullWidth={true}/>
                                     <Field
                                         name="contract"

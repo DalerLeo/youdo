@@ -247,18 +247,21 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                         ? <div className={classes.tabContent}>
                             {!_.get(expensesListData, 'supplyExpenseListLoading') ? <div className={classes.tabWrapper}>
                                     <Row className="dottedList">
-                                        <Col xs={9}>Описания</Col>
+                                        <Col xs={6}>Описания</Col>
+                                        <Col xs={3}>Тип оплаты</Col>
                                         <Col xs={3} style={{textAlign: 'right'}}>Сумма</Col>
                                     </Row>
                                     {
                                         _.map(_.get(expensesListData, 'data'), (item) => {
                                             const expId = _.get(item, 'id')
                                             const expComment = _.get(item, 'comment')
+                                            const paymentType = _.get(item, 'paymentType') === 'cash' ? 'Наличный' : 'Банковский счет'
                                             const expAmount = numberFormat(_.get(item, 'amount'))
                                             const expCurrency = _.get(item, ['currency', 'name'])
                                             return (
                                                 <Row key={expId} className="dottedList">
-                                                    <Col xs={9}>{expComment}</Col>
+                                                    <Col xs={6}>{expComment}</Col>
+                                                    <Col xs={3}>{paymentType}</Col>
                                                     <Col xs={3} className={classes.expenseSum}>
                                                         <div
                                                             style={{textAlign: 'right'}}>{expAmount} {expCurrency}</div>

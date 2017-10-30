@@ -4,6 +4,7 @@ import {compose, withState} from 'recompose'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import Edit from 'material-ui/svg-icons/image/edit'
+import Add from 'material-ui/svg-icons/image/leak-add'
 import LinearProgress from 'material-ui/LinearProgress'
 import FlatButton from 'material-ui/FlatButton'
 import Delete from 'material-ui/svg-icons/action/delete'
@@ -207,6 +208,7 @@ const SupplyDetails = enhance((props) => {
     const agent = _.get(data, ['user', 'firstName']) + ' ' + _.get(data, ['user', 'secondName'])
 
     const provider = _.get(data, ['provider', 'name'])
+    const paymentType = _.get(data, 'paymentType') === 'cash' ? 'Наличный' : 'Банковский счет'
     const phone = _.get(data, ['contact', 'phone'])
     const email = _.get(data, ['contact', 'email'])
     const deliveryType = _.get(data, 'deliveryType')
@@ -336,6 +338,10 @@ const SupplyDetails = enhance((props) => {
                                 <li>
                                     <span>Общая стоимость</span>
                                     <span>{numberFormat(totalCost, primaryCurrency)}</span>
+                                </li>
+                                <li>
+                                    <span>Тип оплаты</span>
+                                    <span>{paymentType}</span>
                                 </li>
                                 <li>
                                     <span>Оплачено:</span>

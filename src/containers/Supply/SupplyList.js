@@ -201,6 +201,7 @@ const enhance = compose(
             const product = _.get(filterForm, ['values', 'product', 'value']) || null
             const stock = _.get(filterForm, ['values', 'stock', 'value']) || null
             const status = _.get(filterForm, ['values', 'status', 'value']) || null
+            const paymentType = _.get(filterForm, ['values', 'paymentType', 'value']) || null
             const contract = _.get(filterForm, ['values', 'contract']) || null
 
             filter.filterBy({
@@ -209,6 +210,7 @@ const enhance = compose(
                 [SUPPLY_FILTER_KEY.PRODUCT]: product,
                 [SUPPLY_FILTER_KEY.STOCK]: stock,
                 [SUPPLY_FILTER_KEY.STATUS]: status,
+                [SUPPLY_FILTER_KEY.PAYMENT_TYPE]: paymentType,
                 [SUPPLY_FILTER_KEY.CONTRACT]: contract,
                 [SUPPLY_FILTER_KEY.DELIVERY_FROM_DATE]: deliveryFromDate && deliveryFromDate.format('YYYY-MM-DD'),
                 [SUPPLY_FILTER_KEY.DELIVERY_TO_DATE]: deliveryToDate && deliveryToDate.format('YYYY-MM-DD'),
@@ -443,6 +445,9 @@ const SupplyList = enhance((props) => {
                 contract: _.get(detail, 'contract'),
                 stock: {
                     value: _.get(detail, ['stock', 'id'])
+                },
+                paymentType: {
+                    value: _.get(detail, ['paymentType'])
                 },
                 currency: {
                     value: _.get(detail, ['currency', 'id'])
