@@ -8,10 +8,10 @@ import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import IconButton from 'material-ui/IconButton'
 import CircularProgress from 'material-ui/CircularProgress'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import {TextField, CashboxTypeSearchField, CashboxSearchField} from '../ReduxForm'
-import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import MainStyles from '../Styles/MainStyles'
 import normalizeNumber from '../ReduxForm/normalizers/normalizeNumber'
 import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
@@ -71,28 +71,36 @@ const enhance = compose(
         enableReinitialize: true
     }),
     connect((state) => {
-        const chosenCashbox = _.get(state, ['form', 'TransactionCreateForm', 'values', 'categoryId', 'value'])
+        const chosenCashboxId = _.get(state, ['form', 'TransactionCreateForm', 'values', 'categoryId', 'value'])
         const amountFrom = _.get(state, ['form', 'TransactionCreateForm', 'values', 'amountFrom'])
         const amountTo = _.get(state, ['form', 'TransactionCreateForm', 'values', 'amountTo'])
+        const amountFromPersent = _.get(state, ['form', 'TransactionCreateForm', 'values', 'amountFromPersent'])
+        const amountToPersent = _.get(state, ['form', 'TransactionCreateForm', 'values', 'amountToPersent'])
         const currentCashbox = _.get(state, ['form', 'TransactionCreateForm', 'values', 'cashbox', 'value'])
         return {
-            chosenCashbox,
+            chosenCashboxId,
             amountFrom,
             amountTo,
+            amountToPersent,
+            amountFromPersent,
             currentCashbox
         }
     })
 )
 
+const HUNDRED = 100
 const TransactionSendDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, cashboxData, chosenCashbox, amountFrom, amountTo, noCashbox, currentCashbox} = props
+    const {open, loading, handleSubmit, onClose, classes, cashboxData, chosenCashboxId, amountFrom, amountTo, amountFromPersent, amountToPersent, noCashbox, currentCashbox} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
-    const cashboxId = noCashbox ? currentCashbox : _.get(cashboxData, 'cashboxId')
+    const cashboxId = noCashbox ? _.get(currentCashbox, 'id') : _.get(cashboxData, 'cashboxId')
     const cashbox = _.find(_.get(cashboxData, 'data'), {'id': cashboxId})
-    const chosenCurrencyId = _.get(_.find(_.get(cashboxData, 'data'), {'id': chosenCashbox}), ['currency', 'id'])
-    const currentCurrencyName = _.get(_.find(_.get(cashboxData, 'data'), {'id': cashboxId}), ['currency', 'name'])
-    const chosenCurrencyName = _.get(_.find(_.get(cashboxData, 'data'), {'id': chosenCashbox}), ['currency', 'name'])
+    const chosenCashbox = _.find(_.get(cashboxData, 'data'), {'id': _.toInteger(chosenCashboxId)})
+    const courseOrPersent = _.get(cashbox, ['currency', 'name']) === _.get(chosenCashbox, ['currency', 'name']) && _.get(cashbox, 'type') !== _.get(chosenCashbox, 'type')
+    const chosenCurrencyId = _.get(chosenCashbox, ['currency', 'id'])
+    const currentCurrencyName = _.get(cashbox, ['currency', 'name'])
+    const chosenCurrencyName = _.get(chosenCashbox, ['currency', 'name'])
     const customRate = _.toNumber(numberWithoutSpaces(amountFrom)) / _.toNumber(numberWithoutSpaces(amountTo))
+    const customRatePersent = _.toNumber(numberWithoutSpaces(amountFromPersent)) * _.toNumber(numberWithoutSpaces(amountToPersent)) / HUNDRED
     const ROUND_VAL = 5
 
     return (
@@ -136,33 +144,67 @@ const TransactionSendDialog = enhance((props) => {
                                 cashbox={cashbox}
                                 label="Касса получатель"
                                 fullWidth={true}/>
-                            <div className={classes.flex} style={{justifyContent: 'space-between'}}>
-                                <div style={{display: 'flex', alignItems: 'baseline', width: '48%'}}>
-                                    {cashbox && <Field
-                                        name="amountFrom"
-                                        className={classes.inputFieldCustom}
-                                        component={TextField}
-                                        label="Сумма с кассы"
-                                        normalize={normalizeNumber}
-                                        fullWidth={true}/>}
-                                    <span style={{marginLeft: '10px'}}>{currentCurrencyName}</span>
+                            {!courseOrPersent &&
+                            <div>
+                                <div className={classes.flex} style={{justifyContent: 'space-between'}}>
+                                    <div style={{display: 'flex', alignItems: 'baseline', width: '48%'}}>
+                                        {cashbox && <Field
+                                            name="amountFrom"
+                                            className={classes.inputFieldCustom}
+                                            component={TextField}
+                                            label="Сумма с кассы"
+                                            normalize={normalizeNumber}
+                                            fullWidth={true}/>}
+                                        <span style={{marginLeft: '10px'}}>{currentCurrencyName}</span>
+                                    </div>
+                                    {chosenCurrencyId &&
+                                    <div style={{display: 'flex', alignItems: 'baseline', width: '48%'}}>
+                                        <Field
+                                            name="amountTo"
+                                            className={classes.inputFieldCustom}
+                                            component={TextField}
+                                            label="Сумма в кассу"
+                                            normalize={normalizeNumber}
+                                            fullWidth={true}/>
+                                        <span style={{marginLeft: '10px'}}>{chosenCurrencyName}</span>
+                                    </div>}
                                 </div>
-                                {chosenCurrencyId &&
-                                <div style={{display: 'flex', alignItems: 'baseline', width: '48%'}}>
-                                    <Field
-                                        name="amountTo"
-                                        className={classes.inputFieldCustom}
-                                        component={TextField}
-                                        label="Сумма в кассу"
-                                        normalize={normalizeNumber}
-                                        fullWidth={true}/>
-                                    <span style={{marginLeft: '10px'}}>{chosenCurrencyName}</span>
+                                {(amountFrom && amountTo) &&
+                                <div style={{padding: '10px 0'}}>
+                                    Курс: <strong>1 {chosenCurrencyName}</strong> = {_.round(customRate, ROUND_VAL)} <strong>{currentCurrencyName}</strong>
                                 </div>}
                             </div>
-                            {(amountFrom && amountTo) &&
-                            <div style={{padding: '10px 0'}}>
-                                Курс: <strong>1 {chosenCurrencyName}</strong> = {_.round(customRate, ROUND_VAL)} <strong>{currentCurrencyName}</strong>
-                            </div>}
+                            }
+                            {courseOrPersent &&
+                            <div>
+                                <div className={classes.flex} style={{justifyContent: 'space-between'}}>
+                                    <div style={{display: 'flex', alignItems: 'baseline', width: '48%'}}>
+                                        {cashbox && <Field
+                                            name="amountFromPersent"
+                                            className={classes.inputFieldCustom}
+                                            component={TextField}
+                                            label="Сумма с кассы"
+                                            normalize={normalizeNumber}
+                                            fullWidth={true}/>}
+                                        <span style={{marginLeft: '10px'}}>{currentCurrencyName}</span>
+                                    </div>
+                                    <div style={{display: 'flex', alignItems: 'baseline', width: '48%'}}>
+                                        <Field
+                                            name="amountToPersent"
+                                            className={classes.inputFieldCustom}
+                                            component={TextField}
+                                            label="Процент"
+                                            normalize={normalizeNumber}
+                                            fullWidth={true}/>
+                                        <span style={{marginLeft: '10px'}}>%</span>
+                                    </div>
+                                </div>
+                                {(amountFromPersent && amountToPersent) &&
+                                <div style={{padding: '10px 0'}}>
+                                    Касса <i>{_.get(chosenCashbox, 'name')}</i> получает: <strong>{_.round(customRatePersent, ROUND_VAL)}</strong>
+                                </div>}
+                            </div>
+                            }
                             <Field
                                 name="comment"
                                 className={classes.inputFieldCustom}
@@ -170,6 +212,7 @@ const TransactionSendDialog = enhance((props) => {
                                 component={TextField}
                                 label="Комментарий..."
                                 fullWidth={true}/>
+
                         </div>
                     </div>
                     <div className={classes.bottomButton}>

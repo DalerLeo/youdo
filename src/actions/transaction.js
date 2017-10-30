@@ -80,8 +80,8 @@ export const pendingTransactionFetchAction = (user, currency, filter) => {
     }
 }
 
-export const transactionCreateSendAction = (formValues, cashboxId) => {
-    const requestData = serializers.createSendSerializer(formValues, cashboxId)
+export const transactionCreateSendAction = (formValues, cashboxId, withPersent) => {
+    const requestData = serializers.createSendSerializer(formValues, cashboxId, withPersent)
     const payload = axios()
         .post(API.TRANSACTION_SEND, requestData)
         .then((response) => {

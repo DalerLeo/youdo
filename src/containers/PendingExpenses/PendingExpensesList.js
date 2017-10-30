@@ -86,11 +86,15 @@ const enhance = compose(
             const {filter, filterForm} = props
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
+            const type = _.get(filterForm, ['values', 'type', 'value']) || null
+            const provider = _.get(filterForm, ['values', 'provider', 'value']) || null
 
             filter.filterBy({
                 [PENDING_EXPENSES_FILTER_OPEN]: false,
                 [PENDING_EXPENSES_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
-                [PENDING_EXPENSES_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
+                [PENDING_EXPENSES_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD'),
+                [PENDING_EXPENSES_FILTER_KEY.TYPE]: type,
+                [PENDING_EXPENSES_FILTER_KEY.PROVIDER]: provider
             })
         },
 
@@ -139,6 +143,8 @@ const PendingExpensesList = enhance((props) => {
     const openUpdateDialog = toBoolean(_.get(location, ['query', PENDING_EXPENSES_UPDATE_DIALOG_OPEN]))
     const fromDate = filter.getParam(PENDING_EXPENSES_FILTER_KEY.FROM_DATE)
     const toDate = filter.getParam(PENDING_EXPENSES_FILTER_KEY.TO_DATE)
+    const type = filter.getParam(PENDING_EXPENSES_FILTER_KEY.TYPE)
+    const provider = filter.getParam(PENDING_EXPENSES_FILTER_KEY.PROVIDER)
     const detailId = _.toInteger(_.get(params, 'pendingExpensesId'))
 
     const confirmDialog = {
@@ -182,6 +188,12 @@ const PendingExpensesList = enhance((props) => {
             date: {
                 fromDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),
                 toDate: toDate && moment(toDate, 'YYYY-MM-DD')
+            },
+            type: {
+                value: type
+            },
+            provider: {
+                value: provider
             }
         },
         filterLoading: false,

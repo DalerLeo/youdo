@@ -21,9 +21,10 @@ export const zoneDeleteAction = (id) => {
     }
 }
 
-export const zoneListFetchAction = () => {
+export const zoneListFetchAction = (data) => {
+    const search = data.getParams().search
     const payload = axios()
-        .get(API.ZONE_LIST)
+        .get(API.ZONE_LIST, {params: {search}})
         .then((response) => {
             return _.get(response, 'data')
         })

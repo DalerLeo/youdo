@@ -20,19 +20,31 @@ const listHeader = [
         sorting: true,
         name: 'supply',
         title: '№ поставки',
+        xs: 1
+    },
+    {
+        sorting: false,
+        name: 'provider',
+        title: 'Поставщик',
+        xs: 2
+    },
+    {
+        sorting: false,
+        name: 'comment',
+        title: 'Описание',
         xs: 2
     },
     {
         sorting: false,
         name: 'type',
-        title: 'Описание',
-        xs: 5
+        title: 'Тип',
+        xs: 2
     },
     {
         sorting: false,
-        name: 'brand',
+        name: 'createdDate',
         title: 'Дата',
-        xs: 2
+        xs: 1
     },
     {
         sorting: true,
@@ -40,6 +52,13 @@ const listHeader = [
         alignRight: true,
         title: 'Сумма',
         xs: 2
+    },
+    {
+        sorting: true,
+        name: 'balance',
+        alignRight: true,
+        title: 'Остаток',
+        xs: 1
     },
     {
         name: 'buttons'
@@ -98,17 +117,23 @@ const PendingExpensesGridList = enhance((props) => {
 
     const pendingExpensesList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const supplyNo = _.get(item, 'supply')
+        const supplyNo = _.get(item, 'supplyId')
+        const provider = _.get(item, ['provider', 'name'])
+        const type = _.get(item, 'type') === 'supply' ? 'Поставка' : 'Доп. расход'
         const comment = _.get(item, 'comment')
         const createdDate = dateTimeFormat(_.get(item, 'createdDate'))
         const summary = numberFormat(_.get(item, 'amount'))
         const currency = _.get(item, ['currency', 'name'])
+        const balance = _.get(item, 'balance')
         return (
             <Row key={id}>
-                <Col xs={2}>{supplyNo}</Col>
-                <Col xs={5}>{comment}</Col>
-                <Col xs={2} style={{whiteSpace: 'nowrap'}}>{createdDate}</Col>
+                <Col xs={1}>{supplyNo}</Col>
+                <Col xs={2}>{provider}</Col>
+                <Col xs={2}>{comment}</Col>
+                <Col xs={2}>{type}</Col>
+                <Col xs={1} style={{whiteSpace: 'nowrap'}}>{createdDate}</Col>
                 <Col xs={2} style={{textAlign: 'right'}}>{summary} {currency}</Col>
+                <Col xs={1} style={{textAlign: 'right'}}>{balance} {currency}</Col>
                 <Col xs={1} style={{textAlign: 'right', padding: '0'}}>
                     <IconButton
                         iconStyle={iconStyle.icon}

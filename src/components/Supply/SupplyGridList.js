@@ -163,7 +163,8 @@ const SupplyGridList = enhance((props) => {
         classes,
         isAdmin,
         supplyExpenseCreateDialog,
-        supplyListData
+        supplyListData,
+        tabData
     } = props
 
     const actions = (
@@ -201,6 +202,7 @@ const SupplyGridList = enhance((props) => {
             handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
             filter={filterItem}
             isAdmin={isAdmin}
+            tabData={tabData}
         />
     )
 

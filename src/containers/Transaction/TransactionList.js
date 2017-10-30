@@ -359,9 +359,12 @@ const enhance = compose(
         },
 
         handleSubmitCreateSendDialog: props => () => {
-            const {dispatch, createForm, filter, location: {pathname}, filterCashbox} = props
+            const {dispatch, createForm, filter, location: {pathname}, filterCashbox, cashboxList} = props
             const cashboxId = _.get(props, ['location', 'query', 'cashboxId'])
-            return dispatch(transactionCreateSendAction(_.get(createForm, ['values']), cashboxId))
+            const cashbox = _.find(_.get(cashboxList, 'results'), {'id': _.toInteger(cashboxId)})
+            const chosenCashbox = _.find(_.get(cashboxList, 'results'), {'id': _.toInteger(_.get(createForm, ['values', 'categoryId', 'value']))})
+            const withPersent = _.get(cashbox, ['currency', 'name']) === _.get(chosenCashbox, ['currency', 'name']) && _.get(cashbox, 'type') !== _.get(chosenCashbox, 'type')
+            return dispatch(transactionCreateSendAction(_.get(createForm, ['values']), cashboxId, withPersent))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })

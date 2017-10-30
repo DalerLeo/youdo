@@ -3,7 +3,7 @@ export const API_ROOT = 'api'
 export const API_VERSION = 'v1'
 export const API_PROTOCOL = process.env.API_PROTOCOL ? process.env.API_PROTOCOL : 'https'
 
-export const API_URL = `$(API_PROTOCOL)://${API_HOST}/${API_ROOT}/${API_VERSION}`
+export const API_URL = `${API_PROTOCOL}://${API_HOST}/${API_ROOT}/${API_VERSION}`
 
 export const USER = 'main/user'
 export const SIGN_IN = `/${USER}/auth/`
@@ -209,7 +209,7 @@ export const USER_SHIFT_DELETE = `/${USER_SHIFT}/%d/`
 
 export const PENDING_EXPENSES = 'stock/supply_expanse'
 export const PENDING_EXPENSES_UPDATE = '/finance/expanse_cashbox/'
-export const PENDING_EXPENSES_LIST = `/${PENDING_EXPENSES}/`
+export const PENDING_EXPENSES_LIST = 'finance/pending_payments/'
 export const PENDING_EXPENSES_ITEM = `/${PENDING_EXPENSES}/%d/`
 
 export const STATSTOCK = 'stock/stock'
