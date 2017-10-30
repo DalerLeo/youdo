@@ -91,14 +91,17 @@ const enhance = compose(
 )
 
 const ManufactureShipment = enhance((props) => {
-    const {shipmentData, classes, manufactureId} = props
+    const {filterLogs, tabData, shipmentData, classes, manufactureId, handleCloseDetail} = props
 
     const ZERO = 0
     const filter = _.get(shipmentData, 'filter')
     const detail = (
         <ManufactureShipmentDetail
+            filterLogs={filterLogs}
             key={_.get(shipmentData, ['detailData', 'id'])}
+            tabData={tabData}
             detailData={_.get(shipmentData, 'detailData')}
+            handleCloseDetail={handleCloseDetail}
             filter={_.get(shipmentData, 'filter')}
         />
     )
