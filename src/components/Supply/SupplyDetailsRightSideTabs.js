@@ -81,7 +81,7 @@ const enhance = compose(
             marginBottom: '0',
             width: '100%',
             '& > div': {
-                paddingRight: 'calc(100% - 250px)',
+                paddingRight: 'calc(100% - 350px)',
                 background: 'transparent !important'
             },
             '& > div:first-child': {
@@ -154,21 +154,25 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
         }
     }
     const ZERO = 0
-    let identicalMeasurement = false
     const tab = _.get(tabData, 'tab')
     const id = _.get(data, 'id')
     const products = _.get(data, 'products')
-    const discountPrice = _.get(data, 'discountPrice')
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const currency = _.get(data, ['currency', 'name']) || 'N/A'
-    const firstMeasurement = _.get(products, ['0', 'product', 'measurement', 'name'])
-    const totalProductPrice = _.sumBy(products, (item) => {
-        return _.toNumber(_.get(item, 'totalPrice'))
-    })
+
     const wholeAmount = _.sumBy(products, (o) => {
         return _.toNumber(_.get(o, 'amount'))
     })
-    let commonMeasurement = false
+    const wholePostedAmount = _.sumBy(products, (o) => {
+        return _.toNumber(_.get(o, 'postedAmount'))
+    })
+    const wholeDefectAmount = _.sumBy(products, (o) => {
+        return _.toNumber(_.get(o, 'defectAmount'))
+    })
+    const wholeCost = _.sumBy(products, (o) => {
+        return _.toNumber(_.get(o, 'cost'))
+    })
+    const wholeNotAccepted = wholeAmount - wholePostedAmount - wholeDefectAmount
     return (
         <div className={classes.rightSide}>
             <Tabs
@@ -203,9 +207,6 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                                 const measurement = _.get(product, ['measurement', 'name'])
                                 const defectAmount = _.toNumber(_.get(item, 'defectAmount'))
                                 const notAccepted = postedAmount + defectAmount < amount ? numberFormat(amount - defectAmount - postedAmount, measurement) : numberFormat(ZERO, measurement)
-                                if (firstMeasurement === measurement) {
-                                    identicalMeasurement = true
-                                }
                                 return (
                                     <Row className="dataInfo dottedList" key={productId}>
                                         <Col xs={4}>{productName}</Col>
@@ -228,14 +229,15 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                             })}
                         </div>
                         <Row className={classes.summary}>
-                            <Col xs={4}>{commonMeasurement ? <span>Итого:</span> : <span>Общая сумма {primaryCurrency}</span>}</Col>
-                            {commonMeasurement
-                                ? <Col xs={2}>{(wholeAmount > ZERO) &&
-                                <span>{numberFormat(wholeAmount, firstMeasurement)}</span>}</Col>
-                                : <Col xs={2}></Col>}
-                            <Col xs={2}> </Col>
-                            <Col xs={2}>{numberFormat(totalProductPrice)}</Col>
-                            <Col xs={2}>{numberFormat(discountPrice)}</Col>
+                            <Col xs={4}>Итого:</Col>
+                            <Col xs={1}>{wholeAmount}</Col>
+                            <Col xs={1}>{wholePostedAmount}</Col>
+                            <Col xs={1}>{wholeDefectAmount}</Col>
+                            <Col xs={1}>{wholeNotAccepted}</Col>
+                            <Col xs={2}></Col>
+                            <Col xs={2}>
+                                <div style={{textAlign: 'right'}}>{wholeCost} {currency}</div>
+                            </Col>
                         </Row>
                     </div>
                 </Tab>
