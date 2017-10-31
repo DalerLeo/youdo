@@ -35,7 +35,7 @@ const listHeader = [
         sorting: true,
         name: 'id',
         title: 'Заказ №',
-        width: '10%'
+        width: '5%'
     },
     {
         sorting: false,
@@ -53,26 +53,32 @@ const listHeader = [
         sorting: false,
         name: 'user',
         title: 'Инициатор',
-        width: '10%'
+        width: '12.5%'
+    },
+    {
+        sorting: false,
+        name: 'deliveryMan',
+        title: 'Поставщик',
+        width: '12.5%'
     },
     {
         sorting: true,
         name: 'totalPrice',
         alignRight: true,
         title: 'Сумма заказа',
-        width: '15%'
+        width: '10%'
     },
     {
         sorting: true,
         name: 'dateDelivery',
         title: 'Дата доставки',
-        width: '15%'
+        width: '10%'
     },
     {
         sorting: true,
         name: 'createdDate',
         title: 'Дата создания',
-        width: '15%'
+        width: '10%'
     },
     {
         sorting: false,
@@ -241,6 +247,7 @@ const OrderGridList = enhance((props) => {
         const dateDelivery = dateFormat((_.get(item, 'dateDelivery')), '')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY HH:MM')
         const totalBalance = _.toNumber(_.get(item, 'totalBalance'))
+        const deliveryMan = _.toNumber(_.get(item, 'deliveryMan'))
         const balanceTooltip = numberFormat(totalBalance, currentCurrency)
         const totalPrice = numberFormat(_.get(item, 'totalPrice'), currentCurrency)
         const status = _.toInteger(_.get(item, 'status'))
@@ -266,13 +273,14 @@ const OrderGridList = enhance((props) => {
                     query: filter.getParams()
                 }}>
                 </Link>
-                <div style={{width: '10%'}}>{id}</div>
+                <div style={{width: '5%'}}>{id}</div>
                 <div style={{width: '17.5%'}}>{client}</div>
                 <div style={{width: '17.5%'}}>{market}</div>
-                <div style={{width: '10%'}}>{user}</div>
-                <div style={{width: '15%', textAlign: 'right'}}>{totalPrice}</div>
-                <div style={{width: '15%'}}>{dateDelivery}</div>
-                <div style={{width: '15%'}}>{createdDate}</div>
+                <div style={{width: '12.5%'}}>{user}</div>
+                <div style={{width: '12.5%'}}>{deliveryMan}</div>
+                <div style={{width: '10%', textAlign: 'right'}}>{totalPrice}</div>
+                <div style={{width: '10%'}}>{dateDelivery}</div>
+                <div style={{width: '10%'}}>{createdDate}</div>
                 <div style={{width: '5%'}} className={classes.buttons}>
                     {(status === REQUESTED) ? <Tooltip position="bottom" text="В процессе">
                         <IconButton

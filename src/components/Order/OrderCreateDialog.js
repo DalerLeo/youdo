@@ -1,4 +1,3 @@
-
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
@@ -17,7 +16,8 @@ import {
     ClientSearchField,
     OrderListProductField,
     DateField,
-    UsersSearchField
+    UsersSearchField,
+    ProviderSearchField
 } from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 import numberFormat from '../../helpers/numberFormat'
@@ -286,100 +286,110 @@ const OrderCreateDialog = enhance((props) => {
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit} scrolling="auto" className={classes.form}>
                     {loading ? <div className={classes.loader}>
-                        <CircularProgress size={40} thickness={4}/>
-                    </div>
-                    : <div className={classes.innerWrap}>
-                        <div style={{minHeight: '470px'}} className={classes.inContent}>
-                            <div className={classes.leftOrderPart}>
-                                <div className={classes.subTitleOrder}>
-                                    <span>Выбор клиента</span>
-                                    <Link style={{color: '#12aaeb'}}
-                                          target="_blank"
-                                          to={{pathname: [ROUTES.SHOP_LIST_URL],
-                                              query: filter.getParams({[CLIENT_CREATE_DIALOG_OPEN]: true})}}>
-                                     + добавить
-                                    </Link>
-                                </div>
-                                <div>
-                                    <Field
-                                        name="client"
-                                        component={ClientSearchField}
-                                        className={classes.inputFieldCustom}
-                                        label="Клиент"
-                                        fullWidth={true}/>
-                                    <Field
-                                        name="market"
-                                        component={MarketSearchField}
-                                        className={classes.inputFieldCustom}
-                                        label="Название магазина"
-                                        clientId={clientId}
-                                        initialVal={_.get(initialValues, ['market', 'value', 'id'])}
-                                        disabled={!clientId}
-                                        fullWidth={true}/>
-                                </div>
-
-                                {(!notEnough) ? <div className={classes.condition} style={isUpdate ? {margin: '0'} : {}}>
-                                    <div className={classes.subTitleOrder} style={{padding: '0 !important'}}>Условия
-                                        доставки
-                                    </div>
-                                    <Field
-                                        name="dealType"
-                                        component={OrderDealTypeRadio}
-                                    />
-                                    <Field
-                                        name="deliveryDate"
-                                        component={DateField}
-                                        className={classes.inputDateCustom}
-                                        floatingLabelText="Дата доставки"
-                                        container="inline"
-                                        fullWidth={true}/>
-                                </div>
-                                    : <div className={classes.notEnough}>Недостаточно товаров на складе</div>}
-
-                                <div className={classes.condition}>
-                                    <div className={classes.subTitleOrder} style={{padding: '0 !important'}}>Оплата
-                                    </div>
-                                    <Field
-                                        name="paymentType"
-                                        component={OrderPaymentTypeRadio}
-                                    />
-                                    {isSuperUser && <Field
-                                        name="user"
-                                        component={UsersSearchField}
-                                        className={classes.inputFieldCustom}
-                                        label="Агент"
-                                        selectFieldScroll={selectFieldScroll}
-                                        fullWidth={true}/>}
-                                    <Field
-                                        name="paymentDate"
-                                        component={DateField}
-                                        className={classes.inputDateCustom}
-                                        floatingLabelText="Дата оплаты"
-                                        container="inline"
-                                        fullWidth={true}/>
-                                </div>
-                            </div>
-                            <div className={classes.rightOrderPart}>
-                                <Fields
-                                    names={['products', 'product', 'amount', 'cost', 'type', 'editAmount', 'editCost']}
-                                    editOnlyCost={status === DELIVERED || status === GIVEN}
-                                    canChangeAnyPrice={canChangeAnyPrice}
-                                    component={OrderListProductField}
-                                    isUpdate={isUpdate}
-                                />
-                            </div>
+                            <CircularProgress size={40} thickness={4}/>
                         </div>
-                    </div>}
+                        : <div className={classes.innerWrap}>
+                            <div style={{minHeight: '470px'}} className={classes.inContent}>
+                                <div className={classes.leftOrderPart}>
+                                    <div className={classes.subTitleOrder}>
+                                        <span>Выбор клиента</span>
+                                        <Link style={{color: '#12aaeb'}}
+                                              target="_blank"
+                                              to={{
+                                                  pathname: [ROUTES.SHOP_LIST_URL],
+                                                  query: filter.getParams({[CLIENT_CREATE_DIALOG_OPEN]: true})
+                                              }}>
+                                            + добавить
+                                        </Link>
+                                    </div>
+                                    <div>
+                                        <Field
+                                            name="client"
+                                            component={ClientSearchField}
+                                            className={classes.inputFieldCustom}
+                                            label="Клиент"
+                                            fullWidth={true}/>
+                                        <Field
+                                            name="market"
+                                            component={MarketSearchField}
+                                            className={classes.inputFieldCustom}
+                                            label="Название магазина"
+                                            clientId={clientId}
+                                            initialVal={_.get(initialValues, ['market', 'value', 'id'])}
+                                            disabled={!clientId}
+                                            fullWidth={true}/>
+                                    </div>
+
+                                    {(!notEnough) ? <div className={classes.condition} style={isUpdate ? {margin: '0'} : {}}>
+                                            <div className={classes.subTitleOrder} style={{padding: '0 !important'}}>
+                                                Условия
+                                                доставки
+                                            </div>
+                                            <Field
+                                                name="dealType"
+                                                component={OrderDealTypeRadio}
+                                            />
+                                            <Field
+                                                name="deliveryMan"
+                                                component={ProviderSearchField}
+                                                className={classes.inputDateCustom}
+                                                label="Поставщик"
+                                                container="inline"
+                                                fullWidth={true}/>
+                                            <Field
+                                                name="deliveryDate"
+                                                component={DateField}
+                                                className={classes.inputDateCustom}
+                                                floatingLabelText="Дата доставки"
+                                                container="inline"
+                                                fullWidth={true}/>
+                                        </div>
+                                        : <div className={classes.notEnough}>Недостаточно товаров на складе</div>}
+
+                                    <div className={classes.condition}>
+                                        <div className={classes.subTitleOrder} style={{padding: '0 !important'}}>Оплата
+                                        </div>
+                                        <Field
+                                            name="paymentType"
+                                            component={OrderPaymentTypeRadio}
+                                        />
+                                        {isSuperUser && <Field
+                                            name="user"
+                                            component={UsersSearchField}
+                                            className={classes.inputFieldCustom}
+                                            label="Агент"
+                                            selectFieldScroll={selectFieldScroll}
+                                            fullWidth={true}/>}
+                                        <Field
+                                            name="paymentDate"
+                                            component={DateField}
+                                            className={classes.inputDateCustom}
+                                            floatingLabelText="Дата оплаты"
+                                            container="inline"
+                                            fullWidth={true}/>
+                                    </div>
+                                </div>
+                                <div className={classes.rightOrderPart}>
+                                    <Fields
+                                        names={['products', 'product', 'amount', 'cost', 'type', 'editAmount', 'editCost']}
+                                        editOnlyCost={status === DELIVERED || status === GIVEN}
+                                        canChangeAnyPrice={canChangeAnyPrice}
+                                        component={OrderListProductField}
+                                        isUpdate={isUpdate}
+                                    />
+                                </div>
+                            </div>
+                        </div>}
                     <div className={classes.bottomButton}>
                         <div className={classes.commentField}>
                             Общая сумма заказа: <b>{numberFormat(totalCost, getConfig('PRIMARY_CURRENCY'))}</b>
                         </div>
                         {(notEnough) ? <FlatButton
-                            label="Далее"
-                            labelStyle={{fontSize: '13px'}}
-                            className={classes.actionButton}
-                            primary={true}
-                            onTouchTap={shortageDialog.handleOpenShortageDialog}/>
+                                label="Далее"
+                                labelStyle={{fontSize: '13px'}}
+                                className={classes.actionButton}
+                                primary={true}
+                                onTouchTap={shortageDialog.handleOpenShortageDialog}/>
 
                             : <FlatButton
                                 label={isUpdate ? 'Изменить заказ' : 'Оформить заказ'}

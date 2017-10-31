@@ -20,7 +20,7 @@ import {
     pendingExpensesListFetchAction,
     pendingExpensesItemFetchAction
 } from '../../actions/pendingExpenses'
-
+import {openErrorAction} from '../../actions/error'
 import {openSnackbarAction} from '../../actions/snackbar'
 
 const enhance = compose(
@@ -87,6 +87,7 @@ const enhance = compose(
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
             const type = _.get(filterForm, ['values', 'type', 'value']) || null
+            const paymentType = _.get(filterForm, ['values', 'paymentType', 'value']) || null
             const provider = _.get(filterForm, ['values', 'provider', 'value']) || null
 
             filter.filterBy({
@@ -94,6 +95,7 @@ const enhance = compose(
                 [PENDING_EXPENSES_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [PENDING_EXPENSES_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD'),
                 [PENDING_EXPENSES_FILTER_KEY.TYPE]: type,
+                [PENDING_EXPENSES_FILTER_KEY.PAYMENT_TYPE]: paymentType,
                 [PENDING_EXPENSES_FILTER_KEY.PROVIDER]: provider
             })
         },
@@ -122,6 +124,17 @@ const enhance = compose(
                     hashHistory.push(filter.createURL({[PENDING_EXPENSES_UPDATE_DIALOG_OPEN]: false}))
                     dispatch(pendingExpensesListFetchAction(filter))
                 })
+                .catch((error) => {
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
+                    })
+
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                            {errorWhole}
+                        </div>
+                    }))
+                })
         }
     })
 )
@@ -144,6 +157,7 @@ const PendingExpensesList = enhance((props) => {
     const fromDate = filter.getParam(PENDING_EXPENSES_FILTER_KEY.FROM_DATE)
     const toDate = filter.getParam(PENDING_EXPENSES_FILTER_KEY.TO_DATE)
     const type = filter.getParam(PENDING_EXPENSES_FILTER_KEY.TYPE)
+    const paymentType = filter.getParam(PENDING_EXPENSES_FILTER_KEY.PAYMENT_TYPE)
     const provider = filter.getParam(PENDING_EXPENSES_FILTER_KEY.PROVIDER)
     const detailId = _.toInteger(_.get(params, 'pendingExpensesId'))
 
@@ -164,6 +178,9 @@ const PendingExpensesList = enhance((props) => {
                 name: _.get(detail, 'name'),
                 category: {
                     value: _.get(detail, 'category')
+                },
+                paymentType: {
+                    value: _.get(detail, 'paymentType')
                 },
                 address: _.get(detail, 'address'),
                 guide: _.get(detail, 'guide'),
@@ -191,6 +208,9 @@ const PendingExpensesList = enhance((props) => {
             },
             type: {
                 value: type
+            },
+            paymentType: {
+                value: paymentType
             },
             provider: {
                 value: provider

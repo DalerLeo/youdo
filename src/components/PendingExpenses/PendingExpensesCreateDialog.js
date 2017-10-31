@@ -9,7 +9,7 @@ import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import numberFormat from '../../helpers/numberFormat'
 import toCamelCase from '../../helpers/toCamelCase'
-import {ExpensiveCategorySearchField, CashboxSearchField} from '../ReduxForm'
+import {ExpensiveCategorySearchField, CashboxSearchField, TextField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
@@ -65,7 +65,7 @@ const enhance = compose(
 )
 
 const PendingExpensesCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, detailData, classes} = props
+    const {open, loading, handleSubmit, onClose, detailData, classes, itemBalance} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
     const supply = _.get(detailData, ['data', 'supply'])
@@ -100,12 +100,14 @@ const PendingExpensesCreateDialog = enhance((props) => {
                         <div className={classes.field}>
                             <div className={classes.info}>
                                 <div className={classes.infoHeader}>
-                                    <div>{supplier}</div>
-                                    <div>Поставка №{supplyId}</div>
+                                    <div>Поставщик: {supplier}</div>
+                                    <div>Поставка №: {supplyId}</div>
                                 </div>
                                 <div className={classes.infoSummary}>
                                     <div><strong style={{marginRight: '10px'}}>Сумма расхода:</strong>
                                         <span>{numberFormat(summary, currencyName)}</span></div>
+                                    <div><strong style={{marginRight: '10px'}}>Остаток:</strong>
+                                        <span>{numberFormat(itemBalance, currencyName)}</span></div>
                                     <div><strong style={{marginRight: '10px'}}>Описание:</strong> <span>{comment}</span>
                                     </div>
                                 </div>
@@ -122,6 +124,11 @@ const PendingExpensesCreateDialog = enhance((props) => {
                                     className={classes.inputFieldCustom}
                                     component={CashboxSearchField}
                                     label="Касса получатель"/>
+                                <Field
+                                    name="amount"
+                                    className={classes.inputFieldCustom}
+                                    component={TextField}
+                                    label="Cумма"/>
                             </div>
                         </div>
                     </div>
