@@ -19,12 +19,12 @@ export const TRANSACTION_FILTER_OPEN = 'openFilterDialog'
 
 export const TRANSACTION_FILTER_KEY = {
     TYPE: 'type',
-    EXCLUDE: 'exclude',
     CATEGORY_EXPENSE: 'categoryExpense',
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate',
     CLIENT: 'client',
-    DIVISION: 'division'
+    DIVISION: 'division',
+    WITH_DELETED: 'with_deleted'
 }
 
 const enhance = compose(
@@ -165,7 +165,7 @@ const TransactionFilterForm = enhance((props) => {
                     <Field className={classes.inputFieldCustom} name="client" component={ClientSearchField} label="Клиент" fullWidth={true}/>
                     {getConfig && <Field className={classes.inputFieldCustom} name="division" component={DivisionSearchField} label="Подразделение" fullWidth={true}/>}
                     <Field className={classes.inputFieldCustom} name="date" component={DateToDateField} label="Диапазон дат" fullWidth={true}/>
-                    <Field name="exclude" component={CheckBox} defaultChecked = {true} label="Исключить удаление трансакции"/>
+                    <Field name="with_deleted" component={CheckBox} defaultChecked = {true} label="Показать удаленные транзакции"/>
 
                     <RaisedButton
                         type="submit"

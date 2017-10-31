@@ -4,8 +4,8 @@ import {compose, withState} from 'recompose'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import Edit from 'material-ui/svg-icons/image/edit'
+import Expense from 'material-ui/svg-icons/editor/money-off'
 import LinearProgress from 'material-ui/LinearProgress'
-import FlatButton from 'material-ui/FlatButton'
 import Delete from 'material-ui/svg-icons/action/delete'
 import RightSide from './SupplyDetailsRightSideTabs'
 import IconButton from 'material-ui/IconButton'
@@ -207,16 +207,14 @@ const SupplyDetails = enhance((props) => {
     const agent = _.get(data, ['user', 'firstName']) + ' ' + _.get(data, ['user', 'secondName'])
 
     const provider = _.get(data, ['provider', 'name'])
+    const paymentType = _.get(data, 'paymentType') === 'cash' ? 'Наличный' : 'Банковский счет'
     const phone = _.get(data, ['contact', 'phone'])
     const email = _.get(data, ['contact', 'email'])
-    const deliveryType = _.get(data, 'deliveryType')
     const dateDelivery = moment(_.get(data, 'dateDelivery')).format('DD.MM.YYYY')
     const acceptedTime = (_.get(data, 'acceptedTime')) ? dateTimeFormat(_.get(data, 'acceptedTime')) : 'Не началась'
     const finishedTime = (_.get(data, 'finishedTime')) ? dateTimeFormat(_.get(data, 'finishedTime')) : 'Не закончилась'
     const contract = _.get(data, 'contract') || 'Не указана'
 
-    const REQUESTED = 0
-    const READY = 1
     const GIVEN = 2
     const DELIVERED = 3
     const CANCELED = 4
@@ -246,7 +244,7 @@ const SupplyDetails = enhance((props) => {
     return (
         <div className={classes.wrapper}>
             <div className={classes.title}>
-                <div className={classes.titleLabel}>Поставка №: {id}</div>
+                <div className={classes.titleLabel}>Поставка №{id}</div>
                 <div className={classes.closeDetail}
                      onClick={handleCloseDetail}>
                 </div>
@@ -261,14 +259,16 @@ const SupplyDetails = enhance((props) => {
                     <div className={classes.arrow}></div>
                     <div className={classes.arrowShadow}></div>
                 </div>
-                <div style={{textAlign: 'center'}}>
-                    <FlatButton
-                        onTouchTap={() => { handleSupplyExpenseOpenCreateDialog(id) }}
-                        labelStyle={{fontSize: '13px'}}
-                        className="expenseButton"
-                        label="+ добавить доп. расход"/>
-                </div>
                 <div className={classes.titleButtons}>
+                    <Tooltip position="bottom" text="Добавить расход">
+                        <IconButton
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            touch={true}
+                            onTouchTap={() => { handleSupplyExpenseOpenCreateDialog(id) }}>
+                            <Expense/>
+                        </IconButton>
+                    </Tooltip>
                     {updateDialog && <Tooltip position="bottom" text="Изменить">
                         <IconButton
                             disabled={(status === CANCELED)}
@@ -297,7 +297,7 @@ const SupplyDetails = enhance((props) => {
                         <div className={classes.dataBox}>
                             <ul>
                                 <li>
-                                    <span>Номер договора №:</span>
+                                    <span>Договор №:</span>
                                     <span>{contract}</span>
                                 </li>
                                 <li>
@@ -338,6 +338,10 @@ const SupplyDetails = enhance((props) => {
                                     <span>{numberFormat(totalCost, primaryCurrency)}</span>
                                 </li>
                                 <li>
+                                    <span>Тип оплаты</span>
+                                    <span>{paymentType}</span>
+                                </li>
+                                <li>
                                     <span>Оплачено:</span>
                                     {(totalPaid !== zero && type) ? <span>
                                         <a onClick={transactionsDialog.handleOpenTransactionsDialog}
@@ -358,19 +362,6 @@ const SupplyDetails = enhance((props) => {
                         <div className={classes.subtitle}>Исполнение</div>
                         <div className={classes.dataBox}>
                             <ul>
-                                <li>
-                                    <span>Текущий статус:</span>
-                                    {(status === REQUESTED) ? <span className={classes.yellow}>Запрос отправлен</span>
-                                        : (status === READY) ? <span className={classes.green}>Есть на складе</span>
-                                            : (status === GIVEN) ? <span className={classes.yellow}>Передан доставщику</span>
-                                                : (status === DELIVERED) ? <span className={classes.green}>Доставлен</span>
-                                                    : <span className={classes.red}>Отменен</span>
-                                    }
-                                </li>
-                                <li>
-                                    <span>Тип передачи:</span>
-                                    <span>{deliveryType > zero ? 'Доставка' : 'Самовывоз'}</span>
-                                </li>
                                 <li>
                                     <span>Начало приемки:</span>
                                     <span>{acceptedTime}</span>

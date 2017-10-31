@@ -218,7 +218,8 @@ const OrderDetails = enhance((props) => {
         handleSubmitSetZeroDiscountDialog,
         stat,
         filter,
-        clientId
+        clientId,
+        isSuperUser
     } = props
     const id = _.get(data, 'id')
     const market = _.get(data, ['market', 'name'])
@@ -480,6 +481,7 @@ const OrderDetails = enhance((props) => {
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
                 filter={filter}
                 clientId={clientId}
+                isSuperUser={isSuperUser}
             />}
 
         </div>

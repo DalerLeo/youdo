@@ -227,6 +227,7 @@ const OrderGridList = enhance((props) => {
             handleSubmitDiscountDialog={handleSubmitDiscountDialog}
             handleSubmitSetZeroDiscountDialog={handleSubmitSetZeroDiscountDialog}
             clientId={clientId}
+            isSuperUser={isSuperUser}
         />
     )
     const orderList = _.map(_.get(listData, 'data'), (item) => {

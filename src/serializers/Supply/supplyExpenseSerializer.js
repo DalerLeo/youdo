@@ -7,6 +7,7 @@ export const createSerializer = (data, id) => {
 
     const amount = numberWithoutSpaces(_.get(data, ['amount']))
     const currency = _.get(data, ['currency', 'value'])
+    const paymentType = _.get(data, ['paymentType', 'value'])
     const comment = _.get(data, 'comment')
     const supplyProduct = _.get(data, ['product', 'value', 'id'])
 
@@ -15,6 +16,7 @@ export const createSerializer = (data, id) => {
         amount,
         currency,
         comment,
+        'payment_type': paymentType,
         'supply_product': supplyProduct
     }
 }

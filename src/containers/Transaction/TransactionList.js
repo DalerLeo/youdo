@@ -256,14 +256,14 @@ const enhance = compose(
             const type = _.get(filterForm, ['values', 'type', 'value']) || null
             const division = _.get(filterForm, ['values', 'division', 'value']) || null
             const client = _.get(filterForm, ['values', 'client', 'value']) || null
-            const exclude = _.get(filterForm, ['values', 'exclude']) || null
+            const withDeleted = _.get(filterForm, ['values', 'with_deleted']) || null
             const categoryExpense = _.get(filterForm, ['values', 'categoryExpense', 'value']) || null
 
             filter.filterBy({
                 [TRANSACTION_FILTER_OPEN]: false,
                 [TRANSACTION_FILTER_KEY.TYPE]: type,
                 [TRANSACTION_FILTER_KEY.CLIENT]: client,
-                [TRANSACTION_FILTER_KEY.EXCLUDE]: exclude,
+                [TRANSACTION_FILTER_KEY.WITH_DELETED]: withDeleted,
                 [TRANSACTION_FILTER_KEY.DIVISION]: division,
                 [TRANSACTION_FILTER_KEY.CATEGORY_EXPENSE]: categoryExpense,
                 [TRANSACTION_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
@@ -676,7 +676,7 @@ const TransactionList = enhance((props) => {
     const openUpdateTransaction = _.toInteger(_.get(location, ['query', UPDATE_TRANSACTION]))
     const categoryExpense = _.toInteger(filter.getParam(TRANSACTION_FILTER_KEY.CATEGORY_EXPENSE))
     const type = _.toInteger(filter.getParam(TRANSACTION_FILTER_KEY.TYPE))
-    const exclude = _.toInteger(filter.getParam(TRANSACTION_FILTER_KEY.EXCLUDE))
+    const withDeleted = toBoolean(filter.getParam(TRANSACTION_FILTER_KEY.WITH_DELETED))
     const fromDate = filter.getParam(TRANSACTION_FILTER_KEY.FROM_DATE)
     const toDate = filter.getParam(TRANSACTION_FILTER_KEY.TO_DATE)
     const detailId = _.toInteger(_.get(params, 'transactionId'))
@@ -812,7 +812,7 @@ const TransactionList = enhance((props) => {
                 fromDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),
                 toDate: toDate && moment(toDate, 'YYYY-MM-DD')
             },
-            exclude: exclude
+            with_deleted: withDeleted
         },
         filterLoading: false,
         openFilterDialog,

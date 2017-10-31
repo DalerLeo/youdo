@@ -1,7 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Row} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import {Link} from 'react-router'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
@@ -122,13 +121,41 @@ const enhance = compose(
         deleteBtn: {
             opacity: '0'
         },
-        rows: {
+        listRow: {
+            display: 'flex',
+            width: '100%',
+            height: '100%',
+            minHeight: '50px',
+            alignItems: 'center',
             padding: '5px 0',
             '& > div': {
                 padding: '0 8px !important'
             },
             '&:hover button': {
                 opacity: '1 !important'
+            }
+        },
+        deletedRow: {
+            extend: 'listRow',
+            background: '#fffafa',
+            width: 'auto',
+            padding: '5px 30px',
+            margin: '0 -30px',
+            position: 'relative',
+            '& > div': {
+                opacity: '0.6',
+                '&:last-child': {
+                    color: '#333 !important'
+                }
+            },
+            '&:after': {
+                position: 'absolute',
+                content: '""',
+                top: '0',
+                left: '0',
+                bottom: '0',
+                width: '3px',
+                background: '#e57373'
             }
         },
         clickable: {
@@ -270,9 +297,10 @@ const TransactionsList = enhance((props) => {
         const expanseCategory = _.get(item, ['expanseCategory', 'name'])
         const transType = _.get(item, ['type'])
         const rate = _.toInteger(amount / internal)
+        const isDeleted = _.get(item, 'isDelete')
 
         return (
-            <Row key={id} className={classes.rows}>
+            <div key={id} className={isDeleted ? classes.deletedRow : classes.listRow}>
                 <div style={{flexBasis: '10%', maxWidth: '10%'}}>{id}</div>
                 <div style={{flexBasis: '22%', maxWidth: '24%'}}>
                     {client}
@@ -308,12 +336,12 @@ const TransactionsList = enhance((props) => {
                 </div>
                 <div style={{flexBasis: '18%', maxWidth: '18%'}}>{date}</div>
                 <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}} className={type >= zero ? classes.green : classes.red}>
-                    {amount} {currentCurrency}
+                    {numberFormat(amount, currentCurrency)}
                     {(currentCurrency !== primaryCurrency) && <div>{numberFormat(internal, primaryCurrency)}
                     {internal !== ZERO &&
                     <span style={{fontSize: 11, color: '#333', fontWeight: 600}}> ({rate})</span>}</div>}
                 </div>
-                <div style={{width: '5%', textAlign: 'right', display: 'flex'}}>
+                {!isDeleted && <div style={{width: '5%', textAlign: 'right', display: 'flex'}}>
                     <IconButton
                         className={classes.deleteBtn}
                         style={iconStyle.button}
@@ -328,8 +356,8 @@ const TransactionsList = enhance((props) => {
                         onTouchTap={() => { updateTransactionDialog.handleOpenDialog(id) }}>
                         <EditIcon/>
                     </IconButton>
-                </div>
-            </Row>
+                </div>}
+            </div>
         )
     })
 

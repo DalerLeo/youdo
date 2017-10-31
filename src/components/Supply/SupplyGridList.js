@@ -49,7 +49,13 @@ const listHeader = [
         sorting: true,
         name: 'dateDelivery',
         title: 'Дата поставки',
-        xs: 2
+        xs: 1
+    },
+    {
+        sorting: true,
+        name: 'paymentType',
+        title: 'Тип оплаты',
+        xs: 1
     },
     {
         sorting: true,
@@ -219,6 +225,7 @@ const SupplyGridList = enhance((props) => {
         const defectedCost = numberFormat(_.get(item, 'defectedCost'), _.get(item, ['currency', 'name']))
         const status = _.toNumber(_.get(item, 'status'))
         const contract = _.get(item, 'contract')
+        const paymentType = _.get(item, 'paymentType') === 'cash' ? 'Наличный' : 'Банковский счет'
 
         return (
             <Row key={id} className={classes.listRow}>
@@ -230,7 +237,8 @@ const SupplyGridList = enhance((props) => {
                 </Link>
                 <Col xs={2}>{name}</Col>
                 <Col xs={2}>{stock}</Col>
-                <Col xs={2}>{dateDelivery}</Col>
+                <Col xs={1}>{dateDelivery}</Col>
+                <Col xs={1}>{paymentType}</Col>
                 <Col xs={1}>{contract}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>{totalCost}</Col>
                 <Col xs={1}>{status === PENDING ? (<span><i className={classes.waiting}/> ожидает</span>)

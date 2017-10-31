@@ -10,7 +10,7 @@ import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, CurrencySearchField, CheckBox, normalizeNumber} from '../ReduxForm'
+import {TextField, CurrencySearchField, CheckBox, normalizeNumber, PaymentTypeSearchField} from '../ReduxForm'
 import MainStyles from '../Styles/MainStyles'
 import SupplyProductsSearchField from '../ReduxForm/Supply/SupplyProductsSearchField'
 import {connect} from 'react-redux'
@@ -41,6 +41,20 @@ const enhance = compose(
         inputHalfWrap: {
             flexBasis: '49%',
             width: '49%'
+        },
+        fieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
         }
     })),
     reduxForm({
@@ -90,7 +104,7 @@ const ExpenseCreateDialog = enhance((props) => {
                                     <Field
                                         name="amount"
                                         component={TextField}
-                                        className={classes.inputFieldCustom}
+                                        className={classes.fieldCustom}
                                         label="Сумма"
                                         fullWidth={true}
                                         normalize={normalizeNumber}/>
@@ -104,6 +118,12 @@ const ExpenseCreateDialog = enhance((props) => {
                                         fullWidth={true}/>
                                 </div>
                             </div>
+                            <Field
+                                name="paymentType"
+                                component={PaymentTypeSearchField}
+                                className={classes.inputFieldCustom}
+                                label="Валюта"
+                                fullWidth={true}/>
                             <Field
                                 name="linkToProduct"
                                 style={{margin: '20px 0 10px'}}

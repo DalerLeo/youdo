@@ -64,8 +64,7 @@ const enhance = compose(
         },
         flexibleItem: {
             extend: 'item',
-            height: 'auto',
-            minHeight: '50px'
+            height: 'auto'
         },
         detail: {
             margin: '20px -15px !important',
