@@ -48,8 +48,7 @@ const enhance = compose(
                     textAlign: 'right'
                 },
                 '& > div:first-child': {
-                    textAlign: 'left',
-                    display: 'flex'
+                    textAlign: 'left'
                 },
                 '& .redFont > div': {
                     display: 'inline-block',
@@ -81,7 +80,7 @@ const enhance = compose(
             marginBottom: '0',
             width: '100%',
             '& > div': {
-                paddingRight: 'calc(100% - 350px)',
+                paddingRight: 'calc(100% - 400px)',
                 background: 'transparent !important'
             },
             '& > div:first-child': {
@@ -95,23 +94,16 @@ const enhance = compose(
                 marginTop: '0px !important',
                 marginBottom: '-1px',
                 backgroundColor: '#12aaeb !important',
-                height: '1px !important'
+                height: '2px !important'
             },
             '& button': {
-                color: '#333 !important',
-                backgroundColor: '#fefefe !important'
-            },
-            '& button > span:first-line': {
-                color: '#a6dff7'
-            },
-            '& button div div': {
-                textTransform: 'initial'
+                textTransform: 'none !important'
             }
         },
         emptyQuery: {
             background: 'url(' + NotFound + ') no-repeat center center',
-            backgroundSize: '215px',
-            padding: '215px 0 0',
+            backgroundSize: '200px',
+            padding: '200px 0 0',
             textAlign: 'center',
             color: '#999'
         },
@@ -173,27 +165,24 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
         return _.toNumber(_.get(o, 'cost'))
     })
     const wholeNotAccepted = wholeAmount - wholePostedAmount - wholeDefectAmount
+    const wholeMeasurement = _.get(_.first(products), ['product', 'measurement', 'name'])
     return (
         <div className={classes.rightSide}>
             <Tabs
                 value={tab}
                 className={classes.tab}
                 onChange={(value) => tabData.handleTabChange(value, id)}>
-                <Tab label="Список товаров" value={TAB.SUPPLY_TAB_PRODUCT_LIST}>
+                <Tab label="Список товаров" value={TAB.SUPPLY_TAB_PRODUCT_LIST} disableTouchRipple={true}>
                     <div className={classes.tabContent}>
                         <div className={classes.tabWrapper}>
-                            <Row clasName="dottedList">
+                            <Row className="dottedList">
                                 <Col xs={4}>Товар</Col>
                                 <Col xs={1}>Кол-во</Col>
                                 <Col xs={1}>Принято</Col>
                                 <Col xs={1}>Брак</Col>
                                 <Col xs={1}>Недостача</Col>
-                                <Col xs={2}>
-                                    <div style={{textAlign: 'right'}}>Стоимость</div>
-                                </Col>
-                                <Col xs={2}>
-                                    <div style={{textAlign: 'right'}}>Итог</div>
-                                </Col>
+                                <Col xs={2} style={{textAlign: 'right'}}>Стоимость</Col>
+                                <Col xs={2} style={{textAlign: 'right'}}>Итог</Col>
                             </Row>
 
                             {_.map(products, (item) => {
@@ -230,10 +219,10 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                         </div>
                         <Row className={classes.summary}>
                             <Col xs={4}>Итого:</Col>
-                            <Col xs={1}>{wholeAmount}</Col>
-                            <Col xs={1}>{wholePostedAmount}</Col>
-                            <Col xs={1}>{wholeDefectAmount}</Col>
-                            <Col xs={1}>{wholeNotAccepted}</Col>
+                            <Col xs={1}>{numberFormat(wholeAmount, wholeMeasurement)}</Col>
+                            <Col xs={1}>{numberFormat(wholePostedAmount, wholeMeasurement)}</Col>
+                            <Col xs={1}>{numberFormat(wholeDefectAmount, wholeMeasurement)}</Col>
+                            <Col xs={1}>{numberFormat(wholeNotAccepted, wholeMeasurement)}</Col>
                             <Col xs={2}></Col>
                             <Col xs={2}>
                                 <div style={{textAlign: 'right'}}>{wholeCost} {currency}</div>
@@ -242,12 +231,12 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                     </div>
                 </Tab>
 
-                <Tab label="Доп. расходы" value={TAB.SUPPLY_TAB_EXPENSES}>
+                <Tab label="Доп. расходы" value={TAB.SUPPLY_TAB_EXPENSES} disableTouchRipple={true}>
                     {!_.isEmpty(expensesListData)
                         ? <div className={classes.tabContent}>
                             {!_.get(expensesListData, 'supplyExpenseListLoading') ? <div className={classes.tabWrapper}>
                                     <Row className="dottedList">
-                                        <Col xs={6}>Описания</Col>
+                                        <Col xs={6}>Описание</Col>
                                         <Col xs={3}>Тип оплаты</Col>
                                         <Col xs={3} style={{textAlign: 'right'}}>Сумма</Col>
                                     </Row>
@@ -289,7 +278,7 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                             <div>В данном заказе нет возвратов</div>
                         </div>)}
                 </Tab>
-                <Tab label="Оплаты" value={TAB.SUPPLY_TAB_PAID}>
+                <Tab label="Оплаты" value={TAB.SUPPLY_TAB_PAID} disableTouchRipple={true}>
                     {!_.isEmpty(returnData)
                         ? <div className={classes.tabContent}>
                             {!returnDataLoading ? <div className={classes.tabWrapper}>
@@ -379,7 +368,7 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                             }
                         </div>
                         : (!returnDataLoading && <div className={classes.emptyQuery}>
-                            <div>В данном заказе нет возвратов</div>
+                            <div>В данной поставке не произведено оплат</div>
                         </div>)}
                 </Tab>
             </Tabs>

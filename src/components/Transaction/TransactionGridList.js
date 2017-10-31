@@ -231,7 +231,6 @@ const TransactionGridList = enhance((props) => {
                     acceptCashDialog={acceptCashDialog}
                     detailData={detailData}
                     cashBoxDialog={cashBoxDialog}
-                    classes={classes}
                     paymentData={paymentData}
                     transactionInfoDialog={transactionInfoDialog}
                     superUser={superUser}
