@@ -27,7 +27,7 @@ const enhance = compose(
             extend: 'tab',
             color: '#12aaeb',
             fontWeight: '600',
-            borderBottom: '3px #12aaeb solid',
+            borderBottom: '2px #12aaeb solid',
             cursor: 'default'
         }
     })

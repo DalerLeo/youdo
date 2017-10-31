@@ -54,13 +54,22 @@ const enhance = compose(
 
 const ManufactureShipmentWrapper = enhance((props) => {
     const {
+        filterLogs,
+        tabData,
         detailData,
         shipmentData
     } = props
     return (
         <div>
-            <ManufactureTabs currentURL={ROUTES.MANUFACTURE_SHIPMENT_LIST_URL} detailId={_.toInteger(_.get(detailData, 'id'))}/>
-            <ManufactureShipment manufactureId={_.toInteger(_.get(detailData, 'id'))} shipmentData={shipmentData}/>
+            <ManufactureTabs
+                currentURL={ROUTES.MANUFACTURE_SHIPMENT_LIST_URL}
+                detailId={_.toInteger(_.get(detailData, 'id'))}/>
+            <ManufactureShipment
+                manufactureId={_.toInteger(_.get(detailData, 'id'))}
+                shipmentData={shipmentData}
+                tabData={tabData}
+                handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
+                filterLogs={filterLogs}/>
         </div>
     )
 })

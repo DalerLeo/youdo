@@ -38,6 +38,22 @@ export const shipmentItemFetchAction = (id) => {
     }
 }
 
+export const shipmentLogsListFetchAction = (id, manufacture, page) => {
+    const payload = axios()
+        .get(API.SHIPMENT_LOGS, {params: {staff_rotation: id, manufacture: manufacture, page: page}})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.SHIPMENT_LOGS,
+        payload
+    }
+}
+
 export const shipmentProductsListFetchAction = (id) => {
     const payload = axios()
         .get(API.SHIPMENT_PRODUCTS_LIST, {params: {personal_rotation: id}})

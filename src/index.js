@@ -56,6 +56,11 @@ const muiTheme = getMuiTheme({
     },
     timePicker: {
         headerColor: '#2d3037'
+    },
+    tabs: {
+        backgroundColor: '#fff',
+        selectedTextColor: '#12aaeb',
+        textColor: '#333'
     }
 })
 
