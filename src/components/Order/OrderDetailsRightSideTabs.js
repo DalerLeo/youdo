@@ -89,22 +89,6 @@ const enhance = compose(
             '& > div:last-child': {
                 width: '100% !important',
                 padding: '0'
-            },
-            '& > div:nth-child(2) > div': {
-                marginTop: '0px !important',
-                marginBottom: '-1px',
-                backgroundColor: '#12aaeb !important',
-                height: '1px !important'
-            },
-            '& button': {
-                color: '#333 !important',
-                backgroundColor: '#fefefe !important'
-            },
-            '& button > span:first-line': {
-                color: '#a6dff7'
-            },
-            '& button div div': {
-                textTransform: 'initial'
             }
         },
         emptyQuery: {
@@ -145,6 +129,12 @@ const OrderDetailsRightSideTabs = enhance((props) => {
             zIndex: 0
         }
     }
+    const tabStyle = {
+        button: {
+            textTransform: 'none'
+        }
+    }
+
     const ZERO = 0
     const ONE = 1
     const tab = _.get(tabData, 'tab')
@@ -166,8 +156,13 @@ const OrderDetailsRightSideTabs = enhance((props) => {
             <Tabs
                 value={tab}
                 className={classes.tab}
+                inkBarStyle={{background: '#12aaeb', marginTop: '-2px', height: '2px'}}
                 onChange={(value) => tabData.handleTabChange(value, id)}>
-                <Tab label="Список товаров" value={TAB.ORDER_TAB_PRODUCT_LIST}>
+                <Tab
+                    label="Список товаров"
+                    buttonStyle={tabStyle.button}
+                    value={TAB.ORDER_TAB_PRODUCT_LIST}
+                    disableTouchRipple={true}>
                     <div className={classes.tabContent}>
                         <div className={classes.tabWrapper}>
                             <Row className="dottedList">
@@ -232,7 +227,11 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                     </div>
                 </Tab>
 
-                <Tab label="Возврат" value={TAB.ORDER_TAB_RETURN}>
+                <Tab
+                    label="Возврат"
+                    buttonStyle={tabStyle.button}
+                    value={TAB.ORDER_TAB_RETURN}
+                    disableTouchRipple={true}>
                     {!_.isEmpty(returnData)
                         ? <div className={classes.tabContent}>
                             {!returnDataLoading ? <div className={classes.tabWrapper}>

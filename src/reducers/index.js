@@ -40,6 +40,7 @@ const rootReducer = combineReducers({
     shipment: combineReducers({
         list: createThunkReducer(actionTypes.SHIPMENT_LIST),
         item: createThunkReducer(actionTypes.SHIPMENT_ITEM),
+        logs: createThunkReducer(actionTypes.SHIPMENT_LOGS),
         products: createThunkReducer(actionTypes.SHIPMENT_PRODUCTS_LIST),
         materials: createThunkReducer(actionTypes.SHIPMENT_MATERIALS_LIST)
     }),
