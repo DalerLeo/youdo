@@ -14,7 +14,6 @@ import {OrderPrint} from '../../components/Order'
 import {
     STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN,
     TAB_TRANSFER_FILTER_OPEN,
-    TAB,
     STOCK_CONFIRM_DIALOG_OPEN,
     TAB_TRANSFER_FILTER_KEY
 } from '../../components/StockReceive'
@@ -25,7 +24,9 @@ import {
     stockTransferItemAcceptAction,
     stockReceiveItemConfirmAction,
     stockReceiveItemReturnAction,
-    stockReceiveDeliveryConfirmAction
+    stockReceiveDeliveryConfirmAction,
+    stockTransferDeliveryListFetchAction
+    // Uncomment stockTransferDeliveryItemFetchAction
 } from '../../actions/stockReceive'
 import {
     orderListPintFetchAction
@@ -33,6 +34,7 @@ import {
 import {openSnackbarAction} from '../../actions/snackbar'
 import {openErrorAction} from '../../actions/error'
 
+const TOGGLE = 'toggle'
 const TYPE = 'openType'
 const ZERO = 0
 const enhance = compose(
@@ -41,6 +43,10 @@ const enhance = compose(
         const pathname = _.get(props, ['location', 'pathname'])
         const list = _.get(state, ['stockTransfer', 'list', 'data'])
         const listLoading = _.get(state, ['stockTransfer', 'list', 'loading'])
+        const deliveryList = _.get(state, ['stockTransfer', 'deliveryList', 'data'])
+        const deliveryListLoading = _.get(state, ['stockTransfer', 'deliveryList', 'loading'])
+        const deliveryDetail = _.get(state, ['stockTransfer', 'deliveryDetail', 'data'])
+        const deliveryDetailLoading = _.get(state, ['stockTransfer', 'deliveryDetail', 'loading'])
         const detail = _.get(state, ['stockReceive', 'item', 'data'])
         const detailLoading = _.get(state, ['stockReceive', 'item', 'loading'])
         const printList = _.get(state, ['stockReceive', 'print', 'data'])
@@ -48,17 +54,25 @@ const enhance = compose(
         const historyFilterForm = _.get(state, ['form', 'HistoryFilterForm'])
         const filterForm = _.get(state, ['form', 'TabTransferFilterForm'])
         const filter = filterHelper(list, pathname, query)
+        const filterDelivery = filterHelper(deliveryList, pathname, query)
+        const toggle = _.get(query, TOGGLE) || 'order'
 
         return {
             list,
             listLoading,
+            deliveryList,
+            deliveryListLoading,
+            deliveryDetail,
+            deliveryDetailLoading,
             detail,
             detailLoading,
             filter,
+            filterDelivery,
             printList,
             printLoading,
             historyFilterForm,
-            filterForm
+            filterForm,
+            toggle
         }
     }),
 
@@ -66,9 +80,25 @@ const enhance = compose(
         const except = {
             openTransferFilter: null
         }
-        return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
-    }, ({dispatch, filter}) => {
-        dispatch(stockTransferListFetchAction(filter))
+        return props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
+    }, ({dispatch, filter, toggle}) => {
+        if (toggle === 'order') {
+            dispatch(stockTransferListFetchAction(filter))
+        }
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const except = {
+            openTransferFilter: null
+        }
+        const toggle = _.get(props, 'toggle')
+        const nextToggle = _.get(nextProps, 'toggle')
+        return (toggle !== nextToggle && nextToggle === 'delivery') ||
+            (props.filterDelivery.filterRequest(except) !== nextProps.filterDelivery.filterRequest(except) && nextToggle === 'delivery')
+    }, ({dispatch, filter, toggle}) => {
+        if (toggle === 'delivery') {
+            dispatch(stockTransferDeliveryListFetchAction(filter))
+        }
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -111,8 +141,8 @@ const enhance = compose(
 
         handleClearFilterDialog: props => () => {
             const {location: {pathname, query}} = props
-            const currentTab = _.get(query, 'tab') || 'receive'
-            hashHistory.push({pathname, query: {[TAB]: currentTab}})
+            const toggle = _.get(query, 'toggle') || 'order'
+            hashHistory.push({pathname, query: {[TOGGLE]: toggle}})
         },
 
         handleSubmitTabReceiveFilterDialog: props => () => {
@@ -198,6 +228,11 @@ const enhance = compose(
         handleOpenDetail: props => (id, type) => {
             const {filter} = props
             hashHistory.push({pathname: sprintf(ROUTER.STOCK_TRANSFER_ITEM_PATH, id), query: filter.getParams({[TYPE]: type})})
+        },
+
+        handleChooseToggle: props => (type) => {
+            const {location: {pathname}} = props
+            hashHistory.push({pathname, query: {[TOGGLE]: type}})
         }
     })
 )
@@ -206,14 +241,20 @@ const StockTransferList = enhance((props) => {
     const {
         list,
         listLoading,
+        deliveryList,
+        deliveryListLoading,
+        deliveryDetail,
+        deliveryDetailLoading,
         detail,
+        detailLoading,
         location,
         filter,
+        filterDelivery,
         layout,
         openPrint,
         printList,
         printLoading,
-        detailLoading,
+        toggle,
         params
     } = props
 
@@ -227,11 +268,28 @@ const StockTransferList = enhance((props) => {
     const toDate = filter.getParam(TAB_TRANSFER_FILTER_KEY.TO_DATE)
     const handleCloseDetail = _.get(props, 'handleCloseDetail')
 
+    const toggleData = {
+        toggle,
+        handleChooseToggle: props.handleChooseToggle
+    }
+
     const listData = {
         handleOpenDetail: props.handleOpenDetail,
         data: _.get(list, 'results'),
         listLoading
     }
+
+    const deliveryData = {
+        data: _.get(deliveryList, 'results'),
+        deliveryListLoading
+    }
+
+    const deliveryDetailsData = {
+        id: detailId,
+        data: deliveryDetail,
+        deliveryDetailLoading
+    }
+
     const orderData = {
         data: printList,
         printLoading
@@ -292,8 +350,12 @@ const StockTransferList = enhance((props) => {
         <Layout {...layout}>
             <TabTransfer
                 filter={filter}
+                filterDelivery={filterDelivery}
+                deliveryData={deliveryData}
+                deliveryDetailsData={deliveryDetailsData}
                 listData={listData}
                 detailData={detailData}
+                toggleData={toggleData}
                 handleCloseDetail={handleCloseDetail}
                 confirmDialog={confirmDialog}
                 filterDialog={filterDialog}

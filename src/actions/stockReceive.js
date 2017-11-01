@@ -121,6 +121,40 @@ export const stockTransferItemFetchAction = (id) => {
     }
 }
 
+export const stockTransferDeliveryListFetchAction = (filter) => {
+    const params = serializers.listFilterSerializer(filter.getParams())
+    const payload = axios()
+        .get((API.STOCK_TRANSFER_DELIVERY_LIST), {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STOCK_TRANSFER_DELIVERY_LIST,
+        payload
+    }
+}
+
+export const stockTransferDeliveryItemFetchAction = (filter) => {
+    const params = serializers.listFilterSerializer(filter.getParams())
+    const payload = axios()
+        .get((API.STOCK_TRANSFER_DELIVERY_ITEM), {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STOCK_TRANSFER_DELIVERY_ITEM,
+        payload
+    }
+}
+
 export const stockTransferItemAcceptAction = (id, stock) => {
     const requestData = serializers.acceptSerializer(id, stock)
     const payload = axios()

@@ -7,12 +7,14 @@ import TabTransferFilterForm from './TabTransferFilterForm'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import Details from './StockTransferDetails'
+import DeliveryDetails from './StockTransferDeliveryDetails'
 import ConfirmDialog from '../ConfirmDialog'
 import StockReceiveTabList from '../../containers/StockReceive/StockReceiveTabList'
 import * as TAB from '../../constants/stockReceiveTab'
 import dateFormat from '../../helpers/dateFormat'
-import FloatingActionButton from 'material-ui/FloatingActionButton'
-import ContentAdd from 'material-ui/svg-icons/content/add'
+import FlatButton from 'material-ui/FlatButton'
+import Order from 'material-ui/svg-icons/editor/monetization-on'
+import Delivery from 'material-ui/svg-icons/maps/local-taxi'
 import Tooltip from '../ToolTip'
 
 const ZERO = 0
@@ -49,6 +51,21 @@ const listHeader = [
     }
 ]
 
+const deliveryHeader = [
+    {
+        sorting: false,
+        name: 'id',
+        title: 'Доставщик',
+        xs: 6
+    },
+    {
+        sorting: true,
+        name: 'ordersCount',
+        title: 'Кол-во заказов',
+        xs: 6
+    }
+]
+
 const enhance = compose(
     injectSheet({
         loader: {
@@ -63,10 +80,32 @@ const enhance = compose(
             justifyContent: 'center',
             display: 'flex'
         },
-        fabWrapper: {
-            position: 'absolute',
-            top: '0',
-            right: '0'
+        toggleWrapper: {
+            display: 'flex',
+            alignItems: 'center',
+            margin: '-10px 0 10px',
+            justifyContent: 'flex-end',
+            '& > div': {
+                display: 'flex',
+                background: 'transparent !important'
+            },
+            '& button': {
+                height: '32px !important',
+                lineHeight: '32px !important',
+                minWidth: '66px !important',
+                '& > div': {
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    '& svg': {
+                        width: '20px !important',
+                        height: '20px !important'
+                    }
+                }
+            }
+        },
+        shadowButton: {
+            boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px'
         },
         wrapper: {
             '& .row > div > svg': {
@@ -84,13 +123,19 @@ const StockTabTransfer = enhance((props) => {
     const {
         filter,
         filterDialog,
+        filterDelivery,
+        deliveryData,
+        deliveryDetailsData,
         listData,
         detailData,
         handleCloseDetail,
         confirmDialog,
         classes,
-        printDialog
+        printDialog,
+        toggleData
     } = props
+
+    const toggle = _.get(toggleData, 'toggle')
 
     const usersFilterDialog = (
         <TabTransferFilterForm
@@ -100,15 +145,12 @@ const StockTabTransfer = enhance((props) => {
         />
     )
 
-    const historyDetail = (
-        <Details
-            detailData={detailData || {}}
-            key={_.get(detailData, 'id') + '_' + _.get(detailData, 'type')}
+    const deliveryDetail = (
+        <DeliveryDetails
+            detailData={deliveryDetailsData}
+            key={_.get(deliveryDetailsData, 'id')}
             handleCloseDetail={handleCloseDetail}
-            loading={_.get(detailData, 'detailLoading')}
-            printDialog={printDialog}
-            confirmDialog={confirmDialog}
-            confirm={true}
+            loading={_.get(deliveryDetailsData, 'deliveryDetailLoading')}
         />
 
     )
@@ -136,31 +178,87 @@ const StockTabTransfer = enhance((props) => {
         )
     })
 
+    const deliveryList = _.map(_.get(deliveryData, 'data'), (item) => {
+        const user = _.get(item, ['user', 'id'])
+        const keyname = user || ZERO
+        const userName = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'firstName'])
+        const ordersCount = _.get(item, 'ordersCount')
+
+        return (
+            <Row key={keyname} style={{position: 'relative', cursor: 'pointer'}}
+                 onClick={() => { listData.handleOpenDetail(keyname) }}>
+                <Col xs={6} >{user ? userName : 'Не определен'}</Col>
+                <div className={classes.closeDetail} onClick={handleCloseDetail}>{null}</div>
+                <Col xs={6}>{ordersCount}</Col>
+            </Row>
+        )
+    })
+
+    const historyDetail = (
+        <Details
+            detailData={detailData || {}}
+            key={_.get(detailData, 'id') + '_' + _.get(detailData, 'type')}
+            handleCloseDetail={handleCloseDetail}
+            loading={_.get(detailData, 'detailLoading')}
+            printDialog={printDialog}
+            confirmDialog={confirmDialog}
+            confirm={true}
+        />
+
+    )
+
     const list = {
         header: listHeader,
         list: historyList,
         loading: _.get(listData, 'listLoading')
     }
+    const listDelivery = {
+        header: deliveryHeader,
+        list: deliveryList,
+        loading: _.get(deliveryData, 'deliveryListLoading')
+    }
 
+    const primaryColor = '#12aaeb'
+    const disabledColor = '#dadada'
+    const whiteColor = '#fff'
+    const isOrder = toggle === 'order'
+    const isDelivery = toggle === 'delivery'
     return (
         <div className={classes.wrapper}>
             <StockReceiveTabList currentTab={TAB.STOCK_RECEIVE_TAB_TRANSFER}/>
-            <div className={classes.fabWrapper}>
-                <Tooltip position="left" text="Добавить магазин">
-                    <FloatingActionButton
-                        mini={true}
-                        zDepth={1}
-                        backgroundColor="#12aaeb">
-                        <ContentAdd />
-                    </FloatingActionButton>
+            <div className={classes.toggleWrapper}>
+                <Tooltip position="left" text="Показать по заказам">
+                    <FlatButton
+                        icon={<Order color={whiteColor}/>}
+                        className={isOrder ? classes.shadowButton : ''}
+                        onTouchTap={() => { toggleData.handleChooseToggle('order') }}
+                        backgroundColor={isOrder ? primaryColor : disabledColor}
+                        rippleColor={whiteColor}
+                        hoverColor={isOrder ? primaryColor : disabledColor}/>
+                </Tooltip>
+                <Tooltip position="left" text="Показать по доставщикам">
+                    <FlatButton
+                        icon={<Delivery color={whiteColor}/>}
+                        className={isDelivery ? classes.shadowButton : ''}
+                        onTouchTap={() => { toggleData.handleChooseToggle('delivery') }}
+                        backgroundColor={isDelivery ? primaryColor : disabledColor}
+                        rippleColor={whiteColor}
+                        hoverColor={isDelivery ? primaryColor : disabledColor}/>
                 </Tooltip>
             </div>
-            <GridList
-                filter={filter}
-                list={list}
-                detail={historyDetail}
-                filterDialog={usersFilterDialog}
-            />
+            {toggle === 'order'
+            ? <GridList
+                    filter={filter}
+                    list={list}
+                    detail={historyDetail}
+                    filterDialog={usersFilterDialog}
+                />
+            : <GridList
+                    filter={filterDelivery}
+                    list={listDelivery}
+                    detail={deliveryDetail}
+                    filterDialog={usersFilterDialog}
+                />}
             <ConfirmDialog
                 type="submit"
                 message={'Запрос № ' + _.get(detailData, 'id')}
