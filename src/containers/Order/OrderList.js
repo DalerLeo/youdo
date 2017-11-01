@@ -708,6 +708,9 @@ const OrderList = enhance((props) => {
                 market: {
                     value: _.toInteger(_.get(detail, ['market', 'id']))
                 },
+                deliveryMan: {
+                    value: _.toInteger(_.get(detail, ['deliveryMan', 'id']))
+                },
                 deliveryType: {
                     value: deliveryType,
                     text: deliveryTypeText

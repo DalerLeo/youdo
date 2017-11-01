@@ -35,7 +35,7 @@ export const createSerializer = (data) => {
         'payment_type': paymentType,
         'payment_term': paymentTerm,
         'deal_type': dealType,
-        deliveryMan,
+        'delivery_man': deliveryMan,
         market,
         user,
         products

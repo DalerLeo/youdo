@@ -40,7 +40,7 @@ const enhance = compose(
             display: 'flex',
             flexWrap: 'wrap',
             transition: 'all 250ms ease-out',
-            maxHeight: '615px',
+            maxHeight: '660px',
             overflow: 'hidden'
         },
         link: {
@@ -227,7 +227,7 @@ const OrderDetails = enhance((props) => {
     const agent = _.get(data, ['user', 'firstName']) + ' ' + _.get(data, ['user', 'secondName'])
     const dealType = _.get(data, 'dealType')
     const division = _.get(data, ['division', 'name'])
-    const deliveryMan = _.get(data, ['deliveryMan'])
+    const deliveryMan = _.get(data, ['deliveryMan', 'firstName']) + ' ' + _.get(data, ['deliveryMan', 'firstName'])
     const client = _.get(data, ['client', 'name'])
     const deliveryType = _.get(data, 'deliveryType')
     const dateDelivery = moment(_.get(data, 'dateDelivery')).format('DD.MM.YYYY')

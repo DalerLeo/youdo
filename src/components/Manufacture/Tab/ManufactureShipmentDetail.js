@@ -170,7 +170,7 @@ const enhance = compose(
         emptyQuery: {
             background: 'url(' + NotFound + ') no-repeat center 20px',
             backgroundSize: '175px',
-            padding: '140px 0 20px',
+            padding: '140px 0 0px',
             textAlign: 'center',
             fontSize: '13px',
             color: '#666'
