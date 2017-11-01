@@ -227,7 +227,7 @@ const OrderDetails = enhance((props) => {
     const agent = _.get(data, ['user', 'firstName']) + ' ' + _.get(data, ['user', 'secondName'])
     const dealType = _.get(data, 'dealType')
     const division = _.get(data, ['division', 'name'])
-
+    const deliveryMan = _.get(data, ['deliveryMan'])
     const client = _.get(data, ['client', 'name'])
     const deliveryType = _.get(data, 'deliveryType')
     const dateDelivery = moment(_.get(data, 'dateDelivery')).format('DD.MM.YYYY')
@@ -352,6 +352,10 @@ const OrderDetails = enhance((props) => {
                                             query: {search: market}
                                         }} target='_blank'>{market}</Link>
                                     </span>
+                                </li>
+                                <li>
+                                    <span>Поставщик:</span>
+                                    <span>{deliveryMan}</span>
                                 </li>
                                 <li>
                                     <span>Инициатор:</span>

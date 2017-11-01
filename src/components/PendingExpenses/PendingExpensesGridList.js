@@ -38,6 +38,12 @@ const listHeader = [
         sorting: false,
         name: 'type',
         title: 'Тип',
+        xs: 1
+    },
+    {
+        sorting: false,
+        name: 'type',
+        title: 'Тип оплаты',
         xs: 2
     },
     {
@@ -51,7 +57,7 @@ const listHeader = [
         name: 'amount',
         alignRight: true,
         title: 'Сумма',
-        xs: 2
+        xs: 1
     },
     {
         sorting: true,
@@ -119,21 +125,24 @@ const PendingExpensesGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const supplyNo = _.get(item, 'supplyId')
         const provider = _.get(item, ['provider', 'name'])
+        const paymentType = _.get(item, 'paymentType') === 'cash' ? 'Наличный' : 'Банковский счет'
         const type = _.get(item, 'type') === 'supply' ? 'Поставка' : 'Доп. расход'
         const comment = _.get(item, 'comment')
         const createdDate = dateTimeFormat(_.get(item, 'createdDate'))
-        const summary = numberFormat(_.get(item, 'amount'))
         const currency = _.get(item, ['currency', 'name'])
-        const balance = _.get(item, 'balance')
+        const summary = _.get(item, 'totalAmount')
+        const paidAmount = _.get(item, 'paidAmount')
+        const balance = summary - paidAmount
         return (
             <Row key={id}>
                 <Col xs={1}>{supplyNo}</Col>
                 <Col xs={2}>{provider}</Col>
                 <Col xs={2}>{comment}</Col>
-                <Col xs={2}>{type}</Col>
+                <Col xs={1}>{type}</Col>
+                <Col xs={2}>{paymentType}</Col>
                 <Col xs={1} style={{whiteSpace: 'nowrap'}}>{createdDate}</Col>
-                <Col xs={2} style={{textAlign: 'right'}}>{summary} {currency}</Col>
-                <Col xs={1} style={{textAlign: 'right'}}>{balance} {currency}</Col>
+                <Col xs={1} style={{textAlign: 'right'}}>{numberFormat(summary)} {currency}</Col>
+                <Col xs={1} style={{textAlign: 'right'}}>{numberFormat(balance)} {currency}</Col>
                 <Col xs={1} style={{textAlign: 'right', padding: '0'}}>
                     <IconButton
                         iconStyle={iconStyle.icon}
@@ -153,6 +162,8 @@ const PendingExpensesGridList = enhance((props) => {
         loading: _.get(listData, 'listLoading')
     }
 
+    const currentItem = _.find(_.get(listData, 'data'), {'id': _.get(detailData, 'id')})
+    const itemBalance = _.get(currentItem, 'totalAmount') - _.get(currentItem, 'paidAmount')
     return (
         <Container>
             <SubMenu url={ROUTES.PENDING_EXPENSES_LIST_URL}/>
@@ -168,6 +179,7 @@ const PendingExpensesGridList = enhance((props) => {
                 initialValues={updateDialog.initialValues}
                 open={updateDialog.openUpdateDialog}
                 detailData={detailData}
+                itemBalance={itemBalance}
                 loading={updateDialog.updateLoading}
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}

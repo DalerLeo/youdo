@@ -270,6 +270,7 @@ const enhance = compose(
             const zone = _.get(filterForm, ['values', 'zone', 'value']) || null
             const dept = _.get(filterForm, ['values', 'dept', 'value']) || null
             const initiator = _.get(filterForm, ['values', 'initiator', 'value']) || null
+            const deliveryMan = _.get(filterForm, ['values', 'deliveryMan', 'value']) || null
             const onlyBonus = _.get(filterForm, ['values', 'onlyBonus']) || null
             const exclude = _.get(filterForm, ['values', 'exclude']) || null
 
@@ -285,6 +286,7 @@ const enhance = compose(
                 [ORDER_FILTER_KEY.DEPT]: dept,
                 [ORDER_FILTER_KEY.ONLY_BONUS]: onlyBonus,
                 [ORDER_FILTER_KEY.EXCLUDE]: exclude,
+                [ORDER_FILTER_KEY.DELIVERY_MAN]: deliveryMan,
                 [ORDER_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [ORDER_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD'),
                 [ORDER_FILTER_KEY.DELIVERY_FROM_DATE]: deliveryFromDate && deliveryFromDate.format('YYYY-MM-DD'),

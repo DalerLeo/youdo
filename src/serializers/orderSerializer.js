@@ -11,6 +11,7 @@ const FIVE = 5
 export const createSerializer = (data) => {
     const client = _.get(data, ['client', 'value'])
     const paymentType = _.get(data, ['paymentType'])
+    const deliveryMan = _.get(data, ['deliveryMan', 'value'])
     const paymentTerm = 1
     const paymentDate = moment(_.get(data, ['paymentDate'])).format('YYYY-MM-DD')
     const deliveryDate = moment(_.get(data, ['deliveryDate'])).format('YYYY-MM-DD')
@@ -34,6 +35,7 @@ export const createSerializer = (data) => {
         'payment_type': paymentType,
         'payment_term': paymentTerm,
         'deal_type': dealType,
+        deliveryMan,
         market,
         user,
         products
@@ -61,6 +63,7 @@ export const listFilterSerializer = (data, id, withOrderReturn) => {
         'debt': dept === ONE ? true : (dept === TWO ? false : null),
         'market': _.get(defaultData, 'shop'),
         'date_delivery': _.get(defaultData, 'dateDelivery'),
+        'deliveryMan': _.get(defaultData, 'deliveryMan'),
         'total_price': _.get(defaultData, 'totalPrice'),
         'total_balance': _.get(defaultData, 'totalBalance'),
         'status': status,

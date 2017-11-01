@@ -8,13 +8,20 @@ export const createSerializer = (data) => {
     const measurement = _.get(data, ['measurement', 'value'])
     const image = _.get(data, 'image')
     const imageId = (_.get(image, ['id'])) ? _.get(image, ['id']) : image
-
+    if (image) {
+        return {
+            name,
+            code,
+            type,
+            measurement,
+            image: imageId
+        }
+    }
     return {
         name,
         code,
         type,
-        measurement,
-        image: imageId
+        measurement
     }
 }
 

@@ -18,7 +18,8 @@ import {
     ZoneSearchField,
     DivisionSearchField,
     ProductSearchField,
-    CheckBox
+    CheckBox,
+    ProviderSearchField
 } from '../ReduxForm'
 import OrderStatusSearchField from '../ReduxForm/Order/OrderStatusSearchField'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
@@ -40,7 +41,8 @@ export const ORDER_FILTER_KEY = {
     DELIVERY_TO_DATE: 'deliveryToDate',
     ZONE: 'zone',
     ONLY_BONUS: 'onlyBonus',
-    EXCLUDE: 'exclude'
+    EXCLUDE: 'exclude',
+    DELIVERY_MAN: 'deliveryMan'
 }
 
 const enhance = compose(
@@ -208,6 +210,7 @@ const OrderFilterForm = enhance((props) => {
                         <Field className={classes.inputFieldCustom} name="shop" component={MarketSearchField} label="Магазин"/>
                         {divisionStatus && <Field className={classes.inputFieldCustom} name="division" component={DivisionSearchField} label="Подразделение"/>}
                         <Field className={classes.inputFieldCustom} name="initiator" component={UsersSearchField} label="Инициатор "/>
+                        <Field className={classes.inputFieldCustom} name="deliveryMan" component={ProviderSearchField} label="Поставщик "/>
                         <Field className={classes.inputFieldCustom} name="dept" component={DeptSearchField} label="Оплаченный "/>
                         <Field className={classes.inputFieldCustom} name="zone" component={ZoneSearchField} label="Зона"/>
                         <Field className={classes.inputDateCustom} name="data" component={DateToDateField} label="Период создания"/>
