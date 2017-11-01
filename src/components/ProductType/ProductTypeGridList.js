@@ -354,6 +354,7 @@ const ProductTypeGridList = enhance((props) => {
                         actionsDialog={actions}
                         withoutPagination={true}
                         flexibleRow={true}
+                        hoverableList={false}
                         listShadow={false}
                         addButton={addButton}
                     />

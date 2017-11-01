@@ -71,10 +71,7 @@ const enhance = compose(
             position: 'relative',
             margin: '0 -30px !important',
             padding: '0 30px',
-            width: 'auto !important',
-            '&:hover': {
-                background: '#f2f5f8'
-            }
+            width: 'auto !important'
         },
         alignRight: {
             textAlign: 'right'

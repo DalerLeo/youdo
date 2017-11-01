@@ -13,6 +13,7 @@ import Sort from 'material-ui/svg-icons/content/sort'
 import Log from 'material-ui/svg-icons/content/content-paste'
 import Product from 'material-ui/svg-icons/device/widgets'
 import Material from 'material-ui/svg-icons/action/exit-to-app'
+import Defected from 'material-ui/svg-icons/image/broken-image'
 import Pagination from '../../ReduxForm/Pagination'
 
 const enhance = compose(
@@ -116,6 +117,10 @@ const enhance = compose(
         },
         productsBlock: {
             padding: '15px 30px',
+            borderBottom: '1px #efefef solid',
+            '&:last-child': {
+                borderBottom: 'none'
+            },
             '& h4': {
                 fontWeight: '600',
                 marginBottom: '5px',
@@ -149,6 +154,12 @@ const enhance = compose(
                 textAlign: 'right'
             }
         },
+        productDefected: {
+            extend: 'product',
+            background: '#ffebee',
+            borderRadius: '2px',
+            color: '#f44336'
+        },
         pagination: {
             position: 'absolute',
             display: 'flex',
@@ -157,17 +168,12 @@ const enhance = compose(
             right: '30px'
         },
         emptyQuery: {
-            background: 'url(' + NotFound + ') no-repeat center center',
-            backgroundSize: '285px',
-            padding: '260px 0 0',
+            background: 'url(' + NotFound + ') no-repeat center 20px',
+            backgroundSize: '175px',
+            padding: '140px 0 20px',
             textAlign: 'center',
-            fontSize: '15px',
-            color: '#666',
-            '& svg': {
-                width: '50px !important',
-                height: '50px !important',
-                color: '#999 !important'
-            }
+            fontSize: '13px',
+            color: '#666'
         }
     }),
 )
@@ -191,6 +197,11 @@ const ManufactureShipmentDetail = enhance((props) => {
             width: 20,
             height: 20,
             color: '#999'
+        },
+        defected: {
+            width: 20,
+            height: 20,
+            color: '#e57373'
         }
     }
     const PRODUCT = 'return'
@@ -202,7 +213,10 @@ const ManufactureShipmentDetail = enhance((props) => {
     const userName = _.get(detailData, ['data', 'user', 'firstName']) + ' ' + _.get(detailData, ['data', 'user', 'secondName'])
     const openedTime = _.get(detailData, ['data', 'openedTime']) ? dateTimeFormat(_.get(detailData, ['data', 'openedTime'])) : 'Не началась'
     const closedTime = _.get(detailData, ['data', 'closedTime']) ? dateTimeFormat(_.get(detailData, ['data', 'closedTime'])) : 'Не закончилась'
-    const producs = _.map(_.get(detailData, 'products'), (item, index) => {
+
+    const defectedProducts = _.map(_.filter(_.get(detailData, 'products'), (item) => {
+        return _.get(item, 'isDefect')
+    }), (item, index) => {
         const measurement = _.get(item, ['measurement', 'name'])
         const product = _.get(item, ['product', 'name'])
         const amount = _.get(item, 'totalAmount')
@@ -213,7 +227,35 @@ const ManufactureShipmentDetail = enhance((props) => {
             </div>
         )
     })
-    const materials = _.map(_.get(detailData, 'materials'), (item, index) => {
+    const products = _.map(_.filter(_.get(detailData, 'products'), (item) => {
+        return !_.get(item, 'isDefect')
+    }), (item, index) => {
+        const measurement = _.get(item, ['measurement', 'name'])
+        const product = _.get(item, ['product', 'name'])
+        const amount = _.get(item, 'totalAmount')
+        return (
+            <div key={index} className={classes.product}>
+                <span>{product}</span>
+                <span>{numberFormat(amount, measurement)}</span>
+            </div>
+        )
+    })
+    const defectedMaterials = _.map(_.filter(_.get(detailData, 'materials'), (item) => {
+        return _.get(item, 'isDefect')
+    }), (item, index) => {
+        const measurement = _.get(item, ['measurement', 'name'])
+        const product = _.get(item, ['product', 'name'])
+        const amount = _.get(item, 'totalAmount')
+        return (
+            <div key={index} className={classes.product}>
+                <span>{product}</span>
+                <span>{numberFormat(amount, measurement)}</span>
+            </div>
+        )
+    })
+    const materials = _.map(_.filter(_.get(detailData, 'materials'), (item) => {
+        return !_.get(item, 'isDefect')
+    }), (item, index) => {
         const measurement = _.get(item, ['measurement', 'name'])
         const product = _.get(item, ['product', 'name'])
         const amount = _.get(item, 'totalAmount')
@@ -230,16 +272,18 @@ const ManufactureShipmentDetail = enhance((props) => {
         const createdDate = dateTimeFormat(_.get(item, 'createdDate'))
         const amount = _.get(item, 'amount')
         const type = _.get(item, 'type')
+        const isDefect = _.get(item, 'isDefect')
         return (
-            <Row key={index} className={classes.product}>
+            <Row key={index} className={isDefect ? classes.productDefected : classes.product}>
                 {type === PRODUCT
-                    ? <Col xs={8}><span><Product style={iconStyles.product}/>{product}</span></Col>
-                    : <Col xs={8}><span><Material style={iconStyles.material}/>{product}</span></Col>}
+                    ? <Col xs={8}><span>{isDefect ? <Defected style={iconStyles.defected}/> : <Product style={iconStyles.product}/>}{product}</span></Col>
+                    : <Col xs={8}><span>{isDefect ? <Defected style={iconStyles.defected}/> : <Material style={iconStyles.material}/>}{product}</span></Col>}
                 <Col xs={2}>{numberFormat(amount, measurement)}</Col>
                 <Col xs={2}>{createdDate}</Col>
             </Row>
         )
     })
+    const wholeEmpty = _.isEmpty(products) && _.isEmpty(materials)
     if (loading || productsLoading || materialsLoading) {
         return (
             <div className={classes.loader}>
@@ -258,7 +302,10 @@ const ManufactureShipmentDetail = enhance((props) => {
         <div className={classes.wrapper}>
             <div className={classes.title} onClick={handleCloseDetail}>
                 <div className={classes.titleLabel}>{userName}</div>
-                <span>Начало смены: {openedTime} <br/> Конец смены: {closedTime}</span>
+                <span>
+                    <div>Начало смены: {openedTime}</div>
+                    <div>Конец смены: {closedTime}</div>
+                </span>
             </div>
             <div className={classes.details}>
                 <div className={classes.leftSide}>
@@ -287,16 +334,42 @@ const ManufactureShipmentDetail = enhance((props) => {
                             disableTouchRipple={true}
                             icon={<Sort/>}
                             value={TAB.TAB_SORTED}>
-                            <div className={classes.flexReview}>
-                                <div className={classes.productsBlock}>
-                                    <h4>Произведенная продукция</h4>
-                                    {producs}
+                            {!wholeEmpty
+                            ? <div className={classes.flexReview}>
+                                <div>
+                                    <div className={classes.productsBlock}>
+                                        <h4>Произведенная продукция</h4>
+                                        {!_.isEmpty(products)
+                                        ? products
+                                        : <div className={classes.emptyQuery}>
+                                                <div>Продукции еще не произведены</div>
+                                            </div>}
+                                    </div>
+                                    {!_.isEmpty(defectedProducts) &&
+                                    <div className={classes.productsBlock}>
+                                        <h4>Бракованные</h4>
+                                        {defectedProducts}
+                                    </div>}
                                 </div>
-                                <div className={classes.productsBlock}>
-                                    <h4>Затраченное сырье</h4>
-                                    {materials}
+                                <div>
+                                    <div className={classes.productsBlock}>
+                                        <h4>Затраченное сырье</h4>
+                                        {!_.isEmpty(materials)
+                                            ? materials
+                                            : <div className={classes.emptyQuery}>
+                                                <div>Не затрачено сырья</div>
+                                            </div>}
+                                    </div>
+                                    {!_.isEmpty(defectedMaterials) &&
+                                    <div className={classes.productsBlock}>
+                                        <h4>Бракованные</h4>
+                                        {defectedMaterials}
+                                    </div>}
                                 </div>
                             </div>
+                            : <div className={classes.emptyQuery}>
+                                    <div>В данную смену не произведено ни одной продукции</div>
+                                </div>}
                         </Tab>
 
                         <Tab
@@ -305,21 +378,25 @@ const ManufactureShipmentDetail = enhance((props) => {
                             disableTouchRipple={true}
                             icon={<Log/>}
                             value={TAB.TAB_LOGS}>
-                            <div className={classes.productsBlock}>
-                                <div className={classes.pagination}>
-                                    <Pagination filter={filterLogs}/>
-                                </div>
-                                <Row className={classes.flexTitle}>
-                                    <Col xs={8}><h4>Продукт / сырье</h4></Col>
-                                    <Col xs={2}><h4>Кол-во</h4></Col>
-                                    <Col xs={2}><h4>Дата</h4></Col>
-                                </Row>
-                                {logsLoading
-                                    ? <div className={classes.loader}>
-                                        <Loader size={0.75}/>
+                            {!_.isEmpty(logs)
+                            ? <div className={classes.productsBlock}>
+                                    <div className={classes.pagination}>
+                                        <Pagination filter={filterLogs}/>
                                     </div>
-                                    : logs}
-                            </div>
+                                    <Row className={classes.flexTitle}>
+                                        <Col xs={8}><h4>Продукт / сырье</h4></Col>
+                                        <Col xs={2}><h4>Кол-во</h4></Col>
+                                        <Col xs={2}><h4>Дата</h4></Col>
+                                    </Row>
+                                    {logsLoading
+                                        ? <div className={classes.loader}>
+                                            <Loader size={0.75}/>
+                                        </div>
+                                        : logs}
+                                </div>
+                            : <div className={classes.emptyQuery}>
+                                    <div>Нет записей в данной смене</div>
+                                </div>}
                         </Tab>
                     </Tabs>
                 </div>
