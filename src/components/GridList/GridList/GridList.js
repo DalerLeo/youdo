@@ -56,7 +56,8 @@ const GridList = enhance((props) => {
         withoutPagination,
         refreshAction,
         listShadow,
-        transparentLoading
+        transparentLoading,
+        hoverableList
     } = props
 
     const header = _.get(list, 'header')
@@ -82,6 +83,7 @@ const GridList = enhance((props) => {
                 flexibleRow={flexibleRow}
                 withoutCheckboxes={withoutCheckboxes}
                 listShadow={listShadow}
+                hoverableList={hoverableList}
             />
         )
     }
@@ -155,6 +157,7 @@ GridList.defaultProps = {
     withoutPagination: false,
     listShadow: true,
     transparentLoading: false,
+    hoverableList: true,
     actionsDialog: (<div>no</div>)
 }
 

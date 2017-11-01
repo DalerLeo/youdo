@@ -11,6 +11,9 @@ import ConfirmDialog from '../ConfirmDialog'
 import StockReceiveTabList from '../../containers/StockReceive/StockReceiveTabList'
 import * as TAB from '../../constants/stockReceiveTab'
 import dateFormat from '../../helpers/dateFormat'
+import FloatingActionButton from 'material-ui/FloatingActionButton'
+import ContentAdd from 'material-ui/svg-icons/content/add'
+import Tooltip from '../ToolTip'
 
 const ZERO = 0
 
@@ -59,6 +62,11 @@ const enhance = compose(
             zIndex: '999',
             justifyContent: 'center',
             display: 'flex'
+        },
+        fabWrapper: {
+            position: 'absolute',
+            top: '0',
+            right: '0'
         },
         wrapper: {
             '& .row > div > svg': {
@@ -137,6 +145,16 @@ const StockTabTransfer = enhance((props) => {
     return (
         <div className={classes.wrapper}>
             <StockReceiveTabList currentTab={TAB.STOCK_RECEIVE_TAB_TRANSFER}/>
+            <div className={classes.fabWrapper}>
+                <Tooltip position="left" text="Добавить магазин">
+                    <FloatingActionButton
+                        mini={true}
+                        zDepth={1}
+                        backgroundColor="#12aaeb">
+                        <ContentAdd />
+                    </FloatingActionButton>
+                </Tooltip>
+            </div>
             <GridList
                 filter={filter}
                 list={list}

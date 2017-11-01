@@ -30,7 +30,6 @@ const enhance = compose(
         item: {
             height: '50px',
             padding: '0 30px',
-            background: '#fff',
             '& .row': {
                 width: '100%',
                 alignItems: 'center',
@@ -61,6 +60,15 @@ const enhance = compose(
                 fontWeight: '600'
             }
 
+        },
+        hoverItem: {
+            extend: 'item',
+            '&:hover': {
+                background: '#f2f5f8 !important'
+            },
+            '&:active': {
+                background: '#fff !important'
+            }
         },
         flexibleItem: {
             extend: 'item',
@@ -114,7 +122,19 @@ const enhance = compose(
 )
 
 const GridListBody = enhance((props) => {
-    const {classes, filter, list, onChecked, detail, withoutCheckboxes, flexibleRow, listShadow, listLoading, transparentLoading} = props
+    const {
+        classes,
+        filter,
+        list,
+        onChecked,
+        detail,
+        withoutCheckboxes,
+        flexibleRow,
+        listShadow,
+        listLoading,
+        transparentLoading,
+        hoverableList
+    } = props
 
     const items = _.map(list, (item, index) => {
         const id = (_.get(item, 'key'))
@@ -137,7 +157,7 @@ const GridListBody = enhance((props) => {
         return (
             <Paper
                 zDepth={1}
-                className={flexibleRow ? classes.flexibleItem : classes.item}
+                className={flexibleRow ? classes.flexibleItem : hoverableList ? classes.hoverItem : classes.item}
                 key={index}
                 style={!listShadow ? {boxShadow: 'none'} : {boxShadow: 'rgba(0, 0, 0, 0.12) 0px 3px 6px, rgba(0, 0, 0, 0.12) 0px 3px 4px'}}>
                 <div className={classes.checkbox}>
