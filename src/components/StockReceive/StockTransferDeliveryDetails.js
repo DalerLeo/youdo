@@ -1,9 +1,15 @@
+import _ from 'lodash'
 import React from 'react'
-import PropTypes from 'prop-types'
+import {Row, Col} from 'react-flexbox-grid'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import NotFound from '../Images/not-found.png'
 import LinearProgress from '../LinearProgress'
+import numberFormat from '../../helpers/numberFormat'
+import Tooltip from '../ToolTip'
+import IconButton from 'material-ui/IconButton'
+import PrintIcon from 'material-ui/svg-icons/action/print'
+import SendDelivery from 'material-ui/svg-icons/content/reply-all'
 
 const colorBlue = '#12aaeb !important'
 const enhance = compose(
@@ -39,9 +45,12 @@ const enhance = compose(
         },
         content: {
             width: '100%',
-            overflow: 'hidden',
-            display: 'flex',
-            borderTop: 'solid 1px #efefef'
+            overflow: 'hidden'
+        },
+        ordersData: {
+            width: '100%',
+            padding: '15px 30px',
+            borderBottom: '1px #efefef solid'
         },
         leftSide: {
             flexBasis: '100%',
@@ -54,6 +63,9 @@ const enhance = compose(
                 },
                 '&:last-child:after': {
                     display: 'none'
+                },
+                '& > div:last-child': {
+                    textAlign: 'right'
                 }
             }
         },
@@ -63,12 +75,21 @@ const enhance = compose(
             position: 'relative'
         },
         header: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            height: '64px',
+            borderBottom: '1px #efefef solid',
             position: 'relative',
             padding: '0 30px',
             width: '100%',
             '& .row': {
                 alignItems: 'center'
             }
+        },
+        title: {
+            fontSize: '18px',
+            fontWeight: '600'
         },
         emptyQuery: {
             background: 'url(' + NotFound + ') no-repeat center 25px',
@@ -99,8 +120,23 @@ const enhance = compose(
     withState('openDetails', 'setOpenDetails', false)
 )
 
+const iconStyle = {
+    icon: {
+        color: '#666',
+        width: 20,
+        height: 20
+    },
+    button: {
+        width: 48,
+        height: 48,
+        padding: 0
+    }
+}
+
 const StockTransferDetails = enhance((props) => {
     const {
+        detailData,
+        handleCloseDetail,
         classes,
         loading
     } = props
@@ -112,15 +148,69 @@ const StockTransferDetails = enhance((props) => {
             </div>
         )
     }
+    const products = _.get(detailData, 'products')
+    const orders = _.join(_.get(detailData, 'orders'), ', ')
+    const deliveryMan = _.get(detailData, 'deliveryMan', 'id')
+    const deliveryManName = deliveryMan
+        ? _.get(detailData, ['deliveryMan', 'firstName']) + ' ' + _.get(detailData, ['deliveryMan', 'secondName'])
+        : 'Доставщик не определен'
     return (
         <div className={classes.wrapper}>
-           asd
+            <div className={classes.header}>
+                <div className={classes.title}>{deliveryManName}</div>
+                <div className={classes.closeDetail} onClick={handleCloseDetail}>{null}</div>
+                <div className={classes.titleButtons}>
+                    <Tooltip position="bottom" text="Распечатать накладную">
+                        <IconButton
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            touch={true}>
+                            <PrintIcon />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip position="bottom" text="Передать доставщику">
+                        <IconButton
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            touch={true}>
+                            <SendDelivery />
+                        </IconButton>
+                    </Tooltip>
+                </div>
+            </div>
+            {_.isEmpty(products)
+                ? <div className={classes.emptyQuery}>
+                    <div>Товаров не найдено</div>
+                </div>
+                : <div style={{width: '100%'}}>
+                    <div className={classes.content}>
+                        <div className={classes.ordersData}>Показаны товары по следующим заказам: <strong>{orders}</strong></div>
+                        <div className={classes.leftSide}>
+                            <Row className='dottedList'>
+                                <Col xs={6}>Товар</Col>
+                                <Col xs={4}>Тип товара</Col>
+                                <Col xs={2}>Кол-во</Col>
+                            </Row>
+                            {_.map(products, (item) => {
+                                const productId = _.get(item, 'id')
+                                const name = _.get(item, 'name')
+                                const measurement = _.get(item, ['measurement', 'name'])
+                                const amount = numberFormat(_.get(item, 'count'), measurement)
+                                const type = _.get(item, ['type', 'name'])
+                                return (
+                                    <Row key={productId} className='dottedList'>
+                                        <Col xs={6}>{name}</Col>
+                                        <Col xs={4}>{type}</Col>
+                                        <Col xs={2}>{amount}</Col>
+                                    </Row>
+                                )
+                            })}
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
     )
 })
-
-StockTransferDetails.propTypes = {
-    detailData: PropTypes.object.isRequired
-}
 
 export default StockTransferDetails

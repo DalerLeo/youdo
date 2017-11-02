@@ -35,7 +35,7 @@ const listHeader = [
         sorting: true,
         name: 'id',
         title: 'Заказ №',
-        width: '5%'
+        width: '10%'
     },
     {
         sorting: false,
@@ -76,7 +76,6 @@ const listHeader = [
     },
     {
         sorting: false,
-        name: 'acceptedCost',
         title: 'Статус',
         width: '5%'
     }

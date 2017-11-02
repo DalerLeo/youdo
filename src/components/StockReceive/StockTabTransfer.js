@@ -8,6 +8,7 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import Details from './StockTransferDetails'
 import DeliveryDetails from './StockTransferDeliveryDetails'
+import StockTabTransferDateRange from './StockTabTransferDateRange'
 import ConfirmDialog from '../ConfirmDialog'
 import StockReceiveTabList from '../../containers/StockReceive/StockReceiveTabList'
 import * as TAB from '../../constants/stockReceiveTab'
@@ -80,10 +81,25 @@ const enhance = compose(
             justifyContent: 'center',
             display: 'flex'
         },
+        filters: {
+            display: 'flex',
+            height: '40px',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            margin: '-10px 0 10px'
+        },
+        filtersReverse: {
+            extend: 'filters',
+            justifyContent: 'flex-end'
+        },
+        dateRange: {
+            '& a': {
+                fontWeight: '600'
+            }
+        },
         toggleWrapper: {
             display: 'flex',
             alignItems: 'center',
-            margin: '-10px 0 10px',
             justifyContent: 'flex-end',
             '& > div': {
                 display: 'flex',
@@ -147,7 +163,7 @@ const StockTabTransfer = enhance((props) => {
 
     const deliveryDetail = (
         <DeliveryDetails
-            detailData={deliveryDetailsData}
+            detailData={_.get(deliveryDetailsData, 'data')}
             key={_.get(deliveryDetailsData, 'id')}
             handleCloseDetail={handleCloseDetail}
             loading={_.get(deliveryDetailsData, 'deliveryDetailLoading')}
@@ -181,7 +197,7 @@ const StockTabTransfer = enhance((props) => {
     const deliveryList = _.map(_.get(deliveryData, 'data'), (item) => {
         const user = _.get(item, ['user', 'id'])
         const keyname = user || ZERO
-        const userName = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'firstName'])
+        const userName = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName'])
         const ordersCount = _.get(item, 'ordersCount')
 
         return (
@@ -226,25 +242,31 @@ const StockTabTransfer = enhance((props) => {
     return (
         <div className={classes.wrapper}>
             <StockReceiveTabList currentTab={TAB.STOCK_RECEIVE_TAB_TRANSFER}/>
-            <div className={classes.toggleWrapper}>
-                <Tooltip position="left" text="Показать по заказам">
-                    <FlatButton
-                        icon={<Order color={whiteColor}/>}
-                        className={isOrder ? classes.shadowButton : ''}
-                        onTouchTap={() => { toggleData.handleChooseToggle('order') }}
-                        backgroundColor={isOrder ? primaryColor : disabledColor}
-                        rippleColor={whiteColor}
-                        hoverColor={isOrder ? primaryColor : disabledColor}/>
-                </Tooltip>
-                <Tooltip position="left" text="Показать по доставщикам">
-                    <FlatButton
-                        icon={<Delivery color={whiteColor}/>}
-                        className={isDelivery ? classes.shadowButton : ''}
-                        onTouchTap={() => { toggleData.handleChooseToggle('delivery') }}
-                        backgroundColor={isDelivery ? primaryColor : disabledColor}
-                        rippleColor={whiteColor}
-                        hoverColor={isDelivery ? primaryColor : disabledColor}/>
-                </Tooltip>
+            <div className={toggle === 'delivery' ? classes.filters : classes.filtersReverse}>
+                {toggle === 'delivery' &&
+                <Tooltip position="bottom" text="Период доставки">
+                    <StockTabTransferDateRange filter={filterDelivery} initialValues={filterDialog.initialValues}/>
+                </Tooltip>}
+                <div className={classes.toggleWrapper}>
+                    <Tooltip position="left" text="Показать по заказам">
+                        <FlatButton
+                            icon={<Order color={whiteColor}/>}
+                            className={isOrder ? classes.shadowButton : ''}
+                            onTouchTap={() => { toggleData.handleChooseToggle('order') }}
+                            backgroundColor={isOrder ? primaryColor : disabledColor}
+                            rippleColor={whiteColor}
+                            hoverColor={isOrder ? primaryColor : disabledColor}/>
+                    </Tooltip>
+                    <Tooltip position="left" text="Показать по доставщикам">
+                        <FlatButton
+                            icon={<Delivery color={whiteColor}/>}
+                            className={isDelivery ? classes.shadowButton : ''}
+                            onTouchTap={() => { toggleData.handleChooseToggle('delivery') }}
+                            backgroundColor={isDelivery ? primaryColor : disabledColor}
+                            rippleColor={whiteColor}
+                            hoverColor={isDelivery ? primaryColor : disabledColor}/>
+                    </Tooltip>
+                </div>
             </div>
             {toggle === 'order'
             ? <GridList

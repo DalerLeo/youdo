@@ -21,10 +21,7 @@ const enhance = compose(
                     boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px',
                     borderRadius: '2px',
                     height: '52px',
-                    alignItems: 'center',
-                    '& button': {
-                        color: '#333 !important'
-                    }
+                    alignItems: 'center'
                 },
                 '&:nth-child(2)': {
                     marginTop: '-3px'
@@ -43,31 +40,18 @@ const enhance = compose(
     withState('tab', 'setTab', 'receive'),
     withHandlers({
         handleTabChange: props => (tab) => {
-            if (tab === 'stockReceive') {
-                hashHistory.push({
-                    pathname: ROUTER.STOCK_RECEIVE_LIST_URL,
-                    query: {}
-                })
-            } else if (tab === 'stockTransfer') {
-                hashHistory.push({
-                    pathname: ROUTER.STOCK_TRANSFER_LIST_URL,
-                    query: {}
-                })
-            } else if (tab === 'stockOutHistory') {
-                hashHistory.push({
-                    pathname: ROUTER.STOCK_OUT_HISTORY_LIST_URL,
-                    query: {}
-                })
-            } else if (tab === 'stockTransferHistory') {
-                hashHistory.push({
-                    pathname: ROUTER.STOCK_TRANSFER_HISTORY_LIST_URL,
-                    query: {}
-                })
-            } else if (tab === 'stockReceiveHistory') {
-                hashHistory.push({
-                    pathname: ROUTER.STOCK_RECEIVE_HISTORY_LIST_URL,
-                    query: {}
-                })
+            switch (tab) {
+                case 'stockReceive': hashHistory.push({pathname: ROUTER.STOCK_RECEIVE_LIST_URL, query: {}})
+                    break
+                case 'stockTransfer': hashHistory.push({pathname: ROUTER.STOCK_TRANSFER_LIST_URL, query: {}})
+                    break
+                case 'stockOutHistory': hashHistory.push({pathname: ROUTER.STOCK_OUT_HISTORY_LIST_URL, query: {}})
+                    break
+                case 'stockTransferHistory': hashHistory.push({pathname: ROUTER.STOCK_TRANSFER_HISTORY_LIST_URL, query: {}})
+                    break
+                case 'stockReceiveHistory': hashHistory.push({pathname: ROUTER.STOCK_RECEIVE_HISTORY_LIST_URL, query: {}})
+                    break
+                default: hashHistory.push({pathname: ROUTER.STOCK_RECEIVE_LIST_URL, query: {}})
             }
         }
     })

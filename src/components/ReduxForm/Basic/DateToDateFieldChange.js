@@ -10,6 +10,7 @@ import {Popover, FlatButton} from 'material-ui'
 import dateFormat from '../../../helpers/dateFormat'
 import MUITextField from 'material-ui/TextField'
 import moment from 'moment'
+import {hashHistory} from 'react-router'
 
 const MINUS_ONE = -1
 const MINUS_SEVEN = -7
@@ -107,21 +108,27 @@ class DateToDateField extends React.Component {
         })
     }
     render () {
-        const {label, classes, input, meta: {error}} = this.props
+        const {label, classes, input, meta: {error}, filter} = this.props
         const {
             open,
             anchorEl
         } = this.state
-        const startDate = dateFormat(_.get(input, ['value', 'fromDate']))
-        const endDate = dateFormat(_.get(input, ['value', 'toDate']))
+        const startDate = dateFormat(_.get(input, ['value', 'startDate']))
+        const endDate = dateFormat(_.get(input, ['value', 'endDate']))
         const dateLabel = error || (!startDate)
-            ? '' : startDate === endDate
-                ? startDate : startDate + ' - ' + endDate
+            ? '' : startDate + ' - ' + endDate
+        const onChange = (inputDate) => {
+            const beginDateUrl = moment(_.get(inputDate, 'startDate')).format('YYYY-MM-DD')
+            const endDateUrl = moment(_.get(inputDate, 'endDate')).format('YYYY-MM-DD')
+            input.onChange(inputDate)
+            hashHistory.push(filter.createURL({beginDate: beginDateUrl, endDate: endDateUrl}))
+        }
         return (
 
             <div>
                 <div className={classes.button}>
                     <MUITextField
+                        name="dateField"
                         errorText={error}
                         floatingLabelText={label}
                         onFocus={this.handleOnTouchTap}
@@ -141,13 +148,11 @@ class DateToDateField extends React.Component {
                             />
                         </div>
                         <DateRange
-                            startDate={_.get(input, ['value', 'fromDate']) || moment()}
-                            endDate={_.get(input, ['value', 'toDate']) || moment()}
+                            startDate={_.get(input, ['value', 'startDate']) || moment()}
+                            endDate={_.get(input, ['value', 'endDate']) || moment()}
                             lang={'ru'}
                             ranges={ range }
-                            onChange={ (which) => {
-                                input.onChange({fromDate: which.startDate, toDate: which.endDate})
-                            }}
+                            onChange={onChange}
                             theme={{
                                 Calendar: {width: 350},
                                 PredefinedRangesItemActive: {
