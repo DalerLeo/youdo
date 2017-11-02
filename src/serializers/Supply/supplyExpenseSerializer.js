@@ -45,3 +45,9 @@ export const expenseSupplySerializer = (supplyId, data) => {
     }
 }
 
+export const supplyPaidSerializer = (supplyId) => {
+    return {
+        'supply': supplyId
+    }
+}
+

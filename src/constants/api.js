@@ -139,6 +139,7 @@ export const GET_DOCUMENT = 'order_document/%d/'
 export const SUPPLY_EXPENSE = 'stock/supply_expanse'
 export const SUPPLY_EXPENSE_CREATE = `/${SUPPLY_EXPENSE}/`
 export const SUPPLY_EXPENSE_LIST = `/${SUPPLY_EXPENSE}/`
+export const SUPPLY_PAID_LIST = 'finance/transaction/'
 export const SUPPLY_EXPENSE_ITEM = `/${SUPPLY_EXPENSE}/%d/`
 export const SUPPLY_EXPENSE_DELETE = `/${SUPPLY_EXPENSE}/%d/`
 
