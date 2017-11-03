@@ -201,7 +201,8 @@ const SupplyDetails = enhance((props) => {
         setOpenDiscountDialog,
         handleSubmitDiscountDialog,
         handleSubmitSetZeroDiscountDialog,
-        confirmExpenseDialog
+        confirmExpenseDialog,
+        paidData
     } = props
     const id = _.get(data, 'id')
     const agent = _.get(data, ['user', 'firstName']) + ' ' + _.get(data, ['user', 'secondName'])
@@ -381,7 +382,8 @@ const SupplyDetails = enhance((props) => {
                     returnData={returnData}
                     returnDataLoading={returnDataLoading}
                     expensesListData={supplyListData}
-                    confirmExpenseDialog={confirmExpenseDialog}/>
+                    confirmExpenseDialog={confirmExpenseDialog}
+                    paidData={paidData}/>
             </div>
         </div>
     )

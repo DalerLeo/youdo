@@ -4,26 +4,17 @@ import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import CircularProgress from 'material-ui/CircularProgress'
+import * as ROUTES from '../../constants/routes'
 import {Row, Col} from 'react-flexbox-grid'
-import moment from 'moment'
+import {Link} from 'react-router'
 import numberFormat from '../../helpers/numberFormat'
 import {Tabs, Tab} from 'material-ui/Tabs'
 import * as TAB from '../../constants/supplyTab'
 import NotFound from '../Images/not-found.png'
 import getConfig from '../../helpers/getConfig'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
-import DeleteIcon from 'material-ui/svg-icons/action/delete'
-import InProcess from 'material-ui/svg-icons/action/cached'
+import dateFormat from '../../helpers/dateFormat'
 import IconButton from 'material-ui/IconButton'
-import DoneIcon from 'material-ui/svg-icons/action/done-all'
-import Canceled from 'material-ui/svg-icons/notification/do-not-disturb-alt'
-
-import Tooltip from '../ToolTip'
-
-const PENDING = 0
-const IN_PROGRESS = 1
-const COMPLETED = 2
-const CANCELLED = 3
 
 const enhance = compose(
     injectSheet({
@@ -123,28 +114,13 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
     const {
         classes,
         data,
-        itemReturnDialog,
         tabData,
-        returnData,
         returnDataLoading,
         expensesListData,
-        cancelSupplyReturnOpen,
+        paidData,
         confirmExpenseDialog
     } = props
 
-    const iconStyle = {
-        icon: {
-            color: '#666',
-            width: 20,
-            height: 20
-        },
-        button: {
-            width: 30,
-            height: 30,
-            padding: 0,
-            zIndex: 0
-        }
-    }
     const ZERO = 0
     const tab = _.get(tabData, 'tab')
     const id = _.get(data, 'id')
@@ -279,86 +255,63 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                         </div>)}
                 </Tab>
                 <Tab label="Оплаты" value={TAB.SUPPLY_TAB_PAID} disableTouchRipple={true}>
-                    {!_.isEmpty(returnData)
+                    {!_.isEmpty(_.get(paidData, 'data'))
                         ? <div className={classes.tabContent}>
-                            {!returnDataLoading ? <div className={classes.tabWrapper}>
+                            {!_.get(paidData, 'loading') ? <div className={classes.tabWrapper}>
                                     <Row className="dottedList">
-                                        <Col xs={1}>Код</Col>
-                                        <Col xs={6} style={{textAlign: 'left'}}>Причина возврата</Col>
-                                        <Col xs={2}>Дата возврата</Col>
-                                        <Col xs={2}>Сумма {primaryCurrency}</Col>
-
+                                        <Col xs={1}>№</Col>
+                                        <Col xs={3}>Касса</Col>
+                                        <Col xs={3}>Описание</Col>
+                                        <Col xs={2}>Дата</Col>
+                                        <Col xs={3}>Сумма</Col>
                                     </Row>
-                                    {_.map(returnData, (item, index) => {
-                                        const returnId = _.get(item, 'id')
-                                        const comment = _.get(item, 'comment')
-                                        const status = _.toNumber(_.get(item, 'status'))
-                                        const dateReturn = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
-                                        const totalSum = numberFormat(_.get(item, 'totalPrice'))
+                                    {_.map(_.get(paidData, 'data'), (item) => {
+                                        const zero = 0
+                                        const paidId = _.get(item, 'id')
+                                        const comment = _.get(item, 'comment') || 'N/A'
+                                        const type = _.get(item, 'amount') || 'N/A'
+                                        const cashbox = _.get(item, ['cashbox', 'name'])
+                                        const amount = _.toNumber(_.get(item, 'amount'))
+                                        const internal = _.toNumber(_.get(item, 'internalAmount'))
+                                        const date = dateFormat(_.get(item, 'date'), true)
+                                        const currentCurrency = _.get(_.find(_.get(paidData, 'data'), {'id': cashbox}), ['currency', 'name'])
+                                        const clientId = _.get(item, ['client', 'id'])
+                                        const rate = _.toInteger(amount / internal)
+
                                         return (
-                                            <Row className="dottedList" key={index}>
-                                                <Col xs={1}><a
-                                                    onClick={() => {
-                                                        itemReturnDialog.handleOpenItemReturnDialog(returnId)
-                                                    }}
-                                                    className={classes.link}>
-                                                    {returnId}
-                                                </a>
+                                            <Row key={paidId} className="dottedList">
+                                                <Col xs={1}>{paidId}</Col>
+                                                <Col xs={3}>{cashbox}</Col>
+                                                <Col xs={3}>
+                                                    <Link
+                                                        target="_blank"
+                                                        className={classes.clickable}
+                                                        to={{
+                                                            pathname: ROUTES.CLIENT_BALANCE_LIST_URL,
+                                                            query: {search: clientId}
+                                                        }}>
+                                                        <strong>Комментарий:</strong> {comment}
+                                                    </Link>
                                                 </Col>
-                                                <Col style={{textAlign: 'left'}} xs={6}>{comment}</Col>
-                                                <Col xs={2}>{dateReturn}</Col>
-                                                <Col xs={2}>{totalSum}</Col>
-                                                <Col xs={1}>
-                                                    <div className={classes.buttons}>
-                                                        {(status === PENDING || status === IN_PROGRESS)
-                                                            ? <div className={classes.buttons}>
-                                                                <Tooltip position="bottom" text="Ожидает">
-                                                                    <IconButton
-                                                                        disableTouchRipple={true}
-                                                                        iconStyle={iconStyle.icon}
-                                                                        style={iconStyle.button}
-                                                                        touch={true}>
-                                                                        <InProcess color="#f0ad4e"/>
-                                                                    </IconButton>
-                                                                </Tooltip>
-                                                                <Tooltip position="bottom" text="Отменить">
-                                                                    <IconButton
-                                                                        disableTouchRipple={true}
-                                                                        iconStyle={iconStyle.icon}
-                                                                        style={iconStyle.button}
-                                                                        touch={true}
-                                                                        onClick={() => {
-                                                                            cancelSupplyReturnOpen(returnId)
-                                                                        }}>
-                                                                        <DeleteIcon/>
-                                                                    </IconButton>
-                                                                </Tooltip>
-                                                            </div>
-                                                            : (status === COMPLETED)
-                                                                ? <Tooltip position="bottom" text="Завершен">
-                                                                    <IconButton
-                                                                        disableTouchRipple={true}
-                                                                        iconStyle={iconStyle.icon}
-                                                                        style={iconStyle.button}
-                                                                        touch={true}>
-                                                                        <DoneIcon color="#81c784"/>
-                                                                    </IconButton>
-                                                                </Tooltip>
-                                                                : (status === CANCELLED)
-                                                                    ? <Tooltip position="bottom" text="Отменен">
-                                                                        <IconButton
-                                                                            disableTouchRipple={true}
-                                                                            iconStyle={iconStyle.icon}
-                                                                            style={iconStyle.button}
-                                                                            touch={true}>
-                                                                            <Canceled color='#e57373'/>
-                                                                        </IconButton>
-                                                                    </Tooltip> : null}
-                                                    </div>
+                                                <Col xs={2}>{date}</Col>
+                                                <Col xs={3} style={{
+                                                    textAlign: 'right'
+                                                }}
+                                                     className={type >= zero ? classes.green : classes.red}>
+                                                    {numberFormat(amount, currentCurrency)}
+                                                    {(currentCurrency !== primaryCurrency) &&
+                                                    <div>{numberFormat(internal, primaryCurrency)}
+                                                        {internal !== ZERO &&
+                                                        <span style={{
+                                                            fontSize: 11,
+                                                            color: '#333',
+                                                            fontWeight: 600
+                                                        }}> ({rate})</span>}</div>}
                                                 </Col>
                                             </Row>
                                         )
-                                    })}
+                                    })
+                                    }
                                 </div>
                                 : <div className={classes.loader} style={{height: '265px', marginTop: '1px'}}>
                                     <div>

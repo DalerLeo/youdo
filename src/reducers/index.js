@@ -77,6 +77,9 @@ const rootReducer = combineReducers({
         item: createThunkReducer(actionTypes.SUPPLY_EXPENSE_ITEM),
         update: createThunkReducer(actionTypes.SUPPLY_EXPENSE_UPDATE)
     }),
+    supplyPaid: combineReducers({
+        list: createThunkReducer(actionTypes.SUPPLY_PAID_LIST)
+    }),
     order: combineReducers({
         create: createThunkReducer(actionTypes.ORDER_CREATE),
         list: createThunkReducer(actionTypes.ORDER_LIST),

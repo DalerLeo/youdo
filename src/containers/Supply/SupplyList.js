@@ -35,6 +35,9 @@ import {
     supplyExpenseDeleteAction,
     supplyExpenseListFetchAction
 } from '../../actions/supplyExpense'
+import {
+    supplyPaidListFetchAction
+} from '../../actions/supplyPaid'
 import {openErrorAction} from '../../actions/error'
 import {openSnackbarAction} from '../../actions/snackbar'
 
@@ -51,6 +54,8 @@ const enhance = compose(
         const list = _.get(state, ['supply', 'list', 'data'])
         const defectData = _.get(state, ['supply', 'defect', 'data'])
         const listLoading = _.get(state, ['supply', 'list', 'loading'])
+        const paidList = _.get(state, ['supplyPaid', 'list', 'data'])
+        const paidListLoading = _.get(state, ['supplyPaid', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'SupplyFilterForm'])
         const createForm = _.get(state, ['form', 'SupplyCreateForm'])
         const filter = filterHelper(list, pathname, query)
@@ -68,6 +73,8 @@ const enhance = compose(
             detailLoading,
             createLoading,
             updateLoading,
+            paidList,
+            paidListLoading,
             filter,
             filterForm,
             createForm,
@@ -115,6 +122,8 @@ const enhance = compose(
         const supplyId = _.toInteger(_.get(params, 'supplyId'))
         if (supplyId > ZERO && currentTab === SUPPLY_TAB.SUPPLY_TAB_EXPENSES) {
             supplyId && dispatch(supplyExpenseListFetchAction(supplyId, filterItem))
+        } else if (supplyId > ZERO && currentTab === SUPPLY_TAB.SUPPLY_TAB_PAID) {
+            supplyId && dispatch(supplyPaidListFetchAction(supplyId, filterItem))
         }
     }),
 
@@ -361,6 +370,8 @@ const SupplyList = enhance((props) => {
         detailLoading,
         createLoading,
         updateLoading,
+        paidList,
+        paidListLoading,
         filter,
         layout,
         params,
@@ -516,6 +527,10 @@ const SupplyList = enhance((props) => {
         detailLoading,
         handleCloseDetail: props.handleCloseDetail
     }
+    const paidData = {
+        data: _.get(paidList, 'results'),
+        loading: paidListLoading
+    }
 
     // Supply Expense
 
@@ -555,7 +570,7 @@ const SupplyList = enhance((props) => {
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}
                 filterDialog={filterDialog}
-
+                paidData={paidData}
                 supplyListData={supplyListData}
                 supplyExpenseCreateDialog={supplyExpenseCreateDialog}
             />
