@@ -299,6 +299,7 @@ export const PRICE = 'stock/products_net_costs'
 export const PRICE_CREATE = `/${PRICE}/`
 export const PRICE_LIST = `/${PRICE}/`
 export const PRICE_ITEM = 'main/product_mobile/%d/get_custom_price/'
+export const PRICE_ITEM_SET_DEFAULT = 'stock/default_net_cost/'
 export const PRICE_DELETE = `/${PRICE}/%d/`
 export const PRICE_GET_DOCUMENT = '/sales/product_price_list/export/'
 

@@ -18,6 +18,7 @@ import {
     PRICE_FILTER_OPEN,
     PRICE_SUPPLY_DIALOG_OPEN,
     PRICE_SET_FORM_OPEN,
+    PRICE_SET_DEFAULT_OPEN,
     PriceGridList
 } from '../../components/Price'
 import {
@@ -25,6 +26,7 @@ import {
     priceListFetchAction,
     priceItemFetchAction,
     getPriceItemsAction,
+    priceSetDefaultAction,
     priceItemHistoryFetchAction,
     priceItemExpensesFetchAction
 } from '../../actions/price'
@@ -44,6 +46,7 @@ const enhance = compose(
         const filterForm = _.get(state, ['form', 'PriceFilterForm'])
         const createForm = _.get(state, ['form', 'PriceCreateForm'])
         const globalForm = _.get(state, ['form', 'PriceGlobalForm'])
+        const setDefaultForm = _.get(state, ['form', 'PriceSetDefaultForm'])
         const filter = filterHelper(list, pathname, query)
         const marketTypeList = _.get(state, ['marketType', 'list', 'data'])
         const marketTypeLoading = _.get(state, ['marketType', 'list', 'loading'])
@@ -69,11 +72,15 @@ const enhance = compose(
             priceItemHistoryLoading,
             priceItemExpenseList,
             priceItemExpenseLoading,
-            globalForm
+            globalForm,
+            setDefaultForm
         }
     }),
     withPropsOnChange((props, nextProps) => {
-        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
+        const except = {
+            openPriceSetDefault: null
+        }
+        return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
         dispatch(priceListFetchAction(filter))
     }),
@@ -113,12 +120,14 @@ const enhance = compose(
             const typeParent = _.get(filterForm, ['values', 'typeParent', 'value']) || null
             const typeChild = _.get(filterForm, ['values', 'typeChild', 'value']) || null
             const measurement = _.get(filterForm, ['values', 'measurement', 'value']) || null
+            const withoutNetCost = _.get(filterForm, ['values', 'withoutNetCost']) || null
 
             filter.filterBy({
                 [PRICE_FILTER_OPEN]: false,
                 [PRICE_FILTER_KEY.TYPE_PARENT]: typeParent,
                 [PRICE_FILTER_KEY.TYPE_CHILD]: typeChild,
-                [PRICE_FILTER_KEY.MEASUREMENT]: measurement
+                [PRICE_FILTER_KEY.MEASUREMENT]: measurement,
+                [PRICE_FILTER_KEY.WITHOUT_NET_COST]: withoutNetCost
             })
         },
         handleOpenSupplyDialog: props => (id) => {
@@ -133,6 +142,31 @@ const enhance = compose(
         handleOpenPriceSetForm: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[PRICE_SET_FORM_OPEN]: true})})
+        },
+        handleOpenDefaultDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[PRICE_SET_DEFAULT_OPEN]: true})})
+        },
+        handleCloseDefaultDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[PRICE_SET_DEFAULT_OPEN]: false})})
+        },
+        handleSubmitSetDefaultForm: props => () => {
+            const {dispatch, setDefaultForm, params: {priceId}, location: {pathname}, filter} = props
+            const price = _.get(setDefaultForm, ['values', 'amount'])
+            return dispatch(priceSetDefaultAction(priceId, price))
+                .then(() => {
+                    dispatch(priceItemFetchAction(Number(priceId)))
+                    dispatch(priceItemHistoryFetchAction(Number(priceId)))
+                    hashHistory.push({pathname, query: filter.getParams({[PRICE_SET_DEFAULT_OPEN]: false})})
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: '',
+                        arrMessage: error
+                    }))
+                })
         },
         handleClosePriceSetForm: props => () => {
             const {location: {pathname}, filter} = props
@@ -157,6 +191,7 @@ const enhance = compose(
                     }))
                 })
         },
+
         handleCloseDetail: props => () => {
             const {filter} = props
             hashHistory.push({pathname: ROUTER.PRICE_LIST_URL, query: filter.getParams()})
@@ -191,9 +226,11 @@ const PriceList = enhance((props) => {
     const openFilterDialog = toBoolean(_.get(location, ['query', PRICE_FILTER_OPEN]))
     const openPriceSupplyDialog = _.toInteger(_.get(location, ['query', PRICE_SUPPLY_DIALOG_OPEN]))
     const openPriceSetForm = toBoolean(_.get(location, ['query', PRICE_SET_FORM_OPEN]))
+    const openPriceSetDefault = toBoolean(_.get(location, ['query', PRICE_SET_DEFAULT_OPEN]))
     const typeParent = _.toNumber(_.get(location, ['query', PRICE_FILTER_KEY.TYPE_PARENT]))
     const typeChild = _.toNumber(_.get(location, ['query', PRICE_FILTER_KEY.TYPE_CHILD]))
     const measurement = _.toNumber(_.get(location, ['query', PRICE_FILTER_KEY.MEASUREMENT]))
+    const withoutNetCost = toBoolean(_.get(location, ['query', PRICE_FILTER_KEY.WITHOUT_NET_COST]))
     const detailId = _.toInteger(_.get(params, 'priceId'))
 
     const priceSupplyDialog = {
@@ -211,7 +248,8 @@ const PriceList = enhance((props) => {
             },
             measurement: {
                 value: measurement
-            }
+            },
+            withoutNetCost: withoutNetCost
         },
         filterLoading: false,
         openFilterDialog,
@@ -250,7 +288,8 @@ const PriceList = enhance((props) => {
     const detailData = {
         priceItemExpenseLoading,
         priceItemExpenseList,
-        priceItemHistoryList,
+        priceItemHistoryList: priceItemHistoryList.supplies,
+        defaultNetCost: priceItemHistoryList.defaultNetCost,
         priceItemHistoryLoading,
         id: detailId,
         priceListItemsLoading,
@@ -305,6 +344,12 @@ const PriceList = enhance((props) => {
         handleClosePriceSetForm: props.handleClosePriceSetForm,
         handleSubmitPriceSetForm: props.handleSubmitPriceSetForm
     }
+    const defaultDialog = {
+        open: openPriceSetDefault,
+        handleOpen: props.handleOpenDefaultDialog,
+        handleClose: props.handleCloseDefaultDialog,
+        handleSubmit: props.handleSubmitSetDefaultForm
+    }
 
     return (
         <Layout {...layout}>
@@ -316,6 +361,7 @@ const PriceList = enhance((props) => {
                 priceSetForm={priceSetForm}
                 filterDialog={filterDialog}
                 getDocument={props.handleGetDocument}
+                defaultDialog={defaultDialog}
             />
         </Layout>
     )

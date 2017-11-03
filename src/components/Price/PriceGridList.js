@@ -155,7 +155,8 @@ const PriceGridList = enhance((props) => {
         priceSetForm,
         listData,
         detailData,
-        getDocument
+        getDocument,
+        defaultDialog
     } = props
     const expenseList = _.get(detailData, 'priceItemExpenseList')
     const expenseLoading = _.get(detailData, 'priceItemExpenseLoading')
@@ -178,6 +179,7 @@ const PriceGridList = enhance((props) => {
             priceSupplyDialog={priceSupplyDialog}
             priceSetForm={priceSetForm}
             handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
+            defaultDialog={defaultDialog}
             mergedList={(detailData.mergedList())}>
         </PriceDetails>
     )

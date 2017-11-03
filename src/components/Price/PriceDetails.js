@@ -11,9 +11,13 @@ import {Row, Col} from 'react-flexbox-grid'
 import Tooltip from '../ToolTip'
 import PriceSetForm from './PriceSetForm'
 import getConfig from '../../helpers/getConfig'
+import * as ROUTES from '../../constants/routes'
 import moment from 'moment'
+import CircularProgress from 'material-ui/CircularProgress'
+import PriceSetDefaultDialog from './PriceSetDefaultDialog'
 import numberFormat from '../../helpers/numberFormat'
-
+import NotFound from '../Images/not-found.png'
+import {Link} from 'react-router'
 const enhance = compose(
     injectSheet({
         loader: {
@@ -119,7 +123,9 @@ const enhance = compose(
             margin: '-10px -30px 10px',
             padding: '10px 30px',
             background: '#f2f5f8',
-            fontWeight: '600'
+            fontWeight: '600',
+            borderRight: '1px solid #efefef',
+            height: '55px'
         },
         average: {
             fontWeight: '600',
@@ -139,6 +145,24 @@ const enhance = compose(
             bottom: '0',
             cursor: 'pointer',
             zIndex: '1'
+        },
+        emptyQuery: {
+            background: 'url(' + NotFound + ') no-repeat center center',
+            backgroundSize: '180px',
+            padding: '140px 0 0',
+            textAlign: 'center',
+            fontSize: '13px',
+            color: '#666'
+        },
+        noSupply: {
+            textAlign: 'center'
+        },
+        netCost: {
+            extend: 'agentCanSet',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+
         }
     })
 )
@@ -150,7 +174,8 @@ const PriceDetails = enhance((props) => {
         detailData,
         handleCloseDetail,
         mergedList,
-        listDetailData
+        listDetailData,
+        defaultDialog
     } = props
     const loading = _.get(detailData, 'detailLoading')
     const marketTypeIsLoading = _.get(detailData, 'marketTypeLoading')
@@ -161,12 +186,11 @@ const PriceDetails = enhance((props) => {
     const measurement = _.get(detailData, ['data', 'measurement', 'name'])
     const priceUpdated = _.get(listDetailData, ['0', 'priceUpdated']) ? moment(_.get(listDetailData, ['0', 'priceUpdated'])).format('DD.MM.YYYY') : 'Не установлено'
     const averageCost = _.get(listDetailData, ['0', 'netCost'])
-
     const minPrice = numberFormat(_.get(detailData, ['data', 'minPrice']))
     const maxPrice = numberFormat(_.get(detailData, ['data', 'maxPrice']))
     const customPrice = _.get(detailData, ['data', 'customPrice'])
     const currencyName = _.get(detailData, ['data', 'currencyName'])
-
+    const defaultNetCost = _.get(detailData, 'defaultNetCost')
     const iconStyle = {
         icon: {
             color: '#666',
@@ -211,13 +235,37 @@ const PriceDetails = enhance((props) => {
             <div className={classes.content}>
 
                 <div className={classes.leftSide}>
-                    <div className={classes.bodyTitle}>Поставки</div>
+                    {(!_.isEmpty(priceHistoryList) || _.get(defaultNetCost, 'cost')) && <div className={classes.bodyTitle}>Поставки</div> }
                     {priceHistoryLoading && <div className={classes.loader}>
                                                 <div>
                                                     <CircularProgress size={40} thickness={4}/>
                                                 </div>
                                             </div>}
-                    {!priceHistoryLoading &&
+
+                    {!priceHistoryLoading && (_.isEmpty(priceHistoryList) && !_.get(defaultNetCost, 'cost')) &&
+                        // If not default net cost set nor supplied show this element
+                        <div>
+                            <div className={classes.emptyQuery}>
+                            </div>
+                            <div className={classes.noSupply}>
+                                Постaвок не найдено, <Link to={{
+                                    pathname: ROUTES.SUPPLY_LIST_URL,
+                                    query: {openCreateDialog: true}
+                                }} target='_blank'>добавить поставку</Link>
+                                <br/>или <span onClick={defaultDialog.handleOpen} style={{color: '#129fdd', cursor: 'pointer'}}>
+                                     добавьте
+                                </span> себестоимость по умолчанию
+                            </div>
+                        </div>
+                    }
+                    {!priceHistoryLoading && (_.get(defaultNetCost, 'cost')) &&
+                        // If net cost set show it
+                        <div className={classes.netCost}>
+                            <span>Себестоимость по умолчанию:</span>
+                            <span>{numberFormat(_.get(defaultNetCost, 'cost'), getConfig('PRIMARY_CURRENCY'))}</span>
+                        </div>
+                    }
+                    {!priceHistoryLoading && (!_.isEmpty(priceHistoryList) || _.get(defaultNetCost, 'cost')) &&
                         <div className={classes.tableContent}>
                             <Row>
                                 <Col xs={2} style={{fontSize: '15px'}}>&#8470;</Col>
@@ -310,6 +358,13 @@ const PriceDetails = enhance((props) => {
                     </div> }
                 </div>
             </div>
+
+            <PriceSetDefaultDialog
+                onClose={defaultDialog.handleClose}
+                open={defaultDialog.open}
+                onSubmit={defaultDialog.handleSubmit}
+            />
+
         </div>)
 })
 PriceDetails.PropTypes = {

@@ -4,6 +4,7 @@ const PRICE_UPDATE_DIALOG_OPEN = 'openUpdateDialog'
 const PRICE_DELETE_DIALOG_OPEN = 'openDeleteDialog'
 const PRICE_SUPPLY_DIALOG_OPEN = 'openPriceSupplyDialog'
 const PRICE_SET_FORM_OPEN = 'openPriceSetFrom'
+const PRICE_SET_DEFAULT_OPEN = 'openPriceSetDefault'
 export {
     PRICE_UPDATE_DIALOG_OPEN,
     PRICE_DELETE_DIALOG_OPEN,
@@ -11,5 +12,6 @@ export {
     PRICE_FILTER_OPEN,
     PRICE_SUPPLY_DIALOG_OPEN,
     PRICE_SET_FORM_OPEN,
+    PRICE_SET_DEFAULT_OPEN,
     PriceGridList
 }
