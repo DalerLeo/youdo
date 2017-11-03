@@ -133,7 +133,11 @@ const enhance = compose(
                 width: '100%',
                 '& span:last-child': {
                     fontWeight: '600',
-                    textAlign: 'right'
+                    textAlign: 'right',
+                    maxWidth: '50%',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis'
                 },
                 '& a': {
                     fontWeight: '600'
@@ -341,21 +345,17 @@ const OrderDetails = enhance((props) => {
                             <ul>
                                 <li>
                                     <span>Клиент:</span>
-                                    <span>{client}</span>
+                                    <span title={client}>{client}</span>
                                 </li>
 
                                 <li>
                                     <span>Магазин:</span>
-                                    <span>
+                                    <span title={market}>
                                         <Link to={{
                                             pathname: sprintf(ROUTES.SHOP_ITEM_PATH, marketId),
                                             query: {search: market}
                                         }} target='_blank'>{market}</Link>
                                     </span>
-                                </li>
-                                <li>
-                                    <span>Поставщик:</span>
-                                    <span>{deliveryMan}</span>
                                 </li>
                                 <li>
                                     <span>Инициатор:</span>
@@ -421,6 +421,10 @@ const OrderDetails = enhance((props) => {
                                             : (status === DELIVERED) ? <span className={classes.green}>Доставлен</span>
                                                 : <span className={classes.red}>Отменен</span>
                                     }
+                                </li>
+                                <li>
+                                    <span>Доставщик:</span>
+                                    <span>{deliveryMan}</span>
                                 </li>
                                 <li>
                                     <span>Тип передачи:</span>

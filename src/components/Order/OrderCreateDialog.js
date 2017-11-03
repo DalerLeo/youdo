@@ -291,7 +291,7 @@ const OrderCreateDialog = enhance((props) => {
                             <div style={{minHeight: '470px'}} className={classes.inContent}>
                                 <div className={classes.leftOrderPart}>
                                     <div className={classes.subTitleOrder}>
-                                        <span>Выбор клиента</span>
+                                        <span>Выбор магазина</span>
                                         <Link style={{color: '#12aaeb'}}
                                               target="_blank"
                                               to={{

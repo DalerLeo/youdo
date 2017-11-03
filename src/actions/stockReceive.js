@@ -121,8 +121,8 @@ export const stockTransferItemFetchAction = (id) => {
     }
 }
 
-export const stockTransferDeliveryListFetchAction = (filter) => {
-    const params = serializers.listFilterSerializer(filter.getParams())
+export const stockTransferDeliveryListFetchAction = (dateRange) => {
+    const params = serializers.deliveryItemSerializer(dateRange)
     const payload = axios()
         .get((API.STOCK_TRANSFER_DELIVERY_LIST), {params})
         .then((response) => {
@@ -138,8 +138,8 @@ export const stockTransferDeliveryListFetchAction = (filter) => {
     }
 }
 
-export const stockTransferDeliveryItemFetchAction = (filter) => {
-    const params = serializers.listFilterSerializer(filter.getParams())
+export const stockTransferDeliveryItemFetchAction = (dateRange, detailId) => {
+    const params = serializers.deliveryItemSerializer(dateRange, detailId)
     const payload = axios()
         .get((API.STOCK_TRANSFER_DELIVERY_ITEM), {params})
         .then((response) => {
@@ -151,6 +151,22 @@ export const stockTransferDeliveryItemFetchAction = (filter) => {
 
     return {
         type: actionTypes.STOCK_TRANSFER_DELIVERY_ITEM,
+        payload
+    }
+}
+
+export const stockTransferDeliveryTransferAction = (details) => {
+    const requestData = serializers.deliveryTransferSerializer(details)
+    const payload = axios()
+        .post((API.STOCK_TRANSFER_DELIVERY_ITEM), requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
         payload
     }
 }

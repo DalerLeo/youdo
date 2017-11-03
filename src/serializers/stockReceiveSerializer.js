@@ -2,6 +2,7 @@ import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
 import numberWithoutSpaces from '../helpers/numberWithoutSpaces'
 
+const ZERO = 0
 export const acceptSerializer = (id, stock) => {
     return {
         'order': id,
@@ -36,7 +37,7 @@ export const createSerializer = (data, detail) => {
 }
 
 export const updateSerializer = (data, detail) => {
-    const products = _.map(_.get(detail, 'products'), (item, index) => {
+    return _.map(_.get(detail, 'products'), (item, index) => {
         const supplyProduct = _.get(item, 'id')
 
         return {
@@ -46,7 +47,6 @@ export const updateSerializer = (data, detail) => {
             comment: '1'
         }
     })
-    return products
 }
 export const listFilterSerializer = (data, history, outHistory) => {
     const {...defaultData} = data
@@ -66,6 +66,23 @@ export const listFilterSerializer = (data, history, outHistory) => {
         'ordering': ordering && orderingSnakeCase(ordering),
         history
 
+    }
+}
+
+export const deliveryItemSerializer = (dateRange, detailId) => {
+    return {
+        'from_date': _.get(dateRange, 'fromDate'),
+        'to_date': _.get(dateRange, 'toDate'),
+        'delivery_man': detailId > ZERO ? detailId : null
+    }
+}
+
+export const deliveryTransferSerializer = (details) => {
+    const orders = _.get(details, 'orders')
+    const deliveryMan = _.get(details, ['deliveryMan', 'id'])
+    return {
+        orders,
+        'delivery_man': deliveryMan
     }
 }
 

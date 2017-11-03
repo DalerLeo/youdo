@@ -3,60 +3,51 @@ import React from 'react'
 import {Row, Col} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import IconButton from 'material-ui/IconButton'
-import DeleteIcon from 'material-ui/svg-icons/action/delete'
-import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
-import ManufactureShipmentDetail from './ManufactureShipmentDetail'
-import GridList from '../../GridList'
+import Filter from 'material-ui/svg-icons/content/filter-list'
+import * as TAB from '../../../constants/manufactureShipmentTab'
+import ManufactureActivityDateRange from './ManufactureActivityDateRange'
 import Paper from 'material-ui/Paper'
+import Loader from '../../Loader'
+import {Tabs, Tab} from 'material-ui/Tabs'
+import Sort from 'material-ui/svg-icons/content/sort'
+import Log from 'material-ui/svg-icons/content/content-paste'
+import Shift from 'material-ui/svg-icons/av/loop'
+import Product from 'material-ui/svg-icons/device/widgets'
+import Material from 'material-ui/svg-icons/action/exit-to-app'
+import Defected from 'material-ui/svg-icons/image/broken-image'
+import Pagination from '../../ReduxForm/Pagination'
 import Choose from '../../Images/choose-menu.png'
+import NotFound from '../../Images/not-found.png'
 import dateTimeFormat from '../../../helpers/dateTimeFormat'
+import numberFormat from '../../../helpers/numberFormat'
 
-const listHeader = [
-    {
-        sorting: false,
-        name: 'name',
-        title: 'Работник',
-        xs: 2
-    },
-    {
-        sorting: true,
-        name: 'openedTime',
-        title: 'Начало смены',
-        xs: 2
-    },
-    {
-        sorting: true,
-        name: 'closedTime',
-        title: 'Конец смены',
-        xs: 2
-    },
-    {
-        sorting: false,
-        name: '',
-        title: 'Затрачено сырья',
-        alignRight: true,
-        xs: 2
-    },
-    {
-        sorting: false,
-        name: 'brand',
-        title: 'Произведено',
-        alignRight: true,
-        xs: 2
-    },
-    {
-        sorting: false,
-        name: 'brand',
-        title: 'Браковано',
-        alignRight: true,
-        xs: 2
-    }
-]
+export const MANUF_ACTIVITY_FILTER_KEY = {
+    SHIFT: 'shift'
+}
+
 const enhance = compose(
     injectSheet({
         shipmentContent: {
-            marginTop: '56px'
+            marginTop: '56px',
+            '& header': {
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                height: '65px',
+                padding: '0 30px',
+                borderBottom: '1px #efefef solid',
+                '& > div': {
+                    fontSize: '18px',
+                    fontWeight: '600'
+                }
+            }
+        },
+        loader: {
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginTop: '56px',
+            padding: '100px 0'
         },
         choose: {
             background: 'url(' + Choose + ') no-repeat center 50px',
@@ -67,91 +58,427 @@ const enhance = compose(
             fontSize: '15px',
             color: '#666 !important'
         },
-        listRow: {
+        filterBtn: {
+            background: '#71ce87',
+            borderRadius: '2px',
+            color: '#fff',
+            fontWeight: '600',
+            display: 'flex',
+            alignItems: 'center',
             position: 'relative',
-            margin: '0 -30px !important',
-            padding: '0 30px',
-            width: 'auto !important'
+            padding: '5px 15px',
+            '& svg': {
+                color: '#fff !important',
+                width: '18px !important'
+            }
         },
-        alignRight: {
-            textAlign: 'right'
+        details: {
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%'
         },
-        openDetails: {
+        leftSide: {
+            width: '100%',
+            borderRight: '1px #efefef solid'
+        },
+        infoBlock: {
+            padding: '15px 30px',
+            borderBottom: '1px #efefef solid',
+            '&:last-child': {
+                border: 'none'
+            },
+            '& ul li': {
+                marginBottom: '5px',
+                '& > span:last-child': {
+                    marginLeft: '5px',
+                    fontWeight: '600'
+                }
+            }
+        },
+        rightSide: {
+            width: '100%',
+            position: 'relative',
+            '& > div > div': {
+                '&:nth-child(1)': {
+                    paddingRight: 'calc(100% - 330px)'
+                },
+                '&:nth-child(2)': {
+                    paddingRight: 'calc(100% - 330px)'
+                }
+            }
+        },
+        tabWrapper: {
+            borderTop: '1px #efefef solid',
+            marginTop: '-1px'
+        },
+        tab: {
+            textTransform: 'none !important',
+            '& > div': {
+                flexDirection: 'row !important',
+                height: '48px !important',
+                '& svg': {
+                    marginBottom: '0 !important',
+                    marginRight: '5px',
+                    width: '22px !important',
+                    height: '22px !important'
+                }
+            }
+        },
+        flexReview: {
+            display: 'flex',
+            '& > div': {
+                width: '50%',
+                borderRight: '1px #efefef solid',
+                '&:last-child': {
+                    borderRight: 'none'
+                }
+            }
+        },
+        productsBlock: {
+            padding: '15px 30px',
+            borderBottom: '1px #efefef solid',
+            '&:last-child': {
+                borderBottom: 'none'
+            },
+            '& h4': {
+                fontWeight: '600',
+                marginBottom: '5px',
+                fontSize: '13px'
+            }
+        },
+        flexTitle: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            marginBottom: '5px',
+            '& h4': {
+                fontWeight: '600',
+                fontSize: '13px'
+            },
+            '& > div:last-child': {
+                textAlign: 'right'
+            }
+        },
+        flexTitleShift: {
+            extend: 'flexTitle',
+            '& > div': {
+                textAlign: 'right',
+                '&:first-child': {
+                    textAlign: 'left'
+                }
+            }
+        },
+        product: {
+            display: 'flex',
+            padding: '5px 0',
+            justifyContent: 'space-between',
+            '& span': {
+                display: 'flex',
+                alignItems: 'center',
+                '& svg': {
+                    marginRight: '5px'
+                }
+            },
+            '& > div:last-child': {
+                textAlign: 'right'
+            }
+        },
+        shift: {
+            extend: 'product',
+            borderRadius: '2px',
+            padding: '8px 0',
+            '&:hover': {
+                background: '#f2f5f8'
+            },
+            '& > div': {
+                textAlign: 'right',
+                '&:first-child': {
+                    textAlign: 'left'
+                }
+            }
+        },
+        productDefected: {
+            extend: 'product',
+            background: '#ffebee',
+            borderRadius: '2px',
+            color: '#f44336'
+        },
+        pagination: {
             position: 'absolute',
-            top: '0',
-            left: '0',
-            right: '0',
-            bottom: '0',
-            cursor: 'pointer'
+            display: 'flex',
+            height: '48px',
+            top: '-48px',
+            right: '30px'
+        },
+        emptyQuery: {
+            background: 'url(' + NotFound + ') no-repeat center 20px',
+            backgroundSize: '175px',
+            padding: '140px 0 20px',
+            textAlign: 'center',
+            fontSize: '13px',
+            color: '#666'
         }
     })
 )
 
+const iconStyles = {
+    product: {
+        width: 20,
+        height: 20,
+        color: '#81c784'
+    },
+    material: {
+        width: 20,
+        height: 20,
+        color: '#999'
+    },
+    defected: {
+        width: 20,
+        height: 20,
+        color: '#e57373'
+    }
+}
+const tabStyles = {
+    ink: {
+        background: '#12aaeb',
+        margin: '0',
+        height: '2px'
+    }
+}
+
 const ManufactureShipment = enhance((props) => {
-    const {filterLogs, tabData, shipmentData, classes, manufactureId, handleCloseDetail} = props
+    const {filterLogs, filterDialog, tabData, shipmentData, classes, manufactureId} = props
 
     const ZERO = 0
     const filter = _.get(shipmentData, 'filter')
-    const detail = (
-        <ManufactureShipmentDetail
-            filterLogs={filterLogs}
-            key={_.get(shipmentData, ['detailData', 'id'])}
-            tabData={tabData}
-            detailData={_.get(shipmentData, 'detailData')}
-            handleCloseDetail={handleCloseDetail}
-            filter={_.get(shipmentData, 'filter')}
-        />
-    )
-    const handleClick = _.get(shipmentData, 'handleShipmentClick')
-    const shipment = _.map(_.get(shipmentData, 'shipmentList'), (item) => {
-        const id = _.get(item, 'id')
-        const user = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName'])
-        const openedTime = _.get(item, 'openedTime') ? dateTimeFormat(_.get(item, 'openedTime')) : 'Не началась'
-        const closedTime = _.get(item, 'closedTime') ? dateTimeFormat(_.get(item, 'closedTime')) : 'Не закончилась'
+    const PRODUCT = 'return'
+    const tab = _.get(tabData, 'tab')
+    const detailData = _.get(shipmentData, 'detailData')
+    const shipmentList = _.get(shipmentData, 'shipmentList')
+    const shiftsLoading = _.get(shipmentData, 'listLoading')
+    const logsLoading = _.get(detailData, 'logsLoading')
+    const productsLoading = _.get(detailData, 'productsLoading')
+    const materialsLoading = _.get(detailData, 'materialsLoading')
+    const reviewLoading = productsLoading || materialsLoading
+
+    const defectedProducts = _.map(_.filter(_.get(detailData, 'products'), (item) => {
+        return _.get(item, 'isDefect')
+    }), (item, index) => {
+        const measurement = _.get(item, ['measurement', 'name'])
+        const product = _.get(item, ['product', 'name'])
+        const amount = _.get(item, 'totalAmount')
         return (
-            <Row className={classes.listRow} key={id}>
-                <Col xs={2}>{user}</Col>
-                <Col xs={2}>{openedTime}</Col>
-                <Col xs={2}>{closedTime}</Col>
-                <div className={classes.openDetails} onClick={() => { handleClick(id) }}>{null}</div>
-                <Col xs={2} className={classes.alignRight}>4 564 USD</Col>
-                <Col xs={2} className={classes.alignRight}>3 335 USD</Col>
-                <Col xs={2} className={classes.alignRight}>1 346 USD</Col>
+            <div key={index} className={classes.product}>
+                <span>{product}</span>
+                <span>{numberFormat(amount, measurement)}</span>
+            </div>
+        )
+    })
+    const products = _.map(_.filter(_.get(detailData, 'products'), (item) => {
+        return !_.get(item, 'isDefect')
+    }), (item, index) => {
+        const measurement = _.get(item, ['measurement', 'name'])
+        const product = _.get(item, ['product', 'name'])
+        const amount = _.get(item, 'totalAmount')
+        return (
+            <div key={index} className={classes.product}>
+                <span>{product}</span>
+                <span>{numberFormat(amount, measurement)}</span>
+            </div>
+        )
+    })
+    const defectedMaterials = _.map(_.filter(_.get(detailData, 'materials'), (item) => {
+        return _.get(item, 'isDefect')
+    }), (item, index) => {
+        const measurement = _.get(item, ['measurement', 'name'])
+        const product = _.get(item, ['product', 'name'])
+        const amount = _.get(item, 'totalAmount')
+        return (
+            <div key={index} className={classes.product}>
+                <span>{product}</span>
+                <span>{numberFormat(amount, measurement)}</span>
+            </div>
+        )
+    })
+    const materials = _.map(_.filter(_.get(detailData, 'materials'), (item) => {
+        return !_.get(item, 'isDefect')
+    }), (item, index) => {
+        const measurement = _.get(item, ['measurement', 'name'])
+        const product = _.get(item, ['product', 'name'])
+        const amount = _.get(item, 'totalAmount')
+        return (
+            <div key={index} className={classes.product}>
+                <span>{product}</span>
+                <span>{numberFormat(amount, measurement)}</span>
+            </div>
+        )
+    })
+    const logs = _.map(_.get(detailData, 'logs'), (item, index) => {
+        const measurement = _.get(item, ['product', 'measurement', 'name'])
+        const product = _.get(item, ['product', 'name'])
+        const createdDate = dateTimeFormat(_.get(item, 'createdDate'))
+        const amount = _.get(item, 'amount')
+        const type = _.get(item, 'type')
+        const isDefect = _.get(item, 'isDefect')
+        return (
+            <Row key={index} className={isDefect ? classes.productDefected : classes.product}>
+                {type === PRODUCT
+                    ? <Col xs={8}><span>{isDefect ? <Defected style={iconStyles.defected}/> : <Product style={iconStyles.product}/>}{product}</span></Col>
+                    : <Col xs={8}><span>{isDefect ? <Defected style={iconStyles.defected}/> : <Material style={iconStyles.material}/>}{product}</span></Col>}
+                <Col xs={2}>{numberFormat(amount, measurement)}</Col>
+                <Col xs={2}>{createdDate}</Col>
             </Row>
         )
     })
-    const shipmentExp = {
-        header: listHeader,
-        list: shipment,
-        loading: _.get(shipmentData, 'listLoading')
-    }
-    const actions = (
-        <div>
-            <IconButton>
-                <ModEditorIcon />
-            </IconButton>
-
-            <IconButton>
-                <DeleteIcon />
-            </IconButton>
-        </div>
-    )
-
+    const shifts = _.map(shipmentList, (item) => {
+        const id = _.get(item, 'id')
+        const openedTime = dateTimeFormat(_.get(item, 'openedTime'))
+        const closedTime = _.get(item, 'closedTime') ? dateTimeFormat(_.get(item, 'closedTime')) : 'Не закончилась'
+        const userName = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'firstName'])
+        return (
+            <Row key={id} className={classes.shift}>
+                <Col xs={6}>{userName}</Col>
+                <Col xs={3}>{openedTime}</Col>
+                <Col xs={3}>{closedTime}</Col>
+            </Row>
+        )
+    })
+    const wholeEmpty = _.isEmpty(products) && _.isEmpty(materials)
     if (manufactureId <= ZERO) {
         return (
-            <Paper zDepth={1} className={classes.choose}>
+            <Paper transitionEnabled={false} zDepth={1} className={classes.choose}>
                 <div>Выберите производство...</div>
             </Paper>
         )
     }
     return (
-        <div className={classes.shipmentContent}>
-            <GridList
-                filter={filter}
-                list={shipmentExp}
-                detail={detail}
-                actionsDialog={actions}/>
-        </div>
+        <Paper transitionEnabled={false} zDepth={1} className={classes.shipmentContent}>
+            <header>
+                <ManufactureActivityDateRange filter={filter} initialValues={filterDialog.initialValues}/>
+                <a className={classes.filterBtn}>
+                    <Filter/>
+                    <span>Фильтр</span>
+                </a>
+            </header>
+            <div className={classes.details}>
+                <div className={classes.rightSide}>
+                    <Tabs
+                        value={tab}
+                        contentContainerClassName={classes.tabWrapper}
+                        inkBarStyle={tabStyles.ink}
+                        onChange={(value) => tabData.handleTabChange(value)}>
+                        <Tab
+                            label="Обзор"
+                            className={classes.tab}
+                            disableTouchRipple={true}
+                            icon={<Sort/>}
+                            value={TAB.TAB_SORTED}>
+                            {!wholeEmpty
+                                ? <div className={classes.flexReview}>
+                                    <div>
+                                        <div className={classes.productsBlock}>
+                                            <h4>Произведенная продукция</h4>
+                                            {!_.isEmpty(products)
+                                                ? products
+                                                : <div className={classes.emptyQuery}>
+                                                    <div>Продукции еще не произведены</div>
+                                                </div>}
+                                        </div>
+                                        {!_.isEmpty(defectedProducts) &&
+                                        <div className={classes.productsBlock}>
+                                            <h4>Бракованные</h4>
+                                            {defectedProducts}
+                                        </div>}
+                                    </div>
+                                    <div>
+                                        <div className={classes.productsBlock}>
+                                            <h4>Затраченное сырье</h4>
+                                            {!_.isEmpty(materials)
+                                                ? materials
+                                                : <div className={classes.emptyQuery}>
+                                                    <div>Не затрачено сырья</div>
+                                                </div>}
+                                        </div>
+                                        {!_.isEmpty(defectedMaterials) &&
+                                        <div className={classes.productsBlock}>
+                                            <h4>Бракованные</h4>
+                                            {defectedMaterials}
+                                        </div>}
+                                    </div>
+                                </div>
+                                : reviewLoading
+                                    ? <div className={classes.loader}>
+                                        <Loader size={0.75}/>
+                                    </div>
+                                    : <div className={classes.emptyQuery}>
+                                        <div>В данную смену не произведено ни одной продукции</div>
+                                    </div>}
+                        </Tab>
+
+                        <Tab
+                            label="Записи"
+                            className={classes.tab}
+                            disableTouchRipple={true}
+                            icon={<Log/>}
+                            value={TAB.TAB_LOGS}>
+                            {!_.isEmpty(logs)
+                                ? <div className={classes.productsBlock}>
+                                    <div className={classes.pagination}>
+                                        <Pagination filter={filterLogs}/>
+                                    </div>
+                                    <Row className={classes.flexTitle}>
+                                        <Col xs={8}><h4>Продукт / сырье</h4></Col>
+                                        <Col xs={2}><h4>Кол-во</h4></Col>
+                                        <Col xs={2}><h4>Дата</h4></Col>
+                                    </Row>
+                                    {logsLoading
+                                        ? <div className={classes.loader}>
+                                            <Loader size={0.75}/>
+                                        </div>
+                                        : logs}
+                                </div>
+                                : logsLoading
+                                    ? <div className={classes.loader}>
+                                        <Loader size={0.75}/>
+                                    </div>
+                                    : <div className={classes.emptyQuery}>
+                                    <div>Нет записей в данной смене</div>
+                                </div>}
+                        </Tab>
+
+                        <Tab
+                            label="Смены"
+                            className={classes.tab}
+                            disableTouchRipple={true}
+                            icon={<Shift/>}
+                            value={TAB.TAB_SHIFT}>
+                            {!_.isEmpty(shifts)
+                                ? <div className={classes.productsBlock}>
+                                    <div className={classes.pagination}>
+                                        <Pagination filter={filter}/>
+                                    </div>
+                                    <Row className={classes.flexTitleShift}>
+                                        <Col xs={6}><h4>Работник</h4></Col>
+                                        <Col xs={3}><h4>Начало смены</h4></Col>
+                                        <Col xs={3}><h4>Конец смены</h4></Col>
+                                    </Row>
+                                    {shiftsLoading
+                                        ? <div className={classes.loader}>
+                                            <Loader size={0.75}/>
+                                        </div>
+                                        : shifts}
+                                </div>
+                                : shiftsLoading
+                                    ? <div className={classes.loader}>
+                                        <Loader size={0.75}/>
+                                    </div>
+                                    : <div className={classes.emptyQuery}>
+                                        <div>В этом периоде не найдено смен</div>
+                                    </div>}
+                        </Tab>
+                    </Tabs>
+                </div>
+            </div>
+        </Paper>
     )
 })
 

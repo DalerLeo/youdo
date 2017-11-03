@@ -6,11 +6,12 @@ import SearchFieldCustom from '../Basic/SearchFieldCustom'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
+import numberFormat from '../../../helpers/numberFormat'
 import * as actionTypes from '../../../constants/actionTypes'
 import {connect} from 'react-redux'
 
-const getOptions = (search, type) => {
-    return axios().get(`${PATH.PRODUCT_FOR_SELECT_LIST}?type=${type || ''}&page_size=100&search=${search || ''}`)
+const getOptions = (search, type, market) => {
+    return axios().get(`${PATH.PRODUCT_FOR_ORDER_SELECT_LIST}?market=${market || ''}&type=${type || ''}&page_size=100&search=${search || ''}`)
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
         })
@@ -58,9 +59,14 @@ const ProductCustomSearchField = enhance((props) => {
                 return _.get(value, 'id')
             }}
             getText={(value) => {
-                return _.get(value, ['name'])
+                const balance = _.get(value, 'balance')
+                const measurement = _.get(value, ['measurement', 'name'])
+                const name = _.get(value, 'name')
+                return (
+                    <div>{name} <strong>({numberFormat(balance, measurement)})</strong></div>
+                )
             }}
-            getOptions={ (search) => { return getOptions(search, type) }}
+            getOptions={ (search) => { return getOptions(search, type, market) }}
             getItem={test}
             getItemText={(value) => {
                 return _.get(value, ['name'])

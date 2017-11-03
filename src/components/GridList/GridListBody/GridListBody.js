@@ -81,7 +81,7 @@ const enhance = compose(
             borderBottom: '1px dotted #eee',
             alignItems: 'center',
             position: 'relative',
-            minHeight: '150px',
+            minHeight: '100px',
             transition: 'all 400ms ease-out !important'
         },
         emptyQuery: {
