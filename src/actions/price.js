@@ -19,6 +19,20 @@ export const priceCreateAction = (formValues, productId, priceList) => {
         payload
     }
 }
+export const priceSetDefaultAction = (product, cost) => {
+    const payload = axios()
+        .post(API.PRICE_ITEM_SET_DEFAULT, {product, cost})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+    return {
+        type: actionTypes.PRICE_SET_DEFAULT,
+        payload
+    }
+}
 export const priceListFetchAction = (filter, manufacture) => {
     const params = serializers.listFilterSerializer(filter.getParams(), manufacture)
     const payload = axios()

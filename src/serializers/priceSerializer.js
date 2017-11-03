@@ -70,6 +70,7 @@ export const listFilterSerializer = (data, manufacture) => {
         'brand': _.get(defaultData, 'brand'),
         type,
         'measurement': _.get(defaultData, 'measurement'),
+        'without_net_Cost': _.get(defaultData, 'withoutNetCost'),
         'search': _.get(defaultData, 'search'),
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),
