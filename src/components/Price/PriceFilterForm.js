@@ -13,7 +13,8 @@ import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import {
     MeasurementSearchField,
     ProductTypeChildSearchField,
-    ProductTypeParentSearchField
+    ProductTypeParentSearchField,
+    CheckBox
 } from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
@@ -23,7 +24,8 @@ export const PRICE_FILTER_OPEN = 'openFilterDialog'
 export const PRICE_FILTER_KEY = {
     TYPE_PARENT: 'typeParent',
     TYPE_CHILD: 'typeChild',
-    MEASUREMENT: 'measurement'
+    MEASUREMENT: 'measurement',
+    WITHOUT_NET_COST: 'withoutNetCost'
 }
 
 const enhance = compose(
@@ -185,6 +187,13 @@ const ProductFilterForm = enhance((props) => {
                             name="measurement"
                             component={MeasurementSearchField}
                             label="Мера"/>
+                    </div>
+                    <div>
+                        <Field
+                            className={classes.inputFieldCustom}
+                            name="withoutNetCost"
+                            component={CheckBox}
+                            label="Товары без себестоимоста"/>
                     </div>
                     <RaisedButton
                         type="submit"
