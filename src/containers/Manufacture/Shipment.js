@@ -1,14 +1,17 @@
 import React from 'react'
 import _ from 'lodash'
 import sprintf from 'sprintf'
+import moment from 'moment'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
-import {ManufactureShipmentWrapper} from '../../components/Manufacture'
+import toBoolean from '../../helpers/toBoolean'
+import {ManufactureShipmentWrapper, OPEN_FILTER} from '../../components/Manufacture'
 import * as SHIPMENT_TAB from '../../constants/manufactureShipmentTab'
+import {MANUF_ACTIVITY_FILTER_KEY} from '../../components/Manufacture/Tab/ManufactureShipment'
 import {
     shipmentListFetchAction,
     shipmentItemFetchAction,
@@ -21,6 +24,7 @@ import ManufactureWrapper from './Wrapper'
 const TAB = 'tab'
 const MINUS_ONE = -1
 const ZERO = 0
+const defaultDate = moment().format('YYYY-MM-DD')
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -40,6 +44,9 @@ const enhance = compose(
         const shipmentMaterialsLoading = _.get(state, ['shipment', 'materials', 'loading'])
         const filterShipment = filterHelper(shipmentList, pathname, query)
         const filterLogs = filterHelper(shipmentLogs, pathname, query, {'page': 'logsPage', 'pageSize': 'logsPageSize'})
+        const beginDate = _.get(query, 'beginDate') || defaultDate
+        const endDate = _.get(query, 'endDate') || defaultDate
+        const filterForm = _.get(state, ['form', 'ManufactureActivityFilterForm'])
 
         return {
             query,
@@ -58,7 +65,10 @@ const enhance = compose(
             shipmentMaterialsLoading,
             shipmentLogs,
             shipmentLogsLoading,
-            filterShipment
+            filterShipment,
+            beginDate,
+            endDate,
+            filterForm
         }
     }),
 
@@ -75,9 +85,7 @@ const enhance = compose(
         const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
         const shipmentId = _.toInteger(_.get(location, ['query', 'shipmentId']))
         if (manufactureId > ZERO) {
-            if (shipmentId > ZERO) {
-                dispatch(shipmentItemFetchAction(shipmentId))
-            }
+            dispatch(shipmentItemFetchAction(shipmentId))
             dispatch(shipmentListFetchAction(filterShipment, manufactureId))
         }
     }),
@@ -129,6 +137,23 @@ const enhance = compose(
             hashHistory.push({pathname: sprintf(ROUTER.MANUFACTURE_SHIPMENT_ITEM_PATH, id), query: filterShipment.getParams()})
         },
 
+        handleOpenFilterDialog: props => () => {
+            const {location: {pathname}} = props
+            hashHistory.push({pathname, query: {[OPEN_FILTER]: true}})
+        },
+        handleCloseFilterDialog: props => () => {
+            const {location: {pathname}} = props
+            hashHistory.push({pathname, query: {[OPEN_FILTER]: false}})
+        },
+        handleSubmitFilterDialog: props => () => {
+            const {location: {pathname}, filter, filterForm} = props
+            const shift = _.get(filterForm, ['values', 'shift', 'value']) || null
+            filter.filterBy({
+                [MANUF_ACTIVITY_FILTER_KEY.SHIFT]: shift
+            })
+            hashHistory.push({pathname, query: {[OPEN_FILTER]: false}})
+        },
+
         handleShipmentClick: props => (id) => {
             const {filterShipment, location: {pathname}, dispatch} = props
             hashHistory.push({
@@ -166,12 +191,15 @@ const ManufactureShipmentList = enhance((props) => {
         shipmentMaterialsLoading,
         filterShipment,
         params,
-        layout
+        layout,
+        beginDate,
+        endDate
     } = props
 
     const detailId = _.toInteger(_.get(params, 'manufactureId'))
     const shipmentId = _.toNumber(_.get(props, ['location', 'query', 'shipmentId']) || MINUS_ONE)
     const tab = _.get(location, ['query', TAB]) || SHIPMENT_TAB.DEFAULT_TAB
+    const openFilterDialog = toBoolean(_.get(location, ['query', OPEN_FILTER]))
 
     const tabData = {
         tab,
@@ -209,11 +237,25 @@ const ManufactureShipmentList = enhance((props) => {
         handleShipmentClick: props.handleShipmentClick
     }
 
+    const filterDialog = {
+        initialValues: {
+            dateRange: {
+                startDate: moment(beginDate),
+                endDate: moment(endDate)
+            }
+        },
+        openFilterDialog,
+        handleOpenFilterDialog: props.handleOpenFilterDialog,
+        handleCloseFilterDialog: props.handleCloseFilterDialog,
+        handleSubmitFilterDialog: props.handleSubmitFilterDialog
+    }
+
     return (
         <Layout {...layout}>
             <ManufactureWrapper detailId={detailId} clickDetail={props.handleClickItem}>
                 <ManufactureShipmentWrapper
                     filter={filter}
+                    filterDialog={filterDialog}
                     filterLogs={filterLogs}
                     tabData={tabData}
                     shipmentData={shipmentData}

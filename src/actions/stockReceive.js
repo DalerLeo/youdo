@@ -155,6 +155,22 @@ export const stockTransferDeliveryItemFetchAction = (dateRange, detailId) => {
     }
 }
 
+export const stockTransferDeliveryTransferAction = (details) => {
+    const requestData = serializers.deliveryTransferSerializer(details)
+    const payload = axios()
+        .post((API.STOCK_TRANSFER_DELIVERY_ITEM), requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        payload
+    }
+}
+
 export const stockTransferItemAcceptAction = (id, stock) => {
     const requestData = serializers.acceptSerializer(id, stock)
     const payload = axios()

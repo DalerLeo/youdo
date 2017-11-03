@@ -10,6 +10,9 @@ import Tooltip from '../ToolTip'
 import IconButton from 'material-ui/IconButton'
 import PrintIcon from 'material-ui/svg-icons/action/print'
 import SendDelivery from 'material-ui/svg-icons/content/reply-all'
+import sprintf from 'sprintf'
+import {Link} from 'react-router'
+import * as ROUTES from '../../constants/routes'
 
 const colorBlue = '#12aaeb !important'
 const enhance = compose(
@@ -137,6 +140,8 @@ const StockTransferDetails = enhance((props) => {
     const {
         detailData,
         handleCloseDetail,
+        handleOpenDeliveryPrintDialog,
+        confirmTransfer,
         classes,
         loading
     } = props
@@ -149,7 +154,12 @@ const StockTransferDetails = enhance((props) => {
         )
     }
     const products = _.get(detailData, 'products')
-    const orders = _.join(_.get(detailData, 'orders'), ', ')
+    const orders = _.map(_.get(detailData, 'orders'), (item) => {
+        return <Link style={{marginRight: 5}} target="_blank" to={{
+            pathname: sprintf(ROUTES.ORDER_ITEM_PATH, item),
+            query: {search: item}
+        }}>{<strong>{item}</strong>}</Link>
+    })
     const deliveryMan = _.get(detailData, 'deliveryMan', 'id')
     const deliveryManName = deliveryMan
         ? _.get(detailData, ['deliveryMan', 'firstName']) + ' ' + _.get(detailData, ['deliveryMan', 'secondName'])
@@ -162,17 +172,21 @@ const StockTransferDetails = enhance((props) => {
                 <div className={classes.titleButtons}>
                     <Tooltip position="bottom" text="Распечатать накладную">
                         <IconButton
+                            disabled={_.isEmpty(products)}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
-                            touch={true}>
+                            touch={true}
+                            onTouchTap={handleOpenDeliveryPrintDialog}>
                             <PrintIcon />
                         </IconButton>
                     </Tooltip>
                     <Tooltip position="bottom" text="Передать доставщику">
                         <IconButton
+                            disabled={!deliveryMan}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
-                            touch={true}>
+                            touch={true}
+                            onTouchTap={confirmTransfer.handleOpenDeliveryConfirmDialog}>
                             <SendDelivery />
                         </IconButton>
                     </Tooltip>

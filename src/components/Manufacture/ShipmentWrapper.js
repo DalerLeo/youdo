@@ -54,6 +54,7 @@ const enhance = compose(
 
 const ManufactureShipmentWrapper = enhance((props) => {
     const {
+        filterDialog,
         filterLogs,
         tabData,
         detailData,
@@ -68,6 +69,7 @@ const ManufactureShipmentWrapper = enhance((props) => {
                 manufactureId={_.toInteger(_.get(detailData, 'id'))}
                 shipmentData={shipmentData}
                 tabData={tabData}
+                filterDialog={filterDialog}
                 handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
                 filterLogs={filterLogs}/>
         </div>

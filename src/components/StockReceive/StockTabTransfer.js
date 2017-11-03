@@ -148,7 +148,8 @@ const StockTabTransfer = enhance((props) => {
         confirmDialog,
         classes,
         printDialog,
-        toggleData
+        toggleData,
+        confirmTransfer
     } = props
 
     const toggle = _.get(toggleData, 'toggle')
@@ -166,7 +167,9 @@ const StockTabTransfer = enhance((props) => {
             detailData={_.get(deliveryDetailsData, 'data')}
             key={_.get(deliveryDetailsData, 'id')}
             handleCloseDetail={handleCloseDetail}
+            handleOpenDeliveryPrintDialog={_.get(deliveryDetailsData, 'handleOpenDeliveryPrintDialog')}
             loading={_.get(deliveryDetailsData, 'deliveryDetailLoading')}
+            confirmTransfer={confirmTransfer}
         />
 
     )
@@ -288,6 +291,13 @@ const StockTabTransfer = enhance((props) => {
                 onSubmit={confirmDialog.handleSubmitTransferAcceptDialog}
                 open={confirmDialog.openConfirmDialog > ZERO}
             />
+            <ConfirmDialog
+                type="submit"
+                message={'Передать доставщику?'}
+                onClose={confirmTransfer.handleCloseDeliveryConfirmDialog}
+                onSubmit={confirmTransfer.handleSubmitDeliveryConfirmDialog}
+                open={confirmTransfer.openConfirmTransfer}
+            />
         </div>
     )
 })
@@ -301,7 +311,13 @@ StockTabTransfer.propTypes = {
         openFilterDialog: PropTypes.bool.isRequired,
         handleOpenFilterDialog: PropTypes.func.isRequired,
         handleCloseFilterDialog: PropTypes.func.isRequired
-    }).isRequired
+    }).isRequired,
+    confirmTransfer: PropTypes.shape({
+        openConfirmTransfer: PropTypes.bool,
+        handleOpenDeliveryConfirmDialog: PropTypes.func,
+        handleCloseDeliveryConfirmDialog: PropTypes.func,
+        handleSubmitDeliveryConfirmDialog: PropTypes.func
+    })
 }
 
 export default StockTabTransfer

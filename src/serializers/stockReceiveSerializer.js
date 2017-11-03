@@ -77,3 +77,12 @@ export const deliveryItemSerializer = (dateRange, detailId) => {
     }
 }
 
+export const deliveryTransferSerializer = (details) => {
+    const orders = _.get(details, 'orders')
+    const deliveryMan = _.get(details, ['deliveryMan', 'id'])
+    return {
+        orders,
+        'delivery_man': deliveryMan
+    }
+}
+

@@ -5,7 +5,7 @@ import injectSheet from 'react-jss'
 import _ from 'lodash'
 import {compose} from 'recompose'
 import Close from 'material-ui/svg-icons/navigation/close'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 import numberFormat from '../../helpers/numberFormat'
 import dateFormat from '../../helpers/dateFormat'
 import paymentTypeFormat from '../../helpers/paymentTypeFormat'
@@ -144,9 +144,7 @@ const OrderPrint = enhance((props) => {
     if (loading) {
         return (
             <div className={classes.loader}>
-                <div>
-                    <CircularProgress size={40} thickness={4}/>
-                </div>
+                <Loader size={0.75}/>
             </div>
         )
     }

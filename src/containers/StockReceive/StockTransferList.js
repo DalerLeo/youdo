@@ -11,6 +11,7 @@ import sprintf from 'sprintf'
 import moment from 'moment'
 import TabTransfer from '../../components/StockReceive/StockTabTransfer'
 import {OrderPrint} from '../../components/Order'
+import TabTransferDeliveryPrint from '../../components/StockReceive/TabTransferDeliveryPrint'
 import {
     STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN,
     TAB_TRANSFER_FILTER_OPEN,
@@ -26,7 +27,8 @@ import {
     stockReceiveItemReturnAction,
     stockReceiveDeliveryConfirmAction,
     stockTransferDeliveryListFetchAction,
-    stockTransferDeliveryItemFetchAction
+    stockTransferDeliveryItemFetchAction,
+    stockTransferDeliveryTransferAction
 } from '../../actions/stockReceive'
 import {
     orderListPintFetchAction
@@ -146,7 +148,9 @@ const enhance = compose(
         }
     }),
 
+    withState('openConfirmTransfer', 'setOpenConfirmTransfer', false),
     withState('openPrint', 'setOpenPrint', false),
+    withState('openDeliveryPrint', 'setOpenDeliveryPrint', false),
 
     withHandlers({
         handleOpenPrintDialog: props => (id) => {
@@ -161,6 +165,25 @@ const enhance = compose(
         handleClosePrintDialog: props => () => {
             const {setOpenPrint} = props
             setOpenPrint(false)
+        },
+
+        handleOpenDeliveryPrintDialog: props => () => {
+            const {setOpenDeliveryPrint, dispatch, beginDate, endDate, params} = props
+            const detailId = _.get(params, 'stockTransferId') ? _.toInteger(_.get(params, 'stockTransferId')) : false
+            const dateRange = {
+                fromDate: beginDate,
+                toDate: endDate
+            }
+            setOpenDeliveryPrint(true)
+            dispatch(stockTransferDeliveryItemFetchAction(dateRange, detailId))
+                .then(() => {
+                    window.print()
+                })
+        },
+
+        handleCloseDeliveryPrintDialog: props => () => {
+            const {setOpenDeliveryPrint} = props
+            setOpenDeliveryPrint(false)
         },
 
         handleOpenFilterDialog: props => () => {
@@ -194,9 +217,22 @@ const enhance = compose(
 
             })
         },
-        handleOpenConfirmDialog: props => (status) => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[STOCK_CONFIRM_DIALOG_OPEN]: status})})
+        handleOpenDeliveryConfirmDialog: props => () => {
+            const {setOpenConfirmTransfer} = props
+            setOpenConfirmTransfer(true)
+        },
+
+        handleCloseDeliveryConfirmDialog: props => () => {
+            const {setOpenConfirmTransfer} = props
+            setOpenConfirmTransfer(false)
+        },
+
+        handleSubmitDeliveryConfirmDialog: props => () => {
+            const {setOpenConfirmTransfer, dispatch, deliveryDetail} = props
+            return dispatch(stockTransferDeliveryTransferAction(deliveryDetail))
+                .then(() => {
+                    setOpenConfirmTransfer(false)
+                })
         },
 
         handleCloseConfirmDialog: props => () => {
@@ -285,6 +321,8 @@ const StockTransferList = enhance((props) => {
         filterDelivery,
         layout,
         openPrint,
+        openConfirmTransfer,
+        openDeliveryPrint,
         printList,
         printLoading,
         toggle,
@@ -320,7 +358,9 @@ const StockTransferList = enhance((props) => {
     const deliveryDetailsData = {
         id: detailId,
         data: deliveryDetail,
-        deliveryDetailLoading
+        deliveryDetailLoading,
+        handleOpenDeliveryPrintDialog: props.handleOpenDeliveryPrintDialog,
+        handleCloseDeliveryPrintDialog: props.handleCloseDeliveryPrintDialog
     }
 
     const orderData = {
@@ -333,6 +373,13 @@ const StockTransferList = enhance((props) => {
         handleOpenConfirmDialog: props.handleOpenConfirmDialog,
         handleCloseConfirmDialog: props.handleCloseConfirmDialog,
         handleSubmitTransferAcceptDialog: props.handleSubmitTransferAcceptDialog
+    }
+
+    const confirmTransfer = {
+        openConfirmTransfer,
+        handleOpenDeliveryConfirmDialog: props.handleOpenDeliveryConfirmDialog,
+        handleCloseDeliveryConfirmDialog: props.handleCloseDeliveryConfirmDialog,
+        handleSubmitDeliveryConfirmDialog: props.handleSubmitDeliveryConfirmDialog
     }
 
     const filterDialog = {
@@ -373,9 +420,16 @@ const StockTransferList = enhance((props) => {
     if (openPrint) {
         document.getElementById('wrapper').style.height = 'auto'
 
-        return <OrderPrint
-            printDialog={printDialog}
-            listPrintData={orderData}/>
+        return (
+            <OrderPrint
+                printDialog={printDialog}
+                listPrintData={orderData}/>)
+    } else if (openDeliveryPrint) {
+        document.getElementById('wrapper').style.height = 'auto'
+        return (
+            <TabTransferDeliveryPrint
+                deliveryDetailsData={deliveryDetailsData}/>
+        )
     }
     document.getElementById('wrapper').style.height = '100%'
 
@@ -392,7 +446,8 @@ const StockTransferList = enhance((props) => {
                 handleCloseDetail={handleCloseDetail}
                 confirmDialog={confirmDialog}
                 filterDialog={filterDialog}
-                printDialog={printDialog}/>
+                printDialog={printDialog}
+                confirmTransfer={confirmTransfer}/>
         </Layout>
     )
 })

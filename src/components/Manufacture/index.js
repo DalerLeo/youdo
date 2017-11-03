@@ -8,6 +8,7 @@ import {MANUFACTURE_SHOW_BOM_DIALOG_OPEN} from './ManufactureShowBom'
 import {MANUFACTURE_ADD_PRODUCT_DIALOG_OPEN} from './ManufactureAddProductDialog'
 import {MANUFACTURE_EDIT_PRODUCT_DIALOG_OPEN} from './ManufactureEditProductDialog'
 
+const OPEN_FILTER = 'openFilter'
 const OPEN_DELETE_PRODUCT_DIALOG = 'openDeleteDialog'
 const OPEN_USER_UPDATE_DIALOG = 'openUpdateDialog'
 const MANUFACTURE_CREATE_PRODUCT_DIALOG_OPEN = 'createMaterials'
@@ -16,6 +17,7 @@ const OPEN_USER_CONFIRM_DIALOG = 'openUserDeleteDialog'
 const MANUFACTURE_CHANGE = 'openChangeManufacture'
 
 export {
+    OPEN_FILTER,
     OPEN_USER_CREATE_DIALOG,
     MANUFACTURE_SHOW_BOM_DIALOG_OPEN,
     MANUFACTURE_ADD_PRODUCT_DIALOG_OPEN,
