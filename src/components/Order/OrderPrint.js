@@ -11,7 +11,6 @@ import dateFormat from '../../helpers/dateFormat'
 import paymentTypeFormat from '../../helpers/paymentTypeFormat'
 import dealTypeFormat from '../../helpers/dealTypeFormat'
 import getConfig from '../../helpers/getConfig'
-import toBoolean from '../../helpers/toBoolean'
 
 const ONE = 1
 const enhance = compose(
@@ -168,12 +167,11 @@ const OrderPrint = enhance((props) => {
                 const totalAmount = _.sumBy(_.get(item, 'products'), (o) => {
                     return _.toNumber(_.get(o, 'amount'))
                 })
-
                 return (
                     <div key={id} className="printItem">
                         <div className={classes.title}>
                             <span>Заказ № {id}</span>
-                            {toBoolean(getConfig('DIVISIONS')) && <div className={classes.kerasys}>KeraSys</div>}
+                            {getConfig('COMPANY_NAME') ? <div className={classes.kerasys}>{getConfig('COMPANY_NAME')}</div> : null}
                             <div>Добавлено: {createdDate}</div>
                         </div>
                         <div className={classes.info}>
