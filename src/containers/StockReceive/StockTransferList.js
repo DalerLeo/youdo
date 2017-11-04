@@ -238,7 +238,13 @@ const enhance = compose(
             }
             return dispatch(stockTransferDeliveryTransferAction(deliveryDetail, stockId, dateRange))
                 .then(() => {
+                    dispatch(stockTransferDeliveryListFetchAction(dateRange))
                     setOpenConfirmTransfer(false)
+                }).catch((error) => {
+                    dispatch(openErrorAction({
+                        message: '',
+                        arrMessage: error
+                    }))
                 })
         },
 

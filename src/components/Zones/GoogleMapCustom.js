@@ -1,6 +1,5 @@
 /* eslint no-undef: 0 */
 /* eslint no-new: 0 */
-
 /* eslint dot-notation: 0 */
 
 import React from 'react'
@@ -13,8 +12,8 @@ import ZoneDeleteDialog from './ZoneDeleteDialog'
 import {googleMapStyle} from '../../constants/googleMapsStyle'
 import Location from '../Images/market-green.png'
 import MarketOff from '../Images/market-red.png'
+import Checkbox from 'material-ui/Checkbox'
 const MARKER_SIZE = 30
-const MARKER_TIME = 1500
 const ZERO = 0
 const INFO_WINDOW_OFFSET = -7
 const ANCHOR = 7
@@ -29,6 +28,14 @@ const classes = {
         display: 'flex'
     }
 }
+const styles = {
+    block: {
+        maxWidth: 250
+    },
+    checkbox: {
+        marginBottom: 16
+    }
+}
 
 export default class GoogleCustomMap extends React.Component {
     constructor (props) {
@@ -39,7 +46,8 @@ export default class GoogleCustomMap extends React.Component {
             points: null,
             isDrawing: false,
             initial: true,
-            currentOverlay: null
+            currentOverlay: null,
+            showMarkets: false
         }
 
         this.handleClearDrawing = this.handleClearDrawing.bind(this)
@@ -303,29 +311,6 @@ export default class GoogleCustomMap extends React.Component {
         })
     }
 
-    createCustomZone2 (nextState) {
-        google.maps.event.addListener(nextState.drawing, 'overlaycomplete', (event) => {
-            this.handleEdit()
-            const coordinates = event.overlay.getPath().getArray()
-            event.overlay.getPaths().forEach((path) => {
-                this.getPoints = () => {
-                    return _.map(coordinates, (p) => {
-                        const polyLat = p.lat()
-                        const polyLng = p.lng()
-                        return {lat: polyLat, lng: polyLng}
-                    })
-                }
-
-                google.maps.event.addListener(path, 'insert_at', () => this.setState({points: this.getPoints()}))
-
-                google.maps.event.addListener(path, 'remove_at', () => this.setState({points: this.getPoints()}))
-
-                google.maps.event.addListener(path, 'set_at', () => this.setState({points: this.getPoints()}))
-            })
-            this.setState({points: this.getPoints()})
-        })
-    }
-
     editZone (nextProps, nextState) {
         // Find not selected zones
         const otherZones = _.filter(nextState.zone, (item) => {
@@ -405,10 +390,10 @@ export default class GoogleCustomMap extends React.Component {
                 this.editZone(nextProps, nextState)
             }
             _.get(nextProps, ['addZone', 'openAddZone']) && this.createCustomZone(nextState)
-            const {marketsData: {data}, listData} = this.props
-            if (nextProps.marketsData.data !== data ||
-                (listData.data && nextProps.listData.data.length !== listData.data.length)) {
-                setTimeout(() => this.getMarkers(nextProps.marketsData.data), MARKER_TIME)
+
+            const {marketsData} = this.props
+            if (nextState.showMarkets && this.state.showMarkets !== nextState.showMarkets && !_.isEmpty(_.get(marketsData, 'data'))) {
+                this.getMarkers(nextProps.marketsData.data)
             }
 
             if (_.get(nextState, 'currentOverlay') &&
@@ -437,12 +422,18 @@ export default class GoogleCustomMap extends React.Component {
         this.overlayView = null
         this.map = null
     }
-
+    updateCheck () {
+        this.setState((oldState) => {
+            return {
+                showMarkets: !oldState.showMarkets
+            }
+        })
+    }
     render () {
         if (this.map && this.overlayView) {
             this.map.addListener('zoom_changed', () => {
-                let mapPane1 = this.overlayView.getPanes()
-                mapPane1[GOOGLE_MAP.FLOATPANE].innerHTML = ''
+                let mapFloatPane = this.overlayView.getPanes()
+                mapFloatPane[GOOGLE_MAP.FLOATPANE].innerHTML = ''
             })
         }
         const {addZone, filter, updateZone, isOpenAddZone, isOpenUpdateZone, deleteZone} = this.props
@@ -459,6 +450,12 @@ export default class GoogleCustomMap extends React.Component {
         }
         return (
             <div style={{height: '100%', width: '100%'}}>
+                <Checkbox
+                    label="Markets"
+                    checked={this.state.showMarkets}
+                    onCheck={this.updateCheck.bind(this)}
+                    style={styles.checkbox}
+                />
                 <div className='GMap-canvas' id="mappingGoogleCustom" ref='mapping'
                      style={{height: '100%', width: '100%'}}>
                 </div>
