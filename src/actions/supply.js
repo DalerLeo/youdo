@@ -89,8 +89,11 @@ export const supplyListFetchAction = (filter) => {
 }
 
 export const supplyItemFetchAction = (id) => {
+    const params = {
+        'extented': 1
+    }
     const payload = axios()
-        .get(sprintf(API.SUPPLY_ITEM, id))
+        .get(sprintf(API.SUPPLY_ITEM, id), {params})
         .then((response) => {
             return _.get(response, 'data')
         })

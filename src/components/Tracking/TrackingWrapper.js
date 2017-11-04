@@ -90,14 +90,6 @@ const enhance = compose(
             transition: 'all 0.3s ease',
             zIndex: '6'
         },
-        toggleButton: {
-            background: '#fff',
-            position: 'absolute',
-            border: '1px #efefef solid',
-            borderRight: 'none',
-            left: '-21px',
-            top: '55px'
-        },
         trackingInfoTitle: {
             display: 'flex',
             alignItems: 'center',
@@ -109,6 +101,14 @@ const enhance = compose(
                 textAlign: 'right',
                 lineHeight: '14px'
             }
+        },
+        toggleButton: {
+            background: '#fff',
+            position: 'absolute',
+            border: '1px #efefef solid',
+            borderRight: 'none',
+            left: '-21px',
+            top: '0'
         },
         online: {
             color: '#666',
@@ -126,6 +126,7 @@ const enhance = compose(
             display: 'flex',
             justifyContent: 'center',
             minHeight: '40px',
+            position: 'relative',
             '& button': {
                 justifyContent: 'center',
                 alignItems: 'center'
@@ -339,15 +340,6 @@ const TrackingWrapper = enhance((props) => {
 
     const zoneInfoToggle = (
         <div className={classes.trackingInfo} style={openAgentsInfo ? {right: -28} : {right: (-378)}}>
-            <div className={classes.toggleButton}>
-                <IconButton
-                    onTouchTap={() => { toggleAgentsInfo(!openAgentsInfo) }}
-                    iconStyle={buttonStyle.icon}
-                    style={buttonStyle.button}
-                    disableTouchRipple={true}>
-                    {openAgentsInfo ? <RightArrow/> : <LeftArrow/>}
-                </IconButton>
-            </div>
             <div className={classes.wrapper}>
                 {openDetail && <TrackingDatePicker
                     filter={filter}
@@ -385,6 +377,15 @@ const TrackingWrapper = enhance((props) => {
                         </div>}
                 </div>}
                 <div className={classes.titleTabs}>
+                    <div className={classes.toggleButton}>
+                        <IconButton
+                            onTouchTap={() => { toggleAgentsInfo(!openAgentsInfo) }}
+                            iconStyle={buttonStyle.icon}
+                            style={buttonStyle.button}
+                            disableTouchRipple={true}>
+                            {openAgentsInfo ? <RightArrow/> : <LeftArrow/>}
+                        </IconButton>
+                    </div>
                     {_.map(buttons, (item) => {
                         const group = _.get(item, 'group')
                         const name = _.get(item, 'name')

@@ -5,7 +5,8 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import Filter from 'material-ui/svg-icons/content/filter-list'
 import * as TAB from '../../../constants/manufactureShipmentTab'
-import ManufactureActivityDateRange from './ManufactureActivityDateRange'
+import ManufactureActivityDateRange from '../ManufactureActivityDateRange'
+import ManufactureActivityFilterDialog from '../ManufactureActivityFilterDialog'
 import Paper from 'material-ui/Paper'
 import Loader from '../../Loader'
 import {Tabs, Tab} from 'material-ui/Tabs'
@@ -15,20 +16,18 @@ import Shift from 'material-ui/svg-icons/av/loop'
 import Product from 'material-ui/svg-icons/device/widgets'
 import Material from 'material-ui/svg-icons/action/exit-to-app'
 import Defected from 'material-ui/svg-icons/image/broken-image'
-import Pagination from '../../ReduxForm/Pagination'
+import Pagination from '../../GridList/GridListNavPagination'
 import Choose from '../../Images/choose-menu.png'
 import NotFound from '../../Images/not-found.png'
 import dateTimeFormat from '../../../helpers/dateTimeFormat'
 import numberFormat from '../../../helpers/numberFormat'
 
-export const MANUF_ACTIVITY_FILTER_KEY = {
-    SHIFT: 'shift'
-}
-
 const enhance = compose(
     injectSheet({
         shipmentContent: {
+            position: 'relative',
             marginTop: '56px',
+            overflow: 'hidden',
             '& header': {
                 display: 'flex',
                 justifyContent: 'space-between',
@@ -125,10 +124,8 @@ const enhance = compose(
             }
         },
         flexReview: {
-            display: 'flex',
             '& > div': {
-                width: '50%',
-                borderRight: '1px #efefef solid',
+                width: '100%',
                 '&:last-child': {
                     borderRight: 'none'
                 }
@@ -182,6 +179,12 @@ const enhance = compose(
                 textAlign: 'right'
             }
         },
+        productAmount: {
+            '& span': {
+                display: 'inline-block',
+                marginLeft: '5px'
+            }
+        },
         shift: {
             extend: 'product',
             borderRadius: '2px',
@@ -194,6 +197,13 @@ const enhance = compose(
                 '&:first-child': {
                     textAlign: 'left'
                 }
+            }
+        },
+        productReview: {
+            extend: 'product',
+            borderRadius: '2px',
+            '&:hover': {
+                background: '#f2f5f8'
             }
         },
         productDefected: {
@@ -260,43 +270,40 @@ const ManufactureShipment = enhance((props) => {
     const materialsLoading = _.get(detailData, 'materialsLoading')
     const reviewLoading = productsLoading || materialsLoading
 
-    const defectedProducts = _.map(_.filter(_.get(detailData, 'products'), (item) => {
-        return _.get(item, 'isDefect')
-    }), (item, index) => {
-        const measurement = _.get(item, ['measurement', 'name'])
-        const product = _.get(item, ['product', 'name'])
-        const amount = _.get(item, 'totalAmount')
-        return (
-            <div key={index} className={classes.product}>
-                <span>{product}</span>
-                <span>{numberFormat(amount, measurement)}</span>
-            </div>
-        )
+    const groupedProducts = _.groupBy(_.get(detailData, 'products'), (item) => {
+        return item.product.id
     })
-    const products = _.map(_.filter(_.get(detailData, 'products'), (item) => {
-        return !_.get(item, 'isDefect')
-    }), (item, index) => {
-        const measurement = _.get(item, ['measurement', 'name'])
-        const product = _.get(item, ['product', 'name'])
-        const amount = _.get(item, 'totalAmount')
+    const products = _.map(groupedProducts, (item, index) => {
+        const productName = _.get(_.find(_.get(detailData, 'products'), (obj) => {
+            return _.toInteger(obj.product.id) === _.toInteger(index)
+        }), ['product', 'name'])
+        const totalAmount = _.sumBy(item, (o) => {
+            return _.toNumber(_.get(o, 'totalAmount'))
+        })
+        const totalMeasurement = _.get(_.first(item), ['measurement', 'name'])
+
+        const defected = _.filter(item, (o) => {
+            return _.get(o, 'isDefect')
+        })
+        const defectedAmount = _.get(_.first(defected), 'totalAmount')
+
         return (
-            <div key={index} className={classes.product}>
-                <span>{product}</span>
-                <span>{numberFormat(amount, measurement)}</span>
-            </div>
-        )
-    })
-    const defectedMaterials = _.map(_.filter(_.get(detailData, 'materials'), (item) => {
-        return _.get(item, 'isDefect')
-    }), (item, index) => {
-        const measurement = _.get(item, ['measurement', 'name'])
-        const product = _.get(item, ['product', 'name'])
-        const amount = _.get(item, 'totalAmount')
-        return (
-            <div key={index} className={classes.product}>
-                <span>{product}</span>
-                <span>{numberFormat(amount, measurement)}</span>
-            </div>
+            <Row key={index} className={classes.productReview}>
+                <Col xs={6}>{productName}</Col>
+                <Col xs={2}>{numberFormat(totalAmount, totalMeasurement)}</Col>
+                <Col xs={2}>{_.map(_.filter(item, (o) => {
+                    return !_.get(o, 'isDefect')
+                }), (o, i) => {
+                    const measurement = _.get(o, ['measurement', 'name'])
+                    const amount = _.get(o, 'totalAmount')
+                    return (
+                        <span key={index + '_' + i}>{numberFormat(amount, measurement)}</span>
+                    )
+                })}</Col>
+                <Col xs={2}>
+                    {_.isEmpty(defected) ? numberFormat('0', totalMeasurement) : numberFormat(defectedAmount, totalMeasurement)}
+                </Col>
+            </Row>
         )
     })
     const materials = _.map(_.filter(_.get(detailData, 'materials'), (item) => {
@@ -306,10 +313,10 @@ const ManufactureShipment = enhance((props) => {
         const product = _.get(item, ['product', 'name'])
         const amount = _.get(item, 'totalAmount')
         return (
-            <div key={index} className={classes.product}>
-                <span>{product}</span>
-                <span>{numberFormat(amount, measurement)}</span>
-            </div>
+            <Row key={index} className={classes.productReview}>
+                <Col xs={6}>{product}</Col>
+                <Col xs={6}>{numberFormat(amount, measurement)}</Col>
+            </Row>
         )
     })
     const logs = _.map(_.get(detailData, 'logs'), (item, index) => {
@@ -322,8 +329,9 @@ const ManufactureShipment = enhance((props) => {
         return (
             <Row key={index} className={isDefect ? classes.productDefected : classes.product}>
                 {type === PRODUCT
-                    ? <Col xs={8}><span>{isDefect ? <Defected style={iconStyles.defected}/> : <Product style={iconStyles.product}/>}{product}</span></Col>
-                    : <Col xs={8}><span>{isDefect ? <Defected style={iconStyles.defected}/> : <Material style={iconStyles.material}/>}{product}</span></Col>}
+                    ? <Col xs={6}><span>{isDefect ? <Defected style={iconStyles.defected}/> : <Product style={iconStyles.product}/>}{product}</span></Col>
+                    : <Col xs={6}><span>{isDefect ? <Defected style={iconStyles.defected}/> : <Material style={iconStyles.material}/>}{product}</span></Col>}
+                <Col xs={2}>{type === PRODUCT ? 'Продукт' : 'Сырье'}</Col>
                 <Col xs={2}>{numberFormat(amount, measurement)}</Col>
                 <Col xs={2}>{createdDate}</Col>
             </Row>
@@ -354,11 +362,14 @@ const ManufactureShipment = enhance((props) => {
         <Paper transitionEnabled={false} zDepth={1} className={classes.shipmentContent}>
             <header>
                 <ManufactureActivityDateRange filter={filter} initialValues={filterDialog.initialValues}/>
-                <a className={classes.filterBtn}>
+                <a className={classes.filterBtn} onClick={filterDialog.handleOpenFilterDialog}>
                     <Filter/>
                     <span>Фильтр</span>
                 </a>
             </header>
+            <ManufactureActivityFilterDialog
+                filterDialog={filterDialog}
+                initialValues={filterDialog.initialValues}/>
             <div className={classes.details}>
                 <div className={classes.rightSide}>
                     <Tabs
@@ -374,35 +385,29 @@ const ManufactureShipment = enhance((props) => {
                             value={TAB.TAB_SORTED}>
                             {!wholeEmpty
                                 ? <div className={classes.flexReview}>
-                                    <div>
-                                        <div className={classes.productsBlock}>
-                                            <h4>Произведенная продукция</h4>
-                                            {!_.isEmpty(products)
-                                                ? products
-                                                : <div className={classes.emptyQuery}>
-                                                    <div>Продукции еще не произведены</div>
-                                                </div>}
-                                        </div>
-                                        {!_.isEmpty(defectedProducts) &&
-                                        <div className={classes.productsBlock}>
-                                            <h4>Бракованные</h4>
-                                            {defectedProducts}
-                                        </div>}
+                                    <div className={classes.productsBlock}>
+                                        <Row className={classes.flexTitle}>
+                                            <Col xs={6}><h4>Произведено</h4></Col>
+                                            <Col xs={2}><h4>Всего</h4></Col>
+                                            <Col xs={2}><h4>Ок</h4></Col>
+                                            <Col xs={2}><h4>Брак</h4></Col>
+                                        </Row>
+                                        {!_.isEmpty(products)
+                                            ? products
+                                            : <div className={classes.emptyQuery}>
+                                                <div>Продукции еще не произведены</div>
+                                            </div>}
                                     </div>
-                                    <div>
-                                        <div className={classes.productsBlock}>
-                                            <h4>Затраченное сырье</h4>
-                                            {!_.isEmpty(materials)
-                                                ? materials
-                                                : <div className={classes.emptyQuery}>
-                                                    <div>Не затрачено сырья</div>
-                                                </div>}
-                                        </div>
-                                        {!_.isEmpty(defectedMaterials) &&
-                                        <div className={classes.productsBlock}>
-                                            <h4>Бракованные</h4>
-                                            {defectedMaterials}
-                                        </div>}
+                                    <div className={classes.productsBlock}>
+                                        <Row className={classes.flexTitle}>
+                                            <Col xs={6}><h4>Затраченное сырье</h4></Col>
+                                            <Col xs={2}><h4>Кол-во</h4></Col>
+                                        </Row>
+                                        {!_.isEmpty(materials)
+                                            ? materials
+                                            : <div className={classes.emptyQuery}>
+                                                <div>Не затрачено сырья</div>
+                                            </div>}
                                     </div>
                                 </div>
                                 : reviewLoading
@@ -426,9 +431,10 @@ const ManufactureShipment = enhance((props) => {
                                         <Pagination filter={filterLogs}/>
                                     </div>
                                     <Row className={classes.flexTitle}>
-                                        <Col xs={8}><h4>Продукт / сырье</h4></Col>
+                                        <Col xs={6}><h4>Продукт / сырье</h4></Col>
+                                        <Col xs={2}><h4>Тип</h4></Col>
                                         <Col xs={2}><h4>Кол-во</h4></Col>
-                                        <Col xs={2}><h4>Дата</h4></Col>
+                                        <Col xs={2}><h4>Дата, время</h4></Col>
                                     </Row>
                                     {logsLoading
                                         ? <div className={classes.loader}>
