@@ -338,6 +338,16 @@ const SupplyDetails = enhance((props) => {
                                     <span>Общая стоимость</span>
                                     <span>{numberFormat(totalCost, primaryCurrency)}</span>
                                 </li>
+                                {_.map(_.get(data, 'totalAdditionalCosts'), (item) => {
+                                    const itemAmount = _.get(item, 'totalAmount')
+                                    const itemCurrency = _.get(item, ['currency', 'name'])
+                                    return (
+                                        <li>
+                                            <span>Доп. расход {itemCurrency}</span>
+                                            <span>{numberFormat(itemAmount, itemCurrency)}</span>
+                                        </li>
+                                    )
+                                })}
                                 <li>
                                     <span>Тип оплаты</span>
                                     <span>{paymentType}</span>

@@ -183,6 +183,7 @@ const PendingExpensesList = enhance((props) => {
                     value: _.get(detail, 'paymentType')
                 },
                 address: _.get(detail, 'address'),
+                comment: _.get(detail, 'comment'),
                 guide: _.get(detail, 'guide'),
                 phone: _.get(detail, 'phone'),
                 contactName: _.get(detail, 'contactName'),

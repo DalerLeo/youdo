@@ -9,7 +9,7 @@ import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import numberFormat from '../../helpers/numberFormat'
 import toCamelCase from '../../helpers/toCamelCase'
-import {ExpensiveCategorySearchField, CashboxSearchField, TextField} from '../ReduxForm'
+import {ExpensiveCategorySearchField, CashboxTypeSearchField, TextField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
@@ -65,7 +65,7 @@ const enhance = compose(
 )
 
 const PendingExpensesCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, detailData, classes, itemBalance} = props
+    const {open, loading, handleSubmit, onClose, detailData, classes, itemBalance, cashbox} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
     const supply = _.get(detailData, ['data', 'supply'])
@@ -122,13 +122,23 @@ const PendingExpensesCreateDialog = enhance((props) => {
                                 <Field
                                     name="cashbox"
                                     className={classes.inputFieldCustom}
-                                    component={CashboxSearchField}
+                                    component={CashboxTypeSearchField}
+                                    cashbox={cashbox}
                                     label="Касса получатель"/>
+                                <div style={{display: 'flex'}}>
+                                    <Field
+                                        name="amount"
+                                        className={classes.inputFieldCustom}
+                                        component={TextField}
+                                        label="Cумма"/>
+                                    <span style={{padding: '29px 10px 0'}}> {currencyName}</span>
+                                </div>
                                 <Field
-                                    name="amount"
+                                    name="comment"
                                     className={classes.inputFieldCustom}
                                     component={TextField}
-                                    label="Cумма"/>
+                                    label="Комментарий"
+                                    fullWidth={true}/>
                             </div>
                         </div>
                     </div>

@@ -208,7 +208,7 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                 </Tab>
 
                 <Tab label="Доп. расходы" value={TAB.SUPPLY_TAB_EXPENSES} disableTouchRipple={true}>
-                    {!_.isEmpty(expensesListData)
+                    {!_.isEmpty(_.get(expensesListData, 'data'))
                         ? <div className={classes.tabContent}>
                             {!_.get(expensesListData, 'supplyExpenseListLoading') ? <div className={classes.tabWrapper}>
                                     <Row className="dottedList">

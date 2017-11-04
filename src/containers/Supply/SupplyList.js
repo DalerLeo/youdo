@@ -354,6 +354,7 @@ const enhance = compose(
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[SUPPLY_EXPENSE_CREATE_DIALOG_OPEN]: false})})
+                    dispatch(supplyItemFetchAction(id))
                     return dispatch(supplyExpenseListFetchAction(id, filter))
                 })
         }
