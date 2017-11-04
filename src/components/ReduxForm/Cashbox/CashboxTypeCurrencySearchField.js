@@ -9,13 +9,7 @@ import {compose} from 'recompose'
 import {connect} from 'react-redux'
 
 const getOptions = (search, type, currency, cashboxId) => {
-    if (cashboxId) {
-        return currency && type && axios().get(`${PATH.CASHBOX_LIST}?type=${type}&page_size=1000&search=${search || ''}&exclude_id=${cashboxId}&currency=${currency}`)
-            .then(({data}) => {
-                return Promise.resolve(toCamelCase(data.results))
-            })
-    }
-    return currency && type && axios().get(`${PATH.CASHBOX_LIST}?type=${type}&page_size=1000&search=${search || ''}&currency=${currency}`)
+    return axios().get(`${PATH.CASHBOX_LIST}?type =${type || ''}&page_size=1000&search=${search || ''}&exclude_id=${cashboxId}`)
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
         })
@@ -37,7 +31,7 @@ const enhance = compose(
     })
 )
 
-const CashboxTypeSearchField = enhance((props) => {
+const CashboxTypeCurrencySearchField = enhance((props) => {
     const {dispatch, cashbox, ...defaultProps} = props
     const test = (id) => {
         return getItem(id, dispatch)
@@ -45,14 +39,12 @@ const CashboxTypeSearchField = enhance((props) => {
     const type = _.get(cashbox, 'type')
     const cashboxId = _.get(cashbox, 'id')
     const currency = _.get(cashbox, ['currency', 'id'])
-    if (_.get(cashbox, 'type') && _.get(cashbox, 'currency')) {
+    if (cashbox) {
         return (
             <SearchField
                 getValue={SearchField.defaultGetValue('id')}
                 getText={SearchField.defaultGetText('name')}
-                getOptions={(search) => {
-                    return type && currency && getOptions(search, type, currency, cashboxId)
-                }}
+                getOptions={(search) => { return getOptions(search, type, currency, cashboxId) }}
                 getItem={test}
                 getItemText={(value) => {
                     return _.get(value, ['name'])
@@ -66,4 +58,4 @@ const CashboxTypeSearchField = enhance((props) => {
     return null
 })
 
-export default CashboxTypeSearchField
+export default CashboxTypeCurrencySearchField

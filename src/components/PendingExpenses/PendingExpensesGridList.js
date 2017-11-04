@@ -163,6 +163,10 @@ const PendingExpensesGridList = enhance((props) => {
     }
 
     const currentItem = _.find(_.get(listData, 'data'), {'id': _.get(detailData, 'id')})
+    const cashbox = {
+        currency: _.get(currentItem, 'currency'),
+        type: _.get(currentItem, 'paymentType')
+    }
     const itemBalance = _.get(currentItem, 'totalAmount') - _.get(currentItem, 'paidAmount')
     return (
         <Container>
@@ -175,7 +179,7 @@ const PendingExpensesGridList = enhance((props) => {
                 filterDialog={pendingExpensesFilterDialog}
             />
 
-            {detailData.data && <PendingExpensesCreateDialog
+            <PendingExpensesCreateDialog
                 initialValues={updateDialog.initialValues}
                 open={updateDialog.openUpdateDialog}
                 detailData={detailData}
@@ -183,7 +187,8 @@ const PendingExpensesGridList = enhance((props) => {
                 loading={updateDialog.updateLoading}
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
-            />}
+                cashbox={cashbox}
+            />
         </Container>
     )
 })
