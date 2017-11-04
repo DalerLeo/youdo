@@ -9,19 +9,16 @@ import {compose} from 'recompose'
 import {connect} from 'react-redux'
 
 const getOptions = (search, type, currency, cashboxId) => {
-    console.log(type, currency, 'eee jonga tegdi lekin')
-    if (cashboxId){
+    if (cashboxId) {
         return currency && type && axios().get(`${PATH.CASHBOX_LIST}?type=${type}&page_size=1000&search=${search || ''}&exclude_id=${cashboxId}&currency=${currency}`)
             .then(({data}) => {
                 return Promise.resolve(toCamelCase(data.results))
             })
-    } else {
-        return currency && type && axios().get(`${PATH.CASHBOX_LIST}?type=${type}&page_size=1000&search=${search || ''}&currency=${currency}`)
-            .then(({data}) => {
-                return Promise.resolve(toCamelCase(data.results))
-            })
     }
-
+    return currency && type && axios().get(`${PATH.CASHBOX_LIST}?type=${type}&page_size=1000&search=${search || ''}&currency=${currency}`)
+        .then(({data}) => {
+            return Promise.resolve(toCamelCase(data.results))
+        })
 }
 
 const getItem = (id) => {
@@ -53,7 +50,9 @@ const CashboxTypeSearchField = enhance((props) => {
             <SearchField
                 getValue={SearchField.defaultGetValue('id')}
                 getText={SearchField.defaultGetText('name')}
-                getOptions={(search) => { return type && currency && getOptions(search, type, currency, cashboxId) }}
+                getOptions={(search) => {
+                    return type && currency && getOptions(search, type, currency, cashboxId)
+                }}
                 getItem={test}
                 getItemText={(value) => {
                     return _.get(value, ['name'])
