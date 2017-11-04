@@ -8,6 +8,7 @@ import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
+import excludeObjKey from '../../helpers/excludeObjKey'
 import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
 import {
     SHOP_CREATE_DIALOG_OPEN,
@@ -228,14 +229,17 @@ const enhance = compose(
                     dispatch(shopListFetchAction(filter))
                 })
                 .catch((error) => {
-                    const errorWhole = _.map(error, (item, index) => {
+                    const locErr = _.get(error, 'location')
+                    const errors = excludeObjKey(error, ['location'])
+                    const errorWhole = _.map(errors, (item, index) => {
                         return <p style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
                     })
 
                     dispatch(openErrorAction({
                         message: <div style={{padding: '0 30px'}}>
                             {errorWhole}
-                        </div>
+                        </div>,
+                        arrMessage: locErr
                     }))
                 })
         },
