@@ -111,8 +111,8 @@ const enhance = compose(
         const prevZone = toBoolean(_.get(props, ['query', 'showZones']))
         const nextZone = toBoolean(_.get(nextProps, ['query', 'showZones']))
         return prevZone !== nextZone && nextZone === true
-    }, ({dispatch}) => {
-        dispatch(zoneListFetchAction())
+    }, ({dispatch, filter}) => {
+        dispatch(zoneListFetchAction(filter))
     }),
 
     withPropsOnChange((props, nextProps) => {

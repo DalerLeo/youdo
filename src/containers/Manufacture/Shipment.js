@@ -11,7 +11,7 @@ import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import {ManufactureShipmentWrapper, OPEN_FILTER} from '../../components/Manufacture'
 import * as SHIPMENT_TAB from '../../constants/manufactureShipmentTab'
-import {MANUF_ACTIVITY_FILTER_KEY} from '../../components/Manufacture/Tab/ManufactureShipment'
+import {MANUF_ACTIVITY_FILTER_KEY} from '../../components/Manufacture/ManufactureActivityFilterDialog'
 import {
     shipmentListFetchAction,
     shipmentItemFetchAction,
@@ -74,6 +74,7 @@ const enhance = compose(
 
     withPropsOnChange((props, nextProps) => {
         const except = {
+            openFilter: null,
             logsPage: null,
             logsPageSize: null
         }
@@ -81,46 +82,51 @@ const enhance = compose(
         const nextManufactureId = _.get(nextProps, ['params', 'manufactureId'])
         return (props.filterShipment.filterRequest(except) !== nextProps.filterShipment.filterRequest(except) && nextManufactureId > ZERO) ||
             (manufactureId !== nextManufactureId && nextManufactureId)
-    }, ({dispatch, filterShipment, params, location}) => {
+    }, ({dispatch, filterShipment, params, beginDate, endDate}) => {
+        const dateRange = {
+            beginDate,
+            endDate
+        }
         const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
-        const shipmentId = _.toInteger(_.get(location, ['query', 'shipmentId']))
         if (manufactureId > ZERO) {
-            dispatch(shipmentItemFetchAction(shipmentId))
-            dispatch(shipmentListFetchAction(filterShipment, manufactureId))
+            dispatch(shipmentListFetchAction(filterShipment, manufactureId, dateRange))
         }
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const shipmentId = _.toInteger(_.get(props, ['location', 'query', 'shipmentId']))
-        const nextShipmentId = _.toInteger(_.get(nextProps, ['location', 'query', 'shipmentId']))
+        const beginDate = _.get(props, 'beginDate')
+        const endDate = _.get(props, 'endDate')
+        const nextBeginDate = _.get(nextProps, 'beginDate')
+        const nextEndDate = _.get(nextProps, 'endDate')
         const manufacture = _.toInteger(_.get(props, ['params', 'manufactureId']))
         const nextManufacture = _.toInteger(_.get(nextProps, ['params', 'manufactureId']))
-        return (shipmentId !== nextShipmentId && nextShipmentId > ZERO) || (manufacture !== nextManufacture && nextShipmentId > ZERO)
-    }, ({dispatch, location}) => {
-        const shipmentId = _.toInteger(_.get(location, ['query', 'shipmentId']))
-        if (shipmentId > ZERO) {
-            dispatch(shipmentProductsListFetchAction(shipmentId))
-            dispatch(shipmentMaterialsListFetchAction(shipmentId))
+        return (beginDate !== nextBeginDate) || (endDate !== nextEndDate) || (manufacture !== nextManufacture)
+    }, ({dispatch, beginDate, endDate}) => {
+        const dateRange = {
+            beginDate,
+            endDate
         }
+        dispatch(shipmentProductsListFetchAction(dateRange))
+        dispatch(shipmentMaterialsListFetchAction(dateRange))
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const shipmentId = _.toInteger(_.get(props, ['location', 'query', 'shipmentId']))
-        const nextShipmentId = _.toInteger(_.get(nextProps, ['location', 'query', 'shipmentId']))
+        const except = {
+            page: null,
+            pageSize: null,
+            openFilter: null
+        }
         const manufacture = _.toInteger(_.get(props, ['params', 'manufactureId']))
         const nextManufacture = _.toInteger(_.get(nextProps, ['params', 'manufactureId']))
-        const page = _.toInteger(_.get(props, ['location', 'query', 'logsPage']))
-        const nextPage = _.toInteger(_.get(nextProps, ['location', 'query', 'logsPage']))
-        return (shipmentId !== nextShipmentId && nextShipmentId > ZERO) ||
-            (page !== nextPage && nextShipmentId > ZERO) ||
-            (manufacture !== nextManufacture && nextShipmentId > ZERO)
-    }, ({dispatch, location, params}) => {
-        const manufactuureId = _.toInteger(_.get(params, 'manufactureId'))
-        const shipmentId = _.toInteger(_.get(location, ['query', 'shipmentId']))
-        const page = _.get(location, ['query', 'logsPage']) || '1'
-        if (shipmentId > ZERO) {
-            dispatch(shipmentLogsListFetchAction(shipmentId, manufactuureId, page))
+        return (props.filterLogs.filterRequest(except) !== nextProps.filterLogs.filterRequest(except) && nextManufacture > ZERO) ||
+            (manufacture !== nextManufacture && nextManufacture)
+    }, ({dispatch, filterLogs, params, beginDate, endDate}) => {
+        const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
+        const dateRange = {
+            beginDate,
+            endDate
         }
+        dispatch(shipmentLogsListFetchAction(filterLogs, manufactureId, dateRange))
     }),
 
     withHandlers({
@@ -138,12 +144,12 @@ const enhance = compose(
         },
 
         handleOpenFilterDialog: props => () => {
-            const {location: {pathname}} = props
-            hashHistory.push({pathname, query: {[OPEN_FILTER]: true}})
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[OPEN_FILTER]: true})})
         },
         handleCloseFilterDialog: props => () => {
-            const {location: {pathname}} = props
-            hashHistory.push({pathname, query: {[OPEN_FILTER]: false}})
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[OPEN_FILTER]: false})})
         },
         handleSubmitFilterDialog: props => () => {
             const {location: {pathname}, filter, filterForm} = props
@@ -151,7 +157,7 @@ const enhance = compose(
             filter.filterBy({
                 [MANUF_ACTIVITY_FILTER_KEY.SHIFT]: shift
             })
-            hashHistory.push({pathname, query: {[OPEN_FILTER]: false}})
+            hashHistory.push({pathname, query: filter.getParams({[OPEN_FILTER]: false})})
         },
 
         handleShipmentClick: props => (id) => {

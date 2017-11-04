@@ -5,8 +5,8 @@ import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/shipmentSerializer'
 
-export const shipmentListFetchAction = (filter, manufacture) => {
-    const params = serializers.listFilterSerializer(filter.getParams(), manufacture)
+export const shipmentListFetchAction = (filter, manufacture, dateRange) => {
+    const params = serializers.listFilterSerializer(filter.getParams(), manufacture, dateRange)
     const payload = axios()
         .get(API.SHIPMENT_LIST, {params})
         .then((response) => {
@@ -38,9 +38,10 @@ export const shipmentItemFetchAction = (id) => {
     }
 }
 
-export const shipmentLogsListFetchAction = (id, manufacture, page) => {
+export const shipmentLogsListFetchAction = (filter, manufacture, dateRange) => {
+    const params = serializers.logsFilterSerializer(filter.getParams(), manufacture, dateRange)
     const payload = axios()
-        .get(API.SHIPMENT_LOGS, {params: {staff_rotation: id, manufacture: manufacture, page: page}})
+        .get(API.SHIPMENT_LOGS, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -54,9 +55,11 @@ export const shipmentLogsListFetchAction = (id, manufacture, page) => {
     }
 }
 
-export const shipmentProductsListFetchAction = (id) => {
+export const shipmentProductsListFetchAction = (dateRange) => {
+    const beginDate = _.get(dateRange, 'beginDate')
+    const endDate = _.get(dateRange, 'endDate')
     const payload = axios()
-        .get(API.SHIPMENT_PRODUCTS_LIST, {params: {personal_rotation: id}})
+        .get(API.SHIPMENT_PRODUCTS_LIST, {params: {begin_date: beginDate, end_date: endDate}})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -70,9 +73,11 @@ export const shipmentProductsListFetchAction = (id) => {
     }
 }
 
-export const shipmentMaterialsListFetchAction = (id) => {
+export const shipmentMaterialsListFetchAction = (dateRange) => {
+    const beginDate = _.get(dateRange, 'beginDate')
+    const endDate = _.get(dateRange, 'endDate')
     const payload = axios()
-        .get(API.SHIPMENT_MATERIALS_LIST, {params: {personal_rotation: id}})
+        .get(API.SHIPMENT_MATERIALS_LIST, {params: {begin_date: beginDate, end_date: endDate}})
         .then((response) => {
             return _.get(response, 'data')
         })
