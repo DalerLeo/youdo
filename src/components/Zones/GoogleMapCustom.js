@@ -14,7 +14,6 @@ import Location from '../Images/market-green.png'
 import MarketOff from '../Images/market-red.png'
 import Checkbox from 'material-ui/Checkbox'
 const MARKER_SIZE = 30
-const MARKER_TIME = 1500
 const ZERO = 0
 const INFO_WINDOW_OFFSET = -7
 const ANCHOR = 7
@@ -393,8 +392,8 @@ export default class GoogleCustomMap extends React.Component {
             _.get(nextProps, ['addZone', 'openAddZone']) && this.createCustomZone(nextState)
 
             const {marketsData} = this.props
-            if (nextState.showMarkets && this.state.showMarkets !== nextState.showMarkets && _.isEmpty(_.get(marketsData, 'data'))) {
-                setTimeout(() => this.getMarkers(nextProps.marketsData.data), MARKER_TIME)
+            if (nextState.showMarkets && this.state.showMarkets !== nextState.showMarkets && !_.isEmpty(_.get(marketsData, 'data'))) {
+                this.getMarkers(nextProps.marketsData.data)
             }
 
             if (_.get(nextState, 'currentOverlay') &&
