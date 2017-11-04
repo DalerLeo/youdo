@@ -122,15 +122,17 @@ const enhance = compose(
         return (beginDate !== nextBeginDate) ||
             (endDate !== nextEndDate) ||
             (detailId !== nextDetailId)
-    }, ({dispatch, beginDate, endDate, toggle, params}) => {
+    }, ({dispatch, beginDate, endDate, toggle, params, location}) => {
         const detailId = _.get(params, 'stockTransferId') ? _.toInteger(_.get(params, 'stockTransferId')) : false
+        const stockId = _.get(location, ['query', TYPE])
+
         const dateRange = {
             fromDate: beginDate,
             toDate: endDate
         }
         if (toggle === 'delivery') {
             if (_.isNumber(detailId)) {
-                dispatch(stockTransferDeliveryItemFetchAction(dateRange, detailId))
+                dispatch(stockTransferDeliveryItemFetchAction(dateRange, detailId, stockId))
             }
         }
     }),
@@ -228,8 +230,13 @@ const enhance = compose(
         },
 
         handleSubmitDeliveryConfirmDialog: props => () => {
-            const {setOpenConfirmTransfer, dispatch, deliveryDetail} = props
-            return dispatch(stockTransferDeliveryTransferAction(deliveryDetail))
+            const {setOpenConfirmTransfer, dispatch, deliveryDetail, location, beginDate, endDate} = props
+            const stockId = _.get(location, ['query', TYPE])
+            const dateRange = {
+                beginDate,
+                endDate
+            }
+            return dispatch(stockTransferDeliveryTransferAction(deliveryDetail, stockId, dateRange))
                 .then(() => {
                     setOpenConfirmTransfer(false)
                 })
@@ -358,6 +365,7 @@ const StockTransferList = enhance((props) => {
     const deliveryDetailsData = {
         id: detailId,
         data: deliveryDetail,
+        stock: _.toNumber(detailType),
         deliveryDetailLoading,
         handleOpenDeliveryPrintDialog: props.handleOpenDeliveryPrintDialog,
         handleCloseDeliveryPrintDialog: props.handleCloseDeliveryPrintDialog

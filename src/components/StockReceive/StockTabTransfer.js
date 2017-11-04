@@ -61,8 +61,8 @@ const deliveryHeader = [
     },
     {
         sorting: true,
-        name: 'ordersCount',
-        title: 'Кол-во заказов',
+        name: 'stock',
+        title: 'Склад',
         xs: 6
     }
 ]
@@ -153,6 +153,10 @@ const StockTabTransfer = enhance((props) => {
     } = props
 
     const toggle = _.get(toggleData, 'toggle')
+    const currentDeliverer = _.find(_.get(deliveryData, 'data'), (item) => {
+        return _.toInteger(_.get(item, ['user', 'id'])) === _.get(deliveryDetailsData, 'id') &&
+            _.toInteger(_.get(item, ['stock', 'id'])) === _.get(deliveryDetailsData, 'stock')
+    })
 
     const usersFilterDialog = (
         <TabTransferFilterForm
@@ -166,6 +170,7 @@ const StockTabTransfer = enhance((props) => {
         <DeliveryDetails
             detailData={_.get(deliveryDetailsData, 'data')}
             key={_.get(deliveryDetailsData, 'id')}
+            currentDeliverer={currentDeliverer}
             handleCloseDetail={handleCloseDetail}
             handleOpenDeliveryPrintDialog={_.get(deliveryDetailsData, 'handleOpenDeliveryPrintDialog')}
             loading={_.get(deliveryDetailsData, 'deliveryDetailLoading')}
@@ -201,14 +206,15 @@ const StockTabTransfer = enhance((props) => {
         const user = _.get(item, ['user', 'id'])
         const keyname = user || ZERO
         const userName = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName'])
-        const ordersCount = _.get(item, 'ordersCount')
+        const stockName = _.get(item, ['stock', 'name'])
+        const stockid = _.get(item, ['stock', 'id'])
 
         return (
             <Row key={keyname} style={{position: 'relative', cursor: 'pointer'}}
-                 onClick={() => { listData.handleOpenDetail(keyname) }}>
+                 onClick={() => { listData.handleOpenDetail(keyname, stockid) }}>
                 <Col xs={6} >{user ? userName : 'Не определен'}</Col>
                 <div className={classes.closeDetail} onClick={handleCloseDetail}>{null}</div>
-                <Col xs={6}>{ordersCount}</Col>
+                <Col xs={6}>{stockName}</Col>
             </Row>
         )
     })
