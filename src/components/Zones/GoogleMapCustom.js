@@ -446,8 +446,9 @@ export default class GoogleCustomMap extends React.Component {
             })
         }
         const {addZone, filter, updateZone, isOpenAddZone, isOpenUpdateZone, deleteZone} = this.props
-        const GOOGLE_API_KEY = 'AIzaSyDnUkBg_uV1aa4e7pyEvv3bVxN3RfwNQEo'
-        const url = 'http://maps.googleapis.com/maps/api/js?key=' + GOOGLE_API_KEY + '&libraries=drawing'
+
+        const GOOGLE_API_KEY = process.env.GOOGLE_KEY ? process.env.GOOGLE_KEY : 'AIzaSyDnUkBg_uV1aa4e7pyEvv3bVxN3RfwNQEo'
+        const url = 'https://maps.googleapis.com/maps/api/js?key=' + GOOGLE_API_KEY + '&libraries=drawing'
 
         if (_.get(this.props, ['listData', 'listLoading'])) {
             return (

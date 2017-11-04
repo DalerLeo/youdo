@@ -138,8 +138,8 @@ export const stockTransferDeliveryListFetchAction = (dateRange) => {
     }
 }
 
-export const stockTransferDeliveryItemFetchAction = (dateRange, detailId) => {
-    const params = serializers.deliveryItemSerializer(dateRange, detailId)
+export const stockTransferDeliveryItemFetchAction = (dateRange, detailId, stockId) => {
+    const params = serializers.deliveryItemDetailsSerializer(dateRange, detailId, stockId)
     const payload = axios()
         .get((API.STOCK_TRANSFER_DELIVERY_ITEM), {params})
         .then((response) => {
@@ -155,8 +155,8 @@ export const stockTransferDeliveryItemFetchAction = (dateRange, detailId) => {
     }
 }
 
-export const stockTransferDeliveryTransferAction = (details) => {
-    const requestData = serializers.deliveryTransferSerializer(details)
+export const stockTransferDeliveryTransferAction = (details, stockId, dateRange) => {
+    const requestData = serializers.deliveryTransferSerializer(details, stockId, dateRange)
     const payload = axios()
         .post((API.STOCK_TRANSFER_DELIVERY_ITEM), requestData)
         .then((response) => {

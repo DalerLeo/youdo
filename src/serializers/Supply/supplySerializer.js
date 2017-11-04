@@ -31,7 +31,7 @@ export const createSerializer = (data) => {
         contact,
         contract,
         comment,
-        paymentType,
+        'payment_type': paymentType,
         'date_delivery': moment(_.get(data, ['date_delivery'])).format('YYYY-MM-DD'),
         currency,
         products
@@ -74,7 +74,7 @@ export const listFilterSerializer = (data) => {
     const ordering = _.get(data, 'ordering')
     return {
         'provider': _.get(defaultData, 'provider'),
-        'paymentType': _.get(defaultData, 'paymentType'),
+        'payment_type': _.get(defaultData, 'paymentType'),
         'product': _.get(defaultData, 'product'),
         'stock': _.get(defaultData, 'stock'),
         'status': _.toNumber(_.get(defaultData, 'status')) === ONE ? ZERO : _.get(defaultData, 'status'),

@@ -124,7 +124,6 @@ const enhance = compose(
             padding: '10px 30px',
             background: '#f2f5f8',
             fontWeight: '600',
-            borderRight: '1px solid #efefef',
             height: '55px'
         },
         average: {
@@ -161,7 +160,11 @@ const enhance = compose(
             extend: 'agentCanSet',
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'center'
+            alignItems: 'center',
+            '& > div': {
+                display: 'inherit',
+                alignItems: 'inherit'
+            }
 
         }
     })
@@ -203,6 +206,42 @@ const PriceDetails = enhance((props) => {
             padding: 0
         }
     }
+    const iconStyle2 = {
+        icon: {
+            color: '#666',
+            width: 20,
+            height: 20
+        },
+        button: {
+            width: 40,
+            height: 40,
+            padding: 0
+        }
+    }
+
+    const emptySupplyList = (
+        <div>
+            <div className={classes.emptyQuery}>
+            </div>
+            {_.get(defaultNetCost, 'cost')
+                ? <div className={classes.noSupply}>
+                    Постaвок не найдено, <Link to={{
+                        pathname: ROUTES.SUPPLY_LIST_URL,
+                        query: {openCreateDialog: true}
+                    }} target='_blank'>добавить поставку</Link>
+                </div>
+                : <div className={classes.noSupply}>
+                    Постaвок не найдено, <Link to={{
+                        pathname: ROUTES.SUPPLY_LIST_URL,
+                        query: {openCreateDialog: true}
+                    }} target='_blank'>добавить поставку</Link>
+                    <br/>или <span onClick={defaultDialog.handleOpen} style={{color: '#129fdd', cursor: 'pointer'}}>
+                                     добавьте
+                                </span> себестоимость по умолчанию
+                </div>}
+
+        </div>
+    )
     if (loading) {
         return (
             <div className={classes.loader}>
@@ -243,30 +282,35 @@ const PriceDetails = enhance((props) => {
                                             </div>}
 
                     {!priceHistoryLoading && (_.isEmpty(priceHistoryList) && !_.get(defaultNetCost, 'cost')) &&
-                        // If not default net cost set nor supplied show this element
-                        <div>
-                            <div className={classes.emptyQuery}>
-                            </div>
-                            <div className={classes.noSupply}>
-                                Постaвок не найдено, <Link to={{
-                                    pathname: ROUTES.SUPPLY_LIST_URL,
-                                    query: {openCreateDialog: true}
-                                }} target='_blank'>добавить поставку</Link>
-                                <br/>или <span onClick={defaultDialog.handleOpen} style={{color: '#129fdd', cursor: 'pointer'}}>
-                                     добавьте
-                                </span> себестоимость по умолчанию
-                            </div>
-                        </div>
+                        // If default net cost is not set and supply list is empty show this element
+                        emptySupplyList
                     }
-                    {!priceHistoryLoading && (_.get(defaultNetCost, 'cost')) &&
-                        // If net cost set show it
+                    {!priceHistoryLoading && _.get(defaultNetCost, 'cost') &&
+                        // If net_cost set show it
                         <div className={classes.netCost}>
                             <span>Себестоимость по умолчанию:</span>
-                            <span>{numberFormat(_.get(defaultNetCost, 'cost'), getConfig('PRIMARY_CURRENCY'))}</span>
+                            <div>{numberFormat(_.get(defaultNetCost, 'cost'), getConfig('PRIMARY_CURRENCY'))}
+                                <div className={classes.titleButtons}>
+                                    <Tooltip position="bottom" text="Изменить">
+                                        <IconButton
+                                            iconStyle={iconStyle2.icon}
+                                            style={iconStyle2.button}
+                                            touch={true}
+                                            onTouchTap={defaultDialog.handleOpen}>
+                                            <Edit />
+                                        </IconButton>
+                                    </Tooltip>
+                                </div>
+                            </div>
                         </div>
                     }
-                    {!priceHistoryLoading && (!_.isEmpty(priceHistoryList) || _.get(defaultNetCost, 'cost')) &&
-                        <div className={classes.tableContent}>
+                    {!priceHistoryLoading && _.get(defaultNetCost, 'cost') && _.isEmpty(priceHistoryList) &&
+                        // If net_cost set but supply list is empty
+                        emptySupplyList
+                    }
+
+                    {!priceHistoryLoading && (!_.isEmpty(priceHistoryList))
+                        ? <div className={classes.tableContent}>
                             <Row>
                                 <Col xs={2} style={{fontSize: '15px'}}>&#8470;</Col>
                                 <Col style={{textAlign: 'left'}} xs={3}>Дата</Col>
@@ -297,6 +341,7 @@ const PriceDetails = enhance((props) => {
                                 <span className={classes.averagePrice}>{numberFormat(averageCost, getConfig('PRIMARY_CURRENCY'))}</span>
                             </div>
                         </div>
+                        : null
                     }
 
                 </div>
@@ -361,6 +406,7 @@ const PriceDetails = enhance((props) => {
 
             <PriceSetDefaultDialog
                 onClose={defaultDialog.handleClose}
+                initialValues={{amount: _.get(defaultNetCost, 'cost')}}
                 open={defaultDialog.open}
                 onSubmit={defaultDialog.handleSubmit}
             />

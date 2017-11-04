@@ -143,7 +143,8 @@ const StockTransferDetails = enhance((props) => {
         handleOpenDeliveryPrintDialog,
         confirmTransfer,
         classes,
-        loading
+        loading,
+        currentDeliverer
     } = props
 
     if (loading) {
@@ -198,7 +199,10 @@ const StockTransferDetails = enhance((props) => {
                 </div>
                 : <div style={{width: '100%'}}>
                     <div className={classes.content}>
-                        <div className={classes.ordersData}>Показаны товары по следующим заказам: <strong>{orders}</strong></div>
+                        <div className={classes.ordersData}>
+                            <div>Склад: <strong>{currentDeliverer.stock.name}</strong></div>
+                            <div>Показаны товары по следующим заказам: {orders}</div>
+                        </div>
                         <div className={classes.leftSide}>
                             <Row className='dottedList'>
                                 <Col xs={6}>Товар</Col>

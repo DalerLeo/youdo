@@ -288,8 +288,8 @@ const PriceList = enhance((props) => {
     const detailData = {
         priceItemExpenseLoading,
         priceItemExpenseList,
-        priceItemHistoryList: priceItemHistoryList.supplies,
-        defaultNetCost: priceItemHistoryList.defaultNetCost,
+        priceItemHistoryList: _.get(priceItemHistoryList, 'supplies'),
+        defaultNetCost: _.get(priceItemHistoryList, 'defaultNetCost'),
         priceItemHistoryLoading,
         id: detailId,
         priceListItemsLoading,
