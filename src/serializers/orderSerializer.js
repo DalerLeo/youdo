@@ -63,7 +63,7 @@ export const listFilterSerializer = (data, id, withOrderReturn) => {
         'debt': dept === ONE ? true : (dept === TWO ? false : null),
         'market': _.get(defaultData, 'shop'),
         'date_delivery': _.get(defaultData, 'dateDelivery'),
-        'deliveryMan': _.get(defaultData, 'deliveryMan'),
+        'delivery_man': _.get(defaultData, 'deliveryMan'),
         'total_price': _.get(defaultData, 'totalPrice'),
         'total_balance': _.get(defaultData, 'totalBalance'),
         'status': status,

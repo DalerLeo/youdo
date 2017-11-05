@@ -16,7 +16,8 @@ import {
     ClientSearchField,
     OrderListProductField,
     DateField,
-    UsersSearchField
+    UsersSearchField,
+    DeliveryManSearchField
 } from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 import numberFormat from '../../helpers/numberFormat'
@@ -330,7 +331,7 @@ const OrderCreateDialog = enhance((props) => {
                                             />
                                             <Field
                                                 name="deliveryMan"
-                                                component={UsersSearchField}
+                                                component={DeliveryManSearchField}
                                                 className={classes.inputDateCustom}
                                                 label="Доставщик"
                                                 container="inline"

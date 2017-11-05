@@ -581,6 +581,7 @@ const OrderList = enhance((props) => {
     const dept = _.toInteger(filter.getParam(ORDER_FILTER_KEY.DEPT))
     const initiator = _.toInteger(filter.getParam(ORDER_FILTER_KEY.INITIATOR))
     const zone = _.toInteger(filter.getParam(ORDER_FILTER_KEY.ZONE))
+    const deliveryMan = _.toInteger(filter.getParam(ORDER_FILTER_KEY.DELIVERY_MAN))
     const orderStatus = _.toInteger(filter.getParam(ORDER_FILTER_KEY.STATUS))
     const shop = _.toInteger(filter.getParam(ORDER_FILTER_KEY.SHOP))
     const product = _.toInteger(filter.getParam(ORDER_FILTER_KEY.PRODUCT))
@@ -762,6 +763,9 @@ const OrderList = enhance((props) => {
             },
             zone: {
                 value: zone
+            },
+            deliveryMan: {
+                value: deliveryMan
             },
             deliveryDate: {
                 deliveryFromDate: deliveryFromDate && moment(deliveryFromDate, 'YYYY-MM-DD'),

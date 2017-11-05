@@ -79,8 +79,10 @@ import SupplyTypeSearchFiled from './Supply/SupplyTypeSearchFiled'
 import ClientBalanceTypeSearchField from './ClientBalance/ClientBalanceTypeSearchField'
 import EquipmentSearchField from './EquipmentSearchField'
 import PendingExpensesTypeSearchField from './PendingExpensesTypeSearchField'
+import DeliveryManSearchField from './DeliveryManSearchField'
 
 export {
+    DeliveryManSearchField,
     PendingExpensesTypeSearchField,
     EquipmentSearchField,
     SupplyTypeSearchFiled,
