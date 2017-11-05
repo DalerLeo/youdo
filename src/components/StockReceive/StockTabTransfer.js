@@ -17,6 +17,7 @@ import FlatButton from 'material-ui/FlatButton'
 import Order from 'material-ui/svg-icons/editor/monetization-on'
 import Delivery from 'material-ui/svg-icons/maps/local-taxi'
 import Tooltip from '../ToolTip'
+import toBoolean from '../../helpers/toBoolean'
 
 const ZERO = 0
 
@@ -295,14 +296,14 @@ const StockTabTransfer = enhance((props) => {
                 message={'Запрос № ' + _.get(detailData, 'id')}
                 onClose={confirmDialog.handleCloseConfirmDialog}
                 onSubmit={confirmDialog.handleSubmitTransferAcceptDialog}
-                open={confirmDialog.openConfirmDialog > ZERO}
+                open={toBoolean(confirmDialog.openConfirmDialog)}
             />
             <ConfirmDialog
                 type="submit"
                 message={'Передать доставщику?'}
                 onClose={confirmTransfer.handleCloseDeliveryConfirmDialog}
                 onSubmit={confirmTransfer.handleSubmitDeliveryConfirmDialog}
-                open={confirmTransfer.openConfirmTransfer}
+                open={_.toInteger(confirmTransfer.openConfirmTransfer)}
             />
         </div>
     )

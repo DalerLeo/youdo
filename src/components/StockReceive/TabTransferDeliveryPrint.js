@@ -1,4 +1,5 @@
 import React from 'react'
+import moment from 'moment'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import injectSheet from 'react-jss'
@@ -94,8 +95,10 @@ const enhance = compose(
 )
 
 const TabTransferDeliveryPrint = enhance((props) => {
-    const {classes, deliveryDetailsData} = props
+    const {classes, deliveryDetailsData, currentDeliverer, dataRange, orders} = props
     const loading = _.get(deliveryDetailsData, 'deliveryDetailLoading')
+    const startDay = moment(_.get(dataRange, 'startDate')).format('YYYY-MM-01')
+    const endDay = moment(_.get(dataRange, 'endDate')).format('YYYY-MM-01')
     const deliveryMan = _.get(deliveryDetailsData, ['data', 'deliveryMan'])
     const deliveryManName = deliveryMan
         ? _.get(deliveryMan, 'firstName') + ' ' + _.get(deliveryMan, 'secondName')
@@ -111,9 +114,11 @@ const TabTransferDeliveryPrint = enhance((props) => {
         <div className={classes.wrapper}>
             <div className="printItem">
                 <div className={classes.title}>
-                    <span>{deliveryManName}</span>
+                    <div>Доставщик: <span>{deliveryManName}</span></div>
+                    <div>Период : <strong>{startDay} - {endDay}</strong></div>
                 </div>
-
+                <div>Склад: <strong>{currentDeliverer.stock.name}</strong></div>
+                <div>Показаны товары по следующим заказам:: <strong>{orders}</strong></div>
                 <div className={classes.products}>
                     <Row>
                         <Col xs={4}>Наименование</Col>

@@ -12,7 +12,6 @@ import Tooltip from '../ToolTip'
 import IconButton from 'material-ui/IconButton'
 import LinearProgress from '../LinearProgress'
 import CheckCircleIcon from 'material-ui/svg-icons/action/check-circle'
-const ACCEPT = 1
 
 const colorBlue = '#12aaeb !important'
 const enhance = compose(
@@ -180,7 +179,7 @@ const StockTransferDetails = enhance((props) => {
                                             iconStyle={iconStyle.icon}
                                             style={iconStyle.button}
                                             touch={true}
-                                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(ACCEPT) }}>
+                                            onTouchTap={confirmDialog.handleOpenConfirmDialog}>
                                             <CheckCircleIcon />
                                         </IconButton>
                                     </Tooltip>

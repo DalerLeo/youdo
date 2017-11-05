@@ -232,7 +232,7 @@ const OrderDetails = enhance((props) => {
     const dealType = _.get(data, 'dealType')
     const division = _.get(data, ['division', 'name'])
     const deliveryMan = _.get(data, ['deliveryMan', 'firstName']) && _.get(data, ['deliveryMan', 'firstName'])
-        ? _.get(data, ['deliveryMan', 'firstName']) + ' ' + _.get(data, ['deliveryMan', 'firstName'])
+        ? _.get(data, ['deliveryMan', 'firstName']) + ' ' + _.get(data, ['deliveryMan', 'secondName'])
         : 'Не указан'
     const client = _.get(data, ['client', 'name'])
     const deliveryType = _.get(data, 'deliveryType')
