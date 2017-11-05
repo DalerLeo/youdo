@@ -12,7 +12,6 @@ import ZoneDeleteDialog from './ZoneDeleteDialog'
 import {googleMapStyle} from '../../constants/googleMapsStyle'
 import Location from '../Images/market-green.png'
 import MarketOff from '../Images/market-red.png'
-import Checkbox from 'material-ui/Checkbox'
 const MARKER_SIZE = 30
 const ZERO = 0
 const INFO_WINDOW_OFFSET = -7
@@ -26,14 +25,6 @@ const classes = {
         alignItems: 'center',
         justifyContent: 'center',
         display: 'flex'
-    }
-}
-const styles = {
-    block: {
-        maxWidth: 250
-    },
-    checkbox: {
-        marginBottom: 16
     }
 }
 
@@ -422,13 +413,7 @@ export default class GoogleCustomMap extends React.Component {
         this.overlayView = null
         this.map = null
     }
-    updateCheck () {
-        this.setState((oldState) => {
-            return {
-                showMarkets: !oldState.showMarkets
-            }
-        })
-    }
+
     render () {
         if (this.map && this.overlayView) {
             this.map.addListener('zoom_changed', () => {
@@ -450,12 +435,6 @@ export default class GoogleCustomMap extends React.Component {
         }
         return (
             <div style={{height: '100%', width: '100%'}}>
-                <Checkbox
-                    label="Markets"
-                    checked={this.state.showMarkets}
-                    onCheck={this.updateCheck.bind(this)}
-                    style={styles.checkbox}
-                />
                 <div className='GMap-canvas' id="mappingGoogleCustom" ref='mapping'
                      style={{height: '100%', width: '100%'}}>
                 </div>

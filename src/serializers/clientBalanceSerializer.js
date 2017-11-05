@@ -3,6 +3,7 @@ import {orderingSnakeCase} from '../helpers/serializer'
 import numberWithoutSpaces from '../helpers/numberWithoutSpaces'
 import getConfig from '../helpers/getConfig'
 
+const ZERO = 0
 export const createSerializer = (data, expenseId) => {
     const cashboxId = _.get(data, ['cashbox', 'value'])
     const categoryId = _.get(data, ['categoryId', 'value'])
@@ -40,9 +41,18 @@ export const itemFilterSerializer = (data, id, division, type) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
     const paymentType = type || null
+    if (division > ZERO) {
+        return {
+            'client': id,
+            'division': division,
+            'payment_type': paymentType,
+            'page': _.get(defaultData, 'dPage'),
+            'page_size': _.get(defaultData, 'dPageSize'),
+            'ordering': ordering && orderingSnakeCase(ordering)
+        }
+    }
     return {
         'client': id,
-        'division': division,
         'payment_type': paymentType,
         'page': _.get(defaultData, 'dPage'),
         'page_size': _.get(defaultData, 'dPageSize'),
@@ -50,7 +60,6 @@ export const itemFilterSerializer = (data, id, division, type) => {
     }
 }
 
-const ZERO = 0
 const MINUS_ONE = -1
 
 export const createExpenseSerializer = (data, client) => {
