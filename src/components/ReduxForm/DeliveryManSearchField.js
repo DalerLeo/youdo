@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import sprintf from 'sprintf'
 import React from 'react'
 import SearchField from './Basic/SearchField'
@@ -19,14 +20,17 @@ const getItem = (id) => {
         })
 }
 
+const getText = (obj) => {
+    return _.get(obj, 'firstName') + ' ' + _.get(obj, 'secondName')
+}
 const DeliveryManSearchField = (props) => {
     return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
-            getText={SearchField.defaultGetText('name')}
+            getText={getText}
             getOptions={getOptions}
             getItem={getItem}
-            getItemText={SearchField.defaultGetText('name')}
+            getItemText={SearchField.defaultGetText('secontName')}
             {...props}
         />
     )
