@@ -170,14 +170,15 @@ const enhance = compose(
         },
 
         handleOpenDeliveryPrintDialog: props => () => {
-            const {setOpenDeliveryPrint, dispatch, beginDate, endDate, params} = props
+            const {setOpenDeliveryPrint, dispatch, beginDate, endDate, params, location} = props
             const detailId = _.get(params, 'stockTransferId') ? _.toInteger(_.get(params, 'stockTransferId')) : false
+            const stockId = _.get(location, ['query', TYPE])
             const dateRange = {
                 fromDate: beginDate,
                 toDate: endDate
             }
             setOpenDeliveryPrint(true)
-            dispatch(stockTransferDeliveryItemFetchAction(dateRange, detailId))
+            dispatch(stockTransferDeliveryItemFetchAction(dateRange, detailId, stockId))
                 .then(() => {
                     window.print()
                 })
@@ -442,6 +443,7 @@ const StockTransferList = enhance((props) => {
         document.getElementById('wrapper').style.height = 'auto'
         return (
             <TabTransferDeliveryPrint
+                printDialog={printDialog}
                 deliveryDetailsData={deliveryDetailsData}/>
         )
     }
