@@ -171,7 +171,7 @@ const StockTransferDetails = enhance((props) => {
                 <div className={classes.title}>{deliveryManName}</div>
                 <div className={classes.closeDetail} onClick={handleCloseDetail}>{null}</div>
                 <div className={classes.titleButtons}>
-                    <Tooltip position="bottom" text="Распечатать накладную">
+                    <Tooltip position="bottom" text="Распечатать релись">
                         <IconButton
                             disabled={_.isEmpty(products)}
                             iconStyle={iconStyle.icon}

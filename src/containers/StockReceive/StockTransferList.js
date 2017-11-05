@@ -234,8 +234,8 @@ const enhance = compose(
             const {setOpenConfirmTransfer, dispatch, deliveryDetail, location, beginDate, endDate} = props
             const stockId = _.get(location, ['query', TYPE])
             const dateRange = {
-                beginDate,
-                endDate
+                'beginDate': beginDate,
+                'endDate': endDate
             }
             return dispatch(stockTransferDeliveryTransferAction(deliveryDetail, stockId, dateRange))
                 .then(() => {
@@ -249,6 +249,10 @@ const enhance = compose(
                 })
         },
 
+        handleOpenConfirmDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[STOCK_CONFIRM_DIALOG_OPEN]: true})})
+        },
         handleCloseConfirmDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[STOCK_CONFIRM_DIALOG_OPEN]: false})})
@@ -347,7 +351,7 @@ const StockTransferList = enhance((props) => {
 
     const detailId = _.get(params, 'stockTransferId') ? _.toInteger(_.get(params, 'stockTransferId')) : false
     const detailType = _.get(location, ['query', TYPE])
-    const openConfirmDialog = _.toInteger(_.get(location, ['query', STOCK_CONFIRM_DIALOG_OPEN]))
+    const openConfirmDialog = _.get(location, ['query', STOCK_CONFIRM_DIALOG_OPEN])
     const openFilterDialog = toBoolean(_.get(location, ['query', TAB_TRANSFER_FILTER_OPEN]))
     const stock = _.toInteger(filter.getParam(TAB_TRANSFER_FILTER_KEY.STOCK))
     const type = _.toInteger(filter.getParam(TAB_TRANSFER_FILTER_KEY.TYPE))
@@ -431,7 +435,13 @@ const StockTransferList = enhance((props) => {
         detailLoading,
         currentDetail
     }
-
+    const currentDeliverer = _.find(_.get(deliveryData, 'data'), (item) => {
+        return _.toInteger(_.get(item, ['user', 'id'])) === _.get(deliveryDetailsData, 'id') &&
+            _.toInteger(_.get(item, ['stock', 'id'])) === _.get(deliveryDetailsData, 'stock')
+    })
+    const orders = _.map(_.get(deliveryDetailsData, ['data', 'orders']), (item) => {
+        return <strong>{item}</strong>
+    })
     if (openPrint) {
         document.getElementById('wrapper').style.height = 'auto'
 
@@ -444,7 +454,11 @@ const StockTransferList = enhance((props) => {
         return (
             <TabTransferDeliveryPrint
                 printDialog={printDialog}
-                deliveryDetailsData={deliveryDetailsData}/>
+                deliveryDetailsData={deliveryDetailsData}
+                currentDeliverer={currentDeliverer}
+                orders={orders}
+                dataRange={_.get(filterDialog.initialValues, 'dateRange')}/>
+
         )
     }
     document.getElementById('wrapper').style.height = '100%'
