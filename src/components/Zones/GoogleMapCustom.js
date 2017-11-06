@@ -12,6 +12,7 @@ import ZoneDeleteDialog from './ZoneDeleteDialog'
 import {googleMapStyle} from '../../constants/googleMapsStyle'
 import Location from '../Images/market-green.png'
 import MarketOff from '../Images/market-red.png'
+import Checkbox from 'material-ui/Checkbox'
 const MARKER_SIZE = 30
 const ZERO = 0
 const INFO_WINDOW_OFFSET = -7
@@ -25,6 +26,15 @@ const classes = {
         alignItems: 'center',
         justifyContent: 'center',
         display: 'flex'
+    }
+}
+
+const styles = {
+    block: {
+        maxWidth: 250
+    },
+    checkbox: {
+
     }
 }
 
@@ -129,7 +139,7 @@ export default class GoogleCustomMap extends React.Component {
             scaledSize: new google.maps.Size(SCALED, SCALED)
         }
 
-        const markers = list.map((item) => {
+        this.markers = list.map((item) => {
             const marker = new google.maps.Marker({
                 position: item.location,
                 icon: item.isActive ? marketOn : marketOff,
@@ -154,9 +164,10 @@ export default class GoogleCustomMap extends React.Component {
             return marker
         })
 
-        new MarkerClusterer(this.map, markers,
+        this.cluster = new MarkerClusterer(this.map, this.markers,
             {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'})
     }
+
     createMap () {
         const mapOptions = {
             zoom: 13,
@@ -393,11 +404,20 @@ export default class GoogleCustomMap extends React.Component {
                 this.handleClearDrawing()
             }
         }
+        // For deleting markers if checkbox unchecked
+        if (!nextState.showMarkets && this.cluster) {
+            this.cluster.clearMarkers()
+            this.markers = null
+            this.cluster = null
+        }
     }
 
     componentWillUnmount () {
         if (this.overlayView) {
             this.overlayView.setMap(null)
+            this.overlayView.onAdd = null
+            this.overlayView.draw = null
+            this.overlayView.onRemove = null
         }
         this.state.drawing.setMap(null)
         this.setState({
@@ -407,11 +427,16 @@ export default class GoogleCustomMap extends React.Component {
             isDrawing: null,
             currentOverlay: null
         })
-        this.overlayView.onAdd = null
-        this.overlayView.draw = null
-        this.overlayView.onRemove = null
         this.overlayView = null
+        this.cluster = null
         this.map = null
+    }
+    updateCheck () {
+        this.setState((oldState) => {
+            return {
+                showMarkets: !oldState.showMarkets
+            }
+        })
     }
 
     render () {
@@ -421,7 +446,19 @@ export default class GoogleCustomMap extends React.Component {
                 mapFloatPane[GOOGLE_MAP.FLOATPANE].innerHTML = ''
             })
         }
-        const {addZone, filter, updateZone, isOpenAddZone, isOpenUpdateZone, deleteZone} = this.props
+
+        const {addZone, filter, updateZone, isOpenAddZone, isOpenUpdateZone, deleteZone, isOpenToggle} = this.props
+
+        const marker = {
+            background: '#fff',
+            position: 'absolute',
+            bottom: '2px',
+            right: isOpenToggle ? '450px' : '0',
+            zIndex: '1',
+            padding: '8px 15px',
+            transition: 'all 0.3s ease',
+            boxShadow: 'rgba(0, 0, 0, 0.12) -2px -2px 6px, rgba(0, 0, 0, 0.12) -2px -2px 4px'
+        }
 
         const GOOGLE_API_KEY = process.env.GOOGLE_KEY ? process.env.GOOGLE_KEY : 'AIzaSyDnUkBg_uV1aa4e7pyEvv3bVxN3RfwNQEo'
         const url = 'https://maps.googleapis.com/maps/api/js?key=' + GOOGLE_API_KEY + '&libraries=drawing'
@@ -433,8 +470,18 @@ export default class GoogleCustomMap extends React.Component {
                 </div>
             )
         }
+
         return (
-            <div style={{height: '100%', width: '100%'}}>
+            <div style={{height: '100%', width: '100%', overflow: 'hidden'}}>
+                <div style={marker}>
+                    <Checkbox
+                        label="Магазины"
+                        checked={this.state.showMarkets}
+                        onCheck={this.updateCheck.bind(this)}
+                        style={styles}
+                        iconStyle={{marginRight: '5px'}}
+                    />
+                </div>
                 <div className='GMap-canvas' id="mappingGoogleCustom" ref='mapping'
                      style={{height: '100%', width: '100%'}}>
                 </div>
