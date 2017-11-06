@@ -17,8 +17,7 @@ import {
 } from '../../components/PendingExpenses'
 import {
     pendingExpensesUpdateAction,
-    pendingExpensesListFetchAction,
-    pendingExpensesItemFetchAction
+    pendingExpensesListFetchAction
 } from '../../actions/pendingExpenses'
 import {openErrorAction} from '../../actions/error'
 import {openSnackbarAction} from '../../actions/snackbar'
@@ -27,10 +26,7 @@ const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
-        const detail = _.get(state, ['pendingExpenses', 'item', 'data'])
-        const detailLoading = _.get(state, ['pendingExpenses', 'item', 'loading'])
         const createLoading = _.get(state, ['pendingExpenses', 'create', 'loading'])
-        const updateLoading = _.get(state, ['pendingExpenses', 'update', 'loading'])
         const list = _.get(state, ['pendingExpenses', 'list', 'data'])
         const listLoading = _.get(state, ['pendingExpenses', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'PendingExpensesFilterForm'])
@@ -40,10 +36,7 @@ const enhance = compose(
         return {
             list,
             listLoading,
-            detail,
-            detailLoading,
             createLoading,
-            updateLoading,
             filter,
             filterForm,
             createForm
@@ -54,16 +47,6 @@ const enhance = compose(
     }, ({dispatch, filter}) => {
         dispatch(pendingExpensesListFetchAction(filter))
     }),
-
-    withPropsOnChange((props, nextProps) => {
-        const pendingExpensesId = _.get(nextProps, ['params', 'pendingExpensesId'])
-
-        return pendingExpensesId && _.get(props, ['params', 'pendingExpensesId']) !== pendingExpensesId
-    }, ({dispatch, params}) => {
-        const pendingExpensesId = _.toInteger(_.get(params, 'pendingExpensesId'))
-        pendingExpensesId && dispatch(pendingExpensesItemFetchAction(pendingExpensesId))
-    }),
-
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
 
     withHandlers({
@@ -113,9 +96,8 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[PENDING_EXPENSES_UPDATE_DIALOG_OPEN]: false})})
         },
 
-        handleSubmitUpdateDialog: props => () => {
-            const {dispatch, createForm, filter, detail} = props
-
+        handleSubmitUpdateDialog: props => (detail) => {
+            const {dispatch, createForm, filter} = props
             return dispatch(pendingExpensesUpdateAction(detail, _.get(createForm, ['values'])))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
@@ -144,9 +126,6 @@ const PendingExpensesList = enhance((props) => {
         location,
         list,
         listLoading,
-        detail,
-        detailLoading,
-        updateLoading,
         filter,
         layout,
         params
@@ -169,32 +148,6 @@ const PendingExpensesList = enhance((props) => {
     }
 
     const updateDialog = {
-        initialValues: (() => {
-            if (!detail || openUpdateDialog) {
-                return {}
-            }
-
-            return {
-                name: _.get(detail, 'name'),
-                category: {
-                    value: _.get(detail, 'category')
-                },
-                paymentType: {
-                    value: _.get(detail, 'paymentType')
-                },
-                address: _.get(detail, 'address'),
-                comment: _.get(detail, 'comment'),
-                guide: _.get(detail, 'guide'),
-                phone: _.get(detail, 'phone'),
-                contactName: _.get(detail, 'contactName'),
-                official: _.get(detail, 'official'),
-                latLng: {
-                    lat: _.get(detail, 'lat'),
-                    lng: _.get(detail, 'lon')
-                }
-            }
-        })(),
-        updateLoading: detailLoading || updateLoading,
         openUpdateDialog,
         handleOpenUpdateDialog: props.handleOpenUpdateDialog,
         handleCloseUpdateDialog: props.handleCloseUpdateDialog,
@@ -238,22 +191,16 @@ const PendingExpensesList = enhance((props) => {
         listLoading
     }
 
-    const detailData = {
-        id: detailId,
-        data: detail,
-        detailLoading
-    }
-
     return (
         <Layout {...layout}>
             <PendingExpensesGridList
                 filter={filter}
                 listData={listData}
-                detailData={detailData}
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
                 filterDialog={filterDialog}
                 csvDialog={csvDialog}
+                detailId={detailId}
             />
         </Layout>
     )
