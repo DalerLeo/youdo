@@ -50,7 +50,7 @@ class App extends React.Component {
         const layout = {
             handleSignOut
         }
-        const title = this.props.title || ''
+        const title = 'Rhythm ERP'
 
         return (
             <DocumentTitle title={title}>

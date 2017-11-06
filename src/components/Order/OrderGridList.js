@@ -25,10 +25,11 @@ import numberFormat from '../../helpers/numberFormat'
 import Delivered from 'material-ui/svg-icons/action/done-all'
 import Available from 'material-ui/svg-icons/av/playlist-add-check'
 import Canceled from 'material-ui/svg-icons/notification/do-not-disturb-alt'
-import Transfered from 'material-ui/svg-icons/action/motorcycle'
+import Transferred from 'material-ui/svg-icons/action/motorcycle'
 import Payment from 'material-ui/svg-icons/action/credit-card'
 import InProcess from 'material-ui/svg-icons/action/cached'
 import dateFormat from '../../helpers/dateFormat'
+import toBoolean from '../../helpers/toBoolean'
 
 const listHeader = [
     {
@@ -116,6 +117,10 @@ const enhance = compose(
                 background: '#12aaeb'
             }
         },
+        listWithCheckbox: {
+            marginLeft: '-50px !important',
+            paddingLeft: '50px !important'
+        },
         dot: {
             display: 'inline-block',
             height: '7px',
@@ -183,6 +188,7 @@ const OrderGridList = enhance((props) => {
         isSuperUser
     } = props
 
+    const showCheckboxes = toBoolean(_.get(filter.getParams(), 'showCheckboxes'))
     const orderFilterDialog = (
         <OrderFilterForm
             initialValues={filterDialog.initialValues}
@@ -259,7 +265,7 @@ const OrderGridList = enhance((props) => {
         const CANCELED = 4
         const ZERO = 0
         return (
-            <div key={id} className={isNew ? classes.listWrapperNew : classes.listWrapper}>
+            <div key={id} className={(isNew ? classes.listWrapperNew : classes.listWrapper) + ' ' + (showCheckboxes ? classes.listWithCheckbox : '')}>
                 <Link className={classes.openDetails} to={{
                     pathname: sprintf(ROUTES.ORDER_ITEM_PATH, id),
                     query: filter.getParams()
@@ -307,7 +313,7 @@ const OrderGridList = enhance((props) => {
                                         iconStyle={iconStyle.icon}
                                         style={iconStyle.button}
                                         touch={true}>
-                                        <Transfered color="#f0ad4e"/>
+                                        <Transferred color="#f0ad4e"/>
                                     </IconButton>
                                 </Tooltip>
                                     : <Tooltip position="bottom" text="Заказ отменен">
@@ -376,6 +382,7 @@ const OrderGridList = enhance((props) => {
                 filterDialog={orderFilterDialog}
                 printDialog={printDialog}
                 refreshAction={refreshAction}
+                withCheckboxes={showCheckboxes}
             />
 
             <OrderCreateDialog

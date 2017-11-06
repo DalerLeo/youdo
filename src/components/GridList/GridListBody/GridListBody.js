@@ -30,6 +30,8 @@ const enhance = compose(
         item: {
             height: '50px',
             padding: '0 30px',
+            position: 'relative',
+            'padding-left': ({withCheckboxes}) => withCheckboxes ? '50px' : '30px',
             '& .row': {
                 width: '100%',
                 alignItems: 'center',
@@ -63,6 +65,7 @@ const enhance = compose(
         },
         hoverItem: {
             extend: 'item',
+            'padding-left': ({withCheckboxes}) => withCheckboxes ? '50px' : '30px',
             '&:hover': {
                 background: '#f2f5f8 !important'
             },
@@ -72,7 +75,20 @@ const enhance = compose(
         },
         flexibleItem: {
             extend: 'item',
+            'padding-left': ({withCheckboxes}) => withCheckboxes ? '50px' : '30px',
             height: 'auto'
+        },
+        active: {
+            background: '#f2f5f8 !important'
+        },
+        checkbox: {
+            display: 'flex',
+            alignItems: 'center',
+            width: '24px',
+            position: 'absolute',
+            top: '0',
+            left: '20px',
+            bottom: '0'
         },
         detail: {
             margin: '20px -15px !important',
@@ -113,7 +129,7 @@ const enhance = compose(
                     .filter(item => id !== item)
                     .value()
                 const newSelects = isChecked ? selectsInChecked : selectsUnChecked
-                const url = filter.createURL({select: _.join(newSelects, ',')})
+                const url = filter.createURL({select: _.join(newSelects, '-')})
 
                 hashHistory.push(url)
             }
@@ -128,7 +144,7 @@ const GridListBody = enhance((props) => {
         list,
         onChecked,
         detail,
-        withoutCheckboxes,
+        withCheckboxes,
         flexibleRow,
         listShadow,
         listLoading,
@@ -137,12 +153,13 @@ const GridListBody = enhance((props) => {
     } = props
 
     const items = _.map(list, (item, index) => {
-        const id = (_.get(item, 'key'))
-        const detailId = (_.get(detail, 'key'))
+        const id = _.get(item, 'key')
+        const detailId = _.get(detail, 'key')
         const selects = filter.getSelects()
+        const isChecked = _.includes(selects, id)
         const checkboxChecked = _
             .chain(selects)
-            .find(selectId => selectId === id)
+            .find(selectId => _.toInteger(selectId) === _.toInteger(id))
             .isNumber()
             .value()
 
@@ -157,12 +174,12 @@ const GridListBody = enhance((props) => {
         return (
             <Paper
                 zDepth={1}
-                className={flexibleRow ? classes.flexibleItem : hoverableList ? classes.hoverItem : classes.item}
+                className={(flexibleRow ? classes.flexibleItem : hoverableList ? classes.hoverItem : classes.item) + ' ' + (isChecked ? classes.active : '')}
                 key={index}
                 style={!listShadow ? {boxShadow: 'none'} : {boxShadow: 'rgba(0, 0, 0, 0.12) 0px 3px 6px, rgba(0, 0, 0, 0.12) 0px 3px 4px'}}>
                 <div className={classes.checkbox}>
-                    {withoutCheckboxes &&
-                    <Checkbox onCheck={onChecked(id)} checked={checkboxChecked}/>
+                    {withCheckboxes &&
+                    <Checkbox onCheck={onChecked(_.toInteger(id))} checked={checkboxChecked}/>
                     }
                 </div>
                 {item}

@@ -8,9 +8,14 @@ import GridListNavSearch from '../GridListNavSearch'
 import IconButton from 'material-ui/IconButton'
 import Print from 'material-ui/svg-icons/action/print'
 import RefreshIcon from 'material-ui/svg-icons/action/cached'
+import Check from 'material-ui/svg-icons/av/playlist-add-check'
+import HideCheck from 'material-ui/svg-icons/action/visibility-off'
+import Uncheck from 'material-ui/svg-icons/toggle/indeterminate-check-box'
 import Tooltip from '../../ToolTip'
+import {hashHistory} from 'react-router'
+import toBoolean from '../../../helpers/toBoolean'
 
-const GridListNav = ({classes, filter, filterDialog, addButton, actions, withoutSearch, customData, withInvoice, printDialog, refreshAction, withoutPagination}) => {
+const GridListNav = ({classes, filter, filterDialog, addButton, withoutSearch, customData, withInvoice, printDialog, refreshAction, withoutPagination}) => {
     const selectIsEmpty = _.isEmpty(filter.getSelects())
     const filterIsEmpty = _.isEmpty(filterDialog)
     const addButtonIsEmpty = _.isEmpty(addButton)
@@ -18,8 +23,16 @@ const GridListNav = ({classes, filter, filterDialog, addButton, actions, without
     const handleUpdateDialog = _.get(customData, ['dialog', 'handleOpenSetCurrencyDialog'])
     const gridDataId = _.get(customData, 'id')
     const currentCurrency = _.get(_.find(listData, {'id': gridDataId}), 'name')
-    const listCount = filter.getCounts()
-    const MAX_COUNT = 300
+    const selectCount = filter.getSelects().length
+    const showCheckboxes = toBoolean(_.get(filter.getParams(), 'showCheckboxes'))
+    const toggleCheckboxes = () => {
+        return (!showCheckboxes)
+            ? hashHistory.push(filter.createURL({showCheckboxes: 'true'}))
+            : hashHistory.push(filter.createURL({showCheckboxes: null, select: null}))
+    }
+    const clearSelects = () => {
+        hashHistory.push(filter.createURL({select: null}))
+    }
     return (
         <div className={classes.wrapper}>
             <div style={{padding: '0 30px'}}>
@@ -49,11 +62,12 @@ const GridListNav = ({classes, filter, filterDialog, addButton, actions, without
                     <Col xs={5} className={classes.flex}>
                         {!withoutPagination && <GridListNavPagination filter={filter}/>}
                         {withInvoice &&
-                        <Tooltip position="left" text={(listCount > MAX_COUNT) ? 'Превышено количество данных' : 'Распечатать накладные'}>
+                        <Tooltip position="left" text={showCheckboxes ? 'Спрятать флажки' : 'Выбрать заказы для накладного или релиза'}>
                             <IconButton
-                                disabled={(listCount > MAX_COUNT) && true}
-                                onTouchTap={printDialog.handleOpenPrintDialog}>
-                                <Print color="#666"/>
+                                onTouchTap={toggleCheckboxes}>
+                                {showCheckboxes
+                                ? <HideCheck color="#666"/>
+                                : <Check color="#666"/>}
                             </IconButton>
                         </Tooltip>}
                         {refreshAction &&
@@ -68,11 +82,26 @@ const GridListNav = ({classes, filter, filterDialog, addButton, actions, without
                 </Row>}
 
                 {!selectIsEmpty && <Row className={classes.action}>
-                    <Col xs={1}>
-                        {filter.getSelects().length} selected
+                    <Col xs={4}>
+                        <div><strong>Выбрано: {selectCount}</strong></div>
                     </Col>
-                    <Col xs={11} className={classes.actionButtons}>
-                        {actions}
+                    <Col xs={8} className={classes.actionButtons}>
+                        {!withoutPagination && <GridListNavPagination filter={filter}/>}
+                        <div className={classes.buttons}>
+                            {withInvoice &&
+                            <Tooltip position="left" text="Распечатать накладные">
+                                <IconButton
+                                    onTouchTap={printDialog.handleOpenPrintDialog}>
+                                    <Print color="#666"/>
+                                </IconButton>
+                            </Tooltip>}
+                            <Tooltip position="left" text="Снять выделение">
+                                <IconButton
+                                    onTouchTap={clearSelects}>
+                                    <Uncheck color="#666"/>
+                                </IconButton>
+                            </Tooltip>
+                        </div>
                     </Col>
                 </Row>}
             </div>
@@ -132,11 +161,26 @@ export default injectSheet({
         fontWeight: '600 !important'
     },
     action: {
-        background: '#ccc !important'
+        background: '#f2f5f8',
+        alignItems: 'center',
+        margin: '0 -30px',
+        padding: '0 30px',
+        '& > div': {
+            '&:first-child': {
+                paddingLeft: '0'
+            },
+            '&:last-child': {
+                paddingRight: '0'
+            }
+        }
     },
     actionButtons: {
         display: 'flex',
         justifyContent: 'flex-end'
+    },
+    buttons: {
+        extend: 'actionButtons',
+        marginLeft: '20px'
     },
     flex: {
         display: 'flex',

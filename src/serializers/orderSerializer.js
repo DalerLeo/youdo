@@ -42,7 +42,7 @@ export const createSerializer = (data) => {
     }
 }
 
-export const listFilterSerializer = (data, id, withOrderReturn) => {
+export const listFilterSerializer = (data, id, withOrderReturn, print) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
     const dept = _.toInteger(_.get(defaultData, 'dept'))
@@ -52,7 +52,9 @@ export const listFilterSerializer = (data, id, withOrderReturn) => {
             'id': id
         }
     }
+    const orders = _.get(data, 'select')
     return {
+        'ids': print ? orders : null,
         'id': _.get(defaultData, 'id'),
         'starts_with': _.get(defaultData, 'startsWith'),
         'client': _.get(defaultData, 'client'),

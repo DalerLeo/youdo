@@ -7,7 +7,11 @@ import {compose, withHandlers} from 'recompose'
 import ArrowUpIcon from './ArrowUpIcon'
 import ArrowDownIcon from './ArrowDownIcon'
 import Checkbox from 'material-ui/Checkbox'
+import SelectAll from 'material-ui/svg-icons/content/select-all'
+import CheckedAll from 'material-ui/svg-icons/action/done-all'
 import FlatButton from 'material-ui/FlatButton'
+import getMuiTheme from 'material-ui/styles/getMuiTheme'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 
 const enhance = compose(
     injectSheet({
@@ -22,6 +26,7 @@ const enhance = compose(
             fontWeight: '600',
             color: '#fff',
             display: 'flex',
+            transition: 'all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms',
             '& .row': {
                 width: '100%',
                 alignItems: 'center',
@@ -77,6 +82,11 @@ const enhance = compose(
             right: '0px',
             color: '#fff !important'
         },
+        checkbox: {
+            position: 'absolute',
+            left: '20px',
+            width: '24px'
+        },
         button: {
             color: '#fff !important',
             minWidth: 'auto !important',
@@ -129,15 +139,22 @@ const enhance = compose(
                 .value()
 
             const newSelects = isChecked ? selectsInChecked : selectsUnChecked
-            const url = filter.createURL({select: _.join(newSelects, ',')})
+            const url = filter.createURL({select: _.join(newSelects, '-')})
 
             hashHistory.push(url)
         }
     })
 )
 
+const muiTheme = getMuiTheme({
+    checkbox: {
+        boxColor: '#fff',
+        checkedColor: '#fff'
+    }
+})
+
 const GridListHeader = enhance((props) => {
-    const {classes, filter, column, listIds, onChecked, withoutCheckboxes, withoutRow, statistics} = props
+    const {classes, filter, column, listIds, onChecked, withCheckboxes, withoutRow, statistics} = props
 
     // Calculate row size for correct showing grid list
     const rowSize = 12
@@ -226,11 +243,18 @@ const GridListHeader = enhance((props) => {
         )
     })
     return (
-        <div className={statistics ? classes.header2 : classes.header} id="header">
+        <div
+            className={statistics ? classes.header2 : classes.header}
+            style={withCheckboxes ? {paddingLeft: '20px'} : {}}>
             <div className={classes.checkbox}>
-                {withoutCheckboxes &&
-                <Checkbox onCheck={onChecked} checked={checkboxChecked}/>
-                }
+                {withCheckboxes &&
+                <MuiThemeProvider muiTheme={getMuiTheme(muiTheme)}>
+                    <Checkbox
+                        onCheck={onChecked}
+                        checked={checkboxChecked}
+                        checkedIcon={<CheckedAll/>}
+                        uncheckedIcon={<SelectAll/>}/>
+                </MuiThemeProvider>}
             </div>
             <div className={classes.headerPadding}>
                 {!withoutRow && <Row>

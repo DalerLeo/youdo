@@ -116,7 +116,10 @@ const enhance = compose(
         }
     }),
     withPropsOnChange((props, nextProps) => {
-        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
+        const except = {
+            showCheckboxes: null
+        }
+        return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
         dispatch(orderListFetchAction(filter))
     }),
@@ -710,7 +713,7 @@ const OrderList = enhance((props) => {
                     value: _.toInteger(_.get(detail, ['market', 'id']))
                 },
                 deliveryMan: {
-                    value: _.toInteger(_.get(detail, ['deliveryMan', 'id']))
+                    value: _.get(detail, ['deliveryMan', 'id'])
                 },
                 deliveryType: {
                     value: deliveryType,

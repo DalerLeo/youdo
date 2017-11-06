@@ -1,9 +1,9 @@
 {
-  "name": "system",
+  "name": "Rhythm",
   "version": "1.0.0",
-  "description": "Fennec ERP system",
+  "description": "Rhythm ERP System",
   "main": "index.js",
-  "author": "Fennec systems",
+  "author": "Wiener Deming",
   "license": "MIT",
   "eslintConfig": {
     "env": {
