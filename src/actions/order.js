@@ -107,7 +107,7 @@ export const orderUpdateAction = (id, formValues) => {
 }
 
 export const orderListFetchAction = (filter, withOrderReturn) => {
-    const params = serializers.listFilterSerializer(filter.getParams(), null, withOrderReturn)
+    const params = serializers.listFilterSerializer(filter.getParams(), null, withOrderReturn, null)
     const payload = axios()
         .get(API.ORDER_LIST, {params})
         .then((response) => {
@@ -124,7 +124,8 @@ export const orderListFetchAction = (filter, withOrderReturn) => {
 }
 
 export const orderListPintFetchAction = (filter, id) => {
-    const params = serializers.listFilterSerializer(filter.getParams(), id)
+    const print = true
+    const params = serializers.listFilterSerializer(filter.getParams(), id, null, print)
     const payload = axios()
         .get(API.ORDER_LIST_PRINT, {params})
         .then((response) => {

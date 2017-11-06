@@ -27,7 +27,7 @@ const filter = (data, pathname, query = {}, newKeys = {}) => {
     const getSelects = () => {
         return _
             .chain(getParam('select'))
-            .split(',')
+            .split('-')
             .filter(item => item)
             .map((item) => _.toInteger(item))
             .value()

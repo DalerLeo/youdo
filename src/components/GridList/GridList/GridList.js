@@ -47,7 +47,7 @@ const GridList = enhance((props) => {
         filterDialog,
         addButton,
         actionsDialog,
-        withoutCheckboxes,
+        withCheckboxes,
         withoutRow,
         withInvoice,
         withoutSearch,
@@ -81,7 +81,7 @@ const GridList = enhance((props) => {
                 listLoading={listLoading}
                 transparentLoading={transparentLoading}
                 flexibleRow={flexibleRow}
-                withoutCheckboxes={withoutCheckboxes}
+                withCheckboxes={withCheckboxes}
                 listShadow={listShadow}
                 hoverableList={hoverableList}
             />
@@ -106,7 +106,7 @@ const GridList = enhance((props) => {
                 <GridListHeader
                     filter={filter}
                     listIds={listIds}
-                    withoutCheckboxes={withoutCheckboxes}
+                    withCheckboxes={withCheckboxes}
                     withoutRow={withoutRow}
                     column={header}
                     listShadow={listShadow}
@@ -123,7 +123,7 @@ const GridList = enhance((props) => {
 
 GridList.propTypes = {
     filter: PropTypes.object.isRequired,
-    withoutCheckboxes: PropTypes.bool,
+    withCheckboxes: PropTypes.bool,
     withoutSearch: PropTypes.bool,
     withoutRow: PropTypes.bool,
     withInvoice: PropTypes.bool,
@@ -149,7 +149,7 @@ GridList.propTypes = {
 }
 
 GridList.defaultProps = {
-    withoutCheckboxes: false,
+    withCheckboxes: false,
     withoutSearch: false,
     withInvoice: false,
     withRefreshBtn: false,

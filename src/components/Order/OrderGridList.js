@@ -25,10 +25,11 @@ import numberFormat from '../../helpers/numberFormat'
 import Delivered from 'material-ui/svg-icons/action/done-all'
 import Available from 'material-ui/svg-icons/av/playlist-add-check'
 import Canceled from 'material-ui/svg-icons/notification/do-not-disturb-alt'
-import Transfered from 'material-ui/svg-icons/action/motorcycle'
+import Transferred from 'material-ui/svg-icons/action/motorcycle'
 import Payment from 'material-ui/svg-icons/action/credit-card'
 import InProcess from 'material-ui/svg-icons/action/cached'
 import dateFormat from '../../helpers/dateFormat'
+import toBoolean from '../../helpers/toBoolean'
 
 const listHeader = [
     {
@@ -93,8 +94,8 @@ const enhance = compose(
             height: '100%',
             display: 'flex',
             alignItems: 'center',
-            margin: '0 -30px',
-            padding: '0 30px',
+            margin: '0 -30px 0 -50px',
+            padding: '0 30px 0 50px',
             position: 'relative',
             '& > div': {
                 padding: '0 0.5rem',
@@ -183,6 +184,7 @@ const OrderGridList = enhance((props) => {
         isSuperUser
     } = props
 
+    const showCheckboxes = toBoolean(_.get(filter.getParams(), 'showCheckboxes'))
     const orderFilterDialog = (
         <OrderFilterForm
             initialValues={filterDialog.initialValues}
@@ -307,7 +309,7 @@ const OrderGridList = enhance((props) => {
                                         iconStyle={iconStyle.icon}
                                         style={iconStyle.button}
                                         touch={true}>
-                                        <Transfered color="#f0ad4e"/>
+                                        <Transferred color="#f0ad4e"/>
                                     </IconButton>
                                 </Tooltip>
                                     : <Tooltip position="bottom" text="Заказ отменен">
@@ -376,6 +378,7 @@ const OrderGridList = enhance((props) => {
                 filterDialog={orderFilterDialog}
                 printDialog={printDialog}
                 refreshAction={refreshAction}
+                withCheckboxes={showCheckboxes}
             />
 
             <OrderCreateDialog
