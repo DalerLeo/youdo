@@ -94,8 +94,8 @@ const enhance = compose(
             height: '100%',
             display: 'flex',
             alignItems: 'center',
-            margin: '0 -30px 0 -50px',
-            padding: '0 30px 0 50px',
+            margin: '0 -30px',
+            padding: '0 30px',
             position: 'relative',
             '& > div': {
                 padding: '0 0.5rem',
@@ -116,6 +116,10 @@ const enhance = compose(
                 width: '3px',
                 background: '#12aaeb'
             }
+        },
+        listWithCheckbox: {
+            marginLeft: '-50px !important',
+            paddingLeft: '50px !important'
         },
         dot: {
             display: 'inline-block',
@@ -261,7 +265,7 @@ const OrderGridList = enhance((props) => {
         const CANCELED = 4
         const ZERO = 0
         return (
-            <div key={id} className={isNew ? classes.listWrapperNew : classes.listWrapper}>
+            <div key={id} className={(isNew ? classes.listWrapperNew : classes.listWrapper) + ' ' + (showCheckboxes ? classes.listWithCheckbox : '')}>
                 <Link className={classes.openDetails} to={{
                     pathname: sprintf(ROUTES.ORDER_ITEM_PATH, id),
                     query: filter.getParams()
