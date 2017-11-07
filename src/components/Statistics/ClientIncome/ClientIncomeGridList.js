@@ -21,22 +21,9 @@ import {
 } from '../../ReduxForm'
 import Loader from '../../Loader'
 import moment from 'moment'
-import {Link} from 'react-router'
-import sprintf from 'sprintf'
 import {StatisticsFilterExcel, StatisticsChart} from '../../Statistics'
 import NotFound from '../../Images/not-found.png'
-
-import {
-    PAYMENT,
-    CANCEL,
-    ORDER_RETURN,
-    CANCEL_ORDER,
-    CANCEL_ORDER_RETURN,
-    EXPENSE,
-    ORDER,
-    formattedType
-} from '../../../constants/clientBalanceInfo'
-
+import TransactionsFormat from './TransactionsFormat'
 const NEGATIVE = -1
 
 export const CLIENT_INCOME_FILTER_KEY = {
@@ -283,7 +270,6 @@ const ClientIncomeGridList = enhance((props) => {
     )
 
     const ZERO = 0
-    const THREE = 3
     const list = _.map(_.get(listData, 'data'), (item, index) => {
         const transId = _.get(item, 'id')
         const user = _.get(item, 'user')
@@ -296,7 +282,8 @@ const ClientIncomeGridList = enhance((props) => {
         const internal = _.toNumber(_.get(item, 'internal'))
         const customRate = _.get(item, 'customRate') ? _.toInteger(_.get(item, 'customRate')) : _.toInteger(amount / internal)
         const type = _.get(item, 'type')
-        const id = _.toInteger(type) === THREE ? _.get(item, 'orderReturn') : (_.get(item, 'order') || _.get(item, 'transaction'))
+        const orderId = _.get(item, 'order')
+        const orderReturnId = _.get(item, 'orderReturn')
         return (
             <Row key={index} className="dottedList">
                 <Col xs={1}>{transId}</Col>
@@ -304,26 +291,8 @@ const ClientIncomeGridList = enhance((props) => {
                 <Col xs={2}>{client}</Col>
                 <Col xs={2}>{userName}</Col>
                 <Col xs={3}>
-                    {type && <div><span>{type === PAYMENT ? 'Оплата'
-                        : type === CANCEL ? 'Отмена'
-                            : type === CANCEL_ORDER ? <Link to={{
-                                pathname: sprintf(ROUTES.ORDER_ITEM_PATH, id),
-                                query: {search: id}
-                            }} target="_blank">Отмена заказа №{id}</Link>
-                                : type === CANCEL_ORDER_RETURN ? <Link to={{
-                                    pathname: sprintf(ROUTES.ORDER_ITEM_PATH, id),
-                                    query: {search: id}
-                                }} target="_blank">Отмена возврата №{id}</Link>
-                                    : type === ORDER ? <Link to={{
-                                        pathname: sprintf(ROUTES.RETURN_ITEM_PATH, id),
-                                        query: {search: id}
-                                    }} target="_blank">Заказ {id}</Link>
-                                        : type === EXPENSE ? 'Расход'
-                                            : type === ORDER_RETURN ? <Link to={{
-                                                pathname: sprintf(ROUTES.RETURN_ITEM_PATH, id),
-                                                query: {search: id}
-                                            }} target="_blank">Возврат №{id}</Link>
-                                                : formattedType[type] + ' ' + (!_.isNull(id) ? id : '')}</span>
+                    {type && <div>
+                        <TransactionsFormat type={type} order={orderId} orderReturn={orderReturnId}/>
                     </div>}
                     {comment && <div><strong>Комментарий:</strong> {comment}</div>}
                 </Col>
