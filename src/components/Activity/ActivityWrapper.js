@@ -6,7 +6,7 @@ import Container from '../Container'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 import Paper from 'material-ui/Paper'
 import NotFound from '../Images/not-found.png'
 import ActivityCalendar from './ActivityCalendar'
@@ -162,7 +162,7 @@ const ActivityWrapper = enhance((props) => {
                     handleClickDay={handleClickDay}/>
                 {megaLoading
                     ? <div className={classes.loader}>
-                        <CircularProgress size={40} thickness={4}/>
+                        <Loader size={0.75}/>
                     </div>
                     : (emptyQuery && !(orderlistLoading || visitlistLoading || reportlistLoading || returnlistLoading || paymentlistLoading || deliverylistLoading)
                         ? <div className={classes.emptyQuery}>

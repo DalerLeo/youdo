@@ -1,7 +1,6 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
 
-const ZERO = 0
 const MINUS_ONE = -1
 export const createSerializer = (data, detail) => {
     const expenseId = _.get(detail, 'id')
@@ -10,11 +9,11 @@ export const createSerializer = (data, detail) => {
     const categoryId = _.get(data, ['categoryId', 'value'])
     const paymentType = _.get(data, ['paymentType', 'value'])
     const comment = _.get(data, 'comment')
-    const amount = _.toNumber(_.get(data, 'amount')) < ZERO ? _.toNumber(_.get(data, 'amount')) * MINUS_ONE : _.toNumber(_.get(data, 'amount'))
+    const amount = _.toNumber(_.get(data, 'amount')) * MINUS_ONE
     if (type === 'supply') {
         return {
             'cashbox': cashboxId,
-            'expanse': expenseId,
+            'supply': expenseId,
             'expanse_category': categoryId,
             comment,
             amount,
@@ -24,7 +23,7 @@ export const createSerializer = (data, detail) => {
 
     return {
         'cashbox': cashboxId,
-        'supply_expanse': expenseId,
+        'supply_expense': expenseId,
         'expanse_category': categoryId,
         comment,
         amount,
@@ -42,6 +41,7 @@ export const listFilterSerializer = (data) => {
         'type': _.get(defaultData, 'type'),
         'paymentType': _.get(defaultData, 'paymentType'),
         'provider': _.get(defaultData, 'provider'),
+        'supply': _.get(defaultData, 'supply'),
         'search': _.get(defaultData, 'search'),
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),

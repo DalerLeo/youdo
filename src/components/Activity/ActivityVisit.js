@@ -157,12 +157,6 @@ const ActivityVisit = enhance((props) => {
 
     if (_.isEmpty(visitList)) {
         return false
-    } else if (visitlistLoading || summaryLoading) {
-        return (
-            <div className={classes.loader}>
-                <CircularProgress size={40} thickness={4}/>
-            </div>
-        )
     }
 
     return (

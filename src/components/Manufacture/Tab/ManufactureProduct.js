@@ -117,12 +117,12 @@ const ManufactureProduct = enhance((props) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const type = _.get(item, ['type', 'name']) || 'N/A'
-        const brand = _.get(item, ['brand', 'name']) || 'N/A'
+        const equipment = _.get(item, ['equipment', 'name']) || 'N/A'
         return (
             <Row className={classes.listRow} key={id} onClick={ () => { productData.handleItemClick(id) }}>
                 <Col xs={5}>{name}</Col>
                 <Col xs={4}>{type}</Col>
-                <Col xs={3}>{brand}</Col>
+                <Col xs={3}>{equipment}</Col>
             </Row>
         )
     })

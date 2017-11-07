@@ -125,7 +125,7 @@ export const ORDER_RETURN = '/sales/order_return/'
 export const ORDER_RETURN_LIST = '/sales/order_return/%d/'
 export const ORDER_SET_DISCOUNT = `/${ORDER}/%d/add_discount/`
 export const ORDER_TRANSACTION = '/sales/client_transaction/'
-export const ORDER_PAYMENTS = '/sales/payments_list/%d/'
+export const ORDER_PAYMENTS = '/sales/client_transaction/'
 export const ORDER_RETURN_CANCEL = '/sales/order_return/%d/cancel/'
 
 export const ACCEPT_CLIENT_TRANSACTION = 'finance/accept_client_transaction'

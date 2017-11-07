@@ -9,7 +9,13 @@ import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
-import {DateToDateField, ProviderSearchField, PendingExpensesTypeSearchField, PaymentTypeSearchField} from '../ReduxForm'
+import {
+    DateToDateField,
+    ProviderSearchField,
+    PendingExpensesTypeSearchField,
+    PaymentTypeSearchField,
+    SupplySearchField
+} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
@@ -19,6 +25,7 @@ export const PENDING_EXPENSES_FILTER_KEY = {
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate',
     PROVIDER: 'provider',
+    SUPPLY: 'supply',
     PAYMENT_TYPE: 'paymentType',
     TYPE: 'type'
 }
@@ -176,6 +183,11 @@ const PendingExpensesFilterForm = enhance((props) => {
                                name="provider"
                                component={ProviderSearchField}
                                label="Поставщик"
+                               fullWidth={true}/>
+                        <Field className={classes.inputFieldCustom}
+                               name="supply"
+                               component={SupplySearchField}
+                               label="Поставка"
                                fullWidth={true}/>
                     </div>
                     <RaisedButton
