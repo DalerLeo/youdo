@@ -21,6 +21,7 @@ import DateField from './Basic/DateField'
 import TimeField from './Basic/TimeField'
 import ProductSearchField from './Product/ProductSearchField'
 import SupplyListProductField from './Supply/SupplyListProductField'
+import SupplySearchField from './Supply/SupplySearchField'
 import PricesListProductField from './Promotions/PricesListProductField'
 import PricesBonusProductField from './Promotions/PricesBonusProductField'
 import OrderListReturnField from './Order/OrderListReturnField'
@@ -162,6 +163,7 @@ export {
     AgentSearchField,
     ClientTransactionTypeSearchField,
     ClientBalanceTypeSearchField,
+    SupplySearchField,
     TransitionSendCashboxSearchField,
     TransitionSendCashboxTypeSearchField
 }

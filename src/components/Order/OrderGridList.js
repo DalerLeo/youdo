@@ -22,7 +22,6 @@ import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
 import numberFormat from '../../helpers/numberFormat'
-import Delivered from 'material-ui/svg-icons/action/done-all'
 import Available from 'material-ui/svg-icons/action/store'
 import Canceled from 'material-ui/svg-icons/notification/do-not-disturb-alt'
 import Transferred from 'material-ui/svg-icons/maps/local-shipping'
@@ -304,7 +303,7 @@ const OrderGridList = enhance((props) => {
                                     iconStyle={iconStyle.icon}
                                     style={iconStyle.button}
                                     touch={true}>
-                                    <Delivered color="#81c784"/>
+                                    <Transferred color="#81c784"/>
                                 </IconButton>
                             </Tooltip>
                                 : (status === GIVEN) ? <Tooltip position="bottom" text="Передан доставщику">
