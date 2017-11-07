@@ -295,7 +295,7 @@ const ZoneDetails = enhance((props) => {
                         {_.map(_.get(detailData, ['data', 'properties', 'agents']), (item) => {
                             const agentId = _.get(item, 'id')
                             const username = _.get(item, 'firstName') + ' ' + _.get(item, 'secondName')
-                            const position = _.get(item, 'position')
+                            const position = _.get(item, 'position') || 'Без должности'
 
                             return (
                                 <Tooltip key={agentId} position="top" text={username + '<br>' + position}>

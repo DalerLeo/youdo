@@ -67,7 +67,10 @@ const enhance = compose(
         }
     }),
     withPropsOnChange((props, nextProps) => {
-        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
+        const except = {
+            showCheckboxes: null
+        }
+        return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
         dispatch(returnListFetchAction(filter))
     }),
@@ -86,9 +89,9 @@ const enhance = compose(
 
     withHandlers({
         handleOpenPrintDialog: props => () => {
-            const {dispatch, setOpenPrint} = props
+            const {dispatch, setOpenPrint, filter} = props
             setOpenPrint(true)
-            return dispatch(returnListPrintFetchAction())
+            return dispatch(returnListPrintFetchAction(null, filter))
                 .then(() => {
                     window.print()
                 })

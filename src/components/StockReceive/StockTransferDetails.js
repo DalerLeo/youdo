@@ -78,6 +78,16 @@ const enhance = compose(
                 alignItems: 'center'
             }
         },
+        info: {
+            borderTop: '1px #efefef solid',
+            padding: '20px 30px',
+            '& li': {
+                fontWeight: '600',
+                '& span': {
+                    fontWeight: 'normal'
+                }
+            }
+        },
         emptyQuery: {
             background: 'url(' + NotFound + ') no-repeat center 25px',
             backgroundSize: '200px',
@@ -132,12 +142,16 @@ const StockTransferDetails = enhance((props) => {
 
     const products = _.get(detailData, ['data', 'products'])
     const id = _.get(detailData, 'id')
+    const marketAddress = _.get(detailData, ['data', 'market', 'address'])
+    const deliveryMan = _.get(detailData, ['data', 'deliveryMan', 'id'])
+        ? _.get(detailData, ['data', 'deliveryMan', 'firstName']) + _.get(detailData, ['data', 'deliveryMan', 'secondName'])
+        : 'Не определен'
     const dateRequest = dateFormat(_.get(detailData, ['currentDetail', 'dateRequest']))
     const dateDelivery = dateFormat(_.get(detailData, ['currentDetail', 'dateDelivery']))
     const receiver = _.get(detailData, ['currentDetail', 'receiver'])
     const stockName = _.get(detailData, ['currentDetail', 'stock', 'name'])
     const detailType = _.toInteger(_.get(detailData, 'type'))
-    const tooltipText = 'Подтвердить Запрос № ' + id
+    const tooltipText = 'Подтвердить Запрос №' + id
     if (loading) {
         return (
             <div className={classes.loader}>
@@ -186,6 +200,12 @@ const StockTransferDetails = enhance((props) => {
                                 </div>
                             </Col>
                         </Row>
+                    </div>
+                    <div className={classes.info}>
+                        <ul>
+                            <li>Доставщик: <span>{deliveryMan}</span></li>
+                            <li>Адрес магазина: <span>{marketAddress}</span></li>
+                        </ul>
                     </div>
                     <div className={classes.content}>
                         <div className={classes.leftSide}>

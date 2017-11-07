@@ -14,6 +14,7 @@ import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import getConfig from '../../helpers/getConfig'
+import toBoolean from '../../helpers/toBoolean'
 import Tooltip from '../ToolTip'
 import numberFormat from '../../helpers/numberFormat'
 import InProcess from 'material-ui/svg-icons/action/cached'
@@ -95,6 +96,10 @@ const enhance = compose(
                 padding: '0 0.5rem !important'
             }
         },
+        listWithCheckbox: {
+            marginLeft: '-50px !important',
+            paddingLeft: '50px !important'
+        },
         buttons: {
             display: 'flex',
             justifyContent: 'space-around'
@@ -126,6 +131,7 @@ const OrderGridList = enhance((props) => {
         isAdmin
     } = props
 
+    const showCheckboxes = toBoolean(_.get(filter.getParams(), 'showCheckboxes'))
     const orderFilterDialog = (
         <ReturnFilterForm
             initialValues={filterDialog.initialValues}
@@ -178,7 +184,7 @@ const OrderGridList = enhance((props) => {
         const status = _.toInteger(_.get(item, 'status'))
 
         return (
-            <div className={classes.listWrapper} key={id}>
+            <div className={classes.listWrapper + ' ' + (showCheckboxes ? classes.listWithCheckbox : '')} key={id}>
                 <div style={{width: '10%'}}>{id}</div>
                 <div style={{width: '15%'}}>{client}</div>
                 <div style={{width: '10%'}}>{order}</div>
@@ -259,6 +265,7 @@ const OrderGridList = enhance((props) => {
                 withoutRow={true}
                 filterDialog={orderFilterDialog}
                 printDialog={printDialog}
+                withCheckboxes={showCheckboxes}
             />
 
             {detailData.data && <ConfirmDialog

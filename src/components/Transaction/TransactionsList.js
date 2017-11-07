@@ -20,8 +20,13 @@ import dateFormat from '../../helpers/dateFormat'
 import toBoolean from '../../helpers/toBoolean'
 import getConfig from '../../helpers/getConfig'
 import sprintf from 'sprintf'
+import moment from 'moment'
 import {
     ORDER,
+    INCOME,
+    OUTCOME,
+    INCOME_TO_CLIENT,
+    OUTCOME_TO_CLIENT,
     INCOME_FROM_AGENT,
     formattedType
 } from '../../constants/transactionTypes'
@@ -267,12 +272,12 @@ const TransactionsList = enhance((props) => {
             value: _.get(currentItem, ['cashbox', 'id'])
         },
         amount: _.get(currentItem, 'amount'),
-        date: _.get(currentItem, 'createdDate') ? new Date(_.get(currentItem, 'createdDate')) : null,
+        date: _.get(currentItem, 'createdDate') ? moment(_.get(currentItem, 'createdDate')).toDate() : null,
         client: {
             value: _.get(currentItem, ['client', 'id'])
         },
-        showClients: _.get(currentItem, ['client']) && true,
-        'custom_rate': _.get(currentItem, 'customRate'),
+        showClients: _.get(currentItem, ['client', 'id']) && true,
+        custom_rate: _.get(currentItem, 'customRate'),
         comment: _.get(currentItem, 'comment'),
         expanseCategory: {
             value: _.get(currentItem, ['expanseCategory', 'id'])
@@ -346,13 +351,16 @@ const TransactionsList = enhance((props) => {
                         className={classes.deleteBtn}
                         style={iconStyle.button}
                         iconStyle={iconStyle.icon}
+                        disableTouchRipple={true}
                         onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}>
                         <DeleteIcon/>
                     </IconButton>
                     <IconButton
+                        disabled={(transType !== INCOME) && (transType !== OUTCOME) && (transType !== INCOME_TO_CLIENT) && (transType !== OUTCOME_TO_CLIENT)}
                         className={classes.deleteBtn}
                         style={iconStyle.button}
                         iconStyle={iconStyle.icon}
+                        disableTouchRipple={true}
                         onTouchTap={() => { updateTransactionDialog.handleOpenDialog(id) }}>
                         <EditIcon/>
                     </IconButton>

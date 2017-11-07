@@ -156,7 +156,7 @@ const GridListBody = enhance((props) => {
         const id = _.get(item, 'key')
         const detailId = _.get(detail, 'key')
         const selects = filter.getSelects()
-        const isChecked = _.includes(selects, id)
+        const isChecked = _.includes(selects, _.toInteger(id))
         const checkboxChecked = _
             .chain(selects)
             .find(selectId => _.toInteger(selectId) === _.toInteger(id))

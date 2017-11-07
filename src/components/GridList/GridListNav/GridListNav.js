@@ -62,7 +62,7 @@ const GridListNav = ({classes, filter, filterDialog, addButton, withoutSearch, c
                     <Col xs={5} className={classes.flex}>
                         {!withoutPagination && <GridListNavPagination filter={filter}/>}
                         {withInvoice &&
-                        <Tooltip position="left" text={showCheckboxes ? 'Спрятать флажки' : 'Выбрать заказы для накладного или релиза'}>
+                        <Tooltip position="left" text={showCheckboxes ? 'Спрятать флажки' : 'Выбрать из списка для распечатки накладного'}>
                             <IconButton
                                 onTouchTap={toggleCheckboxes}>
                                 {showCheckboxes

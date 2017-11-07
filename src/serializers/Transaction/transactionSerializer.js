@@ -130,6 +130,8 @@ export const listFilterSerializer = (data, cashbox) => {
         'cashbox': newCashbox,
         'with_deleted': 1,
         'search': _.get(defaultData, 'search'),
+        'page': _.get(defaultData, 'page'),
+        'page_size': _.get(defaultData, 'pageSize'),
         'ordering': ordering && orderingSnakeCase(ordering),
         'expanse_category': _.get(data, 'categoryExpense')
     }
