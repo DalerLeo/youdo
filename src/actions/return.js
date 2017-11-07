@@ -39,9 +39,10 @@ export const returnListFetchAction = (filter) => {
     }
 }
 
-export const returnListPrintFetchAction = (id) => {
+export const returnListPrintFetchAction = (id, filter) => {
+    const orderReturns = _.get(filter.getParams(), 'select')
     const payload = axios()
-        .get(API.RETURN_PRINT, {'params': {'id': id}})
+        .get(API.RETURN_PRINT, {'params': {'id': id, ids: orderReturns}})
         .then((response) => {
             return _.get(response, 'data')
         })
