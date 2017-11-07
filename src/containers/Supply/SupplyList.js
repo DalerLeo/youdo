@@ -172,13 +172,16 @@ const enhance = compose(
             setExpenseRemoveId(false)
         },
         handleSendConfirmExpenseDialog: props => () => {
-            const {dispatch, setExpenseRemoveId, expenseRemoveId, detail} = props
+            const {dispatch, setExpenseRemoveId, expenseRemoveId, detail, filterItem} = props
             const id = _.get(detail, 'id')
             dispatch(supplyExpenseDeleteAction(expenseRemoveId))
                 .then(() => {
                     setExpenseRemoveId(false)
-                    dispatch(supplyExpenseListFetchAction(id))
                     return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
+                })
+                .then(() => {
+                    dispatch(supplyItemFetchAction(id))
+                    return dispatch(supplyExpenseListFetchAction(id, filterItem))
                 })
                 .catch(() => {
                     return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
@@ -573,6 +576,7 @@ const SupplyList = enhance((props) => {
                 filterDialog={filterDialog}
                 paidData={paidData}
                 supplyListData={supplyListData}
+                detailId={detailId}
                 supplyExpenseCreateDialog={supplyExpenseCreateDialog}
             />
         </Layout>

@@ -28,7 +28,7 @@ const enhance = compose(
             display: 'flex',
             flexWrap: 'wrap',
             transition: 'all 250ms ease-out',
-            maxHeight: '615px',
+            maxHeight: '670px',
             overflow: 'hidden'
         },
         link: {
@@ -138,6 +138,18 @@ const enhance = compose(
                 }
             }
         },
+        addExpense: {
+            position: 'unset !important',
+            padding: '0 !important',
+            left: 'unset !important',
+            minWidth: 'unset !important',
+            zIndex: 'unset !important',
+            opacity: '1 !important',
+            top: 'unset !important',
+            '& > span': {
+                padding: '0 10px'
+            }
+        },
         discountPop: {
             width: popupWidth + 'px',
             position: 'absolute',
@@ -186,14 +198,12 @@ const SupplyDetails = enhance((props) => {
         classes,
         loading,
         data,
-        transactionsDialog,
         handleSupplyExpenseOpenCreateDialog,
         returnDataLoading,
         supplyListData,
         itemReturnDialog,
         confirmDialog,
         updateDialog,
-        type,
         tabData,
         returnData,
         handleCloseDetail,
@@ -335,36 +345,41 @@ const SupplyDetails = enhance((props) => {
                         <div className={classes.dataBox}>
                             <ul>
                                 <li>
-                                    <span>Общая стоимость</span>
+                                    <span>Стоимость поставки</span>
                                     <span>{numberFormat(totalCost, primaryCurrency)}</span>
                                 </li>
-                                {_.map(_.get(data, 'totalAdditionalCosts'), (item) => {
-                                    const itemAmount = _.get(item, 'totalAmount')
-                                    const itemCurrency = _.get(item, ['currency', 'name'])
-                                    return (
-                                        <li>
-                                            <span>Доп. расход {itemCurrency}</span>
-                                            <span>{numberFormat(itemAmount, itemCurrency)}</span>
-                                        </li>
-                                    )
-                                })}
                                 <li>
                                     <span>Тип оплаты</span>
                                     <span>{paymentType}</span>
                                 </li>
                                 <li>
                                     <span>Оплачено:</span>
-                                    {(totalPaid !== zero && type) ? <span>
-                                        <a onClick={transactionsDialog.handleOpenTransactionsDialog}
-                                           className={classes.link}>{numberFormat(totalPaid)} {primaryCurrency}</a>
-                                    </span>
-                                        : <span>{numberFormat(totalPaid)} {primaryCurrency}</span>}
+                                    <span>{numberFormat(totalPaid, primaryCurrency)}</span>
                                 </li>
                                 <li>
                                     <span>Остаток:</span>
                                     <span
                                         className={totalBalance > zero ? classes.red : classes.green}>{numberFormat(totalBalance)} {primaryCurrency}</span>
                                 </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div className={classes.subBlock}>
+                        <div className={classes.subtitle}>Доп. расходи</div>
+                        <div className={classes.dataBox}>
+                            <ul>
+
+                                {_.map(_.get(data, 'totalAdditionalCosts'), (item) => {
+                                    const itemAmount = _.get(item, 'totalAmount')
+                                    const itemCurrency = _.get(item, ['currency', 'name'])
+                                    return (
+                                        <li>
+                                            <span>{itemCurrency}</span>
+                                            <span>{numberFormat(itemAmount)}/100</span>
+                                        </li>
+                                    )
+                                })}
                             </ul>
                         </div>
                     </div>

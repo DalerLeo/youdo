@@ -497,6 +497,7 @@ const ZonesWrapper = enhance((props) => {
                     deleteZone={deleteZone}
                     marketsData={marketsData}
                     pathname={props.pathname}
+                    isOpenToggle={isOpenToggle}
                     handleOpenShopDetails={shopDetail.handleOpenShopDetails}
                 />
 
