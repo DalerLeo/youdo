@@ -44,13 +44,14 @@ const listHeader = [
         sorting: false,
         name: 'type',
         title: 'Тип оплаты',
-        xs: 2
+        xs: 1
     },
     {
         sorting: false,
         name: 'createdDate',
+        alignRight: true,
         title: 'Дата',
-        xs: 1
+        xs: 2
     },
     {
         sorting: true,
@@ -106,9 +107,10 @@ const PendingExpensesGridList = enhance((props) => {
         updateDialog,
         filterDialog,
         listData,
-        detailData
+        detailId
     } = props
 
+    const selectedDetails = _.find(_.get(listData, 'data'), {'id': detailId})
     const pendingExpensesFilterDialog = (
         <PendingExpensesFilterForm
             initialValues={filterDialog.initialValues}
@@ -139,8 +141,8 @@ const PendingExpensesGridList = enhance((props) => {
                 <Col xs={2}>{provider}</Col>
                 <Col xs={2}>{comment}</Col>
                 <Col xs={1}>{type}</Col>
-                <Col xs={2}>{paymentType}</Col>
-                <Col xs={1} style={{whiteSpace: 'nowrap'}}>{createdDate}</Col>
+                <Col xs={1}>{paymentType}</Col>
+                <Col xs={2} style={{textAlign: 'right'}}>{createdDate}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>{numberFormat(summary)} {currency}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>{numberFormat(balance)} {currency}</Col>
                 <Col xs={1} style={{textAlign: 'right', padding: '0'}}>
@@ -161,13 +163,7 @@ const PendingExpensesGridList = enhance((props) => {
         list: pendingExpensesList,
         loading: _.get(listData, 'listLoading')
     }
-
-    const currentItem = _.find(_.get(listData, 'data'), {'id': _.get(detailData, 'id')})
-    const cashbox = {
-        currency: _.get(currentItem, 'currency'),
-        type: _.get(currentItem, 'paymentType')
-    }
-    const itemBalance = _.get(currentItem, 'totalAmount') - _.get(currentItem, 'paidAmount')
+    const itemBalance = _.get(selectedDetails, 'totalAmount') - _.get(selectedDetails, 'paidAmount')
     return (
         <Container>
             <SubMenu url={ROUTES.PENDING_EXPENSES_LIST_URL}/>
@@ -180,14 +176,11 @@ const PendingExpensesGridList = enhance((props) => {
             />
 
             <PendingExpensesCreateDialog
-                initialValues={updateDialog.initialValues}
                 open={updateDialog.openUpdateDialog}
-                detailData={detailData}
+                selectedDetails={selectedDetails}
                 itemBalance={itemBalance}
-                loading={updateDialog.updateLoading}
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
-                cashbox={cashbox}
             />
         </Container>
     )

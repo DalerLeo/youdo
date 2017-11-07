@@ -65,16 +65,20 @@ const enhance = compose(
 )
 
 const PendingExpensesCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, detailData, classes, itemBalance, cashbox} = props
-    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+    const {open, loading, handleSubmit, onClose, classes, itemBalance, selectedDetails} = props
+    const id = _.get(selectedDetails, 'id')
+    const comment = _.get(selectedDetails, ['comment'])
+    const currencyName = _.get(selectedDetails, ['currency', 'name'])
+    const summary = _.get(selectedDetails, ['totalAmount'])
+    const supplyId = _.get(selectedDetails, 'supplyId')
+    const supplier = _.get(selectedDetails, ['provider', 'name'])
+    const cashbox = {
+        currency: _.get(selectedDetails, 'currency'),
+        type: _.get(selectedDetails, 'paymentType')
+    }
+    const type = _.get(selectedDetails, 'type')
 
-    const supply = _.get(detailData, ['data', 'supply'])
-    const currency = _.get(detailData, ['data', 'currency'])
-    const comment = _.get(detailData, ['data', 'comment'])
-    const currencyName = _.get(currency, 'name')
-    const summary = _.get(detailData, ['data', 'amount'])
-    const supplyId = _.get(supply, 'id')
-    const supplier = _.get(supply, ['provider', 'name'])
+    const onSubmit = handleSubmit(() => props.onSubmit({id, type}).catch(validate))
 
     return (
         <Dialog
@@ -102,6 +106,7 @@ const PendingExpensesCreateDialog = enhance((props) => {
                                 <div className={classes.infoHeader}>
                                     <div>Поставщик: {supplier}</div>
                                     <div>Поставка №: {supplyId}</div>
+                                    <div>Тип: {type === 'supply' ? 'Поставка' : 'Доп. расход'}</div>
                                 </div>
                                 <div className={classes.infoSummary}>
                                     <div><strong style={{marginRight: '10px'}}>Сумма расхода:</strong>
