@@ -8,8 +8,14 @@ import toCamelCase from '../../../helpers/toCamelCase'
 import {compose} from 'recompose'
 import {connect} from 'react-redux'
 
-const getOptions = (search, type, currency, cashboxId) => {
+const getOptions = (search, type, currency, cashboxId, excludeOnly) => {
     if (cashboxId) {
+        if (excludeOnly) {
+            return axios().get(`${PATH.CASHBOX_LIST}?page_size=1000&search=${search || ''}&exclude_id=${cashboxId}`)
+                .then(({data}) => {
+                    return Promise.resolve(toCamelCase(data.results))
+                })
+        }
         return currency && type && axios().get(`${PATH.CASHBOX_LIST}?type=${type}&page_size=1000&search=${search || ''}&exclude_id=${cashboxId}&currency=${currency}`)
             .then(({data}) => {
                 return Promise.resolve(toCamelCase(data.results))
@@ -42,6 +48,7 @@ const CashboxTypeSearchField = enhance((props) => {
     const test = (id) => {
         return getItem(id, dispatch)
     }
+    const excludeOnly = _.get(props, 'data-exclude-only')
     const type = _.get(cashbox, 'type')
     const cashboxId = _.get(cashbox, 'id')
     const currency = _.get(cashbox, ['currency', 'id'])
@@ -51,7 +58,7 @@ const CashboxTypeSearchField = enhance((props) => {
                 getValue={SearchField.defaultGetValue('id')}
                 getText={SearchField.defaultGetText('name')}
                 getOptions={(search) => {
-                    return type && currency && getOptions(search, type, currency, cashboxId)
+                    return type && currency && getOptions(search, type, currency, cashboxId, excludeOnly)
                 }}
                 getItem={test}
                 getItemText={(value) => {

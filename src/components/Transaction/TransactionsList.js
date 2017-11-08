@@ -2,16 +2,15 @@ import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import IconButton from 'material-ui/IconButton'
-import {Link} from 'react-router'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import EditIcon from 'material-ui/svg-icons/editor/mode-edit'
-import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import TransactionFilterForm from './TransactionFilterForm'
 import TransactionCreateDialog from './TransactionCreateDialog'
 import TransactionSendDialog from './TransactionSendDialog'
 import TransactionCashDialog from './TransactionCashDialog'
 import TransactionInfoDialog from './TransactionInfoDialog'
+import TransactionsFormat from './TransactionsFormat'
 import ConfirmDialog from '../ConfirmDialog'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
@@ -19,16 +18,12 @@ import numberFormat from '../../helpers/numberFormat'
 import dateFormat from '../../helpers/dateFormat'
 import toBoolean from '../../helpers/toBoolean'
 import getConfig from '../../helpers/getConfig'
-import sprintf from 'sprintf'
 import moment from 'moment'
 import {
-    ORDER,
     INCOME,
     OUTCOME,
     INCOME_TO_CLIENT,
-    OUTCOME_TO_CLIENT,
-    INCOME_FROM_AGENT,
-    formattedType
+    OUTCOME_FROM_CLIENT
 } from '../../constants/transactionTypes'
 const currentDay = new Date()
 const enhance = compose(
@@ -135,6 +130,9 @@ const enhance = compose(
             padding: '5px 0',
             '& > div': {
                 padding: '0 8px !important'
+            },
+            '& a': {
+                color: '#12aaeb !important'
             },
             '&:hover button': {
                 opacity: '1 !important'
@@ -298,12 +296,10 @@ const TransactionsList = enhance((props) => {
         const currentCurrency = _.get(_.find(_.get(cashboxData, 'data'), {'id': cashbox}), ['currency', 'name'])
         const client = showCashbox ? _.get(_.find(_.get(cashboxData, 'data'), {'id': cashbox}), 'name') : null
         const clientName = _.get(item, ['client', 'name'])
-        const clientId = _.get(item, ['client', 'id'])
         const expanseCategory = _.get(item, ['expanseCategory', 'name'])
         const transType = _.get(item, ['type'])
         const rate = _.toInteger(amount / internal)
         const isDeleted = _.get(item, 'isDelete')
-
         return (
             <div key={id} className={isDeleted ? classes.deletedRow : classes.listRow}>
                 <div style={{flexBasis: '10%', maxWidth: '10%'}}>{id}</div>
@@ -314,29 +310,13 @@ const TransactionsList = enhance((props) => {
                 <div style={{flexBasis: '30%', maxWidth: '30%'}}>
                     {expanseCategory
                         ? <div><span className={classes.label}>Категория: </span> {expanseCategory}</div> : ''}
-                    {transType &&
-                    <div>
-                        {transType === ORDER
-                        ? <Link to={{
-                            pathname: sprintf(ROUTES.ORDER_ITEM_PATH, order),
-                            query: {search: order}
-                        }} target="_blank"><span className={classes.clickable}> Оплата заказа № {order}</span></Link>
-                        : (transType === INCOME_FROM_AGENT)
-                            ? <span className={classes.clickable}
-                                    onClick={() => { transactionInfoDialog.handleOpenDialog(id) }}> {'Приемка наличных с  ' + _.get(user, 'firstName') + ' ' + _.get(user, 'secondName')}</span>
-                            : <span> {formattedType[transType]} {clientName &&
-                                <Link
-                                    target="_blank"
-                                    className={classes.clickable}
-                                    to={{
-                                        pathname: ROUTES.CLIENT_BALANCE_LIST_URL,
-                                        query: {search: clientId}
-                                    }}>
-                                    {clientName}
-                                </Link>}
-                            </span>}
-
-                    </div>}
+                    {transType && <TransactionsFormat
+                        handleClickAgentIncome={() => { transactionInfoDialog.handleOpenDialog(id) }}
+                        type={transType}
+                        order={order}
+                        client={_.get(item, 'client')}
+                        user={user}/>
+                    }
                     {comment && <div><strong>Комментарий:</strong> {comment}</div>}
                 </div>
                 <div style={{flexBasis: '18%', maxWidth: '18%'}}>{date}</div>
@@ -356,7 +336,7 @@ const TransactionsList = enhance((props) => {
                         <DeleteIcon/>
                     </IconButton>
                     <IconButton
-                        disabled={(transType !== INCOME) && (transType !== OUTCOME) && (transType !== INCOME_TO_CLIENT) && (transType !== OUTCOME_TO_CLIENT)}
+                        disabled={(transType !== INCOME) && (transType !== OUTCOME) && (transType !== INCOME_TO_CLIENT) && (transType !== OUTCOME_FROM_CLIENT)}
                         className={classes.deleteBtn}
                         style={iconStyle.button}
                         iconStyle={iconStyle.icon}

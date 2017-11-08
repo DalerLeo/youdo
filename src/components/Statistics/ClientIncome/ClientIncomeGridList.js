@@ -23,7 +23,7 @@ import Loader from '../../Loader'
 import moment from 'moment'
 import {StatisticsFilterExcel, StatisticsChart} from '../../Statistics'
 import NotFound from '../../Images/not-found.png'
-import TransactionsFormat from './TransactionsFormat'
+import ClientBalanceFormat from './ClientBalanceFormat'
 const NEGATIVE = -1
 
 export const CLIENT_INCOME_FILTER_KEY = {
@@ -292,7 +292,7 @@ const ClientIncomeGridList = enhance((props) => {
                 <Col xs={2}>{userName}</Col>
                 <Col xs={3}>
                     {type && <div>
-                        <TransactionsFormat type={type} order={orderId} orderReturn={orderReturnId}/>
+                        <ClientBalanceFormat type={type} order={orderId} orderReturn={orderReturnId}/>
                     </div>}
                     {comment && <div><strong>Комментарий:</strong> {comment}</div>}
                 </Col>
