@@ -75,6 +75,7 @@ const enhance = compose(
         const returnDataLoading = _.get(state, ['order', 'return', 'loading'])
         const products = _.get(state, ['form', 'OrderCreateForm', 'values', 'products'])
         const editProducts = _.get(state, ['order', 'updateProducts', 'data', 'results'])
+        const editProductsLoading = _.get(state, ['order', 'updateProducts', 'loading'])
         const filter = filterHelper(list, pathname, query)
         const userGroups = _.get(state, ['authConfirm', 'data', 'groups'])
         const defaultUser = _.get(state, ['authConfirm', 'data', 'id'])
@@ -112,7 +113,8 @@ const enhance = compose(
             defaultUser,
             selectedProduct,
             paymentType,
-            isSuperUser
+            isSuperUser,
+            editProductsLoading
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -186,11 +188,11 @@ const enhance = compose(
         return (prevUpdate !== nextUpdate && nextUpdate === true && !_.isEmpty(detail))
     }, ({dispatch, params, location, detail}) => {
         const orderId = _.toInteger(_.get(params, 'orderId'))
-        const marketId = _.toInteger(_.get(detail, ['market', 'id']))
+        const priceList = _.toInteger(_.get(detail, ['priceList', 'id']))
         const openUpdate = toBoolean(_.get(location, ['query', ORDER_UPDATE_DIALOG_OPEN]))
-        if (orderId > ZERO && marketId > ZERO && openUpdate) {
+        if (orderId > ZERO && priceList > ZERO && openUpdate) {
             const size = 100
-            dispatch(orderProductMobileAction(orderId, marketId, size))
+            dispatch(orderProductMobileAction(orderId, priceList, size))
         }
     }),
 
@@ -568,9 +570,10 @@ const OrderList = enhance((props) => {
         listPrintLoading,
         userGroups,
         defaultUser,
-        isSuperUser
+        isSuperUser,
+        editProducts,
+        editProductsLoading
     } = props
-
     const openFilterDialog = toBoolean(_.get(location, ['query', ORDER_FILTER_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', ORDER_CREATE_DIALOG_OPEN]))
     const openTransactionsDialog = toBoolean(_.get(location, ['query', ORDER_TRANSACTIONS_DIALOG_OPEN]))
@@ -658,7 +661,10 @@ const OrderList = enhance((props) => {
     }
 
     const withoutBonusProducts = _.filter(_.get(detail, 'products'), {'isBonus': false})
-
+    const getBalance = (id) => {
+        const foundProduct = _.find(editProducts, {'id': id})
+        return _.toInteger(_.get(foundProduct, 'balance'))
+    }
     const forUpdateProducts = _.map(withoutBonusProducts, (item) => {
         return {
             amount: _.get(item, 'amount'),
@@ -669,6 +675,7 @@ const OrderList = enhance((props) => {
                 value: {
                     id: _.get(item, ['product', 'id']),
                     name: _.get(item, ['product', 'name']),
+                    balance: getBalance(_.get(item, ['product', 'id'])),
                     measurement: {
                         id: _.get(item, ['product', 'measurement', 'id']),
                         name: _.get(item, ['product', 'measurement', 'name'])
@@ -679,7 +686,6 @@ const OrderList = enhance((props) => {
 
         }
     })
-
     const updateDialog = {
         initialValues: (() => {
             if (openCreateDialog) {
@@ -733,6 +739,7 @@ const OrderList = enhance((props) => {
         })(),
         updateLoading: detailLoading || updateLoading,
         openUpdateDialog,
+        editProductsLoading,
         handleOpenUpdateDialog: props.handleOpenUpdateDialog,
         handleCloseUpdateDialog: props.handleCloseUpdateDialog,
         handleSubmitUpdateDialog: props.handleSubmitUpdateDialog

@@ -39,7 +39,7 @@ export const createSerializer = (data) => {
         position,
         'is_active': isActive,
         'stocks': stockSelect ? newStock : singleStock,
-        'types': newMarket
+        'price_lists': newMarket
     }
 }
 

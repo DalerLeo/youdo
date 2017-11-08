@@ -154,6 +154,7 @@ export const PRODUCT_FOR_SELECT = 'main/product/for_select'
 export const PRODUCT_FOR_SELECT_LIST = `${PRODUCT_FOR_SELECT}/`
 
 export const PRODUCT_MOBILE = 'main/product_mobile'
+export const PRODUCT_MOBILE_URL = 'main/product_mobile/'
 export const PRODUCT_MOBILE_ITEM = `${PRODUCT_MOBILE}/%d/`
 export const PRODUCT_EXTRA = `${PRODUCT_MOBILE}/%d/`
 export const PRODUCT_FOR_ORDER_SELECT_LIST = `${PRODUCT_MOBILE}/`
@@ -468,3 +469,6 @@ export const ACCESS_LIST = `${ACCESS}/`
 export const ACCESS_ITEM = `${ACCESS}/%d/`
 export const ACCESS_UPDATE = `${ACCESS}/%d/`
 
+export const PRICELIST = 'sales/price_list'
+export const PRICELIST_CREATE = `/${PRICELIST}/`
+export const PRICELIST_LIST = `/${PRICELIST}/`
