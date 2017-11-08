@@ -142,7 +142,7 @@ export const orderListPintFetchAction = (filter, id) => {
 }
 
 export const orderTransactionFetchAction = (orderId) => {
-    const params = orderId === 'trans' ? {transaction: 0} : {order: orderId}
+    const params = {order: orderId}
     const payload = axios()
         .get(API.ORDER_PAYMENTS, {params})
         .then((response) => {

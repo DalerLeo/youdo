@@ -1,10 +1,13 @@
 import _ from 'lodash'
+import sprintf from 'sprintf'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {compose, withReducer} from 'recompose'
 import injectSheet from 'react-jss'
 import {reduxForm} from 'redux-form'
 import Dialog from 'material-ui/Dialog'
+import * as ROUTES from '../../constants/routes'
+import {Link} from 'react-router'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
@@ -50,6 +53,9 @@ const enhance = compose(
                     textAlign: 'right !important'
                 },
                 '& > div:nth-child(5)': {
+                    textAlign: 'right !important'
+                },
+                '& > div:nth-child(6)': {
                     textAlign: 'right !important'
                 }
             }
@@ -157,57 +163,67 @@ const OrderTransactionsDialog = enhance((props) => {
 
             <div className={classes.bodyContent}>
                 {loading ? <div className={classes.loader}>
-                    <CircularProgress size={40} thickness={4}/>
-                </div>
+                        <CircularProgress size={40} thickness={4}/>
+                    </div>
                     : <div className={classes.inContent}>
                         <div className={classes.field}>
                             {!_.isEmpty(data) ? <div className={classes.transactions}>
-                                <Row className="dottedList">
-                                    <Col xs={3}>Описание</Col>
-                                    <Col xs={2}>Касса</Col>
-                                    <Col xs={2}>Дата</Col>
-                                    <Col xs={3}>Сумма оплаты</Col>
-                                    <Col xs={2}>На заказ</Col>
-                                </Row>
-                                {_.map(data, (item, index) => {
-                                    const PAYMENT = 1
-                                    const BALANCE = 2
+                                    <Row className="dottedList">
+                                        <Col xs={2}>Описание</Col>
+                                        <Col xs={2}>Касса</Col>
+                                        <Col xs={2}>Дата</Col>
+                                        <Col xs={1}>Описание</Col>
+                                        <Col xs={3}>Сумма оплаты</Col>
+                                        <Col xs={2}>На заказ</Col>
+                                    </Row>
+                                    {_.map(data, (item, index) => {
+                                        const PAYMENT = 1
+                                        const BALANCE = 2
 
-                                    const whoFirst = _.get(item, ['clientTransaction', 'user', 'firstName'])
-                                    const whoSecond = _.get(item, ['clientTransaction', 'user', 'secondName'])
-                                    const who = _.get(item, 'clientTransaction') ? (whoFirst + ' ' + whoSecond) : 'Не указано'
-                                    const currency = _.get(item, ['clientTransaction', 'currency', 'name'])
-                                    const currentCurrency = getConfig('PRIMARY_CURRENCY')
-                                    const cashbox = _.get(item, ['clientTransaction', 'transaction']) || 'Не принято'
-                                    const type = _.toInteger(_.get(item, 'type'))
+                                        const whoFirst = _.get(item, ['clientTransaction', 'user', 'firstName'])
+                                        const whoSecond = _.get(item, ['clientTransaction', 'user', 'secondName'])
+                                        const who = _.get(item, 'clientTransaction') ? (whoFirst + ' ' + whoSecond) : 'Не указано'
+                                        const currency = _.get(item, ['clientTransaction', 'currency', 'name'])
+                                        const currentCurrency = getConfig('PRIMARY_CURRENCY')
+                                        const cashbox = _.get(item, ['clientTransaction', 'transaction']) || 'Не принято'
+                                        const type = _.toInteger(_.get(item, 'type'))
+                                        const order = _.toInteger(_.get(item, 'order'))
+                                        const payDate = _.get(item, 'clientTransaction') ? dateTimeFormat(_.get(item, ['clientTransaction', 'createdDate'])) : dateTimeFormat(_.get(item, 'createdDate'))
+                                        const orderSum = numberFormat(_.get(item, 'amount'), currentCurrency)
+                                        const amount = type === BALANCE ? _.get(item, 'amount') : _.toNumber(_.get(item, ['clientTransaction', 'amount']))
+                                        const internal = _.toNumber(_.get(item, ['clientTransaction', 'internal']))
+                                        const pp = '(' + numberFormat(internal, currentCurrency) + ')'
 
-                                    const payDate = _.get(item, 'clientTransaction') ? dateTimeFormat(_.get(item, ['clientTransaction', 'createdDate'])) : dateTimeFormat(_.get(item, 'createdDate'))
-                                    const orderSum = numberFormat(_.get(item, 'amount'), currentCurrency)
-                                    const amount = type === BALANCE ? _.get(item, 'amount') : _.toNumber(_.get(item, ['clientTransaction', 'amount']))
-                                    const internal = _.toNumber(_.get(item, ['clientTransaction', 'internal']))
-                                    const pp = '(' + numberFormat(internal, currentCurrency) + ')'
+                                        let trText = ''
+                                        if (type === PAYMENT) {
+                                            trText = (<span>Оплатил <strong>{who}</strong></span>)
+                                        } else if (type === BALANCE) {
+                                            trText = 'Списано со счета'
+                                        } else {
+                                            trText = (<span>Возврат оформил <strong>{who}</strong></span>)
+                                        }
 
-                                    let trText = ''
-                                    if (type === PAYMENT) {
-                                        trText = (<span>Оплатил <strong>{who}</strong></span>)
-                                    } else if (type === BALANCE) {
-                                        trText = 'Списано со счета'
-                                    } else {
-                                        trText = (<span>Возврат оформил <strong>{who}</strong></span>)
-                                    }
-
-                                    return (
-                                        <Row key={index} className="dottedList">
-                                            <Col xs={3}>{trText}</Col>
-                                            <Col xs={2}>{cashbox}</Col>
-                                            <Col xs={2}>{payDate}</Col>
-                                            <Col
-                                                xs={3}>{numberFormat(amount, currency)} {!(amount === internal) && pp}</Col>
-                                            <Col xs={2}>{orderSum}</Col>
-                                        </Row>
-                                    )
-                                })}
-                            </div>
+                                        return (
+                                            <Row key={index} className="dottedList">
+                                                <Col xs={2}>{trText}</Col>
+                                                <Col xs={2}>{cashbox}</Col>
+                                                <Col xs={2}>{payDate}</Col>
+                                                <Col xs={1}>
+                                                    <Link style={{color: '#12aaeb'}}
+                                                          target="_blank"
+                                                          to={{
+                                                              pathname: sprintf(ROUTES.ORDER_ITEM_PATH, order)
+                                                          }}>
+                                                        Заказ {order}
+                                                    </Link>
+                                                </Col>
+                                                <Col
+                                                    xs={3}>{numberFormat(amount, currency)} {!(amount === internal) && pp}</Col>
+                                                <Col xs={2}>{orderSum}</Col>
+                                            </Row>
+                                        )
+                                    })}
+                                </div>
                                 : <div className={classes.noPayment}>
                                     <div>По данному заказу еще не произведено оплат</div>
                                 </div>}
