@@ -13,6 +13,7 @@ import {connect} from 'react-redux'
 import numberFormat from '../../../helpers/numberFormat'
 import getConfig from '../../../helpers/getConfig'
 import numberWithoutSpaces from '../../../helpers/numberWithoutSpaces'
+import CircularProgress from 'material-ui/CircularProgress'
 import {
     Table,
     TableBody,
@@ -32,6 +33,17 @@ import OrderProductTypeSearchField from './OrderProductTypeSearchField'
 let initialPaymentType = ''
 const enhance = compose(
     injectSheet({
+        loader: {
+            position: 'absolute',
+            width: '100%',
+            height: '300px',
+            background: '#fff',
+            alignItems: 'center',
+            zIndex: '999',
+            textAlign: 'center',
+            justifyContent: 'center',
+            display: 'flex'
+        },
         wrapper: {
             display: 'flex',
             flexDirection: 'column',
@@ -186,7 +198,7 @@ const enhance = compose(
         const isAdmin = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
         const paymentType = _.get(state, ['form', 'OrderCreateForm', 'values', 'paymentType'])
         const updateProducts = _.get(state, ['order', 'updateProducts', 'data', 'results'])
-        const selectedMarket = _.get(state, ['form', 'OrderCreateForm', 'values', 'market', 'value'])
+        const priceList = _.get(state, ['form', 'OrderCreateForm', 'values', 'priceList', 'value'])
         return {
             measurement,
             customPrice,
@@ -194,7 +206,7 @@ const enhance = compose(
             paymentType,
             updateProducts,
             isAdmin,
-            selectedMarket
+            priceList
         }
     }),
     withReducer('state', 'dispatch', (state, action) => {
@@ -345,7 +357,8 @@ const OrderListProductField = enhance((props) => {
         handleChangePT,
         isUpdate,
         isAdmin,
-        selectedMarket
+        editProductsLoading,
+        priceList
     } = props
     const ONE = 1
     const editOnlyCost = _.get(props, 'editOnlyCost')
@@ -380,14 +393,14 @@ const OrderListProductField = enhance((props) => {
             <div>
                 <div className={classes.headers} style={{marginTop: '-10px'}}>
                     <div className={classes.title}>Список товаров</div>
-                    {!editOnlyCost && selectedMarket && <FlatButton
+                    {!editOnlyCost && priceList && <FlatButton
                         label="+ добавить товар"
                         labelStyle={{fontSize: '13px', color: '#12aaeb'}}
                         className={classes.span}
                         onTouchTap={() => dispatch({open: !state.open})}
                     />}
-                    {!editOnlyCost && !selectedMarket &&
-                    <Tooltip position="bottom" text="Выберите магазин">
+                    {!editOnlyCost && !priceList &&
+                    <Tooltip position="bottom" text="Выберите прайс лист">
                         <FlatButton
                             label="+ добавить товар"
                             disabled={true}
@@ -411,7 +424,6 @@ const OrderListProductField = enhance((props) => {
                         <ProductCustomSearchField
                             name="product"
                             label="Наименование"
-                            data-market={selectedMarket}
                             className={classes.searchFieldCustom}
                             fullWidth={true}
                             {..._.get(props, 'product')}
@@ -455,7 +467,10 @@ const OrderListProductField = enhance((props) => {
             </div>
             {error && <div className={classes.error}>{error}</div>}
             {!_.isEmpty(products) ? <div className={classes.table}>
-                    <Table
+                {editProductsLoading ? <div className={classes.loader}>
+                    <CircularProgress size={40} thickness={4}/>
+                </div>
+                    : <Table
                         fixedHeader={true}
                         fixedFooter={false}
                         selectable={false}
@@ -469,6 +484,7 @@ const OrderListProductField = enhance((props) => {
                                 <TableHeaderColumn
                                     className={classes.tableTitle}>Наименование</TableHeaderColumn>
                                 <TableHeaderColumn className={classes.tableTitle}>Кол-во</TableHeaderColumn>
+                                <TableHeaderColumn className={classes.tableTitle}>На складе</TableHeaderColumn>
                                 <TableHeaderColumn className={classes.tableTitle} style={{textAlign: 'right'}}>Цена
                                     ({currency})</TableHeaderColumn>
                                 <TableHeaderColumn className={classes.tableTitle} style={{textAlign: 'right'}}>Всего
@@ -486,8 +502,8 @@ const OrderListProductField = enhance((props) => {
                                 const itemMeasurement = _.get(item, 'measurement') || _.get(item, ['product', 'value', 'measurement', 'name'])
                                 const cost = _.toNumber(_.get(item, 'cost'))
                                 const amount = _.toNumber(_.get(item, 'amount'))
+                                const balance = _.toNumber(_.get(item, ['product', 'value', 'balance']))
                                 const isEditable = _.get(item, 'customPrice')
-
                                 if (editItem === index) {
                                     if (canChangeAnyPrice) {
                                         return (
@@ -505,6 +521,8 @@ const OrderListProductField = enhance((props) => {
                                                             fullWidth={true}
                                                         />
                                                     </TableRowColumn>}
+                                                <TableRowColumn>{numberFormat(balance, itemMeasurement)}</TableRowColumn>
+
                                                 <TableRowColumn style={{padding: 0, textAlign: 'right'}}>
                                                     <Field
                                                         name="editCost"
@@ -542,6 +560,7 @@ const OrderListProductField = enhance((props) => {
                                                         fullWidth={true}
                                                     />
                                                 </TableRowColumn>}
+                                            <TableRowColumn>{numberFormat(balance, itemMeasurement)}</TableRowColumn>
                                             <TableRowColumn style={{padding: 0, textAlign: 'right'}}>
                                                 {isEditable
                                                     ? <Field
@@ -570,6 +589,7 @@ const OrderListProductField = enhance((props) => {
                                     <TableRow key={index} className={classes.tableRow}>
                                         <TableRowColumn><strong style={{marginRight: '5px'}}>{index + ONE}.</strong> {product}</TableRowColumn>
                                         <TableRowColumn>{amount} {itemMeasurement}</TableRowColumn>
+                                        <TableRowColumn>{numberFormat(balance, itemMeasurement)}</TableRowColumn>
                                         <TableRowColumn style={{textAlign: 'right'}}>{numberFormat(cost)}</TableRowColumn>
                                         <TableRowColumn
                                             style={{textAlign: 'right'}}>{numberFormat(cost * amount)}</TableRowColumn>
@@ -600,12 +620,12 @@ const OrderListProductField = enhance((props) => {
                                 )
                             })}
                         </TableBody>
-                    </Table>
+                    </Table>}
                 </div>
                 : <div className={classes.imagePlaceholder}>
                     <div style={{textAlign: 'center', color: '#adadad'}}>
                         <img src={Groceries} alt=""/>
-                        {selectedMarket
+                        {priceList
                         ? <div>Вы еще не выбрали ни одного товара. <br/> <a onClick={() => dispatch({open: !state.open})}>Добавить</a>
                             товар?
                         </div>

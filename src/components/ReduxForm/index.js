@@ -81,6 +81,7 @@ import ClientBalanceTypeSearchField from './ClientBalance/ClientBalanceTypeSearc
 import EquipmentSearchField from './EquipmentSearchField'
 import PendingExpensesTypeSearchField from './PendingExpensesTypeSearchField'
 import DeliveryManSearchField from './DeliveryManSearchField'
+import PriceListSearchField from './PriceListSearchField'
 
 export {
     DeliveryManSearchField,
@@ -165,5 +166,6 @@ export {
     ClientBalanceTypeSearchField,
     SupplySearchField,
     TransitionSendCashboxSearchField,
-    TransitionSendCashboxTypeSearchField
+    TransitionSendCashboxTypeSearchField,
+    PriceListSearchField
 }

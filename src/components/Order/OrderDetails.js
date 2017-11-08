@@ -487,6 +487,7 @@ const OrderDetails = enhance((props) => {
                 initialValues={updateDialog.initialValues}
                 open={updateDialog.openUpdateDialog}
                 loading={updateDialog.updateLoading}
+                editProductsLoading={updateDialog.editProductsLoading}
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
                 filter={filter}

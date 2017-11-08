@@ -17,7 +17,8 @@ import {
     OrderListProductField,
     DateField,
     UsersSearchField,
-    DeliveryManSearchField
+    DeliveryManSearchField,
+    PriceListSearchField
 } from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 import numberFormat from '../../helpers/numberFormat'
@@ -244,7 +245,8 @@ const OrderCreateDialog = enhance((props) => {
         clientId,
         loading,
         orderProducts,
-        isSuperUser
+        isSuperUser,
+        editProductsLoading
     } = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const totalCost = _.sumBy(orderProducts, (item) => {
@@ -286,8 +288,8 @@ const OrderCreateDialog = enhance((props) => {
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit} scrolling="auto" className={classes.form}>
                     {loading ? <div className={classes.loader}>
-                            <CircularProgress size={40} thickness={4}/>
-                        </div>
+                        <CircularProgress size={40} thickness={4}/>
+                    </div>
                         : <div className={classes.innerWrap}>
                             <div style={{minHeight: '470px'}} className={classes.inContent}>
                                 <div className={classes.leftOrderPart}>
@@ -318,9 +320,17 @@ const OrderCreateDialog = enhance((props) => {
                                             initialVal={_.get(initialValues, ['market', 'value', 'id'])}
                                             disabled={!clientId}
                                             fullWidth={true}/>
+                                        <Field
+                                            name="priceList"
+                                            component={PriceListSearchField}
+                                            className={classes.inputFieldCustom}
+                                            label="Прайс лист"
+                                            fullWidth={true}/>
                                     </div>
 
-                                    {(!notEnough) ? <div className={classes.condition} style={isUpdate ? {margin: '0'} : {}}>
+                                    {(notEnough)
+                                        ? <div className={classes.notEnough}>Недостаточно товаров на складе</div>
+                                        : <div className={classes.condition}>
                                             <div className={classes.subTitleOrder} style={{padding: '0 !important'}}>
                                                 Условия
                                                 доставки
@@ -343,8 +353,7 @@ const OrderCreateDialog = enhance((props) => {
                                                 floatingLabelText="Дата доставки"
                                                 container="inline"
                                                 fullWidth={true}/>
-                                        </div>
-                                        : <div className={classes.notEnough}>Недостаточно товаров на складе</div>}
+                                        </div>}
 
                                     <div className={classes.condition}>
                                         <div className={classes.subTitleOrder} style={{padding: '0 !important'}}>Оплата
@@ -375,6 +384,7 @@ const OrderCreateDialog = enhance((props) => {
                                         editOnlyCost={status === DELIVERED || status === GIVEN}
                                         canChangeAnyPrice={canChangeAnyPrice}
                                         component={OrderListProductField}
+                                        editProductsLoading={editProductsLoading}
                                         isUpdate={isUpdate}
                                     />
                                 </div>
@@ -385,11 +395,11 @@ const OrderCreateDialog = enhance((props) => {
                             Общая сумма заказа: <b>{numberFormat(totalCost, getConfig('PRIMARY_CURRENCY'))}</b>
                         </div>
                         {(notEnough) ? <FlatButton
-                                label="Далее"
-                                labelStyle={{fontSize: '13px'}}
-                                className={classes.actionButton}
-                                primary={true}
-                                onTouchTap={shortageDialog.handleOpenShortageDialog}/>
+                            label="Далее"
+                            labelStyle={{fontSize: '13px'}}
+                            className={classes.actionButton}
+                            primary={true}
+                            onTouchTap={shortageDialog.handleOpenShortageDialog}/>
 
                             : <FlatButton
                                 label={isUpdate ? 'Изменить заказ' : 'Оформить заказ'}
