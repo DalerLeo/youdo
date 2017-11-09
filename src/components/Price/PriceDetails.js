@@ -180,6 +180,7 @@ const PriceDetails = enhance((props) => {
         listDetailData,
         defaultDialog
     } = props
+    console.warn(mergedList)
     const loading = _.get(detailData, 'detailLoading')
     const marketTypeIsLoading = _.get(detailData, 'marketTypeLoading')
     const priceListItemsIsLoading = _.get(detailData, 'priceListItemsLoading')
@@ -235,9 +236,7 @@ const PriceDetails = enhance((props) => {
                         pathname: ROUTES.SUPPLY_LIST_URL,
                         query: {openCreateDialog: true}
                     }} target='_blank'>добавить поставку</Link>
-                    <br/>или <span onClick={defaultDialog.handleOpen} style={{color: '#129fdd', cursor: 'pointer'}}>
-                                     добавьте
-                                </span> себестоимость по умолчанию
+                    <br/>или <a onClick={defaultDialog.handleOpen}>добавьте себестоимость </a> по умолчанию
                 </div>}
 
         </div>
@@ -275,11 +274,12 @@ const PriceDetails = enhance((props) => {
 
                 <div className={classes.leftSide}>
                     {(!_.isEmpty(priceHistoryList) || _.get(defaultNetCost, 'cost')) && <div className={classes.bodyTitle}>Поставки</div> }
-                    {priceHistoryLoading && <div className={classes.loader}>
-                                                <div>
-                                                    <CircularProgress size={40} thickness={4}/>
-                                                </div>
-                                            </div>}
+                    {priceHistoryLoading &&
+                    <div className={classes.loader}>
+                        <div>
+                            <CircularProgress size={40} thickness={4}/>
+                        </div>
+                    </div>}
 
                     {!priceHistoryLoading && (_.isEmpty(priceHistoryList) && !_.get(defaultNetCost, 'cost')) &&
                         // If default net cost is not set and supply list is empty show this element

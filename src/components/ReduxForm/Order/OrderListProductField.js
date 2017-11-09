@@ -31,6 +31,7 @@ import ProductCustomSearchField from './ProductCustomSearchField'
 import OrderProductTypeSearchField from './OrderProductTypeSearchField'
 
 let initialPaymentType = ''
+let initialPriceList = ''
 const enhance = compose(
     injectSheet({
         loader: {
@@ -194,19 +195,24 @@ const enhance = compose(
     connect((state) => {
         const measurement = _.get(state, ['product', 'extra', 'data', 'measurement', 'name'])
         const customPrice = _.get(state, ['product', 'extra', 'data', 'custom_price'])
-        const cashPrice = _.get(state, ['product', 'extra', 'data', 'cash_price'])
+        const prices = {
+            cashPrice: _.get(state, ['product', 'extra', 'data', 'cash_price']),
+            transferPrice: _.get(state, ['product', 'extra', 'data', 'transfer_price'])
+        }
         const isAdmin = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
         const paymentType = _.get(state, ['form', 'OrderCreateForm', 'values', 'paymentType'])
-        const updateProducts = _.get(state, ['order', 'updateProducts', 'data', 'results'])
-        const priceList = _.get(state, ['form', 'OrderCreateForm', 'values', 'priceList', 'value'])
+        const priceList = _.get(state, ['form', 'OrderCreateForm', 'values', 'priceList'])
+        const updatedPriceListProducts = _.get(state, ['order', 'updateProducts', 'data', 'results'])
+        const initialProducts = _.get(state, ['form', 'OrderCreateForm', 'values', 'products'])
         return {
             measurement,
             customPrice,
-            cashPrice,
+            prices,
             paymentType,
-            updateProducts,
+            updatedPriceListProducts,
             isAdmin,
-            priceList
+            priceList,
+            initialProducts
         }
     }),
     withReducer('state', 'dispatch', (state, action) => {
@@ -218,9 +224,9 @@ const enhance = compose(
     withHandlers({
         handleAdd: props => () => {
             const product = _.get(props, ['product', 'input', 'value'])
-            const cashPrice = _.get(props, ['cashPrice'])
+            const price = _.get(props, 'prices')
             const amount = numberWithoutSpaces(_.get(props, ['amount', 'input', 'value']))
-            const cost = numberWithoutSpaces(_.get(props, ['cost', 'input', 'value'])) || cashPrice
+            const cost = numberWithoutSpaces(_.get(props, ['cost', 'input', 'value']))
             const measurement = _.get(props, ['measurement'])
             const customPrice = _.get(props, ['customPrice'])
             const onChange = _.get(props, ['products', 'input', 'onChange'])
@@ -236,7 +242,7 @@ const enhance = compose(
                 }
 
                 if (!has) {
-                    let newArray = [{product, amount, cost, measurement, customPrice}]
+                    let newArray = [{product, amount, cost, measurement, customPrice, price}]
                     _.map(products, (obj) => {
                         newArray.push(obj)
                     })
@@ -250,12 +256,30 @@ const enhance = compose(
             initialPaymentType = paymentType
             const products = _.get(props, ['products', 'input', 'value'])
             const changedProducts = _.get(props, ['products', 'input', 'onChange'])
-            const updateProducts = _.get(props, 'updateProducts')
+            const initialProducts = _.get(props, 'initialProducts')
             _.map(products, (item, index) => {
-                const prices = _.find(updateProducts, (obj, indx) => {
+                const prices = _.find(initialProducts, (obj, indx) => {
                     return index === indx
                 })
-                item.cost = (paymentType === 'bank') ? _.get(prices, 'transferPrice') : _.get(prices, 'cashPrice')
+                item.cost = (paymentType === 'bank') ? _.get(prices, ['price', 'transferPrice']) : _.get(prices, ['price', 'cashPrice'])
+            })
+            let newArray = []
+            _.map(products, (obj) => {
+                newArray.push(obj)
+            })
+            changedProducts(newArray)
+        },
+        handleChangePriceList: props => () => {
+            const paymentType = _.get(props, 'paymentType')
+            initialPriceList = _.get(props, ['priceList', 'value'])
+            const products = _.get(props, ['products', 'input', 'value'])
+            const changedProducts = _.get(props, ['products', 'input', 'onChange'])
+            const updatedPriceListProducts = _.get(props, 'updatedPriceListProducts')
+            _.map(products, (item, index) => {
+                const prices = _.find(updatedPriceListProducts, (obj, indx) => {
+                    return index === indx
+                })
+                item.cost = (paymentType === 'bank') ? _.get(prices, ['transferPrice']) : _.get(prices, ['cashPrice'])
             })
             let newArray = []
             _.map(products, (obj) => {
@@ -299,23 +323,36 @@ const enhance = compose(
 
     lifecycle({
         componentDidMount () {
-            if (_.get(this.props, 'isUpdate')) {
-                const cancelBtn = ReactDOM.findDOMNode(this.refs.cancel)
-                const confirmBtn = ReactDOM.findDOMNode(this.refs.confirm)
-                const confirmDialog = ReactDOM.findDOMNode(this.refs.confirmDialog)
-                cancelBtn.addEventListener('click', () => {
-                    confirmDialog.style.zIndex = '-10'
-                })
-                confirmBtn.addEventListener('click', () => {
-                    confirmDialog.style.zIndex = '-10'
-                })
-            }
+            const cancelBtn = ReactDOM.findDOMNode(this.refs.cancel)
+            const confirmBtn = ReactDOM.findDOMNode(this.refs.confirm)
+            const confirmDialog = ReactDOM.findDOMNode(this.refs.confirmDialog)
+            const cancelBtnPriceList = ReactDOM.findDOMNode(this.refs.cancelPriceList)
+            const confirmBtnPriceList = ReactDOM.findDOMNode(this.refs.confirmPriceList)
+            const confirmDialogPriceList = ReactDOM.findDOMNode(this.refs.confirmDialogPriceList)
+            cancelBtn.addEventListener('click', () => {
+                confirmDialog.style.zIndex = '-10'
+            })
+            confirmBtn.addEventListener('click', () => {
+                confirmDialog.style.zIndex = '-10'
+            })
+            cancelBtnPriceList.addEventListener('click', () => {
+                confirmDialogPriceList.style.zIndex = '-10'
+            })
+            confirmBtnPriceList.addEventListener('click', () => {
+                confirmDialogPriceList.style.zIndex = '-10'
+            })
         },
         componentWillReceiveProps (props) {
-            if (_.get(props, 'isUpdate')) {
-                const confirmDialog = ReactDOM.findDOMNode(this.refs.confirmDialog)
-                if (props.paymentType !== initialPaymentType) {
+            const confirmDialog = ReactDOM.findDOMNode(this.refs.confirmDialog)
+            const confirmDialogPriceList = ReactDOM.findDOMNode(this.refs.confirmDialogPriceList)
+            if (props.paymentType !== initialPaymentType) {
+                if (initialPaymentType) {
                     confirmDialog.style.zIndex = '10'
+                }
+            }
+            if (props.priceList.value !== initialPriceList && props.priceList.value) {
+                if (initialPriceList) {
+                    confirmDialogPriceList.style.zIndex = '10'
                 }
             }
         }
@@ -355,7 +392,7 @@ const OrderListProductField = enhance((props) => {
         customPrice,
         paymentType,
         handleChangePT,
-        isUpdate,
+        handleChangePriceList,
         isAdmin,
         editProductsLoading,
         priceList
@@ -366,11 +403,15 @@ const OrderListProductField = enhance((props) => {
     const products = _.get(props, ['products', 'input', 'value']) || []
     const error = _.get(props, ['products', 'meta', 'error'])
     const currency = getConfig('PRIMARY_CURRENCY')
-    initialPaymentType = (paymentType === 'cash') ? 'cash' : 'bank'
+    initialPaymentType = paymentType
+    initialPriceList = priceList.value
 
     return (
         <div className={classes.wrapper}>
-            {isUpdate && <div ref="confirmDialog" className={classes.confirm} style={(paymentType !== initialPaymentType) ? {zIndex: 10} : {zIndex: -10}}>
+            <div
+                ref="confirmDialog"
+                className={classes.confirm}
+                style={(paymentType !== initialPaymentType && paymentType) ? {zIndex: 10} : {zIndex: -10}}>
                 <div className={classes.confirmButtons}>
                     <div>Цены товаров будут изменены на {(paymentType === 'cash' ? 'наличные' : 'банковский счет')}</div>
                     <FlatButton
@@ -389,7 +430,30 @@ const OrderListProductField = enhance((props) => {
                         onTouchTap={handleChangePT}
                     />
                 </div>
-            </div>}
+            </div>
+            <div
+                ref="confirmDialogPriceList"
+                className={classes.confirm}
+                style={(priceList.value !== initialPriceList && priceList.value) ? {zIndex: 10} : {zIndex: -10}}>
+                <div className={classes.confirmButtons}>
+                    <div>Цены товаров будут изменены на {priceList.text}</div>
+                    <FlatButton
+                        label="Нет"
+                        ref="cancelPriceList"
+                        labelStyle={flatButton.label}
+                        className={classes.actionButton}
+                        primary={true}
+                    />
+                    <FlatButton
+                        label="Да"
+                        ref="confirmPriceList"
+                        labelStyle={flatButton.label}
+                        className={classes.actionButton}
+                        primary={true}
+                        onTouchTap={handleChangePriceList}
+                    />
+                </div>
+            </div>
             <div>
                 <div className={classes.headers} style={{marginTop: '-10px'}}>
                     <div className={classes.title}>Список товаров</div>
@@ -629,7 +693,7 @@ const OrderListProductField = enhance((props) => {
                         ? <div>Вы еще не выбрали ни одного товара. <br/> <a onClick={() => dispatch({open: !state.open})}>Добавить</a>
                             товар?
                         </div>
-                        : <div>Для добавления товаров, <br/> выберите магазин</div>}
+                        : <div>Для добавления товаров, <br/> выберите прайс лист</div>}
                     </div>
                 </div>
             }

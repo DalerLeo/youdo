@@ -181,11 +181,13 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const prevUpdate = toBoolean(_.get(props, ['location', 'query', ORDER_UPDATE_DIALOG_OPEN]))
+        const prevLoading = _.get(props, 'detailLoading')
+        const nextLoading = _.get(nextProps, 'detailLoading')
+        const update = toBoolean(_.get(props, ['location', 'query', ORDER_UPDATE_DIALOG_OPEN]))
         const nextUpdate = toBoolean(_.get(nextProps, ['location', 'query', ORDER_UPDATE_DIALOG_OPEN]))
-        const detail = nextProps.detail
 
-        return (prevUpdate !== nextUpdate && nextUpdate === true && !_.isEmpty(detail))
+        return (prevLoading !== nextLoading && nextLoading === false && nextUpdate === true) ||
+            (update !== nextUpdate && nextUpdate === true)
     }, ({dispatch, params, location, detail}) => {
         const orderId = _.toInteger(_.get(params, 'orderId'))
         const priceList = _.toInteger(_.get(detail, ['priceList', 'id']))
@@ -193,6 +195,25 @@ const enhance = compose(
         if (orderId > ZERO && priceList > ZERO && openUpdate) {
             const size = 100
             dispatch(orderProductMobileAction(orderId, priceList, size))
+        }
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const prevPriceList = _.get(props, ['createForm', 'values', 'priceList', 'value'])
+        const nextPriceList = _.get(nextProps, ['createForm', 'values', 'priceList', 'value'])
+        const openCreateDialog = toBoolean(_.get(nextProps, ['location', 'query', ORDER_CREATE_DIALOG_OPEN]))
+        const openUpdateDialog = toBoolean(_.get(nextProps, ['location', 'query', ORDER_UPDATE_DIALOG_OPEN]))
+
+        return (prevPriceList !== nextPriceList && nextPriceList && (openCreateDialog || openUpdateDialog))
+    }, ({dispatch, location, createForm}) => {
+        const priceList = _.toInteger(_.get(createForm, ['values', 'priceList', 'value']))
+        const products = _.join(_.map(_.get(createForm, ['values', 'products']), (item) => {
+            return _.get(item, ['product', 'value', 'id'])
+        }), '-')
+        const openUpdate = toBoolean(_.get(location, ['query', ORDER_UPDATE_DIALOG_OPEN]))
+        if (priceList > ZERO && openUpdate) {
+            const size = 100
+            dispatch(orderProductMobileAction(null, priceList, size, products))
         }
     }),
 
@@ -671,11 +692,19 @@ const OrderList = enhance((props) => {
         const foundProduct = _.find(editProducts, {'id': id})
         return _.toInteger(_.get(foundProduct, 'balance'))
     }
+    const getPrice = (id) => {
+        const foundProduct = _.find(editProducts, {'id': id})
+        return {
+            cashPrice: _.get(foundProduct, 'cashPrice'),
+            transferPrice: _.get(foundProduct, 'transferPrice')
+        }
+    }
     const forUpdateProducts = _.map(withoutBonusProducts, (item) => {
         return {
             amount: _.get(item, 'amount'),
             cost: _.get(item, 'price'),
             customPrice: _.get(item, ['product', 'customPrice']),
+            price: getPrice(_.get(item, ['product', 'id'])),
             product: {
                 id: _.get(item, 'id'),
                 value: {
@@ -738,6 +767,10 @@ const OrderList = enhance((props) => {
                 discountPrice: discount,
                 paymentDate: moment(_.get(detail, ['paymentDate'])).toDate(),
                 products: forUpdateProducts,
+                priceList: {
+                    value: _.get(detail, ['priceList', 'id']),
+                    text: _.get(detail, ['priceList', 'name'])
+                },
                 user: {
                     value: _.get(detail, ['user', 'id'])
                 }
