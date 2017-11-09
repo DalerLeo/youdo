@@ -224,7 +224,7 @@ const SupplyGridList = enhance((props) => {
         const dateDelivery = _.get(item, 'dateDelivery') ? dateFormat(_.get(item, 'dateDelivery')) : 'Не указано'
         const totalCost = numberFormat(_.get(item, 'totalCost'), _.get(item, ['currency', 'name']))
         const acceptedCost = numberFormat(_.get(item, 'acceptedCost'), _.get(item, ['currency', 'name']))
-        const defectedCost = numberFormat(_.get(item, 'defectedCost'), _.get(item, ['currency', 'name']))
+        const defectedCost = numberFormat(_.get(item, 'defectCost'), _.get(item, ['currency', 'name']))
         const status = _.toNumber(_.get(item, 'status'))
         const contract = _.get(item, 'contract')
         const paymentType = _.get(item, 'paymentType') === 'cash' ? 'Наличный' : 'Банковский счет'
