@@ -28,7 +28,7 @@ import OrderPaymentTypeRadio from '../ReduxForm/Order/OrderPaymentTypeRadio'
 import MarketSearchField from '../ReduxForm/ClientBalance/MarketSearchField'
 
 export const ORDER_CREATE_DIALOG_OPEN = 'openCreateDialog'
-const CLIENT_CREATE_DIALOG_OPEN = 'openCreateDialog'
+const SHOP_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -241,7 +241,6 @@ const OrderCreateDialog = enhance((props) => {
         products,
         status,
         canChangeAnyPrice,
-        filter,
         clientId,
         loading,
         orderProducts,
@@ -299,7 +298,7 @@ const OrderCreateDialog = enhance((props) => {
                                               target="_blank"
                                               to={{
                                                   pathname: [ROUTES.SHOP_LIST_URL],
-                                                  query: filter.getParams({[CLIENT_CREATE_DIALOG_OPEN]: true})
+                                                  query: {[SHOP_CREATE_DIALOG_OPEN]: true}
                                               }}>
                                             + добавить
                                         </Link>
