@@ -1,3 +1,3 @@
-import PriceListSettingList from './PriceListSettingList'
+import PriceListSetting from './PriceListSetting'
 
-export {PriceListSettingList}
+export {PriceListSetting}

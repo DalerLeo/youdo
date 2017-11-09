@@ -72,7 +72,7 @@ import {DivisionList} from '../containers/Division'
 import {JoinList} from '../containers/Join'
 import {PermissionList} from '../containers/Permission'
 import {NotificationTemplateList} from '../containers/NotificationTemplate'
-import {PriceListSetting} from '../containers/PriceListSetting/PriceListSetting'
+import {PriceListSetting} from '../containers/PriceListSetting'
 
 const userIsAdminChain = compose(userIsAuth, visibleOnlyAdmin)
 
