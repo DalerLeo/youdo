@@ -169,8 +169,8 @@ const enhance = compose(
     }),
 )
 
-const
-    ZERO = 0
+const ZERO = 0
+const TWO = 2
 const TransactionsList = enhance((props) => {
     const {
         filter,
@@ -300,6 +300,7 @@ const TransactionsList = enhance((props) => {
         const transType = _.get(item, ['type'])
         const rate = _.toInteger(amount / internal)
         const isDeleted = _.get(item, 'isDelete')
+        const supply = _.get(item, 'supply')
         return (
             <div key={id} className={isDeleted ? classes.deletedRow : classes.listRow}>
                 <div style={{flexBasis: '10%', maxWidth: '10%'}}>{id}</div>
@@ -314,6 +315,7 @@ const TransactionsList = enhance((props) => {
                         handleClickAgentIncome={() => { transactionInfoDialog.handleOpenDialog(id) }}
                         type={transType}
                         order={order}
+                        supply={supply}
                         client={_.get(item, 'client')}
                         user={user}/>
                     }
@@ -330,6 +332,7 @@ const TransactionsList = enhance((props) => {
                     <IconButton
                         className={classes.deleteBtn}
                         style={iconStyle.button}
+                        disabled={transType === TWO}
                         iconStyle={iconStyle.icon}
                         disableTouchRipple={true}
                         onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}>

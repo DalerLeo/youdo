@@ -7,6 +7,7 @@ export const INCOME_TO_CLIENT = 6
 export const OUTCOME_FROM_CLIENT = 7
 export const INCOME_FROM_AGENT = 8
 export const OUTCOME_FOR_SUPPLY_EXPANSE = 9
+export const SUPPLY_EXPENCE = 10
 export const formattedType = {
     1: 'Перевод с кассы',
     2: 'Перевод на кассу',
@@ -16,5 +17,6 @@ export const formattedType = {
     6: 'Приход на счет клиента',
     7: 'Снято со счета клиента',
     8: 'Приемка наличных с агента',
-    9: 'Расход на поставку'
+    9: 'Расход на поставку',
+    10: 'Доп.расход на поставку'
 }

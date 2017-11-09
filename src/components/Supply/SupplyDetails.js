@@ -14,7 +14,6 @@ import dateTimeFormat from '../../helpers/dateTimeFormat'
 import Tooltip from '../ToolTip'
 import moment from 'moment'
 import numberFormat from '../../helpers/numberFormat'
-import getConfig from '../../helpers/getConfig'
 import SupplySetDiscountDialog from './SupplySetDiscountDialog'
 import * as ROUTE from '../../constants/routes'
 import {Link} from 'react-router'
@@ -235,7 +234,8 @@ const SupplyDetails = enhance((props) => {
         confirmExpenseDialog,
         paidData,
         openExpenseInfo,
-        setOpenExpenseInfo
+        setOpenExpenseInfo,
+        isAdmin
     } = props
     const zero = 0
     const id = _.get(data, 'id')
@@ -263,6 +263,7 @@ const SupplyDetails = enhance((props) => {
     const price = (discountPrice * hundred) / (totalCost + discountPrice)
     const totalAdditionalCosts = _.get(data, 'totalAdditionalCosts')
     const totalAdditionalCostsPaid = _.get(data, 'totalAdditionalCostsPaid')
+    const currency = _.get(data, ['currency', 'name'])
 
     if (loading) {
         return (
@@ -289,7 +290,6 @@ const SupplyDetails = enhance((props) => {
         }
     })
 
-    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     return (
         <div className={classes.wrapper}>
             <div className={classes.title}>
@@ -313,6 +313,7 @@ const SupplyDetails = enhance((props) => {
                         <Link target="_blank" to={{pathname: ROUTE.PENDING_EXPENSES_LIST_URL, query: {supply: id}}}>
                             <IconButton
                                 iconStyle={iconStyle.icon}
+                                disabled={(status === CANCELED)}
                                 style={iconStyle.button}
                                 touch={true}>
                                 <AddPayment/>
@@ -322,6 +323,7 @@ const SupplyDetails = enhance((props) => {
                     <Tooltip position="bottom" text="Добавить расход">
                         <IconButton
                             iconStyle={iconStyle.icon}
+                            disabled={(status === CANCELED)}
                             style={iconStyle.button}
                             touch={true}
                             onTouchTap={() => { handleSupplyExpenseOpenCreateDialog(id) }}>
@@ -333,6 +335,7 @@ const SupplyDetails = enhance((props) => {
                             disabled={(status === CANCELED)}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
+                            distabled={isAdmin}
                             touch={true}
                             onTouchTap={updateDialog.handleOpenUpdateDialog}>
                             <Edit/>
@@ -340,7 +343,7 @@ const SupplyDetails = enhance((props) => {
                     </Tooltip>}
                     {confirmDialog && <Tooltip position="bottom" text="Отменить">
                         <IconButton
-                            disabled={(status === CANCELED || status === GIVEN || status === DELIVERED)}
+                            disabled={(status === CANCELED || status === GIVEN || status === DELIVERED) && isAdmin}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
@@ -394,7 +397,7 @@ const SupplyDetails = enhance((props) => {
                             <ul>
                                 <li>
                                     <span>Стоимость поставки</span>
-                                    <span>{numberFormat(totalCost, primaryCurrency)}</span>
+                                    <span>{numberFormat(totalCost, currency)}</span>
                                 </li>
                                 <li>
                                     <span>Тип оплаты</span>
@@ -402,11 +405,11 @@ const SupplyDetails = enhance((props) => {
                                 </li>
                                 <li>
                                     <span>Оплачено:</span>
-                                    <span>{numberFormat(totalPaid, primaryCurrency)}</span>
+                                    <span>{numberFormat(totalPaid, currency)}</span>
                                 </li>
                                 <li>
                                     <span>Остаток:</span>
-                                    <span className={totalBalance > zero ? classes.red : classes.green}>{numberFormat(totalBalance)} {primaryCurrency}</span>
+                                    <span className={totalBalance > zero ? classes.red : classes.green}>{numberFormat(totalBalance)} {currency}</span>
                                 </li>
                             </ul>
                         </div>

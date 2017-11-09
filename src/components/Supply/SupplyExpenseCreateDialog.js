@@ -122,7 +122,7 @@ const ExpenseCreateDialog = enhance((props) => {
                                 name="paymentType"
                                 component={PaymentTypeSearchField}
                                 className={classes.inputFieldCustom}
-                                label="Валюта"
+                                label="Тип оплаты"
                                 fullWidth={true}/>
                             <Field
                                 name="linkToProduct"

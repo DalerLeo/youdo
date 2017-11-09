@@ -44,6 +44,7 @@ export const updateSerializer = (data, id) => {
     const currency = _.get(data, ['currency', 'value'])
     const comment = _.get(data, ['comment'])
     const contact = _.get(data, ['contact'])
+    const paymentType = _.get(data, ['paymentType', 'value'])
     const products = _.map(_.get(data, ['products']), (item) => {
         const spId = _.get(item, 'id')
         const amount = numberWithoutSpaces(_.get(item, 'amount'))
@@ -65,7 +66,8 @@ export const updateSerializer = (data, id) => {
         comment,
         'date_delivery': moment(_.get(data, ['date_delivery'])).format('YYYY-MM-DD'),
         currency,
-        products
+        products,
+        'payment_type': paymentType
     }
 }
 

@@ -38,9 +38,10 @@ export const supplyDefectAction = (supplyId, productId) => {
     }
 }
 
+const THREE = 3
 export const supplyDeleteAction = (id) => {
     const payload = axios()
-        .post(API.SUPPLY_CANCEL, {pk: id})
+        .post(API.SUPPLY_CANCEL, {pk: id, status: THREE})
         .then((response) => {
             return _.get(response, 'data')
         })
