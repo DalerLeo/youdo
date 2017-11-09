@@ -204,14 +204,13 @@ const enhance = compose(
         const openCreateDialog = toBoolean(_.get(nextProps, ['location', 'query', ORDER_CREATE_DIALOG_OPEN]))
         const openUpdateDialog = toBoolean(_.get(nextProps, ['location', 'query', ORDER_UPDATE_DIALOG_OPEN]))
 
-        return (prevPriceList !== nextPriceList && nextPriceList && (openCreateDialog || openUpdateDialog))
+        return (prevPriceList !== nextPriceList && nextPriceList && (openCreateDialog === true || openUpdateDialog === true))
     }, ({dispatch, location, createForm}) => {
         const priceList = _.toInteger(_.get(createForm, ['values', 'priceList', 'value']))
         const products = _.join(_.map(_.get(createForm, ['values', 'products']), (item) => {
             return _.get(item, ['product', 'value', 'id'])
         }), '-')
-        const openUpdate = toBoolean(_.get(location, ['query', ORDER_UPDATE_DIALOG_OPEN]))
-        if (priceList > ZERO && openUpdate) {
+        if (priceList > ZERO) {
             const size = 100
             dispatch(orderProductMobileAction(null, priceList, size, products))
         }

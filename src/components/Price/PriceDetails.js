@@ -180,7 +180,6 @@ const PriceDetails = enhance((props) => {
         listDetailData,
         defaultDialog
     } = props
-    console.warn(mergedList)
     const loading = _.get(detailData, 'detailLoading')
     const marketTypeIsLoading = _.get(detailData, 'marketTypeLoading')
     const priceListItemsIsLoading = _.get(detailData, 'priceListItemsLoading')

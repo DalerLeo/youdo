@@ -249,6 +249,7 @@ const OrderDetails = enhance((props) => {
 
     const zero = 0
     const totalPaid = _.toNumber(_.get(data, 'totalPaid'))
+    const priceList = _.get(data, ['priceList', 'name'])
     const paymentType = _.get(data, 'paymentType')
     const totalBalance = _.get(data, 'totalBalance')
     const productTotal = _.toNumber(_.get(data, 'totalPrice'))
@@ -384,6 +385,10 @@ const OrderDetails = enhance((props) => {
                         <div className={classes.subtitle}>Баланс</div>
                         <div className={classes.dataBox}>
                             <ul>
+                                <li>
+                                    <span>Прайс-лист:</span>
+                                    <span>{priceList}</span>
+                                </li>
                                 <li>
                                     <span>Дата ожидаемой оплаты:</span>
                                     <span>{paymentDate}</span>

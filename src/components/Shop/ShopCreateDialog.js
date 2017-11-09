@@ -272,7 +272,7 @@ const ShopCreateDialog = enhance((props) => {
                                     }}>+ добавить клиента</a>}
                                     {openClient && !isUpdate && <a onClick={() => {
                                         setOpenClient(false)
-                                    }}>+ выбрат клиента</a>}
+                                    }}>+ выбрать клиента</a>}
                                 </div>
                             </div>
                             <div className={classes.divider}>

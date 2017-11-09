@@ -350,7 +350,7 @@ const enhance = compose(
                     confirmDialog.style.zIndex = '10'
                 }
             }
-            if (props.priceList.value !== initialPriceList && props.priceList.value) {
+            if (_.get(props, ['priceList', 'value']) !== initialPriceList && _.get(props, ['priceList', 'value'])) {
                 if (initialPriceList) {
                     confirmDialogPriceList.style.zIndex = '10'
                 }
@@ -404,14 +404,14 @@ const OrderListProductField = enhance((props) => {
     const error = _.get(props, ['products', 'meta', 'error'])
     const currency = getConfig('PRIMARY_CURRENCY')
     initialPaymentType = paymentType
-    initialPriceList = priceList.value
+    initialPriceList = _.get(priceList, 'value')
 
     return (
         <div className={classes.wrapper}>
             <div
                 ref="confirmDialog"
                 className={classes.confirm}
-                style={(paymentType !== initialPaymentType && paymentType) ? {zIndex: 10} : {zIndex: -10}}>
+                style={{zIndex: -10}}>
                 <div className={classes.confirmButtons}>
                     <div>Цены товаров будут изменены на {(paymentType === 'cash' ? 'наличные' : 'банковский счет')}</div>
                     <FlatButton
@@ -434,9 +434,9 @@ const OrderListProductField = enhance((props) => {
             <div
                 ref="confirmDialogPriceList"
                 className={classes.confirm}
-                style={(priceList.value !== initialPriceList && priceList.value) ? {zIndex: 10} : {zIndex: -10}}>
+                style={{zIndex: -10}}>
                 <div className={classes.confirmButtons}>
-                    <div>Цены товаров будут изменены на {priceList.text}</div>
+                    <div>Цены товаров будут изменены на {_.get(priceList, 'text')}</div>
                     <FlatButton
                         label="Нет"
                         ref="cancelPriceList"
