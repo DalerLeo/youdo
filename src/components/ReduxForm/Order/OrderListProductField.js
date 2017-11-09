@@ -531,45 +531,84 @@ const OrderListProductField = enhance((props) => {
             </div>
             {error && <div className={classes.error}>{error}</div>}
             {!_.isEmpty(products) ? <div className={classes.table}>
-                {editProductsLoading ? <div className={classes.loader}>
-                    <CircularProgress size={40} thickness={4}/>
-                </div>
-                    : <Table
-                        fixedHeader={true}
-                        fixedFooter={false}
-                        selectable={false}
-                        multiSelectable={false}>
-                        <TableHeader
-                            displaySelectAll={false}
-                            adjustForCheckbox={false}
-                            enableSelectAll={false}
-                            className={classes.title}>
-                            <TableRow className={classes.tableRow}>
-                                <TableHeaderColumn
-                                    className={classes.tableTitle}>Наименование</TableHeaderColumn>
-                                <TableHeaderColumn className={classes.tableTitle}>Кол-во</TableHeaderColumn>
-                                <TableHeaderColumn className={classes.tableTitle}>На складе</TableHeaderColumn>
-                                <TableHeaderColumn className={classes.tableTitle} style={{textAlign: 'right'}}>Цена
-                                    ({currency})</TableHeaderColumn>
-                                <TableHeaderColumn className={classes.tableTitle} style={{textAlign: 'right'}}>Всего
-                                    ({currency})</TableHeaderColumn>
-                                <TableHeaderColumn></TableHeaderColumn>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody
-                            displayRowCheckbox={false}
-                            deselectOnClickaway={false}
-                            showRowHover={false}
-                            stripedRows={false}>
-                            {_.map(products, (item, index) => {
-                                const product = _.get(item, ['product', 'value', 'name'])
-                                const itemMeasurement = _.get(item, 'measurement') || _.get(item, ['product', 'value', 'measurement', 'name'])
-                                const cost = _.toNumber(_.get(item, 'cost'))
-                                const amount = _.toNumber(_.get(item, 'amount'))
-                                const balance = _.toNumber(_.get(item, ['product', 'value', 'balance']))
-                                const isEditable = _.get(item, 'customPrice')
-                                if (editItem === index) {
-                                    if (canChangeAnyPrice) {
+                    {editProductsLoading ? <div className={classes.loader}>
+                            <CircularProgress size={40} thickness={4}/>
+                        </div>
+                        : <Table
+                            fixedHeader={true}
+                            fixedFooter={false}
+                            selectable={false}
+                            multiSelectable={false}>
+                            <TableHeader
+                                displaySelectAll={false}
+                                adjustForCheckbox={false}
+                                enableSelectAll={false}
+                                className={classes.title}>
+                                <TableRow className={classes.tableRow}>
+                                    <TableHeaderColumn
+                                        className={classes.tableTitle}>Наименование</TableHeaderColumn>
+                                    <TableHeaderColumn className={classes.tableTitle}>Кол-во</TableHeaderColumn>
+                                    <TableHeaderColumn className={classes.tableTitle}>На складе</TableHeaderColumn>
+                                    <TableHeaderColumn className={classes.tableTitle} style={{textAlign: 'right'}}>Цена
+                                        ({currency})</TableHeaderColumn>
+                                    <TableHeaderColumn className={classes.tableTitle} style={{textAlign: 'right'}}>Всего
+                                        ({currency})</TableHeaderColumn>
+                                    <TableHeaderColumn></TableHeaderColumn>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody
+                                displayRowCheckbox={false}
+                                deselectOnClickaway={false}
+                                showRowHover={false}
+                                stripedRows={false}>
+                                {_.map(products, (item, index) => {
+                                    const product = _.get(item, ['product', 'value', 'name'])
+                                    const itemMeasurement = _.get(item, 'measurement') || _.get(item, ['product', 'value', 'measurement', 'name'])
+                                    const cost = _.toNumber(_.get(item, 'cost'))
+                                    const amount = _.toNumber(_.get(item, 'amount'))
+                                    const balance = _.toNumber(_.get(item, ['product', 'value', 'balance']))
+                                    const isEditable = _.get(item, 'customPrice')
+                                    if (editItem === index) {
+                                        if (canChangeAnyPrice) {
+                                            return (
+                                                <TableRow key={index} className={classes.tableRow}>
+                                                    <TableRowColumn><strong style={{marginRight: '5px'}}>{index + ONE}.</strong> {product}</TableRowColumn>
+                                                    {editOnlyCost
+                                                        ? <TableRowColumn>{amount} {itemMeasurement}</TableRowColumn>
+                                                        : <TableRowColumn style={{padding: 0}}>
+                                                            <Field
+                                                                name="editAmount"
+                                                                component={TextField}
+                                                                normalize={normalizeNumber}
+                                                                placeholder={amount + ' ' + itemMeasurement}
+                                                                className={classes.inputFieldEdit}
+                                                                fullWidth={true}
+                                                            />
+                                                        </TableRowColumn>}
+                                                    <TableRowColumn>{numberFormat(balance, itemMeasurement)}</TableRowColumn>
+
+                                                    <TableRowColumn style={{padding: 0, textAlign: 'right'}}>
+                                                        <Field
+                                                            name="editCost"
+                                                            component={TextField}
+                                                            normalize={normalizeNumber}
+                                                            placeholder={cost}
+                                                            className={classes.inputFieldEditRight}
+                                                            fullWidth={true}
+                                                        />
+                                                    </TableRowColumn>
+                                                    <TableRowColumn style={{textAlign: 'right'}}>
+                                                        {numberFormat(cost * amount)}
+                                                    </TableRowColumn>
+                                                    <TableRowColumn style={{textAlign: 'right'}}>
+                                                        <IconButton
+                                                            onTouchTap={() => { handleEdit(index) }}>
+                                                            <Check color="#12aaeb"/>
+                                                        </IconButton>
+                                                    </TableRowColumn>
+                                                </TableRow>
+                                            )
+                                        }
                                         return (
                                             <TableRow key={index} className={classes.tableRow}>
                                                 <TableRowColumn><strong style={{marginRight: '5px'}}>{index + ONE}.</strong> {product}</TableRowColumn>
@@ -586,20 +625,20 @@ const OrderListProductField = enhance((props) => {
                                                         />
                                                     </TableRowColumn>}
                                                 <TableRowColumn>{numberFormat(balance, itemMeasurement)}</TableRowColumn>
-
                                                 <TableRowColumn style={{padding: 0, textAlign: 'right'}}>
-                                                    <Field
-                                                        name="editCost"
-                                                        component={TextField}
-                                                        normalize={normalizeNumber}
-                                                        placeholder={cost}
-                                                        className={classes.inputFieldEditRight}
-                                                        fullWidth={true}
-                                                    />
+                                                    {isEditable
+                                                        ? <Field
+                                                            name="editCost"
+                                                            component={TextField}
+                                                            normalize={normalizeNumber}
+                                                            placeholder={cost}
+                                                            className={classes.inputFieldEditRight}
+                                                            fullWidth={true}
+                                                        />
+                                                        : numberFormat(cost)}
                                                 </TableRowColumn>
-                                                <TableRowColumn style={{textAlign: 'right'}}>
-                                                    {numberFormat(cost * amount)}
-                                                </TableRowColumn>
+                                                <TableRowColumn
+                                                    style={{textAlign: 'right'}}>{numberFormat(cost * amount)}</TableRowColumn>
                                                 <TableRowColumn style={{textAlign: 'right'}}>
                                                     <IconButton
                                                         onTouchTap={() => { handleEdit(index) }}>
@@ -609,91 +648,52 @@ const OrderListProductField = enhance((props) => {
                                             </TableRow>
                                         )
                                     }
+
                                     return (
                                         <TableRow key={index} className={classes.tableRow}>
                                             <TableRowColumn><strong style={{marginRight: '5px'}}>{index + ONE}.</strong> {product}</TableRowColumn>
-                                            {editOnlyCost
-                                                ? <TableRowColumn>{amount} {itemMeasurement}</TableRowColumn>
-                                                : <TableRowColumn style={{padding: 0}}>
-                                                    <Field
-                                                        name="editAmount"
-                                                        component={TextField}
-                                                        normalize={normalizeNumber}
-                                                        placeholder={amount + ' ' + itemMeasurement}
-                                                        className={classes.inputFieldEdit}
-                                                        fullWidth={true}
-                                                    />
-                                                </TableRowColumn>}
+                                            <TableRowColumn>{amount} {itemMeasurement}</TableRowColumn>
                                             <TableRowColumn>{numberFormat(balance, itemMeasurement)}</TableRowColumn>
-                                            <TableRowColumn style={{padding: 0, textAlign: 'right'}}>
-                                                {isEditable
-                                                    ? <Field
-                                                        name="editCost"
-                                                        component={TextField}
-                                                        normalize={normalizeNumber}
-                                                        placeholder={cost}
-                                                        className={classes.inputFieldEditRight}
-                                                        fullWidth={true}
-                                                    />
-                                                    : numberFormat(cost)}
-                                            </TableRowColumn>
+                                            <TableRowColumn style={{textAlign: 'right'}}>{numberFormat(cost)}</TableRowColumn>
                                             <TableRowColumn
                                                 style={{textAlign: 'right'}}>{numberFormat(cost * amount)}</TableRowColumn>
                                             <TableRowColumn style={{textAlign: 'right'}}>
+                                                {canChangeAnyPrice
+                                                    ? <IconButton
+                                                        onTouchTap={() => setEditItem(index)}
+                                                        style={iconStyle.button}
+                                                        iconStyle={iconStyle.icon}>
+                                                        <EditIcon color="#666666"/>
+                                                    </IconButton>
+                                                    : <IconButton
+                                                        disabled={editOnlyCost && !isEditable}
+                                                        onTouchTap={() => setEditItem(index)}
+                                                        style={iconStyle.button}
+                                                        iconStyle={iconStyle.icon}>
+                                                        <EditIcon color="#666666"/>
+                                                    </IconButton>}
                                                 <IconButton
-                                                    onTouchTap={() => { handleEdit(index) }}>
-                                                    <Check color="#12aaeb"/>
+                                                    disabled={editOnlyCost}
+                                                    onTouchTap={() => handleRemove(index)}
+                                                    style={iconStyle.button}
+                                                    iconStyle={iconStyle.icon}>
+                                                    <DeleteIcon color="#666666"/>
                                                 </IconButton>
                                             </TableRowColumn>
                                         </TableRow>
                                     )
-                                }
-
-                                return (
-                                    <TableRow key={index} className={classes.tableRow}>
-                                        <TableRowColumn><strong style={{marginRight: '5px'}}>{index + ONE}.</strong> {product}</TableRowColumn>
-                                        <TableRowColumn>{amount} {itemMeasurement}</TableRowColumn>
-                                        <TableRowColumn>{numberFormat(balance, itemMeasurement)}</TableRowColumn>
-                                        <TableRowColumn style={{textAlign: 'right'}}>{numberFormat(cost)}</TableRowColumn>
-                                        <TableRowColumn
-                                            style={{textAlign: 'right'}}>{numberFormat(cost * amount)}</TableRowColumn>
-                                        <TableRowColumn style={{textAlign: 'right'}}>
-                                            {canChangeAnyPrice
-                                                ? <IconButton
-                                                    onTouchTap={() => setEditItem(index)}
-                                                    style={iconStyle.button}
-                                                    iconStyle={iconStyle.icon}>
-                                                    <EditIcon color="#666666"/>
-                                                </IconButton>
-                                                : <IconButton
-                                                    disabled={editOnlyCost && !isEditable}
-                                                    onTouchTap={() => setEditItem(index)}
-                                                    style={iconStyle.button}
-                                                    iconStyle={iconStyle.icon}>
-                                                    <EditIcon color="#666666"/>
-                                                </IconButton>}
-                                            <IconButton
-                                                disabled={editOnlyCost}
-                                                onTouchTap={() => handleRemove(index)}
-                                                style={iconStyle.button}
-                                                iconStyle={iconStyle.icon}>
-                                                <DeleteIcon color="#666666"/>
-                                            </IconButton>
-                                        </TableRowColumn>
-                                    </TableRow>
-                                )
-                            })}
-                        </TableBody>
-                    </Table>}
+                                })}
+                            </TableBody>
+                        </Table>}
                 </div>
                 : <div className={classes.imagePlaceholder}>
                     <div style={{textAlign: 'center', color: '#adadad'}}>
                         <img src={Groceries} alt=""/>
                         {priceList
-                        ? <div>Вы еще не выбрали ни одного товара. <br/> <a onClick={() => dispatch({open: !state.open})}>Добавить</a>
-                            товар?
-                        </div>
-                        : <div>Для добавления товаров, <br/> выберите прайс лист</div>}
+                            ? <div>Вы еще не выбрали ни одного товара. <br/> <a onClick={() => dispatch({open: !state.open})}>Добавить</a>
+                                товар?
+                            </div>
+                            : <div>Для добавления товаров, <br/> выберите прайс лист</div>}
                     </div>
                 </div>
             }
