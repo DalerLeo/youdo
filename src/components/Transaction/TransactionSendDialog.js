@@ -141,6 +141,7 @@ const TransactionSendDialog = enhance((props) => {
                                 name="categoryId"
                                 className={classes.inputFieldCustom}
                                 component={CashboxTypeSearchField}
+                                data-exclude-only={true}
                                 cashbox={cashbox}
                                 label="Касса получатель"
                                 fullWidth={true}/>

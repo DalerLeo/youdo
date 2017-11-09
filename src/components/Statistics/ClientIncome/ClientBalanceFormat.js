@@ -7,7 +7,7 @@ import sprintf from 'sprintf'
 import * as TRANS_TYPE from '../../../constants/clientBalanceInfo'
 
 const enhance = compose()
-const TransactionsFormat = enhance((props) => {
+const ClientBalanceFormat = enhance((props) => {
     const {type, order, orderReturn} = props
 
     let output = null
@@ -52,10 +52,10 @@ const TransactionsFormat = enhance((props) => {
     return (<span>{output}</span>)
 })
 
-TransactionsFormat.propTypes = {
+ClientBalanceFormat.propTypes = {
     type: PropTypes.number.isRequired,
     order: PropTypes.number,
     orderReturn: PropTypes.number
 }
 
-export default TransactionsFormat
+export default ClientBalanceFormat

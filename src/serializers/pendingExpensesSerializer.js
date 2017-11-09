@@ -23,7 +23,7 @@ export const createSerializer = (data, detail) => {
 
     return {
         'cashbox': cashboxId,
-        'supply_expense': expenseId,
+        'supply_expanse': expenseId,
         'expanse_category': categoryId,
         comment,
         amount,

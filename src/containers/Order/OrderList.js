@@ -267,6 +267,8 @@ const enhance = compose(
             const toDate = _.get(filterForm, ['values', 'data', 'toDate']) || null
             const deliveryFromDate = _.get(filterForm, ['values', 'deliveryDate', 'fromDate']) || null
             const deliveryToDate = _.get(filterForm, ['values', 'deliveryDate', 'toDate']) || null
+            const deadlineFromDate = _.get(filterForm, ['values', 'deadlineDate', 'fromDate']) || null
+            const deadlineToDate = _.get(filterForm, ['values', 'deadlineDate', 'toDate']) || null
             const client = _.get(filterForm, ['values', 'client', 'value']) || null
             const status = _.get(filterForm, ['values', 'status', 'value']) || null
             const product = _.get(filterForm, ['values', 'product', 'value']) || null
@@ -294,6 +296,8 @@ const enhance = compose(
                 [ORDER_FILTER_KEY.DELIVERY_MAN]: deliveryMan,
                 [ORDER_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [ORDER_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD'),
+                [ORDER_FILTER_KEY.DEADLINE_FROM_DATE]: deadlineFromDate && deadlineFromDate.format('YYYY-MM-DD'),
+                [ORDER_FILTER_KEY.DEADLINE_TO_DATE]: deadlineToDate && deadlineToDate.format('YYYY-MM-DD'),
                 [ORDER_FILTER_KEY.DELIVERY_FROM_DATE]: deliveryFromDate && deliveryFromDate.format('YYYY-MM-DD'),
                 [ORDER_FILTER_KEY.DELIVERY_TO_DATE]: deliveryToDate && deliveryToDate.format('YYYY-MM-DD')
             })
@@ -593,10 +597,12 @@ const OrderList = enhance((props) => {
     const product = _.toInteger(filter.getParam(ORDER_FILTER_KEY.PRODUCT))
     const division = _.toInteger(filter.getParam(ORDER_FILTER_KEY.DIVISION))
     const status = _.toInteger(filter.getParam(ORDER_FILTER_KEY.STATUS))
+    const toDate = filter.getParam(ORDER_FILTER_KEY.TO_DATE)
     const fromDate = filter.getParam(ORDER_FILTER_KEY.FROM_DATE)
     const deliveryFromDate = filter.getParam(ORDER_FILTER_KEY.DELIVERY_FROM_DATE)
-    const toDate = filter.getParam(ORDER_FILTER_KEY.TO_DATE)
     const deliveryToDate = filter.getParam(ORDER_FILTER_KEY.DELIVERY_TO_DATE)
+    const deadlineFromDate = filter.getParam(ORDER_FILTER_KEY.DEADLINE_FROM_DATE)
+    const deadlineToDate = filter.getParam(ORDER_FILTER_KEY.DEADLINE_TO_DATE)
     const onlyBonus = filter.getParam(ORDER_FILTER_KEY.ONLY_BONUS)
     const exclude = filter.getParam(ORDER_FILTER_KEY.EXCLUDE)
 
@@ -780,6 +786,10 @@ const OrderList = enhance((props) => {
             deliveryDate: {
                 deliveryFromDate: deliveryFromDate && moment(deliveryFromDate, 'YYYY-MM-DD'),
                 deliveryToDate: deliveryToDate && moment(deliveryToDate, 'YYYY-MM-DD')
+            },
+            deadlineDate: {
+                deadlineFromDate: deadlineFromDate && moment(deadlineFromDate, 'YYYY-MM-DD'),
+                deadlineToDate: deadlineToDate && moment(deadlineToDate, 'YYYY-MM-DD')
             },
             onlyBonus: onlyBonus,
             exclude: exclude,

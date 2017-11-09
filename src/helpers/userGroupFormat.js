@@ -1,5 +1,5 @@
 const groups = {
-    'SupDir': 'Завсклад',
+    'manager': 'Завсклад',
     'delivery': 'Доставщик',
     'agent': 'Агент',
     'merch': 'Мерчендайзер',

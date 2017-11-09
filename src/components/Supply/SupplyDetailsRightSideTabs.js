@@ -65,7 +65,8 @@ const enhance = compose(
             fontWeight: '600',
             marginTop: '20px',
             paddingRight: '30px',
-            textAlign: 'right'
+            textAlign: 'right',
+            whiteSpace: 'nowrap'
         },
         tab: {
             marginBottom: '0',
@@ -109,6 +110,19 @@ const enhance = compose(
         }
     })
 )
+
+const iconStyle = {
+    button: {
+        width: 44,
+        height: 44,
+        padding: 12
+    },
+    icon: {
+        color: '#666',
+        width: 22,
+        height: 22
+    }
+}
 
 const SupplyDetailsRightSideTabs = enhance((props) => {
     const {
@@ -212,26 +226,33 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                         ? <div className={classes.tabContent}>
                             {!_.get(expensesListData, 'supplyExpenseListLoading') ? <div className={classes.tabWrapper}>
                                     <Row className="dottedList">
-                                        <Col xs={6}>Описание</Col>
-                                        <Col xs={3}>Тип оплаты</Col>
-                                        <Col xs={3} style={{textAlign: 'right'}}>Сумма</Col>
+                                        <Col xs={2}>Описание</Col>
+                                        <Col xs={3} style={{textAlign: 'left'}}>Продукт</Col>
+                                        <Col xs={2} style={{textAlign: 'left'}}>Тип оплаты</Col>
+                                        <Col xs={2} style={{textAlign: 'right'}}>Сумма</Col>
+                                        <Col xs={2} style={{textAlign: 'right'}}>Оплачено</Col>
                                     </Row>
                                     {
                                         _.map(_.get(expensesListData, 'data'), (item) => {
                                             const expId = _.get(item, 'id')
                                             const expComment = _.get(item, 'comment')
                                             const paymentType = _.get(item, 'paymentType') === 'cash' ? 'Наличный' : 'Банковский счет'
-                                            const expAmount = numberFormat(_.get(item, 'amount'))
                                             const expCurrency = _.get(item, ['currency', 'name'])
+                                            const expAmount = numberFormat(_.get(item, 'amount'), expCurrency)
+                                            const expPaid = _.get(item, 'totalPaid') ? numberFormat(Math.abs(_.toNumber(_.get(item, 'totalPaid'))), expCurrency) : numberFormat(ZERO, expCurrency)
+                                            const expProduct = _.get(_.find(products, {'id': _.get(item, 'supplyProduct')}), ['product', 'name'])
                                             return (
                                                 <Row key={expId} className="dottedList">
-                                                    <Col xs={6}>{expComment}</Col>
-                                                    <Col xs={3}>{paymentType}</Col>
-                                                    <Col xs={3} className={classes.expenseSum}>
-                                                        <div
-                                                            style={{textAlign: 'right'}}>{expAmount} {expCurrency}</div>
+                                                    <Col xs={2}>{expComment}</Col>
+                                                    <Col xs={3} style={{textAlign: 'left'}}>{expProduct || 'Общий расход'}</Col>
+                                                    <Col xs={2} style={{textAlign: 'left'}}>{paymentType}</Col>
+                                                    <Col xs={2} style={{textAlign: 'right'}}>{expAmount}</Col>
+                                                    <Col xs={2} style={{textAlign: 'right'}}>{expPaid}</Col>
+                                                    <Col xs={1} className={classes.expenseSum}>
                                                         <IconButton
-                                                            iconStyle={{color: '#666'}}
+                                                            disableTouchRipple={true}
+                                                            style={iconStyle.button}
+                                                            iconStyle={iconStyle.icon}
                                                             onTouchTap={() => {
                                                                 confirmExpenseDialog.handleOpenConfirmExpenseDialog(expId)
                                                             }}>
@@ -251,7 +272,7 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                             }
                         </div>
                         : (!returnDataLoading && <div className={classes.emptyQuery}>
-                            <div>В данном заказе нет возвратов</div>
+                            <div>В данной поставке нет дополнительных раходов</div>
                         </div>)}
                 </Tab>
                 <Tab label="Оплаты" value={TAB.SUPPLY_TAB_PAID} disableTouchRipple={true}>
@@ -337,14 +358,7 @@ SupplyDetailsRightSideTabs.propTypes = {
     }).isRequired,
     data: PropTypes.object.isRequired,
     returnData: PropTypes.array,
-    itemReturnDialog: PropTypes.shape({
-        returnDialogLoading: PropTypes.bool.isRequired,
-        openSupplyItemReturnDialog: PropTypes.bool.isRequired,
-        handleOpenItemReturnDialog: PropTypes.func.isRequired,
-        handleCloseItemReturnDialog: PropTypes.func.isRequired
-    }).isRequired,
-    returnDataLoading: PropTypes.bool,
-    cancelSupplyReturnOpen: PropTypes.func.isRequired
+    returnDataLoading: PropTypes.bool
 }
 
 export default SupplyDetailsRightSideTabs

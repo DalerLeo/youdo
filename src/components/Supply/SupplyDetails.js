@@ -4,8 +4,9 @@ import {compose, withState} from 'recompose'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import Edit from 'material-ui/svg-icons/image/edit'
-import Expense from 'material-ui/svg-icons/editor/money-off'
-import LinearProgress from 'material-ui/LinearProgress'
+import AddPayment from 'material-ui/svg-icons/editor/attach-money'
+import Expense from 'material-ui/svg-icons/action/credit-card'
+import LinearProgress from '../LinearProgress'
 import Delete from 'material-ui/svg-icons/action/delete'
 import RightSide from './SupplyDetailsRightSideTabs'
 import IconButton from 'material-ui/IconButton'
@@ -15,6 +16,8 @@ import moment from 'moment'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
 import SupplySetDiscountDialog from './SupplySetDiscountDialog'
+import * as ROUTE from '../../constants/routes'
+import {Link} from 'react-router'
 
 const popupWidth = 210
 const enhance = compose(
@@ -125,29 +128,46 @@ const enhance = compose(
                 },
                 '& a': {
                     fontWeight: '600'
-                },
-                '& > div': {
-                    background: '#fff',
-                    position: 'absolute',
-                    padding: '15px 30px',
-                    left: 'calc(100% + 15px)',
-                    minWidth: '335px',
-                    zIndex: '-99',
-                    opacity: '0',
-                    top: '10px'
                 }
             }
         },
-        addExpense: {
-            position: 'unset !important',
-            padding: '0 !important',
-            left: 'unset !important',
-            minWidth: 'unset !important',
-            zIndex: 'unset !important',
-            opacity: '1 !important',
-            top: 'unset !important',
-            '& > span': {
-                padding: '0 10px'
+        expenseInfo: {
+            position: 'absolute',
+            top: '-10px',
+            left: 'calc(100% + 50px)',
+            boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px',
+            background: '#fff',
+            padding: '10px 20px',
+            whiteSpace: 'nowrap',
+            zIndex: '4',
+            '&:before': {
+                content: '""',
+                borderTop: '7px solid transparent',
+                borderBottom: '7px solid transparent',
+                borderRight: '10px solid #ccc',
+                position: 'absolute',
+                left: '-10px',
+                top: '14px'
+            },
+            '&:after': {
+                content: '""',
+                borderTop: '7px solid transparent',
+                borderBottom: '7px solid transparent',
+                borderRight: '9px solid #fff',
+                position: 'absolute',
+                left: '-9px',
+                top: '14px'
+            }
+        },
+        expenseType: {
+            lineHeight: '1.4',
+            paddingBottom: '10px',
+            marginBottom: '10px',
+            borderBottom: '1px #efefef solid',
+            '&:last-child': {
+                paddingBottom: '0',
+                marginBottom: '0',
+                borderBottom: 'none'
             }
         },
         discountPop: {
@@ -176,7 +196,8 @@ const enhance = compose(
             zIndex: '1'
         }
     }),
-    withState('openDiscountDialog', 'setOpenDiscountDialog', false)
+    withState('openDiscountDialog', 'setOpenDiscountDialog', false),
+    withState('openExpenseInfo', 'setOpenExpenseInfo', null)
 )
 
 const iconStyle = {
@@ -212,8 +233,11 @@ const SupplyDetails = enhance((props) => {
         handleSubmitDiscountDialog,
         handleSubmitSetZeroDiscountDialog,
         confirmExpenseDialog,
-        paidData
+        paidData,
+        openExpenseInfo,
+        setOpenExpenseInfo
     } = props
+    const zero = 0
     const id = _.get(data, 'id')
     const agent = _.get(data, ['user', 'firstName']) + ' ' + _.get(data, ['user', 'secondName'])
 
@@ -231,25 +255,39 @@ const SupplyDetails = enhance((props) => {
     const CANCELED = 4
     const status = _.toInteger(_.get(data, 'status'))
 
-    const zero = 0
-    const totalPaid = _.toNumber(_.get(data, 'totalPaid'))
     const comment = _.get(data, 'comment')
-    const totalBalance = _.get(data, 'totalBalance')
+    const totalPaid = _.toNumber(_.get(data, 'totalPaid'))
     const totalCost = _.toNumber(_.get(data, 'totalCost'))
+    const totalBalance = totalCost - totalPaid
     const discountPrice = _.toNumber(_.get(data, 'discountPrice'))
     const price = (discountPrice * hundred) / (totalCost + discountPrice)
+    const totalAdditionalCosts = _.get(data, 'totalAdditionalCosts')
+    const totalAdditionalCostsPaid = _.get(data, 'totalAdditionalCostsPaid')
 
     if (loading) {
         return (
-            <div className={classes.wrapper} style={loading && {maxHeight: '200px'}}>
+            <div className={classes.wrapper}>
                 <div className={classes.loader}>
-                    <div>
-                        <LinearProgress/>
-                    </div>
+                    <LinearProgress/>
                 </div>
             </div>
         )
     }
+    const groupedByCurrency = _.groupBy(totalAdditionalCosts, (item) => {
+        return item.currency.name
+    })
+    const groupedByCurrencyPaid = _.groupBy(totalAdditionalCostsPaid, (item) => {
+        return item.currency.name
+    })
+    const totalAmountPaid = _.map(groupedByCurrencyPaid, (item, index) => {
+        const asd = _.sumBy(item, (obj) => {
+            return Math.abs(_.toNumber(obj.totalAmount))
+        })
+        return {
+            currency: index,
+            paid: asd
+        }
+    })
 
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     return (
@@ -267,10 +305,20 @@ const SupplyDetails = enhance((props) => {
                         handleSubmitSetZeroDiscountDialog={handleSubmitSetZeroDiscountDialog}
                         setOpenDiscountDialog={setOpenDiscountDialog}
                         onSubmit={handleSubmitDiscountDialog}/>
-                    <div className={classes.arrow}></div>
-                    <div className={classes.arrowShadow}></div>
+                    <div className={classes.arrow}>{null}</div>
+                    <div className={classes.arrowShadow}>{null}</div>
                 </div>
                 <div className={classes.titleButtons}>
+                    <Tooltip position="bottom" text="Добавить оплату">
+                        <Link target="_blank" to={{pathname: ROUTE.PENDING_EXPENSES_LIST_URL, query: {supply: id}}}>
+                            <IconButton
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}
+                                touch={true}>
+                                <AddPayment/>
+                            </IconButton>
+                        </Link>
+                    </Tooltip>
                     <Tooltip position="bottom" text="Добавить расход">
                         <IconButton
                             iconStyle={iconStyle.icon}
@@ -358,28 +406,57 @@ const SupplyDetails = enhance((props) => {
                                 </li>
                                 <li>
                                     <span>Остаток:</span>
-                                    <span
-                                        className={totalBalance > zero ? classes.red : classes.green}>{numberFormat(totalBalance)} {primaryCurrency}</span>
+                                    <span className={totalBalance > zero ? classes.red : classes.green}>{numberFormat(totalBalance)} {primaryCurrency}</span>
                                 </li>
                             </ul>
                         </div>
                     </div>
 
                     <div className={classes.subBlock}>
-                        <div className={classes.subtitle}>Доп. расходи</div>
+                        <div className={classes.subtitle}>Доп. расходы</div>
                         <div className={classes.dataBox}>
                             <ul>
-
-                                {_.map(_.get(data, 'totalAdditionalCosts'), (item) => {
-                                    const itemAmount = _.get(item, 'totalAmount')
-                                    const itemCurrency = _.get(item, ['currency', 'name'])
-                                    return (
-                                        <li>
-                                            <span>{itemCurrency}</span>
-                                            <span>{numberFormat(itemAmount)}/100</span>
-                                        </li>
-                                    )
-                                })}
+                                {!_.isEmpty(groupedByCurrency)
+                                    ? _.map(groupedByCurrency, (item, index) => {
+                                        const itemAmount = numberFormat(_.sumBy(item, (o) => _.toNumber(_.get(o, 'totalAmount'))))
+                                        const paidAmount = numberFormat(_.get(_.find(totalAmountPaid, {'currency': index}), 'paid'))
+                                        return (
+                                            <li
+                                                key={index}
+                                                onMouseEnter={() => { setOpenExpenseInfo(index) }}
+                                                onMouseLeave={() => { setOpenExpenseInfo(null) }}>
+                                                <span>{index}</span>
+                                                {openExpenseInfo === index
+                                                    ? <div className={classes.expenseInfo}>
+                                                        {_.map(item, (o) => {
+                                                            const expensePT = _.get(o, 'paymentType')
+                                                            const expenseCurrency = _.get(o, ['currency', 'name'])
+                                                            const totalAmount = _.toNumber(_.get(o, 'totalAmount'))
+                                                            const expPaidAmount = _.toNumber(_.get(_.find(totalAdditionalCostsPaid, (obj) => {
+                                                                return obj.currency.name === expenseCurrency && obj.paymentType === expensePT
+                                                            }), 'totalAmount'))
+                                                            const expTotalPaid = !_.isNaN(expPaidAmount) ? Math.abs(expPaidAmount) : zero
+                                                            return (expensePT === 'cash')
+                                                                ? (
+                                                                    <div key={expensePT} className={classes.expenseType}>
+                                                                        <div><strong>Наличные:</strong> {numberFormat(totalAmount, expenseCurrency)}</div>
+                                                                        <div>Оплачено: {numberFormat(expTotalPaid)} Остаток: {numberFormat(totalAmount - expTotalPaid)}</div>
+                                                                    </div>
+                                                                )
+                                                                : (
+                                                                    <div key={expensePT} className={classes.expenseType}>
+                                                                        <div><strong>Перечисление:</strong> {numberFormat(totalAmount, expenseCurrency)}</div>
+                                                                        <div>Оплачено: {numberFormat(expTotalPaid)} Остаток: {numberFormat(totalAmount - expTotalPaid)}</div>
+                                                                    </div>
+                                                                )
+                                                        })}
+                                                    </div>
+                                                    : null}
+                                                <span>{paidAmount} / {itemAmount}</span>
+                                            </li>
+                                        )
+                                    })
+                                    : <div>Нет дополнительных расходов</div>}
                             </ul>
                         </div>
                     </div>
