@@ -72,6 +72,7 @@ import {DivisionList} from '../containers/Division'
 import {JoinList} from '../containers/Join'
 import {PermissionList} from '../containers/Permission'
 import {NotificationTemplateList} from '../containers/NotificationTemplate'
+import {PriceListSetting} from '../containers/PriceListSetting/PriceListSetting'
 
 const userIsAdminChain = compose(userIsAuth, visibleOnlyAdmin)
 
@@ -437,6 +438,17 @@ export default {
                 {
                     path: ROUTES.MARKET_TYPE_ITEM_URL,
                     component: userIsAuth(MarketTypeList)
+                }
+            ]
+        },
+        // PRICE LIST
+        {
+            path: ROUTES.PRICE_LIST_SETTING_LIST_URL,
+            component: userIsAdminChain(PriceListSetting),
+            childRoutes: [
+                {
+                    path: ROUTES.PRICE_LIST_SETTING_ITEM_URL,
+                    component: userIsAuth(PriceListSetting)
                 }
             ]
         },

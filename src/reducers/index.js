@@ -272,6 +272,12 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.MARKET_TYPE_UPDATE),
         item: createThunkReducer(actionTypes.MARKET_TYPE_ITEM)
     }),
+    priceListSetting: combineReducers({
+        create: createThunkReducer(actionTypes.PRICE_LIST_SETTING_CREATE),
+        list: createThunkReducer(actionTypes.PRICE_LIST_SETTING_LIST),
+        update: createThunkReducer(actionTypes.PRICE_LIST_SETTING_UPDATE),
+        item: createThunkReducer(actionTypes.PRICE_LIST_SETTING_ITEM)
+    }),
     price: combineReducers({
         list: createThunkReducer(actionTypes.PRICE_LIST),
         item: createThunkReducer(actionTypes.PRICE_ITEM),

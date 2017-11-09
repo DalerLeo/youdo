@@ -287,6 +287,12 @@ export const MARKET_TYPE_LIST = `/${MARKET_TYPE}/`
 export const MARKET_TYPE_ITEM = `/${MARKET_TYPE}/%d/`
 export const MARKET_TYPE_DELETE = `/${MARKET_TYPE}/%d/`
 
+export const PRICE_LIST_SETTING = 'sales/price_list'
+export const PRICE_LIST_SETTING_CREATE = `/${PRICE_LIST_SETTING}/`
+export const PRICE_LIST_SETTING_LIST = `/${PRICE_LIST_SETTING}/`
+export const PRICE_LIST_SETTING_ITEM = `/${PRICE_LIST_SETTING}/%d/`
+export const PRICE_LIST_SETTING_DELETE = `/${PRICE_LIST_SETTING}/%d/`
+
 export const ZONE = 'market/border'
 export const ZONE_CREATE = `/${ZONE}/`
 export const ZONE_UPDATE = `/${ZONE}/%d/`
