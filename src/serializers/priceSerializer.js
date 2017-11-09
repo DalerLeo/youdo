@@ -11,9 +11,9 @@ export const createSerializer = (data, productId, priceList) => {
     const minPrice = _.get(data, 'minPrice')
     const maxPrice = _.get(data, 'maxPrice')
     const customCurrency = _.get(data, ['priceCurrency', 'value'])
-    const getPriceByType = (marketTypeId, type) => {
+    const getPriceByType = (priceListId, type) => {
         const price = _.find(_.get(priceList, ['results']), (item) => {
-            return item.marketType.id === marketTypeId
+            return item.priceList.id === priceListId
         })
         if (type === 'cash') {
             const val = _.get(price, 'cashPrice') || ZERO
@@ -32,12 +32,12 @@ export const createSerializer = (data, productId, priceList) => {
 
     const newPrices = _.map(prices, (val) => {
         let obj = {
-            'cash_price': getNum(_.get(val, 'cash_price'), getPriceByType(_.get(val, 'market_type'), 'cash')),
-            'market_type': _.get(val, 'market_type'),
-            'transfer_price': getNum(_.get(val, 'transfer_price'), getPriceByType(_.get(val, 'market_type'), 'transfer')),
+            'cash_price': getNum(_.get(val, 'cash_price'), getPriceByType(_.get(val, 'price_list'), 'cash')),
+            'price_list': _.get(val, 'price_list'),
+            'transfer_price': getNum(_.get(val, 'transfer_price'), getPriceByType(_.get(val, 'price_list'), 'transfer')),
             'currency': _.get(val, ['currency', 'value'])
         }
-        if (Number(isPrimary) === Number(obj.market_type)) {
+        if (Number(isPrimary) === Number(obj.price_list)) {
             obj.is_primary = true
         }
         return obj
