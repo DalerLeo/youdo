@@ -276,12 +276,12 @@ const PriceSetForm = enhance((props) => {
                             <Col style={{textAlign: 'left'}} xs={2}>Валюта</Col>
                         </Row>
                         {_.map(mergedList, (item, index) => {
-                            const marketName = _.get(item, 'marketTypeName')
+                            const priceListName = _.get(item, 'priceListName')
                             const cashPrice = _.get(item, 'cash_price')
                             const transferPrice = _.get(item, 'transfer_price')
                             return (
                                 <Row className='dottedList' key={index}>
-                                    <Col xs={6}> {marketName}</Col>
+                                    <Col xs={6}> {priceListName}</Col>
                                     <Col style={{textAlign: 'left'}} xs={2}>
                                         <Field
                                             name={'prices[' + index + '][cash_price]'}

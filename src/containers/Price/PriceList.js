@@ -30,8 +30,8 @@ import {
     priceItemHistoryFetchAction,
     priceItemExpensesFetchAction
 } from '../../actions/price'
+import {priceListSettingGetAllAction} from '../../actions/priceListSetting'
 import {openErrorAction} from '../../actions/error'
-import {marketTypeGetAllAction} from '../../actions/marketType'
 import {openSnackbarAction} from '../../actions/snackbar'
 const ZERO = 0
 const USD = 3
@@ -48,8 +48,8 @@ const enhance = compose(
         const globalForm = _.get(state, ['form', 'PriceGlobalForm'])
         const setDefaultForm = _.get(state, ['form', 'PriceSetDefaultForm'])
         const filter = filterHelper(list, pathname, query)
-        const marketTypeList = _.get(state, ['marketType', 'list', 'data'])
-        const marketTypeLoading = _.get(state, ['marketType', 'list', 'loading'])
+        const priceLists = _.get(state, ['priceListSetting', 'list', 'data'])
+        const priceListLoading = _.get(state, ['priceListSetting', 'list', 'loading'])
         const priceListItemsList = _.get(state, ['price', 'price', 'data'])
         const priceListItemsLoading = _.get(state, ['price', 'price', 'loading'])
         const priceItemHistoryList = _.get(state, ['price', 'history', 'data'])
@@ -62,8 +62,8 @@ const enhance = compose(
             detail,
             detailLoading,
             filter,
-            marketTypeList,
-            marketTypeLoading,
+            priceLists,
+            priceListLoading,
             filterForm,
             createForm,
             priceListItemsList,
@@ -84,6 +84,7 @@ const enhance = compose(
     }, ({dispatch, filter}) => {
         dispatch(priceListFetchAction(filter))
     }),
+
     withPropsOnChange((props, nextProps) => {
         const priceId = _.get(nextProps, ['params', 'priceId']) || ZERO
         return priceId > ZERO && _.get(props, ['params', 'priceId']) !== priceId
@@ -93,7 +94,7 @@ const enhance = compose(
         if (priceId > ZERO) {
             dispatch(priceItemFetchAction(priceId))
             dispatch(getPriceItemsAction(priceId))
-            dispatch(marketTypeGetAllAction())
+            dispatch(priceListSettingGetAllAction())
             dispatch(priceItemHistoryFetchAction(priceId))
         }
         if (supplyId > ZERO) {
@@ -211,8 +212,8 @@ const PriceList = enhance((props) => {
         listLoading,
         detail,
         detailLoading,
-        marketTypeLoading,
-        marketTypeList,
+        priceListLoading,
+        priceLists,
         priceListItemsList,
         priceListItemsLoading,
         priceItemHistoryList,
@@ -262,9 +263,9 @@ const PriceList = enhance((props) => {
         data: _.get(list, 'results'),
         listLoading
     }
-    const getPriceByParams = (marketTypeId, fieldName) => {
+    const getPriceByParams = (priceListId, fieldName) => {
         const price = _.find(_.get(priceListItemsList, ['results']), (item) => {
-            return item.marketType.id === marketTypeId
+            return item.priceList.id === priceListId
         })
 
         if (fieldName === 'isPrimary') {
@@ -279,11 +280,11 @@ const PriceList = enhance((props) => {
         const val = _.get(price, 'transferPrice') || ZERO
         return numberFormat(val)
     }
-    const getCurrencyByParams = (marketTypeId) => {
-        const priceList = _.find(_.get(priceListItemsList, ['results']), (item) => {
-            return item.marketType.id === marketTypeId
+    const getCurrencyByParams = (priceListId) => {
+        const foundPriceList = _.find(_.get(priceListItemsList, ['results']), (item) => {
+            return item.priceList.id === priceListId
         })
-        return _.get(priceList, 'currency')
+        return _.get(foundPriceList, 'currency')
     }
     const detailData = {
         priceItemExpenseLoading,
@@ -293,18 +294,18 @@ const PriceList = enhance((props) => {
         priceItemHistoryLoading,
         id: detailId,
         priceListItemsLoading,
-        marketTypeLoading: marketTypeLoading,
+        priceListLoading: priceListLoading,
         mergedList: () => {
-            return _.map(_.get(marketTypeList, 'results'), (item) => {
-                const marketTypeId = _.get(item, 'id')
-                const marketTypeName = _.get(item, 'name')
+            return _.map(_.get(priceLists, 'results'), (item) => {
+                const priceListId = _.get(item, 'id')
+                const priceListName = _.get(item, 'name')
                 return {
-                    'cash_price': getPriceByParams(marketTypeId, 'cash'),
-                    'currency': getCurrencyByParams(marketTypeId),
-                    'transfer_price': getPriceByParams(marketTypeId, 'transfer'),
-                    'marketTypeId': marketTypeId,
-                    'isPrimary': toBoolean(getPriceByParams(marketTypeId, 'isPrimary')),
-                    marketTypeName
+                    'cash_price': getPriceByParams(priceListId, 'cash'),
+                    'currency': getCurrencyByParams(priceListId),
+                    'transfer_price': getPriceByParams(priceListId, 'transfer'),
+                    'priceListId': priceListId,
+                    'isPrimary': toBoolean(getPriceByParams(priceListId, 'isPrimary')),
+                    priceListName
                 }
             })
         },
@@ -316,7 +317,7 @@ const PriceList = enhance((props) => {
         let primary = null
         _.map(listD, (obj) => {
             if (_.get(obj, 'isPrimary')) {
-                primary = _.get(obj, 'marketTypeId')
+                primary = _.get(obj, 'priceListId')
             }
         })
         return _.toInteger(primary)
@@ -326,7 +327,7 @@ const PriceList = enhance((props) => {
         initialValues: (() => {
             const priceList = _.map(detailData.mergedList(), (item) => {
                 return {
-                    'market_type': _.get(item, 'marketTypeId'),
+                    'price_list': _.get(item, 'priceListId'),
                     'currency': {value: _.get(item, ['currency', 'id']) || USD}
                 }
             })

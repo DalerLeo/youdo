@@ -181,7 +181,7 @@ const PriceDetails = enhance((props) => {
         defaultDialog
     } = props
     const loading = _.get(detailData, 'detailLoading')
-    const marketTypeIsLoading = _.get(detailData, 'marketTypeLoading')
+    const priceListIsLoading = _.get(detailData, 'priceListLoading')
     const priceListItemsIsLoading = _.get(detailData, 'priceListItemsLoading')
     const priceHistoryList = _.get(detailData, 'priceItemHistoryList')
     const priceHistoryLoading = _.get(detailData, 'priceItemHistoryLoading')
@@ -347,10 +347,10 @@ const PriceDetails = enhance((props) => {
                 </div>
 
                 <div className={classes.rightSide}>
-                    {(marketTypeIsLoading || priceListItemsIsLoading) && <div className={classes.loader}>
+                    {(priceListIsLoading || priceListItemsIsLoading) && <div className={classes.loader}>
                         <CircularProgress size={40} thickness={4} />
                     </div>}
-                    {!marketTypeIsLoading && !priceListItemsIsLoading && priceSetForm.openPriceSetForm &&
+                    {!priceListIsLoading && !priceListItemsIsLoading && priceSetForm.openPriceSetForm &&
                         <PriceSetForm
                             initialValues={priceSetForm.initialValues}
                             onClose={priceSetForm.handleClosePriceSetForm}
@@ -360,7 +360,7 @@ const PriceDetails = enhance((props) => {
                             priceHolder={priceSetForm.initialValues}
                         />
                     }
-                    {(!marketTypeIsLoading && !priceListItemsIsLoading && !priceSetForm.openPriceSetForm) && <div>
+                    {(!priceListIsLoading && !priceListItemsIsLoading && !priceSetForm.openPriceSetForm) && <div>
                         <div className={classes.bodyTitle}>
                             <div>Цены на товар
                                 <span className={classes.rightSideTitleDate}> ({priceUpdated})</span>
@@ -386,14 +386,14 @@ const PriceDetails = enhance((props) => {
                                 <Col xs={3}>Безнал</Col>
                             </Row>
                             {_.map(mergedList, (item) => {
-                                const id = _.get(item, 'marketTypeId')
-                                const marketName = _.get(item, 'marketTypeName')
+                                const id = _.get(item, 'priceListId')
+                                const priceListName = _.get(item, 'priceListName')
                                 const currency = _.get(item, ['currency', 'name']) || ' '
                                 const cashPrice = _.get(item, 'cash_price') + ' ' + currency
                                 const transferPrice = _.get(item, 'transfer_price') + ' ' + currency
                                 return (
                                     <Row className="dottedList" key={id}>
-                                        <Col xs={6}> {marketName}</Col>
+                                        <Col xs={6}> {priceListName}</Col>
                                         <Col xs={3}>{cashPrice}</Col>
                                         <Col xs={3}>{transferPrice}</Col>
                                     </Row>

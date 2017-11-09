@@ -13,7 +13,7 @@ const PriceMainRadionButton = enhance((props) => {
         let primary = first
         _.map(list, (obj) => {
             if (_.get(obj, 'isPrimary')) {
-                primary = _.get(obj, 'marketTypeId')
+                primary = _.get(obj, 'priceListId')
             }
         })
         return _.toInteger(primary)
@@ -25,7 +25,7 @@ const PriceMainRadionButton = enhance((props) => {
                     <RadioButton
                         className='dottedList'
                         key={index}
-                        value={_.toInteger(_.get(item, 'marketTypeId'))}/>
+                        value={_.toInteger(_.get(item, 'priceListId'))}/>
                 )
             })}
         </RadioButtonGroup>
