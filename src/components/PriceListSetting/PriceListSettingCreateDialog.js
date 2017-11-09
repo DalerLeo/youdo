@@ -13,7 +13,7 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 
-export const MARKET_TYPE_CREATE_DIALOG_OPEN = 'openCreateDialog'
+export const PRICE_LIST_SETTING_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -43,12 +43,12 @@ const enhance = compose(
         }
     })),
     reduxForm({
-        form: 'MarketTypeCreateForm',
+        form: 'PriceListSettingCreateForm',
         enableReinitialize: true
     })
 )
 
-const MarketTypeCreateDialog = enhance((props) => {
+const PriceListSettingCreateDialog = enhance((props) => {
     const {open, loading, handleSubmit, onClose, classes, isUpdate} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
@@ -98,7 +98,7 @@ const MarketTypeCreateDialog = enhance((props) => {
     )
 })
 
-MarketTypeCreateDialog.propTyeps = {
+PriceListSettingCreateDialog.propTyeps = {
     isUpdate: PropTypes.bool,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
@@ -106,8 +106,8 @@ MarketTypeCreateDialog.propTyeps = {
     loading: PropTypes.bool.isRequired
 }
 
-MarketTypeCreateDialog.defaultProps = {
+PriceListSettingCreateDialog.defaultProps = {
     isUpdate: false
 }
 
-export default MarketTypeCreateDialog
+export default PriceListSettingCreateDialog

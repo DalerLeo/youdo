@@ -191,6 +191,11 @@ export const MARKET_TYPE_LIST_URL = `/${MARKET_TYPE}`
 export const MARKET_TYPE_ITEM_URL = `${MARKET_TYPE_LIST_URL}/:marketTypeId`
 export const MARKET_TYPE_ITEM_PATH = `/${MARKET_TYPE}/%d`
 
+export const PRICE_LIST_SETTING = 'priceListSetting'
+export const PRICE_LIST_SETTING_LIST_URL = `/${PRICE_LIST_SETTING}`
+export const PRICE_LIST_SETTING_ITEM_URL = `${PRICE_LIST_SETTING_LIST_URL}/:priceListSettingId`
+export const PRICE_LIST_SETTING_ITEM_PATH = `/${PRICE_LIST_SETTING_LIST_URL}/%d`
+
 export const PRICE = 'price'
 export const PRICE_LIST_URL = `/${PRICE}`
 export const PRICE_ITEM_URL = `${PRICE_LIST_URL}/:priceId`

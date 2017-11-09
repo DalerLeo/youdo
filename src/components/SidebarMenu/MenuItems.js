@@ -131,6 +131,7 @@ export const MenuItems = [
             {section: SETTINGS_PRODUCTS, name: 'Типы продуктов', url: ROUTES.PRODUCT_TYPE_LIST_URL, permission: 'frontend_settings_product_type'},
             {section: SETTINGS_PRODUCTS, name: 'Измерения', url: ROUTES.MEASUREMENT_LIST_URL, permission: 'frontend_settings_measurement'},
             {section: SETTINGS_PRODUCTS, name: 'Тип магазина', url: ROUTES.MARKET_TYPE_LIST_URL, permission: 'frontend_settings_market_type'},
+            {section: SETTINGS_MISC, name: 'Cписок цена', url: ROUTES.PRICE_LIST_SETTING_LIST_URL, permission: 'frontend_settings_price_list'},
             {section: SETTINGS_MISC, name: 'Склады', url: ROUTES.STOCK_LIST_URL, permission: 'frontend_settings_stock'},
             {section: SETTINGS_MISC, name: 'Оборудование', url: ROUTES.EQUIPMENT_LIST_URL, permission: 'frontend_settings_equipment'},
             {section: SETTINGS_MISC, name: 'Подразделение', url: ROUTES.DIVISION_LIST_URL, permission: 'frontend_settings_division'},

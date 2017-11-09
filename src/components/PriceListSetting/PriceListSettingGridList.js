@@ -14,7 +14,7 @@ import Edit from 'material-ui/svg-icons/image/edit'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
-import MarketTypeCreateDialog from './PriceListCreateDialog'
+import PriceListSettingCreateDialog from './PriceListSettingCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SettingSideMenu from '../Settings/SettingsSideMenu'
 import Tooltip from '../ToolTip'
@@ -125,7 +125,7 @@ const iconStyle = {
     }
 }
 
-const MarketTypeGridList = enhance((props) => {
+const PriceListSettingGridList = enhance((props) => {
     const {
         filter,
         createDialog,
@@ -149,11 +149,11 @@ const MarketTypeGridList = enhance((props) => {
         </div>
     )
 
-    const marketTypeDetail = (
+    const priceListSettingDetail = (
         <span>a</span>
     )
 
-    const marketTypeList = _.map(_.get(listData, 'data'), (item) => {
+    const priceListSettingList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
@@ -192,7 +192,7 @@ const MarketTypeGridList = enhance((props) => {
 
     const list = {
         header: listHeader,
-        list: marketTypeList,
+        list: priceListSettingList,
         loading: _.get(listData, 'listLoading')
     }
 
@@ -211,12 +211,12 @@ const MarketTypeGridList = enhance((props) => {
     return (
         <Container>
             <div className={classes.wrapper}>
-                <SettingSideMenu currentUrl={ROUTES.MARKET_TYPE_LIST_URL}/>
+                <SettingSideMenu currentUrl={ROUTES.PRICE_LIST_SETTING_LIST_URL}/>
                 <div className={classes.rightPanel}>
                     <GridList
                         filter={filter}
                         list={list}
-                        detail={marketTypeDetail}
+                        detail={priceListSettingDetail}
                         actionsDialog={actions}
                         addButton={addButton}
                         listShadow={false}
@@ -224,14 +224,14 @@ const MarketTypeGridList = enhance((props) => {
                 </div>
             </div>
 
-            <MarketTypeCreateDialog
+            <PriceListSettingCreateDialog
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
             />
 
-            <MarketTypeCreateDialog
+            <PriceListSettingCreateDialog
                 isUpdate={true}
                 initialValues={updateDialog.initialValues}
                 open={updateDialog.openUpdateDialog}
@@ -252,7 +252,7 @@ const MarketTypeGridList = enhance((props) => {
     )
 })
 
-MarketTypeGridList.propTypes = {
+PriceListSettingGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
@@ -283,4 +283,4 @@ MarketTypeGridList.propTypes = {
     }).isRequired
 }
 
-export default MarketTypeGridList
+export default PriceListSettingGridList
