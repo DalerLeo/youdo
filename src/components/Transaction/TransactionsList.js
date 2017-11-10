@@ -114,37 +114,30 @@ const enhance = compose(
         label: {
             fontWeight: '600'
         },
-        actionButtons: {
-            pointerEvents: 'none',
-            opacity: '0.4'
-        },
-        deleteBtn: {
-            opacity: '0'
-        },
         listRow: {
             display: 'flex',
-            width: '100%',
             height: '100%',
             minHeight: '50px',
             alignItems: 'center',
-            padding: '5px 0',
+            padding: '5px 30px',
+            margin: '0 -30px',
+            position: 'relative',
+            overflow: 'hidden',
             '& > div': {
                 padding: '0 8px !important'
             },
             '& a': {
                 color: '#12aaeb !important'
             },
-            '&:hover button': {
-                opacity: '1 !important'
+            '&:hover > div:last-child': {
+                padding: '0 24px !important',
+                opacity: '1',
+                right: '0'
             }
         },
         deletedRow: {
             extend: 'listRow',
             background: '#fffafa',
-            width: 'auto',
-            padding: '5px 30px',
-            margin: '0 -30px',
-            position: 'relative',
             '& > div': {
                 opacity: '0.6',
                 '&:last-child': {
@@ -160,6 +153,18 @@ const enhance = compose(
                 width: '3px',
                 background: '#e57373'
             }
+        },
+        actionButtons: {
+            transition: 'all 150ms ease-out',
+            position: 'absolute',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            background: '#fff',
+            opacity: '0',
+            right: '-20%',
+            height: '100%',
+            width: '20%'
         },
         clickable: {
             cursor: 'pointer',
@@ -245,7 +250,7 @@ const TransactionsList = enhance((props) => {
             name: 'amount',
             alignRight: true,
             title: 'Сумма',
-            width: '15%'
+            width: '20%'
         }
     ]
     const iconStyle = {
@@ -262,25 +267,28 @@ const TransactionsList = enhance((props) => {
     }
 
     /* Getting currentItem for update purpose from openUpdateTransaction in URL */
-    const currentItem = _.find(listData.data, {'id': updateTransactionDialog.open})
+    const currentTransaction = _.get(updateTransactionDialog, 'open')
+    const currentItem = _.find(_.get(listData, 'data'), {'id': currentTransaction})
 
     /* Forming initial value in order to Update Transaction */
-    const TransactionInitialValues = updateTransactionDialog.open ? {
-        cashbox: {
-            value: _.get(currentItem, ['cashbox', 'id'])
-        },
-        amount: _.get(currentItem, 'amount'),
-        date: _.get(currentItem, 'createdDate') ? moment(_.get(currentItem, 'createdDate')).toDate() : null,
-        client: {
-            value: _.get(currentItem, ['client', 'id'])
-        },
-        showClients: _.get(currentItem, ['client', 'id']) && true,
-        custom_rate: _.get(currentItem, 'customRate'),
-        comment: _.get(currentItem, 'comment'),
-        expanseCategory: {
-            value: _.get(currentItem, ['expanseCategory', 'id'])
+    const TransactionInitialValues = currentTransaction
+        ? {
+            cashbox: {
+                value: _.get(currentItem, ['cashbox', 'id'])
+            },
+            amount: _.get(currentItem, 'amount'),
+            date: _.get(currentItem, 'createdDate') ? moment(_.get(currentItem, 'createdDate')).toDate() : null,
+            client: {
+                value: _.get(currentItem, ['client', 'id'])
+            },
+            showClients: _.get(currentItem, ['client', 'id']) && true,
+            custom_rate: _.get(currentItem, 'customRate'),
+            comment: _.get(currentItem, 'comment'),
+            expanseCategory: {
+                value: _.get(currentItem, ['expanseCategory', 'id'])
+            }
         }
-    } : null
+        : null
 
     const transactionList = _.map(_.get(listData, 'data'), (item) => {
         const zero = 0
@@ -298,7 +306,8 @@ const TransactionsList = enhance((props) => {
         const clientName = _.get(item, ['client', 'name'])
         const expanseCategory = _.get(item, ['expanseCategory', 'name'])
         const transType = _.get(item, ['type'])
-        const rate = _.toInteger(amount / internal)
+        const customRate = _.toNumber(_.get(item, 'customRate'))
+        const rate = customRate > ZERO ? customRate : _.toInteger(amount / internal)
         const isDeleted = _.get(item, 'isDelete')
         const supply = _.get(item, 'supply')
         return (
@@ -322,13 +331,13 @@ const TransactionsList = enhance((props) => {
                     {comment && <div><strong>Комментарий:</strong> {comment}</div>}
                 </div>
                 <div style={{flexBasis: '18%', maxWidth: '18%'}}>{date}</div>
-                <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}} className={type >= zero ? classes.green : classes.red}>
+                <div style={{flexBasis: '20%', maxWidth: '20%', textAlign: 'right'}} className={type >= zero ? classes.green : classes.red}>
                     {numberFormat(amount, currentCurrency)}
                     {(currentCurrency !== primaryCurrency) && <div>{numberFormat(internal, primaryCurrency)}
                     {internal !== ZERO &&
                     <span style={{fontSize: 11, color: '#333', fontWeight: 600}}> ({rate})</span>}</div>}
                 </div>
-                {!isDeleted && <div style={{width: '5%', textAlign: 'right', display: 'flex'}}>
+                {!isDeleted && <div className={classes.actionButtons}>
                     <IconButton
                         className={classes.deleteBtn}
                         style={iconStyle.button}
