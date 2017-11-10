@@ -205,7 +205,7 @@ const enhance = compose(
         const openUpdateDialog = toBoolean(_.get(nextProps, ['location', 'query', ORDER_UPDATE_DIALOG_OPEN]))
 
         return (prevPriceList !== nextPriceList && nextPriceList && (openCreateDialog === true || openUpdateDialog === true))
-    }, ({dispatch, location, createForm}) => {
+    }, ({dispatch, createForm}) => {
         const priceList = _.toInteger(_.get(createForm, ['values', 'priceList', 'value']))
         const products = _.join(_.map(_.get(createForm, ['values', 'products']), (item) => {
             return _.get(item, ['product', 'value', 'id'])
@@ -742,6 +742,8 @@ const OrderList = enhance((props) => {
             }
             const dealType = _.toInteger(_.get(detail, 'dealType')) === ONE ? 'consignment' : 'standart'
             const paymentType = _.get(detail, 'paymentType')
+            const paymentTypeForm = _.get(props, ['createForm', 'values', 'paymentType'])
+            const priceList = _.get(props, ['createForm', 'values', 'priceList'])
             return {
                 client: {
                     value: _.toInteger(_.get(detail, ['client', 'id']))
@@ -760,15 +762,15 @@ const OrderList = enhance((props) => {
                     text: deliveryTypeText
                 },
                 dealType: dealType,
-                paymentType: paymentType,
+                paymentType: paymentTypeForm || paymentType,
                 deliveryDate: moment(_.get(detail, ['dateDelivery'])).toDate(),
                 deliveryPrice: numberFormat(_.get(detail, 'deliveryPrice')),
                 discountPrice: discount,
                 paymentDate: moment(_.get(detail, ['paymentDate'])).toDate(),
                 products: forUpdateProducts,
                 priceList: {
-                    value: _.get(detail, ['priceList', 'id']),
-                    text: _.get(detail, ['priceList', 'name'])
+                    value: priceList ? _.get(priceList, 'value') : _.get(detail, ['priceList', 'id']),
+                    text: priceList ? _.get(priceList, 'text') : _.get(detail, ['priceList', 'name'])
                 },
                 user: {
                     value: _.get(detail, ['user', 'id'])

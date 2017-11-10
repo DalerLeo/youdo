@@ -202,7 +202,7 @@ const PriceListSettingGridList = enhance((props) => {
                 backgroundColor="#fff"
                 labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb', fontSize: '13px'}}
                 className={classes.addButton}
-                label="добавить тип магазина"
+                label="добавить прайс лист"
                 onTouchTap={createDialog.handleOpenCreateDialog}
                 icon={<ContentAdd color="#12aaeb"/>}>
             </FlatButton>
