@@ -3,6 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
 import * as ROUTES from '../../constants/routes'
+import {Link} from 'react-router'
 import Container from '../Container'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
@@ -251,7 +252,6 @@ const RemainderGridList = enhance((props) => {
         transferDialog,
         discardDialog,
         handleCloseDetail,
-        handleOpenDetail,
         filterItem,
         filterDialog,
         reservedDialog
@@ -286,7 +286,11 @@ const RemainderGridList = enhance((props) => {
         const type = _.get(item, ['type', 'name'])
         return (
             <Row key={id} style={{position: 'relative'}}>
-                <div className={classes.openDetail} onClick={() => { handleOpenDetail(id) }}> </div>
+                <Link
+                    target="_blank"
+                    to={{pathname: ROUTES.STOCK_OUT_HISTORY_LIST_URL, query: filter.getParams({'product': id})}}
+                    className={classes.openDetail}>
+                </Link>
                 <Col xs={3}>{product}</Col>
                 <Col xs={2}>{type}</Col>
                 <Col xs={2} className={classes.itemData}>{numberFormat(balance, measurement)}</Col>

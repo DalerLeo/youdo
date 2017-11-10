@@ -62,9 +62,6 @@ const enhance = compose(
             color: '#666',
             marginTop: '10px'
         },
-        inContent: {
-            maxHeight: '52vh'
-        },
         cashbox: {
             position: 'relative'
         },

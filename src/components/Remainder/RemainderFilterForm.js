@@ -122,7 +122,7 @@ const enhance = compose(
 )
 
 const RemainderFilterForm = enhance((props) => {
-    const {classes, filterDialog, getCount, typeParent} = props
+    const {classes, filterDialog, getCount, typeParent, handleSubmit} = props
     const filterCounts = getCount()
 
     if (!filterDialog.openFilterDialog) {
@@ -161,7 +161,7 @@ const RemainderFilterForm = enhance((props) => {
                         <CloseIcon className={classes.icon} />
                     </IconButton>
                 </div>
-                <form onSubmit={filterDialog.handleSubmitFilterDialog}>
+                <form onSubmit={handleSubmit(filterDialog.handleSubmitFilterDialog)}>
                     <div>
                         <Field
                             className={classes.inputFieldCustom}

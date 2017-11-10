@@ -4,7 +4,6 @@ import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
 import moment from 'moment'
 
 const ZERO = 0
-const ONE = 1
 export const createSerializer = (data) => {
     const provider = _.get(data, ['provider', 'value'])
     const stock = _.get(data, ['stock', 'value'])
@@ -79,7 +78,7 @@ export const listFilterSerializer = (data) => {
         'payment_type': _.get(defaultData, 'paymentType'),
         'product': _.get(defaultData, 'product'),
         'stock': _.get(defaultData, 'stock'),
-        'status': _.toNumber(_.get(defaultData, 'status')) === ONE ? ZERO : _.get(defaultData, 'status'),
+        'status': _.get(defaultData, 'status') === 'pending' ? ZERO : _.get(defaultData, 'status'),
         'contract': _.get(defaultData, 'contract'),
         'date_delivery_0': _.get(defaultData, 'deliveryFromDate'),
         'date_delivery_1': _.get(defaultData, 'deliveryToDate'),

@@ -10,7 +10,7 @@ import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
-import {ProviderSearchField, StockSearchField, ProductSearchField, TextField, SupplyTypeSearchFiled, PaymentTypeSearchField} from '../ReduxForm'
+import {ProviderSearchField, StockSearchField, ProductSearchField, TextField, SupplyTypeSearchField, PaymentTypeSearchField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
 
@@ -121,7 +121,7 @@ const enhance = compose(
 )
 
 const SupplyFilterForm = enhance((props) => {
-    const {classes, filterDialog, getCount} = props
+    const {classes, filterDialog, getCount, handleSubmit} = props
     const filterCounts = getCount()
 
     if (!filterDialog.openFilterDialog) {
@@ -161,13 +161,13 @@ const SupplyFilterForm = enhance((props) => {
                         <CloseIcon className={classes.icon} />
                     </IconButton>
                 </div>
-                <form onSubmit={filterDialog.handleSubmitFilterDialog}>
+                <form onSubmit={handleSubmit(filterDialog.handleSubmitFilterDialog)}>
                     <div>
                         <Field className={classes.inputFieldCustom} name="provider" component={ProviderSearchField} label="Поставщик"/>
                         <Field className={classes.inputFieldCustom} name="stock" component={StockSearchField} label="Склад"/>
                         <Field className={classes.inputFieldCustom} name="product" component={ProductSearchField} label="Товар"/>
                         <Field className={classes.inputFieldCustom} name="paymentType" component={PaymentTypeSearchField} label="Тип оплаты"/>
-                        <Field className={classes.inputFieldCustom} name="status" component={SupplyTypeSearchFiled} label="Тип"/>
+                        <Field className={classes.inputFieldCustom} name="status" component={SupplyTypeSearchField} label="Тип"/>
                         <Field className={classes.inputFieldCustom} name="contract" component={TextField} label="Номер договора"/>
                     </div>
                     <div>
