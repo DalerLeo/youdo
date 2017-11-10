@@ -33,7 +33,7 @@ const ToolTip = enhance(({classes, text, children, position, type}) => {
             <div data-tip data-for={uniqId} className={classes.wrapper}>
                 {children}
             </div>
-            <ReactTooltip
+            {text && <ReactTooltip
                 place={position}
                 id={uniqId}
                 type={type || 'dark'}
@@ -41,7 +41,7 @@ const ToolTip = enhance(({classes, text, children, position, type}) => {
                 className={classes.tooltip}
                 html={true}>
                 {text}
-            </ReactTooltip>
+            </ReactTooltip>}
         </div>
     )
 })
