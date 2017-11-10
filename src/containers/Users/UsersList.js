@@ -23,9 +23,11 @@ import {
     usersListFetchAction,
     usersDeleteAction,
     usersItemFetchAction,
-    userGroupListFetchAction,
-    userPriceListFetchAction
+    userGroupListFetchAction
 } from '../../actions/users'
+import {
+    priceListSettingGetAllAction
+} from '../../actions/priceListSetting'
 import {stockListFetchAction} from '../../actions/stock'
 import {openSnackbarAction} from '../../actions/snackbar'
 import {openErrorAction} from '../../actions/error'
@@ -42,7 +44,7 @@ const enhance = compose(
         const groupListLoading = _.get(state, ['users', 'groupList', 'loading'])
         const stockList = _.get(state, ['stock', 'list', 'data'])
         const stockListLoading = _.get(state, ['stock', 'list', 'loading'])
-        const priceList = _.get(state, ['users', 'priceList', 'data'])
+        const priceList = _.get(state, ['priceListSetting', 'list', 'data'])
         const priceListLoading = _.get(state, ['users', 'priceList', 'loading'])
         const listLoading = _.get(state, ['users', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'UsersFilterForm'])
@@ -93,7 +95,7 @@ const enhance = compose(
     }, ({dispatch, filterExp}) => {
         dispatch(userGroupListFetchAction())
         dispatch(stockListFetchAction(filterExp))
-        dispatch(userPriceListFetchAction(filterExp))
+        dispatch(priceListSettingGetAllAction(filterExp))
     }),
 
     withHandlers({
@@ -287,8 +289,8 @@ const UsersList = enhance((props) => {
         return {id: obj.id, selected: false}
     })
 
-    const isSelectedMarkets = _.map(_.get(priceList, 'results'), (obj) => {
-        const userSelectedMarkets = _.find(_.get(detail, 'types'), {'id': obj.id})
+    const isSelectedPriceLists = _.map(_.get(priceList, 'results'), (obj) => {
+        const userSelectedMarkets = _.find(_.get(detail, 'priceLists'), {'id': obj.id})
         if (!openCreateDialog && _.get(userSelectedMarkets, 'id') === obj.id) {
             return {id: obj.id, selected: true}
         }
@@ -300,7 +302,7 @@ const UsersList = enhance((props) => {
             return {
                 groups: isSelectedGroups,
                 stocks: isSelectedStocks,
-                types: isSelectedMarkets
+                types: isSelectedPriceLists
             }
         })(),
         createLoading,
@@ -323,7 +325,7 @@ const UsersList = enhance((props) => {
                 return {
                     groups: isSelectedGroups,
                     stocks: isSelectedStocks,
-                    types: isSelectedMarkets,
+                    types: isSelectedPriceLists,
                     isActive: true
                 }
             }
@@ -336,7 +338,7 @@ const UsersList = enhance((props) => {
                 groups: isSelectedGroups,
                 radioStock: _.get(_.find(_.get(detail, 'stocks')), 'id'),
                 stocks: isSelectedStocks,
-                types: isSelectedMarkets,
+                types: isSelectedPriceLists,
                 region: _.get(detail, 'region'),
                 password: _.get(detail, 'password'),
                 typeUser: _.get(detail, 'typeUser'),

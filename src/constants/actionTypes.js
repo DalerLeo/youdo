@@ -460,5 +460,4 @@ export const ACCESS_LIST = 'ACCESS_LIST'
 export const ACCESS_ITEM = 'ACCESS_ITEM'
 export const ACCESS_UPDATE = 'ACCESS_UPDATE'
 
-export const PRICELIST_LIST = 'PRICELIST_LIST'
 
