@@ -249,7 +249,7 @@ const UsersCreateDialog = enhance((props) => {
                                         component={UserStockRadioButtonField}/>
                                 </div>
                         }
-                        <div className={classes.subTitle} style={{marginTop: '15px'}}>Поддерживаемый типа магазинов</div>
+                        <div className={classes.subTitle} style={{marginTop: '15px'}}>Поддерживаемый  прайс лист</div>
                         <Row>
                             {(!loading) && _.get(marketTypeData, 'marketTypeLoading') &&
                             <div className={classes.groupLoader}>

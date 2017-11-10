@@ -9,7 +9,7 @@ import * as TRANS_TYPE from '../../constants/transactionTypes'
 
 const enhance = compose()
 const TransactionsFormat = enhance((props) => {
-    const {type, order, user, client, handleClickAgentIncome} = props
+    const {type, order, user, client, handleClickAgentIncome, supply} = props
     const clientName = _.get(client, 'name')
     const userName = _.get(user, 'firstName') + ' ' + _.get(user, 'secondName')
 
@@ -36,7 +36,11 @@ const TransactionsFormat = enhance((props) => {
             break
         case TRANS_TYPE.INCOME_FROM_AGENT: output = <a onClick={handleClickAgentIncome}><strong>Приемка наличных с агента {userName}</strong></a>
             break
-        case TRANS_TYPE.OUTCOME_FOR_SUPPLY_EXPANSE: output = <span>Расход на поставку</span>
+        case TRANS_TYPE.OUTCOME_FOR_SUPPLY_EXPANSE: output = <span>Расход на поставку <Link to={{
+            pathname: sprintf(ROUTES.SUPPLY_ITEM_PATH, supply)}}>№ {supply}</Link></span>
+            break
+        case TRANS_TYPE.SUPPLY_EXPENCE: output = <span>Доп.расход на поставку <Link to={{
+            pathname: sprintf(ROUTES.SUPPLY_ITEM_PATH, supply)}}>№ {supply}</Link></span>
             break
         default: output = null
     }
