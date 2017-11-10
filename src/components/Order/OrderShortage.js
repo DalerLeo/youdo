@@ -187,6 +187,7 @@ const OrderShortageDialog = enhance((props) => {
         <Dialog
             modal={true}
             contentStyle={loading ? {width: '300px'} : {width: '800px'}}
+            style={{zIndex: '1501'}}
             open={open}
             onRequestClose={onClose}
             bodyClassName={classes.popUp}
@@ -225,6 +226,7 @@ const OrderShortageDialog = enhance((props) => {
                             component={DateField}
                             className={classes.inputFieldCustom}
                             hintText="Срок запроса"
+                            container="inline"
                             fullWidth={true}/>
                         <div className={classes.specialModalButton}>
                             <FlatButton
