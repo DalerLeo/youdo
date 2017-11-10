@@ -83,7 +83,8 @@ const enhance = compose(
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            padding: '10px'
+            padding: '10px',
+            paddingLeft: '30px'
         },
         field: {
             width: '100%'
