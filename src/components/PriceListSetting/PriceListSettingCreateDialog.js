@@ -62,7 +62,7 @@ const PriceListSettingCreateDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>{isUpdate ? 'Изменить тип магазина' : 'Добавить тип магазина'}</span>
+                <span>{isUpdate ? 'Изменить прайс-лист' : 'Добавить прайс-лист'}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
