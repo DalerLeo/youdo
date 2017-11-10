@@ -477,7 +477,3 @@ export const ACCESS = 'main/access'
 export const ACCESS_LIST = `${ACCESS}/`
 export const ACCESS_ITEM = `${ACCESS}/%d/`
 export const ACCESS_UPDATE = `${ACCESS}/%d/`
-
-export const PRICELIST = 'sales/price_list'
-export const PRICELIST_CREATE = `/${PRICELIST}/`
-export const PRICELIST_LIST = `/${PRICELIST}/`
