@@ -19,10 +19,10 @@ const TransactionsFormat = enhance((props) => {
             break
         case TRANS_TYPE.TO_TRANSFER: output = <span>Перевод на кассу</span>
             break
-        case TRANS_TYPE.ORDER: output = <Link to={{
+        case TRANS_TYPE.ORDER: output = <Link target="_blank" to={{
             pathname: sprintf(ROUTES.ORDER_ITEM_PATH, order),
             query: {search: order}
-        }} target="_blank">Оплата заказа №{order}</Link>
+        }}>Оплата заказа №{order}</Link>
             break
         case TRANS_TYPE.INCOME: output = <span>Приход</span>
             break
@@ -36,11 +36,11 @@ const TransactionsFormat = enhance((props) => {
             break
         case TRANS_TYPE.INCOME_FROM_AGENT: output = <a onClick={handleClickAgentIncome}><strong>Приемка наличных с агента {userName}</strong></a>
             break
-        case TRANS_TYPE.OUTCOME_FOR_SUPPLY_EXPANSE: output = <span>Расход на поставку <Link to={{
-            pathname: sprintf(ROUTES.SUPPLY_ITEM_PATH, supply)}}>№ {supply}</Link></span>
+        case TRANS_TYPE.OUTCOME_FOR_SUPPLY_EXPANSE: output = <span>Расход на <Link target="_blank" to={{
+            pathname: sprintf(ROUTES.SUPPLY_ITEM_PATH, supply), query: {search: supply}}}>поставку №{supply}</Link></span>
             break
-        case TRANS_TYPE.SUPPLY_EXPENCE: output = <span>Доп.расход на поставку <Link to={{
-            pathname: sprintf(ROUTES.SUPPLY_ITEM_PATH, supply)}}>№ {supply}</Link></span>
+        case TRANS_TYPE.SUPPLY_EXPENCE: output = <span>Доп. расход на поставку <Link target="_blank" to={{
+            pathname: sprintf(ROUTES.SUPPLY_ITEM_PATH, supply), query: {search: supply}}}>№ {supply}</Link></span>
             break
         default: output = null
     }

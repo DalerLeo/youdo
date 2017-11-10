@@ -15,7 +15,8 @@ import {
     ClientBalanceReturnProductList,
     TextField,
     PaymentTypeSearchField,
-    ClientSearchField
+    ClientSearchField,
+    PriceListSearchField
 } from '../ReduxForm'
 import MarketSearchField from '../ReduxForm/ClientBalance/MarketSearchField'
 import toCamelCase from '../../helpers/toCamelCase'
@@ -283,14 +284,6 @@ const SupplyCreateDialog = enhance((props) => {
                                 </div>
                                 <div className={classes.condition}>
                                     <Field
-                                        name="stock"
-                                        component={StockSearchField}
-                                        className={classes.searchFieldCustom}
-                                        label="Склад"
-                                        fullWidth={true}/>
-                                </div>
-                                <div className={classes.condition}>
-                                    <Field
                                         name="market"
                                         style={{lineHeight: '20px', fontSize: '13px'}}
                                         component={MarketSearchField}
@@ -303,11 +296,28 @@ const SupplyCreateDialog = enhance((props) => {
                                 </div>
                                 <div className={classes.condition}>
                                     <Field
+                                        name="stock"
+                                        component={StockSearchField}
+                                        className={classes.searchFieldCustom}
+                                        label="Склад"
+                                        fullWidth={true}/>
+                                </div>
+                                <div className={classes.condition}>
+                                    <Field
                                         name="paymentType"
                                         style={{lineHeight: '20px', fontSize: '13px'}}
                                         component={PaymentTypeSearchField}
                                         className={classes.searchFieldCustom}
                                         label="Тип оплаты"
+                                        fullWidth={true}/>
+                                </div>
+                                <div className={classes.condition}>
+                                    <Field
+                                        name="priceList"
+                                        style={{lineHeight: '20px', fontSize: '13px'}}
+                                        component={PriceListSearchField}
+                                        className={classes.searchFieldCustom}
+                                        label="Прайс лист"
                                         fullWidth={true}/>
                                 </div>
                                 <div>

@@ -13,7 +13,7 @@ const enhance = compose(
     })
 )
 
-const FrequencySearchField = enhance((props) => {
+const PriceListSearchField = enhance((props) => {
     const priceLists = _.get(props, 'priceLists')
 
     const getOptions = () => {
@@ -37,4 +37,4 @@ const FrequencySearchField = enhance((props) => {
     )
 })
 
-export default FrequencySearchField
+export default PriceListSearchField

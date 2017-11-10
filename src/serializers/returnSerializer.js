@@ -81,12 +81,13 @@ export const listFilterSerializer = (data, id) => {
     }
 }
 
-export const createReturnSerializer = (data, id) => {
+export const createReturnSerializer = (data) => {
     const client = _.get(data, ['client', 'value'])
     const stock = _.get(data, ['stock', 'value'])
     const market = _.get(data, ['market', 'value'])
     const comment = _.get(data, ['comment'])
     const paymentType = _.get(data, ['paymentType', 'value'])
+    const priceList = _.get(data, ['priceList', 'value'])
     const products = _.map(_.get(data, ['products']), (item) => {
         const amount = numberWithoutSpaces(_.get(item, 'amount'))
         const cost = numberWithoutSpaces(_.get(item, 'cost'))
@@ -104,7 +105,8 @@ export const createReturnSerializer = (data, id) => {
         comment,
         products,
         market,
-        payment_type: paymentType
+        payment_type: paymentType,
+        price_list: priceList
     }
 }
 

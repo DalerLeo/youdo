@@ -6,6 +6,7 @@ import injectSheet from 'react-jss'
 import NotFound from '../Images/not-found.png'
 import LinearProgress from '../LinearProgress'
 import numberFormat from '../../helpers/numberFormat'
+import getConfig from '../../helpers/getConfig'
 import Tooltip from '../ToolTip'
 import IconButton from 'material-ui/IconButton'
 import PrintIcon from 'material-ui/svg-icons/action/print'
@@ -154,6 +155,7 @@ const StockTransferDetails = enhance((props) => {
             </div>
         )
     }
+    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const products = _.get(detailData, 'products')
     const orders = _.map(_.get(detailData, 'orders'), (item) => {
         return <Link style={{marginRight: 5}} target="_blank" to={{
@@ -171,7 +173,7 @@ const StockTransferDetails = enhance((props) => {
                 <div className={classes.title}>{deliveryManName}</div>
                 <div className={classes.closeDetail} onClick={handleCloseDetail}>{null}</div>
                 <div className={classes.titleButtons}>
-                    <Tooltip position="bottom" text="Распечатать релись">
+                    <Tooltip position="bottom" text="Распечатать релиз">
                         <IconButton
                             disabled={_.isEmpty(products)}
                             iconStyle={iconStyle.icon}
@@ -205,9 +207,10 @@ const StockTransferDetails = enhance((props) => {
                         </div>
                         <div className={classes.leftSide}>
                             <Row className='dottedList'>
-                                <Col xs={6}>Товар</Col>
-                                <Col xs={4}>Тип товара</Col>
+                                <Col xs={5}>Товар</Col>
+                                <Col xs={3}>Тип товара</Col>
                                 <Col xs={2}>Кол-во</Col>
+                                <Col xs={2}>Сумма</Col>
                             </Row>
                             {_.map(products, (item) => {
                                 const productId = _.get(item, 'id')
@@ -215,11 +218,13 @@ const StockTransferDetails = enhance((props) => {
                                 const measurement = _.get(item, ['measurement', 'name'])
                                 const amount = numberFormat(_.get(item, 'count'), measurement)
                                 const type = _.get(item, ['type', 'name'])
+                                const totalPrice = numberFormat(_.get(item, 'totalPrice'), primaryCurrency)
                                 return (
                                     <Row key={productId} className='dottedList'>
-                                        <Col xs={6}>{name}</Col>
-                                        <Col xs={4}>{type}</Col>
+                                        <Col xs={5}>{name}</Col>
+                                        <Col xs={3}>{type}</Col>
                                         <Col xs={2}>{amount}</Col>
+                                        <Col xs={2}>{totalPrice}</Col>
                                     </Row>
                                 )
                             })}
