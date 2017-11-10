@@ -405,7 +405,7 @@ const PriceDetails = enhance((props) => {
 
             <PriceSetDefaultDialog
                 onClose={defaultDialog.handleClose}
-                initialValues={{amount: _.get(defaultNetCost, 'cost')}}
+                initialValues={{amount: numberFormat(_.get(defaultNetCost, 'cost'))}}
                 open={defaultDialog.open}
                 onSubmit={defaultDialog.handleSubmit}
             />

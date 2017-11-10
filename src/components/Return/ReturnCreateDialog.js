@@ -249,6 +249,7 @@ const SupplyCreateDialog = enhance((props) => {
         const itemAmount = _.toNumber(_.get(item, 'amount'))
         return (itemAmount * itemCost)
     })
+
     return (
         <Dialog
             modal={true}
