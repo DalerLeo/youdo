@@ -257,7 +257,7 @@ const OrderCreateDialog = enhance((props) => {
     _.map(products, (item) => {
         const amount = _.toNumber(_.get(item, 'amount'))
         const balance = _.toNumber(_.get(item, ['product', 'value', 'balance']))
-        if (amount > balance) {
+        if (!editProductsLoading && amount > balance) {
             notEnough = true
         }
     })

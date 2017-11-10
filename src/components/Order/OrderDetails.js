@@ -23,7 +23,6 @@ import moment from 'moment'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
 import StatRightSide from './OrderStatDetailsRightSide'
-import OrderCreateDialog from './OrderCreateDialog'
 import OrderSetDiscountDialog from './OrderSetDiscountDialog'
 
 const ZERO = 0
@@ -215,15 +214,10 @@ const OrderDetails = enhance((props) => {
         getDocument,
         returnData,
         handleCloseDetail,
-        canChangeAnyPrice,
         openDiscountDialog,
         setOpenDiscountDialog,
         handleSubmitDiscountDialog,
-        handleSubmitSetZeroDiscountDialog,
-        stat,
-        filter,
-        clientId,
-        isSuperUser
+        handleSubmitSetZeroDiscountDialog
     } = props
     const id = _.get(data, 'id')
     const market = _.get(data, ['market', 'name'])
@@ -484,21 +478,6 @@ const OrderDetails = enhance((props) => {
                 onSubmit={cancelOrderReturnDialog.handleSubmitCancelOrderReturnDialog}
                 open={cancelOrderReturnDialog.openCancelOrderReturnDialog > ZERO}/>
             }
-
-            {!stat && <OrderCreateDialog
-                isUpdate={true}
-                status={status}
-                canChangeAnyPrice={canChangeAnyPrice}
-                initialValues={updateDialog.initialValues}
-                open={updateDialog.openUpdateDialog}
-                loading={updateDialog.updateLoading}
-                editProductsLoading={updateDialog.editProductsLoading}
-                onClose={updateDialog.handleCloseUpdateDialog}
-                onSubmit={updateDialog.handleSubmitUpdateDialog}
-                filter={filter}
-                clientId={clientId}
-                isSuperUser={isSuperUser}
-            />}
 
         </div>
     )

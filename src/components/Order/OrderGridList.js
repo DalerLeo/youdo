@@ -234,6 +234,7 @@ const OrderGridList = enhance((props) => {
             isSuperUser={isSuperUser}
         />
     )
+    const ZERO = 0
     const orderList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const currentCurrency = getConfig('PRIMARY_CURRENCY')
@@ -249,22 +250,24 @@ const OrderGridList = enhance((props) => {
         const totalPrice = numberFormat(_.get(item, 'totalPrice'), currentCurrency)
         const status = _.toInteger(_.get(item, 'status'))
         const isNew = _.get(item, 'isNew')
+
         const REQUESTED = 0
         const PAY_PENDING = 'Оплата ожидается: ' +
-                            paymentDate.locale('ru').format('DD MMM YYYY') +
-                            '<br/>Ожидаемый платеж: ' + balanceTooltip
+            paymentDate.locale('ru').format('DD MMM YYYY') +
+            '<br/>Ожидаемый платеж: ' + balanceTooltip
 
-        const PAY_DELAY = 'Оплата ожидалась: ' +
-                            paymentDate.locale('ru').format('DD MMM YYYY') +
-                            '<br/>Долг: ' + balanceTooltip
+        const PAY_DELAY = paymentDate.diff(now, 'days') !== ZERO ? 'Оплата ожидалась: ' +
+            paymentDate.locale('ru').format('DD MMM YYYY') +
+            '<br/>Долг: ' + balanceTooltip : 'Оплата ожидается сегодня <br/>Долг: ' + balanceTooltip
 
         const READY = 1
         const GIVEN = 2
         const DELIVERED = 3
         const CANCELED = 4
-        const ZERO = 0
+
         return (
-            <div key={id} className={(isNew ? classes.listWrapperNew : classes.listWrapper) + ' ' + (showCheckboxes ? classes.listWithCheckbox : '')}>
+            <div key={id}
+                 className={(isNew ? classes.listWrapperNew : classes.listWrapper) + ' ' + (showCheckboxes ? classes.listWithCheckbox : '')}>
                 <Link className={classes.openDetails} to={{
                     pathname: sprintf(ROUTES.ORDER_ITEM_PATH, id),
                     query: filter.getParams()
@@ -384,7 +387,7 @@ const OrderGridList = enhance((props) => {
                 withCheckboxes={showCheckboxes}
             />
 
-            <OrderCreateDialog
+            {createDialog.openCreateDialog && <OrderCreateDialog
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
                 createClientDialog={createClientDialog}
@@ -395,7 +398,24 @@ const OrderGridList = enhance((props) => {
                 filter={filter}
                 clientId={clientId}
                 isSuperUser={isSuperUser}
-            />
+            />}
+
+            {updateDialog.openUpdateDialog && <OrderCreateDialog
+                isUpdate={true}
+                status={_.toInteger(_.get(detailData, ['data', 'status'])) || {}}
+                canChangeAnyPrice={canChangeAnyPrice}
+                initialValues={updateDialog.initialValues}
+                open={updateDialog.openUpdateDialog}
+                loading={updateDialog.updateLoading}
+                editProductsLoading={updateDialog.editProductsLoading}
+                onClose={updateDialog.handleCloseUpdateDialog}
+                onSubmit={updateDialog.handleSubmitUpdateDialog}
+                products={products}
+                shortageDialog={shortageDialog}
+                filter={filter}
+                clientId={clientId}
+                isSuperUser={isSuperUser}
+            />}
 
             <OrderShortageDialog
                 products={products}

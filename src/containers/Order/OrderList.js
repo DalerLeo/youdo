@@ -722,7 +722,7 @@ const OrderList = enhance((props) => {
     })
     const updateDialog = {
         initialValues: (() => {
-            if (openCreateDialog) {
+            if (openCreateDialog || !detail) {
                 return {
                     user: {
                         value: defaultUser

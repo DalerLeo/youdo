@@ -211,7 +211,7 @@ const StockList = enhance((props) => {
                     value: _.get(detail, ['manager', 'id'])
                 },
                 stockType: {
-                    value: _.toNumber(_.get(detail, 'stockType'))
+                    value: (_.get(detail, 'stockType'))
                 }
             }
         })(),
