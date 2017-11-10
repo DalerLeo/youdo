@@ -223,7 +223,7 @@ const UsersCreateDialog = enhance((props) => {
                                     fullWidth={true}/>
                             </Col>
                         </Row>
-                        <div className={classes.subTitle} style={{marginTop: '15px'}}>{multiStock ? 'Связанные склады' : 'Связанный склад'}</div>
+                        <div className={classes.subTitle} style={{margin: '15px 0 10px'}}>{multiStock ? 'Связанные склады' : 'Связанный склад'}</div>
                         {(!loading) && _.get(stockListData, 'stockListLoading')
                         ? <div className={classes.groupLoader}>
                             <CircularProgress size={40} thickness={4}/>
@@ -249,7 +249,7 @@ const UsersCreateDialog = enhance((props) => {
                                         component={UserStockRadioButtonField}/>
                                 </div>
                         }
-                        <div className={classes.subTitle} style={{marginTop: '15px'}}>Поддерживаемый  прайс лист</div>
+                        <div className={classes.subTitle} style={{margin: '15px 0 10px'}}>Поддерживаемый  прайс лист</div>
                         <Row>
                             {(!loading) && _.get(marketTypeData, 'marketTypeLoading') &&
                             <div className={classes.groupLoader}>

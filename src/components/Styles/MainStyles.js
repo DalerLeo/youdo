@@ -50,7 +50,6 @@ const MainStyles = {
     },
     inContent: {
         display: 'flex',
-        maxHeight: '50vh',
         minHeight: '184px',
         overflow: 'unset',
         padding: '0 30px',

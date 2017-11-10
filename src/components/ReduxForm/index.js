@@ -76,7 +76,7 @@ import PermissionTimeSearchField from './PermissionTimeSearchField'
 import AgentSearchField from './AgentSearchField'
 import ClientTransactionTypeSearchField from './ClientTransactionTypeSearchField'
 import StockReceiveTypeSearchFiled from './StockReceiveTypeSearchFiled'
-import SupplyTypeSearchFiled from './Supply/SupplyTypeSearchFiled'
+import SupplyTypeSearchField from './Supply/SupplyTypeSearchField'
 import ClientBalanceTypeSearchField from './ClientBalance/ClientBalanceTypeSearchField'
 import EquipmentSearchField from './EquipmentSearchField'
 import PendingExpensesTypeSearchField from './PendingExpensesTypeSearchField'
@@ -87,7 +87,7 @@ export {
     DeliveryManSearchField,
     PendingExpensesTypeSearchField,
     EquipmentSearchField,
-    SupplyTypeSearchFiled,
+    SupplyTypeSearchField,
     StockHistoryTypeSearchField,
     StockReceiveTypeSearchFiled,
     ReturnStatusSearchField,
