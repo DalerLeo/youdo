@@ -73,7 +73,8 @@ const showErrors = (error, label) => {
             showErrors(value, (_.isNumber(key)) ? label : key)
         })
     } else {
-        errors += label + ': ' + error + '<br/>'
+        errors += label ? label + ': ' : ''
+        errors += error + '<br/>'
     }
     return errors
 }
@@ -81,7 +82,7 @@ const showErrors = (error, label) => {
 const ErrorDialog = ({dispatch, message, open, classes, ...defaultProps}) => {
     const close = () => dispatch(closeErrorAction())
     const bug = open ? showErrors(message) : null
-
+    errors = ''
     return (
         <Dialog
             modal={true}
