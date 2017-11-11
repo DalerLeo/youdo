@@ -8,6 +8,7 @@ import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import numberFormat from '../../helpers/numberFormat'
+import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
 import * as API from '../../constants/api'
 import * as serializers from '../../serializers/priceSerializer'
 import getDocuments from '../../helpers/getDocument'
@@ -154,8 +155,8 @@ const enhance = compose(
         },
         handleSubmitSetDefaultForm: props => () => {
             const {dispatch, setDefaultForm, params: {priceId}, location: {pathname}, filter} = props
-            const price = _.get(setDefaultForm, ['values', 'amount'])
-            return dispatch(priceSetDefaultAction(priceId, price))
+            const cost = numberWithoutSpaces(_.get(setDefaultForm, ['values', 'amount']))
+            return dispatch(priceSetDefaultAction(priceId, cost))
                 .then(() => {
                     dispatch(priceItemFetchAction(Number(priceId)))
                     dispatch(priceItemHistoryFetchAction(Number(priceId)))

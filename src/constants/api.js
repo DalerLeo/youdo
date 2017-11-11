@@ -448,6 +448,9 @@ export const RETURN_ITEM = `${RETURN}/%d/`
 export const RETURN_UPDATE = `${RETURN}/%d/`
 export const RETURN_DELETE = `${RETURN}/%d/`
 export const RETURN_CANCEL = `${RETURN}/%d/cancel/`
+export const RETURN_CREATE_PRODUCTS = 'sales/product_sales'
+export const RETURN_CREATE_PRODUCTS_LIST = `${RETURN_CREATE_PRODUCTS}/`
+export const RETURN_CREATE_PRODUCTS_ITEM = `${RETURN_CREATE_PRODUCTS}/%d/`
 
 export const JOIN_MARKETS = 'market/merge/'
 export const JOIN_CLIENTS = 'sales/merge_clients/'
@@ -456,7 +459,3 @@ export const ACCESS = 'main/access'
 export const ACCESS_LIST = `${ACCESS}/`
 export const ACCESS_ITEM = `${ACCESS}/%d/`
 export const ACCESS_UPDATE = `${ACCESS}/%d/`
-
-export const PRICELIST = 'sales/price_list'
-export const PRICELIST_CREATE = `/${PRICELIST}/`
-export const PRICELIST_LIST = `/${PRICELIST}/`

@@ -143,9 +143,13 @@ const enhance = compose(
     connect((state) => {
         const currency = _.get(state, ['form', 'ReturnCreateForm', 'values', 'currency', 'text'])
         const measurement = _.get(state, ['form', 'ReturnCreateForm', 'values', 'product', 'value', 'measurement', 'name'])
+        const market = _.get(state, ['form', 'ReturnCreateForm', 'values', 'market', 'value'])
+        const priceList = _.get(state, ['form', 'ReturnCreateForm', 'values', 'priceList', 'value'])
         return {
             currency,
-            measurement
+            measurement,
+            market,
+            priceList
         }
     }),
     withReducer('state', 'dispatch', (state, action) => {
@@ -233,7 +237,7 @@ const iconStyle = {
     }
 }
 
-const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, handleEdit, handleRemove, editItem, setEditItem, measurement, isUpdate, editOnlyCost, ...defaultProps}) => {
+const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, handleEdit, handleRemove, editItem, setEditItem, measurement, isUpdate, editOnlyCost, market, priceList, ...defaultProps}) => {
     const currency = getConfig('PRIMARY_CURRENCY')
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
     const error = _.get(defaultProps, ['products', 'meta', 'error'])
@@ -242,7 +246,7 @@ const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, h
             <div>
                 <div className={classes.headers} style={{marginTop: '-10px'}}>
                     <div className={classes.title}>Список товаров</div>
-                    {!isUpdate && <FlatButton
+                    {!isUpdate && (market && priceList) && <FlatButton
                         label="+ добавить товар"
                         style={{color: '#12aaeb'}}
                         labelStyle={{fontSize: '13px'}}
@@ -427,7 +431,9 @@ const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, h
                         <img src={Groceries} alt=""/>
                         {isUpdate
                             ? <div>Список возвращаемого товара пуст.</div>
-                            : <div>Вы еще не выбрали ни одного товара. <br/> <a onClick={() => dispatch({open: !state.open})}>Добавить</a> товар?</div>}
+                            : (market && priceList)
+                                ? <div>Вы еще не выбрали ни одного товара. <br/> <a onClick={() => dispatch({open: !state.open})}>Добавить</a> товар?</div>
+                                : <div>Для добавления товаров <br/>выберите магазин и прайс-лист.</div>}
                     </div>
                 </div>
             }

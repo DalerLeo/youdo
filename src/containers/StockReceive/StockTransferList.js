@@ -439,9 +439,7 @@ const StockTransferList = enhance((props) => {
         return _.toInteger(_.get(item, ['user', 'id'])) === _.get(deliveryDetailsData, 'id') &&
             _.toInteger(_.get(item, ['stock', 'id'])) === _.get(deliveryDetailsData, 'stock')
     })
-    const orders = _.map(_.get(deliveryDetailsData, ['data', 'orders']), (item) => {
-        return <strong>{item}</strong>
-    })
+    const orders = _.join(_.get(deliveryDetailsData, ['data', 'orders']), ', ')
     if (openPrint) {
         document.getElementById('wrapper').style.height = 'auto'
 

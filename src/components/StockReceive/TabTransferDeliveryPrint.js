@@ -1,5 +1,4 @@
 import React from 'react'
-import moment from 'moment'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import injectSheet from 'react-jss'
@@ -8,6 +7,8 @@ import {compose} from 'recompose'
 import Close from 'material-ui/svg-icons/navigation/close'
 import Loader from '../Loader'
 import numberFormat from '../../helpers/numberFormat'
+import dateFormat from '../../helpers/dateFormat'
+import getConfig from '../../helpers/getConfig'
 
 const enhance = compose(
     injectSheet({
@@ -27,6 +28,12 @@ const enhance = compose(
             height: '100%',
             zIndex: '999',
             overflowY: 'auto',
+            '& header': {
+                '& > div': {
+                    fontSize: '14px',
+                    marginBottom: '10px'
+                }
+            },
             '& .printItem': {
                 borderBottom: 'none'
             }
@@ -50,11 +57,6 @@ const enhance = compose(
         title: {
             display: 'flex',
             justifyContent: 'space-between',
-            '& span': {
-                fontWeight: 'bold',
-                fontSize: '18px !important',
-                marginBottom: '10px'
-            },
             '& div:last-child': {
                 fontSize: '12px',
                 color: '#777',
@@ -97,12 +99,14 @@ const enhance = compose(
 const TabTransferDeliveryPrint = enhance((props) => {
     const {classes, deliveryDetailsData, currentDeliverer, dataRange, orders} = props
     const loading = _.get(deliveryDetailsData, 'deliveryDetailLoading')
-    const startDay = moment(_.get(dataRange, 'startDate')).format('YYYY-MM-01')
-    const endDay = moment(_.get(dataRange, 'endDate')).format('YYYY-MM-01')
+    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
+    const startDay = dateFormat(_.get(dataRange, 'startDate'))
+    const endDay = dateFormat(_.get(dataRange, 'endDate'))
     const deliveryMan = _.get(deliveryDetailsData, ['data', 'deliveryMan'])
+    const stock = _.get(currentDeliverer, ['stock', 'name'])
     const deliveryManName = deliveryMan
         ? _.get(deliveryMan, 'firstName') + ' ' + _.get(deliveryMan, 'secondName')
-        : 'Доставщик не определен'
+        : 'Не определен'
     if (loading) {
         return (
             <div className={classes.loader}>
@@ -113,30 +117,38 @@ const TabTransferDeliveryPrint = enhance((props) => {
     return (
         <div className={classes.wrapper}>
             <div className="printItem">
-                <div className={classes.title}>
-                    <div>Доставщик: <span>{deliveryManName}</span></div>
-                    <div>Период : <strong>{startDay} - {endDay}</strong></div>
-                </div>
-                <div>Склад: <strong>{currentDeliverer.stock.name}</strong></div>
-                <div>Показаны товары по следующим заказам:: <strong>{orders}</strong></div>
+                <header>
+                    <div className={classes.title}>
+                        <div><strong>Доставщик:</strong> <span>{deliveryManName}</span></div>
+                        <div><strong>{startDay} - {endDay}</strong></div>
+                    </div>
+                    <div><strong>Склад:</strong> <span>{stock}</span></div>
+                    <div><strong>Показаны товары по следующим заказам:</strong> <span>{orders}</span></div>
+                </header>
                 <div className={classes.products}>
                     <Row>
-                        <Col xs={4}>Наименование</Col>
-                        <Col xs={4}>Тип товара</Col>
-                        <Col xs={4}>Кол-во</Col>
+                        <Col xs={3}>Наименование</Col>
+                        <Col xs={1}>Код товара</Col>
+                        <Col xs={3}>Тип товара</Col>
+                        <Col xs={2}>Кол-во</Col>
+                        <Col xs={2}>Сумма</Col>
                     </Row>
                     {_.map(_.get(deliveryDetailsData, ['data', 'products']), (item) => {
                         const productId = _.get(item, 'id')
                         const measurment = _.get(item, ['measurement', 'name'])
                         const name = _.get(item, 'name')
+                        const code = _.get(item, 'code')
+                        const totalPrice = numberFormat(_.get(item, 'totalPrice'), primaryCurrency)
                         const type = _.get(item, ['type', 'name'])
                         const amount = numberFormat(_.get(item, 'count'), measurment)
 
                         return (
                             <Row key={productId}>
-                                <Col xs={4}>{name}</Col>
-                                <Col xs={4}>{type}</Col>
-                                <Col xs={4}>{amount}</Col>
+                                <Col xs={3}>{name}</Col>
+                                <Col xs={1}>{code}</Col>
+                                <Col xs={3}>{type}</Col>
+                                <Col xs={2}>{amount}</Col>
+                                <Col xs={2}>{totalPrice}</Col>
                             </Row>
                         )
                     })}
