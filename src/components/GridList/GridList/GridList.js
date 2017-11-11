@@ -46,15 +46,14 @@ const GridList = enhance((props) => {
         filter,
         filterDialog,
         addButton,
-        actionsDialog,
+        checkboxActions,
+        extraButtons,
+        activeCheckboxes,
         withCheckboxes,
         withoutRow,
-        withInvoice,
         withoutSearch,
-        printDialog,
         flexibleRow,
         withoutPagination,
-        refreshAction,
         listShadow,
         transparentLoading,
         hoverableList
@@ -81,7 +80,7 @@ const GridList = enhance((props) => {
                 listLoading={listLoading}
                 transparentLoading={transparentLoading}
                 flexibleRow={flexibleRow}
-                withCheckboxes={withCheckboxes}
+                activeCheckboxes={activeCheckboxes}
                 listShadow={listShadow}
                 hoverableList={hoverableList}
             />
@@ -96,17 +95,16 @@ const GridList = enhance((props) => {
                     customData={customData}
                     filterDialog={filterDialog}
                     addButton={addButton}
-                    actions={actionsDialog}
+                    checkboxActions={checkboxActions}
                     withoutSearch={withoutSearch}
-                    withInvoice={withInvoice}
-                    printDialog={printDialog}
                     withoutPagination={withoutPagination}
-                    refreshAction={refreshAction}
+                    extraButtons={extraButtons}
+                    withCheckboxes={withCheckboxes}
                 />
                 <GridListHeader
                     filter={filter}
                     listIds={listIds}
-                    withCheckboxes={withCheckboxes}
+                    activeCheckboxes={activeCheckboxes}
                     withoutRow={withoutRow}
                     column={header}
                     listShadow={listShadow}
@@ -137,7 +135,8 @@ GridList.propTypes = {
         listData: PropTypes.array.isRequired
     }),
     detail: PropTypes.node.isRequired,
-    actionsDialog: PropTypes.node,
+    checkboxActions: PropTypes.node,
+    extraButtons: PropTypes.node,
     filterDialog: PropTypes.node,
     addButton: PropTypes.node,
     printDialog: PropTypes.shape({
@@ -149,6 +148,7 @@ GridList.propTypes = {
 }
 
 GridList.defaultProps = {
+    activeCheckboxes: false,
     withCheckboxes: false,
     withoutSearch: false,
     withInvoice: false,
@@ -158,7 +158,8 @@ GridList.defaultProps = {
     listShadow: true,
     transparentLoading: false,
     hoverableList: true,
-    actionsDialog: (<div>no</div>)
+    actionsDialog: null,
+    extraButtons: null
 }
 
 export default GridList

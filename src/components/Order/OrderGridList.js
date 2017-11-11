@@ -2,12 +2,13 @@ import _ from 'lodash'
 import sprintf from 'sprintf'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Link} from 'react-router'
+import {Link, hashHistory} from 'react-router'
 import IconButton from 'material-ui/IconButton'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
 import OrderCreateDialog from './OrderCreateDialog'
+import OrderMultiUpdateDialog from './OrderMultiUpdateDialog'
 import OrderFilterForm from './OrderFilterForm'
 import OrderDetails from './OrderDetails'
 import OrderShortageDialog from './OrderShortage'
@@ -19,14 +20,19 @@ import {compose} from 'recompose'
 import moment from 'moment'
 import getConfig from '../../helpers/getConfig'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
+import Badge from 'material-ui/Badge'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
 import numberFormat from '../../helpers/numberFormat'
 import Available from 'material-ui/svg-icons/action/store'
 import Canceled from 'material-ui/svg-icons/notification/do-not-disturb-alt'
 import Transferred from 'material-ui/svg-icons/maps/local-shipping'
+import Delivered from 'material-ui/svg-icons/action/assignment-turned-in'
 import Payment from 'material-ui/svg-icons/action/credit-card'
-import InProcess from 'material-ui/svg-icons/action/cached'
+import InProcess from 'material-ui/svg-icons/device/access-time'
+import Print from 'material-ui/svg-icons/action/print'
+import Edit from 'material-ui/svg-icons/editor/mode-edit'
+import Done from 'material-ui/svg-icons/action/check-circle'
 import dateFormat from '../../helpers/dateFormat'
 import toBoolean from '../../helpers/toBoolean'
 
@@ -137,6 +143,7 @@ const enhance = compose(
         },
         buttons: {
             display: 'flex',
+            alignItems: 'center',
             justifyContent: 'space-around'
         },
         openDetails: {
@@ -156,11 +163,18 @@ const enhance = compose(
     }),
 )
 
+const REQUESTED = 0
+const READY = 1
+const GIVEN = 2
+const DELIVERED = 3
+const CANCELED = 4
+
 const OrderGridList = enhance((props) => {
     const {
         filter,
         createDialog,
         updateDialog,
+        multiUpdateDialog,
         filterDialog,
         getDocument,
         transactionsDialog,
@@ -188,6 +202,12 @@ const OrderGridList = enhance((props) => {
     } = props
 
     const showCheckboxes = toBoolean(_.get(filter.getParams(), 'showCheckboxes'))
+    const statusIsReady = _.toNumber(_.get(filter.getParams(), 'status')) === READY
+    const statusIsRequested = _.toNumber(_.get(filter.getParams(), 'status')) === REQUESTED
+    const orderCounts = _.get(listData, 'orderCounts')
+    const readyCount = _.get(orderCounts, 'readyCount')
+    const requestedCount = _.get(orderCounts, 'requestedCount')
+    const orderCountsLoading = _.get(listData, 'orderCountsLoading')
     const orderFilterDialog = (
         <OrderFilterForm
             initialValues={filterDialog.initialValues}
@@ -251,7 +271,6 @@ const OrderGridList = enhance((props) => {
         const status = _.toInteger(_.get(item, 'status'))
         const isNew = _.get(item, 'isNew')
 
-        const REQUESTED = 0
         const PAY_PENDING = 'Оплата ожидается: ' +
             paymentDate.locale('ru').format('DD MMM YYYY') +
             '<br/>Ожидаемый платеж: ' + balanceTooltip
@@ -259,11 +278,6 @@ const OrderGridList = enhance((props) => {
         const PAY_DELAY = paymentDate.diff(now, 'days') !== ZERO ? 'Оплата ожидалась: ' +
             paymentDate.locale('ru').format('DD MMM YYYY') +
             '<br/>Долг: ' + balanceTooltip : 'Оплата ожидается сегодня <br/>Долг: ' + balanceTooltip
-
-        const READY = 1
-        const GIVEN = 2
-        const DELIVERED = 3
-        const CANCELED = 4
 
         return (
             <div key={id}
@@ -306,7 +320,7 @@ const OrderGridList = enhance((props) => {
                                     iconStyle={iconStyle.icon}
                                     style={iconStyle.button}
                                     touch={true}>
-                                    <Transferred color="#81c784"/>
+                                    <Delivered color="#81c784"/>
                                 </IconButton>
                             </Tooltip>
                                 : (status === GIVEN) ? <Tooltip position="bottom" text="Передан доставщику">
@@ -353,11 +367,100 @@ const OrderGridList = enhance((props) => {
         )
     })
 
+    const badgeStyle = {
+        wrapper: {
+            padding: 0
+        },
+        badge: {
+            top: 4,
+            right: 4,
+            width: 18,
+            height: 18,
+            fontSize: 9,
+            fontWeight: 600,
+            border: '1px #fff solid',
+            background: statusIsReady ? '#fff' : '#e57373',
+            transition: 'all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms',
+            zIndex: 1
+        },
+        icon: {
+            color: statusIsReady ? '#81c784' : '#5d6474'
+        },
+        badgeRequested: {
+            top: 4,
+            right: 4,
+            width: 18,
+            height: 18,
+            fontSize: 9,
+            fontWeight: 600,
+            border: '1px #fff solid',
+            background: statusIsRequested ? '#fff' : '#e57373',
+            transition: 'all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms',
+            zIndex: 1
+        },
+        iconRequested: {
+            color: statusIsRequested ? '#81c784' : '#5d6474'
+        }
+    }
+
     const list = {
         header: listHeader,
         list: orderList,
-        loading: _.get(listData, 'listLoading')
+        loading: _.get(listData, 'listLoading') || orderCountsLoading
     }
+
+    const filterByReady = () => {
+        return hashHistory.push(filter.createURL({status: READY}))
+    }
+    const filterByRequested = () => {
+        return hashHistory.push(filter.createURL({status: REQUESTED}))
+    }
+
+    const extraButtons = (
+        <div className={classes.buttons}>
+            <Tooltip position="left" text="Отфильтровать по доступным заказам">
+                <Badge
+                    primary={true}
+                    badgeContent={statusIsReady ? <Done style={badgeStyle.icon}/> : readyCount}
+                    style={badgeStyle.wrapper}
+                    badgeStyle={badgeStyle.badge}>
+                    <IconButton
+                        onTouchTap={filterByReady}
+                        iconStyle={badgeStyle.icon}>
+                        <Available/>
+                    </IconButton>
+                </Badge>
+            </Tooltip>
+            <Tooltip position="left" text="Отфильтровать по переданным заказам">
+                <Badge
+                    primary={true}
+                    badgeContent={statusIsRequested ? <Done style={badgeStyle.iconRequested}/> : requestedCount}
+                    style={badgeStyle.wrapper}
+                    badgeStyle={badgeStyle.badgeRequested}>
+                    <IconButton
+                        onTouchTap={filterByRequested}
+                        iconStyle={badgeStyle.iconRequested}>
+                        <InProcess/>
+                    </IconButton>
+                </Badge>
+            </Tooltip>
+        </div>
+    )
+
+    const checkboxActions = (
+        <div className={classes.buttons}>
+            <Tooltip position="left" text="Распечатать накладные">
+                <IconButton onTouchTap={printDialog.handleOpenPrintDialog}>
+                    <Print color="#666"/>
+                </IconButton>
+            </Tooltip>
+            <Tooltip position="left" text="Изменить выбранные заказы">
+                <IconButton onTouchTap={multiUpdateDialog.handleOpenMultiUpdate}>
+                    <Edit color="#666"/>
+                </IconButton>
+            </Tooltip>
+        </div>
+    )
 
     return (
         <Container>
@@ -384,7 +487,10 @@ const OrderGridList = enhance((props) => {
                 filterDialog={orderFilterDialog}
                 printDialog={printDialog}
                 refreshAction={refreshAction}
-                withCheckboxes={showCheckboxes}
+                extraButtons={extraButtons}
+                activeCheckboxes={showCheckboxes}
+                withCheckboxes={true}
+                checkboxActions={checkboxActions}
             />
 
             {createDialog.openCreateDialog && <OrderCreateDialog
@@ -423,6 +529,13 @@ const OrderGridList = enhance((props) => {
                 loading={shortageDialog.shortageLoading}
                 onClose={shortageDialog.handleCloseShortageDialog}
                 onSubmit={shortageDialog.handleSubmitShortageDialog}
+            />
+
+            <OrderMultiUpdateDialog
+                open={multiUpdateDialog.openMultiUpdateDialog}
+                loading={multiUpdateDialog.shortageLoading}
+                onClose={multiUpdateDialog.handleCloseMultiUpdate}
+                onSubmit={multiUpdateDialog.handleSubmitMultiUpdate}
             />
 
             {detailData.data && <ConfirmDialog
@@ -515,6 +628,12 @@ OrderGridList.propTypes = {
         handleCloseCancelOrderReturnDialog: PropTypes.func.isRequired,
         handleSubmitCancelOrderReturnDialog: PropTypes.func.isRequired,
         openCancelOrderReturnDialog: PropTypes.number.isRequired
+    }).isRequired,
+    multiUpdateDialog: PropTypes.shape({
+        openMultiUpdateDialog: PropTypes.bool.isRequired,
+        handleOpenMultiUpdate: PropTypes.func.isRequired,
+        handleCloseMultiUpdate: PropTypes.func.isRequired,
+        handleSubmitMultiUpdate: PropTypes.func.isRequired
     }).isRequired
 }
 
