@@ -265,7 +265,8 @@ const OrderGridList = enhance((props) => {
                 withoutRow={true}
                 filterDialog={orderFilterDialog}
                 printDialog={printDialog}
-                withCheckboxes={showCheckboxes}
+                withCheckboxes={true}
+                activeCheckboxes={showCheckboxes}
             />
 
             {detailData.data && <ConfirmDialog

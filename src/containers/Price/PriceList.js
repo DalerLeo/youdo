@@ -165,8 +165,7 @@ const enhance = compose(
                 })
                 .catch((error) => {
                     dispatch(openErrorAction({
-                        message: '',
-                        arrMessage: error
+                        message: error
                     }))
                 })
         },
@@ -188,8 +187,7 @@ const enhance = compose(
                 })
                 .catch((error) => {
                     dispatch(openErrorAction({
-                        message: '',
-                        arrMessage: error
+                        message: error
                     }))
                 })
         },

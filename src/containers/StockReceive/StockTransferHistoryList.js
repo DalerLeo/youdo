@@ -162,14 +162,8 @@ const enhance = compose(
                     return dispatch(openSnackbarAction({message: 'Успешно отменено'}))
                 })
                 .catch((error) => {
-                    const errorWhole = _.map(error, (item, index) => {
-                        return <p style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
-                    })
-
                     dispatch(openErrorAction({
-                        message: <div style={{padding: '0 30px'}}>
-                            {errorWhole}
-                        </div>
+                        message: error
                     }))
                 })
             hashHistory.push({pathname, query: filter.getParams({[STOCK_REPEAL_DIALOG_OPEN]: false})})

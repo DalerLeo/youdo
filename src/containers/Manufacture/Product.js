@@ -116,13 +116,8 @@ const enhance = compose(
                     return dispatch(productListFetchAction(filterProduct, manufactureId))
                 })
                 .catch((error) => {
-                    const errorWhole = _.map(error, (item, index) => {
-                        return <p key={index} style={{marginBottom: '10px'}}>{(index !== 'non_field_errors') && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
-                    })
                     dispatch(openErrorAction({
-                        message: <div style={{padding: '0 30px'}}>
-                            {errorWhole}
-                        </div>
+                        message: error
                     }))
                 })
         },
@@ -168,14 +163,8 @@ const enhance = compose(
                     return dispatch(productListFetchAction(filterProduct, manufactureId))
                 })
                 .catch((error) => {
-                    const errorWhole = _.map(error, (item, index) => {
-                        return <p style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
-                    })
-
                     dispatch(openErrorAction({
-                        message: <div style={{padding: '0 30px'}}>
-                            {errorWhole}
-                        </div>
+                        message: error
                     }))
                 })
         },
@@ -229,13 +218,8 @@ const enhance = compose(
                     return dispatch(productListFetchAction(filterProduct, manufactureId))
                 })
                 .catch((error) => {
-                    const errorWhole = _.map(error, (item, index) => {
-                        return <p key={index} style={{marginBottom: '10px'}}>{(index !== 'non_field_errors') && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
-                    })
                     dispatch(openErrorAction({
-                        message: <div style={{padding: '0 30px'}}>
-                            {errorWhole}
-                        </div>
+                        message: error
                     }))
                 })
         },
@@ -305,13 +289,8 @@ const enhance = compose(
                     return dispatch(ingredientListFetchAction(productId))
                 })
                 .catch((error) => {
-                    const errorWhole = _.map(error, (item, index) => {
-                        return <p key={index} style={{marginBottom: '10px'}}>{(index !== 'non_field_errors') && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
-                    })
                     dispatch(openErrorAction({
-                        message: <div style={{padding: '0 30px'}}>
-                            {errorWhole}
-                        </div>
+                        message: error
                     }))
                 })
         },
