@@ -4,9 +4,7 @@ import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import CircularProgress from 'material-ui/CircularProgress'
-import * as ROUTES from '../../constants/routes'
 import {Row, Col} from 'react-flexbox-grid'
-import {Link} from 'react-router'
 import numberFormat from '../../helpers/numberFormat'
 import {Tabs, Tab} from 'material-ui/Tabs'
 import * as TAB from '../../constants/supplyTab'
@@ -296,24 +294,12 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                                         const internal = _.toNumber(_.get(item, 'internalAmount'))
                                         const date = dateFormat(_.get(item, 'date'), true)
                                         const currentCurrency = _.get(_.find(_.get(paidData, 'data'), {'id': cashbox}), ['currency', 'name'])
-                                        const clientId = _.get(item, ['client', 'id'])
                                         const rate = _.toInteger(amount / internal)
-
                                         return (
                                             <Row key={paidId} className="dottedList">
                                                 <Col xs={1}>{paidId}</Col>
                                                 <Col xs={3}>{cashbox}</Col>
-                                                <Col xs={3}>
-                                                    <Link
-                                                        target="_blank"
-                                                        className={classes.clickable}
-                                                        to={{
-                                                            pathname: ROUTES.CLIENT_BALANCE_LIST_URL,
-                                                            query: {search: clientId}
-                                                        }}>
-                                                        <strong>Комментарий:</strong> {comment}
-                                                    </Link>
-                                                </Col>
+                                                <Col xs={3}>{comment}</Col>
                                                 <Col xs={2}>{date}</Col>
                                                 <Col xs={3} style={{
                                                     textAlign: 'right'
