@@ -3,7 +3,6 @@ import StatProductList from './StatProduct'
 import StatMarketList from './StatMarket'
 import StatSalesList from './StatSales'
 import StatFinanceList from './StatFinance'
-import StatDebtorsList from './StatDebtors'
 import StatOutcomeCategoryList from './StatOutcomeCategory'
 import StatRemainderList from './StatRemainder'
 import StatCashboxList from './StatCashbox'
@@ -20,7 +19,6 @@ export {
     StatMarketList,
     StatSalesList,
     StatFinanceList,
-    StatDebtorsList,
     StatOutcomeCategoryList,
     StatRemainderList,
     StatCashboxList,

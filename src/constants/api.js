@@ -333,11 +333,6 @@ export const STAT_OUTCOME_DATA = 'stats/transactions/'
 export const STAT_OUTCOME_LIST = 'finance/transaction/'
 export const STAT_OUTCOME_GET_DOCUMENT = 'stats/transactions/export'
 
-export const STAT_DEBTORS_DATA = 'stats/debtors_stats/'
-export const STAT_DEBTORS_LIST = 'stats/debtors/'
-export const STAT_DEBTORS_ITEM = 'sales/order/'
-export const STAT_DEBTORS_GET_DOCUMENT = 'stats/debtors/export'
-
 export const STAT_SALES_DATA = '/stats/orders/'
 export const STAT_SALES_GET_DOCUMENT = '/sales/order/export/'
 

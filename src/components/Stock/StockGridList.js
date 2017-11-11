@@ -18,6 +18,7 @@ import FlatButton from 'material-ui/FlatButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
 import Edit from 'material-ui/svg-icons/image/edit'
+import dateFormat from '../../helpers/dateFormat'
 
 const listHeader = [
     {
@@ -159,7 +160,7 @@ const StockGridList = enhance((props) => {
         const name = _.get(item, 'name')
         const manager = _.get(item, ['manager', 'firstName']) + ' ' + _.get(item, ['manager', 'secondName'])
         const stockType = _.get(item, 'stockType') === BASIC_STOCK ? 'Основной' : 'Производственный'
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+        const createdDate = dateFormat(_.get(item, 'createdDate'))
         return (
             <Row key={id} className={classes.listRow}>
                 <Col xs={1}>{id}</Col>

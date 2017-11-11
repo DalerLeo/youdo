@@ -2,21 +2,21 @@ import _ from 'lodash'
 import React from 'react'
 import {compose, withState} from 'recompose'
 import PropTypes from 'prop-types'
+import {Link} from 'react-router'
 import injectSheet from 'react-jss'
 import Edit from 'material-ui/svg-icons/image/edit'
 import AddPayment from 'material-ui/svg-icons/editor/attach-money'
 import Expense from 'material-ui/svg-icons/action/credit-card'
-import LinearProgress from '../LinearProgress'
 import Delete from 'material-ui/svg-icons/action/delete'
-import RightSide from './SupplyDetailsRightSideTabs'
 import IconButton from 'material-ui/IconButton'
+import RightSide from './SupplyDetailsRightSideTabs'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
+import LinearProgress from '../LinearProgress'
 import Tooltip from '../ToolTip'
-import moment from 'moment'
 import numberFormat from '../../helpers/numberFormat'
+import dateFormat from '../../helpers/dateFormat'
 import SupplySetDiscountDialog from './SupplySetDiscountDialog'
 import * as ROUTE from '../../constants/routes'
-import {Link} from 'react-router'
 
 const popupWidth = 210
 const enhance = compose(
@@ -245,7 +245,7 @@ const SupplyDetails = enhance((props) => {
     const paymentType = _.get(data, 'paymentType') === 'cash' ? 'Наличный' : 'Банковский счет'
     const phone = _.get(data, ['contact', 'phone'])
     const email = _.get(data, ['contact', 'email'])
-    const dateDelivery = moment(_.get(data, 'dateDelivery')).format('DD.MM.YYYY')
+    const dateDelivery = dateFormat(_.get(data, 'dateDelivery'))
     const acceptedTime = (_.get(data, 'acceptedTime')) ? dateTimeFormat(_.get(data, 'acceptedTime')) : 'Не началась'
     const finishedTime = (_.get(data, 'finishedTime')) ? dateTimeFormat(_.get(data, 'finishedTime')) : 'Не закончилась'
     const contract = _.get(data, 'contract') || 'Не указана'

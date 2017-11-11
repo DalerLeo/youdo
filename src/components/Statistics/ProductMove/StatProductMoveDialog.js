@@ -13,6 +13,7 @@ import Person from '../../Images/person.png'
 import Pagination from '../../GridList/GridListNavPagination/index'
 import getConfig from '../../../helpers/getConfig'
 import numberFormat from '../../../helpers/numberFormat.js'
+import dateFormat from '../../../helpers/dateFormat'
 
 const enhance = compose(
     injectSheet({
@@ -139,7 +140,7 @@ const StatProductMove = enhance((props) => {
     const agentName = _.get(detailData, ['agentDetail', '0', 'name'])
     const income = numberFormat(_.get(detailData, ['agentDetail', '0', 'income']), primaryCurrency)
     const fromDate = _.get(detailData, ['filterDateRange', 'fromDate'])
-        ? _.get(detailData, ['filterDateRange', 'fromDate']).format('DD.MM.YYYY')
+        ? dateFormat(_.get(detailData, ['filterDateRange', 'fromDate']))
         : null
     const toDate = _.get(detailData, ['filterDateRange', 'toDate'])
         ? _.get(detailData, ['filterDateRange', 'toDate']).format('DD.MM.YYYY')
@@ -150,7 +151,7 @@ const StatProductMove = enhance((props) => {
         const id = _.get(item, 'id')
         const market = _.get(item, ['market', 'name'])
         const totalPrice = _.get(item, 'totalPrice')
-        const createdDate = moment(_.get(item, 'createdDate')).format('LL')
+        const createdDate = dateFormat(_.get(item, 'createdDate'))
 
         return (
             <Row key={id} className="dottedList">

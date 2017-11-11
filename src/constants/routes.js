@@ -223,10 +223,6 @@ export const STATISTICS_INCOME = 'statistics/income'
 export const STATISTICS_INCOME_URL = `/${STATISTICS_INCOME}`
 export const STATISTICS_OUTCOME = 'statistics/outcome'
 export const STATISTICS_OUTCOME_URL = `/${STATISTICS_OUTCOME}`
-export const STATISTICS_DEBTORS = 'statistics/debtors'
-export const STATISTICS_DEBTORS_URL = `/${STATISTICS_DEBTORS}`
-export const STATISTICS_DEBTORS_ITEM_URL = `/${STATISTICS_DEBTORS}/:statDebtorsId`
-export const STATISTICS_DEBTORS_ITEM_PATH = `/${STATISTICS_DEBTORS}/%d`
 export const STATISTICS_OUTCOME_CATEGORY = 'statistics/outcomeCategory'
 export const STATISTICS_OUTCOME_CATEGORY_URL = `/${STATISTICS_OUTCOME_CATEGORY}`
 
