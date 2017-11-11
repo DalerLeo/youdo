@@ -220,3 +220,36 @@ export const orderProductMobileAction = (orderId, priceList, size, products) => 
         payload
     }
 }
+
+export const orderGetCounts = () => {
+    const payload = axios()
+        .get(API.ORDER_COUNTS)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.ORDER_COUNTS,
+        payload
+    }
+}
+
+export const orderMultiUpdateAction = (data, orders) => {
+    const requestData = serializers.multiUpdateSerializer(data, orders)
+    const payload = axios()
+        .post(API.ORDER_MULTI_UPDATE, requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.ORDER_MULTI_UPDATE,
+        payload
+    }
+}

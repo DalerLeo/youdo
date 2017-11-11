@@ -6,8 +6,6 @@ import injectSheet from 'react-jss'
 import GridListNavPagination from '../GridListNavPagination'
 import GridListNavSearch from '../GridListNavSearch'
 import IconButton from 'material-ui/IconButton'
-import Print from 'material-ui/svg-icons/action/print'
-import RefreshIcon from 'material-ui/svg-icons/action/cached'
 import Check from 'material-ui/svg-icons/av/playlist-add-check'
 import HideCheck from 'material-ui/svg-icons/action/visibility-off'
 import Uncheck from 'material-ui/svg-icons/toggle/indeterminate-check-box'
@@ -15,7 +13,7 @@ import Tooltip from '../../ToolTip'
 import {hashHistory} from 'react-router'
 import toBoolean from '../../../helpers/toBoolean'
 
-const GridListNav = ({classes, filter, filterDialog, addButton, withoutSearch, customData, withInvoice, printDialog, refreshAction, withoutPagination}) => {
+const GridListNav = ({classes, filter, filterDialog, addButton, withoutSearch, checkboxActions, extraButtons, customData, withCheckboxes, withoutPagination}) => {
     const selectIsEmpty = _.isEmpty(filter.getSelects())
     const filterIsEmpty = _.isEmpty(filterDialog)
     const addButtonIsEmpty = _.isEmpty(addButton)
@@ -61,23 +59,14 @@ const GridListNav = ({classes, filter, filterDialog, addButton, withoutSearch, c
                     </Col>
                     <Col xs={5} className={classes.flex}>
                         {!withoutPagination && <GridListNavPagination filter={filter}/>}
-                        {withInvoice &&
-                        <Tooltip position="left" text={showCheckboxes ? 'Спрятать флажки' : 'Выбрать из списка для распечатки накладного'}>
-                            <IconButton
-                                onTouchTap={toggleCheckboxes}>
+                        {withCheckboxes && <Tooltip position="left" text={showCheckboxes ? 'Спрятать флажки' : 'Выбрать из списка для распечатки накладного'}>
+                            <IconButton onTouchTap={toggleCheckboxes}>
                                 {showCheckboxes
-                                ? <HideCheck color="#666"/>
-                                : <Check color="#666"/>}
+                                    ? <HideCheck color="#5d6474"/>
+                                    : <Check color="#5d6474"/>}
                             </IconButton>
                         </Tooltip>}
-                        {refreshAction &&
-                        <Tooltip position="left" text={'Обновить'}>
-                            <IconButton
-                                disabled={false}
-                                onTouchTap={refreshAction}>
-                                <RefreshIcon color="#666"/>
-                            </IconButton>
-                        </Tooltip>}
+                        {extraButtons}
                     </Col>
                 </Row>}
 
@@ -88,16 +77,9 @@ const GridListNav = ({classes, filter, filterDialog, addButton, withoutSearch, c
                     <Col xs={8} className={classes.actionButtons}>
                         {!withoutPagination && <GridListNavPagination filter={filter}/>}
                         <div className={classes.buttons}>
-                            {withInvoice &&
-                            <Tooltip position="left" text="Распечатать накладные">
-                                <IconButton
-                                    onTouchTap={printDialog.handleOpenPrintDialog}>
-                                    <Print color="#666"/>
-                                </IconButton>
-                            </Tooltip>}
+                            {checkboxActions}
                             <Tooltip position="left" text="Снять выделение">
-                                <IconButton
-                                    onTouchTap={clearSelects}>
+                                <IconButton onTouchTap={clearSelects}>
                                     <Uncheck color="#666"/>
                                 </IconButton>
                             </Tooltip>
@@ -111,7 +93,7 @@ const GridListNav = ({classes, filter, filterDialog, addButton, withoutSearch, c
 
 GridListNav.propTypes = {
     filter: PropTypes.object.isRequired,
-    actions: PropTypes.node,
+    checkboxActions: PropTypes.node,
     withoutSearch: PropTypes.bool.isRequired,
     withoutPagination: PropTypes.bool,
     withInvoice: PropTypes.bool,
@@ -180,6 +162,7 @@ export default injectSheet({
     },
     buttons: {
         extend: 'actionButtons',
+        alignItems: 'center',
         marginLeft: '20px'
     },
     flex: {

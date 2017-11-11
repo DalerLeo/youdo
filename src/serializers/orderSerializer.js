@@ -44,6 +44,18 @@ export const createSerializer = (data) => {
     }
 }
 
+export const multiUpdateSerializer = (data, orders) => {
+    const deliveryDate = _.get(data, 'deliveryDate')
+    const paymentDate = _.get(data, 'paymentDate')
+    const deliveryMan = _.get(data, ['deliveryMan', 'value'])
+    return {
+        order_list: _.split(orders, '-'),
+        date_delivery: deliveryDate,
+        payment_date: paymentDate,
+        delivery_man: deliveryMan
+    }
+}
+
 export const listFilterSerializer = (data, id, withOrderReturn, print) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')

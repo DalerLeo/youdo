@@ -22,6 +22,7 @@ import {
     ORDER_ITEM_RETURN_DIALOG_OPEN,
     ORDER_RETURN_DIALOG_OPEN,
     ORDER_SHORTAGE_DIALOG_OPEN,
+    ORDER_MULTI_EDIT_OPEN,
     TAB,
     OrderGridList,
     OrderPrint
@@ -41,7 +42,9 @@ import {
     orderListPintFetchAction,
     orderReturnCancelAction,
     orderProductMobileAction,
-    orderSetDiscountAction
+    orderSetDiscountAction,
+    orderGetCounts,
+    orderMultiUpdateAction
 } from '../../actions/order'
 import {openSnackbarAction} from '../../actions/snackbar'
 
@@ -61,12 +64,15 @@ const enhance = compose(
         const returnDialogLoading = _.get(state, ['order', 'returnList', 'loading'])
         const shortageLoading = _.get(state, ['order', 'create', 'loading'])
         const updateLoading = _.get(state, ['order', 'update', 'loading'])
+        const orderCounts = _.get(state, ['order', 'counts', 'data'])
+        const orderCountsLoading = _.get(state, ['order', 'counts', 'loading'])
         const list = _.get(state, ['order', 'list', 'data'])
+        const listLoading = _.get(state, ['order', 'list', 'loading'])
         const listPrint = _.get(state, ['order', 'listPrint', 'data'])
         const listPrintLoading = _.get(state, ['order', 'listPrint', 'loading'])
-        const listLoading = _.get(state, ['order', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'OrderFilterForm'])
         const createForm = _.get(state, ['form', 'OrderCreateForm'])
+        const multiUpdateForm = _.get(state, ['form', 'OrderMultiUpdateForm'])
         const clientCreateForm = _.get(state, ['form', 'ClientCreateForm'])
         const discountCreateForm = _.get(state, ['form', 'OrderSetDiscountForm'])
         const returnForm = _.get(state, ['form', 'OrderReturnForm'])
@@ -99,6 +105,7 @@ const enhance = compose(
             filterForm,
             paymentLoading,
             createForm,
+            multiUpdateForm,
             clientCreateForm,
             returnForm,
             returnData,
@@ -114,7 +121,9 @@ const enhance = compose(
             selectedProduct,
             paymentType,
             isSuperUser,
-            editProductsLoading
+            editProductsLoading,
+            orderCounts,
+            orderCountsLoading
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -124,6 +133,7 @@ const enhance = compose(
         return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
         dispatch(orderListFetchAction(filter))
+        dispatch(orderGetCounts())
     }),
     withPropsOnChange((props, nextProps) => {
         return (_.get(props, ['selectedProduct', 'id']) !== _.get(nextProps, ['selectedProduct', 'id']) && _.get(nextProps, ['selectedProduct', 'id'])) ||
@@ -484,6 +494,40 @@ const enhance = compose(
                     }))
                 })
         },
+
+        handleOpenMultiUpdate: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[ORDER_MULTI_EDIT_OPEN]: true})})
+        },
+
+        handleCloseMultiUpdate: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[ORDER_MULTI_EDIT_OPEN]: false})})
+        },
+
+        handleSubmitMultiUpdate: props => () => {
+            const {dispatch, multiUpdateForm, filter, location: {pathname, query}} = props
+            const orders = _.get(query, 'select')
+
+            return dispatch(orderMultiUpdateAction(_.get(multiUpdateForm, 'values'), orders))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Выбранные заказы успешно изменены'}))
+                })
+                .then(() => {
+                    hashHistory.push({pathname, query: filter.getParams({[ORDER_MULTI_EDIT_OPEN]: false})})
+                    dispatch(orderListFetchAction(filter))
+                }).catch((error) => {
+                    const errorWhole = _.map(error, (item, index) => {
+                        return <p key={index} style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
+                    })
+
+                    dispatch(openErrorAction({
+                        message: <div style={{padding: '0 30px'}}>
+                                {errorWhole}
+                            </div>
+                    }))
+                })
+        },
         handleOpenCreateClientDialog: props => () => {
             const {filter} = props
             hashHistory.push({pathname: [ROUTER.SHOP_LIST_URL], query: filter.getParams({[CLIENT_CREATE_DIALOG_OPEN]: true})})
@@ -564,7 +608,9 @@ const OrderList = enhance((props) => {
         defaultUser,
         isSuperUser,
         editProducts,
-        editProductsLoading
+        editProductsLoading,
+        orderCounts,
+        orderCountsLoading
     } = props
     const openFilterDialog = toBoolean(_.get(location, ['query', ORDER_FILTER_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', ORDER_CREATE_DIALOG_OPEN]))
@@ -573,6 +619,7 @@ const OrderList = enhance((props) => {
     const openReturnDialog = toBoolean(_.get(location, ['query', ORDER_RETURN_DIALOG_OPEN]))
     const openShortageDialog = toBoolean(_.get(location, ['query', ORDER_SHORTAGE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', ORDER_UPDATE_DIALOG_OPEN]))
+    const openMultiUpdateDialog = toBoolean(_.get(location, ['query', ORDER_MULTI_EDIT_OPEN]))
     const openCancelOrderReturnDialog = _.toInteger(_.get(location, ['query', CANCEL_ORDER_RETURN_DIALOG_OPEN]))
 
     const client = _.toInteger(filter.getParam(ORDER_FILTER_KEY.CLIENT))
@@ -753,6 +800,13 @@ const OrderList = enhance((props) => {
         handleSubmitUpdateDialog: props.handleSubmitUpdateDialog
     }
 
+    const multiUpdateDialog = {
+        openMultiUpdateDialog,
+        handleOpenMultiUpdate: props.handleOpenMultiUpdate,
+        handleCloseMultiUpdate: props.handleCloseMultiUpdate,
+        handleSubmitMultiUpdate: props.handleSubmitMultiUpdate
+    }
+
     const filterDialog = {
         initialValues: {
             client: {
@@ -813,7 +867,9 @@ const OrderList = enhance((props) => {
     }
     const listData = {
         data: _.get(list, 'results') || {},
-        listLoading
+        listLoading,
+        orderCounts,
+        orderCountsLoading
     }
 
     const tabData = {
@@ -875,6 +931,7 @@ const OrderList = enhance((props) => {
                 confirmDialog={confirmDialog}
                 returnDataLoading={returnDataLoading}
                 updateDialog={updateDialog}
+                multiUpdateDialog={multiUpdateDialog}
                 filterDialog={filterDialog}
                 products={products}
                 printDialog={printDialog}
