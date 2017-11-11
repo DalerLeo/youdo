@@ -11,6 +11,15 @@ export const AUTH_CONFIRM = `/${USER}/auth-confirm/`
 export const SIGN_OUT = `/${USER}/unauth/`
 export const CONFIG = 'config/'
 
+export const CLIENT_TRANSACTION = 'sales/client_transaction'
+export const CLIENT_TRANSACTION_CREATE = `/${CLIENT_TRANSACTION}/`
+export const CLIENT_TRANSACTION_RETURN = 'sales/order_return/from_client/'
+export const CLIENT_TRANSACTION_RETURN_UPDATE = 'sales/order_return/%d/from_client_update/'
+export const CLIENT_TRANSACTION_LIST = `/${CLIENT_TRANSACTION}/`
+export const CLIENT_TRANSACTION_ITEM = `/${CLIENT_TRANSACTION}/%d/`
+export const CLIENT_TRANSACTION_SEND = '/transfer/'
+export const CLIENT_TRANSACTION_DELETE = `/${CLIENT_TRANSACTION}/%d/`
+
 export const EQUIPMENT = 'manufacture/equipment'
 export const EQUIPMENT_CREATE = `/${EQUIPMENT}/`
 export const EQUIPMENT_LIST = `/${EQUIPMENT}/`

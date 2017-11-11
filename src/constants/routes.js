@@ -98,6 +98,11 @@ export const PROVIDER_LIST_URL = `/${PROVIDER}`
 export const PROVIDER_ITEM_URL = `${PROVIDER_LIST_URL}/:providerId`
 export const PROVIDER_ITEM_PATH = `${PROVIDER}/%d`
 
+export const CLIENT_TRANSACTION = 'clientTtansaction'
+export const CLIENT_TRANSACTION_LIST_URL = `/${CLIENT_TRANSACTION}`
+export const CLIENT_TRANSACTION_ITEM_URL = `${CLIENT_TRANSACTION_LIST_URL}/:clientId`
+export const CLIENT_TRANSACTION_ITEM_PATH = `${CLIENT_TRANSACTION}/%d`
+
 export const CLIENT = 'client'
 export const CLIENT_LIST_URL = `/${CLIENT}`
 export const CLIENT_ITEM_URL = `${CLIENT_LIST_URL}/:clientId`

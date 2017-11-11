@@ -40,6 +40,7 @@ import {StatCashbox} from '../containers/StatCashbox'
 import {PendingPaymentsList} from '../containers/PendingPayments'
 import {EquipmentList} from '../containers/Equipment'
 import {ShiftList} from '../containers/Shift'
+import {ClientTransactionList} from '../containers/ClientTransaction'
 import {Tracking} from '../containers/Tracking'
 import {MarketTypeList} from '../containers/MarketType'
 import {PricesList} from '../containers/Prices'
@@ -175,6 +176,17 @@ export default {
                 {
                     path: ROUTES.PRICES_ITEM_URL,
                     component: userIsAuth(PricesList)
+                }
+            ]
+        },
+        // Client Transactoin
+        {
+            path: ROUTES.CLIENT_TRANSACTION_LIST_URL,
+            component: userIsAdminChain(ClientTransactionList),
+            childRoutes: [
+                {
+                    path: ROUTES.CLIENT_TRANSACTION_ITEM_URL,
+                    component: userIsAuth(ClientTransactionList)
                 }
             ]
         },

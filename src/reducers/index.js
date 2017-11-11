@@ -32,6 +32,12 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.CASHBOX_UPDATE),
         pending: createThunkReducer(actionTypes.ORDER_TRANSACTION)
     }),
+    clientTransaction: combineReducers({
+        create: createThunkReducer(actionTypes.CLIENT_TRANSACTION_CREATE),
+        item: createThunkReducer(actionTypes.CLIENT_TRANSACTION_ITEM),
+        update: createThunkReducer(actionTypes.CLIENT_TRANSACTION_UPDATE),
+        list: createThunkReducer(actionTypes.CLIENT_TRANSACTION_LIST)
+    }),
     notification: combineReducers({
         list: createThunkReducer(actionTypes.NOTIFICATION_LIST),
         item: createThunkReducer(actionTypes.NOTIFICATION_ITEM),
