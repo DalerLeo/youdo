@@ -136,6 +136,7 @@ export const ORDER_LIST = `/${ORDER}/`
 export const ORDER_ITEM = `/${ORDER}/%d/`
 export const ORDER_LIST_PRINT = `/${ORDER}/print/`
 export const ORDER_CANCEL = `/${ORDER}/%d/cancel/`
+export const ORDER_EXCEL = '/sales/order/print_invoice/'
 export const GET_DOCUMENT = 'order_document/%d/'
 
 export const SUPPLY_EXPENSE = 'stock/supply_expanse'

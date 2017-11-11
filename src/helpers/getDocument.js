@@ -9,6 +9,7 @@ const getDocument = (url, params) => {
         return
     }
     let str = ''
+    console.warn(params)
     for (let key in params) {
         if (params[key]) {
             str += '&' + key + '=' + encodeURIComponent(params[key])

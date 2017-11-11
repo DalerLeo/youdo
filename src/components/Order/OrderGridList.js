@@ -31,6 +31,7 @@ import Delivered from 'material-ui/svg-icons/action/assignment-turned-in'
 import Payment from 'material-ui/svg-icons/action/credit-card'
 import InProcess from 'material-ui/svg-icons/device/access-time'
 import Print from 'material-ui/svg-icons/action/print'
+import Excel from 'material-ui/svg-icons/action/assessment'
 import Edit from 'material-ui/svg-icons/editor/mode-edit'
 import Done from 'material-ui/svg-icons/action/check-circle'
 import dateFormat from '../../helpers/dateFormat'
@@ -198,7 +199,8 @@ const OrderGridList = enhance((props) => {
         handleSubmitDiscountDialog,
         handleSubmitSetZeroDiscountDialog,
         clientId,
-        isSuperUser
+        isSuperUser,
+        getExcelDocument
     } = props
 
     const showCheckboxes = toBoolean(_.get(filter.getParams(), 'showCheckboxes'))
@@ -452,6 +454,11 @@ const OrderGridList = enhance((props) => {
             <Tooltip position="left" text="Распечатать накладные">
                 <IconButton onTouchTap={printDialog.handleOpenPrintDialog}>
                     <Print color="#666"/>
+                </IconButton>
+            </Tooltip>
+            <Tooltip position="left" text="Скачать Excel">
+                <IconButton onTouchTap={getExcelDocument}>
+                    <Excel color="#666"/>
                 </IconButton>
             </Tooltip>
             <Tooltip position="left" text="Изменить выбранные заказы">
