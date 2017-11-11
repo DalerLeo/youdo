@@ -349,7 +349,7 @@ const OrderGridList = enhance((props) => {
                         ? PAY_DELAY
                         : (totalBalance > ZERO) && ((paymentDate.diff(now, 'days') > ZERO))
                             ? PAY_PENDING
-                            : totalBalance === ZERO ? 'Оплачено' : null}>
+                            : totalBalance === ZERO ? 'Оплачено' : ''}>
                         <IconButton
                             disableTouchRipple={true}
                             iconStyle={iconStyle.icon}
@@ -641,7 +641,8 @@ OrderGridList.propTypes = {
         handleOpenMultiUpdate: PropTypes.func.isRequired,
         handleCloseMultiUpdate: PropTypes.func.isRequired,
         handleSubmitMultiUpdate: PropTypes.func.isRequired
-    }).isRequired
+    }).isRequired,
+    getExcelDocument: PropTypes.func.isRequired
 }
 
 export default OrderGridList

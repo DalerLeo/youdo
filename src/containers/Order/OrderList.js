@@ -582,7 +582,8 @@ const enhance = compose(
         },
         handleGetExcelDocument: props => () => {
             const {filter} = props
-            const params = serializers.listFilterSerializer(filter.getParams(), null, null, true)
+            const print = true
+            const params = serializers.listFilterSerializer(filter.getParams(), null, null, print)
             getDocuments(API.ORDER_EXCEL, params)
         }
     }),

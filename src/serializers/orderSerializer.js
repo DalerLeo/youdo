@@ -45,8 +45,8 @@ export const createSerializer = (data) => {
 }
 
 export const multiUpdateSerializer = (data, orders) => {
-    const deliveryDate = _.get(data, 'deliveryDate')
-    const paymentDate = _.get(data, 'paymentDate')
+    const deliveryDate = moment(_.get(data, ['deliveryDate'])).format('YYYY-MM-DD')
+    const paymentDate = moment(_.get(data, ['paymentDate'])).format('YYYY-MM-DD')
     const deliveryMan = _.get(data, ['deliveryMan', 'value'])
     return {
         order_list: _.split(orders, '-'),
