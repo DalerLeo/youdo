@@ -289,7 +289,7 @@ const ClientIncomeGridList = enhance((props) => {
                 <Col xs={1}>{transId}</Col>
                 <Col xs={2}>{date}</Col>
                 <Col xs={2}>{client}</Col>
-                <Col xs={2}>{userName}</Col>
+                <Col xs={2}>{userName} asdasdasda</Col>
                 <Col xs={3}>
                     {type && <div>
                         <ClientBalanceFormat type={type} order={orderId} orderReturn={orderReturnId}/>
