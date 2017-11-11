@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
@@ -17,6 +16,7 @@ import ContentAdd from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
 import {Link} from 'react-router'
 import ProviderDetail from './ProviderDetails'
+import dateFormat from '../../helpers/dateFormat'
 
 const listHeader = [
     {
@@ -96,7 +96,7 @@ const ProviderGridList = enhance((props) => {
     const providerList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+        const createdDate = dateFormat(_.get(item, 'createdDate'))
         return (
             <Row key={id} className={classes.listRow} style={{alignItems: 'center'}}>
                 <Link to={{

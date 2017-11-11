@@ -28,6 +28,7 @@ import Transferred from 'material-ui/svg-icons/maps/local-shipping'
 import Payment from 'material-ui/svg-icons/action/credit-card'
 import InProcess from 'material-ui/svg-icons/action/cached'
 import dateFormat from '../../helpers/dateFormat'
+import dateTimeFormat from '../../helpers/dateTimeFormat'
 import toBoolean from '../../helpers/toBoolean'
 
 const listHeader = [
@@ -240,11 +241,11 @@ const OrderGridList = enhance((props) => {
         const currentCurrency = getConfig('PRIMARY_CURRENCY')
         const client = _.get(item, ['client', 'name'])
         const market = _.get(item, ['market', 'name'])
-        const paymentDate = moment(_.get(item, 'paymentDate'))
+        const paymentDate = dateFormat(_.get(item, 'paymentDate'))
         const now = moment()
         const user = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName']) || 'N/A'
         const dateDelivery = dateFormat((_.get(item, 'dateDelivery')), '')
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY HH:MM')
+        const createdDate = dateTimeFormat(_.get(item, 'createdDate'), true)
         const totalBalance = _.toNumber(_.get(item, 'totalBalance'))
         const balanceTooltip = numberFormat(totalBalance, currentCurrency)
         const totalPrice = numberFormat(_.get(item, 'totalPrice'), currentCurrency)
@@ -253,11 +254,11 @@ const OrderGridList = enhance((props) => {
 
         const REQUESTED = 0
         const PAY_PENDING = 'Оплата ожидается: ' +
-            paymentDate.locale('ru').format('DD MMM YYYY') +
+            paymentDate +
             '<br/>Ожидаемый платеж: ' + balanceTooltip
 
-        const PAY_DELAY = paymentDate.diff(now, 'days') !== ZERO ? 'Оплата ожидалась: ' +
-            paymentDate.locale('ru').format('DD MMM YYYY') +
+        const PAY_DELAY = moment(_.get(item, 'paymentDate')).diff(now, 'days') !== ZERO ? 'Оплата ожидалась: ' +
+            paymentDate +
             '<br/>Долг: ' + balanceTooltip : 'Оплата ожидается сегодня <br/>Долг: ' + balanceTooltip
 
         const READY = 1
@@ -329,9 +330,9 @@ const OrderGridList = enhance((props) => {
                                     </Tooltip>
                     }
                     {!(status === CANCELED) &&
-                    <Tooltip position="bottom" text={(totalBalance > ZERO) && ((paymentDate.diff(now, 'days') <= ZERO))
+                    <Tooltip position="bottom" text={(totalBalance > ZERO) && ((moment(_.get(item, 'paymentDate')).diff(now, 'days') <= ZERO))
                         ? PAY_DELAY
-                        : (totalBalance > ZERO) && ((paymentDate.diff(now, 'days') > ZERO))
+                        : ((totalBalance > ZERO) && moment(_.get(item, 'paymentDate')).diff(now, 'days') > ZERO)
                             ? PAY_PENDING
                             : totalBalance === ZERO ? 'Оплачено' : null}>
                         <IconButton
@@ -339,9 +340,9 @@ const OrderGridList = enhance((props) => {
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}>
-                            <Payment color={(totalBalance > ZERO) && ((paymentDate.diff(now, 'days') <= ZERO))
+                            <Payment color={(totalBalance > ZERO) && ((moment(_.get(item, 'paymentDate')).diff(now, 'days') <= ZERO))
                                 ? '#e57373'
-                                : (totalBalance > ZERO) && ((paymentDate.diff(now, 'days') > ZERO))
+                                : (totalBalance > ZERO) && ((moment(_.get(item, 'paymentDate')).diff(now, 'days') > ZERO))
                                     ? '#B7BBB7'
                                     : (totalBalance === ZERO ? '#81c784' : '#B7BBB7')
                             }/>

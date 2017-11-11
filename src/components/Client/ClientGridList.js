@@ -1,22 +1,22 @@
 import _ from 'lodash'
-import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
+import {Link} from 'react-router'
 import sprintf from 'sprintf'
-import * as ROUTES from '../../constants/routes'
-import GridList from '../GridList'
-import ClientDetails from './ClientDetails'
-import Container from '../Container'
-import ClientCreateDialog from './ClientCreateDialog'
-import ConfirmDialog from '../ConfirmDialog'
-import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
+import ClientDetails from './ClientDetails'
+import ClientCreateDialog from './ClientCreateDialog'
+import * as ROUTES from '../../constants/routes'
+import GridList from '../GridList'
+import Container from '../Container'
+import ConfirmDialog from '../ConfirmDialog'
+import SubMenu from '../SubMenu'
 import Tooltip from '../ToolTip'
-import {Link} from 'react-router'
+import dateFormat from '../../helpers/dateFormat'
 
 const listHeader = [
     {
@@ -34,8 +34,8 @@ const listHeader = [
     {
         sorting: true,
         xs: 3,
-        name: 'created_date',
-        title: 'Дата создания'
+        name: 'address',
+        title: 'Адрес'
     },
     {
         sorting: false,
@@ -172,7 +172,7 @@ const ClientGridList = enhance((props) => {
     const clientList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+        const address = _.get(item, 'address')
         return (
             <Row key={id} className={classes.listRow}>
                 <Link to={{
@@ -181,7 +181,7 @@ const ClientGridList = enhance((props) => {
                 }}>
                     <Col xs={2}>{id}</Col>
                     <Col xs={6}>{name}</Col>
-                    <Col xs={3}>{createdDate}</Col>
+                    <Col xs={3}>{address}</Col>
             </Link>
             </Row>
         )

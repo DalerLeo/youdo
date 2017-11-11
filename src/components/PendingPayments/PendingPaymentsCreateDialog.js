@@ -19,6 +19,7 @@ import {convertCurrency} from '../../helpers/convertCurrency'
 import CashboxCurrencyField from '../ReduxForm/CashboxCurrencyField'
 import PendingPaymentRadioButton from '../ReduxForm/PendingPaymentRadioButton'
 import getConfig from '../../helpers/getConfig'
+import dateTimeFormat from '../../helpers/dateTimeFormat'
 
 export const PENDING_PAYMENTS_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const ORDERING_CURRENCY = 1
@@ -120,7 +121,7 @@ const PendingPaymentsCreateDialog = enhance((props) => {
     const clientName = _.get(client, 'name')
     const currentRate = (currencyRate === INDIVIDUAL) ? customRate : _.get(convert, ['data', 'amount'])
     const convertAmount = convertCurrency(amountValue, currentRate)
-    const createdDate = _.get(detailData, ['data', 'createdDate'])
+    const createdDate = dateTimeFormat(_.get(detailData, ['data', 'createdDate']), true)
     return (
         <Dialog
             modal={true}

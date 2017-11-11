@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
@@ -15,7 +14,7 @@ import Edit from 'material-ui/svg-icons/image/edit'
 import Pagination from '../ReduxForm/Pagination'
 import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat'
-import dateFormat from '../../helpers/dateFormat'
+import dateTimeFormat from '../../helpers/dateTimeFormat'
 import * as ROUTES from '../../constants/routes'
 import Tooltip from '../ToolTip'
 import {Link} from 'react-router'
@@ -207,7 +206,7 @@ const ClientBalanceInfoDialog = enhance((props) => {
     const currentCurrencyId = _.toInteger(getConfig('PRIMARY_CURRENCY_ID'))
     const loading = _.get(detailData, 'detailLoading')
     const detailList = _.map(_.get(detailData, 'data'), (item, index) => {
-        const createdDate = dateFormat(_.get(item, 'createdDate')) + ' ' + moment(_.get(item, 'createdDate')).format('HH:MM')
+        const createdDate = dateTimeFormat(_.get(item, 'createdDate'), true)
         const comment = _.get(item, 'comment')
         const currency = _.get(item, ['currency', 'name'])
         const currencyId = _.get(item, ['currency', 'id'])

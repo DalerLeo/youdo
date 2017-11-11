@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import moment from 'moment'
 import PropTypes from 'prop-types'
 import React from 'react'
 import {Row, Col} from 'react-flexbox-grid'
@@ -23,6 +22,7 @@ import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import Landscape from 'material-ui/svg-icons/image/landscape'
+import dateFormat from '../../helpers/dateFormat'
 
 const listHeader = [
     {
@@ -113,7 +113,7 @@ const ProductGridList = enhance((props) => {
         const type = _.get(item, ['type', 'name']) || 'N/A'
         const image = _.get(item, ['image', 'file'])
         const measurement = _.get(item, ['measurement', 'name']) || ''
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+        const createdDate = dateFormat(_.get(item, 'createdDate'))
         const iconButton = (
             <IconButton style={{padding: '0 12px'}}>
                 <MoreVertIcon />

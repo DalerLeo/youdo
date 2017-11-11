@@ -97,15 +97,6 @@ export const TRANSACTION_SEND = 'finance/transfer/'
 export const TRANSACTION_DELETE = `/${TRANSACTION}/%d/`
 export const TRANSACTION_PAYMENT_DELETE = 'sales/client_transaction/%d/cancel/'
 
-export const CLIENT_TRANSACTION = 'sales/client_transaction'
-export const CLIENT_TRANSACTION_CREATE = `/${CLIENT_TRANSACTION}/`
-export const CLIENT_TRANSACTION_RETURN = 'sales/order_return/from_client/'
-export const CLIENT_TRANSACTION_RETURN_UPDATE = 'sales/order_return/%d/from_client_update/'
-export const CLIENT_TRANSACTION_LIST = `/${CLIENT_TRANSACTION}/`
-export const CLIENT_TRANSACTION_ITEM = `/${CLIENT_TRANSACTION}/%d/`
-export const CLIENT_TRANSACTION_SEND = '/transfer/'
-export const CLIENT_TRANSACTION_DELETE = `/${CLIENT_TRANSACTION}/%d/`
-
 export const SUPPLY = 'stock/supply'
 export const SUPPLY_CREATE = `/${SUPPLY}/`
 export const SUPPLY_LIST = `/${SUPPLY}/`
@@ -231,15 +222,6 @@ export const REMAINDER_STOCK_DELETE = `/${REMAINDER_STOCK}/all_balances/%d`
 
 export const TRANSACTION_STOCK = 'stock/barcode_history'
 export const TRANSACTION_STOCK_LIST = `/${TRANSACTION_STOCK}/`
-
-export const STATDEBTORS = 'sales/debtors'
-export const STATDEBTORS_CREATE = `/${STATDEBTORS}/`
-export const STATDEBTORS_LIST = `/${STATDEBTORS}/`
-export const STATDEBTORS_ORDER_LIST = 'sales/order/'
-export const STATDEBTORS_SUM = '/sales/debtors_statistics/'
-export const STATDEBTORS_ITEM = `/${STATDEBTORS}/%d/`
-export const STATDEBTORS_DELETE = `/${STATDEBTORS}/%d/`
-export const STATDEBTORS_GET_DOCUMENT = 'sales/debtors_statistics/'
 
 export const PENDING_PAYMENTS = 'sales/order'
 export const PENDING_PAYMENTS_CONVERT = 'finance/convert'

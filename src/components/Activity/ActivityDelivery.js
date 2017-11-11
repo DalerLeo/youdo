@@ -3,12 +3,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import {compose, withState} from 'recompose'
-import moment from 'moment'
 import LinearProgress from '../LinearProgress'
 import Paper from 'material-ui/Paper'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
-
+import dateFormat from '../../helpers/dateFormat'
 const ONE = 1
 const TWO = 2
 const TEN = 10
@@ -118,10 +117,6 @@ const enhance = compose(
     }),
     withState('defaultPage', 'updateDefaultPage', TWO)
 )
-
-const dateFormat = (date, defaultText) => {
-    return (date) ? moment(date).locale('ru').format('DD MMM YYYY - HH:mm') : defaultText
-}
 
 const ActivityDelivery = enhance((props) => {
     const currentCurrency = getConfig('PRIMARY_CURRENCY')

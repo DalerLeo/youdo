@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
@@ -21,6 +20,7 @@ import BrandCreateDialog from './BrandCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import Tooltip from '../ToolTip'
+import dateFormat from '../../helpers/dateFormat'
 
 const listHeader = [
     {
@@ -103,7 +103,7 @@ const BrandGridList = enhance((props) => {
     const brandList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+        const createdDate = dateFormat(_.get(item, 'createdDate'))
         const iconButton = (
             <IconButton style={{padding: '0 12px'}}>
                 <MoreVertIcon />

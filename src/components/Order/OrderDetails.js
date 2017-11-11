@@ -3,28 +3,27 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose, withState} from 'recompose'
 import sprintf from 'sprintf'
-import * as ROUTES from '../../constants/routes'
+import {Link} from 'react-router'
 import injectSheet from 'react-jss'
-import LinearProgress from '../LinearProgress'
 import Edit from 'material-ui/svg-icons/image/edit'
 import Delete from 'material-ui/svg-icons/action/delete'
-import OrderTransactionsDialog from './OrderTransactionsDialog'
-import OrderReturnDialog from './OrderReturnDialog'
-import {Link} from 'react-router'
-import OrderItemReturnDialog from './OrderItemReturnDialog'
-import RightSide from './OrderDetailsRightSideTabs'
-import IconButton from 'material-ui/IconButton'
 import Return from 'material-ui/svg-icons/content/reply'
 import PrintIcon from 'material-ui/svg-icons/action/print'
 import MoneyOffIcon from 'material-ui/svg-icons/editor/money-off'
-import ConfirmDialog from '../ConfirmDialog'
-import Tooltip from '../ToolTip'
-import moment from 'moment'
-import numberFormat from '../../helpers/numberFormat'
-import getConfig from '../../helpers/getConfig'
+import IconButton from 'material-ui/IconButton'
+import OrderTransactionsDialog from './OrderTransactionsDialog'
+import OrderReturnDialog from './OrderReturnDialog'
+import OrderItemReturnDialog from './OrderItemReturnDialog'
 import StatRightSide from './OrderStatDetailsRightSide'
 import OrderSetDiscountDialog from './OrderSetDiscountDialog'
-
+import RightSide from './OrderDetailsRightSideTabs'
+import ConfirmDialog from '../ConfirmDialog'
+import Tooltip from '../ToolTip'
+import * as ROUTES from '../../constants/routes'
+import LinearProgress from '../LinearProgress'
+import numberFormat from '../../helpers/numberFormat'
+import getConfig from '../../helpers/getConfig'
+import dateFormat from '../../helpers/dateFormat'
 const ZERO = 0
 
 const popupWidth = 210
@@ -230,9 +229,9 @@ const OrderDetails = enhance((props) => {
         : 'Не указан'
     const client = _.get(data, ['client', 'name'])
     const deliveryType = _.get(data, 'deliveryType')
-    const dateDelivery = moment(_.get(data, 'dateDelivery')).format('DD.MM.YYYY')
-    const createdDate = moment(_.get(data, 'createdDate')).format('DD.MM.YYYY')
-    const paymentDate = moment(_.get(data, 'paymentDate')).format('DD.MM.YYYY')
+    const dateDelivery = dateFormat(_.get(data, 'dateDelivery'))
+    const createdDate = dateFormat(_.get(data, 'createdDate'))
+    const paymentDate = dateFormat(_.get(data, 'paymentDate'))
 
     const REQUESTED = 0
     const READY = 1

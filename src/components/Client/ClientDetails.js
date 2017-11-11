@@ -1,6 +1,5 @@
 import _ from 'lodash'
 import React from 'react'
-import moment from 'moment'
 import PropTypes from 'prop-types'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
@@ -10,6 +9,7 @@ import Delete from 'material-ui/svg-icons/action/delete'
 import IconButton from 'material-ui/IconButton'
 import {Row, Col} from 'react-flexbox-grid'
 import Tooltip from '../ToolTip'
+import dateFormat from '../../helpers/dateFormat'
 
 const colorBlue = '#12aaeb !important'
 const enhance = compose(
@@ -129,7 +129,7 @@ const ClientDetails = enhance((props) => {
     } = props
     const detId = _.get(data, 'id')
     const contacts = _.get(data, 'contacts')
-    const date = moment(_.get(data, 'createdDate')).format('DD.MM.YYYY')
+    const date = dateFormat(_.get(data, 'createdDate'))
     const address = _.get(data, 'address') || 'N/A'
     const providerName = _.get(data, 'name')
 

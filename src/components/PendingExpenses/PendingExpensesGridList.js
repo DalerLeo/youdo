@@ -130,7 +130,7 @@ const PendingExpensesGridList = enhance((props) => {
         const paymentType = _.get(item, 'paymentType') === 'cash' ? 'Наличный' : 'Банковский счет'
         const type = _.get(item, 'type') === 'supply' ? 'Поставка' : 'Доп. расход'
         const comment = _.get(item, 'comment')
-        const createdDate = dateTimeFormat(_.get(item, 'createdDate'))
+        const createdDate = dateTimeFormat(_.get(item, 'createdDate'), true)
         const currency = _.get(item, ['currency', 'name'])
         const summary = _.get(item, 'totalAmount')
         const paidAmount = _.get(item, 'paidAmount')

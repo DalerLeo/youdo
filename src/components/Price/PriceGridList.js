@@ -1,24 +1,24 @@
 import _ from 'lodash'
-import moment from 'moment'
 import sprintf from 'sprintf'
 import PropTypes from 'prop-types'
 import {Link} from 'react-router'
 import React from 'react'
 import {Row, Col} from 'react-flexbox-grid'
+import injectSheet from 'react-jss'
+import {compose} from 'recompose'
+import Excel from 'material-ui/svg-icons/av/equalizer'
+import Person from 'material-ui/svg-icons/social/person'
+import PriceFilterForm from './PriceFilterForm'
+import PriceDetails from './PriceDetails'
+import PriceSupplyDialog from './PriceSupplyDialog'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Tooltip from '../ToolTip'
 import Container from '../Container'
-import PriceFilterForm from './PriceFilterForm'
-import PriceSupplyDialog from './PriceSupplyDialog'
 import SubMenu from '../SubMenu'
-import injectSheet from 'react-jss'
-import {compose} from 'recompose'
-import PriceDetails from './PriceDetails'
 import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat'
-import Person from 'material-ui/svg-icons/social/person'
-import Excel from 'material-ui/svg-icons/av/equalizer'
+import dataFormat from '../../helpers/dateFormat'
 
 const listHeader = [
     {
@@ -200,7 +200,7 @@ const PriceGridList = enhance((props) => {
         const minPrice = _.get(item, 'minPrice')
         const maxPrice = _.get(item, 'maxPrice')
         const price = (minPrice && maxPrice) ? numberFormat(minPrice) + ' - ' + numberFormat(maxPrice, getConfig('PRIMARY_CURRENCY')) : 'Не установлено'
-        const priceUpdate = _.get(item, 'priceUpdated') ? moment(_.get(item, 'priceUpdated')).format('DD.MM.YYYY') : 'Не установлено'
+        const priceUpdate = _.get(item, 'priceUpdated') ? dataFormat(_.get(item, 'priceUpdated')) : 'Не установлено'
         const customPrice = _.get(item, 'customPrice')
 
         const internalMinPrice = numberFormat(_.get(item, 'internalMinPrice'))

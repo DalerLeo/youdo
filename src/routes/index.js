@@ -10,7 +10,6 @@ import SignIn from '../containers/SignIn'
 import {ShopList} from '../containers/Shop'
 import {CashboxList} from '../containers/Cashbox'
 import {TransactionList} from '../containers/Transaction'
-import {ClientTransactionList} from '../containers/ClientTransaction'
 import {SupplyList} from '../containers/Supply'
 import {OrderList} from '../containers/Order'
 import {ReturnList} from '../containers/Return'
@@ -36,7 +35,6 @@ import {
 } from '../containers/Manufacture'
 import {PendingExpensesList} from '../containers/PendingExpenses'
 import {StatStock} from '../containers/StatStock'
-import {StatDebtors} from '../containers/StatDebtors'
 import {StatManufacture} from '../containers/StatManufacture'
 import {StatCashbox} from '../containers/StatCashbox'
 import {PendingPaymentsList} from '../containers/PendingPayments'
@@ -156,17 +154,6 @@ export default {
                 {
                     path: ROUTES.TRANSACTION_ITEM_URL,
                     component: userIsAuth(TransactionList)
-                }
-            ]
-        },
-        // Client Transactoin
-        {
-            path: ROUTES.CLIENT_TRANSACTION_LIST_URL,
-            component: userIsAdminChain(ClientTransactionList),
-            childRoutes: [
-                {
-                    path: ROUTES.CLIENT_TRANSACTION_ITEM_URL,
-                    component: userIsAuth(ClientTransactionList)
                 }
             ]
         },
@@ -383,15 +370,6 @@ export default {
             childRoutes: [{
                 path: ROUTES.STATSTOCK_ITEM_URL,
                 component: userIsAuth(StatStock)
-            }]
-        },
-        // METRICA (Stat Debtors)
-        {
-            path: ROUTES.STATDEBTORS_LIST_URL,
-            component: userIsAdminChain(StatDebtors),
-            childRoutes: [{
-                path: ROUTES.STATDEBTORS_ITEM_URL,
-                component: userIsAuth(StatDebtors)
             }]
         },
         // METRICA (Stat Manufacture)
