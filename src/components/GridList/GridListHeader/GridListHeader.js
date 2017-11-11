@@ -154,7 +154,7 @@ const muiTheme = getMuiTheme({
 })
 
 const GridListHeader = enhance((props) => {
-    const {classes, filter, column, listIds, onChecked, withCheckboxes, withoutRow, statistics} = props
+    const {classes, filter, column, listIds, onChecked, activeCheckboxes, withoutRow, statistics} = props
 
     // Calculate row size for correct showing grid list
     const rowSize = 12
@@ -245,9 +245,9 @@ const GridListHeader = enhance((props) => {
     return (
         <div
             className={statistics ? classes.header2 : classes.header}
-            style={withCheckboxes ? {paddingLeft: '20px'} : {}}>
+            style={activeCheckboxes ? {paddingLeft: '20px'} : {}}>
             <div className={classes.checkbox}>
-                {withCheckboxes &&
+                {activeCheckboxes &&
                 <MuiThemeProvider muiTheme={getMuiTheme(muiTheme)}>
                     <Checkbox
                         onCheck={onChecked}

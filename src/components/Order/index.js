@@ -9,6 +9,7 @@ import OrderPrint from './OrderPrint'
 
 const ORDER_DELETE_DIALOG_OPEN = 'openDeleteDialog'
 const ORDER_UPDATE_DIALOG_OPEN = 'openUpdateDialog'
+const ORDER_MULTI_EDIT_OPEN = 'openMultiEdit'
 const TAB = 'tab'
 
 export {
@@ -21,6 +22,7 @@ export {
     ORDER_RETURN_DIALOG_OPEN,
     ORDER_SHORTAGE_DIALOG_OPEN,
     ORDER_UPDATE_DIALOG_OPEN,
+    ORDER_MULTI_EDIT_OPEN,
     OrderGridList,
     OrderPrint,
     TAB

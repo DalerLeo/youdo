@@ -82,9 +82,6 @@ const enhance = compose(
             color: '#333',
             minHeight: '450px'
         },
-        innerWrap: {
-            maxHeight: '100vh'
-        },
         bodyContent: {
             color: '#333',
             width: '100%'
