@@ -198,10 +198,10 @@ const enhance = compose(
             _.map(products, (item, index) => {
                 if (index === listIndex) {
                     if (!_.isEmpty(amount) && item.amount !== amount) {
-                        item.amount = numberWithoutSpaces(amount)
+                        item.amount = _.toNumber(amount)
                     }
                     if (!_.isEmpty(cost)) {
-                        item.cost = numberWithoutSpaces(cost)
+                        item.cost = _.toNumber(cost)
                     }
                 }
             })

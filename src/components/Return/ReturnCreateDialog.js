@@ -228,9 +228,14 @@ const enhance = compose(
     connect((state) => {
         const clientId = _.get(state, ['form', 'ReturnCreateForm', 'values', 'client', 'value'])
         const returnedProducts = _.get(state, ['form', 'ReturnCreateForm', 'values', 'products'])
+        const totalCost = _.sumBy(returnedProducts, (item) => {
+            const itemCost = _.toNumber(_.get(item, 'cost'))
+            const itemAmount = _.toNumber(_.get(item, 'amount'))
+            return (itemAmount * itemCost)
+        })
         return {
             clientId,
-            returnedProducts
+            totalCost
         }
     }),
     withReducer('state', 'dispatch', (state, action) => {
@@ -242,15 +247,9 @@ const customContentStyle = {
     width: '1000px',
     maxWidth: 'none'
 }
-const SupplyCreateDialog = enhance((props) => {
-    const {open, handleSubmit, onClose, classes, clientId, isUpdate, name, editOnlyCost, returnedProducts, initialValues} = props
+const ReturnCreateDialog = enhance((props) => {
+    const {open, handleSubmit, onClose, classes, clientId, isUpdate, name, editOnlyCost, totalCost, initialValues} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
-    const totalCost = _.sumBy(returnedProducts, (item) => {
-        const itemCost = _.toNumber(_.get(item, 'cost'))
-        const itemAmount = _.toNumber(_.get(item, 'amount'))
-        return (itemAmount * itemCost)
-    })
-
     return (
         <Dialog
             modal={true}
@@ -358,10 +357,10 @@ const SupplyCreateDialog = enhance((props) => {
         </Dialog>
     )
 })
-SupplyCreateDialog.propTyeps = {
+ReturnCreateDialog.propTyeps = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired
 }
-export default SupplyCreateDialog
+export default ReturnCreateDialog

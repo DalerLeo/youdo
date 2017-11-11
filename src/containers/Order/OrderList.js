@@ -356,13 +356,8 @@ const enhance = compose(
                     dispatch(orderListFetchAction(filter))
                 })
                 .catch((error) => {
-                    const errorWhole = _.map(error, (item, index) => {
-                        return <p key={index} style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
-                    })
                     dispatch(openErrorAction({
-                        message: <div style={{padding: '0 30px'}}>
-                            {errorWhole}
-                        </div>
+                        message: error
                     }))
                 })
         },
@@ -409,13 +404,8 @@ const enhance = compose(
                     dispatch(orderItemFetchAction(orderId))
                 })
                 .catch((error) => {
-                    const errorWhole = _.map(error, (item, index) => {
-                        return <p key={index} style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
-                    })
                     dispatch(openErrorAction({
-                        message: <div style={{padding: '0 30px'}}>
-                                {errorWhole}
-                            </div>
+                        message: error
                     }))
                 })
         },
@@ -468,14 +458,8 @@ const enhance = compose(
                     })
                     dispatch(orderListFetchAction(filter))
                 }).catch((error) => {
-                    const errorWhole = _.map(error, (item, index) => {
-                        return <p key={index} style={{marginBottom: '10px'}}><b style={{textTransform: 'uppercase'}}>{index}:</b> {item}</p>
-                    })
-
                     dispatch(openErrorAction({
-                        message: <div style={{padding: '0 30px'}}>
-                            {errorWhole}
-                        </div>
+                        message: error
                     }))
                 })
         },
@@ -505,14 +489,8 @@ const enhance = compose(
                     hashHistory.push({pathname, query: filter.getParams({[ORDER_UPDATE_DIALOG_OPEN]: false})})
                     dispatch(orderListFetchAction(filter))
                 }).catch((error) => {
-                    const errorWhole = _.map(error, (item, index) => {
-                        return <p key={index} style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
-                    })
-
                     dispatch(openErrorAction({
-                        message: <div style={{padding: '0 30px'}}>
-                                {errorWhole}
-                            </div>
+                        message: error
                     }))
                 })
         },
@@ -580,13 +558,8 @@ const enhance = compose(
                 .then(() => {
                     return dispatch(orderItemFetchAction(id))
                 }).catch((error) => {
-                    const errorWhole = _.map(error, (item, index) => {
-                        return <p key={index} style={{marginBottom: '10px'}}><b style={{textTransform: 'uppercase'}}>{index}:</b> {item}</p>
-                    })
                     dispatch(openErrorAction({
-                        message: <div style={{padding: '0 30px'}}>
-                            {errorWhole}
-                        </div>
+                        message: error
                     }))
                 })
         },
@@ -599,13 +572,8 @@ const enhance = compose(
                 .then(() => {
                     return dispatch(orderItemFetchAction(id))
                 }).catch((error) => {
-                    const errorWhole = _.map(error, (item, index) => {
-                        return <p key={index} style={{marginBottom: '10px'}}><b style={{textTransform: 'uppercase'}}>{index}:</b> {item}</p>
-                    })
                     dispatch(openErrorAction({
-                        message: <div style={{padding: '0 30px'}}>
-                            {errorWhole}
-                        </div>
+                        message: error
                     }))
                 })
         }

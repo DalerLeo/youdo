@@ -66,8 +66,22 @@ const enhance = compose(
     })
 )
 
-const ErrorDialog = ({dispatch, message, open, classes, arrMessage, ...defaultProps}) => {
+let errors = ''
+const showErrors = (error, label) => {
+    if (_.isObject(error) || _.isArray(error)) {
+        _.map(error, (value, key) => {
+            showErrors(value, (_.isNumber(key)) ? label : key)
+        })
+    } else {
+        errors += label + ': ' + error + '<br/>'
+    }
+    return errors
+}
+
+const ErrorDialog = ({dispatch, message, open, classes, ...defaultProps}) => {
     const close = () => dispatch(closeErrorAction())
+    const bug = open ? showErrors(message) : null
+
     return (
         <Dialog
             modal={true}
@@ -85,13 +99,8 @@ const ErrorDialog = ({dispatch, message, open, classes, arrMessage, ...defaultPr
                 </IconButton>
                 <div className={classes.inContent}>
                     <Error color="#fff" style={{width: '55px', height: '55px'}}/>
-                    <div className={classes.message}>{message}</div>
-                    {_.map(arrMessage, (item, index) => {
-                        return (
-                            <p key={index}>{(index !== 'non_field_errors') && <b style={{textTransform: 'uppercase'}}>{index}: </b>}{item}</p>
-                        )
-                    })}
-
+                    <div dangerouslySetInnerHTML={{__html: bug}}>
+                    </div>
                 </div>
             </div>
         </Dialog>
