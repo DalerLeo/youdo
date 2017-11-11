@@ -8,7 +8,6 @@ import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
-import excludeObjKey from '../../helpers/excludeObjKey'
 import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
 import {
     SHOP_CREATE_DIALOG_OPEN,
