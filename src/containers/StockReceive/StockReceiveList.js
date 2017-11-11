@@ -182,8 +182,7 @@ const enhance = compose(
                 })
                 .catch((error) => {
                     dispatch(openErrorAction({
-                        message: '',
-                        arrMessage: error
+                        message: error
                     }))
                 })
         },
@@ -262,16 +261,7 @@ const enhance = compose(
                     dispatch(stockReceiveListFetchAction(filter))
                 })
                 .catch((error) => {
-                    const comment = _.map(error, (item, index) => {
-                        return (
-                            <div key={index}>
-                                <p>{_.get(item, 'amount')}</p>
-                                {_.get(item, 'amount or defect_amount') ||
-                                <p>{_.get(item, 'amount or defect_amount')}</p>}
-                            </div>
-                        )
-                    })
-                    return dispatch(openErrorAction({message: comment}))
+                    return dispatch(openErrorAction({message: error}))
                 })
         },
         handleOpenUpdateDialog: props => () => {
@@ -298,10 +288,7 @@ const enhance = compose(
                     dispatch(stockReceiveListFetchAction(filter, history))
                 })
                 .catch((error) => {
-                    const comment = _.map(error, (item) => {
-                        return (<p>{_.get(item, 'amount')}</p>)
-                    })
-                    return dispatch(openErrorAction({message: comment}))
+                    return dispatch(openErrorAction({message: error}))
                 })
         },
         handleCheckedForm: props => (index, value, selected) => {

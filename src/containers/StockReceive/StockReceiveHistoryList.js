@@ -173,8 +173,7 @@ const enhance = compose(
                 })
                 .catch((error) => {
                     dispatch(openErrorAction({
-                        message: '',
-                        arrMessage: error
+                        message: error
                     }))
                 })
         },
@@ -226,14 +225,8 @@ const enhance = compose(
                         return dispatch(openSnackbarAction({message: 'Успешно отменено'}))
                     })
                     .catch((error) => {
-                        const errorWhole = _.map(error, (item, index) => {
-                            return <p style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
-                        })
-
                         dispatch(openErrorAction({
-                            message: <div style={{padding: '0 30px'}}>
-                                {errorWhole}
-                            </div>
+                            message: error
                         }))
                     })
             } else if (currentType === 'supply') {
@@ -244,14 +237,8 @@ const enhance = compose(
                         return dispatch(openSnackbarAction({message: 'Успешно отменено'}))
                     })
                     .catch((error) => {
-                        const errorWhole = _.map(error, (item, index) => {
-                            return <p style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
-                        })
-
                         dispatch(openErrorAction({
-                            message: <div style={{padding: '0 30px'}}>
-                                {errorWhole}
-                            </div>
+                            message: error
                         }))
                     })
             }

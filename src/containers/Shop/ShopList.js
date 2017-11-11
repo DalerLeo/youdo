@@ -229,17 +229,8 @@ const enhance = compose(
                     dispatch(shopListFetchAction(filter))
                 })
                 .catch((error) => {
-                    const locErr = _.get(error, 'location')
-                    const errors = excludeObjKey(error, ['location'])
-                    const errorWhole = _.map(errors, (item, index) => {
-                        return <p style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
-                    })
-
                     dispatch(openErrorAction({
-                        message: <div style={{padding: '0 30px'}}>
-                            {errorWhole}
-                        </div>,
-                        arrMessage: locErr
+                        message: error
                     }))
                 })
         },
@@ -355,19 +346,7 @@ const enhance = compose(
                     hashHistory.push(filter.createURL({[SHOP_UPDATE_DIALOG_OPEN]: false}))
                 })
                 .catch((error) => {
-                    const phoneError = _.get(error, ['phone', '0'])
-                    const contactNameError = _.get(error, ['contact_name', '0'])
-                    const guideError = _.get(error, ['guide', '0'])
-                    const marketTypeError = _.get(error, ['market_type', '0'])
-                    const nameError = _.get(error, ['name', '0'])
-                    const clientNameError = _.get(error, ['new_client_name', '0'])
-                    const locationError = _.get(error, ['location', 'lat', '0']) || _.get(error, ['location', 'lon', '0'])
-                    return dispatch(openErrorAction({message:
-                        <div style={{padding: '0 20px'}}>
-                            {phoneError && <p>Номер телефона должен содержать только цифры и "+"!</p>}
-                            {locationError && <p>Отметьте местоположение на карте!</p>}
-                            {(contactNameError || guideError || marketTypeError || nameError || clientNameError) && <p>Заполните все поля!</p>}
-                        </div>}))
+                    return dispatch(openErrorAction({message: error}))
                 })
         },
 
