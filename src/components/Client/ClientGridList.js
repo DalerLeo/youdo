@@ -16,7 +16,6 @@ import Container from '../Container'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import Tooltip from '../ToolTip'
-import dateFormat from '../../helpers/dateFormat'
 
 const listHeader = [
     {

@@ -236,7 +236,6 @@ const CurrencyGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const rate = numberFormat(_.get(item, 'rate'))
-        console.log(_.get(item, 'createdDate'), 'asdasdasd')
         const createdDate = dateTimeFormat(_.get(item, 'createdDate'))
         if (name !== currentCurrency) {
             return (
