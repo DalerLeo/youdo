@@ -13,7 +13,7 @@ import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import numberFormat from '../../helpers/numberFormat'
-import moment from 'moment'
+import dateTimeFormat from '../../helpers/dateTimeFormat'
 import noPayment from '../Images/noPayment.png'
 import getConfig from '../../helpers/getConfig'
 import NotFound from '../Images/not-found.png'
@@ -143,9 +143,7 @@ const OrderTransactionsDialog = enhance((props) => {
     const {open, loading, onClose, classes, paymentData} = props
     const orderId = _.get(paymentData, 'id')
     const data = _.get(paymentData, ['data', 'results'])
-    const dateTimeFormat = (date, defaultText) => {
-        return (date) ? moment(date).locale('ru').format('DD MMM YYYY, HH:mm') : defaultText
-    }
+
     return (
         <Dialog
             modal={true}
@@ -188,7 +186,7 @@ const OrderTransactionsDialog = enhance((props) => {
                                         const cashbox = _.get(item, ['clientTransaction', 'transaction']) || 'Не принято'
                                         const type = _.toInteger(_.get(item, 'type'))
                                         const order = _.toInteger(_.get(item, 'order'))
-                                        const payDate = _.get(item, 'clientTransaction') ? dateTimeFormat(_.get(item, ['clientTransaction', 'createdDate'])) : dateTimeFormat(_.get(item, 'createdDate'))
+                                        const payDate = _.get(item, 'clientTransaction') ? dateTimeFormat(_.get(item, ['clientTransaction', 'createdDate']), true) : dateTimeFormat(_.get(item, 'createdDate'))
                                         const orderSum = numberFormat(_.get(item, 'amount'), currentCurrency)
                                         const amount = type === BALANCE ? _.get(item, 'amount') : _.toNumber(_.get(item, ['clientTransaction', 'amount']))
                                         const internal = _.toNumber(_.get(item, ['clientTransaction', 'internal']))

@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
@@ -23,6 +22,7 @@ import Tooltip from '../ToolTip'
 import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat'
 import SettingSideMenu from '../Settings/SettingsSideMenu'
+import dateTimeFormat from '../../helpers/dateTimeFormat'
 
 const listHeader = [
     {
@@ -236,14 +236,14 @@ const CurrencyGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const rate = numberFormat(_.get(item, 'rate'))
-        const createdDate = moment(_.get(_.find(_.get(detailData, ['data', 'results']), {'currency': id}), 'createdDate')).format('DD.MM.YYYY')
+        const createdDate = dateTimeFormat(_.get(item, 'createdDate'))
         if (name !== currentCurrency) {
             return (
                 <Row key={id} className={classes.listRow} onClick={() => { listData.handleCurrencyClick(id) }}>
                     <Col xs={1}>{id}</Col>
                     <Col xs={3} className={classes.cursor}>{name}</Col>
                     <Col xs={4}>1 {reversedRate ? name : currentCurrency} = {rate} {reversedRate ? currentCurrency : name}</Col>
-                    <Col xs={3}>{createdDate}</Col>
+                    <Col xs={3}>{createdDate} sdfsdfsdf</Col>
                     <Col xs={1} style={{textAlign: 'right'}}>
                         <div className={classes.iconBtn}>
                             <Tooltip position="bottom" onClick={courseDialog.handleOpenCourseDialog} text="Установить курс">

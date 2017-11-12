@@ -2,21 +2,21 @@ import _ from 'lodash'
 import React from 'react'
 import {compose, withState} from 'recompose'
 import PropTypes from 'prop-types'
+import {Link} from 'react-router'
 import injectSheet from 'react-jss'
 import Edit from 'material-ui/svg-icons/image/edit'
 import AddPayment from 'material-ui/svg-icons/editor/attach-money'
 import Expense from 'material-ui/svg-icons/action/credit-card'
-import LinearProgress from '../LinearProgress'
 import Delete from 'material-ui/svg-icons/action/delete'
-import RightSide from './SupplyDetailsRightSideTabs'
 import IconButton from 'material-ui/IconButton'
+import RightSide from './SupplyDetailsRightSideTabs'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
+import LinearProgress from '../LinearProgress'
 import Tooltip from '../ToolTip'
-import moment from 'moment'
 import numberFormat from '../../helpers/numberFormat'
+import dateFormat from '../../helpers/dateFormat'
 import SupplySetDiscountDialog from './SupplySetDiscountDialog'
 import * as ROUTE from '../../constants/routes'
-import {Link} from 'react-router'
 
 const popupWidth = 210
 const enhance = compose(
@@ -245,14 +245,15 @@ const SupplyDetails = enhance((props) => {
     const paymentType = _.get(data, 'paymentType') === 'cash' ? 'Наличный' : 'Банковский счет'
     const phone = _.get(data, ['contact', 'phone'])
     const email = _.get(data, ['contact', 'email'])
-    const dateDelivery = moment(_.get(data, 'dateDelivery')).format('DD.MM.YYYY')
+    const dateDelivery = dateFormat(_.get(data, 'dateDelivery'))
     const acceptedTime = (_.get(data, 'acceptedTime')) ? dateTimeFormat(_.get(data, 'acceptedTime')) : 'Не началась'
     const finishedTime = (_.get(data, 'finishedTime')) ? dateTimeFormat(_.get(data, 'finishedTime')) : 'Не закончилась'
     const contract = _.get(data, 'contract') || 'Не указана'
 
-    const GIVEN = 2
-    const DELIVERED = 3
-    const CANCELED = 4
+    const PENDING = 0
+    const IN_PROGRESS = 1
+    const COMPLETED = 2
+    const CANCELLED = 4
     const status = _.toInteger(_.get(data, 'status'))
 
     const comment = _.get(data, 'comment')
@@ -313,7 +314,7 @@ const SupplyDetails = enhance((props) => {
                         <Link target="_blank" to={{pathname: ROUTE.PENDING_EXPENSES_LIST_URL, query: {supply: id}}}>
                             <IconButton
                                 iconStyle={iconStyle.icon}
-                                disabled={(status === CANCELED)}
+                                disabled={(status === CANCELLED)}
                                 style={iconStyle.button}
                                 touch={true}>
                                 <AddPayment/>
@@ -323,7 +324,7 @@ const SupplyDetails = enhance((props) => {
                     <Tooltip position="bottom" text="Добавить расход">
                         <IconButton
                             iconStyle={iconStyle.icon}
-                            disabled={(status === CANCELED)}
+                            disabled={(status === CANCELLED)}
                             style={iconStyle.button}
                             touch={true}
                             onTouchTap={() => { handleSupplyExpenseOpenCreateDialog(id) }}>
@@ -332,7 +333,7 @@ const SupplyDetails = enhance((props) => {
                     </Tooltip>
                     {updateDialog && <Tooltip position="bottom" text="Изменить">
                         <IconButton
-                            disabled={(status === CANCELED || status === GIVEN)}
+                            disabled={!(status === PENDING)}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             distabled={isAdmin}
@@ -343,7 +344,7 @@ const SupplyDetails = enhance((props) => {
                     </Tooltip>}
                     {confirmDialog && <Tooltip position="bottom" text="Отменить">
                         <IconButton
-                            disabled={(status === CANCELED || status === GIVEN || status === DELIVERED) && isAdmin}
+                            disabled={ !(PENDING === status || ((status === IN_PROGRESS || status === COMPLETED) && isAdmin)) || status === CANCELLED}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}

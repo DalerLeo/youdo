@@ -32,6 +32,12 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.CASHBOX_UPDATE),
         pending: createThunkReducer(actionTypes.ORDER_TRANSACTION)
     }),
+    clientTransaction: combineReducers({
+        create: createThunkReducer(actionTypes.CLIENT_TRANSACTION_CREATE),
+        item: createThunkReducer(actionTypes.CLIENT_TRANSACTION_ITEM),
+        update: createThunkReducer(actionTypes.CLIENT_TRANSACTION_UPDATE),
+        list: createThunkReducer(actionTypes.CLIENT_TRANSACTION_LIST)
+    }),
     notification: combineReducers({
         list: createThunkReducer(actionTypes.NOTIFICATION_LIST),
         item: createThunkReducer(actionTypes.NOTIFICATION_ITEM),
@@ -51,12 +57,6 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.TRANSACTION_UPDATE),
         acceptCash: createThunkReducer(actionTypes.TRANSACTION_ACCEPT_CASH),
         info: createThunkReducer(actionTypes.TRANSACTION_INFO)
-    }),
-    clientTransaction: combineReducers({
-        create: createThunkReducer(actionTypes.CLIENT_TRANSACTION_CREATE),
-        item: createThunkReducer(actionTypes.CLIENT_TRANSACTION_ITEM),
-        update: createThunkReducer(actionTypes.CLIENT_TRANSACTION_UPDATE),
-        list: createThunkReducer(actionTypes.CLIENT_TRANSACTION_LIST)
     }),
     supply: combineReducers({
         create: createThunkReducer(actionTypes.SUPPLY_CREATE),
@@ -235,15 +235,6 @@ const rootReducer = combineReducers({
         list: createThunkReducer(actionTypes.TRANSACTION_STOCK_LIST),
         update: createThunkReducer(actionTypes.TRANSACTION_STOCK_UPDATE)
     }),
-    statDebtors: combineReducers({
-        create: createThunkReducer(actionTypes.STATDEBTORS_CREATE),
-        list: createThunkReducer(actionTypes.STATDEBTORS_LIST),
-        update: createThunkReducer(actionTypes.STATDEBTORS_UPDATE),
-        item: createThunkReducer(actionTypes.STATDEBTORS_ITEM),
-        sum: createThunkReducer(actionTypes.STATDEBTORS_SUM),
-        orderList: createThunkReducer(actionTypes.STATDEBTORS_ORDER_LIST),
-        document: createThunkReducer(actionTypes.STATDEBTORS_GET_DOCUMENT)
-    }),
     statManufacture: combineReducers({
         create: createThunkReducer(actionTypes.STAT_MANUFACTURE_CREATE),
         list: createThunkReducer(actionTypes.STAT_MANUFACTURE_LIST),
@@ -322,11 +313,6 @@ const rootReducer = combineReducers({
     statReport: combineReducers({
         data: createThunkReducer(actionTypes.STAT_REPORT_DATA),
         list: createThunkReducer(actionTypes.STAT_REPORT_LIST)
-    }),
-    statisticsDebtors: combineReducers({
-        data: createThunkReducer(actionTypes.STAT_DEBTORS_DATA),
-        list: createThunkReducer(actionTypes.STAT_DEBTORS_LIST),
-        item: createThunkReducer(actionTypes.STAT_DEBTORS_ITEM)
     }),
     statOutcomeCategory: combineReducers({
         list: createThunkReducer(actionTypes.STAT_OUTCOME_CATEGORY_LIST)

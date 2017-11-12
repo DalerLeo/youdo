@@ -11,6 +11,15 @@ export const AUTH_CONFIRM = `/${USER}/auth-confirm/`
 export const SIGN_OUT = `/${USER}/unauth/`
 export const CONFIG = 'config/'
 
+export const CLIENT_TRANSACTION = 'sales/client_transaction'
+export const CLIENT_TRANSACTION_CREATE = `/${CLIENT_TRANSACTION}/`
+export const CLIENT_TRANSACTION_RETURN = 'sales/order_return/from_client/'
+export const CLIENT_TRANSACTION_RETURN_UPDATE = 'sales/order_return/%d/from_client_update/'
+export const CLIENT_TRANSACTION_LIST = `/${CLIENT_TRANSACTION}/`
+export const CLIENT_TRANSACTION_ITEM = `/${CLIENT_TRANSACTION}/%d/`
+export const CLIENT_TRANSACTION_SEND = '/transfer/'
+export const CLIENT_TRANSACTION_DELETE = `/${CLIENT_TRANSACTION}/%d/`
+
 export const EQUIPMENT = 'manufacture/equipment'
 export const EQUIPMENT_CREATE = `/${EQUIPMENT}/`
 export const EQUIPMENT_LIST = `/${EQUIPMENT}/`
@@ -96,15 +105,6 @@ export const TRANSACTION_ITEM = `/${TRANSACTION}/%d/`
 export const TRANSACTION_SEND = 'finance/transfer/'
 export const TRANSACTION_DELETE = `/${TRANSACTION}/%d/`
 export const TRANSACTION_PAYMENT_DELETE = 'sales/client_transaction/%d/cancel/'
-
-export const CLIENT_TRANSACTION = 'sales/client_transaction'
-export const CLIENT_TRANSACTION_CREATE = `/${CLIENT_TRANSACTION}/`
-export const CLIENT_TRANSACTION_RETURN = 'sales/order_return/from_client/'
-export const CLIENT_TRANSACTION_RETURN_UPDATE = 'sales/order_return/%d/from_client_update/'
-export const CLIENT_TRANSACTION_LIST = `/${CLIENT_TRANSACTION}/`
-export const CLIENT_TRANSACTION_ITEM = `/${CLIENT_TRANSACTION}/%d/`
-export const CLIENT_TRANSACTION_SEND = '/transfer/'
-export const CLIENT_TRANSACTION_DELETE = `/${CLIENT_TRANSACTION}/%d/`
 
 export const SUPPLY = 'stock/supply'
 export const SUPPLY_CREATE = `/${SUPPLY}/`
@@ -235,15 +235,6 @@ export const REMAINDER_STOCK_DELETE = `/${REMAINDER_STOCK}/all_balances/%d`
 export const TRANSACTION_STOCK = 'stock/barcode_history'
 export const TRANSACTION_STOCK_LIST = `/${TRANSACTION_STOCK}/`
 
-export const STATDEBTORS = 'sales/debtors'
-export const STATDEBTORS_CREATE = `/${STATDEBTORS}/`
-export const STATDEBTORS_LIST = `/${STATDEBTORS}/`
-export const STATDEBTORS_ORDER_LIST = 'sales/order/'
-export const STATDEBTORS_SUM = '/sales/debtors_statistics/'
-export const STATDEBTORS_ITEM = `/${STATDEBTORS}/%d/`
-export const STATDEBTORS_DELETE = `/${STATDEBTORS}/%d/`
-export const STATDEBTORS_GET_DOCUMENT = 'sales/debtors_statistics/'
-
 export const PENDING_PAYMENTS = 'sales/order'
 export const PENDING_PAYMENTS_CONVERT = 'finance/convert'
 export const PENDING_PAYMENTS_CREATE = '/sales/order_payment/'
@@ -353,11 +344,6 @@ export const STAT_INCOME_LIST = 'finance/transaction/'
 export const STAT_OUTCOME_DATA = 'stats/transactions/'
 export const STAT_OUTCOME_LIST = 'finance/transaction/'
 export const STAT_OUTCOME_GET_DOCUMENT = 'stats/transactions/export'
-
-export const STAT_DEBTORS_DATA = 'stats/debtors_stats/'
-export const STAT_DEBTORS_LIST = 'stats/debtors/'
-export const STAT_DEBTORS_ITEM = 'sales/order/'
-export const STAT_DEBTORS_GET_DOCUMENT = 'stats/debtors/export'
 
 export const STAT_SALES_DATA = '/stats/orders/'
 export const STAT_SALES_GET_DOCUMENT = '/sales/order/export/'

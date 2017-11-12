@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
@@ -15,6 +14,7 @@ import {compose} from 'recompose'
 import AddPayment from 'material-ui/svg-icons/av/playlist-add-check'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
+import dateTimeFormat from '../../helpers/dateTimeFormat'
 
 const listHeader = [
     {
@@ -39,7 +39,7 @@ const listHeader = [
         sorting: true,
         name: 'created_date',
         title: 'Дата созд.',
-        xs: 1
+        xs: 2
     },
     {
         sorting: false,
@@ -59,7 +59,7 @@ const listHeader = [
         name: 'totalBalance',
         alignRight: true,
         title: 'Остаток',
-        xs: 2
+        xs: 1
     },
     {
         sorting: false,
@@ -120,7 +120,7 @@ const PendingPaymentsGridList = enhance((props) => {
         const market = _.get(item, ['market', 'name'])
         const paymentType = _.get(item, 'paymentType') === 'cash' ? 'наличный' : 'банковский счет'
         const clientName = _.get(client, 'name')
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+        const createdDate = dateTimeFormat(_.get(item, 'createdDate'))
         const totalPrice = numberFormat(_.get(item, 'totalPrice'), getConfig('PRIMARY_CURRENCY'))
         const totalBalance = numberFormat(_.get(item, 'totalBalance'), getConfig('PRIMARY_CURRENCY'))
         return (
@@ -128,10 +128,10 @@ const PendingPaymentsGridList = enhance((props) => {
                 <Col xs={1}>{id}</Col>
                 <Col xs={2}>{clientName}</Col>
                 <Col xs={2}>{market}</Col>
-                <Col xs={1}>{createdDate}</Col>
+                <Col xs={2}>{createdDate}</Col>
                 <Col xs={1}>{paymentType}</Col>
                 <Col xs={2} style={{textAlign: 'right'}}>{totalPrice}</Col>
-                <Col xs={2} style={{textAlign: 'right'}}>{totalBalance}</Col>
+                <Col xs={1} style={{textAlign: 'right'}}>{totalBalance}</Col>
                 <Col xs={1} style={{textAlign: 'right', padding: '0'}}>
                     <IconButton
                         iconStyle={iconStyle.icon}

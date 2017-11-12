@@ -4,7 +4,6 @@ import StatAgentGridList from './Agents/StatAgentGridList'
 import StatProductGridList from './Products/StatProductGridList'
 import StatMarketGridList from './Markets/StatMarketGridList'
 import StatFinanceGridList from './Finance/StatFinanceGridList'
-import StatDebtorsGridList from './Debtors/StatDebtorsGridList'
 import StatOutcomeCategoryGridList from './Outcome/StatOutcomeCategoryGridList'
 import StatRemainderGridList from './Remainder/StatRemainderGridLIst'
 import StatCashboxGridList from './Cashbox/StatCashboxGridList'
@@ -38,7 +37,6 @@ export {
     StatProductGridList,
     StatMarketGridList,
     StatFinanceGridList,
-    StatDebtorsGridList,
     StatOutcomeCategoryGridList,
     StatRemainderGridList,
     StatCashboxGridList,

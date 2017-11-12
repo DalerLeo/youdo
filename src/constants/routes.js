@@ -28,11 +28,6 @@ export const TRANSACTION_LIST_URL = `/${TRANSACTION}`
 export const TRANSACTION_ITEM_URL = `${TRANSACTION_LIST_URL}/:transactionId`
 export const TRANSACTION_ITEM_PATH = `/${TRANSACTION}/%d`
 
-export const CLIENT_TRANSACTION = 'clientTransaction'
-export const CLIENT_TRANSACTION_LIST_URL = `/${CLIENT_TRANSACTION}`
-export const CLIENT_TRANSACTION_ITEM_URL = `${CLIENT_TRANSACTION_LIST_URL}/:clientTransactionId`
-export const CLIENT_TRANSACTION_ITEM_PATH = `/${CLIENT_TRANSACTION}/%d`
-
 export const SUPPLY = 'supply'
 export const SUPPLY_LIST_URL = `/${SUPPLY}`
 export const SUPPLY_ITEM_URL = `${SUPPLY_LIST_URL}/:supplyId`
@@ -103,6 +98,11 @@ export const PROVIDER_LIST_URL = `/${PROVIDER}`
 export const PROVIDER_ITEM_URL = `${PROVIDER_LIST_URL}/:providerId`
 export const PROVIDER_ITEM_PATH = `${PROVIDER}/%d`
 
+export const CLIENT_TRANSACTION = 'clientTtansaction'
+export const CLIENT_TRANSACTION_LIST_URL = `/${CLIENT_TRANSACTION}`
+export const CLIENT_TRANSACTION_ITEM_URL = `${CLIENT_TRANSACTION_LIST_URL}/:clientId`
+export const CLIENT_TRANSACTION_ITEM_PATH = `${CLIENT_TRANSACTION}/%d`
+
 export const CLIENT = 'client'
 export const CLIENT_LIST_URL = `/${CLIENT}`
 export const CLIENT_ITEM_URL = `${CLIENT_LIST_URL}/:clientId`
@@ -155,11 +155,6 @@ export const REMAINDER_STOCK = 'stockRemainder'
 export const REMAINDER_STOCK_LIST_URL = `/${REMAINDER_STOCK}/%d/balances/`
 export const REMAINDER_STOCK_ITEM_URL = `${REMAINDER_STOCK_LIST_URL}/%d/balances/:remainderStockId`
 export const REMAINDER_STOCK_ITEM_PATH = `/${REMAINDER_STOCK}/%d/balances/%d`
-
-export const STATDEBTORS = 'statDebtors'
-export const STATDEBTORS_LIST_URL = `/${STATDEBTORS}`
-export const STATDEBTORS_ITEM_URL = `${STATDEBTORS_LIST_URL}/:statDebtorsId`
-export const STATDEBTORS_ITEM_PATH = `/${STATDEBTORS}/%d`
 
 export const STAT_MANUFACTURE = 'statManufacture'
 export const STAT_MANUFACTURE_LIST_URL = `/${STAT_MANUFACTURE}`
@@ -233,10 +228,6 @@ export const STATISTICS_INCOME = 'statistics/income'
 export const STATISTICS_INCOME_URL = `/${STATISTICS_INCOME}`
 export const STATISTICS_OUTCOME = 'statistics/outcome'
 export const STATISTICS_OUTCOME_URL = `/${STATISTICS_OUTCOME}`
-export const STATISTICS_DEBTORS = 'statistics/debtors'
-export const STATISTICS_DEBTORS_URL = `/${STATISTICS_DEBTORS}`
-export const STATISTICS_DEBTORS_ITEM_URL = `/${STATISTICS_DEBTORS}/:statDebtorsId`
-export const STATISTICS_DEBTORS_ITEM_PATH = `/${STATISTICS_DEBTORS}/%d`
 export const STATISTICS_OUTCOME_CATEGORY = 'statistics/outcomeCategory'
 export const STATISTICS_OUTCOME_CATEGORY_URL = `/${STATISTICS_OUTCOME_CATEGORY}`
 

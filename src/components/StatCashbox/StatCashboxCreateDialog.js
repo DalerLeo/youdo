@@ -6,8 +6,8 @@ import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
-import MainStyles from '../Styles/MainStyles'
 import {Row, Col} from 'react-flexbox-grid'
+import MainStyles from '../Styles/MainStyles'
 
 export const STAT_CASHBOX_CREATE_DIALOG_OPEN = 'openCreateDialog'
 

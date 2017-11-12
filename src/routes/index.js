@@ -10,7 +10,6 @@ import SignIn from '../containers/SignIn'
 import {ShopList} from '../containers/Shop'
 import {CashboxList} from '../containers/Cashbox'
 import {TransactionList} from '../containers/Transaction'
-import {ClientTransactionList} from '../containers/ClientTransaction'
 import {SupplyList} from '../containers/Supply'
 import {OrderList} from '../containers/Order'
 import {ReturnList} from '../containers/Return'
@@ -36,12 +35,12 @@ import {
 } from '../containers/Manufacture'
 import {PendingExpensesList} from '../containers/PendingExpenses'
 import {StatStock} from '../containers/StatStock'
-import {StatDebtors} from '../containers/StatDebtors'
 import {StatManufacture} from '../containers/StatManufacture'
 import {StatCashbox} from '../containers/StatCashbox'
 import {PendingPaymentsList} from '../containers/PendingPayments'
 import {EquipmentList} from '../containers/Equipment'
 import {ShiftList} from '../containers/Shift'
+import {ClientTransactionList} from '../containers/ClientTransaction'
 import {Tracking} from '../containers/Tracking'
 import {MarketTypeList} from '../containers/MarketType'
 import {PricesList} from '../containers/Prices'
@@ -55,7 +54,6 @@ import {
     StatProductList,
     StatMarketList,
     StatFinanceList,
-    StatDebtorsList,
     StatOutcomeCategoryList,
     StatRemainderList,
     StatCashboxList,
@@ -159,17 +157,6 @@ export default {
                 }
             ]
         },
-        // Client Transactoin
-        {
-            path: ROUTES.CLIENT_TRANSACTION_LIST_URL,
-            component: userIsAdminChain(ClientTransactionList),
-            childRoutes: [
-                {
-                    path: ROUTES.CLIENT_TRANSACTION_ITEM_URL,
-                    component: userIsAuth(ClientTransactionList)
-                }
-            ]
-        },
         // Supply
         {
             path: ROUTES.SUPPLY_LIST_URL,
@@ -189,6 +176,17 @@ export default {
                 {
                     path: ROUTES.PRICES_ITEM_URL,
                     component: userIsAuth(PricesList)
+                }
+            ]
+        },
+        // Client Transactoin
+        {
+            path: ROUTES.CLIENT_TRANSACTION_LIST_URL,
+            component: userIsAdminChain(ClientTransactionList),
+            childRoutes: [
+                {
+                    path: ROUTES.CLIENT_TRANSACTION_ITEM_URL,
+                    component: userIsAuth(ClientTransactionList)
                 }
             ]
         },
@@ -383,15 +381,6 @@ export default {
             childRoutes: [{
                 path: ROUTES.STATSTOCK_ITEM_URL,
                 component: userIsAuth(StatStock)
-            }]
-        },
-        // METRICA (Stat Debtors)
-        {
-            path: ROUTES.STATDEBTORS_LIST_URL,
-            component: userIsAdminChain(StatDebtors),
-            childRoutes: [{
-                path: ROUTES.STATDEBTORS_ITEM_URL,
-                component: userIsAuth(StatDebtors)
             }]
         },
         // METRICA (Stat Manufacture)
@@ -601,17 +590,6 @@ export default {
             path: ROUTES.STATISTICS_FINANCE_URL,
             component: userIsAdminChain(StatFinanceList),
             childRoutes: []
-        },
-        // Statistics/debtors
-        {
-            path: ROUTES.STATISTICS_DEBTORS_URL,
-            component: userIsAdminChain(StatDebtorsList),
-            childRoutes: [
-                {
-                    path: ROUTES.STATISTICS_DEBTORS_ITEM_URL,
-                    component: userIsAuth(StatDebtorsList)
-                }
-            ]
         },
         // Statistics/outcomeCategory
         {
