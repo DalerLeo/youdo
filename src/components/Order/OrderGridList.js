@@ -34,6 +34,7 @@ import Print from 'material-ui/svg-icons/action/print'
 import Excel from 'material-ui/svg-icons/action/assessment'
 import Edit from 'material-ui/svg-icons/editor/mode-edit'
 import Done from 'material-ui/svg-icons/action/check-circle'
+import RefreshIcon from 'material-ui/svg-icons/action/cached'
 import dateFormat from '../../helpers/dateFormat'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
 import toBoolean from '../../helpers/toBoolean'
@@ -381,7 +382,7 @@ const OrderGridList = enhance((props) => {
             height: 18,
             fontSize: 9,
             fontWeight: 600,
-            border: '1px #fff solid',
+            border: statusIsReady ? 'none' : '1px #fff solid',
             background: statusIsReady ? '#fff' : '#e57373',
             transition: 'all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms',
             zIndex: 1
@@ -396,7 +397,7 @@ const OrderGridList = enhance((props) => {
             height: 18,
             fontSize: 9,
             fontWeight: 600,
-            border: '1px #fff solid',
+            border: statusIsRequested ? 'none' : '1px #fff solid',
             background: statusIsRequested ? '#fff' : '#e57373',
             transition: 'all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms',
             zIndex: 1
@@ -421,6 +422,13 @@ const OrderGridList = enhance((props) => {
 
     const extraButtons = (
         <div className={classes.buttons}>
+            <Tooltip position="left" text="Обновить список">
+                <IconButton
+                    disabled={false}
+                    onTouchTap={refreshAction}>
+                    <RefreshIcon color="#5d6474"/>
+                </IconButton>
+            </Tooltip>
             <Tooltip position="left" text="Отфильтровать по доступным заказам">
                 <Badge
                     primary={true}
@@ -434,7 +442,7 @@ const OrderGridList = enhance((props) => {
                     </IconButton>
                 </Badge>
             </Tooltip>
-            <Tooltip position="left" text="Отфильтровать по переданным заказам">
+            <Tooltip position="left" text="Отфильтровать по запрошенным заказам">
                 <Badge
                     primary={true}
                     badgeContent={statusIsRequested ? <Done style={badgeStyle.iconRequested}/> : requestedCount}
@@ -494,7 +502,6 @@ const OrderGridList = enhance((props) => {
                 withInvoice={true}
                 filterDialog={orderFilterDialog}
                 printDialog={printDialog}
-                refreshAction={refreshAction}
                 extraButtons={extraButtons}
                 activeCheckboxes={showCheckboxes}
                 withCheckboxes={true}
