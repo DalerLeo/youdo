@@ -136,6 +136,7 @@ export const ORDER_LIST = `/${ORDER}/`
 export const ORDER_ITEM = `/${ORDER}/%d/`
 export const ORDER_LIST_PRINT = `/${ORDER}/print/`
 export const ORDER_CANCEL = `/${ORDER}/%d/cancel/`
+export const ORDER_EXCEL = `/${ORDER}/download_invoice/`
 export const GET_DOCUMENT = 'order_document/%d/'
 
 export const SUPPLY_EXPENSE = 'stock/supply_expanse'
@@ -407,7 +408,7 @@ export const PLAN_MONTHLY_CREATE = `${PLAN_MONTHLY}/`
 export const PLAN_MONTHLY_LIST = `${PLAN_MONTHLY}/`
 export const PLAN_MONTHLY_ITEM = `${PLAN_MONTHLY}/%d/`
 export const PLAN_AGENT_MONTHLY = 'stats/agents/statistics/'
-export const PLAN_AGENT_LIST = 'stats/agents/statistics/all/'
+export const PLAN_AGENT_LIST = 'market/agents_plans/'
 export const PLAN_AGENTS = 'market/agent_plans/'
 export const PLAN_AGENTS_ITEM = 'market/agent_plans/%d/'
 export const PLAN_COMBINATION = `${PLAN}/combination/`

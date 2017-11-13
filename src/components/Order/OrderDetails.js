@@ -264,6 +264,7 @@ const OrderDetails = enhance((props) => {
         return _.toNumber(_.get(item, 'returnAmount'))
     })
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
+    const configDivisions = getConfig('DIVISIONS')
     return (
         <div className={classes.wrapper}>
             {type && <div className={classes.title}>
@@ -366,10 +367,10 @@ const OrderDetails = enhance((props) => {
                                     <span>Тип сделки:</span>
                                     <span>{(dealType === '0') ? 'Стандартная' : 'Консигнация'}</span>
                                 </li>
-                                <li>
+                                {configDivisions && <li>
                                     <span>Подразделение:</span>
                                     <span>{division}</span>
-                                </li>
+                                </li>}
                             </ul>
                         </div>
                     </div>

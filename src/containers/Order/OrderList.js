@@ -10,7 +10,10 @@ import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import numberFormat from '../../helpers/numberFormat'
 import toBoolean from '../../helpers/toBoolean'
+import getDocuments from '../../helpers/getDocument'
 import * as ORDER_TAB from '../../constants/orderTab'
+import * as serializers from '../../serializers/orderSerializer'
+import * as API from '../../constants/api'
 import {openErrorAction} from '../../actions/error'
 
 import {
@@ -128,7 +131,8 @@ const enhance = compose(
     }),
     withPropsOnChange((props, nextProps) => {
         const except = {
-            showCheckboxes: null
+            showCheckboxes: null,
+            openMultiEdit: null
         }
         return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
@@ -576,6 +580,12 @@ const enhance = compose(
                         message: error
                     }))
                 })
+        },
+        handleGetExcelDocument: props => () => {
+            const {filter} = props
+            const print = true
+            const params = serializers.listFilterSerializer(filter.getParams(), null, null, print)
+            getDocuments(API.ORDER_EXCEL, params)
         }
     }),
 )
@@ -923,6 +933,7 @@ const OrderList = enhance((props) => {
                 paymentData={paymentData}
                 createDialog={createDialog}
                 getDocument={getDocument}
+                getExcelDocument={props.handleGetExcelDocument}
                 createClientDialog={createClientDialog}
                 transactionsDialog={transactionsDialog}
                 itemReturnDialog={itemReturnDialog}

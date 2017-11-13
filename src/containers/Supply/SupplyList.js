@@ -158,7 +158,9 @@ const enhance = compose(
                     return dispatch(supplyListFetchAction(filter))
                 })
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Не удалось'}))
+                    dispatch(openErrorAction({
+                        message: 'Поставка не может быть отменена из за связки к доп расходу или к чему нибудь другому'
+                    }))
                 })
         },
 

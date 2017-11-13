@@ -54,10 +54,10 @@ const GridListNav = ({classes, filter, filterDialog, addButton, withoutSearch, c
                     <Col xs={3}>
                         {filterIsEmpty ? addButton : filterDialog}
                     </Col>
-                    <Col xs={4}>
+                    <Col xs={3}>
                         {!withoutSearch && <GridListNavSearch filter={filter} filterIsEmpty={filterIsEmpty || addButtonIsEmpty}/>}
                     </Col>
-                    <Col xs={5} className={classes.flex}>
+                    <Col xs={6} className={classes.flex}>
                         {!withoutPagination && <GridListNavPagination filter={filter}/>}
                         {withCheckboxes && <Tooltip position="left" text={showCheckboxes ? 'Спрятать флажки' : 'Выбрать из списка для распечатки накладного'}>
                             <IconButton onTouchTap={toggleCheckboxes}>
