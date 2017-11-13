@@ -36,7 +36,7 @@ const listHeader = [
         sorting: true,
         name: 'type',
         title: 'Тип',
-        xs: 2
+        xs: 1
     },
     {
         name: 'receiver',
@@ -44,10 +44,15 @@ const listHeader = [
         xs: 2
     },
     {
+        name: 'acceptedBy',
+        title: 'Передал',
+        xs: 2
+    },
+    {
         sorting: true,
         name: 'dateDelivery',
         title: 'Дата передачи',
-        xs: 2
+        xs: 1
     }
 ]
 
@@ -124,10 +129,13 @@ const StockTabTransferHistory = enhance((props) => {
     const historyList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const dateRequest = dateFormat(_.get(item, 'dateRequest'))
-        const dateDelivery = dateFormat(_.get(item, 'dateDelivery'))
+        const dateDelivery = _.get(item, 'acceptedTime') ? dateFormat(_.get(item, 'acceptedTime')) : 'Не указана'
         const receiver = _.get(item, ['receiver'])
         const stockId = _.get(item, ['stock', 'id'])
         const typeOrg = _.get(item, 'type')
+        const acceptedBy = _.get(item, ['acceptedBy', 'firstName']) && _.get(item, ['acceptedBy', 'secondName'])
+            ? _.get(item, ['acceptedBy', 'firstName']) + ' ' + _.get(item, ['acceptedBy', 'secondName'])
+            : 'Не указана'
         const type = typeOrg === 'order' ? 'Заказ' : (typeOrg === 'transfer' ? 'Передача' : null)
         const stockName = _.get(item, ['stock', 'name'])
         return (
@@ -138,9 +146,10 @@ const StockTabTransferHistory = enhance((props) => {
                 <Col xs={2} >{id}</Col>
                 <Col xs={2}>{dateRequest}</Col>
                 <Col xs={2}>{stockName}</Col>
-                <Col xs={2}>{type}</Col>
+                <Col xs={1}>{type}</Col>
                 <Col xs={2}>{receiver}</Col>
-                <Col xs={2}>{dateDelivery}</Col>
+                <Col xs={2}>{acceptedBy}</Col>
+                <Col xs={1}>{dateDelivery}</Col>
             </Row>
         )
     })

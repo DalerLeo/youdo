@@ -53,6 +53,9 @@ import {openSnackbarAction} from '../../actions/snackbar'
 
 const MINUS_ONE = -1
 const ZERO = 0
+const TWO = 2
+const THREE = 3
+const FOUR = 4
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -653,6 +656,7 @@ const OrderList = enhance((props) => {
 
     const detailId = _.toInteger(_.get(params, 'orderId'))
     const tab = _.get(location, ['query', TAB]) || ORDER_TAB.ORDER_DEFAULT_TAB
+    const orders = _.get(location, ['query', 'select'])
 
     const createDialog = {
         createLoading,
@@ -809,8 +813,23 @@ const OrderList = enhance((props) => {
         handleCloseUpdateDialog: props.handleCloseUpdateDialog,
         handleSubmitUpdateDialog: props.handleSubmitUpdateDialog
     }
+    let givenOrDelivery = false
+    let cancelled = false
+    if (orders) {
+        const ordersArray = orders.split('-')
+        _.map(ordersArray, (item) => {
+            const statusItem = _.toInteger(_.get((_.find(_.get(list, 'results'), {'id': _.toInteger(item)})), 'status'))
+            if (statusItem === TWO || statusItem === THREE) {
+                givenOrDelivery = true
+            } else if (statusItem === FOUR) {
+                cancelled = true
+            }
+        })
+    }
 
     const multiUpdateDialog = {
+        givenOrDelivery,
+        cancelled,
         openMultiUpdateDialog,
         handleOpenMultiUpdate: props.handleOpenMultiUpdate,
         handleCloseMultiUpdate: props.handleCloseMultiUpdate,

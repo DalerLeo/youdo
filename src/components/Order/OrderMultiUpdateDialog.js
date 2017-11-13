@@ -133,7 +133,7 @@ const enhance = compose(
 )
 
 const OrderMultiUpdateDialog = enhance((props) => {
-    const {open, onSubmit, loading, onClose, classes, handleSubmit} = props
+    const {open, onSubmit, loading, onClose, classes, handleSubmit, givenOrDelivery} = props
 
     return (
         <Dialog
@@ -161,6 +161,7 @@ const OrderMultiUpdateDialog = enhance((props) => {
                                 <Field
                                     name="deliveryMan"
                                     component={DeliveryManSearchField}
+                                    disabled={givenOrDelivery}
                                     className={classes.inputDateCustom}
                                     label="Доставщик"
                                     fullWidth={true}/>
@@ -168,6 +169,7 @@ const OrderMultiUpdateDialog = enhance((props) => {
                             <div className={classes.field}>
                                 <Field
                                     name="deliveryDate"
+                                    disabled={givenOrDelivery}
                                     component={DateField}
                                     className={classes.inputDateCustom}
                                     label="Дата доставки"

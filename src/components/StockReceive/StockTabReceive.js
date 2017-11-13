@@ -127,6 +127,44 @@ const listHeader = [
         xs: 2
     }
 ]
+const listHeaderHistory = [
+    {
+        name: 'id',
+        sorting: true,
+        title: '№ заказа',
+        xs: 2
+    },
+    {
+        name: 'by',
+        sorting: false,
+        title: 'От кого',
+        xs: 2
+    },
+    {
+        name: 'type',
+        sorting: false,
+        title: 'Тип',
+        xs: 2
+    },
+    {
+        sorting: true,
+        name: 'date',
+        title: 'Дата приемки',
+        xs: 2
+    },
+    {
+        sorting: true,
+        name: 'acceptedBy',
+        title: 'Принял',
+        xs: 2
+    },
+    {
+        name: 'stock',
+        sorting: false,
+        title: 'Склад',
+        xs: 1
+    }
+]
 
 const StockTabReceive = enhance((props) => {
     const {
@@ -162,7 +200,7 @@ const StockTabReceive = enhance((props) => {
             updateDialog={updateDialog}
             repealDialog={repealDialog}
             history={history}
-    />
+        />
     )
 
     const stockReceiveList = _.map(_.get(listData, 'data'), (item) => {
@@ -171,14 +209,41 @@ const StockTabReceive = enhance((props) => {
         const by = _.get(item, 'by')
         const type = _.get(item, 'type')
         const formattedType = stockTypeFormat(type)
+        const acceptedBy = _.get(item, ['acceptedBy', 'firstName']) && _.get(item, ['acceptedBy', 'secondName'])
+            ? _.get(item, ['acceptedBy', 'firstName']) + ' ' + _.get(item, ['acceptedBy', 'secondName'])
+            : 'Не указана'
+        const acceptedTime = _.get(item, 'acceptedTime') ? dateFormat(_.get(item, 'acceptedTime')) : 'Не указана'
         const date = _.get(item, 'date') ? dateFormat(_.get(item, 'date')) : 'Не указана'
         const stockName = _.get(item, ['stock', 'name'])
         const key = (type === 'delivery_return') ? orderId : id
 
+        if (history) {
+            return (
+                <Row
+                    key={key + '_' + type}
+                    onClick={() => {
+                        listData.handleOpenDetail(key, type, id)
+                    }}
+                    style={{cursor: 'pointer'}}>
+                    <Col xs={2}>{key}</Col>
+                    <Col xs={2}>{by}</Col>
+                    <Col xs={2}>
+                        {formattedType}
+                    </Col>
+                    <Col xs={2}>{acceptedTime}</Col>
+                    <Col xs={2}>{acceptedBy}</Col>
+                    <Col xs={1}>
+                        {stockName}
+                    </Col>
+                </Row>
+            )
+        }
         return (
             <Row
                 key={key + '_' + type}
-                onClick={() => { listData.handleOpenDetail(key, type, id) }}
+                onClick={() => {
+                    listData.handleOpenDetail(key, type, id)
+                }}
                 style={{cursor: 'pointer'}}>
                 <Col xs={2}>{key}</Col>
                 <Col xs={3}>{by}</Col>
@@ -194,7 +259,7 @@ const StockTabReceive = enhance((props) => {
     })
 
     const list = {
-        header: listHeader,
+        header: history ? listHeaderHistory : listHeader,
         list: stockReceiveList,
         loading: listLoading
     }
@@ -209,14 +274,14 @@ const StockTabReceive = enhance((props) => {
                 detail={receiveDetails}/>
 
             <ConfirmDialog
-                type={confirmDialog.openConfirmDialog === CANCEL ? 'cancel' : 'submit' }
+                type={confirmDialog.openConfirmDialog === CANCEL ? 'cancel' : 'submit'}
                 message={'Запрос № ' + _.get(detailData, 'id')}
                 onClose={confirmDialog.handleCloseConfirmDialog}
                 onSubmit={confirmDialog.openConfirmDialog === RETURN
-                            ? confirmDialog.handleSubmitOrderReturnDialog
-                                : (confirmDialog.openConfirmDialog === DELIVERY)
-                                    ? confirmDialog.handleSubmitReceiveDeliveryConfirmDialog
-                                        : confirmDialog.handleSubmitReceiveConfirmDialog}
+                    ? confirmDialog.handleSubmitOrderReturnDialog
+                    : (confirmDialog.openConfirmDialog === DELIVERY)
+                        ? confirmDialog.handleSubmitReceiveDeliveryConfirmDialog
+                        : confirmDialog.handleSubmitReceiveConfirmDialog}
                 open={confirmDialog.openConfirmDialog > ZERO}/>
 
             {history && <ConfirmDialog
