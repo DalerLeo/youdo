@@ -7,6 +7,8 @@ import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
+import updateStore from '../../helpers/updateStore'
+import * as actionTypes from '../../constants/actionTypes'
 import toBoolean from '../../helpers/toBoolean'
 import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
 import {
@@ -104,6 +106,19 @@ const enhance = compose(
         if (index > MINUS_ONE) {
             dispatch(slideShowFetchAction(fileId))
         }
+    }),
+    withPropsOnChange((props, nextProps) => {
+        const shopId = _.get(nextProps, ['params', 'shopId'])
+        return shopId && _.get(props, ['params', 'shopId']) === shopId && props.detailLoading !== nextProps.detailLoading
+    }, ({dispatch, detail, list, params}) => {
+        const shopId = _.toInteger(_.get(params, 'shopId'))
+        return dispatch(updateStore(shopId, list, actionTypes.SHOP_LIST, {
+            isActive: _.get(detail, 'isActive'),
+            border: _.get(detail, 'border'),
+            client: _.get(detail, 'client'),
+            name: _.get(detail, 'name'),
+            marketType: _.get(detail, 'marketType')
+        }))
     }),
 
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),

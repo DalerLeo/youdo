@@ -7,6 +7,7 @@ import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
+import * as actionTypes from '../../constants/actionTypes'
 import filterHelper from '../../helpers/filter'
 import numberFormat from '../../helpers/numberFormat'
 import toBoolean from '../../helpers/toBoolean'
@@ -50,6 +51,7 @@ import {
     orderMultiUpdateAction
 } from '../../actions/order'
 import {openSnackbarAction} from '../../actions/snackbar'
+import updateStore from '../../helpers/updateStore'
 
 const MINUS_ONE = -1
 const ZERO = 0
@@ -227,6 +229,21 @@ const enhance = compose(
             const size = 100
             dispatch(orderProductMobileAction(null, priceList, size, products))
         }
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const orderId = _.get(nextProps, ['params', 'orderId'])
+        return orderId && _.get(props, ['params', 'orderId']) === orderId && props.detailLoading !== nextProps.detailLoading
+    }, ({dispatch, detail, list, params}) => {
+        const orderId = _.toInteger(_.get(params, 'orderId'))
+        return dispatch(updateStore(orderId, list, actionTypes.ORDER_LIST, {
+            client: _.get(detail, 'client'),
+            market: {name: _.get(detail, ['market', 'name']), id: _.get(detail, ['market', 'id'])},
+            user: _.get(detail, 'user'),
+            totalPrice: _.get(detail, 'totalPrice'),
+            totalBalance: _.get(detail, 'totalBalance'),
+            dateDelivery: _.get(detail, 'dateDelivery')
+        }))
     }),
 
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
@@ -490,7 +507,6 @@ const enhance = compose(
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[ORDER_UPDATE_DIALOG_OPEN]: false})})
-                    dispatch(orderListFetchAction(filter))
                 }).catch((error) => {
                     dispatch(openErrorAction({
                         message: error

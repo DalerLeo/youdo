@@ -9,6 +9,8 @@ import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
+import updateStore from '../../helpers/updateStore'
+import * as actionTypes from '../../constants/actionTypes'
 import {
     CLIENT_CREATE_DIALOG_OPEN,
     CLIENT_UPDATE_DIALOG_OPEN,
@@ -60,6 +62,17 @@ const enhance = compose(
     }, ({dispatch, params}) => {
         const clientId = _.toInteger(_.get(params, 'clientId'))
         clientId && dispatch(clientItemFetchAction(clientId))
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const clientId = _.get(nextProps, ['params', 'clientId'])
+        return clientId && _.get(props, ['params', 'clientId']) === clientId && props.detailLoading !== nextProps.detailLoading
+    }, ({dispatch, detail, list, params}) => {
+        const clientId = _.toInteger(_.get(params, 'clientId'))
+        return dispatch(updateStore(clientId, list, actionTypes.CLIENT_LIST, {
+            address: _.get(detail, 'address'),
+            name: _.get(detail, 'name')
+        }))
     }),
 
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
@@ -146,7 +159,6 @@ const enhance = compose(
                 })
                 .then(() => {
                     hashHistory.push(filter.createURL({[CLIENT_UPDATE_DIALOG_OPEN]: false}))
-                    dispatch(clientListFetchAction(filter))
                 })
         },
 
