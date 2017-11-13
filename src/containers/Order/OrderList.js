@@ -131,7 +131,8 @@ const enhance = compose(
     }),
     withPropsOnChange((props, nextProps) => {
         const except = {
-            showCheckboxes: null
+            showCheckboxes: null,
+            openMultiEdit: null
         }
         return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
