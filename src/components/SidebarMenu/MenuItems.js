@@ -6,8 +6,8 @@ import Finance from 'material-ui/svg-icons/action/account-balance-wallet'
 import Map from 'material-ui/svg-icons/maps/map'
 import Settings from 'material-ui/svg-icons/action/settings'
 import Statistics from 'material-ui/svg-icons/action/timeline'
-import Store from 'material-ui/svg-icons/action/store'
-import Person from 'material-ui/svg-icons/social/group'
+import Store from 'material-ui/svg-icons/device/storage'
+import Markets from 'material-ui/svg-icons/action/store'
 import Supply from 'material-ui/svg-icons/action/swap-horiz'
 import Products from 'material-ui/svg-icons/device/widgets'
 
@@ -41,9 +41,9 @@ export const MenuItems = [
         ]
     },
     {
-        name: 'Клиенты',
-        icon: (<Person/>),
-        url: ROUTES.CLIENT_LIST_URL,
+        name: 'Магазины',
+        icon: (<Markets/>),
+        url: ROUTES.SHOP_LIST_URL,
         childs: [
             {name: 'Клиенты', url: ROUTES.CLIENT_LIST_URL, permission: 'frontend_clients'},
             {name: 'Магазины', url: ROUTES.SHOP_LIST_URL, permission: 'frontend_shops'}
