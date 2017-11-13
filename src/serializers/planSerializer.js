@@ -5,14 +5,12 @@ import numberWithoutSpaces from '../helpers/numberWithoutSpaces'
 const ZERO = 0
 const ONE = 1
 export const listFilterSerializer = (data) => {
-    const year = moment(_.get(data, 'date')).format('YYYY') || moment().format('YYYY')
-    const month = moment(_.get(data, 'date')).format('M') || moment().format('M')
+    const date = moment(_.get(data, 'date')).format('YYYY-MM-DD') || moment().format('YYYY-MM-DD')
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
 
     return {
-        year,
-        month,
+        date,
         'page_size': 50,
         'search': _.get(defaultData, 'search'),
         'group': _.get(defaultData, 'group') || ONE,
