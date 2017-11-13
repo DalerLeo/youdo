@@ -143,8 +143,7 @@ GridList.propTypes = {
         openPrint: PropTypes.bool,
         handleOpenPrintDialog: PropTypes.func,
         handleClosePrintDialog: PropTypes.func
-    }),
-    refreshAction: PropTypes.func
+    })
 }
 
 GridList.defaultProps = {
@@ -152,7 +151,6 @@ GridList.defaultProps = {
     withCheckboxes: false,
     withoutSearch: false,
     withInvoice: false,
-    withRefreshBtn: false,
     flexibleRow: false,
     withoutPagination: false,
     listShadow: true,
