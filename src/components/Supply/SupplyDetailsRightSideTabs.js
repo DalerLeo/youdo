@@ -211,9 +211,9 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                             <Col xs={1}>{numberFormat(wholePostedAmount, wholeMeasurement)}</Col>
                             <Col xs={1}>{numberFormat(wholeDefectAmount, wholeMeasurement)}</Col>
                             <Col xs={1}>{numberFormat(wholeNotAccepted, wholeMeasurement)}</Col>
-                            <Col xs={2}></Col>
+                            <Col xs={2}>{null}</Col>
                             <Col xs={2}>
-                                <div style={{textAlign: 'right'}}>{wholeCost} {currency}</div>
+                                <div style={{textAlign: 'right'}}>{numberFormat(wholeCost, currency)}</div>
                             </Col>
                         </Row>
                     </div>

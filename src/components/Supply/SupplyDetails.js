@@ -30,7 +30,7 @@ const enhance = compose(
             display: 'flex',
             flexWrap: 'wrap',
             transition: 'all 250ms ease-out',
-            maxHeight: '670px',
+            maxHeight: '720px',
             overflow: 'hidden'
         },
         link: {
@@ -422,14 +422,14 @@ const SupplyDetails = enhance((props) => {
                             <ul>
                                 {!_.isEmpty(groupedByCurrency)
                                     ? _.map(groupedByCurrency, (item, index) => {
-                                        const itemAmount = numberFormat(_.sumBy(item, (o) => _.toNumber(_.get(o, 'totalAmount'))))
-                                        const paidAmount = numberFormat(_.get(_.find(totalAmountPaid, {'currency': index}), 'paid'))
+                                        const itemAmount = _.sumBy(item, (o) => _.toNumber(_.get(o, 'totalAmount')))
+                                        const paidAmount = _.get(_.find(totalAmountPaid, {'currency': index}), 'paid')
                                         return (
                                             <li
                                                 key={index}
+                                                style={{display: 'block'}}
                                                 onMouseEnter={() => { setOpenExpenseInfo(index) }}
                                                 onMouseLeave={() => { setOpenExpenseInfo(null) }}>
-                                                <span>{index}</span>
                                                 {openExpenseInfo === index
                                                     ? <div className={classes.expenseInfo}>
                                                         {_.map(item, (o) => {
@@ -456,7 +456,10 @@ const SupplyDetails = enhance((props) => {
                                                         })}
                                                     </div>
                                                     : null}
-                                                <span>{paidAmount} / {itemAmount}</span>
+                                                <span
+                                                    style={{fontWeight: 'normal'}}>
+                                                    Сумма: {numberFormat(itemAmount, index)} (Оплачено: {numberFormat(paidAmount)})
+                                                </span>
                                             </li>
                                         )
                                     })
