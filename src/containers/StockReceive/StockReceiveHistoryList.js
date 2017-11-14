@@ -133,7 +133,6 @@ const enhance = compose(
             const acceptedBy = _.get(filterForm, ['values', 'acceptedBy', 'value']) || null
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
-            console.log(fromDate, toDate, 'asdasdasd')
             filter.filterBy({
                 [TAB_RECEIVE_HISTORY_FILTER_OPEN]: false,
                 [TAB_RECEIVE_FILTER_KEY.STOCK]: stock,
