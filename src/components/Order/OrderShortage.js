@@ -129,6 +129,7 @@ const enhance = compose(
                     paddingLeft: '0'
                 },
                 '& div:last-child': {
+                    textAlign: 'right',
                     paddingRight: '0'
                 },
                 '& div div:last-child': {
@@ -167,16 +168,13 @@ const OrderShortageDialog = enhance((props) => {
     const productsList = _.map(products, (item, index) => {
         const name = _.get(item, ['product', 'value', 'name'])
         const shortage = _.get(item, 'amount') - _.toNumber(_.get(item, ['product', 'value', 'balance']))
-        const firstname = _.get(item, ['extra', 'supply_manager', 'first_name'])
-        const lastname = _.get(item, ['extra', 'supply_manager', 'second_name'])
         const measurement = _.get(item, ['product', 'value', 'measurement', 'name'])
 
         if (shortage > ZERO) {
             return (
                 <li key={index} className="dottedList">
-                    <Col xs={6}>{name}</Col>
-                    <Col xs={3}>{numberFormat(shortage, measurement)}</Col>
-                    <Col xs={3}>{firstname} {lastname}</Col>
+                    <Col xs={7}>{name}</Col>
+                    <Col xs={5}>{numberFormat(shortage, measurement)}</Col>
                 </li>
             )
         }
@@ -206,14 +204,11 @@ const OrderShortageDialog = enhance((props) => {
                     <div className={classes.inContent}>
                         <ul className={classes.modalListTable}>
                             <li className="dottedList">
-                                <Col xs={6}>
+                                <Col xs={7}>
                                     <strong>Наименование</strong>
                                 </Col>
-                                <Col xs={3}>
-                                    <strong>Недостоющее кол-во</strong>
-                                </Col>
-                                <Col xs={3}>
-                                    <strong>Исполнитель</strong>
+                                <Col xs={5}>
+                                    <strong>Недостача</strong>
                                 </Col>
                             </li>
                             {productsList}

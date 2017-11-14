@@ -1,7 +1,7 @@
 import React from 'react'
 import {compose} from 'recompose'
 import RaisedButton from 'material-ui/RaisedButton'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 import Paper from 'material-ui/Paper'
 import {Field, reduxForm} from 'redux-form'
 import injectSheet from 'react-jss'
@@ -77,7 +77,7 @@ const SignInForm = enhance((props) => {
     if (loading) {
         return (
             <Paper className={classes.loader} zDepth={2}>
-                <CircularProgress size={40} thickness={4}/>
+                <Loader size={0.75}/>
             </Paper>
         )
     }

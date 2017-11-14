@@ -13,9 +13,9 @@ export const createSerializer = (data) => {
     const paymentType = _.get(data, ['paymentType'])
     const deliveryMan = _.get(data, ['deliveryMan', 'value'])
     const paymentTerm = 1
-    const paymentDate = moment(_.get(data, ['paymentDate'])).format('YYYY-MM-DD')
-    const deliveryDate = moment(_.get(data, ['deliveryDate'])).format('YYYY-MM-DD')
-    const requestDeadline = moment(_.get(data, ['request_dedline'])).format('YYYY-MM-DD')
+    const paymentDate = _.get(data, ['paymentDate']) ? moment(_.get(data, ['paymentDate'])).format('YYYY-MM-DD') : null
+    const deliveryDate = _.get(data, ['deliveryDate']) ? moment(_.get(data, ['deliveryDate'])).format('YYYY-MM-DD') : null
+    const requestDeadline = _.get(data, ['request_dedline']) ? moment(_.get(data, ['request_dedline'])).format('YYYY-MM-DD') : null
     const dealType = _.get(data, ['dealType']) === 'standart' ? ZERO : ONE
     const market = _.get(data, ['market', 'value'])
     const priceList = _.get(data, ['priceList', 'value'])
