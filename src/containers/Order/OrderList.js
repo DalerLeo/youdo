@@ -27,12 +27,14 @@ import {
     ORDER_RETURN_DIALOG_OPEN,
     ORDER_SHORTAGE_DIALOG_OPEN,
     ORDER_MULTI_EDIT_OPEN,
+    ORDER_RELEASE_DIALOG_OPEN,
     TAB,
     OrderGridList,
     OrderPrint
 } from '../../components/Order'
 const CLIENT_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const CANCEL_ORDER_RETURN_DIALOG_OPEN = 'openCancelConfirmDialog'
+const JUMP_TIME = 1000
 import {
     orderCreateAction,
     orderUpdateAction,
@@ -81,6 +83,7 @@ const enhance = compose(
         const filterForm = _.get(state, ['form', 'OrderFilterForm'])
         const createForm = _.get(state, ['form', 'OrderCreateForm'])
         const multiUpdateForm = _.get(state, ['form', 'OrderMultiUpdateForm'])
+        const releaseForm = _.get(state, ['form', 'OrderReleaseUpdateForm'])
         const clientCreateForm = _.get(state, ['form', 'ClientCreateForm'])
         const discountCreateForm = _.get(state, ['form', 'OrderSetDiscountForm'])
         const returnForm = _.get(state, ['form', 'OrderReturnForm'])
@@ -134,6 +137,7 @@ const enhance = compose(
             editProductsLoading,
             orderCounts,
             orderCountsLoading,
+            releaseForm,
             filterProducts,
             addProductsForm
         }
@@ -141,7 +145,8 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         const except = {
             showCheckboxes: null,
-            openMultiEdit: null
+            openMultiEdit: null,
+            openReleaseDialog: null
         }
         return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
@@ -561,15 +566,7 @@ const enhance = compose(
                     hashHistory.push({pathname, query: filter.getParams({[ORDER_MULTI_EDIT_OPEN]: false})})
                     dispatch(orderListFetchAction(filter))
                 }).catch((error) => {
-                    const errorWhole = _.map(error, (item, index) => {
-                        return <p key={index} style={{marginBottom: '10px'}}>{(index !== 'non_field_errors' || _.isNumber(index)) && <b style={{textTransform: 'uppercase'}}>{index}:</b>} {item}</p>
-                    })
-
-                    dispatch(openErrorAction({
-                        message: <div style={{padding: '0 30px'}}>
-                                {errorWhole}
-                            </div>
-                    }))
+                    dispatch(openErrorAction({message: error}))
                 })
         },
 
@@ -670,6 +667,49 @@ const enhance = compose(
                     }))
                 })
         },
+        handleOpenReleaseDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[ORDER_RELEASE_DIALOG_OPEN]: true})})
+        },
+
+        handleCloseReleaseDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[ORDER_RELEASE_DIALOG_OPEN]: false})})
+        },
+        handleSubmitReleaseDialog: props => () => {
+            const {dispatch, releaseForm, filter, location: {pathname, query}} = props
+            const orders = _.get(query, 'select')
+            const date = moment(_.get(releaseForm, ['values', 'deliveryDate'])).format('YYYY-MM-DD')
+            const deliveryMan = _.get(releaseForm, ['values', 'deliveryMan'])
+            return dispatch(orderMultiUpdateAction(_.get(releaseForm, 'values'), orders, true))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Выбранные заказы успешно сформировано'}))
+                })
+                .then(() => {
+                    hashHistory.push({pathname, query: filter.getParams({[ORDER_RELEASE_DIALOG_OPEN]: false})})
+                    dispatch(orderListFetchAction(filter))
+                })
+                .then(() => {
+                    setTimeout(() => {
+                        hashHistory.push({
+                            pathname: ROUTER.STOCK_TRANSFER_LIST_URL,
+                            query: filter.getParams({
+                                'showCheckboxes': null,
+                                'select': null,
+                                'beginDate': date,
+                                'endDate': date,
+                                'deliveryMan': deliveryMan.value,
+                                'ids': orders,
+                                'toggle': 'delivery'
+                            })})
+                    }, JUMP_TIME)
+                })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
+                })
+        },
         handleGetExcelDocument: props => () => {
             const {filter} = props
             const print = true
@@ -722,6 +762,7 @@ const OrderList = enhance((props) => {
     const openUpdateDialog = toBoolean(_.get(location, ['query', ORDER_UPDATE_DIALOG_OPEN]))
     const openMultiUpdateDialog = toBoolean(_.get(location, ['query', ORDER_MULTI_EDIT_OPEN]))
     const openCancelOrderReturnDialog = _.toInteger(_.get(location, ['query', CANCEL_ORDER_RETURN_DIALOG_OPEN]))
+    const openReleaseDialog = toBoolean(_.get(location, ['query', ORDER_RELEASE_DIALOG_OPEN]))
 
     const client = _.toInteger(filter.getParam(ORDER_FILTER_KEY.CLIENT))
     const dept = _.toInteger(filter.getParam(ORDER_FILTER_KEY.DEPT))
@@ -1059,6 +1100,13 @@ const OrderList = enhance((props) => {
         return o.name === 'change_any_price'
     }))
 
+    const releaseDialog = {
+        openReleaseDialog,
+        handleOpenReleaseDialog: props.handleOpenReleaseDialog,
+        handleCloseReleaseDialog: props.handleCloseReleaseDialog,
+        handleSubmitReleaseDialog: props.handleSubmitReleaseDialog
+    }
+
     document.getElementById('wrapper').style.height = '100%'
     const order = true
     return (
@@ -1092,6 +1140,7 @@ const OrderList = enhance((props) => {
                 handleSubmitDiscountDialog={props.handleSubmitDiscountDialog}
                 handleSubmitSetZeroDiscountDialog={props.handleSubmitSetZeroDiscountDialog}
                 isSuperUser={isSuperUser}
+                releaseDialog={releaseDialog}
                 addProductDialog={addProductDialog}
             />
         </Layout>

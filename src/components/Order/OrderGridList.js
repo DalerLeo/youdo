@@ -9,6 +9,7 @@ import GridList from '../GridList'
 import Container from '../Container'
 import OrderCreateDialog from './OrderCreateDialog'
 import OrderMultiUpdateDialog from './OrderMultiUpdateDialog'
+import OrderReleaseDialog from './OrderReleaseDialog'
 import OrderAddProductsDialog from './OrderAddProductsDialog'
 import OrderFilterForm from './OrderFilterForm'
 import OrderDetails from './OrderDetails'
@@ -33,6 +34,7 @@ import Payment from 'material-ui/svg-icons/action/credit-card'
 import InProcess from 'material-ui/svg-icons/device/access-time'
 import Print from 'material-ui/svg-icons/action/print'
 import Excel from 'material-ui/svg-icons/action/assessment'
+import OpenInNew from 'material-ui/svg-icons/action/open-in-new'
 import Edit from 'material-ui/svg-icons/editor/mode-edit'
 import Done from 'material-ui/svg-icons/action/check-circle'
 import RefreshIcon from 'material-ui/svg-icons/action/cached'
@@ -204,6 +206,7 @@ const OrderGridList = enhance((props) => {
         clientId,
         isSuperUser,
         getExcelDocument,
+        releaseDialog,
         addProductDialog
     } = props
 
@@ -478,6 +481,11 @@ const OrderGridList = enhance((props) => {
                     <Edit color="#666"/>
                 </IconButton>
             </Tooltip>
+            <Tooltip position="left" text="Сформироват Релиз">
+                <IconButton onTouchTap={releaseDialog.handleOpenReleaseDialog}>
+                    <OpenInNew color="#666"/>
+                </IconButton>
+            </Tooltip>
         </div>
     )
 
@@ -557,6 +565,11 @@ const OrderGridList = enhance((props) => {
                 loading={multiUpdateDialog.shortageLoading}
                 onClose={multiUpdateDialog.handleCloseMultiUpdate}
                 onSubmit={multiUpdateDialog.handleSubmitMultiUpdate}
+            />
+            <OrderReleaseDialog
+                open={releaseDialog.openReleaseDialog}
+                onClose={releaseDialog.handleCloseReleaseDialog}
+                onSubmit={releaseDialog.handleSubmitReleaseDialog}
             />
 
             <OrderAddProductsDialog
@@ -666,6 +679,13 @@ OrderGridList.propTypes = {
         handleCloseMultiUpdate: PropTypes.func.isRequired,
         handleSubmitMultiUpdate: PropTypes.func.isRequired
     }).isRequired,
+    getExcelDocument: PropTypes.func.isRequired,
+    releaseDialog: PropTypes.shape({
+        openReleaseDialog: PropTypes.bool.isRequired,
+        handleOpenReleaseDialog: PropTypes.func.isRequired,
+        handleCloseReleaseDialog: PropTypes.func.isRequired,
+        handleSubmitReleaseDialog: PropTypes.func.isRequired
+    }).isRequired,
     addProductDialog: PropTypes.shape({
         openAddProductDialog: PropTypes.bool,
         filter: PropTypes.object,
@@ -674,8 +694,7 @@ OrderGridList.propTypes = {
         handleOpenAddProduct: PropTypes.func,
         handleCloseAddProduct: PropTypes.func,
         handleSubmitAddProduct: PropTypes.func
-    }),
-    getExcelDocument: PropTypes.func.isRequired
+    })
 }
 
 export default OrderGridList

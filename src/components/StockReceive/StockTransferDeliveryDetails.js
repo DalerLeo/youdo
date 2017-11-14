@@ -137,6 +137,8 @@ const iconStyle = {
     }
 }
 
+const ZERO = 0
+const ONE = 1
 const StockTransferDetails = enhance((props) => {
     const {
         detailData,
@@ -155,14 +157,24 @@ const StockTransferDetails = enhance((props) => {
             </div>
         )
     }
+    let orderNo = ZERO
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const products = _.get(detailData, 'products')
-    const orders = _.map(_.get(detailData, 'orders'), (item) => {
-        return <Link style={{marginRight: 5}} target="_blank" to={{
+    const firstMeasure = _.get(products, ['0', 'measurement', 'name'])
+    let measurementCheck = true
+
+    const orders = _.map(_.get(detailData, 'orders'), (item, index) => {
+        orderNo = index + ONE
+        return <Link key={item} style={{marginRight: 5}} target="_blank" to={{
             pathname: sprintf(ROUTES.ORDER_ITEM_PATH, item),
             query: {search: item}
         }}>{<strong>{item}</strong>}</Link>
     })
+
+    const totalCalPrice = _.sumBy(products, (item) => {
+        return _.toNumber(item.totalPrice)
+    })
+    const totalAmount = _.sumBy(products, 'count')
     const deliveryMan = _.get(detailData, 'deliveryMan', 'id')
     const deliveryManName = deliveryMan
         ? _.get(detailData, ['deliveryMan', 'firstName']) + ' ' + _.get(detailData, ['deliveryMan', 'secondName'])
@@ -203,7 +215,7 @@ const StockTransferDetails = enhance((props) => {
                     <div className={classes.content}>
                         <div className={classes.ordersData}>
                             <div>Склад: <strong>{currentDeliverer.stock.name}</strong></div>
-                            <div>Показаны товары по следующим заказам: {orders}</div>
+                            <div>Показаны товары по следующим заказам ( <span style={{fontWeight: '600'}}>{orderNo}</span> ): {orders}</div>
                         </div>
                         <div className={classes.leftSide}>
                             <Row className='dottedList'>
@@ -219,6 +231,10 @@ const StockTransferDetails = enhance((props) => {
                                 const amount = numberFormat(_.get(item, 'count'), measurement)
                                 const type = _.get(item, ['type', 'name'])
                                 const totalPrice = numberFormat(_.get(item, 'totalPrice'), primaryCurrency)
+
+                                if (measurementCheck) {
+                                    measurementCheck = (firstMeasure === measurement)
+                                }
                                 return (
                                     <Row key={productId} className='dottedList'>
                                         <Col xs={5}>{name}</Col>
@@ -228,6 +244,16 @@ const StockTransferDetails = enhance((props) => {
                                     </Row>
                                 )
                             })}
+                            <Row className='dottedList'>
+                                <Col xs={8}><span style={{fontWeight: '600'}}>Итого:</span></Col>
+                                <Col xs={2}>{measurementCheck
+                                    ? <span style={{fontWeight: '600'}}>{numberFormat(totalAmount, firstMeasure)}</span>
+                                    : null}
+                                </Col>
+                                <Col xs={2}>
+                                    <span style={{fontWeight: '600'}}>{numberFormat(totalCalPrice, primaryCurrency)}</span>
+                                </Col>
+                            </Row>
                         </div>
                     </div>
                 </div>

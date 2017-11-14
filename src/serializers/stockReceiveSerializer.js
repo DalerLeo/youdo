@@ -69,23 +69,24 @@ export const listFilterSerializer = (data, history, outHistory) => {
     }
 }
 
-export const deliveryItemSerializer = (dateRange, detailId) => {
+export const deliveryItemSerializer = (dateRange, ids) => {
     return {
         'begin_date': _.get(dateRange, 'fromDate'),
         'end_date': _.get(dateRange, 'toDate'),
-        'delivery_man': detailId > ZERO ? detailId : null
+        ids
     }
 }
-export const deliveryItemDetailsSerializer = (dateRange, detailId, stockId) => {
+export const deliveryItemDetailsSerializer = (dateRange, detailId, stockId, ids) => {
     return {
         'begin_date': _.get(dateRange, 'fromDate'),
         'end_date': _.get(dateRange, 'toDate'),
         'delivery_man': detailId > ZERO ? detailId : null,
-        'stock': stockId
+        'stock': stockId,
+        ids
     }
 }
 
-export const deliveryTransferSerializer = (details, stock, dateRange) => {
+export const deliveryTransferSerializer = (details, stock, dateRange, ids) => {
     const orders = _.get(details, 'orders')
     const deliveryMan = _.get(details, ['deliveryMan', 'id'])
     return {
@@ -93,7 +94,8 @@ export const deliveryTransferSerializer = (details, stock, dateRange) => {
         'delivery_man': deliveryMan,
         stock,
         'begin_date': _.get(dateRange, 'beginDate'),
-        'end_date': _.get(dateRange, 'endDate')
+        'end_date': _.get(dateRange, 'endDate'),
+        'custom_orders': Boolean(ids)
     }
 }
 

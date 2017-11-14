@@ -39,6 +39,7 @@ import {openErrorAction} from '../../actions/error'
 const TOGGLE = 'toggle'
 const TYPE = 'openType'
 const ZERO = 0
+const ONE = 1
 const defaultDate = moment().format('YYYY-MM-DD')
 const enhance = compose(
     connect((state, props) => {
@@ -102,13 +103,14 @@ const enhance = compose(
         const nextToggle = _.get(nextProps, 'toggle')
         return (toggle !== nextToggle && nextToggle === 'delivery') ||
             (props.filterDelivery.filterRequest(except) !== nextProps.filterDelivery.filterRequest(except) && nextToggle === 'delivery')
-    }, ({dispatch, toggle, beginDate, endDate}) => {
+    }, ({dispatch, toggle, beginDate, endDate, location: {query}}) => {
+        const ids = _.get(query, 'ids')
         const dateRange = {
             fromDate: beginDate,
             toDate: endDate
         }
         if (toggle === 'delivery') {
-            dispatch(stockTransferDeliveryListFetchAction(dateRange))
+            dispatch(stockTransferDeliveryListFetchAction(dateRange, ids))
         }
     }),
 
@@ -125,14 +127,14 @@ const enhance = compose(
     }, ({dispatch, beginDate, endDate, toggle, params, location}) => {
         const detailId = _.get(params, 'stockTransferId') ? _.toInteger(_.get(params, 'stockTransferId')) : false
         const stockId = _.get(location, ['query', TYPE])
-
+        const ids = _.get(location, ['query', 'ids'])
         const dateRange = {
             fromDate: beginDate,
             toDate: endDate
         }
         if (toggle === 'delivery') {
             if (_.isNumber(detailId)) {
-                dispatch(stockTransferDeliveryItemFetchAction(dateRange, detailId, stockId))
+                dispatch(stockTransferDeliveryItemFetchAction(dateRange, detailId, stockId, ids))
             }
         }
     }),
@@ -233,11 +235,12 @@ const enhance = compose(
         handleSubmitDeliveryConfirmDialog: props => () => {
             const {setOpenConfirmTransfer, dispatch, deliveryDetail, location, beginDate, endDate} = props
             const stockId = _.get(location, ['query', TYPE])
+            const ids = _.get(location, ['query', 'ids'])
             const dateRange = {
                 'beginDate': beginDate,
                 'endDate': endDate
             }
-            return dispatch(stockTransferDeliveryTransferAction(deliveryDetail, stockId, dateRange))
+            return dispatch(stockTransferDeliveryTransferAction(deliveryDetail, stockId, dateRange, ids))
                 .then(() => {
                     dispatch(stockTransferDeliveryListFetchAction(dateRange))
                     setOpenConfirmTransfer(false)
@@ -438,6 +441,7 @@ const StockTransferList = enhance((props) => {
             _.toInteger(_.get(item, ['stock', 'id'])) === _.get(deliveryDetailsData, 'stock')
     })
     const orders = _.join(_.get(deliveryDetailsData, ['data', 'orders']), ', ')
+
     if (openPrint) {
         document.getElementById('wrapper').style.height = 'auto'
 
@@ -453,6 +457,7 @@ const StockTransferList = enhance((props) => {
                 deliveryDetailsData={deliveryDetailsData}
                 currentDeliverer={currentDeliverer}
                 orders={orders}
+                orderNo={_.findLastIndex(_.get(deliveryDetailsData, ['data', 'orders'])) + ONE}
                 dataRange={_.get(filterDialog.initialValues, 'dateRange')}/>
 
         )

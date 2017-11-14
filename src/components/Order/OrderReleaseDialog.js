@@ -124,7 +124,7 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'OrderMultiUpdateForm',
+        form: 'OrderReleaseUpdateForm',
         enableReinitialize: true
     }),
     withReducer('state', 'dispatch', (state, action) => {
@@ -132,7 +132,7 @@ const enhance = compose(
     }, {open: false}),
 )
 
-const OrderMultiUpdateDialog = enhance((props) => {
+const OrderReleaseDialog = enhance((props) => {
     const {open, onSubmit, loading, onClose, classes, handleSubmit, givenOrDelivery} = props
 
     return (
@@ -144,7 +144,7 @@ const OrderMultiUpdateDialog = enhance((props) => {
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>Изменение выбранных заказов</span>
+                <span>Сформироват релиз</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -175,17 +175,9 @@ const OrderMultiUpdateDialog = enhance((props) => {
                                     label="Дата доставки"
                                     fullWidth={true}/>
                             </div>
-                            <div className={classes.field}>
-                                <Field
-                                    name="paymentDate"
-                                    component={DateField}
-                                    className={classes.inputDateCustom}
-                                    label="Дата оплаты"
-                                    fullWidth={true}/>
-                            </div>
                             <div className={classes.bottomButton}>
                                 <FlatButton
-                                    label={'Изменить заказы'}
+                                    label={'Сформироват релиз'}
                                     labelStyle={{fontSize: '13px'}}
                                     className={classes.actionButton}
                                     primary={true}
@@ -198,9 +190,8 @@ const OrderMultiUpdateDialog = enhance((props) => {
         </Dialog>
     )
 })
-OrderMultiUpdateDialog.propTypes = {
+OrderReleaseDialog.propTypes = {
     open: PropTypes.bool.isRequired,
-    onClose: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired
+    onClose: PropTypes.func.isRequired
 }
-export default OrderMultiUpdateDialog
+export default OrderReleaseDialog
