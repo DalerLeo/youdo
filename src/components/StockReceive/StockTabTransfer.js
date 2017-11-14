@@ -303,7 +303,7 @@ const StockTabTransfer = enhance((props) => {
                 message={'Передать доставщику?'}
                 onClose={confirmTransfer.handleCloseDeliveryConfirmDialog}
                 onSubmit={confirmTransfer.handleSubmitDeliveryConfirmDialog}
-                open={_.toInteger(confirmTransfer.openConfirmTransfer)}
+                open={_.toInteger(confirmTransfer.openConfirmTransfer) > ZERO}
             />
         </div>
     )

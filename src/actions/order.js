@@ -237,8 +237,8 @@ export const orderGetCounts = () => {
     }
 }
 
-export const orderMultiUpdateAction = (data, orders) => {
-    const requestData = serializers.multiUpdateSerializer(data, orders)
+export const orderMultiUpdateAction = (data, orders, release) => {
+    const requestData = serializers.multiUpdateSerializer(data, orders, release)
     const payload = axios()
         .post(API.ORDER_MULTI_UPDATE, requestData)
         .then((response) => {

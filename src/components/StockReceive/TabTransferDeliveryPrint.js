@@ -97,13 +97,19 @@ const enhance = compose(
 )
 
 const TabTransferDeliveryPrint = enhance((props) => {
-    const {classes, deliveryDetailsData, currentDeliverer, dataRange, orders} = props
+    const {classes, deliveryDetailsData, currentDeliverer, dataRange, orders, orderNo} = props
+    let measurementCheck = true
     const loading = _.get(deliveryDetailsData, 'deliveryDetailLoading')
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const startDay = dateFormat(_.get(dataRange, 'startDate'))
     const endDay = dateFormat(_.get(dataRange, 'endDate'))
     const deliveryMan = _.get(deliveryDetailsData, ['data', 'deliveryMan'])
     const stock = _.get(currentDeliverer, ['stock', 'name'])
+    const firstMeasure = _.get(deliveryDetailsData, ['data', 'products', '0', 'measurement', 'name'])
+    const totalCalPrice = _.sumBy(_.get(deliveryDetailsData, ['data', 'products']), (item) => {
+        return _.toNumber(item.totalPrice)
+    })
+    const totalAmount = _.sumBy(_.get(deliveryDetailsData, ['data', 'products']), 'count')
     const deliveryManName = deliveryMan
         ? _.get(deliveryMan, 'firstName') + ' ' + _.get(deliveryMan, 'secondName')
         : 'Не определен'
@@ -123,7 +129,7 @@ const TabTransferDeliveryPrint = enhance((props) => {
                         <div><strong>{startDay} - {endDay}</strong></div>
                     </div>
                     <div><strong>Склад:</strong> <span>{stock}</span></div>
-                    <div><strong>Показаны товары по следующим заказам:</strong> <span>{orders}</span></div>
+                    <div><strong>Показаны товары по следующим заказам ( <strong>{orderNo}</strong> ):</strong> <span>{orders}</span></div>
                 </header>
                 <div className={classes.products}>
                     <Row>
@@ -141,6 +147,9 @@ const TabTransferDeliveryPrint = enhance((props) => {
                         const totalPrice = numberFormat(_.get(item, 'totalPrice'), primaryCurrency)
                         const type = _.get(item, ['type', 'name'])
                         const amount = numberFormat(_.get(item, 'count'), measurment)
+                        if (measurementCheck) {
+                            measurementCheck = (firstMeasure === measurment)
+                        }
 
                         return (
                             <Row key={productId}>
@@ -152,6 +161,13 @@ const TabTransferDeliveryPrint = enhance((props) => {
                             </Row>
                         )
                     })}
+                    <Row>
+                        <Col xs={3}><span style={{fontWeight: '600'}}>Итого :</span></Col>
+                        <Col xs={1}></Col>
+                        <Col xs={3}></Col>
+                        <Col xs={2}>{measurementCheck ? <span style={{fontWeight: '600'}}>{numberFormat(totalAmount, firstMeasure)}</span> : null}</Col>
+                        <Col xs={2}><span style={{fontWeight: '600'}}>{numberFormat(totalCalPrice, primaryCurrency)}</span></Col>
+                    </Row>
                 </div>
             </div>
             <IconButton onTouchTap={deliveryDetailsData.handleCloseDeliveryPrintDialog} className="printCloseBtn">
