@@ -380,7 +380,7 @@ const SupplyDetails = enhance((props) => {
                                     <span>{agent}</span>
                                 </li>
                                 <li>
-                                    <span>Дата доставки</span>
+                                    <span>Дата доставки:</span>
                                     <span>{dateDelivery}</span>
                                 </li>
 
