@@ -52,6 +52,24 @@ export const listFilterSerializer = (data, history, outHistory) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
     const productType = _.get(data, 'typeChild') || _.get(data, 'typeParent')
+    if (history) {
+        return {
+            'page': _.get(defaultData, 'page'),
+            'page_size': _.get(defaultData, 'pageSize'),
+            'search': _.get(defaultData, 'search'),
+            'content_type': outHistory ? _.get(defaultData, 'type') : null,
+            'accepted_by': _.get(defaultData, 'acceptedBy'),
+            'stock': _.get(defaultData, 'stock'),
+            'type': outHistory ? _.get(defaultData, 'status') : _.get(defaultData, 'type'),
+            'product': _.get(defaultData, 'product'),
+            'product_type': productType,
+            'accepted_time_0': _.get(defaultData, 'fromDate'),
+            'accepted_time_1': _.get(defaultData, 'toDate'),
+            'ordering': ordering && orderingSnakeCase(ordering),
+            history
+
+        }
+    }
     return {
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),
@@ -65,7 +83,6 @@ export const listFilterSerializer = (data, history, outHistory) => {
         'end_date': _.get(defaultData, 'toDate'),
         'ordering': ordering && orderingSnakeCase(ordering),
         history
-
     }
 }
 

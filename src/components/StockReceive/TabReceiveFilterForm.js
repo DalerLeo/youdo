@@ -12,7 +12,8 @@ import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import {
     DateToDateField,
     StockSearchField,
-    StockReceiveTypeSearchFiled
+    StockReceiveTypeSearchFiled,
+    UsersSearchField
 } from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
@@ -21,6 +22,7 @@ export const TAB_RECEIVE_FILTER_KEY = {
     TYPE: 'type',
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate',
+    ACCEPTED_BY: 'acceptedBy',
     STOCK: 'stock'
 }
 
@@ -116,7 +118,7 @@ const enhance = compose(
 )
 
 const TabReceiveFilterForm = enhance((props) => {
-    const {classes, filterDialog, getCount, handleSubmit} = props
+    const {classes, filterDialog, getCount, handleSubmit, history} = props
     const filterCounts = getCount()
     if (!filterDialog.openFilterDialog) {
         if (filterCounts) {
@@ -172,6 +174,14 @@ const TabReceiveFilterForm = enhance((props) => {
                             label="Тип"
                             fullWidth={true}/>
                     </div>
+                    {history && <div>
+                        <Field
+                            className={classes.inputFieldCustom}
+                            name="acceptedBy"
+                            component={UsersSearchField}
+                            label="Принял"
+                            fullWidth={true}/>
+                    </div>}
                     <div>
                         <Field
                             className={classes.inputFieldCustom}

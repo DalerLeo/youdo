@@ -47,13 +47,19 @@ const listHeader = [
         sorting: false,
         name: 'measurement',
         title: 'Мера',
+        xs: 1
+    },
+    {
+        sorting: false,
+        name: 'priority',
+        title: 'Порядок',
         xs: 2
     },
     {
         sorting: true,
         name: 'created_date',
         title: 'Дата создания',
-        xs: 2
+        xs: 1
     }
 ]
 
@@ -113,6 +119,7 @@ const ProductGridList = enhance((props) => {
         const type = _.get(item, ['type', 'name']) || 'N/A'
         const image = _.get(item, ['image', 'file'])
         const measurement = _.get(item, ['measurement', 'name']) || ''
+        const priority = _.get(item, 'priority') || 'не установлен'
         const createdDate = dateFormat(_.get(item, 'createdDate'))
         const iconButton = (
             <IconButton style={{padding: '0 12px'}}>
@@ -130,8 +137,9 @@ const ProductGridList = enhance((props) => {
                 </Col>
                 <Col xs={2}>{codeProduct}</Col>
                 <Col xs={2}>{type}</Col>
-                <Col xs={2}>{measurement}</Col>
+                <Col xs={1}>{measurement}</Col>
                 <Col xs={2}>{createdDate}</Col>
+                <Col xs={1}>{priority}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
                     <IconMenu
                         menuItemStyle={{fontSize: '13px'}}
