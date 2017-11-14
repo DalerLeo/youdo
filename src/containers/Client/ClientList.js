@@ -26,6 +26,7 @@ import {
 import {openErrorAction} from '../../actions/error'
 import {openSnackbarAction} from '../../actions/snackbar'
 
+const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -69,10 +70,13 @@ const enhance = compose(
         return clientId && _.get(props, ['params', 'clientId']) === clientId && props.detailLoading !== nextProps.detailLoading
     }, ({dispatch, detail, list, params}) => {
         const clientId = _.toInteger(_.get(params, 'clientId'))
-        return dispatch(updateStore(clientId, list, actionTypes.CLIENT_LIST, {
-            address: _.get(detail, 'address'),
-            name: _.get(detail, 'name')
-        }))
+        if (clientId > ZERO) {
+            return dispatch(updateStore(clientId, list, actionTypes.CLIENT_LIST, {
+                address: _.get(detail, 'address'),
+                name: _.get(detail, 'name')
+            }))
+        }
+        return null
     }),
 
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),

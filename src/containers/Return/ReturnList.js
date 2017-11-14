@@ -33,6 +33,7 @@ import {
 } from '../../actions/return'
 import {openSnackbarAction} from '../../actions/snackbar'
 
+const ZERO = 0
 const TWO = 2
 
 const enhance = compose(
@@ -93,11 +94,14 @@ const enhance = compose(
         return returnId && _.get(props, ['params', 'returnId']) === returnId && props.detailLoading !== nextProps.detailLoading
     }, ({dispatch, detail, list, params}) => {
         const returnId = _.toInteger(_.get(params, 'returnId'))
-        return dispatch(updateStore(returnId, list, actionTypes.RETURN_LIST, {
-            stock: _.get(detail, 'stock'),
-            comment: _.get(detail, 'comment'),
-            totalPrice: _.get(detail, 'totalPrice')
-        }))
+        if (returnId > ZERO) {
+            return dispatch(updateStore(returnId, list, actionTypes.RETURN_LIST, {
+                stock: _.get(detail, 'stock'),
+                comment: _.get(detail, 'comment'),
+                totalPrice: _.get(detail, 'totalPrice')
+            }))
+        }
+        return null
     }),
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
     withState('openPrint', 'setOpenPrint', false),

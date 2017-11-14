@@ -88,14 +88,16 @@ const enhance = compose(
         const returnLoading = _.get(state, ['order', 'return', 'loading'])
         const returnDataLoading = _.get(state, ['order', 'return', 'loading'])
         const products = _.get(state, ['form', 'OrderCreateForm', 'values', 'products'])
-        const editProducts = _.get(state, ['order', 'updateProducts', 'data', 'results'])
+        const editProducts = _.get(state, ['order', 'updateProducts', 'data'])
         const editProductsLoading = _.get(state, ['order', 'updateProducts', 'loading'])
         const filter = filterHelper(list, pathname, query)
+        const filterProducts = filterHelper(editProducts, pathname, query, {'page': 'pdPage', 'pageSize': 'pdPageSize'})
         const userGroups = _.get(state, ['authConfirm', 'data', 'groups'])
         const defaultUser = _.get(state, ['authConfirm', 'data', 'id'])
         const selectedProduct = _.get(state, ['form', 'OrderCreateForm', 'values', 'product', 'value'])
         const paymentType = _.get(state, ['form', 'OrderCreateForm', 'values', 'paymentType'])
         const isSuperUser = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
+        const addProductsForm = _.get(state, ['form', 'OrderAddProductsForm'])
 
         return {
             list,
@@ -131,7 +133,9 @@ const enhance = compose(
             isSuperUser,
             editProductsLoading,
             orderCounts,
-            orderCountsLoading
+            orderCountsLoading,
+            filterProducts,
+            addProductsForm
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -240,14 +244,30 @@ const enhance = compose(
         return orderId && _.get(props, ['params', 'orderId']) === orderId && props.detailLoading !== nextProps.detailLoading
     }, ({dispatch, detail, list, params}) => {
         const orderId = _.toInteger(_.get(params, 'orderId'))
-        return dispatch(updateStore(orderId, list, actionTypes.ORDER_LIST, {
-            client: _.get(detail, 'client'),
-            market: {name: _.get(detail, ['market', 'name']), id: _.get(detail, ['market', 'id'])},
-            user: _.get(detail, 'user'),
-            totalPrice: _.get(detail, 'totalPrice'),
-            totalBalance: _.get(detail, 'totalBalance'),
-            dateDelivery: _.get(detail, 'dateDelivery')
-        }))
+        if (orderId > ZERO) {
+            return dispatch(updateStore(orderId, list, actionTypes.ORDER_LIST, {
+                client: _.get(detail, 'client'),
+                market: {name: _.get(detail, ['market', 'name']), id: _.get(detail, ['market', 'id'])},
+                user: _.get(detail, 'user'),
+                totalPrice: _.get(detail, 'totalPrice'),
+                totalBalance: _.get(detail, 'totalBalance'),
+                dateDelivery: _.get(detail, 'dateDelivery')
+            }))
+        }
+        return null
+    }),
+
+    withState('openAddProductDialog', 'setOpenAddProductDialog', false),
+    withPropsOnChange((props, nextProps) => {
+        const addProduct = _.get(props, 'openAddProductDialog')
+        const nextAddProduct = _.get(nextProps, 'openAddProductDialog')
+        return addProduct !== nextAddProduct && nextAddProduct === true
+    }, ({dispatch, createForm}) => {
+        const priceList = _.get(createForm, ['values', 'priceList', 'value'])
+        const pageSize = 10
+        if (priceList) {
+            dispatch(orderProductMobileAction(null, priceList, pageSize))
+        }
     }),
 
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
@@ -477,7 +497,8 @@ const enhance = compose(
                         pathname,
                         query: filter.getParams({
                             [ORDER_SHORTAGE_DIALOG_OPEN]: false,
-                            [ORDER_CREATE_DIALOG_OPEN]: false
+                            [ORDER_CREATE_DIALOG_OPEN]: false,
+                            [ORDER_UPDATE_DIALOG_OPEN]: false
                         })
                     })
                     dispatch(orderListFetchAction(filter))
@@ -551,6 +572,55 @@ const enhance = compose(
                     }))
                 })
         },
+
+        handleOpenAddProduct: props => () => {
+            const {setOpenAddProductDialog} = props
+            setOpenAddProductDialog(true)
+        },
+
+        handleCloseAddProduct: props => () => {
+            const {setOpenAddProductDialog} = props
+            setOpenAddProductDialog(false)
+        },
+
+        handleSubmitAddProduct: props => () => {
+            const {setOpenAddProductDialog, addProductsForm, editProducts, dispatch, createForm} = props
+            const existingProducts = _.get(createForm, ['values', 'products'])
+            const values = _.get(addProductsForm, ['values', 'product'])
+            const getProductData = (id) => {
+                return _.find(_.get(editProducts, 'results'), {'id': id})
+            }
+            const newProductsArray = []
+            _.map(values, (item, index) => {
+                const id = _.toInteger(index)
+                const product = getProductData(id)
+                const amount = _.get(item, 'amount')
+                if (amount) {
+                    newProductsArray.push({
+                        amount: _.get(item, 'amount'),
+                        cost: _.get(item, 'price'),
+                        customPrice: _.get(product, 'customPrice'),
+                        price: _.get(item, 'price'),
+                        product: {
+                            id: id,
+                            value: {
+                                id: _.get(product, 'id'),
+                                name: _.get(product, 'name'),
+                                balance: _.get(product, 'balance'),
+                                measurement: {
+                                    id: _.get(product, ['measurement', 'id']),
+                                    name: _.get(product, ['measurement', 'name'])
+                                }
+                            },
+                            text: _.get(product, 'name')
+                        }
+                    })
+                }
+            })
+            dispatch(change('OrderCreateForm', 'products', _.concat(existingProducts, newProductsArray)))
+            setOpenAddProductDialog(false)
+        },
+
         handleOpenCreateClientDialog: props => () => {
             const {filter} = props
             hashHistory.push({pathname: [ROUTER.SHOP_LIST_URL], query: filter.getParams({[CLIENT_CREATE_DIALOG_OPEN]: true})})
@@ -639,7 +709,9 @@ const OrderList = enhance((props) => {
         editProducts,
         editProductsLoading,
         orderCounts,
-        orderCountsLoading
+        orderCountsLoading,
+        openAddProductDialog,
+        filterProducts
     } = props
     const openFilterDialog = toBoolean(_.get(location, ['query', ORDER_FILTER_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', ORDER_CREATE_DIALOG_OPEN]))
@@ -733,11 +805,11 @@ const OrderList = enhance((props) => {
 
     const withoutBonusProducts = _.filter(_.get(detail, 'products'), {'isBonus': false})
     const getBalance = (id) => {
-        const foundProduct = _.find(editProducts, {'id': id})
+        const foundProduct = _.find(_.get(editProducts, 'results'), {'id': id})
         return _.toInteger(_.get(foundProduct, 'balance'))
     }
     const getPrice = (id) => {
-        const foundProduct = _.find(editProducts, {'id': id})
+        const foundProduct = _.find(_.get(editProducts, 'results'), {'id': id})
         return {
             cashPrice: _.get(foundProduct, 'cashPrice'),
             transferPrice: _.get(foundProduct, 'transferPrice')
@@ -762,7 +834,6 @@ const OrderList = enhance((props) => {
                 },
                 text: _.get(item, ['product', 'name'])
             }
-
         }
     })
     const updateDialog = {
@@ -829,19 +900,23 @@ const OrderList = enhance((props) => {
         handleCloseUpdateDialog: props.handleCloseUpdateDialog,
         handleSubmitUpdateDialog: props.handleSubmitUpdateDialog
     }
-    let givenOrDelivery = false
-    let cancelled = false
-    if (orders) {
-        const ordersArray = orders.split('-')
-        _.map(ordersArray, (item) => {
-            const statusItem = _.toInteger(_.get((_.find(_.get(list, 'results'), {'id': _.toInteger(item)})), 'status'))
-            if (statusItem === TWO || statusItem === THREE) {
-                givenOrDelivery = true
-            } else if (statusItem === FOUR) {
-                cancelled = true
-            }
+
+    const givenOrDelivery = _.includes(_
+        .chain(orders)
+        .split('-')
+        .map((item) => {
+            const statusItem = _.toInteger(_.get(_.find(_.get(list, 'results'), {'id': _.toInteger(item)}), 'status'))
+            return (statusItem === TWO || statusItem === THREE)
         })
-    }
+        .value(), true)
+    const cancelled = _.includes(_
+        .chain(orders)
+        .split('-')
+        .map((item) => {
+            const statusItem = _.toInteger(_.get(_.find(_.get(list, 'results'), {'id': _.toInteger(item)}), 'status'))
+            return statusItem === FOUR
+        })
+        .value(), true)
 
     const multiUpdateDialog = {
         givenOrDelivery,
@@ -943,6 +1018,35 @@ const OrderList = enhance((props) => {
         handleClosePrintDialog: props.handleClosePrintDialog
     }
 
+    const addProductDialog = {
+        initialValues: (() => {
+            if (!editProducts) {
+                return {}
+            }
+            const paymentType = _.get(props, ['createForm', 'values', 'paymentType'])
+            const productValue = {}
+            _.map(_.get(editProducts, 'results'), (item) => {
+                const id = _.get(item, 'id')
+                const price = paymentType === 'cash'
+                    ? _.toNumber(_.get(item, 'cashPrice'))
+                    : paymentType === 'bank'
+                        ? _.toNumber(_.get(item, 'transferPrice'))
+                        : ''
+                productValue[id] = {price: price}
+            })
+            return {
+                product: productValue
+            }
+        })(),
+        openAddProductDialog,
+        filter: filterProducts,
+        data: _.get(editProducts, 'results'),
+        loading: editProductsLoading,
+        handleOpenAddProduct: props.handleOpenAddProduct,
+        handleCloseAddProduct: props.handleCloseAddProduct,
+        handleSubmitAddProduct: props.handleSubmitAddProduct
+    }
+
     if (openPrint) {
         document.getElementById('wrapper').style.height = 'auto'
 
@@ -988,6 +1092,7 @@ const OrderList = enhance((props) => {
                 handleSubmitDiscountDialog={props.handleSubmitDiscountDialog}
                 handleSubmitSetZeroDiscountDialog={props.handleSubmitSetZeroDiscountDialog}
                 isSuperUser={isSuperUser}
+                addProductDialog={addProductDialog}
             />
         </Layout>
     )

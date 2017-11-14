@@ -112,13 +112,16 @@ const enhance = compose(
         return shopId && _.get(props, ['params', 'shopId']) === shopId && props.detailLoading !== nextProps.detailLoading
     }, ({dispatch, detail, list, params}) => {
         const shopId = _.toInteger(_.get(params, 'shopId'))
-        return dispatch(updateStore(shopId, list, actionTypes.SHOP_LIST, {
-            isActive: _.get(detail, 'isActive'),
-            border: _.get(detail, 'border'),
-            client: _.get(detail, 'client'),
-            name: _.get(detail, 'name'),
-            marketType: _.get(detail, 'marketType')
-        }))
+        if (shopId > ZERO) {
+            return dispatch(updateStore(shopId, list, actionTypes.SHOP_LIST, {
+                isActive: _.get(detail, 'isActive'),
+                border: _.get(detail, 'border'),
+                client: _.get(detail, 'client'),
+                name: _.get(detail, 'name'),
+                marketType: _.get(detail, 'marketType')
+            }))
+        }
+        return null
     }),
 
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
