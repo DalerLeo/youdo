@@ -32,10 +32,26 @@ export const returnListFetchAction = (filter) => {
         .catch((error) => {
             return Promise.reject(_.get(error, ['response', 'data']))
         })
-
     return {
         type: actionTypes.RETURN_LIST,
         payload
+    }
+}
+export const returnListUpdateStoreAction = (id, list, obj) => {
+    const newList = _.map(_.get(list, 'results'), (item) => {
+        if (item.id === id) {
+            _.merge(item, obj)
+        }
+        return item
+    })
+    const newData = {...list, results: newList}
+    const getNewData = () => {
+        return Promise.resolve(newData)
+    }
+
+    return {
+        type: actionTypes.RETURN_LIST,
+        payload: getNewData()
     }
 }
 

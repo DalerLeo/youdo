@@ -10,6 +10,9 @@ import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import {openErrorAction} from '../../actions/error'
+import updateStore from '../../helpers/updateStore'
+import * as actionTypes from '../../constants/actionTypes'
+
 import {
     RETURN_FILTER_KEY,
     RETURN_FILTER_OPEN,
@@ -40,6 +43,7 @@ const enhance = compose(
         const detailLoading = _.get(state, ['return', 'item', 'loading'])
         const updateLoading = _.get(state, ['return', 'update', 'loading'])
         const list = _.get(state, ['return', 'list', 'data'])
+        const listInfo = _.get(state, ['return', 'list'])
         const listPrint = _.get(state, ['return', 'listPrint', 'data'])
         const listPrintLoading = _.get(state, ['return', 'listPrint', 'loading'])
         const listLoading = _.get(state, ['return', 'list', 'loading'])
@@ -49,7 +53,6 @@ const enhance = compose(
         const updateForm = _.get(state, ['form', 'OrderReturnForm'])
         const updateClientForm = _.get(state, ['form', 'ReturnCreateForm'])
         const isAdmin = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
-
         return {
             list,
             listLoading,
@@ -63,7 +66,8 @@ const enhance = compose(
             updateForm,
             updateClientForm,
             isAdmin,
-            createForm
+            createForm,
+            listInfo
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -84,6 +88,17 @@ const enhance = compose(
         returnId && dispatch(returnItemFetchAction(returnId))
     }),
 
+    withPropsOnChange((props, nextProps) => {
+        const returnId = _.get(nextProps, ['params', 'returnId'])
+        return returnId && _.get(props, ['params', 'returnId']) === returnId && props.detailLoading !== nextProps.detailLoading
+    }, ({dispatch, detail, list, params}) => {
+        const returnId = _.toInteger(_.get(params, 'returnId'))
+        return dispatch(updateStore(returnId, list, actionTypes.RETURN_LIST, {
+            stock: _.get(detail, 'stock'),
+            comment: _.get(detail, 'comment'),
+            totalPrice: _.get(detail, 'totalPrice')
+        }))
+    }),
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
     withState('openPrint', 'setOpenPrint', false),
 
@@ -223,7 +238,6 @@ const enhance = compose(
             const {dispatch, updateForm, updateClientForm, filter, location: {pathname}, detail} = props
             const type = _.toInteger(_.get(detail, 'type'))
             const returnId = _.toInteger(_.get(props, ['params', 'returnId']))
-
             if (type === TWO) {
                 return dispatch(clientReturnUpdateAction(returnId, _.get(updateClientForm, ['values']), detail))
                     .then(() => {
@@ -234,7 +248,6 @@ const enhance = compose(
                     })
                     .then(() => {
                         hashHistory.push({pathname, query: filter.getParams({[RETURN_UPDATE_DIALOG_OPEN]: false})})
-                        return dispatch(returnListFetchAction(filter))
                     }).catch((error) => {
                         dispatch(openErrorAction({
                             message: error
@@ -250,7 +263,6 @@ const enhance = compose(
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[RETURN_UPDATE_DIALOG_OPEN]: false})})
-                    return dispatch(returnListFetchAction(filter))
                 }).catch((error) => {
                     dispatch(openErrorAction({
                         message: error
@@ -466,7 +478,7 @@ const ReturnList = enhance((props) => {
             }
 
             return {
-                stock: {value: _.get(detail, ['stock', 'id'])},
+                stock: {value: _.get(detail, ['stock', 'id']), text: _.get(detail, ['stock', 'name'])},
                 comment: _.get(detail, 'comment'),
                 products: forUpdateProducts
             }
