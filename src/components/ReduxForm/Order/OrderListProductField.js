@@ -395,7 +395,8 @@ const OrderListProductField = enhance((props) => {
         handleChangePriceList,
         isAdmin,
         editProductsLoading,
-        priceList
+        priceList,
+        handleOpenAddProduct
     } = props
     const ONE = 1
     const editOnlyCost = _.get(props, 'editOnlyCost')
@@ -457,21 +458,29 @@ const OrderListProductField = enhance((props) => {
             <div>
                 <div className={classes.headers} style={{marginTop: '-10px'}}>
                     <div className={classes.title}>Список товаров</div>
-                    {!editOnlyCost && priceList && <FlatButton
-                        label="+ добавить товар"
-                        labelStyle={{fontSize: '13px', color: '#12aaeb'}}
-                        className={classes.span}
-                        onTouchTap={() => dispatch({open: !state.open})}
-                    />}
-                    {!editOnlyCost && !priceList &&
-                    <Tooltip position="bottom" text="Выберите прайс лист">
-                        <FlatButton
-                            label="+ добавить товар"
-                            disabled={true}
-                            labelStyle={{fontSize: '13px', color: '#999'}}
+                    <div>
+                        {!editOnlyCost && priceList && <FlatButton
+                            label="добавить товар"
+                            labelStyle={{fontSize: '13px', color: '#12aaeb'}}
                             className={classes.span}
-                        />
-                    </Tooltip>}
+                            onTouchTap={() => dispatch({open: !state.open})}
+                        />}
+                        {!editOnlyCost && priceList && handleOpenAddProduct && <FlatButton
+                            label="добавить продукты"
+                            labelStyle={{fontSize: '13px', color: '#12aaeb'}}
+                            className={classes.span}
+                            onTouchTap={handleOpenAddProduct}
+                        />}
+                        {!editOnlyCost && !priceList &&
+                        <Tooltip position="bottom" text="Выберите прайс лист">
+                            <FlatButton
+                                label="+ добавить товар"
+                                disabled={true}
+                                labelStyle={{fontSize: '13px', color: '#999'}}
+                                className={classes.span}
+                            />
+                        </Tooltip>}
+                    </div>
                 </div>
                 {state.open && <Row className={classes.background}>
                     <Col xs={3}>

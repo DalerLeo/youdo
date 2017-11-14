@@ -62,6 +62,7 @@ const GridList = enhance((props) => {
     const header = _.get(list, 'header')
     const listItems = _.get(list, 'list')
     const loading = _.get(list, 'loading')
+
     const listIds = _.map(listItems, (item) => _.toInteger(_.get(item, 'key')))
     const loaderOrList = (listLoading) => {
         if (listLoading && !transparentLoading) {

@@ -39,19 +39,18 @@ const enhance = compose(
 )
 const ONE = 1
 const ELEMENTS_AMOUNT = 7
-const BLUE_ELEMENTS = _.parseInt(['2', '5'])
+const BLUE_ELEMENTS = _.map(['2', '5'], _.parseInt)
 const Loader = enhance((props) => {
     const {classes, size} = props
-    const customScale = size || ONE
     const customStyles = {
-        transform: 'scale(' + customScale + ')'
+        transform: 'scale(' + size + ')'
     }
     const elements = _.map(_.range(ELEMENTS_AMOUNT), (item, index) => {
         const hasBlueElements = _.includes(BLUE_ELEMENTS, (index + ONE))
         const HUNDRED = 100
         const animDelay = (index * HUNDRED) + 'ms'
         return (
-            <div style={{animationDelay: animDelay}} className={hasBlueElements ? classes.blue : ''}>{null}</div>
+            <div key={index} style={{animationDelay: animDelay}} className={hasBlueElements ? classes.blue : ''}>{null}</div>
         )
     })
     return (
@@ -60,5 +59,9 @@ const Loader = enhance((props) => {
         </div>
     )
 })
+
+Loader.defaultProps = {
+    size: 1
+}
 
 export default Loader

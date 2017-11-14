@@ -9,6 +9,7 @@ import GridList from '../GridList'
 import Container from '../Container'
 import OrderCreateDialog from './OrderCreateDialog'
 import OrderMultiUpdateDialog from './OrderMultiUpdateDialog'
+import OrderAddProductsDialog from './OrderAddProductsDialog'
 import OrderFilterForm from './OrderFilterForm'
 import OrderDetails from './OrderDetails'
 import OrderShortageDialog from './OrderShortage'
@@ -202,7 +203,8 @@ const OrderGridList = enhance((props) => {
         handleSubmitSetZeroDiscountDialog,
         clientId,
         isSuperUser,
-        getExcelDocument
+        getExcelDocument,
+        addProductDialog
     } = props
 
     const showCheckboxes = toBoolean(_.get(filter.getParams(), 'showCheckboxes'))
@@ -520,6 +522,7 @@ const OrderGridList = enhance((props) => {
                 filter={filter}
                 clientId={clientId}
                 isSuperUser={isSuperUser}
+                handleOpenAddProduct={addProductDialog.handleOpenAddProduct}
             />}
 
             {updateDialog.openUpdateDialog && <OrderCreateDialog
@@ -554,6 +557,16 @@ const OrderGridList = enhance((props) => {
                 loading={multiUpdateDialog.shortageLoading}
                 onClose={multiUpdateDialog.handleCloseMultiUpdate}
                 onSubmit={multiUpdateDialog.handleSubmitMultiUpdate}
+            />
+
+            <OrderAddProductsDialog
+                open={addProductDialog.openAddProductDialog}
+                loading={addProductDialog.loading}
+                filter={addProductDialog.filter}
+                data={addProductDialog.data}
+                onClose={addProductDialog.handleCloseAddProduct}
+                onSubmit={addProductDialog.handleSubmitAddProduct}
+                initialValues={addProductDialog.initialValues}
             />
 
             {detailData.data && <ConfirmDialog
@@ -653,6 +666,15 @@ OrderGridList.propTypes = {
         handleCloseMultiUpdate: PropTypes.func.isRequired,
         handleSubmitMultiUpdate: PropTypes.func.isRequired
     }).isRequired,
+    addProductDialog: PropTypes.shape({
+        openAddProductDialog: PropTypes.bool,
+        filter: PropTypes.object,
+        data: PropTypes.object,
+        loading: PropTypes.bool,
+        handleOpenAddProduct: PropTypes.func,
+        handleCloseAddProduct: PropTypes.func,
+        handleSubmitAddProduct: PropTypes.func
+    }),
     getExcelDocument: PropTypes.func.isRequired
 }
 

@@ -103,6 +103,10 @@ const enhance = compose(
                 fontWeight: '600 !important'
             }
         },
+        subTitleOrderNoPad: {
+            extend: 'subTitleOrder',
+            padding: '0'
+        },
         radioButton: {
             marginTop: '10px',
             '&>div': {
@@ -143,7 +147,7 @@ const enhance = compose(
             margin: '0 !important'
         },
         leftOrderPart: {
-            flexBasis: '25%',
+            width: '275px',
             padding: '20px 30px',
             borderRight: '1px #efefef solid',
             '& .Select-menu-outer': {
@@ -151,8 +155,7 @@ const enhance = compose(
             }
         },
         rightOrderPart: {
-            flexBasis: '75%',
-            maxWidth: '75%',
+            width: 'calc(100% - 275px)',
             padding: '20px 30px',
             overflowY: 'auto',
             maxHeight: '800px'
@@ -206,7 +209,7 @@ const enhance = compose(
         notEnough: {
             padding: '20px 30px',
             color: '#ff2626',
-            margin: '0 -30px',
+            margin: '0 -30px -15px',
             background: '#ffecec'
         }
     }),
@@ -230,7 +233,6 @@ const OrderCreateDialog = enhance((props) => {
     const {
         open,
         handleSubmit,
-        initialValues,
         onClose,
         classes,
         shortageDialog,
@@ -242,7 +244,8 @@ const OrderCreateDialog = enhance((props) => {
         loading,
         orderProducts,
         isSuperUser,
-        editProductsLoading
+        editProductsLoading,
+        handleOpenAddProduct
     } = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const totalCost = _.sumBy(orderProducts, (item) => {
@@ -250,14 +253,11 @@ const OrderCreateDialog = enhance((props) => {
         const cost = _.toNumber(_.get(item, 'cost'))
         return (amount * cost)
     })
-    let notEnough = false
-    _.map(products, (item) => {
+    const notEnough = _.includes(_.map(products, (item) => {
         const amount = _.toNumber(_.get(item, 'amount'))
         const balance = _.toNumber(_.get(item, ['product', 'value', 'balance']))
-        if (!editProductsLoading && amount > balance) {
-            notEnough = true
-        }
-    })
+        return (!editProductsLoading && amount > balance)
+    }), true)
 
     const GIVEN = 2
     const DELIVERED = 3
@@ -313,8 +313,6 @@ const OrderCreateDialog = enhance((props) => {
                                             className={classes.inputFieldCustom}
                                             label="Название магазина"
                                             clientId={clientId}
-                                            initialVal={_.get(initialValues, ['market', 'value', 'id'])}
-                                            disabled={!clientId}
                                             fullWidth={true}/>
                                         <Field
                                             name="priceList"
@@ -324,13 +322,9 @@ const OrderCreateDialog = enhance((props) => {
                                             fullWidth={true}/>
                                     </div>
 
-                                    {(notEnough)
-                                        ? <div className={classes.notEnough}>Недостаточно товаров на складе</div>
-                                        : <div className={classes.condition}>
-                                            <div className={classes.subTitleOrder} style={{padding: '0 !important'}}>
-                                                Условия
-                                                доставки
-                                            </div>
+                                    {notEnough && <div className={classes.notEnough}>Недостаточно товаров на складе</div>}
+                                    <div className={classes.condition}>
+                                            <div className={classes.subTitleOrderNoPad}>Условия доставки</div>
                                             <Field
                                                 name="dealType"
                                                 component={OrderDealTypeRadio}
@@ -349,11 +343,10 @@ const OrderCreateDialog = enhance((props) => {
                                                 floatingLabelText="Дата доставки"
                                                 container="inline"
                                                 fullWidth={true}/>
-                                        </div>}
+                                        </div>
 
                                     <div className={classes.condition}>
-                                        <div className={classes.subTitleOrder} style={{padding: '0 !important'}}>Оплата
-                                        </div>
+                                        <div className={classes.subTitleOrderNoPad}>Оплата</div>
                                         <Field
                                             name="paymentType"
                                             component={OrderPaymentTypeRadio}
@@ -382,6 +375,7 @@ const OrderCreateDialog = enhance((props) => {
                                         component={OrderListProductField}
                                         editProductsLoading={editProductsLoading}
                                         isUpdate={isUpdate}
+                                        handleOpenAddProduct={handleOpenAddProduct}
                                     />
                                 </div>
                             </div>
