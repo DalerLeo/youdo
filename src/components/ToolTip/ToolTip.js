@@ -26,10 +26,10 @@ const enhance = compose(
     withState('visible', 'setVisible', false)
 )
 
-const ToolTip = enhance(({classes, text, children, position, type}) => {
+const ToolTip = enhance(({classes, text, children, position, type, disabled}) => {
     const uniqId = _.uniqueId('tooltip_')
     return (
-        <div>
+        <div disabled={disabled}>
             <div data-tip data-for={uniqId} className={classes.wrapper}>
                 {children}
             </div>

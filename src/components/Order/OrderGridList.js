@@ -471,7 +471,8 @@ const OrderGridList = enhance((props) => {
                 </IconButton>
             </Tooltip>
             <Tooltip position="left" text="Изменить выбранные заказы">
-                <IconButton onTouchTap={multiUpdateDialog.handleOpenMultiUpdate}>
+                <IconButton onTouchTap={multiUpdateDialog.handleOpenMultiUpdate}
+                            disabled={multiUpdateDialog.cancelled}>
                     <Edit color="#666"/>
                 </IconButton>
             </Tooltip>
@@ -548,6 +549,8 @@ const OrderGridList = enhance((props) => {
 
             <OrderMultiUpdateDialog
                 open={multiUpdateDialog.openMultiUpdateDialog}
+                givenOrDelivery={multiUpdateDialog.givenOrDelivery}
+                cancelled={multiUpdateDialog.cancelled}
                 loading={multiUpdateDialog.shortageLoading}
                 onClose={multiUpdateDialog.handleCloseMultiUpdate}
                 onSubmit={multiUpdateDialog.handleSubmitMultiUpdate}
