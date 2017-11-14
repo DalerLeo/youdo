@@ -137,7 +137,7 @@ const enhance = compose(
             editProductsLoading,
             orderCounts,
             orderCountsLoading,
-            releaseForm
+            releaseForm,
             filterProducts,
             addProductsForm
         }
