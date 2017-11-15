@@ -28,10 +28,25 @@ export const createSerializer = (data) => {
             product: _.get(item, ['product', 'value', 'id'])
         }
     })
+    if (requestDeadline) {
+        return {
+            client,
+            'date_delivery': deliveryDate,
+            'request_deadline': requestDeadline,
+            'payment_date': paymentDate,
+            'payment_type': paymentType,
+            'payment_term': paymentTerm,
+            'deal_type': dealType,
+            'delivery_man': deliveryMan,
+            market,
+            user,
+            products,
+            'price_list': priceList
+        }
+    }
     return {
         client,
         'date_delivery': deliveryDate,
-        'request_deadline': requestDeadline,
         'payment_date': paymentDate,
         'payment_type': paymentType,
         'payment_term': paymentTerm,
