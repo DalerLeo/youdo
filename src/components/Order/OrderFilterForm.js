@@ -163,7 +163,7 @@ const enhance = compose(
 )
 
 const OrderFilterForm = enhance((props) => {
-    const {classes, filterDialog, getCount} = props
+    const {classes, filterDialog, getCount, handleSubmit} = props
     const filterCounts = getCount()
     const divisionStatus = getConfig('DIVISIONS')
 
@@ -204,7 +204,7 @@ const OrderFilterForm = enhance((props) => {
                         <CloseIcon className={classes.icon} />
                     </IconButton>
                 </div>
-                <form onSubmit={filterDialog.handleSubmitFilterDialog}>
+                <form onSubmit={handleSubmit(filterDialog.handleSubmitFilterDialog)}>
                     <div>
                         <Field className={classes.inputFieldCustom} name="client" component={ClientSearchField} label="Клиент"/>
                         <Field className={classes.inputFieldCustom} name="deliveryMan" component={DeliveryManSearchField} label="Доставщик"/>

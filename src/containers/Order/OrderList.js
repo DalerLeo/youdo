@@ -50,7 +50,8 @@ import {
     orderProductMobileAction,
     orderSetDiscountAction,
     orderGetCounts,
-    orderMultiUpdateAction
+    orderMultiUpdateAction,
+    orderAddProductsListAction
 } from '../../actions/order'
 import {openSnackbarAction} from '../../actions/snackbar'
 import updateStore from '../../helpers/updateStore'
@@ -144,6 +145,9 @@ const enhance = compose(
     }),
     withPropsOnChange((props, nextProps) => {
         const except = {
+            pdPage: null,
+            pdPageSize: null,
+            pdSearch: null,
             showCheckboxes: null,
             openMultiEdit: null,
             openReleaseDialog: null
@@ -234,14 +238,14 @@ const enhance = compose(
 
         return (prevPriceList !== nextPriceList && nextPriceList && (openCreateDialog === true || openUpdateDialog === true))
     }, ({dispatch, createForm}) => {
-        const priceList = _.toInteger(_.get(createForm, ['values', 'priceList', 'value']))
-        const products = _.join(_.map(_.get(createForm, ['values', 'products']), (item) => {
-            return _.get(item, ['product', 'value', 'id'])
-        }), '-')
-        if (priceList > ZERO) {
-            const size = 100
-            dispatch(orderProductMobileAction(null, priceList, size, products))
-        }
+        // .. const priceList = _.toInteger(_.get(createForm, ['values', 'priceList', 'value']))
+        // .. const products = _.join(_.map(_.get(createForm, ['values', 'products']), (item) => {
+        // ..     return _.get(item, ['product', 'value', 'id'])
+        // .. }), '-')
+        // .. if (priceList > ZERO) {
+        // ..     // const size = 100
+        // ..     // dispatch(orderProductMobileAction(null, priceList, size, products))
+        // .. }
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -263,15 +267,41 @@ const enhance = compose(
     }),
 
     withState('openAddProductDialog', 'setOpenAddProductDialog', false),
+    withState('openAddProductConfirm', 'setOpenAddProductConfirm', false),
     withPropsOnChange((props, nextProps) => {
-        const addProduct = _.get(props, 'openAddProductDialog')
-        const nextAddProduct = _.get(nextProps, 'openAddProductDialog')
-        return addProduct !== nextAddProduct && nextAddProduct === true
-    }, ({dispatch, createForm}) => {
+        const except = {
+            page: null,
+            pageSize: null,
+            client: null,
+            deadlineFromDate: null,
+            deadlineToDate: null,
+            deliveryFromDate: null,
+            deliveryToDate: null,
+            deliveryMan: null,
+            dept: null,
+            division: null,
+            exclude: null,
+            fromDate: null,
+            toDate: null,
+            initiator: null,
+            onlyBonus: null,
+            openCreateDialog: null,
+            openFilterDialog: null,
+            product: null,
+            shop: null,
+            zone: null
+        }
+        const productType = _.get(props, ['addProductsForm', 'values', 'productType', 'value'])
+        const productTypeNext = _.get(nextProps, ['addProductsForm', 'values', 'productType', 'value'])
+        return (props.filterProducts.filterRequest(except) !== nextProps.filterProducts.filterRequest(except)) ||
+            (props.openAddProductDialog !== nextProps.openAddProductDialog && nextProps.openAddProductDialog) ||
+            (productType !== productTypeNext && nextProps.openAddProductDialog)
+    }, ({dispatch, createForm, addProductsForm, filterProducts, openAddProductDialog, setOpenAddProductConfirm}) => {
         const priceList = _.get(createForm, ['values', 'priceList', 'value'])
-        const pageSize = 10
-        if (priceList) {
-            dispatch(orderProductMobileAction(null, priceList, pageSize))
+        const productType = _.get(addProductsForm, ['values', 'productType', 'value'])
+        setOpenAddProductConfirm(true)
+        if (priceList && openAddProductDialog) {
+            dispatch(orderAddProductsListAction(priceList, filterProducts, productType))
         }
     }),
 
@@ -570,19 +600,19 @@ const enhance = compose(
                 })
         },
 
-        handleOpenAddProduct: props => () => {
-            const {setOpenAddProductDialog} = props
-            setOpenAddProductDialog(true)
+        handleCloseAddProductConfirm: props => () => {
+            const {dispatch, createForm, addProductsForm, filterProducts, setOpenAddProductConfirm} = props
+            const priceList = _.get(createForm, ['values', 'priceList', 'value'])
+            const productType = _.get(addProductsForm, ['values', 'productType', 'value'])
+            dispatch(orderAddProductsListAction(priceList, filterProducts, productType))
+            setOpenAddProductConfirm(false)
         },
 
-        handleCloseAddProduct: props => () => {
-            const {setOpenAddProductDialog} = props
-            setOpenAddProductDialog(false)
-        },
-
-        handleSubmitAddProduct: props => () => {
-            const {setOpenAddProductDialog, addProductsForm, editProducts, dispatch, createForm} = props
-            const existingProducts = _.get(createForm, ['values', 'products'])
+        handleSubmitAddProductConfirm: props => () => {
+            const {addProductsForm, editProducts, dispatch, createForm, filterProducts, setOpenAddProductConfirm} = props
+            const priceList = _.get(createForm, ['values', 'priceList', 'value'])
+            const productType = _.get(addProductsForm, ['values', 'productType', 'value'])
+            const existingProducts = _.get(createForm, ['values', 'products']) || []
             const values = _.get(addProductsForm, ['values', 'product'])
             const getProductData = (id) => {
                 return _.find(_.get(editProducts, 'results'), {'id': id})
@@ -614,7 +644,65 @@ const enhance = compose(
                     })
                 }
             })
-            dispatch(change('OrderCreateForm', 'products', _.concat(existingProducts, newProductsArray)))
+            const checkDifference = _.differenceBy(newProductsArray, existingProducts, (o) => {
+                return o.product.value.id
+            })
+            dispatch(change('OrderCreateForm', 'products', _.concat(existingProducts, checkDifference)))
+                .then(() => {
+                    dispatch(orderAddProductsListAction(priceList, filterProducts, productType))
+                    setOpenAddProductConfirm(false)
+                })
+        },
+
+        handleOpenAddProduct: props => () => {
+            const {setOpenAddProductDialog} = props
+            setOpenAddProductDialog(true)
+        },
+
+        handleCloseAddProduct: props => () => {
+            const {setOpenAddProductDialog, filter, location: {pathname}} = props
+            hashHistory.push({pathname, query: filter.getParams({'pdPage': null, 'pdPageSize': null, 'pdSearch': null})})
+            setOpenAddProductDialog(false)
+        },
+
+        handleSubmitAddProduct: props => () => {
+            const {setOpenAddProductDialog, addProductsForm, editProducts, dispatch, createForm} = props
+            const existingProducts = _.get(createForm, ['values', 'products']) || []
+            const values = _.get(addProductsForm, ['values', 'product'])
+            const getProductData = (id) => {
+                return _.find(_.get(editProducts, 'results'), {'id': id})
+            }
+            const newProductsArray = []
+            _.map(values, (item, index) => {
+                const id = _.toInteger(index)
+                const product = getProductData(id)
+                const amount = _.get(item, 'amount')
+                if (amount) {
+                    newProductsArray.push({
+                        amount: _.get(item, 'amount'),
+                        cost: _.get(item, 'price'),
+                        customPrice: _.get(product, 'customPrice'),
+                        price: _.get(item, 'price'),
+                        product: {
+                            id: id,
+                            value: {
+                                id: _.get(product, 'id'),
+                                name: _.get(product, 'name'),
+                                balance: _.get(product, 'balance'),
+                                measurement: {
+                                    id: _.get(product, ['measurement', 'id']),
+                                    name: _.get(product, ['measurement', 'name'])
+                                }
+                            },
+                            text: _.get(product, 'name')
+                        }
+                    })
+                }
+            })
+            const checkDifference = _.differenceBy(newProductsArray, existingProducts, (o) => {
+                return o.product.value.id
+            })
+            dispatch(change('OrderCreateForm', 'products', _.concat(existingProducts, checkDifference)))
             setOpenAddProductDialog(false)
         },
 
@@ -751,6 +839,7 @@ const OrderList = enhance((props) => {
         orderCounts,
         orderCountsLoading,
         openAddProductDialog,
+        openAddProductConfirm,
         filterProducts
     } = props
     const openFilterDialog = toBoolean(_.get(location, ['query', ORDER_FILTER_OPEN]))
@@ -1065,6 +1154,7 @@ const OrderList = enhance((props) => {
                 return {}
             }
             const paymentType = _.get(props, ['createForm', 'values', 'paymentType'])
+            const productType = _.get(props, ['addProductsForm', 'values', 'productType', 'value'])
             const productValue = {}
             _.map(_.get(editProducts, 'results'), (item) => {
                 const id = _.get(item, 'id')
@@ -1076,7 +1166,10 @@ const OrderList = enhance((props) => {
                 productValue[id] = {price: price}
             })
             return {
-                product: productValue
+                product: productValue,
+                productType: {
+                    value: productType
+                }
             }
         })(),
         openAddProductDialog,
@@ -1085,7 +1178,10 @@ const OrderList = enhance((props) => {
         loading: editProductsLoading,
         handleOpenAddProduct: props.handleOpenAddProduct,
         handleCloseAddProduct: props.handleCloseAddProduct,
-        handleSubmitAddProduct: props.handleSubmitAddProduct
+        handleSubmitAddProduct: props.handleSubmitAddProduct,
+        openAddProductConfirm,
+        handleCloseAddProductConfirm: props.handleCloseAddProductConfirm,
+        handleSubmitAddProductConfirm: props.handleSubmitAddProductConfirm
     }
 
     if (openPrint) {
