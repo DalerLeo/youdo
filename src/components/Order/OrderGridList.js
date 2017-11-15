@@ -562,7 +562,6 @@ const OrderGridList = enhance((props) => {
                 open={multiUpdateDialog.openMultiUpdateDialog}
                 givenOrDelivery={multiUpdateDialog.givenOrDelivery}
                 cancelled={multiUpdateDialog.cancelled}
-                loading={multiUpdateDialog.shortageLoading}
                 onClose={multiUpdateDialog.handleCloseMultiUpdate}
                 onSubmit={multiUpdateDialog.handleSubmitMultiUpdate}
             />
@@ -689,7 +688,7 @@ OrderGridList.propTypes = {
     addProductDialog: PropTypes.shape({
         openAddProductDialog: PropTypes.bool,
         filter: PropTypes.object,
-        data: PropTypes.object,
+        data: PropTypes.array,
         loading: PropTypes.bool,
         handleOpenAddProduct: PropTypes.func,
         handleCloseAddProduct: PropTypes.func,

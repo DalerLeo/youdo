@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import sprintf from 'sprintf'
 import React from 'react'
-import SearchField from './Basic/SearchField'
+import SearchField from './Basic/MultiSelectField'
 import axios from '../../helpers/axios'
 import * as PATH from '../../constants/api'
 import toCamelCase from '../../helpers/toCamelCase'
@@ -31,6 +31,7 @@ const DeliveryManSearchField = (props) => {
             getOptions={getOptions}
             getItem={getItem}
             getItemText={SearchField.defaultGetText('secontName')}
+            multi={true}
             {...props}
         />
     )
