@@ -211,8 +211,8 @@ const OrderGridList = enhance((props) => {
     } = props
 
     const showCheckboxes = toBoolean(_.get(filter.getParams(), 'showCheckboxes'))
-    const statusIsReady = _.toNumber(_.get(filter.getParams(), 'status')) === READY
-    const statusIsRequested = _.toNumber(_.get(filter.getParams(), 'status')) === REQUESTED
+    const statusIsReady = !_.isNil(_.get(filter.getParams(), 'status')) && _.toNumber(_.get(filter.getParams(), 'status')) === READY
+    const statusIsRequested = !_.isNil(_.get(filter.getParams(), 'status')) && _.toNumber(_.get(filter.getParams(), 'status')) === REQUESTED
     const orderCounts = _.get(listData, 'orderCounts')
     const readyCount = _.get(orderCounts, 'readyCount')
     const requestedCount = _.get(orderCounts, 'requestedCount')
@@ -580,6 +580,9 @@ const OrderGridList = enhance((props) => {
                 onClose={addProductDialog.handleCloseAddProduct}
                 onSubmit={addProductDialog.handleSubmitAddProduct}
                 initialValues={addProductDialog.initialValues}
+                openAddProductConfirm={addProductDialog.openAddProductConfirm}
+                handleCloseAddProductConfirm={addProductDialog.handleCloseAddProductConfirm}
+                handleSubmitAddProductConfirm={addProductDialog.handleSubmitAddProductConfirm}
             />
 
             {detailData.data && <ConfirmDialog
@@ -693,7 +696,10 @@ OrderGridList.propTypes = {
         loading: PropTypes.bool,
         handleOpenAddProduct: PropTypes.func,
         handleCloseAddProduct: PropTypes.func,
-        handleSubmitAddProduct: PropTypes.func
+        handleSubmitAddProduct: PropTypes.func,
+        openAddProductConfirm: PropTypes.bool,
+        handleCloseAddProductConfirm: PropTypes.func,
+        handleSubmitAddProductConfirm: PropTypes.func
     })
 }
 

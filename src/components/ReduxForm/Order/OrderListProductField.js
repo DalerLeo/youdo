@@ -232,17 +232,19 @@ const enhance = compose(
             const onChange = _.get(props, ['products', 'input', 'onChange'])
             const products = _.get(props, ['products', 'input', 'value'])
             if (!_.isEmpty(_.get(product, 'value')) && amount && cost) {
-                let has = Boolean(_(products)
-                    .filter(item => _.get(item, 'product') === product)
+                const has = Boolean(_(products)
+                    .filter((item) => {
+                        return _.get(item, ['product', 'value', 'id']) === _.get(product, ['value', 'id'])
+                    })
                     .first())
                 const fields = ['amount', 'cost', 'product']
                 for (let i = 0; i < fields.length; i++) {
-                    let newChange = _.get(props, [fields[i], 'input', 'onChange'])
+                    const newChange = _.get(props, [fields[i], 'input', 'onChange'])
                     props.dispatch(newChange(null))
                 }
 
                 if (!has) {
-                    let newArray = [{product, amount, cost, measurement, customPrice, price}]
+                    const newArray = [{product, amount, cost, measurement, customPrice, price}]
                     _.map(products, (obj) => {
                         newArray.push(obj)
                     })

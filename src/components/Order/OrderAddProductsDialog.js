@@ -1,43 +1,68 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {compose} from 'recompose'
+import {compose, withState, withHandlers} from 'recompose'
 import injectSheet from 'react-jss'
 import {Row, Col} from 'react-flexbox-grid'
 import {Field, reduxForm} from 'redux-form'
-import Dialog from 'material-ui/Dialog'
-import CircularProgress from 'material-ui/CircularProgress'
+import {hashHistory} from 'react-router'
+import Loader from '../Loader'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import Pagination from '../GridList/GridListNavPagination'
+import TextFieldSearch from 'material-ui/TextField'
+import SearchIcon from 'material-ui/svg-icons/action/search'
+import NotFound from '../Images/not-found.png'
+import numberFormat from '../../helpers/numberFormat'
+import getConfig from '../../helpers/getConfig'
 import {
     TextField,
+    ProductTypeSearchField,
     normalizeNumber
 } from '../ReduxForm'
-import numberFormat from '../../helpers/numberFormat'
 
 const enhance = compose(
     injectSheet({
         loader: {
             position: 'absolute',
-            width: '100%',
-            height: '300px',
             background: '#fff',
             alignItems: 'center',
             zIndex: '999',
             textAlign: 'center',
             justifyContent: 'center',
-            display: 'flex'
+            display: 'flex',
+            top: '0',
+            left: '0',
+            right: '0',
+            bottom: '0'
+        },
+        confirm: {
+
+            /* Change to flex */
+            display: 'none',
+            alignItems: 'center',
+            justifyContent: 'center',
+            position: 'absolute',
+            background: 'rbga(0,0,0, 0.3)',
+            width: '100%',
+            height: '100%',
+            zIndex: '2100'
         },
         popUp: {
-            overflow: 'unset !important',
-            fontSize: '13px !important',
-            position: 'relative',
-            padding: '0 !important',
+            display: 'flex',
+            flexDirection: 'column',
+            background: '#fff',
+            overflow: 'unset',
+            fontSize: '13px',
+            position: 'fixed',
+            padding: '0',
             height: '100%',
-            maxHeight: 'inherit !important',
-            marginBottom: '64px'
+            top: '0',
+            left: '0',
+            right: '0',
+            bottom: '0',
+            zIndex: '2000'
         },
         titleContent: {
             background: '#fff',
@@ -49,6 +74,7 @@ const enhance = compose(
             alignItems: 'center',
             borderBottom: '1px solid #efefef',
             padding: '20px 30px',
+            minHeight: '60px',
             zIndex: '999',
             '& button': {
                 right: '13px',
@@ -56,44 +82,90 @@ const enhance = compose(
                 position: 'absolute !important'
             }
         },
+        bodyContent: {
+            color: '#333',
+            width: '100%',
+            height: '100%'
+        },
+        form: {
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column'
+        },
         inContent: {
             color: '#333',
-            minHeight: '450px',
+            height: 'calc(100vh - 120px)',
+            position: 'relative',
             '& header': {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                height: '50px',
-                padding: '0 30px'
+                borderBottom: '1px #efefef solid',
+                height: '56px',
+                padding: '0 30px',
+                position: 'relative'
             }
-        },
-        bodyContent: {
-            color: '#333',
-            width: '100%'
-        },
-        form: {
-            position: 'relative'
         },
         field: {
             width: '100%'
         },
+        search: {
+            position: 'absolute',
+            display: 'flex',
+            alignItems: 'center',
+            border: '1px #d9e0e5 solid',
+            borderRadius: '2px',
+            background: '#f2f5f8',
+            width: '280px',
+            left: 'calc(50% - 140px)',
+            '& > div': {
+                height: '40px !important',
+                padding: '0 35px 0 10px'
+            }
+        },
+        searchField: {
+            fontSize: '13px !important',
+            width: '100%',
+            '& > div:first-child': {
+                bottom: '8px !important'
+            },
+            '& hr': {
+                display: 'none'
+            }
+        },
+        searchButton: {
+            position: 'absolute !important',
+            alignItems: 'center',
+            justifyContent: 'center',
+            right: '0'
+        },
         productsList: {
             padding: '0 30px',
-            maxHeight: '600px',
+            height: 'calc(100% - 56px)',
             overflowY: 'auto',
             '& .dottedList': {
-                margin: '0',
-                padding: '15px 0',
+                margin: '0 -30px',
+                padding: '15px 30px',
                 height: '50px',
+                transition: 'all 150ms ease',
                 '&:first-child': {
-                    fontWeight: '600'
+                    fontWeight: '600',
+                    borderBottom: '1px #efefef solid',
+                    '&:hover': {
+                        background: 'transparent'
+                    }
+                },
+                '&:hover': {
+                    background: '#f2f5f8'
+                },
+                '&:after': {
+                    display: 'none'
                 },
                 '& > div': {
                     '&:first-child': {
                         paddingLeft: '0'
                     },
                     '&:last-child': {
-                        textAlign: 'right',
                         paddingRight: '0'
                     }
                 }
@@ -101,12 +173,16 @@ const enhance = compose(
         },
         flex: {
             display: 'flex',
-            alignItems: 'baseline'
+            alignItems: 'baseline',
+            '& > span': {
+                marginLeft: '10px'
+            }
+        },
+        rightAlign: {
+            textAlign: 'right'
         },
         bottomButton: {
-            bottom: '0',
-            left: '0',
-            right: '0',
+            height: '60px',
             padding: '10px',
             zIndex: '999',
             borderTop: '1px solid #efefef',
@@ -144,18 +220,43 @@ const enhance = compose(
             '& > div:first-child > div:first-child': {
                 transform: 'translate(0px, 0px) !important'
             }
+        },
+        emptyQuery: {
+            background: 'url(' + NotFound + ') no-repeat center center',
+            backgroundSize: '175px',
+            padding: '350px 0 180px',
+            textAlign: 'center',
+            fontSize: '13px',
+            color: '#666'
         }
     }),
     reduxForm({
         form: 'OrderAddProductsForm',
         enableReinitialize: true
+    }),
+    withState('pdSearch', 'setSearch', ({filter}) => filter.getParam('pdSearch')),
+    withHandlers({
+        onSubmitSearch: props => () => {
+            const {pdSearch, filter} = props
+            hashHistory.push(filter.createURL({pdSearch}))
+        }
     })
 )
 
-const customContentStyle = {
-    width: '1000px',
-    maxWidth: 'none'
+const iconStyle = {
+    icon: {
+        color: '#bac6ce',
+        width: 22,
+        height: 22
+    },
+    button: {
+        width: 40,
+        height: 40,
+        padding: 0,
+        display: 'flex'
+    }
 }
+
 const OrderAddProductsDialog = enhance((props) => {
     const {
         open,
@@ -164,18 +265,68 @@ const OrderAddProductsDialog = enhance((props) => {
         handleSubmit,
         onClose,
         classes,
-        loading
+        loading,
+        pdSearch,
+        setSearch,
+        openAddProductConfirm,
+        handleCloseAddProductConfirm,
+        handleSubmitAddProductConfirm
     } = props
-    const onSubmit = handleSubmit(() => props.onSubmit())
+    const onSubmit = handleSubmit(props.onSubmit)
+    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
+    const products = _.map(data, (item) => {
+        const id = _.get(item, 'id')
+        const name = _.get(item, 'name')
+        const balance = _.get(item, 'balance')
+        const canChangePrice = _.get(item, 'customPrice')
+        const normalize = value => {
+            if (!value) {
+                return value
+            }
+
+            return value > balance ? balance : value
+        }
+        const measurement = _.get(item, ['measurement', 'name'])
+        return (
+            <Row key={id} className="dottedList">
+                <Col xs={6}>{name}</Col>
+                <Col xs={2}>{numberFormat(balance, measurement)}</Col>
+                <Col xs={2} className={classes.flex}>
+                    <Field
+                        name={'product[' + id + '][price]'}
+                        component={TextField}
+                        className={classes.inputFieldCustom}
+                        inputStyle={{textAlign: 'right'}}
+                        normalize={normalizeNumber}
+                        disabled={!canChangePrice}
+                        fullWidth={true}/>
+                    <span>{primaryCurrency}</span>
+                </Col>
+                <Col xs={2} className={classes.flex}>
+                    <Field
+                        name={'product[' + id + '][amount]'}
+                        component={TextField}
+                        className={classes.inputFieldCustom}
+                        inputStyle={{textAlign: 'right'}}
+                        normalize={normalize}
+                        fullWidth={true}/>
+                    <span>{measurement}</span>
+                </Col>
+            </Row>
+        )
+    })
+    if (!open) {
+        return null
+    }
     return (
-        <Dialog
-            modal={true}
-            className={classes.podlojkaScroll}
-            contentStyle={customContentStyle}
-            open={open}
-            onRequestClose={onClose}
-            bodyClassName={classes.popUp}
-            autoScrollBodyContent={true}>
+        <div className={classes.popUp}>
+            {openAddProductConfirm &&
+            <div className={classes.confirm}>
+                <div className={classes.confirmContent}>
+                    <a onClick={handleCloseAddProductConfirm}>Нет</a>
+                    <a onClick={handleSubmitAddProductConfirm}>Да</a>
+                </div>
+            </div>}
             <div className={classes.titleContent}>
                 <span>Добавление продуктов</span>
                 <IconButton onTouchTap={onClose}>
@@ -183,72 +334,64 @@ const OrderAddProductsDialog = enhance((props) => {
                 </IconButton>
             </div>
             <div className={classes.bodyContent}>
-                <form onSubmit={onSubmit} scrolling="auto" className={classes.form}>
-                    {loading
-                        ? <div className={classes.loader}>
-                            <CircularProgress size={40} thickness={4}/>
-                        </div>
-                        : <div className={classes.inContent}>
-                            <header>
-                                <div>Список продуктов</div>
-                                <Pagination filter={filter}/>
-                            </header>
-                            <div className={classes.productsList}>
-                                <Row className="dottedList">
-                                    <Col xs={6}>Наименование</Col>
-                                    <Col xs={2}>В наличии</Col>
-                                    <Col xs={2}>Цена</Col>
-                                    <Col xs={2}>Кол-во</Col>
-                                </Row>
-                                {_.map(data, (item, index) => {
-                                    const id = _.get(item, 'id')
-                                    const name = _.get(item, 'name')
-                                    const balance = _.get(item, 'balance')
-                                    const normalize = value => {
-                                        if (!value) {
-                                            return value
-                                        }
-
-                                        return value > balance ? balance : value
-                                    }
-                                    const measurement = _.get(item, ['measurement', 'name'])
-                                    return (
-                                        <Row key={id} className="dottedList">
-                                            <Col xs={6}>{name}</Col>
-                                            <Col xs={2}>{numberFormat(balance, measurement)}</Col>
-                                            <Col xs={2}>
-                                                <Field
-                                                    name={'product[' + id + '][price]'}
-                                                    component={TextField}
-                                                    className={classes.inputFieldCustom}
-                                                    normalize={normalizeNumber}
-                                                    fullWidth={true}/>
-                                            </Col>
-                                            <Col xs={2} className={classes.flex}>
-                                                <Field
-                                                    name={'product[' + id + '][amount]'}
-                                                    component={TextField}
-                                                    className={classes.inputFieldCustom}
-                                                    normalize={normalize}
-                                                    fullWidth={true}/>
-                                                <span>{measurement}</span>
-                                            </Col>
-                                        </Row>
-                                    )
-                                })}
-                            </div>
+                <div className={classes.form}>
+                    <div className={classes.inContent}>
+                        {loading && <div className={classes.loader}>
+                            <Loader size={0.75}/>
                         </div>}
+                        <header>
+                            <div style={{width: '250px'}}>
+                                <Field
+                                    name="productType"
+                                    component={ProductTypeSearchField}
+                                    label="Тип продукта"
+                                    fullWidth={true}
+                                />
+                            </div>
+                            <form onSubmit={props.onSubmitSearch} className={classes.search}>
+                                <TextFieldSearch
+                                    fullWidth={true}
+                                    hintText="Поиск товаров..."
+                                    className={classes.searchField}
+                                    value={pdSearch}
+                                    onChange={(event) => setSearch(event.target.value)}
+                                />
+                                <IconButton
+                                    iconStyle={iconStyle.icon}
+                                    style={iconStyle.button}
+                                    className={classes.searchButton}
+                                    disableTouchRipple={true}>
+                                    <SearchIcon />
+                                </IconButton>
+                            </form>
+                            <Pagination filter={filter}/>
+                        </header>
+                        <form className={classes.productsList}>
+                            {!_.isEmpty(products) &&
+                            <Row className="dottedList">
+                                <Col xs={6}>Наименование</Col>
+                                <Col xs={2}>В наличии</Col>
+                                <Col xs={2} className={classes.rightAlign}>Цена</Col>
+                                <Col xs={2} className={classes.rightAlign}>Кол-во</Col>
+                            </Row>}
+                            {!_.isEmpty(products)
+                                ? products
+                                : <div className={classes.emptyQuery}>
+                                    <div>По вашему запросу ничего не найдено...</div>
+                                </div>}
+                        </form>
+                    </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
                             label={'Сохранить'}
                             labelStyle={{fontSize: '13px'}}
                             className={classes.actionButton}
                             primary={true}
-                            type="submit"/>
+                            onTouchTap={onSubmit}/>
                     </div>
-                </form>
+                </div>
             </div>
-        </Dialog>
+        </div>
     )
 })
 OrderAddProductsDialog.propTyeps = {

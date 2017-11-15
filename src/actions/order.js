@@ -253,3 +253,26 @@ export const orderMultiUpdateAction = (data, orders, release) => {
         payload
     }
 }
+
+export const orderAddProductsListAction = (priceList, filter, productType) => {
+    const params = {
+        price_list: priceList,
+        page_size: _.get(filter.getParams(), 'pdPageSize'),
+        page: _.get(filter.getParams(), 'pdPage'),
+        search: _.get(filter.getParams(), 'pdSearch'),
+        type: productType
+    }
+    const payload = axios()
+        .get(API.PRODUCT_MOBILE_URL, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.PRODUCT_MOBILE,
+        payload
+    }
+}
