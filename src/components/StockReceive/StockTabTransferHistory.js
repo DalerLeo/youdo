@@ -102,6 +102,7 @@ const StockTabTransferHistory = enhance((props) => {
             filter={filter}
             filterDialog={filterDialog}
             transfer={true}
+            history={true}
         />
     )
     const historyOrderDetail = (

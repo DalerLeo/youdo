@@ -1001,12 +1001,12 @@ const OrderList = enhance((props) => {
                 value: deliveryMan
             },
             deliveryDate: {
-                deliveryFromDate: deliveryFromDate && moment(deliveryFromDate, 'YYYY-MM-DD'),
-                deliveryToDate: deliveryToDate && moment(deliveryToDate, 'YYYY-MM-DD')
+                fromDate: deliveryFromDate && moment(deliveryFromDate, 'YYYY-MM-DD'),
+                toDate: deliveryToDate && moment(deliveryToDate, 'YYYY-MM-DD')
             },
             deadlineDate: {
-                deadlineFromDate: deadlineFromDate && moment(deadlineFromDate, 'YYYY-MM-DD'),
-                deadlineToDate: deadlineToDate && moment(deadlineToDate, 'YYYY-MM-DD')
+                fromDate: deadlineFromDate && moment(deadlineFromDate, 'YYYY-MM-DD'),
+                toDate: deadlineToDate && moment(deadlineToDate, 'YYYY-MM-DD')
             },
             onlyBonus: onlyBonus,
             exclude: exclude,

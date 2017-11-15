@@ -116,6 +116,13 @@ const ProductCreateDialog = enhance((props) => {
                                 fullWidth={true}
                             />}
                             <Field
+                                name="priority"
+                                className={classes.inputFieldCustom}
+                                component={TextField}
+                                label="Порядок"
+                                fullWidth={true}
+                            />
+                            <Field
                                 name="measurement"
                                 className={classes.inputFieldCustom}
                                 component={MeasurementSearchField}

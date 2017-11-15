@@ -188,6 +188,7 @@ const StockTabReceive = enhance((props) => {
             initialValues={filterDialog.initialValues}
             filter={filter}
             filterDialog={filterDialog}
+            history={history}
         />
     )
     const receiveDetails = (

@@ -116,12 +116,14 @@ const enhance = compose(
             const {filter, tabTransferFilterForm} = props
             const stock = _.get(tabTransferFilterForm, ['values', 'stock', 'value']) || null
             const type = _.get(tabTransferFilterForm, ['values', 'type', 'value']) || null
+            const acceptedBy = _.get(tabTransferFilterForm, ['values', 'acceptedBy', 'value']) || null
             const fromDate = _.get(tabTransferFilterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(tabTransferFilterForm, ['values', 'date', 'toDate']) || null
             filter.filterBy({
                 [TAB_TRANSFER_FILTER_OPEN]: false,
                 [TAB_TRANSFER_FILTER_KEY.STOCK]: stock,
                 [TAB_TRANSFER_FILTER_KEY.TYPE]: type,
+                [TAB_TRANSFER_FILTER_KEY.ACCEPTED_BY]: acceptedBy,
                 [TAB_TRANSFER_FILTER_KEY.FROM_DATE]: fromDate && moment(fromDate).format('YYYY-MM-DD'),
                 [TAB_TRANSFER_FILTER_KEY.TO_DATE]: toDate && moment(toDate).format('YYYY-MM-DD')
 
@@ -193,6 +195,7 @@ const StockTransferHistoryList = enhance((props) => {
     const openFilterDialog = toBoolean(_.get(location, ['query', TAB_TRANSFER_FILTER_OPEN]))
     const stock = _.toInteger(filter.getParam(TAB_TRANSFER_FILTER_KEY.STOCK))
     const type = _.toInteger(filter.getParam(TAB_TRANSFER_FILTER_KEY.TYPE))
+    const acceptedBy = _.toInteger(filter.getParam(TAB_TRANSFER_FILTER_KEY.ACCEPTED_BY))
     const fromDate = filter.getParam(TAB_TRANSFER_FILTER_KEY.FROM_DATE)
     const toDate = filter.getParam(TAB_TRANSFER_FILTER_KEY.TO_DATE)
     const handleCloseDetail = _.get(props, 'handleCloseDetail')
@@ -227,6 +230,9 @@ const StockTransferHistoryList = enhance((props) => {
             },
             stock: {
                 value: stock
+            },
+            acceptedBy: {
+                value: acceptedBy
             }
         },
         filterLoading: false,
