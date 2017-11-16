@@ -237,14 +237,14 @@ const enhance = compose(
 
         return (prevPriceList !== nextPriceList && nextPriceList && (openCreateDialog === true || openUpdateDialog === true))
     }, ({dispatch, createForm}) => {
-        // .. const priceList = _.toInteger(_.get(createForm, ['values', 'priceList', 'value']))
-        // .. const products = _.join(_.map(_.get(createForm, ['values', 'products']), (item) => {
-        // ..     return _.get(item, ['product', 'value', 'id'])
-        // .. }), '-')
-        // .. if (priceList > ZERO) {
-        // ..     // const size = 100
-        // ..     // dispatch(orderProductMobileAction(null, priceList, size, products))
-        // .. }
+        const priceList = _.toInteger(_.get(createForm, ['values', 'priceList', 'value']))
+        const products = _.join(_.map(_.get(createForm, ['values', 'products']), (item) => {
+            return _.get(item, ['product', 'value', 'id'])
+        }), '-')
+        if (priceList > ZERO) {
+            const size = 100
+            dispatch(orderProductMobileAction(null, priceList, size, products))
+        }
     }),
 
     withPropsOnChange((props, nextProps) => {
