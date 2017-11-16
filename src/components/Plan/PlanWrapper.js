@@ -5,6 +5,7 @@ import PropTypes from 'prop-types'
 import * as ROUTES from '../../constants/routes'
 import Container from '../Container'
 import SubMenu from '../SubMenu'
+import Loader from '../Loader'
 import {Link} from 'react-router'
 import sprintf from 'sprintf'
 import Tooltip from '../ToolTip'
@@ -15,9 +16,9 @@ import PlanCreateDialog from './PlanCreateDialog'
 import PlanSalesDialog from './PlanSalesDialog'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import CircularProgress from 'material-ui/CircularProgress'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
+import AllGroup from 'material-ui/svg-icons/social/group'
 import Man from 'material-ui/svg-icons/action/accessibility'
 import Loyalty from 'material-ui/svg-icons/action/loyalty'
 import Van from 'material-ui/svg-icons/maps/local-shipping'
@@ -234,7 +235,7 @@ const PlanWrapper = enhance((props) => {
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const agentsList = _.map(_.get(usersList, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const username = _.get(item, 'name')
+        const username = _.get(item, 'firstName') + ' ' + _.get(item, 'secondName')
         const planFact = _.toNumber(_.get(item, 'factPrice'))
         const planAmount = _.toNumber(_.get(item, 'monthlyPlanAmount'))
         const percent = (planFact / planAmount) * HUNDRED
@@ -276,19 +277,28 @@ const PlanWrapper = enhance((props) => {
 
     const buttons = [
         {
-            group: 1,
+            group: null,
+            name: 'Все',
+            icon: <AllGroup/>
+        },
+        {
+            group: 'agent',
+            name: 'Агенты',
             icon: <Man/>
         },
         {
-            group: 2,
+            group: 'merch',
+            name: 'Мерчендайзеры',
             icon: <Loyalty/>
         },
         {
-            group: 3,
+            group: 'delivery',
+            name: 'Доставщики',
             icon: <Van/>
         },
         {
-            group: 4,
+            group: 'collector',
+            name: 'Инкассаторы',
             icon: <Money/>
         }
     ]
@@ -299,25 +309,27 @@ const PlanWrapper = enhance((props) => {
             <div className={classes.titleTabs}>
                 {_.map(buttons, (item) => {
                     const group = _.get(item, 'group')
+                    const name = _.get(item, 'name')
                     const icon = _.get(item, 'icon')
 
                     return (
-                        <IconButton
-                            key={group}
-                            disableTouchRipple={true}
-                            className={(group === groupId) ? classes.activeTab : ''}
-                            onTouchTap={() => { handleClickTab(group) }}
-                            iconStyle={iconStyle.icon}
-                            style={iconStyle.button}>
-                            {icon}
-                        </IconButton>
+                        <Tooltip key={group} position="bottom" text={name}>
+                            <IconButton
+                                disableTouchRipple={true}
+                                className={(group === groupId) ? classes.activeTab : ''}
+                                onTouchTap={() => { handleClickTab(group) }}
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}>
+                                {icon}
+                            </IconButton>
+                        </Tooltip>
                     )
                 })}
             </div>
             <Search filter={filter}/>
             <div className={classes.agentsList}>
                 {listLoading ? <div className={classes.loader}>
-                    <CircularProgress size={40} thickness={4}/>
+                    <Loader size={0.75}/>
                 </div>
                     : (_.isEmpty(agentsList)
                         ? <div className={classes.emptyQuery}>

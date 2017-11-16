@@ -13,7 +13,7 @@ export const listFilterSerializer = (data) => {
         date,
         'page_size': 50,
         'search': _.get(defaultData, 'search'),
-        'group': _.get(defaultData, 'group') || ONE,
+        'group': _.get(defaultData, 'group'),
         'ordering': ordering && orderingSnakeCase(ordering)
     }
 }
