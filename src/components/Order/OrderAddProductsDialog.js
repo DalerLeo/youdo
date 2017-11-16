@@ -12,6 +12,7 @@ import FlatButton from 'material-ui/FlatButton'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import Pagination from '../GridList/GridListNavPagination'
 import TextFieldSearch from 'material-ui/TextField'
+import Paper from 'material-ui/Paper'
 import SearchIcon from 'material-ui/svg-icons/action/search'
 import NotFound from '../Images/not-found.png'
 import numberFormat from '../../helpers/numberFormat'
@@ -38,16 +39,24 @@ const enhance = compose(
             bottom: '0'
         },
         confirm: {
-
-            /* Change to flex */
-            display: 'none',
+            display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             position: 'absolute',
-            background: 'rbga(0,0,0, 0.3)',
+            background: 'rgba(0,0,0, 0.3)',
             width: '100%',
             height: '100%',
             zIndex: '2100'
+        },
+        confirmContent: {
+            width: '500px',
+            '& > header': {
+                padding: '24px 30px'
+            },
+            '& > div': {
+                textAlign: 'right',
+                padding: '8px'
+            }
         },
         popUp: {
             display: 'flex',
@@ -257,6 +266,13 @@ const iconStyle = {
     }
 }
 
+const flatButtonStyle = {
+    label: {
+        color: '#12aaeb',
+        fontWeight: '600'
+    }
+}
+
 const OrderAddProductsDialog = enhance((props) => {
     const {
         open,
@@ -322,10 +338,19 @@ const OrderAddProductsDialog = enhance((props) => {
         <div className={classes.popUp}>
             {openAddProductConfirm &&
             <div className={classes.confirm}>
-                <div className={classes.confirmContent}>
-                    <a onClick={handleCloseAddProductConfirm}>Нет</a>
-                    <a onClick={handleSubmitAddProductConfirm}>Да</a>
-                </div>
+                <Paper zDepth={2} className={classes.confirmContent}>
+                    <header>Сохранить текущие товары?</header>
+                    <div>
+                        <FlatButton
+                            label="Нет"
+                            labelStyle={flatButtonStyle.label}
+                            onClick={handleCloseAddProductConfirm} />
+                        <FlatButton
+                            label="Сохранить"
+                            labelStyle={flatButtonStyle.label}
+                            onClick={handleSubmitAddProductConfirm} />
+                    </div>
+                </Paper>
             </div>}
             <div className={classes.titleContent}>
                 <span>Добавление продуктов</span>
