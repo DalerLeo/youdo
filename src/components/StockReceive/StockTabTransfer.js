@@ -146,6 +146,8 @@ const StockTabTransfer = enhance((props) => {
         listData,
         detailData,
         handleCloseDetail,
+        getRelease,
+        getRoute,
         confirmDialog,
         classes,
         printDialog,
@@ -175,6 +177,8 @@ const StockTabTransfer = enhance((props) => {
             handleCloseDetail={handleCloseDetail}
             handleOpenDeliveryPrintDialog={_.get(deliveryDetailsData, 'handleOpenDeliveryPrintDialog')}
             loading={_.get(deliveryDetailsData, 'deliveryDetailLoading')}
+            getRelease={getRelease}
+            getRoute={getRoute}
             confirmTransfer={confirmTransfer}
         />
 
