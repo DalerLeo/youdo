@@ -144,7 +144,7 @@ const OrderReleaseDialog = enhance((props) => {
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>Сформироват релиз</span>
+                <span>Сформировать релиз</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -177,7 +177,7 @@ const OrderReleaseDialog = enhance((props) => {
                             </div>
                             <div className={classes.bottomButton}>
                                 <FlatButton
-                                    label={'Сформироват релиз'}
+                                    label={'Сохранить'}
                                     labelStyle={{fontSize: '13px'}}
                                     className={classes.actionButton}
                                     primary={true}

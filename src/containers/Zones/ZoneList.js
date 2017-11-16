@@ -7,8 +7,6 @@ import Layout from '../../components/Layout'
 import {hashHistory} from 'react-router'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
-import * as ROUTES from '../../constants/routes'
-import sprintf from 'sprintf'
 import {
     ZonesWrapper,
     ADD_ZONE,
@@ -295,8 +293,8 @@ const enhance = compose(
                 })
         },
         handleOpenShopDetails: props => (id) => {
-            const {filter} = props
-            hashHistory.push({pathname: sprintf(ROUTES.ZONES_LIST_URL), query: filter.getParams({[TOGGLE_INFO]: true, [SHOP_DETAIL]: id})})
+            const {filter, location: {pathname}} = props
+            hashHistory.push({pathname, query: filter.getParams({[TOGGLE_INFO]: true, [SHOP_DETAIL]: id})})
         },
 
         handleCloseShopDetails: props => () => {

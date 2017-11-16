@@ -347,13 +347,14 @@ const enhance = compose(
         componentWillReceiveProps (props) {
             const confirmDialog = ReactDOM.findDOMNode(this.refs.confirmDialog)
             const confirmDialogPriceList = ReactDOM.findDOMNode(this.refs.confirmDialogPriceList)
+            const initialProducts = !_.isEmpty(props.initialProducts)
             if (props.paymentType !== initialPaymentType) {
-                if (initialPaymentType) {
+                if (initialPaymentType && initialProducts) {
                     confirmDialog.style.zIndex = '10'
                 }
             }
             if (_.get(props, ['priceList', 'value']) !== initialPriceList && _.get(props, ['priceList', 'value'])) {
-                if (initialPriceList) {
+                if (initialPriceList && initialProducts) {
                     confirmDialogPriceList.style.zIndex = '10'
                 }
             }

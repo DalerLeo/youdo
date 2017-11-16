@@ -4,9 +4,10 @@ import IconButton from 'material-ui/IconButton'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import Dot from 'material-ui/svg-icons/av/fiber-manual-record'
+import MarketImage from '../Images/no-shop.svg'
 
 const enhance = compose(
     injectSheet({
@@ -36,12 +37,16 @@ const enhance = compose(
             padding: '15px 30px'
         },
         image: {
-            backgroundSize: 'cover !important',
+            backgroundSize: '220px',
+            background: '#f2f5f8 url(' + MarketImage + ') 50% 50% no-repeat',
             height: '250px',
             margin: '-15px -30px 15px',
             '& img': {
                 width: '100%'
             }
+        },
+        opacity: {
+            opacity: '0.75'
         },
         title: {
             background: '#fff',
@@ -99,6 +104,10 @@ const TrackingShopDetails = enhance((props) => {
     const phone = _.get(data, 'phone')
     const address = _.get(data, 'address')
     const guide = _.get(data, 'guide')
+    const border = _.get(data, ['border', 'title'])
+    const createdBy = _.get(data, 'createdBy')
+        ? _.get(data, ['createdBy', 'firstName']) + ' ' + _.get(data, ['createdBy', 'secondName'])
+        : 'Неизвестно'
 
     const freq = _.get(data, 'visitFrequency')
     const EVERY_DAY = '1'
@@ -106,24 +115,27 @@ const TrackingShopDetails = enhance((props) => {
     const TWICE_IN_A_WEEK = '3'
     const IN_A_DAY = '4'
 
-    const image = _.map(_.get(data, 'images'), (item) => {
-        const isPrimary = _.get(item, 'isPrimary')
+    const primaryImage = _.filter(_.get(data, 'images'), (item) => {
+        return _.get(item, 'isPrimary')
+    })
+    const image = _.map(primaryImage, (item) => {
         const url = _.get(item, 'file')
         const imageStyle = {
-            background: 'url(' + url + ') no-repeat center center'
+            backgroundImage: 'url(' + url + ')',
+            backgroundSize: 'cover',
+            backgroundColor: '#fff',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center center'
         }
-        if (isPrimary) {
-            return (
-                <div className={classes.image} style={imageStyle}>
-                </div>
-            )
-        }
-        return false
+        return (
+            <div className={classes.image} style={imageStyle}>
+            </div>
+        )
     })
     return (
         <div className={classes.detailWrap}>
             {loading && <div className={classes.loader}>
-                <CircularProgress size={40} thickness={4}/>
+                <Loader size={0.75}/>
             </div>}
             <div className={classes.title}>
                 <Dot style={isActive ? {color: '#92ce95'} : {color: '#e57373'}}/>
@@ -134,7 +146,9 @@ const TrackingShopDetails = enhance((props) => {
                 </IconButton>
             </div>
             <div className={classes.content}>
-                {image}
+                {!_.isEmpty(primaryImage)
+                    ? image
+                    : <div className={classes.image + ' ' + classes.opacity}>{null}</div>}
                 <div className={classes.block}>
                     <div className={classes.subtitle}>Детали</div>
                     <div>
@@ -147,13 +161,22 @@ const TrackingShopDetails = enhance((props) => {
                     </div>
                     <div>
                         <span>Частота посещений:</span>
-                        <span>{ freq === EVERY_DAY ? 'Каждый день' : (
+                        <span>{
+                        freq === EVERY_DAY ? 'Каждый день' : (
                             freq === ONCE_IN_A_WEEK ? 'Раз в неделю' : (
                                 freq === TWICE_IN_A_WEEK ? '2 раза в неделю' : (
                                     freq === IN_A_DAY ? 'Через день' : ''
                                 )
                             )
                         )}</span>
+                    </div>
+                    <div>
+                        <span>Создал:</span>
+                        <span>{createdBy}</span>
+                    </div>
+                    <div>
+                        <span>Зона:</span>
+                        <span>{border}</span>
                     </div>
                 </div>
                 <div className={classes.block}>

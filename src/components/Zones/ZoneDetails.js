@@ -8,7 +8,7 @@ import sprintf from 'sprintf'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
@@ -116,7 +116,8 @@ const enhance = compose(
         },
         zoneInfoContent: {
             padding: '0 30px',
-            overflowY: 'auto'
+            overflowY: 'auto',
+            height: '100%'
         },
         personal: {
             padding: '20px 0 15px',
@@ -171,12 +172,12 @@ const enhance = compose(
             '& span': {
                 fontWeight: '600'
             },
-            '& .dottedList': {
-                padding: '15px 0',
+            '& > div:first-child': {
+                padding: '10px 0',
+                display: 'flex',
+                alignItems: 'center',
                 justifyContent: 'space-between',
-                '&:last-child:after': {
-                    display: 'none'
-                }
+                borderBottom: '1px #efefef solid'
             },
             '& a': {
                 color: '#333',
@@ -186,6 +187,42 @@ const enhance = compose(
                     fontWeight: '600'
                 }
             }
+        },
+        marketItem: {
+            display: 'flex',
+            justifyContent: 'center',
+            flexDirection: 'column',
+            cursor: 'pointer',
+            margin: '0 -30px',
+            padding: '8px 30px',
+            paddingLeft: '50px',
+            transition: 'all 150ms ease',
+            position: 'relative',
+            '& > div': {
+                transition: 'all 150ms ease',
+                '&:last-child': {
+                    color: '#666',
+                    fontSize: '12px'
+                }
+            },
+            '&:hover': {
+                background: '#f2f5f8',
+                '& > div:first-child': {
+                    color: '#12aaeb'
+                }
+            }
+        },
+        activeDot: {
+            position: 'absolute',
+            width: '7px',
+            height: '7px',
+            left: '30px',
+            borderRadius: '50%',
+            background: '#8dc572'
+        },
+        inactiveDot: {
+            extend: 'activeDot',
+            background: '#e57373'
         },
         addZoneWrapper: {
             position: 'absolute',
@@ -252,7 +289,8 @@ const ZoneDetails = enhance((props) => {
         shopFilter,
         detailData,
         bindAgent,
-        unbindAgent
+        unbindAgent,
+        handleOpenShopDetails
     } = props
 
     const loading = _.get(detailData, 'detailLoading')
@@ -265,7 +303,7 @@ const ZoneDetails = enhance((props) => {
     return (
         <div className={classes.detailWrap}>
             {(loading || marketsLoading) && <div className={classes.loader}>
-                <CircularProgress size={40} thickness={4}/>
+                <Loader size={0.75}/>
             </div>}
             <div className={classes.zoneInfoNameTitle}>
                 <span>{name} (Z-{id})</span>
@@ -323,7 +361,7 @@ const ZoneDetails = enhance((props) => {
                     </div>
                 </div>
                 <div className={classes.stores}>
-                    <div className="dottedList">
+                    <div>
                         <span>Магазины в зоне</span>
                         <Pagination filter={shopFilter}/>
                     </div>
@@ -331,10 +369,17 @@ const ZoneDetails = enhance((props) => {
                     {_.map(_.get(detailData, ['shop', 'data']), (item) => {
                         const shopId = _.get(item, 'id')
                         const shopName = _.get(item, 'name')
+                        const shopAddr = _.get(item, 'address')
+                        const isActive = _.get(item, 'isActive')
                         return (
-                            <Link key={shopId} target="_blank" to={{pathname: sprintf(ROUTES.SHOP_ITEM_PATH, shopId), query: {search: shopId}}}>
-                                <div className="dottedList">{shopName}</div>
-                            </Link>
+                            <div
+                                key={shopId}
+                                className={classes.marketItem}
+                                onClick={() => { handleOpenShopDetails(shopId) }}>
+                                <div className={isActive ? classes.activeDot : classes.inactiveDot}></div>
+                                <div>{shopName}</div>
+                                <div>{shopAddr}</div>
+                            </div>
                         )
                     })}
                     {marketsCount === ZERO &&

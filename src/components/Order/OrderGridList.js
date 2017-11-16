@@ -34,7 +34,7 @@ import Payment from 'material-ui/svg-icons/action/credit-card'
 import InProcess from 'material-ui/svg-icons/device/access-time'
 import Print from 'material-ui/svg-icons/action/print'
 import Excel from 'material-ui/svg-icons/action/assessment'
-import OpenInNew from 'material-ui/svg-icons/action/open-in-new'
+import GetRelease from 'material-ui/svg-icons/action/description'
 import Edit from 'material-ui/svg-icons/editor/mode-edit'
 import Done from 'material-ui/svg-icons/action/check-circle'
 import RefreshIcon from 'material-ui/svg-icons/action/cached'
@@ -481,9 +481,9 @@ const OrderGridList = enhance((props) => {
                     <Edit color="#666"/>
                 </IconButton>
             </Tooltip>
-            <Tooltip position="left" text="Сформироват Релиз">
+            <Tooltip position="left" text="Сформировать Релиз">
                 <IconButton onTouchTap={releaseDialog.handleOpenReleaseDialog}>
-                    <OpenInNew color="#666"/>
+                    <GetRelease color="#666"/>
                 </IconButton>
             </Tooltip>
         </div>
