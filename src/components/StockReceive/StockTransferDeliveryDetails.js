@@ -10,7 +10,9 @@ import getConfig from '../../helpers/getConfig'
 import Tooltip from '../ToolTip'
 import IconButton from 'material-ui/IconButton'
 import PrintIcon from 'material-ui/svg-icons/action/print'
+import Release from 'material-ui/svg-icons/AV/new-releases'
 import SendDelivery from 'material-ui/svg-icons/content/reply-all'
+import Delivery from 'material-ui/svg-icons/maps/local-taxi'
 import sprintf from 'sprintf'
 import {Link} from 'react-router'
 import * as ROUTES from '../../constants/routes'
@@ -144,6 +146,8 @@ const StockTransferDetails = enhance((props) => {
         detailData,
         handleCloseDetail,
         handleOpenDeliveryPrintDialog,
+        getRelease,
+        getRoute,
         confirmTransfer,
         classes,
         loading,
@@ -185,6 +189,26 @@ const StockTransferDetails = enhance((props) => {
                 <div className={classes.title}>{deliveryManName}</div>
                 <div className={classes.closeDetail} onClick={handleCloseDetail}>{null}</div>
                 <div className={classes.titleButtons}>
+                    <Tooltip position="bottom" text="Релиз">
+                        <IconButton
+                            disabled={_.isEmpty(products)}
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            touch={true}
+                            onTouchTap={getRelease.handleGetRelease}>
+                            <Release />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip position="bottom" text="Маршрут">
+                        <IconButton
+                            disabled={_.isEmpty(products)}
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            touch={true}
+                            onTouchTap={getRoute.handleGetRoute}>
+                            <Delivery />
+                        </IconButton>
+                    </Tooltip>
                     <Tooltip position="bottom" text="Распечатать релиз">
                         <IconButton
                             disabled={_.isEmpty(products)}
