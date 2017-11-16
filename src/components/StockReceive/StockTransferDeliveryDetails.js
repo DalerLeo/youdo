@@ -10,6 +10,7 @@ import getConfig from '../../helpers/getConfig'
 import Tooltip from '../ToolTip'
 import IconButton from 'material-ui/IconButton'
 import PrintIcon from 'material-ui/svg-icons/action/print'
+import Release from 'material-ui/svg-icons/AV/new-releases'
 import SendDelivery from 'material-ui/svg-icons/content/reply-all'
 import Delivery from 'material-ui/svg-icons/maps/local-taxi'
 import sprintf from 'sprintf'
@@ -195,7 +196,7 @@ const StockTransferDetails = enhance((props) => {
                             style={iconStyle.button}
                             touch={true}
                             onTouchTap={getRelease.handleGetRelease}>
-                            <PrintIcon />
+                            <Release />
                         </IconButton>
                     </Tooltip>
                     <Tooltip position="bottom" text="Маршрут">
