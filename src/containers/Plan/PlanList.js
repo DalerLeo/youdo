@@ -246,7 +246,7 @@ const enhance = compose(
         const nextSearch = _.get(nextProps, ['query', 'search'])
 
         return (props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()) ||
-            (prevTab !== nextTab && nextTab) ||
+            (prevTab !== nextTab) ||
             (prevSearch !== nextSearch)
     }, ({dispatch, filter}) => {
         dispatch(planAgentsListFetchAction(filter))
@@ -327,9 +327,9 @@ const enhance = compose(
     }),
 
     withHandlers({
-        handleClickTab: props => (id) => {
+        handleClickTab: props => (group) => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[USER_GROUP]: id})})
+            hashHistory.push({pathname, query: filter.getParams({[USER_GROUP]: group})})
         },
 
         handleOpenAddPlan: props => () => {
@@ -565,7 +565,7 @@ const PlanList = enhance((props) => {
     const openComboPlan = _.get(location, ['query', UPDATE_PLAN]) === 'combo'
     const openPlanSales = toBoolean(_.get(location, ['query', OPEN_PLAN_SALES]))
     const openUpdatePlan = _.get(location, ['query', UPDATE_PLAN]) === 'combo' ? 'combo' : _.toInteger(_.get(location, ['query', UPDATE_PLAN])) > ZERO
-    const groupId = _.toInteger(_.get(location, ['query', USER_GROUP]) || ONE)
+    const groupId = _.get(location, ['query', USER_GROUP]) || null
     const openDetail = !_.isEmpty(_.get(params, 'agentId'))
     const detailId = _.toInteger(_.get(params, 'agentId'))
     const selectedAgent = _.toInteger(_.get(location, ['query', AGENT]))

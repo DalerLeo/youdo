@@ -369,7 +369,7 @@ const OrderAddProductsDialog = enhance((props) => {
                                 <Field
                                     name="productType"
                                     component={ProductTypeSearchField}
-                                    label="Тип продукта"
+                                    label="Фильтр по типу"
                                     fullWidth={true}
                                 />
                             </div>
