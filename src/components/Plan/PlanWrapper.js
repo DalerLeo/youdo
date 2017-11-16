@@ -331,7 +331,7 @@ const PlanWrapper = enhance((props) => {
                 {listLoading ? <div className={classes.loader}>
                     <Loader size={0.75}/>
                 </div>
-                    : (_.isEmpty(agentsList)asd
+                    : (_.isEmpty(agentsList)
                         ? <div className={classes.emptyQuery}>
                             <div>По вашему запросу ничего не найдено</div>
                         </div>
