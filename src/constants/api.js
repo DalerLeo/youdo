@@ -373,6 +373,8 @@ export const STOCK_TRANSFER_LIST = `/${STOCK_TRANSFER}/`
 export const STOCK_TRANSFER_ITEM = '/sales/order/%d/'
 export const STOCK_TRANSFER_HISTORY_REPEAL_URL = '/sales/order/%d/cancel_accepts/'
 export const STOCK_TRANSFER_HISTORY_RETURN_URL = '/sales/order_return/%d/cancel_accepts/'
+export const STOCK_TRANSFER_ROUTE = '/sales/route/export/'
+export const STOCK_TRANSFER_RELEASE = '/stock/delivery_products/export/'
 
 export const STOCK_TRANSFER_ACCEPT = '/stock/accept_outcome/'
 export const STOCK_RECEIVE_LIST = '/stock/income_tasks/'

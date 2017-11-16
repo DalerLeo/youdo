@@ -2,16 +2,18 @@ import React from 'react'
 import _ from 'lodash'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
-import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers, withState} from 'recompose'
-import * as ROUTER from '../../constants/routes'
-import filterHelper from '../../helpers/filter'
-import toBoolean from '../../helpers/toBoolean'
 import sprintf from 'sprintf'
 import moment from 'moment'
+import * as ROUTER from '../../constants/routes'
+import * as API from '../../constants/api'
+import Layout from '../../components/Layout'
+import filterHelper from '../../helpers/filter'
+import toBoolean from '../../helpers/toBoolean'
 import TabTransfer from '../../components/StockReceive/StockTabTransfer'
 import {OrderPrint} from '../../components/Order'
 import TabTransferDeliveryPrint from '../../components/StockReceive/TabTransferDeliveryPrint'
+import getDocuments from '../../helpers/getDocument'
 import {
     STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN,
     TAB_TRANSFER_FILTER_OPEN,
@@ -321,6 +323,35 @@ const enhance = compose(
 
         handleChooseToggle: props => (type) => {
             hashHistory.push({pathname: ROUTER.STOCK_TRANSFER_LIST_URL, query: {[TOGGLE]: type}})
+        },
+        handleGetRelease: props => () => {
+            const {beginDate, endDate, params, location} = props
+            const detailId = _.get(params, 'stockTransferId') ? _.toInteger(_.get(params, 'stockTransferId')) : false
+            const stockId = _.get(location, ['query', TYPE])
+            const ids = _.get(location, ['query', 'ids'])
+
+            const paramsRelease = {
+                'begin_date': beginDate,
+                'end_date': endDate,
+                'delivery_man': detailId > ZERO ? detailId : null,
+                'stock': stockId,
+                ids
+            }
+            getDocuments(API.STOCK_TRANSFER_RELEASE, paramsRelease)
+        },
+        handleGetRoute: props => () => {
+            const {beginDate, endDate, params, location} = props
+            const detailId = _.get(params, 'stockTransferId') ? _.toInteger(_.get(params, 'stockTransferId')) : false
+            const stockId = _.get(location, ['query', TYPE])
+            const ids = _.get(location, ['query', 'ids'])
+            const paramsRoute = {
+                'begin_date': beginDate,
+                'end_date': endDate,
+                'delivery_man': detailId > ZERO ? detailId : null,
+                'stock': stockId,
+                ids
+            }
+            getDocuments(API.STOCK_TRANSFER_ROUTE, paramsRoute)
         }
     })
 )
@@ -463,7 +494,12 @@ const StockTransferList = enhance((props) => {
         )
     }
     document.getElementById('wrapper').style.height = '100%'
-
+    const getRelease = {
+        handleGetRelease: props.handleGetRelease
+    }
+    const getRoute = {
+        handleGetRoute: props.handleGetRoute
+    }
     return (
         <Layout {...layout}>
             <TabTransfer
@@ -475,6 +511,8 @@ const StockTransferList = enhance((props) => {
                 detailData={detailData}
                 toggleData={toggleData}
                 handleCloseDetail={handleCloseDetail}
+                getRelease={getRelease}
+                getRoute={getRoute}
                 confirmDialog={confirmDialog}
                 filterDialog={filterDialog}
                 printDialog={printDialog}
