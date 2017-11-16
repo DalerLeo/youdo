@@ -669,7 +669,8 @@ const enhance = compose(
         },
 
         handleOpenAddProduct: props => () => {
-            const {setOpenAddProductDialog} = props
+            const {setOpenAddProductDialog, filter, location: {pathname}} = props
+            hashHistory.push({pathname, query: filter.getParams({'pdPageSize': 25})})
             setOpenAddProductDialog(true)
         },
 
@@ -680,7 +681,7 @@ const enhance = compose(
         },
 
         handleSubmitAddProduct: props => () => {
-            const {setOpenAddProductDialog, addProductsForm, editProducts, dispatch, createForm} = props
+            const {setOpenAddProductDialog, addProductsForm, editProducts, dispatch, createForm, filter, location: {pathname}} = props
             const existingProducts = _.get(createForm, ['values', 'products']) || []
             const values = _.get(addProductsForm, ['values', 'product'])
             const getProductData = (id) => {
@@ -717,6 +718,7 @@ const enhance = compose(
                 return o.product.value.id
             })
             dispatch(change('OrderCreateForm', 'products', _.concat(existingProducts, checkDifference)))
+            hashHistory.push({pathname, query: filter.getParams({'pdPage': null, 'pdPageSize': null, 'pdSearch': null})})
             setOpenAddProductDialog(false)
         },
 

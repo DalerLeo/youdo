@@ -373,7 +373,7 @@ const OrderAddProductsDialog = enhance((props) => {
                                     fullWidth={true}
                                 />
                             </div>
-                            <form onSubmit={props.onSubmitSearch} className={classes.search}>
+                            <form onSubmit={handleSubmit(props.onSubmitSearch)} className={classes.search}>
                                 <TextFieldSearch
                                     fullWidth={true}
                                     hintText="Поиск товаров..."

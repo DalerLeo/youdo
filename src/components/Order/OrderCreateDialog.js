@@ -314,12 +314,6 @@ const OrderCreateDialog = enhance((props) => {
                                             label="Название магазина"
                                             clientId={clientId}
                                             fullWidth={true}/>
-                                        <Field
-                                            name="priceList"
-                                            component={PriceListSearchField}
-                                            className={classes.inputFieldCustom}
-                                            label="Прайс лист"
-                                            fullWidth={true}/>
                                     </div>
 
                                     {notEnough && <div className={classes.notEnough}>Недостаточно товаров на складе</div>}
@@ -351,6 +345,12 @@ const OrderCreateDialog = enhance((props) => {
                                             name="paymentType"
                                             component={OrderPaymentTypeRadio}
                                         />
+                                        <Field
+                                            name="priceList"
+                                            component={PriceListSearchField}
+                                            className={classes.inputFieldCustom}
+                                            label="Прайс лист"
+                                            fullWidth={true}/>
                                         {isSuperUser && <Field
                                             name="user"
                                             component={UsersSearchField}
