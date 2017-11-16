@@ -34,7 +34,6 @@ import {
 } from '../../components/Order'
 const CLIENT_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const CANCEL_ORDER_RETURN_DIALOG_OPEN = 'openCancelConfirmDialog'
-const JUMP_TIME = 1000
 import {
     orderCreateAction,
     orderUpdateAction,
@@ -238,14 +237,14 @@ const enhance = compose(
 
         return (prevPriceList !== nextPriceList && nextPriceList && (openCreateDialog === true || openUpdateDialog === true))
     }, ({dispatch, createForm}) => {
-        // .. const priceList = _.toInteger(_.get(createForm, ['values', 'priceList', 'value']))
-        // .. const products = _.join(_.map(_.get(createForm, ['values', 'products']), (item) => {
-        // ..     return _.get(item, ['product', 'value', 'id'])
-        // .. }), '-')
-        // .. if (priceList > ZERO) {
-        // ..     // const size = 100
-        // ..     // dispatch(orderProductMobileAction(null, priceList, size, products))
-        // .. }
+        const priceList = _.toInteger(_.get(createForm, ['values', 'priceList', 'value']))
+        const products = _.join(_.map(_.get(createForm, ['values', 'products']), (item) => {
+            return _.get(item, ['product', 'value', 'id'])
+        }), '-')
+        if (priceList > ZERO) {
+            const size = 100
+            dispatch(orderProductMobileAction(null, priceList, size, products))
+        }
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -697,7 +696,10 @@ const enhance = compose(
                         amount: _.get(item, 'amount'),
                         cost: _.get(item, 'price'),
                         customPrice: _.get(product, 'customPrice'),
-                        price: _.get(item, 'price'),
+                        price: {
+                            cashPrice: _.get(product, 'cashPrice'),
+                            transferPrice: _.get(product, 'transferPrice')
+                        },
                         product: {
                             id: id,
                             value: {
@@ -714,10 +716,10 @@ const enhance = compose(
                     })
                 }
             })
-            const checkDifference = _.differenceBy(newProductsArray, existingProducts, (o) => {
+            const checkDifference = _.differenceBy(existingProducts, newProductsArray, (o) => {
                 return o.product.value.id
             })
-            dispatch(change('OrderCreateForm', 'products', _.concat(existingProducts, checkDifference)))
+            dispatch(change('OrderCreateForm', 'products', _.concat(newProductsArray, checkDifference)))
             hashHistory.push({pathname, query: filter.getParams({'pdPage': null, 'pdPageSize': null, 'pdSearch': null})})
             setOpenAddProductDialog(false)
         },
@@ -785,28 +787,31 @@ const enhance = compose(
             const orders = _.get(query, 'select')
             const date = moment(_.get(releaseForm, ['values', 'deliveryDate'])).format('YYYY-MM-DD')
             const deliveryMan = _.get(releaseForm, ['values', 'deliveryMan'])
+            const pathnameWindow = _.trimStart(ROUTER.STOCK_TRANSFER_LIST_URL, '/')
+            const encodeQueryData = (data) => {
+                const ret = []
+                _.map(data, (item, index) => {
+                    ret.push(encodeURIComponent(index) + '=' + encodeURIComponent(item))
+                })
+                return ret.join('&')
+            }
+            const queryWindow = encodeQueryData({
+                'beginDate': date,
+                'endDate': date,
+                'deliveryMan': deliveryMan.value,
+                'ids': orders,
+                'toggle': 'delivery'
+            })
             return dispatch(orderMultiUpdateAction(_.get(releaseForm, 'values'), orders, true))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Выбранные заказы успешно сформировано'}))
+                    return dispatch(openSnackbarAction({message: 'Выбранные заказы успешно сформированы'}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[ORDER_RELEASE_DIALOG_OPEN]: false})})
                     dispatch(orderListFetchAction(filter))
                 })
                 .then(() => {
-                    setTimeout(() => {
-                        hashHistory.push({
-                            pathname: ROUTER.STOCK_TRANSFER_LIST_URL,
-                            query: filter.getParams({
-                                'showCheckboxes': null,
-                                'select': null,
-                                'beginDate': date,
-                                'endDate': date,
-                                'deliveryMan': deliveryMan.value,
-                                'ids': orders,
-                                'toggle': 'delivery'
-                            })})
-                    }, JUMP_TIME)
+                    window.open('/#/' + pathnameWindow + '?' + queryWindow)
                 })
                 .catch((error) => {
                     dispatch(openErrorAction({

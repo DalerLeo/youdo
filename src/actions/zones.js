@@ -149,9 +149,9 @@ export const zoneCustomUpdateAction = (id, title, points) => {
 
 export const shopListFetchAction = (zoneId, filter) => {
     const ONE = 1
-    const page = _.get(filter.getParams(), 'page') ? _.toInteger(_.get(filter.getParams(), 'page')) : ONE
+    const page = _.get(filter.getParams(), 'page') || ONE
     const payload = axios()
-        .get(API.SHOP_LIST, {params: {border: zoneId, page: page}})
+        .get(API.SHOP_LIST, {params: {border: zoneId, page: page, page_size: 25}})
         .then((response) => {
             return _.get(response, 'data')
         })
