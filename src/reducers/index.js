@@ -424,6 +424,7 @@ const rootReducer = combineReducers({
         agentsList: createThunkReducer(actionTypes.PLAN_AGENT_LIST),
         agentPlan: createThunkReducer(actionTypes.PLAN_AGENT_MONTHLY),
         agentsPlan: createThunkReducer(actionTypes.PLAN_AGENTS),
+        agentStats: createThunkReducer(actionTypes.PLAN_AGENTS_ITEM_STATS),
         update: createThunkReducer(actionTypes.PLAN_UPDATE),
         combination: createThunkReducer(actionTypes.PLAN_COMBINATION)
     }),
