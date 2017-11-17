@@ -13,13 +13,13 @@ import DateToDateField from '../ReduxForm/Basic/DateToDateField'
 import {
     ClientSearchField,
     MarketSearchField,
-    UsersSearchField,
+    UsersMultiSearchField,
     DeptSearchField,
     ZoneSearchField,
     DivisionSearchField,
     ProductSearchField,
     CheckBox,
-    DeliveryManSearchField
+    DeliveryManMultiSearchField
 } from '../ReduxForm'
 import OrderStatusSearchField from '../ReduxForm/Order/OrderStatusSearchField'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
@@ -207,12 +207,12 @@ const OrderFilterForm = enhance((props) => {
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
                     <div>
                         <Field className={classes.inputFieldCustom} name="client" component={ClientSearchField} label="Клиент"/>
-                        <Field className={classes.inputFieldCustom} name="deliveryMan" component={DeliveryManSearchField} label="Доставщик"/>
+                        <Field className={classes.inputFieldCustom} name="deliveryMan" component={DeliveryManMultiSearchField} label="Доставщик"/>
                         <Field className={classes.inputFieldCustom} name="product" component={ProductSearchField} label="Товар"/>
                         <Field className={classes.inputFieldCustom} name="status" component={OrderStatusSearchField} label="Статус"/>
                         <Field className={classes.inputFieldCustom} name="shop" component={MarketSearchField} label="Магазин"/>
                         {divisionStatus && <Field className={classes.inputFieldCustom} name="division" component={DivisionSearchField} label="Подразделение"/>}
-                        <Field className={classes.inputFieldCustom} name="initiator" component={UsersSearchField} label="Инициатор"/>
+                        <Field className={classes.inputFieldCustom} name="initiator" component={UsersMultiSearchField} label="Инициатор"/>
                         <Field className={classes.inputFieldCustom} name="dept" component={DeptSearchField} label="Оплаченный"/>
                         <Field className={classes.inputFieldCustom} name="zone" component={ZoneSearchField} label="Зона"/>
                         <Field className={classes.inputDateCustom} name="data" component={DateToDateField} label="Период создания"/>

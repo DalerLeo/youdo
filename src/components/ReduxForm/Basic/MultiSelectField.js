@@ -7,7 +7,12 @@ import Select from 'react-select'
 import 'react-select/dist/react-select.css'
 const DELAY_FOR_TYPE_ATTACK = 300
 
-const fetchList = ({state, dispatch, getOptions, getText, getValue}) => {
+const fetchList = ({state, dispatch, getOptions, getText, getValue, input}) => {
+    const newValues = _.map(input.value, (item) => {
+        return {
+            value: item
+        }
+    })
     dispatch({loading: true})
     getOptions(state.text)
         .then((data) => {
@@ -19,7 +24,8 @@ const fetchList = ({state, dispatch, getOptions, getText, getValue}) => {
             })
         })
         .then((data) => {
-            dispatch({dataSource: data, loading: false})
+            const selectedValues = _.intersectionBy(state.dataSource, newValues, 'value')
+            dispatch({dataSource: _.union(data, selectedValues), loading: false})
         })
 }
 
@@ -49,7 +55,13 @@ const enhance = compose(
                 borderBottom: '1px solid #e8e8e8',
                 backgroundColor: 'unset',
                 '& .Select-value': {
-                    paddingLeft: '0'
+                    paddingLeft: '0',
+                    backgroundColor: '#f2f5f8',
+                    borderColor: '#efefef',
+                    color: '#666666',
+                    '& .Select-value-icon': {
+                        borderColor: '#efefef'
+                    }
                 },
                 '& .Select-placeholder': {
                     color: 'rgba(0,0,0,0.3)',
@@ -57,6 +69,11 @@ const enhance = compose(
                 },
                 '& .Select-input': {
                     paddingLeft: '0'
+                },
+                '& .Select--multi .Select-value': {
+                    backgroundColor: '#f2f5f8',
+                    borderColor: '#efefef',
+                    color: '#6666666'
                 }
             },
             '& .Select-input > input': {
@@ -81,19 +98,30 @@ const enhance = compose(
             }
             return option.text
         },
+        filterOptionRender: props => (options) => {
+            const {state: {values}} = props
+            const newValues = _.map(values, (item) => {
+                return {
+                    value: item
+                }
+            })
+            return _.differenceBy(options, newValues, 'value')
+        },
         handleChange: props => (value) => {
+            const {input} = props
             const arrValues = _.map(_.split(value, ','), (item) => {
                 return _.toNumber(item)
             })
 
-            const {dispatch, state, input} = props
+            const {dispatch} = props
             if (value) {
-                dispatch({values: _.union(state.values, arrValues)})
+                dispatch({values: arrValues})
+                input.onChange(arrValues)
             }
             if (!value) {
                 dispatch({values: []})
+                input.onChange([])
             }
-            input.onChange(state.values)
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -133,17 +161,20 @@ const MultiSelectField = enhance((props) => {
         valueRenderer,
         handleChange,
         disabled,
-        input
+        input,
+        filterOptionRender
     } = props
-    input.onChange(state.values)
+
     return (
         <div className={classes.wrapper}>
             <Select
                 className={classes.select}
                 options={state.dataSource}
-                value={state.values}
-                onInputChange={text => dispatch({text: text})}
+                value={input.value}
+                onInputChange={text => { dispatch({text: text}) }}
                 onChange={handleChange}
+                removeSelected={true}
+                deleteRemoves={false}
                 placeholder={label}
                 noResultsText={'Не найдено'}
                 isLoading={state.loading}
@@ -151,9 +182,8 @@ const MultiSelectField = enhance((props) => {
                 labelKey={'text'}
                 multi
                 simpleValue
-                removeSelected={true}
                 disabled={disabled}
-                filterOptions={options => options}
+                filterOptions={filterOptionRender}
             />
         </div>
     )
