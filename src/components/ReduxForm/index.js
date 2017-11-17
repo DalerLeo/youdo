@@ -7,6 +7,7 @@ import SearchFieldCustom from './Basic/SearchFieldCustom'
 import LocationField from './Basic/LocationField'
 import CategorySearchField from './CategorySearchField'
 import UsersSearchField from './Users/UsersSearchField'
+import UsersAgentSearchField from './Users/UsersAgentSearchField'
 import ProductTypeSearchField from './Product/ProductTypeSearchField'
 import ProductTypeParentSearchField from './Product/ProductTypeParentSearchField'
 import ProductTypeChildSearchField from './Product/ProductTypeChildSearchField'
@@ -84,6 +85,7 @@ import DeliveryManSearchField from './DeliveryManSearchField'
 import PriceListSearchField from './PriceListSearchField'
 
 export {
+    UsersAgentSearchField,
     DeliveryManSearchField,
     PendingExpensesTypeSearchField,
     EquipmentSearchField,

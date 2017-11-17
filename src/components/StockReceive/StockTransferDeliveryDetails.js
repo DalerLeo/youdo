@@ -151,7 +151,8 @@ const StockTransferDetails = enhance((props) => {
         confirmTransfer,
         classes,
         loading,
-        currentDeliverer
+        currentDeliverer,
+        printRouteDialog
     } = props
 
     if (loading) {
@@ -169,10 +170,7 @@ const StockTransferDetails = enhance((props) => {
 
     const orders = _.map(_.get(detailData, 'orders'), (item, index) => {
         orderNo = index + ONE
-        return <Link key={item} style={{marginRight: 5}} target="_blank" to={{
-            pathname: sprintf(ROUTES.ORDER_ITEM_PATH, item),
-            query: {search: item}
-        }}>{<strong>{item}</strong>}</Link>
+        return <a key={item} style={{marginRight: 5}} onTouchTap={() => { printRouteDialog.handleOpenPrintRouteDialog(item) }}>{<strong>{item}</strong>}</a>
     })
 
     const totalCalPrice = _.sumBy(products, (item) => {

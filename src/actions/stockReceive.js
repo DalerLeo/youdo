@@ -356,3 +356,20 @@ export const stockReceiveHistorySupplyAction = (orderId) => {
         payload
     }
 }
+export const routePintFetchAction = (ids) => {
+    const print = true
+    console.log(ids, 'asdasdasdasdasdassssssssssssss')
+    const payload = axios()
+        .get((API.ORDER_LIST_PRINT), {ids: ids})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STOCK_TRANSFER_ROUTE_PRINT,
+        payload
+    }
+}

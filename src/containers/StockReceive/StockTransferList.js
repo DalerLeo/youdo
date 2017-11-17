@@ -12,6 +12,7 @@ import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import TabTransfer from '../../components/StockReceive/StockTabTransfer'
 import {OrderPrint} from '../../components/Order'
+import {RoutePrint} from '../../components/StockReceive/RoutePrint'
 import TabTransferDeliveryPrint from '../../components/StockReceive/TabTransferDeliveryPrint'
 import getDocuments from '../../helpers/getDocument'
 import {
@@ -30,7 +31,8 @@ import {
     stockReceiveDeliveryConfirmAction,
     stockTransferDeliveryListFetchAction,
     stockTransferDeliveryItemFetchAction,
-    stockTransferDeliveryTransferAction
+    stockTransferDeliveryTransferAction,
+    routePintFetchAction
 } from '../../actions/stockReceive'
 import {
     orderListPintFetchAction
@@ -57,6 +59,8 @@ const enhance = compose(
         const detailLoading = _.get(state, ['stockReceive', 'item', 'loading'])
         const printList = _.get(state, ['stockReceive', 'print', 'data'])
         const printLoading = _.get(state, ['stockReceive', 'print', 'loading'])
+        const routePrintList = _.get(state, ['stockReceive', 'routePrint', 'data'])
+        const routePrintLoading = _.get(state, ['stockReceive', 'routePrint', 'loading'])
         const historyFilterForm = _.get(state, ['form', 'HistoryFilterForm'])
         const filterForm = _.get(state, ['form', 'TabTransferFilterForm'])
         const filter = filterHelper(list, pathname, query)
@@ -156,6 +160,7 @@ const enhance = compose(
 
     withState('openConfirmTransfer', 'setOpenConfirmTransfer', false),
     withState('openPrint', 'setOpenPrint', false),
+    withState('openPrintRoute', 'setOpenPrintRoute', false),
     withState('openDeliveryPrint', 'setOpenDeliveryPrint', false),
 
     withHandlers({
@@ -171,6 +176,20 @@ const enhance = compose(
         handleClosePrintDialog: props => () => {
             const {setOpenPrint} = props
             setOpenPrint(false)
+        },
+        handleOpenPrintRouteDialog: props => (item) => {
+            const {setOpenPrintRoute, dispatch, filter} = props
+            setOpenPrintRoute(true)
+            console.log(item, 'item')
+            dispatch(routePintFetchAction(item))
+                .then(() => {
+                    window.print()
+                })
+        },
+
+        handleClosePrintRouteDialog: props => () => {
+            const {setOpenPrintRoute} = props
+            setOpenPrintRoute(false)
         },
 
         handleOpenDeliveryPrintDialog: props => () => {
@@ -371,6 +390,9 @@ const StockTransferList = enhance((props) => {
         filterDelivery,
         layout,
         openPrint,
+        openPrintRoute,
+        routePrintList,
+        routePrintLoading,
         openConfirmTransfer,
         openDeliveryPrint,
         printList,
@@ -418,6 +440,11 @@ const StockTransferList = enhance((props) => {
         data: printList,
         printLoading
     }
+    console.log(routePrintList, 'routePrintList')
+    const routePrintData = {
+        data: routePrintList,
+        listPrintLoading: routePrintLoading
+    }
 
     const confirmDialog = {
         openConfirmDialog,
@@ -459,6 +486,11 @@ const StockTransferList = enhance((props) => {
         handleOpenPrintDialog: props.handleOpenPrintDialog,
         handleClosePrintDialog: props.handleClosePrintDialog
     }
+    const printRouteDialog = {
+        openPrintRoute,
+        handleOpenPrintRouteDialog: props.handleOpenPrintRouteDialog,
+        handleClosePrintRouteDialog: props.handleClosePrintRouteDialog
+    }
     const currentDetail = _.find(_.get(listData, 'data'), {'id': _.toInteger(detailId)})
     const detailData = {
         type: detailType,
@@ -473,6 +505,14 @@ const StockTransferList = enhance((props) => {
     })
     const orders = _.join(_.get(deliveryDetailsData, ['data', 'orders']), ', ')
 
+    if (openPrintRoute) {
+        document.getElementById('wrapper').style.height = 'auto'
+
+        return (
+            <RoutePrint
+                printRouteDialog={printRouteDialog}
+                listPrintData={routePrintData}/>)
+    }
     if (openPrint) {
         document.getElementById('wrapper').style.height = 'auto'
 
@@ -516,6 +556,7 @@ const StockTransferList = enhance((props) => {
                 confirmDialog={confirmDialog}
                 filterDialog={filterDialog}
                 printDialog={printDialog}
+                printRouteDialog={printRouteDialog}
                 confirmTransfer={confirmTransfer}/>
         </Layout>
     )

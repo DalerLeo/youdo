@@ -36,8 +36,8 @@ const TransactionsFormat = enhance((props) => {
             break
         case TRANS_TYPE.INCOME_FROM_AGENT: output = <a onClick={handleClickAgentIncome}><strong>Приемка наличных с агента {userName}</strong></a>
             break
-        case TRANS_TYPE.OUTCOME_FOR_SUPPLY_EXPANSE: output = <span>Расход на <Link target="_blank" to={{
-            pathname: sprintf(ROUTES.SUPPLY_ITEM_PATH, supply), query: {search: supply}}}>поставку №{supply}</Link></span>
+        case TRANS_TYPE.OUTCOME_FOR_SUPPLY_EXPANSE: output = <span>Расход на поставку<Link target="_blank" to={{
+            pathname: sprintf(ROUTES.SUPPLY_ITEM_PATH, supply), query: {search: supply}}}> №{supply}</Link></span>
             break
         case TRANS_TYPE.SUPPLY_EXPENCE: output = <span>Доп. расход на поставку <Link target="_blank" to={{
             pathname: sprintf(ROUTES.SUPPLY_ITEM_PATH, supply), query: {search: supply}}}>№ {supply}</Link></span>
