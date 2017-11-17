@@ -164,16 +164,16 @@ export const getNeedMenu = (userPermissions) => {
                 }
             })
         })
-        const filteredChilds = _.filter(parent.childs, (child) => {
+        const filteredChilds = _.filter(_.get(parent, 'childs'), (child) => {
             return child.permission === perm
         })
         if (!hasIn) {
             const newParent = {
-                name: parent.name,
-                icon: parent.icon,
-                section: parent.section || '',
-                bottom: parent.name === 'Настройки',
-                childs: _.filter(parent.childs, (ch) => {
+                name: _.get(parent, 'name'),
+                icon: _.get(parent, 'icon'),
+                section: _.get(parent, 'section') || '',
+                bottom: _.get(parent, 'name') === 'Настройки',
+                childs: _.filter(_.get(parent, 'childs'), (ch) => {
                     return _.includes(userPermissions, ch.permission)
                 }),
                 url: _.get(_.first(filteredChilds), 'url')
@@ -181,7 +181,9 @@ export const getNeedMenu = (userPermissions) => {
             menus.push(newParent)
         }
     })
-    return _.uniqBy(menus, 'url')
+    return _.uniqBy(_.filter(menus, (o) => {
+        return _.get(o, 'url')
+    }), 'url')
 }
 
 export const getMenus = (userPermissions, isAdmin) => {

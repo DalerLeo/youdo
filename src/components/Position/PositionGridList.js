@@ -205,7 +205,7 @@ const PositionGridList = enhance((props) => {
                             ? <span>Нет доступа</span>
                             : _.map(groups, (perm) => {
                                 return (
-                                <span key={perm.id}>{userGroupFormat(_.get(perm, 'name'))}</span>
+                                    <span key={perm.id}>{userGroupFormat(_.get(perm, 'name'))}</span>
                                 )
                             })}
                     </div>

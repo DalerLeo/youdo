@@ -241,7 +241,7 @@ const enhance = compose(
         const products = _.join(_.map(_.get(createForm, ['values', 'products']), (item) => {
             return _.get(item, ['product', 'value', 'id'])
         }), '-')
-        if (priceList > ZERO) {
+        if (priceList > ZERO && products) {
             const size = 100
             dispatch(orderProductMobileAction(null, priceList, size, products))
         }
@@ -292,8 +292,8 @@ const enhance = compose(
         }
         const productType = _.get(props, ['addProductsForm', 'values', 'productType', 'value'])
         const productTypeNext = _.get(nextProps, ['addProductsForm', 'values', 'productType', 'value'])
-        return (props.filterProducts.filterRequest(except) !== nextProps.filterProducts.filterRequest(except)) ||
-            (productType !== productTypeNext && nextProps.openAddProductDialog)
+        return ((props.filterProducts.filterRequest(except) !== nextProps.filterProducts.filterRequest(except)) ||
+            (productType !== productTypeNext && nextProps.openAddProductDialog)) && !(props.openAddProductDialog !== nextProps.openAddProductDialog && nextProps.openAddProductDialog)
     }, ({setOpenAddProductConfirm, addProductsForm, openAddProductDialog, dispatch, filterProducts, createForm}) => {
         const products = _.filter(_.get(addProductsForm, ['values', 'product']), (item) => {
             const amount = _.toNumber(_.get(item, 'amount'))
@@ -659,10 +659,10 @@ const enhance = compose(
                     })
                 }
             })
-            const checkDifference = _.differenceBy(newProductsArray, existingProducts, (o) => {
+            const checkDifference = _.differenceBy(existingProducts, newProductsArray, (o) => {
                 return o.product.value.id
             })
-            dispatch(change('OrderCreateForm', 'products', _.concat(existingProducts, checkDifference)))
+            dispatch(change('OrderCreateForm', 'products', _.concat(newProductsArray, checkDifference)))
             dispatch(orderAddProductsListAction(priceList, filterProducts, productType))
             setOpenAddProductConfirm(false)
         },

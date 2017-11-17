@@ -583,6 +583,7 @@ const OrderGridList = enhance((props) => {
                 openAddProductConfirm={addProductDialog.openAddProductConfirm}
                 handleCloseAddProductConfirm={addProductDialog.handleCloseAddProductConfirm}
                 handleSubmitAddProductConfirm={addProductDialog.handleSubmitAddProductConfirm}
+                isSuperUser={isSuperUser}
             />
 
             {detailData.data && <ConfirmDialog
