@@ -202,7 +202,7 @@ const enhance = compose(
         const isAdmin = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
         const paymentType = _.get(state, ['form', 'OrderCreateForm', 'values', 'paymentType'])
         const priceList = _.get(state, ['form', 'OrderCreateForm', 'values', 'priceList'])
-        const updatedPriceListProducts = _.get(state, ['order', 'updateProducts', 'data', 'results'])
+        const updatedPriceListProducts = _.get(state, ['order', 'changePrice', 'data', 'results'])
         const initialProducts = _.get(state, ['form', 'OrderCreateForm', 'values', 'products'])
         return {
             measurement,
@@ -281,6 +281,10 @@ const enhance = compose(
                 const prices = _.find(updatedPriceListProducts, (obj, indx) => {
                     return index === indx
                 })
+                item.price = {
+                    cashPrice: _.get(prices, 'cashPrice'),
+                    transferPrice: _.get(prices, 'transferPrice')
+                }
                 item.cost = (paymentType === 'bank') ? _.get(prices, ['transferPrice']) : _.get(prices, ['cashPrice'])
             })
             let newArray = []

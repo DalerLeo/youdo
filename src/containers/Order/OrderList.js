@@ -50,7 +50,8 @@ import {
     orderSetDiscountAction,
     orderGetCounts,
     orderMultiUpdateAction,
-    orderAddProductsListAction
+    orderAddProductsListAction,
+    orderChangePriceListAction
 } from '../../actions/order'
 import {openSnackbarAction} from '../../actions/snackbar'
 import updateStore from '../../helpers/updateStore'
@@ -241,9 +242,9 @@ const enhance = compose(
         const products = _.join(_.map(_.get(createForm, ['values', 'products']), (item) => {
             return _.get(item, ['product', 'value', 'id'])
         }), '-')
-        if (priceList > ZERO) {
+        if (priceList > ZERO && products) {
             const size = 100
-            dispatch(orderProductMobileAction(null, priceList, size, products))
+            dispatch(orderChangePriceListAction(null, priceList, size, products))
         }
     }),
 
@@ -292,8 +293,8 @@ const enhance = compose(
         }
         const productType = _.get(props, ['addProductsForm', 'values', 'productType', 'value'])
         const productTypeNext = _.get(nextProps, ['addProductsForm', 'values', 'productType', 'value'])
-        return (props.filterProducts.filterRequest(except) !== nextProps.filterProducts.filterRequest(except)) ||
-            (productType !== productTypeNext && nextProps.openAddProductDialog)
+        return ((props.filterProducts.filterRequest(except) !== nextProps.filterProducts.filterRequest(except)) ||
+            (productType !== productTypeNext && nextProps.openAddProductDialog)) && !(props.openAddProductDialog !== nextProps.openAddProductDialog && nextProps.openAddProductDialog)
     }, ({setOpenAddProductConfirm, addProductsForm, openAddProductDialog, dispatch, filterProducts, createForm}) => {
         const products = _.filter(_.get(addProductsForm, ['values', 'product']), (item) => {
             const amount = _.toNumber(_.get(item, 'amount'))
@@ -659,10 +660,10 @@ const enhance = compose(
                     })
                 }
             })
-            const checkDifference = _.differenceBy(newProductsArray, existingProducts, (o) => {
+            const checkDifference = _.differenceBy(existingProducts, newProductsArray, (o) => {
                 return o.product.value.id
             })
-            dispatch(change('OrderCreateForm', 'products', _.concat(existingProducts, checkDifference)))
+            dispatch(change('OrderCreateForm', 'products', _.concat(newProductsArray, checkDifference)))
             dispatch(orderAddProductsListAction(priceList, filterProducts, productType))
             setOpenAddProductConfirm(false)
         },
@@ -1009,8 +1010,6 @@ const OrderList = enhance((props) => {
             }
             const dealType = _.toInteger(_.get(detail, 'dealType')) === ONE ? 'consignment' : 'standart'
             const paymentType = _.get(detail, 'paymentType')
-            const paymentTypeForm = _.get(props, ['createForm', 'values', 'paymentType'])
-            const priceList = _.get(props, ['createForm', 'values', 'priceList'])
             return {
                 client: {
                     value: _.toInteger(_.get(detail, ['client', 'id']))
@@ -1029,15 +1028,15 @@ const OrderList = enhance((props) => {
                     text: deliveryTypeText
                 },
                 dealType: dealType,
-                paymentType: paymentTypeForm || paymentType,
+                paymentType: paymentType,
                 deliveryDate: moment(_.get(detail, ['dateDelivery'])).toDate(),
                 deliveryPrice: numberFormat(_.get(detail, 'deliveryPrice')),
                 discountPrice: discount,
                 paymentDate: moment(_.get(detail, ['paymentDate'])).toDate(),
                 products: forUpdateProducts,
                 priceList: {
-                    value: priceList ? _.get(priceList, 'value') : _.get(detail, ['priceList', 'id']),
-                    text: priceList ? _.get(priceList, 'text') : _.get(detail, ['priceList', 'name'])
+                    value: _.get(detail, ['priceList', 'id']),
+                    text: _.get(detail, ['priceList', 'name'])
                 },
                 user: {
                     value: _.get(detail, ['user', 'id'])

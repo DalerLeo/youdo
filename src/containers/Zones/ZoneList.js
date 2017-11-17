@@ -257,6 +257,9 @@ const enhance = compose(
                     return dispatch(zoneItemFetchAction(zoneId))
                 })
                 .then(() => {
+                    return dispatch(zoneListFetchAction(filter))
+                })
+                .then(() => {
                     return dispatch(openSnackbarAction({message: 'Зона успешно изменена'}))
                 })
                 .then(() => {
