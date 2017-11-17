@@ -2,7 +2,7 @@ import _ from 'lodash'
 import sprintf from 'sprintf'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Link, hashHistory} from 'react-router'
+import {hashHistory, Link} from 'react-router'
 import IconButton from 'material-ui/IconButton'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
@@ -270,7 +270,7 @@ const OrderGridList = enhance((props) => {
         const client = _.get(item, ['client', 'name'])
         const market = _.get(item, ['market', 'name'])
         const paymentDate = dateFormat(_.get(item, 'paymentDate'))
-        const now = moment()
+        const now = moment().format('YYYY-MM-DD')
         const user = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName']) || 'N/A'
         const dateDelivery = dateFormat((_.get(item, 'dateDelivery')), '')
         const createdDate = dateTimeFormat(_.get(item, 'createdDate'), true)
@@ -280,13 +280,11 @@ const OrderGridList = enhance((props) => {
         const status = _.toInteger(_.get(item, 'status'))
         const isNew = _.get(item, 'isNew')
 
-        const PAY_PENDING = 'Оплата ожидается: ' +
-            paymentDate +
-            '<br/>Ожидаемый платеж: ' + balanceTooltip
-
-        const PAY_DELAY = moment(_.get(item, 'paymentDate')).diff(now, 'days') !== ZERO ? 'Оплата ожидалась: ' +
-            paymentDate +
-            '<br/>Долг: ' + balanceTooltip : 'Оплата ожидается сегодня <br/>Долг: ' + balanceTooltip
+        const paymentDifference = moment(_.get(item, 'paymentDate')).diff(now, 'days')
+        const PAY_PENDING = 'Оплата ожидается: ' + paymentDate + '<br/>Ожидаемый платеж: ' + balanceTooltip
+        const PAY_DELAY = paymentDifference !== ZERO
+            ? 'Оплата ожидалась: ' + paymentDate + '<br/>Долг: ' + balanceTooltip
+            : 'Оплата ожидается сегодня <br/>Сумма: ' + balanceTooltip
 
         return (
             <div key={id}
@@ -305,42 +303,42 @@ const OrderGridList = enhance((props) => {
                 <div style={{width: '15%'}}>{createdDate}</div>
                 <div style={{width: '5%'}} className={classes.buttons}>
                     {(status === REQUESTED) ? <Tooltip position="bottom" text="В процессе">
-                        <IconButton
-                            disableTouchRipple={true}
-                            iconStyle={iconStyle.icon}
-                            style={iconStyle.button}
-                            touch={true}>
-                            <InProcess color="#f0ad4e"/>
-                        </IconButton>
-                    </Tooltip>
-                        : (status === READY) ? <Tooltip position="bottom" text="Есть на складе">
                             <IconButton
                                 disableTouchRipple={true}
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
                                 touch={true}>
-                                <Available color="#f0ad4e"/>
+                                <InProcess color="#f0ad4e"/>
                             </IconButton>
                         </Tooltip>
-
-                            : (status === DELIVERED) ? <Tooltip position="bottom" text="Доставлен">
+                        : (status === READY) ? <Tooltip position="bottom" text="Есть на складе">
                                 <IconButton
                                     disableTouchRipple={true}
                                     iconStyle={iconStyle.icon}
                                     style={iconStyle.button}
                                     touch={true}>
-                                    <Delivered color="#81c784"/>
+                                    <Available color="#f0ad4e"/>
                                 </IconButton>
                             </Tooltip>
-                                : (status === GIVEN) ? <Tooltip position="bottom" text="Передан доставщику">
+
+                            : (status === DELIVERED) ? <Tooltip position="bottom" text="Доставлен">
                                     <IconButton
                                         disableTouchRipple={true}
                                         iconStyle={iconStyle.icon}
                                         style={iconStyle.button}
                                         touch={true}>
-                                        <Transferred color="#f0ad4e"/>
+                                        <Delivered color="#81c784"/>
                                     </IconButton>
                                 </Tooltip>
+                                : (status === GIVEN) ? <Tooltip position="bottom" text="Передан доставщику">
+                                        <IconButton
+                                            disableTouchRipple={true}
+                                            iconStyle={iconStyle.icon}
+                                            style={iconStyle.button}
+                                            touch={true}>
+                                            <Transferred color="#f0ad4e"/>
+                                        </IconButton>
+                                    </Tooltip>
                                     : <Tooltip position="bottom" text="Заказ отменен">
                                         <IconButton
                                             disableTouchRipple={true}
@@ -362,11 +360,14 @@ const OrderGridList = enhance((props) => {
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}>
-                            <Payment color={(totalBalance > ZERO) && ((moment(_.get(item, 'paymentDate')).diff(now, 'days') <= ZERO))
+                            <Payment color={(totalBalance > ZERO) && (paymentDifference < ZERO)
                                 ? '#e57373'
-                                : (totalBalance > ZERO) && ((moment(_.get(item, 'paymentDate')).diff(now, 'days') > ZERO))
-                                    ? '#B7BBB7'
-                                    : (totalBalance === ZERO ? '#81c784' : '#B7BBB7')
+                                : paymentDifference === ZERO
+                                    ? '#f0ad4e'
+                                    : (totalBalance > ZERO) &&
+                                    (paymentDifference > ZERO)
+                                        ? '#B7BBB7'
+                                        : (totalBalance === ZERO ? '#81c784' : '#B7BBB7')
                             }/>
                         </IconButton>
                     </Tooltip>
@@ -500,7 +501,7 @@ const OrderGridList = enhance((props) => {
                         zDepth={1}
                         backgroundColor="#12aaeb"
                         onTouchTap={createDialog.handleOpenCreateDialog}>
-                        <ContentAdd />
+                        <ContentAdd/>
                     </FloatingActionButton>
                 </Tooltip>
             </div>}
@@ -571,7 +572,7 @@ const OrderGridList = enhance((props) => {
                 onClose={releaseDialog.handleCloseReleaseDialog}
                 onSubmit={releaseDialog.handleSubmitReleaseDialog}
             />
-
+            {addProductDialog.openAddProductDialog &&
             <OrderAddProductsDialog
                 open={addProductDialog.openAddProductDialog}
                 loading={addProductDialog.loading}
@@ -585,6 +586,7 @@ const OrderGridList = enhance((props) => {
                 handleSubmitAddProductConfirm={addProductDialog.handleSubmitAddProductConfirm}
                 isSuperUser={isSuperUser}
             />
+            }
 
             {detailData.data && <ConfirmDialog
                 type="cancel"
