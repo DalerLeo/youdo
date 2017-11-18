@@ -7,6 +7,7 @@ import SearchFieldCustom from './Basic/SearchFieldCustom'
 import LocationField from './Basic/LocationField'
 import CategorySearchField from './CategorySearchField'
 import UsersSearchField from './Users/UsersSearchField'
+import UsersMultiSearchField from './Users/UsersMultiSearchField'
 import ProductTypeSearchField from './Product/ProductTypeSearchField'
 import ProductTypeParentSearchField from './Product/ProductTypeParentSearchField'
 import ProductTypeChildSearchField from './Product/ProductTypeChildSearchField'
@@ -81,6 +82,7 @@ import ClientBalanceTypeSearchField from './ClientBalance/ClientBalanceTypeSearc
 import EquipmentSearchField from './EquipmentSearchField'
 import PendingExpensesTypeSearchField from './PendingExpensesTypeSearchField'
 import DeliveryManSearchField from './DeliveryManSearchField'
+import DeliveryManMultiSearchField from './DeliveryManMultiSearchField'
 import PriceListSearchField from './PriceListSearchField'
 
 export {
@@ -167,5 +169,7 @@ export {
     SupplySearchField,
     TransitionSendCashboxSearchField,
     TransitionSendCashboxTypeSearchField,
-    PriceListSearchField
+    PriceListSearchField,
+    DeliveryManMultiSearchField,
+    UsersMultiSearchField
 }

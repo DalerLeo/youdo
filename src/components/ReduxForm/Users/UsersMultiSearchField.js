@@ -1,13 +1,13 @@
 import _ from 'lodash'
 import sprintf from 'sprintf'
 import React from 'react'
-import SearchField from './Basic/SearchField'
-import axios from '../../helpers/axios'
-import * as PATH from '../../constants/api'
-import toCamelCase from '../../helpers/toCamelCase'
+import SearchField from '../Basic/MultiSelectField'
+import axios from '../../../helpers/axios'
+import * as PATH from '../../../constants/api'
+import toCamelCase from '../../../helpers/toCamelCase'
 
 const getOptions = (search) => {
-    return axios().get(`${PATH.USERS_LIST}?search=${search || ''}&page_size=100&group=delivery`)
+    return axios().get(`${PATH.USERS_LIST}?search=${search || ''}&page_size=100`)
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
         })
@@ -23,18 +23,20 @@ const getItem = (id) => {
 const getText = (obj) => {
     return _.get(obj, 'firstName') + ' ' + _.get(obj, 'secondName')
 }
-const DeliveryManSearchField = (props) => {
+
+const UsersSearchField = (props) => {
+    const selectFieldScroll = _.get(props, 'selectFieldScroll')
     return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
             getText={getText}
+            selectFieldScroll={selectFieldScroll}
             getOptions={getOptions}
             getItem={getItem}
-            getItemText={SearchField.defaultGetText('secontName')}
-            multi={true}
+            getItemText={getText}
             {...props}
         />
     )
 }
 
-export default DeliveryManSearchField
+export default UsersSearchField
