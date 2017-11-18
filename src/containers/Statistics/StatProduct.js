@@ -100,9 +100,11 @@ const StatProductList = enhance((props) => {
     const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
     const productType = !_.isNull(location, ['query', 'productType']) && _.toInteger(_.get(location, ['query', 'productType']))
     const productTypeChild = !_.isNull(location, ['query', 'productTypeChild']) && _.toInteger(_.get(location, ['query', 'productTypeChild']))
+    const search = !_.isNull(_.get(location, ['query', 'search'])) ? _.get(location, ['query', 'search']) : null
 
     const filterForm = {
         initialValues: {
+            search: search,
             productType: {
                 value: productType
             },
@@ -139,6 +141,7 @@ const StatProductList = enhance((props) => {
                 handleSubmitFilterDialog={props.handleSubmitFilterDialog}
                 getDocument={getDocument}
                 filterForm={filterForm}
+                initialValues={filterForm.initialValues}
                 searchSubmit={props.handleSubmitSearch}
                 pathname={_.get(location, 'pathname')}
             />

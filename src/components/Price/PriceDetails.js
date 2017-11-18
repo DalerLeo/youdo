@@ -78,15 +78,15 @@ const enhance = compose(
         leftSide: {
             position: 'relative',
             extend: 'subBlock',
-            flexBasis: '45%',
-            maxWidth: '45%',
+            flexBasis: '50%',
+            maxWidth: '50%',
             borderRight: '1px #efefef solid'
         },
         rightSide: {
             position: 'relative',
             extend: 'subBlock',
-            flexBasis: '55%',
-            maxWidth: '55%'
+            flexBasis: '50%',
+            maxWidth: '50%'
         },
         rightSideTitleDate: {
             fontWeight: '600',
@@ -311,27 +311,30 @@ const PriceDetails = enhance((props) => {
                     {!priceHistoryLoading && (!_.isEmpty(priceHistoryList))
                         ? <div className={classes.tableContent}>
                             <Row>
-                                <Col xs={2} style={{fontSize: '15px'}}>&#8470;</Col>
+                                <Col xs={1} style={{fontSize: '15px'}}>№</Col>
                                 <Col style={{textAlign: 'left'}} xs={3}>Дата</Col>
-                                <Col style={{textAlign: 'left'}} xs={3}>Количество</Col>
-                                <Col xs={4}>Себестоимость</Col>
+                                <Col style={{textAlign: 'left'}} xs={3}>Кол-во</Col>
+                                <Col style={{textAlign: 'left'}} xs={2}>На складе</Col>
+                                <Col xs={3}>Себест.</Col>
                             </Row>
 
                             {_.map(priceHistoryList, (item) => {
                                 const amount = _.get(item, 'amount')
+                                const balance = _.get(item, 'balance')
                                 const netCost = _.get(item, 'netCost')
                                 const id = _.get(item, 'id')
                                 const supplyId = _.get(item, 'supplyId')
                                 return (
                                     <Row key={id} className="dottedList">
-                                        <Col xs={2}>
+                                        <Col xs={1}>
                                             <a onClick={ () => { priceSupplyDialog.handleOpenSupplyDialog(id) }} className={classes.link}>
                                                 {supplyId}
                                             </a>
                                         </Col>
                                         <Col style={{textAlign: 'left'}} xs={3}>23 апр, 2017</Col>
                                         <Col style={{textAlign: 'left'}} xs={3}>{numberFormat(amount, measurement)}</Col>
-                                        <Col xs={4}>{numberFormat(netCost, getConfig('PRIMARY_CURRENCY'))}</Col>
+                                        <Col style={{textAlign: 'left'}} xs={2}>{numberFormat(balance, measurement)}</Col>
+                                        <Col xs={3}>{numberFormat(netCost, getConfig('PRIMARY_CURRENCY'))}</Col>
                                     </Row>
                                 )
                             })}

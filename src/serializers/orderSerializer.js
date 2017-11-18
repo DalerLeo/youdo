@@ -86,7 +86,6 @@ export const listFilterSerializer = (data, id, withOrderReturn, print) => {
     return {
         'ids': print ? orders : null,
         'id': _.get(defaultData, 'id'),
-        'starts_with': _.get(defaultData, 'startsWith'),
         'client': _.get(defaultData, 'client'),
         'product': _.get(defaultData, 'product'),
         'division': _.get(defaultData, 'division'),

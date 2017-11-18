@@ -25,12 +25,14 @@ import NotFound from '../../Images/not-found.png'
 import Tooltip from '../../ToolTip'
 import {
     DateToDateField,
-    ClientSearchField,
     MarketSearchField,
     UsersSearchField,
     DeptSearchField,
     ZoneSearchField,
     DivisionSearchField,
+    DeliveryManMultiSearchField,
+    ProductSearchField,
+    UsersMultiSearchField,
     CheckBox
 } from '../../ReduxForm'
 import OrderStatusSearchField from '../../ReduxForm/Order/OrderStatusSearchField'
@@ -38,6 +40,7 @@ import OrderStatusSearchField from '../../ReduxForm/Order/OrderStatusSearchField
 export const STAT_SALES_FILTER_KEY = {
     CLIENT: 'client',
     STATUS: 'status',
+    PRODUCT: 'product',
     INITIATOR: 'initiator',
     SHOP: 'shop',
     DIVISION: 'division',
@@ -46,9 +49,12 @@ export const STAT_SALES_FILTER_KEY = {
     TO_DATE: 'toDate',
     DELIVERY_FROM_DATE: 'deliveryFromDate',
     DELIVERY_TO_DATE: 'deliveryToDate',
+    DEADLINE_FROM_DATE: 'deadlineFromDate',
+    DEADLINE_TO_DATE: 'deadlineToDate',
     ZONE: 'zone',
     ONLY_BONUS: 'onlyBonus',
-    EXCLUDE: 'exclude'
+    EXCLUDE: 'exclude',
+    DELIVERY_MAN: 'deliveryMan'
 }
 const enhance = compose(
     injectSheet({
@@ -361,15 +367,18 @@ const StatSalesGridList = enhance((props) => {
 
     const fields = (
         <div>
-            <Field name="date" className={classes.inputDateCustom} component={DateToDateField} fullWidth={true} label="Диапазон дат"/>
-            <Field name="client" className={classes.inputFieldCustom} component={ClientSearchField} fullWidth={true} label="Клиент"/>
-            <Field name="status" className={classes.inputFieldCustom} component={OrderStatusSearchField} fullWidth={true} label="Статус"/>
-            <Field name="shop" className={classes.inputFieldCustom} component={MarketSearchField} fullWidth={true} label="Магазин"/>
-            {divisionStatus && <Field name="division" className={classes.inputFieldCustom} component={DivisionSearchField} fullWidth={true} label="Подразделение"/>}
-            <Field name="initiator" className={classes.inputFieldCustom} component={UsersSearchField} fullWidth={true} label="Инициатор "/>
-            <Field name="dept" className={classes.inputFieldCustom} component={DeptSearchField} fullWidth={true} label="Оплаченный "/>
-            <Field name="zone" className={classes.inputFieldCustom} component={ZoneSearchField} fullWidth={true} label="Зона"/>
-            <Field name="deliveryDate" className={classes.inputDateCustom} component={DateToDateField} fullWidth={true} label="Дата доставки"/>
+            <Field name="client" className={classes.inputFieldCustom} component={UsersSearchField} label="Клиент"/>
+            <Field name="deliveryMan" className={classes.inputFieldCustom} component={DeliveryManMultiSearchField} label="Доставщик"/>
+            <Field name="product" className={classes.inputFieldCustom} component={ProductSearchField} label="Товар"/>
+            <Field name="status" className={classes.inputFieldCustom} component={OrderStatusSearchField} label="Статус"/>
+            <Field name="shop" className={classes.inputFieldCustom} component={MarketSearchField} label="Магазин"/>
+            {divisionStatus && <Field name="division" className={classes.inputFieldCustom} component={DivisionSearchField} label="Подразделение"/>}
+            <Field name="initiator" className={classes.inputFieldCustom} component={UsersMultiSearchField} label="Инициатор"/>
+            <Field name="dept" className={classes.inputFieldCustom} component={DeptSearchField} label="Статус оплаты"/>
+            <Field name="zone" className={classes.inputFieldCustom} component={ZoneSearchField} label="Зона"/>
+            <Field name="data" className={classes.inputDateCustom} component={DateToDateField} label="Период создания"/>
+            <Field name="deliveryDate" className={classes.inputDateCustom} component={DateToDateField} label="Дата доставки"/>
+            <Field name="deadlineDate" className={classes.inputDateCustom} component={DateToDateField} label="Период изготовления"/>
             <Field name="onlyBonus" component={CheckBox} label="Только бонусные заказы"/>
             <Field name="exclude" component={CheckBox} label="Исключить отмененные заказы"/>
         </div>

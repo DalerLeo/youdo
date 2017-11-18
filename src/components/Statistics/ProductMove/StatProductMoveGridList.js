@@ -356,12 +356,12 @@ const StatProductMoveGridList = enhance((props) => {
     const sumListLoading = _.get(sumData, 'sumListLoading')
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
 
-    const beginBalance = numberFormat(_.get(sumData, ['data', 'beginPriceSum']), primaryCurrency)
-    const endBalance = numberFormat(_.get(sumData, ['data', 'endPriceSum']), primaryCurrency)
-    const inBalance = numberFormat(_.get(sumData, ['data', 'inPriceSum']), primaryCurrency)
-    const outBalance = numberFormat(_.get(sumData, ['data', 'outPriceSum']), primaryCurrency)
-    const returnBalance = numberFormat(_.get(sumData, ['data', 'returnPriceSum']), primaryCurrency)
-    const writeoffBalance = numberFormat(_.get(sumData, ['data', 'writeoffPriceSum']), primaryCurrency)
+    const beginBalance = numberFormat(Math.abs(_.get(sumData, ['data', 'beginPriceSum'])), primaryCurrency)
+    const endBalance = numberFormat(Math.abs(_.get(sumData, ['data', 'endPriceSum'])), primaryCurrency)
+    const inBalance = numberFormat(Math.abs(_.get(sumData, ['data', 'inPriceSum'])), primaryCurrency)
+    const outBalance = numberFormat(Math.abs(_.get(sumData, ['data', 'outPriceSum'])), primaryCurrency)
+    const returnBalance = numberFormat(Math.abs(_.get(sumData, ['data', 'returnPriceSum'])), primaryCurrency)
+    const writeoffBalance = numberFormat(Math.abs(_.get(sumData, ['data', 'writeoffPriceSum'])), primaryCurrency)
 
     // Amounts
     const beginAmount = numberFormat(_.get(sumData, ['data', 'beginBalanceSum']))
