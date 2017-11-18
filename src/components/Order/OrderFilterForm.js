@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
+import PropTypes from 'prop-types'
 import {compose, withHandlers} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
 import injectSheet from 'react-jss'
