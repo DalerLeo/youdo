@@ -2,7 +2,6 @@ import _ from 'lodash'
 import React from 'react'
 import {compose, withHandlers} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
-import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import {Link} from 'react-router'
 import Paper from 'material-ui/Paper'
@@ -19,7 +18,7 @@ import {
     DivisionSearchField,
     ProductSearchField,
     CheckBox,
-    DeliveryManSearchField
+    DeliveryManMultiSearchField
 } from '../ReduxForm'
 import OrderStatusSearchField from '../ReduxForm/Order/OrderStatusSearchField'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
@@ -207,7 +206,7 @@ const OrderFilterForm = enhance((props) => {
                 <form onSubmit={handleSubmit(filterDialog.handleSubmitFilterDialog)}>
                     <div>
                         <Field className={classes.inputFieldCustom} name="client" component={ClientSearchField} label="Клиент"/>
-                        <Field className={classes.inputFieldCustom} name="deliveryMan" component={DeliveryManSearchField} label="Доставщик"/>
+                        <Field className={classes.inputFieldCustom} name="deliveryMan" component={DeliveryManMultiSearchField} label="Доставщик"/>
                         <Field className={classes.inputFieldCustom} name="product" component={ProductSearchField} label="Товар"/>
                         <Field className={classes.inputFieldCustom} name="status" component={OrderStatusSearchField} label="Статус"/>
                         <Field className={classes.inputFieldCustom} name="shop" component={MarketSearchField} label="Магазин"/>

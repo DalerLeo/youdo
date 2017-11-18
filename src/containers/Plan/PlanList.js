@@ -31,7 +31,7 @@ import {
     planZoneItemFetchAction,
     planMonthlySetAction,
     planMonthlyItemAction,
-    agentMonthlyPlanAction,
+    agentPlansStatsAction,
     planZonesItemFetchAction,
     marketsLocationAction,
     planUpdateDialogAction,
@@ -72,6 +72,8 @@ const enhance = compose(
         const monthlyPlanCreateLoading = _.get(state, ['plan', 'monthlyPlan', 'loading'])
         const monthlyPlanItem = _.get(state, ['plan', 'monthlyPlanItem', 'data', 'results'])
         const monthlyPlanItemLoading = _.get(state, ['plan', 'monthlyPlanItem', 'loading'])
+        const agentStats = _.get(state, ['plan', 'agentStats', 'data'])
+        const agentStatsLoading = _.get(state, ['plan', 'agentStats', 'loading'])
         const createForm = _.get(state, ['form', 'PlanCreateForm', 'values'])
         const monthlyPlanForm = _.get(state, ['form', 'PlanSalesForm', 'values'])
         const selectedDate = _.get(query, DATE) || defaultDate
@@ -129,6 +131,8 @@ const enhance = compose(
             agentPlansLoading,
             comboChosenAgent,
             comboPlanId,
+            agentStats,
+            agentStatsLoading,
             filter
         }
     }),
@@ -265,7 +269,7 @@ const enhance = compose(
                 dispatch(agentPlansAction(agentId, selectedDate))
             }
             dispatch(planItemFetchAction(agentId))
-            dispatch(agentMonthlyPlanAction(filter, agentId))
+            dispatch(agentPlansStatsAction(agentId, selectedDate))
             dispatch(planMonthlyItemAction(filter, agentId))
         }
     }),
@@ -464,7 +468,6 @@ const enhance = compose(
                     hashHistory.push({pathname, query: filter.getParams({[OPEN_PLAN_SALES]: false})})
                     dispatch(planAgentsListFetchAction(filter))
                     dispatch(planItemFetchAction(user))
-                    dispatch(agentMonthlyPlanAction(filter, user))
                     dispatch(planMonthlyItemAction(filter, user))
                 })
         },
@@ -558,7 +561,9 @@ const PlanList = enhance((props) => {
         setOpenConfirmDialog,
         agentPlansData,
         agentPlansLoading,
-        comboPlanId
+        comboPlanId,
+        agentStats,
+        agentStatsLoading
     } = props
 
     const openAddPlan = toBoolean(_.get(location, ['query', ADD_PLAN]))
@@ -705,7 +710,9 @@ const PlanList = enhance((props) => {
 
     const agentPlans = {
         data: agentPlansData,
-        loading: agentPlansLoading
+        loading: agentPlansLoading,
+        stats: agentStats,
+        statsLoading: agentStatsLoading
     }
 
     return (

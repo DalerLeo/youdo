@@ -26,8 +26,15 @@ import dateFormat from '../../helpers/dateFormat'
 import {Link} from 'react-router'
 import * as ROUTE from '../../constants/routes'
 import sprintf from 'sprintf'
+import {
+    VISIT,
+    ORDER,
+    REPORT,
+    ORDER_RETURN,
+    PAYMENT,
+    DELIVERY
+} from '../../actions/activity'
 
-const ORDER = 2
 const formattedType = {
     1: 'Посещение магазина',
     2: 'Оформление заказа',
@@ -454,6 +461,24 @@ const PlanDetails = enhance((props) => {
     const firstName = _.get(detailData, ['data', 'firstName'])
     const secondName = _.get(detailData, ['data', 'secondName'])
     const position = _.get(detailData, ['data', 'position', 'name'])
+    const stats = _.get(agentPlans, 'stats')
+    const statsLoading = _.get(agentPlans, 'statsLoading')
+
+    const statOrders = _.get(stats, ORDER)
+    const statPayments = _.get(stats, PAYMENT)
+    const statVisits = _.get(stats, VISIT)
+    const statReports = _.get(stats, REPORT)
+    const statDeliveries = _.get(stats, DELIVERY)
+    const statReturns = _.get(stats, ORDER_RETURN)
+
+    const ordersCash = _.get(statOrders, 'cash')
+    const ordersBank = _.get(statOrders, 'bank')
+    const paymentsCash = _.get(statPayments, 'cash')
+    const paymentsBank = _.get(statPayments, 'bank')
+    const visitsCount = _.get(statVisits, 'count')
+    const reportsCount = _.get(statReports, 'count')
+    const deliveryCount = _.get(statDeliveries, 'count')
+    const returnsCount = _.get(statReturns, 'count')
 
     const monthFormat = (date, defaultText) => {
         return (date) ? moment(date).locale('ru').format('MMMM') : defaultText
@@ -493,7 +518,7 @@ const PlanDetails = enhance((props) => {
         <div className={classes.wrapper}>
             {isOpenDetails
                 ? <div>
-                    {(agentLoading || monthlyPlanLoading)
+                    {(agentLoading || monthlyPlanLoading || statsLoading)
                         ? <div className={classes.headerLoader}>
                             <Loader size={0.75}/>
                         </div>
@@ -533,17 +558,23 @@ const PlanDetails = enhance((props) => {
                             </div>
                             <div className={classes.achieves}>
                                 <div className={classes.subAchieves}>
-                                    <Tooltip position="bottom" text={'нал: 7 800 USD <br> пер: 2 200 USD'}>
+                                    <Tooltip
+                                        position="bottom"
+                                        text={
+                                            'нал: ' + numberFormat(ordersCash, primaryCurrency) +
+                                            '<br>пер: ' + numberFormat(ordersBank, primaryCurrency)}>
                                         <Deals style={achieveIcon.basic}/>
                                         <div>
-                                            <span>10 000 <small>USD</small></span>
+                                            <span>{numberFormat(ordersCash + ordersBank)} <small>{primaryCurrency}</small></span>
                                             <span>сделки</span>
                                         </div>
                                     </Tooltip>
-                                    <Tooltip position="bottom" text={'нал: 8 000 USD <br> пер: 4 000 USD'}>
+                                    <Tooltip position="bottom" text={
+                                        'нал: ' + numberFormat(paymentsCash, primaryCurrency) +
+                                        '<br>пер: ' + numberFormat(paymentsBank, primaryCurrency)}>
                                         <Payments style={achieveIcon.basic}/>
                                         <div>
-                                            <span>12 000 <small>USD</small></span>
+                                            <span>{numberFormat(paymentsCash + paymentsBank)} <small>{primaryCurrency}</small></span>
                                             <span>оплаты</span>
                                         </div>
                                     </Tooltip>
@@ -552,28 +583,28 @@ const PlanDetails = enhance((props) => {
                                     <div>
                                         <Visits style={achieveIcon.basic}/>
                                         <div>
-                                            <span>16 / 42</span>
+                                            <span>{visitsCount} / 42</span>
                                             <span>посещено</span>
                                         </div>
                                     </div>
                                     <div>
                                         <Reports style={achieveIcon.basic}/>
                                         <div>
-                                            <span>3 / 3</span>
+                                            <span>{reportsCount} / 3</span>
                                             <span>отчеты</span>
                                         </div>
                                     </div>
                                     <div>
                                         <Delivery style={achieveIcon.basic}/>
                                         <div>
-                                            <span>4 / 12</span>
+                                            <span>{deliveryCount} / 12</span>
                                             <span>доставки</span>
                                         </div>
                                     </div>
                                     <div>
                                         <Returns style={achieveIcon.basic}/>
                                         <div>
-                                            <span>3</span>
+                                            <span>{returnsCount}</span>
                                             <span>возвраты</span>
                                         </div>
                                     </div>

@@ -200,7 +200,6 @@ const OrderMultiUpdateDialog = enhance((props) => {
 })
 OrderMultiUpdateDialog.propTypes = {
     open: PropTypes.bool.isRequired,
-    onClose: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired
+    onClose: PropTypes.func.isRequired
 }
 export default OrderMultiUpdateDialog

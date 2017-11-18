@@ -400,6 +400,17 @@ export const CLIENT_BALANCE_SUPER_USER = '/sales/client_transaction/%d/'
 export const CLIENT_BALANCE_GET_DOCUMENT = '/sales/client_balances/export/'
 export const CLIENT_BALANCE_SUM = '/stats/client/balances/'
 
+export const ACTIVITY = 'market/plan_tasks'
+export const ACTIVITY_SUMMARY = `${ACTIVITY}/sum/`
+export const ACTIVITY_ORDER_LIST = `${ACTIVITY}/`
+export const ACTIVITY_ORDER_ITEM = `${ORDER}/%d`
+export const ACTIVITY_VISIT_LIST = `/${ACTIVITY}/`
+export const ACTIVITY_REPORT_LIST = `/${ACTIVITY}/`
+export const ACTIVITY_REPORT_SHOW_IMAGE = 'main/file/%d/'
+export const ACTIVITY_ORDER_RETURN_LIST = `/${ACTIVITY}/`
+export const ACTIVITY_PAYMENT_LIST = `/${ACTIVITY}/`
+export const ACTIVITY_DELIVERY_LIST = `/${ACTIVITY}/`
+
 export const PLAN = 'market/plan'
 export const PLAN_CREATE = `${PLAN}/`
 export const PLAN_UPDATE = `${PLAN}/%d/`
@@ -413,6 +424,7 @@ export const PLAN_AGENT_MONTHLY = 'stats/agents/statistics/'
 export const PLAN_AGENT_LIST = 'market/agents_plans/'
 export const PLAN_AGENTS = 'market/agent_plans/'
 export const PLAN_AGENTS_ITEM = 'market/agent_plans/%d/'
+export const PLAN_AGENTS_ITEM_STATS = `${ACTIVITY}/sum/`
 export const PLAN_COMBINATION = `${PLAN}/combination/`
 
 export const POSITION = 'main/position'
@@ -424,17 +436,6 @@ export const POSITION_ITEM = `/${POSITION}/%d/`
 export const POSITION_PRIMARY = 'currency_primary'
 export const POSITION_RATE = `/${POSITION}/%d/permissions/`
 export const POSITION_PERMISSION = 'main/group/gcrud'
-
-export const ACTIVITY = 'market/plan_tasks'
-export const ACTIVITY_SUMMARY = `${ACTIVITY}/sum/`
-export const ACTIVITY_ORDER_LIST = `${ACTIVITY}/`
-export const ACTIVITY_ORDER_ITEM = `${ORDER}/%d`
-export const ACTIVITY_VISIT_LIST = `/${ACTIVITY}/`
-export const ACTIVITY_REPORT_LIST = `/${ACTIVITY}/`
-export const ACTIVITY_REPORT_SHOW_IMAGE = 'main/file/%d/'
-export const ACTIVITY_ORDER_RETURN_LIST = `/${ACTIVITY}/`
-export const ACTIVITY_PAYMENT_LIST = `/${ACTIVITY}/`
-export const ACTIVITY_DELIVERY_LIST = `/${ACTIVITY}/`
 
 export const STAT_PRODUCT_MOVE_LIST = 'stats/stock/products/'
 export const STAT_PRODUCT_MOVE_SUM = 'stats/stock/sum/'

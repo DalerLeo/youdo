@@ -34,7 +34,6 @@ import {
 } from '../../components/Order'
 const CLIENT_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const CANCEL_ORDER_RETURN_DIALOG_OPEN = 'openCancelConfirmDialog'
-const JUMP_TIME = 1000
 import {
     orderCreateAction,
     orderUpdateAction,
@@ -51,7 +50,8 @@ import {
     orderSetDiscountAction,
     orderGetCounts,
     orderMultiUpdateAction,
-    orderAddProductsListAction
+    orderAddProductsListAction,
+    orderChangePriceListAction
 } from '../../actions/order'
 import {openSnackbarAction} from '../../actions/snackbar'
 import updateStore from '../../helpers/updateStore'
@@ -238,14 +238,14 @@ const enhance = compose(
 
         return (prevPriceList !== nextPriceList && nextPriceList && (openCreateDialog === true || openUpdateDialog === true))
     }, ({dispatch, createForm}) => {
-        // .. const priceList = _.toInteger(_.get(createForm, ['values', 'priceList', 'value']))
-        // .. const products = _.join(_.map(_.get(createForm, ['values', 'products']), (item) => {
-        // ..     return _.get(item, ['product', 'value', 'id'])
-        // .. }), '-')
-        // .. if (priceList > ZERO) {
-        // ..     // const size = 100
-        // ..     // dispatch(orderProductMobileAction(null, priceList, size, products))
-        // .. }
+        const priceList = _.toInteger(_.get(createForm, ['values', 'priceList', 'value']))
+        const products = _.join(_.map(_.get(createForm, ['values', 'products']), (item) => {
+            return _.get(item, ['product', 'value', 'id'])
+        }), '-')
+        if (priceList > ZERO && products) {
+            const size = 100
+            dispatch(orderChangePriceListAction(null, priceList, size, products))
+        }
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -293,8 +293,8 @@ const enhance = compose(
         }
         const productType = _.get(props, ['addProductsForm', 'values', 'productType', 'value'])
         const productTypeNext = _.get(nextProps, ['addProductsForm', 'values', 'productType', 'value'])
-        return (props.filterProducts.filterRequest(except) !== nextProps.filterProducts.filterRequest(except)) ||
-            (productType !== productTypeNext && nextProps.openAddProductDialog)
+        return ((props.filterProducts.filterRequest(except) !== nextProps.filterProducts.filterRequest(except)) ||
+            (productType !== productTypeNext && nextProps.openAddProductDialog)) && !(props.openAddProductDialog !== nextProps.openAddProductDialog && nextProps.openAddProductDialog)
     }, ({setOpenAddProductConfirm, addProductsForm, openAddProductDialog, dispatch, filterProducts, createForm}) => {
         const products = _.filter(_.get(addProductsForm, ['values', 'product']), (item) => {
             const amount = _.toNumber(_.get(item, 'amount'))
@@ -401,8 +401,8 @@ const enhance = compose(
             const division = _.get(filterForm, ['values', 'division', 'value']) || null
             const zone = _.get(filterForm, ['values', 'zone', 'value']) || null
             const dept = _.get(filterForm, ['values', 'dept', 'value']) || null
-            const initiator = _.get(filterForm, ['values', 'initiator', 'value']) || null
-            const deliveryMan = _.get(filterForm, ['values', 'deliveryMan', 'value']) || null
+            const initiator = _.get(filterForm, ['values', 'initiator']) || null
+            const deliveryMan = _.get(filterForm, ['values', 'deliveryMan']) || null
             const onlyBonus = _.get(filterForm, ['values', 'onlyBonus']) || null
             const exclude = _.get(filterForm, ['values', 'exclude']) || null
 
@@ -411,14 +411,14 @@ const enhance = compose(
                 [ORDER_FILTER_KEY.CLIENT]: client,
                 [ORDER_FILTER_KEY.STATUS]: status,
                 [ORDER_FILTER_KEY.PRODUCT]: product,
-                [ORDER_FILTER_KEY.INITIATOR]: initiator,
+                [ORDER_FILTER_KEY.INITIATOR]: _.join(initiator, '-'),
                 [ORDER_FILTER_KEY.ZONE]: zone,
                 [ORDER_FILTER_KEY.SHOP]: shop,
                 [ORDER_FILTER_KEY.DIVISION]: division,
                 [ORDER_FILTER_KEY.DEPT]: dept,
                 [ORDER_FILTER_KEY.ONLY_BONUS]: onlyBonus,
                 [ORDER_FILTER_KEY.EXCLUDE]: exclude,
-                [ORDER_FILTER_KEY.DELIVERY_MAN]: deliveryMan,
+                [ORDER_FILTER_KEY.DELIVERY_MAN]: _.join(deliveryMan, '-'),
                 [ORDER_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [ORDER_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD'),
                 [ORDER_FILTER_KEY.DEADLINE_FROM_DATE]: deadlineFromDate && deadlineFromDate.format('YYYY-MM-DD'),
@@ -660,10 +660,10 @@ const enhance = compose(
                     })
                 }
             })
-            const checkDifference = _.differenceBy(newProductsArray, existingProducts, (o) => {
+            const checkDifference = _.differenceBy(existingProducts, newProductsArray, (o) => {
                 return o.product.value.id
             })
-            dispatch(change('OrderCreateForm', 'products', _.concat(existingProducts, checkDifference)))
+            dispatch(change('OrderCreateForm', 'products', _.concat(newProductsArray, checkDifference)))
             dispatch(orderAddProductsListAction(priceList, filterProducts, productType))
             setOpenAddProductConfirm(false)
         },
@@ -697,7 +697,10 @@ const enhance = compose(
                         amount: _.get(item, 'amount'),
                         cost: _.get(item, 'price'),
                         customPrice: _.get(product, 'customPrice'),
-                        price: _.get(item, 'price'),
+                        price: {
+                            cashPrice: _.get(product, 'cashPrice'),
+                            transferPrice: _.get(product, 'transferPrice')
+                        },
                         product: {
                             id: id,
                             value: {
@@ -714,10 +717,10 @@ const enhance = compose(
                     })
                 }
             })
-            const checkDifference = _.differenceBy(newProductsArray, existingProducts, (o) => {
+            const checkDifference = _.differenceBy(existingProducts, newProductsArray, (o) => {
                 return o.product.value.id
             })
-            dispatch(change('OrderCreateForm', 'products', _.concat(existingProducts, checkDifference)))
+            dispatch(change('OrderCreateForm', 'products', _.concat(newProductsArray, checkDifference)))
             hashHistory.push({pathname, query: filter.getParams({'pdPage': null, 'pdPageSize': null, 'pdSearch': null})})
             setOpenAddProductDialog(false)
         },
@@ -785,28 +788,31 @@ const enhance = compose(
             const orders = _.get(query, 'select')
             const date = moment(_.get(releaseForm, ['values', 'deliveryDate'])).format('YYYY-MM-DD')
             const deliveryMan = _.get(releaseForm, ['values', 'deliveryMan'])
+            const pathnameWindow = _.trimStart(ROUTER.STOCK_TRANSFER_LIST_URL, '/')
+            const encodeQueryData = (data) => {
+                const ret = []
+                _.map(data, (item, index) => {
+                    ret.push(encodeURIComponent(index) + '=' + encodeURIComponent(item))
+                })
+                return ret.join('&')
+            }
+            const queryWindow = encodeQueryData({
+                'beginDate': date,
+                'endDate': date,
+                'deliveryMan': deliveryMan.value,
+                'ids': orders,
+                'toggle': 'delivery'
+            })
             return dispatch(orderMultiUpdateAction(_.get(releaseForm, 'values'), orders, true))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Выбранные заказы успешно сформировано'}))
+                    return dispatch(openSnackbarAction({message: 'Выбранные заказы успешно сформированы'}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[ORDER_RELEASE_DIALOG_OPEN]: false})})
                     dispatch(orderListFetchAction(filter))
                 })
                 .then(() => {
-                    setTimeout(() => {
-                        hashHistory.push({
-                            pathname: ROUTER.STOCK_TRANSFER_LIST_URL,
-                            query: filter.getParams({
-                                'showCheckboxes': null,
-                                'select': null,
-                                'beginDate': date,
-                                'endDate': date,
-                                'deliveryMan': deliveryMan.value,
-                                'ids': orders,
-                                'toggle': 'delivery'
-                            })})
-                    }, JUMP_TIME)
+                    window.open('/#/' + pathnameWindow + '?' + queryWindow)
                 })
                 .catch((error) => {
                     dispatch(openErrorAction({
@@ -871,9 +877,9 @@ const OrderList = enhance((props) => {
 
     const client = _.toInteger(filter.getParam(ORDER_FILTER_KEY.CLIENT))
     const dept = _.toInteger(filter.getParam(ORDER_FILTER_KEY.DEPT))
-    const initiator = _.toInteger(filter.getParam(ORDER_FILTER_KEY.INITIATOR))
+    const initiator = filter.getParam(ORDER_FILTER_KEY.INITIATOR)
     const zone = _.toInteger(filter.getParam(ORDER_FILTER_KEY.ZONE))
-    const deliveryMan = _.toInteger(filter.getParam(ORDER_FILTER_KEY.DELIVERY_MAN))
+    const deliveryMan = filter.getParam(ORDER_FILTER_KEY.DELIVERY_MAN)
     const orderStatus = _.toInteger(filter.getParam(ORDER_FILTER_KEY.STATUS))
     const shop = _.toInteger(filter.getParam(ORDER_FILTER_KEY.SHOP))
     const product = _.toInteger(filter.getParam(ORDER_FILTER_KEY.PRODUCT))
@@ -1004,8 +1010,6 @@ const OrderList = enhance((props) => {
             }
             const dealType = _.toInteger(_.get(detail, 'dealType')) === ONE ? 'consignment' : 'standart'
             const paymentType = _.get(detail, 'paymentType')
-            const paymentTypeForm = _.get(props, ['createForm', 'values', 'paymentType'])
-            const priceList = _.get(props, ['createForm', 'values', 'priceList'])
             return {
                 client: {
                     value: _.toInteger(_.get(detail, ['client', 'id']))
@@ -1024,15 +1028,15 @@ const OrderList = enhance((props) => {
                     text: deliveryTypeText
                 },
                 dealType: dealType,
-                paymentType: paymentTypeForm || paymentType,
+                paymentType: paymentType,
                 deliveryDate: moment(_.get(detail, ['dateDelivery'])).toDate(),
                 deliveryPrice: numberFormat(_.get(detail, 'deliveryPrice')),
                 discountPrice: discount,
                 paymentDate: moment(_.get(detail, ['paymentDate'])).toDate(),
                 products: forUpdateProducts,
                 priceList: {
-                    value: priceList ? _.get(priceList, 'value') : _.get(detail, ['priceList', 'id']),
-                    text: priceList ? _.get(priceList, 'text') : _.get(detail, ['priceList', 'name'])
+                    value: _.get(detail, ['priceList', 'id']),
+                    text: _.get(detail, ['priceList', 'name'])
                 },
                 user: {
                     value: _.get(detail, ['user', 'id'])
@@ -1093,18 +1097,18 @@ const OrderList = enhance((props) => {
             product: {
                 value: product
             },
-            initiator: {
-                value: initiator
-            },
+            initiator: initiator && _.map(_.split(initiator, '-'), (item) => {
+                return _.toNumber(item)
+            }),
             dept: {
                 value: dept
             },
             zone: {
                 value: zone
             },
-            deliveryMan: {
-                value: deliveryMan
-            },
+            deliveryMan: deliveryMan && _.map(_.split(deliveryMan, '-'), (item) => {
+                return _.toNumber(item)
+            }),
             deliveryDate: {
                 fromDate: deliveryFromDate && moment(deliveryFromDate, 'YYYY-MM-DD'),
                 toDate: deliveryToDate && moment(deliveryToDate, 'YYYY-MM-DD')

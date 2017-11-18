@@ -7,7 +7,7 @@ import PropTypes from 'prop-types'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
 import {reduxForm} from 'redux-form'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 import TextFieldSearch from 'material-ui/TextField'
 import SearchIcon from 'material-ui/svg-icons/action/search'
 import Container from '../Container'
@@ -65,7 +65,7 @@ const enhance = compose(
         zonesWrapper: {
             background: '#f2f5f8',
             position: 'relative',
-            overflowX: 'hidden',
+            overflow: 'hidden',
             margin: '0 -28px',
             minHeight: 'calc(100% - 32px)',
             boxShadow: 'rgba(0, 0, 0, 0.09) 0px -2px 5px, rgba(0, 0, 0, 0.05) 0px -2px 6px',
@@ -347,22 +347,22 @@ const ZonesWrapper = enhance((props) => {
                 {isOpenToggle ? <div className={classes.expanded} onClick={toggle.handleCollapseInfo}><Arrow/></div>
                     : <div className={classes.collapsed} onClick={toggle.handleExpandInfo}><Arrow/></div>}
             </div>
+            {openShopDetail &&
+            <ShopDetail shopDetails={shopDetail}/>}
             {openDetail
-            ? <ZoneDetails
-                shopFilter={shopFilter}
-                detailData={detailData}
-                bindAgent={bindAgent}
-                unbindAgent={unbindAgent}
-                filter={filter}
-            />
-            : openShopDetail
-                ? <ShopDetail
-                        shopDetails={shopDetail}/>
-            : <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%'}}>
+                ? <ZoneDetails
+                    handleOpenShopDetails={shopDetail.handleOpenShopDetails}
+                    shopFilter={shopFilter}
+                    detailData={detailData}
+                    bindAgent={bindAgent}
+                    unbindAgent={unbindAgent}
+                    filter={filter}
+                />
+                : <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%'}}>
                     <div className={classes.zonesInfoTitle}>
                         {isLoadingStat &&
                         <div className={classes.loader}>
-                            <CircularProgress size={25} thickness={3}/>
+                            <Loader size={0.5}/>
                         </div>}
                         <div>
                             <big>{activeZones}</big>
@@ -391,7 +391,7 @@ const ZonesWrapper = enhance((props) => {
                                             iconStyle={{color: '#ccc'}}
                                             className={classes.searchButton}
                                             disableTouchRipple={true}>
-                                            <SearchIcon />
+                                            <SearchIcon/>
                                         </IconButton>
                                     </div>
                                 </form>
@@ -405,7 +405,7 @@ const ZonesWrapper = enhance((props) => {
                         <div className={classes.itemList}>
                             {isLoadingList &&
                             <div className={classes.loader}>
-                                <CircularProgress size={40} thickness={4}/>
+                                <Loader size={0.75}/>
                             </div>}
                             {!isListEmpty ? _.map(_.get(listData, 'data'), (item) => {
                                 const id = _.get(item, 'id')
@@ -430,12 +430,12 @@ const ZonesWrapper = enhance((props) => {
                                                 <MenuItem
                                                     primaryText="Изменить"
                                                     onTouchTap={() => { updateZone.handleOpenUpdateZone(id) }}
-                                                    leftIcon={<Edit />}
+                                                    leftIcon={<Edit/>}
                                                 />
                                                 <MenuItem
                                                     primaryText="Удалить"
                                                     onTouchTap={() => { deleteZone.handleOpenDeleteZone(id) }}
-                                                    leftIcon={<DeleteIcon />}
+                                                    leftIcon={<DeleteIcon/>}
                                                 />
                                             </IconMenu>
                                         </Col>
@@ -451,7 +451,7 @@ const ZonesWrapper = enhance((props) => {
                     <div className={classes.zonesInfoFooter}>
                         {isLoadingStat &&
                         <div className={classes.loader}>
-                            <CircularProgress size={25} thickness={3}/>
+                            <Loader size={0.5}/>
                         </div>}
                         <div>
                             <big>{passiveMarkets}</big>

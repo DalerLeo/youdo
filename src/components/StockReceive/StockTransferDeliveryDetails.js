@@ -13,7 +13,7 @@ import PrintIcon from 'material-ui/svg-icons/action/print'
 import PrintRoute from 'material-ui/svg-icons/Maps/directions-car'
 import Release from 'material-ui/svg-icons/AV/new-releases'
 import SendDelivery from 'material-ui/svg-icons/content/reply-all'
-import Delivery from 'material-ui/svg-icons/maps/local-taxi'
+import Direction from 'material-ui/svg-icons/maps/directions'
 import sprintf from 'sprintf'
 import {Link} from 'react-router'
 import * as ROUTES from '../../constants/routes'
@@ -209,7 +209,7 @@ const StockTransferDetails = enhance((props) => {
                             <PrintRoute />
                         </IconButton>
                     </Tooltip>
-                    <Tooltip position="bottom" text="Релиз">
+                    <Tooltip position="bottom" text="Скачать релиз">
                         <IconButton
                             disabled={_.isEmpty(products)}
                             iconStyle={iconStyle.icon}
@@ -219,14 +219,14 @@ const StockTransferDetails = enhance((props) => {
                             <Release />
                         </IconButton>
                     </Tooltip>
-                    <Tooltip position="bottom" text="Маршрут">
+                    <Tooltip position="bottom" text="Скачать маршрут">
                         <IconButton
                             disabled={_.isEmpty(products)}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
                             onTouchTap={getRoute.handleGetRoute}>
-                            <Delivery />
+                            <Direction />
                         </IconButton>
                     </Tooltip>
                     <Tooltip position="bottom" text="Распечатать релиз">

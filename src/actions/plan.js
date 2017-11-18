@@ -261,3 +261,19 @@ export const agentPlansAction = (agent, date) => {
     }
 }
 
+export const agentPlansStatsAction = (agent, date) => {
+    const payload = axios()
+        .get(API.PLAN_AGENTS_ITEM_STATS, {params: {user: agent, date: date}})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.PLAN_AGENTS_ITEM_STATS,
+        payload
+    }
+}
+

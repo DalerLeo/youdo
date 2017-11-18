@@ -286,7 +286,8 @@ const OrderAddProductsDialog = enhance((props) => {
         setSearch,
         openAddProductConfirm,
         handleCloseAddProductConfirm,
-        handleSubmitAddProductConfirm
+        handleSubmitAddProductConfirm,
+        isSuperUser
     } = props
     const onSubmit = handleSubmit(props.onSubmit)
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
@@ -294,7 +295,7 @@ const OrderAddProductsDialog = enhance((props) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const balance = _.get(item, 'balance')
-        const canChangePrice = _.get(item, 'customPrice')
+        const canChangePrice = isSuperUser || _.get(item, 'customPrice')
         const normalize = value => {
             if (!value) {
                 return value

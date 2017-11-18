@@ -221,6 +221,22 @@ export const orderProductMobileAction = (orderId, priceList, size, products) => 
     }
 }
 
+export const orderChangePriceListAction = (orderId, priceList, size, products) => {
+    const payload = axios()
+        .get(API.PRODUCT_MOBILE_URL, {'params': {'order': orderId, 'price_list': priceList, 'page_size': size, 'ids': products}})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.ORDER_CHANGE_PRICE,
+        payload
+    }
+}
+
 export const orderGetCounts = () => {
     const payload = axios()
         .get(API.ORDER_COUNTS)

@@ -91,6 +91,7 @@ const rootReducer = combineReducers({
         returnList: createThunkReducer(actionTypes.ORDER_RETURN_LIST),
         update: createThunkReducer(actionTypes.ORDER_UPDATE),
         updateProducts: createThunkReducer(actionTypes.PRODUCT_MOBILE),
+        changePrice: createThunkReducer(actionTypes.ORDER_CHANGE_PRICE),
         counts: createThunkReducer(actionTypes.ORDER_COUNTS)
     }),
     product: combineReducers({
@@ -424,6 +425,7 @@ const rootReducer = combineReducers({
         agentsList: createThunkReducer(actionTypes.PLAN_AGENT_LIST),
         agentPlan: createThunkReducer(actionTypes.PLAN_AGENT_MONTHLY),
         agentsPlan: createThunkReducer(actionTypes.PLAN_AGENTS),
+        agentStats: createThunkReducer(actionTypes.PLAN_AGENTS_ITEM_STATS),
         update: createThunkReducer(actionTypes.PLAN_UPDATE),
         combination: createThunkReducer(actionTypes.PLAN_COMBINATION)
     }),
