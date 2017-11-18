@@ -357,10 +357,8 @@ export const stockReceiveHistorySupplyAction = (orderId) => {
     }
 }
 export const routePintFetchAction = (ids) => {
-    const print = true
-    console.log(ids, 'asdasdasdasdasdassssssssssssss')
     const payload = axios()
-        .get((API.ORDER_LIST_PRINT), {ids: ids})
+        .get((API.ORDER_LIST_PRINT), {params: {ids: ids}})
         .then((response) => {
             return _.get(response, 'data')
         })

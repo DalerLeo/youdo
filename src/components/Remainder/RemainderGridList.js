@@ -215,7 +215,7 @@ const headerItems = [
         name: 'product',
         sorting: false,
         title: 'Товар',
-        xs: 3
+        xs: 2
     },
     {
         name: 'productType',
@@ -226,14 +226,20 @@ const headerItems = [
     {
         sorting: true,
         name: 'balance',
-        title: 'Всего товаров',
+        title: 'Остатки',
+        xs: 2
+    },
+    {
+        sorting: true,
+        name: 'reserved',
+        title: 'Доступные товары',
         xs: 2
     },
     {
         sorting: true,
         name: 'defects',
         title: 'Бракованные товары',
-        xs: 3
+        xs: 2
     },
     {
         sorting: true,
@@ -279,9 +285,10 @@ const RemainderGridList = enhance((props) => {
     const remainderList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const product = _.get(item, 'title')
-        const balance = Number(_.get(item, 'balance')) + Number(_.get(item, 'defects'))
-        const defects = _.get(item, 'defects')
+        const balance = _.toNumber(_.get(item, 'balance'))
+        const defects = _.toNumber(_.get(item, 'defects'))
         const reserved = _.toNumber(_.get(item, 'reserved'))
+        const accept = balance - defects - reserved
         const measurement = _.get(item, ['measurement', 'name'])
         const type = _.get(item, ['type', 'name'])
         return (
@@ -291,10 +298,11 @@ const RemainderGridList = enhance((props) => {
                     to={{pathname: ROUTES.STOCK_OUT_HISTORY_LIST_URL, query: filter.getParams({'product': id})}}
                     className={classes.openDetail}>
                 </Link>
-                <Col xs={3}>{product}</Col>
+                <Col xs={2}>{product}</Col>
                 <Col xs={2}>{type}</Col>
                 <Col xs={2} className={classes.itemData}>{numberFormat(balance, measurement)}</Col>
-                <Col xs={3} className={classes.itemData}>{numberFormat(defects, measurement)}</Col>
+                <Col xs={2} className={classes.itemData}>{numberFormat(accept, measurement)}</Col>
+                <Col xs={2} className={classes.itemData}>{numberFormat(defects, measurement)}</Col>
                 {(reserved > ZERO)
                     ? <Col xs={2} className={classes.itemOpenData}
                            onClick={() => { reservedDialog.handleOpenRemainderReservedDialog(id) }}>

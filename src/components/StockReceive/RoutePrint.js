@@ -9,10 +9,7 @@ import Loader from '../Loader'
 import numberFormat from '../../helpers/numberFormat'
 import dateFormat from '../../helpers/dateFormat'
 import paymentTypeFormat from '../../helpers/paymentTypeFormat'
-import dealTypeFormat from '../../helpers/dealTypeFormat'
-import getConfig from '../../helpers/getConfig'
 
-const ONE = 1
 const enhance = compose(
     injectSheet({
         loader: {
@@ -27,6 +24,7 @@ const enhance = compose(
         wrapper: {
             background: '#fff',
             fontSize: '14px',
+            padding: '50px',
             width: '100%',
             height: '100%',
             zIndex: '999',
@@ -137,9 +135,8 @@ const enhance = compose(
 )
 
 const RoutePrint = enhance((props) => {
-    const {classes, printDialog, listPrintData} = props
+    const {classes, printRouteDialog, listPrintData, currentDeliverer, deliveryManName, beginDate, endDate} = props
     const loading = _.get(listPrintData, 'listPrintLoading')
-    let formattedAmount = true
     if (loading) {
         return (
             <div className={classes.loader}>
@@ -149,111 +146,56 @@ const RoutePrint = enhance((props) => {
     }
     return (
         <div className={classes.wrapper}>
-            {_.map(_.get(listPrintData, 'data'), (item) => {
-                const id = _.get(item, 'id')
-                const marketName = _.get(item, ['market', 'name'])
-                const marketAddress = _.get(item, ['market', 'address'])
-                const marketGuide = _.get(item, ['market', 'guide'])
-                const marketPhone = _.get(item, ['market', 'phone'])
-                const agent = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName'])
-                const totalPrice = _.get(item, ['totalPrice'])
-                const paymentDate = dateFormat(_.get(item, 'paymentDate'))
-                const createdDate = dateFormat(_.get(item, 'createdDate'))
-                const dateDelivery = dateFormat(_.get(item, 'dateDelivery'))
-                const paymentType = paymentTypeFormat(_.get(item, 'paymentType'))
-                const dealType = dealTypeFormat(_.get(item, 'dealType'))
-                const currentCurrency = getConfig('PRIMARY_CURRENCY')
-                const firstMeasure = _.get(item, ['products', '0', 'product', 'measurement', 'name'])
-                const totalAmount = _.sumBy(_.get(item, 'products'), (o) => {
-                    return _.toNumber(_.get(o, 'amount'))
-                })
-                return (
-                    <div key={id} className="printItem">
-                        <div className={classes.title}>
-                            <span>Заказ № {id}</span>
-                            {getConfig('COMPANY_NAME') ? <div className={classes.kerasys}>{getConfig('COMPANY_NAME')}</div> : null}
-                            <div>Добавлено: {createdDate}</div>
-                        </div>
-                        <div className={classes.info}>
-                            <div className={classes.block}>
-                                <ul>
-                                    <li>Название магазина:</li>
-                                    <li>Адрес:</li>
-                                    <li>Ориентир:</li>
-                                    <li>Телефон:</li>
-                                    <li>Агент:</li>
-                                </ul>
-                                <ul>
-                                    <li>{marketName}</li>
-                                    <li>{marketAddress}</li>
-                                    <li>{marketGuide}</li>
-                                    <li>{marketPhone}</li>
-                                    <li>{agent}</li>
-                                </ul>
-                            </div>
-                            <div className={classes.block}>
-                                <ul>
-                                    <li>Тип сделки:</li>
-                                    <li>Дата ожидаемой оплаты:</li>
-                                    <li>Дата доставки:</li>
-                                    <li>Тип оплаты:</li>
-                                </ul>
-                                <ul>
-                                    <li>{dealType}</li>
-                                    <li>{paymentDate}</li>
-                                    <li>{dateDelivery}</li>
-                                    <li>{paymentType}</li>
-                                </ul>
-                            </div>
-                        </div>
+            <div className={classes.info}>
+                <div className={classes.block}>
+                    <ul>
+                        <li>Агент: </li>
+                        <li>Склад: </li>
+                    </ul>
+                    <ul>
+                        <li>{deliveryManName}</li>
+                        <li>{currentDeliverer.stock.name}</li>
+                    </ul>
+                </div>
+                <div className={classes.block}>
+                    <ul>
+                        <li>c {beginDate} по {endDate}</li>
+                    </ul>
+                </div>
+            </div>
+            <div className={classes.products}>
+                <Row className="printItem">
+                    <Col xs={1}>№</Col>
+                    <Col xs={2}>Агент</Col>
+                    <Col xs={2}>Магазин</Col>
+                    <Col xs={2}>Адрес</Col>
+                    <Col xs={1}>Сумма (USD)</Col>
+                    <Col xs={2}>Тип оплаты</Col>
+                    <Col xs={2}>Дата ожидаемой оплаты</Col>
+                </Row>
+                {_.map(_.get(listPrintData, 'data'), (item) => {
+                    const totalPrice = numberFormat(_.get(item, 'totalPrice'))
+                    const id = _.get(item, 'id')
+                    const market = _.get(item, ['market', 'name'])
+                    const address = _.get(item, ['market', 'address'])
+                    const agent = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName'])
+                    const paymentType = numberFormat(_.get(item, 'paymentType'))
+                    const date = dateFormat(_.get(item, 'paymentDate'))
 
-                        <div className={classes.products}>
-                            <Row>
-                                <Col xs={1}>№</Col>
-                                <Col xs={4}>Наименование</Col>
-                                <Col xs={1}>Код</Col>
-                                <Col xs={2}>Кол-во</Col>
-                                <Col xs={2}>Цена ({currentCurrency})</Col>
-                                <Col xs={2}>Сумма ({currentCurrency})</Col>
-                            </Row>
-                            {_.map(_.get(item, 'products'), (product, index) => {
-                                const totalProductPrice = numberFormat(_.get(product, 'totalPrice'))
-                                const productId = _.get(product, 'id')
-                                const code = _.get(product, ['product', 'code'])
-                                const measurment = _.get(product, ['product', 'measurement', 'name'])
-                                const name = _.get(product, ['product', 'name'])
-                                const isBonus = _.get(product, ['isBonus'])
-                                const price = numberFormat(_.get(product, 'price'))
-                                const amount = numberFormat(_.get(product, 'amount'), measurment)
-                                if (formattedAmount) {
-                                    formattedAmount = (firstMeasure === measurment)
-                                }
-                                return (
-                                    <Row key={productId}>
-                                        <Col xs={1}>{index + ONE}</Col>
-                                        <Col xs={4}>{!isBonus ? name : <div><span style={{fontWeight: '700'}}>БОНУС</span> {name}</div>}</Col>
-                                        <Col xs={1}>{code}</Col>
-                                        <Col xs={2}>{amount}</Col>
-                                        <Col xs={2}>{price}</Col>
-                                        <Col xs={2}>{totalProductPrice}</Col>
-                                    </Row>
-                                )
-                            })}
-                            <Row className={classes.summary}>
-                                <Col xs={1}></Col>
-                                <Col xs={1}></Col>
-                                <Col xs={4}></Col>
-                                <Col xs={2}>{formattedAmount && 'Итого: ' + numberFormat(totalAmount, firstMeasure)}</Col>
-                                <Col xs={2}></Col>
-                                <Col xs={2}>Итого: {numberFormat(totalPrice)}</Col>
-                            </Row>
-                        </div>
-                        <div className={classes.sign}>Подпись клиента:<span> </span></div>
-
-                    </div>
-                )
-            })}
-            <IconButton onTouchTap={printDialog.handleClosePrintDialog} className="printCloseBtn">
+                    return (
+                        <Row key={id} className="printItem">
+                            <Col xs={1}>{id}</Col>
+                            <Col xs={2}>{agent}</Col>
+                            <Col xs={2}>{market}</Col>
+                            <Col xs={2}>{address}</Col>
+                            <Col xs={1}>{totalPrice}</Col>
+                            <Col xs={2}>{paymentTypeFormat(paymentType)}</Col>
+                            <Col xs={2}>{date}</Col>
+                        </Row>
+                    )
+                })}
+            </div>
+            <IconButton onTouchTap={printRouteDialog.handleClosePrintRouteDialog} className="printCloseBtn">
                 <Close color="#666"/>
             </IconButton>
         </div>
