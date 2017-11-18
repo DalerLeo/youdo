@@ -1,11 +1,12 @@
 import _ from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
+import ReactDOM from 'react-dom'
 import {Row} from 'react-flexbox-grid'
 import * as ROUTES from '../../../constants/routes'
 import Container from '../../Container/index'
 import Loader from '../../Loader'
-import {compose} from 'recompose'
+import {compose, lifecycle} from 'recompose'
 import injectSheet from 'react-jss'
 import StatSideMenu from '../StatSideMenu'
 import Pagination from '../../GridList/GridListNavPagination/index'
@@ -34,13 +35,16 @@ export const STAT_PRODUCT_FILTER_KEY = {
 const enhance = compose(
     injectSheet({
         loader: {
+            position: 'absolute',
+            top: '0',
+            left: '0',
+            bottom: '0',
             width: '100%',
             padding: '100px 0',
             background: '#fff',
             alignItems: 'center',
             zIndex: '999',
-            justifyContent: 'center',
-            display: 'flex'
+            justifyContent: 'center'
         },
         mainWrapper: {
             background: '#fff',
@@ -85,12 +89,18 @@ const enhance = compose(
             overflow: 'hidden'
         },
         emptyQuery: {
-            background: 'url(' + NotFound + ') no-repeat center center',
+            position: 'absolute',
+            top: '0',
+            left: '0',
+            right: '0',
+            bottom: '0',
+            background: '#fff url(' + NotFound + ') no-repeat center 20px',
             backgroundSize: '200px',
-            padding: '200px 0 0',
+            padding: '160px 0 0',
             textAlign: 'center',
             fontSize: '13px',
             color: '#666',
+            zIndex: '30',
             '& svg': {
                 width: '50px !important',
                 height: '50px !important',
@@ -161,11 +171,14 @@ const enhance = compose(
                 }
             }
         },
+        container: {
+            position: 'relative'
+        },
         tableWrapper: {
             display: 'flex',
             margin: '0 -30px',
-            overflow: 'hidden',
             paddingLeft: '30px',
+            position: 'relative',
             '& > div:first-child': {
                 zIndex: '20',
                 boxShadow: '5px 0 8px -3px #CCC',
@@ -227,6 +240,26 @@ const enhance = compose(
         const typeParent = _.get(state, ['form', 'StatisticsFilterForm', 'values', 'productType', 'value'])
         return {
             typeParent
+        }
+    }),
+    lifecycle({
+        componentDidMount () {
+            const horizontalTable = ReactDOM.findDOMNode(this.refs.horizontalTable)
+            const ONE = 1
+            const MINUS_ONE = -1
+            const MULTIPLY = 35
+            const scrollHorizontally = (event) => {
+                const customEvent = window.event || event
+                const delta = Math.max(MINUS_ONE, Math.min(ONE, (customEvent.wheelDelta || -customEvent.detail)))
+                horizontalTable.scrollLeft -= (delta * MULTIPLY)
+                customEvent.preventDefault()
+            }
+            if (horizontalTable.addEventListener) {
+                horizontalTable.addEventListener('mousewheel', scrollHorizontally, false)
+                horizontalTable.addEventListener('DOMMouseScroll', scrollHorizontally, false)
+            } else {
+                horizontalTable.attachEvent('onmousewheel', scrollHorizontally)
+            }
         }
     })
 )
@@ -382,23 +415,24 @@ const StatProductGridList = enhance((props) => {
                                     <Search/>
                                 </IconButton>
                             </form>
-                        <Pagination filter={filter}/>
+                            <Pagination filter={filter}/>
                         </div>
-                        {listLoading
-                        ? <div className={classes.loader}>
-                            <Loader size={0.75}/>
-                        </div>
-                        : _.isEmpty(tableList) ? <div className={classes.emptyQuery}>
-                            <div>По вашему запросу ничего не найдено</div>
-                        </div>
-                        : <div className={classes.tableWrapper}>
-                            <div className={classes.leftTable}>
-                                <div><span>Товар</span></div>
-                                {tableLeft}
-                            </div>
-                            <div>
-                                <table className={classes.mainTable}>
-                                    <tbody className={classes.tableBody}>
+                        <div className={classes.container}>
+                            {listLoading && <div className={classes.loader}>
+                                <Loader size={0.75}/>
+                            </div>}
+                            <div className={classes.tableWrapper}>
+                                <div className={classes.leftTable}>
+                                    <div><span>Товар</span></div>
+                                    {tableLeft}
+                                </div>
+                                {_.isEmpty(tableList) && !listLoading &&
+                                <div className={classes.emptyQuery}>
+                                    <div>По вашему запросу ничего не найдено</div>
+                                </div>}
+                                <div ref="horizontalTable">
+                                    <table className={classes.mainTable}>
+                                        <tbody className={classes.tableBody}>
                                         <tr className={classes.title}>
                                             <td rowSpan={2}>Тип</td>
                                             <td colSpan={2}>Продажа</td>
@@ -412,15 +446,16 @@ const StatProductGridList = enhance((props) => {
                                                 if (!header.sorting) {
                                                     return <td>{header.title}</td>
                                                 }
-                                                return <td key={index} style={{cursor: 'pointer'}} onClick={ () =>
+                                                return <td key={index} style={{cursor: 'pointer'}} onClick={() =>
                                                     ordering(filter, header.name, pathname)}>{header.title}{icon}</td>
                                             })}
                                         </tr>
                                         {tableList}
-                                    </tbody>
-                                </table>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
-                        </div>}
+                        </div>
                     </div>
                 </div>
             </Row>
