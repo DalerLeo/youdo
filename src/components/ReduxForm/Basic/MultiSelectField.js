@@ -46,7 +46,10 @@ const enhance = compose(
             '& .Select-menu-outer': {
                 maxHeight: '200px',
                 zIndex: '99',
-                boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px 3px, rgba(0, 0, 0, 0.12) 0px 1px 4px'
+                boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px 3px, rgba(0, 0, 0, 0.12) 0px 1px 4px',
+                '& ::-webkit-scrollbar': {
+                    width: '4px'
+                }
             },
             '& .Select-control': {
                 borderRadius: '0px',
@@ -67,7 +70,8 @@ const enhance = compose(
                     paddingLeft: '0'
                 },
                 '& .Select-input': {
-                    paddingLeft: '0'
+                    paddingLeft: '0',
+                    marginLeft: '0'
                 },
                 '& .Select--multi .Select-value': {
                     backgroundColor: '#f2f5f8',

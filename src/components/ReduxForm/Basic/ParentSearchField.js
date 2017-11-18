@@ -28,7 +28,10 @@ const enhance = compose(
                 zIndex: '6',
                 border: 'unset',
                 maxHeight: '200px',
-                marginTop: '5px'
+                marginTop: '5px',
+                '& ::-webkit-scrollbar': {
+                    width: '4px'
+                }
             },
             '& .Select-menu': {
                 maxHeight: '200px',
@@ -43,7 +46,7 @@ const enhance = compose(
                 border: '0',
                 paddingBottom: '1px',
                 borderBottom: '1px solid rgb(224, 224, 224)',
-                backgroundColor: 'unset'
+                backgroundColor: 'unset',
             }
         }
     }),
