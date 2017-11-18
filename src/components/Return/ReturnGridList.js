@@ -25,6 +25,7 @@ import Tooltip from '../ToolTip'
 import numberFormat from '../../helpers/numberFormat'
 import dateFormat from '../../helpers/dateTimeFormat'
 import ReturnUpdateDialog from '../Order/OrderReturnDialog'
+import Print from 'material-ui/svg-icons/action/print'
 
 const listHeader = [
     {
@@ -241,6 +242,15 @@ const OrderGridList = enhance((props) => {
         list: orderList,
         loading: _.get(listData, 'listLoading')
     }
+    const checkboxActions = (
+        <div className={classes.buttons}>
+            <Tooltip position="left" text="Распечатать накладные">
+                <IconButton onTouchTap={printDialog.handleOpenPrintDialog}>
+                    <Print color="#666"/>
+                </IconButton>
+            </Tooltip>
+        </div>
+    )
 
     return (
         <Container>
@@ -267,6 +277,8 @@ const OrderGridList = enhance((props) => {
                 printDialog={printDialog}
                 withCheckboxes={true}
                 activeCheckboxes={showCheckboxes}
+                checkboxActions={checkboxActions}
+
             />
 
             {detailData.data && <ConfirmDialog

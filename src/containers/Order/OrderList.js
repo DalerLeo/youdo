@@ -248,24 +248,6 @@ const enhance = compose(
         }
     }),
 
-    withPropsOnChange((props, nextProps) => {
-        const orderId = _.get(nextProps, ['params', 'orderId'])
-        return orderId && _.get(props, ['params', 'orderId']) === orderId && props.detailLoading !== nextProps.detailLoading
-    }, ({dispatch, detail, list, params}) => {
-        const orderId = _.toInteger(_.get(params, 'orderId'))
-        if (orderId > ZERO) {
-            return dispatch(updateStore(orderId, list, actionTypes.ORDER_LIST, {
-                client: _.get(detail, 'client'),
-                market: {name: _.get(detail, ['market', 'name']), id: _.get(detail, ['market', 'id'])},
-                user: _.get(detail, 'user'),
-                totalPrice: _.get(detail, 'totalPrice'),
-                totalBalance: _.get(detail, 'totalBalance'),
-                dateDelivery: _.get(detail, 'dateDelivery')
-            }))
-        }
-        return null
-    }),
-
     withState('openAddProductDialog', 'setOpenAddProductDialog', false),
     withState('openAddProductConfirm', 'setOpenAddProductConfirm', false),
     withPropsOnChange((props, nextProps) => {
@@ -447,7 +429,11 @@ const enhance = compose(
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[ORDER_CREATE_DIALOG_OPEN]: false})})
+                    hashHistory.push({pathname,
+                        query: filter.getParams({
+                            [ORDER_CREATE_DIALOG_OPEN]: false,
+                            [ORDER_SHORTAGE_DIALOG_OPEN]: false
+                        })})
                     dispatch(orderListFetchAction(filter))
                 })
                 .catch((error) => {
@@ -537,29 +523,6 @@ const enhance = compose(
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[ORDER_SHORTAGE_DIALOG_OPEN]: false})})
         },
-        handleSubmitShortageDialog: props => () => {
-            const {dispatch, createForm, filter, location: {pathname}} = props
-            return dispatch(orderCreateAction(_.get(createForm, ['values'])))
-                .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно отправлено'}))
-                })
-                .then(() => {
-                    hashHistory.push({
-                        pathname,
-                        query: filter.getParams({
-                            [ORDER_SHORTAGE_DIALOG_OPEN]: false,
-                            [ORDER_CREATE_DIALOG_OPEN]: false,
-                            [ORDER_UPDATE_DIALOG_OPEN]: false
-                        })
-                    })
-                    dispatch(orderListFetchAction(filter))
-                }).catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
-                })
-        },
-
         handleOpenUpdateDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[ORDER_UPDATE_DIALOG_OPEN]: true})})
@@ -571,18 +534,34 @@ const enhance = compose(
         },
 
         handleSubmitUpdateDialog: props => () => {
-            const {dispatch, createForm, filter, location: {pathname}} = props
+            const {dispatch, createForm, filter, location: {pathname}, list} = props
             const orderId = _.toInteger(_.get(props, ['params', 'orderId']))
 
             return dispatch(orderUpdateAction(orderId, _.get(createForm, ['values'])))
                 .then(() => {
-                    return dispatch(orderItemFetchAction(orderId))
+                    return dispatch(orderItemFetchAction(orderId)).then((data) => {
+                        const detail = _.get(data, 'value')
+                        dispatch(updateStore(orderId, list, actionTypes.ORDER_LIST, {
+                            client: _.get(detail, 'client'),
+                            market: {name: _.get(detail, ['market', 'name']), id: _.get(detail, ['market', 'id'])},
+                            user: _.get(detail, 'user'),
+                            status: _.get(detail, 'status'),
+                            totalPrice: _.get(detail, 'total_price'),
+                            totalBalance: _.get(detail, 'total_balance'),
+                            dateDelivery: _.get(detail, 'date_delivery'),
+                            paymentDate: _.get(detail, 'payment_date')
+                        }))
+                    })
                 })
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[ORDER_UPDATE_DIALOG_OPEN]: false})})
+                    hashHistory.push({pathname,
+                        query: filter.getParams({
+                            [ORDER_UPDATE_DIALOG_OPEN]: false,
+                            [ORDER_SHORTAGE_DIALOG_OPEN]: false
+                        })})
                 }).catch((error) => {
                     dispatch(openErrorAction({
                         message: error
@@ -937,7 +916,7 @@ const OrderList = enhance((props) => {
         openShortageDialog,
         handleOpenShortageDialog: props.handleOpenShortageDialog,
         handleCloseShortageDialog: props.handleCloseShortageDialog,
-        handleSubmitShortageDialog: props.handleSubmitShortageDialog
+        handleSubmitShortageDialog: openCreateDialog ? props.handleSubmitCreateDialog : props.handleSubmitUpdateDialog
     }
 
     const getDocument = {
