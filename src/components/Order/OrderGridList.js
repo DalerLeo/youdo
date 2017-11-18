@@ -42,6 +42,12 @@ import dateFormat from '../../helpers/dateFormat'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
 import toBoolean from '../../helpers/toBoolean'
 
+const ZERO = 0
+const REQUESTED = 0
+const READY = 1
+const GIVEN = 2
+const DELIVERED = 3
+const CANCELED = 4
 const listHeader = [
     {
         sorting: true,
@@ -169,12 +175,6 @@ const enhance = compose(
     }),
 )
 
-const REQUESTED = 0
-const READY = 1
-const GIVEN = 2
-const DELIVERED = 3
-const CANCELED = 4
-
 const OrderGridList = enhance((props) => {
     const {
         filter,
@@ -214,7 +214,7 @@ const OrderGridList = enhance((props) => {
     const statusIsReady = !_.isNil(_.get(filter.getParams(), 'status')) && _.toNumber(_.get(filter.getParams(), 'status')) === READY
     const statusIsRequested = !_.isNil(_.get(filter.getParams(), 'status')) && _.toNumber(_.get(filter.getParams(), 'status')) === REQUESTED
     const orderCounts = _.get(listData, 'orderCounts')
-    const readyCount = _.get(orderCounts, 'readyCount')
+    const readyCount = _.get(orderCounts, 'readyCount') || ZERO
     const requestedCount = _.get(orderCounts, 'requestedCount')
     const orderCountsLoading = _.get(listData, 'orderCountsLoading')
     const orderFilterDialog = (
@@ -263,7 +263,7 @@ const OrderGridList = enhance((props) => {
             isSuperUser={isSuperUser}
         />
     )
-    const ZERO = 0
+
     const orderList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const currentCurrency = getConfig('PRIMARY_CURRENCY')
@@ -435,6 +435,7 @@ const OrderGridList = enhance((props) => {
                     <RefreshIcon color="#5d6474"/>
                 </IconButton>
             </Tooltip>
+
             <Tooltip position="left" text="Отфильтровать по доступным заказам">
                 <Badge
                     primary={true}

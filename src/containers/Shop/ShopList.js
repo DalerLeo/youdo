@@ -107,22 +107,6 @@ const enhance = compose(
             dispatch(slideShowFetchAction(fileId))
         }
     }),
-    withPropsOnChange((props, nextProps) => {
-        const shopId = _.get(nextProps, ['params', 'shopId'])
-        return shopId && _.get(props, ['params', 'shopId']) === shopId && props.detailLoading !== nextProps.detailLoading
-    }, ({dispatch, detail, list, params}) => {
-        const shopId = _.toInteger(_.get(params, 'shopId'))
-        if (shopId > ZERO) {
-            return dispatch(updateStore(shopId, list, actionTypes.SHOP_LIST, {
-                isActive: _.get(detail, 'isActive'),
-                border: _.get(detail, 'border'),
-                client: _.get(detail, 'client'),
-                name: _.get(detail, 'name'),
-                marketType: _.get(detail, 'marketType')
-            }))
-        }
-        return null
-    }),
 
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
     withState('openDeleteImage', 'setOpenDeleteImage', false),
@@ -349,12 +333,22 @@ const enhance = compose(
         },
 
         handleSubmitUpdateDialog: props => () => {
-            const {dispatch, createForm, filter, mapLocation, detail} = props
+            const {dispatch, createForm, filter, mapLocation, detail, list} = props
             const shopId = _.toInteger(_.get(props, ['params', 'shopId']))
 
             return dispatch(shopUpdateAction(shopId, _.get(createForm, ['values']), mapLocation, detail))
                 .then(() => {
                     return dispatch(shopItemFetchAction(shopId))
+                        .then((data) => {
+                            const detailData = _.get(data, 'value')
+                            return dispatch(updateStore(shopId, list, actionTypes.SHOP_LIST, {
+                                isActive: _.get(detailData, 'is_active'),
+                                border: _.get(detailData, 'border'),
+                                client: _.get(detailData, 'client'),
+                                name: _.get(detailData, 'name'),
+                                marketType: _.get(detailData, 'market_type')
+                            }))
+                        })
                 })
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
