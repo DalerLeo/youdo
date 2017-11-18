@@ -25,8 +25,6 @@ import {
 } from '../../actions/client'
 import {openErrorAction} from '../../actions/error'
 import {openSnackbarAction} from '../../actions/snackbar'
-
-const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -63,20 +61,6 @@ const enhance = compose(
     }, ({dispatch, params}) => {
         const clientId = _.toInteger(_.get(params, 'clientId'))
         clientId && dispatch(clientItemFetchAction(clientId))
-    }),
-
-    withPropsOnChange((props, nextProps) => {
-        const clientId = _.get(nextProps, ['params', 'clientId'])
-        return clientId && _.get(props, ['params', 'clientId']) === clientId && props.detailLoading !== nextProps.detailLoading
-    }, ({dispatch, detail, list, params}) => {
-        const clientId = _.toInteger(_.get(params, 'clientId'))
-        if (clientId > ZERO) {
-            return dispatch(updateStore(clientId, list, actionTypes.CLIENT_LIST, {
-                address: _.get(detail, 'address'),
-                name: _.get(detail, 'name')
-            }))
-        }
-        return null
     }),
 
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
@@ -151,18 +135,30 @@ const enhance = compose(
         },
 
         handleSubmitUpdateDialog: props => () => {
-            const {dispatch, createForm, filter} = props
+            const {dispatch, createForm, filter, list} = props
             const clientId = _.toInteger(_.get(props, ['params', 'clientId']))
 
             return dispatch(clientUpdateAction(clientId, _.get(createForm, ['values'])))
                 .then(() => {
                     return dispatch(clientItemFetchAction(clientId))
+                        .then((data) => {
+                            const detail = _.get(data, 'value')
+                            return dispatch(updateStore(clientId, list, actionTypes.CLIENT_LIST, {
+                                address: _.get(detail, 'address'),
+                                name: _.get(detail, 'name')
+                            }))
+                        })
                 })
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
                     hashHistory.push(filter.createURL({[CLIENT_UPDATE_DIALOG_OPEN]: false}))
+                })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
                 })
         },
 

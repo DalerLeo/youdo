@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 import {connect} from 'react-redux'
-import SearchFieldCustom from '../Basic/SearchFieldCustom'
+import SearchFieldCustom from '../Basic/SearchFilterField'
 import {compose} from 'recompose'
 import PropTypes from 'prop-types'
 
@@ -28,7 +28,7 @@ const ReturnProductsSearchField = enhance((props) => {
                 return Promise.resolve(
                     _.find(productItems, (o) => { return _.toInteger(_.get(o, ['id'])) === _.toInteger(value) }))
             }}
-                getItemText={(value) => { return _.get(value, ['product', 'name']) }}
+            getItemText={(value) => { return _.get(value, ['product', 'name']) }}
             {...props}
         />
     )

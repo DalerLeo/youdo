@@ -50,7 +50,7 @@ const enhance = compose(
     injectSheet({
         wrapper: {
             position: 'absolute',
-            minWidth: '310px',
+            width: '310px',
             background: '#fff',
             zIndex: 99,
             top: 0,
@@ -212,7 +212,7 @@ const OrderFilterForm = enhance((props) => {
                         <Field className={classes.inputFieldCustom} name="shop" component={MarketSearchField} label="Магазин"/>
                         {divisionStatus && <Field className={classes.inputFieldCustom} name="division" component={DivisionSearchField} label="Подразделение"/>}
                         <Field className={classes.inputFieldCustom} name="initiator" component={UsersAgentSearchField} label="Инициатор"/>
-                        <Field className={classes.inputFieldCustom} name="dept" component={DeptSearchField} label="Оплаченный"/>
+                        <Field className={classes.inputFieldCustom} name="dept" component={DeptSearchField} label="Статус оплаты"/>
                         <Field className={classes.inputFieldCustom} name="zone" component={ZoneSearchField} label="Зона"/>
                         <Field className={classes.inputDateCustom} name="data" component={DateToDateField} label="Период создания"/>
                         <Field className={classes.inputDateCustom} name="deliveryDate" component={DateToDateField} label="Дата доставки"/>

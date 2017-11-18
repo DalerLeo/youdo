@@ -33,7 +33,6 @@ import {
 } from '../../actions/return'
 import {openSnackbarAction} from '../../actions/snackbar'
 
-const ZERO = 0
 const TWO = 2
 
 const enhance = compose(
@@ -87,21 +86,6 @@ const enhance = compose(
     }, ({dispatch, params}) => {
         const returnId = _.toInteger(_.get(params, 'returnId'))
         returnId && dispatch(returnItemFetchAction(returnId))
-    }),
-
-    withPropsOnChange((props, nextProps) => {
-        const returnId = _.get(nextProps, ['params', 'returnId'])
-        return returnId && _.get(props, ['params', 'returnId']) === returnId && props.detailLoading !== nextProps.detailLoading
-    }, ({dispatch, detail, list, params}) => {
-        const returnId = _.toInteger(_.get(params, 'returnId'))
-        if (returnId > ZERO) {
-            return dispatch(updateStore(returnId, list, actionTypes.RETURN_LIST, {
-                stock: _.get(detail, 'stock'),
-                comment: _.get(detail, 'comment'),
-                totalPrice: _.get(detail, 'totalPrice')
-            }))
-        }
-        return null
     }),
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
     withState('openPrint', 'setOpenPrint', false),
@@ -239,13 +223,21 @@ const enhance = compose(
         },
 
         handleSubmitUpdateDialog: props => () => {
-            const {dispatch, updateForm, updateClientForm, filter, location: {pathname}, detail} = props
+            const {dispatch, updateForm, updateClientForm, filter, location: {pathname}, detail, list} = props
             const type = _.toInteger(_.get(detail, 'type'))
             const returnId = _.toInteger(_.get(props, ['params', 'returnId']))
             if (type === TWO) {
                 return dispatch(clientReturnUpdateAction(returnId, _.get(updateClientForm, ['values']), detail))
                     .then(() => {
                         return dispatch(returnItemFetchAction(returnId))
+                            .then((data) => {
+                                const detailData = _.get(data, 'value')
+                                return dispatch(updateStore(returnId, list, actionTypes.RETURN_LIST, {
+                                    stock: _.get(detailData, 'stock'),
+                                    comment: _.get(detailData, 'comment'),
+                                    totalPrice: _.get(detailData, 'total_price')
+                                }))
+                            })
                     })
                     .then(() => {
                         return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
@@ -261,6 +253,14 @@ const enhance = compose(
             return dispatch(returnUpdateAction(returnId, _.get(updateForm, ['values']), detail))
                 .then(() => {
                     return dispatch(returnItemFetchAction(returnId))
+                        .then((data) => {
+                            const detailData = _.get(data, 'value')
+                            return dispatch(updateStore(returnId, list, actionTypes.RETURN_LIST, {
+                                stock: _.get(detailData, 'stock'),
+                                comment: _.get(detailData, 'comment'),
+                                totalPrice: _.get(detailData, 'total_price')
+                            }))
+                        })
                 })
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))

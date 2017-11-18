@@ -177,7 +177,7 @@ const enhance = compose(
             order: '3'
         },
         noImage: {
-            background: '#efefef',
+            background: '#f2f5f8',
             border: '1px #ccc dashed',
             color: '#999',
             fontSize: '11px !important',
@@ -256,10 +256,13 @@ const ShopDetails = enhance((props) => {
     const id = _.get(data, 'id')
     const name = _.get(data, 'name')
     const client = _.get(data, ['client', 'name'])
-    const createdBy = _.get(data, ['createdBy', 'firstName']) + ' ' + _.get(data, ['createdBy', 'secondName']) || 'Неизвестно'
+    const createdBy = _.get(data, 'createdBy')
+        ? _.get(data, ['createdBy', 'firstName']) + ' ' + _.get(data, ['createdBy', 'secondName'])
+        : 'Неизвестно'
     const createdDate = _.get(data, 'createdDate') ? dateTimeFormat(_.get(data, 'createdDate')) : 'Неизвестно'
     const changedDate = _.get(data, 'modifiedDate') ? dateTimeFormat(_.get(data, 'modifiedDate')) : 'Неизвестно'
-    const changedBy = _.get(data, 'changedBy') ? _.get(data, ['changedBy', 'firstName']) + ' ' + _.get(data, ['changedBy', 'secondName'])
+    const changedBy = _.get(data, 'changedBy')
+        ? _.get(data, ['changedBy', 'firstName']) + ' ' + _.get(data, ['changedBy', 'secondName'])
         : 'Неизвестно'
     const shopType = _.get(data, ['marketType', 'name'])
     const address = _.get(data, 'address')
