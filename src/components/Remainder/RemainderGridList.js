@@ -288,7 +288,7 @@ const RemainderGridList = enhance((props) => {
         const balance = _.toNumber(_.get(item, 'balance'))
         const defects = _.toNumber(_.get(item, 'defects'))
         const reserved = _.toNumber(_.get(item, 'reserved'))
-        const accept = balance - defects - reserved
+        const accept = balance - reserved
         const measurement = _.get(item, ['measurement', 'name'])
         const type = _.get(item, ['type', 'name'])
         return (
