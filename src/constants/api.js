@@ -183,7 +183,7 @@ export const BRAND_ITEM = `/${BRAND}/%d/`
 export const BRAND_DELETE = `/${BRAND}/%d/`
 
 export const INGREDIENT = 'manufacture/ingredients'
-export const INGREDIENT_CREATE = 'manufacture/create_ingredient'
+export const INGREDIENT_CREATE = 'manufacture/ingredients/'
 export const INGREDIENT_LIST = 'main/product/%d/ingredient_list/'
 export const INGREDIENT_ITEM = `/${INGREDIENT}/%d/`
 export const INGREDIENT_DELETE = `/${INGREDIENT}/%d/`

@@ -2,15 +2,10 @@ import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
 
 export const createSerializer = (data, id, manufacture) => {
-    const ingredients = [
-        {
-            ingredient: _.get(data, ['ingredient', 'value']),
-            amount: _.get(data, 'amount')
-        }
-    ]
     return {
         'product': id,
-        'ingredients': ingredients,
+        'ingredient': _.get(data, ['ingredient', 'value']),
+        'amount': _.get(data, 'amount'),
         manufacture
     }
 }
