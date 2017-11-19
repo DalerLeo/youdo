@@ -296,13 +296,6 @@ const OrderAddProductsDialog = enhance((props) => {
         const name = _.get(item, 'name')
         const balance = _.get(item, 'balance')
         const canChangePrice = isSuperUser || _.get(item, 'customPrice')
-        const normalize = value => {
-            if (!value) {
-                return value
-            }
-
-            return value > balance ? balance : value
-        }
         const measurement = _.get(item, ['measurement', 'name'])
         return (
             <Row key={id} className="dottedList">
@@ -325,7 +318,6 @@ const OrderAddProductsDialog = enhance((props) => {
                         component={TextField}
                         className={classes.inputFieldCustom}
                         inputStyle={{textAlign: 'right'}}
-                        normalize={normalize}
                         fullWidth={true}/>
                     <span>{measurement}</span>
                 </Col>
