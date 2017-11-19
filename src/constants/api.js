@@ -158,7 +158,7 @@ export const PRODUCT_FOR_SELECT_LIST = `${PRODUCT_FOR_SELECT}/`
 
 export const PRODUCT_MOBILE = 'main/product_mobile'
 export const PRODUCT_MOBILE_URL = 'main/product_mobile/'
-export const PRODUCT_MOBILE_ITEM = `${PRODUCT_MOBILE}/%d/`
+export const PRODUCT_MOBILE_ITEM = `${PRODUCT_MOBILE}/`
 export const PRODUCT_EXTRA = `${PRODUCT_MOBILE}/%d/`
 export const PRODUCT_FOR_ORDER_SELECT_LIST = `${PRODUCT_MOBILE}/`
 

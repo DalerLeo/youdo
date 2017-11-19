@@ -24,6 +24,7 @@ const PriceMainRadionButton = enhance((props) => {
                 return (
                     <RadioButton
                         className='dottedList'
+                        style={{height: '44px !important'}}
                         key={index}
                         value={_.toInteger(_.get(item, 'priceListId'))}/>
                 )

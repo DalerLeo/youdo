@@ -27,10 +27,11 @@ const setExtraData = (data, loading) => {
 
 const getItem = (id, dispatch, priceList) => {
     dispatch(setExtraData(null, true))
-    return axios().get(sprintf(PATH.PRODUCT_MOBILE_ITEM, id), {'params': {'price_list': priceList}})
+    return axios().get(PATH.PRODUCT_MOBILE_ITEM, {'params': {'price_list': priceList, 'ids': id}})
         .then(({data}) => {
-            dispatch(setExtraData(data, false))
-            return Promise.resolve(toCamelCase(data))
+            const obj = _.get(data, ['results', 0])
+            dispatch(setExtraData(obj, false))
+            return Promise.resolve(toCamelCase(obj))
         })
 }
 
