@@ -231,12 +231,6 @@ const headerItems = [
     },
     {
         sorting: true,
-        name: 'reserved',
-        title: 'Доступные товары',
-        xs: 2
-    },
-    {
-        sorting: true,
         name: 'defects',
         title: 'Бракованные товары',
         xs: 2
@@ -245,6 +239,12 @@ const headerItems = [
         sorting: true,
         name: 'reserved',
         title: 'Забронированые',
+        xs: 2
+    },
+    {
+        sorting: false,
+        name: 'reserved',
+        title: 'Доступные товары',
         xs: 2
     }
 ]
@@ -301,7 +301,6 @@ const RemainderGridList = enhance((props) => {
                 <Col xs={2}>{product}</Col>
                 <Col xs={2}>{type}</Col>
                 <Col xs={2} className={classes.itemData}>{numberFormat(balance, measurement)}</Col>
-                <Col xs={2} className={classes.itemData}>{numberFormat(accept, measurement)}</Col>
                 <Col xs={2} className={classes.itemData}>{numberFormat(defects, measurement)}</Col>
                 {(reserved > ZERO)
                     ? <Col xs={2} className={classes.itemOpenData}
@@ -311,6 +310,7 @@ const RemainderGridList = enhance((props) => {
                     : <Col xs={2} className={classes.itemData}>
                         {numberFormat(reserved, measurement)}
                     </Col>}
+                <Col xs={2} className={classes.itemData}>{numberFormat(accept, measurement)}</Col>
             </Row>
         )
     })

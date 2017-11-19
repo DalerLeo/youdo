@@ -239,11 +239,11 @@ const CurrencyGridList = enhance((props) => {
         const createdDate = dateTimeFormat(_.get(item, 'createdDate'))
         if (name !== currentCurrency) {
             return (
-                <Row key={id} className={classes.listRow} onClick={() => { listData.handleCurrencyClick(id) }}>
-                    <Col xs={1}>{id}</Col>
-                    <Col xs={3} className={classes.cursor}>{name}</Col>
-                    <Col xs={4}>1 {reversedRate ? name : currentCurrency} = {rate} {reversedRate ? currentCurrency : name}</Col>
-                    <Col xs={3}>{createdDate} sdfsdfsdf</Col>
+                <Row key={id} className={classes.listRow}>
+                    <Col xs={1} onClick={() => { listData.handleCurrencyClick(id) }}>{id}</Col>
+                    <Col xs={3} className={classes.cursor} onClick={() => { listData.handleCurrencyClick(id) }}>{name}</Col>
+                    <Col xs={4} onClick={() => { listData.handleCurrencyClick(id) }}>1 {reversedRate ? name : currentCurrency} = {rate} {reversedRate ? currentCurrency : name}</Col>
+                    <Col xs={3} onClick={() => { listData.handleCurrencyClick(id) }}>{createdDate}</Col>
                     <Col xs={1} style={{textAlign: 'right'}}>
                         <div className={classes.iconBtn}>
                             <Tooltip position="bottom" onClick={courseDialog.handleOpenCourseDialog} text="Установить курс">

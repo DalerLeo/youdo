@@ -8,6 +8,7 @@ import Loader from '../Loader'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import Dot from 'material-ui/svg-icons/av/fiber-manual-record'
 import MarketImage from '../Images/no-shop.svg'
+import dateFormat from '../../helpers/dateFormat'
 
 const enhance = compose(
     injectSheet({
@@ -105,6 +106,7 @@ const TrackingShopDetails = enhance((props) => {
     const address = _.get(data, 'address')
     const guide = _.get(data, 'guide')
     const border = _.get(data, ['border', 'title'])
+    const createdDate = dateFormat(_.get(data, ['createdDate']))
     const createdBy = _.get(data, 'createdBy')
         ? _.get(data, ['createdBy', 'firstName']) + ' ' + _.get(data, ['createdBy', 'secondName'])
         : 'Неизвестно'
@@ -173,6 +175,10 @@ const TrackingShopDetails = enhance((props) => {
                     <div>
                         <span>Создал:</span>
                         <span>{createdBy}</span>
+                    </div>
+                    <div>
+                        <span>Дата:</span>
+                        <span>{createdDate}</span>
                     </div>
                     <div>
                         <span>Зона:</span>

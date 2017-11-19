@@ -10,6 +10,7 @@ import {Tabs, Tab} from 'material-ui/Tabs'
 import * as TAB from '../../constants/supplyTab'
 import NotFound from '../Images/not-found.png'
 import getConfig from '../../helpers/getConfig'
+import TransactionsFormat from '../../components/Transaction/TransactionsFormat'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import dateFormat from '../../helpers/dateFormat'
 import IconButton from 'material-ui/IconButton'
@@ -105,7 +106,24 @@ const enhance = compose(
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'flex-end'
+        },
+        listRow: {
+            display: 'flex',
+            height: '100%',
+            minHeight: '50px',
+            alignItems: 'center',
+            padding: '5px 30px',
+            margin: '0 -30px',
+            position: 'relative',
+            overflow: 'hidden',
+            '& > div': {
+                padding: '0 8px !important'
+            },
+            '& a': {
+                color: '#12aaeb !important'
+            }
         }
+
     })
 )
 
@@ -134,6 +152,7 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
     } = props
 
     const ZERO = 0
+    const MINUS_ONE = -1
     const tab = _.get(tabData, 'tab')
     const id = _.get(data, 'id')
     const products = _.get(data, 'products')
@@ -154,6 +173,7 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
     })
     const wholeNotAccepted = wholeAmount - wholePostedAmount - wholeDefectAmount
     const wholeMeasurement = _.get(_.first(products), ['product', 'measurement', 'name'])
+
     return (
         <div className={classes.rightSide}>
             <Tabs
@@ -242,7 +262,8 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                                             return (
                                                 <Row key={expId} className="dottedList">
                                                     <Col xs={2}>{expComment}</Col>
-                                                    <Col xs={3} style={{textAlign: 'left'}}>{expProduct || 'Общий расход'}</Col>
+                                                    <Col xs={3}
+                                                         style={{textAlign: 'left'}}>{expProduct || 'Общий расход'}</Col>
                                                     <Col xs={2} style={{textAlign: 'left'}}>{paymentType}</Col>
                                                     <Col xs={2} style={{textAlign: 'right'}}>{expAmount}</Col>
                                                     <Col xs={2} style={{textAlign: 'right'}}>{expPaid}</Col>
@@ -275,36 +296,52 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                 </Tab>
                 <Tab label="Оплаты" value={TAB.SUPPLY_TAB_PAID} disableTouchRipple={true}>
                     {!_.isEmpty(_.get(paidData, 'data'))
-                        ? <div className={classes.tabContent}>
-                            {!_.get(paidData, 'loading') ? <div className={classes.tabWrapper}>
-                                    <Row className="dottedList">
-                                        <Col xs={1}>№</Col>
-                                        <Col xs={3}>Касса</Col>
-                                        <Col xs={3}>Описание</Col>
-                                        <Col xs={2}>Дата</Col>
-                                        <Col xs={3}>Сумма</Col>
-                                    </Row>
+                        ? <div>
+                            {!_.get(paidData, 'loading') ? <div>
+                                    <div className={classes.listRow}>
+                                        <div style={{flexBasis: '10%', maxWidth: '10%'}}>№</div>
+                                        <div style={{flexBasis: '22%', maxWidth: '24%'}}>Касса</div>
+                                        <div style={{flexBasis: '30%', maxWidth: '30%'}}>Описание</div>
+                                        <div style={{flexBasis: '18%', maxWidth: '18%'}}>Дата</div>
+                                        <div style={{flexBasis: '20%', maxWidth: '20%', textAlign: 'right'}}>Сумма</div>
+                                    </div>
                                     {_.map(_.get(paidData, 'data'), (item) => {
-                                        const zero = 0
-                                        const paidId = _.get(item, 'id')
-                                        const comment = _.get(item, 'comment') || 'N/A'
-                                        const type = _.get(item, 'amount') || 'N/A'
-                                        const cashbox = _.get(item, ['cashbox', 'name'])
-                                        const amount = _.toNumber(_.get(item, 'amount'))
-                                        const internal = _.toNumber(_.get(item, 'internalAmount'))
+                                        const idItem = _.get(item, 'id')
+                                        const comment = _.get(item, 'comment')
+                                        const cashbox = _.get(item, ['cashbox', 'name']) || 'N/A'
+                                        const user = _.get(item, 'user')
+                                        const order = _.get(item, 'order')
+                                        const amount = _.toNumber(_.get(item, 'amount')) < ZERO ? _.toNumber(_.get(item, 'amount')) * MINUS_ONE : _.toNumber(_.get(item, 'amount'))
+                                        const internal = _.toNumber(_.get(item, 'internalAmount')) < ZERO ? _.toNumber(_.get(item, 'internalAmount')) * MINUS_ONE : _.toNumber(_.get(item, 'internalAmount'))
                                         const date = dateFormat(_.get(item, 'date'), true)
-                                        const currentCurrency = _.get(_.find(_.get(paidData, 'data'), {'id': cashbox}), ['currency', 'name'])
-                                        const rate = _.toInteger(amount / internal)
+                                        const currentCurrency = _.get(item, ['currency', 'name'])
+                                        const expanseCategory = _.get(item, ['expanseCategory', 'name'])
+                                        const transType = _.get(item, ['type'])
+                                        const customRate = _.toNumber(_.get(item, 'customRate'))
+                                        const rate = customRate > ZERO ? customRate : _.toInteger(amount / internal)
+                                        const supply = _.get(item, 'supply')
+                                        const supplyExpanse = _.get(item, 'supplyExpanse')
                                         return (
-                                            <Row key={paidId} className="dottedList">
-                                                <Col xs={1}>{paidId}</Col>
-                                                <Col xs={3}>{cashbox}</Col>
-                                                <Col xs={3}>{comment}</Col>
-                                                <Col xs={2}>{date}</Col>
-                                                <Col xs={3} style={{
-                                                    textAlign: 'right'
-                                                }}
-                                                     className={type >= zero ? classes.green : classes.red}>
+                                            <div key={idItem} className={classes.listRow}>
+                                                <div style={{flexBasis: '10%', maxWidth: '10%'}}>{idItem}</div>
+                                                <div style={{flexBasis: '22%', maxWidth: '24%'}}>{cashbox}</div>
+                                                <div style={{flexBasis: '30%', maxWidth: '30%'}}>
+                                                    {expanseCategory
+                                                        ? <div><span
+                                                            className={classes.label}>Категория: </span> {expanseCategory}
+                                                        </div> : ''}
+                                                    {transType && <TransactionsFormat
+                                                        type={transType}
+                                                        order={order}
+                                                        supply={supply}
+                                                        supplyExpanseId={supplyExpanse}
+                                                        client={_.get(item, 'client')}
+                                                        user={user}/>
+                                                    }
+                                                    {comment && <div><strong>Комментарий:</strong> {comment}</div>}
+                                                </div>
+                                                <div style={{flexBasis: '18%', maxWidth: '18%'}}>{date}</div>
+                                                <div style={{flexBasis: '20%', maxWidth: '20%', textAlign: 'right'}}>
                                                     {numberFormat(amount, currentCurrency)}
                                                     {(currentCurrency !== primaryCurrency) &&
                                                     <div>{numberFormat(internal, primaryCurrency)}
@@ -314,8 +351,8 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                                                             color: '#333',
                                                             fontWeight: 600
                                                         }}> ({rate})</span>}</div>}
-                                                </Col>
-                                            </Row>
+                                                </div>
+                                            </div>
                                         )
                                     })
                                     }
