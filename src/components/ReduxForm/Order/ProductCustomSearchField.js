@@ -1,4 +1,3 @@
-import sprintf from 'sprintf'
 import _ from 'lodash'
 import React from 'react'
 import {compose} from 'recompose'
@@ -10,6 +9,7 @@ import numberFormat from '../../../helpers/numberFormat'
 import * as actionTypes from '../../../constants/actionTypes'
 import {connect} from 'react-redux'
 
+const ZERO = 0
 const getOptions = (search, type, priceList) => {
     return axios().get(`${PATH.PRODUCT_FOR_ORDER_SELECT_LIST}?price_list=${priceList || ''}&type=${type || ''}&page_size=100&search=${search || ''}`)
         .then(({data}) => {
@@ -29,7 +29,7 @@ const getItem = (id, dispatch, priceList) => {
     dispatch(setExtraData(null, true))
     return axios().get(PATH.PRODUCT_MOBILE_ITEM, {'params': {'price_list': priceList, 'ids': id}})
         .then(({data}) => {
-            const obj = _.get(data, ['results', 0])
+            const obj = _.get(data, ['results', ZERO])
             dispatch(setExtraData(obj, false))
             return Promise.resolve(toCamelCase(obj))
         })
