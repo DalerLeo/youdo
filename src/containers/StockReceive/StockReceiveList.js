@@ -293,17 +293,17 @@ const enhance = compose(
         },
         handleCheckedForm: props => (index, value, selected) => {
             const {dispatch} = props
-            const val = !selected ? value : ''
+            const val = !selected ? _.toNumber(value) : ''
             const form = 'StockReceiveCreateForm'
             dispatch(change(form, 'product[' + index + '][accepted]', val))
+            dispatch(change(form, 'product[' + index + '][defected]', ''))
         },
         handleCheckedDefect: props => (index, value) => {
             const {dispatch} = props
-            const zero = 0
             const val = _.toNumber(value)
             const form = 'StockReceiveCreateForm'
             dispatch(change(form, 'product[' + index + '][accepted]', val))
-            dispatch(change(form, 'product[' + index + '][defected]', zero))
+            dispatch(change(form, 'product[' + index + '][defected]', ZERO))
         }
     })
 )
