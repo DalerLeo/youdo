@@ -1,235 +1,223 @@
 import _ from 'lodash'
-import sprintf from 'sprintf'
+import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {compose, withReducer} from 'recompose'
 import injectSheet from 'react-jss'
 import {reduxForm} from 'redux-form'
 import Dialog from 'material-ui/Dialog'
-import * as ROUTES from '../../constants/routes'
-import {Link} from 'react-router'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import numberFormat from '../../helpers/numberFormat'
-import dateTimeFormat from '../../helpers/dateTimeFormat'
 import noPayment from '../Images/noPayment.png'
-import getConfig from '../../helpers/getConfig'
 import NotFound from '../Images/not-found.png'
+import ClientBalanceFormat from '../../components/Statistics/ClientIncome/ClientBalanceFormat'
+import getConfig from '../../helpers/getConfig'
 
 export const ORDER_TRANSACTIONS_DIALOG_OPEN = 'openTransactionsDialog'
 const enhance = compose(
-  injectSheet({
-      loader: {
-          width: '100%',
-          height: '100px',
-          display: 'flex',
-          background: '#fff',
-          alignItems: 'center',
-          zIndex: '999',
-          justifyContent: 'center'
-      },
-      transactions: {
-          padding: '10px 0 0',
-          '& .row': {
-              '& > div': {
-                  textAlign: 'left !important'
-              },
-              '&:after': {
-                  left: '0.5rem',
-                  right: '0.5rem'
-              },
-              '&:first-child': {
-                  fontWeight: '600'
-              },
-              '&:last-child:after': {
-                  position: 'static'
-              },
-              '& > div:nth-child(3)': {
-                  textAlign: 'right !important'
-              },
-              '& > div:nth-child(4)': {
-                  textAlign: 'right !important'
-              },
-              '& > div:nth-child(5)': {
-                  textAlign: 'right !important'
-              },
-              '& > div:nth-child(6)': {
-                  textAlign: 'right !important'
-              }
-          }
-      },
-      popUp: {
-          color: '#333 !important',
-          overflowY: 'hidden !important',
-          fontSize: '13px !important',
-          position: 'relative',
-          padding: '0 !important',
-          overflowX: 'hidden',
-          height: '100%',
-          marginBottom: '64px'
-      },
-      titleContent: {
-          background: '#fff',
-          color: '#333',
-          fontWeight: 'bold',
-          textTransform: 'uppercase',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          borderBottom: '1px solid #efefef',
-          padding: '20px 30px',
-          zIndex: '999',
-          '& button': {
-              right: '13px',
-              padding: '0 !important',
-              position: 'absolute !important'
-          }
-      },
-      inContent: {
-          display: 'flex',
-          maxHeight: '50vh',
-          overflow: 'auto',
-          padding: '0 30px',
-          color: '#333'
-      },
-      noPayment: {
-          background: 'url(' + noPayment + ') no-repeat center 15px',
-          backgroundSize: '270px',
-          height: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          minHeight: '270px',
-          justifyContent: 'center',
-          paddingTop: '25px',
-          '& > div': {
-              marginTop: '140px',
-              fontSize: '15px',
-              width: '50%',
-              textAlign: 'center'
-          }
-      },
-      field: {
-          width: '100%'
-      },
-      bodyContent: {
-          width: '100%'
-      },
-      emptyQuery: {
-          background: 'url(' + NotFound + ') no-repeat center center',
-          backgroundSize: '200px',
-          padding: '200px 0 0',
-          textAlign: 'center',
-          fontSize: '13px',
-          color: '#666',
-          '& svg': {
-              width: '50px !important',
-              height: '50px !important',
-              color: '#999 !important'
-          }
-      }
-  }),
-  reduxForm({
-      form: 'OrderCreateForm',
-      enableReinitialize: true
-  }),
-  withReducer('state', 'dispatch', (state, action) => {
-      return {...state, ...action}
-  }, {open: false}),
+    injectSheet({
+        loader: {
+            width: '100%',
+            height: '100px',
+            display: 'flex',
+            background: '#fff',
+            alignItems: 'center',
+            zIndex: '999',
+            justifyContent: 'center'
+        },
+        transactions: {
+            padding: '10px 0 0',
+            '& .row': {
+                '& > div': {
+                    textAlign: 'left !important'
+                },
+                '&:after': {
+                    left: '0.5rem',
+                    right: '0.5rem'
+                },
+                '&:first-child': {
+                    fontWeight: '600'
+                },
+                '&:last-child:after': {
+                    position: 'static'
+                },
+                '& > div:nth-child(3)': {
+                    textAlign: 'right !important'
+                },
+                '& > div:nth-child(4)': {
+                    textAlign: 'right !important'
+                },
+                '& > div:nth-child(7)': {
+                    textAlign: 'right !important'
+                }
+            }
+        },
+        popUp: {
+            color: '#333 !important',
+            overflowY: 'hidden !important',
+            fontSize: '13px !important',
+            position: 'relative',
+            padding: '0 !important',
+            overflowX: 'hidden',
+            height: '100%',
+            marginBottom: '64px'
+        },
+        titleContent: {
+            background: '#fff',
+            color: '#333',
+            fontWeight: 'bold',
+            textTransform: 'uppercase',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            borderBottom: '1px solid #efefef',
+            padding: '20px 30px',
+            zIndex: '999',
+            '& button': {
+                right: '13px',
+                padding: '0 !important',
+                position: 'absolute !important'
+            }
+        },
+        inContent: {
+            display: 'flex',
+            maxHeight: '50vh',
+            overflow: 'auto',
+            padding: '0 30px',
+            color: '#333'
+        },
+        noPayment: {
+            background: 'url(' + noPayment + ') no-repeat center 15px',
+            backgroundSize: '270px',
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            minHeight: '270px',
+            justifyContent: 'center',
+            paddingTop: '25px',
+            '& > div': {
+                marginTop: '140px',
+                fontSize: '15px',
+                width: '50%',
+                textAlign: 'center'
+            }
+        },
+        field: {
+            width: '100%'
+        },
+        bodyContent: {
+            width: '100%'
+        },
+        emptyQuery: {
+            background: 'url(' + NotFound + ') no-repeat center center',
+            backgroundSize: '200px',
+            padding: '200px 0 0',
+            textAlign: 'center',
+            fontSize: '13px',
+            color: '#666',
+            '& svg': {
+                width: '50px !important',
+                height: '50px !important',
+                color: '#999 !important'
+            }
+        }
+    }),
+    reduxForm({
+        form: 'OrderCreateForm',
+        enableReinitialize: true
+    }),
+    withReducer('state', 'dispatch', (state, action) => {
+        return {...state, ...action}
+    }, {open: false}),
 )
-
+const ZERO = 0
 const OrderTransactionsDialog = enhance((props) => {
     const {open, loading, onClose, classes, paymentData} = props
     const orderId = _.get(paymentData, 'id')
     const data = _.get(paymentData, ['data', 'results'])
+    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
 
     return (
-    <Dialog
-      modal={true}
-      contentStyle={loading ? {width: '500px'} : {width: '900px', maxWidth: 'none'}}
-      open={open}
-      onRequestClose={onClose}
-      bodyClassName={classes.popUp}
-      autoScrollBodyContent={true}>
-      <div className={classes.titleContent}>
-        <span>Список оплат по заказу № {orderId}</span>
-        <IconButton onTouchTap={onClose}>
-          <CloseIcon color="#666666"/>
-        </IconButton>
-      </div>
-
-      <div className={classes.bodyContent}>
-        {loading ? <div className={classes.loader}>
-            <CircularProgress size={40} thickness={4}/>
-          </div>
-          : <div className={classes.inContent}>
-            <div className={classes.field}>
-              {!_.isEmpty(data) ? <div className={classes.transactions}>
-                  <Row className="dottedList">
-                    <Col xs={2}>Описание</Col>
-                    <Col xs={2}>Касса</Col>
-                    <Col xs={2}>Дата</Col>
-                    <Col xs={1}>Описание</Col>
-                    <Col xs={3}>Сумма оплаты</Col>
-                    <Col xs={2}>На заказ</Col>
-                  </Row>
-                  {_.map(data, (item, index) => {
-                      const PAYMENT = 1
-                      const BALANCE = 2
-
-                      const whoFirst = _.get(item, ['clientTransaction', 'user', 'firstName'])
-                      const whoSecond = _.get(item, ['clientTransaction', 'user', 'secondName'])
-                      const who = _.get(item, 'clientTransaction') ? (whoFirst + ' ' + whoSecond) : 'Не указано'
-                      const currency = _.get(item, ['clientTransaction', 'currency', 'name'])
-                      const currentCurrency = getConfig('PRIMARY_CURRENCY')
-                      const cashbox = _.get(item, ['clientTransaction', 'transaction']) || 'Не принято'
-                      const type = _.toInteger(_.get(item, 'type'))
-                      const order = _.toInteger(_.get(item, 'order'))
-                      const payDate = _.get(item, 'clientTransaction') ? dateTimeFormat(_.get(item, ['clientTransaction', 'createdDate']), true) : dateTimeFormat(_.get(item, 'createdDate'))
-                      const orderSum = numberFormat(_.get(item, 'amount'), currentCurrency)
-                      const amount = type === BALANCE ? _.get(item, 'amount') : _.toNumber(_.get(item, ['clientTransaction', 'amount']))
-                      const internal = _.toNumber(_.get(item, ['clientTransaction', 'internal']))
-                      const pp = '(' + numberFormat(internal, currentCurrency) + ')'
-
-                      let trText = ''
-                      if (type === PAYMENT) {
-                          trText = (<span>Оплатил <strong>{who}</strong></span>)
-                      } else if (type === BALANCE) {
-                          trText = 'Списано со счета'
-                      } else {
-                          trText = (<span>Возврат оформил <strong>{who}</strong></span>)
-                      }
-
-                      return (
-                      <Row key={index} className="dottedList">
-                        <Col xs={2}>{trText}</Col>
-                        <Col xs={2}>{cashbox}</Col>
-                        <Col xs={2}>{payDate}</Col>
-                        <Col xs={1}>
-                          <Link style={{color: '#12aaeb'}}
-                                target="_blank"
-                                to={{
-                                    pathname: sprintf(ROUTES.ORDER_ITEM_PATH, order)
-                                }}>
-                            Заказ {order}
-                          </Link>
-                        </Col>
-                        <Col
-                          xs={3}>{numberFormat(amount, currency)} {!(amount === internal) && pp}</Col>
-                        <Col xs={2}>{orderSum}</Col>
-                      </Row>
-                      )
-                  })}
-                </div>
-                : <div className={classes.noPayment}>
-                  <div>По данному заказу еще не произведено оплат</div>
-                </div>}
+        <Dialog
+            modal={true}
+            contentStyle={loading ? {width: '500px'} : {width: '900px', maxWidth: 'none'}}
+            open={open}
+            onRequestClose={onClose}
+            bodyClassName={classes.popUp}
+            autoScrollBodyContent={true}>
+            <div className={classes.titleContent}>
+                <span>Список оплат по заказу № {orderId}</span>
+                <IconButton onTouchTap={onClose}>
+                    <CloseIcon color="#666666"/>
+                </IconButton>
             </div>
-          </div>
-        }
-      </div>
-    </Dialog>
+
+            <div className={classes.bodyContent}>
+                {loading ? <div className={classes.loader}>
+                        <CircularProgress size={40} thickness={4}/>
+                    </div>
+                    : <div className={classes.inContent}>
+                        <div className={classes.field}>
+                            {!_.isEmpty(data) ? <div className={classes.transactions}>
+                                    <Row className="dottedList">
+                                        <Col xs={1}>№</Col>
+                                        <Col xs={1}>Дата</Col>
+                                        <Col xs={2}>Клиент</Col>
+                                        <Col xs={2}>Пользователь</Col>
+                                        <Col xs={2}>Описание</Col>
+                                        <Col xs={2}>Сумма</Col>
+                                        <Col xs={2}>На заказ</Col>
+                                    </Row>
+                                    {_.map(data, (item, index) => {
+                                        const transId = _.get(item, 'id')
+                                        const user = _.get(item, ['fromTransaction', 'user'])
+                                        const comment = _.get(item, ['fromTransaction', 'comment'])
+                                        const client = _.get(item, ['fromTransaction', 'client', 'name'])
+                                        const currency = _.get(item, ['fromTransaction', 'currency', 'name'])
+                                        const userName = !_.isNull(user) ? user.firstName + ' ' + user.secondName : 'Не известно'
+                                        const date = moment(_.get(item, ['fromTransaction', 'createdDate'])).format('DD:MM:YYYY')
+                                        const amount = _.toNumber(_.get(item, ['fromTransaction', 'amount']))
+                                        const amountOrder = _.toNumber(_.get(item, 'amount'))
+                                        const internal = _.toNumber(_.get(item, ['fromTransaction', 'internal']))
+                                        const customRate = _.get(item, ['fromTransaction', 'customRate']) ? _.toInteger(_.get(item, ['fromTransaction', 'customRate'])) : _.toInteger(amount / internal)
+                                        const type = _.get(item, ['fromTransaction', 'type'])
+                                        const orderIdItem = _.get(item, ['fromTransaction', 'order'])
+                                        const orderReturnId = _.get(item, ['fromTransaction', 'orderReturn'])
+                                        return (
+                                            <Row key={index} className="dottedList">
+                                                <Col xs={1}>{transId}</Col>
+                                                <Col xs={1}>{date}</Col>
+                                                <Col xs={2}>{client}</Col>
+                                                <Col xs={2}>{userName}</Col>
+                                                <Col xs={2}>
+                                                    {type && <div>
+                                                        <ClientBalanceFormat type={type} order={orderIdItem} orderReturn={orderReturnId}/>
+                                                    </div>}
+                                                    {comment && <div><strong>Комментарий:</strong> {comment}</div>}
+                                                </Col>
+                                                <Col xs={2} style={{textAlign: 'right'}}>
+                                                    <div className={amount > ZERO ? 'greenFont' : (amount === ZERO ? '' : 'redFont')}>
+                                                        <span>{numberFormat(amount, currency)}</span>
+                                                        {primaryCurrency !== currency && <div>{numberFormat(internal, primaryCurrency)} <span
+                                                            style={{fontSize: 11, color: '#666', fontWeight: 600}}>({customRate})</span></div>}
+                                                    </div>
+                                                </Col>
+                                                <Col xs={2}><strong>{numberFormat(amountOrder, currency)}</strong></Col>
+                                            </Row>
+                                        )
+                                    })}
+                                </div>
+                                : <div className={classes.noPayment}>
+                                    <div>По данному заказу еще не произведено оплат</div>
+                                </div>}
+                        </div>
+                    </div>
+                }
+            </div>
+        </Dialog>
     )
 })
 OrderTransactionsDialog.propTyeps = {
