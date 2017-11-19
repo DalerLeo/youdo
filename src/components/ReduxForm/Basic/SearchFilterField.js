@@ -61,7 +61,10 @@ const enhance = compose(
                 overflowY: 'unset',
                 zIndex: '6',
                 border: 'unset',
-                marginTop: '5px'
+                marginTop: '5px',
+                '& ::-webkit-scrollbar': {
+                    width: '4px'
+                }
             },
             '& .Select-control': {
                 borderRadius: '0px',

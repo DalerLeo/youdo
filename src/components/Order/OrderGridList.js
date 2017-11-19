@@ -214,8 +214,8 @@ const OrderGridList = enhance((props) => {
     const statusIsReady = !_.isNil(_.get(filter.getParams(), 'status')) && _.toNumber(_.get(filter.getParams(), 'status')) === READY
     const statusIsRequested = !_.isNil(_.get(filter.getParams(), 'status')) && _.toNumber(_.get(filter.getParams(), 'status')) === REQUESTED
     const orderCounts = _.get(listData, 'orderCounts')
-    const readyCount = _.get(orderCounts, 'readyCount') || ZERO
-    const requestedCount = _.get(orderCounts, 'requestedCount')
+    const readyCount = _.get(orderCounts, 'readyCount') || ''
+    const requestedCount = _.get(orderCounts, 'requestedCount') || ''
     const orderCountsLoading = _.get(listData, 'orderCountsLoading')
     const orderFilterDialog = (
         <OrderFilterForm

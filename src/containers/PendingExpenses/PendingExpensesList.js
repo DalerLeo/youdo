@@ -21,6 +21,7 @@ import {
 } from '../../actions/pendingExpenses'
 import {openErrorAction} from '../../actions/error'
 import {openSnackbarAction} from '../../actions/snackbar'
+import {reset} from 'redux-form'
 
 const enhance = compose(
     connect((state, props) => {
@@ -86,7 +87,8 @@ const enhance = compose(
         },
 
         handleOpenUpdateDialog: props => (id) => {
-            const {filter} = props
+            const {filter, dispatch} = props
+            dispatch(reset('PendingExpensesCreateForm'))
             hashHistory.push({
                 pathname: sprintf(ROUTER.PENDING_EXPENSES_ITEM_PATH, id),
                 query: filter.getParams({[PENDING_EXPENSES_UPDATE_DIALOG_OPEN]: true})
