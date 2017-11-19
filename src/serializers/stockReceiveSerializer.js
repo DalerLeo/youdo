@@ -115,4 +115,16 @@ export const deliveryTransferSerializer = (details, stock, dateRange, ids) => {
         'custom_orders': Boolean(ids)
     }
 }
+export const routePrintSerializer = (details, stock, dateRange, ids) => {
+    const orders = _.get(details, 'orders')
+    const deliveryMan = _.get(details, ['deliveryMan', 'id'])
+    return {
+        orders,
+        'delivery_man': deliveryMan,
+        stock,
+        'begin_date': _.get(dateRange, 'beginDate'),
+        'end_date': _.get(dateRange, 'endDate'),
+        'custom_orders': Boolean(ids)
+    }
+}
 

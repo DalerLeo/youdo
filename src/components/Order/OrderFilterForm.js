@@ -1,8 +1,8 @@
 import _ from 'lodash'
 import React from 'react'
+import PropTypes from 'prop-types'
 import {compose, withHandlers} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
-import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import {Link} from 'react-router'
 import Paper from 'material-ui/Paper'
@@ -13,7 +13,7 @@ import DateToDateField from '../ReduxForm/Basic/DateToDateField'
 import {
     ClientSearchField,
     MarketSearchField,
-    UsersMultiSearchField,
+    UsersAgentSearchField,
     DeptSearchField,
     ZoneSearchField,
     DivisionSearchField,
@@ -212,7 +212,7 @@ const OrderFilterForm = enhance((props) => {
                         <Field className={classes.inputFieldCustom} name="status" component={OrderStatusSearchField} label="Статус"/>
                         <Field className={classes.inputFieldCustom} name="shop" component={MarketSearchField} label="Магазин"/>
                         {divisionStatus && <Field className={classes.inputFieldCustom} name="division" component={DivisionSearchField} label="Подразделение"/>}
-                        <Field className={classes.inputFieldCustom} name="initiator" component={UsersMultiSearchField} label="Инициатор"/>
+                        <Field className={classes.inputFieldCustom} name="initiator" component={UsersAgentSearchField} label="Инициатор"/>
                         <Field className={classes.inputFieldCustom} name="dept" component={DeptSearchField} label="Статус оплаты"/>
                         <Field className={classes.inputFieldCustom} name="zone" component={ZoneSearchField} label="Зона"/>
                         <Field className={classes.inputDateCustom} name="data" component={DateToDateField} label="Период создания"/>

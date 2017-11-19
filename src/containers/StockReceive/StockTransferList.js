@@ -12,6 +12,7 @@ import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import TabTransfer from '../../components/StockReceive/StockTabTransfer'
 import {OrderPrint} from '../../components/Order'
+import RoutePrint from '../../components/StockReceive/RoutePrint'
 import TabTransferDeliveryPrint from '../../components/StockReceive/TabTransferDeliveryPrint'
 import getDocuments from '../../helpers/getDocument'
 import {
@@ -30,7 +31,8 @@ import {
     stockReceiveDeliveryConfirmAction,
     stockTransferDeliveryListFetchAction,
     stockTransferDeliveryItemFetchAction,
-    stockTransferDeliveryTransferAction
+    stockTransferDeliveryTransferAction,
+    routePintFetchAction
 } from '../../actions/stockReceive'
 import {
     orderListPintFetchAction
@@ -40,6 +42,7 @@ import {openErrorAction} from '../../actions/error'
 
 const TOGGLE = 'toggle'
 const TYPE = 'openType'
+const KEY = 'key'
 const ZERO = 0
 const ONE = 1
 const defaultDate = moment().format('YYYY-MM-DD')
@@ -57,6 +60,8 @@ const enhance = compose(
         const detailLoading = _.get(state, ['stockReceive', 'item', 'loading'])
         const printList = _.get(state, ['stockReceive', 'print', 'data'])
         const printLoading = _.get(state, ['stockReceive', 'print', 'loading'])
+        const routePrintList = _.get(state, ['stockReceive', 'routePrint', 'data'])
+        const routePrintLoading = _.get(state, ['stockReceive', 'routePrint', 'loading'])
         const historyFilterForm = _.get(state, ['form', 'HistoryFilterForm'])
         const filterForm = _.get(state, ['form', 'TabTransferFilterForm'])
         const filter = filterHelper(list, pathname, query)
@@ -82,7 +87,9 @@ const enhance = compose(
             filterForm,
             toggle,
             beginDate,
-            endDate
+            endDate,
+            routePrintList,
+            routePrintLoading
         }
     }),
 
@@ -156,6 +163,7 @@ const enhance = compose(
 
     withState('openConfirmTransfer', 'setOpenConfirmTransfer', false),
     withState('openPrint', 'setOpenPrint', false),
+    withState('openPrintRoute', 'setOpenPrintRoute', false),
     withState('openDeliveryPrint', 'setOpenDeliveryPrint', false),
 
     withHandlers({
@@ -171,6 +179,19 @@ const enhance = compose(
         handleClosePrintDialog: props => () => {
             const {setOpenPrint} = props
             setOpenPrint(false)
+        },
+        handleOpenPrintRouteDialog: props => (ids) => {
+            const {setOpenPrintRoute, dispatch} = props
+            setOpenPrintRoute(true)
+            dispatch(routePintFetchAction(ids))
+                .then(() => {
+                    window.print()
+                })
+        },
+
+        handleClosePrintRouteDialog: props => () => {
+            const {setOpenPrintRoute} = props
+            setOpenPrintRoute(false)
         },
 
         handleOpenDeliveryPrintDialog: props => () => {
@@ -313,12 +334,12 @@ const enhance = compose(
             const {filter} = props
             hashHistory.push({
                 pathname: ROUTER.STOCK_TRANSFER_LIST_URL,
-                query: filter.getParams({[STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN]: false})
+                query: filter.getParams({[STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN]: false, [KEY]: false})
             })
         },
-        handleOpenDetail: props => (id, type) => {
+        handleOpenDetail: props => (id, type, key) => {
             const {filter} = props
-            hashHistory.push({pathname: sprintf(ROUTER.STOCK_TRANSFER_ITEM_PATH, id), query: filter.getParams({[TYPE]: type})})
+            hashHistory.push({pathname: sprintf(ROUTER.STOCK_TRANSFER_ITEM_PATH, id), query: filter.getParams({[TYPE]: type, [KEY]: key})})
         },
 
         handleChooseToggle: props => (type) => {
@@ -371,6 +392,9 @@ const StockTransferList = enhance((props) => {
         filterDelivery,
         layout,
         openPrint,
+        openPrintRoute,
+        routePrintList,
+        routePrintLoading,
         openConfirmTransfer,
         openDeliveryPrint,
         printList,
@@ -385,6 +409,7 @@ const StockTransferList = enhance((props) => {
     const detailType = _.get(location, ['query', TYPE])
     const openConfirmDialog = _.get(location, ['query', STOCK_CONFIRM_DIALOG_OPEN])
     const openFilterDialog = toBoolean(_.get(location, ['query', TAB_TRANSFER_FILTER_OPEN]))
+    const key = _.get(location, ['query', KEY])
     const stock = _.toInteger(filter.getParam(TAB_TRANSFER_FILTER_KEY.STOCK))
     const type = _.toInteger(filter.getParam(TAB_TRANSFER_FILTER_KEY.TYPE))
     const handleCloseDetail = _.get(props, 'handleCloseDetail')
@@ -406,6 +431,7 @@ const StockTransferList = enhance((props) => {
     }
 
     const deliveryDetailsData = {
+        key: key,
         id: detailId,
         data: deliveryDetail,
         stock: _.toNumber(detailType),
@@ -417,6 +443,10 @@ const StockTransferList = enhance((props) => {
     const orderData = {
         data: printList,
         printLoading
+    }
+    const routePrintData = {
+        data: routePrintList,
+        listPrintLoading: routePrintLoading
     }
 
     const confirmDialog = {
@@ -459,6 +489,11 @@ const StockTransferList = enhance((props) => {
         handleOpenPrintDialog: props.handleOpenPrintDialog,
         handleClosePrintDialog: props.handleClosePrintDialog
     }
+    const printRouteDialog = {
+        openPrintRoute,
+        handleOpenPrintRouteDialog: props.handleOpenPrintRouteDialog,
+        handleClosePrintRouteDialog: props.handleClosePrintRouteDialog
+    }
     const currentDetail = _.find(_.get(listData, 'data'), {'id': _.toInteger(detailId)})
     const detailData = {
         type: detailType,
@@ -471,8 +506,24 @@ const StockTransferList = enhance((props) => {
         return _.toInteger(_.get(item, ['user', 'id'])) === _.get(deliveryDetailsData, 'id') &&
             _.toInteger(_.get(item, ['stock', 'id'])) === _.get(deliveryDetailsData, 'stock')
     })
+    const deliveryManName = _.get(deliveryDetail, 'deliveryMan')
+        ? _.get(deliveryDetail, ['deliveryMan', 'firstName']) + ' ' + _.get(deliveryDetail, ['deliveryMan', 'secondName'])
+        : 'Доставщик не определен'
+
     const orders = _.join(_.get(deliveryDetailsData, ['data', 'orders']), ', ')
 
+    if (openPrintRoute) {
+        document.getElementById('wrapper').style.height = 'auto'
+        return (
+            <RoutePrint
+                printRouteDialog={printRouteDialog}
+                listPrintData={routePrintData}
+                deliveryManName={deliveryManName}
+                currentDeliverer={currentDeliverer}
+                beginDate={beginDate}
+                endDate={endDate}
+            />)
+    }
     if (openPrint) {
         document.getElementById('wrapper').style.height = 'auto'
 
@@ -516,7 +567,9 @@ const StockTransferList = enhance((props) => {
                 confirmDialog={confirmDialog}
                 filterDialog={filterDialog}
                 printDialog={printDialog}
-                confirmTransfer={confirmTransfer}/>
+                printRouteDialog={printRouteDialog}
+                confirmTransfer={confirmTransfer}
+                currentDeliverer={currentDeliverer}/>
         </Layout>
     )
 })

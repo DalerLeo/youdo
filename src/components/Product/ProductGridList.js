@@ -138,8 +138,8 @@ const ProductGridList = enhance((props) => {
                 <Col xs={2}>{codeProduct}</Col>
                 <Col xs={2}>{type}</Col>
                 <Col xs={1}>{measurement}</Col>
-                <Col xs={2}>{createdDate}</Col>
-                <Col xs={1}>{priority}</Col>
+                <Col xs={2}>{priority}</Col>
+                <Col xs={1}>{createdDate}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
                     <IconMenu
                         menuItemStyle={{fontSize: '13px'}}

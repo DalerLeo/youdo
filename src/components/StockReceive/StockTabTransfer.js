@@ -151,15 +151,13 @@ const StockTabTransfer = enhance((props) => {
         confirmDialog,
         classes,
         printDialog,
+        printRouteDialog,
         toggleData,
-        confirmTransfer
+        confirmTransfer,
+        currentDeliverer
     } = props
 
     const toggle = _.get(toggleData, 'toggle')
-    const currentDeliverer = _.find(_.get(deliveryData, 'data'), (item) => {
-        return _.toInteger(_.get(item, ['user', 'id'])) === _.get(deliveryDetailsData, 'id') &&
-            _.toInteger(_.get(item, ['stock', 'id'])) === _.get(deliveryDetailsData, 'stock')
-    })
 
     const usersFilterDialog = (
         <TabTransferFilterForm
@@ -172,13 +170,14 @@ const StockTabTransfer = enhance((props) => {
     const deliveryDetail = (
         <DeliveryDetails
             detailData={_.get(deliveryDetailsData, 'data')}
-            key={_.get(deliveryDetailsData, 'id')}
+            key={_.get(deliveryDetailsData, 'key')}
             currentDeliverer={currentDeliverer}
             handleCloseDetail={handleCloseDetail}
             handleOpenDeliveryPrintDialog={_.get(deliveryDetailsData, 'handleOpenDeliveryPrintDialog')}
             loading={_.get(deliveryDetailsData, 'deliveryDetailLoading')}
             getRelease={getRelease}
             getRoute={getRoute}
+            printRouteDialog={printRouteDialog}
             confirmTransfer={confirmTransfer}
         />
 
@@ -208,15 +207,15 @@ const StockTabTransfer = enhance((props) => {
     })
 
     const deliveryList = _.map(_.get(deliveryData, 'data'), (item) => {
-        const user = _.get(item, ['user', 'id'])
-        const keyname = user || ZERO
+        const user = _.get(item, ['user', 'id']) || ZERO
         const userName = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName'])
         const stockName = _.get(item, ['stock', 'name'])
         const stockid = _.get(item, ['stock', 'id'])
+        const keyname = user + '_' + stockid
 
         return (
             <Row key={keyname} style={{position: 'relative', cursor: 'pointer'}}
-                 onClick={() => { listData.handleOpenDetail(keyname, stockid) }}>
+                 onClick={() => { listData.handleOpenDetail(user, stockid, keyname) }}>
                 <Col xs={6} >{user ? userName : 'Не определен'}</Col>
                 <div className={classes.closeDetail} onClick={handleCloseDetail}>{null}</div>
                 <Col xs={6}>{stockName}</Col>
