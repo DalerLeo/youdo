@@ -264,6 +264,7 @@ const PriceSetForm = enhance((props) => {
                                 name='isPrimary'
                                 component={PriceMainRadioButton}
                                 mergedList={mergedList}
+                                style={{height: '44px'}}
                                 fullWidth={true}>
                             </Field>
                         </div>

@@ -232,6 +232,7 @@ const OrderDetails = enhance((props) => {
     const dateDelivery = dateFormat(_.get(data, 'dateDelivery'))
     const createdDate = dateFormat(_.get(data, 'createdDate'))
     const paymentDate = dateFormat(_.get(data, 'paymentDate'))
+    const requestDeadline = _.get(data, 'requestDeadline') ? dateFormat(_.get(data, 'requestDeadline')) : 'Не задан'
 
     const REQUESTED = 0
     const READY = 1
@@ -430,6 +431,10 @@ const OrderDetails = enhance((props) => {
                                 <li>
                                     <span>Тип передачи:</span>
                                     <span>{deliveryType > zero ? 'Доставка' : 'Самовывоз'}</span>
+                                </li>
+                                <li>
+                                    <span>Срок запроса:</span>
+                                    <span>{requestDeadline}</span>
                                 </li>
                                 <li>
                                     <span>Дата передачи:</span>

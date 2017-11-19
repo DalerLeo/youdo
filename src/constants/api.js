@@ -158,7 +158,7 @@ export const PRODUCT_FOR_SELECT_LIST = `${PRODUCT_FOR_SELECT}/`
 
 export const PRODUCT_MOBILE = 'main/product_mobile'
 export const PRODUCT_MOBILE_URL = 'main/product_mobile/'
-export const PRODUCT_MOBILE_ITEM = `${PRODUCT_MOBILE}/%d/`
+export const PRODUCT_MOBILE_ITEM = `${PRODUCT_MOBILE}/`
 export const PRODUCT_EXTRA = `${PRODUCT_MOBILE}/%d/`
 export const PRODUCT_FOR_ORDER_SELECT_LIST = `${PRODUCT_MOBILE}/`
 
@@ -183,7 +183,7 @@ export const BRAND_ITEM = `/${BRAND}/%d/`
 export const BRAND_DELETE = `/${BRAND}/%d/`
 
 export const INGREDIENT = 'manufacture/ingredients'
-export const INGREDIENT_CREATE = 'manufacture/create_ingredient'
+export const INGREDIENT_CREATE = 'manufacture/ingredients/'
 export const INGREDIENT_LIST = 'main/product/%d/ingredient_list/'
 export const INGREDIENT_ITEM = `/${INGREDIENT}/%d/`
 export const INGREDIENT_DELETE = `/${INGREDIENT}/%d/`
