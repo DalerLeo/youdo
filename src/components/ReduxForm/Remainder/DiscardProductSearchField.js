@@ -26,7 +26,7 @@ const setMeasurementAction = (data, loading) => {
 
 const getItem = (id, dispatch) => {
     dispatch(setMeasurementAction(null, true))
-    return axios().get(sprintf(PATH.PRODUCT_MOBILE_ITEM, id))
+    return axios().get(sprintf(PATH.PRODUCT_ITEM, id))
         .then(({data}) => {
             dispatch(setMeasurementAction(_.get(data, ['measurement', 'name']), false))
             return Promise.resolve(toCamelCase(data))
