@@ -7,6 +7,11 @@ import CircularProgress from 'material-ui/CircularProgress'
 import Paper from 'material-ui/Paper'
 import Alukobond from '../CustomIcons/Manufacture/Alukobond.svg'
 import Metall from '../CustomIcons/Manufacture/Metall.svg'
+import Crusher from '../CustomIcons/Manufacture/Crusher.svg'
+import Glue from '../CustomIcons/Manufacture/Glue.svg'
+import Carving from '../CustomIcons/Manufacture/Carving.svg'
+import Tape from '../CustomIcons/Manufacture/Tape.svg'
+import Manufacture from '../CustomIcons/Manufacture/Manufacture.svg'
 
 const enhance = compose(
     injectSheet({
@@ -74,7 +79,15 @@ const ManufacturesList = enhance((props) => {
                 break
             case 'metall': icon = Metall
                 break
-            default: icon = ''
+            case 'tape': icon = Tape
+                break
+            case 'glue': icon = Glue
+                break
+            case 'crusher': icon = Crusher
+                break
+            case 'carving': icon = Carving
+                break
+            default: icon = Manufacture
         }
         return (
             <li key={id}
