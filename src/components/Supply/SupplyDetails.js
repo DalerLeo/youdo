@@ -240,12 +240,12 @@ const SupplyDetails = enhance((props) => {
     const zero = 0
     const id = _.get(data, 'id')
     const agent = _.get(data, ['user', 'firstName']) + ' ' + _.get(data, ['user', 'secondName'])
-
     const provider = _.get(data, ['provider', 'name'])
+    const stockName = _.get(data, ['stock', 'name']) || 'Не указано'
     const paymentType = _.get(data, 'paymentType') === 'cash' ? 'Наличный' : 'Банковский счет'
-    const phone = _.get(data, ['contact', 'phone'])
-    const email = _.get(data, ['contact', 'email'])
-    const dateDelivery = dateFormat(_.get(data, 'dateDelivery'))
+    const phone = _.get(data, ['contact', 'phone']) || 'Не указано'
+    const email = _.get(data, ['contact', 'email']) || 'Не указано'
+    const dateDelivery = dateFormat(_.get(data, 'dateDelivery')) || 'Не указано'
     const acceptedTime = (_.get(data, 'acceptedTime')) ? dateTimeFormat(_.get(data, 'acceptedTime')) : 'Не началась'
     const finishedTime = (_.get(data, 'finishedTime')) ? dateTimeFormat(_.get(data, 'finishedTime')) : 'Не закончилась'
     const contract = _.get(data, 'contract') || 'Не указана'
@@ -256,7 +256,7 @@ const SupplyDetails = enhance((props) => {
     const CANCELLED = 4
     const status = _.toInteger(_.get(data, 'status'))
 
-    const comment = _.get(data, 'comment')
+    const comment = _.get(data, 'comment') || 'Не указано'
     const totalPaid = _.toNumber(_.get(data, 'totalPaid'))
     const totalCost = _.toNumber(_.get(data, 'totalCost'))
     const totalBalance = totalCost - totalPaid
@@ -333,10 +333,9 @@ const SupplyDetails = enhance((props) => {
                     </Tooltip>
                     {updateDialog && <Tooltip position="bottom" text="Изменить">
                         <IconButton
-                            disabled={!(status === PENDING)}
+                            disabled={isAdmin || !(status === PENDING)}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
-                            distabled={isAdmin}
                             touch={true}
                             onTouchTap={updateDialog.handleOpenUpdateDialog}>
                             <Edit/>
@@ -378,6 +377,10 @@ const SupplyDetails = enhance((props) => {
                                 <li>
                                     <span>Инициатор:</span>
                                     <span>{agent}</span>
+                                </li>
+                                <li>
+                                    <span>Склад:</span>
+                                    <span>{stockName}</span>
                                 </li>
                                 <li>
                                     <span>Дата доставки:</span>
