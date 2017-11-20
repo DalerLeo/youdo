@@ -5,11 +5,8 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import CircularProgress from 'material-ui/CircularProgress'
 import Paper from 'material-ui/Paper'
-import Glue from '../Images/glue.png'
-import Cylindrical from '../Images/cylindrical.png'
-import Press from '../Images/press.png'
-import Cut from '../Images/cut.png'
-import Badge from '../Images/badge.png'
+import Alukobond from '../CustomIcons/Manufacture/Alukobond.svg'
+import Metall from '../CustomIcons/Manufacture/Metall.svg'
 
 const enhance = compose(
     injectSheet({
@@ -67,30 +64,26 @@ const ManufacturesList = enhance((props) => {
         handleClick,
         detailId
     } = props
-
-    const glue = 2
-    const cylindrical = 4
-    const press = 6
-    const cut = 1
-    const badge = 8
     const manufactureList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
+        const keyName = _.get(item, 'keyName')
+        let icon = ''
+        switch (keyName) {
+            case 'alyukobond': icon = Alukobond
+                break
+            case 'metall': icon = Metall
+                break
+            default: icon = ''
+        }
         return (
-            <li key={id} className={classes.productionType}
+            <li key={id}
+                className={classes.productionType}
                 onClick={() => {
                     handleClick(id)
                 }}
                 style={detailId === id ? {backgroundColor: 'white'} : {}}>
-                {id === glue ? <img src={Glue}/> : (
-                    id === cylindrical ? <img src={Cylindrical}/> : (
-                        id === press ? <img src={Press}/> : (
-                            id === cut ? <img src={Cut}/> : (
-                                id === badge ? <img src={Badge}/> : '')
-                        )
-                    )
-                )}
-
+                <img src={icon}/>
                 {name}
             </li>
         )

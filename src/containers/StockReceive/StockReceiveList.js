@@ -169,6 +169,11 @@ const enhance = compose(
                     dispatch(stockReceiveListFetchAction(filter))
                     return dispatch(openSnackbarAction({message: 'Успешно принять'}))
                 })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
+                })
         },
         handleSubmitTransferAcceptDialog: props => () => {
             const {dispatch, filter, location: {pathname, query}, params} = props
@@ -195,7 +200,12 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[STOCK_CONFIRM_DIALOG_OPEN]: false})})
                     dispatch(stockReceiveListFetchAction(filter))
-                    return dispatch(openSnackbarAction({message: 'Успешно принять'}))
+                    return dispatch(openSnackbarAction({message: 'Запрос отменен'}))
+                })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
                 })
         },
         handleSubmitReceiveDeliveryConfirmDialog: props => () => {
@@ -205,7 +215,12 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[STOCK_CONFIRM_DIALOG_OPEN]: false})})
                     dispatch(stockReceiveListFetchAction(filter))
-                    return dispatch(openSnackbarAction({message: 'Успешно принять'}))
+                    return dispatch(openSnackbarAction({message: 'Успешно подтверждено'}))
+                })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
                 })
         },
         handleCloseDetail: props => () => {

@@ -63,7 +63,18 @@ export const MenuItems = [
         url: ROUTES.REMAINDER_LIST_URL,
         childs: [
             {name: 'Остаток', url: ROUTES.REMAINDER_LIST_URL, permission: 'frontend_remainder'},
-            {name: 'Приемка / Передача', url: ROUTES.STOCK_RECEIVE_LIST_URL, permission: 'frontend_in_out'}
+            {
+                name: 'Приемка / Передача',
+                url: ROUTES.STOCK_RECEIVE_LIST_URL,
+                extraURLs: {
+                    1: ROUTES.STOCK_RECEIVE_LIST_URL,
+                    2: ROUTES.STOCK_RECEIVE_HISTORY_LIST_URL,
+                    3: ROUTES.STOCK_TRANSFER_LIST_URL,
+                    4: ROUTES.STOCK_TRANSFER_HISTORY_LIST_URL,
+                    5: ROUTES.STOCK_OUT_HISTORY_LIST_URL
+                },
+                permission: 'frontend_in_out'
+            }
         ]
     },
     {

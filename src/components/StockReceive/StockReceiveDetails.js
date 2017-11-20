@@ -176,7 +176,7 @@ const TransferDetail = enhance((props) => {
     const currentDate = dateFormat(_.get(detailData, ['currentDetail', 'date']))
     const currentStock = _.get(detailData, ['currentDetail', 'stock', 'name'])
 
-    const currentRequestDate = _.get(detailData, ['currentDetail', 'dateRequest'])
+    const currentRequestDate = dateFormat(_.get(detailData, ['currentDetail', 'dateRequest']))
     const currentReceiver = _.get(detailData, ['currentDetail', 'receiver'])
 
     const useBarcode = toBoolean(getConfig('USE_BARCODE'))
@@ -225,7 +225,7 @@ const TransferDetail = enhance((props) => {
                             <Col xs={2}>{(history && transferHistory) ? currentStock : formattedType}</Col>
                             <Col xs={2}>{(history && transferHistory) ? formattedType : (history ? currentDate : date)}</Col>
                             <Col xs={2}>{(history && transferHistory) ? currentReceiver : (history ? currentStock : stockName)}</Col>
-                            <Col xs={(history && transferHistory) ? TWO : ONE}>
+                            <Col xs={(history && transferHistory) ? TWO : ONE} style={{textAlign: 'right'}}>
                                 {(history && transferHistory) && currentRequestDate}
                                 <div className={classes.titleButtons}>
                                     {!history && (type === 'transfer')
