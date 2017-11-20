@@ -27,7 +27,13 @@ export const visibleOnlyAdmin = connectedRouterRedirect({
         }
         const filter = _.filter(menus, (o) => {
             const childURL = _.map(_.get(o, 'childs'), (child) => {
+                const extra = _.get(child, 'extraURLs')
+                const extraURL = _.map(extra, (url) => {
+                    return _.startsWith(_.trimStart(currentPath, '/'), _.trimStart(url, '/'))
+                })
                 if (_.startsWith(_.trimStart(currentPath, '/'), _.trimStart(child.url, '/'))) {
+                    return 'hasin'
+                } else if (_.includes(extraURL, true)) {
                     return 'hasin'
                 }
                 return ''

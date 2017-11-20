@@ -119,9 +119,12 @@ const enhance = compose(
         flex: {
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between',
+            justifyContent: 'flex-end',
             '& > div': {
                 display: 'flex'
+            },
+            '& > span': {
+                marginRight: '10px'
             }
         }
 
@@ -206,17 +209,15 @@ const StockTransferDetails = enhance((props) => {
                                         </IconButton>
                                     </Tooltip>
                                     <Tooltip position="right" text={tooltipCancelText}>
-                                        <div style={{paddingRight: '10px'}}>
-                                            <IconButton
-                                                iconStyle={iconStyle.icon}
-                                                style={iconStyle.button}
-                                                onTouchTap={() => {
-                                                    repealDialog.handleOpenRepealDialog(id)
-                                                }}
-                                                touch={true}>
-                                                <RemoveCircleIcon/>
-                                            </IconButton>
-                                        </div>
+                                        <IconButton
+                                            iconStyle={iconStyle.icon}
+                                            style={iconStyle.button}
+                                            onTouchTap={() => {
+                                                repealDialog.handleOpenRepealDialog(id)
+                                            }}
+                                            touch={true}>
+                                            <RemoveCircleIcon/>
+                                        </IconButton>
                                     </Tooltip>
                                 </div>
                             </Col>
@@ -232,12 +233,13 @@ const StockTransferDetails = enhance((props) => {
                             {_.map(products, (item) => {
                                 const productId = _.get(item, 'id')
                                 const name = _.get(item, ['product', 'name'])
+                                const productType = _.get(item, ['product', 'productType', 'name'])
                                 const measurement = _.get(item, ['product', 'measurement', 'name'])
                                 const amount = numberformat(_.get(item, 'amount'), measurement)
                                 return (
                                     <Row key={productId} className='dottedList'>
                                         <Col xs={6}>{name}</Col>
-                                        <Col xs={4}>Стиральный порошек</Col>
+                                        <Col xs={4}>{productType}</Col>
                                         <Col xs={2}>{amount}</Col>
                                     </Row>
                                 )

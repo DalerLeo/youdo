@@ -59,7 +59,9 @@ const enhance = compose(
 
     withPropsOnChange((props, nextProps) => {
         const except = {
-            openTransferFilter: null
+            openTransferFilter: null,
+            stockId: null,
+            currentType: null
         }
         return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {

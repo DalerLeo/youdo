@@ -3,9 +3,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
-import Dialog from 'material-ui/Dialog'
 import IconButton from 'material-ui/IconButton'
-import CircularProgress from 'material-ui/CircularProgress'
+import Paper from 'material-ui/Paper'
+import Loader from '../Loader'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 
 export const PRODUCT_SHOW_PHOTO_OPEN = 'openShowBigImg'
@@ -13,28 +13,38 @@ export const PRODUCT_SHOW_PHOTO_OPEN = 'openShowBigImg'
 const enhance = compose(
     injectSheet({
         loader: {
-            width: '100%',
-            height: '100%',
+            width: '120px',
+            height: '120px',
             background: '#fff !important',
             alignItems: 'center',
             zIndex: '999',
             justifyContent: 'center',
             display: 'flex'
         },
-        imgPopup: {
-            padding: '0 !important',
-            maxHeight: '500px !important',
-            height: '500px'
+        imagePopup: {
+            background: 'rgba(0,0,0, 0.54)',
+            display: 'flex',
+            alignItems: 'flex-start',
+            justifyContent: 'center',
+            position: 'fixed',
+            overflowY: 'auto',
+            top: '0',
+            left: '0',
+            right: '0',
+            bottom: '0',
+            zIndex: '2000'
+        },
+        loadingWrapper: {
+            alignSelf: 'center'
         },
         imgWrapper: {
-            height: '500px',
+            margin: '60px 0',
             '& img': {
-                height: '100%',
-                width: '100%'
+                display: 'block'
             }
         },
         closeBtn: {
-            position: 'absolute !important',
+            position: 'fixed !important',
             right: '7px',
             top: '7px'
         }
@@ -44,26 +54,22 @@ const enhance = compose(
 const ProductShowPhotoDialog = enhance((props) => {
     const {open, loading, onClose, classes, detailData} = props
     const image = _.get(detailData, ['data', 'image', 'file'])
-    return (
-        <Dialog
-            modal={true}
-            open={open}
-            onRequestClose={onClose}
-            className={classes.imagePopup}
-            bodyStyle={{minHeight: 'auto'}}
-            bodyClassName={classes.imgPopup}>
-
-            <div className={classes.imgWrapper}>
+    return open
+    ? (
+        <div className={classes.imagePopup}>
+            <Paper zDepth={3} className={loading ? classes.loadingWrapper : classes.imgWrapper}>
                 <IconButton onTouchTap={onClose} className={classes.closeBtn}>
                     <CloseIcon color="#f0f0f0"/>
                 </IconButton>
-                {loading ? <div className={classes.loader}>
-                        <CircularProgress />
+                {loading
+                    ? <div className={classes.loader}>
+                        <Loader size={0.75}/>
                     </div>
                     : <img src={image}/>}
-            </div>
-        </Dialog>
+            </Paper>
+        </div>
     )
+    : null
 })
 
 ProductShowPhotoDialog.propTyeps = {

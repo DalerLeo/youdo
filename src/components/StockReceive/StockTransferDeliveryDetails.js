@@ -11,7 +11,7 @@ import Tooltip from '../ToolTip'
 import IconButton from 'material-ui/IconButton'
 import PrintIcon from 'material-ui/svg-icons/action/print'
 import PrintRoute from 'material-ui/svg-icons/maps/directions-car'
-import Release from 'material-ui/svg-icons/av/new-releases'
+import Release from 'material-ui/svg-icons/action/description'
 import SendDelivery from 'material-ui/svg-icons/content/reply-all'
 import Direction from 'material-ui/svg-icons/maps/directions'
 import sprintf from 'sprintf'
@@ -199,16 +199,6 @@ const StockTransferDetails = enhance((props) => {
                 <div className={classes.title}>{deliveryManName}</div>
                 <div className={classes.closeDetail} onClick={handleCloseDetail}>{null}</div>
                 <div className={classes.titleButtons}>
-                    <Tooltip position="bottom" text="Распечатать маршрут">
-                        <IconButton
-                            disabled={_.isEmpty(products)}
-                            iconStyle={iconStyle.icon}
-                            style={iconStyle.button}
-                            touch={true}
-                            onTouchTap={() => { printRouteDialog.handleOpenPrintRouteDialog(orders) }}>
-                            <PrintRoute />
-                        </IconButton>
-                    </Tooltip>
                     <Tooltip position="bottom" text="Скачать релиз">
                         <IconButton
                             disabled={_.isEmpty(products)}
@@ -237,6 +227,16 @@ const StockTransferDetails = enhance((props) => {
                             touch={true}
                             onTouchTap={handleOpenDeliveryPrintDialog}>
                             <PrintIcon />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip position="bottom" text="Распечатать маршрут">
+                        <IconButton
+                            disabled={_.isEmpty(products)}
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            touch={true}
+                            onTouchTap={() => { printRouteDialog.handleOpenPrintRouteDialog(orders) }}>
+                            <PrintRoute />
                         </IconButton>
                     </Tooltip>
                     <Tooltip position="bottom" text="Передать доставщику">
