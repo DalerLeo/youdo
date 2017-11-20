@@ -2,7 +2,6 @@ import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
 import numberWithoutSpaces from '../helpers/numberWithoutSpaces'
 
-const ONE = 1
 export const updateSerializer = (data, detail, CLIENT_RETURN) => {
     const type = _.toInteger(_.get(detail, 'type'))
     const client = _.get(detail, ['client', 'id'])
@@ -62,16 +61,16 @@ export const listFilterSerializer = (data, id) => {
     }
     return {
         'id': _.get(defaultData, 'id'),
-        'client': _.get(defaultData, 'client'),
+        'client': _.get(defaultData, 'client') || null,
         'type': _.get(defaultData, 'type'),
         'code': _.get(defaultData, 'code'),
-        'product': _.get(defaultData, 'product'),
-        'division': _.get(defaultData, 'division'),
-        'market': _.get(defaultData, 'market'),
+        'product': _.get(defaultData, 'product') || null,
+        'division': _.get(defaultData, 'division') || null,
+        'market': _.get(defaultData, 'market') || null,
         'order': _.get(defaultData, 'order'),
-        'created_by': _.get(defaultData, 'initiator'),
+        'created_by': _.get(defaultData, 'initiator') || null,
         'payment_type': _.get(defaultData, 'paymentType'),
-        'status': _.get(defaultData, 'status') && _.toNumber(_.get(defaultData, 'status')) - ONE,
+        'status': _.get(defaultData, 'status') || null,
         'created_date_0': _.get(defaultData, 'fromDate'),
         'created_date_1': _.get(defaultData, 'toDate') || _.get(defaultData, 'fromDate'),
         'search': _.get(defaultData, 'search'),

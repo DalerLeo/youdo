@@ -376,12 +376,12 @@ const enhance = compose(
             const deliveryToDate = _.get(filterForm, ['values', 'deliveryDate', 'toDate']) || null
             const deadlineFromDate = _.get(filterForm, ['values', 'deadlineDate', 'fromDate']) || null
             const deadlineToDate = _.get(filterForm, ['values', 'deadlineDate', 'toDate']) || null
-            const client = _.get(filterForm, ['values', 'client', 'value']) || null
-            const status = _.get(filterForm, ['values', 'status', 'value']) || null
-            const product = _.get(filterForm, ['values', 'product', 'value']) || null
-            const shop = _.get(filterForm, ['values', 'shop', 'value']) || null
-            const division = _.get(filterForm, ['values', 'division', 'value']) || null
-            const zone = _.get(filterForm, ['values', 'zone', 'value']) || null
+            const client = _.get(filterForm, ['values', 'client']) || null
+            const status = _.get(filterForm, ['values', 'status']) || null
+            const product = _.get(filterForm, ['values', 'product']) || null
+            const shop = _.get(filterForm, ['values', 'shop']) || null
+            const division = _.get(filterForm, ['values', 'division']) || null
+            const zone = _.get(filterForm, ['values', 'zone']) || null
             const dept = _.get(filterForm, ['values', 'dept', 'value']) || null
             const initiator = _.get(filterForm, ['values', 'initiator']) || null
             const deliveryMan = _.get(filterForm, ['values', 'deliveryMan']) || null
@@ -390,13 +390,13 @@ const enhance = compose(
 
             filter.filterBy({
                 [ORDER_FILTER_OPEN]: false,
-                [ORDER_FILTER_KEY.CLIENT]: client,
-                [ORDER_FILTER_KEY.STATUS]: status,
-                [ORDER_FILTER_KEY.PRODUCT]: product,
+                [ORDER_FILTER_KEY.CLIENT]: _.join(client, '-'),
+                [ORDER_FILTER_KEY.STATUS]: _.join(status, '-'),
+                [ORDER_FILTER_KEY.PRODUCT]: _.join(product, '-'),
                 [ORDER_FILTER_KEY.INITIATOR]: _.join(initiator, '-'),
-                [ORDER_FILTER_KEY.ZONE]: zone,
-                [ORDER_FILTER_KEY.SHOP]: shop,
-                [ORDER_FILTER_KEY.DIVISION]: division,
+                [ORDER_FILTER_KEY.ZONE]: _.join(zone, '-'),
+                [ORDER_FILTER_KEY.SHOP]: _.join(shop, '-'),
+                [ORDER_FILTER_KEY.DIVISION]: _.join(division, '-'),
                 [ORDER_FILTER_KEY.DEPT]: dept,
                 [ORDER_FILTER_KEY.ONLY_BONUS]: onlyBonus,
                 [ORDER_FILTER_KEY.EXCLUDE]: exclude,
@@ -854,16 +854,16 @@ const OrderList = enhance((props) => {
     const openCancelOrderReturnDialog = _.toInteger(_.get(location, ['query', CANCEL_ORDER_RETURN_DIALOG_OPEN]))
     const openReleaseDialog = toBoolean(_.get(location, ['query', ORDER_RELEASE_DIALOG_OPEN]))
 
-    const client = _.toInteger(filter.getParam(ORDER_FILTER_KEY.CLIENT))
+    const client = filter.getParam(ORDER_FILTER_KEY.CLIENT)
     const dept = _.toInteger(filter.getParam(ORDER_FILTER_KEY.DEPT))
     const initiator = filter.getParam(ORDER_FILTER_KEY.INITIATOR)
-    const zone = _.toInteger(filter.getParam(ORDER_FILTER_KEY.ZONE))
+    const zone = filter.getParam(ORDER_FILTER_KEY.ZONE)
     const deliveryMan = filter.getParam(ORDER_FILTER_KEY.DELIVERY_MAN)
-    const orderStatus = _.toInteger(filter.getParam(ORDER_FILTER_KEY.STATUS))
-    const shop = _.toInteger(filter.getParam(ORDER_FILTER_KEY.SHOP))
-    const product = _.toInteger(filter.getParam(ORDER_FILTER_KEY.PRODUCT))
-    const division = _.toInteger(filter.getParam(ORDER_FILTER_KEY.DIVISION))
-    const status = _.toInteger(filter.getParam(ORDER_FILTER_KEY.STATUS))
+    const orderStatus = filter.getParam(ORDER_FILTER_KEY.STATUS)
+    const shop = filter.getParam(ORDER_FILTER_KEY.SHOP)
+    const product = filter.getParam(ORDER_FILTER_KEY.PRODUCT)
+    const division = filter.getParam(ORDER_FILTER_KEY.DIVISION)
+    const status = filter.getParam(ORDER_FILTER_KEY.STATUS)
     const toDate = filter.getParam(ORDER_FILTER_KEY.TO_DATE)
     const fromDate = filter.getParam(ORDER_FILTER_KEY.FROM_DATE)
     const deliveryFromDate = filter.getParam(ORDER_FILTER_KEY.DELIVERY_FROM_DATE)
@@ -1058,33 +1058,33 @@ const OrderList = enhance((props) => {
 
     const filterDialog = {
         initialValues: {
-            client: {
-                value: client
-            },
-            orderStatus: {
-                value: orderStatus
-            },
-            division: {
-                value: division
-            },
-            status: {
-                value: status
-            },
-            shop: {
-                value: shop
-            },
-            product: {
-                value: product
-            },
+            client: client && _.map(_.split(client, '-'), (item) => {
+                return _.toNumber(item)
+            }),
+            orderStatus: orderStatus && _.map(_.split(orderStatus, '-'), (item) => {
+                return _.toNumber(item)
+            }),
+            division: division && _.map(_.split(division, '-'), (item) => {
+                return _.toNumber(item)
+            }),
+            status: status && _.map(_.split(status, '-'), (item) => {
+                return _.toNumber(item)
+            }),
+            shop: shop && _.map(_.split(shop, '-'), (item) => {
+                return _.toNumber(item)
+            }),
+            product: product && _.map(_.split(product, '-'), (item) => {
+                return _.toNumber(item)
+            }),
             initiator: initiator && _.map(_.split(initiator, '-'), (item) => {
                 return _.toNumber(item)
             }),
             dept: {
                 value: dept
             },
-            zone: {
-                value: zone
-            },
+            zone: zone && _.map(_.split(zone, '-'), (item) => {
+                return _.toNumber(item)
+            }),
             deliveryMan: deliveryMan && _.map(_.split(deliveryMan, '-'), (item) => {
                 return _.toNumber(item)
             }),

@@ -91,7 +91,7 @@ const enhance = compose(
 
     withReducer('state', 'dispatch', (state, action) => {
         return {...state, ...action}
-    }, {dataSource: [], text: '', loading: false, values: []}),
+    }, {dataSource: [], text: '', loading: false}),
 
     withHandlers({
         valueRenderer: props => (option) => {
@@ -102,8 +102,8 @@ const enhance = compose(
             return option.text
         },
         filterOptionRender: props => (options) => {
-            const {state: {values}} = props
-            const newValues = _.map(values, (item) => {
+            const {input} = props
+            const newValues = _.map(input.value, (item) => {
                 return {
                     value: item
                 }
@@ -116,13 +116,10 @@ const enhance = compose(
                 return _.toNumber(item)
             })
 
-            const {dispatch} = props
             if (value) {
-                dispatch({values: arrValues})
                 input.onChange(arrValues)
             }
             if (!value) {
-                dispatch({values: []})
                 input.onChange([])
             }
         }

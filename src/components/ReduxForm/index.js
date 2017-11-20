@@ -85,6 +85,14 @@ import PendingExpensesTypeSearchField from './PendingExpensesTypeSearchField'
 import DeliveryManSearchField from './DeliveryManSearchField'
 import DeliveryManMultiSearchField from './DeliveryManMultiSearchField'
 import PriceListSearchField from './PriceListSearchField'
+import ClientMultiSearchField from './Client/ClientMultiSearchField'
+import ZoneMultiSearchField from './ZoneMultiSearchField'
+import DivisionMultiSearchField from './DivisionMultiSearchField'
+import UsersAgentMultiSearchField from './Users/UsersAgentMultiSearchField'
+import MarketMultiSearchField from './Shop/MarketMultiSearchField'
+import ProductMultiSearchField from './Product/ProductMultiSearchField'
+import OrderStatusMultiSearchField from './Order/OrderStatusMultiSearchField'
+import ReturnStatusMultiSearch from './ReturnStatusMultiSearch'
 
 export {
     UsersAgentSearchField,
@@ -173,5 +181,13 @@ export {
     TransitionSendCashboxTypeSearchField,
     PriceListSearchField,
     DeliveryManMultiSearchField,
-    UsersMultiSearchField
+    UsersMultiSearchField,
+    ClientMultiSearchField,
+    ProductMultiSearchField,
+    ZoneMultiSearchField,
+    UsersAgentMultiSearchField,
+    MarketMultiSearchField,
+    DivisionMultiSearchField,
+    OrderStatusMultiSearchField,
+    ReturnStatusMultiSearch
 }

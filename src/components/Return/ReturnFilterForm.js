@@ -7,18 +7,19 @@ import injectSheet from 'react-jss'
 import {Link} from 'react-router'
 import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
+import getConfig from '../../helpers/getConfig'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
 import {
-    ClientSearchField,
-    MarketSearchField,
-    UsersSearchField,
+    ClientMultiSearchField,
+    MarketMultiSearchField,
+    UsersMultiSearchField,
     TextField,
-    ProductSearchField,
-    ReturnStatusSearchField,
+    ProductMultiSearchField,
+    ReturnStatusMultiSearch,
     ReturnTypeSearchField,
-    DivisionSearchField,
+    DivisionMultiSearchField,
     PaymentTypeSearchField
 } from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
@@ -45,7 +46,7 @@ const enhance = compose(
     injectSheet({
         wrapper: {
             position: 'absolute',
-            minWidth: '300px',
+            width: '310px',
             background: '#fff',
             zIndex: 99,
             top: 0,
@@ -159,7 +160,7 @@ const enhance = compose(
 const ReturnFilterForm = enhance((props) => {
     const {classes, filterDialog, getCount, handleSubmit} = props
     const filterCounts = getCount()
-    const divisionStatus = getCount('DIVISION')
+    const divisionStatus = getConfig('DIVISIONS')
 
     if (!filterDialog.openFilterDialog) {
         if (filterCounts) {
@@ -201,14 +202,14 @@ const ReturnFilterForm = enhance((props) => {
                 <form onSubmit={handleSubmit(filterDialog.handleSubmitFilterDialog)}>
                     <div>
                         <Field className={classes.inputFieldCustom} name="order" component={TextField} label="№ Заказа"/>
-                        <Field className={classes.inputFieldCustom} name="product" component={ProductSearchField} label="Продукт"/>
-                        {divisionStatus && <Field className={classes.inputFieldCustom} name="division" component={DivisionSearchField} label="Подразделение"/>}
+                        <Field className={classes.inputFieldCustom} name="product" component={ProductMultiSearchField} label="Продукт"/>
+                        {divisionStatus && <Field className={classes.inputFieldCustom} name="division" component={DivisionMultiSearchField} label="Подразделение"/>}
                         <Field className={classes.inputFieldCustom} name="paymentType" component={PaymentTypeSearchField} label="Тип оплаты"/>
-                        <Field className={classes.inputFieldCustom} name="status" component={ReturnStatusSearchField} label="Статус"/>
+                        <Field className={classes.inputFieldCustom} name="status" component={ReturnStatusMultiSearch} label="Статус"/>
                         <Field className={classes.inputFieldCustom} name="type" component={ReturnTypeSearchField} label="Тип"/>
-                        <Field className={classes.inputFieldCustom} name="client" component={ClientSearchField} label="Клиент"/>
-                        <Field className={classes.inputFieldCustom} name="market" component={MarketSearchField} label="Магазин"/>
-                        <Field className={classes.inputFieldCustom} name="initiator" component={UsersSearchField} label="Инициатор "/>
+                        <Field className={classes.inputFieldCustom} name="client" component={ClientMultiSearchField} label="Клиент"/>
+                        <Field className={classes.inputFieldCustom} name="market" component={MarketMultiSearchField} label="Магазин"/>
+                        <Field className={classes.inputFieldCustom} name="initiator" component={UsersMultiSearchField} label="Инициатор "/>
                         <Field className={classes.inputFieldCustom} name="code" component={TextField} label="Код"/>
                         <Field className={classes.inputDateCustom} name="data" component={DateToDateField} label="Период создания"/>
                     </div>

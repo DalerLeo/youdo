@@ -153,25 +153,25 @@ const enhance = compose(
             const toDate = _.get(filterForm, ['values', 'data', 'toDate']) || null
             const type = _.get(filterForm, ['values', 'type', 'value']) || null
             const order = _.get(filterForm, ['values', 'order']) || null
-            const client = _.get(filterForm, ['values', 'client', 'value']) || null
-            const status = _.get(filterForm, ['values', 'status', 'value']) || null
-            const market = _.get(filterForm, ['values', 'market', 'value']) || null
-            const initiator = _.get(filterForm, ['values', 'initiator', 'value']) || null
-            const product = _.get(filterForm, ['values', 'product', 'value']) || null
-            const division = _.get(filterForm, ['values', 'division', 'value']) || null
+            const client = _.get(filterForm, ['values', 'client']) || null
+            const status = _.get(filterForm, ['values', 'status']) || null
+            const market = _.get(filterForm, ['values', 'market']) || null
+            const initiator = _.get(filterForm, ['values', 'initiator']) || null
+            const product = _.get(filterForm, ['values', 'product']) || null
+            const division = _.get(filterForm, ['values', 'division']) || null
             const paymentType = _.get(filterForm, ['values', 'paymentType', 'value']) || null
             const code = _.get(filterForm, ['values', 'code']) || null
 
             filter.filterBy({
                 [RETURN_FILTER_OPEN]: false,
                 [RETURN_FILTER_KEY.TYPE]: type,
-                [RETURN_FILTER_KEY.ORDER]: order,
-                [RETURN_FILTER_KEY.CLIENT]: client,
-                [RETURN_FILTER_KEY.STATUS]: status,
-                [RETURN_FILTER_KEY.INITIATOR]: initiator,
-                [RETURN_FILTER_KEY.MARKET]: market,
-                [RETURN_FILTER_KEY.PRODUCT]: product,
-                [RETURN_FILTER_KEY.DIVISION]: division,
+                [RETURN_FILTER_KEY.ORDER]: _.join(order, '-'),
+                [RETURN_FILTER_KEY.CLIENT]: _.join(client, '-'),
+                [RETURN_FILTER_KEY.STATUS]: _.join(status, '-'),
+                [RETURN_FILTER_KEY.INITIATOR]: _.join(initiator, '-'),
+                [RETURN_FILTER_KEY.MARKET]: _.join(market, '-'),
+                [RETURN_FILTER_KEY.PRODUCT]: _.join(product, '-'),
+                [RETURN_FILTER_KEY.DIVISION]: _.join(division, '-'),
                 [RETURN_FILTER_KEY.PAYMENT_TYPE]: paymentType,
                 [RETURN_FILTER_KEY.CODE]: code,
                 [RETURN_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
@@ -334,10 +334,12 @@ const ReturnList = enhance((props) => {
     const openCancelDialog = _.toInteger(_.get(location, ['query', CANCEL_RETURN_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', RETURN_UPDATE_DIALOG_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', RETURN_CREATE_DIALOG_OPEN]))
-    const client = _.toInteger(filter.getParam(RETURN_FILTER_KEY.CLIENT))
-    const zone = _.toInteger(filter.getParam(RETURN_FILTER_KEY.ZONE))
-    const division = _.toInteger(filter.getParam(RETURN_FILTER_KEY.DIVISION))
-    const returnStatus = _.toInteger(filter.getParam(RETURN_FILTER_KEY.STATUS))
+    const client = filter.getParam(RETURN_FILTER_KEY.CLIENT)
+    const division = filter.getParam(RETURN_FILTER_KEY.DIVISION)
+    const returnStatus = filter.getParam(RETURN_FILTER_KEY.STATUS)
+    const initiator = filter.getParam(RETURN_FILTER_KEY.INITIATOR)
+    const market = filter.getParam(RETURN_FILTER_KEY.MARKET)
+    const product = filter.getParam(RETURN_FILTER_KEY.PRODUCT)
     const paymentType = _.toInteger(filter.getParam(RETURN_FILTER_KEY.PAYMENT_TYPE))
     const fromDate = filter.getParam(RETURN_FILTER_KEY.FROM_DATE)
     const deliveryFromDate = filter.getParam(RETURN_FILTER_KEY.DELIVERY_FROM_DATE)
@@ -365,21 +367,27 @@ const ReturnList = enhance((props) => {
 
     const filterDialog = {
         initialValues: {
-            client: {
-                value: client
-            },
+            client: client && _.map(_.split(client, '-'), (item) => {
+                return _.toNumber(item)
+            }),
             paymentType: {
                 value: paymentType
             },
-            status: {
-                value: returnStatus
-            },
-            zone: {
-                value: zone
-            },
-            division: {
-                value: division
-            },
+            status: returnStatus && _.map(_.split(returnStatus, '-'), (item) => {
+                return _.toNumber(item)
+            }),
+            division: division && _.map(_.split(division, '-'), (item) => {
+                return _.toNumber(item)
+            }),
+            product: product && _.map(_.split(product, '-'), (item) => {
+                return _.toNumber(item)
+            }),
+            market: product && _.map(_.split(market, '-'), (item) => {
+                return _.toNumber(item)
+            }),
+            initiator: initiator && _.map(_.split(initiator, '-'), (item) => {
+                return _.toNumber(item)
+            }),
             deliveryDate: {
                 deliveryFromDate: deliveryFromDate && moment(deliveryFromDate, 'YYYY-MM-DD'),
                 deliveryToDate: deliveryToDate && moment(deliveryToDate, 'YYYY-MM-DD')

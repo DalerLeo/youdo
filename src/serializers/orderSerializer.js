@@ -6,7 +6,6 @@ import numberWithoutSpaces from '../helpers/numberWithoutSpaces'
 const ZERO = 0
 const ONE = 1
 const TWO = 2
-const FIVE = 5
 
 export const createSerializer = (data) => {
     const client = _.get(data, ['client', 'value'])
@@ -76,7 +75,6 @@ export const listFilterSerializer = (data, id, withOrderReturn, print) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
     const dept = _.toInteger(_.get(defaultData, 'dept'))
-    const status = _.get(defaultData, 'status') ? (_.toInteger(_.get(defaultData, 'status')) === FIVE ? ZERO : _.toInteger(_.get(defaultData, 'status'))) : null
     if (id) {
         return {
             'id': id
@@ -86,18 +84,18 @@ export const listFilterSerializer = (data, id, withOrderReturn, print) => {
     return {
         'ids': print ? orders : null,
         'id': _.get(defaultData, 'id'),
-        'client': _.get(defaultData, 'client'),
-        'product': _.get(defaultData, 'product'),
-        'division': _.get(defaultData, 'division'),
-        'border': _.get(defaultData, 'zone'),
+        'client': _.get(defaultData, 'client') || null,
+        'product': _.get(defaultData, 'product') || null,
+        'division': _.get(defaultData, 'division') || null,
+        'border': _.get(defaultData, 'zone') || null,
         'user': _.get(defaultData, 'initiator'),
         'debt': dept === ONE ? true : (dept === TWO ? false : null),
-        'market': _.get(defaultData, 'shop'),
+        'market': _.get(defaultData, 'shop') || null,
         'date_delivery': _.get(defaultData, 'dateDelivery'),
-        'delivery_man': _.get(defaultData, 'deliveryMan'),
+        'delivery_man': _.get(defaultData, 'deliveryMan') || null,
         'total_price': _.get(defaultData, 'totalPrice'),
         'total_balance': _.get(defaultData, 'totalBalance'),
-        'status': status,
+        'status': _.get(defaultData, 'status') || null,
         'only_bonus': _.get(defaultData, 'onlyBonus') ? 'True' : null,
         'exclude_cancelled': _.get(defaultData, 'exclude') ? 'True' : null,
         'created_date_0': _.get(defaultData, 'fromDate'),
