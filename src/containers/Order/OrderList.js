@@ -30,7 +30,8 @@ import {
     ORDER_RELEASE_DIALOG_OPEN,
     TAB,
     OrderGridList,
-    OrderPrint
+    OrderPrint,
+    OrderSalesPrint
 } from '../../components/Order'
 const CLIENT_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const CANCEL_ORDER_RETURN_DIALOG_OPEN = 'openCancelConfirmDialog'
@@ -51,7 +52,8 @@ import {
     orderGetCounts,
     orderMultiUpdateAction,
     orderAddProductsListAction,
-    orderChangePriceListAction
+    orderChangePriceListAction,
+    orderSalesPrintFetchAction
 } from '../../actions/order'
 import {openSnackbarAction} from '../../actions/snackbar'
 import updateStore from '../../helpers/updateStore'
@@ -94,6 +96,8 @@ const enhance = compose(
         const products = _.get(state, ['form', 'OrderCreateForm', 'values', 'products'])
         const editProducts = _.get(state, ['order', 'updateProducts', 'data'])
         const editProductsLoading = _.get(state, ['order', 'updateProducts', 'loading'])
+        const salesPrintData = _.get(state, ['order', 'salesPrint', 'data'])
+        const salesPrintDataLoading = _.get(state, ['order', 'salesPrint', 'loading'])
         const filter = filterHelper(list, pathname, query)
         const filterProducts = filterHelper(editProducts, pathname, query, {'page': 'pdPage', 'pageSize': 'pdPageSize'})
         const userGroups = _.get(state, ['authConfirm', 'data', 'groups'])
@@ -140,7 +144,9 @@ const enhance = compose(
             orderCountsLoading,
             releaseForm,
             filterProducts,
-            addProductsForm
+            addProductsForm,
+            salesPrintData,
+            salesPrintDataLoading
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -305,6 +311,7 @@ const enhance = compose(
 
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
     withState('openPrint', 'setOpenPrint', false),
+    withState('openSalesPrint', 'setOpenSalesPrint', false),
 
     withHandlers({
         handleOpenPrintDialog: props => () => {
@@ -319,6 +326,20 @@ const enhance = compose(
         handleClosePrintDialog: props => () => {
             const {setOpenPrint} = props
             setOpenPrint(false)
+        },
+        handleOpenSalesPrintDialog: props => () => {
+            const {setOpenSalesPrint, dispatch, location: {query}} = props
+            const orders = _.get(query, 'select')
+            setOpenSalesPrint(true)
+            dispatch(orderSalesPrintFetchAction(orders))
+                .then(() => {
+                    window.print()
+                })
+        },
+
+        handleCloseSalesPrintDialog: props => () => {
+            const {setOpenSalesPrint} = props
+            setOpenSalesPrint(false)
         },
 
         handleTabChange: props => (tab) => {
@@ -647,18 +668,6 @@ const enhance = compose(
             setOpenAddProductConfirm(false)
         },
 
-        handleOpenAddProduct: props => () => {
-            const {setOpenAddProductDialog, filter, location: {pathname}} = props
-            hashHistory.push({pathname, query: filter.getParams({'pdPageSize': 25})})
-            setOpenAddProductDialog(true)
-        },
-
-        handleCloseAddProduct: props => () => {
-            const {setOpenAddProductDialog, filter, location: {pathname}} = props
-            hashHistory.push({pathname, query: filter.getParams({'pdPage': null, 'pdPageSize': null, 'pdSearch': null})})
-            setOpenAddProductDialog(false)
-        },
-
         handleSubmitAddProduct: props => () => {
             const {setOpenAddProductDialog, addProductsForm, editProducts, dispatch, createForm, filter, location: {pathname}} = props
             const existingProducts = _.get(createForm, ['values', 'products']) || []
@@ -799,6 +808,19 @@ const enhance = compose(
                     }))
                 })
         },
+
+        handleOpenAddProduct: props => () => {
+            const {setOpenAddProductDialog, filter, location: {pathname}} = props
+            hashHistory.push({pathname, query: filter.getParams({'pdPageSize': 25})})
+            setOpenAddProductDialog(true)
+        },
+
+        handleCloseAddProduct: props => () => {
+            const {setOpenAddProductDialog, filter, location: {pathname}} = props
+            hashHistory.push({pathname, query: filter.getParams({'pdPage': null, 'pdPageSize': null, 'pdSearch': null})})
+            setOpenAddProductDialog(false)
+        },
+
         handleGetExcelDocument: props => () => {
             const {filter} = props
             const print = true
@@ -841,7 +863,10 @@ const OrderList = enhance((props) => {
         orderCountsLoading,
         openAddProductDialog,
         openAddProductConfirm,
-        filterProducts
+        filterProducts,
+        openSalesPrint,
+        salesPrintData,
+        salesPrintDataLoading
     } = props
     const openFilterDialog = toBoolean(_.get(location, ['query', ORDER_FILTER_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', ORDER_CREATE_DIALOG_OPEN]))
@@ -1146,6 +1171,11 @@ const OrderList = enhance((props) => {
         handleOpenPrintDialog: props.handleOpenPrintDialog,
         handleClosePrintDialog: props.handleClosePrintDialog
     }
+    const printSalesDialog = {
+        openPrint,
+        handleOpenSalesPrintDialog: props.handleOpenSalesPrintDialog,
+        handleCloseSalesPrintDialog: props.handleCloseSalesPrintDialog
+    }
 
     const addProductDialog = {
         initialValues: (() => {
@@ -1189,6 +1219,15 @@ const OrderList = enhance((props) => {
         return <OrderPrint
             printDialog={printDialog}
             listPrintData={listPrintData}/>
+    }
+
+    if (openSalesPrint) {
+        document.getElementById('wrapper').style.height = 'auto'
+
+        return <OrderSalesPrint
+            onClose={printSalesDialog.handleCloseSalesPrintDialog}
+            loading={salesPrintDataLoading}
+            data={salesPrintData}/>
     }
 
     const canChangeAnyPrice = !_.isEmpty(_.filter(userGroups, (o) => {
@@ -1237,6 +1276,7 @@ const OrderList = enhance((props) => {
                 isSuperUser={isSuperUser}
                 releaseDialog={releaseDialog}
                 addProductDialog={addProductDialog}
+                printSalesDialog={printSalesDialog}
             />
         </Layout>
     )

@@ -41,6 +41,8 @@ import RefreshIcon from 'material-ui/svg-icons/action/cached'
 import dateFormat from '../../helpers/dateFormat'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
 import toBoolean from '../../helpers/toBoolean'
+import MenuItem from 'material-ui/MenuItem'
+import IconMenu from 'material-ui/IconMenu'
 
 const ZERO = 0
 const REQUESTED = 0
@@ -207,7 +209,8 @@ const OrderGridList = enhance((props) => {
         isSuperUser,
         getExcelDocument,
         releaseDialog,
-        addProductDialog
+        addProductDialog,
+        printSalesDialog
     } = props
 
     const showCheckboxes = toBoolean(_.get(filter.getParams(), 'showCheckboxes'))
@@ -262,6 +265,11 @@ const OrderGridList = enhance((props) => {
             clientId={clientId}
             isSuperUser={isSuperUser}
         />
+    )
+    const iconButton = (
+        <IconButton>
+            <Print color="#666"/>
+        </IconButton>
     )
 
     const orderList = _.map(_.get(listData, 'data'), (item) => {
@@ -467,10 +475,21 @@ const OrderGridList = enhance((props) => {
 
     const checkboxActions = (
         <div className={classes.buttons}>
-            <Tooltip position="left" text="Распечатать накладные">
-                <IconButton onTouchTap={printDialog.handleOpenPrintDialog}>
-                    <Print color="#666"/>
-                </IconButton>
+            <Tooltip position="left" text="">
+                <IconMenu
+                    menuItemStyle={{fontSize: '13px'}}
+                    iconButtonElement={iconButton}
+                    anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
+                    targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+                    <MenuItem
+                        primaryText="Распечатать накладные"
+                        onTouchTap={() => { printDialog.handleOpenPrintDialog() }}
+                    />
+                    <MenuItem
+                        primaryText="Продажа товаров"
+                        onTouchTap={() => { printSalesDialog.handleOpenSalesPrintDialog() }}
+                    />
+                </IconMenu>
             </Tooltip>
             <Tooltip position="left" text="Скачать Excel">
                 <IconButton onTouchTap={getExcelDocument}>
