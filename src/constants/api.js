@@ -135,6 +135,7 @@ export const ACCEPT_CLIENT_TRANSACTION = 'finance/accept_client_transaction'
 export const ORDER_LIST = `/${ORDER}/`
 export const ORDER_ITEM = `/${ORDER}/%d/`
 export const ORDER_LIST_PRINT = `/${ORDER}/print/`
+export const ORDER_SALES_PRINT = '/stock/delivery_products/custom_release/'
 export const ORDER_CANCEL = `/${ORDER}/%d/cancel/`
 export const ORDER_EXCEL = `/${ORDER}/download_invoice/`
 export const GET_DOCUMENT = 'order_document/%d/'

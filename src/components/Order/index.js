@@ -6,6 +6,7 @@ import {ORDER_SHORTAGE_DIALOG_OPEN} from './OrderShortage'
 import {ORDER_FILTER_KEY, ORDER_FILTER_OPEN} from './OrderFilterForm'
 import {ORDER_ITEM_RETURN_DIALOG_OPEN} from './OrderItemReturnDialog'
 import OrderPrint from './OrderPrint'
+import OrderSalesPrint from './OrderSalesPrint'
 
 const ORDER_DELETE_DIALOG_OPEN = 'openDeleteDialog'
 const ORDER_UPDATE_DIALOG_OPEN = 'openUpdateDialog'
@@ -27,5 +28,6 @@ export {
     ORDER_RELEASE_DIALOG_OPEN,
     OrderGridList,
     OrderPrint,
-    TAB
+    TAB,
+    OrderSalesPrint
 }

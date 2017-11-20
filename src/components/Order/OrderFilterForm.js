@@ -11,17 +11,17 @@ import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
 import {
-    ClientSearchField,
-    MarketSearchField,
-    UsersAgentSearchField,
+    ClientMultiSearchField,
+    MarketMultiSearchField,
+    UsersAgentMultiSearchField,
     DeptSearchField,
-    ZoneSearchField,
-    DivisionSearchField,
-    ProductSearchField,
+    ZoneMultiSearchField,
+    DivisionMultiSearchField,
+    ProductMultiSearchField,
     CheckBox,
-    DeliveryManMultiSearchField
+    DeliveryManMultiSearchField,
+    OrderStatusMultiSearchField
 } from '../ReduxForm'
-import OrderStatusSearchField from '../ReduxForm/Order/OrderStatusSearchField'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 import getConfig from '../../helpers/getConfig'
@@ -206,15 +206,15 @@ const OrderFilterForm = enhance((props) => {
                 </div>
                 <form onSubmit={handleSubmit(filterDialog.handleSubmitFilterDialog)}>
                     <div>
-                        <Field className={classes.inputFieldCustom} name="client" component={ClientSearchField} label="Клиент"/>
+                        <Field className={classes.inputFieldCustom} name="client" component={ClientMultiSearchField} label="Клиент"/>
                         <Field className={classes.inputFieldCustom} name="deliveryMan" component={DeliveryManMultiSearchField} label="Доставщик"/>
-                        <Field className={classes.inputFieldCustom} name="product" component={ProductSearchField} label="Товар"/>
-                        <Field className={classes.inputFieldCustom} name="status" component={OrderStatusSearchField} label="Статус"/>
-                        <Field className={classes.inputFieldCustom} name="shop" component={MarketSearchField} label="Магазин"/>
-                        {divisionStatus && <Field className={classes.inputFieldCustom} name="division" component={DivisionSearchField} label="Подразделение"/>}
-                        <Field className={classes.inputFieldCustom} name="initiator" component={UsersAgentSearchField} label="Инициатор"/>
+                        <Field className={classes.inputFieldCustom} name="product" component={ProductMultiSearchField} label="Товар"/>
+                        <Field className={classes.inputFieldCustom} name="status" component={OrderStatusMultiSearchField} label="Статус"/>
+                        <Field className={classes.inputFieldCustom} name="shop" component={MarketMultiSearchField} label="Магазин"/>
+                        {divisionStatus && <Field className={classes.inputFieldCustom} name="division" component={DivisionMultiSearchField} label="Подразделение"/>}
+                        <Field className={classes.inputFieldCustom} name="initiator" component={UsersAgentMultiSearchField} label="Инициатор"/>
                         <Field className={classes.inputFieldCustom} name="dept" component={DeptSearchField} label="Статус оплаты"/>
-                        <Field className={classes.inputFieldCustom} name="zone" component={ZoneSearchField} label="Зона"/>
+                        <Field className={classes.inputFieldCustom} name="zone" component={ZoneMultiSearchField} label="Зона"/>
                         <Field className={classes.inputDateCustom} name="data" component={DateToDateField} label="Период создания"/>
                         <Field className={classes.inputDateCustom} name="deliveryDate" component={DateToDateField} label="Дата доставки"/>
                         <Field className={classes.inputDateCustom} name="deadlineDate" component={DateToDateField} label="Период изготовления"/>

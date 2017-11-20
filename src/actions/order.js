@@ -140,6 +140,21 @@ export const orderListPintFetchAction = (filter, id) => {
         payload
     }
 }
+export const orderSalesPrintFetchAction = (orders) => {
+    const payload = axios()
+        .get(API.ORDER_SALES_PRINT, {params: {orders}})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.ORDER_SALES_PRINT,
+        payload
+    }
+}
 
 export const orderTransactionFetchAction = (orderId) => {
     const params = {order: orderId}
