@@ -203,10 +203,12 @@ const OrderCreateDialog = enhance((props) => {
         isUpdate,
         handleCheckedForm,
         handleCheckedDefect,
+        handleCheckNoDefect,
         stock
     } = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const supplyId = _.get(detailProducts, 'id')
+    const products = _.get(detailProducts, 'products')
     return (
         <Dialog
             modal={true}
@@ -217,7 +219,7 @@ const OrderCreateDialog = enhance((props) => {
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>{isUpdate ? `ИЗМЕНИТЬ ПРИЕМКА ТОВАРА (Заказ № ${supplyId})` : `ПРИЕМКА ТОВАРА (Заказ № ${supplyId})`}</span>
+                <span>{isUpdate ? 'ИЗМЕНИТЬ ПРИЕМКУ ТОВАРА' : 'ПРИЕМКА ТОВАРА'} (Заказ №${supplyId})</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -238,11 +240,17 @@ const OrderCreateDialog = enhance((props) => {
                                     <Col xs={3}>Товар</Col>
                                     <Col xs={2}>Тип товара</Col>
                                     <Col xs={2}>Кол-во</Col>
-                                    <Col xs={1}></Col>
+                                    <Col xs={1}>
+                                        <Tooltip position="left" text='Отметить все как без браков'>
+                                            <div onClick={() => { handleCheckNoDefect(products) }}>
+                                                <Field name="noDefects" component={CheckBox}/>
+                                            </div>
+                                        </Tooltip>
+                                    </Col>
                                     <Col xs={2}>Принято</Col>
                                     <Col xs={2}>Брак</Col>
                                 </Row>
-                                {_.map(_.get(detailProducts, 'products'), (item, index) => {
+                                {_.map(products, (item, index) => {
                                     const disable = Boolean(stock[index])
                                     const id = _.get(item, 'id')
                                     const name = _.get(item, ['product', 'name'])
@@ -264,12 +272,14 @@ const OrderCreateDialog = enhance((props) => {
                                                             component={CheckBox}/>
                                                     </Tooltip>
                                                 </Col>
-                                                : <Col xs={1} onTouchTap={() => { handleCheckedForm(index, _.get(item, 'amount'), disable) }}>
+                                                : <Col xs={1}>
                                                     <Tooltip position="left" text='Без браков'>
-                                                        <Field
-                                                            key={id}
-                                                            name={'stocks[' + index + '][selected]'}
-                                                            component={CheckBox}/>
+                                                        <div onClick={() => { handleCheckedForm(index, _.get(item, 'amount'), disable) }}>
+                                                            <Field
+                                                                key={id}
+                                                                name={'stocks[' + index + '][selected]'}
+                                                                component={CheckBox}/>
+                                                        </div>
                                                     </Tooltip>
                                                 </Col>}
                                             <Col xs={2}>

@@ -103,16 +103,22 @@ const enhance = compose(
         const prevMarket = toBoolean(_.get(props, ['query', 'showMarkets']))
         const nextMarket = toBoolean(_.get(nextProps, ['query', 'showMarkets']))
         return prevMarket !== nextMarket && nextMarket === true
-    }, ({dispatch}) => {
-        dispatch(marketsLocationFetchAction())
+    }, ({dispatch, location}) => {
+        const showMarkets = toBoolean(_.get(location, ['query', 'showMarkets']))
+        if (showMarkets) {
+            dispatch(marketsLocationFetchAction())
+        }
     }),
 
     withPropsOnChange((props, nextProps) => {
         const prevZone = toBoolean(_.get(props, ['query', 'showZones']))
         const nextZone = toBoolean(_.get(nextProps, ['query', 'showZones']))
         return prevZone !== nextZone && nextZone === true
-    }, ({dispatch, filter}) => {
-        dispatch(zoneListFetchAction(filter))
+    }, ({dispatch, filter, location}) => {
+        const showZones = toBoolean(_.get(location, ['query', 'showZones']))
+        if (showZones) {
+            dispatch(zoneListFetchAction(filter))
+        }
     }),
 
     withPropsOnChange((props, nextProps) => {

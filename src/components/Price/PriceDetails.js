@@ -234,7 +234,7 @@ const PriceDetails = enhance((props) => {
                     Постaвок не найдено, <Link to={{
                         pathname: ROUTES.SUPPLY_LIST_URL,
                         query: {openCreateDialog: true}
-                    }} target='_blank'>добавить поставку</Link>
+                    }} target='_blank'>добавьте поставку</Link>
                     <br/>или <a onClick={defaultDialog.handleOpen}>добавьте себестоимость </a> по умолчанию
                 </div>}
 

@@ -147,7 +147,7 @@ const enhance = compose(
                 paddingRight: '20px'
             },
             '& .dottedList': {
-                padding: '8px 20px 8px 0px !important'
+                padding: '10px 20px 10px 0px !important'
             }
         }
     }),
@@ -271,7 +271,7 @@ const PriceSetForm = enhance((props) => {
                     </div>
                     <div className={classes.tableContent}>
                         <Row className={classes.priceRow}>
-                            <Col xs={6}>Тип обьекта</Col>
+                            <Col xs={5}>Тип обьекта</Col>
                             <Col style={{textAlign: 'left'}} xs={2}>Нал</Col>
                             <Col style={{textAlign: 'left'}} xs={2}>Безнал</Col>
                             <Col style={{textAlign: 'left'}} xs={2}>Валюта</Col>
@@ -282,7 +282,7 @@ const PriceSetForm = enhance((props) => {
                             const transferPrice = _.get(item, 'transfer_price')
                             return (
                                 <Row className='dottedList' key={index}>
-                                    <Col xs={6}> {priceListName}</Col>
+                                    <Col xs={5}> {priceListName}</Col>
                                     <Col style={{textAlign: 'left'}} xs={2}>
                                         <Field
                                             name={'prices[' + index + '][cash_price]'}
@@ -301,7 +301,7 @@ const PriceSetForm = enhance((props) => {
                                             fullWidth={true}
                                         />
                                     </Col>
-                                    <Col xs={2}>
+                                    <Col xs={3}>
                                         <Field
                                             name={'prices[' + index + '][currency]'}
                                             className={classes.inputField}
