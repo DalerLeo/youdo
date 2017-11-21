@@ -8,6 +8,7 @@ import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import moment from 'moment'
 import {OrderPrint} from '../../components/Order'
+import * as SUPPLY_TAB from '../../constants/supplyTab'
 import {
     STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN,
     OUT_HISTORY_FILTER_OPEN,
@@ -149,10 +150,8 @@ const enhance = compose(
             setOpenPrint(false)
         },
         handleTabChange: props => (tab) => {
-            hashHistory.push({
-                pathname: 'stockReceive',
-                query: {[TAB]: tab}
-            })
+            const {filter, location: {pathname}} = props
+            hashHistory.push({pathname, query: filter.getParams({[TAB]: tab})})
         },
 
         handleOpenFilterDialog: props => () => {
@@ -277,6 +276,7 @@ const StockOutHistoryList = enhance((props) => {
     const supplyDialogOpen = _.toNumber(_.get(location, ['query', STOCK_SUPPLY_DIALOG_OPEN]) || '0')
     const popoverDialogOpen = _.toNumber(_.get(location, ['query', STOCK_POPVER_DIALOG_OPEN]))
     const popoverType = _.get(location, ['query', 'popType'])
+    const tab = _.get(location, ['query', TAB]) || SUPPLY_TAB.SUPPLY_DEFAULT_TAB
 
     const historyDialog = {
         openHistoryInfoDialog,
@@ -291,6 +291,10 @@ const StockOutHistoryList = enhance((props) => {
             data: historyOrderDetail || {},
             id: openHistoryInfoDialog
         }
+    }
+    const tabData = {
+        tab,
+        handleTabChange: props.handleTabChange
     }
     const orderData = {
         data: printList,
@@ -381,7 +385,9 @@ const StockOutHistoryList = enhance((props) => {
                 historyDialog={historyDialog}
                 returnDialog={returnDialog}
                 supplyDialog={supplyDialog}
-                popoverDialog={popoverDialog}/>
+                popoverDialog={popoverDialog}
+                tabData={tabData}
+            />
         </Layout>
     )
 })

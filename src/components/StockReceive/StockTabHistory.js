@@ -94,7 +94,8 @@ const StockTabHistory = enhance((props) => {
         historyDialog,
         returnDialog,
         supplyDialog,
-        popoverDialog
+        popoverDialog,
+        tabData
     } = props
 
     const usersFilterDialog = (
@@ -182,6 +183,7 @@ const StockTabHistory = enhance((props) => {
                 key={_.get(supplyDialog, 'open')}
                 data={_.get(supplyDialog, 'data') || {}}
                 loading={_.get(supplyDialog, 'loading')}
+                tabData={tabData}
                 filter={_.get(supplyDialog, 'filter')}/>
             <PopoverDialog
                 open={_.toNumber(_.get(popoverDialog, 'open')) > ZERO}

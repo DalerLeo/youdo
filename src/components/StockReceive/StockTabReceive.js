@@ -212,7 +212,7 @@ const StockTabReceive = enhance((props) => {
         const formattedType = stockTypeFormat(type)
         const acceptedBy = _.get(item, ['acceptedBy', 'firstName']) && _.get(item, ['acceptedBy', 'secondName'])
             ? _.get(item, ['acceptedBy', 'firstName']) + ' ' + _.get(item, ['acceptedBy', 'secondName'])
-            : 'Не указана'
+            : 'Не указано'
         const acceptedTime = _.get(item, 'acceptedTime') ? dateFormat(_.get(item, 'acceptedTime')) : 'Не указана'
         const date = _.get(item, 'date') ? dateFormat(_.get(item, 'date')) : 'Не указана'
         const stockName = _.get(item, ['stock', 'name'])
@@ -228,14 +228,10 @@ const StockTabReceive = enhance((props) => {
                     style={{cursor: 'pointer'}}>
                     <Col xs={2}>{key}</Col>
                     <Col xs={2}>{by}</Col>
-                    <Col xs={2}>
-                        {formattedType}
-                    </Col>
+                    <Col xs={2}>{formattedType}</Col>
                     <Col xs={2}>{acceptedTime}</Col>
                     <Col xs={2}>{acceptedBy}</Col>
-                    <Col xs={1}>
-                        {stockName}
-                    </Col>
+                    <Col xs={1}>{stockName}</Col>
                 </Row>
             )
         }
@@ -248,13 +244,9 @@ const StockTabReceive = enhance((props) => {
                 style={{cursor: 'pointer'}}>
                 <Col xs={2}>{key}</Col>
                 <Col xs={3}>{by}</Col>
-                <Col xs={2}>
-                    {formattedType}
-                </Col>
+                <Col xs={2}>{formattedType}</Col>
                 <Col xs={2}>{date}</Col>
-                <Col xs={2}>
-                    {stockName}
-                </Col>
+                <Col xs={2}>{stockName}</Col>
             </Row>
         )
     })

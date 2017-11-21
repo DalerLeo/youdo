@@ -217,8 +217,8 @@ const OrderGridList = enhance((props) => {
     const statusIsReady = !_.isNil(_.get(filter.getParams(), 'status')) && _.toNumber(_.get(filter.getParams(), 'status')) === READY
     const statusIsRequested = !_.isNil(_.get(filter.getParams(), 'status')) && _.toNumber(_.get(filter.getParams(), 'status')) === REQUESTED
     const orderCounts = _.get(listData, 'orderCounts')
-    const readyCount = _.get(orderCounts, 'readyCount') || ''
-    const requestedCount = _.get(orderCounts, 'requestedCount') || ''
+    const readyCount = _.get(orderCounts, 'readyCount')
+    const requestedCount = _.get(orderCounts, 'requestedCount')
     const orderCountsLoading = _.get(listData, 'orderCountsLoading')
     const orderFilterDialog = (
         <OrderFilterForm
@@ -444,7 +444,7 @@ const OrderGridList = enhance((props) => {
                 </IconButton>
             </Tooltip>
 
-            <Tooltip position="left" text="Отфильтровать по доступным заказам">
+            {readyCount > ZERO && <Tooltip position="left" text="Отфильтровать по доступным заказам">
                 <Badge
                     primary={true}
                     badgeContent={statusIsReady ? <Done style={badgeStyle.icon}/> : readyCount}
@@ -456,8 +456,8 @@ const OrderGridList = enhance((props) => {
                         <Available/>
                     </IconButton>
                 </Badge>
-            </Tooltip>
-            <Tooltip position="left" text="Отфильтровать по запрошенным заказам">
+            </Tooltip>}
+            {requestedCount > ZERO && <Tooltip position="left" text="Отфильтровать по запрошенным заказам">
                 <Badge
                     primary={true}
                     badgeContent={statusIsRequested ? <Done style={badgeStyle.iconRequested}/> : requestedCount}
@@ -469,7 +469,7 @@ const OrderGridList = enhance((props) => {
                         <InProcess/>
                     </IconButton>
                 </Badge>
-            </Tooltip>
+            </Tooltip>}
         </div>
     )
 
