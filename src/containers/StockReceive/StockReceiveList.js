@@ -1,7 +1,7 @@
 import React from 'react'
 import _ from 'lodash'
 import {connect} from 'react-redux'
-import {change} from 'redux-form'
+import {change, reset} from 'redux-form'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers, withState} from 'recompose'
@@ -100,6 +100,49 @@ const enhance = compose(
             dispatch(stockReceiveHistoryReturnItemFetchAction(stockReceiveId))
         } else if (stockReceiveType === 'delivery_return') {
             dispatch(stockTransferItemFetchAction(stockReceiveId))
+        }
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const check = _.get(props, ['createForm', 'values', 'noDefects'])
+        const nextCheck = _.get(nextProps, ['createForm', 'values', 'noDefects'])
+        const details = _.get(nextProps, 'detail')
+        return check !== nextCheck && details
+    }, ({dispatch, createForm, detail}) => {
+        const checked = _.get(createForm, ['values', 'noDefects'])
+        const products = _.get(detail, 'products')
+        const form = 'StockReceiveCreateForm'
+        if (checked) {
+            dispatch(change(form, 'stocks', _.map(products, () => {
+                return {selected: true}
+            })))
+            dispatch(change(form, 'product', _.map(products, (item) => {
+                return {
+                    accepted: _.toNumber(_.get(item, 'amount')),
+                    defected: ''
+                }
+            })))
+        }
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const selects = _.get(props, ['createForm', 'values', 'stocks'])
+        const nextSelects = _.get(nextProps, ['createForm', 'values', 'stocks'])
+        const details = _.get(nextProps, 'detail')
+        return !_.isEqual(selects, nextSelects) && details
+    }, ({dispatch, detail, createForm}) => {
+        const selects = _.get(createForm, ['values', 'stocks'])
+        const form = 'StockReceiveCreateForm'
+        if (!_.isEmpty(selects)) {
+            const selectsCount = _.filter(selects, (item) => {
+                return _.get(item, 'selected') === true
+            }).length
+            const products = _.get(detail, 'products').length
+            if (selectsCount === products) {
+                dispatch(change(form, 'noDefects', true))
+            } else {
+                dispatch(change(form, 'noDefects', false))
+            }
         }
     }),
 
@@ -319,6 +362,14 @@ const enhance = compose(
             const form = 'StockReceiveCreateForm'
             dispatch(change(form, 'product[' + index + '][accepted]', val))
             dispatch(change(form, 'product[' + index + '][defected]', ZERO))
+        },
+        handleCheckNoDefect: props => () => {
+            const {dispatch, createForm} = props
+            const form = 'StockReceiveCreateForm'
+            const checked = _.get(createForm, ['values', 'noDefects'])
+            if (checked) {
+                dispatch(reset(form))
+            }
         }
     })
 )
@@ -468,6 +519,7 @@ const StockReceiveListContent = enhance((props) => {
                 updateDialog={updateDialog}
                 handleCheckedForm={props.handleCheckedForm}
                 handleCheckedDefect={props.handleCheckedDefect}
+                handleCheckNoDefect={props.handleCheckNoDefect}
                 history={false}/>
         </Layout>
     )
