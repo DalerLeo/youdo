@@ -320,7 +320,7 @@ export const LOCATION_LIST = 'market/location/'
 
 export const REMAINDER = 'stock'
 export const REMAINDER_LIST = `/${REMAINDER}/all_balances/`
-export const REMAINDER_ITEM = `stock/stock/balances_by_product/%d/`
+export const REMAINDER_ITEM = 'stock/stock/balances_by_product/%d/'
 export const REMAINDER_TRANSFER = '/stock/stock_transfer/wb_create/'
 export const REMAINDER_DISCARD = '/stock/writeoff/'
 export const REMAINDER_RESERVED = '/stock/reserved_product/'
