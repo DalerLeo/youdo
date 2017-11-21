@@ -257,5 +257,20 @@ export default injectSheet({
                 color: '#fff !important'
             }
         }
+    },
+    submit: {
+        position: 'absolute',
+        bottom: '45px',
+        backgroundColor: '#5d6474',
+        borderRadius: '3px',
+        margin: '10px',
+        width: '140px',
+        '& button': {
+            width: '100%',
+            '& span': {
+                textTransform: 'none !important',
+                color: '#fff !important'
+            }
+        }
     }
 })(DateToDateField)
