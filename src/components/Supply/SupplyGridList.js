@@ -25,6 +25,7 @@ import Tooltip from '../ToolTip'
 import numberFormat from '../../helpers/numberFormat'
 import dateFormat from '../../helpers/dateFormat'
 import {connect} from 'react-redux'
+import AddProductDialog from '../Order/OrderAddProductsDialog'
 
 const listHeader = [
     {
@@ -171,7 +172,8 @@ const SupplyGridList = enhance((props) => {
         supplyExpenseCreateDialog,
         supplyListData,
         tabData,
-        paidData
+        paidData,
+        addProductDialog
     } = props
 
     const actions = (
@@ -291,6 +293,7 @@ const SupplyGridList = enhance((props) => {
                 loading={createDialog.createLoading}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
+                handleOpenAddProduct={addProductDialog.handleOpenAddProduct}
             />
 
             <SupplyDefectDialog
@@ -306,6 +309,7 @@ const SupplyGridList = enhance((props) => {
                 loading={updateDialog.updateLoading}
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
+                handleOpenAddProduct={addProductDialog.handleOpenAddProduct}
             />
 
             <SupplyExpenseCreateDialog
@@ -339,6 +343,21 @@ const SupplyGridList = enhance((props) => {
                 onClose={confirmExpenseDialog.handleCloseConfirmExpenseDialog}
                 onSubmit={confirmExpenseDialog.handleSendConfirmExpenseDialog}
                 open={confirmExpenseDialog.openConfirmExpenseDialog}
+            />}
+
+            {addProductDialog.openAddProductDialog &&
+            <AddProductDialog
+                open={addProductDialog.openAddProductDialog}
+                loading={addProductDialog.loading}
+                filter={addProductDialog.filter}
+                data={addProductDialog.data}
+                onClose={addProductDialog.handleCloseAddProduct}
+                onSubmit={addProductDialog.handleSubmitAddProduct}
+                initialValues={addProductDialog.initialValues}
+                openAddProductConfirm={addProductDialog.openAddProductConfirm}
+                handleCloseAddProductConfirm={addProductDialog.handleCloseAddProductConfirm}
+                handleSubmitAddProductConfirm={addProductDialog.handleSubmitAddProductConfirm}
+                withoutCustomPrice={true}
             />}
         </Container>
     )

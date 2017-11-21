@@ -668,51 +668,6 @@ const enhance = compose(
             setOpenAddProductConfirm(false)
         },
 
-        handleSubmitAddProduct: props => () => {
-            const {setOpenAddProductDialog, addProductsForm, editProducts, dispatch, createForm, filter, location: {pathname}} = props
-            const existingProducts = _.get(createForm, ['values', 'products']) || []
-            const values = _.get(addProductsForm, ['values', 'product'])
-            const getProductData = (id) => {
-                return _.find(_.get(editProducts, 'results'), {'id': id})
-            }
-            const newProductsArray = []
-            _.map(values, (item, index) => {
-                const id = _.toInteger(index)
-                const product = getProductData(id)
-                const amount = _.get(item, 'amount')
-                if (amount) {
-                    newProductsArray.push({
-                        amount: _.get(item, 'amount'),
-                        cost: _.get(item, 'price'),
-                        customPrice: _.get(product, 'customPrice'),
-                        price: {
-                            cashPrice: _.get(product, 'cashPrice'),
-                            transferPrice: _.get(product, 'transferPrice')
-                        },
-                        product: {
-                            id: id,
-                            value: {
-                                id: _.get(product, 'id'),
-                                name: _.get(product, 'name'),
-                                balance: _.get(product, 'balance'),
-                                measurement: {
-                                    id: _.get(product, ['measurement', 'id']),
-                                    name: _.get(product, ['measurement', 'name'])
-                                }
-                            },
-                            text: _.get(product, 'name')
-                        }
-                    })
-                }
-            })
-            const checkDifference = _.differenceBy(existingProducts, newProductsArray, (o) => {
-                return o.product.value.id
-            })
-            dispatch(change('OrderCreateForm', 'products', _.concat(newProductsArray, checkDifference)))
-            hashHistory.push({pathname, query: filter.getParams({'pdPage': null, 'pdPageSize': null, 'pdSearch': null})})
-            setOpenAddProductDialog(false)
-        },
-
         handleOpenCreateClientDialog: props => () => {
             const {filter} = props
             hashHistory.push({pathname: [ROUTER.SHOP_LIST_URL], query: filter.getParams({[CLIENT_CREATE_DIALOG_OPEN]: true})})
@@ -817,6 +772,51 @@ const enhance = compose(
 
         handleCloseAddProduct: props => () => {
             const {setOpenAddProductDialog, filter, location: {pathname}} = props
+            hashHistory.push({pathname, query: filter.getParams({'pdPage': null, 'pdPageSize': null, 'pdSearch': null})})
+            setOpenAddProductDialog(false)
+        },
+
+        handleSubmitAddProduct: props => () => {
+            const {setOpenAddProductDialog, addProductsForm, editProducts, dispatch, createForm, filter, location: {pathname}} = props
+            const existingProducts = _.get(createForm, ['values', 'products']) || []
+            const values = _.get(addProductsForm, ['values', 'product'])
+            const getProductData = (id) => {
+                return _.find(_.get(editProducts, 'results'), {'id': id})
+            }
+            const newProductsArray = []
+            _.map(values, (item, index) => {
+                const id = _.toInteger(index)
+                const product = getProductData(id)
+                const amount = _.get(item, 'amount')
+                if (amount) {
+                    newProductsArray.push({
+                        amount: _.get(item, 'amount'),
+                        cost: _.get(item, 'price'),
+                        customPrice: _.get(product, 'customPrice'),
+                        price: {
+                            cashPrice: _.get(product, 'cashPrice'),
+                            transferPrice: _.get(product, 'transferPrice')
+                        },
+                        product: {
+                            id: id,
+                            value: {
+                                id: _.get(product, 'id'),
+                                name: _.get(product, 'name'),
+                                balance: _.get(product, 'balance'),
+                                measurement: {
+                                    id: _.get(product, ['measurement', 'id']),
+                                    name: _.get(product, ['measurement', 'name'])
+                                }
+                            },
+                            text: _.get(product, 'name')
+                        }
+                    })
+                }
+            })
+            const checkDifference = _.differenceBy(existingProducts, newProductsArray, (o) => {
+                return o.product.value.id
+            })
+            dispatch(change('OrderCreateForm', 'products', _.concat(newProductsArray, checkDifference)))
             hashHistory.push({pathname, query: filter.getParams({'pdPage': null, 'pdPageSize': null, 'pdSearch': null})})
             setOpenAddProductDialog(false)
         },

@@ -2,7 +2,7 @@ import React from 'react'
 import _ from 'lodash'
 import moment from 'moment'
 import {connect} from 'react-redux'
-import {reset} from 'redux-form'
+import {reset, change} from 'redux-form'
 import {hashHistory} from 'react-router'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import Layout from '../../components/Layout'
@@ -10,6 +10,7 @@ import * as ROUTER from '../../constants/routes'
 import * as SUPPLY_TAB from '../../constants/supplyTab'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
+import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
 import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
 import {setItemAction} from '../../components/ReduxForm/Provider/ProviderSearchField'
 import {
@@ -28,7 +29,8 @@ import {
     supplyListFetchAction,
     supplyDeleteAction,
     supplyItemFetchAction,
-    supplyDefectAction
+    supplyDefectAction,
+    addProductsListAction
 } from '../../actions/supply'
 import {
     supplyExpenseCreateAction,
@@ -63,6 +65,10 @@ const enhance = compose(
         const createSupplyExpenseForm = _.get(state, ['form', 'SupplyExpenseCreateForm'])
         const supplyExpenseList = _.get(state, ['supplyExpense', 'list', 'data'])
         const supplyExpenseListLoading = _.get(state, ['supplyExpense', 'list', 'loading'])
+        const addProductsForm = _.get(state, ['form', 'OrderAddProductsForm'])
+        const addProducts = _.get(state, ['order', 'updateProducts', 'data'])
+        const addProductsLoading = _.get(state, ['order', 'updateProducts', 'loading'])
+        const filterProducts = filterHelper(addProducts, pathname, query, {'page': 'pdPage', 'pageSize': 'pdPageSize'})
         const filterItem = filterHelper(supplyExpenseList, pathname, query, {'page': 'dPage', 'pageSize': 'dPageSize'})
 
         return {
@@ -82,7 +88,11 @@ const enhance = compose(
             createSupplyExpenseForm,
             supplyExpenseList,
             supplyExpenseListLoading,
-            filterItem
+            filterItem,
+            addProductsForm,
+            addProducts,
+            addProductsLoading,
+            filterProducts
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -131,6 +141,54 @@ const enhance = compose(
     withState('openConfirmExpenseDialog', 'setOpenConfirmExpenseDialog', false),
     withState('openSupplyExpenseConfirmDialog', 'setOpenSupplyExpenseConfirmDialog', false),
     withState('expenseRemoveId', 'setExpenseRemoveId', false),
+    withState('openAddProductDialog', 'setOpenAddProductDialog', false),
+    withState('openAddProductConfirm', 'setOpenAddProductConfirm', false),
+
+    withPropsOnChange((props, nextProps) => {
+        const except = {
+            page: null,
+            pageSize: null,
+            contract: null,
+            createdFromDate: null,
+            createdToDate: null,
+            deliveryFromDate: null,
+            deliveryToDate: null,
+            paymentType: null,
+            openCreateDialog: null,
+            openFilterDialog: null,
+            product: null,
+            provider: null,
+            status: null,
+            stock: null
+        }
+        const productType = _.get(props, ['addProductsForm', 'values', 'productType', 'value'])
+        const productTypeNext = _.get(nextProps, ['addProductsForm', 'values', 'productType', 'value'])
+        return ((props.filterProducts.filterRequest(except) !== nextProps.filterProducts.filterRequest(except)) ||
+            (productType !== productTypeNext && nextProps.openAddProductDialog)) && !(props.openAddProductDialog !== nextProps.openAddProductDialog && nextProps.openAddProductDialog)
+    }, ({setOpenAddProductConfirm, addProductsForm, openAddProductDialog, dispatch, filterProducts}) => {
+        const products = _.filter(_.get(addProductsForm, ['values', 'product']), (item) => {
+            const amount = _.toNumber(_.get(item, 'amount'))
+            const price = _.toNumber(_.get(item, 'price'))
+            return amount > ZERO && price > ZERO
+        })
+        const productType = _.get(addProductsForm, ['values', 'productType', 'value'])
+        if (!_.isEmpty(products)) {
+            setOpenAddProductConfirm(true)
+        } else if (openAddProductDialog && _.isEmpty(products)) {
+            setOpenAddProductConfirm(false)
+            dispatch(addProductsListAction(filterProducts, productType))
+        }
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        return props.openAddProductDialog !== nextProps.openAddProductDialog && nextProps.openAddProductDialog
+    }, ({dispatch, addProductsForm, openAddProductDialog, filterProducts, setOpenAddProductConfirm}) => {
+        const productType = _.get(addProductsForm, ['values', 'productType', 'value'])
+        if (openAddProductDialog) {
+            setOpenAddProductConfirm(false)
+            dispatch(addProductsListAction(filterProducts, productType))
+        }
+    }),
 
     withHandlers({
         handleActionEdit: props => () => {
@@ -350,6 +408,116 @@ const enhance = compose(
                     dispatch(supplyItemFetchAction(id))
                     return dispatch(supplyExpenseListFetchAction(id, filter))
                 })
+        },
+
+        handleOpenAddProduct: props => () => {
+            const {setOpenAddProductDialog, filter, location: {pathname}} = props
+            hashHistory.push({pathname, query: filter.getParams({'pdPageSize': 25})})
+            setOpenAddProductDialog(true)
+        },
+
+        handleCloseAddProduct: props => () => {
+            const {setOpenAddProductDialog, filter, location: {pathname}} = props
+            hashHistory.push({pathname, query: filter.getParams({'pdPage': null, 'pdPageSize': null, 'pdSearch': null})})
+            setOpenAddProductDialog(false)
+        },
+
+        handleSubmitAddProduct: props => () => {
+            const {setOpenAddProductDialog, addProductsForm, addProducts, dispatch, createForm, filter, location: {pathname}} = props
+            const existingProducts = _.get(createForm, ['values', 'products']) || []
+            const values = _.get(addProductsForm, ['values', 'product'])
+            const getProductData = (id) => {
+                return _.find(_.get(addProducts, 'results'), {'id': id})
+            }
+            const newProductsArray = []
+            _.map(values, (item, index) => {
+                const id = _.toInteger(index)
+                const product = getProductData(id)
+                const amount = _.get(item, 'amount')
+                const price = _.get(item, 'price')
+                if (amount && price) {
+                    newProductsArray.push({
+                        amount: _.get(item, 'amount'),
+                        cost: numberWithoutSpaces(_.get(item, 'price')),
+                        customPrice: _.get(product, 'customPrice'),
+                        price: {
+                            cashPrice: _.get(product, 'cashPrice'),
+                            transferPrice: _.get(product, 'transferPrice')
+                        },
+                        product: {
+                            id: id,
+                            value: {
+                                id: _.get(product, 'id'),
+                                name: _.get(product, 'name'),
+                                balance: _.get(product, 'balance'),
+                                measurement: {
+                                    id: _.get(product, ['measurement', 'id']),
+                                    name: _.get(product, ['measurement', 'name'])
+                                }
+                            },
+                            text: _.get(product, 'name')
+                        }
+                    })
+                }
+            })
+            const checkDifference = _.differenceBy(existingProducts, newProductsArray, (o) => {
+                return o.product.value.id
+            })
+            dispatch(change('SupplyCreateForm', 'products', _.concat(newProductsArray, checkDifference)))
+            hashHistory.push({pathname, query: filter.getParams({'pdPage': null, 'pdPageSize': null, 'pdSearch': null})})
+            setOpenAddProductDialog(false)
+        },
+
+        handleCloseAddProductConfirm: props => () => {
+            const {dispatch, createForm, addProductsForm, filterProducts, setOpenAddProductConfirm} = props
+            const priceList = _.get(createForm, ['values', 'priceList', 'value'])
+            const productType = _.get(addProductsForm, ['values', 'productType', 'value'])
+            dispatch(addProductsListAction(priceList, filterProducts, productType))
+            setOpenAddProductConfirm(false)
+        },
+
+        handleSubmitAddProductConfirm: props => () => {
+            const {addProductsForm, addProducts, dispatch, createForm, filterProducts, setOpenAddProductConfirm} = props
+            const productType = _.get(addProductsForm, ['values', 'productType', 'value'])
+            const existingProducts = _.get(createForm, ['values', 'products']) || []
+            const values = _.get(addProductsForm, ['values', 'product'])
+            const getProductData = (id) => {
+                return _.find(_.get(addProducts, 'results'), {'id': id})
+            }
+            const newProductsArray = []
+            _.map(values, (item, index) => {
+                const id = _.toInteger(index)
+                const product = getProductData(id)
+                const amount = _.get(item, 'amount')
+                const price = _.get(item, 'price')
+                if (amount && price) {
+                    newProductsArray.push({
+                        amount: _.get(item, 'amount'),
+                        cost: numberWithoutSpaces(_.get(item, 'price')),
+                        customPrice: _.get(product, 'customPrice'),
+                        price: _.get(item, 'price'),
+                        product: {
+                            id: id,
+                            value: {
+                                id: _.get(product, 'id'),
+                                name: _.get(product, 'name'),
+                                balance: _.get(product, 'balance'),
+                                measurement: {
+                                    id: _.get(product, ['measurement', 'id']),
+                                    name: _.get(product, ['measurement', 'name'])
+                                }
+                            },
+                            text: _.get(product, 'name')
+                        }
+                    })
+                }
+            })
+            const checkDifference = _.differenceBy(existingProducts, newProductsArray, (o) => {
+                return o.product.value.id
+            })
+            dispatch(change('SupplyCreateForm', 'products', _.concat(newProductsArray, checkDifference)))
+            dispatch(addProductsListAction(filterProducts, productType))
+            setOpenAddProductConfirm(false)
         }
     })
 )
@@ -373,7 +541,12 @@ const SupplyList = enhance((props) => {
         filterItem,
         supplyExpenseLoading,
         supplyExpenseList,
-        supplyExpenseListLoading
+        supplyExpenseListLoading,
+        addProducts,
+        addProductsLoading,
+        filterProducts,
+        openAddProductDialog,
+        openAddProductConfirm
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', SUPPLY_FILTER_OPEN]))
@@ -391,6 +564,19 @@ const SupplyList = enhance((props) => {
     const createdToDate = filter.getParam(SUPPLY_FILTER_KEY.CREATED_TO_DATE)
     const detailId = _.toInteger(_.get(params, 'supplyId'))
     const tab = _.get(location, ['query', TAB]) || SUPPLY_TAB.SUPPLY_DEFAULT_TAB
+
+    const addProductDialog = {
+        openAddProductDialog,
+        filter: filterProducts,
+        data: _.get(addProducts, 'results'),
+        loading: addProductsLoading,
+        handleOpenAddProduct: props.handleOpenAddProduct,
+        handleCloseAddProduct: props.handleCloseAddProduct,
+        handleSubmitAddProduct: props.handleSubmitAddProduct,
+        openAddProductConfirm,
+        handleCloseAddProductConfirm: props.handleCloseAddProductConfirm,
+        handleSubmitAddProductConfirm: props.handleSubmitAddProductConfirm
+    }
 
     const actionsDialog = {
         handleActionEdit: props.handleActionEdit,
@@ -568,6 +754,7 @@ const SupplyList = enhance((props) => {
                 supplyListData={supplyListData}
                 detailId={detailId}
                 supplyExpenseCreateDialog={supplyExpenseCreateDialog}
+                addProductDialog={addProductDialog}
             />
         </Layout>
     )

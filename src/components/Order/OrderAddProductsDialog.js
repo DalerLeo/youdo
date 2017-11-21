@@ -22,6 +22,7 @@ import {
     ProductTypeSearchField,
     normalizeNumber
 } from '../ReduxForm'
+import {connect} from 'react-redux'
 
 const enhance = compose(
     injectSheet({
@@ -243,6 +244,12 @@ const enhance = compose(
         form: 'OrderAddProductsForm',
         enableReinitialize: true
     }),
+    connect((state) => {
+        const currency = _.get(state, ['form', 'SupplyCreateForm', 'values', 'currency', 'text'])
+        return {
+            currency
+        }
+    }),
     withState('pdSearch', 'setSearch', ({filter}) => filter.getParam('pdSearch')),
     withHandlers({
         onSubmitSearch: props => () => {
@@ -287,16 +294,25 @@ const OrderAddProductsDialog = enhance((props) => {
         openAddProductConfirm,
         handleCloseAddProductConfirm,
         handleSubmitAddProductConfirm,
-        isSuperUser
+        isSuperUser,
+        withoutCustomPrice,
+        currency
     } = props
     const onSubmit = handleSubmit(props.onSubmit)
-    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
+    const primaryCurrency = currency || getConfig('PRIMARY_CURRENCY')
     const products = _.map(data, (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const balance = _.get(item, 'balance')
-        const canChangePrice = isSuperUser || _.get(item, 'customPrice')
+        const canChangePrice = (isSuperUser || withoutCustomPrice) || _.get(item, 'customPrice')
         const measurement = _.get(item, ['measurement', 'name'])
+        const normalize = value => {
+            if (!value) {
+                return value
+            }
+
+            return value > balance ? balance : value
+        }
         return (
             <Row key={id} className="dottedList">
                 <Col xs={6}>{name}</Col>
@@ -316,6 +332,7 @@ const OrderAddProductsDialog = enhance((props) => {
                     <Field
                         name={'product[' + id + '][amount]'}
                         component={TextField}
+                        normalize={normalize}
                         className={classes.inputFieldCustom}
                         inputStyle={{textAlign: 'right'}}
                         fullWidth={true}/>
@@ -412,6 +429,9 @@ const OrderAddProductsDialog = enhance((props) => {
         </div>
     )
 })
+OrderAddProductsDialog.defaultProps = {
+    withoutCustomPrice: false
+}
 OrderAddProductsDialog.propTyeps = {
     products: PropTypes.array,
     open: PropTypes.bool.isRequired,
