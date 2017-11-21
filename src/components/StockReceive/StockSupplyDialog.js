@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
@@ -37,21 +38,9 @@ const enhance = compose(
             marginBottom: '64px'
         },
         content: {
-            width: '100%',
-            display: 'block',
-            '& > div': {
-                width: 'auto',
-                border: 'none',
-                padding: '0',
-                maxHeight: '573px',
-                '& > div > div:last-child > div > div:first-child': {
-                    maxHeight: '465px',
-                    overflowY: 'auto',
-                    margin: '0 -30px',
-                    padding: '0 30px'
-                },
-                '& > div > div:last-child > div > div:last-child': {
-                    padding: '0'
+            '& > div > div': {
+                '&:first-child': {
+                    display: 'none'
                 }
             }
         },
@@ -147,35 +136,40 @@ const StatSaleDialog = enhance((props) => {
         data,
         loading,
         key,
-        filter
+        filter,
+        tabData
     } = props
+    const supplyId = _.get(data, 'id')
     return (
         <Dialog
             modal={true}
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '500px'} : {width: '1000px', maxWidth: 'unset'}}
+            contentStyle={loading ? {width: '500px'} : {width: '85%', maxWidth: 'unset', minWidth: '1000px'}}
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>Движение товаров</span>
+                <span>Движение товаров. Поставка №{supplyId}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
             </div>
-            {loading ? <div className={classes.loader}>
+            {loading
+                ? <div className={classes.loader}>
                     <CircularProgress/>
                 </div>
-                : <SupplyDetails
-                    open={true}
-                    key={key}
-                    data={data || {}}
-                    loading={loading}
-                    handleCloseDetail={onClose}
-                    filter={filter}
-                    history={true}
-                />}
+                : <div className={classes.content}>
+                    <SupplyDetails
+                        open={true}
+                        key={key}
+                        data={data}
+                        loading={loading}
+                        filter={filter}
+                        history={true}
+                        tabData={tabData}
+                    />
+                </div>}
         </Dialog>
     )
 })

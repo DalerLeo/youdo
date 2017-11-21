@@ -527,15 +527,16 @@ const OrderListProductField = enhance((props) => {
                         </div>
                     </Col>
                     <Col xs={2}>
-                        {(customPrice || isAdmin) && <Field
+                        <Field
                             component={TextField}
                             label="Сумма за ед"
                             name="cost"
+                            disabled={isAdmin ? false : !customPrice}
                             className={classes.inputFieldCustom}
                             fullWidth={true}
                             normalize={normalizeNumber}
                             {..._.get(props, 'cost')}
-                        />}
+                        />
                     </Col>
                     <Col xs={1} style={{alignSelf: 'center'}}>
                         <IconButton

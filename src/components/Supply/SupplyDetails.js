@@ -248,7 +248,7 @@ const SupplyDetails = enhance((props) => {
     const dateDelivery = dateFormat(_.get(data, 'dateDelivery')) || 'Не указано'
     const acceptedTime = (_.get(data, 'acceptedTime')) ? dateTimeFormat(_.get(data, 'acceptedTime')) : 'Не началась'
     const finishedTime = (_.get(data, 'finishedTime')) ? dateTimeFormat(_.get(data, 'finishedTime')) : 'Не закончилась'
-    const contract = _.get(data, 'contract') || 'Не указана'
+    const contract = _.get(data, 'contract') || 'Не указано'
 
     const PENDING = 0
     const IN_PROGRESS = 1
@@ -507,7 +507,7 @@ SupplyDetails.propTypes = {
     tabData: PropTypes.shape({
         tab: PropTypes.string,
         handleTabChange: PropTypes.func
-    }),
+    }).isRequired,
     data: PropTypes.object.isRequired,
     returnData: PropTypes.array,
     loading: PropTypes.bool,
@@ -541,7 +541,7 @@ SupplyDetails.propTypes = {
         handleOpenUpdateDialog: PropTypes.func.isRequired,
         handleCloseUpdateDialog: PropTypes.func.isRequired,
         handleSubmitUpdateDialog: PropTypes.func.isRequired
-    }).isRequired
+    })
 }
 
 export default SupplyDetails
