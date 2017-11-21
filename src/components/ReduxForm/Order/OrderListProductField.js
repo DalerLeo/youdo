@@ -80,6 +80,7 @@ const enhance = compose(
             height: '40px !important',
             border: 'none !important',
             '& td:first-child': {
+                whiteSpace: 'normal !important',
                 width: '250px'
             },
             '& tr': {
