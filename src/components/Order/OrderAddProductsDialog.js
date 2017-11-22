@@ -296,6 +296,7 @@ const OrderAddProductsDialog = enhance((props) => {
         handleSubmitAddProductConfirm,
         isSuperUser,
         withoutCustomPrice,
+        withoutValidations,
         currency
     } = props
     const onSubmit = handleSubmit(props.onSubmit)
@@ -303,6 +304,7 @@ const OrderAddProductsDialog = enhance((props) => {
     const products = _.map(data, (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
+        const code = _.get(item, 'code')
         const balance = _.get(item, 'balance')
         const canChangePrice = (isSuperUser || withoutCustomPrice) || _.get(item, 'customPrice')
         const measurement = _.get(item, ['measurement', 'name'])
@@ -315,7 +317,8 @@ const OrderAddProductsDialog = enhance((props) => {
         }
         return (
             <Row key={id} className="dottedList">
-                <Col xs={6}>{name}</Col>
+                <Col xs={4}>{name}</Col>
+                <Col xs={2}>{code}</Col>
                 <Col xs={2}>{numberFormat(balance, measurement)}</Col>
                 <Col xs={2} className={classes.flex}>
                     <Field
@@ -332,7 +335,7 @@ const OrderAddProductsDialog = enhance((props) => {
                     <Field
                         name={'product[' + id + '][amount]'}
                         component={TextField}
-                        normalize={normalize}
+                        normalize={!withoutValidations && normalize}
                         className={classes.inputFieldCustom}
                         inputStyle={{textAlign: 'right'}}
                         fullWidth={true}/>
@@ -404,7 +407,8 @@ const OrderAddProductsDialog = enhance((props) => {
                         <form className={classes.productsList}>
                             {!_.isEmpty(products) &&
                             <Row className="dottedList">
-                                <Col xs={6}>Наименование</Col>
+                                <Col xs={4}>Наименование</Col>
+                                <Col xs={2}>Код</Col>
                                 <Col xs={2}>В наличии</Col>
                                 <Col xs={2} className={classes.rightAlign}>Цена</Col>
                                 <Col xs={2} className={classes.rightAlign}>Кол-во</Col>
@@ -430,7 +434,8 @@ const OrderAddProductsDialog = enhance((props) => {
     )
 })
 OrderAddProductsDialog.defaultProps = {
-    withoutCustomPrice: false
+    withoutCustomPrice: false,
+    withoutValidations: false
 }
 OrderAddProductsDialog.propTyeps = {
     products: PropTypes.array,

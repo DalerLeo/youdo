@@ -14,6 +14,7 @@ import Logo from '../Images/logo.svg'
 import CustomBadge from '../CustomBadge/CustomBadge'
 import ArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 import ArrowUp from 'material-ui/svg-icons/hardware/keyboard-arrow-up'
+import * as ROUTE from '../../constants/routes'
 
 const style = {
     style: {
@@ -162,7 +163,9 @@ const SideBarMenu = enhance((props) => {
             </div>
             : <div className={classes.items} ref="items">
                 <div className={classes.logo}>
-                    <div></div>
+                    <Link to={ROUTE.DASHBOARD_URL}>
+                        <div>{null}</div>
+                    </Link>
                 </div>
                 <div className={classes.notifications}>
                     <CustomBadge
@@ -283,7 +286,7 @@ export default injectSheet({
 
     logo: {
         padding: '20px 10px 30px',
-        '& > div': {
+        '& div': {
             background: 'url(' + Logo + ') no-repeat center center',
             backgroundSize: '100%',
             height: '66px'

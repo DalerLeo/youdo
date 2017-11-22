@@ -469,10 +469,9 @@ const enhance = compose(
         },
 
         handleCloseAddProductConfirm: props => () => {
-            const {dispatch, createForm, addProductsForm, filterProducts, setOpenAddProductConfirm} = props
-            const priceList = _.get(createForm, ['values', 'priceList', 'value'])
+            const {dispatch, addProductsForm, filterProducts, setOpenAddProductConfirm} = props
             const productType = _.get(addProductsForm, ['values', 'productType', 'value'])
-            dispatch(addProductsListAction(priceList, filterProducts, productType))
+            dispatch(addProductsListAction(filterProducts, productType))
             setOpenAddProductConfirm(false)
         },
 
