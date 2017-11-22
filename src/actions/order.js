@@ -237,8 +237,9 @@ export const orderProductMobileAction = (orderId, priceList, size, products) => 
 }
 
 export const orderChangePriceListAction = (orderId, priceList, size, products) => {
+    const params = serializers.priceListFilterSerializer(orderId, priceList, size, products)
     const payload = axios()
-        .get(API.PRODUCT_MOBILE_URL, {'params': {'order': orderId, 'price_list': priceList, 'page_size': size, 'ids': products}})
+        .get(API.PRODUCT_MOBILE_URL, {params})
         .then((response) => {
             return _.get(response, 'data')
         })

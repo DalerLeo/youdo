@@ -283,10 +283,12 @@ const enhance = compose(
                     return index === indx
                 })
                 item.price = {
-                    cashPrice: _.get(prices, 'cashPrice'),
-                    transferPrice: _.get(prices, 'transferPrice')
+                    cashPrice: _.get(prices, 'netCost') ? _.toNumber(_.get(prices, 'netCost')) : _.get(prices, 'cashPrice'),
+                    transferPrice: _.get(prices, 'netCost') ? _.toNumber(_.get(prices, 'netCost')) : _.get(prices, 'transferPrice')
                 }
-                item.cost = (paymentType === 'bank') ? _.get(prices, ['transferPrice']) : _.get(prices, ['cashPrice'])
+                item.cost = _.get(prices, 'netCost')
+                    ? _.toNumber(_.get(prices, 'netCost'))
+                    : (paymentType === 'bank') ? _.get(prices, ['transferPrice']) : _.get(prices, ['cashPrice'])
             })
             let newArray = []
             _.map(products, (obj) => {

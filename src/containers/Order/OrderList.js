@@ -248,7 +248,7 @@ const enhance = compose(
         const products = _.join(_.map(_.get(createForm, ['values', 'products']), (item) => {
             return _.get(item, ['product', 'value', 'id'])
         }), '-')
-        if (priceList > ZERO && products) {
+        if ((priceList > ZERO || priceList === MINUS_ONE) && products) {
             const size = 100
             dispatch(orderChangePriceListAction(null, priceList, size, products))
         }
