@@ -16,7 +16,7 @@ export const createSerializer = (data, detail) => {
         const supplyProduct = _.get(item, 'id')
         return {
             'amount': numberWithoutSpaces(_.get(data, ['product', index, 'accepted'])),
-            'defect_amount': _.get(data, ['product', index, 'defected']),
+            'defect_amount': _.get(data, ['product', index, 'defected']) || ZERO,
             'supply_product': supplyProduct
         }
     })

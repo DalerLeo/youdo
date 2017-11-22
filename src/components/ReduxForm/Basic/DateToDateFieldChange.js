@@ -74,7 +74,7 @@ const range = {
             return now
         }
     },
-    'Прев. месяц': {
+    'Пред. месяц': {
         startDate: (now) => {
             return now.add((TODAY + DAY_OF_LAST_MONTH) * MINUS_ONE, 'day')
         },
