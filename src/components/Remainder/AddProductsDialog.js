@@ -16,13 +16,11 @@ import Paper from 'material-ui/Paper'
 import SearchIcon from 'material-ui/svg-icons/action/search'
 import NotFound from '../Images/not-found.png'
 import numberFormat from '../../helpers/numberFormat'
-import getConfig from '../../helpers/getConfig'
 import {
     TextField,
-    ProductTypeSearchField,
-    normalizeNumber
+    ProductTypeSearchField
 } from '../ReduxForm'
-import {connect} from 'react-redux'
+import RemainderStatusSearchField from '../../components/ReduxForm/Remainder/RemainderStatusSearchField'
 
 const enhance = compose(
     injectSheet({
@@ -241,14 +239,8 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'OrderAddProductsForm',
+        form: 'RemainderAddProductsForm',
         enableReinitialize: true
-    }),
-    connect((state) => {
-        const currency = _.get(state, ['form', 'SupplyCreateForm', 'values', 'currency', 'text'])
-        return {
-            currency
-        }
     }),
     withState('pdSearch', 'setSearch', ({filter}) => filter.getParam('pdSearch')),
     withHandlers({
@@ -280,7 +272,7 @@ const flatButtonStyle = {
     }
 }
 
-const OrderAddProductsDialog = enhance((props) => {
+const AddProductsDialog = enhance((props) => {
     const {
         open,
         data,
@@ -294,19 +286,14 @@ const OrderAddProductsDialog = enhance((props) => {
         openAddProductConfirm,
         handleCloseAddProductConfirm,
         handleSubmitAddProductConfirm,
-        isSuperUser,
-        withoutCustomPrice,
-        withoutValidations,
-        currency
+        withoutValidations
     } = props
     const onSubmit = handleSubmit(props.onSubmit)
-    const primaryCurrency = currency || getConfig('PRIMARY_CURRENCY')
     const products = _.map(data, (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const code = _.get(item, 'code')
         const balance = _.get(item, 'balance')
-        const canChangePrice = (isSuperUser || withoutCustomPrice) || _.get(item, 'customPrice')
         const measurement = _.get(item, ['measurement', 'name'])
         const normalize = value => {
             if (!value) {
@@ -322,17 +309,6 @@ const OrderAddProductsDialog = enhance((props) => {
                 <Col xs={2}>{numberFormat(balance, measurement)}</Col>
                 <Col xs={2} className={classes.flex}>
                     <Field
-                        name={'product[' + id + '][price]'}
-                        component={TextField}
-                        className={classes.inputFieldCustom}
-                        inputStyle={{textAlign: 'right'}}
-                        normalize={normalizeNumber}
-                        disabled={!canChangePrice}
-                        fullWidth={true}/>
-                    <span>{primaryCurrency}</span>
-                </Col>
-                <Col xs={2} className={classes.flex}>
-                    <Field
                         name={'product[' + id + '][amount]'}
                         component={TextField}
                         normalize={!withoutValidations && normalize}
@@ -340,6 +316,15 @@ const OrderAddProductsDialog = enhance((props) => {
                         inputStyle={{textAlign: 'right'}}
                         fullWidth={true}/>
                     <span>{measurement}</span>
+                </Col>
+                <Col xs={2}>
+                    <Field
+                        label="Статус"
+                        name={'product[' + id + '][isDefect]'}
+                        className={classes.inputFieldCustom}
+                        fullWidth={true}
+                        component={RemainderStatusSearchField}
+                    />
                 </Col>
             </Row>
         )
@@ -411,7 +396,7 @@ const OrderAddProductsDialog = enhance((props) => {
                                 <Col xs={2}>Код</Col>
                                 <Col xs={2}>В наличии</Col>
                                 <Col xs={2} className={classes.rightAlign}>Цена</Col>
-                                <Col xs={2} className={classes.rightAlign}>Кол-во</Col>
+                                <Col xs={2} className={classes.rightAlign}>Статус</Col>
                             </Row>}
                             {!_.isEmpty(products)
                                 ? products
@@ -433,15 +418,15 @@ const OrderAddProductsDialog = enhance((props) => {
         </div>
     )
 })
-OrderAddProductsDialog.defaultProps = {
+AddProductsDialog.defaultProps = {
     withoutCustomPrice: false,
     withoutValidations: false
 }
-OrderAddProductsDialog.propTyeps = {
+AddProductsDialog.propTyeps = {
     products: PropTypes.array,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired
 }
-export default OrderAddProductsDialog
+export default AddProductsDialog

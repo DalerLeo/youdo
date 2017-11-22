@@ -88,3 +88,26 @@ export const remainderDiscardAction = (formValues) => {
         payload
     }
 }
+
+export const addProductsListAction = (filter, productType) => {
+    const params = {
+        page_size: _.get(filter.getParams(), 'pdPageSize'),
+        page: _.get(filter.getParams(), 'pdPage'),
+        search: _.get(filter.getParams(), 'pdSearch'),
+        type: productType
+    }
+    const payload = axios()
+        .get(API.PRODUCT_MOBILE_URL, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.PRODUCT_MOBILE,
+        payload
+    }
+}
+

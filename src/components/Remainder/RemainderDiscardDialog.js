@@ -175,7 +175,7 @@ const enhance = compose(
 )
 
 const RemainderDiscardDialog = enhance((props) => {
-    const {open, handleSubmit, onClose, classes} = props
+    const {open, handleSubmit, onClose, classes, handleOpenAddProduct} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
     const iconStyle = {
@@ -231,6 +231,14 @@ const RemainderDiscardDialog = enhance((props) => {
                             fullWidth={true}/>
                     </div>
                     <div className={classes.rightSide}>
+                        <div style={{textAlign: 'right'}}>
+                            <FlatButton
+                                label="добавить товары"
+                                style={{color: '#12aaeb'}}
+                                labelStyle={{fontSize: '13px'}}
+                                className={classes.span}
+                                onTouchTap={() => { handleOpenAddProduct('discard') }}/>
+                        </div>
                         <Fields
                             names={['products', 'productType', 'product', 'isDefect', 'amount', 'editIsDefect', 'editAmount']}
                             component={RemainderListProductField}

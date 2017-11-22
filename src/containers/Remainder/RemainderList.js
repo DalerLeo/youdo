@@ -2,15 +2,16 @@ import React from 'react'
 import _ from 'lodash'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
+import {reset, change} from 'redux-form'
 import Layout from '../../components/Layout'
-import {compose, withPropsOnChange, withHandlers} from 'recompose'
+import {compose, withPropsOnChange, withHandlers, withState} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import sprintf from 'sprintf'
-import {reset} from 'redux-form'
 import {openSnackbarAction} from '../../actions/snackbar'
 import {openErrorAction} from '../../actions/error'
+import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
 import {
     RemainderGridList,
     REMAINDER_TRANSFER_DIALOG_OPEN,
@@ -24,9 +25,11 @@ import {
     remainderItemFetchAction,
     remainderTransferAction,
     remainderDiscardAction,
-    remainderReversedListFetchAction
+    remainderReversedListFetchAction,
+    addProductsListAction
 } from '../../actions/remainder'
 
+const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -41,6 +44,10 @@ const enhance = compose(
         const searchForm = _.get(state, ['form', 'RemainderSearchForm'])
         const transferForm = _.get(state, ['form', 'RemainderTransferForm'])
         const discardForm = _.get(state, ['form', 'RemainderDiscardForm'])
+        const addProducts = _.get(state, ['order', 'updateProducts', 'data'])
+        const addProductsLoading = _.get(state, ['order', 'updateProducts', 'loading'])
+        const addProductsForm = _.get(state, ['form', 'RemainderAddProductsForm'])
+        const filterProducts = filterHelper(addProducts, pathname, query, {'page': 'pdPage', 'pageSize': 'pdPageSize'})
         const filter = filterHelper(list, pathname, query)
         const filterItem = filterHelper(detail, pathname, query, {'page': 'dPage', 'pageSize': 'dPageSize'})
         const dialogFilter = filterHelper(reserved, pathname, query, {'page': 'dPage', 'pageSize': 'dPageSize'})
@@ -58,9 +65,15 @@ const enhance = compose(
             filterItem,
             reserved,
             reservedLoading,
-            dialogFilter
+            dialogFilter,
+            filterProducts,
+            addProducts,
+            addProductsLoading,
+            addProductsForm
         }
     }),
+    withState('openAddProductDialog', 'setOpenAddProductDialog', false),
+    withState('openAddProductConfirm', 'setOpenAddProductConfirm', false),
     withPropsOnChange((props, nextProps) => {
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
@@ -82,6 +95,50 @@ const enhance = compose(
         const dialog = _.get(location, ['query', REMAINDER_RESERVED_DIALOG_OPEN])
         if (dialog !== 'false') {
             dispatch(remainderReversedListFetchAction(dialog))
+        }
+    }),
+    withPropsOnChange((props, nextProps) => {
+        const except = {
+            page: null,
+            pageSize: null,
+            contract: null,
+            createdFromDate: null,
+            createdToDate: null,
+            deliveryFromDate: null,
+            deliveryToDate: null,
+            paymentType: null,
+            openCreateDialog: null,
+            openFilterDialog: null,
+            product: null,
+            provider: null,
+            status: null,
+            stock: null
+        }
+        const productType = _.get(props, ['addProductsForm', 'values', 'productType', 'value'])
+        const productTypeNext = _.get(nextProps, ['addProductsForm', 'values', 'productType', 'value'])
+        return ((props.filterProducts.filterRequest(except) !== nextProps.filterProducts.filterRequest(except)) ||
+            (productType !== productTypeNext && nextProps.openAddProductDialog)) && !(props.openAddProductDialog !== nextProps.openAddProductDialog && nextProps.openAddProductDialog)
+    }, ({setOpenAddProductConfirm, addProductsForm, openAddProductDialog, dispatch, filterProducts}) => {
+        const products = _.filter(_.get(addProductsForm, ['values', 'product']), (item) => {
+            const amount = _.toNumber(_.get(item, 'amount'))
+            const isDefect = _.toNumber(_.get(item, 'isDefect'))
+            return amount > ZERO && isDefect
+        })
+        const productType = _.get(addProductsForm, ['values', 'productType', 'value'])
+        if (!_.isEmpty(products)) {
+            setOpenAddProductConfirm(true)
+        } else if (openAddProductDialog && _.isEmpty(products)) {
+            setOpenAddProductConfirm(false)
+            dispatch(addProductsListAction(filterProducts, productType))
+        }
+    }),
+    withPropsOnChange((props, nextProps) => {
+        return props.openAddProductDialog !== nextProps.openAddProductDialog && nextProps.openAddProductDialog
+    }, ({dispatch, addProductsForm, openAddProductDialog, filterProducts, setOpenAddProductConfirm}) => {
+        const productType = _.get(addProductsForm, ['values', 'productType', 'value'])
+        if (openAddProductDialog) {
+            setOpenAddProductConfirm(false)
+            dispatch(addProductsListAction(filterProducts, productType))
         }
     }),
     withHandlers({
@@ -191,6 +248,117 @@ const enhance = compose(
         handleOpenDetail: props => (id) => {
             const {filter} = props
             hashHistory.push({pathname: sprintf(ROUTER.REMAINDER_ITEM_PATH, id), query: filter.getParams()})
+        },
+        handleOpenAddProduct: props => (type) => {
+            const {setOpenAddProductDialog, filter, location: {pathname}} = props
+            hashHistory.push({pathname, query: filter.getParams({'pdPageSize': 25, 'dialogType': type})})
+            setOpenAddProductDialog(true)
+        },
+
+        handleCloseAddProduct: props => () => {
+            const {setOpenAddProductDialog, filter, location: {pathname}} = props
+            hashHistory.push({pathname, query: filter.getParams({'pdPage': null, 'pdPageSize': null, 'pdSearch': null})})
+            setOpenAddProductDialog(false)
+        },
+
+        handleSubmitAddProduct: props => () => {
+            const {setOpenAddProductDialog, addProductsForm, addProducts, dispatch, transferForm, discardForm, filter, location: {pathname}} = props
+            const dialog = _.get(props, ['location', 'query', 'dialogType'])
+            const productsDiscart = _.get(discardForm, ['values', 'products'])
+            const productsTransfer = _.get(transferForm, ['values', 'products'])
+            const existingProducts = dialog === 'discard' ? productsDiscart : productsTransfer
+            const values = _.get(addProductsForm, ['values', 'product'])
+            const getProductData = (id) => {
+                return _.find(_.get(addProducts, 'results'), {'id': id})
+            }
+            const newProductsArray = []
+            _.map(values, (item, index) => {
+                const id = _.toInteger(index)
+                const product = getProductData(id)
+                const amount = _.get(item, 'amount')
+                const isDefect = _.get(item, 'isDefect')
+                if (amount && isDefect) {
+                    newProductsArray.push({
+                        amount: _.get(item, 'amount'),
+                        isDefect: _.get(item, 'isDefect'),
+                        customPrice: _.get(product, 'customPrice'),
+                        product: {
+                            id: id,
+                            value: {
+                                id: _.get(product, 'id'),
+                                name: _.get(product, 'name'),
+                                balance: _.get(product, 'balance'),
+                                measurement: {
+                                    id: _.get(product, ['measurement', 'id']),
+                                    name: _.get(product, ['measurement', 'name'])
+                                }
+                            },
+                            text: _.get(product, 'name')
+                        }
+                    })
+                }
+            })
+            const checkDifference = _.differenceBy(existingProducts, newProductsArray, (o) => {
+                return o.product.value.id
+            })
+            if (dialog === 'discard') {
+                dispatch(change('RemainderDiscardForm', 'products', _.concat(newProductsArray, checkDifference)))
+            } else {
+                dispatch(change('RemainderTransferForm', 'products', _.concat(newProductsArray, checkDifference)))
+            }
+
+            hashHistory.push({pathname, query: filter.getParams({'pdPage': null, 'pdPageSize': null, 'pdSearch': null})})
+            setOpenAddProductDialog(false)
+        },
+        handleCloseAddProductConfirm: props => () => {
+            const {dispatch, addProductsForm, filterProducts, setOpenAddProductConfirm} = props
+            const productType = _.get(addProductsForm, ['values', 'productType', 'value'])
+            dispatch(addProductsListAction(filterProducts, productType))
+            setOpenAddProductConfirm(false)
+        },
+
+        handleSubmitAddProductConfirm: props => () => {
+            const {addProductsForm, addProducts, dispatch, createForm, filterProducts, setOpenAddProductConfirm} = props
+            const productType = _.get(addProductsForm, ['values', 'productType', 'value'])
+            const existingProducts = _.get(createForm, ['values', 'products']) || []
+            const values = _.get(addProductsForm, ['values', 'product'])
+            const getProductData = (id) => {
+                return _.find(_.get(addProducts, 'results'), {'id': id})
+            }
+            const newProductsArray = []
+            _.map(values, (item, index) => {
+                const id = _.toInteger(index)
+                const product = getProductData(id)
+                const amount = _.get(item, 'amount')
+                const price = _.get(item, 'price')
+                if (amount && price) {
+                    newProductsArray.push({
+                        amount: _.get(item, 'amount'),
+                        cost: numberWithoutSpaces(_.get(item, 'price')),
+                        customPrice: _.get(product, 'customPrice'),
+                        price: _.get(item, 'price'),
+                        product: {
+                            id: id,
+                            value: {
+                                id: _.get(product, 'id'),
+                                name: _.get(product, 'name'),
+                                balance: _.get(product, 'balance'),
+                                measurement: {
+                                    id: _.get(product, ['measurement', 'id']),
+                                    name: _.get(product, ['measurement', 'name'])
+                                }
+                            },
+                            text: _.get(product, 'name')
+                        }
+                    })
+                }
+            })
+            const checkDifference = _.differenceBy(existingProducts, newProductsArray, (o) => {
+                return o.product.value.id
+            })
+            dispatch(change('SupplyCreateForm', 'products', _.concat(newProductsArray, checkDifference)))
+            dispatch(addProductsListAction(filterProducts, productType))
+            setOpenAddProductConfirm(false)
         }
     })
 )
@@ -208,7 +376,12 @@ const RemainderList = enhance((props) => {
         filterItem,
         reserved,
         reservedLoading,
-        dialogFilter
+        dialogFilter,
+        filterProducts,
+        openAddProductDialog,
+        addProducts,
+        addProductsLoading,
+        openAddProductConfirm
     } = props
 
     const stock = _.toInteger(filter.getParam(REMAINDER_FILTER_KEY.STOCK))
@@ -278,6 +451,18 @@ const RemainderList = enhance((props) => {
         detailLoading,
         currentRow
     }
+    const addProductDialog = {
+        openAddProductDialog,
+        filter: filterProducts,
+        data: _.get(addProducts, 'results'),
+        loading: addProductsLoading,
+        handleOpenAddProduct: props.handleOpenAddProduct,
+        handleCloseAddProduct: props.handleCloseAddProduct,
+        handleSubmitAddProduct: props.handleSubmitAddProduct,
+        openAddProductConfirm,
+        handleCloseAddProductConfirm: props.handleCloseAddProductConfirm,
+        handleSubmitAddProductConfirm: props.handleSubmitAddProductConfirm
+    }
 
     return (
         <Layout {...layout}>
@@ -294,6 +479,7 @@ const RemainderList = enhance((props) => {
                 searchSubmit={props.handleSubmitSearch}
                 filterItem={filterItem}
                 reservedDialog={reservedDialog}
+                addProductDialog={addProductDialog}
             />
         </Layout>
     )

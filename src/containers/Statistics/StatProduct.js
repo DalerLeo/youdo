@@ -38,7 +38,8 @@ const enhance = compose(
             filterItem,
             filterForm,
             searchForm,
-            pathname
+            pathname,
+            query
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -92,7 +93,8 @@ const StatProductList = enhance((props) => {
         filter,
         layout,
         location,
-        params
+        params,
+        query
     } = props
     const detailId = _.toInteger(_.get(params, 'statProductId'))
     const firstDayOfMonth = _.get(location, ['query', 'fromDate']) || moment().format('YYYY-MM-01')
@@ -144,6 +146,7 @@ const StatProductList = enhance((props) => {
                 initialValues={filterForm.initialValues}
                 searchSubmit={props.handleSubmitSearch}
                 pathname={_.get(location, 'pathname')}
+                query={query}
             />
         </Layout>
     )
