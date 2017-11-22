@@ -227,7 +227,7 @@ export const STATSTOCK_DELETE = `/${STATSTOCK}/%d/`
 export const STATSTOCK_DATA = '/stock/stock_stat/'
 export const STATSTOCK_GET_DOCUMENT = 'stock/stock/export_balances/'
 
-export const REMAINDER_STOCK = 'stock/stock'
+export const REMAINDER_STOCK = 'stock'
 export const REMAINDER_STOCK_CREATE = `/${REMAINDER_STOCK}/all_balances/`
 export const REMAINDER_STOCK_LIST = `/${REMAINDER_STOCK}/all_balances/`
 export const REMAINDER_STOCK_ITEM = `/${REMAINDER_STOCK}/all_balances/balances/%d`
@@ -319,7 +319,7 @@ export const MARKETS_LOCATION = `${SHOP}/locations/`
 export const LOCATION_LIST = 'market/location/'
 
 export const REMAINDER = 'stock/stock'
-export const REMAINDER_LIST = `/${REMAINDER}/all_balances/`
+export const REMAINDER_LIST = `/${REMAINDER_STOCK}/all_balances/`
 export const REMAINDER_ITEM = `/${REMAINDER}/balances_by_product/%d/`
 export const REMAINDER_TRANSFER = '/stock/stock_transfer/wb_create/'
 export const REMAINDER_DISCARD = '/stock/writeoff/'
@@ -358,10 +358,10 @@ export const STAT_RETURN_GET_DOCUMENT = '/sales/order_return/excel/'
 export const STAT_OUTCOME_CATEGORY_LIST = 'stats/expenses/'
 export const STAT_OUTCOME_CATEGORY_ITEM = 'sales/order/'
 export const STAT_OUTCOME_CATEGORY_GET_DOCUMENT = 'stats/agents/export/'
-export const STAT_REMAINDER_LIST = `/${REMAINDER}/all_balances/`
+export const STAT_REMAINDER_LIST = `/${REMAINDER_STOCK}/all_balances/`
 export const STAT_REMAINDER_ITEM = `/${REMAINDER}/balances_by_product/%d/`
 export const STAT_REMAINDER_SUM = '/stats/stock/balances_sum/'
-export const STAT_REMAINDER_GET_DOCUMENT = '/stock/stock/to_excel/'
+export const STAT_REMAINDER_GET_DOCUMENT = `/${REMAINDER_STOCK}/all_balances_export/`
 export const STATISTICS_CASHBOX_LIST = `/${CASHBOX}/`
 export const STATISTICS_CASHBOX_ITEM = `/${CASHBOX}/%d/`
 
