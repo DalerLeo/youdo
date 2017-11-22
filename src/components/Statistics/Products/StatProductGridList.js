@@ -6,7 +6,7 @@ import {Row} from 'react-flexbox-grid'
 import * as ROUTES from '../../../constants/routes'
 import Container from '../../Container/index'
 import Loader from '../../Loader'
-import {compose, lifecycle} from 'recompose'
+import {compose, lifecycle, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import StatSideMenu from '../StatSideMenu'
 import Pagination from '../../GridList/GridListNavPagination/index'
@@ -37,14 +37,12 @@ const enhance = compose(
         loader: {
             position: 'absolute',
             top: '0',
-            left: '0',
+            left: '-30px',
+            right: '-30px',
             bottom: '0',
-            width: '100%',
             padding: '100px 0',
             background: '#fff',
-            alignItems: 'center',
-            zIndex: '999',
-            justifyContent: 'center'
+            zIndex: '999'
         },
         mainWrapper: {
             background: '#fff',
@@ -236,6 +234,7 @@ const enhance = compose(
         form: 'StatProductForm',
         enableReinitialize: true
     }),
+    withState('currentRow', 'updateRow', null),
     connect((state) => {
         const typeParent = _.get(state, ['form', 'StatisticsFilterForm', 'values', 'productType', 'value'])
         return {
@@ -306,7 +305,9 @@ const StatProductGridList = enhance((props) => {
         filterForm,
         handleSubmit,
         searchSubmit,
-        pathname
+        pathname,
+        currentRow,
+        updateRow
     } = props
 
     const iconStyle = {
@@ -322,13 +323,22 @@ const StatProductGridList = enhance((props) => {
             padding: 9
         }
     }
+    const styleOnHover = {
+        background: '#efefef'
+    }
     const listLoading = _.get(listData, 'listLoading')
     const currency = getConfig('PRIMARY_CURRENCY')
     const tableLeft = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name') || 'No'
         return (
-            <div key={id}><span>{name}</span></div>
+            <div
+                key={id}
+                style={id === currentRow ? styleOnHover : {}}
+                onMouseEnter={() => { updateRow(id) }}
+                onMouseLeave={() => { updateRow(null) }}>
+                <span>{name}</span>
+            </div>
         )
     })
     const tableList = _.map(_.get(listData, 'data'), (item) => {
@@ -343,7 +353,12 @@ const StatProductGridList = enhance((props) => {
         const salesCount = numberFormat(_.get(item, 'salesCount'), measurement)
 
         return (
-            <tr key={id} className={classes.tableRow}>
+            <tr
+                key={id}
+                className={classes.tableRow}
+                style={id === currentRow ? styleOnHover : {}}
+                onMouseEnter={() => { updateRow(id) }}
+                onMouseLeave={() => { updateRow(null) }}>
                 <td>{type}</td>
 
                 <td>{salesCount}</td>

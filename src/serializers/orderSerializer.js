@@ -41,7 +41,8 @@ export const createSerializer = (data) => {
             market,
             user,
             products,
-            'price_list': priceList
+            'price_list': priceList === MINUS_ONE ? null : priceList,
+            'with_net_cost': priceList === MINUS_ONE ? ONE : false
         }
     }
     return {
@@ -55,7 +56,8 @@ export const createSerializer = (data) => {
         market,
         user,
         products,
-        'price_list': priceList
+        'price_list': priceList === MINUS_ONE ? null : priceList,
+        'with_net_cost': priceList === MINUS_ONE ? ONE : false
     }
 }
 
