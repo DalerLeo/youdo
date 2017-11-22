@@ -7,28 +7,19 @@ import injectSheet from 'react-jss'
 import PropTypes from 'prop-types'
 import {DateRange} from 'react-date-range-ru'
 import {Popover, FlatButton} from 'material-ui'
+import Close from 'material-ui/svg-icons/navigation/close'
+import Check from 'material-ui/svg-icons/navigation/check'
 import dateFormat from '../../../helpers/dateFormat'
 import MUITextField from 'material-ui/TextField'
 import moment from 'moment'
+import Tooltip from '../../ToolTip/ToolTip'
 
 const MINUS_ONE = -1
 const MINUS_SEVEN = -7
 const MINUS_THIRTY = -30
 const x = new Date()
 const TODAY = x.getDate()
-const MONTH = x.getMonth()
-const ZERO = 0
 const ONE = 1
-const TWO = 2
-const FOUR = 4
-const SIX = 6
-const SEVEN = 7
-const NINE = 9
-const ELEVEN = 11
-const THIRTY = 30
-const THIRTY_ONE = 31
-const DAY_OF_LAST_MONTH = (MONTH === ZERO || MONTH === TWO || MONTH === FOUR || MONTH === SIX || MONTH === SEVEN || MONTH === NINE || MONTH === ELEVEN)
-    ? THIRTY_ONE : THIRTY
 const range = {
     'Сегодня': {
         startDate: (now) => {
@@ -72,14 +63,6 @@ const range = {
         endDate: (now) => {
             return now
         }
-    },
-    'Прев. месяц': {
-        startDate: (now) => {
-            return now.add((TODAY + DAY_OF_LAST_MONTH) * MINUS_ONE, 'day')
-        },
-        endDate: (now) => {
-            return now.add(TODAY * MINUS_ONE, 'day')
-        }
     }
 }
 
@@ -90,6 +73,7 @@ class DateToDateField extends React.Component {
         this.state = {
             starting: false
         }
+        this.handleOnRequestClose = this.handleOnRequestClose.bind(this)
     }
 
     handleOnTouchTap = (event) => {
@@ -132,13 +116,21 @@ class DateToDateField extends React.Component {
                         open={open}
                         anchorEl={anchorEl}
                         onRequestClose={this.handleOnRequestClose}>
-                        <div
-                            className={classes.clear}
-                            onClick={() => { input.onChange({startDate: undefined, endDate: undefined}) }}>
-                            <FlatButton
-                                label="Очистить"
-                                labelStyle={{fontSize: '13px'}}
-                            />
+                        <div className={classes.clear}>
+                            <Tooltip position="top" text="Очистить">
+                                <FlatButton
+                                    disableTouchRipple={true}
+                                    onClick={() => { input.onChange({startDate: undefined, endDate: undefined}) }}>
+                                    <Close color="#fff"/>
+                                </FlatButton>
+                            </Tooltip>
+                            <Tooltip position="top" text="Применить">
+                                <FlatButton
+                                    disableTouchRipple={true}
+                                    onClick={() => { this.handleOnRequestClose() }}>
+                                    <Check color="#fff"/>
+                                </FlatButton>
+                            </Tooltip>
                         </div>
                         <DateRange
                             startDate={_.get(input, ['value', 'fromDate']) || moment()}
@@ -149,7 +141,7 @@ class DateToDateField extends React.Component {
                                 input.onChange({fromDate: which.startDate, toDate: which.endDate})
                             }}
                             theme={{
-                                Calendar: {width: 350},
+                                Calendar: {width: 300},
                                 PredefinedRangesItemActive: {
                                     background: '#98a1b7',
                                     color: '#fff'
@@ -239,6 +231,34 @@ export default injectSheet({
         }
     },
     clear: {
+        position: 'absolute',
+        bottom: '0',
+        display: 'flex',
+        justifyContent: 'space-between',
+        borderRadius: '3px',
+        margin: '10px',
+        width: '140px',
+        '& > div': {
+            width: '100%'
+        },
+        '& button': {
+            margin: '0 5px!important',
+            width: '100%',
+            background: '#5d6474 !important',
+            minWidth: 'unset !important',
+            lineHeight: '0 !important',
+            height: '26px !important',
+            '& svg': {
+                width: '18px !important',
+                height: '18px !important'
+            },
+            '& span': {
+                textTransform: 'none !important',
+                color: '#fff !important'
+            }
+        }
+    },
+    submit: {
         position: 'absolute',
         bottom: '0',
         backgroundColor: '#5d6474',

@@ -1,72 +1,67 @@
+import _ from 'lodash'
 import React from 'react'
-import injectSheet from 'react-jss'
-import {compose} from 'recompose'
-import ChoosMenu from '../../components/Images/choose-menu.png'
+import {compose, withPropsOnChange} from 'recompose'
 import Layout from '../../components/Layout'
+import DashboardWrapper from '../../components/Dashboard'
+import {connect} from 'react-redux'
+import filterHelper from '../../helpers/filter'
+import moment from 'moment'
+import {
+    statSalesDataFetchAction
+} from '../../actions/dashboard'
 
 const enhance = compose(
-    injectSheet({
-        wrapper: {
-            background: '#fdfdfd',
-            height: 'calc(100% + 28px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            margin: '0 -28px -28px',
-            userSelect: 'none'
-        },
-        item: {
-            padding: '135px 100px',
-            background: '#fff',
-            border: '1px #efefef solid',
-            display: 'flex',
-            alignItems: 'center'
-        },
-        image: {
-            background: 'url(' + ChoosMenu + ') no-repeat center center',
-            width: '200px',
-            height: '200px',
-            marginRight: '60px'
-        },
-        text: {
-            color: '#666',
-            '& h1': {
-                fontSize: '48px',
-                lineHeight: '1',
-                fontWeight: '600',
-                marginBottom: '30px',
-                '& span': {
-                    display: 'block',
-                    fontSize: '25px !important'
-                }
-            },
-            '& p': {
-                fontSize: '14px',
-                margin: '5px 0',
-                fontWeight: '600',
-                '& a': {
-                    fontWeight: '600'
-                }
-            }
+    connect((state, props) => {
+        const query = _.get(props, ['location', 'query'])
+        const pathname = _.get(props, ['location', 'pathname'])
+        const graphList = _.get(state, ['statSales', 'data', 'data'])
+        const graphLoading = _.get(state, ['statSales', 'data', 'loading'])
+        const filter = filterHelper(graphList, pathname, query)
+        return {
+            graphList,
+            graphLoading,
+            filter
         }
-    })
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        return props.graphList && props.filter.filterRequest() !== nextProps.filter.filterRequest()
+    }, ({dispatch, filter}) => {
+        dispatch(statSalesDataFetchAction(filter))
+    }),
 )
 
 const MainList = enhance((props) => {
-    const {classes, layout} = props
+    const {
+        layout,
+        location,
+        graphList,
+        graphLoading,
+        filter
+    } = props
+
+    const beginDate = _.get(location, ['query', 'beginDate']) || moment().format('YYYY-MM-DD')
+    const endDate = _.get(location, ['query', 'endDate']) || moment().format('YYYY-MM-DD')
+
+    const orderChart = {
+        data: graphList,
+        loading: graphLoading
+    }
+
+    const dateInitialValues = {
+        dateRange: {
+            startDate: moment(beginDate),
+            endDate: moment(endDate)
+        }
+    }
+
     return (
         <Layout {...layout}>
-            <div className={classes.wrapper}>
-                <div className={classes.item}>
-                    <div className={classes.image}>
-                    </div>
-
-                    <div className={classes.text}>
-                        <h1>Добро пожаловать!</h1>
-                        <p>Для работы с системой выберите пункт меню</p>
-                    </div>
-                </div>
-            </div>
+            <DashboardWrapper
+                filter={filter}
+                orderChart={orderChart}
+                dateInitialValues={dateInitialValues}
+            />
         </Layout>
     )
 })

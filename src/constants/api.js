@@ -358,10 +358,10 @@ export const STAT_RETURN_GET_DOCUMENT = '/sales/order_return/excel/'
 export const STAT_OUTCOME_CATEGORY_LIST = 'stats/expenses/'
 export const STAT_OUTCOME_CATEGORY_ITEM = 'sales/order/'
 export const STAT_OUTCOME_CATEGORY_GET_DOCUMENT = 'stats/agents/export/'
-export const STAT_REMAINDER_LIST = `/${REMAINDER}/all_balances/`
+export const STAT_REMAINDER_LIST = `/${REMAINDER_STOCK}/all_balances/`
 export const STAT_REMAINDER_ITEM = `/${REMAINDER}/balances_by_product/%d/`
 export const STAT_REMAINDER_SUM = '/stats/stock/balances_sum/'
-export const STAT_REMAINDER_GET_DOCUMENT = '/stock/to_excel/'
+export const STAT_REMAINDER_GET_DOCUMENT = `/${REMAINDER_STOCK}/all_balances_export/`
 export const STATISTICS_CASHBOX_LIST = `/${CASHBOX}/`
 export const STATISTICS_CASHBOX_ITEM = `/${CASHBOX}/%d/`
 

@@ -74,7 +74,7 @@ const range = {
             return now
         }
     },
-    'Прев. месяц': {
+    'Пред. месяц': {
         startDate: (now) => {
             return now.add((TODAY + DAY_OF_LAST_MONTH) * MINUS_ONE, 'day')
         },
@@ -246,6 +246,21 @@ export default injectSheet({
     clear: {
         position: 'absolute',
         bottom: '0',
+        backgroundColor: '#5d6474',
+        borderRadius: '3px',
+        margin: '10px',
+        width: '140px',
+        '& button': {
+            width: '100%',
+            '& span': {
+                textTransform: 'none !important',
+                color: '#fff !important'
+            }
+        }
+    },
+    submit: {
+        position: 'absolute',
+        bottom: '45px',
         backgroundColor: '#5d6474',
         borderRadius: '3px',
         margin: '10px',

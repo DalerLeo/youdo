@@ -334,7 +334,7 @@ const SupplyCreateDialog = enhance((props) => {
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
-                            label="Оформить заказ"
+                            label="Сохранить"
                             className={classes.actionButton}
                             primary={true}
                             type="submit"

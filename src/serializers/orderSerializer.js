@@ -6,6 +6,7 @@ import numberWithoutSpaces from '../helpers/numberWithoutSpaces'
 const ZERO = 0
 const ONE = 1
 const TWO = 2
+const MINUS_ONE = -1
 
 export const createSerializer = (data) => {
     const client = _.get(data, ['client', 'value'])
@@ -40,7 +41,8 @@ export const createSerializer = (data) => {
             market,
             user,
             products,
-            'price_list': priceList
+            'price_list': priceList === MINUS_ONE ? null : priceList,
+            'with_net_cost': priceList === MINUS_ONE ? ONE : false
         }
     }
     return {
@@ -54,7 +56,8 @@ export const createSerializer = (data) => {
         market,
         user,
         products,
-        'price_list': priceList
+        'price_list': priceList === MINUS_ONE ? null : priceList,
+        'with_net_cost': priceList === MINUS_ONE ? ONE : false
     }
 }
 
@@ -110,6 +113,21 @@ export const listFilterSerializer = (data, id, withOrderReturn, print) => {
         'page_size': _.get(defaultData, 'pageSize'),
         'with_order_return': withOrderReturn,
         'ordering': ordering && orderingSnakeCase(ordering)
+    }
+}
+export const priceListFilterSerializer = (orderId, priceList, size, products) => {
+    if (priceList === MINUS_ONE) {
+        return {
+            'net_cost': ONE,
+            'page_size': size,
+            'ids': products
+        }
+    }
+    return {
+        'order': orderId,
+        'price_list': priceList,
+        'page_size': size,
+        'ids': products
     }
 }
 

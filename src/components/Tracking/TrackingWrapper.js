@@ -9,7 +9,7 @@ import sprintf from 'sprintf'
 import PropTypes from 'prop-types'
 import {compose, withState} from 'recompose'
 import moment from 'moment'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 import IconButton from 'material-ui/IconButton'
 import TrackingMap from './TrackingMap'
 import TrackingMarketsZones from './TrackingMarketsZones'
@@ -352,7 +352,7 @@ const TrackingWrapper = enhance((props) => {
                     {listLoading
                         ? <div className={classes.loader} style={{width: '65px'}}>
                             <div>
-                                <CircularProgress size={25} thickness={3}/>
+                                <Loader size={0.6}/>
                             </div>
                         </div>
                         : <div className={classes.online}>
@@ -410,7 +410,7 @@ const TrackingWrapper = enhance((props) => {
                     {listLoading
                         ? <div className={classes.loader}>
                             <div>
-                                <CircularProgress size={40} thickness={4}/>
+                                <Loader size={0.6}/>
                             </div>
                         </div>
                         : (!_.isEmpty(filteredList) ? <div className={classes.activeAgents}>
@@ -461,7 +461,7 @@ const TrackingWrapper = enhance((props) => {
             {(listLoading || agentLocationLoading) &&
             <div className={classes.mapLoader} style={openAgentsInfo ? {right: 322} : {right: -28}}>
                 <div>
-                    <CircularProgress size={40} thickness={4}/>
+                    <Loader size={0.75}/>
                 </div>
             </div>}
             <div className={classes.trackingWrapper}>
