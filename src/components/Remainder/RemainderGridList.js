@@ -22,6 +22,7 @@ import {reduxForm} from 'redux-form'
 import NotFound from '../Images/not-found.png'
 import RemainderReservedDialog from './RemainderReservedDialog'
 import GridList from '../GridList'
+import AddProductDialog from '../Remainder/AddProductsDialog'
 
 const ZERO = 0
 const enhance = compose(
@@ -260,7 +261,8 @@ const RemainderGridList = enhance((props) => {
         handleCloseDetail,
         filterItem,
         filterDialog,
-        reservedDialog
+        reservedDialog,
+        addProductDialog
     } = props
     const listLoading = _.get(listData, 'listLoading')
 
@@ -369,11 +371,14 @@ const RemainderGridList = enhance((props) => {
             <RemainderTransferDialog
                 open={transferDialog.openTransferDialog}
                 onClose={transferDialog.handleCloseTransferDialog}
-                onSubmit={transferDialog.handleSubmitTransferDialog}/>
+                onSubmit={transferDialog.handleSubmitTransferDialog}
+                handleOpenAddProduct={addProductDialog.handleOpenAddProduct}/>
             <RemainderDiscardDialog
                 open={discardDialog.openDiscardDialog}
                 onClose={discardDialog.handleCloseDiscardDialog}
-                onSubmit={discardDialog.handleSubmitDiscardDialog}/>
+                onSubmit={discardDialog.handleSubmitDiscardDialog}
+                handleOpenAddProduct={addProductDialog.handleOpenAddProduct}/>
+
             <RemainderReservedDialog
                 listLoading={listLoading}
                 loading={reservedDialog.loading}
@@ -382,6 +387,21 @@ const RemainderGridList = enhance((props) => {
                 open={reservedDialog.openReversedDialog > ZERO}
                 onClose={reservedDialog.handleCloseRemainderReservedDialog}
                 filterItem={reservedDialog.dialogFilter}/>
+            {addProductDialog.openAddProductDialog &&
+            <AddProductDialog
+                open={addProductDialog.openAddProductDialog}
+                loading={addProductDialog.loading}
+                filter={addProductDialog.filter}
+                data={addProductDialog.data}
+                onClose={addProductDialog.handleCloseAddProduct}
+                onSubmit={addProductDialog.handleSubmitAddProduct}
+                initialValues={addProductDialog.initialValues}
+                openAddProductConfirm={addProductDialog.openAddProductConfirm}
+                handleCloseAddProductConfirm={addProductDialog.handleCloseAddProductConfirm}
+                handleSubmitAddProductConfirm={addProductDialog.handleSubmitAddProductConfirm}
+                withoutCustomPrice={true}
+                withoutValidations={true}
+            />}
         </Container>
     )
 })

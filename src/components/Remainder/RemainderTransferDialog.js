@@ -160,7 +160,7 @@ const enhance = compose(
 )
 
 const RemainderTransferDialog = enhance((props) => {
-    const {open, handleSubmit, onClose, classes} = props
+    const {open, handleSubmit, onClose, classes, handleOpenAddProduct} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
     return (
@@ -212,6 +212,14 @@ const RemainderTransferDialog = enhance((props) => {
                         fullWidth={true}/>
                 </div>
                 <div className={classes.rightSide}>
+                    <div style={{textAlign: 'right'}}>
+                        <FlatButton
+                            label="добавить товары"
+                            style={{color: '#12aaeb'}}
+                            labelStyle={{fontSize: '13px'}}
+                            className={classes.span}
+                            onTouchTap={() => { handleOpenAddProduct('transfer') }}/>
+                    </div>
                     <Fields
                         names={['products', 'productType', 'product', 'amount', 'isDefect', 'editIsDefect', 'editAmount']}
                         component={RemainderListProductField}

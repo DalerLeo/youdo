@@ -318,9 +318,9 @@ export const TRACKING_ITEM = `${TRACKING}/%d/`
 export const MARKETS_LOCATION = `${SHOP}/locations/`
 export const LOCATION_LIST = 'market/location/'
 
-export const REMAINDER = 'stock/stock'
-export const REMAINDER_LIST = `/${REMAINDER_STOCK}/all_balances/`
-export const REMAINDER_ITEM = `/${REMAINDER}/balances_by_product/%d/`
+export const REMAINDER = 'stock'
+export const REMAINDER_LIST = `/${REMAINDER}/all_balances/`
+export const REMAINDER_ITEM = 'stock/stock/balances_by_product/%d/'
 export const REMAINDER_TRANSFER = '/stock/stock_transfer/wb_create/'
 export const REMAINDER_DISCARD = '/stock/writeoff/'
 export const REMAINDER_RESERVED = '/stock/reserved_product/'
