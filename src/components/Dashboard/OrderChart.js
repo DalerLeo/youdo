@@ -75,12 +75,11 @@ const OrderChart = enhance((props) => {
         },
         plotOptions: {
             series: {
-                lineWidth: 0,
+                lineWidth: 0
             },
             column: {
                 borderRadius: 2,
-                stacking: 'normal',
-                fillOpacity: 0.7
+                stacking: 'normal'
             }
         },
         tooltip: {
@@ -105,7 +104,7 @@ const OrderChart = enhance((props) => {
         {
             name: secondaryText,
             data: secondaryValues,
-            color: '#71ce87'
+            color: '#5d6474'
         }]
     }
 

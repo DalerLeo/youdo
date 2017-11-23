@@ -37,3 +37,37 @@ export const statAgentDataFetchAction = (filter) => {
         payload
     }
 }
+
+export const statFinanceIncomeFetchAction = (filter) => {
+    const params = serializers.incomeFinance(filter.getParams())
+    const payload = axios()
+        .get(API.STAT_FINANCE_DATA, {params, type: 'income'})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STAT_FINANCE_DATA_IN,
+        payload
+    }
+}
+
+export const statFinanceExpenseFetchAction = (filter) => {
+    const params = serializers.expenseFinance(filter.getParams())
+    const payload = axios()
+        .get(API.STAT_FINANCE_DATA, {params, type: 'expense'})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STAT_FINANCE_DATA_OUT,
+        payload
+    }
+}

@@ -1,9 +1,16 @@
 import PropTypes from 'prop-types'
 import React from 'react'
+import _ from 'lodash'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import ReactHighcharts from 'react-highcharts'
 import getConfig from '../../helpers/getConfig'
+import moment from 'moment'
+
+const dateFormat = (date, time, defaultText) => {
+    const dateTime = moment(date).locale('ru').format('DD MMM YYYY')
+    return (date && time) ? dateTime : (date) ? moment(date).locale('ru').format('D MMM') : defaultText
+}
 
 const enhance = compose(
     injectSheet({
@@ -11,19 +18,25 @@ const enhance = compose(
     })
 )
 
-const AgentsChart = enhance((props) => {
+const FinanceChart = enhance((props) => {
     const {
-        agentsList,
-        ordersData,
-        returnsData,
-        factsData
+        tooltipTitle,
+        primaryValues,
+        secondaryValues,
+        primaryText,
+        secondaryText,
+        height
     } = props
+
+    const tooltipDate = _.map(tooltipTitle, (item) => {
+        return dateFormat(item)
+    })
 
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const config = {
         chart: {
-            type: 'bar',
-            height: 450
+            type: 'areaspline',
+            height: height
         },
         title: {
             text: '',
@@ -38,7 +51,8 @@ const AgentsChart = enhance((props) => {
             enabled: false
         },
         xAxis: {
-            categories: agentsList,
+            categories: tooltipDate,
+            tickmarkPlacement: 'on',
             title: {
                 text: '',
                 style: {
@@ -61,8 +75,12 @@ const AgentsChart = enhance((props) => {
             }]
         },
         plotOptions: {
-            bar: {
-                borderRadius: 2
+            series: {
+                lineWidth: 0,
+                pointPlacement: 'on'
+            },
+            areaspline: {
+                fillOpacity: 0.7
             }
         },
         tooltip: {
@@ -81,23 +99,29 @@ const AgentsChart = enhance((props) => {
             useHTML: true,
             crosshairs: true,
             pointFormat:
-            '<div>' +
+            '<div class="diagramTooltip">' +
             '{series.name}: {point.y}' +
             '</div>'
         },
         series: [{
-            name: 'Продажи',
-            data: ordersData,
-            color: '#5d6474'
+            marker: {
+                enabled: false,
+                symbol: 'circle'
+            },
+            name: primaryText,
+            data: primaryValues,
+            color: '#12aaeb'
+
         },
         {
-            name: 'Возвраты',
-            data: returnsData,
-            color: '#ff526d'
-        }, {
-            name: 'Фактически',
-            data: factsData,
-            color: '#12aaeb'
+            marker: {
+                enabled: false,
+                symbol: 'circle'
+            },
+            name: secondaryText,
+            data: secondaryValues,
+            color: '#e57373'
+
         }]
     }
 
@@ -106,11 +130,13 @@ const AgentsChart = enhance((props) => {
     )
 })
 
-AgentsChart.propTypes = {
-    agentsList: PropTypes.array.isRequired,
-    ordersData: PropTypes.array.isRequired,
-    returnsData: PropTypes.array.isRequired,
-    factsData: PropTypes.array.isRequired
+FinanceChart.propTypes = {
+    tooltipTitle: PropTypes.any.isRequired,
+    primaryValues: PropTypes.array.isRequired,
+    secondaryValues: PropTypes.array.isRequired,
+    primaryText: PropTypes.string.isRequired,
+    secondaryText: PropTypes.string.isRequired,
+    height: PropTypes.number.isRequired
 }
 
-export default AgentsChart
+export default FinanceChart
