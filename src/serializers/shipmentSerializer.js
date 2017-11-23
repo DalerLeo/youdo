@@ -12,10 +12,10 @@ export const createSerializer = (data) => {
 export const listFilterSerializer = (data, manufacture, dateRange) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
-
     return {
         'begin_date': _.get(dateRange, 'beginDate'),
         'end_date': _.get(dateRange, 'endDate'),
+        'shift': _.get(defaultData, 'shift'),
         'manufacture': manufacture,
         'name': _.get(defaultData, 'name'),
         'search': _.get(defaultData, 'search'),
