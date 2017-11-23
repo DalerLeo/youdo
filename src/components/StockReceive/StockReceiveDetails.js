@@ -158,6 +158,7 @@ const iconStyle = {
     }
 }
 
+const ZERO = 0
 const TransferDetail = enhance((props) => {
     const {
         classes,
@@ -320,7 +321,43 @@ const TransferDetail = enhance((props) => {
                         </Row>
                     </div>
                     <div className={classes.content}>
-                        <div className={classes.leftSide}>
+                        {history && <div className={classes.leftSide}>
+                            <Row className='dottedList'>
+                                <Col xs={4}>Товар</Col>
+                                <Col xs={4}>Тип товара</Col>
+                                <Col xs={1}>Кол-во</Col>
+                                <Col xs={1}>Принято</Col>
+                                <Col xs={1}>Брак</Col>
+                                <Col xs={1}>Недостача</Col>
+
+                            </Row>
+                            {_.map(products, (item) => {
+                                const productId = _.get(item, 'id')
+                                const name = _.get(item, ['product', 'name'])
+                                const measurement = _.get(item, ['product', 'measurement', 'name'])
+                                const productType = _.get(item, ['product', 'type', 'name'])
+                                const amount = _.get(item, 'amount')
+                                const postedAmount = _.get(item, 'postedAmount')
+                                const defectAmount = _.get(item, 'defectAmount')
+                                const notAccepted = postedAmount + defectAmount < amount ? numberFormat(amount - defectAmount - postedAmount, measurement) : numberFormat(ZERO, measurement)
+
+                                return (
+                                    <Row key={productId} className='dottedList'>
+                                        <Col xs={4}>{name}</Col>
+                                        <Col xs={4}>{productType}</Col>
+                                        <Col xs={1}>{numberFormat(amount, measurement)}</Col>
+                                        <Col xs={1}>{numberFormat(postedAmount, measurement)}</Col>
+                                        <Col xs={1}>
+                                            {(defectAmount > ZERO) ? <span
+                                                    className={classes.defect}>{numberFormat(defectAmount, measurement)}</span>
+                                                : <span>{numberFormat(defectAmount, measurement)}</span>}
+                                        </Col>
+                                        <Col xs={1}>{notAccepted}</Col>
+                                    </Row>
+                                )
+                            })}
+                        </div>}
+                        {!history && <div className={classes.leftSide}>
                             <Row className='dottedList'>
                                 <Col xs={6}>Товар</Col>
                                 <Col xs={4}>Тип товара</Col>
@@ -341,6 +378,7 @@ const TransferDetail = enhance((props) => {
                                 )
                             })}
                         </div>
+                        }
                         <div className={classes.rightSide}>
                             {history && useBarcode &&
                             <div>

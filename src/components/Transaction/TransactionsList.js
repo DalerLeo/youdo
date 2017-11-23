@@ -277,6 +277,9 @@ const TransactionsList = enhance((props) => {
                 value: _.get(currentItem, ['cashbox', 'id'])
             },
             amount: _.get(currentItem, 'amount'),
+            division: {
+                value: _.get(currentItem, 'division')
+            },
             date: _.get(currentItem, 'createdDate') ? moment(_.get(currentItem, 'createdDate')).toDate() : null,
             client: {
                 value: _.get(currentItem, ['client', 'id'])

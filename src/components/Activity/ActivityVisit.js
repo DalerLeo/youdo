@@ -5,7 +5,7 @@ import injectSheet from 'react-jss'
 import {compose, withState} from 'recompose'
 import Paper from 'material-ui/Paper'
 import LinearProgress from '../LinearProgress'
-import dateFormat from '../../helpers/dateFormat'
+import dateTimeFormat from '../../helpers/dateTimeFormat'
 
 const ONE = 1
 const TWO = 2
@@ -138,7 +138,7 @@ const ActivityVisit = enhance((props) => {
         const market = _.get(item, ['visit', 'market', 'name'])
         const comment = _.get(item, ['visit', 'comment'])
         const name = _.get(item, ['visit', 'user', 'firstName']) + ' ' + _.get(item, ['visit', 'user', 'secondName'])
-        const createdDate = dateFormat(_.get(item, ['visit', 'createdDate']))
+        const createdDate = dateTimeFormat(_.get(item, ['visit', 'createdDate']), true)
 
         return (
             <Paper key={id} zDepth={1} className={classes.tube}>

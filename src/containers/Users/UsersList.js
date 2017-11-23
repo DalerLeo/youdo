@@ -223,6 +223,11 @@ const enhance = compose(
                     })
                     dispatch(usersListFetchAction(filter))
                 })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
+                })
         }
     })
 )

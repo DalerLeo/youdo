@@ -10,7 +10,7 @@ import LinearProgress from '../LinearProgress'
 import Paper from 'material-ui/Paper'
 import Info from 'material-ui/svg-icons/action/info-outline'
 import Tooltip from '../ToolTip'
-import dateFormat from '../../helpers/dateFormat'
+import dateTimeFormat from '../../helpers/dateTimeFormat'
 
 const ONE = 1
 const TWO = 2
@@ -157,7 +157,7 @@ const ActivityOrder = enhance((props) => {
     const orderList = _.map(_.get(orderlistData, 'data'), (item) => {
         const id = _.get(item, ['order', 'id'])
         const name = _.get(item, ['order', 'user', 'firstName']) + ' ' + _.get(item, ['order', 'user', 'secondName'])
-        const createdDate = dateFormat(_.get(item, ['order', 'createdDate']))
+        const createdDate = dateTimeFormat(_.get(item, ['order', 'createdDate']), true)
         const orderPrice = numberFormat(_.get(item, ['order', 'totalPrice']), currentCurrency)
         const marketName = _.get(item, ['order', 'market', 'name'])
         const paymentType = paymentTypeFormat(_.get(item, ['order', 'paymentType']))

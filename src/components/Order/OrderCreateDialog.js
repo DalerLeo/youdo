@@ -318,27 +318,6 @@ const OrderCreateDialog = enhance((props) => {
 
                                     {notEnough && <div className={classes.notEnough}>Недостаточно товаров на складе</div>}
                                     <div className={classes.condition}>
-                                        <div className={classes.subTitleOrderNoPad}>Условия доставки</div>
-                                        <Field
-                                            name="dealType"
-                                            component={OrderDealTypeRadio}/>
-                                        <Field
-                                            name="deliveryMan"
-                                            component={DeliveryManSearchField}
-                                            className={classes.inputDateCustom}
-                                            label="Доставщик"
-                                            container="inline"
-                                            fullWidth={true}/>
-                                        <Field
-                                            name="deliveryDate"
-                                            component={DateField}
-                                            className={classes.inputDateCustom}
-                                            floatingLabelText="Дата доставки"
-                                            container="inline"
-                                            fullWidth={true}/>
-                                    </div>
-
-                                    <div className={classes.condition}>
                                         <div className={classes.subTitleOrderNoPad}>Оплата</div>
                                         <Field
                                             name="paymentType"
@@ -362,6 +341,26 @@ const OrderCreateDialog = enhance((props) => {
                                             component={DateField}
                                             className={classes.inputDateCustom}
                                             floatingLabelText="Дата оплаты"
+                                            container="inline"
+                                            fullWidth={true}/>
+                                    </div>
+                                    <div className={classes.condition}>
+                                        <div className={classes.subTitleOrderNoPad}>Условия доставки</div>
+                                        <Field
+                                            name="dealType"
+                                            component={OrderDealTypeRadio}/>
+                                        <Field
+                                            name="deliveryMan"
+                                            component={DeliveryManSearchField}
+                                            className={classes.inputDateCustom}
+                                            label="Доставщик"
+                                            container="inline"
+                                            fullWidth={true}/>
+                                        <Field
+                                            name="deliveryDate"
+                                            component={DateField}
+                                            className={classes.inputDateCustom}
+                                            floatingLabelText="Дата доставки"
                                             container="inline"
                                             fullWidth={true}/>
                                     </div>
