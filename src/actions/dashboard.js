@@ -20,3 +20,20 @@ export const statSalesDataFetchAction = (filter) => {
         payload
     }
 }
+
+export const statAgentDataFetchAction = (filter) => {
+    const params = serializers.agentsChart(filter.getParams())
+    const payload = axios()
+        .get((API.STAT_AGENT_LIST), {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STAT_AGENT_LIST,
+        payload
+    }
+}

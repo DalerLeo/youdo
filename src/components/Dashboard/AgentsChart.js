@@ -18,25 +18,19 @@ const enhance = compose(
     })
 )
 
-const OrderChart = enhance((props) => {
+const AgentsChart = enhance((props) => {
     const {
-        tooltipTitle,
-        primaryValues,
-        secondaryValues,
-        primaryText,
-        secondaryText,
-        height
+        agentsList,
+        ordersData,
+        returnsData,
+        factsData
     } = props
-
-    const tooltipDate = _.map(tooltipTitle, (item) => {
-        return dateFormat(item)
-    })
 
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const config = {
         chart: {
             type: 'column',
-            height: height
+            height: 400
         },
         title: {
             text: '',
@@ -51,7 +45,7 @@ const OrderChart = enhance((props) => {
             enabled: false
         },
         xAxis: {
-            categories: tooltipDate,
+            categories: agentsList,
             title: {
                 text: '',
                 style: {
@@ -74,16 +68,10 @@ const OrderChart = enhance((props) => {
             }]
         },
         plotOptions: {
-            series: {
-                lineWidth: 0,
-            },
-            column: {
-                borderRadius: 2,
-                stacking: 'normal',
-                fillOpacity: 0.7
-            }
+
         },
         tooltip: {
+            shared: true,
             valueSuffix: ' ' + primaryCurrency,
             backgroundColor: '#fff',
             style: {
@@ -93,19 +81,24 @@ const OrderChart = enhance((props) => {
             },
             borderRadius: 0,
             borderWidth: 0,
-            headerFormat: '<b>{point.x}</b><br/>',
-            pointFormat: '{series.name}: {point.y}<br/>Сумма: {point.stackTotal}'
+            enabled: true,
+            shadow: true,
+            useHTML: true,
+            crosshairs: true,
+            pointFormat:
+            '<div>' +
+            '{series.name}: {point.y}' +
+            '</div>'
         },
         series: [{
-            name: primaryText,
-            data: primaryValues,
-            color: '#12aaeb'
-
-        },
-        {
-            name: secondaryText,
-            data: secondaryValues,
-            color: '#71ce87'
+            name: 'Продажи',
+            data: ordersData
+        }, {
+            name: 'Возвраты',
+            data: returnsData
+        }, {
+            name: 'Фактически',
+            data: factsData
         }]
     }
 
@@ -114,11 +107,11 @@ const OrderChart = enhance((props) => {
     )
 })
 
-OrderChart.propTypes = {
-    tooltipTitle: PropTypes.any.isRequired,
-    primaryValues: PropTypes.array.isRequired,
-    primaryText: PropTypes.string.isRequired,
-    height: PropTypes.number.isRequired
+AgentsChart.propTypes = {
+    agentsList: PropTypes.array.isRequired,
+    ordersData: PropTypes.array.isRequired,
+    returnsData: PropTypes.array.isRequired,
+    factsData: PropTypes.array.isRequired
 }
 
-export default OrderChart
+export default AgentsChart

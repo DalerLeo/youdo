@@ -18,7 +18,7 @@ const enhance = compose(
     })
 )
 
-const OrderChart = enhance((props) => {
+const SalesReturnsChart = enhance((props) => {
     const {
         tooltipTitle,
         primaryValues,
@@ -35,7 +35,7 @@ const OrderChart = enhance((props) => {
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const config = {
         chart: {
-            type: 'column',
+            type: 'areaspline',
             height: height
         },
         title: {
@@ -52,6 +52,7 @@ const OrderChart = enhance((props) => {
         },
         xAxis: {
             categories: tooltipDate,
+            tickmarkPlacement: 'on',
             title: {
                 text: '',
                 style: {
@@ -76,14 +77,14 @@ const OrderChart = enhance((props) => {
         plotOptions: {
             series: {
                 lineWidth: 0,
+                pointPlacement: 'on'
             },
-            column: {
-                borderRadius: 2,
-                stacking: 'normal',
+            areaspline: {
                 fillOpacity: 0.7
             }
         },
         tooltip: {
+            shared: true,
             valueSuffix: ' ' + primaryCurrency,
             backgroundColor: '#fff',
             style: {
@@ -93,19 +94,34 @@ const OrderChart = enhance((props) => {
             },
             borderRadius: 0,
             borderWidth: 0,
-            headerFormat: '<b>{point.x}</b><br/>',
-            pointFormat: '{series.name}: {point.y}<br/>Сумма: {point.stackTotal}'
+            enabled: true,
+            shadow: true,
+            useHTML: true,
+            crosshairs: true,
+            pointFormat:
+            '<div class="diagramTooltip">' +
+            '{series.name}: {point.y}' +
+            '</div>'
         },
         series: [{
+            marker: {
+                enabled: false,
+                symbol: 'circle'
+            },
             name: primaryText,
             data: primaryValues,
             color: '#12aaeb'
 
         },
         {
+            marker: {
+                enabled: false,
+                symbol: 'circle'
+            },
             name: secondaryText,
             data: secondaryValues,
-            color: '#71ce87'
+            color: '#e57373'
+
         }]
     }
 
@@ -114,11 +130,13 @@ const OrderChart = enhance((props) => {
     )
 })
 
-OrderChart.propTypes = {
+SalesReturnsChart.propTypes = {
     tooltipTitle: PropTypes.any.isRequired,
     primaryValues: PropTypes.array.isRequired,
+    secondaryValues: PropTypes.array.isRequired,
     primaryText: PropTypes.string.isRequired,
+    secondaryText: PropTypes.string.isRequired,
     height: PropTypes.number.isRequired
 }
 
-export default OrderChart
+export default SalesReturnsChart
