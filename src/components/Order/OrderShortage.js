@@ -217,7 +217,7 @@ const OrderShortageDialog = enhance((props) => {
 
                     <form onSubmit={onSubmit} scrolling="auto" className={classes.form}>
                         <Field
-                            name="request_dedline"
+                            name="requestDeadline"
                             component={DateField}
                             className={classes.inputFieldCustom}
                             hintText="Срок запроса"
