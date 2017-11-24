@@ -1021,6 +1021,9 @@ const OrderList = enhance((props) => {
                 contact: {
                     value: _.toInteger(_.get(detail, ['contact', 'id']))
                 },
+                currency: {
+                    value: _.get(detail, ['currency', 'id'])
+                },
                 market: {
                     value: _.toInteger(_.get(detail, ['market', 'id']))
                 },
@@ -1034,6 +1037,7 @@ const OrderList = enhance((props) => {
                 dealType: dealType,
                 paymentType: paymentType,
                 deliveryDate: moment(_.get(detail, ['dateDelivery'])).toDate(),
+                requestDeadline: _.get(detail, ['requestDeadline']) && moment(_.get(detail, ['requestDeadline'])).toDate(),
                 deliveryPrice: numberFormat(_.get(detail, 'deliveryPrice')),
                 discountPrice: discount,
                 paymentDate: moment(_.get(detail, ['paymentDate'])).toDate(),

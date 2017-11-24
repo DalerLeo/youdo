@@ -93,6 +93,7 @@ import MarketMultiSearchField from './Shop/MarketMultiSearchField'
 import ProductMultiSearchField from './Product/ProductMultiSearchField'
 import OrderStatusMultiSearchField from './Order/OrderStatusMultiSearchField'
 import ReturnStatusMultiSearch from './ReturnStatusMultiSearch'
+import UserCurrenciesSearchField from './UserCurrenciesSearchField'
 
 export {
     UsersAgentSearchField,
@@ -189,5 +190,6 @@ export {
     MarketMultiSearchField,
     DivisionMultiSearchField,
     OrderStatusMultiSearchField,
-    ReturnStatusMultiSearch
+    ReturnStatusMultiSearch,
+    UserCurrenciesSearchField
 }

@@ -137,6 +137,7 @@ const UsersGridList = enhance((props) => {
         marketTypeData,
         listData,
         detailData,
+        currencyData,
         classes
     } = props
 
@@ -255,6 +256,7 @@ const UsersGridList = enhance((props) => {
                 groupListData={groupListData}
                 stockListData={stockListData}
                 marketTypeData={marketTypeData}
+                currencyData={currencyData}
             />
 
             <UsersCreateDialog
@@ -267,6 +269,7 @@ const UsersGridList = enhance((props) => {
                 groupListData={groupListData}
                 stockListData={stockListData}
                 marketTypeData={marketTypeData}
+                currencyData={currencyData}
                 errorData={updateDialog.errorData}
             />
 

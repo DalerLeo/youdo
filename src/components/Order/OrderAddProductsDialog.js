@@ -296,7 +296,6 @@ const OrderAddProductsDialog = enhance((props) => {
         handleSubmitAddProductConfirm,
         isSuperUser,
         withoutCustomPrice,
-        withoutValidations,
         currency
     } = props
     const onSubmit = handleSubmit(props.onSubmit)
@@ -308,13 +307,6 @@ const OrderAddProductsDialog = enhance((props) => {
         const balance = _.get(item, 'balance')
         const canChangePrice = (isSuperUser || withoutCustomPrice) || _.get(item, 'customPrice')
         const measurement = _.get(item, ['measurement', 'name'])
-        const normalize = value => {
-            if (!value) {
-                return value
-            }
-
-            return value > balance ? balance : value
-        }
         return (
             <Row key={id} className="dottedList">
                 <Col xs={4}>{name}</Col>
@@ -335,7 +327,6 @@ const OrderAddProductsDialog = enhance((props) => {
                     <Field
                         name={'product[' + id + '][amount]'}
                         component={TextField}
-                        normalize={!withoutValidations && !isSuperUser && normalize}
                         className={classes.inputFieldCustom}
                         inputStyle={{textAlign: 'right'}}
                         fullWidth={true}/>

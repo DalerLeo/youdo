@@ -233,6 +233,7 @@ const OrderDetails = enhance((props) => {
     const createdDate = dateFormat(_.get(data, 'createdDate'))
     const paymentDate = dateFormat(_.get(data, 'paymentDate'))
     const requestDeadline = _.get(data, 'requestDeadline') ? dateFormat(_.get(data, 'requestDeadline')) : 'Не задан'
+    const currency = _.get(data, ['currency', 'name'])
 
     const REQUESTED = 0
     const READY = 1
@@ -264,7 +265,6 @@ const OrderDetails = enhance((props) => {
     const totalReturned = _.sumBy(_.get(data, 'products'), (item) => {
         return _.toNumber(_.get(item, 'returnAmount'))
     })
-    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const configDivisions = getConfig('DIVISIONS')
     return (
         <div className={classes.wrapper}>
@@ -372,6 +372,10 @@ const OrderDetails = enhance((props) => {
                                     <span>Подразделение:</span>
                                     <span>{division}</span>
                                 </li>}
+                                <li>
+                                    <span>Валюта:</span>
+                                    <span>{currency}</span>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -394,18 +398,18 @@ const OrderDetails = enhance((props) => {
                                 </li>
                                 <li>
                                     <span>Общая стоимость</span>
-                                    <span>{numberFormat(productTotal, primaryCurrency)}</span>
+                                    <span>{numberFormat(productTotal, currency)}</span>
                                 </li>
                                 <li>
                                     <span>Оплачено:</span>
                                     {(totalPaid !== zero && type) ? <span>
-                                        <a onClick={transactionsDialog.handleOpenTransactionsDialog} className={classes.link}>{numberFormat(totalPaid)} {primaryCurrency}</a>
+                                        <a onClick={transactionsDialog.handleOpenTransactionsDialog} className={classes.link}>{numberFormat(totalPaid)} {currency}</a>
                                     </span>
-                                        : <span>{numberFormat(totalPaid)} {primaryCurrency}</span>}
+                                        : <span>{numberFormat(totalPaid)} {currency}</span>}
                                 </li>
                                 <li>
                                     <span>Остаток:</span>
-                                    <span className={totalBalance > zero ? classes.red : classes.green}>{numberFormat(totalBalance)} {primaryCurrency}</span>
+                                    <span className={totalBalance > zero ? classes.red : classes.green}>{numberFormat(totalBalance)} {currency}</span>
                                 </li>
                             </ul>
                         </div>
