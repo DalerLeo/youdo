@@ -100,35 +100,7 @@ const enhance = compose(
         }
     })
 )
-const income = [
-    {date: '2017-11-12', amount: 521},
-    {date: '2017-11-13', amount: 124},
-    {date: '2017-11-14', amount: 243},
-    {date: '2017-11-15', amount: 65}
-]
-const expense = [
-    {date: '2017-11-14', amount: 999},
-    {date: '2017-11-15', amount: 666}
-]
-const mergedGraph = {}
-_.map(income, (item) => {
-    mergedGraph[_.get(item, 'date')] = {
-        in: _.get(item, 'amount')
-    }
-})
-_.map(expense, (item) => {
-    if (mergedGraph[_.get(item, 'date')]) {
-        mergedGraph[_.get(item, 'date')] = {
-            in: mergedGraph[_.get(item, 'date')].in,
-            out: _.get(item, 'amount')
-        }
-    } else {
-        mergedGraph[_.get(item, 'date')] = {
-            in: 0,
-            out: _.get(item, 'amount')
-        }
-    }
-})
+
 const Dashboard = enhance((props) => {
     const {
         classes,
