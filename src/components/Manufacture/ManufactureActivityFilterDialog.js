@@ -87,16 +87,15 @@ const iconStyle = {
 }
 
 const ManufactureActivityFilter = enhance((props) => {
-    const {classes, filterDialog, handleSubmit} = props
+    const {classes, filterDialog, handleSubmit, fields} = props
     const isOpen = _.get(filterDialog, 'openFilterDialog')
     return (
         <div className={classes.filterWrapper}>
-            {isOpen && <div className={classes.overlay} onClick={filterDialog.handleCloseFilterDialog}>
-            </div>}
             <Paper zDepth={2} className={isOpen ? classes.form : classes.closedForm}>
                 <form onSubmit={handleSubmit(filterDialog.handleSubmitFilterDialog)}>
                     <div className={classes.filter}>
                         <h3>Фильтр</h3>
+                        {fields}
                         <IconButton
                             className={classes.closeFilter}
                             style={iconStyle.button}

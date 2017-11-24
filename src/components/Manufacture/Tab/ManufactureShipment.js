@@ -14,6 +14,7 @@ import Sort from 'material-ui/svg-icons/content/sort'
 import Log from 'material-ui/svg-icons/content/content-paste'
 import Shift from 'material-ui/svg-icons/av/loop'
 import Product from 'material-ui/svg-icons/device/widgets'
+import {Field} from 'redux-form'
 import Material from 'material-ui/svg-icons/action/exit-to-app'
 import Defected from 'material-ui/svg-icons/image/broken-image'
 import Pagination from '../../GridList/GridListNavPagination'
@@ -21,7 +22,7 @@ import Choose from '../../Images/choose-menu.png'
 import NotFound from '../../Images/not-found.png'
 import dateTimeFormat from '../../../helpers/dateTimeFormat'
 import numberFormat from '../../../helpers/numberFormat'
-
+import {ShiftSearchField} from '../../ReduxForm'
 const enhance = compose(
     injectSheet({
         shipmentContent: {
@@ -226,6 +227,21 @@ const enhance = compose(
             textAlign: 'center',
             fontSize: '13px',
             color: '#666'
+        },
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
         }
     })
 )
@@ -257,7 +273,6 @@ const tabStyles = {
 
 const ManufactureShipment = enhance((props) => {
     const {filterLogs, filterDialog, tabData, shipmentData, classes, manufactureId} = props
-
     const ZERO = 0
     const filter = _.get(shipmentData, 'filter')
     const PRODUCT = 'return'
@@ -350,6 +365,16 @@ const ManufactureShipment = enhance((props) => {
             </Row>
         )
     })
+    const fields = (
+        <div>
+            <Field
+                className={classes.inputFieldCustom}
+                name="shift"
+                component={ShiftSearchField}
+                label="Смена"
+                fullWidth={true}/>
+        </div>
+    )
     const wholeEmpty = _.isEmpty(products) && _.isEmpty(materials)
     if (manufactureId <= ZERO) {
         return (
@@ -369,6 +394,7 @@ const ManufactureShipment = enhance((props) => {
             </header>
             <ManufactureActivityFilterDialog
                 filterDialog={filterDialog}
+                fields={tab === TAB.TAB_SHIFT ? fields : null}
                 initialValues={filterDialog.initialValues}/>
             <div className={classes.details}>
                 <div className={classes.rightSide}>
