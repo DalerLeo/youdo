@@ -18,7 +18,6 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
-import AllGroup from 'material-ui/svg-icons/social/group'
 import Man from 'material-ui/svg-icons/action/accessibility'
 import Loyalty from 'material-ui/svg-icons/action/loyalty'
 import Van from 'material-ui/svg-icons/maps/local-shipping'
@@ -276,11 +275,6 @@ const PlanWrapper = enhance((props) => {
     const listLoading = _.get(usersList, 'usersListLoading')
 
     const buttons = [
-        {
-            group: null,
-            name: 'Все',
-            icon: <AllGroup/>
-        },
         {
             group: 'agent',
             name: 'Агенты',
