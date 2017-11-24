@@ -73,7 +73,6 @@ const enhance = compose(
                     }
                 }
             },
-            overflow: 'hidden',
             width: 'calc(100% - 86px)'
         },
         actionButton: {

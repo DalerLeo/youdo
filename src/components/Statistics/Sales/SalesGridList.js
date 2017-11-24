@@ -242,7 +242,8 @@ const StatSalesGridList = enhance((props) => {
         statSaleDialog,
         detailData,
         handleGetDocument,
-        initialValues
+        initialValues,
+        printDialog
     } = props
     const graphLoading = _.get(graphData, 'graphLoading')
     const divisionStatus = _.get('DIVISION')
@@ -394,11 +395,13 @@ const StatSalesGridList = enhance((props) => {
                         <div className={classes.wrapper}>
                             <StatisticsFilterExcel
                                 filter={filter}
+                                sales={true}
                                 initialValues={initialValues}
                                 fields={fields}
                                 filterKeys={STAT_SALES_FILTER_KEY}
                                 handleSubmitFilterDialog={onSubmit}
                                 handleGetDocument={handleGetDocument}
+                                handleOpenprintDialog={printDialog.handleOpenPrintDialog}
                             />
                             <div>
                                 {graphLoading
