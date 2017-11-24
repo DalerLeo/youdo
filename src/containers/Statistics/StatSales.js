@@ -104,7 +104,6 @@ const enhance = compose(
             const exclude = _.get(filterForm, ['values', 'exclude']) || null
 
             filter.filterBy({
-                [STAT_SALES_FILTER_KEY]: false,
                 [STAT_SALES_FILTER_KEY.CLIENT]: client,
                 [STAT_SALES_FILTER_KEY.STATUS]: status,
                 [STAT_SALES_FILTER_KEY.PRODUCT]: product,
@@ -236,20 +235,20 @@ const StatSalesList = enhance((props) => {
             }
         }
     }
+    const mergedGraph = {}
+    if (!graphReturnLoading) {
+        _.map(graphList, (item) => {
+            mergedGraph[item.date] = {'in': item.amount, date: item.date}
+        })
 
-    let mergedGraph = {}
-
-    _.map(graphList, (item) => {
-        mergedGraph[item.date] = {'in': item.amount, date: item.date}
-    })
-
-    _.map(graphReturnList, (item) => {
-        if (mergedGraph[item.date]) {
-            mergedGraph[item.date] = {'in': mergedGraph[item.date].in, 'out': item.totalAmount, date: item.date}
-        } else {
-            mergedGraph[item.date] = {'in': 0, 'out': item.totalAmount, date: item.date}
-        }
-    })
+        _.map(graphReturnList, (item) => {
+            if (mergedGraph[item.date]) {
+                mergedGraph[item.date] = {'in': mergedGraph[item.date].in, 'out': item.totalAmount, date: item.date}
+            } else {
+                mergedGraph[item.date] = {'in': 0, 'out': item.totalAmount, date: item.date}
+            }
+        })
+    }
 
     const graphData = {
         mergedGraph: _.sortBy(mergedGraph, ['date']),
