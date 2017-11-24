@@ -9,7 +9,7 @@ import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
-import {ClientBalanceTypeSearchField, PaymentTypeSearchField} from '../ReduxForm'
+import {ClientBalanceTypeSearchField, PaymentTypeSearchField, DivisionSearchField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
@@ -17,7 +17,8 @@ export const CLIENT_BALANCE_FILTER_OPEN = 'openFilterDialog'
 
 export const CLIENT_BALANCE_FILTER_KEY = {
     PAYMENT_TYPE: 'paymentType',
-    BALANCE_TYPE: 'balanceType'
+    BALANCE_TYPE: 'balanceType',
+    DIVISION: 'divisionFilter'
 }
 
 const enhance = compose(
@@ -38,7 +39,8 @@ const enhance = compose(
             display: 'flex',
             backgroundColor: '#efefef',
             position: 'relative',
-            padding: '16px 30px',
+            padding: '0 30px',
+            height: '100%',
             marginLeft: '-30px',
             '& > div:nth-child(2)': {
                 position: 'absolute',
@@ -113,7 +115,7 @@ const enhance = compose(
 )
 
 const ClientBalanceFilterForm = enhance((props) => {
-    const {classes, filterDialog, getCount} = props
+    const {classes, filterDialog, getCount, handleSubmit} = props
     const filterCounts = getCount()
 
     if (!filterDialog.openFilterDialog) {
@@ -153,7 +155,7 @@ const ClientBalanceFilterForm = enhance((props) => {
                         <CloseIcon className={classes.icon} />
                     </IconButton>
                 </div>
-                <form onSubmit={filterDialog.handleSubmitFilterDialog}>
+                <form onSubmit={handleSubmit(filterDialog.handleSubmitFilterDialog)}>
                     <div>
                         <Field
                             className={classes.inputFieldCustom}
@@ -166,6 +168,12 @@ const ClientBalanceFilterForm = enhance((props) => {
                             name="paymentType"
                             component={PaymentTypeSearchField}
                             label="Тип оплаты"
+                            fullWidth={true}/>
+                        <Field
+                            className={classes.inputFieldCustom}
+                            name="division"
+                            component={DivisionSearchField}
+                            label="Подразделение"
                             fullWidth={true}/>
                     </div>
                     <RaisedButton
