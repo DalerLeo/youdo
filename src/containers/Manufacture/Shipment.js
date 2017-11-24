@@ -152,12 +152,12 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[OPEN_FILTER]: false})})
         },
         handleSubmitFilterDialog: props => () => {
-            const {location: {pathname}, filter, filterForm} = props
+            const {filter, filterForm} = props
             const shift = _.get(filterForm, ['values', 'shift', 'value']) || null
             filter.filterBy({
+                [OPEN_FILTER]: false,
                 [MANUF_ACTIVITY_FILTER_KEY.SHIFT]: shift
             })
-            hashHistory.push({pathname, query: filter.getParams({[OPEN_FILTER]: false})})
         },
 
         handleShipmentClick: props => (id) => {

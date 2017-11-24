@@ -333,7 +333,7 @@ const SupplyDetails = enhance((props) => {
                     </Tooltip>
                     {updateDialog && <Tooltip position="bottom" text="Изменить">
                         <IconButton
-                            disabled={isAdmin || !(status === PENDING)}
+                            disabled={status === CANCELLED}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}

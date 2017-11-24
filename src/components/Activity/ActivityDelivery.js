@@ -7,7 +7,7 @@ import LinearProgress from '../LinearProgress'
 import Paper from 'material-ui/Paper'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
-import dateFormat from '../../helpers/dateFormat'
+import dateTimeFormat from '../../helpers/dateTimeFormat'
 const ONE = 1
 const TWO = 2
 const TEN = 10
@@ -140,7 +140,7 @@ const ActivityDelivery = enhance((props) => {
         const amount = numberFormat(_.get(item, ['order', 'totalPrice']), currentCurrency)
         const name = _.get(item, ['order', 'user', 'firstName']) + ' ' + _.get(item, ['order', 'user', 'secondName'])
         const market = _.get(item, ['order', 'market', 'name'])
-        const createdDate = dateFormat(_.get(item, ['order', 'createdDate']))
+        const createdDate = dateTimeFormat(_.get(item, ['order', 'createdDate']), true)
 
         return (
             <Paper key={id} zDepth={1} className={classes.tube}>
