@@ -8,7 +8,7 @@ import FlatButton from 'material-ui/FlatButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, UsersSearchField, StockTypeSearchField} from '../ReduxForm'
+import {TextField, StockTypeSearchField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
@@ -101,13 +101,6 @@ const StockCreateDialog = enhance((props) => {
                                 component={TextField}
                                 className={classes.inputFieldCustom}
                                 label="Наименование"
-                                fullWidth={true}
-                            />
-                            <Field
-                                name="manager"
-                                component={UsersSearchField}
-                                className={classes.inputFieldCustom}
-                                label="Завсклад"
                                 fullWidth={true}
                             />
                             <Field

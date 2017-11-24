@@ -120,19 +120,21 @@ const StockTabHistory = enhance((props) => {
         const genericType = stockTypeFormat(_.get(item, ['generic', 'type']))
         const genericTypeUse = _.get(item, ['generic', 'type'])
         const type = _.get(item, 'type')
+        const isDefect = _.get(item, 'isDefect')
         return (
-            <Row key={id}>
+            <Row key={id} style={isDefect ? {color: '#e57373'} : {}}>
                 <Col xs={4}>
-                    {(type === 'Out') ? <ArrowUp color="#e57373"/> : <ArrowDown color="#81c784"/>} {product}
+                    {(type === 'Out') ? <ArrowUp color="#e57373"/> : <ArrowDown color="#81c784"/>}
+                    {product} {isDefect && <strong>(брак)</strong>}
                 </Col>
                 <Col xs={1}>{amount} {measurement}</Col>
                 <Col xs={3}>{date}</Col>
                 <Col xs={2}>{stock}</Col>
                 <Col xs={2}>{genericType} {_.get(item, ['generic', 'type']) === 'order transfer product'
-                        ? <span className={classes.infoDialog} onClick={() => {
-                            historyDialog.handleOpenHistoryDialog(parent)
-                        }}>{parent}</span>
-                        : (_.get(item, ['generic', 'type']) === 'order return accept' || _.get(item, ['generic', 'type']) === 'order_return'
+                    ? <span className={classes.infoDialog} onClick={() => {
+                        historyDialog.handleOpenHistoryDialog(parent)
+                    }}>{parent}</span>
+                    : (_.get(item, ['generic', 'type']) === 'order return accept' || _.get(item, ['generic', 'type']) === 'order_return'
                         ? <span className={classes.infoDialog} onClick={() => {
                             returnDialog.handleOpenStockReturnDialog(parent)
                         }}>{parent}</span>

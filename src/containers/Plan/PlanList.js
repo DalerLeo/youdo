@@ -570,7 +570,7 @@ const PlanList = enhance((props) => {
     const openComboPlan = _.get(location, ['query', UPDATE_PLAN]) === 'combo'
     const openPlanSales = toBoolean(_.get(location, ['query', OPEN_PLAN_SALES]))
     const openUpdatePlan = _.get(location, ['query', UPDATE_PLAN]) === 'combo' ? 'combo' : _.toInteger(_.get(location, ['query', UPDATE_PLAN])) > ZERO
-    const groupId = _.get(location, ['query', USER_GROUP]) || null
+    const groupId = _.get(location, ['query', USER_GROUP]) || 'agent'
     const openDetail = !_.isEmpty(_.get(params, 'agentId'))
     const detailId = _.toInteger(_.get(params, 'agentId'))
     const selectedAgent = _.toInteger(_.get(location, ['query', AGENT]))

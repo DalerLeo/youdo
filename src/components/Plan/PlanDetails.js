@@ -374,7 +374,15 @@ const enhance = compose(
             '& h2': {
                 fontSize: '16px',
                 lineHeight: '14px',
-                marginBottom: '10px'
+                marginBottom: '10px',
+                '& a': {
+                    fontSize: 'inherit',
+                    fontWeight: 'inherit',
+                    color: 'inherit',
+                    '&:hover': {
+                        color: '#12aaeb'
+                    }
+                }
             },
             '& li': {
                 lineHeight: '25px',
@@ -624,6 +632,7 @@ const PlanDetails = enhance((props) => {
                                         {_.map(_.get(agentPlans, 'data'), (item) => {
                                             const id = _.get(item, 'id')
                                             const market = _.get(item, ['market', 'name'])
+                                            const marketId = _.get(item, ['market', 'id'])
                                             const planTasks = _.get(item, 'planTasks')
                                             const hasPlanTasks = !_.isEmpty(planTasks)
                                             const time = moment(_.get(_.head(planTasks), 'completedDate')).format('HH:mm')
@@ -649,7 +658,10 @@ const PlanDetails = enhance((props) => {
                                                     </div>
 
                                                     <Paper className={classes.timelineContent}>
-                                                        <h2>{market}</h2>
+                                                        <h2><Link target="_blank" to={{
+                                                            pathname: sprintf(ROUTE.SHOP_ITEM_PATH, marketId),
+                                                            query: {search: marketId}
+                                                        }}>{market}</Link></h2>
                                                         {hasPlanTasks
                                                             ? <ul>
                                                                 {tasks}
