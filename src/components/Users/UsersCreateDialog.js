@@ -132,7 +132,18 @@ const enhance = compose(
 )
 
 const UsersCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, isUpdate, errorData, stockListData, marketTypeData} = props
+    const {
+        open,
+        loading,
+        handleSubmit,
+        onClose,
+        classes,
+        isUpdate,
+        errorData,
+        stockListData,
+        marketTypeData,
+        currencyData
+    } = props
     const errorText = _.get(errorData, 'errorText')
     const show = _.get(errorData, 'show')
     const multiStock = getConfig('MULTISELECTSTOCK')
@@ -263,6 +274,26 @@ const UsersCreateDialog = enhance((props) => {
                                     <div key={id} style={{flexBasis: '33.33333%', maxWidth: '33.33333%', padding: '0 10px'}}>
                                         <Field
                                             name={'types[' + index + '][selected]'}
+                                            component={CheckBox}
+                                            label={name}/>
+                                    </div>
+                                )
+                            })}
+                        </Row>
+                        <div className={classes.subTitle} style={{margin: '15px 0 10px'}}>Валюты</div>
+                        <Row>
+                            {(!loading) && _.get(currencyData, 'currencyListLoading') &&
+                            <div className={classes.groupLoader}>
+                                <CircularProgress size={40} thickness={4}/>
+                            </div>}
+                            {!_.get(currencyData, 'currencyListLoading') &&
+                            _.map(_.get(currencyData, 'data'), (item, index) => {
+                                const id = _.get(item, 'id')
+                                const name = _.get(item, 'name')
+                                return (
+                                    <div key={id} style={{flexBasis: '33.33333%', maxWidth: '33.33333%', padding: '0 10px'}}>
+                                        <Field
+                                            name={'currencies[' + index + '][selected]'}
                                             component={CheckBox}
                                             label={name}/>
                                     </div>

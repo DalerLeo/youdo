@@ -125,26 +125,27 @@ const enhance = compose(
         }
     }),
 
-    withPropsOnChange((props, nextProps) => {
-        const selects = _.get(props, ['createForm', 'values', 'stocks'])
-        const nextSelects = _.get(nextProps, ['createForm', 'values', 'stocks'])
-        const details = _.get(nextProps, 'detail')
-        return !_.isEqual(selects, nextSelects) && details
-    }, ({dispatch, detail, createForm}) => {
-        const selects = _.get(createForm, ['values', 'stocks'])
-        const form = 'StockReceiveCreateForm'
-        if (!_.isEmpty(selects)) {
-            const selectsCount = _.filter(selects, (item) => {
-                return _.get(item, 'selected') === true
-            }).length
-            const products = _.get(detail, 'products').length
-            if (selectsCount === products) {
-                dispatch(change(form, 'noDefects', true))
-            } else {
-                dispatch(change(form, 'noDefects', false))
-            }
-        }
-    }),
+    // .. withPropsOnChange((props, nextProps) => {
+    // ..     const selects = _.get(props, ['createForm', 'values', 'stocks'])
+    // ..     const nextSelects = _.get(nextProps, ['createForm', 'values', 'stocks'])
+    // ..     const details = !_.isEmpty(_.get(nextProps, 'detail'))
+    // ..     console.warn(!_.isEqual(selects, nextSelects) && details)
+    // ..     return false
+    // .. }, ({dispatch, detail, createForm}) => {
+    // ..     const selects = _.get(createForm, ['values', 'stocks'])
+    // ..     const form = 'StockReceiveCreateForm'
+    // ..     if (!_.isEmpty(selects)) {
+    // ..         const selectsCount = _.filter(selects, (item) => {
+    // ..             return _.get(item, 'selected') === true
+    // ..         }).length
+    // ..         const products = _.get(detail, 'products').length
+    // ..         if (selectsCount === products) {
+    // ..             dispatch(change(form, 'noDefects', true))
+    // ..         } else {
+    // ..             dispatch(change(form, 'noDefects', false))
+    // ..         }
+    // ..     }
+    // .. }),
 
     withState('openPrint', 'setOpenPrint', false),
 
