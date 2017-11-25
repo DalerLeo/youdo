@@ -54,3 +54,20 @@ export const orderListFetchAction = (filter, withOrderReturn) => {
         payload
     }
 }
+
+export const orderListPintFetchAction = (filter) => {
+    const params = serializers.listFilterSerializer(filter.getParams())
+    const payload = axios()
+        .get(API.ORDER_LIST_PRINT, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.ORDER_LIST_PRINT,
+        payload
+    }
+}
