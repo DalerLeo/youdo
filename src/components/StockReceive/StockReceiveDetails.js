@@ -154,7 +154,34 @@ const iconStyle = {
     button: {
         width: 48,
         height: 48,
-        padding: 0
+        padding: 0,
+        color: '#e57373'
+    }
+}
+const iconStyleCheck = {
+    icon: {
+        color: '#12AAEB',
+        width: 22,
+        height: 22
+    },
+    button: {
+        width: 48,
+        height: 48,
+        padding: 0,
+        color: '#e57373'
+    }
+}
+const iconStyleCancell = {
+    icon: {
+        color: '#e57373',
+        width: 22,
+        height: 22
+    },
+    button: {
+        width: 48,
+        height: 48,
+        padding: 0,
+        color: '#e57373'
     }
 }
 
@@ -230,10 +257,10 @@ const TransferDetail = enhance((props) => {
                                 {(history && transferHistory) && currentRequestDate}
                                 <div className={classes.titleButtons}>
                                     {!history && (type === 'transfer')
-                                        ? <Tooltip position="right" text={tooltipText}>
+                                        ? <Tooltip position="right" text={tooltipText} style={{color: '#e57373'}}>
                                             <IconButton
-                                                iconStyle={iconStyle.icon}
-                                                style={iconStyle.button}
+                                                iconStyle={iconStyleCheck.icon}
+                                                style={iconStyleCheck.button}
                                                 touch={true}
                                                 onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(APPROVE) }}>
                                                 <CheckCircleIcon />
@@ -242,8 +269,8 @@ const TransferDetail = enhance((props) => {
                                         : (!history && type === 'delivery_return')
                                             ? <Tooltip position="right" text={tooltipText}>
                                                 <IconButton
-                                                    iconStyle={iconStyle.icon}
-                                                    style={iconStyle.button}
+                                                    iconStyle={iconStyleCheck.icon}
+                                                    style={iconStyleCheck.button}
                                                     touch={true}
                                                     onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(DELIVERY) }}>
                                                     <CheckCircleIcon />
@@ -252,8 +279,8 @@ const TransferDetail = enhance((props) => {
                                             : (!history && type === 'order_return')
                                                 ? <Tooltip position="right" text={tooltipText}>
                                                     <IconButton
-                                                        iconStyle={iconStyle.icon}
-                                                        style={iconStyle.button}
+                                                        iconStyle={iconStyleCheck.icon}
+                                                        style={iconStyleCheck.button}
                                                         touch={true}
                                                         onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(RETURN) }}>
                                                         <CheckCircleIcon />
@@ -263,8 +290,8 @@ const TransferDetail = enhance((props) => {
                                                     ? (!history
                                                         ? <Tooltip position="right" text={tooltipText}>
                                                             <IconButton
-                                                                iconStyle={iconStyle.icon}
-                                                                style={iconStyle.button}
+                                                                iconStyle={iconStyleCheck.icon}
+                                                                style={iconStyleCheck.button}
                                                                 touch={true}
                                                                 onTouchTap={() => { createDialog.handleOpenCreateDialog() }}>
                                                                 <CheckCircleIcon />
@@ -286,8 +313,8 @@ const TransferDetail = enhance((props) => {
                                     {!history && type === 'transfer' &&
                                     <Tooltip position="right" text={tooltipCancelText}>
                                         <IconButton
-                                            iconStyle={iconStyle.icon}
-                                            style={iconStyle.button}
+                                            iconStyle={iconStyleCancell.icon}
+                                            style={iconStyleCancell.button}
                                             onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(CANCEL) }}
                                             touch={true}>
                                             <RemoveCircleIcon />
@@ -296,8 +323,8 @@ const TransferDetail = enhance((props) => {
                                     {!history && type === 'delivery_return' &&
                                     <Tooltip position="right" text={tooltipCancelText}>
                                         <IconButton
-                                            iconStyle={iconStyle.icon}
-                                            style={iconStyle.button}
+                                            iconStyle={iconStyleCancell.icon}
+                                            style={iconStyleCancell.button}
                                             onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(DELIVERY) }}
                                             touch={true}>
                                             <RemoveCircleIcon />
@@ -305,8 +332,8 @@ const TransferDetail = enhance((props) => {
                                     </Tooltip>}
                                     {history && type !== 'transfer' && type !== 'delivery_return' && <Tooltip position="right" text={tooltipCancelText}>
                                         <IconButton
-                                            iconStyle={iconStyle.icon}
-                                            style={iconStyle.button}
+                                            iconStyle={iconStyleCancell.icon}
+                                            style={iconStyleCancell.button}
                                             onTouchTap={() => { repealDialog.handleOpenRepealDialog(id) }}
                                             touch={true}>
                                             <RemoveCircleIcon />
@@ -359,21 +386,24 @@ const TransferDetail = enhance((props) => {
                         </div>}
                         {!history && <div className={classes.leftSide}>
                             <Row className='dottedList'>
-                                <Col xs={6}>Товар</Col>
+                                <Col xs={4}>Товар</Col>
                                 <Col xs={4}>Тип товара</Col>
                                 <Col xs={2}>Кол-во</Col>
+                                <Col xs={2}>Статус</Col>
                             </Row>
                             {_.map(products, (item) => {
                                 const productId = _.get(item, 'id')
                                 const name = _.get(item, ['product', 'name'])
                                 const measurement = _.get(item, ['product', 'measurement', 'name'])
                                 const productType = _.get(item, ['product', 'type', 'name'])
+                                const isDefect = toBoolean(_.get(item, 'isDefect')) ? 'Брак' : 'Xarasho'
                                 const amount = numberFormat(_.get(item, 'amount'), measurement)
                                 return (
                                     <Row key={productId} className='dottedList'>
-                                        <Col xs={6}>{name}</Col>
+                                        <Col xs={4}>{name}</Col>
                                         <Col xs={4}>{productType}</Col>
                                         <Col xs={2}>{amount}</Col>
+                                        <Col xs={2}>{isDefect}</Col>
                                     </Row>
                                 )
                             })}

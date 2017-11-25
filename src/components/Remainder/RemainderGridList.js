@@ -228,8 +228,8 @@ const enhance = compose(
 
 const headerItems = [
     {
-        name: 'product',
-        sorting: false,
+        name: 'productName',
+        sorting: true,
         title: 'Товар',
         xs: 2
     },
@@ -258,8 +258,8 @@ const headerItems = [
         xs: 2
     },
     {
-        sorting: false,
-        name: 'reserved',
+        sorting: true,
+        name: 'available',
         title: 'Доступные товары',
         xs: 2
     }
