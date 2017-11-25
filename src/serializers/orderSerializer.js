@@ -69,7 +69,7 @@ export const listFilterSerializer = (data, id, withOrderReturn, print) => {
     const dept = _.toInteger(_.get(defaultData, 'dept'))
     if (id) {
         return {
-            'id': id
+            'ids': id
         }
     }
     const orders = _.get(data, 'select')

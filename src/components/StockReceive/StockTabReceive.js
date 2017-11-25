@@ -211,7 +211,6 @@ const StockTabReceive = enhance((props) => {
         const by = _.get(item, 'by')
         const type = _.get(item, 'type')
         const formattedType = stockTypeFormat(type)
-        const status = _.get(item, 'status')
         const acceptedBy = _.get(item, ['acceptedBy', 'firstName']) && _.get(item, ['acceptedBy', 'secondName'])
             ? _.get(item, ['acceptedBy', 'firstName']) + ' ' + _.get(item, ['acceptedBy', 'secondName'])
             : 'Не указано'

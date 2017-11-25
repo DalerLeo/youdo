@@ -20,7 +20,6 @@ import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import moment from 'moment'
-import getConfig from '../../helpers/getConfig'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import Badge from 'material-ui/Badge'
 import ContentAdd from 'material-ui/svg-icons/content/add'
@@ -272,13 +271,13 @@ const OrderGridList = enhance((props) => {
         </IconButton>
     )
 
-    const currentCurrency = getConfig('PRIMARY_CURRENCY')
     const orderList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const client = _.get(item, ['client', 'name'])
         const market = _.get(item, ['market', 'name'])
         const paymentDate = dateFormat(_.get(item, 'paymentDate'))
         const now = moment().format('YYYY-MM-DD')
+        const currentCurrency = _.get(item, ['currency', 'name'])
         const user = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName']) || 'N/A'
         const dateDelivery = dateFormat((_.get(item, 'dateDelivery')), '')
         const createdDate = dateTimeFormat(_.get(item, 'createdDate'), true)
