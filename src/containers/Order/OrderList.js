@@ -53,6 +53,7 @@ import {
     orderMultiUpdateAction,
     orderAddProductsListAction,
     orderChangePriceListAction,
+    orderChangeCurrencyListAction,
     orderSalesPrintFetchAction
 } from '../../actions/order'
 import {openSnackbarAction} from '../../actions/snackbar'
@@ -254,6 +255,25 @@ const enhance = compose(
         }
     }),
 
+    withPropsOnChange((props, nextProps) => {
+        const prevCurrency = _.get(props, ['createForm', 'values', 'currency', 'value'])
+        const nextCurrency = _.get(nextProps, ['createForm', 'values', 'currency', 'value'])
+        const openCreateDialog = toBoolean(_.get(nextProps, ['location', 'query', ORDER_CREATE_DIALOG_OPEN]))
+        const openUpdateDialog = toBoolean(_.get(nextProps, ['location', 'query', ORDER_UPDATE_DIALOG_OPEN]))
+
+        return (prevCurrency !== nextCurrency && nextCurrency && (openCreateDialog === true || openUpdateDialog === true))
+    }, ({dispatch, createForm}) => {
+        const currency = _.toInteger(_.get(createForm, ['values', 'currency', 'value']))
+        const priceList = _.toInteger(_.get(createForm, ['values', 'priceList', 'value']))
+        const products = _.join(_.map(_.get(createForm, ['values', 'products']), (item) => {
+            return _.get(item, ['product', 'value', 'id'])
+        }), '-')
+        if (currency > ZERO && priceList > ZERO) {
+            const size = 100
+            dispatch(orderChangeCurrencyListAction(null, priceList, size, products, currency))
+        }
+    }),
+
     withState('openAddProductDialog', 'setOpenAddProductDialog', false),
     withState('openAddProductConfirm', 'setOpenAddProductConfirm', false),
     withPropsOnChange((props, nextProps) => {
@@ -289,12 +309,13 @@ const enhance = compose(
             return amount > ZERO
         })
         const priceList = _.get(createForm, ['values', 'priceList', 'value'])
+        const currency = _.get(createForm, ['values', 'currency', 'value'])
         const productType = _.get(addProductsForm, ['values', 'productType', 'value'])
         if (!_.isEmpty(products)) {
             setOpenAddProductConfirm(true)
         } else if (priceList && openAddProductDialog && _.isEmpty(products)) {
             setOpenAddProductConfirm(false)
-            dispatch(orderAddProductsListAction(priceList, filterProducts, productType))
+            dispatch(orderAddProductsListAction(priceList, filterProducts, productType, currency))
         }
     }),
 
@@ -302,10 +323,11 @@ const enhance = compose(
         return props.openAddProductDialog !== nextProps.openAddProductDialog && nextProps.openAddProductDialog
     }, ({dispatch, createForm, addProductsForm, openAddProductDialog, filterProducts, setOpenAddProductConfirm}) => {
         const priceList = _.get(createForm, ['values', 'priceList', 'value'])
+        const currency = _.get(createForm, ['values', 'currency', 'value'])
         const productType = _.get(addProductsForm, ['values', 'productType', 'value'])
         if (priceList && openAddProductDialog) {
             setOpenAddProductConfirm(false)
-            dispatch(orderAddProductsListAction(priceList, filterProducts, productType))
+            dispatch(orderAddProductsListAction(priceList, filterProducts, productType, currency))
         }
     }),
 
@@ -1022,7 +1044,8 @@ const OrderList = enhance((props) => {
                     value: _.toInteger(_.get(detail, ['contact', 'id']))
                 },
                 currency: {
-                    value: _.get(detail, ['currency', 'id'])
+                    value: _.get(detail, ['currency', 'id']),
+                    text: _.get(detail, ['currency', 'name'])
                 },
                 market: {
                     value: _.toInteger(_.get(detail, ['market', 'id']))

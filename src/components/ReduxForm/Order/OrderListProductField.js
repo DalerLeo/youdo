@@ -11,7 +11,6 @@ import Groceries from '../../Images/groceries.svg'
 import Tooltip from '../../ToolTip'
 import {connect} from 'react-redux'
 import numberFormat from '../../../helpers/numberFormat'
-import getConfig from '../../../helpers/getConfig'
 import numberWithoutSpaces from '../../../helpers/numberWithoutSpaces'
 import CircularProgress from 'material-ui/CircularProgress'
 import {
@@ -203,6 +202,7 @@ const enhance = compose(
         const isAdmin = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
         const paymentType = _.get(state, ['form', 'OrderCreateForm', 'values', 'paymentType'])
         const priceList = _.get(state, ['form', 'OrderCreateForm', 'values', 'priceList'])
+        const formCurerncy = _.get(state, ['form', 'OrderCreateForm', 'values', 'currency'])
         const updatedPriceListProducts = _.get(state, ['order', 'changePrice', 'data', 'results'])
         const initialProducts = _.get(state, ['form', 'OrderCreateForm', 'values', 'products'])
         return {
@@ -213,6 +213,7 @@ const enhance = compose(
             updatedPriceListProducts,
             isAdmin,
             priceList,
+            formCurerncy,
             initialProducts
         }
     }),
@@ -406,6 +407,7 @@ const OrderListProductField = enhance((props) => {
         isAdmin,
         editProductsLoading,
         priceList,
+        formCurerncy,
         handleOpenAddProduct
     } = props
     const ONE = 1
@@ -413,7 +415,7 @@ const OrderListProductField = enhance((props) => {
     const canChangeAnyPrice = _.get(props, 'canChangeAnyPrice')
     const products = _.get(props, ['products', 'input', 'value']) || []
     const error = _.get(props, ['products', 'meta', 'error'])
-    const currency = getConfig('PRIMARY_CURRENCY')
+    const currency = _.get(formCurerncy, 'text')
     initialPaymentType = paymentType
     initialPriceList = _.get(priceList, 'value')
 
@@ -469,19 +471,19 @@ const OrderListProductField = enhance((props) => {
                 <div className={classes.headers} style={{marginTop: '-10px'}}>
                     <div className={classes.title}>Список товаров</div>
                     <div>
-                        {!editOnlyCost && priceList && <FlatButton
+                        {!editOnlyCost && (paymentType && priceList && formCurerncy) && <FlatButton
                             label="добавить товар"
                             labelStyle={{fontSize: '13px', color: '#12aaeb'}}
                             className={classes.span}
                             onTouchTap={() => dispatch({open: !state.open})}
                         />}
-                        {!editOnlyCost && priceList && handleOpenAddProduct && <FlatButton
+                        {!editOnlyCost && (paymentType && priceList && formCurerncy) && handleOpenAddProduct && <FlatButton
                             label="добавить продукты"
                             labelStyle={{fontSize: '13px', color: '#12aaeb'}}
                             className={classes.span}
                             onTouchTap={handleOpenAddProduct}
                         />}
-                        {!editOnlyCost && !priceList &&
+                        {!editOnlyCost && !(paymentType && priceList && formCurerncy) &&
                         <Tooltip position="bottom" text="Выберите прайс лист">
                             <FlatButton
                                 label="+ добавить товар"
@@ -709,11 +711,11 @@ const OrderListProductField = enhance((props) => {
                 : <div className={classes.imagePlaceholder}>
                     <div style={{textAlign: 'center', color: '#adadad'}}>
                         <img src={Groceries} alt=""/>
-                        {priceList
+                        {(paymentType && priceList && formCurerncy)
                             ? <div>Вы еще не выбрали ни одного товара. <br/> <a onClick={() => dispatch({open: !state.open})}>Добавить</a>
                                 товар?
                             </div>
-                            : <div>Для добавления товаров, <br/> выберите прайс лист</div>}
+                            : <div>Для добавления товаров, <br/> выберите тип оплаты, валюту и прайс лист</div>}
                     </div>
                 </div>
             }
