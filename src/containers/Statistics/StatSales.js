@@ -80,6 +80,8 @@ const enhance = compose(
     }),
 
     withState('openPrint', 'setOpenPrint', false),
+    withState('openDeliveryPrint', 'setOpenDeliveryPrint', false),
+
     withHandlers({
         handleOpenStatSaleDialog: props => (id) => {
             const {filter} = props
@@ -290,7 +292,6 @@ const StatSalesList = enhance((props) => {
         data: listPrint,
         listPrintLoading
     }
-    const order = false
     if (openPrint) {
         document.getElementById('wrapper').style.height = 'auto'
 
@@ -299,6 +300,7 @@ const StatSalesList = enhance((props) => {
             listPrintData={listPrintData}/>
     }
 
+    const order = false
     return (
         <Layout {...layout}>
             <StatSalesGridList

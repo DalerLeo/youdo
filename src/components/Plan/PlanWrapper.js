@@ -25,6 +25,10 @@ import Money from 'material-ui/svg-icons/maps/local-atm'
 import NotFound from '../Images/not-found.png'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
+const ZERO = 0
+const HUNDRED = 100
+const MERCH = 'посещено'
+const DELIVER = 'посетил'
 
 const enhance = compose(
     injectSheet({
@@ -227,18 +231,16 @@ const PlanWrapper = enhance((props) => {
         selectedWeekDay,
         agentPlans
     } = props
-
-    const ZERO = 0
-    const HUNDRED = 100
     const detailId = _.get(detailData, 'id')
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const agentsList = _.map(_.get(usersList, 'data'), (item) => {
         const id = _.get(item, 'id')
         const username = _.get(item, 'firstName') + ' ' + _.get(item, 'secondName')
-        const planFact = _.toNumber(_.get(item, 'factPrice'))
-        const planAmount = _.toNumber(_.get(item, 'monthlyPlanAmount'))
+        const planFact = _.toNumber(_.get(item, 'doneCount'))
+        const planAmount = _.toNumber(_.get(item, 'todoCount'))
         const percent = (planFact / planAmount) * HUNDRED
-        const agentTooltip = numberFormat(planFact) + '/ ' + numberFormat(planAmount) + ' ' + primaryCurrency
+        const tooltipHint = groupId === 'merch' ? MERCH : (groupId === 'delivery') ? DELIVER : (groupId === 'collector') ? primaryCurrency : ''
+        const agentTooltip = numberFormat(planFact) + ' / ' + numberFormat(planAmount) + ' ' + tooltipHint
 
         if (planAmount <= ZERO) {
             return (

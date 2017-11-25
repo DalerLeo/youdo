@@ -24,6 +24,8 @@ import LinearProgress from '../LinearProgress'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
 import dateFormat from '../../helpers/dateFormat'
+import MenuItem from 'material-ui/MenuItem'
+import IconMenu from 'material-ui/IconMenu'
 const ZERO = 0
 
 const popupWidth = 210
@@ -216,7 +218,8 @@ const OrderDetails = enhance((props) => {
         openDiscountDialog,
         setOpenDiscountDialog,
         handleSubmitDiscountDialog,
-        handleSubmitSetZeroDiscountDialog
+        handleSubmitSetZeroDiscountDialog,
+        handleOpenPrintContract
     } = props
     const id = _.get(data, 'id')
     const market = _.get(data, ['market', 'name'])
@@ -294,15 +297,28 @@ const OrderDetails = enhance((props) => {
                             <Return />
                         </IconButton>
                     </Tooltip>
-                    <Tooltip position="bottom" text="Распечатать накладную">
-                        <IconButton
-                            disabled={(status === CANCELED)}
-                            iconStyle={iconStyle.icon}
-                            style={iconStyle.button}
-                            touch={true}
-                            onTouchTap={() => { getDocument.handleGetDocument(id) }}>
-                            <PrintIcon />
-                        </IconButton>
+                    <Tooltip position="left" text="Распечатать">
+                        <IconMenu
+                            menuItemStyle={{fontSize: '13px'}}
+                            disabled={true}
+                            iconButtonElement={<IconButton
+                                disabled={(status === CANCELED)}
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}
+                                touch={true}>
+                                <PrintIcon />
+                            </IconButton>}
+                            anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
+                            targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+                            <MenuItem
+                                primaryText="Накладные"
+                                onTouchTap={() => { getDocument.handleGetDocument(id) }}
+                            />
+                            <MenuItem
+                                primaryText="Договор"
+                                onTouchTap={() => { handleOpenPrintContract() }}
+                            />
+                        </IconMenu>
                     </Tooltip>
                     <Tooltip position="bottom" text="Изменить">
                         <IconButton
