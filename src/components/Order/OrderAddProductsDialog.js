@@ -16,7 +16,6 @@ import Paper from 'material-ui/Paper'
 import SearchIcon from 'material-ui/svg-icons/action/search'
 import NotFound from '../Images/not-found.png'
 import numberFormat from '../../helpers/numberFormat'
-import getConfig from '../../helpers/getConfig'
 import {
     TextField,
     ProductTypeSearchField,
@@ -245,7 +244,8 @@ const enhance = compose(
         enableReinitialize: true
     }),
     connect((state) => {
-        const currency = _.get(state, ['form', 'SupplyCreateForm', 'values', 'currency', 'text'])
+        const currency = _.get(state, ['form', 'SupplyCreateForm', 'values', 'currency', 'text']) ||
+            _.get(state, ['form', 'OrderCreateForm', 'values', 'currency', 'text'])
         return {
             currency
         }
@@ -299,7 +299,7 @@ const OrderAddProductsDialog = enhance((props) => {
         currency
     } = props
     const onSubmit = handleSubmit(props.onSubmit)
-    const primaryCurrency = currency || getConfig('PRIMARY_CURRENCY')
+    const primaryCurrency = currency
     const products = _.map(data, (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')

@@ -104,19 +104,21 @@ export const listFilterSerializer = (data, id, withOrderReturn, print) => {
         'ordering': ordering && orderingSnakeCase(ordering)
     }
 }
-export const priceListFilterSerializer = (orderId, priceList, size, products) => {
+export const priceListFilterSerializer = (orderId, priceList, size, products, currency) => {
     if (priceList === MINUS_ONE) {
         return {
             'net_cost': ONE,
             'page_size': size,
-            'ids': products
+            'ids': products,
+            currency
         }
     }
     return {
         'order': orderId,
         'price_list': priceList,
         'page_size': size,
-        'ids': products
+        'ids': products,
+        currency
     }
 }
 
