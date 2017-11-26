@@ -234,7 +234,7 @@ export default injectSheet({
         }
     },
 
-    '@keyframes animation': {
+    '@keyframes sidebarArrow': {
         '0%': {top: 3},
         '50%': {top: -3},
         '100%': {top: 3}
@@ -261,7 +261,7 @@ export default injectSheet({
             position: 'relative',
             transition: 'all 300ms ease',
             opacity: '0.5',
-            animation: 'animation ease 700ms infinite'
+            animation: 'sidebarArrow ease 700ms infinite'
         }
     },
 

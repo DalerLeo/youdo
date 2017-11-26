@@ -20,3 +20,71 @@ export const statSalesDataFetchAction = (filter) => {
         payload
     }
 }
+
+export const statSalesReturnDataFetchAction = (filter) => {
+    const params = serializers.returnChart(filter.getParams())
+    const payload = axios()
+        .get(API.STAT_RETURN_LIST, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STAT_RETURN_LIST,
+        payload
+    }
+}
+
+export const statAgentDataFetchAction = (filter) => {
+    const params = serializers.agentsChart(filter.getParams())
+    const payload = axios()
+        .get((API.STAT_AGENT_LIST), {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STAT_AGENT_LIST,
+        payload
+    }
+}
+
+export const statFinanceIncomeFetchAction = (filter) => {
+    const params = serializers.incomeFinance(filter.getParams())
+    const payload = axios()
+        .get(API.STAT_FINANCE_DATA, {params, type: 'income'})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STAT_FINANCE_DATA_IN,
+        payload
+    }
+}
+
+export const statFinanceExpenseFetchAction = (filter) => {
+    const params = serializers.expenseFinance(filter.getParams())
+    const payload = axios()
+        .get(API.STAT_FINANCE_DATA, {params, type: 'expense'})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STAT_FINANCE_DATA_OUT,
+        payload
+    }
+}

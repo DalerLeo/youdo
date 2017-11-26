@@ -1,16 +1,9 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import _ from 'lodash'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import ReactHighcharts from 'react-highcharts'
 import getConfig from '../../helpers/getConfig'
-import moment from 'moment'
-
-const dateFormat = (date, time, defaultText) => {
-    const dateTime = moment(date).locale('ru').format('DD MMM YYYY')
-    return (date && time) ? dateTime : (date) ? moment(date).locale('ru').format('D MMM') : defaultText
-}
 
 const enhance = compose(
     injectSheet({
@@ -18,25 +11,19 @@ const enhance = compose(
     })
 )
 
-const OrderChart = enhance((props) => {
+const AgentsChart = enhance((props) => {
     const {
-        tooltipTitle,
-        primaryValues,
-        secondaryValues,
-        primaryText,
-        secondaryText,
-        height
+        agentsList,
+        ordersData,
+        returnsData,
+        factsData
     } = props
-
-    const tooltipDate = _.map(tooltipTitle, (item) => {
-        return dateFormat(item)
-    })
 
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const config = {
         chart: {
-            type: 'column',
-            height: height
+            type: 'bar',
+            height: 450
         },
         title: {
             text: '',
@@ -51,7 +38,7 @@ const OrderChart = enhance((props) => {
             enabled: false
         },
         xAxis: {
-            categories: tooltipDate,
+            categories: agentsList,
             title: {
                 text: '',
                 style: {
@@ -74,15 +61,12 @@ const OrderChart = enhance((props) => {
             }]
         },
         plotOptions: {
-            series: {
-                lineWidth: 0
-            },
-            column: {
-                borderRadius: 2,
-                stacking: 'normal'
+            bar: {
+                borderRadius: 2
             }
         },
         tooltip: {
+            shared: true,
             valueSuffix: ' ' + primaryCurrency,
             backgroundColor: '#fff',
             style: {
@@ -92,19 +76,28 @@ const OrderChart = enhance((props) => {
             },
             borderRadius: 0,
             borderWidth: 0,
-            headerFormat: '<b>{point.x}</b><br/>',
-            pointFormat: '{series.name}: {point.y}<br/>Сумма: {point.stackTotal}'
+            enabled: true,
+            shadow: true,
+            useHTML: true,
+            crosshairs: true,
+            pointFormat:
+            '<div>' +
+            '{series.name}: {point.y}' +
+            '</div>'
         },
         series: [{
-            name: primaryText,
-            data: primaryValues,
-            color: '#12aaeb'
-
+            name: 'Продажи',
+            data: ordersData,
+            color: '#5d6474'
         },
         {
-            name: secondaryText,
-            data: secondaryValues,
-            color: '#5d6474'
+            name: 'Возвраты',
+            data: returnsData,
+            color: '#ff526d'
+        }, {
+            name: 'Фактически',
+            data: factsData,
+            color: '#12aaeb'
         }]
     }
 
@@ -113,11 +106,11 @@ const OrderChart = enhance((props) => {
     )
 })
 
-OrderChart.propTypes = {
-    tooltipTitle: PropTypes.any.isRequired,
-    primaryValues: PropTypes.array.isRequired,
-    primaryText: PropTypes.string.isRequired,
-    height: PropTypes.number.isRequired
+AgentsChart.propTypes = {
+    agentsList: PropTypes.array.isRequired,
+    ordersData: PropTypes.array.isRequired,
+    returnsData: PropTypes.array.isRequired,
+    factsData: PropTypes.array.isRequired
 }
 
-export default OrderChart
+export default AgentsChart
