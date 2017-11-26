@@ -106,7 +106,7 @@ const listHeader = [
         name: 'by',
         sorting: false,
         title: 'От кого',
-        xs: 3
+        xs: 4
     },
     {
         name: 'type',
@@ -125,12 +125,6 @@ const listHeader = [
         sorting: false,
         title: 'Склад',
         xs: 2
-    },
-    {
-        name: 'stock',
-        sorting: false,
-        title: 'Cтатус',
-        xs: 1
     }
 ]
 const listHeaderHistory = [
@@ -217,7 +211,6 @@ const StockTabReceive = enhance((props) => {
         const by = _.get(item, 'by')
         const type = _.get(item, 'type')
         const formattedType = stockTypeFormat(type)
-        const status = _.get(item, 'status')
         const acceptedBy = _.get(item, ['acceptedBy', 'firstName']) && _.get(item, ['acceptedBy', 'secondName'])
             ? _.get(item, ['acceptedBy', 'firstName']) + ' ' + _.get(item, ['acceptedBy', 'secondName'])
             : 'Не указано'
@@ -251,11 +244,10 @@ const StockTabReceive = enhance((props) => {
                 }}
                 style={{cursor: 'pointer'}}>
                 <Col xs={2}>{key}</Col>
-                <Col xs={3}>{by}</Col>
+                <Col xs={4}>{by}</Col>
                 <Col xs={2}>{formattedType}</Col>
                 <Col xs={2}>{date}</Col>
                 <Col xs={2}>{stockName}</Col>
-                <Col xs={1}>{status}</Col>
             </Row>
         )
     })

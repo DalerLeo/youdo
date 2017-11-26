@@ -227,6 +227,7 @@ const OrderDetails = enhance((props) => {
     const agent = _.get(data, ['user', 'firstName']) + ' ' + _.get(data, ['user', 'secondName'])
     const dealType = _.get(data, 'dealType')
     const division = _.get(data, ['division', 'name'])
+    const divisionBool = _.toInteger(_.get(data, 'division'))
     const deliveryMan = _.get(data, ['deliveryMan', 'firstName']) && _.get(data, ['deliveryMan', 'firstName'])
         ? _.get(data, ['deliveryMan', 'firstName']) + ' ' + _.get(data, ['deliveryMan', 'secondName'])
         : 'Не указан'
@@ -384,7 +385,7 @@ const OrderDetails = enhance((props) => {
                                     <span>Тип сделки:</span>
                                     <span>{(dealType === '0') ? 'Стандартная' : 'Консигнация'}</span>
                                 </li>
-                                {configDivisions && <li>
+                                {configDivisions && divisionBool && <li>
                                     <span>Подразделение:</span>
                                     <span>{division}</span>
                                 </li>}

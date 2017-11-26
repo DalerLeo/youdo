@@ -76,7 +76,7 @@ export const listFilterSerializer = (data, id, withOrderReturn, print) => {
 
     if (id) {
         return {
-            'id': id
+            'ids': id
         }
     }
     const orders = _.get(data, 'select')

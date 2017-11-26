@@ -149,7 +149,7 @@ const RoutePrint = enhance((props) => {
             <div className={classes.info}>
                 <div className={classes.block}>
                     <ul>
-                        <li>Агент: </li>
+                        <li>Доставщик: </li>
                         <li>Склад: </li>
                     </ul>
                     <ul>

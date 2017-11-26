@@ -23,7 +23,6 @@ import {
 } from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 import numberFormat from '../../helpers/numberFormat'
-import getConfig from '../../helpers/getConfig'
 import OrderDealTypeRadio from '../ReduxForm/Order/OrderDealTypeRadio'
 import OrderPaymentTypeRadio from '../ReduxForm/Order/OrderPaymentTypeRadio'
 import MarketSearchField from '../ReduxForm/ClientBalance/MarketSearchField'
@@ -220,8 +219,10 @@ const enhance = compose(
     }),
     connect((state) => {
         const orderProducts = _.get(state, ['form', 'OrderCreateForm', 'values', 'products'])
+        const currencyItem = _.get(state, ['form', 'OrderCreateForm', 'values', 'currencyItem'])
         return {
-            orderProducts
+            orderProducts,
+            currencyItem
         }
     }),
 )
@@ -244,6 +245,7 @@ const OrderCreateDialog = enhance((props) => {
         clientId,
         loading,
         orderProducts,
+        currencyItem,
         isSuperUser,
         editProductsLoading,
         handleOpenAddProduct
@@ -387,7 +389,7 @@ const OrderCreateDialog = enhance((props) => {
                         </div>}
                     <div className={classes.bottomButton}>
                         <div className={classes.commentField}>
-                            Общая сумма заказа: <b>{numberFormat(totalCost, getConfig('PRIMARY_CURRENCY'))}</b>
+                            Общая сумма заказа: <b>{numberFormat(totalCost, currencyItem)}</b>
                         </div>
                         {(notEnough) ? <FlatButton
                             label="Далее"
