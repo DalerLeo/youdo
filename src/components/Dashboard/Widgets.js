@@ -7,7 +7,7 @@ import Drawer from 'material-ui/Drawer'
 import FlatButton from 'material-ui/FlatButton'
 import {CheckBox} from '../ReduxForm'
 
-export const widgetsFormKey = {
+export const WIDGETS_FORM_KEY = {
     SALES: 'sales',
     ORDERS: 'orders',
     AGENTS: 'agents',
@@ -29,6 +29,9 @@ const enhance = compose(
                 display: 'flex',
                 flexDirection: 'column',
                 height: '100%'
+            },
+            '& footer': {
+                padding: '12px 15px'
             }
         },
         switches: {
@@ -59,7 +62,9 @@ const Widgets = enhance((props) => {
     const {
         classes,
         openDrawer,
-        setOpenDrawer
+        setOpenDrawer,
+        submitForm,
+        handleSubmit
     } = props
 
     return (
@@ -71,7 +76,7 @@ const Widgets = enhance((props) => {
                 containerClassName={classes.widgetsWrapper}
                 onRequestChange={() => { setOpenDrawer(false) }}
                 open={openDrawer}>
-                <form>
+                <form onSubmit={handleSubmit(submitForm)}>
                     <header>
                         <h4>Настройка виджетов</h4>
                     </header>
@@ -110,7 +115,7 @@ const Widgets = enhance((props) => {
                             style={{height: '40px', lineHeight: '40px'}}
                             labelStyle={{color: '#fff', fontWeight: '600', verticalAlign: 'baseline'}}
                             fullWidth={true}
-                            onClick={() => { setOpenDrawer(false) }}/>
+                            type="submit"/>
                     </footer>
                 </form>
             </Drawer>
