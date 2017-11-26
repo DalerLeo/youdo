@@ -21,6 +21,23 @@ export const statSalesDataFetchAction = (filter) => {
     }
 }
 
+export const statSalesReturnDataFetchAction = (filter) => {
+    const params = serializers.returnChart(filter.getParams())
+    const payload = axios()
+        .get(API.STAT_RETURN_LIST, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STAT_RETURN_LIST,
+        payload
+    }
+}
+
 export const statAgentDataFetchAction = (filter) => {
     const params = serializers.agentsChart(filter.getParams())
     const payload = axios()

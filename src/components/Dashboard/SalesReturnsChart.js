@@ -120,7 +120,7 @@ const SalesReturnsChart = enhance((props) => {
             },
             name: secondaryText,
             data: secondaryValues,
-            color: '#e57373'
+            color: '#ff526d'
 
         }]
     }

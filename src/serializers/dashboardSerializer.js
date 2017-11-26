@@ -16,6 +16,20 @@ export const orderChart = (data) => {
     }
 }
 
+export const returnChart = (data) => {
+    const {...defaultData} = data
+    const lastDayOfMonth = _.get(defaultData, 'endDate')
+        ? moment(_.get(defaultData, 'endDate')).daysInMonth()
+        : moment().daysInMonth()
+    const urlFromDate = _.get(defaultData, 'beginDate') || moment().format('YYYY-MM-01')
+    const urlToDate = _.get(defaultData, 'endDate') || moment().format('YYYY-MM-' + lastDayOfMonth)
+
+    return {
+        'created_date_0': urlFromDate,
+        'created_date_1': urlToDate
+    }
+}
+
 export const agentsChart = (data) => {
     const {...defaultData} = data
     const beginMonth = _.get(defaultData, 'beginDate') ? moment(_.get(defaultData, 'beginDate')).format('M') : moment().format('M')

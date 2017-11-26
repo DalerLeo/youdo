@@ -8,6 +8,7 @@ import filterHelper from '../../helpers/filter'
 import moment from 'moment'
 import {
     statSalesDataFetchAction,
+    statSalesReturnDataFetchAction,
     statAgentDataFetchAction,
     statFinanceIncomeFetchAction,
     statFinanceExpenseFetchAction
@@ -19,6 +20,8 @@ const enhance = compose(
         const pathname = _.get(props, ['location', 'pathname'])
         const orderList = _.get(state, ['statSales', 'data', 'data'])
         const orderLoading = _.get(state, ['statSales', 'data', 'loading'])
+        const returnList = _.get(state, ['statSales', 'returnList', 'data'])
+        const returnLoading = _.get(state, ['statSales', 'returnList', 'loading'])
         const agentsData = _.get(state, ['statAgent', 'list', 'data'])
         const agentsDataLoading = _.get(state, ['statAgent', 'list', 'loading'])
         const financeIncome = _.get(state, ['statFinance', 'dataIn', 'data'])
@@ -30,6 +33,8 @@ const enhance = compose(
         return {
             orderList,
             orderLoading,
+            returnList,
+            returnLoading,
             agentsData,
             agentsDataLoading,
             financeIncome,
@@ -45,6 +50,7 @@ const enhance = compose(
         return props.orderList && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
         dispatch(statSalesDataFetchAction(filter))
+        dispatch(statSalesReturnDataFetchAction(filter))
     }),
     withPropsOnChange((props, nextProps) => {
         return props.agentsData && props.filter.filterRequest() !== nextProps.filter.filterRequest()
@@ -65,6 +71,8 @@ const MainList = enhance((props) => {
         location,
         orderList,
         orderLoading,
+        returnList,
+        returnLoading,
         agentsData,
         agentsDataLoading,
         financeIncome,
@@ -100,6 +108,31 @@ const MainList = enhance((props) => {
         return financeData
     }
 
+    const mergeOrdersReturns = (firstData, secondData) => {
+        const ordersData = {}
+        if (!orderLoading && !returnLoading) {
+            _.map(firstData, (item) => {
+                ordersData[_.get(item, 'date')] = {
+                    orders: _.toNumber(_.get(item, 'amount'))
+                }
+            })
+            _.map(secondData, (item) => {
+                if (ordersData[_.get(item, 'date')]) {
+                    ordersData[_.get(item, 'date')] = {
+                        orders: _.toNumber(ordersData[_.get(item, 'date')].orders),
+                        returns: _.toNumber(_.get(item, 'totalAmount'))
+                    }
+                } else {
+                    ordersData[_.get(item, 'date')] = {
+                        orders: null,
+                        returns: _.toNumber(_.get(item, 'totalAmount'))
+                    }
+                }
+            })
+        }
+        return ordersData
+    }
+
     const lastDayOfMonth = _.get(location, ['query', 'endDate'])
         ? moment(_.get(location, ['query', 'endDate'])).daysInMonth()
         : moment().daysInMonth()
@@ -110,9 +143,15 @@ const MainList = enhance((props) => {
         username: userName,
         position: userPosition
     }
+
     const orderChart = {
         data: orderList,
         loading: orderLoading
+    }
+
+    const ordersReturnsChart = {
+        data: mergeOrdersReturns(orderList, returnList),
+        loading: orderLoading || returnLoading
     }
 
     const agentsChart = {
@@ -137,6 +176,7 @@ const MainList = enhance((props) => {
             <DashboardWrapper
                 filter={filter}
                 orderChart={orderChart}
+                ordersReturnsChart={ordersReturnsChart}
                 agentsChart={agentsChart}
                 financeChart={financeChart}
                 userData={userData}

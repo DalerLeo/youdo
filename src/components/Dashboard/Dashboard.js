@@ -107,6 +107,7 @@ const Dashboard = enhance((props) => {
         userData,
         filter,
         orderChart,
+        ordersReturnsChart,
         agentsChart,
         financeChart,
         dateInitialValues
@@ -118,7 +119,7 @@ const Dashboard = enhance((props) => {
     const username = _.get(userData, 'username')
     const position = _.get(userData, 'position')
 
-    // ORDERS & RETURNS //
+    // SALES //
     const orderChartLoading = _.get(orderChart, 'loading')
     const orderChartDate = _.map(_.get(orderChart, 'data'), (item) => {
         return _.get(item, 'date')
@@ -126,15 +127,17 @@ const Dashboard = enhance((props) => {
     const orderChartSales = _.map(_.get(orderChart, 'data'), (item) => {
         return _.toNumber(_.get(item, 'amount'))
     })
-    const orderChartReturns = _.map(_.get(orderChart, 'data'), (item) => {
-        const returnAmount = _.get(item, 'returnAmount')
-        return _.isNull(returnAmount) ? null : _.toNumber(returnAmount)
-    })
     const orderChartSalesSum = _.sumBy(_.get(orderChart, 'data'), (item) => {
         return _.toNumber(_.get(item, 'amount'))
     })
-    const orderChartReturnsSum = _.sumBy(_.get(orderChart, 'data'), (item) => {
-        return _.toNumber(_.get(item, 'returnAmount'))
+
+    // ORDERS & RETURNS //
+    const orderReturnLoading = _.get(ordersReturnsChart, 'loading')
+    const orderChartReturns = _.map(_.get(ordersReturnsChart, 'data'), (item) => {
+        return _.get(item, 'returns') || null
+    })
+    const orderChartReturnsSum = _.sumBy(_.get(ordersReturnsChart, 'data'), (item) => {
+        return _.toNumber(_.get(item, 'returns'))
     })
 
     // AGENTS //
@@ -219,7 +222,7 @@ const Dashboard = enhance((props) => {
                                 <div>Продажи: {numberFormat(orderChartSalesSum, primaryCurrency)}</div>
                                 <div>Возвраты: {numberFormat(orderChartReturnsSum, primaryCurrency)}</div>
                             </div>
-                            {orderChartLoading
+                            {orderReturnLoading
                                 ? <div className={classes.chartLoader}>
                                     <Loader size={0.75}/>
                                 </div>
