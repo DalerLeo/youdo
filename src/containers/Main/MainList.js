@@ -3,6 +3,7 @@ import React from 'react'
 import {compose, withPropsOnChange} from 'recompose'
 import Layout from '../../components/Layout'
 import DashboardWrapper from '../../components/Dashboard'
+import WelcomeERP from '../../components/Dashboard/WelcomeERP'
 import {connect} from 'react-redux'
 import filterHelper from '../../helpers/filter'
 import moment from 'moment'
@@ -29,6 +30,7 @@ const enhance = compose(
         const financeDataLoading = _.get(state, ['statFinance', 'dataIn', 'loading']) || _.get(state, ['statFinance', 'dataOut', 'loading'])
         const userName = _.get(state, ['authConfirm', 'data', 'firstName']) + ' ' + _.get(state, ['authConfirm', 'data', 'secondName'])
         const userPosition = _.get(state, ['authConfirm', 'data', 'position', 'name'])
+        const isAdmin = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
         const filter = filterHelper(orderList, pathname, query)
         return {
             orderList,
@@ -42,6 +44,7 @@ const enhance = compose(
             financeDataLoading,
             userName,
             userPosition,
+            isAdmin,
             filter
         }
     }),
@@ -80,6 +83,7 @@ const MainList = enhance((props) => {
         financeDataLoading,
         userName,
         userPosition,
+        isAdmin,
         filter
     } = props
 
@@ -173,15 +177,17 @@ const MainList = enhance((props) => {
 
     return (
         <Layout {...layout}>
-            <DashboardWrapper
-                filter={filter}
-                orderChart={orderChart}
-                ordersReturnsChart={ordersReturnsChart}
-                agentsChart={agentsChart}
-                financeChart={financeChart}
-                userData={userData}
-                dateInitialValues={dateInitialValues}
-            />
+            {isAdmin
+            ? <DashboardWrapper
+                    filter={filter}
+                    orderChart={orderChart}
+                    ordersReturnsChart={ordersReturnsChart}
+                    agentsChart={agentsChart}
+                    financeChart={financeChart}
+                    userData={userData}
+                    dateInitialValues={dateInitialValues}
+                />
+            : <WelcomeERP/>}
         </Layout>
     )
 })
