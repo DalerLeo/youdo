@@ -217,6 +217,10 @@ const StatisticsFilterExcel = enhance((props) => {
                         primaryText="Список заказов"
                         onTouchTap={() => { handleGetDocument() }}
                     />
+                    <MenuItem
+                        primaryText="Релиз"
+                        onTouchTap={() => { handleGetDocument() }}
+                    />
                 </IconMenu>
                     : <a className={classes.excel} onClick={handleGetDocument}>
                         <Excel color="#fff"/> <span>Excel</span>

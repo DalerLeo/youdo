@@ -474,7 +474,6 @@ const PlanDetails = enhance((props) => {
     const position = _.get(detailData, ['data', 'position', 'name'])
     const stats = _.get(agentPlans, 'stats')
     const statsLoading = _.get(agentPlans, 'statsLoading')
-
     const statOrders = _.get(stats, ORDER)
     const statPayments = _.get(stats, PAYMENT)
     const statVisits = _.get(stats, VISIT)

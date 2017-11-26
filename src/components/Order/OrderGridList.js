@@ -177,6 +177,20 @@ const enhance = compose(
     }),
 )
 
+const iconStyle = {
+    icon: {
+        color: '#666',
+        width: 20,
+        height: 20
+    },
+    button: {
+        width: 30,
+        height: 30,
+        padding: 0,
+        zIndex: 0
+    }
+}
+
 const OrderGridList = enhance((props) => {
     const {
         filter,
@@ -210,7 +224,8 @@ const OrderGridList = enhance((props) => {
         getExcelDocument,
         releaseDialog,
         addProductDialog,
-        printSalesDialog
+        printSalesDialog,
+        printContractDialog
     } = props
 
     const showCheckboxes = toBoolean(_.get(filter.getParams(), 'showCheckboxes'))
@@ -226,19 +241,7 @@ const OrderGridList = enhance((props) => {
             filter={filter}
             filterDialog={filterDialog}/>
     )
-    const iconStyle = {
-        icon: {
-            color: '#666',
-            width: 20,
-            height: 20
-        },
-        button: {
-            width: 30,
-            height: 30,
-            padding: 0,
-            zIndex: 0
-        }
-    }
+
     const orderDetail = (
         <OrderDetails
             key={_.get(detailData, 'id')}
@@ -264,6 +267,7 @@ const OrderGridList = enhance((props) => {
             handleSubmitSetZeroDiscountDialog={handleSubmitSetZeroDiscountDialog}
             clientId={clientId}
             isSuperUser={isSuperUser}
+            handleOpenPrintContract={printContractDialog.handleOpenContractPrint}
         />
     )
     const iconButton = (
@@ -691,6 +695,11 @@ OrderGridList.propTypes = {
         openPrint: PropTypes.bool.isRequired,
         handleOpenPrintDialog: PropTypes.func.isRequired,
         handleClosePrintDialog: PropTypes.func.isRequired
+    }).isRequired,
+    printContractDialog: PropTypes.shape({
+        openContractPrint: PropTypes.bool.isRequired,
+        handleOpenContractPrint: PropTypes.func.isRequired,
+        handleCloseContractPrint: PropTypes.func.isRequired
     }).isRequired,
     cancelOrderReturnDialog: PropTypes.shape({
         handleOpenCancelOrderReturnDialog: PropTypes.func.isRequired,

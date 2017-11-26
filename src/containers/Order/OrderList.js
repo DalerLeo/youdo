@@ -31,7 +31,8 @@ import {
     TAB,
     OrderGridList,
     OrderPrint,
-    OrderSalesPrint
+    OrderSalesPrint,
+    OrderContractPrint
 } from '../../components/Order'
 const CLIENT_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const CANCEL_ORDER_RETURN_DIALOG_OPEN = 'openCancelConfirmDialog'
@@ -64,6 +65,7 @@ const ZERO = 0
 const TWO = 2
 const THREE = 3
 const FOUR = 4
+const HUNDRED = 1000
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -331,9 +333,12 @@ const enhance = compose(
         }
     }),
 
+    withState('openAddProductDialog', 'setOpenAddProductDialog', false),
+    withState('openAddProductConfirm', 'setOpenAddProductConfirm', false),
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
     withState('openPrint', 'setOpenPrint', false),
     withState('openSalesPrint', 'setOpenSalesPrint', false),
+    withState('openContractPrint', 'setOpenContractPrint', false),
 
     withHandlers({
         handleOpenPrintDialog: props => () => {
@@ -848,6 +853,18 @@ const enhance = compose(
             const print = true
             const params = serializers.listFilterSerializer(filter.getParams(), null, null, print)
             getDocuments(API.ORDER_EXCEL, params)
+        },
+        handleOpenContractPrint: props => () => {
+            const {setOpenContractPrint} = props
+            setOpenContractPrint(true)
+
+            setTimeout(() => {
+                window.print()
+            }, HUNDRED)
+        },
+        handleCloseContractPrint: props => () => {
+            const {setOpenContractPrint} = props
+            setOpenContractPrint(false)
         }
     }),
 )
@@ -888,7 +905,8 @@ const OrderList = enhance((props) => {
         filterProducts,
         openSalesPrint,
         salesPrintData,
-        salesPrintDataLoading
+        salesPrintDataLoading,
+        openContractPrint
     } = props
     const openFilterDialog = toBoolean(_.get(location, ['query', ORDER_FILTER_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', ORDER_CREATE_DIALOG_OPEN]))
@@ -1199,9 +1217,14 @@ const OrderList = enhance((props) => {
         handleClosePrintDialog: props.handleClosePrintDialog
     }
     const printSalesDialog = {
-        openPrint,
+        openSalesPrint,
         handleOpenSalesPrintDialog: props.handleOpenSalesPrintDialog,
         handleCloseSalesPrintDialog: props.handleCloseSalesPrintDialog
+    }
+    const printContractDialog = {
+        openContractPrint,
+        handleOpenContractPrint: props.handleOpenContractPrint,
+        handleCloseContractPrint: props.handleCloseContractPrint
     }
 
     const addProductDialog = {
@@ -1256,6 +1279,19 @@ const OrderList = enhance((props) => {
             loading={salesPrintDataLoading}
             data={salesPrintData}/>
     }
+    if (openContractPrint) {
+        document.getElementById('wrapper').style.height = 'auto'
+
+        return <OrderContractPrint
+            onClose={printContractDialog.handleCloseContractPrint}
+            loading={false}
+            data={{
+                client: _.get(detail, 'client'),
+                market: _.get(detail, 'market'),
+                products: _.get(detail, 'products'),
+                id: _.get(detail, 'id')
+            }}/>
+    }
 
     const canChangeAnyPrice = !_.isEmpty(_.filter(userGroups, (o) => {
         return o.name === 'change_any_price'
@@ -1304,6 +1340,7 @@ const OrderList = enhance((props) => {
                 releaseDialog={releaseDialog}
                 addProductDialog={addProductDialog}
                 printSalesDialog={printSalesDialog}
+                printContractDialog={printContractDialog}
             />
         </Layout>
     )
