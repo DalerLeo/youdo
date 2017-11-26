@@ -10,7 +10,6 @@ import numberFormat from '../../helpers/numberFormat'
 import {Tabs, Tab} from 'material-ui/Tabs'
 import * as TAB from '../../constants/orderTab'
 import NotFound from '../Images/not-found.png'
-import getConfig from '../../helpers/getConfig'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import InProcess from 'material-ui/svg-icons/action/cached'
 import IconButton from 'material-ui/IconButton'
@@ -141,7 +140,7 @@ const OrderDetailsRightSideTabs = enhance((props) => {
     const id = _.get(data, 'id')
     const products = _.get(data, 'products')
     const discountPrice = _.get(data, 'discountPrice')
-    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
+    const primaryCurrency = _.get(data, ['currency', 'name'])
     const firstType = _.get(products, ['0', 'product', 'productType', 'id'])
     const firstMeasurement = _.get(products, ['0', 'product', 'measurement', 'name'])
     const totalProductPrice = _.sumBy(products, (item) => {

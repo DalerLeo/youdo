@@ -11,7 +11,8 @@ import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import Paper from 'material-ui/Paper'
 import moment from 'moment'
-
+import MenuItem from 'material-ui/MenuItem'
+import IconMenu from 'material-ui/IconMenu'
 const ZERO = 0
 
 const enhance = compose(
@@ -133,7 +134,9 @@ const StatisticsFilterExcel = enhance((props) => {
         openFilter,
         handleGetDocument,
         withoutDate,
-        extraButton
+        extraButton,
+        sales,
+        handleOpenprintDialog
     } = props
 
     const iconStyle = {
@@ -198,9 +201,27 @@ const StatisticsFilterExcel = enhance((props) => {
             </a>
             <div className={classes.buttons}>
                 {extraButton || null}
-                <a className={classes.excel} onClick={handleGetDocument}>
-                    <Excel color="#fff"/> <span>Excel</span>
-                </a>
+                {sales ? <IconMenu
+                    menuItemStyle={{fontSize: '13px'}}
+                    iconButtonElement={<a className={classes.excel}>
+                                            <Excel color="#fff"/> <span>Скачать</span>
+                                        </a>
+                    }
+                    anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
+                    targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+                    <MenuItem
+                        primaryText="Накладные"
+                        onTouchTap={handleOpenprintDialog}
+                    />
+                    <MenuItem
+                        primaryText="Список заказов"
+                        onTouchTap={() => { handleGetDocument() }}
+                    />
+                </IconMenu>
+                    : <a className={classes.excel} onClick={handleGetDocument}>
+                        <Excel color="#fff"/> <span>Excel</span>
+                      </a>}
+
             </div>
         </div>
     )

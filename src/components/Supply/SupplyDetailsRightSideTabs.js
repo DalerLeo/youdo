@@ -38,6 +38,7 @@ const enhance = compose(
                     textAlign: 'right'
                 },
                 '& > div:first-child': {
+                    wordWrap: 'break-word',
                     textAlign: 'left'
                 },
                 '& .redFont > div': {

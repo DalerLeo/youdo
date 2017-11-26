@@ -17,6 +17,12 @@ export const createSerializer = (data) => {
         return _.get(o, 'selected')
     })
 
+    const currencies = _.map(_.filter(_.get(data, ['currencies']), (o) => {
+        return _.get(o, 'selected')
+    }), (item) => {
+        return _.get(item, 'id')
+    })
+
     const newStock = _.map(stocks, (val) => {
         return val.id
     })
@@ -39,7 +45,8 @@ export const createSerializer = (data) => {
         position,
         'is_active': isActive,
         'stocks': stockSelect ? newStock : singleStock,
-        'price_lists': newMarket
+        'price_lists': newMarket,
+        currencies
     }
 }
 

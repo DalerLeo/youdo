@@ -1,3 +1,4 @@
+import moment from 'moment'
 import PropTypes from 'prop-types'
 import React from 'react'
 import _ from 'lodash'
@@ -8,6 +9,7 @@ import Available from 'material-ui/svg-icons/av/playlist-add-check'
 import Canceled from 'material-ui/svg-icons/notification/do-not-disturb-alt'
 import Transfered from 'material-ui/svg-icons/action/motorcycle'
 import InProcess from 'material-ui/svg-icons/action/cached'
+import Payment from 'material-ui/svg-icons/action/credit-card'
 import * as ROUTES from '../../../constants/routes'
 import Container from '../../Container/index'
 import injectSheet from 'react-jss'
@@ -18,7 +20,6 @@ import Pagination from '../../GridList/GridListNavPagination'
 import numberFormat from '../../../helpers/numberFormat'
 import StatSaleDialog from './SalesDialog'
 import {StatisticsFilterExcel, StatisticsChart} from '../../Statistics'
-import moment from 'moment'
 import Loader from '../../Loader'
 import getConfig from '../../../helpers/getConfig'
 import NotFound from '../../Images/not-found.png'
@@ -36,6 +37,7 @@ import {
     CheckBox
 } from '../../ReduxForm'
 import OrderStatusSearchField from '../../ReduxForm/Order/OrderStatusSearchField'
+import dateFormat from '../../../helpers/dateFormat'
 
 export const STAT_SALES_FILTER_KEY = {
     CLIENT: 'client',
@@ -232,6 +234,7 @@ const iconStyle = {
     }
 }
 
+const ZERO = 0
 const StatSalesGridList = enhance((props) => {
     const {
         classes,
@@ -242,7 +245,8 @@ const StatSalesGridList = enhance((props) => {
         statSaleDialog,
         detailData,
         handleGetDocument,
-        initialValues
+        initialValues,
+        printDialog
     } = props
     const graphLoading = _.get(graphData, 'graphLoading')
     const divisionStatus = _.get('DIVISION')
@@ -290,14 +294,23 @@ const StatSalesGridList = enhance((props) => {
             const id = _.get(item, 'id')
             const createdDate = moment(_.get(item, 'createdDate')).locale('ru').format('DD MMM YYYY HH:MM')
             const firstName = _.get(item, ['user', 'firstName'])
-            const secondName = _.get(item, ['user', 'secondName '])
             const totalPrice = _.get(item, 'totalPrice')
+            const totalBalance = _.get(item, 'totalBalance')
+            const secondName = _.get(item, ['user', 'secondName '])
             const REQUESTED = 0
             const READY = 1
             const GIVEN = 2
             const DELIVERED = 3
             const CANCELED = 4
+            const now = moment().format('YYYY-MM-DD')
+            const paymentDate = dateFormat(_.get(item, 'paymentDate'))
+            const balanceTooltip = numberFormat(totalBalance, currentCurrency)
             const paymentType = _.get(item, 'paymentType') === 'cash' ? 'наличный' : 'банковский счет'
+            const paymentDifference = moment(_.get(item, 'paymentDate')).diff(now, 'days')
+            const PAY_PENDING = 'Оплата ожидается: ' + paymentDate + '<br/>Ожидаемый платеж: ' + balanceTooltip
+            const PAY_DELAY = paymentDifference !== ZERO
+                ? 'Оплата ожидалась: ' + paymentDate + '<br/>Долг: ' + balanceTooltip
+                : 'Оплата ожидается сегодня <br/>Сумма: ' + balanceTooltip
             return (
                 <Row key={id} className="dottedList" style={status === CANCELED ? {color: '#999'} : {}}>
                     <Col xs={1}><a onClick={() => { statSaleDialog.handleOpenStatSaleDialog(id) }}>{id}</a></Col>
@@ -357,6 +370,29 @@ const StatSalesGridList = enhance((props) => {
                                                 </IconButton>
                                             </Tooltip>
                             }
+                            {!(status === CANCELED) &&
+                            <Tooltip position="bottom" text={(totalPrice > ZERO) && ((moment(_.get(item, 'paymentDate')).diff(now, 'days') <= ZERO))
+                                ? PAY_DELAY
+                                : ((totalBalance > ZERO) && moment(_.get(item, 'paymentDate')).diff(now, 'days') > ZERO)
+                                    ? PAY_PENDING
+                                    : totalBalance === ZERO ? 'Оплачено' : ''}>
+                                <IconButton
+                                    disableTouchRipple={true}
+                                    iconStyle={iconStyle.icon}
+                                    style={iconStyle.button}
+                                    touch={true}>
+                                    <Payment color={(totalBalance > ZERO) && (paymentDifference < ZERO)
+                                        ? '#e57373'
+                                        : paymentDifference === ZERO
+                                            ? '#f0ad4e'
+                                            : (totalBalance > ZERO) &&
+                                            (paymentDifference > ZERO)
+                                                ? '#B7BBB7'
+                                                : (totalBalance === ZERO ? '#81c784' : '#B7BBB7')
+                                    }/>
+                                </IconButton>
+                            </Tooltip>
+                            }
                         </div>
                     </Col>
                 </Row>
@@ -394,11 +430,13 @@ const StatSalesGridList = enhance((props) => {
                         <div className={classes.wrapper}>
                             <StatisticsFilterExcel
                                 filter={filter}
+                                sales={true}
                                 initialValues={initialValues}
                                 fields={fields}
                                 filterKeys={STAT_SALES_FILTER_KEY}
                                 handleSubmitFilterDialog={onSubmit}
                                 handleGetDocument={handleGetDocument}
+                                handleOpenprintDialog={printDialog.handleOpenPrintDialog}
                             />
                             <div>
                                 {graphLoading

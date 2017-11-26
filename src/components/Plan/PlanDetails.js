@@ -88,6 +88,8 @@ const enhance = compose(
         },
         agentInfo: {
             border: '1px #e9e9e9 solid',
+            borderRadius: '2px',
+            overflow: 'hidden',
             position: 'relative',
             boxShadow: '0px 8px 20px 10px #f4f4f4',
             zIndex: '10',
@@ -374,7 +376,15 @@ const enhance = compose(
             '& h2': {
                 fontSize: '16px',
                 lineHeight: '14px',
-                marginBottom: '10px'
+                marginBottom: '10px',
+                '& a': {
+                    fontSize: 'inherit',
+                    fontWeight: 'inherit',
+                    color: 'inherit',
+                    '&:hover': {
+                        color: '#12aaeb'
+                    }
+                }
             },
             '& li': {
                 lineHeight: '25px',
@@ -435,6 +445,7 @@ const enhance = compose(
             background: '#fff url(' + NotFound + ') no-repeat center 20px',
             backgroundSize: '200px',
             border: '1px #e9e9e9 solid',
+            borderRadius: '2px',
             padding: '170px 0 20px',
             textAlign: 'center',
             fontSize: '13px',
@@ -476,8 +487,10 @@ const PlanDetails = enhance((props) => {
     const paymentsCash = _.get(statPayments, 'cash')
     const paymentsBank = _.get(statPayments, 'bank')
     const visitsCount = _.get(statVisits, 'count')
+    const visitsPlan = _.get(statVisits, 'plan')
     const reportsCount = _.get(statReports, 'count')
     const deliveryCount = _.get(statDeliveries, 'count')
+    const deliveryPlan = _.get(statDeliveries, 'plan')
     const returnsCount = _.get(statReturns, 'count')
 
     const monthFormat = (date, defaultText) => {
@@ -558,7 +571,7 @@ const PlanDetails = enhance((props) => {
                             </div>
                             <div className={classes.achieves}>
                                 <div className={classes.subAchieves}>
-                                    <Tooltip
+                                    {statOrders && <Tooltip
                                         position="bottom"
                                         text={
                                             'нал: ' + numberFormat(ordersCash, primaryCurrency) +
@@ -568,8 +581,8 @@ const PlanDetails = enhance((props) => {
                                             <span>{numberFormat(ordersCash + ordersBank)} <small>{primaryCurrency}</small></span>
                                             <span>сделки</span>
                                         </div>
-                                    </Tooltip>
-                                    <Tooltip position="bottom" text={
+                                    </Tooltip>}
+                                    {statPayments && <Tooltip position="bottom" text={
                                         'нал: ' + numberFormat(paymentsCash, primaryCurrency) +
                                         '<br>пер: ' + numberFormat(paymentsBank, primaryCurrency)}>
                                         <Payments style={achieveIcon.basic}/>
@@ -577,37 +590,37 @@ const PlanDetails = enhance((props) => {
                                             <span>{numberFormat(paymentsCash + paymentsBank)} <small>{primaryCurrency}</small></span>
                                             <span>оплаты</span>
                                         </div>
-                                    </Tooltip>
+                                    </Tooltip>}
                                 </div>
                                 <div className={classes.subAchieves}>
-                                    <div>
+                                    {statVisits && <div>
                                         <Visits style={achieveIcon.basic}/>
                                         <div>
-                                            <span>{visitsCount} / 42</span>
+                                            <span>{visitsCount} / {visitsPlan}</span>
                                             <span>посещено</span>
                                         </div>
-                                    </div>
-                                    <div>
+                                    </div>}
+                                    {statReports && <div>
                                         <Reports style={achieveIcon.basic}/>
                                         <div>
                                             <span>{reportsCount} / 3</span>
                                             <span>отчеты</span>
                                         </div>
-                                    </div>
-                                    <div>
+                                    </div>}
+                                    {statDeliveries && <div>
                                         <Delivery style={achieveIcon.basic}/>
                                         <div>
-                                            <span>{deliveryCount} / 12</span>
+                                            <span>{deliveryCount} / {deliveryPlan}</span>
                                             <span>доставки</span>
                                         </div>
-                                    </div>
-                                    <div>
+                                    </div>}
+                                    {statReturns && <div>
                                         <Returns style={achieveIcon.basic}/>
                                         <div>
                                             <span>{returnsCount}</span>
                                             <span>возвраты</span>
                                         </div>
-                                    </div>
+                                    </div>}
                                 </div>
                             </div>
                         </div>}
@@ -624,6 +637,7 @@ const PlanDetails = enhance((props) => {
                                         {_.map(_.get(agentPlans, 'data'), (item) => {
                                             const id = _.get(item, 'id')
                                             const market = _.get(item, ['market', 'name'])
+                                            const marketId = _.get(item, ['market', 'id'])
                                             const planTasks = _.get(item, 'planTasks')
                                             const hasPlanTasks = !_.isEmpty(planTasks)
                                             const time = moment(_.get(_.head(planTasks), 'completedDate')).format('HH:mm')
@@ -649,7 +663,10 @@ const PlanDetails = enhance((props) => {
                                                     </div>
 
                                                     <Paper className={classes.timelineContent}>
-                                                        <h2>{market}</h2>
+                                                        <h2><Link target="_blank" to={{
+                                                            pathname: sprintf(ROUTE.SHOP_ITEM_PATH, marketId),
+                                                            query: {search: marketId}
+                                                        }}>{market}</Link></h2>
                                                         {hasPlanTasks
                                                             ? <ul>
                                                                 {tasks}

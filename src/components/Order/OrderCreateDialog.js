@@ -18,7 +18,8 @@ import {
     DateField,
     UsersSearchField,
     DeliveryManSearchField,
-    PriceListSearchField
+    PriceListSearchField,
+    UserCurrenciesSearchField
 } from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 import numberFormat from '../../helpers/numberFormat'
@@ -337,13 +338,18 @@ const OrderCreateDialog = enhance((props) => {
                                             container="inline"
                                             fullWidth={true}/>
                                     </div>
-
                                     <div className={classes.condition}>
                                         <div className={classes.subTitleOrderNoPad}>Оплата</div>
                                         <Field
                                             name="paymentType"
                                             component={OrderPaymentTypeRadio}
                                         />
+                                        <Field
+                                            name="currency"
+                                            component={UserCurrenciesSearchField}
+                                            className={classes.inputFieldCustom}
+                                            label="Валюта"
+                                            fullWidth={true}/>
                                         <Field
                                             name="priceList"
                                             component={PriceListSearchField}

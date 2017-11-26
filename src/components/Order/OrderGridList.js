@@ -272,9 +272,9 @@ const OrderGridList = enhance((props) => {
         </IconButton>
     )
 
+    const currentCurrency = getConfig('PRIMARY_CURRENCY')
     const orderList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const currentCurrency = getConfig('PRIMARY_CURRENCY')
         const client = _.get(item, ['client', 'name'])
         const market = _.get(item, ['market', 'name'])
         const paymentDate = dateFormat(_.get(item, 'paymentDate'))

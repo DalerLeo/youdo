@@ -6,7 +6,7 @@ import sprintf from 'sprintf'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import * as ROUTER from '../../constants/routes'
-import {compose, withHandlers, withPropsOnChange} from 'recompose'
+import {compose, withHandlers, withPropsOnChange, withState} from 'recompose'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import * as serializers from '../../serializers/Statistics/statSalesSerializer'
@@ -18,8 +18,10 @@ import * as API from '../../constants/api'
 import {
     statSalesDataFetchAction,
     statSalesReturnDataFetchAction,
-    orderListFetchAction
+    orderListFetchAction,
+    orderListPintFetchAction
 } from '../../actions/statSales'
+import {OrderPrint} from '../../components/Order'
 const ONE = 1
 const enhance = compose(
     connect((state, props) => {
@@ -33,6 +35,8 @@ const enhance = compose(
         const detailLoading = _.get(state, ['order', 'item', 'loading'])
         const list = _.get(state, ['order', 'list', 'data'])
         const listLoading = _.get(state, ['order', 'list', 'loading'])
+        const listPrint = _.get(state, ['order', 'listPrint', 'data'])
+        const listPrintLoading = _.get(state, ['order', 'listPrint', 'loading'])
         const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
         const filter = filterHelper(list, pathname, query)
         return {
@@ -46,7 +50,9 @@ const enhance = compose(
             filter,
             filterForm,
             graphList,
-            graphLoading
+            graphLoading,
+            listPrint,
+            listPrintLoading
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -73,6 +79,7 @@ const enhance = compose(
         saleId && dispatch(orderItemFetchAction(saleId))
     }),
 
+    withState('openPrint', 'setOpenPrint', false),
     withHandlers({
         handleOpenStatSaleDialog: props => (id) => {
             const {filter} = props
@@ -104,7 +111,6 @@ const enhance = compose(
             const exclude = _.get(filterForm, ['values', 'exclude']) || null
 
             filter.filterBy({
-                [STAT_SALES_FILTER_KEY]: false,
                 [STAT_SALES_FILTER_KEY.CLIENT]: client,
                 [STAT_SALES_FILTER_KEY.STATUS]: status,
                 [STAT_SALES_FILTER_KEY.PRODUCT]: product,
@@ -128,6 +134,19 @@ const enhance = compose(
             const {filter} = props
             const params = serializers.orderListFilterSerializer(filter.getParams())
             getDocuments(API.STAT_SALES_GET_DOCUMENT, params)
+        },
+        handleOpenPrintDialog: props => () => {
+            const {setOpenPrint, dispatch, filter} = props
+            setOpenPrint(true)
+            dispatch(orderListPintFetchAction(filter))
+                .then(() => {
+                    window.print()
+                })
+        },
+
+        handleClosePrintDialog: props => () => {
+            const {setOpenPrint} = props
+            setOpenPrint(false)
         }
     })
 )
@@ -146,7 +165,10 @@ const StatSalesList = enhance((props) => {
         returnData,
         params,
         graphList,
-        graphLoading
+        graphLoading,
+        openPrint,
+        listPrint,
+        listPrintLoading
     } = props
 
     const detailId = _.toInteger(_.get(params, 'statSaleId'))
@@ -236,20 +258,20 @@ const StatSalesList = enhance((props) => {
             }
         }
     }
+    const mergedGraph = {}
+    if (!graphReturnLoading) {
+        _.map(graphList, (item) => {
+            mergedGraph[item.date] = {'in': item.amount, date: item.date}
+        })
 
-    let mergedGraph = {}
-
-    _.map(graphList, (item) => {
-        mergedGraph[item.date] = {'in': item.amount, date: item.date}
-    })
-
-    _.map(graphReturnList, (item) => {
-        if (mergedGraph[item.date]) {
-            mergedGraph[item.date] = {'in': mergedGraph[item.date].in, 'out': item.totalAmount, date: item.date}
-        } else {
-            mergedGraph[item.date] = {'in': 0, 'out': item.totalAmount, date: item.date}
-        }
-    })
+        _.map(graphReturnList, (item) => {
+            if (mergedGraph[item.date]) {
+                mergedGraph[item.date] = {'in': mergedGraph[item.date].in, 'out': item.totalAmount, date: item.date}
+            } else {
+                mergedGraph[item.date] = {'in': 0, 'out': item.totalAmount, date: item.date}
+            }
+        })
+    }
 
     const graphData = {
         mergedGraph: _.sortBy(mergedGraph, ['date']),
@@ -258,7 +280,24 @@ const StatSalesList = enhance((props) => {
         graphReturnList,
         graphReturnLoading
     }
+
+    const printDialog = {
+        openPrint,
+        handleOpenPrintDialog: props.handleOpenPrintDialog,
+        handleClosePrintDialog: props.handleClosePrintDialog
+    }
+    const listPrintData = {
+        data: listPrint,
+        listPrintLoading
+    }
     const order = false
+    if (openPrint) {
+        document.getElementById('wrapper').style.height = 'auto'
+
+        return <OrderPrint
+            printDialog={printDialog}
+            listPrintData={listPrintData}/>
+    }
 
     return (
         <Layout {...layout}>
@@ -273,6 +312,7 @@ const StatSalesList = enhance((props) => {
                 onSubmit={props.handleSubmitFilterDialog}
                 graphData={graphData}
                 handleGetDocument={props.handleGetDocument}
+                printDialog={printDialog}
             />
         </Layout>
     )

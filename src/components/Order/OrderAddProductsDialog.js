@@ -16,7 +16,6 @@ import Paper from 'material-ui/Paper'
 import SearchIcon from 'material-ui/svg-icons/action/search'
 import NotFound from '../Images/not-found.png'
 import numberFormat from '../../helpers/numberFormat'
-import getConfig from '../../helpers/getConfig'
 import {
     TextField,
     ProductTypeSearchField,
@@ -245,7 +244,8 @@ const enhance = compose(
         enableReinitialize: true
     }),
     connect((state) => {
-        const currency = _.get(state, ['form', 'SupplyCreateForm', 'values', 'currency', 'text'])
+        const currency = _.get(state, ['form', 'SupplyCreateForm', 'values', 'currency', 'text']) ||
+            _.get(state, ['form', 'OrderCreateForm', 'values', 'currency', 'text'])
         return {
             currency
         }
@@ -296,11 +296,10 @@ const OrderAddProductsDialog = enhance((props) => {
         handleSubmitAddProductConfirm,
         isSuperUser,
         withoutCustomPrice,
-        withoutValidations,
         currency
     } = props
     const onSubmit = handleSubmit(props.onSubmit)
-    const primaryCurrency = currency || getConfig('PRIMARY_CURRENCY')
+    const primaryCurrency = currency
     const products = _.map(data, (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
@@ -308,13 +307,6 @@ const OrderAddProductsDialog = enhance((props) => {
         const balance = _.get(item, 'balance')
         const canChangePrice = (isSuperUser || withoutCustomPrice) || _.get(item, 'customPrice')
         const measurement = _.get(item, ['measurement', 'name'])
-        const normalize = value => {
-            if (!value) {
-                return value
-            }
-
-            return value > balance ? balance : value
-        }
         return (
             <Row key={id} className="dottedList">
                 <Col xs={4}>{name}</Col>
@@ -335,7 +327,6 @@ const OrderAddProductsDialog = enhance((props) => {
                     <Field
                         name={'product[' + id + '][amount]'}
                         component={TextField}
-                        normalize={!withoutValidations && normalize}
                         className={classes.inputFieldCustom}
                         inputStyle={{textAlign: 'right'}}
                         fullWidth={true}/>

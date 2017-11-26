@@ -15,7 +15,7 @@ export const listFilterSerializer = (data) => {
         'brand': _.get(defaultData, 'brand'),
         'stock': _.get(defaultData, 'stock'),
         'measurement': _.get(defaultData, 'measurement'),
-        'searching': _.get(defaultData, 'search'),
+        'search': _.get(defaultData, 'search'),
         'ordering': ordering && orderingSnakeCase(ordering)
     }
 }

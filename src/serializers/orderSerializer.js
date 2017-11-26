@@ -15,11 +15,12 @@ export const createSerializer = (data) => {
     const paymentTerm = 1
     const paymentDate = _.get(data, ['paymentDate']) ? moment(_.get(data, ['paymentDate'])).format('YYYY-MM-DD') : null
     const deliveryDate = _.get(data, ['deliveryDate']) ? moment(_.get(data, ['deliveryDate'])).format('YYYY-MM-DD') : null
-    const requestDeadline = _.get(data, ['request_dedline']) ? moment(_.get(data, ['request_dedline'])).format('YYYY-MM-DD') : null
+    const requestDeadline = _.get(data, ['requestDeadline']) ? moment(_.get(data, ['requestDeadline'])).format('YYYY-MM-DD') : null
     const dealType = _.get(data, ['dealType']) === 'standart' ? ZERO : ONE
     const market = _.get(data, ['market', 'value'])
     const priceList = _.get(data, ['priceList', 'value'])
     const user = _.get(data, ['user', 'value'])
+    const currency = _.get(data, ['currency', 'value'])
     const products = _.map(_.get(data, ['products']), (item) => {
         return {
             id: _.get(item, ['product', 'id']),
@@ -28,25 +29,9 @@ export const createSerializer = (data) => {
             product: _.get(item, ['product', 'value', 'id'])
         }
     })
-    if (requestDeadline) {
-        return {
-            client,
-            'date_delivery': deliveryDate,
-            'request_deadline': requestDeadline,
-            'payment_date': paymentDate,
-            'payment_type': paymentType,
-            'payment_term': paymentTerm,
-            'deal_type': dealType,
-            'delivery_man': deliveryMan,
-            market,
-            user,
-            products,
-            'price_list': priceList === MINUS_ONE ? null : priceList,
-            'with_net_cost': priceList === MINUS_ONE ? ONE : false
-        }
-    }
-    return {
+    const request = {
         client,
+        currency,
         'date_delivery': deliveryDate,
         'payment_date': paymentDate,
         'payment_type': paymentType,
@@ -59,6 +44,10 @@ export const createSerializer = (data) => {
         'price_list': priceList === MINUS_ONE ? null : priceList,
         'with_net_cost': priceList === MINUS_ONE ? ONE : false
     }
+    if (requestDeadline) {
+        return _.merge(request, {'request_deadline': requestDeadline})
+    }
+    return request
 }
 
 export const multiUpdateSerializer = (data, orders, release) => {
@@ -115,19 +104,21 @@ export const listFilterSerializer = (data, id, withOrderReturn, print) => {
         'ordering': ordering && orderingSnakeCase(ordering)
     }
 }
-export const priceListFilterSerializer = (orderId, priceList, size, products) => {
+export const priceListFilterSerializer = (orderId, priceList, size, products, currency) => {
     if (priceList === MINUS_ONE) {
         return {
             'net_cost': ONE,
             'page_size': size,
-            'ids': products
+            'ids': products,
+            currency
         }
     }
     return {
         'order': orderId,
         'price_list': priceList,
         'page_size': size,
-        'ids': products
+        'ids': products,
+        currency
     }
 }
 

@@ -253,6 +253,23 @@ export const orderChangePriceListAction = (orderId, priceList, size, products) =
     }
 }
 
+export const orderChangeCurrencyListAction = (orderId, priceList, size, products, currency) => {
+    const params = serializers.priceListFilterSerializer(orderId, priceList, size, products, currency)
+    const payload = axios()
+        .get(API.PRODUCT_MOBILE_URL, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.ORDER_CHANGE_PRICE,
+        payload
+    }
+}
+
 export const orderGetCounts = () => {
     const payload = axios()
         .get(API.ORDER_COUNTS)
@@ -286,9 +303,10 @@ export const orderMultiUpdateAction = (data, orders, release) => {
     }
 }
 
-export const orderAddProductsListAction = (priceList, filter, productType) => {
+export const orderAddProductsListAction = (priceList, filter, productType, currency) => {
     const params = {
         price_list: priceList,
+        currency: currency,
         page_size: _.get(filter.getParams(), 'pdPageSize'),
         page: _.get(filter.getParams(), 'pdPage'),
         search: _.get(filter.getParams(), 'pdSearch'),

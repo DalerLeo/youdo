@@ -9,7 +9,7 @@ import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
 import Info from 'material-ui/svg-icons/action/info-outline'
 import Tooltip from '../ToolTip'
-import dateFormat from '../../helpers/dateFormat'
+import dateTimeFormat from '../../helpers/dateTimeFormat'
 
 const ONE = 1
 const TWO = 2
@@ -151,7 +151,7 @@ const ActivityReturn = enhance((props) => {
         const market = _.get(item, ['orderReturn', 'market', 'name'])
         const comment = _.get(item, ['orderReturn', 'comment'])
         const name = _.get(item, ['orderReturn', 'createdBy', 'firstName']) + ' ' + _.get(item, ['orderReturn', 'createdBy', 'secondName'])
-        const createdDate = dateFormat(_.get(item, ['orderReturn', 'createdDate']))
+        const createdDate = dateTimeFormat(_.get(item, ['orderReturn', 'createdDate']), true)
 
         return (
             <Paper key={id} zDepth={1} className={classes.tube}>

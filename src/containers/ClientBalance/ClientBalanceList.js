@@ -123,11 +123,13 @@ const enhance = compose(
             const {filter, filterForm} = props
             const paymentType = _.get(filterForm, ['values', 'paymentType', 'value']) || null
             const balanceType = _.get(filterForm, ['values', 'balanceType', 'value']) || null
+            const division = _.get(filterForm, ['values', 'division', 'value']) || null
 
             filter.filterBy({
                 [CLIENT_BALANCE_FILTER_OPEN]: false,
                 [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: paymentType,
-                [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: balanceType
+                [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: balanceType,
+                [CLIENT_BALANCE_FILTER_KEY.DIVISION]: division
             })
         },
 
@@ -299,6 +301,7 @@ const ClientBalanceList = enhance((props) => {
     const type = _.get(location, ['query', 'type'])
     const paymentType = filter.getParam(CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE)
     const balanceType = filter.getParam(CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE)
+    const divisionValue = filter.getParam(CLIENT_BALANCE_FILTER_KEY.DIVISION)
     const detailId = _.toInteger(_.get(params, 'clientBalanceId'))
 
     const divisionInfo = _.find(_.get(list, ['results', '0', 'divisions']), (item) => {
@@ -346,6 +349,9 @@ const ClientBalanceList = enhance((props) => {
             },
             balanceType: {
                 value: balanceType
+            },
+            division: {
+                value: divisionValue
             }
         },
         filterLoading: false,

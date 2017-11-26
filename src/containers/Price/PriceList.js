@@ -159,6 +159,7 @@ const enhance = compose(
             return dispatch(priceSetDefaultAction(priceId, cost))
                 .then(() => {
                     dispatch(priceItemFetchAction(Number(priceId)))
+                    dispatch(priceListFetchAction(filter))
                     dispatch(priceItemHistoryFetchAction(Number(priceId)))
                     hashHistory.push({pathname, query: filter.getParams({[PRICE_SET_DEFAULT_OPEN]: false})})
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))

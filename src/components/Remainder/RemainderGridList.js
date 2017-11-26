@@ -13,11 +13,6 @@ import numberFormat from '../../helpers/numberFormat'
 import RemainderTransferDialog from './RemainderTransferDialog'
 import RemainderFilterForm from './RemainderFilterForm'
 import RemainderDiscardDialog from './RemainderDiscardDialog'
-import MoreHortIcon from 'material-ui/svg-icons/navigation/more-horiz'
-import FloatingActionButton from 'material-ui/FloatingActionButton'
-import RemoveIcon from 'material-ui/svg-icons/content/remove'
-import SwapHorizIcon from 'material-ui/svg-icons/action/swap-horiz'
-import Tooltip from '../ToolTip'
 import {reduxForm} from 'redux-form'
 import NotFound from '../Images/not-found.png'
 import RemainderReservedDialog from './RemainderReservedDialog'
@@ -188,6 +183,41 @@ const enhance = compose(
             bottom: '0',
             cursor: 'pointer',
             zIndex: '1'
+        },
+        sendBtn: {
+            width: '40px',
+            height: '40px',
+            position: 'absolute',
+            top: '10px',
+            right: '0',
+            marginBottom: '0',
+            borderRadius: '100%'
+        },
+        discardBtn: {
+            width: '40px',
+            height: '40px',
+            position: 'absolute',
+            top: '10px',
+            right: '50px',
+            marginBottom: '0',
+            borderRadius: '100%'
+        },
+        buttons: {
+            display: 'flex',
+            alingItems: 'center',
+            height: '40px',
+            position: 'absolute',
+            top: '20px',
+            right: '0',
+            fontWeight: '600',
+            paddingBottom: '10px',
+            paddingTop: '5px',
+            '& a': {
+                padding: '2px 10px',
+                border: '1px solid',
+                borderRadius: '2px',
+                marginLeft: '12px'
+            }
         }
     }),
     reduxForm({
@@ -195,21 +225,6 @@ const enhance = compose(
         enableReinitialize: true
     }),
 )
-
-const actionIconStyle = {
-    icon: {
-        width: 30,
-        height: 30,
-        backgroundColor: 'transparent'
-    },
-    button: {
-        width: 30,
-        height: 30,
-        padding: 0,
-        backgroundColor: '#12aaeb'
-
-    }
-}
 
 const headerItems = [
     {
@@ -327,39 +342,9 @@ const RemainderGridList = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.REMAINDER_LIST_URL}/>
 
-            <div className="sendButtonWrapper">
-                <FloatingActionButton
-                    zDepth={1}
-                    backgroundColor="#12aaeb"
-                    mini={true}>
-                    <MoreHortIcon />
-                </FloatingActionButton>
-
-                <ul>
-                    <li style={{left: '60px'}}>
-                        <Tooltip position="bottom" text="Списание товара">
-                            <FloatingActionButton
-                                zDepth={1}
-                                iconStyle={actionIconStyle.icon}
-                                style={actionIconStyle.button}
-                                onTouchTap={discardDialog.handleOpenDiscardDialog}>
-                                <RemoveIcon
-                                    style={{width: '20px', height: '30px', margin: 'auto'}}/>
-                            </FloatingActionButton>
-                        </Tooltip>
-                    </li>
-                    <li style={{left: '70px'}}>
-                        <Tooltip position="bottom" text="Передача товаров">
-                            <FloatingActionButton
-                                zDepth={1}
-                                iconStyle={actionIconStyle.icon}
-                                style={actionIconStyle.button}
-                                onTouchTap={transferDialog.handleOpenTransferDialog}>
-                                <SwapHorizIcon style={{width: '20px', height: '30px', margin: 'auto'}}/>
-                            </FloatingActionButton>
-                        </Tooltip>
-                    </li>
-                </ul>
+            <div className={classes.buttons}>
+                <a onClick={transferDialog.handleOpenTransferDialog}>Передача товаров</a>
+                <a onClick={discardDialog.handleOpenDiscardDialog} style={{color: '#e57373'}}>Списание товара</a>
             </div>
 
             <GridList

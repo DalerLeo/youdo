@@ -29,19 +29,13 @@ const listHeader = [
     {
         sorting: true,
         name: 'name',
-        xs: 3,
+        xs: 5,
         title: 'Наименование'
     },
     {
         sorting: true,
-        name: 'manager',
-        xs: 3,
-        title: 'Завсклад'
-    },
-    {
-        sorting: true,
         name: 'stockType',
-        xs: 2,
+        xs: 3,
         title: 'Тип склада'
     },
     {
@@ -157,15 +151,13 @@ const StockGridList = enhance((props) => {
     const stockList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const manager = _.get(item, ['manager', 'firstName']) + ' ' + _.get(item, ['manager', 'secondName'])
         const stockType = _.get(item, 'stockType') === BASIC_STOCK ? 'Основной' : 'Производственный'
         const createdDate = dateFormat(_.get(item, 'createdDate'))
         return (
             <Row key={id} className={classes.listRow}>
                 <Col xs={1}>{id}</Col>
-                <Col xs={3}>{name}</Col>
-                <Col xs={3}>{manager}</Col>
-                <Col xs={2}>{stockType}</Col>
+                <Col xs={5}>{name}</Col>
+                <Col xs={3}>{stockType}</Col>
                 <Col xs={2}>{createdDate}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
                     <div className={classes.iconBtn}>

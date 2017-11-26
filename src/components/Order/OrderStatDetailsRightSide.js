@@ -6,7 +6,6 @@ import injectSheet from 'react-jss'
 import {Row, Col} from 'react-flexbox-grid'
 import numberFormat from '../../helpers/numberFormat'
 import NotFound from '../Images/not-found.png'
-import getConfig from '../../helpers/getConfig'
 
 const enhance = compose(
     injectSheet({
@@ -90,7 +89,7 @@ const OrderStatDetailsRightSide = enhance((props) => {
     const {classes, data} = props
 
     const products = _.get(data, 'products')
-    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
+    const primaryCurrency = _.get(data, ['currency', 'name'])
     const totalProductPrice = _.sumBy(products, (item) => {
         return _.toNumber(_.get(item, 'totalPrice'))
     })
