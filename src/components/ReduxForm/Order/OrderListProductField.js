@@ -12,7 +12,7 @@ import Tooltip from '../../ToolTip'
 import {connect} from 'react-redux'
 import numberFormat from '../../../helpers/numberFormat'
 import numberWithoutSpaces from '../../../helpers/numberWithoutSpaces'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../../Loader'
 import {
     Table,
     TableBody,
@@ -564,7 +564,7 @@ const OrderListProductField = enhance((props) => {
             {error && <div className={classes.error}>{error}</div>}
             {!_.isEmpty(products) ? <div className={classes.table}>
                     {editProductsLoading ? <div className={classes.loader}>
-                            <CircularProgress size={40} thickness={4}/>
+                            <Loader size={0.75}/>
                         </div>
                         : <Table
                             fixedHeader={true}

@@ -3,7 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 import {Row, Col} from 'react-flexbox-grid'
 import numberFormat from '../../helpers/numberFormat'
 import {Tabs, Tab} from 'material-ui/Tabs'
@@ -286,7 +286,7 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                                 </div>
                                 : <div className={classes.loader} style={{height: '265px', marginTop: '1px'}}>
                                     <div>
-                                        <CircularProgress size={40} thickness={4}/>
+                                        <Loader size={0.75}/>
                                     </div>
                                 </div>
                             }
@@ -360,7 +360,7 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                                 </div>
                                 : <div className={classes.loader} style={{height: '265px', marginTop: '1px'}}>
                                     <div>
-                                        <CircularProgress size={40} thickness={4}/>
+                                        <Loader size={0.75}/>
                                     </div>
                                 </div>
                             }

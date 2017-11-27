@@ -10,7 +10,7 @@ import toCamelCase from '../../helpers/toCamelCase'
 import {TextField, TimeField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 import MainStyles from '../Styles/MainStyles'
 
 export const SHIFT_CREATE_DIALOG_OPEN = 'openCreateDialog'
@@ -93,7 +93,7 @@ const ShiftCreateDialog = enhance((props) => {
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit}>
                     <div className={classes.loader}>
-                        <CircularProgress size={40} thickness={4}/>
+                        <Loader size={0.75}/>
                     </div>
                     <div className={classes.inContent} style={{minHeight: '150px'}}>
                         <div className={classes.field} style={{paddingTop: '15px'}}>

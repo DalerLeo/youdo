@@ -10,7 +10,7 @@ import {compose} from 'recompose'
 import Paper from 'material-ui/Paper'
 import CashPayment from 'material-ui/svg-icons/maps/local-atm'
 import BankPayment from 'material-ui/svg-icons/action/credit-card'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 import numberFormat from '../../helpers/numberFormat'
 
 const enhance = compose(
@@ -209,7 +209,7 @@ const TransactionGridList = enhance((props) => {
                             </div>
                             {cashboxListLoading
                                 ? <div style={{textAlign: 'center'}}>
-                                    <CircularProgress size={40} thickness={4}/>
+                                    <Loader size={0.75}/>
                                 </div>
                                 : cashboxList
                             }

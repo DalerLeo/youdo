@@ -11,7 +11,7 @@ import {
 } from 'react-google-maps'
 import MarkerClusterer from 'react-google-maps/lib/addons/MarkerClusterer'
 import withScriptjs from 'react-google-maps/lib/async/withScriptjs'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 import * as GOOGLE_MAP from '../../constants/googleMaps'
 import moment from 'moment'
 import injectSheet from 'react-jss'
@@ -359,9 +359,9 @@ const GoogleMapWrapper = enhance(({
     )
 })
 
-const Loader = () =>
+const MapLoader = () =>
     <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%'}}>
-        <CircularProgress size={40} thickness={4}/>
+        <Loader size={0.75}/>
     </div>
 
 const GoogleMap = (props) => {
@@ -391,7 +391,7 @@ const GoogleMap = (props) => {
     return (
         <GoogleMapWrapper
             googleMapURL={GOOGLE_MAP.GOOGLE_API_URL}
-            loadingElement={<Loader/>}
+            loadingElement={<MapLoader/>}
             containerElement={<div style={{height: '100%'}}/>}
             mapElement={<div style={{height: '100%'}}/>}
             options={mapOptions}

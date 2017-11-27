@@ -5,10 +5,8 @@ import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import IconButton from 'material-ui/IconButton'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
-
-export const PRICE_SHOW_PHOTO_OPEN = 'openShowBigImg'
 
 const enhance = compose(
     injectSheet({
@@ -104,7 +102,7 @@ const PriceShowPhotoDialog = enhance((props) => {
         return (
             <div>
                 <div className={classes.loader}>
-                    <CircularProgress />
+                    <Loader size={0.75}/>
                 </div>
             </div>
         )

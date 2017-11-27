@@ -7,7 +7,7 @@ import ClientBalanceInfoDialog from './ClientBalanceInfoDialog'
 import ClientBalanceCreateDialog from './ClientBalanceCreateDialog'
 import ClientBalanceUpdateDialog from './ClientBalanceUpdateDialog'
 import ClientBalanceFilterForm from './ClientBalanceFilterForm'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 import {Field, reduxForm} from 'redux-form'
 import SubMenu from '../SubMenu'
 import {hashHistory} from 'react-router'
@@ -549,7 +549,7 @@ const ClientBalanceGridList = enhance((props) => {
     const summary = (
         sumLoading
         ? <div className={classes.sumLoader}>
-            <CircularProgress size={40} thickness={4}/>
+            <Loader size={0.75}/>
         </div>
         : <div className={classes.summaryWrapper}>
             <div
@@ -621,7 +621,7 @@ const ClientBalanceGridList = enhance((props) => {
                             {navigation}
                             {listLoading
                                 ? <div className={classes.loader}>
-                                    <CircularProgress size={40} thickness={4} />
+                                    <Loader size={0.75}/>
                                 </div>
                                 : (_.isEmpty(tableList) && !listLoading)
                                     ? <div className={classes.emptyQuery}>
@@ -642,7 +642,7 @@ const ClientBalanceGridList = enhance((props) => {
                 {navigation}
                 {listLoading
                     ? <div className={classes.loader}>
-                        <CircularProgress size={40} thickness={4}/>
+                        <Loader size={0.75}/>
                     </div>
                     : (_.isEmpty(tableList) && !listLoading)
                         ? <div className={classes.emptyQuery}>

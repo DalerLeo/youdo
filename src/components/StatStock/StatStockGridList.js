@@ -14,7 +14,7 @@ import {compose, withState} from 'recompose'
 import MainStyles from '../Styles/MainStyles'
 import InComing from 'material-ui/svg-icons/navigation/arrow-upward'
 import OutComing from 'material-ui/svg-icons/navigation/arrow-downward'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 import Paper from 'material-ui/Paper'
 import numberFormat from '../../helpers/numberFormat'
 import StatStockFilterForm from './StatStockFilterForm'
@@ -293,7 +293,7 @@ const StatStockGridList = enhance((props) => {
                 <Col xs={9} style={{textAlign: 'right'}}>
                     {_.get(statStockData, 'statStockDataLoading')
                         ? <div className={classes.statLoader}>
-                            <CircularProgress size={40} thickness={4}/>
+                            <Loader size={0.75}/>
                         </div>
                         : <div>
                             <div className={classes.infoBlock}>

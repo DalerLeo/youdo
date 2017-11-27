@@ -7,7 +7,7 @@ import Dialog from 'material-ui/Dialog'
 import sprintf from 'sprintf'
 import {Link} from 'react-router'
 import IconButton from 'material-ui/IconButton'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 import {Row, Col} from 'react-flexbox-grid'
 import NotFound from '../Images/not-found.png'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
@@ -182,7 +182,7 @@ const RemainderReservedDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             {loading || listLoading ? <div className={classes.loader}>
-                <CircularProgress/>
+                <Loader size={0.75}/>
             </div>
                 : <div>
                     <div className={classes.titleContent}>

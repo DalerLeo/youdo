@@ -17,7 +17,7 @@ import EditIcon from 'material-ui/svg-icons/image/edit'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import {reduxForm} from 'redux-form'
 import ContentAdd from 'material-ui/svg-icons/content/add'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 import userGroupFormat from '../../helpers/userGroupFormat'
 const enhance = compose(
     injectSheet({
@@ -265,7 +265,7 @@ const PositionGridList = enhance((props) => {
                     </div>
                     <div className={classes.headers}>{headers}</div>
                     {loading
-                        ? <div className={classes.loader}><CircularProgress size={60} thickness={4}/></div>
+                        ? <div className={classes.loader}><Loader size={0.75}/></div>
                         : <div className={classes.list}>{permissionList}</div>}
                 </div>
                 <PositionCreateDialog

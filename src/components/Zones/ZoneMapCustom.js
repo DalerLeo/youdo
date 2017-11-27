@@ -2,14 +2,14 @@ import _ from 'lodash'
 import {default as React, Component} from 'react'
 import * as GOOGLE_MAP from '../../constants/googleMaps'
 import withScriptjs from 'react-google-maps/lib/async/withScriptjs'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 import {withGoogleMap, GoogleMap} from 'react-google-maps'
 import {googleMapStyle} from '../../constants/googleMapsStyle'
 import DrawingManager from 'react-google-maps/lib/drawing/DrawingManager'
 
-const Loader = () =>
+const MapLoader = () =>
     <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%'}}>
-        <CircularProgress size={40} thickness={4} />
+        <Loader size={0.75}/>
     </div>
 
 const handleOverlayComplete = (event) => {
@@ -70,7 +70,7 @@ class GettingStartedExample extends Component {
                 <GettingStartedGoogleMap
                     defaultCenter={GOOGLE_MAP.DEFAULT_LOCATION}
                     googleMapURL={GOOGLE_MAP.GOOGLE_API_URL}
-                    loadingElement={<Loader />}
+                    loadingElement={<MapLoader/>}
                     containerElement={
                         <div style={{height: '100%'}} />
                     }

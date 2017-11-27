@@ -10,7 +10,7 @@ import IconButton from 'material-ui/IconButton'
 import {Row} from 'react-flexbox-grid'
 import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 
 const ZERO = 0
 const enhance = compose(
@@ -127,7 +127,7 @@ const PriceSupplyDialog = enhance((props) => {
             </div>
             {loading ? <div className={classes.loader}>
                 <div>
-                    <CircularProgress size={40} thickness={4}/>
+                    <Loader size={0.75}/>
                 </div>
             </div>
                 : <div className={classes.content}>

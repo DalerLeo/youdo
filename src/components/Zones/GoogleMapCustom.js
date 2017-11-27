@@ -6,7 +6,7 @@ import React from 'react'
 import Script from 'react-load-script'
 import _ from 'lodash'
 import * as GOOGLE_MAP from '../../constants/googleMaps'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 import AddZonePopup from './AddZonePopup'
 import ZoneDeleteDialog from './ZoneDeleteDialog'
 import {googleMapStyle} from '../../constants/googleMapsStyle'
@@ -466,7 +466,7 @@ export default class GoogleCustomMap extends React.Component {
         if (_.get(this.props, ['listData', 'listLoading'])) {
             return (
                 <div style={classes.loader}>
-                    <CircularProgress size={60} thickness={6}/>
+                    <Loader size={0.75}/>
                 </div>
             )
         }

@@ -6,7 +6,7 @@ import {connect} from 'react-redux'
 import {compose, lifecycle} from 'recompose'
 import injectSheet from 'react-jss'
 import FlatButton from 'material-ui/FlatButton'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 import SettingsPower from 'material-ui/svg-icons/action/settings-power'
 import ToolTip from '../ToolTip'
 import {getMenus} from './MenuItems'
@@ -159,7 +159,7 @@ const SideBarMenu = enhance((props) => {
         <div className={classes.wrapper} ref="menuWrapper">
         {loading
             ? <div className={classes.menuLoading}>
-                <CircularProgress size={40} thickness={4} color="#efefef"/>
+                <Loader size={0.75}/>
             </div>
             : <div className={classes.items} ref="items">
                 <div className={classes.logo}>

@@ -5,7 +5,7 @@ import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import {ImageUploadField} from '../ReduxForm'
@@ -74,7 +74,7 @@ const AddPhotoDialog = enhance((props) => {
                 <form onSubmit={onSubmit} className={classes.form}>
                     <div className={classes.inContent} style={{minHeight: '250px'}}>
                         <div className={classes.loader}>
-                            <CircularProgress size={40} thickness={4}/>
+                            <Loader size={0.75}/>
                         </div>
                         <div className={classes.shopAddPhoto}>
                             <Field

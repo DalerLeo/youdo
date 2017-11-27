@@ -11,7 +11,7 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 import normalizeNumber from '../ReduxForm/normalizers/normalizeNumber'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 import {DivisionSearchField, PaymentTypeSearchField, UsersSearchField, CurrencySearchField} from '../ReduxForm'
 import getConfig from '../../helpers/getConfig'
 import {connect} from 'react-redux'
@@ -72,7 +72,7 @@ const TransactionUpdatePriceDialog = enhance((props) => {
             </div>
             {loading
                 ? <div className={classes.loader}>
-                    <CircularProgress size={40} thickness={4}/>
+                    <Loader size={0.75}/>
                 </div>
                 : <div className={classes.bodyContent}>
                     <div style={{padding: '10px 30px'}}>Клиент: <strong>{_.get(client, 'name')}</strong></div>

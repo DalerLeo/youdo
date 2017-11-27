@@ -5,7 +5,7 @@ import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import {Field, Fields, reduxForm, SubmissionError} from 'redux-form'
 import Dialog from 'material-ui/Dialog'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
@@ -287,7 +287,7 @@ const OrderCreateDialog = enhance((props) => {
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit} scrolling="auto" className={classes.form}>
                     {loading ? <div className={classes.loader}>
-                        <CircularProgress size={40} thickness={4}/>
+                        <Loader size={0.75}/>
                     </div>
                         : <div className={classes.innerWrap}>
                             <div style={{minHeight: '470px'}} className={classes.inContent}>
@@ -321,26 +321,6 @@ const OrderCreateDialog = enhance((props) => {
 
                                     {notEnough && <div className={classes.notEnough}>Недостаточно товаров на складе</div>}
                                     <div className={classes.condition}>
-                                        <div className={classes.subTitleOrderNoPad}>Условия доставки</div>
-                                        <Field
-                                            name="dealType"
-                                            component={OrderDealTypeRadio}/>
-                                        <Field
-                                            name="deliveryMan"
-                                            component={DeliveryManSearchField}
-                                            className={classes.inputDateCustom}
-                                            label="Доставщик"
-                                            container="inline"
-                                            fullWidth={true}/>
-                                        <Field
-                                            name="deliveryDate"
-                                            component={DateField}
-                                            className={classes.inputDateCustom}
-                                            floatingLabelText="Дата доставки"
-                                            container="inline"
-                                            fullWidth={true}/>
-                                    </div>
-                                    <div className={classes.condition}>
                                         <div className={classes.subTitleOrderNoPad}>Оплата</div>
                                         <Field
                                             name="paymentType"
@@ -370,6 +350,26 @@ const OrderCreateDialog = enhance((props) => {
                                             component={DateField}
                                             className={classes.inputDateCustom}
                                             floatingLabelText="Дата оплаты"
+                                            container="inline"
+                                            fullWidth={true}/>
+                                    </div>
+                                    <div className={classes.condition}>
+                                        <div className={classes.subTitleOrderNoPad}>Условия доставки</div>
+                                        <Field
+                                            name="dealType"
+                                            component={OrderDealTypeRadio}/>
+                                        <Field
+                                            name="deliveryMan"
+                                            component={DeliveryManSearchField}
+                                            className={classes.inputDateCustom}
+                                            label="Доставщик"
+                                            container="inline"
+                                            fullWidth={true}/>
+                                        <Field
+                                            name="deliveryDate"
+                                            component={DateField}
+                                            className={classes.inputDateCustom}
+                                            floatingLabelText="Дата доставки"
                                             container="inline"
                                             fullWidth={true}/>
                                     </div>

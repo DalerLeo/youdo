@@ -13,7 +13,7 @@ import PriceSetForm from './PriceSetForm'
 import getConfig from '../../helpers/getConfig'
 import * as ROUTES from '../../constants/routes'
 import moment from 'moment'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 import PriceSetDefaultDialog from './PriceSetDefaultDialog'
 import numberFormat from '../../helpers/numberFormat'
 import NotFound from '../Images/not-found.png'
@@ -276,7 +276,7 @@ const PriceDetails = enhance((props) => {
                     {priceHistoryLoading &&
                     <div className={classes.loader}>
                         <div>
-                            <CircularProgress size={40} thickness={4}/>
+                            <Loader size={0.75}/>
                         </div>
                     </div>}
 
@@ -350,7 +350,7 @@ const PriceDetails = enhance((props) => {
 
                 <div className={classes.rightSide}>
                     {(priceListIsLoading || priceListItemsIsLoading) && <div className={classes.loader}>
-                        <CircularProgress size={40} thickness={4} />
+                        <Loader size={0.75}/>
                     </div>}
                     {!priceListIsLoading && !priceListItemsIsLoading && priceSetForm.openPriceSetForm &&
                         <PriceSetForm

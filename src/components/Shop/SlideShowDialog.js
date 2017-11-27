@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 import IconButton from 'material-ui/IconButton'
 import Star from 'material-ui/svg-icons/toggle/star'
 import StarBorder from 'material-ui/svg-icons/toggle/star-border'
@@ -136,7 +136,7 @@ const SlideShowDialog = enhance((props) => {
             </div>
             <div className={classes.inContent} style={{width: contentWidth + 'px', height: contentHeight + 'px'}}>
                 {loading ? <div className={classes.loader}>
-                    <CircularProgress size={40} thickness={4}/>
+                    <Loader size={0.75}/>
                 </div>
                 : imgURL && <img src={imgURL} alt="" onLoad={handleImageLoad}/>}
                 <IconButton className={classes.favourite}>

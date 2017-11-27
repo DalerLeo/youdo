@@ -3,7 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 import Paper from 'material-ui/Paper'
 import Alukobond from '../CustomIcons/Manufacture/Alukobond.svg'
 import Metall from '../CustomIcons/Manufacture/Metall.svg'
@@ -108,7 +108,7 @@ const ManufacturesList = enhance((props) => {
             <Paper zDepth={1} style={{height: 'calc(100% - 58px)', position: 'relative'}}>
                 {_.get(listData, 'listLoading')
                     ? <div className={classes.loader}>
-                        <CircularProgress size={40} thickness={4}/>
+                        <Loader size={0.75}/>
                     </div>
                     : <ul className={classes.productionUl}>
                         {manufactureList}

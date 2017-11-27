@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import {withGoogleMap, GoogleMap as DefaultGoogleMap} from 'react-google-maps'
 import withScriptjs from 'react-google-maps/lib/async/withScriptjs'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 import * as GOOGLE_MAP from '../../constants/googleMaps'
 import {googleMapStyle} from '../../constants/googleMapsStyle'
 
@@ -20,9 +20,9 @@ const GoogleMapWrapper = enhance(({onMapLoad, ...props}) => {
     )
 })
 
-const Loader = () =>
+const MapLoader = () =>
     <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%'}}>
-        <CircularProgress size={40} thickness={4} />
+        <Loader size={0.75}/>
     </div>
 
 const GoogleMap = (props) => {
@@ -44,7 +44,7 @@ const GoogleMap = (props) => {
         <GoogleMapWrapper
             defaultCenter={defaultCenter}
             googleMapURL={GOOGLE_MAP.GOOGLE_API_URL}
-            loadingElement={<Loader />}
+            loadingElement={<MapLoader />}
             containerElement={<div style={{height: '100%'}} />}
             mapElement={<div style={{height: '100%'}} />}
             defaultZoom={15}

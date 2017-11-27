@@ -7,7 +7,7 @@ import Dialog from 'material-ui/Dialog'
 import SupplyDetails from '../Supply/SupplyDetails'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 
 const enhance = compose(
     injectSheet({
@@ -157,7 +157,7 @@ const StatSaleDialog = enhance((props) => {
             </div>
             {loading
                 ? <div className={classes.loader}>
-                    <CircularProgress/>
+                    <Loader size={0.75}/>
                 </div>
                 : <div className={classes.content}>
                     <SupplyDetails

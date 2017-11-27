@@ -10,7 +10,7 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 import normalizeNumber from '../ReduxForm/normalizers/normalizeNumber'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 import {
     DivisionSearchField,
     PaymentTypeSearchField,
@@ -78,7 +78,7 @@ const ClientBalanceUpdateDialog = enhance((props) => {
             </div>
             {loading
                 ? <div className={classes.loader}>
-                    <CircularProgress size={40} thickness={4}/>
+                    <Loader size={0.75}/>
                 </div>
                 : <div className={classes.bodyContent}>
                     <div style={{padding: '10px 30px'}}>Клиент: <strong>{name}</strong></div>

@@ -14,7 +14,7 @@ import MainStyles from '../Styles/MainStyles'
 import normalizeNumber from '../ReduxForm/normalizers/normalizeNumber'
 import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 import {DivisionSearchField, PaymentTypeSearchField} from '../ReduxForm'
 
 const validate = (data) => {
@@ -110,7 +110,7 @@ const ClientBalanceCreateDialog = enhance((props) => {
             </div>
             {loading
                 ? <div className={classes.loader}>
-                    <CircularProgress size={40} thickness={4}/>
+                    <Loader size={0.75}/>
                 </div>
                 : <div className={classes.bodyContent}>
                     <div style={{padding: '10px 30px'}}>Клиент: <strong>{name}</strong></div>

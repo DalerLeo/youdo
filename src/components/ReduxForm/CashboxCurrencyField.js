@@ -2,7 +2,7 @@ import _ from 'lodash'
 import React from 'react'
 import {compose} from 'recompose'
 import {connect} from 'react-redux'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 
 const enhance = compose(
     connect((state) => {
@@ -19,7 +19,7 @@ const CashboxCurrencyField = enhance((props) => {
     const {currency, extraLoading} = props
     return (
         <div style={{margin: '6px 0 0 10px', display: 'flex', alignItems: 'center'}}>
-            { extraLoading && <div><CircularProgress size={20} thickness={2} /></div> }
+            { extraLoading && <div><Loader size={0.5}/></div> }
             {!extraLoading && <div>{currency}</div>}
         </div>
     )

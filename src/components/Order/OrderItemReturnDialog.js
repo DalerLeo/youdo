@@ -5,7 +5,7 @@ import {compose, withReducer} from 'recompose'
 import injectSheet from 'react-jss'
 import {reduxForm} from 'redux-form'
 import Dialog from 'material-ui/Dialog'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
@@ -225,7 +225,7 @@ const OrderItemReturnDialog = enhance((props) => {
             </div>
             <div className={classes.bodyContent}>
                 {loading && <div className={classes.loader}>
-                    <CircularProgress size={40} thickness={4}/>
+                    <Loader size={0.75}/>
                 </div>}
                 <div className={classes.inContent} style={{minHeight: 'initial'}}>
                     <div className={classes.field}>

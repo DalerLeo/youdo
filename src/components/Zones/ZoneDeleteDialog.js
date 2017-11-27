@@ -6,7 +6,7 @@ import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import IconButton from 'material-ui/IconButton'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 const ZERO = 0
 const enhance = compose(
@@ -150,7 +150,7 @@ const ConfirmDialog = enhance((props) => {
                 <div className={classes.inContent}>
                     {loading &&
                     <div className={classes.loader}>
-                        <CircularProgress size={40} thickness={4}/>
+                        <Loader size={0.75}/>
                     </div>}
                     <div className={classes.confirm}>
                         {text}
