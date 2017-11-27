@@ -129,10 +129,14 @@ const enhance = compose(
             '& a': {
                 color: '#12aaeb !important'
             },
+            '&:hover': {
+                background: '#f2f5f8'
+            },
             '&:hover > div:last-child': {
                 padding: '0 24px !important',
                 opacity: '1',
-                right: '0'
+                right: '0',
+                background: '#f2f5f8'
             }
         },
         deletedRow: {
