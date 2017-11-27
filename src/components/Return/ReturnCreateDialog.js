@@ -16,12 +16,12 @@ import {
     TextField,
     PaymentTypeSearchField,
     ClientSearchField,
-    PriceListSearchField
+    PriceListSearchField,
+    CurrencySearchField
 } from '../ReduxForm'
 import MarketSearchField from '../ReduxForm/ClientBalance/MarketSearchField'
 import toCamelCase from '../../helpers/toCamelCase'
 import numberFormat from '../../helpers/numberFormat'
-import getConfig from '../../helpers/getConfig'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -228,6 +228,7 @@ const enhance = compose(
     connect((state) => {
         const clientId = _.get(state, ['form', 'ReturnCreateForm', 'values', 'client', 'value'])
         const returnedProducts = _.get(state, ['form', 'ReturnCreateForm', 'values', 'products'])
+        const currency = _.get(state, ['form', 'ReturnCreateForm', 'values', 'currency', 'text'])
         const totalCost = _.sumBy(returnedProducts, (item) => {
             const itemCost = _.toNumber(_.get(item, 'cost'))
             const itemAmount = _.toNumber(_.get(item, 'amount'))
@@ -235,7 +236,8 @@ const enhance = compose(
         })
         return {
             clientId,
-            totalCost
+            totalCost,
+            currency
         }
     }),
     withReducer('state', 'dispatch', (state, action) => {
@@ -248,7 +250,7 @@ const customContentStyle = {
     maxWidth: 'none'
 }
 const ReturnCreateDialog = enhance((props) => {
-    const {open, handleSubmit, onClose, classes, clientId, isUpdate, name, editOnlyCost, totalCost, initialValues} = props
+    const {open, handleSubmit, onClose, classes, clientId, isUpdate, name, editOnlyCost, totalCost, initialValues, currency} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     return (
         <Dialog
@@ -304,6 +306,14 @@ const ReturnCreateDialog = enhance((props) => {
                                 </div>
                                 <div className={classes.condition}>
                                     <Field
+                                        name="currency"
+                                        component={CurrencySearchField}
+                                        className={classes.searchFieldCustom}
+                                        label="Валюта"
+                                        fullWidth={true}/>
+                                </div>
+                                <div className={classes.condition}>
+                                    <Field
                                         name="paymentType"
                                         style={{lineHeight: '20px', fontSize: '13px'}}
                                         component={PaymentTypeSearchField}
@@ -344,7 +354,7 @@ const ReturnCreateDialog = enhance((props) => {
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
-                    <div>Общая сумма возврата: <b>{numberFormat(totalCost, getConfig('PRIMARY_CURRENCY'))}</b></div>
+                    <div>Общая сумма возврата: <b>{numberFormat(totalCost, currency)}</b></div>
                         <FlatButton
                             label={isUpdate ? 'Изменить возврат' : 'Оформить возврат'}
                             className={classes.actionButton}
