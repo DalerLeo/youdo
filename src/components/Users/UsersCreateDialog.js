@@ -146,7 +146,7 @@ const UsersCreateDialog = enhance((props) => {
     } = props
     const errorText = _.get(errorData, 'errorText')
     const show = _.get(errorData, 'show')
-    const multiStock = getConfig('MULTISELECTSTOCK')
+    const multiStock = getConfig('MULTI_SELECT_STOCK')
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     return (
         <Dialog
