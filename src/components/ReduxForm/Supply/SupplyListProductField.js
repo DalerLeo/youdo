@@ -52,7 +52,12 @@ const enhance = compose(
             }
         },
         table: {
-            marginTop: '20px'
+            marginTop: '20px',
+            '& tbody tr': {
+                '&:hover': {
+                    background: '#f2f5f8 !important'
+                }
+            }
         },
         tableTitle: {
             fontWeight: '600',
@@ -63,16 +68,16 @@ const enhance = compose(
             height: '40px !important',
             border: 'none !important',
             '& td:first-child': {
-                width: '250px'
+                width: '250px',
+                wordBreak: 'break-word'
             },
             '& tr': {
                 border: 'none !important'
             },
             '& td': {
-                height: '40px !important',
+                height: '45px !important',
                 padding: '0 5px !important',
-                whiteSpace: 'normal !important',
-                verticalAlign: 'baseline'
+                whiteSpace: 'normal !important'
             },
             '& th:first-child': {
                 width: '250px',

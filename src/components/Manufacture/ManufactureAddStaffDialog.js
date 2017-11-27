@@ -55,6 +55,7 @@ const enhance = compose(
             }
         },
         popUp: {
+            overflow: 'unset !important',
             fontSize: '13px !important',
             position: 'relative',
             padding: '0 !important',

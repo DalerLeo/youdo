@@ -232,9 +232,9 @@ const enhance = compose(
     }, ({dispatch, params, location, detail}) => {
         const orderId = _.toInteger(_.get(params, 'orderId'))
         const priceList = _.toInteger(_.get(detail, ['priceList', 'id']))
+        const size = _.get(location, ['query', 'pdPageSize'])
         const openUpdate = toBoolean(_.get(location, ['query', ORDER_UPDATE_DIALOG_OPEN]))
         if (orderId > ZERO && priceList > ZERO && openUpdate) {
-            const size = 100
             dispatch(orderProductMobileAction(orderId, priceList, size))
         }
     }),
@@ -246,13 +246,13 @@ const enhance = compose(
         const openUpdateDialog = toBoolean(_.get(nextProps, ['location', 'query', ORDER_UPDATE_DIALOG_OPEN]))
 
         return (prevPriceList !== nextPriceList && nextPriceList && (openCreateDialog === true || openUpdateDialog === true))
-    }, ({dispatch, createForm}) => {
+    }, ({dispatch, createForm, location}) => {
         const priceList = _.toInteger(_.get(createForm, ['values', 'priceList', 'value']))
+        const size = _.get(location, ['query', 'pdPageSize'])
         const products = _.join(_.map(_.get(createForm, ['values', 'products']), (item) => {
             return _.get(item, ['product', 'value', 'id'])
         }), '-')
         if ((priceList > ZERO || priceList === MINUS_ONE) && products) {
-            const size = 100
             dispatch(orderChangePriceListAction(null, priceList, size, products))
         }
     }),
@@ -264,14 +264,14 @@ const enhance = compose(
         const openUpdateDialog = toBoolean(_.get(nextProps, ['location', 'query', ORDER_UPDATE_DIALOG_OPEN]))
 
         return (prevCurrency !== nextCurrency && nextCurrency && (openCreateDialog === true || openUpdateDialog === true))
-    }, ({dispatch, createForm}) => {
+    }, ({dispatch, createForm, location}) => {
         const currency = _.toInteger(_.get(createForm, ['values', 'currency', 'value']))
         const priceList = _.toInteger(_.get(createForm, ['values', 'priceList', 'value']))
+        const size = _.get(location, ['query', 'pdPageSize'])
         const products = _.join(_.map(_.get(createForm, ['values', 'products']), (item) => {
             return _.get(item, ['product', 'value', 'id'])
         }), '-')
         if (currency > ZERO && priceList > ZERO) {
-            const size = 100
             dispatch(orderChangeCurrencyListAction(null, priceList, size, products, currency))
         }
     }),
@@ -333,8 +333,6 @@ const enhance = compose(
         }
     }),
 
-    withState('openAddProductDialog', 'setOpenAddProductDialog', false),
-    withState('openAddProductConfirm', 'setOpenAddProductConfirm', false),
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
     withState('openPrint', 'setOpenPrint', false),
     withState('openSalesPrint', 'setOpenSalesPrint', false),
