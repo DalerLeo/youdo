@@ -5,7 +5,7 @@ import {Row} from 'react-flexbox-grid'
 import * as ROUTES from '../../../constants/routes'
 import Container from '../../Container/index'
 import injectSheet from 'react-jss'
-import {compose} from 'recompose'
+import {compose, withState} from 'recompose'
 import {Field, reduxForm} from 'redux-form'
 import {connect} from 'react-redux'
 import ordering from '../../../helpers/ordering'
@@ -273,7 +273,8 @@ const enhance = compose(
         return {
             typeParent
         }
-    })
+    }),
+    withState('currentRow', 'setCurrentRow', null)
 )
 const listHeader = [
     {
@@ -337,7 +338,9 @@ const listHeader = [
         title: 'Стоимость'
     }
 ]
-
+const styleOnHover = {
+    background: '#efefef'
+}
 const StatProductMoveGridList = enhance((props) => {
     const {
         classes,
@@ -348,7 +351,9 @@ const StatProductMoveGridList = enhance((props) => {
         getDocument,
         typeParent,
         initialValues,
-        handleSubmit
+        handleSubmit,
+        currentRow,
+        setCurrentRow
     } = props
 
     const summaryMeasurement = 'шт'
@@ -375,7 +380,13 @@ const StatProductMoveGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name') || 'No'
         return (
-            <div key={id}><span>{name}</span></div>
+            <div
+                key={id}
+                onMouseLeave={() => setCurrentRow(null)}
+                onMouseEnter={() => setCurrentRow(id)}
+                style={currentRow === id ? styleOnHover : {}}>
+                <span>{name}</span>
+            </div>
         )
     })
 
@@ -402,7 +413,12 @@ const StatProductMoveGridList = enhance((props) => {
         const writeoffBalancePr = numberFormat(_.get(item, 'writeoffBalance'), measurement)
         const writeoffPricePr = numberFormat(_.get(item, 'writeoffPrice'), primaryCurrency)
         return (
-            <tr key={id} className={classes.tableRow}>
+            <tr
+                key={id}
+                className={classes.tableRow}
+                style={id === currentRow ? styleOnHover : {}}
+                onMouseEnter={() => setCurrentRow(id)}
+                onMouseLeave={() => setCurrentRow(null)}>
                 <td>{code}</td>
 
                 <td>{beginBalancePr}</td>
