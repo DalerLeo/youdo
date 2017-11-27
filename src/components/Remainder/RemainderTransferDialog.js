@@ -88,7 +88,8 @@ const enhance = compose(
             maxWidth: '75%'
         },
         dialog: {
-            width: '1000px important'
+            overflowY: 'auto',
+            padding: '0 !important'
         },
         dialogBody: {
             display: 'flex'
@@ -96,7 +97,9 @@ const enhance = compose(
         noPadding: {
             color: '#333 !important',
             padding: '0 !important',
-            fontSize: 'unset !important'
+            fontSize: 'unset !important',
+            maxHeight: 'none !important',
+            marginBottom: '50px'
         },
         subTitle: {
             fontWeight: '600'
@@ -221,7 +224,7 @@ const RemainderTransferDialog = enhance((props) => {
                             onTouchTap={() => { handleOpenAddProduct('transfer') }}/>
                     </div>
                     <Fields
-                        names={['products', 'productType', 'product', 'amount', 'isDefect', 'editIsDefect', 'editAmount']}
+                        names={['products', 'productType', 'product', 'amount', 'defect', 'editDefect', 'editAmount']}
                         component={RemainderListProductField}
                     />
                 </div>

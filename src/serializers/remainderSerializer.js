@@ -1,7 +1,8 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
 import moment from 'moment'
-const DEFECT = 2
+
+const ZERO = 0
 
 export const listFilterSerializer = (data) => {
     const {...defaultData} = data
@@ -35,9 +36,9 @@ export const transferSerializer = (data) => {
     const deliveryDate = _.get(data, 'deliveryDate') ? moment(_.get(data, 'deliveryDate')).format('YYYY-MM-DD') : null
     const products = _.map(_.get(data, 'products'), (item) => {
         return {
-            amount: item.amount,
+            amount: item.amount || ZERO,
             product: item.product.value.id,
-            'is_defect': _.toInteger(_.get(item, ['isDefect', 'value', 'id'])) === DEFECT
+            defect: item.defect || ZERO
         }
     })
 
@@ -55,9 +56,9 @@ export const discardSerializer = (data) => {
     const stock = _.get(data, ['fromStock', 'value'])
     const products = _.map(_.get(data, 'products'), (item) => {
         return {
-            amount: item.amount,
+            amount: item.amount || ZERO,
             product: item.product.value.id,
-            'is_defect': _.toInteger(_.get(item, ['isDefect', 'value', 'id'])) === DEFECT
+            defect: item.defect || ZERO
         }
     })
 

@@ -20,7 +20,6 @@ import {
     TextField,
     ProductTypeSearchField
 } from '../ReduxForm'
-import RemainderStatusSearchField from '../../components/ReduxForm/Remainder/RemainderStatusSearchField'
 
 const enhance = compose(
     injectSheet({
@@ -285,8 +284,7 @@ const AddProductsDialog = enhance((props) => {
         setSearch,
         openAddProductConfirm,
         handleCloseAddProductConfirm,
-        handleSubmitAddProductConfirm,
-        withoutValidations
+        handleSubmitAddProductConfirm
     } = props
     const onSubmit = handleSubmit(props.onSubmit)
     const products = _.map(data, (item) => {
@@ -295,13 +293,6 @@ const AddProductsDialog = enhance((props) => {
         const code = _.get(item, 'code')
         const balance = _.get(item, 'balance')
         const measurement = _.get(item, ['measurement', 'name'])
-        const normalize = value => {
-            if (!value) {
-                return value
-            }
-
-            return value > balance ? balance : value
-        }
         return (
             <Row key={id} className="dottedList">
                 <Col xs={4}>{name}</Col>
@@ -311,20 +302,19 @@ const AddProductsDialog = enhance((props) => {
                     <Field
                         name={'product[' + id + '][amount]'}
                         component={TextField}
-                        normalize={!withoutValidations && normalize}
                         className={classes.inputFieldCustom}
                         inputStyle={{textAlign: 'right'}}
                         fullWidth={true}/>
                     <span>{measurement}</span>
                 </Col>
-                <Col xs={2}>
+                <Col xs={2} className={classes.flex}>
                     <Field
-                        label="Статус"
-                        name={'product[' + id + '][isDefect]'}
+                        name={'product[' + id + '][defect]'}
+                        component={TextField}
                         className={classes.inputFieldCustom}
-                        fullWidth={true}
-                        component={RemainderStatusSearchField}
-                    />
+                        inputStyle={{textAlign: 'right'}}
+                        fullWidth={true}/>
+                    <span>{measurement}</span>
                 </Col>
             </Row>
         )
@@ -395,8 +385,8 @@ const AddProductsDialog = enhance((props) => {
                                 <Col xs={4}>Наименование</Col>
                                 <Col xs={2}>Код</Col>
                                 <Col xs={2}>В наличии</Col>
-                                <Col xs={2} className={classes.rightAlign}>Цена</Col>
-                                <Col xs={2} className={classes.rightAlign}>Статус</Col>
+                                <Col xs={2} className={classes.rightAlign}>ОК</Col>
+                                <Col xs={2} className={classes.rightAlign}>Брак</Col>
                             </Row>}
                             {!_.isEmpty(products)
                                 ? products

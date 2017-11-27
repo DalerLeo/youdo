@@ -63,6 +63,10 @@ const enhance = compose(
                 position: 'absolute !important'
             }
         },
+        dialog: {
+            overflowY: 'auto',
+            padding: '0 !important'
+        },
         dialogBody: {
             display: 'flex',
             '& tbody:last-child': {
@@ -71,8 +75,9 @@ const enhance = compose(
             }
         },
         noPadding: {
-            padding: '0! important',
+            padding: '0 !important',
             maxHeight: 'none !important',
+            marginBottom: '50px',
             fontSize: 'unset !important',
             color: '#333 !important'
         },
@@ -240,7 +245,7 @@ const RemainderDiscardDialog = enhance((props) => {
                                 onTouchTap={() => { handleOpenAddProduct('discard') }}/>
                         </div>
                         <Fields
-                            names={['products', 'productType', 'product', 'isDefect', 'amount', 'editIsDefect', 'editAmount']}
+                            names={['products', 'productType', 'product', 'defect', 'amount', 'editDefect', 'editAmount']}
                             component={RemainderListProductField}
                         />
                     </div>

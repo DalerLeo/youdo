@@ -11,7 +11,6 @@ import toBoolean from '../../helpers/toBoolean'
 import sprintf from 'sprintf'
 import {openSnackbarAction} from '../../actions/snackbar'
 import {openErrorAction} from '../../actions/error'
-import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
 import {
     RemainderGridList,
     REMAINDER_TRANSFER_DIALOG_OPEN,
@@ -75,7 +74,13 @@ const enhance = compose(
     withState('openAddProductDialog', 'setOpenAddProductDialog', false),
     withState('openAddProductConfirm', 'setOpenAddProductConfirm', false),
     withPropsOnChange((props, nextProps) => {
-        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
+        const except = {
+            openDiscardDialog: null,
+            pdPage: null,
+            pdPageSize: null,
+            pdSearch: null
+        }
+        return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
         dispatch(remainderListFetchAction(filter))
     }),
@@ -121,8 +126,8 @@ const enhance = compose(
     }, ({setOpenAddProductConfirm, addProductsForm, openAddProductDialog, dispatch, filterProducts}) => {
         const products = _.filter(_.get(addProductsForm, ['values', 'product']), (item) => {
             const amount = _.toNumber(_.get(item, 'amount'))
-            const isDefect = _.toNumber(_.get(item, 'isDefect'))
-            return amount > ZERO && isDefect
+            const defect = _.toNumber(_.get(item, 'defect'))
+            return amount > ZERO && defect > ZERO
         })
         const productType = _.get(addProductsForm, ['values', 'productType', 'value'])
         if (!_.isEmpty(products)) {
@@ -276,24 +281,18 @@ const enhance = compose(
                 const id = _.toInteger(index)
                 const product = getProductData(id)
                 const amount = _.get(item, 'amount')
-                const isDefect = _.get(item, 'isDefect')
-                if (amount && isDefect) {
+                const defect = _.get(item, 'defect')
+                if (amount || defect) {
                     newProductsArray.push({
                         amount: _.get(item, 'amount'),
-                        isDefect: _.get(item, 'isDefect'),
-                        customPrice: _.get(product, 'customPrice'),
+                        defect: _.get(item, 'defect'),
                         product: {
-                            id: id,
                             value: {
                                 id: _.get(product, 'id'),
                                 name: _.get(product, 'name'),
                                 balance: _.get(product, 'balance'),
-                                measurement: {
-                                    id: _.get(product, ['measurement', 'id']),
-                                    name: _.get(product, ['measurement', 'name'])
-                                }
-                            },
-                            text: _.get(product, 'name')
+                                measurement: _.get(product, 'measurement')
+                            }
                         }
                     })
                 }
@@ -318,9 +317,12 @@ const enhance = compose(
         },
 
         handleSubmitAddProductConfirm: props => () => {
-            const {addProductsForm, addProducts, dispatch, createForm, filterProducts, setOpenAddProductConfirm} = props
+            const {addProductsForm, addProducts, dispatch, discardForm, transferForm, filterProducts, setOpenAddProductConfirm} = props
             const productType = _.get(addProductsForm, ['values', 'productType', 'value'])
-            const existingProducts = _.get(createForm, ['values', 'products']) || []
+            const dialog = _.get(props, ['location', 'query', 'dialogType'])
+            const productsDiscart = _.get(discardForm, ['values', 'products'])
+            const productsTransfer = _.get(transferForm, ['values', 'products'])
+            const existingProducts = dialog === 'discard' ? productsDiscart : productsTransfer
             const values = _.get(addProductsForm, ['values', 'product'])
             const getProductData = (id) => {
                 return _.find(_.get(addProducts, 'results'), {'id': id})
@@ -330,25 +332,18 @@ const enhance = compose(
                 const id = _.toInteger(index)
                 const product = getProductData(id)
                 const amount = _.get(item, 'amount')
-                const price = _.get(item, 'price')
-                if (amount && price) {
+                const defect = _.get(item, 'defect')
+                if (amount || defect) {
                     newProductsArray.push({
                         amount: _.get(item, 'amount'),
-                        cost: numberWithoutSpaces(_.get(item, 'price')),
-                        customPrice: _.get(product, 'customPrice'),
-                        price: _.get(item, 'price'),
+                        defect: _.get(item, 'defect'),
                         product: {
-                            id: id,
                             value: {
                                 id: _.get(product, 'id'),
                                 name: _.get(product, 'name'),
                                 balance: _.get(product, 'balance'),
-                                measurement: {
-                                    id: _.get(product, ['measurement', 'id']),
-                                    name: _.get(product, ['measurement', 'name'])
-                                }
-                            },
-                            text: _.get(product, 'name')
+                                measurement: _.get(product, 'measurement')
+                            }
                         }
                     })
                 }
@@ -356,7 +351,11 @@ const enhance = compose(
             const checkDifference = _.differenceBy(existingProducts, newProductsArray, (o) => {
                 return o.product.value.id
             })
-            dispatch(change('SupplyCreateForm', 'products', _.concat(newProductsArray, checkDifference)))
+            if (dialog === 'discard') {
+                dispatch(change('RemainderDiscardForm', 'products', _.concat(newProductsArray, checkDifference)))
+            } else {
+                dispatch(change('RemainderTransferForm', 'products', _.concat(newProductsArray, checkDifference)))
+            }
             dispatch(addProductsListAction(filterProducts, productType))
             setOpenAddProductConfirm(false)
         }

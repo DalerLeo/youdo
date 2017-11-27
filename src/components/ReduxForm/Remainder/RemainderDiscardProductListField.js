@@ -19,9 +19,9 @@ import {
 import DeleteIcon from 'material-ui/svg-icons/action/delete-forever'
 import DiscardProductSearchField from './DiscardProductSearchField'
 import {RemainderProductTypeSearchField} from '../index'
-import RemainderStatusSearchField from '../../ReduxForm/Remainder/RemainderStatusSearchField'
 import TextField from '../Basic/TextField'
 import EditIcon from 'material-ui/svg-icons/editor/mode-edit'
+import numberFormat from '../../../helpers/numberFormat'
 
 const enhance = compose(
     injectSheet({
@@ -50,9 +50,6 @@ const enhance = compose(
         },
         table: {
             padding: '10px 30px !important',
-            maxHeight: '200px',
-            minHeight: '200px',
-            overflow: 'auto',
             '& > div': {
                 overflow: 'unset !important',
                 '& > div:nth-child(2)': {
@@ -216,24 +213,24 @@ const enhance = compose(
         handleAdd: props => () => {
             const product = _.get(props, ['product', 'input', 'value'])
             const amount = _.get(props, ['amount', 'input', 'value'])
-            const isDefect = _.get(props, ['isDefect', 'input', 'value'])
+            const defect = _.get(props, ['defect', 'input', 'value'])
             const onChange = _.get(props, ['products', 'input', 'onChange'])
             const products = _.get(props, ['products', 'input', 'value'])
 
-            if (!_.isEmpty(_.get(product, 'value')) && amount && _.get(isDefect, 'value')) {
+            if (!_.isEmpty(_.get(product, 'value')) && amount && defect) {
                 let has = false
                 _.map(products, (item) => {
-                    if (_.get(item, 'product') === product && _.isEqual(isDefect, _.get(item, 'isDefect'))) {
+                    if (_.get(item, 'product') === product && _.isEqual(defect, _.get(item, 'defect'))) {
                         has = true
                     }
                 })
-                const fields = ['productType', 'product', 'isDefect', 'amount']
+                const fields = ['productType', 'product', 'defect', 'amount']
                 for (let i = 0; i < fields.length; i++) {
                     let newChange = _.get(props, [fields[i], 'input', 'onChange'])
                     props.dispatch(newChange(null))
                 }
                 if (!has) {
-                    let newArray = [{product, isDefect, amount}]
+                    let newArray = [{product, defect, amount}]
                     _.map(products, (obj) => {
                         newArray.push(obj)
                     })
@@ -247,18 +244,18 @@ const enhance = compose(
             const {setEditItem} = props
             const products = _.get(props, ['products', 'input', 'value'])
             const amount = (_.get(props, ['editAmount', 'input', 'value']))
-            const isDefect = (_.get(props, ['editIsDefect', 'input', 'value']))
+            const defect = (_.get(props, ['editDefect', 'input', 'value']))
             _.map(products, (item, index) => {
                 if (index === listIndex) {
                     if (!_.isEmpty(amount)) {
                         item.amount = amount
                     }
-                    if (!_.isEmpty(isDefect)) {
-                        item.isDefect = isDefect
+                    if (!_.isEmpty(defect)) {
+                        item.defect = defect
                     }
                 }
             })
-            const fields = ['editAmount', 'editIsDefect']
+            const fields = ['editAmount', 'editDefect']
             for (let i = 0; i < fields.length; i++) {
                 let newChange = _.get(props, [fields[i], 'input', 'onChange'])
                 props.dispatch(newChange(null))
@@ -307,19 +304,15 @@ const RemainderListProductField = ({classes, handleAdd, handleRemove, measuremen
                         <TextField
                             label="Кол-во"
                             fullWidth={true}
-                            {..._.get(defaultProps, 'amount')}
-                        />
+                            {..._.get(defaultProps, 'amount')}/>
                         <span style={{margin: '15px 0 15px 15px', alignSelf: 'flex-end'}}>{measurement}</span>
                     </Col>
                     <Col xs={2}>
-                        <Field
-                            label="Статус"
-                            name="isDefect"
-                            className={classes.inputFieldCustom}
+                        <TextField
+                            label="Брак"
                             fullWidth={true}
-                            component={RemainderStatusSearchField}
-                            {..._.get(defaultProps, 'isDefect')}
-                        />
+                            {..._.get(defaultProps, 'defect')}/>
+                        <span style={{margin: '15px 0 15px 15px', alignSelf: 'flex-end'}}>{measurement}</span>
                     </Col>
                     <Col xs={1}>
                         <IconButton
@@ -345,8 +338,8 @@ const RemainderListProductField = ({classes, handleAdd, handleRemove, measuremen
                         <TableRow className={classes.tableRowHead}>
                             <TableHeaderColumn
                                 className={classes.tableTitle}>Наименование</TableHeaderColumn>
-                            <TableHeaderColumn className={classes.tableTitle}>Статус</TableHeaderColumn>
-                            <TableHeaderColumn className={classes.tableTitle}>Кол-во</TableHeaderColumn>
+                            <TableHeaderColumn className={classes.tableTitle}>Брак</TableHeaderColumn>
+                            <TableHeaderColumn className={classes.tableTitle}>ОК</TableHeaderColumn>
                             <TableHeaderColumn style={{display: 'none'}}>.</TableHeaderColumn>
                         </TableRow>
                     </TableHeader>
@@ -357,7 +350,7 @@ const RemainderListProductField = ({classes, handleAdd, handleRemove, measuremen
                         stripedRows={false}>
                         {_.map(products, (item, index) => {
                             const product = _.get(item, ['product', 'value', 'name'])
-                            const isDefect = _.get(item, ['isDefect', 'value', 'name'])
+                            const defect = _.get(item, 'defect')
                             const amount = _.get(item, 'amount')
                             const proMeasurement = _.get(item, ['product', 'value', 'measurement', 'name'])
 
@@ -366,18 +359,16 @@ const RemainderListProductField = ({classes, handleAdd, handleRemove, measuremen
                                     <TableRow key={index} className={classes.tableRow}>
                                         <TableRowColumn>{product}</TableRowColumn>
                                         <TableRowColumn>
-                                            <Field
-                                                label="Статус"
-                                                name="editIsDefect"
-                                                className={classes.inputFieldCustom}
+                                            <TextField
+                                                hintText={defect}
                                                 fullWidth={true}
-                                                component={RemainderStatusSearchField}
-                                                {..._.get(defaultProps, 'editIsDefect')}
+                                                className={classes.inputFieldCustom}
+                                                {..._.get(defaultProps, 'editDefect')}
                                             />
                                         </TableRowColumn>
                                         <TableRowColumn>
                                             <TextField
-                                                label={amount}
+                                                hintText={amount}
                                                 fullWidth={true}
                                                 className={classes.inputFieldCustom}
                                                 {..._.get(defaultProps, 'editAmount')}
@@ -395,10 +386,8 @@ const RemainderListProductField = ({classes, handleAdd, handleRemove, measuremen
                             return (
                                 <TableRow key={index} className={classes.tableRow}>
                                     <TableRowColumn>{product}</TableRowColumn>
-                                    <TableRowColumn>{isDefect}</TableRowColumn>
-                                    <TableRowColumn>
-                                        {amount} {proMeasurement}
-                                    </TableRowColumn>
+                                    <TableRowColumn>{numberFormat(defect, proMeasurement)}</TableRowColumn>
+                                    <TableRowColumn>{numberFormat(amount, proMeasurement)}</TableRowColumn>
                                     <TableRowColumn style={{textAlign: 'right'}}>
                                         <IconButton
                                             onTouchTap={() => setEditItem(index)}>
