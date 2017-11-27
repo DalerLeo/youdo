@@ -396,7 +396,7 @@ const TransferDetail = enhance((props) => {
                                 const name = _.get(item, ['product', 'name'])
                                 const measurement = _.get(item, ['product', 'measurement', 'name'])
                                 const productType = _.get(item, ['product', 'type', 'name'])
-                                const isDefect = toBoolean(_.get(item, 'isDefect')) ? 'Брак' : 'Xarasho'
+                                const isDefect = toBoolean(_.get(item, 'isDefect')) ? 'Брак' : 'ОК'
                                 const amount = numberFormat(_.get(item, 'amount'), measurement)
                                 return (
                                     <Row key={productId} className='dottedList'>

@@ -109,6 +109,9 @@ const enhance = compose(
         contacts: {
             width: '100%',
             borderCollapse: 'collapse',
+            '& thead': {
+                display: 'table-row-group'
+            },
             '& td, th': {
                 border: 'solid 1px',
                 padding: '5px 10px'
@@ -288,19 +291,19 @@ const OrderSalesPrint = enhance((props) => {
                             </tr>
                             <tr>
                                 <td>P/c 20 214 000 000 604 470 001</td>
-                                <td>P/c 20 214 000 000 604 470 001</td>
+                                <td></td>
                             </tr>
                             <tr>
                                 <td>в АКБ «Asia Alliance Bank» Мирабадский ф-л г. Ташкент МФО 01124</td>
-                                <td>в АКБ «Asia Alliance Bank» </td>
+                                <td></td>
                             </tr>
                             <tr>
                                 <td>ИНН 303875278</td>
-                                <td>ИНН 303875278</td>
+                                <td></td>
                             </tr>
                             <tr>
                                 <td>ОКЭД 20300</td>
-                                <td>ОКЭД 20300</td>
+                                <td></td>
                             </tr>
                             <tr>
                                 <td>Тел.: </td>
@@ -311,8 +314,8 @@ const OrderSalesPrint = enhance((props) => {
                                 <td height={'29px'}> </td>
                             </tr>
                             <tr>
-                                <td>Ген.Директор______________________________</td>
-                                <td>Директор______________________________</td>
+                                <td><div style={{float: 'left'}}>Ген.Директор</div><div style={{borderBottom: '1px solid'}}>:</div></td>
+                                <td><div style={{float: 'left'}}>Директор</div><div style={{borderBottom: '1px solid'}}>:</div></td>
                             </tr>
                             <tr>
                                 <td> М.П.</td>
