@@ -22,7 +22,7 @@ const enhance = compose(
             display: 'flex'
         },
         imagePopup: {
-            background: 'rgba(0,0,0, 0.54)',
+            background: 'rgba(0,0,0, 0.75)',
             display: 'flex',
             alignItems: 'flex-start',
             justifyContent: 'center',
