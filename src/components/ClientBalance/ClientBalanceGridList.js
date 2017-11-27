@@ -425,19 +425,21 @@ const ClientBalanceGridList = enhance((props) => {
             <tr className={classes.title}>
                 <td
                     style={{cursor: 'pointer'}}
-                    onClick={() => ordering(filter, 'order_no')}>
+                    onClick={() => ordering(filter, 'order_no', props.pathname)}>
                     Кол-во заказов {orderNoSorting}
                 </td>
                 {_.map(head, (item, index) => {
                     const sortingType = filter.getSortingType(item.type + '_' + item.id)
-                    const icon = _.isNil(sortingType) ? null
-                                                        : sortingType ? <ArrowUpIcon className={classes.icon}/>
-                                                                        : <ArrowDownIcon className={classes.icon}/>
+                    const icon = _.isNil(sortingType)
+                        ? null
+                        : sortingType
+                            ? <ArrowUpIcon className={classes.icon}/>
+                            : <ArrowDownIcon className={classes.icon}/>
                     return (
                         <td
                             key={index}
                             style={{cursor: 'pointer'}}
-                            onClick={() => ordering(filter, item.type + '_' + item.id)}>
+                            onClick={() => ordering(filter, item.type + '_' + item.id, props.pathname)}>
                             {item.name}{icon}
                         </td>
                     )

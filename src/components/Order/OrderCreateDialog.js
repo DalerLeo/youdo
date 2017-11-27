@@ -219,7 +219,7 @@ const enhance = compose(
     }),
     connect((state) => {
         const orderProducts = _.get(state, ['form', 'OrderCreateForm', 'values', 'products'])
-        const currencyItem = _.get(state, ['form', 'OrderCreateForm', 'values', 'currencyItem'])
+        const currencyItem = _.get(state, ['form', 'OrderCreateForm', 'values', 'currency', 'text'])
         return {
             orderProducts,
             currencyItem
