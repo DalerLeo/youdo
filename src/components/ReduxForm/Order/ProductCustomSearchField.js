@@ -10,8 +10,8 @@ import * as actionTypes from '../../../constants/actionTypes'
 import {connect} from 'react-redux'
 
 const ZERO = 0
-const getOptions = (search, type, priceList) => {
-    return axios().get(`${PATH.PRODUCT_FOR_ORDER_SELECT_LIST}?price_list=${priceList || ''}&type=${type || ''}&page_size=100&search=${search || ''}`)
+const getOptions = (search, type, priceList, currency) => {
+    return axios().get(`${PATH.PRODUCT_FOR_ORDER_SELECT_LIST}?price_list=${priceList || ''}&currency=${currency || ''}&type=${type || ''}&page_size=100&search=${search || ''}`)
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
         })
@@ -25,9 +25,9 @@ const setExtraData = (data, loading) => {
     }
 }
 
-const getItem = (id, dispatch, priceList) => {
+const getItem = (id, dispatch, priceList, currency) => {
     dispatch(setExtraData(null, true))
-    return axios().get(PATH.PRODUCT_MOBILE_ITEM, {'params': {'price_list': priceList, 'ids': id}})
+    return axios().get(PATH.PRODUCT_MOBILE_ITEM, {params: {price_list: priceList, ids: id, currency: currency}})
         .then(({data}) => {
             const obj = _.get(data, ['results', ZERO])
             dispatch(setExtraData(obj, false))
@@ -39,19 +39,21 @@ const enhance = compose(
     connect((state, props) => {
         const dispatch = _.get(props, 'dispatch')
         const priceList = _.get(state, ['form', 'OrderCreateForm', 'values', 'priceList', 'value'])
+        const currency = _.get(state, ['form', 'OrderCreateForm', 'values', 'currency', 'value'])
 
         return {
             state,
             dispatch,
-            priceList
+            priceList,
+            currency
         }
     })
 )
 
 const ProductCustomSearchField = enhance((props) => {
-    const {dispatch, state, priceList, ...defaultProps} = props
+    const {dispatch, state, priceList, currency, ...defaultProps} = props
     const test = (id) => {
-        return getItem(id, dispatch, priceList)
+        return getItem(id, dispatch, priceList, currency)
     }
     const type = _.get(state, ['form', 'OrderCreateForm', 'values', 'type', 'value'])
     return (
@@ -67,7 +69,7 @@ const ProductCustomSearchField = enhance((props) => {
                     <div>{name} <strong>({numberFormat(balance, measurement)})</strong></div>
                 )
             }}
-            getOptions={ (search) => { return getOptions(search, type, priceList) }}
+            getOptions={ (search) => { return getOptions(search, type, priceList, currency) }}
             getItem={test}
             getItemText={(value) => {
                 return _.get(value, ['name'])
