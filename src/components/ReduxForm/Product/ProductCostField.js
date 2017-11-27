@@ -2,7 +2,7 @@ import _ from 'lodash'
 import React from 'react'
 import {compose} from 'recompose'
 import {connect} from 'react-redux'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../../Loader'
 import getConfig from '../../../helpers/getConfig'
 import numberFormat from '../../../helpers/numberFormat'
 
@@ -26,7 +26,7 @@ const ProductCostField = enhance((props) => {
     const cost = _.toNumber(_.get(extra, ['product', 'price']) || ZERO) * _.toNumber(count)
     return (
         <div style={{marginTop: '20px', whiteSpace: 'nowrap'}}>
-            { extraLoading && <div><CircularProgress size={20} thickness={2} /></div> }
+            { extraLoading && <div><Loader size={0.5}/></div> }
             {!extraLoading && <div>{numberFormat(cost, getConfig('PRIMARY_CURRENCY'))}</div>}
         </div>
     )

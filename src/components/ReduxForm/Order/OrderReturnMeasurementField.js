@@ -2,7 +2,7 @@ import _ from 'lodash'
 import React from 'react'
 import {compose} from 'recompose'
 import {connect} from 'react-redux'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../../Loader'
 
 const enhance = compose(
     connect((state) => {
@@ -23,7 +23,7 @@ const OrderReturnMeasurementField = enhance((props) => {
     const measurement = _.get(values, ['product', 'value', 'product', 'measurement', 'name'])
     return (
         <div style={{marginTop: '20px'}}>
-            { extraLoading && <div><CircularProgress size={20} thickness={2} /></div> }
+            { extraLoading && <div><Loader size={0.5}/></div> }
             {!extraLoading && <div>{measurement}</div>}
         </div>
     )

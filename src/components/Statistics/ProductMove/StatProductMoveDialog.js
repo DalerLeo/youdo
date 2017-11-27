@@ -6,7 +6,7 @@ import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../../Loader'
 import {Row, Col} from 'react-flexbox-grid'
 import Person from '../../Images/person.png'
 import Pagination from '../../GridList/GridListNavPagination/index'
@@ -172,7 +172,7 @@ const StatProductMove = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             {loading ? <div className={classes.loader}>
-                <CircularProgress/>
+                <Loader size={0.75}/>
             </div>
                 : <div>
                     <div className={classes.titleContent}>

@@ -6,7 +6,7 @@ import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import {connect} from 'react-redux'
 import FlatButton from 'material-ui/FlatButton'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import {TextField, CashboxSearchField, CashboxBankCustomField, normalizeNumber} from '../ReduxForm'
@@ -141,7 +141,7 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                 <form onSubmit={onSubmit} className={classes.form}>
                     <div className={classes.inContent} style={{minHeight: '220px'}}>
                         <div className={classes.loader}>
-                            <CircularProgress size={40} thickness={4}/>
+                            <Loader size={0.75}/>
                         </div>
                         <div className={classes.field}>
                             <div className={classes.info}>

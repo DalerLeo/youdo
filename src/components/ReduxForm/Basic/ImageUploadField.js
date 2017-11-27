@@ -6,7 +6,7 @@ import injectSheet from 'react-jss'
 import * as PATH from '../../../constants/api'
 import Dropzone from 'react-dropzone'
 import axios from '../../../helpers/axios'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../../Loader'
 import ImageImage from 'material-ui/svg-icons/image/image'
 
 const enhance = compose(
@@ -67,7 +67,7 @@ const ImageUploadField = ({classes, setFileUploadLoading, fileUploadLoading, set
     const dropZoneView = ({acceptedFiles, rejectedFiles}) => {
         const zero = 0
         if (fileUploadLoading) {
-            return (<CircularProgress size={40} thickness={4}/>)
+            return (<Loader size={0.75}/>)
         }
 
         if (fileUploadErrors !== null) {

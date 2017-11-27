@@ -248,12 +248,13 @@ const enhance = compose(
         return (prevPriceList !== nextPriceList && nextPriceList && (openCreateDialog === true || openUpdateDialog === true))
     }, ({dispatch, createForm, location}) => {
         const priceList = _.toInteger(_.get(createForm, ['values', 'priceList', 'value']))
+        const currency = _.toInteger(_.get(createForm, ['values', 'currency', 'value']))
         const size = _.get(location, ['query', 'pdPageSize'])
         const products = _.join(_.map(_.get(createForm, ['values', 'products']), (item) => {
             return _.get(item, ['product', 'value', 'id'])
         }), '-')
         if ((priceList > ZERO || priceList === MINUS_ONE) && products) {
-            dispatch(orderChangePriceListAction(null, priceList, size, products))
+            dispatch(orderChangePriceListAction(null, priceList, size, products, currency))
         }
     }),
 
@@ -271,7 +272,7 @@ const enhance = compose(
         const products = _.join(_.map(_.get(createForm, ['values', 'products']), (item) => {
             return _.get(item, ['product', 'value', 'id'])
         }), '-')
-        if (currency > ZERO && priceList > ZERO) {
+        if (currency > ZERO && (priceList > ZERO || priceList === MINUS_ONE)) {
             dispatch(orderChangeCurrencyListAction(null, priceList, size, products, currency))
         }
     }),

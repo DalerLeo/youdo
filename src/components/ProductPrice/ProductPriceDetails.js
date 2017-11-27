@@ -3,7 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 import {Col} from 'react-flexbox-grid'
 import Popover from 'material-ui/Popover'
 
@@ -143,7 +143,7 @@ const ProductPriceDetails = enhance((props) => {
         return (
             <div className={classes.loader}>
                 <div>
-                    <CircularProgress size={40} thickness={4}/>
+                    <Loader size={0.75}/>
                 </div>
             </div>
         )

@@ -17,7 +17,7 @@ import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import Paper from 'material-ui/Paper'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 import numberFormat from '../../helpers/numberFormat'
 import GridListNavSearch from '../GridList/GridListNavSearch'
 
@@ -251,7 +251,7 @@ const ClientTransactionGridList = enhance((props) => {
                             </div>
                             {clientListLoading
                                 ? <div style={{textAlign: 'center'}}>
-                                    <CircularProgress size={40} thickness={4}/>
+                                    <Loader size={0.75}/>
                                 </div>
                                 : clientList
                             }

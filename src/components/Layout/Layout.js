@@ -16,7 +16,7 @@ import Money from 'material-ui/svg-icons/editor/attach-money'
 import Clear from 'material-ui/svg-icons/action/delete'
 import Storehouse from 'material-ui/svg-icons/action/home'
 import Balance from 'material-ui/svg-icons/action/account-balance-wallet'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 import {
     notificationListFetchAction,
     notificationDeleteAction
@@ -329,7 +329,7 @@ const Layout = enhance((props) => {
                     <div className={classes.notifBody}>
                         {
                             notificationsLoading ? <div className={classes.loading}>
-                                <CircularProgress size={40} thickness={4}/>
+                                <Loader size={0.75}/>
                             </div>
                                 : (notificationListExp.length > ZERO ? notificationListExp
                                 : <div className={classes.emptyQuery}>

@@ -5,7 +5,7 @@ import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import StockReceiveDetails from './StockReceiveDetails'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 
 const enhance = compose(
     injectSheet({
@@ -147,7 +147,7 @@ const PopoverDialog = enhance((props) => {
             bodyClassName={classes.popUp}>
             {loading
                 ? <div className={classes.loader}>
-                    <CircularProgress/>
+                    <Loader size={0.75}/>
                 </div>
                 : <div className={classes.content}>
                     <StockReceiveDetails

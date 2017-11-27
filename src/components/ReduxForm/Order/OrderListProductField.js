@@ -12,7 +12,7 @@ import Tooltip from '../../ToolTip'
 import {connect} from 'react-redux'
 import numberFormat from '../../../helpers/numberFormat'
 import numberWithoutSpaces from '../../../helpers/numberWithoutSpaces'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../../Loader'
 import {
     Table,
     TableBody,
@@ -31,6 +31,7 @@ import OrderProductTypeSearchField from './OrderProductTypeSearchField'
 
 let initialPaymentType = ''
 let initialPriceList = ''
+let initialCurrency = ''
 const enhance = compose(
     injectSheet({
         loader: {
@@ -273,15 +274,16 @@ const enhance = compose(
             })
             changedProducts(newArray)
         },
+
         handleChangePriceList: props => () => {
             const paymentType = _.get(props, 'paymentType')
             initialPriceList = _.get(props, ['priceList', 'value'])
             const products = _.get(props, ['products', 'input', 'value'])
             const changedProducts = _.get(props, ['products', 'input', 'onChange'])
             const updatedPriceListProducts = _.get(props, 'updatedPriceListProducts')
-            _.map(products, (item, index) => {
-                const prices = _.find(updatedPriceListProducts, (obj, indx) => {
-                    return index === indx
+            _.map(products, (item) => {
+                const prices = _.find(updatedPriceListProducts, (obj) => {
+                    return obj.id === item.product.value.id
                 })
                 item.price = {
                     cashPrice: _.get(prices, 'netCost') ? _.toNumber(_.get(prices, 'netCost')) : _.get(prices, 'cashPrice'),
@@ -291,7 +293,7 @@ const enhance = compose(
                     ? _.toNumber(_.get(prices, 'netCost'))
                     : (paymentType === 'bank') ? _.get(prices, ['transferPrice']) : _.get(prices, ['cashPrice'])
             })
-            let newArray = []
+            const newArray = []
             _.map(products, (obj) => {
                 newArray.push(obj)
             })
@@ -361,8 +363,15 @@ const enhance = compose(
                     confirmDialog.style.zIndex = '10'
                 }
             }
-            if (_.get(props, ['priceList', 'value']) !== initialPriceList && _.get(props, ['priceList', 'value'])) {
+            const formPriceList = _.get(props, ['priceList', 'value'])
+            const formCurrencyValue = _.get(props, ['formCurerncy', 'value'])
+            if (formPriceList !== initialPriceList && formPriceList) {
                 if (initialPriceList && initialProducts) {
+                    confirmDialogPriceList.style.zIndex = '10'
+                }
+            }
+            if (formCurrencyValue !== initialCurrency && formCurrencyValue) {
+                if (initialCurrency && initialProducts) {
                     confirmDialogPriceList.style.zIndex = '10'
                 }
             }
@@ -418,6 +427,7 @@ const OrderListProductField = enhance((props) => {
     const currency = _.get(formCurerncy, 'text')
     initialPaymentType = paymentType
     initialPriceList = _.get(priceList, 'value')
+    initialCurrency = _.get(formCurerncy, 'value')
 
     return (
         <div className={classes.wrapper}>
@@ -449,7 +459,7 @@ const OrderListProductField = enhance((props) => {
                 className={classes.confirm}
                 style={{zIndex: -10}}>
                 <div className={classes.confirmButtons}>
-                    <div>Цены товаров будут изменены на {_.get(priceList, 'text')}</div>
+                    <div>Цены товаров будут изменены на {_.get(priceList, 'text')} {_.get(formCurerncy, 'text')}</div>
                     <FlatButton
                         label="Нет"
                         ref="cancelPriceList"
@@ -554,7 +564,7 @@ const OrderListProductField = enhance((props) => {
             {error && <div className={classes.error}>{error}</div>}
             {!_.isEmpty(products) ? <div className={classes.table}>
                     {editProductsLoading ? <div className={classes.loader}>
-                            <CircularProgress size={40} thickness={4}/>
+                            <Loader size={0.75}/>
                         </div>
                         : <Table
                             fixedHeader={true}

@@ -7,7 +7,7 @@ import ClientBalanceInfoDialog from './ClientBalanceInfoDialog'
 import ClientBalanceCreateDialog from './ClientBalanceCreateDialog'
 import ClientBalanceUpdateDialog from './ClientBalanceUpdateDialog'
 import ClientBalanceFilterForm from './ClientBalanceFilterForm'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 import {Field, reduxForm} from 'redux-form'
 import SubMenu from '../SubMenu'
 import {hashHistory} from 'react-router'
@@ -425,19 +425,21 @@ const ClientBalanceGridList = enhance((props) => {
             <tr className={classes.title}>
                 <td
                     style={{cursor: 'pointer'}}
-                    onClick={() => ordering(filter, 'order_no')}>
+                    onClick={() => ordering(filter, 'order_no', props.pathname)}>
                     Кол-во заказов {orderNoSorting}
                 </td>
                 {_.map(head, (item, index) => {
                     const sortingType = filter.getSortingType(item.type + '_' + item.id)
-                    const icon = _.isNil(sortingType) ? null
-                                                        : sortingType ? <ArrowUpIcon className={classes.icon}/>
-                                                                        : <ArrowDownIcon className={classes.icon}/>
+                    const icon = _.isNil(sortingType)
+                        ? null
+                        : sortingType
+                            ? <ArrowUpIcon className={classes.icon}/>
+                            : <ArrowDownIcon className={classes.icon}/>
                     return (
                         <td
                             key={index}
                             style={{cursor: 'pointer'}}
-                            onClick={() => ordering(filter, item.type + '_' + item.id)}>
+                            onClick={() => ordering(filter, item.type + '_' + item.id, props.pathname)}>
                             {item.name}{icon}
                         </td>
                     )
@@ -547,7 +549,7 @@ const ClientBalanceGridList = enhance((props) => {
     const summary = (
         sumLoading
         ? <div className={classes.sumLoader}>
-            <CircularProgress size={40} thickness={4}/>
+            <Loader size={0.75}/>
         </div>
         : <div className={classes.summaryWrapper}>
             <div
@@ -619,7 +621,7 @@ const ClientBalanceGridList = enhance((props) => {
                             {navigation}
                             {listLoading
                                 ? <div className={classes.loader}>
-                                    <CircularProgress size={40} thickness={4} />
+                                    <Loader size={0.75}/>
                                 </div>
                                 : (_.isEmpty(tableList) && !listLoading)
                                     ? <div className={classes.emptyQuery}>
@@ -640,7 +642,7 @@ const ClientBalanceGridList = enhance((props) => {
                 {navigation}
                 {listLoading
                     ? <div className={classes.loader}>
-                        <CircularProgress size={40} thickness={4}/>
+                        <Loader size={0.75}/>
                     </div>
                     : (_.isEmpty(tableList) && !listLoading)
                         ? <div className={classes.emptyQuery}>

@@ -6,7 +6,7 @@ import _ from 'lodash'
 import {reduxForm, SubmissionError, Field} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import Dialog from 'material-ui/Dialog'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 import IconButton from 'material-ui/IconButton'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import AcceptClientTransactionCashBoxSearchField from '../ReduxForm/Cashbox/AcceptClientTransactionCashBoxSearchField'
@@ -163,7 +163,7 @@ const AcceptClientTransactionDialog = enhance((props) => {
             <div className={classes.bodyContent}>
                 {loading
                     ? <div className={classes.loader}>
-                        <CircularProgress size={40} thickness={4}/>
+                        <Loader size={0.75}/>
                       </div>
                     : <form onSubmit={onSubmit}>
                         <div className={classes.inContent} style={{minHeight: 'initial'}}>

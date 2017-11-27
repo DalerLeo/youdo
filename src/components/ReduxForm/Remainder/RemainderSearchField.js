@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import {compose, withPropsOnChange, withReducer} from 'recompose'
 import MUIAutoComplete from 'material-ui/AutoComplete'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../../Loader'
 import excludeObjKey from '../../../helpers/excludeObjKey'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
@@ -111,7 +111,7 @@ const SearchField = enhance((props) => {
                 <KeyboardArrowDown style={{color: '#ccc', height: '20px', width: '20px'}}/>
             </div>}
             {state.loading && <div className={classes.icon}>
-                <CircularProgress size={20} thickness={2} />
+                <Loader size={0.5}/>
             </div>}
         </div>
     )

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
-import CircularProgress from 'material-ui/CircularProgress'
+import Loader from '../Loader'
 import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
@@ -469,7 +469,7 @@ const PlanCreateDialog = enhance((props) => {
                                 </div>
                                 {zonesLoading
                                     ? <div className={classes.loader}>
-                                        <CircularProgress size={40} thickness={4}/>
+                                        <Loader size={0.75}/>
                                     </div>
                                     : zones}
                             </div>
@@ -480,7 +480,7 @@ const PlanCreateDialog = enhance((props) => {
                             {zoneAgentsLoading
                                 ? <Paper zDepth={2} className={classes.agentsWrapper}>
                                     <div className={classes.agentsLoader}>
-                                        <CircularProgress size={35} thickness={3.5}/>
+                                        <Loader size={0.75}/>
                                     </div>
                                 </Paper>
                                 : (selectedZone === ZERO)
