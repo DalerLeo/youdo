@@ -42,12 +42,15 @@ const ClientBalanceFormat = enhance((props) => {
             break
         case TRANS_TYPE.NONE_TYPE: output = <span>Нет типа</span>
             break
-        case TRANS_TYPE.ORDER_EDIT: output = <span>Редактирование заказа</span>
+        case TRANS_TYPE.ORDER_EDIT: output = <Link to={{
+            pathname: sprintf(ROUTES.ORDER_ITEM_PATH, order),
+            query: {search: order}
+        }} target="_blank">Редактирование заказа №{order}</Link>
             break
         case TRANS_TYPE.ORDER_DISCOUNT: output = <Link to={{
             pathname: sprintf(ROUTES.ORDER_ITEM_PATH, order),
             query: {search: order}
-        }} target="_blank">Скидка № {order}</Link>
+        }} target="_blank">Скидка на заказ №{order}</Link>
             break
         default: output = null
     }

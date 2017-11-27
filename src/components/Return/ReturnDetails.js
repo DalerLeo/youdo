@@ -94,12 +94,12 @@ const enhance = compose(
             padding: '20px 30px'
         },
         leftSide: {
-            width: '320px',
+            width: '350px',
             borderRight: '1px #efefef solid'
         },
         rightSide: {
             padding: '0 30px',
-            width: 'calc(100% - 320px)'
+            width: 'calc(100% - 350px)'
         },
         list: {
             maxHeight: '384px',
@@ -198,13 +198,17 @@ const ReturnDetails = enhance((props) => {
     const id = _.get(data, 'id')
     const user = _.get(data, ['createdBy', 'firstName']) + ' ' + _.get(data, ['createdBy', 'secondName'])
     const createdDate = dateTimeFormat(_.get(data, 'createdDate'))
-    const finishedTime = _.get(data, 'acceptedTime') ? dateTimeFormat(_.get(data, 'finishedTime'), true) : 'Не установлена'
-    const acceptedBy = _.get(data, ['acceptedBy', 'firstName'])
-    const acceptedDate = _.get(data, 'acceptedTime') ? dateTimeFormat(_.get(data, 'acceptedTime')) : 'Не установлена'
+    const finishedTime = _.get(data, 'acceptedTime') ? dateTimeFormat(_.get(data, 'finishedTime'), true) : 'Не установлен'
+    const acceptedBy = _.get(data, ['acceptedBy'])
+        ? _.get(data, ['acceptedBy', 'firstName']) + ' ' + _.get(data, ['acceptedBy', 'secondName'])
+        : 'Не принят'
+    const acceptedDate = _.get(data, 'acceptedTime') ? dateTimeFormat(_.get(data, 'acceptedTime')) : 'Не установлено'
     const comment = _.get(data, 'comment')
     const stock = _.get(data, ['stock', 'name'])
     const order = _.get(data, 'order')
     const client = _.get(data, ['client', 'name'])
+    const currency = _.get(data, ['currency', 'name'])
+    const priceList = _.get(data, ['priceList', 'name'])
     const market = _.get(data, 'market')
     const status = _.toInteger(_.get(data, 'status'))
     const paymentType = _.get(data, 'paymentType') === 'cash' ? 'Наличными' : 'Перечислением'
@@ -272,27 +276,48 @@ const ReturnDetails = enhance((props) => {
                     <div className={classes.subBlock}>
                         <div className={classes.dataBox}>
                             <ul>
-
-                                <li>
-                                    <span>Тип оплаты</span>
-                                    <span>{paymentType}</span>
-                                </li>
                                 <li>
                                     <span>Добавил:</span>
                                     <span>{user}</span>
+                                </li>
+                                {client && <li>
+                                    <span>Клиент:</span>
+                                    <span>{client}</span>
+                                </li>}
+                                {market && <li>
+                                    <span>Магазин:</span>
+                                    <span>{_.get(market, 'name')}</span>
+                                </li>}
+                                <li>
+                                    <span>Дата возврата:</span>
+                                    <span>{createdDate}</span>
+                                </li>
+                                <li>
+                                    <span>Валюта:</span>
+                                    <span>{currency}</span>
+                                </li>
+                                <li>
+                                    <span>Прайс-лист:</span>
+                                    <span>{priceList}</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div className={classes.subBlock}>
+                        <div className={classes.dataBox}>
+                            <ul>
+                                <li>
+                                    <span>Склад:</span>
+                                    <span>{stock}</span>
+                                </li>
+                                <li>
+                                    <span>Тип оплаты</span>
+                                    <span>{paymentType}</span>
                                 </li>
                                 {order && <li>
                                     <span>Заказ №:</span>
                                     <span>{order}</span>
                                 </li>}
-                                <li>
-                                    <span>Тип оплаты</span>
-                                    <span>{paymentType}</span>
-                                </li>
-                                <li>
-                                    <span>Склад:</span>
-                                    <span>{stock}</span>
-                                </li>
                                 <li>
                                     <span>Начало приемки:</span>
                                     <span>{acceptedDate}</span>
@@ -305,18 +330,6 @@ const ReturnDetails = enhance((props) => {
                                     <span>Принял:</span>
                                     <span>{acceptedBy}</span>
                                 </li>
-                                <li>
-                                    <span>Дата возврата:</span>
-                                    <span>{createdDate}</span>
-                                </li>
-                                {client && <li>
-                                    <span>Клиент:</span>
-                                    <span>{client}</span>
-                                </li>}
-                                {market && <li>
-                                    <span>Магазин:</span>
-                                    <span>{_.get(market, 'name')}</span>
-                                </li>}
                                 <li>
                                     <span>Статус:</span>
                                     <span>

@@ -10,7 +10,6 @@ import Groceries from '../../Images/groceries.svg'
 import {connect} from 'react-redux'
 import numberFormat from '../../../helpers/numberFormat'
 import numberWithoutSpaces from '../../../helpers/numberWithoutSpaces'
-import getConfig from '../../../helpers/getConfig'
 import {
     Table,
     TableBody,
@@ -162,7 +161,7 @@ const enhance = compose(
             const product = _.get(props, ['product', 'input', 'value'])
             const amount = numberWithoutSpaces(_.get(props, ['amount', 'input', 'value']))
             const cost = numberWithoutSpaces(_.get(props, ['cost', 'input', 'value']))
-            const currency = getConfig('PRIMARY_CURRENCY')
+            const currency = _.get(props, 'currency')
             const measurement = _.get(props, ['measurement'])
             const onChange = _.get(props, ['products', 'input', 'onChange'])
             const products = _.get(props, ['products', 'input', 'value'])
@@ -237,8 +236,7 @@ const iconStyle = {
     }
 }
 
-const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, handleEdit, handleRemove, editItem, setEditItem, measurement, isUpdate, editOnlyCost, market, priceList, ...defaultProps}) => {
-    const currency = getConfig('PRIMARY_CURRENCY')
+const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, handleEdit, handleRemove, editItem, setEditItem, measurement, isUpdate, editOnlyCost, market, priceList, currency, ...defaultProps}) => {
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
     const error = _.get(defaultProps, ['products', 'meta', 'error'])
     return (

@@ -204,9 +204,9 @@ const enhance = compose(
         },
 
         handleGetDocument: props => (id) => {
-            const {dispatch, setOpenPrint} = props
+            const {dispatch, setOpenPrint, filter} = props
             setOpenPrint(true)
-            return dispatch(returnListPrintFetchAction(id))
+            return dispatch(returnListPrintFetchAction(id, filter))
                 .then(() => {
                     window.print()
                 })
@@ -483,6 +483,11 @@ const ReturnList = enhance((props) => {
                     client: {value: _.get(detail, ['client', 'id'])},
                     stock: {value: _.get(detail, ['stock', 'id'])},
                     market: {value: _.get(detail, ['market', 'id'])},
+                    priceList: {value: _.get(detail, ['priceList', 'id'])},
+                    currency: {
+                        value: _.get(detail, ['currency', 'id']),
+                        text: _.get(detail, ['currency', 'name'])
+                    },
                     paymentType: {value: _.get(detail, ['paymentType'])},
                     comment: _.get(detail, 'comment'),
                     products: forUpdateProducts

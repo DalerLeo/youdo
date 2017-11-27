@@ -15,23 +15,12 @@ import Pagination from '../ReduxForm/Pagination'
 import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
-import * as ROUTES from '../../constants/routes'
 import Tooltip from '../ToolTip'
-import {Link} from 'react-router'
-import sprintf from 'sprintf'
 import NotFound from '../Images/not-found.png'
+import ClientBalanceFormat from '../Statistics/ClientIncome/ClientBalanceFormat'
 
 import {
-    PAYMENT,
-    CANCEL,
-    ORDER_RETURN,
-    CANCEL_ORDER,
-    CANCEL_ORDER_RETURN,
-    EXPENSE,
     FIRST_BALANCE,
-    ORDER,
-    ORDER_EDIT,
-    ORDER_DISCOUNT,
     NONE_TYPE
 } from '../../constants/clientBalanceInfo'
 
@@ -197,7 +186,6 @@ const iconStyle = {
         padding: 0
     }
 }
-const THREE = 3
 const ClientBalanceInfoDialog = enhance((props) => {
     const {open, filterItem, onClose, classes, detailData, name, balance, paymentType, superUser, setItem, stat} = props
     const isSuperUser = _.get(superUser, 'isSuperUser')
@@ -216,7 +204,8 @@ const ClientBalanceInfoDialog = enhance((props) => {
         const customRate = _.get(item, 'customRate') ? _.toNumber(_.get(item, 'customRate')) : _.toInteger(amount / internal)
         const user = _.get(item, 'user') ? (_.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName'])) : 'Система'
         const type = _.get(item, 'type')
-        const id = _.toInteger(type) === THREE ? _.get(item, 'orderReturn') : (_.get(item, 'order') || _.get(item, 'transaction'))
+        const order = _.get(item, 'order')
+        const orderReturn = _.get(item, 'orderReturn')
 
         const openEditDialog = (thisItem) => {
             superUser.handleOpenSuperUserDialog(thisItem.id)
@@ -233,24 +222,7 @@ const ClientBalanceInfoDialog = enhance((props) => {
                 <div style={{flexBasis: '40%', maxWidth: '40%'}}>
                     {market && <div>Магазин: <span>{market}</span></div>}
                     {comment && <div>Комментарии: <span>{comment}</span></div>}
-                    {type && <div>Тип: <span>{type === PAYMENT ? 'Оплата'
-                        : type === CANCEL ? 'Отмена'
-                            : type === CANCEL_ORDER ? 'Отмена заказа'
-                                : type === ORDER_EDIT ? 'Изменения заказа'
-                                    : type === ORDER_DISCOUNT ? 'Скидка на заказ'
-                                        : type === CANCEL_ORDER_RETURN ? 'Отмена возврата'
-                                            : type === ORDER ? <Link to={{
-                                                pathname: sprintf(ROUTES.ORDER_ITEM_PATH, id),
-                                                query: {search: id}
-                                            }} target="_blank">Заказ {id}</Link>
-                                                : type === EXPENSE ? 'Расход'
-                                                    : type === ORDER_RETURN ? <Link to={{
-                                                        pathname: sprintf(ROUTES.RETURN_ITEM_PATH, id),
-                                                        query: {search: id}
-                                                    }} target="_blank">Возврат {id}</Link>
-                                                        : type === FIRST_BALANCE ? 'Первый баланс'
-                                                            : type === NONE_TYPE ? 'Произвольный' : null}</span>
-                    </div>}
+                    <ClientBalanceFormat type={type} order={order} orderReturn={orderReturn}/>
                 </div>
                 <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>
                     <div>{numberFormat(amount, currency)}</div>

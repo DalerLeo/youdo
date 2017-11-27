@@ -461,7 +461,7 @@ const ClientBalanceGridList = enhance((props) => {
                             const amount = _.toNumber(_.get(val, 'amount'))
                             return (
                                 <td key={index} style={{cursor: 'pointer'}} onClick={() => { infoDialog.handleOpenInfoDialog(id, _.get(val, 'id'), _.get(val, 'type')) }}>
-                                    <span className={(amount > ZERO) ? classes.green : (amount < ZERO) && classes.red}>{amount} {primaryCurrency}</span>
+                                    <span className={(amount > ZERO) ? classes.green : (amount < ZERO) && classes.red}>{numberFormat(amount, primaryCurrency)}</span>
                                 </td>
                             )
                         })}
