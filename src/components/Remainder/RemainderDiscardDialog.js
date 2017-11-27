@@ -2,6 +2,7 @@ import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
+import {connect} from 'react-redux'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
@@ -12,6 +13,7 @@ import IconButton from 'material-ui/IconButton'
 import TextField from '../ReduxForm/Basic/TextField'
 import RemainderListProductField from '../ReduxForm/Remainder/RemainderDiscardProductListField'
 import {StockSearchField} from '../ReduxForm'
+import Tooltip from '../ToolTip'
 
 export const REMAINDER_DISCARD_DIALOG_OPEN = 'openDiscardDialog'
 
@@ -69,6 +71,7 @@ const enhance = compose(
         },
         dialogBody: {
             display: 'flex',
+            minHeight: '400px',
             '& tbody:last-child': {
                 borderBottom: '1px #efefef solid'
 
@@ -171,16 +174,28 @@ const enhance = compose(
         rightSide: {
             flexBasis: '75%',
             maxWidth: '75%'
+        },
+        addButtons: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: '10px 30px'
         }
     }),
     reduxForm({
         form: 'RemainderDiscardForm',
         enableReinitialize: true
-    })
+    }),
+    connect((state) => {
+        const fromStock = _.get(state, ['form', 'RemainderDiscardForm', 'values', 'fromStock'])
+        return {
+            fromStock
+        }
+    }),
 )
 
 const RemainderDiscardDialog = enhance((props) => {
-    const {open, handleSubmit, onClose, classes, handleOpenAddProduct} = props
+    const {open, handleSubmit, onClose, classes, handleOpenAddProduct, fromStock} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
     const iconStyle = {
@@ -236,18 +251,29 @@ const RemainderDiscardDialog = enhance((props) => {
                             fullWidth={true}/>
                     </div>
                     <div className={classes.rightSide}>
-                        <div style={{textAlign: 'right'}}>
-                            <FlatButton
-                                label="добавить товары"
-                                style={{color: '#12aaeb'}}
-                                labelStyle={{fontSize: '13px'}}
-                                className={classes.span}
-                                onTouchTap={() => { handleOpenAddProduct('discard') }}/>
+                        <div className={classes.addButtons}>
+                            <strong>Список товаров</strong>
+                            {!fromStock
+                                ? <Tooltip text={'Выберите склад'} position="right">
+                                    <FlatButton
+                                        disabled={true}
+                                        label="добавить товары"
+                                        labelStyle={{fontSize: '13px', textTransform: 'unset'}}/>
+                                </Tooltip>
+                                : <div>
+                                    <FlatButton
+                                        label="добавить товары"
+                                        style={{color: '#12aaeb'}}
+                                        labelStyle={{fontSize: '13px', textTransform: 'unset'}}
+                                        className={classes.span}
+                                        onTouchTap={() => { handleOpenAddProduct('discard') }}/>
+                                </div> }
                         </div>
+                        {fromStock &&
                         <Fields
                             names={['products', 'productType', 'product', 'defect', 'amount', 'editDefect', 'editAmount']}
                             component={RemainderListProductField}
-                        />
+                        />}
                     </div>
                 </div>
                 <div className={classes.bottomButton}>

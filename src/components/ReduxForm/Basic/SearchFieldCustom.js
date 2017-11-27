@@ -99,7 +99,7 @@ const enhance = compose(
 
     withPropsOnChange((props, nextProps) => {
         return (_.get(props, ['state', 'text']) !== _.get(nextProps, ['state', 'text']) && _.get(nextProps, ['state', 'text']) !== '') ||
-            _.get(props, ['parent']) !== _.get(nextProps, ['parent'])
+            _.get(props, ['parent']) !== _.get(nextProps, ['parent']) || _.get(props, ['stock']) !== _.get(nextProps, ['stock'])
     }, (props) => {
         _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)
     })

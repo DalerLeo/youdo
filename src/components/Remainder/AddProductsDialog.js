@@ -15,6 +15,7 @@ import TextFieldSearch from 'material-ui/TextField'
 import Paper from 'material-ui/Paper'
 import SearchIcon from 'material-ui/svg-icons/action/search'
 import NotFound from '../Images/not-found.png'
+import Tooltip from '../ToolTip'
 import numberFormat from '../../helpers/numberFormat'
 import {
     TextField,
@@ -289,15 +290,16 @@ const AddProductsDialog = enhance((props) => {
     const onSubmit = handleSubmit(props.onSubmit)
     const products = _.map(data, (item) => {
         const id = _.get(item, 'id')
-        const name = _.get(item, 'name')
-        const code = _.get(item, 'code')
-        const balance = _.get(item, 'balance')
+        const name = _.get(item, 'title')
+        const defect = _.get(item, 'defects')
+        const available = _.get(item, 'available')
         const measurement = _.get(item, ['measurement', 'name'])
         return (
             <Row key={id} className="dottedList">
-                <Col xs={4}>{name}</Col>
-                <Col xs={2}>{code}</Col>
-                <Col xs={2}>{numberFormat(balance, measurement)}</Col>
+                <Col xs={5}>{name}</Col>
+                <Col xs={3}>
+                    <Tooltip text='доступно / брак' position="left">{numberFormat(available)}/{numberFormat(defect, measurement)}</Tooltip>
+                </Col>
                 <Col xs={2} className={classes.flex}>
                     <Field
                         name={'product[' + id + '][amount]'}
@@ -382,9 +384,8 @@ const AddProductsDialog = enhance((props) => {
                         <form className={classes.productsList}>
                             {!_.isEmpty(products) &&
                             <Row className="dottedList">
-                                <Col xs={4}>Наименование</Col>
-                                <Col xs={2}>Код</Col>
-                                <Col xs={2}>В наличии</Col>
+                                <Col xs={5}>Наименование</Col>
+                                <Col xs={3}>В наличии</Col>
                                 <Col xs={2} className={classes.rightAlign}>ОК</Col>
                                 <Col xs={2} className={classes.rightAlign}>Брак</Col>
                             </Row>}

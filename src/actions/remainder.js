@@ -89,15 +89,16 @@ export const remainderDiscardAction = (formValues) => {
     }
 }
 
-export const addProductsListAction = (filter, productType) => {
+export const addProductsListAction = (filter, productType, stock) => {
     const params = {
         page_size: _.get(filter.getParams(), 'pdPageSize'),
         page: _.get(filter.getParams(), 'pdPage'),
         search: _.get(filter.getParams(), 'pdSearch'),
-        type: productType
+        type: productType,
+        stock
     }
     const payload = axios()
-        .get(API.PRODUCT_MOBILE_URL, {params})
+        .get(API.REMAINDER_LIST, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -106,7 +107,7 @@ export const addProductsListAction = (filter, productType) => {
         })
 
     return {
-        type: actionTypes.PRODUCT_MOBILE,
+        type: actionTypes.REMAINDER_ADD_PRODUCTS,
         payload
     }
 }

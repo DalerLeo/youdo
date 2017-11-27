@@ -2,6 +2,7 @@ import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
+import {connect} from 'react-redux'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
@@ -9,6 +10,7 @@ import {Field, Fields, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
+import Tooltip from '../ToolTip'
 import StockSearchField from '../ReduxForm/Stock/StockSearchField'
 import DateField from '../ReduxForm/Basic/DateField'
 import TextField from '../ReduxForm/Basic/TextField'
@@ -92,7 +94,8 @@ const enhance = compose(
             padding: '0 !important'
         },
         dialogBody: {
-            display: 'flex'
+            display: 'flex',
+            minHeight: '400px'
         },
         noPadding: {
             color: '#333 !important',
@@ -154,16 +157,28 @@ const enhance = compose(
         actionButton: {
             fontSize: '13px !important',
             margin: '0 !important'
+        },
+        addButtons: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: '10px 30px'
         }
     }),
     reduxForm({
         form: 'RemainderTransferForm',
         enableReinitialize: true
-    })
+    }),
+    connect((state) => {
+        const fromStock = _.get(state, ['form', 'RemainderTransferForm', 'values', 'fromStock'])
+        return {
+            fromStock
+        }
+    }),
 )
 
 const RemainderTransferDialog = enhance((props) => {
-    const {open, handleSubmit, onClose, classes, handleOpenAddProduct} = props
+    const {open, handleSubmit, onClose, classes, handleOpenAddProduct, fromStock} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
     return (
@@ -215,18 +230,29 @@ const RemainderTransferDialog = enhance((props) => {
                         fullWidth={true}/>
                 </div>
                 <div className={classes.rightSide}>
-                    <div style={{textAlign: 'right'}}>
-                        <FlatButton
-                            label="добавить товары"
-                            style={{color: '#12aaeb'}}
-                            labelStyle={{fontSize: '13px'}}
-                            className={classes.span}
-                            onTouchTap={() => { handleOpenAddProduct('transfer') }}/>
+                    <div className={classes.addButtons}>
+                        <strong>Список товаров</strong>
+                        {!fromStock
+                            ? <Tooltip text={'Выберите склад'} position="right">
+                                <FlatButton
+                                    disabled={true}
+                                    label="добавить товары"
+                                    labelStyle={{fontSize: '13px', textTransform: 'unset'}}/>
+                              </Tooltip>
+                            : <div>
+                                <FlatButton
+                                    label="добавить товары"
+                                    style={{color: '#12aaeb'}}
+                                    labelStyle={{fontSize: '13px', textTransform: 'unset'}}
+                                    className={classes.span}
+                                    onTouchTap={() => { handleOpenAddProduct('transfer') }}/>
+                            </div> }
                     </div>
+                    {fromStock &&
                     <Fields
                         names={['products', 'productType', 'product', 'amount', 'defect', 'editDefect', 'editAmount']}
                         component={RemainderListProductField}
-                    />
+                    />}
                 </div>
             </div>
             <div className={classes.bottomButton}>
