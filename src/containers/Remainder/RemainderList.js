@@ -43,8 +43,8 @@ const enhance = compose(
         const searchForm = _.get(state, ['form', 'RemainderSearchForm'])
         const transferForm = _.get(state, ['form', 'RemainderTransferForm'])
         const discardForm = _.get(state, ['form', 'RemainderDiscardForm'])
-        const addProducts = _.get(state, ['order', 'updateProducts', 'data'])
-        const addProductsLoading = _.get(state, ['order', 'updateProducts', 'loading'])
+        const addProducts = _.get(state, ['remainder', 'addProducts', 'data'])
+        const addProductsLoading = _.get(state, ['remainder', 'addProducts', 'loading'])
         const addProductsForm = _.get(state, ['form', 'RemainderAddProductsForm'])
         const filterProducts = filterHelper(addProducts, pathname, query, {'page': 'pdPage', 'pageSize': 'pdPageSize'})
         const filter = filterHelper(list, pathname, query)
@@ -139,11 +139,14 @@ const enhance = compose(
     }),
     withPropsOnChange((props, nextProps) => {
         return props.openAddProductDialog !== nextProps.openAddProductDialog && nextProps.openAddProductDialog
-    }, ({dispatch, addProductsForm, openAddProductDialog, filterProducts, setOpenAddProductConfirm}) => {
+    }, ({dispatch, addProductsForm, openAddProductDialog, filterProducts, setOpenAddProductConfirm, transferForm, discardForm, location}) => {
         const productType = _.get(addProductsForm, ['values', 'productType', 'value'])
+        const stock = toBoolean(_.get(location, ['query', REMAINDER_TRANSFER_DIALOG_OPEN]))
+            ? _.get(transferForm, ['values', 'fromStock', 'value'])
+            : _.get(discardForm, ['values', 'fromStock', 'value'])
         if (openAddProductDialog) {
             setOpenAddProductConfirm(false)
-            dispatch(addProductsListAction(filterProducts, productType))
+            dispatch(addProductsListAction(filterProducts, productType, stock))
         }
     }),
     withHandlers({
@@ -289,7 +292,7 @@ const enhance = compose(
                         product: {
                             value: {
                                 id: _.get(product, 'id'),
-                                name: _.get(product, 'name'),
+                                name: _.get(product, 'title'),
                                 balance: _.get(product, 'balance'),
                                 measurement: _.get(product, 'measurement')
                             }

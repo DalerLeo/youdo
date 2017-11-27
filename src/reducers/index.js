@@ -297,7 +297,8 @@ const rootReducer = combineReducers({
         list: createThunkReducer(actionTypes.REMAINDER_LIST),
         update: createThunkReducer(actionTypes.REMAINDER_UPDATE),
         item: createThunkReducer(actionTypes.REMAINDER_ITEM),
-        reserved: createThunkReducer(actionTypes.REMAINDER_RESERVED)
+        reserved: createThunkReducer(actionTypes.REMAINDER_RESERVED),
+        addProducts: createThunkReducer(actionTypes.REMAINDER_ADD_PRODUCTS)
     }),
     statAgent: combineReducers({
         list: createThunkReducer(actionTypes.STAT_AGENT_LIST),
