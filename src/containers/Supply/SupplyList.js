@@ -67,8 +67,8 @@ const enhance = compose(
         const supplyExpenseList = _.get(state, ['supplyExpense', 'list', 'data'])
         const supplyExpenseListLoading = _.get(state, ['supplyExpense', 'list', 'loading'])
         const addProductsForm = _.get(state, ['form', 'OrderAddProductsForm'])
-        const addProducts = _.get(state, ['order', 'updateProducts', 'data'])
-        const addProductsLoading = _.get(state, ['order', 'updateProducts', 'loading'])
+        const addProducts = _.get(state, ['remainder', 'addProducts', 'data'])
+        const addProductsLoading = _.get(state, ['remainder', 'addProducts', 'loading'])
         const filterProducts = filterHelper(addProducts, pathname, query, {'page': 'pdPage', 'pageSize': 'pdPageSize'})
         const filterItem = filterHelper(supplyExpenseList, pathname, query, {'page': 'dPage', 'pageSize': 'dPageSize'})
 
@@ -441,23 +441,16 @@ const enhance = compose(
                     newProductsArray.push({
                         amount: _.get(item, 'amount'),
                         cost: numberWithoutSpaces(_.get(item, 'price')),
-                        customPrice: _.get(product, 'customPrice'),
-                        price: {
-                            cashPrice: _.get(product, 'cashPrice'),
-                            transferPrice: _.get(product, 'transferPrice')
-                        },
                         product: {
                             id: id,
                             value: {
                                 id: _.get(product, 'id'),
-                                name: _.get(product, 'name'),
-                                balance: _.get(product, 'balance'),
+                                name: _.get(product, 'title'),
                                 measurement: {
                                     id: _.get(product, ['measurement', 'id']),
                                     name: _.get(product, ['measurement', 'name'])
                                 }
-                            },
-                            text: _.get(product, 'name')
+                            }
                         }
                     })
                 }
@@ -495,20 +488,16 @@ const enhance = compose(
                     newProductsArray.push({
                         amount: _.get(item, 'amount'),
                         cost: numberWithoutSpaces(_.get(item, 'price')),
-                        customPrice: _.get(product, 'customPrice'),
-                        price: _.get(item, 'price'),
                         product: {
                             id: id,
                             value: {
                                 id: _.get(product, 'id'),
-                                name: _.get(product, 'name'),
-                                balance: _.get(product, 'balance'),
+                                name: _.get(product, 'title'),
                                 measurement: {
                                     id: _.get(product, ['measurement', 'id']),
                                     name: _.get(product, ['measurement', 'name'])
                                 }
-                            },
-                            text: _.get(product, 'name')
+                            }
                         }
                     })
                 }

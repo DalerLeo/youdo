@@ -1,24 +1,22 @@
 import _ from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
-import {Row, Col} from 'react-flexbox-grid'
+import {Row} from 'react-flexbox-grid'
 import * as ROUTES from '../../../constants/routes'
 import Container from '../../Container/index'
 import injectSheet from 'react-jss'
-import {compose} from 'recompose'
-import moment from 'moment'
+import {compose, withState, lifecycle} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
-import {TextField, ZoneSearchField, DivisionSearchField} from '../../ReduxForm'
+import {TextField, ZoneSearchField, DivisionSearchField, DateToDateField} from '../../ReduxForm'
 import StatAgentDialog from './StatAgentDialog'
 import StatSideMenu from '../StatSideMenu'
 import Loader from '../../Loader'
+import ToolTip from '../../ToolTip'
 import Pagination from '../../GridList/GridListNavPagination/index'
-import numberFormat from '../../../helpers/numberFormat.js'
+import numberFormat from '../../../helpers/numberFormat'
+import horizontalScroll from '../../../helpers/horizontalScroll'
 import getConfig from '../../../helpers/getConfig'
 import NotFound from '../../Images/not-found.png'
-import GridListHeader from '../../GridList/GridListHeader/index'
-import DateFilter from './DateFilter'
-import Tooltip from '../../ToolTip'
 import {StatisticsFilterExcel} from '../../Statistics'
 
 export const STAT_AGENT_FILTER_KEY = {
@@ -31,13 +29,14 @@ export const STAT_AGENT_FILTER_KEY = {
 const enhance = compose(
     injectSheet({
         loader: {
-            width: '100%',
+            position: 'absolute',
+            top: '0',
+            left: '-30px',
+            right: '-30px',
+            bottom: '0',
             padding: '100px 0',
             background: '#fff',
-            alignItems: 'center',
-            zIndex: '999',
-            justifyContent: 'center',
-            display: 'flex'
+            zIndex: '30'
         },
         mainWrapper: {
             background: '#fff',
@@ -48,57 +47,101 @@ const enhance = compose(
         wrapper: {
             padding: '20px 30px',
             height: '100%',
-            '& > div:nth-child(2)': {
-                marginTop: '10px',
-                borderTop: '1px #efefef solid',
-                borderBottom: '1px #efefef solid'
-            },
             '& .row': {
                 margin: '0 !important'
             }
         },
+        container: {
+            position: 'relative'
+        },
         tableWrapper: {
+            display: 'flex',
             margin: '0 -30px',
-            '& .row': {
-                '&:after': {
-                    bottom: '-1px'
-                },
-                '& > div': {
-                    textAlign: 'right',
-                    '&:first-child': {
-                        paddingLeft: '0',
-                        textAlign: 'left'
-                    },
-                    '&:last-child': {
-                        paddingRight: '0'
-                    }
-                }
+            paddingLeft: '30px',
+            position: 'relative',
+            overflow: 'hidden',
+            minHeight: '200px',
+            '& > div:first-child': {
+                zIndex: '20',
+                boxShadow: '5px 0 8px -3px #CCC',
+                width: '350px'
             },
-            '& .dottedList': {
-                padding: '0 30px',
-                height: '50px',
-                '&:last-child:after': {
-                    display: 'none'
+            '& > div:last-child': {
+                width: 'calc(100% - 350px)',
+                overflowX: 'auto',
+                overflowY: 'hidden'
+            }
+        },
+        leftTable: {
+            display: 'table',
+            marginLeft: '-30px',
+            width: '100%',
+            '& > div': {
+                '&:nth-child(even)': {
+                    backgroundColor: '#f9f9f9'
                 },
-                '&:hover': {
-                    '& > div:first-child': {
-                        fontWeight: '600',
-                        color: '#12aaeb'
+                display: 'table-row',
+                height: '40px',
+                '&:nth-child(2)': {
+                    height: '39px'
+                },
+                '&:first-child': {
+                    backgroundColor: 'white',
+                    height: '81px',
+                    verticalAlign: 'bottom',
+                    '& span': {
+                        verticalAlign: 'bottom',
+                        padding: '15px 30px',
+                        borderTop: '1px #efefef solid',
+                        borderBottom: '1px #efefef solid'
                     }
+                },
+                '& span': {
+                    display: 'table-cell',
+                    verticalAlign: 'middle',
+                    padding: '0 30px'
                 }
+            }
+        },
+        mainTable: {
+            width: '100%',
+            minWidth: '950px',
+            color: '#666',
+            borderCollapse: 'collapse',
+            '& tr, td': {
+                height: '40px'
             },
-            '& .personImage': {
-                borderRadius: '50%',
-                overflow: 'hidden',
-                height: '30px',
-                minWidth: '30px',
-                width: '30px',
-                marginRight: '10px',
-                '& img': {
-                    display: 'flex',
-                    height: '100%',
-                    width: '100%'
-                }
+            '& td': {
+                padding: '0 20px',
+                minWidth: '140px'
+            }
+        },
+        title: {
+            fontWeight: '600',
+            '& tr, td': {
+                border: '1px #efefef solid'
+            }
+        },
+        subTitle: {
+            extend: 'title',
+            '& td:nth-child(odd)': {
+                borderRight: 'none'
+            },
+            '& td:nth-child(even)': {
+                borderLeft: 'none',
+                textAlign: 'right'
+            }
+        },
+        tableRow: {
+            '& td:nth-child(odd)': {
+                textAlign: 'left'
+            },
+            '& td:nth-child(even)': {
+                borderRight: '1px #efefef solid',
+                textAlign: 'right'
+            },
+            '&:nth-child(odd)': {
+                backgroundColor: '#f9f9f9'
             }
         },
         balanceInfo: {
@@ -198,12 +241,18 @@ const enhance = compose(
             }
         },
         emptyQuery: {
-            background: 'url(' + NotFound + ') no-repeat center center',
+            position: 'absolute',
+            top: '0',
+            left: '0',
+            right: '0',
+            bottom: '0',
+            background: '#fff url(' + NotFound + ') no-repeat center 20px',
             backgroundSize: '200px',
-            padding: '200px 0 0',
+            padding: '160px 0 0',
             textAlign: 'center',
             fontSize: '13px',
             color: '#666',
+            zIndex: '30',
             '& svg': {
                 width: '50px !important',
                 height: '50px !important',
@@ -222,7 +271,9 @@ const enhance = compose(
         },
         filters: {
             display: 'flex',
-            justifyContent: 'space-between'
+            justifyContent: 'space-between',
+            marginTop: '10px',
+            borderTop: '1px #efefef solid'
         },
         opacity: {
             '& span': {
@@ -231,55 +282,63 @@ const enhance = compose(
             }
         }
     }),
+    withState('currentRow', 'updateRow', null),
     reduxForm({
         form: 'StatisticsFilterForm',
         enableReinitialize: true
+    }),
+    lifecycle({
+        componentDidMount () {
+            const horizontalTable = this.refs.horizontalTable
+            horizontalScroll(horizontalTable)
+        }
     })
 )
 
 const listHeader = [
+    // Sales
     {
-        sorting: false,
-        name: 'agent',
-        title: 'Агенты',
-        xs: 2
+        sorting: true,
+        title: 'Сумма'
     },
     {
         sorting: true,
-        name: 'monthlyPlanAmount',
-        alignRight: true,
-        title: 'План',
-        xs: 1
+        title: 'Фактически'
     },
+    // Returns
     {
-        sorting: false,
-        alignRight: true,
-        name: 'summary',
-        title: 'Сумма',
-        xs: 3
+        sorting: true,
+        tooltip: 'Сумма возвратов заказов за этот период',
+        title: 'По периоду'
     },
     {
         sorting: true,
-        name: 'totalPaid',
-        alignRight: true,
-        title: 'Оплачено',
-        xs: 2
+        tooltip: 'Сумма возвратов за этот период',
+        title: 'Общее'
+    },
+    // Payments
+    {
+        sorting: true,
+        title: 'По периоду'
     },
     {
         sorting: true,
-        name: 'ordersLeftTotalPrice',
-        alignRight: true,
-        title: 'Баланс',
-        xs: 2
+        title: 'Общее'
+    },
+    // Plan
+    {
+        sorting: true,
+        title: 'План'
     },
     {
         sorting: true,
-        alignRight: true,
-        name: 'monthlyPlanLeft',
-        title: 'До выполнения',
-        xs: 2
+        title: 'Осталось'
     }
 ]
+
+const styleOnHover = {
+    background: '#efefef'
+}
 
 const StatAgentGridList = enhance((props) => {
     const {
@@ -290,68 +349,68 @@ const StatAgentGridList = enhance((props) => {
         handleSubmitFilterDialog,
         detailData,
         getDocument,
-        calendarBegin,
-        calendarEnd,
         initialValues,
         handleSubmit,
-        filterOpen
+        filterOpen,
+        currentRow,
+        updateRow
     } = props
 
     const listLoading = _.get(listData, 'listLoading')
     const salesSummary = numberFormat(_.get(_.find(_.get(listData, 'data'), {'id': _.get(detailData, 'id')}), 'ordersTotalPrice'))
     const divisionStatus = getConfig('DIVISIONS')
 
-    const list = _.map(_.get(listData, 'data'), (item) => {
+    const tableLeft = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const plan = numberFormat(_.get(item, 'monthlyPlanAmount'), getConfig('PRIMARY_CURRENCY'))
-        const factPrice = numberFormat(_.get(item, 'factPrice'))
-        const orderTotalPrice = numberFormat(_.get(item, 'ordersTotalPrice'))
-        const orderReturnTotalPrice = numberFormat(_.get(item, 'ordersReturnedTotalPrice'))
-        const orderLeftTotalPrice = numberFormat(_.get(item, 'ordersLeftTotalPrice'), getConfig('PRIMARY_CURRENCY'))
-        const totalPaid = _.get(item, 'totalPaid')
-        const monthlyPlanLeft = numberFormat(_.get(item, 'monthlyPlanLeft'), getConfig('PRIMARY_CURRENCY'))
-
-        const tooltipText = '<div>Продажи / Возвраты / Фактически</div>'
-        const tooltipPaid = '<div>Всего / Для текущих заказов / Остальное</div>'
+        return (
+            <div
+                key={id}
+                style={id === currentRow ? styleOnHover : {}}
+                onMouseEnter={() => { updateRow(id) }}
+                onMouseLeave={() => { updateRow(null) }}>
+                <span>{name}</span>
+            </div>
+        )
+    })
+    const tableList = _.map(_.get(listData, 'data'), (item) => {
+        const id = _.get(item, 'id')
+        const actualSalesPrice = numberFormat(_.get(item, 'actualSalesSum'), 'UZS')
+        const actualSalesCount = numberFormat(_.get(item, 'actualSalesCount'), 'UZS')
+        const returnPrice = numberFormat(_.get(item, 'orderReturnsCount'), 'UZS')
+        const returnCount = numberFormat(_.get(item, 'orderReturnsSum'), 'UZS')
+        const salesPrice = numberFormat(_.get(item, 'salesIncome'), 'UZS')
+        const salesCount = numberFormat(_.get(item, 'salesCount'), 'UZS')
 
         return (
-            <Row key={id} className="dottedList">
-                <Col xs={2}>
-                    <div className={classes.pointer} onClick={() => {
-                        statAgentDialog.handleOpenStatAgentDialog(id)
-                    }}>{name}</div>
-                </Col>
-                <Col xs={1}>
-                    <div>{plan}</div>
-                </Col>
-                <Col xs={3} style={{display: 'flex', justifyContent: 'flex-end'}}>
-                    <Tooltip position="bottom" text={tooltipText}>
-                        <div className={classes.opacity}>
-                            <span>{orderTotalPrice}</span> / <span>{orderReturnTotalPrice}</span> /
-                            <strong>{factPrice}</strong> {getConfig('PRIMARY_CURRENCY')}
-                        </div>
-                    </Tooltip>
-                </Col>
-                <Col xs={2} style={{display: 'flex', justifyContent: 'flex-end'}}>
-                    <Tooltip position="bottom" text={tooltipPaid}>
-                        <div className={classes.opacity}>
-                            <span>{totalPaid}</span> / <span>1 000</span> / <strong>5
-                            000</strong> {getConfig('PRIMARY_CURRENCY')}
-                        </div>
-                    </Tooltip>
-                </Col>
-                <Col xs={2} className={classes.alignRightFlex}>
-                    <div>{orderLeftTotalPrice}</div>
-                </Col>
-                <Col xs={2} className={classes.alignRightFlex}>
-                    <div>{monthlyPlanLeft}</div>
-                </Col>
-            </Row>
+            <tr
+                key={id}
+                className={classes.tableRow}
+                style={id === currentRow ? styleOnHover : {}}
+                onMouseEnter={() => { updateRow(id) }}
+                onMouseLeave={() => { updateRow(null) }}>
+                <td>{salesCount}</td>
+                <td>{salesPrice}</td>
+
+                <td>{returnPrice}</td>
+                <td>{returnCount}</td>
+
+                <td>{actualSalesCount}</td>
+                <td>{actualSalesPrice}</td>
+
+                <td>{actualSalesCount}</td>
+                <td>{actualSalesPrice}</td>
+            </tr>
         )
     })
     const fields = (
         <div>
+            <Field
+                className={classes.inputFieldCustom}
+                name="date"
+                component={DateToDateField}
+                label="Диапазон дат"
+                fullWidth={true}/>
             <Field
                 className={classes.inputFieldCustom}
                 name="zone"
@@ -367,7 +426,6 @@ const StatAgentGridList = enhance((props) => {
         </div>
 
     )
-    const listIds = _.map(list, item => _.toInteger(_.get(item, 'key')))
     const page = (
         <div className={classes.mainWrapper}>
             <Row style={{margin: '0', height: '100%'}}>
@@ -384,7 +442,6 @@ const StatAgentGridList = enhance((props) => {
                             initialValues={initialValues}
                             handleSubmitFilterDialog={handleSubmitFilterDialog}
                             handleGetDocument={getDocument.handleGetDocument}
-                            withoutDate={true}
                         />
                         <div className={classes.filters}>
                             <form onSubmit={handleSubmit(handleSubmitFilterDialog)}>
@@ -394,46 +451,63 @@ const StatAgentGridList = enhance((props) => {
                                     component={TextField}
                                     hintText="Поиск"/>
                             </form>
-                            <div className={classes.dateFilter}>
-                                <DateFilter
-                                    type={'begin'}
-                                    beginDate={_.toInteger(moment(calendarBegin.selectedDate).format('x'))}
-                                    endDate={_.toInteger(moment(calendarEnd.selectedDate).format('x'))}
-                                    handlePrevMonth={calendarBegin.handlePrevMonthBegin}
-                                    handleNextMonth={calendarBegin.handleNextMonthBegin}
-                                    selectedDate={calendarBegin.selectedDate}/>
-                                <span>Период</span>
-                                <DateFilter
-                                    type={'end'}
-                                    beginDate={_.toInteger(moment(calendarBegin.selectedDate).format('x'))}
-                                    endDate={_.toInteger(moment(calendarEnd.selectedDate).format('x'))}
-                                    handlePrevMonth={calendarEnd.handlePrevMonthEnd}
-                                    handleNextMonth={calendarEnd.handleNextMonthEnd}
-                                    selectedDate={calendarEnd.selectedDate}/>
-                            </div>
                             <Pagination filter={filter}/>
                         </div>
-                        <div className={classes.tableWrapper}>
-                            <GridListHeader
-                                filter={filter}
-                                listIds={listIds}
-                                withoutCheckboxes={false}
-                                column={listHeader}
-                                listShadow={true}
-                                style={{position: 'relative'}}
-                                className={classes.header}
-                                statistics={true}
-                            />
-                            {listLoading
-                                ? <div className={classes.loader}>
-                                    <Loader size={0.75}/>
+                        <div className={classes.container}>
+                            {listLoading && <div className={classes.loader}>
+                                <Loader size={0.75}/>
+                            </div>}
+                            <div className={classes.tableWrapper}>
+                                <div className={classes.leftTable}>
+                                    <div><span>Агент</span></div>
+                                    {tableLeft}
                                 </div>
-                                : (_.isEmpty(list))
-                                    ? <div className={classes.emptyQuery}>
-                                        <div>По вашему запросу ничего не найдено</div>
-                                    </div>
-                                    : <div>{list}</div>
-                            }
+                                {_.isEmpty(tableList) && !listLoading &&
+                                <div className={classes.emptyQuery}>
+                                    <div>По вашему запросу ничего не найдено</div>
+                                </div>}
+                                <div ref="horizontalTable">
+                                    <table className={classes.mainTable}>
+                                        <tbody className={classes.tableBody}>
+                                        <tr className={classes.title}>
+                                            <td colSpan={2}>Продажа</td>
+                                            <td colSpan={2}>Возврат</td>
+                                            <td colSpan={2}>Оплачено</td>
+                                            <td colSpan={2}>План</td>
+                                        </tr>
+                                        <tr className={classes.subTitle}>
+                                            {_.map(listHeader, (header, index) => {
+                                                const ZERO = 0
+                                                const ONE = 1
+                                                const EVEN = 2
+                                                const isEven = (index + ONE) % EVEN === ZERO
+                                                const tooltip = _.get(header, 'tooltip')
+                                                const sorting = _.get(header, 'sorting')
+                                                const position = 'left'
+                                                if (tooltip) {
+                                                    return (
+                                                        <td key={index}>
+                                                            <ToolTip text={tooltip} position={position} alignRight={isEven}>{header.title}</ToolTip>
+                                                        </td>
+                                                    )
+                                                } else if (sorting) {
+                                                    if (tooltip) {
+                                                        return (
+                                                            <td key={index} style={{cursor: 'pointer'}}>
+                                                                <ToolTip text={tooltip} position={position} alignRight={isEven}>{header.title}</ToolTip>
+                                                            </td>
+                                                        )
+                                                    }
+                                                    return <td key={index} style={{cursor: 'pointer'}}>{header.title}</td>
+                                                }
+                                                return <td key={index}>{header.title}</td>
+                                            })}
+                                        </tr>
+                                        {tableList}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

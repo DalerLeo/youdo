@@ -194,8 +194,9 @@ const enhance = compose(
             const createdBy = _.get(filterForm, ['values', 'createdBy', 'value']) || null
             const marketType = _.get(filterForm, ['values', 'marketType', 'value']) || null
             const zone = _.get(filterForm, ['values', 'zone', 'value']) || null
-            const isActive = _.get(filterForm, ['values', 'isActive', 'value'])
+            const isActive = _.get(filterForm, ['values', 'isActive', 'value']) || null
             const frequency = _.get(filterForm, ['values', 'frequency', 'value']) || null
+            const nullBorder = _.get(filterForm, ['values', 'nullBorder']) || null
 
             filter.filterBy({
                 [SHOP_FILTER_OPEN]: false,
@@ -204,7 +205,8 @@ const enhance = compose(
                 [SHOP_FILTER_KEY.MARKET_TYPE]: marketType,
                 [SHOP_FILTER_KEY.STATUS]: isActive,
                 [SHOP_FILTER_KEY.FREQUENCY]: frequency,
-                [SHOP_FILTER_KEY.ZONE]: zone
+                [SHOP_FILTER_KEY.ZONE]: zone,
+                [SHOP_FILTER_KEY.NULL_BORDER]: nullBorder
             })
         },
         handleOpenCreateDialog: props => () => {
@@ -393,12 +395,15 @@ const ShopList = enhance((props) => {
     const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
     const openAddPhotoDialog = toBoolean(_.get(location, ['query', ADD_PHOTO_DIALOG_OPEN]))
     const openSlideShowDialog = _.toInteger(_.get(location, ['query', SHOP_SLIDESHOW_DIALOG_OPEN]) || MINUS_ONE) > MINUS_ONE
+
     const client = _.toInteger(filter.getParam(SHOP_FILTER_KEY.CLIENT))
     const marketType = _.toInteger(filter.getParam(SHOP_FILTER_KEY.MARKET_TYPE))
     const createdBy = _.toInteger(filter.getParam(SHOP_FILTER_KEY.CREATED_BY))
     const zone = _.toInteger(filter.getParam(SHOP_FILTER_KEY.ZONE))
     const frequency = _.toInteger(filter.getParam(SHOP_FILTER_KEY.FREQUENCY))
     const filterIsActive = _.toInteger(filter.getParam(SHOP_FILTER_KEY.STATUS))
+    const nullBorder = toBoolean(filter.getParam(SHOP_FILTER_KEY.NULL_BORDER))
+
     const detailId = _.toInteger(_.get(params, 'shopId'))
 
     const createDialog = {
@@ -552,7 +557,8 @@ const ShopList = enhance((props) => {
             },
             marketType: {
                 value: marketType
-            }
+            },
+            nullBorder: nullBorder
         },
         filterLoading: false,
         openFilterDialog,

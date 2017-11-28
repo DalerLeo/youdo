@@ -140,6 +140,26 @@ const enhance = compose(
             extend: 'zonesInfoTitle',
             borderBottom: 'none',
             borderTop: '1px #efefef solid',
+            '& > a': {
+                marginRight: '50px',
+                color: 'inherit',
+                '&:hover div': {
+                    color: '#12aaeb !important'
+                },
+                '& > div': {
+                    display: 'flex',
+                    '& big': {
+                        color: '#ff7374',
+                        fontSize: '28px',
+                        lineHeight: '28px',
+                        marginRight: '10px'
+                    },
+                    '& span': {
+                        fontSize: '12px !important',
+                        lineHeight: '14px'
+                    }
+                }
+            },
             '& > div big': {
                 color: '#ff7374'
             }
@@ -453,10 +473,12 @@ const ZonesWrapper = enhance((props) => {
                         <div className={classes.loader}>
                             <Loader size={0.5}/>
                         </div>}
-                        <div>
-                            <big>{passiveMarkets}</big>
-                            <span>магазинов <br/> не распределено</span>
-                        </div>
+                        <Link target="_blank" to={{pathname: ROUTES.SHOP_LIST_URL, query: {nullBorder: true}}}>
+                            <div>
+                                <big>{passiveMarkets}</big>
+                                <span>магазинов <br/> не распределено</span>
+                            </div>
+                        </Link>
                         <div>
                             <big>{passiveAgents}</big>
                             <span>агентов <br/> не распределено</span>

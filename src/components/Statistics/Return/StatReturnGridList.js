@@ -70,6 +70,11 @@ const enhance = compose(
         },
         tableWrapper: {
             '& .row': {
+                margin: '0 -30px',
+                padding: '0 30px',
+                '&:hover': {
+                    background: '#f2f5f8'
+                },
                 '&:after': {
                     bottom: '-1px'
                 },
@@ -87,7 +92,7 @@ const enhance = compose(
                 }
             },
             '& .dottedList': {
-                padding: '0',
+                padding: '0 30px',
                 '&:last-child:after': {
                     content: '""',
                     backgroundImage: 'none'
@@ -233,15 +238,15 @@ const StatReturnGridList = enhance((props) => {
         </Row>
     )
 
-    const currentCurrency = getConfig('PRIMARY_CURRENCY')
     const list = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const client = _.get(item, ['client', 'name']) || '-'
         const order = _.get(item, 'order') || '-'
         const stock = _.get(item, ['stock', 'name'])
+        const currency = _.get(item, ['currency', 'name'])
         const user = _.get(item, ['createdBy', 'firstName']) + ' ' + _.get(item, ['createdBy', 'secondName']) || 'N/A'
         const createdDate = dateFormat(_.get(item, 'createdDate'))
-        const totalPrice = numberFormat(_.get(item, 'totalPrice'), currentCurrency)
+        const totalPrice = numberFormat(_.get(item, 'totalPrice'), currency)
         const status = _.toInteger(_.get(item, 'status'))
 
         return (

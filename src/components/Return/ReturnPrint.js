@@ -163,7 +163,7 @@ const OrderPrint = enhance((props) => {
                 const client = _.get(item, ['client', 'name'])
                 const order = _.get(item, 'order')
                 const comment = _.get(item, 'comment')
-                const primaryCurrency = getConfig('PRIMARY_CURRENCY')
+                const primaryCurrency = _.get(item, ['currency', 'name'])
                 const totalPrice = numberFormat(_.get(item, 'totalPrice'), primaryCurrency)
                 const type = _.toInteger(_.get(item, 'type'))
                 const firstMeasure = _.get(item, ['returnedProducts', '0', 'product', 'measurement', 'name'])

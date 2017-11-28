@@ -76,6 +76,7 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         const except = {
             openDiscardDialog: null,
+            dPage: null,
             pdPage: null,
             pdPageSize: null,
             pdSearch: null
@@ -90,16 +91,23 @@ const enhance = compose(
             (props.filterItem.filterRequest() !== nextProps.filterItem.filterRequest())
     }, ({dispatch, params, filter}) => {
         const remainderId = _.toInteger(_.get(params, 'remainderId'))
-        remainderId && dispatch(remainderItemFetchAction(remainderId, filter))
+        if (remainderId) {
+            dispatch(remainderItemFetchAction(remainderId, filter))
+        }
     }),
     withPropsOnChange((props, nextProps) => {
-        const nextDialog = _.get(nextProps, ['location', 'query', REMAINDER_RESERVED_DIALOG_OPEN])
-        const prevDialog = _.get(props, ['location', 'query', REMAINDER_RESERVED_DIALOG_OPEN])
-        return prevDialog !== nextDialog && nextDialog !== 'false'
+        const nextDialog = toBoolean(_.get(nextProps, ['location', 'query', REMAINDER_RESERVED_DIALOG_OPEN]))
+        const prevDialog = toBoolean(_.get(props, ['location', 'query', REMAINDER_RESERVED_DIALOG_OPEN]))
+        const prevPage = _.get(props, ['location', 'query', 'dPage'])
+        const nextPage = _.get(nextProps, ['location', 'query', 'dPage'])
+        return (prevDialog !== nextDialog && nextDialog !== false) ||
+            (prevPage !== nextPage)
     }, ({dispatch, location}) => {
-        const dialog = _.get(location, ['query', REMAINDER_RESERVED_DIALOG_OPEN])
-        if (dialog !== 'false') {
-            dispatch(remainderReversedListFetchAction(dialog))
+        const product = _.toInteger(_.get(location, ['query', REMAINDER_RESERVED_DIALOG_OPEN]))
+        const stock = _.get(location, ['query', REMAINDER_FILTER_KEY.STOCK])
+        const page = _.get(location, ['query', 'dPage'])
+        if (product > ZERO) {
+            dispatch(remainderReversedListFetchAction(product, page, stock))
         }
     }),
     withPropsOnChange((props, nextProps) => {

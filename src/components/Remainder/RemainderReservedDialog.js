@@ -28,9 +28,7 @@ const enhance = compose(
             display: 'flex'
         },
         dialog: {
-            '& > div:first-child > div:first-child': {
-                transform: 'translate(0px, 0px) !important'
-            }
+            overflowY: 'auto'
         },
         popUp: {
             color: '#333 !important',
@@ -39,6 +37,7 @@ const enhance = compose(
             position: 'relative',
             padding: '0 !important',
             overflowX: 'hidden',
+            maxHeight: 'none !important',
             height: '100%',
             marginBottom: '64px'
         },
@@ -123,6 +122,11 @@ const enhance = compose(
                 }
             }
         },
+        pagination: {
+            borderBottom: '1px #efefef solid',
+            margin: '0 -30px',
+            padding: '10px 30px'
+        },
         emptyQuery: {
             background: 'url(' + NotFound + ') no-repeat center 25px',
             backgroundSize: '200px',
@@ -197,6 +201,9 @@ const RemainderReservedDialog = enhance((props) => {
                         </div>
                         : <div className={classes.content}>
                             <div className={classes.tableWrapper}>
+                                <div className={classes.pagination}>
+                                    <Pagination filter={filterItem}/>
+                                </div>
                                 <Row className="dottedList">
                                     <Col xs={4}>№ заказа</Col>
                                     <Col xs={4}>Склад</Col>
@@ -205,7 +212,6 @@ const RemainderReservedDialog = enhance((props) => {
                                 <div>
                                 {reservedList}
                                 </div>
-                                <Pagination filter={filterItem}/>
                             </div>
                           </div>}
                 </div>}
