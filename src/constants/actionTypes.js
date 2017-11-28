@@ -52,6 +52,7 @@ export const SUPPLY_UPDATE = 'SUPPLY_UPDATE'
 export const SUPPLY_CREATE = 'SUPPLY_CREATE'
 export const SUPPLY_CANCEL = 'SUPPLY_CANCEL'
 export const SUPPLY_DEFECT = 'SUPPLY_DEFECT'
+export const SUPPLY_SYNC = 'SUPPLY_SYNC'
 
 export const PRICES_LIST = 'PRICES_LIST'
 export const PRICES_LIST_CSV = 'PRICES_LIST_CSV'

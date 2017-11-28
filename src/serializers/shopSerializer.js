@@ -37,7 +37,12 @@ export const createSerializer = (data, location, newClient) => {
             'lon': lon
         },
         'is_active': isActive,
-        'new_client_name': newClientName
+        'new_client_name': newClientName,
+        okad: _.get(data, 'okad'),
+        mfo: _.get(data, 'mfo'),
+        inn: _.get(data, 'inn'),
+        'bank_address': _.get(data, 'bankAddress'),
+        'checking_account': _.get(data, 'checkingAccount')
     }
 }
 
@@ -73,7 +78,12 @@ export const updateSerializer = (data, location, detail) => {
             'lat': lat,
             'lon': lon
         },
-        'is_active': isActive
+        'is_active': isActive,
+        okad: _.get(data, 'okad'),
+        mfo: _.get(data, 'mfo'),
+        inn: _.get(data, 'inn'),
+        'bank_address': _.get(data, 'bankAddress'),
+        'checking_account': _.get(data, 'checkingAccount')
     }
 }
 

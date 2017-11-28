@@ -77,6 +77,9 @@ const enhance = compose(
             },
             '& .dottedList': {
                 padding: '0',
+                '&:hover': {
+                    backgroundColor: '#f2f5f8'
+                },
                 '&:last-child:after': {
                     content: '""',
                     backgroundImage: 'none'

@@ -252,9 +252,13 @@ const ShopDetails = enhance((props) => {
     const ONCE_IN_A_WEEK = '2'
     const TWICE_IN_A_WEEK = '3'
     const IN_A_DAY = '4'
-
     const id = _.get(data, 'id')
     const name = _.get(data, 'name')
+    const okad = _.get(data, 'okad') || 'не указано'
+    const bankAddress = _.get(data, 'bankAddress') || 'не указано'
+    const checkAccount = _.get(data, 'checkingAccount') || 'не указано'
+    const inn = _.get(data, 'inn') || 'не указано'
+    const mfo = _.get(data, 'mfo') || 'не указано'
     const client = _.get(data, ['client', 'name'])
     const createdBy = _.get(data, 'createdBy')
         ? _.get(data, ['createdBy', 'firstName']) + ' ' + _.get(data, ['createdBy', 'secondName'])
@@ -407,6 +411,22 @@ const ShopDetails = enhance((props) => {
                         <li>{phone}</li>
                         <li>{address}</li>
                         <li>{guide}</li>
+                    </ul>
+
+                    <div className={classes.infoTitle} style={{marginTop: '10px'}}>Дополнительно</div>
+                    <ul className={classes.details}>
+                        <li>Р/с</li>
+                        <li>Адрес Банка</li>
+                        <li>ИНН</li>
+                        <li>ОКЭД</li>
+                        <li>МФО</li>
+                    </ul>
+                    <ul className={classes.details}>
+                        <li>{checkAccount}</li>
+                        <li>{bankAddress}</li>
+                        <li>{inn}</li>
+                        <li>{okad}</li>
+                        <li>{mfo}</li>
                     </ul>
                 </div>
             </div>

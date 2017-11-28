@@ -122,8 +122,13 @@ const enhance = compose(
 )
 const ONE = 1
 const OrderSalesPrint = enhance((props) => {
-    const {classes, data, loading, onClose} = props
+    const {classes, data, loading, onClose, marketData} = props
     const market = _.get(data, 'market')
+    const okad = _.get(marketData, 'okad')
+    const bankAddress = _.get(marketData, 'bankAddress')
+    const checkAccount = _.get(marketData, 'checkingAccount')
+    const inn = _.get(marketData, 'inn')
+    const mfo = _.get(marketData, 'mfo')
     let measurementCheck = true
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const firstMeasure = _.get(data, ['products', '0', 'product', 'measurement', 'name'])
@@ -291,19 +296,19 @@ const OrderSalesPrint = enhance((props) => {
                             </tr>
                             <tr>
                                 <td>P/c 20 214 000 000 604 470 001</td>
-                                <td></td>
+                                <td>{checkAccount}</td>
                             </tr>
                             <tr>
                                 <td>в АКБ «Asia Alliance Bank» Мирабадский ф-л г. Ташкент МФО 01124</td>
-                                <td></td>
+                                <td>{bankAddress} МФО {mfo}</td>
                             </tr>
                             <tr>
                                 <td>ИНН 303875278</td>
-                                <td></td>
+                                <td>{inn}</td>
                             </tr>
                             <tr>
                                 <td>ОКЭД 20300</td>
-                                <td></td>
+                                <td>{okad}</td>
                             </tr>
                             <tr>
                                 <td>Тел.: </td>

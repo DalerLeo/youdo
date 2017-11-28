@@ -159,7 +159,8 @@ const ClientBalanceList = enhance((props) => {
         layout,
         params,
         sum,
-        sumLoading
+        sumLoading,
+        query
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', CLIENT_BALANCE_FILTER_OPEN]))
@@ -248,6 +249,7 @@ const ClientBalanceList = enhance((props) => {
                 sumData={sumData}
                 onSubmit={props.handleSubmitFilterDialog}
                 pathname={location.pathname}
+                query={query}
             />
         </Layout>
     )

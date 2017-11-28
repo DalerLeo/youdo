@@ -102,7 +102,18 @@ export const MenuItems = [
         icon: (<Map/>),
         url: ROUTES.MANUFACTURE_LIST_URL,
         childs: [
-            {name: 'Производство', url: ROUTES.MANUFACTURE_LIST_URL, permission: 'frontend_manufacture'}
+            {
+                name: 'Производство',
+                url: ROUTES.MANUFACTURE_LIST_URL,
+                permission: 'frontend_manufacture',
+                extraURLs: {
+                    1: ROUTES.MANUFACTURE_PRODUCT_LIST_URL,
+                    2: ROUTES.MANUFACTURE_PERSON_LIST_URL,
+                    3: ROUTES.MANUFACTURE_EQUIPMENT_LIST_URL,
+                    4: ROUTES.MANUFACTURE_SHIPMENT_LIST_URL
+                }
+
+            }
         ]
     },
     {
