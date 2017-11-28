@@ -6,12 +6,17 @@ export const listFilterSerializer = (query) => {
     const {...defaultData} = query
     const ordering = _.get(query, 'ordering')
 
+    const firstDayOfMonth = moment().format('YYYY-MM-01')
+    const lastDay = moment().daysInMonth()
+    const lastDayOfMonth = moment().format('YYYY-MM-' + lastDay)
     const beginYear = moment(_.get(query, 'begin_date')).format('YYYY') || moment().format('YYYY')
     const beginMonth = moment(_.get(query, 'begin_date')).format('M') || moment().format('M')
     const endYear = moment(_.get(query, 'end_date')).format('YYYY') || moment().format('YYYY')
     const endMonth = moment(_.get(query, 'end_date')).format('M') || moment().format('M')
 
     return {
+        'begin_date': firstDayOfMonth,
+        'end_date': lastDayOfMonth,
         begin_month: beginMonth,
         begin_year: beginYear,
         end_month: endMonth,

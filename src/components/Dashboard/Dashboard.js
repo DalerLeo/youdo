@@ -148,6 +148,9 @@ const Dashboard = enhance((props) => {
     const orderChartReturns = _.map(_.get(ordersReturnsChart, 'data'), (item) => {
         return _.get(item, 'returns') || null
     })
+    const orderReturnDate = _.map(_.get(ordersReturnsChart, 'data'), (item, index) => {
+        return index
+    })
     const orderChartReturnsSum = _.sumBy(_.get(ordersReturnsChart, 'data'), (item) => {
         return _.toNumber(_.get(item, 'returns'))
     })
@@ -253,7 +256,7 @@ const Dashboard = enhance((props) => {
                                 secondaryText="Возврат"
                                 primaryValues={orderChartSales}
                                 secondaryValues={orderChartReturns}
-                                tooltipTitle={orderChartDate}
+                                tooltipTitle={orderReturnDate}
                             />}
                     </Paper>}
                     {agentsChartActive &&

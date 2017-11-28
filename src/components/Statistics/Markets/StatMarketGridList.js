@@ -1,24 +1,22 @@
 import _ from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
-import {Row, Col} from 'react-flexbox-grid'
-import {compose} from 'recompose'
+import {Row} from 'react-flexbox-grid'
+import {compose, withState, lifecycle} from 'recompose'
 import injectSheet from 'react-jss'
 import {reduxForm, Field} from 'redux-form'
-import IconButton from 'material-ui/IconButton'
-import Chart from 'material-ui/svg-icons/action/timeline'
 import * as ROUTES from '../../../constants/routes'
 import Container from '../../Container/index'
 import {TextField, AgentSearchField} from '../../ReduxForm'
 import DateToDateField from '../../ReduxForm/Basic/DateToDateField'
 import StatSideMenu from '../StatSideMenu'
-import LinearLoading from '../../LinearProgress/index'
 import Loader from '../../Loader'
 import Pagination from '../../GridList/GridListNavPagination/index'
 import numberFormat from '../../../helpers/numberFormat'
+import horizontalScroll from '../../../helpers/horizontalScroll'
 import getConfig from '../../../helpers/getConfig'
 import NotFound from '../../Images/not-found.png'
-import {StatisticsFilterExcel, StatisticsChart} from '../../Statistics'
+import {StatisticsFilterExcel} from '../../Statistics'
 
 export const STAT_MARKET_FILTER_KEY = {
     SEARCH: 'search',
@@ -29,25 +27,23 @@ export const STAT_MARKET_FILTER_KEY = {
 const enhance = compose(
     injectSheet({
         loader: {
-            width: '100%',
+            position: 'absolute',
+            top: '0',
+            left: '-30px',
+            right: '-30px',
+            bottom: '0',
             padding: '100px 0',
+            background: '#fff',
+            zIndex: '30'
+        },
+        sumLoader: {
+            width: '100%',
             margin: '0 !important',
             background: '#fff',
             alignItems: 'center',
             zIndex: '999',
             justifyContent: 'center',
-            display: 'flex'
-        },
-        graphLoader: {
-            padding: '50px 0',
-            margin: '0 -30px',
-            position: 'relative',
-            '& > div': {
-                background: 'transparent'
-            }
-        },
-        sumLoader: {
-            extend: 'loader',
+            display: 'flex',
             padding: '0',
             height: '75px'
         },
@@ -67,46 +63,106 @@ const enhance = compose(
                 margin: '0 !important'
             }
         },
-        tableWrapper: {
-            padding: '0 30px',
-            margin: '0 -30px',
-            '& .row': {
-                '&:after': {
-                    bottom: '-1px'
-                },
-                '& > div': {
-                    display: 'flex',
-                    height: '50px',
-                    alignItems: 'center',
-                    '&:first-child': {
-                        paddingLeft: '0'
-                    },
-                    '&:last-child': {
-                        paddingRight: '0'
-                    },
-                    '& img': {
-                        width: '35px',
-                        height: '35px',
-                        borderRadius: '4px',
-                        marginRight: '10px'
-                    }
-                }
+        tableRow: {
+            '& td:nth-child(odd)': {
+                borderRight: '1px #efefef solid',
+                textAlign: 'right'
             },
-            '& .dottedList': {
-                padding: '0 30px',
-                margin: '0 -30px !important',
-                '& button': {
-                    opacity: '0'
+            '& td:nth-child(1)': {
+                textAlign: 'left'
+            },
+            '&:nth-child(odd)': {
+                backgroundColor: '#f9f9f9'
+            }
+        },
+        leftTable: {
+            display: 'table',
+            marginLeft: '-30px',
+            width: '100%',
+            '& > div': {
+                '&:nth-child(even)': {
+                    backgroundColor: '#f9f9f9'
                 },
-                '&:hover': {
-                    '& button': {
-                        opacity: '1 !important'
+                display: 'table-row',
+                height: '40px',
+                '&:nth-child(2)': {
+                    height: '39px'
+                },
+                '&:first-child': {
+                    backgroundColor: 'white',
+                    height: '81px',
+                    verticalAlign: 'bottom',
+                    '& span': {
+                        verticalAlign: 'bottom',
+                        padding: '15px 30px',
+                        borderTop: '1px #efefef solid',
+                        borderBottom: '1px #efefef solid'
                     }
                 },
-                '&:last-child:after': {
-                    content: '""',
-                    backgroundImage: 'none'
+                '& span': {
+                    display: 'table-cell',
+                    verticalAlign: 'middle',
+                    padding: '0 30px'
                 }
+            }
+        },
+        container: {
+            position: 'relative'
+        },
+        tableWrapper: {
+            display: 'flex',
+            margin: '0 -30px',
+            paddingLeft: '30px',
+            position: 'relative',
+            overflow: 'hidden',
+            minHeight: '200px',
+            '& > div:first-child': {
+                zIndex: '20',
+                boxShadow: '5px 0 8px -3px #CCC',
+                width: '350px'
+            },
+            '& > div:last-child': {
+                width: 'calc(100% - 350px)',
+                overflowX: 'auto',
+                overflowY: 'hidden'
+            }
+        },
+        tableBody: {
+            '& > tr:first-child > td:first-child': {
+                minWidth: '220px'
+            },
+            '& tr:first-child > td:first-child': {
+                verticalAlign: 'bottom',
+                padding: '0 20px 15px'
+            }
+        },
+        mainTable: {
+            width: '100%',
+            minWidth: '950px',
+            color: '#666',
+            borderCollapse: 'collapse',
+            '& tr, td': {
+                height: '40px'
+            },
+            '& td': {
+                padding: '0 20px',
+                minWidth: '140px'
+            }
+        },
+        title: {
+            fontWeight: '600',
+            '& tr, td': {
+                border: '1px #efefef solid'
+            }
+        },
+        subTitle: {
+            extend: 'title',
+            '& td:nth-child(odd)': {
+                borderRight: 'none'
+            },
+            '& td:nth-child(even)': {
+                borderLeft: 'none',
+                textAlign: 'right'
             }
         },
         inputFieldCustom: {
@@ -263,120 +319,124 @@ const enhance = compose(
             bottom: '0'
         }
     }),
+    withState('currentRow', 'updateRow', null),
     reduxForm({
         form: 'StatisticsFilterForm',
         enableReinitialize: true
     }),
+    lifecycle({
+        componentDidMount () {
+            const horizontalTable = this.refs.horizontalTable
+            horizontalScroll(horizontalTable)
+        }
+    })
 )
+
+const listHeader = [
+    // Sales
+    {
+        sorting: true,
+        title: 'Сумма'
+    },
+    {
+        sorting: true,
+        title: 'Фактически'
+    },
+    // Returns
+    {
+        sorting: true,
+        title: 'По периоду'
+    },
+    {
+        sorting: true,
+        title: 'Общее'
+    },
+    // Payments
+    {
+        sorting: true,
+        title: 'По периоду'
+    },
+    {
+        sorting: true,
+        title: 'Общее'
+    },
+    // Plan
+    {
+        sorting: true,
+        title: 'По периоду'
+    },
+    {
+        sorting: true,
+        title: 'Общее'
+    }
+]
 
 const StatMarketGridList = enhance((props) => {
     const {
         listData,
-        detailData,
         classes,
         filter,
         handleSubmitFilterDialog,
         initialValues,
         getDocument,
-        handleSubmit
+        handleSubmit,
+        currentRow,
+        updateRow
     } = props
 
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const listLoading = _.get(listData, 'listLoading')
-    const graphLoading = _.get(detailData, ['graphLoading'])
     const sumIncome = _.get(listData, ['sumData', 'income'])
     const sumFact = _.get(listData, ['sumData', 'fact'])
     const sumReturn = _.get(listData, ['sumData', 'returnSum'])
     const paid = _.get(listData, ['sumData', 'paid']) || ''
     const dept = _.get(listData, ['sumData', 'dept'])
     const sumLoading = _.get(listData, 'sumLoading')
-    const headerStyle = {
-        backgroundColor: '#fff',
-        fontWeight: '600',
-        color: '#666'
+
+    const styleOnHover = {
+        background: '#efefef'
     }
-
-    const amountValue = _.map(_.get(detailData, ['graphList']), (item) => {
-        return _.toInteger(_.get(item, 'amount'))
-    })
-    const returnAmountValue = _.map(_.get(detailData, ['graphList']), (item) => {
-        return _.toInteger(_.get(item, 'returnAmount'))
-    })
-
-    const valueName = _.map(_.get(detailData, ['graphList']), (item) => {
-        return _.get(item, 'date')
-    })
-
-    const headers = (
-        <Row style={headerStyle} className="dottedList">
-            <Col xs={2}>Магазины</Col>
-            <Col xs={2}>Клиенты</Col>
-            <Col xs={2} style={{justifyContent: 'flex-end'}}>Продажи</Col>
-            <Col xs={2} style={{justifyContent: 'flex-end'}}>Возвраты</Col>
-            <Col xs={1} style={{justifyContent: 'flex-end'}}>Факт.</Col>
-            <Col xs={1} style={{justifyContent: 'flex-end'}}>Оплачено</Col>
-            <Col xs={1} style={{justifyContent: 'flex-end'}}>Долг</Col>
-            <Col xs={1}>{null}</Col>
-        </Row>
-    )
-
-    const list = _.map(_.get(listData, 'data'), (item, index) => {
+    const tableLeft = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const name = _.get(item, 'name')
+        const name = _.get(item, 'name') || 'No'
+        return (
+            <div
+                key={id}
+                style={id === currentRow ? styleOnHover : {}}
+                onMouseEnter={() => { updateRow(id) }}
+                onMouseLeave={() => { updateRow(null) }}>
+                <span>{name}</span>
+            </div>
+        )
+    })
+    const tableList = _.map(_.get(listData, 'data'), (item) => {
+        const id = _.get(item, 'id')
         const income = _.toNumber(_.get(item, 'income'))
         const actual = _.toNumber(_.get(item, 'actualSales'))
-        const paidItem = _.get(item, 'paid') || '0 USD'
-        const deptItem = _.get(item, 'dept') || '0 USD'
+        const paidItem = _.get(item, 'paid')
+        const deptItem = _.get(item, 'dept')
         const returns = _.toNumber(_.get(item, 'orderReturns'))
         const clientName = _.get(item, 'clientName')
 
-        if (id === _.get(detailData, 'id')) {
-            return (
-                <div key={index} className={classes.details}>
-                    <Row>
-                        <Col xs={2}>{name}</Col>
-                        <Col xs={2}>{clientName}</Col>
-                        <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right'}}>{numberFormat(income, primaryCurrency)}</Col>
-                        <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right'}}>{numberFormat(returns, primaryCurrency)}</Col>
-                        <Col xs={1} style={{justifyContent: 'flex-end', textAlign: 'right'}}>{numberFormat(actual, primaryCurrency)}</Col>
-                        <Col xs={1} style={{justifyContent: 'flex-end', textAlign: 'right'}}>{numberFormat(paidItem, primaryCurrency)}</Col>
-                        <Col xs={1} style={{justifyContent: 'flex-end', textAlign: 'right'}}>{numberFormat(deptItem, primaryCurrency)}</Col>
-                        <div className={classes.closeDetail} onClick={detailData.handleCloseDetail}>{null}</div>
-                        <Col xs={1}>{null}</Col>
-                    </Row>
-                    {graphLoading
-                        ? <div className={classes.graphLoader}><LinearLoading/></div>
-                        : <StatisticsChart
-                            primaryValues={amountValue}
-                            secondaryValues={returnAmountValue}
-                            tooltipTitle={valueName}
-                            primaryText="Продажи"
-                            secondaryText="Возвраты"
-                            height={180}
-                        />
-                    }
-                </div>
-            )
-        }
-
         return (
-            <Row key={index} className="dottedList">
-                <Col xs={2}>
-                    <span>{name}</span>
-                </Col>
-                <Col xs={2}>{clientName}</Col>
-                <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(income, primaryCurrency)}</Col>
-                <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(returns, primaryCurrency)}</Col>
-                <Col xs={1} style={{justifyContent: 'flex-end'}}>{numberFormat(actual, primaryCurrency)}</Col>
-                <Col xs={1} style={{justifyContent: 'flex-end'}}>{numberFormat(paid, primaryCurrency)}</Col>
-                <Col xs={1} style={{justifyContent: 'flex-end'}}>{numberFormat(dept, primaryCurrency)}</Col>
-                <Col xs={1} style={{justifyContent: 'flex-end', paddingRight: '0'}}>
-                    <IconButton
-                        onTouchTap={() => { detailData.handleOpenDetail(id) }}>
-                        <Chart color="#12aaeb"/>
-                    </IconButton>
-                </Col>
-            </Row>
+            <tr
+                key={id}
+                className={classes.tableRow}
+                style={id === currentRow ? styleOnHover : {}}
+                onMouseEnter={() => { updateRow(id) }}
+                onMouseLeave={() => { updateRow(null) }}>
+                <td>{clientName}</td>
+
+                <td>{numberFormat(income, primaryCurrency)}</td>
+                <td>{numberFormat(returns, primaryCurrency)}</td>
+                <td>{numberFormat(actual, primaryCurrency)}</td>
+                <td>{numberFormat(paidItem, primaryCurrency)}</td>
+                <td>{numberFormat(deptItem, primaryCurrency)}</td>
+
+                <td>{numberFormat(deptItem, primaryCurrency)}</td>
+                <td>{numberFormat(deptItem, primaryCurrency)}</td>
+                <td>{numberFormat(deptItem, primaryCurrency)}</td>
+            </tr>
         )
     })
 
@@ -451,22 +511,43 @@ const StatMarketGridList = enhance((props) => {
                             </form>
                             <Pagination filter={filter}/>
                         </div>
-                        {listLoading
-                            ? <div className={classes.tableWrapper}>
-                                <div className={classes.loader}>
-                                    <Loader size={0.75}/>
+                        <div className={classes.container}>
+                            {listLoading && <div className={classes.loader}>
+                                <Loader size={0.75}/>
+                            </div>}
+                            <div className={classes.tableWrapper}>
+                                <div className={classes.leftTable}>
+                                    <div><span>Товар</span></div>
+                                    {tableLeft}
+                                </div>
+                                {_.isEmpty(tableList) && !listLoading &&
+                                <div className={classes.emptyQuery}>
+                                    <div>По вашему запросу ничего не найдено</div>
+                                </div>}
+                                <div ref="horizontalTable">
+                                    <table className={classes.mainTable}>
+                                        <tbody className={classes.tableBody}>
+                                        <tr className={classes.title}>
+                                            <td rowSpan={2}>Тип</td>
+                                            <td colSpan={2}>Продажа</td>
+                                            <td colSpan={2}>Возврат</td>
+                                            <td colSpan={2}>Оплачено</td>
+                                            <td colSpan={2}>Долг</td>
+                                        </tr>
+                                        <tr className={classes.subTitle}>
+                                            {_.map(listHeader, (header, index) => {
+                                                if (!header.sorting) {
+                                                    return <td key={index}>{header.title}</td>
+                                                }
+                                                return <td key={index} style={{cursor: 'pointer'}}>{header.title}</td>
+                                            })}
+                                        </tr>
+                                        {tableList}
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
-                            : <div className={classes.tableWrapper}>
-                                {_.isEmpty(list) && !listLoading
-                                    ? <div className={classes.emptyQuery}>
-                                        <div>По вашему запросу ничего не найдено</div>
-                                    </div>
-                                    : <div>
-                                        {headers}
-                                        {list}
-                                    </div>}
-                            </div>}
+                        </div>
                     </div>
                 </div>
             </Row>
