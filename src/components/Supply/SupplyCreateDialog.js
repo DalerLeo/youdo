@@ -235,7 +235,7 @@ const customContentStyle = {
     maxWidth: 'none'
 }
 const SupplyCreateDialog = enhance((props) => {
-    const {open, handleSubmit, onClose, classes, isUpdate, handleOpenAddProduct} = props
+    const {open, handleSubmit, onClose, classes, isUpdate, handleOpenAddProduct, editOnlyPrice} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     return (
         <Dialog
@@ -327,6 +327,7 @@ const SupplyCreateDialog = enhance((props) => {
                                 <Fields
                                     names={['products', 'product', 'amount', 'cost', 'editAmount', 'editCost', 'type']}
                                     handleOpenAddProduct={handleOpenAddProduct}
+                                    editOnlyPrice={editOnlyPrice}
                                     component={SupplyListProductField}
                                 />
                             </div>
