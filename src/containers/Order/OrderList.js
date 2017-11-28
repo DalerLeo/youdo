@@ -10,7 +10,9 @@ import * as ROUTER from '../../constants/routes'
 import * as actionTypes from '../../constants/actionTypes'
 import filterHelper from '../../helpers/filter'
 import numberFormat from '../../helpers/numberFormat'
+import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
 import toBoolean from '../../helpers/toBoolean'
+import checkPermission from '../../helpers/checkPermission'
 import getDocuments from '../../helpers/getDocument'
 import * as ORDER_TAB from '../../constants/orderTab'
 import * as serializers from '../../serializers/orderSerializer'
@@ -103,7 +105,6 @@ const enhance = compose(
         const salesPrintDataLoading = _.get(state, ['order', 'salesPrint', 'loading'])
         const filter = filterHelper(list, pathname, query)
         const filterProducts = filterHelper(editProducts, pathname, query, {'page': 'pdPage', 'pageSize': 'pdPageSize'})
-        const userGroups = _.get(state, ['authConfirm', 'data', 'groups'])
         const defaultUser = _.get(state, ['authConfirm', 'data', 'id'])
         const selectedProduct = _.get(state, ['form', 'OrderCreateForm', 'values', 'product', 'value'])
         const paymentType = _.get(state, ['form', 'OrderCreateForm', 'values', 'paymentType'])
@@ -136,7 +137,6 @@ const enhance = compose(
             returnDialogLoading,
             products,
             editProducts,
-            userGroups,
             discountCreateForm,
             defaultUser,
             selectedProduct,
@@ -667,7 +667,7 @@ const enhance = compose(
                 if (amount) {
                     newProductsArray.push({
                         amount: _.get(item, 'amount'),
-                        cost: _.get(item, 'price'),
+                        cost: numberWithoutSpaces(_.get(item, 'price')),
                         customPrice: _.get(product, 'customPrice'),
                         price: _.get(item, 'price'),
                         product: {
@@ -817,7 +817,7 @@ const enhance = compose(
                 if (amount) {
                     newProductsArray.push({
                         amount: _.get(item, 'amount'),
-                        cost: _.get(item, 'price'),
+                        cost: numberWithoutSpaces(_.get(item, 'price')),
                         customPrice: _.get(product, 'customPrice'),
                         price: {
                             cashPrice: _.get(product, 'cashPrice'),
@@ -892,7 +892,6 @@ const OrderList = enhance((props) => {
         params,
         listPrint,
         listPrintLoading,
-        userGroups,
         defaultUser,
         isSuperUser,
         editProducts,
@@ -1237,9 +1236,9 @@ const OrderList = enhance((props) => {
             _.map(_.get(editProducts, 'results'), (item) => {
                 const id = _.get(item, 'id')
                 const price = paymentType === 'cash'
-                    ? _.toNumber(_.get(item, 'cashPrice'))
+                    ? numberFormat(_.toNumber(_.get(item, 'cashPrice')))
                     : paymentType === 'bank'
-                        ? _.toNumber(_.get(item, 'transferPrice'))
+                        ? numberFormat(_.toNumber(_.get(item, 'transferPrice')))
                         : ''
                 productValue[id] = {price: price}
             })
@@ -1292,9 +1291,7 @@ const OrderList = enhance((props) => {
             }}/>
     }
 
-    const canChangeAnyPrice = !_.isEmpty(_.filter(userGroups, (o) => {
-        return o.name === 'change_any_price'
-    }))
+    const canChangeAnyPrice = checkPermission('change_any_price')
 
     const releaseDialog = {
         openReleaseDialog,

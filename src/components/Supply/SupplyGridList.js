@@ -358,7 +358,7 @@ const SupplyGridList = enhance((props) => {
                 handleCloseAddProductConfirm={addProductDialog.handleCloseAddProductConfirm}
                 handleSubmitAddProductConfirm={addProductDialog.handleSubmitAddProductConfirm}
                 withoutCustomPrice={true}
-                withoutValidations={true}
+                fromAllBalances={true}
             />}
         </Container>
     )

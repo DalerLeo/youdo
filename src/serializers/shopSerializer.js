@@ -1,6 +1,10 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
+import toBoolean from '../helpers/toBoolean'
+
 const ONE = 1
+const TWO = 2
+
 export const createSerializer = (data, location, newClient) => {
     const name = _.get(data, 'name')
     const client = !newClient ? _.get(data, ['client', 'value']) : _.get(data, 'undefined')
@@ -79,10 +83,10 @@ export const imageSerializer = (image) => {
         'is_primary': false
     }
 }
-const TWO = 2
 export const listFilterSerializer = (data) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
+    const nullBorder = toBoolean(_.get(defaultData, 'nullBorder'))
 
     return {
         'client': _.get(defaultData, 'client'),
@@ -91,6 +95,7 @@ export const listFilterSerializer = (data) => {
         'frequency': _.get(defaultData, 'frequency'),
         'border': _.get(defaultData, 'zone'),
         'market_type': _.get(defaultData, 'marketType'),
+        'null_border': nullBorder ? 'True' : null,
         'created_date_0': _.get(defaultData, 'fromDate'),
         'created_date_1': _.get(defaultData, 'toDate'),
         'search': _.get(defaultData, 'search'),

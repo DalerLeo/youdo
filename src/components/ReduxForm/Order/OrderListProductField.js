@@ -601,7 +601,7 @@ const OrderListProductField = enhance((props) => {
                                     const balance = _.toNumber(_.get(item, ['product', 'value', 'balance']))
                                     const isEditable = _.get(item, 'customPrice')
                                     if (editItem === index) {
-                                        if (canChangeAnyPrice) {
+                                        if (canChangeAnyPrice || isAdmin) {
                                             return (
                                                 <TableRow key={index} className={classes.tableRow}>
                                                     <TableRowColumn><strong style={{marginRight: '5px'}}>{index + ONE}.</strong> {product}</TableRowColumn>

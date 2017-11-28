@@ -21,9 +21,9 @@ export const remainderListFetchAction = (filter) => {
         payload
     }
 }
-export const remainderReversedListFetchAction = (id) => {
+export const remainderReversedListFetchAction = (id, page, stock) => {
     const payload = axios()
-        .get(API.REMAINDER_RESERVED, {params: {product: id}})
+        .get(API.REMAINDER_RESERVED, {params: {product: id, page: page, stock: stock}})
         .then((response) => {
             return _.get(response, 'data')
         })

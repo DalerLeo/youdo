@@ -19,7 +19,6 @@ import Container from '../Container'
 import ReturnFilterForm from './ReturnFilterForm'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
-import getConfig from '../../helpers/getConfig'
 import toBoolean from '../../helpers/toBoolean'
 import Tooltip from '../ToolTip'
 import numberFormat from '../../helpers/numberFormat'
@@ -178,7 +177,7 @@ const OrderGridList = enhance((props) => {
         const client = _.get(item, ['client', 'name']) || '-'
         const order = _.get(item, 'order') || '-'
         const stock = _.get(item, ['stock', 'name'])
-        const currentCurrency = getConfig('PRIMARY_CURRENCY')
+        const currentCurrency = _.get(item, ['currency', 'name'])
         const user = _.get(item, ['createdBy', 'firstName']) + ' ' + _.get(item, ['createdBy', 'secondName']) || 'N/A'
         const createdDate = dateFormat(_.get(item, 'createdDate'))
         const totalPrice = numberFormat(_.get(item, 'totalPrice'), currentCurrency)

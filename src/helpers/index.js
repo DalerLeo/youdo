@@ -1,5 +1,3 @@
-/* Import */
-
 import toCamelCase from './toCamelCase'
 import toBoolean from './toBoolean'
 import filter from './filter'
@@ -8,6 +6,7 @@ import createReducer from './createReducer'
 import excludeObjKey from './excludeObjKey'
 import axios from './axios'
 import getConfig from './getConfig'
+import checkPermission from './checkPermission'
 
 export default {
     toCamelCase,
@@ -17,5 +16,6 @@ export default {
     createThunkReducer,
     getConfig,
     createReducer,
-    axios
+    axios,
+    checkPermission
 }

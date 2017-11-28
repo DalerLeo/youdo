@@ -9,8 +9,15 @@ import toCamelCase from '../../../helpers/toCamelCase'
 import * as actionTypes from '../../../constants/actionTypes'
 import {connect} from 'react-redux'
 
-const getOptions = (search, type, market, priceList) => {
-    return axios().get(`${PATH.RETURN_CREATE_PRODUCTS_LIST}?type=${type || ''}&market=${market || ''}&price_list=${priceList || ''}&page_size=100&search=${search || ''}`)
+const getOptions = (search, type, market, priceList, currency) => {
+    return axios().get(PATH.RETURN_CREATE_PRODUCTS_LIST,
+        {params: {
+            type: type,
+            market: market,
+            price_list: priceList,
+            currency: currency,
+            search: search
+        }})
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
         })
@@ -24,9 +31,9 @@ const setMeasurementAction = (data, loading) => {
     }
 }
 
-const getItem = (id, dispatch, market, priceList) => {
+const getItem = (id, dispatch, market, priceList, currency) => {
     dispatch(setMeasurementAction(null, true))
-    return axios().get(sprintf(PATH.RETURN_CREATE_PRODUCTS_ITEM, id), {params: {market: market, price_list: priceList}})
+    return axios().get(sprintf(PATH.RETURN_CREATE_PRODUCTS_ITEM, id), {params: {market: market, price_list: priceList, currency: currency}})
         .then(({data}) => {
             dispatch(setMeasurementAction(_.get(data, ['measurement', 'name']), false))
             return Promise.resolve(toCamelCase(data))
@@ -48,8 +55,9 @@ const ProductCustomSearchField = enhance((props) => {
     const type = _.get(state, ['form', 'ReturnCreateForm', 'values', 'type', 'value'])
     const market = _.get(state, ['form', 'ReturnCreateForm', 'values', 'market', 'value'])
     const priceList = _.get(state, ['form', 'ReturnCreateForm', 'values', 'priceList', 'value'])
+    const currency = _.get(state, ['form', 'ReturnCreateForm', 'values', 'currency', 'value'])
     const test = (id) => {
-        return getItem(id, dispatch, market, priceList)
+        return getItem(id, dispatch, market, priceList, currency)
     }
     return (
         <SearchFieldCustom
@@ -63,7 +71,7 @@ const ProductCustomSearchField = enhance((props) => {
                     <div>{name} <strong>Продажи {sales}</strong></div>
                 )
             }}
-            getOptions={ (search) => { return getOptions(search, type, market, priceList) }}
+            getOptions={ (search) => { return getOptions(search, type, market, priceList, currency) }}
             getItem={test}
             getItemText={(value) => {
                 return _.get(value, ['name'])

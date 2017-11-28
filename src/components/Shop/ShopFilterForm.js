@@ -10,7 +10,7 @@ import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import MarketTypeField from '../ReduxForm/Shop/MarketTypeSearchField'
-import {ClientSearchField, ShopStatusSearchField, FrequencySearchField, UsersSearchField, ZoneSearchField} from '../ReduxForm'
+import {ClientSearchField, ShopStatusSearchField, FrequencySearchField, UsersSearchField, ZoneSearchField, CheckBox} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
@@ -22,7 +22,8 @@ export const SHOP_FILTER_KEY = {
     STATUS: 'isActive',
     FREQUENCY: 'frequency',
     ZONE: 'zone',
-    CREATED_BY: 'createdBy'
+    CREATED_BY: 'createdBy',
+    NULL_BORDER: 'nullBorder'
 }
 
 const enhance = compose(
@@ -117,7 +118,7 @@ const enhance = compose(
 )
 
 const ShopFilterForm = enhance((props) => {
-    const {classes, filterDialog, getCount} = props
+    const {classes, filterDialog, getCount, handleSubmit} = props
     const filterCounts = getCount()
 
     if (!filterDialog.openFilterDialog) {
@@ -157,7 +158,7 @@ const ShopFilterForm = enhance((props) => {
                         <CloseIcon className={classes.icon} />
                     </IconButton>
                 </div>
-                <form onSubmit={filterDialog.handleSubmitFilterDialog}>
+                <form onSubmit={handleSubmit(filterDialog.handleSubmitFilterDialog)}>
                     <Field
                         className={classes.inputFieldCustom}
                         name="marketType"
@@ -189,6 +190,11 @@ const ShopFilterForm = enhance((props) => {
                         name="frequency"
                         component={FrequencySearchField}
                         label="Частота посещений"/>
+                    <Field
+                        className={classes.inputFieldCustom}
+                        name="nullBorder"
+                        component={CheckBox}
+                        label="Зона не определена"/>
 
                     <RaisedButton
                         type="submit"
