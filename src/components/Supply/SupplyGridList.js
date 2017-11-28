@@ -173,7 +173,8 @@ const SupplyGridList = enhance((props) => {
         supplyListData,
         tabData,
         paidData,
-        addProductDialog
+        addProductDialog,
+        confirmSyncDialog
     } = props
 
     const actions = (
@@ -213,6 +214,7 @@ const SupplyGridList = enhance((props) => {
             isAdmin={isAdmin}
             tabData={tabData}
             paidData={paidData}
+            confirmSyncDialog={confirmSyncDialog}
         />
     )
 
@@ -345,6 +347,14 @@ const SupplyGridList = enhance((props) => {
                 onSubmit={confirmExpenseDialog.handleSendConfirmExpenseDialog}
                 open={confirmExpenseDialog.openConfirmExpenseDialog}
             />}
+
+            <ConfirmDialog
+                type="submit"
+                message={' Синхронизировать колво. товаров с приёмкой '}
+                onClose={confirmSyncDialog.handleCloseConfirmDialog}
+                onSubmit={confirmSyncDialog.handleSubmitConfirmDialog}
+                open={confirmSyncDialog.openSyncConfirmDialog}
+            />
 
             {addProductDialog.openAddProductDialog &&
             <AddProductDialog

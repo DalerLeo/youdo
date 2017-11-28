@@ -30,7 +30,8 @@ import {
     supplyDeleteAction,
     supplyItemFetchAction,
     supplyDefectAction,
-    addProductsListAction
+    addProductsListAction,
+    supplySyncAction
 } from '../../actions/supply'
 import {
     supplyExpenseCreateAction,
@@ -138,6 +139,7 @@ const enhance = compose(
     }),
 
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
+    withState('openSyncConfirmDialog', 'setOpenSyncConfirmDialog', false),
     withState('openConfirmExpenseDialog', 'setOpenConfirmExpenseDialog', false),
     withState('openSupplyExpenseConfirmDialog', 'setOpenSupplyExpenseConfirmDialog', false),
     withState('expenseRemoveId', 'setExpenseRemoveId', false),
@@ -517,6 +519,31 @@ const enhance = compose(
             dispatch(change('SupplyCreateForm', 'products', _.concat(newProductsArray, checkDifference)))
             dispatch(addProductsListAction(filterProducts, productType))
             setOpenAddProductConfirm(false)
+        },
+        handleOpenSyncConfirmDialog: props => () => {
+            const {setOpenSyncConfirmDialog} = props
+            setOpenSyncConfirmDialog(true)
+        },
+        handleCloseSyncConfirmDialog: props => () => {
+            const {setOpenSyncConfirmDialog} = props
+            setOpenSyncConfirmDialog(false)
+        },
+        handleSubmitSyncConfirmDialog: props => () => {
+            const {setOpenSyncConfirmDialog, params, dispatch} = props
+            const id = _.get(params, 'supplyId')
+            return dispatch(supplySyncAction(Number(id)))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Cинхронизирован'}))
+                })
+                .then(() => {
+                 return dispatch(supplyItemFetchAction(id))
+                })
+                .then(() => {
+                    setOpenSyncConfirmDialog(false)
+                })
+                .catch(() => {
+                    return dispatch(openSnackbarAction({message: 'Ошибка'}))
+                })
         }
     })
 )
@@ -545,7 +572,8 @@ const SupplyList = enhance((props) => {
         addProductsLoading,
         filterProducts,
         openAddProductDialog,
-        openAddProductConfirm
+        openAddProductConfirm,
+        openSyncConfirmDialog
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', SUPPLY_FILTER_OPEN]))
@@ -607,6 +635,12 @@ const SupplyList = enhance((props) => {
         handleOpenConfirmDialog: props.handleOpenConfirmDialog,
         handleCloseConfirmDialog: props.handleCloseConfirmDialog,
         handleSendConfirmDialog: props.handleSendConfirmDialog
+    }
+    const confirmSyncDialog = {
+        openSyncConfirmDialog,
+        handleOpenConfirmDialog: props.handleOpenSyncConfirmDialog,
+        handleCloseConfirmDialog: props.handleCloseSyncConfirmDialog,
+        handleSubmitConfirmDialog: props.handleSubmitSyncConfirmDialog
     }
 
     const confirmExpenseDialog = {
@@ -754,6 +788,7 @@ const SupplyList = enhance((props) => {
                 detailId={detailId}
                 supplyExpenseCreateDialog={supplyExpenseCreateDialog}
                 addProductDialog={addProductDialog}
+                confirmSyncDialog={confirmSyncDialog}
             />
         </Layout>
     )

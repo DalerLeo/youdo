@@ -7,6 +7,7 @@ import injectSheet from 'react-jss'
 import Edit from 'material-ui/svg-icons/image/edit'
 import AddPayment from 'material-ui/svg-icons/editor/attach-money'
 import Expense from 'material-ui/svg-icons/action/credit-card'
+import Sync from 'material-ui/svg-icons/notification/sync'
 import Delete from 'material-ui/svg-icons/action/delete'
 import IconButton from 'material-ui/IconButton'
 import RightSide from './SupplyDetailsRightSideTabs'
@@ -235,7 +236,8 @@ const SupplyDetails = enhance((props) => {
         paidData,
         openExpenseInfo,
         setOpenExpenseInfo,
-        isAdmin
+        isAdmin,
+        confirmSyncDialog
     } = props
     const zero = 0
     const id = _.get(data, 'id')
@@ -329,6 +331,16 @@ const SupplyDetails = enhance((props) => {
                             touch={true}
                             onTouchTap={() => { handleSupplyExpenseOpenCreateDialog(id) }}>
                             <Expense/>
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip position="bottom" text="Синхронизировать колво. товаров с приёмкой">
+                        <IconButton
+                            iconStyle={iconStyle.icon}
+                            disabled={!(status === COMPLETED)}
+                            style={iconStyle.button}
+                            touch={true}
+                            onTouchTap={() => { confirmSyncDialog.handleOpenConfirmDialog() }}>
+                            <Sync/>
                         </IconButton>
                     </Tooltip>
                     {updateDialog && <Tooltip position="bottom" text="Изменить">

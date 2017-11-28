@@ -386,10 +386,10 @@ const OrderDetails = enhance((props) => {
                                     <span>Тип сделки:</span>
                                     <span>{(dealType === '0') ? 'Стандартная' : 'Консигнация'}</span>
                                 </li>
-                                {(configDivisions && divisionBool) ? <li>
+                                {configDivisions && divisionBool && <li>
                                     <span>Подразделение:</span>
                                     <span>{division}</span>
-                                </li> : null}
+                                </li>}
                                 <li>
                                     <span>Валюта:</span>
                                     <span>{currency}</span>

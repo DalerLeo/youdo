@@ -404,6 +404,7 @@ const ClientBalanceList = enhance((props) => {
                 getDocument={getDocument}
                 sumData={sumData}
                 pathname={location.pathname}
+                query={props.query}
             />
         </Layout>
     )

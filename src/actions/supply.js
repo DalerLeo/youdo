@@ -128,3 +128,19 @@ export const addProductsListAction = (filter, productType) => {
     }
 }
 
+export const supplySyncAction = (supplyId) => {
+    const payload = axios()
+        .post(sprintf(API.SUPPLY_SYNC, supplyId))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.SUPPLY_SYNC,
+        payload
+    }
+}
+

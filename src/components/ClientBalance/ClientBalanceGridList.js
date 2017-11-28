@@ -303,7 +303,8 @@ const enhance = compose(
         form: 'ClientBalanceForm',
         enableReinitialize: true
     }),
-    withState('currentItem', 'setItem', null)
+    withState('currentItem', 'setItem', null),
+    withState('currentRow', 'setCurrentRow', null)
 )
 
 const searchIconStyle = {
@@ -328,7 +329,9 @@ const iconStyle = {
         padding: 4
     }
 }
-
+const styleOnHover = {
+    background: '#efefef'
+}
 const ZERO = 0
 const ClientBalanceGridList = enhance((props) => {
     const {
@@ -349,7 +352,10 @@ const ClientBalanceGridList = enhance((props) => {
         stat,
         sumData,
         filterDialog,
-        onSubmit
+        onSubmit,
+        setCurrentRow,
+        currentRow,
+        query
     } = props
 
     // This constants for Statistics
@@ -376,7 +382,11 @@ const ClientBalanceGridList = enhance((props) => {
                 const id = _.get(item, 'id')
                 const name = _.get(item, 'name') || 'No'
                 return (
-                    <div key={id}><span>{name}</span>
+                    <div
+                        key={id}
+                        style={id === currentRow ? styleOnHover : {}}
+                        onMouseEnter={() => setCurrentRow(id)}
+                        onMouseLeave={() => setCurrentRow(null)}><span>{name}</span>
                         {!stat && isSuperUser && <div key={id} className={classes.buttonsWrapper}>
                             <Tooltip position="bottom" text="Списать">
                                 <IconButton
@@ -425,7 +435,16 @@ const ClientBalanceGridList = enhance((props) => {
             <tr className={classes.title}>
                 <td
                     style={{cursor: 'pointer'}}
-                    onClick={() => ordering(filter, 'order_no', props.pathname)}>
+                    onClick={() => {
+                        ordering(filter, 'orders', props.pathname)
+                        if (_.get(query, 'ordering') === 'orders') {
+                            ordering(filter, '-orders', props.pathname)
+                        } else if (_.get(query, 'ordering') === '-orders') {
+                            ordering(filter, '', props.pathname)
+                        } else {
+                            ordering(filter, 'orders', props.pathname)
+                        }
+                    }}>
                     Кол-во заказов {orderNoSorting}
                 </td>
                 {_.map(head, (item, index) => {
@@ -439,7 +458,15 @@ const ClientBalanceGridList = enhance((props) => {
                         <td
                             key={index}
                             style={{cursor: 'pointer'}}
-                            onClick={() => ordering(filter, item.type + '_' + item.id, props.pathname)}>
+                            onClick={() => {
+                                if (_.get(query, 'ordering') === item.type + '_' + item.id) {
+                                    ordering(filter, '-' + item.type + '_' + item.id, props.pathname)
+                                } else if (_.get(query, 'ordering') === '-' + item.type + '_' + item.id) {
+                                    ordering(filter, '', props.pathname)
+                                } else {
+                                    ordering(filter, item.type + '_' + item.id, props.pathname)
+                                }
+                            }}>
                             {item.name}{icon}
                         </td>
                     )
@@ -455,12 +482,20 @@ const ClientBalanceGridList = enhance((props) => {
                     amountValues.push({amount: _.get(child, 'bank'), type: 'bank', id: _.get(child, 'id')})
                 })
                 return (
-                    <tr key={id} className={classes.tableRow}>
+                    <tr key={id}
+                        style={id === currentRow ? styleOnHover : {}}
+                        onMouseEnter={() => setCurrentRow(id)}
+                        onMouseLeave={() => setCurrentRow(null)}
+                        className={classes.tableRow}>
                         <td>{orderNo}</td>
                         {_.map(amountValues, (val, index) => {
                             const amount = _.toNumber(_.get(val, 'amount'))
                             return (
-                                <td key={index} style={{cursor: 'pointer'}} onClick={() => { infoDialog.handleOpenInfoDialog(id, _.get(val, 'id'), _.get(val, 'type')) }}>
+                                <td key={index}
+                                    style={id === currentRow ? {background: '#efefef', cursor: 'pointer'} : {cursor: 'pointer'}}
+                                    onMouseEnter={() => setCurrentRow(id)}
+                                    onMouseLeave={() => setCurrentRow(null)}
+                                    onClick={() => { infoDialog.handleOpenInfoDialog(id, _.get(val, 'id'), _.get(val, 'type')) }}>
                                     <span className={(amount > ZERO) ? classes.green : (amount < ZERO) && classes.red}>{numberFormat(amount, primaryCurrency)}</span>
                                 </td>
                             )
