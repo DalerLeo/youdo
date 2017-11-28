@@ -2,6 +2,7 @@ import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
 
 const MINUS_ONE = -1
+const ZERO = 0
 export const createSerializer = (data, detail) => {
     const expenseId = _.get(detail, 'id')
     const type = _.get(detail, 'type')
@@ -9,7 +10,7 @@ export const createSerializer = (data, detail) => {
     const categoryId = _.get(data, ['categoryId', 'value'])
     const paymentType = _.get(data, ['paymentType', 'value'])
     const comment = _.get(data, 'comment')
-    const amount = _.toNumber(_.get(data, 'amount')) * MINUS_ONE
+    const amount = _.toNumber(_.get(data, 'amount')) > ZERO ? _.toNumber(_.get(data, 'amount')) * MINUS_ONE : _.toNumber(_.get(data, 'amount'))
     if (type === 'supply') {
         return {
             'cashbox': cashboxId,

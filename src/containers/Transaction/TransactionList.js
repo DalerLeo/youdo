@@ -704,7 +704,9 @@ const TransactionList = enhance((props) => {
                 },
                 amount: amount,
                 custom_rate: _.get(detail, ['clientTransaction', 'customRate']),
-                division: {value: _.get(detail, ['clientTransaction', 'division', 'id'])},
+                division: {
+                    value: _.get(detail, ['division', 'id'])
+                },
                 showClients: showClients
             }
         })(),
