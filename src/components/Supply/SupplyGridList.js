@@ -305,6 +305,7 @@ const SupplyGridList = enhance((props) => {
             <SupplyCreateDialog
                 isUpdate={true}
                 initialValues={updateDialog.initialValues}
+                editOnlyPrice={detailStatus === COMPLETED}
                 open={updateDialog.openUpdateDialog}
                 loading={updateDialog.updateLoading}
                 onClose={updateDialog.handleCloseUpdateDialog}

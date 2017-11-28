@@ -241,7 +241,7 @@ const iconStyle = {
     }
 }
 
-const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleEdit, handleRemove, editItem, setEditItem, currency, measurement, handleOpenAddProduct, ...defaultProps}) => {
+const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleEdit, handleRemove, editItem, setEditItem, currency, measurement, handleOpenAddProduct, editOnlyPrice, ...defaultProps}) => {
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
     const error = _.get(defaultProps, ['products', 'meta', 'error'])
     return (
@@ -354,6 +354,32 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleEdit
                             const amount = _.toNumber(_.get(item, 'amount'))
 
                             if (editItem === index) {
+                                if (editOnlyPrice) {
+                                    return (
+                                        <TableRow key={index} className={classes.tableRow}>
+                                            <TableRowColumn>
+                                                {product}
+                                            </TableRowColumn>
+                                            <TableRowColumn>
+                                                {amount} {itemMeasurement}</TableRowColumn>
+                                            <TableRowColumn>
+                                                <TextField
+                                                    label={cost}
+                                                    className={classes.inputFieldCustom}
+                                                    fullWidth={true}
+                                                    {..._.get(defaultProps, 'editCost')}
+                                                />
+                                            </TableRowColumn>
+                                            <TableRowColumn>{numberFormat(cost * amount, currency)}</TableRowColumn>
+                                            <TableRowColumn style={{textAlign: 'right'}}>
+                                                <IconButton
+                                                    onTouchTap={() => { handleEdit(index) }}>
+                                                    <Check color="#12aaeb"/>
+                                                </IconButton>
+                                            </TableRowColumn>
+                                        </TableRow>
+                                    )
+                                }
                                 return (
                                     <TableRow key={index} className={classes.tableRow}>
                                         <TableRowColumn>
