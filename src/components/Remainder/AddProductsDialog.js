@@ -291,14 +291,14 @@ const AddProductsDialog = enhance((props) => {
     const products = _.map(data, (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'title')
-        const defect = _.get(item, 'defects')
-        const available = _.get(item, 'available')
+        const defect = _.toNumber(_.get(item, 'defects'))
+        const available = _.toNumber(_.get(item, 'available'))
         const measurement = _.get(item, ['measurement', 'name'])
         return (
             <Row key={id} className="dottedList">
                 <Col xs={5}>{name}</Col>
                 <Col xs={3}>
-                    <Tooltip text='доступно / брак' position="left">{numberFormat(available)}/{numberFormat(defect, measurement)}</Tooltip>
+                    <Tooltip text='доступно / брак' position="left">{numberFormat(available)} / {numberFormat(defect, measurement)}</Tooltip>
                 </Col>
                 <Col xs={2} className={classes.flex}>
                     <Field

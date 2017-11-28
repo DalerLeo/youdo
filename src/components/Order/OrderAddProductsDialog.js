@@ -16,6 +16,7 @@ import Paper from 'material-ui/Paper'
 import SearchIcon from 'material-ui/svg-icons/action/search'
 import NotFound from '../Images/not-found.png'
 import numberFormat from '../../helpers/numberFormat'
+import Tooltip from '../ToolTip'
 import {
     TextField,
     ProductTypeSearchField,
@@ -296,22 +297,29 @@ const OrderAddProductsDialog = enhance((props) => {
         handleSubmitAddProductConfirm,
         isSuperUser,
         withoutCustomPrice,
+        fromAllBalances,
         currency
     } = props
     const onSubmit = handleSubmit(props.onSubmit)
     const primaryCurrency = currency
     const products = _.map(data, (item) => {
         const id = _.get(item, 'id')
-        const name = _.get(item, 'name')
-        const code = _.get(item, 'code')
+        const name = fromAllBalances ? _.get(item, 'title') : _.get(item, 'name')
+        const code = _.get(item, 'code') || '-'
         const balance = _.get(item, 'balance')
+        const available = numberFormat(_.get(item, 'available'))
+        const defects = numberFormat(_.get(item, 'defects'))
         const canChangePrice = (isSuperUser || withoutCustomPrice) || _.get(item, 'customPrice')
         const measurement = _.get(item, ['measurement', 'name'])
         return (
             <Row key={id} className="dottedList">
                 <Col xs={4}>{name}</Col>
                 <Col xs={2}>{code}</Col>
-                <Col xs={2}>{numberFormat(balance, measurement)}</Col>
+                <Col xs={2}>
+                    {fromAllBalances
+                        ? <Tooltip position="left" text="доступно / брак">{available} / {defects} {measurement}</Tooltip>
+                        : numberFormat(balance, measurement)}
+                </Col>
                 <Col xs={2} className={classes.flex}>
                     <Field
                         name={'product[' + id + '][price]'}
@@ -426,7 +434,7 @@ const OrderAddProductsDialog = enhance((props) => {
 })
 OrderAddProductsDialog.defaultProps = {
     withoutCustomPrice: false,
-    withoutValidations: false
+    fromAllBalances: false
 }
 OrderAddProductsDialog.propTyeps = {
     products: PropTypes.array,

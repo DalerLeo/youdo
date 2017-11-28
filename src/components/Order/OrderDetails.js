@@ -301,7 +301,6 @@ const OrderDetails = enhance((props) => {
                     <Tooltip position="left" text="Распечатать">
                         <IconMenu
                             menuItemStyle={{fontSize: '13px'}}
-                            disabled={currency !== 'SUM'}
                             iconButtonElement={<IconButton
                                 disabled={(status === CANCELED)}
                                 iconStyle={iconStyle.icon}
@@ -312,12 +311,12 @@ const OrderDetails = enhance((props) => {
                             anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
                             targetOrigin={{horizontal: 'right', vertical: 'top'}}>
                             <MenuItem
-                                primaryText="Накладные"
+                                primaryText="Накладную"
                                 onTouchTap={() => { getDocument.handleGetDocument(id) }}
                             />
                             <MenuItem
-                                disabled={true}
-                                primaryText="Договор"
+                                disabled={currency !== 'SUM' && currency !== 'СУМ'}
+                                primaryText={currency === 'SUM' || currency === 'СУМ' ? 'Договор' : 'Договор (валюта должна быть в сумах)'}
                                 onTouchTap={() => { handleOpenPrintContract() }}
                             />
                         </IconMenu>

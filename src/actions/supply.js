@@ -114,7 +114,7 @@ export const addProductsListAction = (filter, productType) => {
         type: productType
     }
     const payload = axios()
-        .get(API.PRODUCT_MOBILE_URL, {params})
+        .get(API.REMAINDER_LIST, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -123,7 +123,7 @@ export const addProductsListAction = (filter, productType) => {
         })
 
     return {
-        type: actionTypes.PRODUCT_MOBILE,
+        type: actionTypes.REMAINDER_ADD_PRODUCTS,
         payload
     }
 }

@@ -162,7 +162,7 @@ const OrderPrint = enhance((props) => {
                 const dateDelivery = dateFormat(_.get(item, 'dateDelivery'))
                 const paymentType = paymentTypeFormat(_.get(item, 'paymentType'))
                 const dealType = dealTypeFormat(_.get(item, 'dealType'))
-                const currentCurrency = getConfig('PRIMARY_CURRENCY')
+                const currentCurrency = _.get(item, ['currency', 'name'])
                 const firstMeasure = _.get(item, ['products', '0', 'product', 'measurement', 'name'])
                 const totalAmount = _.sumBy(_.get(item, 'products'), (o) => {
                     return _.toNumber(_.get(o, 'amount'))
