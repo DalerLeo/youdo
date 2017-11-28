@@ -12,6 +12,7 @@ import StatSideMenu from '../StatSideMenu'
 import Pagination from '../../GridList/GridListNavPagination/index'
 import getConfig from '../../../helpers/getConfig'
 import numberFormat from '../../../helpers/numberFormat.js'
+import horizontalScroll from '../../../helpers/horizontalScroll.js'
 import NotFound from '../../Images/not-found.png'
 import {ProductTypeChildSearchField, ProductTypeParentSearchField, DateToDateField} from '../../ReduxForm'
 import ordering from '../../../helpers/ordering'
@@ -42,7 +43,7 @@ const enhance = compose(
             bottom: '0',
             padding: '100px 0',
             background: '#fff',
-            zIndex: '999'
+            zIndex: '30'
         },
         mainWrapper: {
             background: '#fff',
@@ -177,6 +178,8 @@ const enhance = compose(
             margin: '0 -30px',
             paddingLeft: '30px',
             position: 'relative',
+            overflow: 'hidden',
+            minHeight: '200px',
             '& > div:first-child': {
                 zIndex: '20',
                 boxShadow: '5px 0 8px -3px #CCC',
@@ -244,21 +247,7 @@ const enhance = compose(
     lifecycle({
         componentDidMount () {
             const horizontalTable = ReactDOM.findDOMNode(this.refs.horizontalTable)
-            const ONE = 1
-            const MINUS_ONE = -1
-            const MULTIPLY = 35
-            const scrollHorizontally = (event) => {
-                const customEvent = window.event || event
-                const delta = Math.max(MINUS_ONE, Math.min(ONE, (customEvent.wheelDelta || -customEvent.detail)))
-                horizontalTable.scrollLeft -= (delta * MULTIPLY)
-                customEvent.preventDefault()
-            }
-            if (horizontalTable.addEventListener) {
-                horizontalTable.addEventListener('mousewheel', scrollHorizontally, false)
-                horizontalTable.addEventListener('DOMMouseScroll', scrollHorizontally, false)
-            } else {
-                horizontalTable.attachEvent('onmousewheel', scrollHorizontally)
-            }
+            horizontalScroll(horizontalTable)
         }
     })
 )
@@ -460,7 +449,7 @@ const StatProductGridList = enhance((props) => {
                                                 const sortingType = filter.getSortingType(header.name)
                                                 const icon = _.isNil(sortingType) ? null : sortingType ? <ArrowUpIcon className={classes.icon}/> : <ArrowDownIcon className={classes.icon}/>
                                                 if (!header.sorting) {
-                                                    return <td>{header.title}</td>
+                                                    return <td key={index}>{header.title}</td>
                                                 }
                                                 return <td key={index} style={{cursor: 'pointer'}} onClick={() => {
                                                     if (_.get(query, 'ordering') === header.name) {

@@ -115,7 +115,11 @@ const enhance = compose(
                 }
             },
             '& .dottedList': {
-                padding: '0',
+                margin: '0 -30px',
+                padding: '0 30px',
+                '&:hover': {
+                    background: '#f2f5f8'
+                },
                 '&:last-child:after': {
                     content: '""',
                     backgroundImage: 'none'
@@ -291,6 +295,7 @@ const StatSalesGridList = enhance((props) => {
         _.map(_.get(listData, 'data'), (item) => {
             const status = _.toInteger(_.get(item, 'status'))
             const marketName = _.get(item, ['market', 'name'])
+            const currency = _.get(item, ['currency', 'name'])
             const id = _.get(item, 'id')
             const createdDate = moment(_.get(item, 'createdDate')).locale('ru').format('DD MMM YYYY HH:MM')
             const firstName = _.get(item, ['user', 'firstName'])
@@ -320,7 +325,7 @@ const StatSalesGridList = enhance((props) => {
                         <div>{firstName} {secondName}</div>
                     </Col>
                     <Col xs={2}>{paymentType}</Col>
-                    <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(totalPrice, currentCurrency)}</Col>
+                    <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(totalPrice, currency)}</Col>
                     <Col xs={1} style={{justifyContent: 'flex-end'}}>
                         <div className={classes.buttons}>
                             {(status === REQUESTED) ? <Tooltip position="bottom" text="В процессе">
