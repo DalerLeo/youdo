@@ -525,7 +525,7 @@ const enhance = compose(
                     return dispatch(openSnackbarAction({message: 'Cинхронизирован'}))
                 })
                 .then(() => {
-                 return dispatch(supplyItemFetchAction(id))
+                    return dispatch(supplyItemFetchAction(id))
                 })
                 .then(() => {
                     setOpenSyncConfirmDialog(false)
