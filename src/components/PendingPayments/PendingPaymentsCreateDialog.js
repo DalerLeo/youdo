@@ -9,7 +9,7 @@ import FlatButton from 'material-ui/FlatButton'
 import Loader from '../Loader'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, CashboxSearchField, CashboxBankCustomField, normalizeNumber} from '../ReduxForm'
+import {TextField, CashboxSearchField, CashboxTypeCurrencyField, normalizeNumber} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
@@ -20,6 +20,7 @@ import CashboxCurrencyField from '../ReduxForm/CashboxCurrencyField'
 import PendingPaymentRadioButton from '../ReduxForm/PendingPaymentRadioButton'
 import getConfig from '../../helpers/getConfig'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
+import CashboxTypeCurrencyField from "../ReduxForm/CashboxTypeCurrencyField";
 
 export const PENDING_PAYMENTS_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const ORDERING_CURRENCY = 1
@@ -122,6 +123,7 @@ const PendingPaymentsCreateDialog = enhance((props) => {
     const currentRate = (currencyRate === INDIVIDUAL) ? customRate : _.get(convert, ['data', 'amount'])
     const convertAmount = convertCurrency(amountValue, currentRate)
     const createdDate = dateTimeFormat(_.get(detailData, ['data', 'createdDate']), true)
+    console.log(detailData, 'dateildata')
     return (
         <Dialog
             modal={true}
@@ -161,7 +163,9 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                                 ? <Field
                                     name="cashbox"
                                     className={classes.inputFieldCustom}
-                                    component={CashboxBankCustomField}
+                                    component={CashboxTypeCurrencyField}
+                                    // type={type}
+                                    // currency={currency}
                                     label="Касса получатель"
                                     fullWidth={true}
                                 />

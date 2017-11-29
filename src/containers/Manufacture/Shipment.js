@@ -72,6 +72,45 @@ const enhance = compose(
         }
     }),
 
+    // REVIEW LIST
+    withPropsOnChange((props, nextProps) => {
+        const beginDate = _.get(props, 'beginDate')
+        const endDate = _.get(props, 'endDate')
+        const nextBeginDate = _.get(nextProps, 'beginDate')
+        const nextEndDate = _.get(nextProps, 'endDate')
+        const manufacture = _.toInteger(_.get(props, ['params', 'manufactureId']))
+        const nextManufacture = _.toInteger(_.get(nextProps, ['params', 'manufactureId']))
+        return (beginDate !== nextBeginDate) || (endDate !== nextEndDate) || (manufacture !== nextManufacture)
+    }, ({dispatch, beginDate, endDate}) => {
+        const dateRange = {
+            beginDate,
+            endDate
+        }
+        dispatch(shipmentProductsListFetchAction(dateRange))
+        dispatch(shipmentMaterialsListFetchAction(dateRange))
+    }),
+
+    // LOGS LIST
+    withPropsOnChange((props, nextProps) => {
+        const except = {
+            page: null,
+            pageSize: null,
+            openFilter: null
+        }
+        const manufacture = _.toInteger(_.get(props, ['params', 'manufactureId']))
+        const nextManufacture = _.toInteger(_.get(nextProps, ['params', 'manufactureId']))
+        return (props.filterLogs.filterRequest(except) !== nextProps.filterLogs.filterRequest(except) && nextManufacture > ZERO) ||
+            (manufacture !== nextManufacture && nextManufacture)
+    }, ({dispatch, filterLogs, params, beginDate, endDate}) => {
+        const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
+        const dateRange = {
+            beginDate,
+            endDate
+        }
+        dispatch(shipmentLogsListFetchAction(filterLogs, manufactureId, dateRange))
+    }),
+
+    // SHIFTS LIST
     withPropsOnChange((props, nextProps) => {
         const except = {
             openFilter: null,
@@ -91,42 +130,6 @@ const enhance = compose(
         if (manufactureId > ZERO) {
             dispatch(shipmentListFetchAction(filterShipment, manufactureId, dateRange))
         }
-    }),
-
-    withPropsOnChange((props, nextProps) => {
-        const beginDate = _.get(props, 'beginDate')
-        const endDate = _.get(props, 'endDate')
-        const nextBeginDate = _.get(nextProps, 'beginDate')
-        const nextEndDate = _.get(nextProps, 'endDate')
-        const manufacture = _.toInteger(_.get(props, ['params', 'manufactureId']))
-        const nextManufacture = _.toInteger(_.get(nextProps, ['params', 'manufactureId']))
-        return (beginDate !== nextBeginDate) || (endDate !== nextEndDate) || (manufacture !== nextManufacture)
-    }, ({dispatch, beginDate, endDate}) => {
-        const dateRange = {
-            beginDate,
-            endDate
-        }
-        dispatch(shipmentProductsListFetchAction(dateRange))
-        dispatch(shipmentMaterialsListFetchAction(dateRange))
-    }),
-
-    withPropsOnChange((props, nextProps) => {
-        const except = {
-            page: null,
-            pageSize: null,
-            openFilter: null
-        }
-        const manufacture = _.toInteger(_.get(props, ['params', 'manufactureId']))
-        const nextManufacture = _.toInteger(_.get(nextProps, ['params', 'manufactureId']))
-        return (props.filterLogs.filterRequest(except) !== nextProps.filterLogs.filterRequest(except) && nextManufacture > ZERO) ||
-            (manufacture !== nextManufacture && nextManufacture)
-    }, ({dispatch, filterLogs, params, beginDate, endDate}) => {
-        const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
-        const dateRange = {
-            beginDate,
-            endDate
-        }
-        dispatch(shipmentLogsListFetchAction(filterLogs, manufactureId, dateRange))
     }),
 
     withHandlers({

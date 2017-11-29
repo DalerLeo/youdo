@@ -88,7 +88,6 @@ const enhance = compose(
 
 const OrderStatDetailsRightSide = enhance((props) => {
     const {classes, data} = props
-
     const products = _.get(data, 'products')
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const totalProductPrice = _.sumBy(products, (item) => {

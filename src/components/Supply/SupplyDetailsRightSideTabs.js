@@ -159,6 +159,7 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
     const products = _.get(data, 'products')
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const currency = _.get(data, ['currency', 'name']) || 'N/A'
+    const status = _.toInteger(_.get(data, 'status'))
 
     const wholeAmount = _.sumBy(products, (o) => {
         return _.toNumber(_.get(o, 'amount'))
@@ -215,7 +216,11 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                                                     className={classes.defect}>{numberFormat(defectAmount, measurement)}</span>
                                                 : <span>{numberFormat(defectAmount, measurement)}</span>}
                                         </Col>
-                                        <Col xs={1}>{notAccepted}</Col>
+                                        <Col xs={1}>
+                                            {status === ZERO
+                                                ? numberFormat(ZERO, measurement)
+                                                : notAccepted}
+                                        </Col>
                                         <Col xs={2}>
                                             <div style={{textAlign: 'right'}}>{numberFormat(itemPrice, currency)}</div>
                                         </Col>

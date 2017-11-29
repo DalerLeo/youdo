@@ -1,4 +1,4 @@
-export const API_HOST = 'apitest1.wienerdeming.com'
+export const API_HOST = process.env.API_HOST
 export const API_ROOT = 'api'
 export const API_VERSION = 'v1'
 export const API_PROTOCOL = process.env.API_PROTOCOL ? process.env.API_PROTOCOL : 'https'
@@ -112,6 +112,7 @@ export const SUPPLY_LIST = `/${SUPPLY}/`
 export const SUPPLY_ITEM = `/${SUPPLY}/%d/`
 export const SUPPLY_DEFECT = `/${SUPPLY}/%d/product_detail/%d/`
 export const SUPPLY_CANCEL = `/${SUPPLY}/cancel`
+export const SUPPLY_SYNC = `/${SUPPLY}/%d/update_amount/`
 
 export const PRICES = 'market/promotion'
 export const PRICES_CREATE = `/${PRICES}/`

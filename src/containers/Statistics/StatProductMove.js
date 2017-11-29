@@ -180,6 +180,7 @@ const StatProductMoveList = enhance((props) => {
     return (
         <Layout {...layout}>
             <StatProductMoveGridList
+                pathname={location.pathname}
                 filter={filter}
                 handleSubmitFilterDialog={props.handleSubmitFilterDialog}
                 listData={listData}

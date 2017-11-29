@@ -206,7 +206,8 @@ const enhance = compose(
         form: 'ShopCreateForm',
         enableReinitialize: true
     }),
-    withState('openClient', 'setOpenClient', false)
+    withState('openClient', 'setOpenClient', false),
+    withState('openAddition', 'setOpenAddition', false)
 )
 const ShopCreateDialog = enhance((props) => {
     const {
@@ -220,7 +221,9 @@ const ShopCreateDialog = enhance((props) => {
         setOpenClient,
         mapDialog,
         updateMapDialog,
-        mapLocation
+        mapLocation,
+        openAddition,
+        setOpenAddition
     } = props
     const onSubmit = handleSubmit(() => props.onSubmit(openClient).catch(validate))
     const lat = _.get(mapLocation, 'lat')
@@ -352,6 +355,49 @@ const ShopCreateDialog = enhance((props) => {
                                 className={classes.inputFieldCustom}
                                 label="Контактное лицо"
                                 fullWidth={true}/>
+                            <div>
+                                <div style={{textAlign: 'right'}}>
+                                    <FlatButton
+                                        label="дополнительно"
+                                        className={classes.actionButton}
+                                        primary={true}
+                                        labelStyle={{textTransform: 'unset', color: '#129fdd'}}
+                                        onClick={() => setOpenAddition(!openAddition)}/>
+                                </div>
+                                {openAddition && <div>
+                                    <Field
+                                        name="mfo"
+                                        component={TextField}
+                                        className={classes.inputFieldCustom}
+                                        label="МФО"
+                                        fullWidth={true}/>
+                                    <Field
+                                        name="inn"
+                                        component={TextField}
+                                        className={classes.inputFieldCustom}
+                                        label="ИНН"
+                                        fullWidth={true}/>
+                                    <Field
+                                        name="okad"
+                                        component={TextField}
+                                        className={classes.inputFieldCustom}
+                                        label="ОКАД"
+                                        fullWidth={true}/>
+                                    <Field
+                                        name="bankAddress"
+                                        component={TextField}
+                                        className={classes.inputFieldCustom}
+                                        label="Адрес банка"
+                                        fullWidth={true}/>
+                                    <Field
+                                        name="checkingAccount"
+                                        component={TextField}
+                                        className={classes.inputFieldCustom}
+                                        label="Р/с"
+                                        fullWidth={true}/>
+                                </div>}
+                            </div>
+
                         </div>
                     </div>
                     <div className={classes.bottomButton}>

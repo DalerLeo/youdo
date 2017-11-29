@@ -3,7 +3,8 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import {Row, Col} from 'react-flexbox-grid'
 import * as ROUTES from '../../../constants/routes'
-import Container from '../../Container/index'
+import {Link} from 'react-router'
+import Container from '../../Container'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import {connect} from 'react-redux'
@@ -13,13 +14,12 @@ import StatRemainderDialog from './StatRemainderDialog'
 import StatSideMenu from '../StatSideMenu'
 import Search from 'material-ui/svg-icons/action/search'
 import IconButton from 'material-ui/IconButton'
-import List from 'material-ui/svg-icons/action/list'
 import Loader from '../../Loader'
 import Pagination from '../../GridList/GridListNavPagination/index'
 import numberFormat from '../../../helpers/numberFormat.js'
 import NotFound from '../../Images/not-found.png'
 import getConfig from '../../../helpers/getConfig'
-import Tooltip from '../../ToolTip/index'
+import Tooltip from '../../ToolTip'
 import {StatisticsFilterExcel} from '../../Statistics'
 
 export const STAT_REMAINDER_FILTER_KEY = {
@@ -54,7 +54,22 @@ const enhance = compose(
             padding: '20px 30px',
             height: 'calc(100% - 40px)',
             '& .row': {
-                margin: '0 !important'
+                margin: '0'
+            }
+        },
+        linkList: {
+            color: 'inherit',
+            '& .dottedList': {
+                padding: '0 30px',
+                margin: '0 -30px',
+                '&:hover': {
+                    backgroundColor: '#f2f5f8'
+                }
+            },
+            '&:last-child .dottedList': {
+                '&:after': {
+                    display: 'none'
+                }
             }
         },
         tableWrapper: {
@@ -73,13 +88,6 @@ const enhance = compose(
                     '&:last-child': {
                         paddingRight: '0'
                     }
-                }
-            },
-            '& .dottedList': {
-                padding: '0',
-                '&:last-child:after': {
-                    content: '""',
-                    backgroundImage: 'none'
                 }
             },
             '& .personImage': {
@@ -235,6 +243,12 @@ const enhance = compose(
             fontSize: '13px',
             color: '#666'
         },
+        boldFont: {
+            justifyContent: 'flex-end',
+            textAlign: 'right',
+            fontWeight: '600',
+            fontSize: '15px'
+        },
         searchForm: {
             display: 'flex',
             alignItems: 'center',
@@ -303,11 +317,10 @@ const StatRemainderGridList = enhance((props) => {
     const headers = (
         <Row style={headerStyle} className="dottedList">
             <Col xs={3}>Товар</Col>
-            <Col xs={2}>Тип товара</Col>
+            <Col xs={3}>Тип товара</Col>
             <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right'}}>Всего товаров</Col>
             <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right'}}>Доступно</Col>
             <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right'}}>Цена</Col>
-            <Col xs={1} style={{display: 'none'}}>|</Col>
         </Row>
     )
 
@@ -323,37 +336,24 @@ const StatRemainderGridList = enhance((props) => {
         const available = numberFormat(Number(_.get(item, 'balance')) - Number(_.get(item, 'reserved')), measurement)
 
         return (
-            <Row key={id} className="dottedList">
-                <Col xs={3}>
-                    <div>{product}</div>
-                </Col>
-                <Col xs={2}>{productType}</Col>
-                <Col xs={2}
-                     style={{justifyContent: 'flex-end', textAlign: 'right', fontWeight: '600', whiteSpace: 'nowrap'}}>
-                    <Tooltip position="top" text="Всего / Забронировано / Брак">
-                        {balance} / <span style={{color: '#90a4ae', margin: '0 3px'}}> {reserved} </span> / <span
-                        style={{color: '#e57373', margin: '0 3px'}}> {defects} </span>
-                    </Tooltip>
-                </Col>
-                <Col xs={2} style={{
-                    justifyContent: 'flex-end',
-                    textAlign: 'right',
-                    fontWeight: '600',
-                    fontSize: '15px'
-                }}>{available}</Col>
-                <Col xs={2} style={{
-                    justifyContent: 'flex-end',
-                    textAlign: 'right',
-                    fontWeight: '600',
-                    fontSize: '15px'
-                }}>{price}</Col>
-                <Col xs={1} style={{justifyContent: 'flex-end', textAlign: 'right', paddingRight: '0'}}>
-                    <IconButton
-                        onTouchTap={() => { statRemainderDialog.handleOpenStatRemainderDialog(id) }}>
-                        <List color="#12aaeb"/>
-                    </IconButton>
-                </Col>
-            </Row>
+            <Link target="_blank" to={{
+                pathname: ROUTES.STOCK_OUT_HISTORY_LIST_URL,
+                query: {product: id, stock: _.get(filter.getParams(), 'stock')}
+            }} key={id} className={classes.linkList}>
+                <Row className="dottedList">
+                    <Col xs={3}>{product}</Col>
+                    <Col xs={3}>{productType}</Col>
+                    <Col xs={2}
+                         style={{justifyContent: 'flex-end', textAlign: 'right', fontWeight: '600', whiteSpace: 'nowrap'}}>
+                        <Tooltip position="top" text="Всего / Забронировано / Брак">
+                            {balance} / <span style={{color: '#90a4ae', margin: '0 3px'}}> {reserved} </span> / <span
+                            style={{color: '#e57373', margin: '0 3px'}}> {defects} </span>
+                        </Tooltip>
+                    </Col>
+                    <Col xs={2} className={classes.boldFont}>{available}</Col>
+                    <Col xs={2} className={classes.boldFont}>{price}</Col>
+                </Row>
+            </Link>
         )
     })
 

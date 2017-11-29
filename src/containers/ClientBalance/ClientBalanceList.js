@@ -303,6 +303,7 @@ const ClientBalanceList = enhance((props) => {
     const balanceType = filter.getParam(CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE)
     const divisionValue = filter.getParam(CLIENT_BALANCE_FILTER_KEY.DIVISION)
     const detailId = _.toInteger(_.get(params, 'clientBalanceId'))
+    const search = !_.isNull(_.get(location, ['query', 'search'])) ? _.get(location, ['query', 'search']) : null
 
     const divisionInfo = _.find(_.get(list, ['results', '0', 'divisions']), (item) => {
         return _.get(item, 'id') === division
@@ -344,6 +345,7 @@ const ClientBalanceList = enhance((props) => {
     }
     const filterDialog = {
         initialValues: {
+            searching: search,
             paymentType: {
                 value: paymentType
             },
@@ -398,12 +400,14 @@ const ClientBalanceList = enhance((props) => {
                 createDialog={createDialog}
                 addDialog={addDialog}
                 filterDialog={filterDialog}
+                initialValues={filterDialog.initialValues}
                 onSubmit={props.handleSubmitFilterDialog}
                 superUser={superUser}
                 handleSubmitSearch={props.handleSubmitSearch}
                 getDocument={getDocument}
                 sumData={sumData}
                 pathname={location.pathname}
+                query={props.query}
             />
         </Layout>
     )

@@ -102,7 +102,18 @@ export const MenuItems = [
         icon: (<Map/>),
         url: ROUTES.MANUFACTURE_LIST_URL,
         childs: [
-            {name: 'Производство', url: ROUTES.MANUFACTURE_LIST_URL, permission: 'frontend_manufacture'}
+            {
+                name: 'Производство',
+                url: ROUTES.MANUFACTURE_LIST_URL,
+                permission: 'frontend_manufacture',
+                extraURLs: {
+                    1: ROUTES.MANUFACTURE_PRODUCT_LIST_URL,
+                    2: ROUTES.MANUFACTURE_PERSON_LIST_URL,
+                    3: ROUTES.MANUFACTURE_EQUIPMENT_LIST_URL,
+                    4: ROUTES.MANUFACTURE_SHIPMENT_LIST_URL
+                }
+
+            }
         ]
     },
     {
@@ -112,9 +123,9 @@ export const MenuItems = [
         url: ROUTES.STATISTICS_LIST_URL,
         childs: [
             {section: STATS_SALES, name: 'Оборот', url: ROUTES.STATISTICS_SALES_URL, permission: 'frontend_stat_sales'},
-            {section: STATS_SALES, name: 'Агенты', url: ROUTES.STATISTICS_AGENT_URL, permission: 'frontend_stat_agents'},
+            {section: STATS_SALES, name: 'Агенты', url: ROUTES.STATISTICS_AGENT_URL, permission: 'frontend_stat_agents', query: {pageSize: 25}},
             {section: STATS_SALES, name: 'Товары', url: ROUTES.STATISTICS_PRODUCT_URL, permission: 'frontend_stat_product', query: {pageSize: 25}},
-            {section: STATS_SALES, name: 'Магазины', url: ROUTES.STATISTICS_MARKET_URL, permission: 'frontend_stat_markets'},
+            {section: STATS_SALES, name: 'Магазины', url: ROUTES.STATISTICS_MARKET_URL, permission: 'frontend_stat_markets', query: {pageSize: 25}},
             {section: STATS_SALES, name: 'Возврат', url: ROUTES.STATISTICS_RETURN_URL, permission: 'frontend_stat_order_returns'},
             {section: STATS_FINANCE, name: 'Оборот', url: ROUTES.STATISTICS_FINANCE_URL, permission: 'frontend_stat_finance'},
             {section: STATS_FINANCE, name: 'Расходы по категориям', url: ROUTES.STATISTICS_OUTCOME_CATEGORY_URL, permission: 'frontend_stat_outcome_category'},

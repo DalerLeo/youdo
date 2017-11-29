@@ -258,7 +258,7 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleEdit
                             onTouchTap={() => dispatch({open: !state.open})}
                         />
                         <FlatButton
-                            label="добавить товары"
+                            label="добавить из списка"
                             style={{color: '#12aaeb'}}
                             labelStyle={{fontSize: '13px'}}
                             className={classes.span}

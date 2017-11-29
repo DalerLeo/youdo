@@ -65,7 +65,7 @@ const enhance = compose(
             overflowX: 'hidden',
             padding: '20px 30px',
             '& .row': {
-                margin: '0 !important'
+                margin: '0'
             }
         },
         tableWrapper: {

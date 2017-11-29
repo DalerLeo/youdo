@@ -62,6 +62,7 @@ import {
 import {openSnackbarAction} from '../../actions/snackbar'
 import updateStore from '../../helpers/updateStore'
 
+import {shopItemFetchAction} from '../../actions/shop'
 const MINUS_ONE = -1
 const ZERO = 0
 const TWO = 2
@@ -102,6 +103,8 @@ const enhance = compose(
         const editProducts = _.get(state, ['order', 'updateProducts', 'data'])
         const editProductsLoading = _.get(state, ['order', 'updateProducts', 'loading'])
         const salesPrintData = _.get(state, ['order', 'salesPrint', 'data'])
+        const marketDetails = _.get(state, ['shop', 'item', 'data'])
+        const marketDetailsLoading = _.get(state, ['shop', 'item', 'loading'])
         const salesPrintDataLoading = _.get(state, ['order', 'salesPrint', 'loading'])
         const filter = filterHelper(list, pathname, query)
         const filterProducts = filterHelper(editProducts, pathname, query, {'page': 'pdPage', 'pageSize': 'pdPageSize'})
@@ -149,7 +152,9 @@ const enhance = compose(
             filterProducts,
             addProductsForm,
             salesPrintData,
-            salesPrintDataLoading
+            salesPrintDataLoading,
+            marketDetails,
+            marketDetailsLoading
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -306,21 +311,22 @@ const enhance = compose(
         const productTypeNext = _.get(nextProps, ['addProductsForm', 'values', 'productType', 'value'])
         return ((props.filterProducts.filterRequest(except) !== nextProps.filterProducts.filterRequest(except)) ||
             (productType !== productTypeNext && nextProps.openAddProductDialog)) && !(props.openAddProductDialog !== nextProps.openAddProductDialog && nextProps.openAddProductDialog)
-    }, ({setOpenAddProductConfirm, addProductsForm, openAddProductDialog, dispatch, filterProducts, createForm}) => {
-        const products = _.filter(_.get(addProductsForm, ['values', 'product']), (item) => {
-            const amount = _.toNumber(_.get(item, 'amount'))
-            return amount > ZERO
-        })
-        const priceList = _.get(createForm, ['values', 'priceList', 'value'])
-        const currency = _.get(createForm, ['values', 'currency', 'value'])
-        const productType = _.get(addProductsForm, ['values', 'productType', 'value'])
-        if (!_.isEmpty(products)) {
-            setOpenAddProductConfirm(true)
-        } else if (priceList && openAddProductDialog && _.isEmpty(products)) {
-            setOpenAddProductConfirm(false)
-            dispatch(orderAddProductsListAction(priceList, filterProducts, productType, currency))
-        }
-    }),
+    },
+        ({setOpenAddProductConfirm, addProductsForm, openAddProductDialog, dispatch, filterProducts, createForm}) => {
+            const products = _.filter(_.get(addProductsForm, ['values', 'product']), (item) => {
+                const amount = _.toNumber(_.get(item, 'amount'))
+                return amount > ZERO
+            })
+            const priceList = _.get(createForm, ['values', 'priceList', 'value'])
+            const currency = _.get(createForm, ['values', 'currency', 'value'])
+            const productType = _.get(addProductsForm, ['values', 'productType', 'value'])
+            if (!_.isEmpty(products)) {
+                setOpenAddProductConfirm(true)
+            } else if (priceList && openAddProductDialog && _.isEmpty(products)) {
+                setOpenAddProductConfirm(false)
+                dispatch(orderAddProductsListAction(priceList, filterProducts, productType, currency))
+            }
+        }),
 
     withPropsOnChange((props, nextProps) => {
         return props.openAddProductDialog !== nextProps.openAddProductDialog && nextProps.openAddProductDialog
@@ -854,12 +860,15 @@ const enhance = compose(
             getDocuments(API.ORDER_EXCEL, params)
         },
         handleOpenContractPrint: props => () => {
-            const {setOpenContractPrint} = props
+            const {setOpenContractPrint, dispatch, detail} = props
             setOpenContractPrint(true)
-
-            setTimeout(() => {
-                window.print()
-            }, HUNDRED)
+            const id = _.get(detail, ['market', 'id'])
+            return dispatch(shopItemFetchAction(id))
+                .then(({value}) => {
+                    setTimeout(() => {
+                        window.print()
+                    }, HUNDRED)
+                })
         },
         handleCloseContractPrint: props => () => {
             const {setOpenContractPrint} = props
@@ -904,7 +913,9 @@ const OrderList = enhance((props) => {
         openSalesPrint,
         salesPrintData,
         salesPrintDataLoading,
-        openContractPrint
+        openContractPrint,
+        marketDetailsLoading,
+        marketDetails
     } = props
     const openFilterDialog = toBoolean(_.get(location, ['query', ORDER_FILTER_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', ORDER_CREATE_DIALOG_OPEN]))
@@ -1282,7 +1293,8 @@ const OrderList = enhance((props) => {
 
         return <OrderContractPrint
             onClose={printContractDialog.handleCloseContractPrint}
-            loading={false}
+            loading={marketDetailsLoading}
+            marketData={marketDetails}
             data={{
                 client: _.get(detail, 'client'),
                 market: _.get(detail, 'market'),

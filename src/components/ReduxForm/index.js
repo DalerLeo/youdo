@@ -94,8 +94,10 @@ import ProductMultiSearchField from './Product/ProductMultiSearchField'
 import OrderStatusMultiSearchField from './Order/OrderStatusMultiSearchField'
 import ReturnStatusMultiSearch from './ReturnStatusMultiSearch'
 import UserCurrenciesSearchField from './UserCurrenciesSearchField'
+import CashboxTypeCurrencyField from './CashboxTypeCurrencyField'
 
 export {
+    CashboxTypeCurrencyField,
     UsersAgentSearchField,
     DeliveryManSearchField,
     PendingExpensesTypeSearchField,
