@@ -5,10 +5,11 @@ import {Row} from 'react-flexbox-grid'
 import * as ROUTES from '../../../constants/routes'
 import Container from '../../Container/index'
 import injectSheet from 'react-jss'
-import {compose, withState} from 'recompose'
+import {compose, withState, lifecycle} from 'recompose'
 import {Field, reduxForm} from 'redux-form'
 import {connect} from 'react-redux'
 import ordering from '../../../helpers/ordering'
+import horizontalScroll from '../../../helpers/horizontalScroll'
 import {
     DateToDateField,
     StockSearchField,
@@ -38,16 +39,22 @@ export const STAT_PRODUCT_MOVE_FILTER_KEY = {
 const enhance = compose(
     injectSheet({
         loader: {
-            width: '100%',
+            position: 'absolute',
+            top: '0',
+            left: '-30px',
+            right: '-30px',
+            bottom: '0',
             padding: '100px 0',
+            background: '#fff',
+            zIndex: '30'
+        },
+        summaryLoader: {
+            width: '100%',
             background: '#fff',
             display: 'flex',
             alignItems: 'center',
             zIndex: '999',
-            justifyContent: 'center'
-        },
-        summaryLoader: {
-            extend: 'loader',
+            justifyContent: 'center',
             padding: '0'
         },
         mainWrapper: {
@@ -65,11 +72,16 @@ const enhance = compose(
                 margin: '0 !important'
             }
         },
+        container: {
+            position: 'relative'
+        },
         tableWrapper: {
             display: 'flex',
             margin: '0 -30px',
-            overflow: 'hidden',
             paddingLeft: '30px',
+            position: 'relative',
+            overflow: 'hidden',
+            minHeight: '200px',
             '& > div:first-child': {
                 zIndex: '20',
                 boxShadow: '5px 0 8px -3px #ccc',
@@ -274,7 +286,13 @@ const enhance = compose(
             typeParent
         }
     }),
-    withState('currentRow', 'setCurrentRow', null)
+    withState('currentRow', 'setCurrentRow', null),
+    lifecycle({
+        componentDidMount () {
+            const horizontalTable = this.refs.horizontalTable
+            horizontalScroll(horizontalTable)
+        }
+    })
 )
 const listHeader = [
     {
@@ -369,12 +387,12 @@ const StatProductMoveGridList = enhance((props) => {
     const writeoffBalance = numberFormat(Math.abs(_.get(sumData, ['data', 'writeoffPriceSum'])), primaryCurrency)
 
     // Amounts
-    const beginAmount = numberFormat(_.get(sumData, ['data', 'beginBalanceSum']))
-    const endAmount = numberFormat(_.get(sumData, ['data', 'endBalanceSum']))
-    const inAmount = numberFormat(_.get(sumData, ['data', 'inBalanceSum']))
-    const outAmount = numberFormat(_.get(sumData, ['data', 'outBalanceSum']))
-    const returnAmount = numberFormat(_.get(sumData, ['data', 'returnBalanceSum']))
-    const writeoffAmount = numberFormat(_.get(sumData, ['data', 'writeoffBalanceSum']))
+    const beginAmount = numberFormat(Math.abs(_.get(sumData, ['data', 'beginBalanceSum'])))
+    const endAmount = numberFormat(Math.abs(_.get(sumData, ['data', 'endBalanceSum'])))
+    const inAmount = numberFormat(Math.abs(_.get(sumData, ['data', 'inBalanceSum'])))
+    const outAmount = numberFormat(Math.abs(_.get(sumData, ['data', 'outBalanceSum'])))
+    const returnAmount = numberFormat(Math.abs(_.get(sumData, ['data', 'returnBalanceSum'])))
+    const writeoffAmount = numberFormat(Math.abs(_.get(sumData, ['data', 'writeoffBalanceSum'])))
 
     const tableLeft = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
@@ -527,55 +545,56 @@ const StatProductMoveGridList = enhance((props) => {
                             </form>
                             <Pagination filter={filter}/>
                         </div>
-                        {listLoading
-                            ? <div className={classes.loader}>
+                        <div className={classes.container}>
+                            {listLoading && <div className={classes.loader}>
                                 <Loader size={0.75}/>
-                            </div>
-                            : !_.isEmpty(tableList) && !listLoading
-                                ? <div className={classes.tableWrapper}>
-                                    <div className={classes.leftTable}>
-                                        <div><span>Товар</span></div>
-                                        {tableLeft}
-                                    </div>
-                                    <div>
-                                        <table className={classes.mainTable}>
-                                            <tbody className={classes.tableBody}>
-                                            <tr className={classes.title}>
-                                                <td rowSpan={2}>Код товара</td>
-
-                                                <td colSpan={2}>Остаток на начало периода</td>
-                                                <td colSpan={2}>Поступивший товара за период</td>
-                                                <td colSpan={2}>Возврат</td>
-                                                <td colSpan={2}>Выдано по заказу</td>
-                                                <td colSpan={2}>Списано за период</td>
-                                                <td colSpan={2}>Остаток на конец</td>
-                                            </tr>
-                                            <tr className={classes.subTitle}>
-                                                {_.map(listHeader, (header, index) => {
-                                                    const sortingType = filter.getSortingType(header.name)
-                                                    const icon = _.isNil(sortingType) ? null : sortingType ? <ArrowUpIcon className={classes.icon}/> : <ArrowDownIcon className={classes.icon}/>
-
-                                                    if (!header.sorting) {
-                                                        return <td>{header.title}</td>
-                                                    }
-                                                    return (
-                                                        <td
-                                                            key={index}
-                                                            style={{cursor: 'pointer'}}
-                                                            onClick={() => ordering(filter, header.name, props.pathname)}>
-                                                            {header.title}{icon}
-                                                        </td>
-                                                    )
-                                                })}
-                                            </tr>
-                                            {tableList}
-                                            </tbody>
-                                        </table>
-                                    </div>
+                            </div>}
+                            <div className={classes.tableWrapper}>
+                                <div className={classes.leftTable}>
+                                    <div><span>Товар</span></div>
+                                    {tableLeft}
                                 </div>
-                                : <div className={classes.emptyQuery}>
+                                {_.isEmpty(tableList) && !listLoading &&
+                                <div className={classes.emptyQuery}>
                                     <div>По вашему запросу ничего не найдено</div>
                                 </div>}
+                                <div ref="horizontalTable">
+                                    <table className={classes.mainTable}>
+                                        <tbody className={classes.tableBody}>
+                                        <tr className={classes.title}>
+                                            <td rowSpan={2}>Код товара</td>
+
+                                            <td colSpan={2}>Остаток на начало периода</td>
+                                            <td colSpan={2}>Поступивший товара за период</td>
+                                            <td colSpan={2}>Возврат</td>
+                                            <td colSpan={2}>Выдано по заказу</td>
+                                            <td colSpan={2}>Списано за период</td>
+                                            <td colSpan={2}>Остаток на конец</td>
+                                        </tr>
+                                        <tr className={classes.subTitle}>
+                                            {_.map(listHeader, (header, index) => {
+                                                const sortingType = filter.getSortingType(header.name)
+                                                const icon = _.isNil(sortingType) ? null : sortingType ? <ArrowUpIcon className={classes.icon}/> : <ArrowDownIcon className={classes.icon}/>
+
+                                                if (!header.sorting) {
+                                                    return <td>{header.title}</td>
+                                                }
+                                                return (
+                                                    <td
+                                                        key={index}
+                                                        style={{cursor: 'pointer'}}
+                                                        onClick={() => ordering(filter, header.name, props.pathname)}>
+                                                        {header.title}{icon}
+                                                    </td>
+                                                )
+                                            })}
+                                        </tr>
+                                        {tableList}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </Row>

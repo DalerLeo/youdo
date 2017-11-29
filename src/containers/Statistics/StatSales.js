@@ -278,9 +278,8 @@ const StatSalesList = enhance((props) => {
     const graphData = {
         mergedGraph: _.sortBy(mergedGraph, ['date']),
         data: graphList || {},
-        graphLoading,
-        graphReturnList,
-        graphReturnLoading
+        graphLoading: graphLoading || graphReturnLoading,
+        graphReturnList
     }
 
     const printDialog = {
