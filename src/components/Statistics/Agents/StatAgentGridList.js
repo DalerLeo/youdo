@@ -105,7 +105,7 @@ const enhance = compose(
         },
         mainTable: {
             width: '100%',
-            minWidth: '950px',
+            minWidth: '1600px',
             color: '#666',
             borderCollapse: 'collapse',
             '& tr, td': {
@@ -124,8 +124,8 @@ const enhance = compose(
         },
         subTitle: {
             extend: 'title',
-            '& td:nth-child(odd)': {
-                borderRight: 'none'
+            '& td:last-child': {
+                textAlign: 'right'
             },
             '& td:nth-child(even)': {
                 borderLeft: 'none',
@@ -134,14 +134,26 @@ const enhance = compose(
         },
         tableRow: {
             '& td:nth-child(odd)': {
-                textAlign: 'left'
+                textAlign: 'left',
+                borderLeft: '1px #efefef solid',
+                '&:first-child': {
+                    borderLeft: 'none'
+                }
             },
             '& td:nth-child(even)': {
                 borderRight: '1px #efefef solid',
-                textAlign: 'right'
+                textAlign: 'right',
+                '&:first-child': {
+                    borderRight: 'none'
+                }
             },
             '&:nth-child(odd)': {
                 backgroundColor: '#f9f9f9'
+            },
+            '& td:last-child': {
+                textAlign: 'right',
+                borderRight: '1px #efefef solid',
+                borderLeft: 'none'
             }
         },
         balanceInfo: {
@@ -337,6 +349,10 @@ const listHeader = [
     {
         sorting: true,
         title: 'Осталось'
+    },
+    {
+        sorting: true,
+        title: 'Долг'
     }
 ]
 
@@ -386,8 +402,8 @@ const StatAgentGridList = enhance((props) => {
         const returnTotalSum = numberFormat(_.get(item, 'returnTotalSum'), primaryCurrency)
         const paymentOrdersSum = numberFormat(_.get(item, 'paymentOrdersSum'), primaryCurrency)
         const paymentTotalSum = numberFormat(_.get(item, 'paymentTotalSum'), primaryCurrency)
-        const monthlyPlanAmount = numberFormat(_.get(item, 'monthlyPlanAmount'), primaryCurrency)
-        const monthlyPlanLeft = numberFormat(_.get(item, 'monthlyPlanLeft'), primaryCurrency)
+        const planTotal = numberFormat(_.get(item, 'planTotal'), primaryCurrency)
+        const planLeft = numberFormat(_.get(item, 'planLeft'), primaryCurrency)
 
         return (
             <tr
@@ -405,8 +421,9 @@ const StatAgentGridList = enhance((props) => {
                 <td>{paymentOrdersSum}</td>
                 <td>{paymentTotalSum}</td>
 
-                <td>{monthlyPlanAmount}</td>
-                <td>{monthlyPlanLeft}</td>
+                <td>{planTotal}</td>
+                <td style={{border: 'none'}}>{planLeft}</td>
+                <td>{planLeft}</td>
             </tr>
         )
     })
@@ -480,7 +497,7 @@ const StatAgentGridList = enhance((props) => {
                                             <td colSpan={2}>Продажа</td>
                                             <td colSpan={2}>Возврат</td>
                                             <td colSpan={2}>Оплачено</td>
-                                            <td colSpan={2}>План</td>
+                                            <td colSpan={3}>План</td>
                                         </tr>
                                         <tr className={classes.subTitle}>
                                             {_.map(listHeader, (header, index) => {

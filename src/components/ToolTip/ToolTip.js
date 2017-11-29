@@ -12,7 +12,8 @@ const enhance = compose(
             display: 'flex',
             alignItems: 'center'
         },
-        alignRight: {
+        alignRightWrapper: {
+            extend: 'wrapper',
             justifyContent: 'flex-end'
         },
         tooltip: {
@@ -33,7 +34,7 @@ const ToolTip = enhance(({classes, text, children, position, type, disabled, ali
     const uniqId = _.uniqueId('tooltip_')
     return (
         <div disabled={disabled}>
-            <div data-tip data-for={uniqId} className={classes.wrapper + ' ' + alignRight ? classes.alignRight : ''}>
+            <div data-tip data-for={uniqId} className={alignRight ? classes.alignRightWrapper : classes.wrapper}>
                 {children}
             </div>
             {text && <ReactTooltip
