@@ -63,9 +63,8 @@ const enhance = compose(
         },
         wrapper: {
             padding: '0 30px',
-            height: '100%',
             '& .row': {
-                margin: '0 !important'
+                margin: '0'
             }
         },
         listRow: {
@@ -679,16 +678,7 @@ const ClientBalanceGridList = enhance((props) => {
                                 {summary}
                             </div>
                             {navigation}
-                            {listLoading
-                                ? <div className={classes.loader}>
-                                    <Loader size={0.75}/>
-                                </div>
-                                : (_.isEmpty(tableList) && !listLoading)
-                                    ? <div className={classes.emptyQuery}>
-                                        <div>По вашему запросу ничего не найдено</div>
-                                    </div>
-                                    : lists
-                            }
+                            {lists}
                         </div>
                     </div>
                 </Row>
