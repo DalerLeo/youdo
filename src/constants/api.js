@@ -1,4 +1,4 @@
-export const API_HOST = process.env.API_HOST
+export const API_HOST = 'apitest1.wienerdeming.com'
 export const API_ROOT = 'api'
 export const API_VERSION = 'v1'
 export const API_PROTOCOL = process.env.API_PROTOCOL ? process.env.API_PROTOCOL : 'https'

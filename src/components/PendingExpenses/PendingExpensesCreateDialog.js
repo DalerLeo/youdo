@@ -9,7 +9,7 @@ import Loader from '../Loader'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import numberFormat from '../../helpers/numberFormat'
 import toCamelCase from '../../helpers/toCamelCase'
-import {ExpensiveCategorySearchField, CashboxTypeSearchField, TextField, normalizeNumber} from '../ReduxForm'
+import {ExpensiveCategorySearchField, CashboxTypeSearchField, TextField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
@@ -138,7 +138,6 @@ const PendingExpensesCreateDialog = enhance((props) => {
                                         name="amount"
                                         className={classes.inputFieldCustom}
                                         component={TextField}
-                                        normalize={normalizeNumber}
                                         label="Cумма"/>
                                     <span style={{padding: '29px 10px 0'}}> {currencyName}</span>
                                 </div>
