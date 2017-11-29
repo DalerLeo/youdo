@@ -3,9 +3,7 @@ import moment from 'moment'
 
 export const orderChart = (data) => {
     const {...defaultData} = data
-    const lastDayOfMonth = _.get(defaultData, 'endDate')
-        ? moment(_.get(defaultData, 'endDate')).daysInMonth()
-        : moment().daysInMonth()
+    const lastDayOfMonth = moment().daysInMonth()
     const urlFromDate = _.get(defaultData, 'beginDate') || moment().format('YYYY-MM-01')
     const urlToDate = _.get(defaultData, 'endDate') || moment().format('YYYY-MM-' + lastDayOfMonth)
 
@@ -18,9 +16,7 @@ export const orderChart = (data) => {
 
 export const returnChart = (data) => {
     const {...defaultData} = data
-    const lastDayOfMonth = _.get(defaultData, 'endDate')
-        ? moment(_.get(defaultData, 'endDate')).daysInMonth()
-        : moment().daysInMonth()
+    const lastDayOfMonth = moment().daysInMonth()
     const urlFromDate = _.get(defaultData, 'beginDate') || moment().format('YYYY-MM-01')
     const urlToDate = _.get(defaultData, 'endDate') || moment().format('YYYY-MM-' + lastDayOfMonth)
 
@@ -32,25 +28,20 @@ export const returnChart = (data) => {
 
 export const agentsChart = (data) => {
     const {...defaultData} = data
-    const beginMonth = _.get(defaultData, 'beginDate') ? moment(_.get(defaultData, 'beginDate')).format('M') : moment().format('M')
-    const endMonth = _.get(defaultData, 'endDate') ? moment(_.get(defaultData, 'endDate')).format('M') : moment().format('M')
-    const beginYear = _.get(defaultData, 'beginDate') ? moment(_.get(defaultData, 'beginDate')).format('YYYY') : moment().format('YYYY')
-    const endYear = _.get(defaultData, 'endDate') ? moment(_.get(defaultData, 'endDate')).format('YYYY') : moment().format('YYYY')
+    const lastDayOfMonth = moment().daysInMonth()
+    const urlFromDate = _.get(defaultData, 'beginDate') || moment().format('YYYY-MM-01')
+    const urlToDate = _.get(defaultData, 'endDate') || moment().format('YYYY-MM-' + lastDayOfMonth)
 
     return {
         'page_size': '100',
-        'begin_month': beginMonth,
-        'end_month': endMonth,
-        'begin_year': beginYear,
-        'end_year': endYear
+        'begin_date': urlFromDate,
+        'end_date': urlToDate
     }
 }
 
 export const incomeFinance = (data) => {
     const {...defaultData} = data
-    const lastDayOfMonth = _.get(defaultData, 'endDate')
-        ? moment(_.get(defaultData, 'endDate')).daysInMonth()
-        : moment().daysInMonth()
+    const lastDayOfMonth = moment().daysInMonth()
     const urlFromDate = _.get(defaultData, 'beginDate') || moment().format('YYYY-MM-01')
     const urlToDate = _.get(defaultData, 'endDate') || moment().format('YYYY-MM-' + lastDayOfMonth)
 
@@ -63,9 +54,7 @@ export const incomeFinance = (data) => {
 
 export const expenseFinance = (data) => {
     const {...defaultData} = data
-    const lastDayOfMonth = _.get(defaultData, 'endDate')
-        ? moment(_.get(defaultData, 'endDate')).daysInMonth()
-        : moment().daysInMonth()
+    const lastDayOfMonth = moment().daysInMonth()
     const urlFromDate = _.get(defaultData, 'beginDate') || moment().format('YYYY-MM-01')
     const urlToDate = _.get(defaultData, 'endDate') || moment().format('YYYY-MM-' + lastDayOfMonth)
 
