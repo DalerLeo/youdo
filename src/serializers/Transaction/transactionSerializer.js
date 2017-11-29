@@ -2,6 +2,7 @@ import _ from 'lodash'
 import {orderingSnakeCase} from '../../helpers/serializer'
 import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
 import getConfig from '../../helpers/getConfig'
+import toBoolean from '../../helpers/toBoolean'
 import moment from 'moment'
 
 const ZERO = 0
@@ -122,13 +123,15 @@ export const listFilterSerializer = (data, cashbox) => {
     const ordering = _.get(data, 'ordering')
     const newCashbox = (cashbox && cashbox > ZERO) ? cashbox : null
     const type = _.get(defaultData, 'type')
+    const withDeleted = toBoolean(_.get(defaultData, 'with_deleted'))
     return {
         'division': _.get(defaultData, 'division'),
         'created_date_0': _.get(defaultData, 'fromDate'),
         'created_date_1': _.get(defaultData, 'toDate'),
         'type': type,
         'cashbox': newCashbox,
-        'with_deleted': 1,
+        'with_deleted': withDeleted ? '1' : null,
+        'own': 'True',
         'search': _.get(defaultData, 'search'),
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),

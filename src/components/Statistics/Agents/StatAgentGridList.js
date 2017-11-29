@@ -363,6 +363,7 @@ const StatAgentGridList = enhance((props) => {
     const listLoading = _.get(listData, 'listLoading')
     const salesSummary = numberFormat(_.get(_.find(_.get(listData, 'data'), {'id': _.get(detailData, 'id')}), 'ordersTotalPrice'))
     const divisionStatus = getConfig('DIVISIONS')
+    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
 
     const tableLeft = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
@@ -379,12 +380,14 @@ const StatAgentGridList = enhance((props) => {
     })
     const tableList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const actualSalesPrice = numberFormat(_.get(item, 'actualSalesSum'), 'UZS')
-        const actualSalesCount = numberFormat(_.get(item, 'actualSalesCount'), 'UZS')
-        const returnPrice = numberFormat(_.get(item, 'orderReturnsCount'), 'UZS')
-        const returnCount = numberFormat(_.get(item, 'orderReturnsSum'), 'UZS')
-        const salesPrice = numberFormat(_.get(item, 'salesIncome'), 'UZS')
-        const salesCount = numberFormat(_.get(item, 'salesCount'), 'UZS')
+        const salesTotalSum = numberFormat(_.get(item, 'salesTotalSum'), primaryCurrency)
+        const salesFactSum = numberFormat(_.get(item, 'salesFactSum'), primaryCurrency)
+        const returnOrdersSum = numberFormat(_.get(item, 'returnOrdersSum'), primaryCurrency)
+        const returnTotalSum = numberFormat(_.get(item, 'returnTotalSum'), primaryCurrency)
+        const paymentOrdersSum = numberFormat(_.get(item, 'paymentOrdersSum'), primaryCurrency)
+        const paymentTotalSum = numberFormat(_.get(item, 'paymentTotalSum'), primaryCurrency)
+        const monthlyPlanAmount = numberFormat(_.get(item, 'monthlyPlanAmount'), primaryCurrency)
+        const monthlyPlanLeft = numberFormat(_.get(item, 'monthlyPlanLeft'), primaryCurrency)
 
         return (
             <tr
@@ -393,17 +396,17 @@ const StatAgentGridList = enhance((props) => {
                 style={id === currentRow ? styleOnHover : {}}
                 onMouseEnter={() => { updateRow(id) }}
                 onMouseLeave={() => { updateRow(null) }}>
-                <td>{salesCount}</td>
-                <td>{salesPrice}</td>
+                <td>{salesTotalSum}</td>
+                <td>{salesFactSum}</td>
 
-                <td>{returnPrice}</td>
-                <td>{returnCount}</td>
+                <td>{returnOrdersSum}</td>
+                <td>{returnTotalSum}</td>
 
-                <td>{actualSalesCount}</td>
-                <td>{actualSalesPrice}</td>
+                <td>{paymentOrdersSum}</td>
+                <td>{paymentTotalSum}</td>
 
-                <td>{actualSalesCount}</td>
-                <td>{actualSalesPrice}</td>
+                <td>{monthlyPlanAmount}</td>
+                <td>{monthlyPlanLeft}</td>
             </tr>
         )
     })

@@ -1,7 +1,6 @@
 import _ from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
-import ReactDOM from 'react-dom'
 import {Row} from 'react-flexbox-grid'
 import * as ROUTES from '../../../constants/routes'
 import Container from '../../Container/index'
@@ -246,7 +245,7 @@ const enhance = compose(
     }),
     lifecycle({
         componentDidMount () {
-            const horizontalTable = ReactDOM.findDOMNode(this.refs.horizontalTable)
+            const horizontalTable = this.refs.horizontalTable
             horizontalScroll(horizontalTable)
         }
     })
