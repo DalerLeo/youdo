@@ -11,6 +11,7 @@ import {TextField, AgentSearchField} from '../../ReduxForm'
 import DateToDateField from '../../ReduxForm/Basic/DateToDateField'
 import StatSideMenu from '../StatSideMenu'
 import Loader from '../../Loader'
+import ToolTip from '../../ToolTip'
 import Pagination from '../../GridList/GridListNavPagination/index'
 import numberFormat from '../../../helpers/numberFormat'
 import horizontalScroll from '../../../helpers/horizontalScroll'
@@ -336,34 +337,40 @@ const listHeader = [
     // Sales
     {
         sorting: true,
-        title: 'Сумма'
+        title: 'Сумма',
+        tooltip: 'Общая сумма продаж'
     },
     {
         sorting: true,
-        title: 'Фактически'
+        title: 'Фактически',
+        tooltip: 'Сумма продаж с учетом возвратов'
     },
     // Returns
     {
         sorting: true,
-        title: 'По периоду'
+        tooltip: 'Сумма возвратов от продаж',
+        title: 'По заказам'
     },
     {
         sorting: true,
+        tooltip: 'Сумма возвратов за этот период',
         title: 'Общее'
     },
     // Payments
     {
         sorting: true,
-        title: 'По периоду'
+        title: 'По заказам',
+        tooltip: 'Сумма оплат с заказов'
     },
     {
         sorting: true,
-        title: 'Общее'
+        title: 'Общее',
+        tooltip: 'Общая сумма оплат'
     },
-    // Plan
+    // Debt
     {
         sorting: true,
-        title: 'По периоду'
+        title: 'По заказам'
     },
     {
         sorting: true,
@@ -536,10 +543,30 @@ const StatMarketGridList = enhance((props) => {
                                         </tr>
                                         <tr className={classes.subTitle}>
                                             {_.map(listHeader, (header, index) => {
-                                                if (!header.sorting) {
-                                                    return <td key={index}>{header.title}</td>
+                                                const ZERO = 0
+                                                const ONE = 1
+                                                const EVEN = 2
+                                                const isEven = (index + ONE) % EVEN === ZERO
+                                                const tooltip = _.get(header, 'tooltip')
+                                                const sorting = _.get(header, 'sorting')
+                                                const position = 'left'
+                                                if (tooltip) {
+                                                    return (
+                                                        <td key={index}>
+                                                            <ToolTip text={tooltip} position={position} alignRight={isEven}>{header.title}</ToolTip>
+                                                        </td>
+                                                    )
+                                                } else if (sorting) {
+                                                    if (tooltip) {
+                                                        return (
+                                                            <td key={index} style={{cursor: 'pointer'}}>
+                                                                <ToolTip text={tooltip} position={position} alignRight={isEven}>{header.title}</ToolTip>
+                                                            </td>
+                                                        )
+                                                    }
+                                                    return <td key={index} style={{cursor: 'pointer'}}>{header.title}</td>
                                                 }
-                                                return <td key={index} style={{cursor: 'pointer'}}>{header.title}</td>
+                                                return <td key={index}>{header.title}</td>
                                             })}
                                         </tr>
                                         {tableList}

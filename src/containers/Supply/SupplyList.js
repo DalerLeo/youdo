@@ -519,10 +519,10 @@ const enhance = compose(
         },
         handleSubmitSyncConfirmDialog: props => () => {
             const {setOpenSyncConfirmDialog, params, dispatch} = props
-            const id = _.get(params, 'supplyId')
-            return dispatch(supplySyncAction(Number(id)))
+            const id = _.toInteger(_.get(params, 'supplyId'))
+            return dispatch(supplySyncAction(id))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Cинхронизирован'}))
+                    return dispatch(openSnackbarAction({message: 'Успешно синхронизирован'}))
                 })
                 .then(() => {
                     return dispatch(supplyItemFetchAction(id))

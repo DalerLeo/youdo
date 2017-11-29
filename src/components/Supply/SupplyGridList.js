@@ -114,7 +114,7 @@ const enhance = compose(
         },
         begin: {
             extend: 'dot',
-            backgroundColor: '#f0ad4e'
+            backgroundColor: '#64b5f6'
         },
         error: {
             extend: 'dot',
@@ -122,7 +122,7 @@ const enhance = compose(
         },
         waiting: {
             extend: 'dot',
-            backgroundColor: '#64b5f6'
+            backgroundColor: '#f0ad4e'
         },
         listRow: {
             position: 'relative',
@@ -249,7 +249,7 @@ const SupplyGridList = enhance((props) => {
                 <Col xs={1} style={{textAlign: 'right'}}>{totalCost}</Col>
                 <Col xs={1}>{status === PENDING ? (<span><i className={classes.waiting}/> ожидает</span>)
                     : ((status === IN_PROGRESS) ? (<span><i className={classes.begin}/> начался</span>)
-                        : (status === COMPLETED) ? (<span><i className={classes.success}/> принято</span>)
+                        : (status === COMPLETED) ? (<span><i className={classes.success}/> принят</span>)
                             : (<span><i className={classes.error}/> отменен</span>))}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>{acceptedCost}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>{defectedCost}</Col>

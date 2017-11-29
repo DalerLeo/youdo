@@ -54,8 +54,7 @@ const enhance = compose(
           overflowY: 'auto',
           padding: '20px 30px',
           '& .row': {
-              marginLeft: '0',
-              marginRight: '0'
+              margin: '0'
           }
       },
       loader: {
@@ -96,8 +95,12 @@ const enhance = compose(
               }
           },
           '& .dottedList': {
-              padding: '5px 0',
+              margin: '0 -30px !important',
+              padding: '5px 30px',
               minHeight: '50px',
+              '&:hover': {
+                  background: '#f2f5f8'
+              },
               '&:last-child:after': {
                   content: '""',
                   backgroundImage: 'none'

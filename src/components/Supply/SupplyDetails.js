@@ -257,6 +257,19 @@ const SupplyDetails = enhance((props) => {
     const COMPLETED = 2
     const CANCELLED = 4
     const status = _.toInteger(_.get(data, 'status'))
+    let statusOutput = null
+    switch (status) {
+        case PENDING: statusOutput = <span className={classes.yellow}>Ожидает</span>
+            break
+        case IN_PROGRESS: statusOutput = <span className={classes.blue}>В процессе</span>
+            break
+        case COMPLETED: statusOutput = <span className={classes.green}>Завершен</span>
+            break
+        case CANCELLED: statusOutput = <span className={classes.red}>Отменен</span>
+            break
+        default: statusOutput = null
+
+    }
 
     const comment = _.get(data, 'comment') || 'Не указано'
     const totalPaid = _.toNumber(_.get(data, 'totalPaid'))
@@ -333,7 +346,7 @@ const SupplyDetails = enhance((props) => {
                             <Expense/>
                         </IconButton>
                     </Tooltip>
-                    <Tooltip position="bottom" text="Синхронизировать колво. товаров с приёмкой">
+                    <Tooltip position="bottom" text="Синхронизировать кол-во товаров с приёмкой">
                         <IconButton
                             iconStyle={iconStyle.icon}
                             disabled={!(status === COMPLETED)}
@@ -487,6 +500,10 @@ const SupplyDetails = enhance((props) => {
                         <div className={classes.subtitle}>Исполнение</div>
                         <div className={classes.dataBox}>
                             <ul>
+                                <li>
+                                    <span>Статус:</span>
+                                    <span>{statusOutput}</span>
+                                </li>
                                 <li>
                                     <span>Начало приемки:</span>
                                     <span>{acceptedTime}</span>

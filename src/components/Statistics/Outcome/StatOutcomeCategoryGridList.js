@@ -42,7 +42,6 @@ const enhance = compose(
         },
         wrapper: {
             padding: '20px 30px',
-            height: 'calc(100% - 40px)',
             '& > div:nth-child(2)': {
                 marginTop: '10px',
                 borderTop: '1px #efefef solid',
@@ -53,9 +52,7 @@ const enhance = compose(
             }
         },
         tableWrapper: {
-            height: 'calc(100% - 118px)',
-            overflowY: 'auto',
-            overflowX: 'hidden',
+            margin: '0 -30px',
             '& .row': {
                 '&:after': {
                     bottom: '-1px'
@@ -67,7 +64,10 @@ const enhance = compose(
                 }
             },
             '& .dottedList': {
-                padding: '0',
+                padding: '0 30px',
+                '&:hover': {
+                    background: '#f2f5f8'
+                },
                 '&:last-child:after': {
                     content: '""',
                     backgroundImage: 'none'
@@ -141,7 +141,7 @@ const enhance = compose(
         rightPanel: {
             flexBasis: 'calc(100% - 250px)',
             maxWidth: 'calc(100% - 250px)',
-            overflow: 'hidden'
+            overflowY: 'auto'
         },
         searchButton: {
             marginLeft: '-10px !important',

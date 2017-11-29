@@ -14,7 +14,8 @@ import {hashHistory} from 'react-router'
 import {Row} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
 import ordering from '../../helpers/ordering'
-import {compose, withState} from 'recompose'
+import horizontalScroll from '../../helpers/horizontalScroll'
+import {compose, withState, lifecycle} from 'recompose'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
 import IconButton from 'material-ui/IconButton'
@@ -114,14 +115,24 @@ const enhance = compose(
         tableRow: {
             '& td': {
                 borderRight: '1px #efefef solid',
-                textAlign: 'left'
+                textAlign: 'left',
+                '&:first-child': {
+                    width: '200px !important'
+                }
             },
             '&:nth-child(odd)': {
-                backgroundColor: '#f4f4f4'
+                backgroundColor: '#f9f9f9'
             }
         },
         tableWrapper: {
             display: 'flex',
+            overflow: 'hidden',
+            marginLeft: '-30px',
+            'padding-left': ({stat}) => stat ? '0' : '30px',
+            'margin-right': ({stat}) => stat ? '-30px' : 'unset'
+        },
+        tableWrapperLoading: {
+            display: 'block',
             overflow: 'hidden',
             marginLeft: '-30px',
             'padding-left': ({stat}) => stat ? '0' : '30px',
@@ -139,7 +150,7 @@ const enhance = compose(
                 },
                 position: 'relative',
                 '&:nth-child(odd)': {
-                    backgroundColor: '#f4f4f4'
+                    backgroundColor: '#f9f9f9'
                 },
                 height: '40px',
                 '&:nth-child(2)': {
@@ -170,7 +181,6 @@ const enhance = compose(
             width: '120px'
         },
         buttonsWrapper: {
-            opacity: '0',
             padding: '0 8px',
             display: 'flex !important',
             justifyContent: 'flex-end',
@@ -248,7 +258,8 @@ const enhance = compose(
         emptyQuery: {
             background: 'url(' + NotFound + ') no-repeat center center',
             backgroundSize: '200px',
-            padding: '200px 0 0',
+            borderTop: '1px #efefef solid',
+            padding: '200px 0 20px',
             textAlign: 'center',
             fontSize: '13px',
             color: '#666',
@@ -304,7 +315,13 @@ const enhance = compose(
         enableReinitialize: true
     }),
     withState('currentItem', 'setItem', null),
-    withState('currentRow', 'setCurrentRow', null)
+    withState('currentRow', 'setCurrentRow', null),
+    lifecycle({
+        componentDidMount () {
+            const mainTable = this.refs.mainTable
+            horizontalScroll(mainTable)
+        }
+    })
 )
 
 const searchIconStyle = {
@@ -387,7 +404,8 @@ const ClientBalanceGridList = enhance((props) => {
                         style={id === currentRow ? styleOnHover : {}}
                         onMouseEnter={() => setCurrentRow(id)}
                         onMouseLeave={() => setCurrentRow(null)}><span>{name}</span>
-                        {!stat && isSuperUser && <div key={id} className={classes.buttonsWrapper}>
+                        {!stat && isSuperUser &&
+                        id === currentRow && <div key={id} className={classes.buttonsWrapper}>
                             <Tooltip position="bottom" text="Списать">
                                 <IconButton
                                     disableTouchRipple={true}
@@ -507,13 +525,20 @@ const ClientBalanceGridList = enhance((props) => {
         </table>
     )
 
+    const emptyData = _.isEmpty(_.get(listData, 'data'))
     const lists = (
-        <div className={classes.tableWrapper} style={!stat ? {marginBottom: 30} : {}}>
-            {clients}
-            <div className={classes.mainTableWrapper} style={stat
-                ? {width: 'calc(100% - 350px)'}
-                : {width: 'calc(100% - 350px)'}}>
-                {tableList}
+        <div className={(listLoading || emptyData) ? classes.tableWrapperLoading : classes.tableWrapper} style={!stat ? {marginBottom: 30} : {}}>
+            {listLoading &&
+            <div className={classes.loader}>
+                <Loader size={0.75}/>
+            </div>}
+            {!listLoading && emptyData &&
+            <div className={classes.emptyQuery}>
+                <div>По вашему запросу ничего не найдено</div>
+            </div>}
+            {!listLoading && !emptyData && clients}
+            <div ref="mainTable" className={classes.mainTableWrapper} style={{width: 'calc(100% - 350px)'}}>
+                {!listLoading && !emptyData && tableList}
             </div>
         </div>
     )
@@ -662,9 +687,7 @@ const ClientBalanceGridList = enhance((props) => {
                                     ? <div className={classes.emptyQuery}>
                                         <div>По вашему запросу ничего не найдено</div>
                                     </div>
-                                    : <div>
-                                        {lists}
-                                    </div>
+                                    : lists
                             }
                         </div>
                     </div>
@@ -675,15 +698,7 @@ const ClientBalanceGridList = enhance((props) => {
             {!stat && <Paper style={{marginBottom: '15px', padding: '10px 30px'}}>{summary}</Paper>}
             {!stat && <Paper>
                 {navigation}
-                {listLoading
-                    ? <div className={classes.loader}>
-                        <Loader size={0.75}/>
-                    </div>
-                    : (_.isEmpty(tableList) && !listLoading)
-                        ? <div className={classes.emptyQuery}>
-                            <div>По вашему запросу ничего не найдено</div>
-                        </div>
-                        : lists}
+                {lists}
             </Paper>}
 
             <ClientBalanceInfoDialog
