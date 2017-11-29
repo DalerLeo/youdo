@@ -51,11 +51,14 @@ const enhance = compose(
                 }
             },
             '& .dottedList': {
-                padding: '5px 0',
+                margin: '0 -30px !important',
+                padding: '5px 30px',
                 minHeight: '50px',
+                '&:hover': {
+                    background: '#f2f5f8'
+                },
                 '&:last-child:after': {
-                    content: '""',
-                    backgroundImage: 'none'
+                    display: 'none'
                 },
                 '& a': {
                     fontWeight: '600'

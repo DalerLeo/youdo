@@ -299,17 +299,19 @@ const listHeader = [
     // Sales
     {
         sorting: true,
-        title: 'Сумма'
+        title: 'Сумма',
+        tooltip: 'Общая сумма продаж'
     },
     {
         sorting: true,
-        title: 'Фактически'
+        title: 'Фактически',
+        tooltip: 'Сумма продаж с учетом возвратов'
     },
     // Returns
     {
         sorting: true,
-        tooltip: 'Сумма возвратов заказов за этот период',
-        title: 'По периоду'
+        tooltip: 'Сумма возвратов от продаж',
+        title: 'По заказам'
     },
     {
         sorting: true,
@@ -319,11 +321,13 @@ const listHeader = [
     // Payments
     {
         sorting: true,
-        title: 'По периоду'
+        title: 'По заказам',
+        tooltip: 'Сумма оплат с заказов'
     },
     {
         sorting: true,
-        title: 'Общее'
+        title: 'Общее',
+        tooltip: 'Общая сумма оплат'
     },
     // Plan
     {

@@ -54,7 +54,7 @@ const enhance = compose(
             padding: '20px 30px',
             height: 'calc(100% - 40px)',
             '& .row': {
-                margin: '0 !important'
+                margin: '0'
             }
         },
         tableWrapper: {
@@ -76,7 +76,8 @@ const enhance = compose(
                 }
             },
             '& .dottedList': {
-                padding: '0',
+                padding: '0 30px',
+                margin: '0 -30px',
                 '&:hover': {
                     backgroundColor: '#f2f5f8'
                 },

@@ -558,7 +558,14 @@ const StatProductMoveGridList = enhance((props) => {
                                                     if (!header.sorting) {
                                                         return <td>{header.title}</td>
                                                     }
-                                                    return <td key={index} style={{cursor: 'pointer'}} onClick={ () => ordering(filter, header.name)}>{header.title}{icon}</td>
+                                                    return (
+                                                        <td
+                                                            key={index}
+                                                            style={{cursor: 'pointer'}}
+                                                            onClick={() => ordering(filter, header.name, props.pathname)}>
+                                                            {header.title}{icon}
+                                                        </td>
+                                                    )
                                                 })}
                                             </tr>
                                             {tableList}
