@@ -488,7 +488,7 @@ const OrderListProductField = enhance((props) => {
                             onTouchTap={() => dispatch({open: !state.open})}
                         />}
                         {!editOnlyCost && (paymentType && priceList && formCurerncy) && handleOpenAddProduct && <FlatButton
-                            label="добавить продукты"
+                            label="добавить из списка"
                             labelStyle={{fontSize: '13px', color: '#12aaeb'}}
                             className={classes.span}
                             onTouchTap={handleOpenAddProduct}
