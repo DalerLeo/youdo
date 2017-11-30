@@ -670,10 +670,11 @@ const enhance = compose(
                 const id = _.toInteger(index)
                 const product = getProductData(id)
                 const amount = _.get(item, 'amount')
+                const price = _.get(item, 'price')
                 if (amount) {
                     newProductsArray.push({
                         amount: _.get(item, 'amount'),
-                        cost: numberWithoutSpaces(_.get(item, 'price')),
+                        cost: numberWithoutSpaces(price),
                         customPrice: _.get(product, 'customPrice'),
                         price: _.get(item, 'price'),
                         product: {
@@ -820,10 +821,11 @@ const enhance = compose(
                 const id = _.toInteger(index)
                 const product = getProductData(id)
                 const amount = _.get(item, 'amount')
+                const price = _.get(item, 'price')
                 if (amount) {
                     newProductsArray.push({
                         amount: _.get(item, 'amount'),
-                        cost: numberWithoutSpaces(_.get(item, 'price')),
+                        cost: numberWithoutSpaces(price),
                         customPrice: _.get(product, 'customPrice'),
                         price: {
                             cashPrice: _.get(product, 'cashPrice'),
@@ -1247,9 +1249,9 @@ const OrderList = enhance((props) => {
             _.map(_.get(editProducts, 'results'), (item) => {
                 const id = _.get(item, 'id')
                 const price = paymentType === 'cash'
-                    ? numberFormat(_.toNumber(_.get(item, 'cashPrice')))
+                    ? _.toNumber(_.get(item, 'cashPrice'))
                     : paymentType === 'bank'
-                        ? numberFormat(_.toNumber(_.get(item, 'transferPrice')))
+                        ? _.toNumber(_.get(item, 'transferPrice'))
                         : ''
                 productValue[id] = {price: price}
             })

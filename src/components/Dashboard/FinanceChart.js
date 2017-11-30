@@ -98,6 +98,7 @@ const FinanceChart = enhance((props) => {
             shadow: true,
             useHTML: true,
             crosshairs: true,
+            headerFormat: '<b>{point.x}</b><br/>',
             pointFormat:
             '<div class="diagramTooltip">' +
             '{series.name}: {point.y}' +
