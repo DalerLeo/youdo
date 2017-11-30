@@ -9,7 +9,7 @@ import FlatButton from 'material-ui/FlatButton'
 import Loader from '../Loader'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, CashboxSearchField, CashboxTypeCurrencyField, normalizeNumber} from '../ReduxForm'
+import {TextField, CashboxTypeCurrencyField, normalizeNumber} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
@@ -20,7 +20,6 @@ import CashboxCurrencyField from '../ReduxForm/CashboxCurrencyField'
 import PendingPaymentRadioButton from '../ReduxForm/PendingPaymentRadioButton'
 import getConfig from '../../helpers/getConfig'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
-import CashboxTypeCurrencyField from "../ReduxForm/CashboxTypeCurrencyField";
 
 export const PENDING_PAYMENTS_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const ORDERING_CURRENCY = 1
@@ -123,7 +122,6 @@ const PendingPaymentsCreateDialog = enhance((props) => {
     const currentRate = (currencyRate === INDIVIDUAL) ? customRate : _.get(convert, ['data', 'amount'])
     const convertAmount = convertCurrency(amountValue, currentRate)
     const createdDate = dateTimeFormat(_.get(detailData, ['data', 'createdDate']), true)
-    console.log(detailData, 'dateildata')
     return (
         <Dialog
             modal={true}
@@ -159,21 +157,14 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                                 </div>
                             </div>
                             <div className={classes.cashbox}>
-                                {(paymentType === 'bank')
-                                ? <Field
+                                {!_.get(detailData, 'detailLoading') && <Field
                                     name="cashbox"
                                     className={classes.inputFieldCustom}
                                     component={CashboxTypeCurrencyField}
-                                    // type={type}
-                                    // currency={currency}
+                                    currency={_.get(detailData, ['data', 'currency', 'id'])}
+                                    paymentType={_.get(detailData, ['data', 'paymentType'])}
                                     label="Касса получатель"
-                                    fullWidth={true}
-                                />
-                                : <Field
-                                        name="cashbox"
-                                        className={classes.inputFieldCustom}
-                                        component={CashboxSearchField}
-                                        label="Касса получатель"/>}
+                                    fullWidth={true}/>}
                                 <div className={classes.flex} style={{justifyContent: 'space-between'}}>
                                     <div className={classes.half}>
                                         <Field
