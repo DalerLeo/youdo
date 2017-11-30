@@ -232,6 +232,7 @@ const enhance = compose(
             }
         },
         leftTable: {
+            color: '#666',
             display: 'table',
             marginLeft: '-30px',
             width: '100%',
@@ -249,6 +250,7 @@ const enhance = compose(
                     height: '81px',
                     verticalAlign: 'bottom',
                     '& span': {
+                        fontWeight: '600',
                         verticalAlign: 'bottom',
                         padding: '15px 30px',
                         borderTop: '1px #efefef solid',

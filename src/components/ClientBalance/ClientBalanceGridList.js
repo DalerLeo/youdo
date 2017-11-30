@@ -138,6 +138,7 @@ const enhance = compose(
             'margin-right': ({stat}) => stat ? '-30px' : 'unset'
         },
         leftTable: {
+            color: '#666',
             zIndex: '4',
             width: '350px',
             boxShadow: '5px 0 8px -3px #ccc',
