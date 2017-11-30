@@ -132,6 +132,7 @@ const ActivityVisit = enhance((props) => {
         return _.get(o, 'type')
     })
     const visitlistLoading = _.get(visitlistData, 'visitListLoading')
+    const isEmpty = _.isEmpty(_.get(visitlistData, 'data')) && !visitlistLoading
     const countSummary = _.get(summary, 'count')
     const visitList = _.map(_.get(visitlistData, 'data'), (item) => {
         const id = _.get(item, ['visit', 'id'])
@@ -151,8 +152,8 @@ const ActivityVisit = enhance((props) => {
         )
     })
 
-    if (_.isEmpty(visitList)) {
-        return false
+    if (isEmpty) {
+        return null
     }
 
     return (

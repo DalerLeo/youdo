@@ -148,6 +148,7 @@ const ActivityPayment = enhance((props) => {
         return _.get(o, 'type')
     })
     const paymentlistLoading = _.get(paymentlistData, 'paymentListLoading')
+    const isEmpty = _.isEmpty(_.get(paymentlistData, 'data')) && !paymentlistLoading
     const countSummary = _.get(summary, 'count')
     const cashSummary = numberFormat(_.get(summary, 'cash'), currentCurrency)
     const bankSummary = numberFormat(_.get(summary, 'bank'), currentCurrency)
@@ -170,8 +171,8 @@ const ActivityPayment = enhance((props) => {
         )
     })
 
-    if (_.isEmpty(paymentList)) {
-        return false
+    if (isEmpty) {
+        return null
     }
 
     return (

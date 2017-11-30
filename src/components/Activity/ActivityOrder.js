@@ -64,6 +64,7 @@ const enhance = compose(
             width: '300px',
             cursor: 'pointer',
             transition: 'box-shadow 125ms ease-out !important',
+            position: 'relative',
             '&:hover': {
                 boxShadow: 'rgba(0, 0, 0, 0.16) 0px 3px 10px, rgba(0, 0, 0, 0.23) 0px 3px 10px !important'
             }
@@ -150,11 +151,12 @@ const ActivityOrder = enhance((props) => {
         return _.get(o, 'type')
     })
     const orderlistLoading = _.get(orderlistData, 'orderListLoading')
+    const isEmpty = _.isEmpty(_.get(orderlistData, 'data')) && !orderlistLoading
     const countSummary = _.get(summary, 'count')
     const cashSummary = numberFormat(_.get(summary, 'cash'), currentCurrency)
     const bankSummary = numberFormat(_.get(summary, 'bank'), currentCurrency)
     const tooltipText = '<div>Сумма (нал): ' + cashSummary + '</div> <div>Сумма (пер): ' + bankSummary + '</div>'
-    const orderList = _.map(_.get(orderlistData, 'data'), (item) => {
+    const orderList = _.map(_.get(orderlistData, 'data'), (item, index) => {
         const id = _.get(item, ['order', 'id'])
         const name = _.get(item, ['order', 'user', 'firstName']) + ' ' + _.get(item, ['order', 'user', 'secondName'])
         const createdDate = dateTimeFormat(_.get(item, ['order', 'createdDate']), true)
@@ -163,7 +165,11 @@ const ActivityOrder = enhance((props) => {
         const paymentType = paymentTypeFormat(_.get(item, ['order', 'paymentType']))
 
         return (
-            <Paper key={id} zDepth={1} className={classes.tube} onClick={() => { orderDetails.handleOpenOrderDetails(id) }}>
+            <Paper
+                key={id}
+                zDepth={1}
+                className={classes.tube}
+                onClick={() => { orderDetails.handleOpenOrderDetails(id) }}>
                 <div className={classes.tubeTitle}>
                     <span>{name}</span>
                     <div className={classes.statusGreen}> </div>
@@ -175,7 +181,7 @@ const ActivityOrder = enhance((props) => {
         )
     })
 
-    if (_.isEmpty(orderList)) {
+    if (isEmpty) {
         return null
     }
 

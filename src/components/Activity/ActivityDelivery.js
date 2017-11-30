@@ -134,6 +134,7 @@ const ActivityDelivery = enhance((props) => {
         return _.get(o, 'type')
     })
     const deliverylistLoading = _.get(deliverylistData, 'deliveryListLoading')
+    const isEmpty = _.isEmpty(_.get(deliverylistData, 'data')) && !deliverylistLoading
     const summaryCount = _.get(summary, 'count')
     const deliveryList = _.map(_.get(deliverylistData, 'data'), (item) => {
         const id = _.get(item, ['order', 'id'])
@@ -153,7 +154,7 @@ const ActivityDelivery = enhance((props) => {
         )
     })
 
-    if (_.isEmpty(deliveryList)) {
+    if (isEmpty) {
         return null
     }
 
