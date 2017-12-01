@@ -129,7 +129,6 @@ const enhance = compose(
         },
         handleCloseConfirmUser: props => () => {
             const {location: {pathname}, filter} = props
-            console.warn('asdasdasdasd')
             hashHistory.push({
                 pathname,
                 query: filter.getParams({[NOTIFICATION_CONFIRM_USER_OPEN]: false, id: null})

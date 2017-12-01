@@ -74,7 +74,7 @@ const enhance = compose(
 
     withReducer('state', 'dispatch', (state, action) => {
         return {...state, ...action}
-    }, {dataSource: [], text: '', loading: false}),
+    }, {dataSource: [], text: '', loading: false, open: false}),
 
     withHandlers({
         valueRenderer: props => (option) => {
@@ -93,8 +93,13 @@ const enhance = compose(
         props.getItem(_.get(props, ['input', 'value', 'value']))
     }),
     withPropsOnChange((props, nextProps) => {
-        return _.get(props, ['state', 'text']) !== _.get(nextProps, ['state', 'text'])
-    }, (props) => _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)),
+        return (_.get(props, ['state', 'text']) !== _.get(nextProps, ['state', 'text']) ||
+            _.get(props, ['state', 'open']) !== _.get(nextProps, ['state', 'open'])) &&
+            _.get(nextProps, ['state', 'open'])
+    }, (props) => {
+        props.state.open && _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)
+    }),
+
     withPropsOnChange((props, nextProps) => {
         return !_.isEmpty(_.get(nextProps, ['state', 'dataSource'])) && _.get(nextProps, ['input', 'value']) &&
             _.get(props, ['state', 'loading']) !== _.get(nextProps, ['state', 'loading'])
@@ -137,8 +142,10 @@ const SearchField = enhance((props) => {
                 valueRenderer={valueRenderer}
                 labelKey={'text'}
                 disabled={disabled}
+                onOpen={() => { dispatch({open: true}) }}
                 closeOnSelect={true}
                 filterOptions={options => options}
+                loadingPlaceholder="Загрузка..."
             />
         </div>
     )
