@@ -126,7 +126,8 @@ const SearchField = enhance((props) => {
         dispatch,
         valueRenderer,
         input,
-        disabled
+        disabled,
+        clearValue
     } = props
     return (
         <div className={classes.wrapper}>
@@ -145,6 +146,7 @@ const SearchField = enhance((props) => {
                 onOpen={() => { dispatch({open: true}) }}
                 closeOnSelect={true}
                 filterOptions={options => options}
+                clearable={clearValue}
                 loadingPlaceholder="Загрузка..."
             />
         </div>
