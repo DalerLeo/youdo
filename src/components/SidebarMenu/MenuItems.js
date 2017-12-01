@@ -45,8 +45,8 @@ export const MenuItems = [
         icon: (<Markets/>),
         url: ROUTES.SHOP_LIST_URL,
         childs: [
-            {name: 'Клиенты', url: ROUTES.CLIENT_LIST_URL, permission: 'frontend_clients'},
-            {name: 'Магазины', url: ROUTES.SHOP_LIST_URL, permission: 'frontend_shops'}
+            {name: 'Магазины', url: ROUTES.SHOP_LIST_URL, permission: 'frontend_shops'},
+            {name: 'Клиенты', url: ROUTES.CLIENT_LIST_URL, permission: 'frontend_clients'}
         ]
     },
     {

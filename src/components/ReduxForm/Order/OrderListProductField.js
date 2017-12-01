@@ -358,20 +358,22 @@ const enhance = compose(
             const confirmDialog = ReactDOM.findDOMNode(this.refs.confirmDialog)
             const confirmDialogPriceList = ReactDOM.findDOMNode(this.refs.confirmDialogPriceList)
             const initialProducts = !_.isEmpty(props.initialProducts)
+            const canChangeAnyPrice = props.canChangeAnyPrice
+            const isAdmin = props.isAdmin
             if (props.paymentType !== initialPaymentType) {
-                if (initialPaymentType && initialProducts) {
+                if (initialPaymentType && initialProducts && (isAdmin || canChangeAnyPrice)) {
                     confirmDialog.style.zIndex = '10'
                 }
             }
             const formPriceList = _.get(props, ['priceList', 'value'])
             const formCurrencyValue = _.get(props, ['formCurerncy', 'value'])
             if (formPriceList !== initialPriceList && formPriceList) {
-                if (initialPriceList && initialProducts) {
+                if (initialPriceList && initialProducts && (isAdmin || canChangeAnyPrice)) {
                     confirmDialogPriceList.style.zIndex = '10'
                 }
             }
             if (formCurrencyValue !== initialCurrency && formCurrencyValue) {
-                if (initialCurrency && initialProducts) {
+                if (initialCurrency && initialProducts && (isAdmin || canChangeAnyPrice)) {
                     confirmDialogPriceList.style.zIndex = '10'
                 }
             }

@@ -185,6 +185,7 @@ const enhance = compose(
             display: 'flex',
             alignItems: 'baseline',
             '& > span': {
+                whiteSpace: 'nowrap',
                 marginLeft: '10px'
             }
         },
@@ -298,7 +299,8 @@ const OrderAddProductsDialog = enhance((props) => {
         isSuperUser,
         withoutCustomPrice,
         fromAllBalances,
-        currency
+        currency,
+        canChangeAnyPrice
     } = props
     const onSubmit = handleSubmit(props.onSubmit)
     const primaryCurrency = currency
@@ -309,7 +311,7 @@ const OrderAddProductsDialog = enhance((props) => {
         const balance = _.get(item, 'balance')
         const available = numberFormat(_.get(item, 'available'))
         const defects = numberFormat(_.get(item, 'defects'))
-        const canChangePrice = (isSuperUser || withoutCustomPrice) || _.get(item, 'customPrice')
+        const canChangePrice = (isSuperUser || withoutCustomPrice) || canChangeAnyPrice
         const measurement = _.get(item, ['measurement', 'name'])
         return (
             <Row key={id} className="dottedList">
@@ -434,7 +436,8 @@ const OrderAddProductsDialog = enhance((props) => {
 })
 OrderAddProductsDialog.defaultProps = {
     withoutCustomPrice: false,
-    fromAllBalances: false
+    fromAllBalances: false,
+    canChangeAnyPrice: false
 }
 OrderAddProductsDialog.propTyeps = {
     products: PropTypes.array,

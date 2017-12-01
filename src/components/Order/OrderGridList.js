@@ -555,6 +555,7 @@ const OrderGridList = enhance((props) => {
                 clientId={clientId}
                 isSuperUser={isSuperUser}
                 handleOpenAddProduct={addProductDialog.handleOpenAddProduct}
+                canChangeAnyPrice={canChangeAnyPrice}
             />}
 
             {updateDialog.openUpdateDialog && <OrderCreateDialog
@@ -607,6 +608,7 @@ const OrderGridList = enhance((props) => {
                 handleCloseAddProductConfirm={addProductDialog.handleCloseAddProductConfirm}
                 handleSubmitAddProductConfirm={addProductDialog.handleSubmitAddProductConfirm}
                 isSuperUser={isSuperUser}
+                canChangeAnyPrice={canChangeAnyPrice}
             />
             }
 
