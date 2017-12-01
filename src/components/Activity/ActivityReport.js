@@ -133,6 +133,7 @@ const ActivityReport = enhance((props) => {
         return _.get(o, 'type')
     })
     const reportlistLoading = _.get(reportlistData, 'reportListLoading')
+    const isEmpty = _.isEmpty(_.get(reportlistData, 'data')) && !reportlistLoading
     const summaryCount = _.get(summary, 'count')
     const reportList = _.map(_.get(reportlistData, 'data'), (item) => {
         const id = _.get(item, ['report', 'id'])
@@ -164,8 +165,8 @@ const ActivityReport = enhance((props) => {
         )
     })
 
-    if (_.isEmpty(reportList)) {
-        return false
+    if (isEmpty) {
+        return null
     }
 
     return (

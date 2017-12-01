@@ -6,7 +6,7 @@ import Container from '../Container'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import Loader from '../Loader'
+import LinearProgress from '../LinearProgress'
 import Paper from 'material-ui/Paper'
 import NotFound from '../Images/not-found.png'
 import ActivityCalendar from './ActivityCalendar'
@@ -35,20 +35,74 @@ const enhance = compose(
         },
         tubeWrapper: {
             padding: '0 30px 25px',
-            marginTop: '10px',
             height: 'calc(100vh - 145px)'
+        },
+        linearProgress: {
+            position: 'absolute',
+            margin: '0 -30px',
+            left: '0',
+            right: '0',
+            '& > div': {
+                background: 'transparent',
+                height: '3px'
+            }
         },
         horizontal: {
             display: 'flex',
             position: 'relative',
-            height: 'calc(100% + 16px)',
+            height: 'calc(100% + 26px)',
             margin: '0 -30px',
             padding: '0 30px',
             overflowX: 'auto',
-            zIndex: '2'
+            zIndex: '2',
+            '& > div': {
+                minWidth: '330px',
+                '& > div:last-child': {
+                    position: 'relative',
+                    animation: 'tubeFadeIn 500ms ease'
+                }
+            }
         },
         block: {
             paddingRight: '20px'
+        },
+        tubeLoaderWrapper: {
+            paddingTop: '54px'
+        },
+        tubeLoader: {
+            background: '#fefefe',
+            borderRadius: '2px',
+            width: '300px',
+            height: '112px',
+            marginBottom: '10px',
+            position: 'relative',
+            overflow: 'hidden',
+            animation: 'unset !important',
+            '& > div': {
+                animation: 'tubeAnimation 1.25s ease infinite',
+                background: 'linear-gradient(to right, #ffffff 0%, #f2f5f8 50%, #ffffff 100%)',
+                opacity: '0.25',
+                transition: 'all 300ms ease',
+                position: 'absolute',
+                filter: 'blur(3px)',
+                left: '0',
+                top: '0',
+                bottom: '0',
+                width: '60px',
+                fallbacks: [
+                    {background: '-moz-linear-gradient(left, #ffffff 0%, #f2f5f8 50%, #ffffff 100%)'},
+                    {background: '-webkit-linear-gradient(left, #ffffff 0%, #f2f5f8 50%, #ffffff 100%)'}
+                ]
+            }
+        },
+        '@keyframes tubeAnimation': {
+            '0%': {left: '0', opacity: '0.25'},
+            '50%': {opacity: '1'},
+            '100%': {left: '100%', opacity: '0.25'}
+        },
+        '@keyframes tubeFadeIn': {
+            '0%': {top: '50px', opacity: '0'},
+            '100%': {top: '0', opacity: '1'}
         },
         horizontalScroll: {
             position: 'fixed',
@@ -92,7 +146,8 @@ const ActivityWrapper = enhance((props) => {
         paymentlistData,
         deliverylistData,
         calendar,
-        handleClickDay
+        handleClickDay,
+        loading
     } = props
 
     const orderlistLoading = _.get(orderlistData, 'orderListLoading')
@@ -109,44 +164,57 @@ const ActivityWrapper = enhance((props) => {
     const paymentListEmpty = _.isEmpty(_.get(paymentlistData, 'data'))
     const deliveryListEmpty = _.isEmpty(_.get(deliverylistData, 'data'))
 
-    const megaLoading = (orderlistLoading && visitlistLoading && reportlistLoading && returnlistLoading && paymentlistLoading && deliverylistLoading)
     const emptyQuery = (orderListEmpty && visitListEmpty && reportListEmpty && returnListEmpty && paymentListEmpty && deliveryListEmpty)
+    const tubeLoader = null
 
     const tubeWrapper = (
         <div className={classes.tubeWrapper}>
+            {loading && <div className={classes.linearProgress}><LinearProgress/></div>}
             <div className={classes.horizontal}>
-                <ActivityOrder
-                    handleLoadMoreItems={_.get(orderlistData, 'handleLoadMoreItems')}
-                    summary={_.get(summaryData, ['data', ORDER])}
-                    summaryLoading={_.get(summaryData, 'summaryListLoading')}
-                    orderlistData={orderlistData}
-                    orderDetails={orderDetails}/>
-                <ActivityVisit
-                    handleLoadMoreItems={_.get(visitlistData, 'handleLoadMoreItems')}
-                    summary={_.get(summaryData, ['data', VISIT])}
-                    summaryLoading={_.get(summaryData, 'summaryListLoading')}
-                    visitlistData={visitlistData}/>
-                <ActivityReport
-                    handleLoadMoreItems={_.get(reportlistData, 'handleLoadMoreItems')}
-                    summary={_.get(summaryData, ['data', REPORT])}
-                    summaryLoading={_.get(summaryData, 'summaryListLoading')}
-                    reportImageData={reportImageData}
-                    reportlistData={reportlistData}/>
-                <ActivityReturn
-                    handleLoadMoreItems={_.get(returnlistData, 'handleLoadMoreItems')}
-                    summary={_.get(summaryData, ['data', ORDER_RETURN])}
-                    summaryLoading={_.get(summaryData, 'summaryListLoading')}
-                    returnListData={returnlistData}/>
-                <ActivityPayment
-                    handleLoadMoreItems={_.get(paymentlistData, 'handleLoadMoreItems')}
-                    summary={_.get(summaryData, ['data', PAYMENT])}
-                    summaryLoading={_.get(summaryData, 'summaryListLoading')}
-                    paymentlistData={paymentlistData}/>
-                <ActivityDelivery
-                    handleLoadMoreItems={_.get(deliverylistData, 'handleLoadMoreItems')}
-                    summary={_.get(summaryData, ['data', DELIVERY])}
-                    summaryLoading={_.get(summaryData, 'summaryListLoading')}
-                    deliverylistData={deliverylistData}/>
+                {orderlistLoading && loading
+                    ? tubeLoader
+                    : <ActivityOrder
+                        handleLoadMoreItems={_.get(orderlistData, 'handleLoadMoreItems')}
+                        summary={_.get(summaryData, ['data', ORDER])}
+                        summaryLoading={_.get(summaryData, 'summaryListLoading')}
+                        orderlistData={orderlistData}
+                        orderDetails={orderDetails}/>}
+                {visitlistLoading && loading
+                    ? tubeLoader
+                    : <ActivityVisit
+                        handleLoadMoreItems={_.get(visitlistData, 'handleLoadMoreItems')}
+                        summary={_.get(summaryData, ['data', VISIT])}
+                        summaryLoading={_.get(summaryData, 'summaryListLoading')}
+                        visitlistData={visitlistData}/>}
+                {reportlistLoading && loading
+                    ? tubeLoader
+                    : <ActivityReport
+                        handleLoadMoreItems={_.get(reportlistData, 'handleLoadMoreItems')}
+                        summary={_.get(summaryData, ['data', REPORT])}
+                        summaryLoading={_.get(summaryData, 'summaryListLoading')}
+                        reportImageData={reportImageData}
+                        reportlistData={reportlistData}/>}
+                {returnlistLoading && loading
+                    ? tubeLoader
+                    : <ActivityReturn
+                        handleLoadMoreItems={_.get(returnlistData, 'handleLoadMoreItems')}
+                        summary={_.get(summaryData, ['data', ORDER_RETURN])}
+                        summaryLoading={_.get(summaryData, 'summaryListLoading')}
+                        returnListData={returnlistData}/>}
+                {paymentlistLoading && loading
+                    ? tubeLoader
+                    : <ActivityPayment
+                        handleLoadMoreItems={_.get(paymentlistData, 'handleLoadMoreItems')}
+                        summary={_.get(summaryData, ['data', PAYMENT])}
+                        summaryLoading={_.get(summaryData, 'summaryListLoading')}
+                        paymentlistData={paymentlistData}/>}
+                {deliverylistLoading && loading
+                    ? tubeLoader
+                    : <ActivityDelivery
+                        handleLoadMoreItems={_.get(deliverylistData, 'handleLoadMoreItems')}
+                        summary={_.get(summaryData, ['data', DELIVERY])}
+                        summaryLoading={_.get(summaryData, 'summaryListLoading')}
+                        deliverylistData={deliverylistData}/>}
             </div>
             <Paper className={classes.horizontalScroll} zDepth={1}> </Paper>
         </div>
@@ -160,15 +228,11 @@ const ActivityWrapper = enhance((props) => {
                 <ActivityCalendar
                     calendar={calendar}
                     handleClickDay={handleClickDay}/>
-                {megaLoading
-                    ? <div className={classes.loader}>
-                        <Loader size={0.75}/>
+                {(emptyQuery && !(loading)
+                    ? <div className={classes.emptyQuery}>
+                        <div>По вашему запросу ничего не найдено...</div>
                     </div>
-                    : (emptyQuery && !(orderlistLoading || visitlistLoading || reportlistLoading || returnlistLoading || paymentlistLoading || deliverylistLoading)
-                        ? <div className={classes.emptyQuery}>
-                            <div>По вашему запросу ничего не найдено...</div>
-                        </div>
-                        : tubeWrapper)}
+                    : tubeWrapper)}
             </div>
 
             <ActivityOrderDetails

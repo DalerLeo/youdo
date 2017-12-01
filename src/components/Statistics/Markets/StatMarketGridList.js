@@ -77,6 +77,7 @@ const enhance = compose(
             }
         },
         leftTable: {
+            color: '#666',
             display: 'table',
             marginLeft: '-30px',
             width: '100%',
@@ -94,6 +95,7 @@ const enhance = compose(
                     height: '81px',
                     verticalAlign: 'bottom',
                     '& span': {
+                        fontWeight: '600',
                         verticalAlign: 'bottom',
                         padding: '15px 30px',
                         borderTop: '1px #efefef solid',
@@ -524,7 +526,7 @@ const StatMarketGridList = enhance((props) => {
                             </div>}
                             <div className={classes.tableWrapper}>
                                 <div className={classes.leftTable}>
-                                    <div><span>Товар</span></div>
+                                    <div><span>Магазин</span></div>
                                     {tableLeft}
                                 </div>
                                 {_.isEmpty(tableList) && !listLoading &&
@@ -535,7 +537,7 @@ const StatMarketGridList = enhance((props) => {
                                     <table className={classes.mainTable}>
                                         <tbody className={classes.tableBody}>
                                         <tr className={classes.title}>
-                                            <td rowSpan={2}>Тип</td>
+                                            <td rowSpan={2}>Клиент</td>
                                             <td colSpan={2}>Продажа</td>
                                             <td colSpan={2}>Возврат</td>
                                             <td colSpan={2}>Оплачено</td>

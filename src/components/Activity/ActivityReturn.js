@@ -143,6 +143,7 @@ const ActivityReturn = enhance((props) => {
         return _.get(o, 'type')
     })
     const returnlistLoading = _.get(returnListData, 'returnListLoading')
+    const isEmpty = _.isEmpty(_.get(returnListData, 'data')) && !returnlistLoading
     const summaryCount = _.get(summary, 'count')
     const summaryPrice = numberFormat(_.get(summary, 'totalPrice'), currentCurrency)
     const tooltipText = '<div>Cумма возврата ' + summaryPrice + '</div>'
@@ -164,8 +165,8 @@ const ActivityReturn = enhance((props) => {
         )
     })
 
-    if (_.isEmpty(returnList)) {
-        return false
+    if (isEmpty) {
+        return null
     }
 
     return (

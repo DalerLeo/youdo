@@ -60,6 +60,7 @@ const enhance = compose(
             color: '#fff',
             fontWeight: '600',
             position: 'relative',
+            zIndex: '2',
             '&:before': {
                 content: '""',
                 position: 'absolute',

@@ -35,19 +35,19 @@ const enhance = compose(
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
         const orderList = _.get(state, ['activity', 'orderList', 'data', 'results'])
-        const orderListLoading = _.get(state, ['activity', 'orderList', 'loading'])
+        const orderListLoading = _.isUndefined(_.get(state, ['activity', 'orderList', 'data', 'results'])) ? true : _.get(state, ['activity', 'orderList', 'loading'])
         const visitList = _.get(state, ['activity', 'visitList', 'data', 'results'])
-        const visitListLoading = _.get(state, ['activity', 'visitList', 'loading'])
+        const visitListLoading = _.isUndefined(_.get(state, ['activity', 'visitList', 'data', 'results'])) ? true : _.get(state, ['activity', 'visitList', 'loading'])
         const reportList = _.get(state, ['activity', 'reportList', 'data', 'results'])
-        const reportListLoading = _.get(state, ['activity', 'reportList', 'loading'])
+        const reportListLoading = _.isUndefined(_.get(state, ['activity', 'reportList', 'data', 'results'])) ? true : _.get(state, ['activity', 'reportList', 'loading'])
         const reportImage = _.get(state, ['activity', 'reportImage', 'data'])
         const reportImageLoading = _.get(state, ['activity', 'reportImage', 'loading'])
         const returnList = _.get(state, ['activity', 'returnList', 'data', 'results'])
-        const returnListLoading = _.get(state, ['activity', 'returnList', 'loading'])
+        const returnListLoading = _.isUndefined(_.get(state, ['activity', 'returnList', 'data', 'results'])) ? true : _.get(state, ['activity', 'returnList', 'loading'])
         const paymentList = _.get(state, ['activity', 'paymentList', 'data', 'results'])
-        const paymentListLoading = _.get(state, ['activity', 'paymentList', 'loading'])
+        const paymentListLoading = _.isUndefined(_.get(state, ['activity', 'paymentList', 'data', 'results'])) ? true : _.get(state, ['activity', 'paymentList', 'loading'])
         const deliveryList = _.get(state, ['activity', 'deliveryList', 'data', 'results'])
-        const deliveryListLoading = _.get(state, ['activity', 'deliveryList', 'loading'])
+        const deliveryListLoading = _.isUndefined(_.get(state, ['activity', 'deliveryList', 'data', 'results'])) ? true : _.get(state, ['activity', 'deliveryList', 'loading'])
         const summaryList = _.get(state, ['activity', 'summary', 'data'])
         const summaryListLoading = _.get(state, ['activity', 'summary', 'loading'])
         const orderItem = _.get(state, ['activity', 'orderItem', 'data'])
@@ -88,24 +88,41 @@ const enhance = compose(
     withState('paymentData', 'updatePaymentData', []),
     withState('deliveryData', 'updateDeliveryData', []),
 
+    withState('loading', 'setLoading', false),
     withPropsOnChange((props, nextProps) => {
         const prevDay = _.get(props, ['location', 'query', DAY])
         const nextDay = _.get(nextProps, ['location', 'query', DAY])
         return (props.curDate !== nextProps.curDate) || (prevDay !== nextDay)
-    }, ({dispatch, filter, updateOrderData, updateVisitData, updateReportData, updateReturnData, updatePaymentData, updateDeliveryData}) => {
+    }, ({dispatch, filter, updateOrderData, updateVisitData, updateReportData, updateReturnData, updatePaymentData, updateDeliveryData, setLoading}) => {
+        setLoading(true)
         updateOrderData([])
         updateVisitData([])
         updateReportData([])
         updateReturnData([])
         updatePaymentData([])
         updateDeliveryData([])
-        dispatch(activityOrderListFetchAction(filter))
-        dispatch(activityVisitListFetchAction(filter))
-        dispatch(activityReportListFetchAction(filter))
-        dispatch(activityReturnListFetchAction(filter))
-        dispatch(activityPaymentListFetchAction(filter))
-        dispatch(activityDeliveryListFetchAction(filter))
         dispatch(activitySummaryListFetchAction(filter))
+            .then(() => {
+                dispatch(activityOrderListFetchAction(filter))
+                    .then(() => {
+                        dispatch(activityVisitListFetchAction(filter))
+                            .then(() => {
+                                dispatch(activityReportListFetchAction(filter))
+                                    .then(() => {
+                                        dispatch(activityReturnListFetchAction(filter))
+                                            .then(() => {
+                                                dispatch(activityPaymentListFetchAction(filter))
+                                                    .then(() => {
+                                                        dispatch(activityDeliveryListFetchAction(filter))
+                                                            .then(() => {
+                                                                setLoading(false)
+                                                            })
+                                                    })
+                                            })
+                                    })
+                            })
+                    })
+            })
     }),
 
     // ORDER LIST
@@ -257,7 +274,8 @@ const ActivityList = enhance((props) => {
         summaryList,
         summaryListLoading,
         location,
-        layout
+        layout,
+        loading
     } = props
 
     const openOrderDetails = _.toInteger(_.get(location, ['query', ORDER_DETAILS]) || ZERO) > ZERO
@@ -347,6 +365,7 @@ const ActivityList = enhance((props) => {
                 deliverylistData={deliverylistData}
                 handleClickDay={props.handleClickDay}
                 calendar={calendar}
+                loading={loading}
             />
         </Layout>
     )
