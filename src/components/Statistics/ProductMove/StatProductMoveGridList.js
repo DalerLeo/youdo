@@ -155,7 +155,7 @@ const enhance = compose(
                     color: '#666'
                 },
                 '& > div:nth-child(even)': {
-                    fontSize: '17px',
+                    fontSize: '16px',
                     fontWeight: '600',
                     marginBottom: '10px',
                     '& > span': {

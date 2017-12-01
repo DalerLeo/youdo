@@ -59,8 +59,8 @@ export const returnGraphSerializer = (data) => {
     const urlToDate = _.get(defaultData, 'toDate')
 
     return {
-        'begin_date': urlFromDate || firstDayOfMonth,
-        'end_date': urlToDate || lastDayOfMonth,
+        'created_date_0': urlFromDate || firstDayOfMonth,
+        'created_date_1': urlToDate || lastDayOfMonth,
         'division': _.get(defaultData, 'division')
     }
 }

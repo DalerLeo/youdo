@@ -15,7 +15,6 @@ import {
 } from '../../components/NotificationTemplate'
 import {
     notificationTemplateListFetchAction,
-    notificationTemplateItemFetchAction,
     notificationTemplateUpdateAction,
     notificationTemplateChangeStatusAction,
     notificationAddUserAction,
@@ -47,17 +46,12 @@ const enhance = compose(
         }
     }),
     withPropsOnChange((props, nextProps) => {
-        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
+        const except = {
+            openAddUser: null
+        }
+        return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
         dispatch(notificationTemplateListFetchAction(filter))
-    }),
-
-    withPropsOnChange((props, nextProps) => {
-        const itemId = _.get(nextProps, ['params', 'notificationTemplateId'])
-        return itemId && _.get(props, ['params', 'notificationTemplateId']) !== itemId
-    }, ({dispatch, params}) => {
-        const itemId = _.toInteger(_.get(params, 'notificationTemplateId'))
-        dispatch(notificationTemplateItemFetchAction(itemId))
     }),
 
     withHandlers({
@@ -80,9 +74,6 @@ const enhance = compose(
 
             return dispatch(notificationTemplateUpdateAction(notificationTemplateId, _.get(updateForm, ['values']), detail))
                 .then(() => {
-                    return dispatch(notificationTemplateItemFetchAction(notificationTemplateId))
-                })
-                .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
@@ -94,9 +85,6 @@ const enhance = compose(
             const {dispatch, filter} = props
 
             return dispatch(notificationTemplateChangeStatusAction(_.get(item, 'id'), item))
-                .then(() => {
-                    return dispatch(notificationTemplateItemFetchAction(_.get(item, 'id')))
-                })
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
@@ -136,14 +124,15 @@ const enhance = compose(
             const {location: {pathname}, filter} = props
             hashHistory.push({
                 pathname,
-                query: filter.getParams({[NOTIFICATION_CONFIRM_USER_OPEN]: user, 'id': id})
+                query: filter.getParams({[NOTIFICATION_CONFIRM_USER_OPEN]: user, id: id})
             })
         },
         handleCloseConfirmUser: props => () => {
             const {location: {pathname}, filter} = props
+            console.warn('asdasdasdasd')
             hashHistory.push({
                 pathname,
-                query: filter.getParams({[NOTIFICATION_CONFIRM_USER_OPEN]: false})
+                query: filter.getParams({[NOTIFICATION_CONFIRM_USER_OPEN]: false, id: null})
             })
         },
         handleSubmitConfirmUser: props => () => {
