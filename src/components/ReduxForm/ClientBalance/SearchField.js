@@ -74,7 +74,7 @@ const enhance = compose(
 
     withReducer('state', 'dispatch', (state, action) => {
         return {...state, ...action}
-    }, {dataSource: [], text: '', loading: false}),
+    }, {dataSource: [], text: '', loading: false, open: false}),
 
     withHandlers({
         valueRenderer: props => (option) => {
@@ -91,8 +91,27 @@ const enhance = compose(
         !_.isEmpty(_.get(props, ['state', 'dataSource'])) && _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props, true)
     }),
     withPropsOnChange((props, nextProps) => {
-        return _.get(props, ['state', 'text']) !== _.get(nextProps, ['state', 'text'])
-    }, (props) => _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)),
+        return (_.get(props, ['state', 'text']) !== _.get(nextProps, ['state', 'text']) ||
+            _.get(props, ['state', 'open']) !== _.get(nextProps, ['state', 'open'])) &&
+            _.get(nextProps, ['state', 'open'])
+    }, (props) => _.get(props, ['state', 'open']) && _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)),
+
+    withPropsOnChange((props, nextProps) => {
+        return !_.isEmpty(_.get(nextProps, ['state', 'dataSource'])) && _.get(nextProps, ['input', 'value']) &&
+            _.get(props, ['state', 'loading']) !== _.get(nextProps, ['state', 'loading'])
+    }, (props) => {
+        const {state, input, getItem, dispatch, getText, getValue} = props
+        const finder = _.find(state.dataSource, {'value': input.value.value})
+        if (_.isEmpty(finder) && input.value.value) {
+            getItem(input.value.value).then((data) => {
+                return dispatch({
+                    dataSource: _.union(props.state.dataSource, [{
+                        text: getText(data), value: getValue(data)
+                    }])
+                })
+            })
+        }
+    }),
 )
 
 const SearchField = enhance((props) => {
@@ -118,6 +137,7 @@ const SearchField = enhance((props) => {
                 valueRenderer={valueRenderer}
                 labelKey={'text'}
                 filterOptions={options => options}
+                onOpen={() => dispatch({open: true})}
             />
         </div>
     )
