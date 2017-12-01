@@ -156,6 +156,7 @@ const OrderPrint = enhance((props) => {
                 const marketGuide = _.get(item, ['market', 'guide'])
                 const marketPhone = _.get(item, ['market', 'phone'])
                 const agent = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName'])
+                const deliveryMan = _.get(item, ['deliveryMan', 'firstName']) + ' ' + _.get(item, ['deliveryMan', 'secondName'])
                 const totalPrice = _.get(item, ['totalPrice'])
                 const paymentDate = dateFormat(_.get(item, 'paymentDate'))
                 const createdDate = dateFormat(_.get(item, 'createdDate'))
@@ -182,6 +183,7 @@ const OrderPrint = enhance((props) => {
                                     <li>Ориентир:</li>
                                     <li>Телефон:</li>
                                     <li>Агент:</li>
+                                    <li>Доставщик:</li>
                                 </ul>
                                 <ul>
                                     <li>{marketName}</li>
@@ -189,6 +191,7 @@ const OrderPrint = enhance((props) => {
                                     <li>{marketGuide}</li>
                                     <li>{marketPhone}</li>
                                     <li>{agent}</li>
+                                    <li>{deliveryMan}</li>
                                 </ul>
                             </div>
                             <div className={classes.block}>

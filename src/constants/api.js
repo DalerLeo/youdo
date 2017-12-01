@@ -96,6 +96,8 @@ export const CASHBOX_DELETE = `/${CASHBOX}/%d/`
 export const NOTIFICATION_TEMPLATE = 'notification/notification_template'
 export const NOTIFICATION_TEMPLATE_LIST = `/${NOTIFICATION_TEMPLATE}/`
 export const NOTIFICATION_TEMPLATE_ITEM = `/${NOTIFICATION_TEMPLATE}/%d/`
+export const NOTIFICATION_TEMPLATE_ADD_USER = `/${NOTIFICATION_TEMPLATE}/%d/add_user/`
+export const NOTIFICATION_TEMPLATE_REMOVE_USER = `/${NOTIFICATION_TEMPLATE}/%d/remove_user/`
 
 export const TRANSACTION = 'finance/transaction'
 export const TRANSACTION_ACCEPT_CASH = 'finance/accept_cash_list/'
@@ -136,7 +138,7 @@ export const ACCEPT_CLIENT_TRANSACTION = 'finance/accept_client_transaction'
 export const ORDER_LIST = `/${ORDER}/`
 export const ORDER_ITEM = `/${ORDER}/%d/`
 export const ORDER_LIST_PRINT = `/${ORDER}/print/`
-export const ORDER_SALES_PRINT = '/stock/delivery_products/custom_release/'
+export const ORDER_SALES_PRINT = '/stock/delivery_products/custom_releases/'
 export const ORDER_CANCEL = `/${ORDER}/%d/cancel/`
 export const ORDER_EXCEL = `/${ORDER}/download_invoice/`
 export const GET_DOCUMENT = 'order_document/%d/'

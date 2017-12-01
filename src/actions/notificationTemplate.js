@@ -70,3 +70,34 @@ export const notificationTemplateChangeStatusAction = (id, detail) => {
         payload
     }
 }
+export const notificationAddUserAction = (id, formValues) => {
+    const requestData = serializers.userSerializer(formValues)
+    const payload = axios()
+        .put(sprintf(API.NOTIFICATION_TEMPLATE_ADD_USER, id), requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.NOTIFICATION_TEMPLATE_ADD_USER,
+        payload
+    }
+}
+export const notificationRemoveUserAction = (id, user) => {
+    const payload = axios()
+        .put(sprintf(API.NOTIFICATION_TEMPLATE_REMOVE_USER, id), {params: {user: user}})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.NOTIFICATION_TEMPLATE_REMOVE_USER,
+        payload
+    }
+}

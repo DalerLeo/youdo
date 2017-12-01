@@ -44,3 +44,10 @@ export const listFilterSerializer = (data) => {
     }
 }
 
+export const userSerializer = (data) => {
+    const agent = _.get(data, ['user', 'value'])
+
+    return {
+        'user': agent
+    }
+}

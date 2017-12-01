@@ -9,13 +9,17 @@ import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import {
     NotificationTemplateGridList,
-    NOTIFICATION_UPDATE_DIALOG_OPEN
+    NOTIFICATION_UPDATE_DIALOG_OPEN,
+    NOTIFICATION_CONFIRM_USER_OPEN,
+    NOTIFICATION_ADD_USER_OPEN
 } from '../../components/NotificationTemplate'
 import {
     notificationTemplateListFetchAction,
     notificationTemplateItemFetchAction,
     notificationTemplateUpdateAction,
-    notificationTemplateChangeStatusAction
+    notificationTemplateChangeStatusAction,
+    notificationAddUserAction,
+    notificationRemoveUserAction
 } from '../../actions/notificationTemplate'
 import {openSnackbarAction} from '../../actions/snackbar'
 
@@ -28,6 +32,7 @@ const enhance = compose(
         const list = _.get(state, ['notificationTemplate', 'list', 'data'])
         const listLoading = _.get(state, ['notificationTemplate', 'list', 'loading'])
         const updateForm = _.get(state, ['form', 'NotificationTemplateUpdateDialog'])
+        const userForm = _.get(state, ['form', 'ZoneBindAgentForm'])
         const filter = filterHelper(list, pathname, query)
 
         return {
@@ -37,6 +42,7 @@ const enhance = compose(
             detailLoading,
             filter,
             updateForm,
+            userForm,
             query
         }
     }),
@@ -98,6 +104,61 @@ const enhance = compose(
                     hashHistory.push(filter.createURL({[NOTIFICATION_UPDATE_DIALOG_OPEN]: false}))
                     dispatch(notificationTemplateListFetchAction(filter))
                 })
+        },
+        handleOpenAddUser: props => (id) => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({
+                pathname,
+                query: filter.getParams({[NOTIFICATION_ADD_USER_OPEN]: id})
+            })
+        },
+        handleCloseAddUser: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({
+                pathname,
+                query: filter.getParams({[NOTIFICATION_ADD_USER_OPEN]: false})
+            })
+        },
+        handleSubmitAddUser: props => () => {
+            const {dispatch, filter, userForm, location} = props
+            const item = _.toNumber(_.get(location, ['query', 'openAddUser']))
+
+            return dispatch(notificationAddUserAction(item, _.get(userForm, ['values'])))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                })
+                .then(() => {
+                    hashHistory.push(filter.createURL({[NOTIFICATION_ADD_USER_OPEN]: false}))
+                    dispatch(notificationTemplateListFetchAction(filter))
+                })
+        },
+        handleOpenConfirmUser: props => (user, id) => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({
+                pathname,
+                query: filter.getParams({[NOTIFICATION_CONFIRM_USER_OPEN]: user, 'id': id})
+            })
+        },
+        handleCloseConfirmUser: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({
+                pathname,
+                query: filter.getParams({[NOTIFICATION_CONFIRM_USER_OPEN]: false})
+            })
+        },
+        handleSubmitConfirmUser: props => () => {
+            const {dispatch, filter, location} = props
+            const id = _.toNumber(_.get(location, ['query', 'id']))
+            const user = _.toNumber(_.get(location, ['query', 'openConfirmUser']))
+
+            return dispatch(notificationRemoveUserAction(id, user))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                })
+                .then(() => {
+                    hashHistory.push(filter.createURL({[NOTIFICATION_CONFIRM_USER_OPEN]: false}))
+                    dispatch(notificationTemplateListFetchAction(filter))
+                })
         }
     })
 )
@@ -113,6 +174,8 @@ const NotificationTemplateList = enhance((props) => {
     } = props
 
     const openUpdateDialog = _.get(location, ['query', 'openUpdateDialog'])
+    const openAddUser = _.get(location, ['query', 'openAddUser'])
+    const openConfirmUser = _.get(location, ['query', 'openConfirmUser'])
 
     const listData = {
         data: _.get(list, 'results'),
@@ -133,10 +196,24 @@ const NotificationTemplateList = enhance((props) => {
         handleCloseUpdateDialog: props.handleCloseUpdateDialog,
         handleSubmitUpdateDialog: props.handleSubmitUpdateDialog
     }
+
     const changeDialog = {
         handelChangeStatus: props.handelChangeStatus
     }
 
+    const notificationUser = {
+        open: openAddUser,
+        handleOpenAddUser: props.handleOpenAddUser,
+        handleCloseAddUser: props.handleCloseAddUser,
+        handleSubmitAddUser: props.handleSubmitAddUser
+    }
+
+    const userConfirm = {
+        open: openConfirmUser,
+        handleOpenConfirmUser: props.handleOpenConfirmUser,
+        handleCloseConfrimUser: props.handleCloseConfirmUser,
+        handleSubmitConfirmUser: props.handleSubmitConfirmUser
+    }
     return (
         <Layout {...layout}>
             <NotificationTemplateGridList
@@ -144,6 +221,8 @@ const NotificationTemplateList = enhance((props) => {
                 listData={listData}
                 updateDialog={updateDialog}
                 changeDialog={changeDialog}
+                notificationUser={notificationUser}
+                userConfirm={userConfirm}
             />
         </Layout>
     )
