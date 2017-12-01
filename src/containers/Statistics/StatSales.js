@@ -94,8 +94,8 @@ const enhance = compose(
         },
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
-            const fromDate = _.get(filterForm, ['values', 'data', 'fromDate']) || null
-            const toDate = _.get(filterForm, ['values', 'data', 'toDate']) || null
+            const fromDate = _.get(filterForm, ['values', 'createdDate', 'fromDate']) || null
+            const toDate = _.get(filterForm, ['values', 'createdDate', 'toDate']) || null
             const deliveryFromDate = _.get(filterForm, ['values', 'deliveryDate', 'fromDate']) || null
             const deliveryToDate = _.get(filterForm, ['values', 'deliveryDate', 'toDate']) || null
             const deadlineFromDate = _.get(filterForm, ['values', 'deadlineDate', 'fromDate']) || null
@@ -188,6 +188,8 @@ const StatSalesList = enhance((props) => {
     const status = _.toInteger(filter.getParam(STAT_SALES_FILTER_KEY.STATUS))
     const deliveryFromDate = filter.getParam(STAT_SALES_FILTER_KEY.DELIVERY_FROM_DATE)
     const deliveryToDate = filter.getParam(STAT_SALES_FILTER_KEY.DELIVERY_TO_DATE)
+    const createdFromDate = filter.getParam(STAT_SALES_FILTER_KEY.FROM_DATE)
+    const createdToDate = filter.getParam(STAT_SALES_FILTER_KEY.TO_DATE)
     const deadlineFromDate = filter.getParam(STAT_SALES_FILTER_KEY.DEADLINE_FROM_DATE)
     const deadlineToDate = filter.getParam(STAT_SALES_FILTER_KEY.DEADLINE_TO_DATE)
     const onlyBonus = filter.getParam(STAT_SALES_FILTER_KEY.ONLY_BONUS)
@@ -247,6 +249,10 @@ const StatSalesList = enhance((props) => {
             deliveryDate: {
                 fromDate: deliveryFromDate && moment(deliveryFromDate, 'YYYY-MM-DD'),
                 toDate: deliveryToDate && moment(deliveryToDate, 'YYYY-MM-DD')
+            },
+            createdDate: {
+                fromDate: createdFromDate && moment(createdFromDate, 'YYYY-MM-DD'),
+                toDate: createdToDate && moment(createdToDate, 'YYYY-MM-DD')
             },
             deadlineDate: {
                 fromDate: deadlineFromDate && moment(deadlineFromDate, 'YYYY-MM-DD'),

@@ -247,12 +247,18 @@ const enhance = compose(
             }
         },
         emptyQuery: {
-            background: 'url(' + NotFound + ') no-repeat center center',
+            position: 'absolute',
+            top: '0',
+            left: '0',
+            right: '0',
+            bottom: '0',
+            background: '#fff url(' + NotFound + ') no-repeat center 20px',
             backgroundSize: '200px',
-            padding: '200px 0 0',
+            padding: '160px 0 0',
             textAlign: 'center',
             fontSize: '13px',
-            color: '#666'
+            color: '#666',
+            zIndex: '20'
         },
         summary: {
             display: 'flex',

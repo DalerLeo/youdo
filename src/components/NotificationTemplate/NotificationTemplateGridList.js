@@ -3,20 +3,15 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
 import Toggle from 'material-ui/Toggle'
-import FloatingActionButton from 'material-ui/FloatingActionButton'
-import ContentAdd from 'material-ui/svg-icons/content/add'
-import IconButton from 'material-ui/IconButton'
+import FlatButton from 'material-ui/FlatButton'
+import CloseIcon from 'material-ui/svg-icons/navigation/cancel'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
-import Edit from 'material-ui/svg-icons/image/edit'
 import Container from '../Container'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import SettingSideMenu from '../Settings/SettingsSideMenu'
-import UpdateDialog from './NotificationTemplateCreateDialog'
-import toBoolean from '../../helpers/toBoolean'
-import Tooltip from '../ToolTip/index'
-import Person from '../Images/person.png'
+import Tooltip from '../ToolTip'
 import BindAgentDialog from '../../components/Zones/ZoneBindAgentDialog'
 import ConfirmDialog from '../ConfirmDialog'
 
@@ -30,20 +25,15 @@ const listHeader = [
     {
         sorting: false,
         name: 'user',
-        xs: 5,
+        xs: 8,
         title: 'Пользователи'
     },
     {
         sorting: false,
         name: 'edit',
-        xs: 2,
-        title: ''
-    },
-    {
-        sorting: false,
-        name: 'action',
-        xs: 2,
-        title: ''
+        xs: 1,
+        title: 'Статус',
+        alignRight: true
     }
 ]
 
@@ -54,9 +44,6 @@ const enhance = compose(
                 width: '14px !important',
                 height: '14px !important'
             }
-        },
-        toggle: {
-            marginBottom: 16
         },
         wrapper: {
             display: 'flex',
@@ -96,12 +83,9 @@ const enhance = compose(
             margin: '0 -30px !important',
             width: 'auto !important',
             padding: '0 30px',
-            '&:hover > div:last-child > div ': {
-                opacity: '1'
-            },
-            '& > div': {
-                overflow: 'hidden',
-                textOverflow: 'ellipsis'
+            '& > div:last-child': {
+                display: 'flex',
+                flexDirection: 'row-reverse'
             }
         },
         personal: {
@@ -115,25 +99,28 @@ const enhance = compose(
         },
         personalWrap: {
             display: 'flex',
-            flexWrap: 'wrap',
-            '& > div': {
-                width: '30px',
-                height: '30px',
-                display: 'inline-block',
-                marginRight: '10px',
-                marginBottom: '5px',
-                position: 'relative',
-                '& img': {
-                    height: '100%',
-                    width: '100%',
-                    borderRadius: '50%'
-                },
-                '&:hover > div > div > div': {
-                    display: 'flex'
-                },
-                '&:nth-child(10n)': {
-                    margin: '0 !important'
-                }
+            alignItems: 'center',
+            flexWrap: 'wrap'
+        },
+        person: {
+            height: '28px',
+            margin: '5px 10px 5px 0',
+            padding: '0 10px',
+            display: 'inline-flex',
+            lineHeight: '1',
+            alignItems: 'center',
+            borderRadius: '2px',
+            backgroundColor: '#e9ecef',
+            position: 'relative'
+        },
+        deletePers: {
+            position: 'absolute',
+            cursor: 'pointer',
+            right: '-8px',
+            top: '-8px',
+            '& svg': {
+                width: '20px !important',
+                height: '20px !important'
             }
         },
         addPerson: {
@@ -151,24 +138,11 @@ const enhance = compose(
     }),
 )
 
-const iconStyle = {
-    icon: {
-        color: '#666',
-        width: 22,
-        height: 22
-    },
-    button: {
-        width: 30,
-        height: 25,
-        padding: 0
-    }
-}
 const ZERO = 0
 const NotificationGridList = enhance((props) => {
     const {
         filter,
         listData,
-        updateDialog,
         classes,
         changeDialog,
         notificationUser,
@@ -187,63 +161,43 @@ const NotificationGridList = enhance((props) => {
         return (
             <Row key={id} className={classes.listRow}>
                 <Col xs={3}>{name}</Col>
-                <Col xs={5}>
+                <Col xs={8}>
                     <div className={classes.personalWrap}>
-                        {_.map(_.get(item, 'users'), (item2) => {
-                            const userId = _.get(item2, 'id')
-                            const username = _.get(item2, 'firstName') + ' ' + _.get(item2, 'secondName')
-                            const position = _.get(item2, 'position') || 'Без должности'
+                        {_.map(_.get(item, 'users'), (user) => {
+                            const userId = _.get(user, 'id')
+                            const username = _.get(user, 'firstName') + ' ' + _.get(user, 'secondName')
 
                             return (
-                                <Tooltip key={id} position="top" text={username + '<br>' + position}>
-                                    <div className={classes.person}>
-                                        <img src={Person} alt=""/>
-                                        <div className={classes.deletePers}>
-                                            <CloseIcon
-                                                onClick={() => { notificationUser.handleOpenConfirmUser(userId, id) }}
-                                                color="#fff"/>
-                                        </div>
+                                <div className={classes.person}>
+                                    {username}
+                                    <div className={classes.deletePers}>
+                                        <CloseIcon
+                                            onClick={() => { userConfirm.handleOpenConfirmUser(userId, id) }}
+                                            color="#5d6474"/>
                                     </div>
-                                </Tooltip>
+                                </div>
                             )
                         })}
-                        <div className={classes.person} style={{overflow: 'hidden'}}>
-                            <Tooltip position="bottom" text="Добавить">
-                                <FloatingActionButton
-                                    mini={true}
-                                    className={classes.addPerson}
-                                    onTouchTap={() => { notificationUser.handleOpenAddUser(id) }}>
-                                    <ContentAdd/>
-                                </FloatingActionButton>
-                            </Tooltip>
-                        </div>
+                        <Tooltip position="bottom" text="Добавить">
+                            <FlatButton
+                                backgroundColor={'#12aaeb'}
+                                hoverColor={'#12aaeb'}
+                                rippleColor={'#fff'}
+                                style={{height: '28px', lineHeight: '28px', minWidth: '60px', marginLeft: '10px'}}
+                                labelStyle={{textTransform: 'none', color: '#fff', verticalAlign: 'baseline'}}
+                                className={classes.addPerson}
+                                label="добавить"
+                                onTouchTap={() => { notificationUser.handleOpenAddUser(id) }}/>
+                        </Tooltip>
                     </div>
                 </Col>
-                <Col xs={2}>
+                <Col xs={1}>
                     <Toggle
                         name="status"
                         toggled={status}
-                        onTouchTap={() => {
-                            changeDialog.handelChangeStatus(item)
-                        }}
-                        style={classes.toggle}
+                        onTouchTap={() => { changeDialog.handelChangeStatus(item) }}
+                        style={{width: 'auto'}}
                     />
-                </Col>
-                <Col xs={2} style={{textAlign: 'right'}}>
-                    <div className={classes.iconBtn}>
-                        <Tooltip position="bottom" text="Изменить">
-                            <IconButton
-                                iconStyle={iconStyle.icon}
-                                style={iconStyle.button}
-                                disableTouchRipple={true}
-                                touch={true}
-                                onTouchTap={() => {
-                                    updateDialog.handleOpenUpdateDialog(id)
-                                }}>
-                                <Edit/>
-                            </IconButton>
-                        </Tooltip>
-                    </div>
                 </Col>
             </Row>
         )
@@ -269,12 +223,6 @@ const NotificationGridList = enhance((props) => {
                     />
                 </div>
             </div>
-            <UpdateDialog
-                initialValues={updateDialog.initialValues}
-                open={_.toInteger(updateDialog.open) > ZERO ? true : toBoolean(updateDialog.open)}
-                onClose={updateDialog.handleCloseUpdateDialog}
-                onSubmit={updateDialog.handleSubmitUpdateDialog}
-            />
             <BindAgentDialog
                 open={notificationUser.open > ZERO}
                 onClose={notificationUser.handleCloseAddUser}
@@ -284,7 +232,7 @@ const NotificationGridList = enhance((props) => {
                 open={userConfirm.open > ZERO}
                 onClose={userConfirm.handleCloseConfirmUser}
                 onSubmit={userConfirm.handleSubmitConfirmUser}
-                message="Удалить этот пользователь?"
+                message="Удалить этого пользователя?"
                 type="submit"
             />
         </Container>

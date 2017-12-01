@@ -25,7 +25,7 @@ import Tooltip from '../ToolTip'
 import Paper from 'material-ui/Paper'
 import SearchIcon from 'material-ui/svg-icons/action/search'
 import StatSideMenu from '../Statistics/StatSideMenu'
-import {TextField, ClientBalanceTypeSearchField, PaymentTypeSearchField} from '../ReduxForm/index'
+import {TextField, ClientBalanceTypeSearchField, PaymentTypeSearchField, CheckBox} from '../ReduxForm'
 import Pagination from '../GridList/GridListNavPagination'
 import NotFound from '../Images/not-found.png'
 import ArrowUpIcon from 'material-ui/svg-icons/navigation/arrow-upward'
@@ -308,6 +308,27 @@ const enhance = compose(
                     textAlign: 'right'
                 }
             }
+        },
+        groupBy: {
+            display: 'flex',
+            alignItems: 'center',
+            height: '50px',
+            margin: '0 -30px',
+            padding: '0 30px',
+            borderTop: '1px #efefef solid',
+            '& > div:first-child': {
+                fontWeight: '600',
+                marginRight: '10px'
+            }
+        },
+        checkboxes: {
+            display: 'flex',
+            alignItems: 'center',
+            '& > div': {
+                marginRight: '5px',
+                whiteSpace: 'nowrap',
+                width: 'auto !important'
+            }
         }
     }),
     reduxForm({
@@ -582,6 +603,29 @@ const ClientBalanceGridList = enhance((props) => {
         </div>
     )
 
+    const groupBy = (
+        <div className={classes.groupBy}>
+            <div>Сгруппировать по:</div>
+            <div className={classes.checkboxes}>
+                <Field
+                    name="[groupBy][division][active]"
+                    label="Подразделениям"
+                    component={CheckBox}
+                />
+                <Field
+                    name="[groupBy][currency][active]"
+                    label="Валюте"
+                    component={CheckBox}
+                />
+                <Field
+                    name="[groupBy][paymentType][active]"
+                    label="Типу оплат"
+                    component={CheckBox}
+                />
+            </div>
+        </div>
+    )
+
     const navigation = (
         <div className={classes.nav}>
             {!stat && <ClientBalanceFilterForm
@@ -678,6 +722,7 @@ const ClientBalanceGridList = enhance((props) => {
                             <div className={classes.summary}>
                                 {summary}
                             </div>
+                            {groupBy}
                             {navigation}
                             {lists}
                         </div>

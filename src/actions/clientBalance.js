@@ -5,8 +5,8 @@ import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/clientBalanceSerializer'
 
-export const clientBalanceListFetchAction = (filter) => {
-    const params = serializers.listFilterSerializer(filter.getParams())
+export const clientBalanceListFetchAction = (filter, groupBy) => {
+    const params = serializers.listFilterSerializer(filter.getParams(), groupBy)
     const payload = axios()
         .get(API.CLIENT_BALANCE_LIST, {params})
         .then((response) => {

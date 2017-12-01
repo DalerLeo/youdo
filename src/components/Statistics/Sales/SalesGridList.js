@@ -417,7 +417,7 @@ const StatSalesGridList = enhance((props) => {
             <Field name="initiator" className={classes.inputFieldCustom} component={UsersMultiSearchField} label="Инициатор"/>
             <Field name="dept" className={classes.inputFieldCustom} component={DeptSearchField} label="Статус оплаты"/>
             <Field name="zone" className={classes.inputFieldCustom} component={ZoneSearchField} label="Зона"/>
-            <Field name="data" className={classes.inputDateCustom} component={DateToDateField} label="Период создания"/>
+            <Field name="createdDate" className={classes.inputDateCustom} component={DateToDateField} label="Период создания"/>
             <Field name="deliveryDate" className={classes.inputDateCustom} component={DateToDateField} label="Дата доставки"/>
             <Field name="deadlineDate" className={classes.inputDateCustom} component={DateToDateField} label="Период изготовления"/>
             <Field name="onlyBonus" component={CheckBox} label="Только бонусные заказы"/>

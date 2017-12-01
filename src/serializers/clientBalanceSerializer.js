@@ -14,11 +14,12 @@ export const createSerializer = (data, expenseId) => {
     }
 }
 
-export const listFilterSerializer = (data) => {
+export const listFilterSerializer = (data, groupBy) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
 
     return {
+        'group_by': groupBy,
         'created_date_0': _.get(defaultData, 'fromDate'),
         'created_date_1': _.get(defaultData, 'toDate'),
         'search': _.get(defaultData, 'search'),

@@ -79,6 +79,26 @@ const enhance = compose(
         clientBalanceId && dispatch(clientBalanceItemFetchAction(filterItem, clientBalanceId, division, type))
     }),
 
+    withPropsOnChange((props, nextProps) => {
+        const groupBy = _.get(props, ['searchForm', 'values', 'groupBy'])
+        const groupByNext = _.get(nextProps, ['searchForm', 'values', 'groupBy'])
+        return !_.isEqual(groupBy, groupByNext)
+    }, ({filter, searchForm, location: {pathname}}) => {
+        const groupBy = _.filter(_.map(_.get(searchForm, ['values', 'groupBy']), (item, index) => {
+            return {by: index, active: item.active}
+        }), (item) => {
+            return _.get(item, 'active')
+        })
+        const toURL = _.map(groupBy, (item) => {
+            return _.get(item, 'by')
+        })
+        if (!_.isEmpty(toURL)) {
+            hashHistory.push({pathname, query: filter.getParams({'groupBy': _.join(toURL, '-')})})
+        } else {
+            hashHistory.push({pathname, query: filter.getParams({'groupBy': null})})
+        }
+    }),
+
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
 
     withHandlers({

@@ -128,7 +128,7 @@ const enhance = compose(
             color: '#666',
             '& > div': {
                 '& > div': {
-                    fontSize: '20px',
+                    fontSize: '16px',
                     color: '#333',
                     fontWeight: '600',
                     '& span': {
@@ -246,8 +246,7 @@ const enhance = compose(
         boldFont: {
             justifyContent: 'flex-end',
             textAlign: 'right',
-            fontWeight: '600',
-            fontSize: '15px'
+            fontWeight: '600'
         },
         searchForm: {
             display: 'flex',
@@ -300,7 +299,8 @@ const StatRemainderGridList = enhance((props) => {
     const headerStyle = {
         backgroundColor: '#fff',
         fontWeight: '600',
-        color: '#666'
+        color: '#666',
+        padding: '0'
     }
     const iconStyle = {
         icon: {

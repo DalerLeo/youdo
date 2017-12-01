@@ -237,8 +237,7 @@ StatisticsFilterExcel.propTypes = {
     initialValues: PropTypes.object.isRequired,
     fields: PropTypes.node.isRequired,
     handleSubmitFilterDialog: PropTypes.func.isRequired,
-    handleGetDocument: PropTypes.func.isRequired,
-    setOpenFilter: PropTypes.func.isRequired
+    handleGetDocument: PropTypes.func.isRequired
 }
 
 export default StatisticsFilterExcel
