@@ -58,39 +58,42 @@ const enhance = compose(
     withState('loading', 'setLoading', false),
     withPropsOnChange((props, nextProps) => {
         return props.filter.filterRequest() !== nextProps.filter.filterRequest()
-    }, ({dispatch, filter, setLoading}) => {
-        setLoading(true)
-        const activeSales = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.SALES)) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.SALES))
-        const activeOrders = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.ORDERS)) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.ORDERS))
-        const activeAgents = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.AGENTS)) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.AGENTS))
-        const activeFinance = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.FINANCE)) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.FINANCE))
-        return (activeSales
-            ? dispatch(statSalesDataFetchAction(filter))
-            : Promise.resolve())
-            .then(() => {
-                return (activeOrders
-                    ? dispatch(statSalesReturnDataFetchAction(filter))
-                        .then(() => {
-                            dispatch(statSalesDataFetchAction(filter))
-                        })
-                    : Promise.resolve())
-                    .then(() => {
-                        return (activeAgents
-                            ? dispatch(statAgentDataFetchAction(filter))
-                            : Promise.resolve())
-                            .then(() => {
-                                return (activeFinance
-                                    ? dispatch(statFinanceIncomeFetchAction(filter))
-                                        .then(() => {
-                                            dispatch(statFinanceExpenseFetchAction(filter))
-                                        })
-                                    : Promise.resolve())
-                                    .then(() => {
-                                        setLoading(false)
-                                    })
-                            })
-                    })
-            })
+    }, ({dispatch, filter, setLoading, isAdmin}) => {
+        if (isAdmin) {
+            setLoading(true)
+            const activeSales = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.SALES)) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.SALES))
+            const activeOrders = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.ORDERS)) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.ORDERS))
+            const activeAgents = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.AGENTS)) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.AGENTS))
+            const activeFinance = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.FINANCE)) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.FINANCE))
+            return (activeSales
+               ? dispatch(statSalesDataFetchAction(filter))
+               : Promise.resolve())
+               .then(() => {
+                   return (activeOrders
+                       ? dispatch(statSalesReturnDataFetchAction(filter))
+                           .then(() => {
+                               dispatch(statSalesDataFetchAction(filter))
+                           })
+                       : Promise.resolve())
+                       .then(() => {
+                           return (activeAgents
+                               ? dispatch(statAgentDataFetchAction(filter))
+                               : Promise.resolve())
+                               .then(() => {
+                                   return (activeFinance
+                                       ? dispatch(statFinanceIncomeFetchAction(filter))
+                                           .then(() => {
+                                               dispatch(statFinanceExpenseFetchAction(filter))
+                                           })
+                                       : Promise.resolve())
+                                       .then(() => {
+                                           setLoading(false)
+                                       })
+                               })
+                       })
+               })
+        }
+        return null
     }),
     // .. withPropsOnChange((props, nextProps) => {
     // ..     const except = {

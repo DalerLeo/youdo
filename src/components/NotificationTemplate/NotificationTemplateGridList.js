@@ -82,7 +82,8 @@ const enhance = compose(
         listRow: {
             margin: '0 -30px !important',
             width: 'auto !important',
-            padding: '0 30px',
+            padding: '5px 30px',
+            minHeight: '50px',
             '& > div:last-child': {
                 display: 'flex',
                 flexDirection: 'row-reverse'
@@ -100,7 +101,13 @@ const enhance = compose(
         personalWrap: {
             display: 'flex',
             alignItems: 'center',
-            flexWrap: 'wrap'
+            flexWrap: 'wrap',
+            '& > div:first-child': {
+                marginLeft: '0 !important'
+            },
+            '& > div:last-child': {
+                marginLeft: '5px'
+            }
         },
         person: {
             height: '28px',
@@ -183,7 +190,7 @@ const NotificationGridList = enhance((props) => {
                                 backgroundColor={'#12aaeb'}
                                 hoverColor={'#12aaeb'}
                                 rippleColor={'#fff'}
-                                style={{height: '28px', lineHeight: '28px', minWidth: '60px', marginLeft: '10px'}}
+                                style={{height: '28px', lineHeight: '28px', minWidth: '60px'}}
                                 labelStyle={{textTransform: 'none', color: '#fff', verticalAlign: 'baseline'}}
                                 className={classes.addPerson}
                                 label="добавить"
@@ -220,6 +227,7 @@ const NotificationGridList = enhance((props) => {
                         detail={notificationDetail}
                         transparentLoading={true}
                         listShadow={false}
+                        flexibleRow={true}
                     />
                 </div>
             </div>

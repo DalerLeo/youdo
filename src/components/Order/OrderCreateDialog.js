@@ -242,6 +242,7 @@ const OrderCreateDialog = enhance((props) => {
         products,
         status,
         canChangeAnyPrice,
+        canChangePrice,
         clientId,
         loading,
         orderProducts,
@@ -285,7 +286,7 @@ const OrderCreateDialog = enhance((props) => {
                 </IconButton>
             </div>
             <div className={classes.bodyContent}>
-                <form onSubmit={onSubmit} scrolling="auto" className={classes.form}>
+                <form onSubmit={onSubmit} className={classes.form}>
                     {loading ? <div className={classes.loader}>
                         <Loader size={0.75}/>
                     </div>
@@ -379,6 +380,7 @@ const OrderCreateDialog = enhance((props) => {
                                         names={['products', 'product', 'amount', 'cost', 'type', 'editAmount', 'editCost']}
                                         editOnlyCost={status === DELIVERED || status === GIVEN}
                                         canChangeAnyPrice={canChangeAnyPrice}
+                                        canChangePrice={canChangePrice}
                                         component={OrderListProductField}
                                         editProductsLoading={editProductsLoading}
                                         isUpdate={isUpdate}
