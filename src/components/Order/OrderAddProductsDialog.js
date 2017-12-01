@@ -300,7 +300,8 @@ const OrderAddProductsDialog = enhance((props) => {
         withoutCustomPrice,
         fromAllBalances,
         currency,
-        canChangeAnyPrice
+        canChangeAnyPrice,
+        canChangePrice
     } = props
     const onSubmit = handleSubmit(props.onSubmit)
     const primaryCurrency = currency
@@ -309,9 +310,12 @@ const OrderAddProductsDialog = enhance((props) => {
         const name = fromAllBalances ? _.get(item, 'title') : _.get(item, 'name')
         const code = _.get(item, 'code') || '-'
         const balance = _.get(item, 'balance')
+        const customPrice = _.get(item, 'customPrice')
         const available = numberFormat(_.get(item, 'available'))
         const defects = numberFormat(_.get(item, 'defects'))
-        const canChangePrice = (isSuperUser || withoutCustomPrice) || canChangeAnyPrice
+        const userCanChangePrice = (canChangeAnyPrice || isSuperUser || withoutCustomPrice)
+            ? true
+            : Boolean(canChangePrice && customPrice)
         const measurement = _.get(item, ['measurement', 'name'])
         return (
             <Row key={id} className="dottedList">
@@ -329,7 +333,7 @@ const OrderAddProductsDialog = enhance((props) => {
                         className={classes.inputFieldCustom}
                         inputStyle={{textAlign: 'right'}}
                         normalize={normalizeNumber}
-                        disabled={!canChangePrice}
+                        disabled={!userCanChangePrice}
                         fullWidth={true}/>
                     <span>{primaryCurrency}</span>
                 </Col>

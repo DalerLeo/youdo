@@ -359,22 +359,30 @@ const enhance = compose(
             const confirmDialogPriceList = ReactDOM.findDOMNode(this.refs.confirmDialogPriceList)
             const initialProducts = !_.isEmpty(props.initialProducts)
             const canChangeAnyPrice = props.canChangeAnyPrice
-            const isAdmin = props.isAdmin
+
+            const handleChangePT = _.get(props, 'handleChangePT')
+            const handleChangePriceList = _.get(props, 'handleChangePriceList')
             if (props.paymentType !== initialPaymentType) {
-                if (initialPaymentType && initialProducts && (isAdmin || canChangeAnyPrice)) {
+                if (initialPaymentType && initialProducts && !canChangeAnyPrice) {
                     confirmDialog.style.zIndex = '10'
+                } else if (initialPriceList && initialProducts && canChangeAnyPrice) {
+                    handleChangePT()
                 }
             }
             const formPriceList = _.get(props, ['priceList', 'value'])
             const formCurrencyValue = _.get(props, ['formCurerncy', 'value'])
             if (formPriceList !== initialPriceList && formPriceList) {
-                if (initialPriceList && initialProducts && (isAdmin || canChangeAnyPrice)) {
+                if (initialPriceList && initialProducts && !canChangeAnyPrice) {
                     confirmDialogPriceList.style.zIndex = '10'
+                } else if (initialPriceList && initialProducts && canChangeAnyPrice) {
+                    handleChangePriceList()
                 }
             }
             if (formCurrencyValue !== initialCurrency && formCurrencyValue) {
-                if (initialCurrency && initialProducts && (isAdmin || canChangeAnyPrice)) {
+                if (initialCurrency && initialProducts && !canChangeAnyPrice) {
                     confirmDialogPriceList.style.zIndex = '10'
+                } else if (initialPriceList && initialProducts && canChangeAnyPrice) {
+                    handleChangePriceList()
                 }
             }
         }
@@ -424,6 +432,7 @@ const OrderListProductField = enhance((props) => {
     const ONE = 1
     const editOnlyCost = _.get(props, 'editOnlyCost')
     const canChangeAnyPrice = _.get(props, 'canChangeAnyPrice')
+    const canChangePrice = _.get(props, 'canChangePrice')
     const products = _.get(props, ['products', 'input', 'value']) || []
     const error = _.get(props, ['products', 'meta', 'error'])
     const currency = _.get(formCurerncy, 'text')
@@ -431,6 +440,9 @@ const OrderListProductField = enhance((props) => {
     initialPriceList = _.get(priceList, 'value')
     initialCurrency = _.get(formCurerncy, 'value')
 
+    const userCanChangePrice = (canChangeAnyPrice || isAdmin)
+        ? true
+        : Boolean(canChangePrice && customPrice)
     return (
         <div className={classes.wrapper}>
             <div
@@ -548,7 +560,7 @@ const OrderListProductField = enhance((props) => {
                             component={TextField}
                             label="Сумма за ед"
                             name="cost"
-                            disabled={isAdmin ? false : !customPrice}
+                            disabled={!userCanChangePrice}
                             className={classes.inputFieldCustom}
                             fullWidth={true}
                             normalize={normalizeNumber}

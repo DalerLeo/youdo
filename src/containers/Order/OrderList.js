@@ -1305,7 +1305,8 @@ const OrderList = enhance((props) => {
             }}/>
     }
 
-    const canChangeAnyPrice = checkPermission('change_any_price')
+    const canChangeAnyPrice = checkPermission('can_set_any_price')
+    const canChangePrice = checkPermission('can_change_price')
 
     const releaseDialog = {
         openReleaseDialog,
@@ -1344,6 +1345,7 @@ const OrderList = enhance((props) => {
                 refreshAction={props.handleRefreshList}
                 cancelOrderReturnDialog={cancelOrderReturnDialog}
                 canChangeAnyPrice={canChangeAnyPrice}
+                canChangePrice={canChangePrice}
                 handleSubmitDiscountDialog={props.handleSubmitDiscountDialog}
                 handleSubmitSetZeroDiscountDialog={props.handleSubmitSetZeroDiscountDialog}
                 isSuperUser={isSuperUser}
