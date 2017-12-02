@@ -95,46 +95,6 @@ const enhance = compose(
         }
         return null
     }),
-    // .. withPropsOnChange((props, nextProps) => {
-    // ..     const except = {
-    // ..         sales: null,
-    // ..         agents: null,
-    // ..         finance: null
-    // ..     }
-    // ..     return props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
-    // .. }, ({dispatch, filter}) => {
-    // ..     const active = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.ORDERS)) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.ORDERS))
-    // ..     if (active) {
-    // ..         dispatch(statSalesReturnDataFetchAction(filter))
-    // ..     }
-    // .. }),
-    // .. withPropsOnChange((props, nextProps) => {
-    // ..     const except = {
-    // ..         sales: null,
-    // ..         orders: null,
-    // ..         finance: null
-    // ..     }
-    // ..     return props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
-    // .. }, ({dispatch, filter}) => {
-    // ..     const active = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.AGENTS)) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.AGENTS))
-    // ..     if (active) {
-    // ..         dispatch(statAgentDataFetchAction(filter))
-    // ..     }
-    // .. }),
-    // .. withPropsOnChange((props, nextProps) => {
-    // ..     const except = {
-    // ..         sales: null,
-    // ..         orders: null,
-    // ..         agents: null
-    // ..     }
-    // ..     return props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
-    // .. }, ({dispatch, filter}) => {
-    // ..     const active = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.FINANCE)) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.FINANCE))
-    // ..     if (active) {
-    // ..         dispatch(statFinanceIncomeFetchAction(filter))
-    // ..         dispatch(statFinanceExpenseFetchAction(filter))
-    // ..     }
-    // .. }),
 
     withHandlers({
         handleSubmitWidgetsForm: props => () => {

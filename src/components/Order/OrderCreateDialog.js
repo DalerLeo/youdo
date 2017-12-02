@@ -13,13 +13,15 @@ import * as ROUTES from '../../constants/routes'
 import {Link} from 'react-router'
 import {connect} from 'react-redux'
 import {
+    TextField,
     ClientSearchField,
     OrderListProductField,
     DateField,
     UsersSearchField,
     DeliveryManSearchField,
     PriceListSearchField,
-    UserCurrenciesSearchField
+    UserCurrenciesSearchField,
+    DeliveryTypeSearchField
 } from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 import numberFormat from '../../helpers/numberFormat'
@@ -220,9 +222,11 @@ const enhance = compose(
     connect((state) => {
         const orderProducts = _.get(state, ['form', 'OrderCreateForm', 'values', 'products'])
         const currencyItem = _.get(state, ['form', 'OrderCreateForm', 'values', 'currency', 'text'])
+        const deliveryType = _.get(state, ['form', 'OrderCreateForm', 'values', 'deliveryType', 'value'])
         return {
             orderProducts,
-            currencyItem
+            currencyItem,
+            deliveryType
         }
     }),
 )
@@ -249,7 +253,8 @@ const OrderCreateDialog = enhance((props) => {
         currencyItem,
         isSuperUser,
         editProductsLoading,
-        handleOpenAddProduct
+        handleOpenAddProduct,
+        deliveryType
     } = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const totalCost = _.sumBy(orderProducts, (item) => {
@@ -355,24 +360,40 @@ const OrderCreateDialog = enhance((props) => {
                                             fullWidth={true}/>
                                     </div>
                                     <div className={classes.condition}>
-                                        <div className={classes.subTitleOrderNoPad}>Условия доставки</div>
+                                        <div className={classes.subTitleOrderNoPad}>Условия договора</div>
                                         <Field
                                             name="dealType"
                                             component={OrderDealTypeRadio}/>
+                                        <Field
+                                            name="contract"
+                                            component={TextField}
+                                            className={classes.inputDateCustom}
+                                            label="Номер договора"
+                                            fullWidth={true}/>
+                                    </div>
+                                    <div className={classes.condition}>
+                                        <div className={classes.subTitleOrderNoPad}>Условия доставки</div>
+                                        <Field
+                                            name="deliveryType"
+                                            component={DeliveryTypeSearchField}
+                                            className={classes.inputDateCustom}
+                                            label="Тип доставки"
+                                            fullWidth={true}/>
+                                        {deliveryType === 'delivery' &&
                                         <Field
                                             name="deliveryMan"
                                             component={DeliveryManSearchField}
                                             className={classes.inputDateCustom}
                                             label="Доставщик"
-                                            container="inline"
-                                            fullWidth={true}/>
+                                            fullWidth={true}/>}
+                                        {deliveryType === 'delivery' &&
                                         <Field
                                             name="deliveryDate"
                                             component={DateField}
                                             className={classes.inputDateCustom}
                                             floatingLabelText="Дата доставки"
                                             container="inline"
-                                            fullWidth={true}/>
+                                            fullWidth={true}/>}
                                     </div>
                                 </div>
                                 <div className={classes.rightOrderPart}>
