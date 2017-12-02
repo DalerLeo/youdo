@@ -129,6 +129,7 @@ const SearchField = enhance((props) => {
         disabled,
         clearValue
     } = props
+    const hintText = state.loading ? <div>Загрузка...</div> : <div>Не найдено</div>
     return (
         <div className={classes.wrapper}>
             <Select
@@ -138,7 +139,7 @@ const SearchField = enhance((props) => {
                 onInputChange={text => dispatch({text: text})}
                 onChange={value => input.onChange(value)}
                 placeholder={label}
-                noResultsText={'Не найдено'}
+                noResultsText={hintText}
                 isLoading={state.loading}
                 valueRenderer={valueRenderer}
                 labelKey={'text'}
