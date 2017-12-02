@@ -162,7 +162,7 @@ const NotificationGridList = enhance((props) => {
 
     const notificationList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const name = _.get(item, 'name')
+        const name = _.get(item, 'title')
         const status = _.get(item, 'status') === 'on'
 
         return (
@@ -185,7 +185,6 @@ const NotificationGridList = enhance((props) => {
                                 </div>
                             )
                         })}
-                        <Tooltip position="bottom" text="Добавить">
                             <FlatButton
                                 backgroundColor={'#12aaeb'}
                                 hoverColor={'#12aaeb'}
@@ -195,16 +194,17 @@ const NotificationGridList = enhance((props) => {
                                 className={classes.addPerson}
                                 label="добавить"
                                 onTouchTap={() => { notificationUser.handleOpenAddUser(id) }}/>
-                        </Tooltip>
                     </div>
                 </Col>
                 <Col xs={1}>
-                    <Toggle
-                        name="status"
-                        toggled={status}
-                        onTouchTap={() => { changeDialog.handelChangeStatus(item) }}
-                        style={{width: 'auto'}}
-                    />
+                    <Tooltip position="bottom" text={status ? 'вкл' : 'выкл'}>
+                        <Toggle
+                            name="status"
+                            toggled={status}
+                            onTouchTap={() => { changeDialog.handelChangeStatus(item) }}
+                            style={{width: 'auto'}}
+                        />
+                    </Tooltip>
                 </Col>
             </Row>
         )
@@ -235,6 +235,7 @@ const NotificationGridList = enhance((props) => {
                 open={notificationUser.open > ZERO}
                 onClose={notificationUser.handleCloseAddUser}
                 onSubmit={notificationUser.handleSubmitAddUser}
+                notify={true}
             />
             <ConfirmDialog
                 open={userConfirm.open > ZERO}

@@ -390,9 +390,10 @@ const PriceDetails = enhance((props) => {
                             {_.map(mergedList, (item) => {
                                 const id = _.get(item, 'priceListId')
                                 const priceListName = _.get(item, 'priceListName')
-                                const currency = _.get(item, ['currency', 'name']) || ' '
-                                const cashPrice = _.get(item, 'cash_price') + ' ' + currency
-                                const transferPrice = _.get(item, 'transfer_price') + ' ' + currency
+                                const transferCurrency = _.get(item, ['transferCurrency', 'name']) || ' '
+                                const cashCurrency = _.get(item, ['cashCurrency', 'name']) || ' '
+                                const cashPrice = _.get(item, 'cash_price') + ' ' + cashCurrency
+                                const transferPrice = _.get(item, 'transfer_price') + ' ' + transferCurrency
                                 return (
                                     <Row className="dottedList" key={id}>
                                         <Col xs={6}> {priceListName}</Col>

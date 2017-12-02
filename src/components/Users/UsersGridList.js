@@ -41,7 +41,7 @@ const listHeader = [
     {
         sorting: false,
         name: 'typeUser',
-        title: 'Должность',
+        title: 'Права доступа',
         xs: 2
     },
     {

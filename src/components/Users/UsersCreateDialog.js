@@ -14,6 +14,8 @@ import toCamelCase from '../../helpers/toCamelCase'
 import {TextField, ImageUploadField, CheckBox, PositionSearchField, UserStockRadioButtonField} from '../ReduxForm'
 import MainStyles from '../Styles/MainStyles'
 import getConfig from '../../helpers/getConfig'
+import {connect} from 'react-redux'
+
 export const USERS_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
 const validate = (data) => {
@@ -128,6 +130,12 @@ const enhance = compose(
         form: 'UsersCreateForm',
         validate: validateForm,
         enableReinitialize: true
+    }),
+    connect((state, props) => {
+        const positionGroups = _.get(state, ['position', 'item', 'data', 'groups'])
+        return {
+            positionGroups
+        }
     })
 )
 
@@ -142,12 +150,16 @@ const UsersCreateDialog = enhance((props) => {
         errorData,
         stockListData,
         marketTypeData,
-        currencyData
+        currencyData,
+        positionGroups
     } = props
     const errorText = _.get(errorData, 'errorText')
     const show = _.get(errorData, 'show')
     const multiStock = getConfig('MULTI_SELECT_STOCK')
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+    const agent = _.find(positionGroups, {'name': 'agent'})
+    const manufacture = _.find(positionGroups, {'name': 'manufacture'})
+    const manager = _.find(positionGroups, {'name': 'manager'})
     return (
         <Dialog
             modal={true}
@@ -185,9 +197,13 @@ const UsersCreateDialog = enhance((props) => {
                                 <Field
                                     name="position"
                                     component={PositionSearchField}
-                                    label="Должность"
+                                    label="Права доступа"
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
+                                <Field
+                                    name="isActive"
+                                    component={CheckBox}
+                                    label="Активный"/>
                             </Col>
                             <Col xs={5}>
                                 <Field
@@ -234,79 +250,81 @@ const UsersCreateDialog = enhance((props) => {
                                     fullWidth={true}/>
                             </Col>
                         </Row>
-                        <div className={classes.subTitle} style={{margin: '15px 0 10px'}}>{multiStock ? 'Связанные склады' : 'Связанный склад'}</div>
-                        {(!loading) && _.get(stockListData, 'stockListLoading')
-                        ? <div className={classes.groupLoader}>
-                            <Loader size={0.75}/>
-                        </div>
-                        : (multiStock) ? <div className={classes.stocksCheckList}>
-                                {_.map(_.get(stockListData, 'data'), (item, index) => {
-                                    const name = _.get(item, 'name')
-                                    const id = _.get(item, 'id')
-                                    return (
+                        {manager && manufacture &&
+                        <div>
+                            <div className={classes.subTitle} style={{margin: '15px 0 10px'}}>{multiStock ? 'Связанные склады' : 'Связанный склад'}</div>
+                            {(!loading) && _.get(stockListData, 'stockListLoading')
+                            ? <div className={classes.groupLoader}>
+                                <Loader size={0.75}/>
+                            </div>
+                            : (multiStock) ? <div className={classes.stocksCheckList}>
+                                    {_.map(_.get(stockListData, 'data'), (item, index) => {
+                                        const name = _.get(item, 'name')
+                                        const id = _.get(item, 'id')
+                                        return (
+                                            <Field
+                                                key={id}
+                                                name={'stocks[' + index + '][selected]'}
+                                                component={CheckBox}
+                                                label={name}/>
+                                        )
+                                    })}
+                                </div>
+                                    : <div className={classes.radioStock}>
                                         <Field
-                                            key={id}
-                                            name={'stocks[' + index + '][selected]'}
-                                            component={CheckBox}
-                                            label={name}/>
+                                            name='radioStock'
+                                            stockList={_.get(stockListData, 'data')}
+                                            loading={loading}
+                                            component={UserStockRadioButtonField}/>
+                                    </div>
+                            }
+                         </div>}
+                        {agent &&
+                        <div>
+                            <div className={classes.subTitle} style={{margin: '15px 0 10px'}}>Поддерживаемый  прайс лист</div>
+                            <Row>
+                                {(!loading) && _.get(marketTypeData, 'marketTypeLoading') &&
+                                <div className={classes.groupLoader}>
+                                    <Loader size={0.75}/>
+                                </div>}
+                                {!_.get(marketTypeData, 'marketTypeLoading') &&
+                                _.map(_.get(marketTypeData, 'data'), (item, index) => {
+                                    const id = _.get(item, 'id')
+                                    const name = _.get(item, 'name')
+                                    return (
+                                        <div key={id} style={{flexBasis: '33.33333%', maxWidth: '33.33333%', padding: '0 10px'}}>
+                                            <Field
+                                                name={'types[' + index + '][selected]'}
+                                                component={CheckBox}
+                                                label={name}/>
+                                        </div>
                                     )
                                 })}
-                            </div>
-                                : <div className={classes.radioStock}>
-                                    <Field
-                                        name='radioStock'
-                                        stockList={_.get(stockListData, 'data')}
-                                        loading={loading}
-                                        component={UserStockRadioButtonField}/>
-                                </div>
-                        }
-                        <div className={classes.subTitle} style={{margin: '15px 0 10px'}}>Поддерживаемый  прайс лист</div>
-                        <Row>
-                            {(!loading) && _.get(marketTypeData, 'marketTypeLoading') &&
-                            <div className={classes.groupLoader}>
-                                <Loader size={0.75}/>
-                            </div>}
-                            {!_.get(marketTypeData, 'marketTypeLoading') &&
-                            _.map(_.get(marketTypeData, 'data'), (item, index) => {
-                                const id = _.get(item, 'id')
-                                const name = _.get(item, 'name')
-                                return (
-                                    <div key={id} style={{flexBasis: '33.33333%', maxWidth: '33.33333%', padding: '0 10px'}}>
-                                        <Field
-                                            name={'types[' + index + '][selected]'}
-                                            component={CheckBox}
-                                            label={name}/>
-                                    </div>
-                                )
-                            })}
-                        </Row>
-                        <div className={classes.subTitle} style={{margin: '15px 0 10px'}}>Валюты</div>
-                        <Row>
-                            {(!loading) && _.get(currencyData, 'currencyListLoading') &&
-                            <div className={classes.groupLoader}>
-                                <Loader size={0.75}/>
-                            </div>}
-                            {!_.get(currencyData, 'currencyListLoading') &&
-                            _.map(_.get(currencyData, 'data'), (item, index) => {
-                                const id = _.get(item, 'id')
-                                const name = _.get(item, 'name')
-                                return (
-                                    <div key={id} style={{flexBasis: '33.33333%', maxWidth: '33.33333%', padding: '0 10px'}}>
-                                        <Field
-                                            name={'currencies[' + index + '][selected]'}
-                                            component={CheckBox}
-                                            label={name}/>
-                                    </div>
-                                )
-                            })}
-                        </Row>
+                            </Row>
+                            <div className={classes.subTitle} style={{margin: '15px 0 10px'}}>Валюты</div>
+                            <Row>
+                                {(!loading) && _.get(currencyData, 'currencyListLoading') &&
+                                <div className={classes.groupLoader}>
+                                    <Loader size={0.75}/>
+                                </div>}
+                                {!_.get(currencyData, 'currencyListLoading') &&
+                                _.map(_.get(currencyData, 'data'), (item, index) => {
+                                    const id = _.get(item, 'id')
+                                    const name = _.get(item, 'name')
+                                    return (
+                                        <div key={id} style={{flexBasis: '33.33333%', maxWidth: '33.33333%', padding: '0 10px'}}>
+                                            <Field
+                                                name={'currencies[' + index + '][selected]'}
+                                                component={CheckBox}
+                                                label={name}/>
+                                        </div>
+                                    )
+                                })}
+                            </Row>
+                        </div>}
                     </div>
                     <div className={classes.bottomButtonUsers}>
                         <div>
-                            <Field
-                                name="isActive"
-                                component={CheckBox}
-                                label="Активный"/>
                         </div>
                         <FlatButton
                             label="Сохранить"

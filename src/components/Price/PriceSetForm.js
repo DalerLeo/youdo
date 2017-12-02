@@ -302,7 +302,7 @@ const PriceSetForm = enhance((props) => {
                                     </Col>
                                     <Col xs={2}>
                                         <Field
-                                            name={'prices[' + index + '][currency_cash]'}
+                                            name={'prices[' + index + '][cashCurrency]'}
                                             className={classes.inputField}
                                             clearValue={false}
                                             placeholder="Выберите"
@@ -321,7 +321,7 @@ const PriceSetForm = enhance((props) => {
                                     </Col>
                                     <Col xs={3}>
                                         <Field
-                                            name={'prices[' + index + '][currency]'}
+                                            name={'prices[' + index + '][transferCurrency]'}
                                             className={classes.inputField}
                                             component={CurrencySearchField}
                                             placeholder="Выберите"
