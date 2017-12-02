@@ -205,6 +205,7 @@ const enhance = compose(
         const priceList = _.get(state, ['form', 'OrderCreateForm', 'values', 'priceList'])
         const formCurerncy = _.get(state, ['form', 'OrderCreateForm', 'values', 'currency'])
         const updatedPriceListProducts = _.get(state, ['order', 'changePrice', 'data', 'results'])
+        const changePriceLoading = _.get(state, ['order', 'changePrice', 'loading'])
         const initialProducts = _.get(state, ['form', 'OrderCreateForm', 'values', 'products'])
         return {
             measurement,
@@ -212,6 +213,7 @@ const enhance = compose(
             prices,
             paymentType,
             updatedPriceListProducts,
+            changePriceLoading,
             isAdmin,
             priceList,
             formCurerncy,
@@ -359,6 +361,8 @@ const enhance = compose(
             const confirmDialogPriceList = ReactDOM.findDOMNode(this.refs.confirmDialogPriceList)
             const initialProducts = !_.isEmpty(props.initialProducts)
             const canChangeAnyPrice = props.canChangeAnyPrice
+            const loading = _.get(this, ['props', 'changePriceLoading'])
+            const nextLoading = _.get(props, 'changePriceLoading')
 
             const handleChangePT = _.get(props, 'handleChangePT')
             const handleChangePriceList = _.get(props, 'handleChangePriceList')
@@ -372,18 +376,19 @@ const enhance = compose(
             const formPriceList = _.get(props, ['priceList', 'value'])
             const formCurrencyValue = _.get(props, ['formCurerncy', 'value'])
             if (formPriceList !== initialPriceList && formPriceList) {
-                if (initialPriceList && initialProducts && !canChangeAnyPrice) {
+                if (initialPriceList && initialProducts && canChangeAnyPrice) {
                     confirmDialogPriceList.style.zIndex = '10'
-                } else if (initialPriceList && initialProducts && canChangeAnyPrice) {
-                    handleChangePriceList()
                 }
             }
+
             if (formCurrencyValue !== initialCurrency && formCurrencyValue) {
-                if (initialCurrency && initialProducts && !canChangeAnyPrice) {
+                if (initialCurrency && initialProducts && canChangeAnyPrice) {
                     confirmDialogPriceList.style.zIndex = '10'
-                } else if (initialPriceList && initialProducts && canChangeAnyPrice) {
-                    handleChangePriceList()
                 }
+            }
+
+            if (!canChangeAnyPrice && initialProducts && loading !== nextLoading && nextLoading === false) {
+                handleChangePriceList()
             }
         }
     })

@@ -54,6 +54,7 @@ const enhance = compose(
             margin: '0 -30px',
             padding: '0 30px',
             overflowX: 'auto',
+            overflowY: 'hidden',
             zIndex: '2',
             '& > div': {
                 minWidth: '330px',
