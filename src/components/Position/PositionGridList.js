@@ -185,8 +185,8 @@ const PositionGridList = enhance((props) => {
 
     const headers = (
         <Row className="dottedList">
-            <Col xs={2}>Должность</Col>
-            <Col xs={9}>Права доступа</Col>
+            <Col xs={2}>Права доступа</Col>
+            <Col xs={9}>Возможности</Col>
             <Col xs={1}></Col>
         </Row>
     )
@@ -252,7 +252,7 @@ const PositionGridList = enhance((props) => {
                     <div className={classes.nav}>
                         <div>
                             <FlatButton
-                                label="создать должность"
+                                label="создать права доступа"
                                 labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb', fontSize: '13px'}}
                                 className={classes.addButton}
                                 onTouchTap={createDialog.handleOpenCreateDialog}

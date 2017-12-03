@@ -167,7 +167,7 @@ const MultiSelectField = enhance((props) => {
         input,
         filterOptionRender
     } = props
-
+    const hintText = state.loading ? <div>Загрузка...</div> : <div>Не найдено</div>
     return (
         <div className={classes.wrapper}>
             <Select
@@ -179,7 +179,7 @@ const MultiSelectField = enhance((props) => {
                 removeSelected={true}
                 deleteRemoves={false}
                 placeholder={label}
-                noResultsText={'Не найдено'}
+                noResultsText={hintText}
                 isLoading={state.loading}
                 valueRenderer={valueRenderer}
                 labelKey={'text'}

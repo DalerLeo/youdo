@@ -101,11 +101,12 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
-        return !_.isEmpty(_.get(nextProps, ['state', 'dataSource'])) && _.get(nextProps, ['input', 'value']) &&
-            _.get(props, ['state', 'loading']) !== _.get(nextProps, ['state', 'loading'])
+        return (!_.isEmpty(_.get(nextProps, ['state', 'dataSource'])) || _.get(props, ['input', 'value']) !== _.get(nextProps, ['input', 'value'])) &&
+        _.get(nextProps, ['input', 'value'])
     }, (props) => {
         const {state, input, getItem, dispatch, getText, getValue} = props
         const finder = _.find(state.dataSource, {'value': input.value.value})
+
         if (_.isEmpty(finder) && input.value.value) {
             getItem(input.value.value).then((data) => {
                 return dispatch({
@@ -129,6 +130,7 @@ const SearchField = enhance((props) => {
         disabled,
         clearValue
     } = props
+    const hintText = state.loading ? <div>Загрузка...</div> : <div>Не найдено</div>
     return (
         <div className={classes.wrapper}>
             <Select
@@ -138,7 +140,7 @@ const SearchField = enhance((props) => {
                 onInputChange={text => dispatch({text: text})}
                 onChange={value => input.onChange(value)}
                 placeholder={label}
-                noResultsText={'Не найдено'}
+                noResultsText={hintText}
                 isLoading={state.loading}
                 valueRenderer={valueRenderer}
                 labelKey={'text'}

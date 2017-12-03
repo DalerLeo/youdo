@@ -101,7 +101,7 @@ const enhance = compose(
         return (((_.get(props, ['state', 'text']) !== _.get(nextProps, ['state', 'text']) && _.get(nextProps, ['state', 'text']) !== '') ||
             _.get(props, ['state', 'open']) !== _.get(nextProps, ['state', 'open'])) ||
             _.get(props, ['parent']) !== _.get(nextProps, ['parent']) || _.get(props, ['stock']) !== _.get(nextProps, ['stock'])) &&
-            _.get(nextProps, ['state', 'open'])
+            _.get(nextProps, ['state', 'text'])
     }, (props) => {
         props.state.open && _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)
     })
