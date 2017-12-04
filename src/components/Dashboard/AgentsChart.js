@@ -23,7 +23,7 @@ const AgentsChart = enhance((props) => {
     const config = {
         chart: {
             type: 'bar',
-            height: 250
+            height: 350
         },
         title: {
             text: '',

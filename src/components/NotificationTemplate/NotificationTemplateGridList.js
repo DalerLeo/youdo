@@ -11,7 +11,6 @@ import Container from '../Container'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import SettingSideMenu from '../Settings/SettingsSideMenu'
-import Tooltip from '../ToolTip'
 import BindAgentDialog from '../../components/Zones/ZoneBindAgentDialog'
 import ConfirmDialog from '../ConfirmDialog'
 
@@ -160,6 +159,18 @@ const NotificationGridList = enhance((props) => {
         <span>a</span>
     )
 
+    const styles = {
+        toggle: {
+            marginBottom: 16
+        },
+        thumbOff: {
+            backgroundColor: '#f2f5f8'
+        },
+        trackOff: {
+            backgroundColor: '#bdbdbd'
+        }
+    }
+
     const notificationList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'title')
@@ -197,14 +208,15 @@ const NotificationGridList = enhance((props) => {
                     </div>
                 </Col>
                 <Col xs={1}>
-                    <Tooltip position="bottom" text={status ? 'вкл' : 'выкл'}>
-                        <Toggle
-                            name="status"
-                            toggled={status}
-                            onTouchTap={() => { changeDialog.handelChangeStatus(item) }}
-                            style={{width: 'auto'}}
-                        />
-                    </Tooltip>
+                    <Toggle
+                        name="status"
+                        toggled={status}
+                        onTouchTap={() => { changeDialog.handelChangeStatus(item) }}
+                        thumbStyle={styles.thumbOff}
+                        trackStyle={styles.trackOff}
+                        thumbSwitchedStyle={styles.thumbSwitched}
+                        trackSwitchedStyle={styles.trackSwitched}
+                        style={{width: 'auto'}}/>
                 </Col>
             </Row>
         )

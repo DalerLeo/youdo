@@ -11,7 +11,8 @@ export const WIDGETS_FORM_KEY = {
     SALES: 'sales',
     ORDERS: 'orders',
     AGENTS: 'agents',
-    FINANCE: 'finance'
+    FINANCE: 'finance',
+    CURRENCY: 'currency'
 }
 
 const enhance = compose(
@@ -103,6 +104,12 @@ const Widgets = enhance((props) => {
                             <Field
                                 label="Оборот"
                                 name="finance"
+                                component={CheckBox}/>
+                        </div>
+                        <div className={classes.switch}>
+                            <Field
+                                label="Валюты"
+                                name="currency"
                                 component={CheckBox}/>
                         </div>
                     </div>

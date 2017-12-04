@@ -62,7 +62,7 @@ const DivisionCreateDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>{isUpdate ? 'Изменить измерение' : 'Добавить измерение'}</span>
+                <span>{isUpdate ? 'Изменить подразделение' : 'Добавить подразделение'}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>

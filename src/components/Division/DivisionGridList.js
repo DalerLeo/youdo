@@ -21,25 +21,19 @@ import Edit from 'material-ui/svg-icons/image/edit'
 const listHeader = [
     {
         sorting: true,
-        name: 'id',
-        xs: 2,
-        title: 'Id'
-    },
-    {
-        sorting: true,
         name: 'name',
-        xs: 5,
+        xs: 3,
         title: 'Наименование'
     },
     {
         sorting: false,
         name: 'type',
-        xs: 4,
+        xs: 7,
         title: 'Тип'
     },
     {
         sorting: false,
-        xs: 1,
+        xs: 2,
         name: 'actions',
         title: ''
     }
@@ -84,14 +78,16 @@ const enhance = compose(
         },
         listRow: {
             margin: '0 -30px !important',
+            minHeight: '50px',
             width: 'auto !important',
-            padding: '0 30px',
+            padding: '5px 30px',
             '&:hover > div:last-child > div ': {
                 opacity: '1'
             }
         },
         iconBtn: {
             display: 'flex',
+            justifyContent: 'flex-end',
             opacity: '0',
             transition: 'all 200ms ease-out'
         }
@@ -142,14 +138,37 @@ const DivisionGridList = enhance((props) => {
     const divisionList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const type = _.get(item, 'type')
 
         return (
             <Row key={id} className={classes.listRow}>
-                <Col xs={2}>{id}</Col>
-                <Col xs={5}>{name}</Col>
-                <Col xs={4}>{type}</Col>
-                <Col xs={1} style={{textAlign: 'right'}}>
+                <Col xs={3}>{name}</Col>
+                <Col xs={7}>
+                    <div className={classes.personalWrap}>
+                        {_.map(_.get(item, 'users'), (user) => {
+                            const username = _.get(user, 'firstName') + ' ' + _.get(user, 'secondName')
+
+                            return (
+                                <div className={classes.person}>
+                                    {username}
+                                    <div className={classes.deletePers}>
+                                        <CloseIcon
+                                            color="#5d6474"/>
+                                    </div>
+                                </div>
+                            )
+                        })}
+                        <FlatButton
+                            backgroundColor={'#12aaeb'}
+                            hoverColor={'#12aaeb'}
+                            rippleColor={'#fff'}
+                            style={{height: '28px', lineHeight: '28px', minWidth: '60px'}}
+                            labelStyle={{textTransform: 'none', color: '#fff', verticalAlign: 'baseline'}}
+                            className={classes.addPerson}
+                            label="добавить"
+                        />
+                    </div>
+                </Col>
+                <Col xs={2}>
                     <div className={classes.iconBtn}>
                         <Tooltip position="bottom" text="Изменить">
                             <IconButton
@@ -208,6 +227,7 @@ const DivisionGridList = enhance((props) => {
                         actionsDialog={actions}
                         addButton={addButton}
                         listShadow={false}
+                        flexibleRow={true}
                     />
                 </div>
             </div>
