@@ -44,6 +44,12 @@ export const EXPENSIVE_CATEGORY_LIST = `/${EXPENSIVE_CATEGORY}/`
 export const EXPENSIVE_CATEGORY_ITEM = `/${EXPENSIVE_CATEGORY}/%d/`
 export const EXPENSIVE_CATEGORY_DELETE = `/${EXPENSIVE_CATEGORY}/%d/`
 
+export const POST = 'main/jobs'
+export const POST_CREATE = `/${POST}/`
+export const POST_LIST = `/${POST}/`
+export const POST_ITEM = `/${POST}/%d/`
+export const POST_DELETE = `/${POST}/%d/`
+
 export const PROVIDER = 'stock/provider'
 export const PROVIDER_CREATE = `/${PROVIDER}/`
 export const PROVIDER_DELETE = `/${PROVIDER}/%d/`

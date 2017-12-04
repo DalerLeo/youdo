@@ -23,6 +23,7 @@ import {BrandList} from '../containers/Brand'
 import {MeasurementList} from '../containers/Measurement'
 import {ZonesList} from '../containers/Zones'
 import {ExpensiveCategoryList} from '../containers/ExpensiveCategory'
+import {PostList} from '../containers/Post'
 import {UsersList} from '../containers/Users'
 import {ProviderList} from '../containers/Provider'
 import {ClientList} from '../containers/Client'
@@ -308,6 +309,17 @@ export default {
                 {
                     path: ROUTES.EXPENSIVE_CATEGORY_ITEM_URL,
                     component: userIsAuth(ExpensiveCategoryList)
+                }
+            ]
+        },
+        // Post
+        {
+            path: ROUTES.POST_LIST_URL,
+            component: userIsAdminChain(PostList),
+            childRoutes: [
+                {
+                    path: ROUTES.POST_ITEM_URL,
+                    component: userIsAuth(PostList)
                 }
             ]
         },
