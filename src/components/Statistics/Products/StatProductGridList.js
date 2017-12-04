@@ -8,21 +8,23 @@ import Loader from '../../Loader'
 import {compose, lifecycle, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import StatSideMenu from '../StatSideMenu'
+import ToolTip from '../../ToolTip'
 import Pagination from '../../GridList/GridListNavPagination/index'
 import getConfig from '../../../helpers/getConfig'
 import numberFormat from '../../../helpers/numberFormat.js'
 import horizontalScroll from '../../../helpers/horizontalScroll.js'
 import NotFound from '../../Images/not-found.png'
-import {ProductTypeChildSearchField, ProductTypeParentSearchField, DateToDateField} from '../../ReduxForm'
+import {TextField, ProductTypeChildSearchField, ProductTypeParentSearchField, DateToDateField} from '../../ReduxForm'
 import ordering from '../../../helpers/ordering'
 import {reduxForm, Field} from 'redux-form'
-import {TextField} from '../../ReduxForm/index'
 import IconButton from 'material-ui/IconButton'
 import Search from 'material-ui/svg-icons/action/search'
 import ArrowUpIcon from 'material-ui/svg-icons/navigation/arrow-upward'
 import ArrowDownIcon from 'material-ui/svg-icons/navigation/arrow-downward'
 import {StatisticsFilterExcel} from '../../Statistics'
 import {connect} from 'react-redux'
+import FullScreen from 'material-ui/svg-icons/navigation/fullscreen'
+import FullScreenExit from 'material-ui/svg-icons/navigation/fullscreen-exit'
 
 export const STAT_PRODUCT_FILTER_KEY = {
     SEARCH: 'search',
@@ -55,10 +57,6 @@ const enhance = compose(
             overflowX: 'hidden',
             overflowY: 'auto',
             padding: '20px 30px 0',
-            '& > div:nth-child(2)': {
-                marginTop: '10px',
-                borderTop: '1px #efefef solid'
-            },
             '& .row': {
                 margin: '0 !important'
             }
@@ -171,6 +169,12 @@ const enhance = compose(
                 }
             }
         },
+        filters: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            marginTop: '10px',
+            borderTop: '1px #efefef solid'
+        },
         container: {
             position: 'relative'
         },
@@ -232,6 +236,28 @@ const enhance = compose(
         },
         icon: {
             height: '15px !important'
+        },
+        expandedTable: {
+            background: '#fff',
+            padding: '0 10px 0 30px',
+            position: 'fixed',
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            top: '0',
+            left: '0',
+            right: '0',
+            bottom: '0',
+            zIndex: '100',
+            '& > div': {
+                margin: '0'
+            }
+        },
+        flexCenter: {
+            display: 'flex',
+            alignItems: 'center'
+        },
+        fullScreen: {
+            marginLeft: '10px !important'
         }
     }),
     reduxForm({
@@ -239,6 +265,7 @@ const enhance = compose(
         enableReinitialize: true
     }),
     withState('currentRow', 'updateRow', null),
+    withState('expandedTable', 'setExpandedTable', false),
     connect((state) => {
         const typeParent = _.get(state, ['form', 'StatisticsFilterForm', 'values', 'productType', 'value'])
         return {
@@ -298,6 +325,8 @@ const StatProductGridList = enhance((props) => {
         pathname,
         currentRow,
         updateRow,
+        expandedTable,
+        setExpandedTable,
         query
     } = props
 
@@ -405,67 +434,80 @@ const StatProductGridList = enhance((props) => {
                             fields={fields}
                             filterKeys={STAT_PRODUCT_FILTER_KEY}
                         />
-                        <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                            <form className={classes.form} onSubmit={handleSubmit(searchSubmit)}>
-                                <Field
-                                    className={classes.inputFieldCustom}
-                                    name="search"
-                                    component={TextField}
-                                    label="Поиск"
-                                    fullWidth={true}/>
-                                <IconButton
-                                    className={classes.searchButton}
-                                    iconStyle={iconStyle.icon}
-                                    style={iconStyle.button}
-                                    type="submit">
-                                    <Search/>
-                                </IconButton>
-                            </form>
-                            <Pagination filter={filter}/>
-                        </div>
-                        <div className={classes.container}>
-                            {listLoading && <div className={classes.loader}>
-                                <Loader size={0.75}/>
-                            </div>}
-                            <div className={classes.tableWrapper}>
-                                <div className={classes.leftTable}>
-                                    <div><span>Товар</span></div>
-                                    {tableLeft}
+                        <div className={expandedTable ? classes.expandedTable : ''}>
+                            <div className={classes.filters}>
+                                <form className={classes.form} onSubmit={handleSubmit(searchSubmit)}>
+                                    <Field
+                                        className={classes.inputFieldCustom}
+                                        name="search"
+                                        component={TextField}
+                                        label="Поиск"
+                                        fullWidth={true}/>
+                                    <IconButton
+                                        className={classes.searchButton}
+                                        iconStyle={iconStyle.icon}
+                                        style={iconStyle.button}
+                                        type="submit">
+                                        <Search/>
+                                    </IconButton>
+                                </form>
+                                <div className={classes.flexCenter}>
+                                    <Pagination filter={filter}/>
+                                    <ToolTip position="left" text={expandedTable ? 'Обычный вид' : 'Расширенный вид'}>
+                                        <IconButton
+                                            className={classes.fullScreen}
+                                            onTouchTap={() => { setExpandedTable(!expandedTable) }}
+                                            iconStyle={iconStyle.icon}
+                                            style={iconStyle.button}>
+                                            {expandedTable ? <FullScreenExit color="#666"/> : <FullScreen color="#666"/>}
+                                        </IconButton>
+                                    </ToolTip>
                                 </div>
-                                {_.isEmpty(tableList) && !listLoading &&
-                                <div className={classes.emptyQuery}>
-                                    <div>По вашему запросу ничего не найдено</div>
+                            </div>
+                            <div className={classes.container}>
+                                {listLoading && <div className={classes.loader}>
+                                    <Loader size={0.75}/>
                                 </div>}
-                                <div ref="horizontalTable">
-                                    <table className={classes.mainTable}>
-                                        <tbody className={classes.tableBody}>
-                                        <tr className={classes.title}>
-                                            <td rowSpan={2}>Тип</td>
-                                            <td colSpan={2}>Продажа</td>
-                                            <td colSpan={2}>Возврат</td>
-                                            <td colSpan={2}>Фактическая продажа</td>
-                                        </tr>
-                                        <tr className={classes.subTitle}>
-                                            {_.map(listHeader, (header, index) => {
-                                                const sortingType = filter.getSortingType(header.name)
-                                                const icon = _.isNil(sortingType) ? null : sortingType ? <ArrowUpIcon className={classes.icon}/> : <ArrowDownIcon className={classes.icon}/>
-                                                if (!header.sorting) {
-                                                    return <td key={index}>{header.title}</td>
-                                                }
-                                                return <td key={index} style={{cursor: 'pointer'}} onClick={() => {
-                                                    if (_.get(query, 'ordering') === header.name) {
-                                                        ordering(filter, '-' + header.name, pathname)
-                                                    } else if (_.get(query, 'ordering') === '-' + header.name) {
-                                                        ordering(filter, '', pathname)
-                                                    } else {
-                                                        ordering(filter, header.name, pathname)
+                                <div className={classes.tableWrapper}>
+                                    <div className={classes.leftTable}>
+                                        <div><span>Товар</span></div>
+                                        {tableLeft}
+                                    </div>
+                                    {_.isEmpty(tableList) && !listLoading &&
+                                    <div className={classes.emptyQuery}>
+                                        <div>По вашему запросу ничего не найдено</div>
+                                    </div>}
+                                    <div ref="horizontalTable">
+                                        <table className={classes.mainTable}>
+                                            <tbody className={classes.tableBody}>
+                                            <tr className={classes.title}>
+                                                <td rowSpan={2}>Тип</td>
+                                                <td colSpan={2}>Продажа</td>
+                                                <td colSpan={2}>Возврат</td>
+                                                <td colSpan={2}>Фактическая продажа</td>
+                                            </tr>
+                                            <tr className={classes.subTitle}>
+                                                {_.map(listHeader, (header, index) => {
+                                                    const sortingType = filter.getSortingType(header.name)
+                                                    const icon = _.isNil(sortingType) ? null : sortingType ? <ArrowUpIcon className={classes.icon}/> : <ArrowDownIcon className={classes.icon}/>
+                                                    if (!header.sorting) {
+                                                        return <td key={index}>{header.title}</td>
                                                     }
-                                                }}>{header.title}{icon}</td>
-                                            })}
-                                        </tr>
-                                        {tableList}
-                                        </tbody>
-                                    </table>
+                                                    return <td key={index} style={{cursor: 'pointer'}} onClick={() => {
+                                                        if (_.get(query, 'ordering') === header.name) {
+                                                            ordering(filter, '-' + header.name, pathname)
+                                                        } else if (_.get(query, 'ordering') === '-' + header.name) {
+                                                            ordering(filter, '', pathname)
+                                                        } else {
+                                                            ordering(filter, header.name, pathname)
+                                                        }
+                                                    }}>{header.title}{icon}</td>
+                                                })}
+                                            </tr>
+                                            {tableList}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>

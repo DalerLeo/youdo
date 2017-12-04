@@ -92,9 +92,7 @@ const enhance = compose(
         rightSide: {
             flexBasis: '50%',
             maxWidth: '50%',
-            extend: 'padding',
-            maxHeight: '442px',
-            overflowY: 'auto'
+            extend: 'padding'
         },
         bodyContent: {
             color: '#333',
@@ -292,6 +290,31 @@ const ShopCreateDialog = enhance((props) => {
                                     label="Тип заведения"
                                     fullWidth={true}/>
                             </div>
+                            <div className={classes.divider}>
+                                <Field
+                                    name="address"
+                                    component={TextField}
+                                    className={classes.inputFieldCustom}
+                                    label="Адрес"
+                                    fullWidth={true}/>
+                                <Field
+                                    name="guide"
+                                    component={TextField}
+                                    className={classes.inputFieldCustom}
+                                    label="Ориентир"
+                                    fullWidth={true}/>
+                                <div className={classes.addPlace}>
+                                    {!(lat && lng)
+                                        ? <a onClick={mapDialog.handleOpenMapDialog}><Place color="#129fdd"/> отметить
+                                            местоположение на карте</a>
+                                        : <div className={classes.flex}>
+                                            <div>
+                                                <Place color="#999"/> <span>{lat}</span> <span>{lng}</span>
+                                            </div>
+                                            <a onClick={updateMapDialog.handleOpenMapUpdateDialog}>Изменить</a>
+                                        </div>}
+                                </div>
+                            </div>
                             <div className={classes.flex} style={{alignItems: 'baseline'}}>
                                 <div className={classes.inputHalfWrap}>Частота посещений:</div>
                                 <div className={classes.inputHalfWrap}>
@@ -318,31 +341,6 @@ const ShopCreateDialog = enhance((props) => {
                             </div>
                         </div>
                         <div className={classes.rightSide}>
-                            <div className={classes.divider}>
-                                <Field
-                                    name="address"
-                                    component={TextField}
-                                    className={classes.inputFieldCustom}
-                                    label="Адрес"
-                                    fullWidth={true}/>
-                                <Field
-                                    name="guide"
-                                    component={TextField}
-                                    className={classes.inputFieldCustom}
-                                    label="Ориентир"
-                                    fullWidth={true}/>
-                                <div className={classes.addPlace}>
-                                    {!(lat && lng)
-                                        ? <a onClick={mapDialog.handleOpenMapDialog}><Place color="#129fdd"/> отметить
-                                            местоположение на карте</a>
-                                        : <div className={classes.flex}>
-                                            <div>
-                                                <Place color="#999"/> <span>{lat}</span> <span>{lng}</span>
-                                            </div>
-                                            <a onClick={updateMapDialog.handleOpenMapUpdateDialog}>Изменить</a>
-                                        </div>}
-                                </div>
-                            </div>
                             <Field
                                 name="phone"
                                 component={TextField}

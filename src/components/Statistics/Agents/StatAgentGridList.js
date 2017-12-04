@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import {Row} from 'react-flexbox-grid'
 import * as ROUTES from '../../../constants/routes'
-import Container from '../../Container/index'
+import Container from '../../Container'
 import injectSheet from 'react-jss'
 import {compose, withState, lifecycle} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
@@ -18,6 +18,9 @@ import horizontalScroll from '../../../helpers/horizontalScroll'
 import getConfig from '../../../helpers/getConfig'
 import NotFound from '../../Images/not-found.png'
 import {StatisticsFilterExcel} from '../../Statistics'
+import IconButton from 'material-ui/IconButton'
+import FullScreen from 'material-ui/svg-icons/navigation/fullscreen'
+import FullScreenExit from 'material-ui/svg-icons/navigation/fullscreen-exit'
 
 export const STAT_AGENT_FILTER_KEY = {
     FROM_DATE: 'fromDate',
@@ -294,9 +297,32 @@ const enhance = compose(
                 color: '#777',
                 margin: '0 2px'
             }
+        },
+        expandedTable: {
+            background: '#fff',
+            padding: '0 10px 0 30px',
+            position: 'fixed',
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            top: '0',
+            left: '0',
+            right: '0',
+            bottom: '0',
+            zIndex: '100',
+            '& > div': {
+                margin: '0'
+            }
+        },
+        flexCenter: {
+            display: 'flex',
+            alignItems: 'center'
+        },
+        fullScreen: {
+            marginLeft: '10px !important'
         }
     }),
     withState('currentRow', 'updateRow', null),
+    withState('expandedTable', 'setExpandedTable', false),
     reduxForm({
         form: 'StatisticsFilterForm',
         enableReinitialize: true
@@ -362,6 +388,18 @@ const styleOnHover = {
     background: '#efefef'
 }
 
+const iconStyle = {
+    icon: {
+        width: 24,
+        height: 24
+    },
+    button: {
+        width: 36,
+        height: 36,
+        padding: 6
+    }
+}
+
 const StatAgentGridList = enhance((props) => {
     const {
         classes,
@@ -375,7 +413,9 @@ const StatAgentGridList = enhance((props) => {
         handleSubmit,
         filterOpen,
         currentRow,
-        updateRow
+        updateRow,
+        expandedTable,
+        setExpandedTable
     } = props
 
     const listLoading = _.get(listData, 'listLoading')
@@ -469,69 +509,82 @@ const StatAgentGridList = enhance((props) => {
                             handleSubmitFilterDialog={handleSubmitFilterDialog}
                             handleGetDocument={getDocument.handleGetDocument}
                         />
-                        <div className={classes.filters}>
-                            <form onSubmit={handleSubmit(handleSubmitFilterDialog)}>
-                                <Field
-                                    className={classes.inputFieldCustom}
-                                    name="search"
-                                    component={TextField}
-                                    hintText="Поиск"/>
-                            </form>
-                            <Pagination filter={filter}/>
-                        </div>
-                        <div className={classes.container}>
-                            {listLoading && <div className={classes.loader}>
-                                <Loader size={0.75}/>
-                            </div>}
-                            <div className={classes.tableWrapper}>
-                                <div className={classes.leftTable}>
-                                    <div><span>Агент</span></div>
-                                    {tableLeft}
+                        <div className={expandedTable ? classes.expandedTable : ''}>
+                            <div className={classes.filters}>
+                                <form onSubmit={handleSubmit(handleSubmitFilterDialog)}>
+                                    <Field
+                                        className={classes.inputFieldCustom}
+                                        name="search"
+                                        component={TextField}
+                                        hintText="Поиск"/>
+                                </form>
+                                <div className={classes.flexCenter}>
+                                    <Pagination filter={filter}/>
+                                    <ToolTip position="left" text={expandedTable ? 'Обычный вид' : 'Расширенный вид'}>
+                                        <IconButton
+                                            className={classes.fullScreen}
+                                            onTouchTap={() => { setExpandedTable(!expandedTable) }}
+                                            iconStyle={iconStyle.icon}
+                                            style={iconStyle.button}>
+                                            {expandedTable ? <FullScreenExit color="#666"/> : <FullScreen color="#666"/>}
+                                        </IconButton>
+                                    </ToolTip>
                                 </div>
-                                {_.isEmpty(tableList) && !listLoading &&
-                                <div className={classes.emptyQuery}>
-                                    <div>По вашему запросу ничего не найдено</div>
+                            </div>
+                            <div className={classes.container}>
+                                {listLoading && <div className={classes.loader}>
+                                    <Loader size={0.75}/>
                                 </div>}
-                                <div ref="horizontalTable">
-                                    <table className={classes.mainTable}>
-                                        <tbody className={classes.tableBody}>
-                                        <tr className={classes.title}>
-                                            <td colSpan={2}>Продажа</td>
-                                            <td colSpan={2}>Возврат</td>
-                                            <td colSpan={2}>Оплачено</td>
-                                            <td colSpan={3}>План</td>
-                                        </tr>
-                                        <tr className={classes.subTitle}>
-                                            {_.map(listHeader, (header, index) => {
-                                                const ZERO = 0
-                                                const ONE = 1
-                                                const EVEN = 2
-                                                const isEven = (index + ONE) % EVEN === ZERO
-                                                const tooltip = _.get(header, 'tooltip')
-                                                const sorting = _.get(header, 'sorting')
-                                                const position = 'left'
-                                                if (tooltip) {
-                                                    return (
-                                                        <td key={index}>
-                                                            <ToolTip text={tooltip} position={position} alignRight={isEven}>{header.title}</ToolTip>
-                                                        </td>
-                                                    )
-                                                } else if (sorting) {
+                                <div className={classes.tableWrapper}>
+                                    <div className={classes.leftTable}>
+                                        <div><span>Агент</span></div>
+                                        {tableLeft}
+                                    </div>
+                                    {_.isEmpty(tableList) && !listLoading &&
+                                    <div className={classes.emptyQuery}>
+                                        <div>По вашему запросу ничего не найдено</div>
+                                    </div>}
+                                    <div ref="horizontalTable">
+                                        <table className={classes.mainTable}>
+                                            <tbody className={classes.tableBody}>
+                                            <tr className={classes.title}>
+                                                <td colSpan={2}>Продажа</td>
+                                                <td colSpan={2}>Возврат</td>
+                                                <td colSpan={2}>Оплачено</td>
+                                                <td colSpan={3}>План</td>
+                                            </tr>
+                                            <tr className={classes.subTitle}>
+                                                {_.map(listHeader, (header, index) => {
+                                                    const ZERO = 0
+                                                    const ONE = 1
+                                                    const EVEN = 2
+                                                    const isEven = (index + ONE) % EVEN === ZERO
+                                                    const tooltip = _.get(header, 'tooltip')
+                                                    const sorting = _.get(header, 'sorting')
+                                                    const position = 'left'
                                                     if (tooltip) {
                                                         return (
-                                                            <td key={index} style={{cursor: 'pointer'}}>
+                                                            <td key={index}>
                                                                 <ToolTip text={tooltip} position={position} alignRight={isEven}>{header.title}</ToolTip>
                                                             </td>
                                                         )
+                                                    } else if (sorting) {
+                                                        if (tooltip) {
+                                                            return (
+                                                                <td key={index} style={{cursor: 'pointer'}}>
+                                                                    <ToolTip text={tooltip} position={position} alignRight={isEven}>{header.title}</ToolTip>
+                                                                </td>
+                                                            )
+                                                        }
+                                                        return <td key={index} style={{cursor: 'pointer'}}>{header.title}</td>
                                                     }
-                                                    return <td key={index} style={{cursor: 'pointer'}}>{header.title}</td>
-                                                }
-                                                return <td key={index}>{header.title}</td>
-                                            })}
-                                        </tr>
-                                        {tableList}
-                                        </tbody>
-                                    </table>
+                                                    return <td key={index}>{header.title}</td>
+                                                })}
+                                            </tr>
+                                            {tableList}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
