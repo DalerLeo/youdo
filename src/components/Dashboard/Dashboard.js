@@ -15,6 +15,7 @@ import Widgets from './Widgets'
 import OrderChart from './OrderChart'
 import AgentsChart from './AgentsChart'
 import FinanceChart from './FinanceChart'
+import Currencies from './Currencies'
 import SalesReturnsChart from './SalesReturnsChart'
 
 const enhance = compose(
@@ -80,7 +81,9 @@ const enhance = compose(
         chartHalf: {
             width: 'calc(50% - 10px)',
             '& > div': {
-                marginBottom: '20px'
+                marginBottom: '20px',
+                minWidth: 'calc(50% - 10px)',
+                width: '100%'
             }
         },
         chart: {
@@ -127,12 +130,24 @@ const enhance = compose(
             const wrapper = this.refs.wrapper
             const firstChild = wrapper.firstChild
             const lastChild = wrapper.lastChild
+            _.map(wrapper.childNodes, (half) => {
+                _.map(half.childNodes, (chart) => {
+                    chart.style.width = '100%'
+                })
+            })
+            const style = 'width: 100%; display: flex; justify-content: space-between'
+            firstChild.style.cssText = ''
+            lastChild.style.cssText = ''
             if (_.isEmpty(firstChild.childNodes)) {
-                lastChild.className += 'aaaaa'
-                lastChild.style.width = '100%'
+                _.map(lastChild.childNodes, (div) => {
+                    div.style.width = 'calc(50% - 10px)'
+                })
+                lastChild.style.cssText = style
             } else if (_.isEmpty(lastChild.childNodes)) {
-                firstChild.className += 'aaaaa'
-                firstChild.style.width = '100%'
+                _.map(firstChild.childNodes, (div) => {
+                    div.style.width = 'calc(50% - 10px)'
+                })
+                firstChild.style.cssText = style
             }
         }
     })
@@ -147,6 +162,7 @@ const Dashboard = enhance((props) => {
         ordersReturnsChart,
         agentsChart,
         financeChart,
+        currencyData,
         dateInitialValues,
         widgetsForm,
         loading
@@ -154,6 +170,7 @@ const Dashboard = enhance((props) => {
     const ZERO = 0
     const MAX_OUTPUT = 10
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
+
     // USER DATA //
     const username = _.get(userData, 'username')
     const position = _.get(userData, 'position')
@@ -222,6 +239,9 @@ const Dashboard = enhance((props) => {
         return item
     })
 
+    // CURRENCY DATA //
+    const currencyListActive = _.get(currencyData, 'active')
+
     const noWidgets = !orderChartActive && !orderReturnActive && !agentsChartActive && !financeChartActive
     const emptySales = _.isEmpty(orderChartSales) && !orderChartLoading
     const emptyOrders = _.isEmpty(orderChartReturns) && !orderReturnLoading
@@ -253,6 +273,8 @@ const Dashboard = enhance((props) => {
 
                 <section className={classes.chartsWrapper} ref="wrapper">
                     <div className={classes.chartHalf}>
+                        {currencyListActive && <Currencies currencyData={currencyData}/>}
+
                         {orderChartActive &&
                         <Paper zDepth={1}>
                             <div className={classes.chartHeader}>

@@ -16,6 +16,12 @@ import {
     statFinanceIncomeFetchAction,
     statFinanceExpenseFetchAction
 } from '../../actions/dashboard'
+import {
+    courseCreateAction,
+    currencyListFetchAction
+} from '../../actions/currency'
+import {reset} from 'redux-form'
+import {openSnackbarAction} from '../../actions/snackbar'
 
 const enhance = compose(
     connect((state, props) => {
@@ -32,11 +38,14 @@ const enhance = compose(
         const financeDataLoading = !_.isArray(financeIncome) || !_.isArray(financeExpense)
             ? true
             : _.get(state, ['statFinance', 'dataIn', 'loading']) || _.get(state, ['statFinance', 'dataOut', 'loading'])
+        const currencyList = _.get(state, ['currency', 'list', 'data'])
+        const currencyListLoading = !_.isArray(currencyList.results) ? true : _.get(state, ['currency', 'list', 'loading'])
         const userName = _.get(state, ['authConfirm', 'data', 'firstName']) + ' ' + _.get(state, ['authConfirm', 'data', 'secondName'])
         const userPosition = _.get(state, ['authConfirm', 'data', 'position', 'name'])
         const isAdmin = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
         const filter = filterHelper(orderList, pathname, query)
         const widgetsForm = _.get(state, ['form', 'DashboardWidgetsForm'])
+        const currencyForm = _.get(state, ['form', 'DashboardCurrencyForm'])
         return {
             orderList,
             orderLoading,
@@ -47,11 +56,14 @@ const enhance = compose(
             financeIncome,
             financeExpense,
             financeDataLoading,
+            currencyList,
+            currencyListLoading,
             userName,
             userPosition,
             isAdmin,
             filter,
-            widgetsForm
+            widgetsForm,
+            currencyForm
         }
     }),
 
@@ -65,33 +77,39 @@ const enhance = compose(
             const activeOrders = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.ORDERS)) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.ORDERS))
             const activeAgents = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.AGENTS)) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.AGENTS))
             const activeFinance = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.FINANCE)) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.FINANCE))
-            return (activeSales
-               ? dispatch(statSalesDataFetchAction(filter))
-               : Promise.resolve())
-               .then(() => {
-                   return (activeOrders
-                       ? dispatch(statSalesReturnDataFetchAction(filter))
-                           .then(() => {
-                               dispatch(statSalesDataFetchAction(filter))
-                           })
-                       : Promise.resolve())
-                       .then(() => {
-                           return (activeAgents
-                               ? dispatch(statAgentDataFetchAction(filter))
-                               : Promise.resolve())
-                               .then(() => {
-                                   return (activeFinance
-                                       ? dispatch(statFinanceIncomeFetchAction(filter))
-                                           .then(() => {
-                                               dispatch(statFinanceExpenseFetchAction(filter))
-                                           })
-                                       : Promise.resolve())
-                                       .then(() => {
-                                           setLoading(false)
-                                       })
-                               })
-                       })
-               })
+            const activeCurrency = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.CURRENCY)) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.CURRENCY))
+            return (activeCurrency
+                ? dispatch(currencyListFetchAction(filter))
+                : Promise.resolve())
+                .then(() => {
+                    return (activeSales
+                        ? dispatch(statSalesDataFetchAction(filter))
+                        : Promise.resolve())
+                        .then(() => {
+                            return (activeOrders
+                                ? dispatch(statSalesReturnDataFetchAction(filter))
+                                    .then(() => {
+                                        dispatch(statSalesDataFetchAction(filter))
+                                    })
+                                : Promise.resolve())
+                                .then(() => {
+                                    return (activeAgents
+                                        ? dispatch(statAgentDataFetchAction(filter))
+                                        : Promise.resolve())
+                                        .then(() => {
+                                            return (activeFinance
+                                                ? dispatch(statFinanceIncomeFetchAction(filter))
+                                                    .then(() => {
+                                                        dispatch(statFinanceExpenseFetchAction(filter))
+                                                    })
+                                                : Promise.resolve())
+                                                .then(() => {
+                                                    setLoading(false)
+                                                })
+                                        })
+                                })
+                        })
+                })
         }
         return null
     }),
@@ -103,13 +121,27 @@ const enhance = compose(
             const orders = _.get(widgetsForm, ['values', 'orders']) || null
             const agents = _.get(widgetsForm, ['values', 'agents']) || null
             const finance = _.get(widgetsForm, ['values', 'finance']) || null
+            const currency = _.get(widgetsForm, ['values', 'currency']) || null
 
             filter.filterBy({
                 [WIDGETS_FORM_KEY.SALES]: sales,
                 [WIDGETS_FORM_KEY.ORDERS]: orders,
                 [WIDGETS_FORM_KEY.AGENTS]: agents,
-                [WIDGETS_FORM_KEY.FINANCE]: finance
+                [WIDGETS_FORM_KEY.FINANCE]: finance,
+                [WIDGETS_FORM_KEY.CURRENCY]: currency
             })
+        },
+
+        handleUpdateRate: props => (currency) => {
+            const {dispatch, currencyForm, filter} = props
+            return dispatch(courseCreateAction(_.get(currencyForm, ['values']), currency))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Курс обновлен'}))
+                })
+                .then(() => {
+                    dispatch(currencyListFetchAction(filter))
+                    dispatch(reset('DashboardCurrencyForm'))
+                })
         }
     })
 )
@@ -127,6 +159,8 @@ const MainList = enhance((props) => {
         financeIncome,
         financeExpense,
         financeDataLoading,
+        currencyList,
+        currencyListLoading,
         userName,
         userPosition,
         isAdmin,
@@ -138,6 +172,7 @@ const MainList = enhance((props) => {
     const orders = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.ORDERS)) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.ORDERS))
     const agents = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.AGENTS)) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.AGENTS))
     const finance = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.FINANCE)) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.FINANCE))
+    const currency = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.CURRENCY)) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.CURRENCY))
 
     const mergeFinanceData = (firstData, secondData) => {
         const financeData = {}
@@ -224,6 +259,13 @@ const MainList = enhance((props) => {
         loading: financeDataLoading
     }
 
+    const currencyData = {
+        active: currency,
+        data: _.get(currencyList, 'results'),
+        loading: currencyListLoading,
+        handleUpdateRate: props.handleUpdateRate
+    }
+
     const dateInitialValues = {
         dateRange: {
             startDate: moment(beginDate),
@@ -236,7 +278,8 @@ const MainList = enhance((props) => {
             sales: sales,
             orders: orders,
             agents: agents,
-            finance: finance
+            finance: finance,
+            currency: currency
         },
         handleSubmitWidgetsForm: props.handleSubmitWidgetsForm
     }
@@ -250,6 +293,7 @@ const MainList = enhance((props) => {
                     ordersReturnsChart={ordersReturnsChart}
                     agentsChart={agentsChart}
                     financeChart={financeChart}
+                    currencyData={currencyData}
                     userData={userData}
                     dateInitialValues={dateInitialValues}
                     widgetsForm={widgetsForm}
