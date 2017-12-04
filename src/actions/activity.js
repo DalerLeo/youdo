@@ -171,3 +171,18 @@ export const activitySummaryListFetchAction = (filter) => {
         payload
     }
 }
+
+const CancelToken = axios().CancelToken
+const source = CancelToken.source()
+const cancel = source.cancel
+export const activitySummaryCancelAction = () => {
+    axios()
+        .get(API.ACTIVITY_SUMMARY, {cancelToken: source.token})
+        .catch((error) => {
+            if (axios().isCancel(error)) {
+                return null
+            }
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+    cancel()
+}

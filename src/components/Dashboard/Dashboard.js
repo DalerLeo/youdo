@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
-import {compose} from 'recompose'
+import {compose, lifecycle} from 'recompose'
 import injectSheet from 'react-jss'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
@@ -75,10 +75,12 @@ const enhance = compose(
             marginTop: '20px',
             display: 'flex',
             flexWrap: 'wrap',
-            justifyContent: 'space-between',
+            justifyContent: 'space-between'
+        },
+        chartHalf: {
+            width: 'calc(50% - 10px)',
             '& > div': {
-                marginBottom: '20px',
-                width: 'calc(50% - 10px)'
+                marginBottom: '20px'
             }
         },
         chart: {
@@ -118,6 +120,20 @@ const enhance = compose(
             borderTop: '1px #efefef solid',
             background: 'url(' + NoData + ') no-repeat center 20px',
             padding: '145px 0 20px !important'
+        }
+    }),
+    lifecycle({
+        componentWillReceiveProps () {
+            const wrapper = this.refs.wrapper
+            const firstChild = wrapper.firstChild
+            const lastChild = wrapper.lastChild
+            if (_.isEmpty(firstChild.childNodes)) {
+                lastChild.className += 'aaaaa'
+                lastChild.style.width = '100%'
+            } else if (_.isEmpty(lastChild.childNodes)) {
+                firstChild.className += 'aaaaa'
+                firstChild.style.width = '100%'
+            }
         }
     })
 )
@@ -235,106 +251,110 @@ const Dashboard = enhance((props) => {
                     </div>
                 </Paper>
 
-                <section className={classes.chartsWrapper}>
-                    {orderChartActive &&
-                    <Paper zDepth={1}>
-                        <div className={classes.chartHeader}>
-                            <div>Продажи</div>
-                        </div>
-                        {emptySales
-                            ? noData
-                            : <div className={classes.chart}>
-                                <div className={classes.chartStats}>
-                                    <div>Нал: {numberFormat(orderChartSalesSum, primaryCurrency)}</div>
-                                    <div>Пер: {numberFormat(orderChartSalesSum, primaryCurrency)}</div>
-                                    <div>Сумма: {numberFormat(orderChartSalesSum, primaryCurrency)}</div>
-                                </div>
-                                {orderChartLoading || loading
-                                    ? <div className={classes.chartLoader}>
-                                        <Loader size={0.75}/>
+                <section className={classes.chartsWrapper} ref="wrapper">
+                    <div className={classes.chartHalf}>
+                        {orderChartActive &&
+                        <Paper zDepth={1}>
+                            <div className={classes.chartHeader}>
+                                <div>Продажи</div>
+                            </div>
+                            {emptySales
+                                ? noData
+                                : <div className={classes.chart}>
+                                    <div className={classes.chartStats}>
+                                        <div>Нал: {numberFormat(orderChartSalesSum, primaryCurrency)}</div>
+                                        <div>Пер: {numberFormat(orderChartSalesSum, primaryCurrency)}</div>
+                                        <div>Сумма: {numberFormat(orderChartSalesSum, primaryCurrency)}</div>
                                     </div>
-                                    : <OrderChart
-                                        height={250}
-                                        primaryText="Нал"
-                                        secondaryText="Переч"
-                                        primaryValues={orderChartSales}
-                                        secondaryValues={orderChartSales}
-                                        tooltipTitle={orderChartDate}
-                                    />}
-                            </div>}
-                    </Paper>}
-                    {orderReturnActive &&
-                    <Paper zDepth={1}>
-                        <div className={classes.chartHeader}>
-                            <div>Заказы и возвраты</div>
-                        </div>
-                        {emptyOrders
-                            ? noData
-                            : <div className={classes.chart}>
-                                <div className={classes.chartStats}>
-                                    <div>Продажи: {numberFormat(orderChartSalesSum, primaryCurrency)}</div>
-                                    <div>Возвраты: {numberFormat(orderChartReturnsSum, primaryCurrency)}</div>
-                                </div>
-                                {orderReturnLoading || loading
-                                    ? <div className={classes.chartLoader}>
-                                        <Loader size={0.75}/>
+                                    {orderChartLoading || loading
+                                        ? <div className={classes.chartLoader}>
+                                            <Loader size={0.75}/>
+                                        </div>
+                                        : <OrderChart
+                                            height={250}
+                                            primaryText="Нал"
+                                            secondaryText="Переч"
+                                            primaryValues={orderChartSales}
+                                            secondaryValues={orderChartSales}
+                                            tooltipTitle={orderChartDate}
+                                        />}
+                                </div>}
+                        </Paper>}
+                        {orderReturnActive &&
+                        <Paper zDepth={1}>
+                            <div className={classes.chartHeader}>
+                                <div>Заказы и возвраты</div>
+                            </div>
+                            {emptyOrders
+                                ? noData
+                                : <div className={classes.chart}>
+                                    <div className={classes.chartStats}>
+                                        <div>Продажи: {numberFormat(orderChartSalesSum, primaryCurrency)}</div>
+                                        <div>Возвраты: {numberFormat(orderChartReturnsSum, primaryCurrency)}</div>
                                     </div>
-                                    : <SalesReturnsChart
-                                        height={250}
-                                        primaryText="Продажа"
-                                        secondaryText="Возврат"
-                                        primaryValues={orderChartSales}
-                                        secondaryValues={orderChartReturns}
-                                        tooltipTitle={orderReturnDate}
-                                    />}
-                            </div>}
-                    </Paper>}
-                    {agentsChartActive &&
-                    <Paper zDepth={1}>
-                        <div className={classes.chartHeader + ' ' + classes.borderBottom}>
-                            <div>Статистика по агентам</div>
-                        </div>
-                        {emptyAgents
-                            ? noData
-                            : <div className={classes.chart}>
-                                {agentsChartLoading || loading
-                                    ? <div className={classes.chartLoader}>
-                                        <Loader size={0.75}/>
+                                    {orderReturnLoading || loading
+                                        ? <div className={classes.chartLoader}>
+                                            <Loader size={0.75}/>
+                                        </div>
+                                        : <SalesReturnsChart
+                                            height={250}
+                                            primaryText="Продажа"
+                                            secondaryText="Возврат"
+                                            primaryValues={orderChartSales}
+                                            secondaryValues={orderChartReturns}
+                                            tooltipTitle={orderReturnDate}
+                                        />}
+                                </div>}
+                        </Paper>}
+                    </div>
+                    <div className={classes.chartHalf}>
+                        {agentsChartActive &&
+                        <Paper zDepth={1}>
+                            <div className={classes.chartHeader + ' ' + classes.borderBottom}>
+                                <div>Статистика по агентам</div>
+                            </div>
+                            {emptyAgents
+                                ? noData
+                                : <div className={classes.chart}>
+                                    {agentsChartLoading || loading
+                                        ? <div className={classes.chartLoader}>
+                                            <Loader size={0.75}/>
+                                        </div>
+                                        : <AgentsChart
+                                            agentsList={agentsList}
+                                            ordersData={agentsOrders}
+                                            returnsData={agentsReturns}
+                                            factsData={agentsFact}
+                                        />}
+                                </div>}
+                        </Paper>}
+                        {financeChartActive &&
+                        <Paper zDepth={1}>
+                            <div className={classes.chartHeader}>
+                                <div>Оборот</div>
+                            </div>
+                            {emptyFinance
+                                ? noData
+                                : <div className={classes.chart}>
+                                    <div className={classes.chartStats}>
+                                        <div>Приход: {numberFormat(financeIncomeSum, primaryCurrency)}</div>
+                                        <div>Расход: {numberFormat(financeExpenseSum, primaryCurrency)}</div>
                                     </div>
-                                    : <AgentsChart
-                                        agentsList={agentsList}
-                                        ordersData={agentsOrders}
-                                        returnsData={agentsReturns}
-                                        factsData={agentsFact}
-                                    />}
-                            </div>}
-                    </Paper>}
-                    {financeChartActive &&
-                    <Paper zDepth={1}>
-                        <div className={classes.chartHeader}>
-                            <div>Оборот</div>
-                        </div>
-                        {emptyFinance
-                            ? noData
-                            : <div className={classes.chart}>
-                                <div className={classes.chartStats}>
-                                    <div>Приход: {numberFormat(financeIncomeSum, primaryCurrency)}</div>
-                                    <div>Расход: {numberFormat(financeExpenseSum, primaryCurrency)}</div>
-                                </div>
-                                {financeChartLoading || loading
-                                    ? <div className={classes.chartLoader}>
-                                        <Loader size={0.75}/>
-                                    </div>
-                                    : <FinanceChart
-                                        primaryValues={financeIncome}
-                                        secondaryValues={financeExpense}
-                                        tooltipTitle={financeDate}
-                                        height={230}
-                                        primaryText="Приход"
-                                        secondaryText="Расход"
-                                    />}
-                            </div>}
-                    </Paper>}
+                                    {financeChartLoading || loading
+                                        ? <div className={classes.chartLoader}>
+                                            <Loader size={0.75}/>
+                                        </div>
+                                        : <FinanceChart
+                                            primaryValues={financeIncome}
+                                            secondaryValues={financeExpense}
+                                            tooltipTitle={financeDate}
+                                            height={230}
+                                            primaryText="Приход"
+                                            secondaryText="Расход"
+                                        />}
+                                </div>}
+                        </Paper>}
+                    </div>
                 </section>
 
                 {noWidgets &&
