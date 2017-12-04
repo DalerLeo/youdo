@@ -21,6 +21,7 @@ import Container from '../Container'
 import Tooltip from '../ToolTip'
 import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat'
+import toBoolean from '../../helpers/toBoolean'
 import SettingSideMenu from '../Settings/SettingsSideMenu'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
 
@@ -228,7 +229,7 @@ const CurrencyGridList = enhance((props) => {
         </div>
     )
     const currentCurrency = getConfig('PRIMARY_CURRENCY')
-    const reversedRate = !getConfig('REVERSED_CURRENCY_RATE')
+    const reversedRate = !toBoolean(getConfig('REVERSED_CURRENCY_RATE'))
     const currency = _.get(_.find(_.get(listData, 'data'), (o) => {
         return o.id === _.toInteger(_.get(detailData, 'id'))
     }), 'name')

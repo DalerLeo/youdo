@@ -280,11 +280,14 @@ const PriceList = enhance((props) => {
         const val = _.get(price, 'transferPrice') || ZERO
         return numberFormat(val)
     }
-    const getCurrencyByParams = (priceListId) => {
+    const getCurrencyByParams = (priceListId, currency) => {
         const foundPriceList = _.find(_.get(priceListItemsList, ['results']), (item) => {
             return item.priceList.id === priceListId
         })
-        return _.get(foundPriceList, 'currency')
+        if (currency === 'cash') {
+            return _.get(foundPriceList, ['cashCurrency'])
+        }
+        return _.get(foundPriceList, ['transferCurrency'])
     }
     const detailData = {
         priceItemExpenseLoading,
@@ -301,8 +304,9 @@ const PriceList = enhance((props) => {
                 const priceListName = _.get(item, 'name')
                 return {
                     'cash_price': getPriceByParams(priceListId, 'cash'),
-                    'currency': getCurrencyByParams(priceListId),
+                    'cashCurrency': getCurrencyByParams(priceListId, 'cash'),
                     'transfer_price': getPriceByParams(priceListId, 'transfer'),
+                    'transferCurrency': getCurrencyByParams(priceListId, 'trans'),
                     'priceListId': priceListId,
                     'isPrimary': toBoolean(getPriceByParams(priceListId, 'isPrimary')),
                     priceListName
@@ -328,7 +332,8 @@ const PriceList = enhance((props) => {
             const priceList = _.map(detailData.mergedList(), (item) => {
                 return {
                     'price_list': _.get(item, 'priceListId'),
-                    'currency': {value: _.get(item, ['currency', 'id']) || USD}
+                    'transferCurrency': {value: _.get(item, ['transferCurrency', 'id']) || USD},
+                    'cashCurrency': {value: _.get(item, ['cashCurrency', 'id']) || USD}
                 }
             })
             return {

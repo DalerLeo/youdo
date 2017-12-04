@@ -82,7 +82,8 @@ const enhance = compose(
         listRow: {
             margin: '0 -30px !important',
             width: 'auto !important',
-            padding: '0 30px',
+            padding: '5px 30px',
+            minHeight: '50px',
             '& > div:last-child': {
                 display: 'flex',
                 flexDirection: 'row-reverse'
@@ -100,7 +101,13 @@ const enhance = compose(
         personalWrap: {
             display: 'flex',
             alignItems: 'center',
-            flexWrap: 'wrap'
+            flexWrap: 'wrap',
+            '& > div:first-child': {
+                marginLeft: '0 !important'
+            },
+            '& > div:last-child': {
+                marginLeft: '5px'
+            }
         },
         person: {
             height: '28px',
@@ -155,7 +162,7 @@ const NotificationGridList = enhance((props) => {
 
     const notificationList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const name = _.get(item, 'name')
+        const name = _.get(item, 'title')
         const status = _.get(item, 'status') === 'on'
 
         return (
@@ -178,26 +185,26 @@ const NotificationGridList = enhance((props) => {
                                 </div>
                             )
                         })}
-                        <Tooltip position="bottom" text="Добавить">
                             <FlatButton
                                 backgroundColor={'#12aaeb'}
                                 hoverColor={'#12aaeb'}
                                 rippleColor={'#fff'}
-                                style={{height: '28px', lineHeight: '28px', minWidth: '60px', marginLeft: '10px'}}
+                                style={{height: '28px', lineHeight: '28px', minWidth: '60px'}}
                                 labelStyle={{textTransform: 'none', color: '#fff', verticalAlign: 'baseline'}}
                                 className={classes.addPerson}
                                 label="добавить"
                                 onTouchTap={() => { notificationUser.handleOpenAddUser(id) }}/>
-                        </Tooltip>
                     </div>
                 </Col>
                 <Col xs={1}>
-                    <Toggle
-                        name="status"
-                        toggled={status}
-                        onTouchTap={() => { changeDialog.handelChangeStatus(item) }}
-                        style={{width: 'auto'}}
-                    />
+                    <Tooltip position="bottom" text={status ? 'вкл' : 'выкл'}>
+                        <Toggle
+                            name="status"
+                            toggled={status}
+                            onTouchTap={() => { changeDialog.handelChangeStatus(item) }}
+                            style={{width: 'auto'}}
+                        />
+                    </Tooltip>
                 </Col>
             </Row>
         )
@@ -220,6 +227,7 @@ const NotificationGridList = enhance((props) => {
                         detail={notificationDetail}
                         transparentLoading={true}
                         listShadow={false}
+                        flexibleRow={true}
                     />
                 </div>
             </div>
@@ -227,6 +235,7 @@ const NotificationGridList = enhance((props) => {
                 open={notificationUser.open > ZERO}
                 onClose={notificationUser.handleCloseAddUser}
                 onSubmit={notificationUser.handleSubmitAddUser}
+                notify={true}
             />
             <ConfirmDialog
                 open={userConfirm.open > ZERO}

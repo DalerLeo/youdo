@@ -24,6 +24,8 @@ import Add from 'material-ui/svg-icons/content/add-circle'
 import Tooltip from '../ToolTip'
 import Paper from 'material-ui/Paper'
 import SearchIcon from 'material-ui/svg-icons/action/search'
+import FullScreen from 'material-ui/svg-icons/navigation/fullscreen'
+import FullScreenExit from 'material-ui/svg-icons/navigation/fullscreen-exit'
 import StatSideMenu from '../Statistics/StatSideMenu'
 import {TextField, ClientBalanceTypeSearchField, PaymentTypeSearchField, CheckBox} from '../ReduxForm'
 import Pagination from '../GridList/GridListNavPagination'
@@ -137,8 +139,21 @@ const enhance = compose(
             'padding-left': ({stat}) => stat ? '0' : '30px',
             'margin-right': ({stat}) => stat ? '-30px' : 'unset'
         },
+        expandedTable: {
+            background: '#fff',
+            padding: '0 10px 0 30px',
+            position: 'fixed',
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            top: '0',
+            left: '0',
+            right: '0',
+            bottom: '0',
+            zIndex: '100'
+        },
         leftTable: {
             color: '#666',
+            fontWeight: '600',
             zIndex: '4',
             width: '350px',
             boxShadow: '5px 0 8px -3px #ccc',
@@ -329,6 +344,13 @@ const enhance = compose(
                 whiteSpace: 'nowrap',
                 width: 'auto !important'
             }
+        },
+        flexCenter: {
+            display: 'flex',
+            alignItems: 'center'
+        },
+        fullScreen: {
+            marginLeft: '10px !important'
         }
     }),
     reduxForm({
@@ -337,6 +359,7 @@ const enhance = compose(
     }),
     withState('currentItem', 'setItem', null),
     withState('currentRow', 'setCurrentRow', null),
+    withState('expandedTable', 'setExpandedTable', false),
     lifecycle({
         componentDidMount () {
             const mainTable = this.refs.mainTable
@@ -393,6 +416,8 @@ const ClientBalanceGridList = enhance((props) => {
         onSubmit,
         setCurrentRow,
         currentRow,
+        expandedTable,
+        setExpandedTable,
         query
     } = props
 
@@ -407,8 +432,10 @@ const ClientBalanceGridList = enhance((props) => {
     const loanersCashCount = _.get(sumData, ['sum', 'loanersCountCash'])
     const sumLoading = _.get(sumData, ['sumLoading'])
 
-    const orderNoSorting = _.isNil(filter.getSortingType('order_no')) ? null
-        : filter.getSortingType('order_no') ? <ArrowUpIcon className={classes.icon}/>
+    const orderNoSorting = _.isNil(filter.getSortingType('order_no'))
+        ? null
+        : filter.getSortingType('order_no')
+            ? <ArrowUpIcon className={classes.icon}/>
             : <ArrowDownIcon className={classes.icon}/>
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const listLoading = _.get(listData, 'listLoading')
@@ -548,7 +575,10 @@ const ClientBalanceGridList = enhance((props) => {
 
     const emptyData = _.isEmpty(_.get(listData, 'data'))
     const lists = (
-        <div className={(listLoading || emptyData) ? classes.tableWrapperLoading : classes.tableWrapper} style={!stat ? {marginBottom: 30} : {}}>
+        <div className={(listLoading || emptyData)
+            ? classes.tableWrapperLoading
+            : classes.tableWrapper}
+             style={!stat ? {marginBottom: 30} : {}}>
             {listLoading &&
             <div className={classes.loader}>
                 <Loader size={0.75}/>
@@ -644,10 +674,21 @@ const ClientBalanceGridList = enhance((props) => {
                     iconStyle={searchIconStyle.icon}
                     style={searchIconStyle.button}
                     touch={true}>
-                    <SearchIcon color='rgb(204, 204, 204)'/>
+                    <SearchIcon color='#ccc'/>
                 </IconButton>
             </form>
-            <Pagination filter={filter}/>
+            <div className={classes.flexCenter}>
+                <Pagination filter={filter}/>
+                <Tooltip position="left" text={expandedTable ? 'Обычный вид' : 'Расширенный вид'}>
+                    <IconButton
+                        className={classes.fullScreen}
+                        onTouchTap={() => { setExpandedTable(!expandedTable) }}
+                        iconStyle={searchIconStyle.icon}
+                        style={searchIconStyle.button}>
+                        {expandedTable ? <FullScreenExit color="#666"/> : <FullScreen color="#666"/>}
+                    </IconButton>
+                </Tooltip>
+            </div>
         </div>
     )
     const summary = (
@@ -723,8 +764,10 @@ const ClientBalanceGridList = enhance((props) => {
                                 {summary}
                             </div>
                             {groupBy}
-                            {navigation}
-                            {lists}
+                            <div className={expandedTable ? classes.expandedTable : ''}>
+                                {navigation}
+                                {lists}
+                            </div>
                         </div>
                     </div>
                 </Row>
@@ -732,7 +775,7 @@ const ClientBalanceGridList = enhance((props) => {
             }
             {!stat && <SubMenu url={ROUTES.CLIENT_BALANCE_LIST_URL}/>}
             {!stat && <Paper style={{marginBottom: '15px', padding: '10px 30px'}}>{summary}</Paper>}
-            {!stat && <Paper>
+            {!stat && <Paper className={expandedTable ? classes.expandedTable : ''} style={expandedTable ? {padding: '0'} : {}}>
                 {navigation}
                 {lists}
             </Paper>}

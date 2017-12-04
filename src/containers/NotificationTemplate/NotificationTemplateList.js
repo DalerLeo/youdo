@@ -2,6 +2,7 @@ import React from 'react'
 import _ from 'lodash'
 import sprintf from 'sprintf'
 import {connect} from 'react-redux'
+import {reset} from 'redux-form'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
@@ -94,7 +95,8 @@ const enhance = compose(
                 })
         },
         handleOpenAddUser: props => (id) => {
-            const {location: {pathname}, filter} = props
+            const {location: {pathname}, filter, dispatch} = props
+            dispatch(reset('ZoneBindAgentForm'))
             hashHistory.push({
                 pathname,
                 query: filter.getParams({[NOTIFICATION_ADD_USER_OPEN]: id})

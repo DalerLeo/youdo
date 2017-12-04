@@ -216,6 +216,7 @@ const OrderGridList = enhance((props) => {
         cancelOrderReturnDialog,
         refreshAction,
         canChangeAnyPrice,
+        canChangePrice,
         handleSubmitDiscountDialog,
         handleSubmitSetZeroDiscountDialog,
         clientId,
@@ -555,12 +556,15 @@ const OrderGridList = enhance((props) => {
                 clientId={clientId}
                 isSuperUser={isSuperUser}
                 handleOpenAddProduct={addProductDialog.handleOpenAddProduct}
+                canChangeAnyPrice={canChangeAnyPrice}
+                canChangePrice={canChangePrice}
             />}
 
             {updateDialog.openUpdateDialog && <OrderCreateDialog
                 isUpdate={true}
                 status={_.toInteger(_.get(detailData, ['data', 'status'])) || {}}
                 canChangeAnyPrice={canChangeAnyPrice}
+                canChangePrice={canChangePrice}
                 initialValues={updateDialog.initialValues}
                 open={updateDialog.openUpdateDialog}
                 loading={updateDialog.updateLoading}
@@ -607,6 +611,8 @@ const OrderGridList = enhance((props) => {
                 handleCloseAddProductConfirm={addProductDialog.handleCloseAddProductConfirm}
                 handleSubmitAddProductConfirm={addProductDialog.handleSubmitAddProductConfirm}
                 isSuperUser={isSuperUser}
+                canChangeAnyPrice={canChangeAnyPrice}
+                canChangePrice={canChangePrice}
             />
             }
 

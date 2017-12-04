@@ -47,7 +47,7 @@ const enhance = compose(
 )
 
 const ZoneBindAgentDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes} = props
+    const {open, loading, handleSubmit, onClose, classes, notify} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
     return (
@@ -60,7 +60,7 @@ const ZoneBindAgentDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>Привязать агента</span>
+                <span>{notify ? 'Привязать пользователя' : 'Привязать агента'}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -76,7 +76,7 @@ const ZoneBindAgentDialog = enhance((props) => {
                                 name="user"
                                 component={UsersSearchField}
                                 className={classes.inputFieldCustom}
-                                label="Агент"
+                                label={notify ? 'Ползователь' : 'Агент'}
                                 fullWidth={true}
                             />
                         </div>

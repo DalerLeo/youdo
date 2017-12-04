@@ -74,7 +74,7 @@ const enhance = compose(
 
     withReducer('state', 'dispatch', (state, action) => {
         return {...state, ...action}
-    }, {dataSource: [], text: '', loading: false}),
+    }, {dataSource: [], text: '', loading: false, open: false}),
 
     withHandlers({
         valueRenderer: props => (option) => {
@@ -93,14 +93,20 @@ const enhance = compose(
         props.getItem(_.get(props, ['input', 'value', 'value']))
     }),
     withPropsOnChange((props, nextProps) => {
-        return _.get(props, ['state', 'text']) !== _.get(nextProps, ['state', 'text'])
-    }, (props) => _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)),
+        return (_.get(props, ['state', 'text']) !== _.get(nextProps, ['state', 'text']) ||
+            _.get(props, ['state', 'open']) !== _.get(nextProps, ['state', 'open'])) &&
+            _.get(nextProps, ['state', 'open'])
+    }, (props) => {
+        props.state.open && _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)
+    }),
+
     withPropsOnChange((props, nextProps) => {
-        return !_.isEmpty(_.get(nextProps, ['state', 'dataSource'])) && _.get(nextProps, ['input', 'value']) &&
-            _.get(props, ['state', 'loading']) !== _.get(nextProps, ['state', 'loading'])
+        return (!_.isEmpty(_.get(nextProps, ['state', 'dataSource'])) || _.get(props, ['input', 'value']) !== _.get(nextProps, ['input', 'value'])) &&
+        _.get(nextProps, ['input', 'value'])
     }, (props) => {
         const {state, input, getItem, dispatch, getText, getValue} = props
         const finder = _.find(state.dataSource, {'value': input.value.value})
+
         if (_.isEmpty(finder) && input.value.value) {
             getItem(input.value.value).then((data) => {
                 return dispatch({
@@ -121,8 +127,10 @@ const SearchField = enhance((props) => {
         dispatch,
         valueRenderer,
         input,
-        disabled
+        disabled,
+        clearValue
     } = props
+    const hintText = state.loading ? <div>Загрузка...</div> : <div>Не найдено</div>
     return (
         <div className={classes.wrapper}>
             <Select
@@ -132,13 +140,16 @@ const SearchField = enhance((props) => {
                 onInputChange={text => dispatch({text: text})}
                 onChange={value => input.onChange(value)}
                 placeholder={label}
-                noResultsText={'Не найдено'}
+                noResultsText={hintText}
                 isLoading={state.loading}
                 valueRenderer={valueRenderer}
                 labelKey={'text'}
                 disabled={disabled}
+                onOpen={() => { dispatch({open: true}) }}
                 closeOnSelect={true}
                 filterOptions={options => options}
+                clearable={clearValue}
+                loadingPlaceholder="Загрузка..."
             />
         </div>
     )

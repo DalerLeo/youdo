@@ -8,7 +8,13 @@ import FlatButton from 'material-ui/FlatButton'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import getConfig from '../../helpers/getConfig'
-import {TextField, PriceMainRadioButton, CurrencySearchField, CheckBox} from '../ReduxForm'
+import {
+    TextField,
+    PriceMainRadioButton,
+    CurrencySearchField,
+    CheckBox,
+    normalizeNumber
+} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import {Row, Col} from 'react-flexbox-grid'
@@ -73,7 +79,7 @@ const enhance = compose(
                     }
                 }
             },
-            width: 'calc(100% - 86px)'
+            width: 'calc(100% - 40px)'
         },
         actionButton: {
             display: 'flex',
@@ -138,15 +144,16 @@ const enhance = compose(
             height: '40px'
         },
         radios: {
+            width: '40px',
+            marginRight: '10px',
             '& > div': {
                 '&:first-child': {
-                    fontWeight: '600'
-                },
-                lineHeight: '40px',
-                paddingRight: '20px'
+                    fontWeight: '600',
+                    height: '40px'
+                }
             },
             '& .dottedList': {
-                padding: '10px 20px 10px 0px !important'
+                padding: '10px 0 !important'
             }
         }
     }),
@@ -257,7 +264,7 @@ const PriceSetForm = enhance((props) => {
                 </div>
                 <div style={{display: 'flex'}}>
                     <div className={classes.radios}>
-                        <div>Основной</div>
+                        <div></div>
                         <div>
                             <Field
                                 name='isPrimary'
@@ -270,8 +277,9 @@ const PriceSetForm = enhance((props) => {
                     </div>
                     <div className={classes.tableContent}>
                         <Row className={classes.priceRow}>
-                            <Col xs={5}>Тип обьекта</Col>
+                            <Col xs={3}>Тип обьекта</Col>
                             <Col style={{textAlign: 'left'}} xs={2}>Нал</Col>
+                            <Col style={{textAlign: 'left'}} xs={2}>Валюта</Col>
                             <Col style={{textAlign: 'left'}} xs={2}>Безнал</Col>
                             <Col style={{textAlign: 'left'}} xs={2}>Валюта</Col>
                         </Row>
@@ -281,30 +289,43 @@ const PriceSetForm = enhance((props) => {
                             const transferPrice = _.get(item, 'transfer_price')
                             return (
                                 <Row className='dottedList' key={index}>
-                                    <Col xs={5}> {priceListName}</Col>
+                                    <Col xs={3}> {priceListName}</Col>
                                     <Col style={{textAlign: 'left'}} xs={2}>
                                         <Field
                                             name={'prices[' + index + '][cash_price]'}
                                             className={classes.inputField}
                                             component={TextField}
                                             placeholder={cashPrice}
+                                            normalize={normalizeNumber}
                                             fullWidth={true}
                                         />
+                                    </Col>
+                                    <Col xs={2}>
+                                        <Field
+                                            name={'prices[' + index + '][cashCurrency]'}
+                                            className={classes.inputField}
+                                            clearValue={false}
+                                            placeholder="Выберите"
+                                            component={CurrencySearchField}
+                                            fullWidth={true}/>
                                     </Col>
                                     <Col style={{textAlign: 'left'}} xs={2}>
                                         <Field
                                             name={'prices[' + index + '][transfer_price]'}
                                             className={classes.inputField}
                                             component={TextField}
+                                            normalize={normalizeNumber}
                                             placeholder={transferPrice}
                                             fullWidth={true}
                                         />
                                     </Col>
                                     <Col xs={3}>
                                         <Field
-                                            name={'prices[' + index + '][currency]'}
+                                            name={'prices[' + index + '][transferCurrency]'}
                                             className={classes.inputField}
                                             component={CurrencySearchField}
+                                            placeholder="Выберите"
+                                            clearValue={false}
                                             fullWidth={true}/>
                                     </Col>
                                 </Row>

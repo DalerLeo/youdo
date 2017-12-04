@@ -18,6 +18,8 @@ export const createSerializer = (data) => {
     const requestDeadline = _.get(data, ['requestDeadline']) ? moment(_.get(data, ['requestDeadline'])).format('YYYY-MM-DD') : null
     const dealType = _.get(data, ['dealType']) === 'standart' ? ZERO : ONE
     const market = _.get(data, ['market', 'value'])
+    const contract = _.get(data, ['contract'])
+    const deliveryType = _.get(data, ['deliveryType', 'value'])
     const priceList = _.get(data, ['priceList', 'value'])
     const user = _.get(data, ['user', 'value'])
     const currency = _.get(data, ['currency', 'value'])
@@ -32,11 +34,13 @@ export const createSerializer = (data) => {
     const request = {
         client,
         currency,
+        contract,
         'date_delivery': deliveryDate,
         'payment_date': paymentDate,
         'payment_type': paymentType,
         'payment_term': paymentTerm,
         'deal_type': dealType,
+        'delivery_type': deliveryType,
         'delivery_man': deliveryMan,
         market,
         user,
