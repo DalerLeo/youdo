@@ -171,23 +171,23 @@ const enhance = compose(
         },
         handleSubmitFilterDialog: props => () => {
             const {filter, historyFilterForm} = props
-            const stock = _.get(historyFilterForm, ['values', 'stock', 'value']) || null
-            const type = _.get(historyFilterForm, ['values', 'type', 'value']) || null
+            const stock = _.get(historyFilterForm, ['values', 'stock']) || null
+            const type = _.get(historyFilterForm, ['values', 'type']) || null
             const status = _.get(historyFilterForm, ['values', 'status', 'value']) || null
-            const product = _.get(historyFilterForm, ['values', 'product', 'value']) || null
+            const product = _.get(historyFilterForm, ['values', 'product']) || null
             const fromDate = _.get(historyFilterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(historyFilterForm, ['values', 'date', 'toDate']) || null
             const typeChild = _.get(historyFilterForm, ['values', 'typeChild', 'value']) || null
-            const typeParent = _.get(historyFilterForm, ['values', 'typeParent', 'value']) || null
+            const typeParent = _.get(historyFilterForm, ['values', 'typeParent']) || null
 
             filter.filterBy({
                 [OUT_HISTORY_FILTER_OPEN]: false,
-                [OUT_HISTORY_FILTER_KEY.STOCK]: stock,
-                [OUT_HISTORY_FILTER_KEY.TYPE]: type,
+                [OUT_HISTORY_FILTER_KEY.STOCK]: _.join(stock, '-'),
+                [OUT_HISTORY_FILTER_KEY.TYPE]: _.join(type, '-'),
                 [OUT_HISTORY_FILTER_KEY.STATUS]: status,
-                [OUT_HISTORY_FILTER_KEY.PRODUCT]: product,
+                [OUT_HISTORY_FILTER_KEY.PRODUCT]: _.join(product, '-'),
                 [OUT_HISTORY_FILTER_KEY.TYPE_CHILD]: typeChild,
-                [OUT_HISTORY_FILTER_KEY.TYPE_PARENT]: typeParent,
+                [OUT_HISTORY_FILTER_KEY.TYPE_PARENT]: _.join(typeParent, '-'),
                 [OUT_HISTORY_FILTER_KEY.FROM_DATE]: fromDate && moment(fromDate).format('YYYY-MM-DD'),
                 [OUT_HISTORY_FILTER_KEY.TO_DATE]: toDate && moment(toDate).format('YYYY-MM-DD')
 
@@ -269,6 +269,7 @@ const StockOutHistoryList = enhance((props) => {
     const typeParent = _.toInteger(filter.getParam(OUT_HISTORY_FILTER_KEY.TYPE_PARENT))
     const typeChild = _.toInteger(filter.getParam(OUT_HISTORY_FILTER_KEY.TYPE_CHILD))
     const product = _.toInteger(filter.getParam(OUT_HISTORY_FILTER_KEY.PRODUCT))
+    const status = _.toInteger(filter.getParam(OUT_HISTORY_FILTER_KEY.STATUS))
     const fromDate = filter.getParam(OUT_HISTORY_FILTER_KEY.FROM_DATE)
     const toDate = filter.getParam(OUT_HISTORY_FILTER_KEY.TO_DATE)
 
@@ -303,27 +304,30 @@ const StockOutHistoryList = enhance((props) => {
 
     const filterDialog = {
         initialValues: {
-            brand: {
-                value: brand
-            },
-            type: {
-                value: type
-            },
-            product: {
-                value: product
-            },
+            brand: brand && _.map(_.split(brand, '-'), (item) => {
+                return _.toNumber(item)
+            }),
+            type: type && _.map(_.split(type, '-'), (item) => {
+                return _.toNumber(item)
+            }),
+            product: product && _.map(_.split(product, '-'), (item) => {
+                return _.toNumber(item)
+            }),
             date: {
                 fromDate: fromDate && moment(fromDate),
                 toDate: toDate && moment(toDate)
             },
-            typeParent: {
-                value: typeParent
-            },
+            typeParent: typeParent && _.map(_.split(typeParent, '-'), (item) => {
+                return _.toNumber(item)
+            }),
             typeChild: {
                 value: typeChild
             },
-            stock: {
-                value: stock
+            stock: stock && _.map(_.split(stock, '-'), (item) => {
+                return _.toNumber(item)
+            }),
+            status: {
+                value: status
             }
         },
         filterLoading: false,

@@ -128,16 +128,16 @@ const enhance = compose(
 
         handleSubmitTabReceiveFilterDialog: props => () => {
             const {filter, filterForm} = props
-            const stock = _.get(filterForm, ['values', 'stock', 'value']) || null
+            const stock = _.get(filterForm, ['values', 'stock']) || null
             const type = _.get(filterForm, ['values', 'type', 'value']) || null
-            const acceptedBy = _.get(filterForm, ['values', 'acceptedBy', 'value']) || null
+            const acceptedBy = _.get(filterForm, ['values', 'acceptedBy']) || null
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
             filter.filterBy({
                 [TAB_RECEIVE_HISTORY_FILTER_OPEN]: false,
-                [TAB_RECEIVE_FILTER_KEY.STOCK]: stock,
+                [TAB_RECEIVE_FILTER_KEY.STOCK]: _.join(stock, '-'),
                 [TAB_RECEIVE_FILTER_KEY.TYPE]: type,
-                [TAB_RECEIVE_FILTER_KEY.ACCEPTED_BY]: acceptedBy,
+                [TAB_RECEIVE_FILTER_KEY.ACCEPTED_BY]: _.join(acceptedBy, '-'),
                 [TAB_RECEIVE_FILTER_KEY.FROM_DATE]: fromDate && moment(fromDate).format('YYYY-MM-DD'),
                 [TAB_RECEIVE_FILTER_KEY.TO_DATE]: toDate && moment(toDate).format('YYYY-MM-DD')
 
@@ -299,9 +299,9 @@ const StockReceiveHistoryList = enhance((props) => {
             type: {
                 value: type
             },
-            stock: {
-                value: stock
-            },
+            stock: stock && _.map(_.split(stock, '-'), (item) => {
+                return _.toNumber(item)
+            }),
             date: {
                 fromDate: fromDate && moment(fromDate),
                 toDate: toDate && moment(toDate)

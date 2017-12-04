@@ -14,8 +14,8 @@ export const listFilterSerializer = (query) => {
         'begin_date': firstDayOfMonth,
         'end_date': lastDayOfMonth,
         'search': _.get(defaultData, 'search'),
-        'zone': _.get(defaultData, 'zone'),
-        'division': _.get(defaultData, 'division'),
+        'zone': _.get(defaultData, 'zone') || null,
+        'division': _.get(defaultData, 'division') || null,
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),
         'ordering': ordering && orderingSnakeCase(ordering)

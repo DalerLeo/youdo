@@ -151,13 +151,13 @@ const enhance = compose(
 
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
-            const manufacture = _.get(filterForm, ['values', 'manufacture', 'value']) || null
-            const group = _.get(filterForm, ['values', 'group', 'value']) || null
+            const manufacture = _.get(filterForm, ['values', 'manufacture']) || null
+            const group = _.get(filterForm, ['values', 'group']) || null
 
             filter.filterBy({
                 [USERS_FILTER_OPEN]: false,
-                [USERS_FILTER_KEY.MANUFACTURE]: manufacture,
-                [USERS_FILTER_KEY.GROUP]: group
+                [USERS_FILTER_KEY.MANUFACTURE]: _.join(manufacture, '-'),
+                [USERS_FILTER_KEY.GROUP]: _.join(group, '-')
             })
         },
         handleOpenDeleteDialog: props => () => {
@@ -374,12 +374,12 @@ const UsersList = enhance((props) => {
     }
     const filterDialog = {
         initialValues: {
-            manufacture: {
-                value: manufacture
-            },
-            group: {
-                value: group
-            }
+            manufacture: manufacture && _.map(_.split(manufacture, '-'), (item) => {
+                return _.toNumber(item)
+            }),
+            group: group && _.map(_.split(group, '-'), (item) => {
+                return _.toNumber(item)
+            })
         },
         filterLoading: false,
         openFilterDialog,

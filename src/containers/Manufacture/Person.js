@@ -209,9 +209,9 @@ const ManufacturePersonList = enhance((props) => {
 
     const personFilterDialog = {
         initialValues: {
-            shift: {
-                value: shift
-            }
+            shift: shift && _.map(_.split(shift, '-'), (item) => {
+                return _.toNumber(item)
+            })
         },
         filterLoading: false,
         openFilterDialog: openPersonFilterDialog,

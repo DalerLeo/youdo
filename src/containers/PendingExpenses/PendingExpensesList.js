@@ -72,8 +72,8 @@ const enhance = compose(
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
             const type = _.get(filterForm, ['values', 'type', 'value']) || null
             const paymentType = _.get(filterForm, ['values', 'paymentType', 'value']) || null
-            const provider = _.get(filterForm, ['values', 'provider', 'value']) || null
-            const supply = _.get(filterForm, ['values', 'supply', 'value']) || null
+            const provider = _.get(filterForm, ['values', 'provider']) || null
+            const supply = _.get(filterForm, ['values', 'supply']) || null
 
             filter.filterBy({
                 [PENDING_EXPENSES_FILTER_OPEN]: false,
@@ -81,8 +81,8 @@ const enhance = compose(
                 [PENDING_EXPENSES_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD'),
                 [PENDING_EXPENSES_FILTER_KEY.TYPE]: type,
                 [PENDING_EXPENSES_FILTER_KEY.PAYMENT_TYPE]: paymentType,
-                [PENDING_EXPENSES_FILTER_KEY.PROVIDER]: provider,
-                [PENDING_EXPENSES_FILTER_KEY.SUPPLY]: supply
+                [PENDING_EXPENSES_FILTER_KEY.PROVIDER]: _.join(provider, '-'),
+                [PENDING_EXPENSES_FILTER_KEY.SUPPLY]: _.join(supply, '-')
             })
         },
 
@@ -165,12 +165,12 @@ const PendingExpensesList = enhance((props) => {
             paymentType: {
                 value: paymentType
             },
-            provider: {
-                value: provider
-            },
-            supply: {
-                value: supply
-            }
+            provider: provider && _.map(_.split(provider, '-'), (item) => {
+                return _.toNumber(item)
+            }),
+            supply: supply && _.map(_.split(supply, '-'), (item) => {
+                return _.toNumber(item)
+            })
         },
         filterLoading: false,
         openFilterDialog,

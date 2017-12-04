@@ -36,8 +36,8 @@ export const listFilterSerializer = (data) => {
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),
         'ordering': ordering && orderingSnakeCase(ordering),
-        'market': _.get(defaultData, 'market'),
-        'client': _.get(defaultData, 'client'),
+        'market': _.get(defaultData, 'market') || null,
+        'client': _.get(defaultData, 'client') || null,
         'payment_type': _.get(defaultData, 'paymentType')
     }
 }

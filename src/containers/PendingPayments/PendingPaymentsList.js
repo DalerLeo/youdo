@@ -88,16 +88,16 @@ const enhance = compose(
             const {filter, filterForm} = props
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
-            const client = _.get(filterForm, ['values', 'client', 'value']) || null
-            const market = _.get(filterForm, ['values', 'market', 'value']) || null
+            const client = _.get(filterForm, ['values', 'client']) || null
+            const market = _.get(filterForm, ['values', 'market']) || null
             const paymentType = _.get(filterForm, ['values', 'paymentType', 'value']) || null
 
             filter.filterBy({
                 [PENDING_PAYMENTS_FILTER_OPEN]: false,
                 [PENDING_PAYMENTS_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [PENDING_PAYMENTS_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD'),
-                [PENDING_PAYMENTS_FILTER_KEY.MARKET]: market,
-                [PENDING_PAYMENTS_FILTER_KEY.CLIENT]: client,
+                [PENDING_PAYMENTS_FILTER_KEY.MARKET]: _.join(market, '-'),
+                [PENDING_PAYMENTS_FILTER_KEY.CLIENT]: _.join(client, '-'),
                 [PENDING_PAYMENTS_FILTER_KEY.PAYMENT_TYPE]: paymentType
             })
         },
@@ -188,12 +188,12 @@ const PendingPaymentsList = enhance((props) => {
             paymentType: {
                 value: paymentType
             },
-            client: {
-                value: client
-            },
-            market: {
-                value: market
-            }
+            client: client && _.map(_.split(client, '-'), (item) => {
+                return _.toNumber(item)
+            }),
+            market: market && _.map(_.split(market, '-'), (item) => {
+                return _.toNumber(item)
+            })
         },
         filterLoading: false,
         openFilterDialog,

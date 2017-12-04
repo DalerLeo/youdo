@@ -3,7 +3,7 @@ export const API_ROOT = 'api'
 export const API_VERSION = 'v1'
 export const API_PROTOCOL = process.env.API_PROTOCOL ? process.env.API_PROTOCOL : 'https'
 
-export const API_URL = `${API_PROTOCOL}://${API_HOST}/${API_ROOT}/${API_VERSION}`
+export const API_URL = `${API_PROTOCOL}://apitest1.wienerdeming.com/api/v1`
 
 export const USER = 'main/user'
 export const SIGN_IN = `/${USER}/auth/`

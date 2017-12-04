@@ -79,7 +79,7 @@ const enhance = compose(
             filter.filterBy({
                 [STAT_RETURN_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [STAT_RETURN_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD'),
-                [STAT_RETURN_FILTER_KEY.DIVISION]: division
+                [STAT_RETURN_FILTER_KEY.DIVISION]: _.join(division, '-')
 
             })
         },
@@ -132,9 +132,9 @@ const StatReturnList = enhance((props) => {
 
     const filterForm = {
         initialValues: {
-            division: {
-                value: division
-            },
+            division: division && _.map(_.split(division, '-'), (item) => {
+                return _.toNumber(item)
+            }),
             date: {
                 fromDate: moment(firstDayOfMonth),
                 toDate: moment(lastDayOfMonth)

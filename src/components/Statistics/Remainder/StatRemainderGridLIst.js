@@ -27,7 +27,6 @@ export const STAT_REMAINDER_FILTER_KEY = {
     TYPE: 'type',
     TYPE_PARENT: 'typeParent',
     SEARCH: 'search',
-    PRODUCT: 'product',
     DIVISION: 'division'
 }
 const enhance = compose(

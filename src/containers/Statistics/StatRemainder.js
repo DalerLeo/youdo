@@ -102,7 +102,6 @@ const enhance = compose(
         },
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
-            const product = _.get(filterForm, ['values', 'product', 'value']) || null
             const search = _.get(filterForm, ['values', 'search']) || null
             const type = _.get(filterForm, ['values', 'type', 'value']) || null
             const typeParent = _.get(filterForm, ['values', 'typeParent', 'value']) || null
@@ -110,10 +109,9 @@ const enhance = compose(
 
             filter.filterBy({
                 [STAT_REMAINDER_FILTER_KEY.SEARCH]: search,
-                [STAT_REMAINDER_FILTER_KEY.PRODUCT]: product,
                 [STAT_REMAINDER_FILTER_KEY.TYPE]: type,
-                [STAT_REMAINDER_FILTER_KEY.TYPE_PARENT]: typeParent,
-                [STAT_REMAINDER_FILTER_KEY.STOCK]: stock
+                [STAT_REMAINDER_FILTER_KEY.TYPE_PARENT]: _.join(typeParent, '-'),
+                [STAT_REMAINDER_FILTER_KEY.STOCK]: _.join(stock, '-')
 
             })
         },
@@ -175,12 +173,12 @@ const StatRemainderList = enhance((props) => {
             type: {
                 value: type
             },
-            typeParent: {
-                value: typeParent
-            },
-            stock: {
-                value: stock
-            }
+            typeParent: typeParent && _.map(_.split(typeParent, '-'), (item) => {
+                return _.toNumber(item)
+            }),
+            stock: stock && _.map(_.split(stock, '-'), (item) => {
+                return _.toNumber(item)
+            })
         }
     }
 

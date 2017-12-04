@@ -67,16 +67,16 @@ const enhance = compose(
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
             const type = _.get(filterForm, ['values', 'type', 'value']) || null
-            const client = _.get(filterForm, ['values', 'client', 'value']) || null
-            const categoryExpense = _.get(filterForm, ['values', 'categoryExpense', 'value']) || null
+            const client = _.get(filterForm, ['values', 'client']) || null
+            const categoryExpense = _.get(filterForm, ['values', 'categoryExpense']) || null
 
             filter.filterBy({
                 [STAT_FINANCE_FILTER_KEY.SEARCH]: search,
                 [STAT_FINANCE_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [STAT_FINANCE_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD'),
                 [STAT_FINANCE_FILTER_KEY.TYPE]: type,
-                [STAT_FINANCE_FILTER_KEY.CLIENT]: client,
-                [STAT_FINANCE_FILTER_KEY.CATEGORY_EXPENSE]: categoryExpense
+                [STAT_FINANCE_FILTER_KEY.CLIENT]: _.join(client, '-'),
+                [STAT_FINANCE_FILTER_KEY.CATEGORY_EXPENSE]: _.join(categoryExpense, '-')
             })
         },
         handleGetDocument: props => () => {
@@ -123,12 +123,12 @@ const StatFinanceList = enhance((props) => {
             type: {
                 value: type
             },
-            client: {
-                value: client
-            },
-            categoryExpense: {
-                value: categoryExpense
-            },
+            client: client && _.map(_.split(client, '-'), (item) => {
+                return _.toNumber(item)
+            }),
+            categoryExpense: categoryExpense && _.map(_.split(categoryExpense, '-'), (item) => {
+                return _.toNumber(item)
+            }),
             date: {
                 fromDate: moment(firstDayOfMonth),
                 toDate: moment(lastDayOfMonth)

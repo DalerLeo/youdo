@@ -182,13 +182,13 @@ const enhance = compose(
 
         handleSubmitTabReceiveFilterDialog: props => () => {
             const {filter, filterForm} = props
-            const stock = _.get(filterForm, ['values', 'stock', 'value']) || null
+            const stock = _.get(filterForm, ['values', 'stock']) || null
             const type = _.get(filterForm, ['values', 'type', 'value']) || null
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
             filter.filterBy({
                 [TAB_RECEIVE_FILTER_OPEN]: false,
-                [TAB_TRANSFER_FILTER_KEY.STOCK]: stock,
+                [TAB_TRANSFER_FILTER_KEY.STOCK]: _.join(stock, '-'),
                 [TAB_TRANSFER_FILTER_KEY.TYPE]: type,
                 [TAB_TRANSFER_FILTER_KEY.FROM_DATE]: fromDate && moment(fromDate).format('YYYY-MM-DD'),
                 [TAB_TRANSFER_FILTER_KEY.TO_DATE]: toDate && moment(toDate).format('YYYY-MM-DD')
@@ -479,9 +479,9 @@ const StockReceiveListContent = enhance((props) => {
                 fromDate: fromDate && moment(fromDate),
                 toDate: toDate && moment(toDate)
             },
-            stock: {
-                value: stock
-            }
+            stock: _.map(_.split(stock, '-'), (item) => {
+                return _.toNumber(item)
+            })
         },
         filterLoading: false,
         openFilterDialog,

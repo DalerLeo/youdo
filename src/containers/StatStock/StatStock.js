@@ -118,16 +118,16 @@ const enhance = compose(
             if (tab === ONE) {
                 filter.filterBy({
                     [STATSTOCK_FILTER_OPEN]: false,
-                    [STATSTOCK_FILTER_KEY.TYPE]: type,
-                    [STATSTOCK_FILTER_KEY.BRAND]: brand
+                    [STATSTOCK_FILTER_KEY.TYPE]: _.join(type, '-'),
+                    [STATSTOCK_FILTER_KEY.BRAND]: _.join(brand, '-')
                 })
             } else {
                 filter.filterBy({
                     [STATSTOCK_FILTER_OPEN]: false,
                     [STATSTOCK_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                     [STATSTOCK_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD'),
-                    [STATSTOCK_FILTER_KEY.BRAND]: brand,
-                    [STATSTOCK_FILTER_KEY.TYPE]: type
+                    [STATSTOCK_FILTER_KEY.BRAND]: _.join(brand, '-'),
+                    [STATSTOCK_FILTER_KEY.TYPE]: _.join(type, '-')
                 })
             }
         },
@@ -208,12 +208,12 @@ const StatStock = enhance((props) => {
                     fromDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),
                     toDate: toDate && moment(toDate, 'YYYY-MM-DD')
                 },
-                brand: {
-                    value: brand
-                },
-                type: {
-                    value: type
-                }
+                brand: brand && _.map(_.split(brand, '-'), (item) => {
+                    return _.toNumber(item)
+                }),
+                type: _.map(_.split(type, '-'), (item) => {
+                    return _.toNumber(item)
+                })
             }
         })(),
         filterLoading: false,

@@ -190,22 +190,22 @@ const enhance = compose(
         },
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
-            const client = _.get(filterForm, ['values', 'client', 'value']) || null
-            const createdBy = _.get(filterForm, ['values', 'createdBy', 'value']) || null
-            const marketType = _.get(filterForm, ['values', 'marketType', 'value']) || null
-            const zone = _.get(filterForm, ['values', 'zone', 'value']) || null
+            const client = _.get(filterForm, ['values', 'client']) || null
+            const createdBy = _.get(filterForm, ['values', 'createdBy']) || null
+            const marketType = _.get(filterForm, ['values', 'marketType']) || null
+            const zone = _.get(filterForm, ['values', 'zone']) || null
             const isActive = _.get(filterForm, ['values', 'isActive', 'value']) || null
             const frequency = _.get(filterForm, ['values', 'frequency', 'value']) || null
             const nullBorder = _.get(filterForm, ['values', 'nullBorder']) || null
 
             filter.filterBy({
                 [SHOP_FILTER_OPEN]: false,
-                [SHOP_FILTER_KEY.CLIENT]: client,
-                [SHOP_FILTER_KEY.CREATED_BY]: createdBy,
-                [SHOP_FILTER_KEY.MARKET_TYPE]: marketType,
+                [SHOP_FILTER_KEY.CLIENT]: _.join(client, '-'),
+                [SHOP_FILTER_KEY.CREATED_BY]: _.join(createdBy, '-'),
+                [SHOP_FILTER_KEY.MARKET_TYPE]: _.join(marketType, '-'),
                 [SHOP_FILTER_KEY.STATUS]: isActive,
                 [SHOP_FILTER_KEY.FREQUENCY]: frequency,
-                [SHOP_FILTER_KEY.ZONE]: zone,
+                [SHOP_FILTER_KEY.ZONE]: _.join(zone, '-'),
                 [SHOP_FILTER_KEY.NULL_BORDER]: nullBorder
             })
         },
@@ -537,26 +537,23 @@ const ShopList = enhance((props) => {
 
     const filterDialog = {
         initialValues: {
-            createdBy: {
-                value: createdBy
-            },
+            createdBy: createdBy && _.map(_.split(createdBy, '-'), (item) => {
+                return _.toNumber(item)
+            }),
+            zone: zone && _.map(_.split(zone, '-'), (item) => {
+                return _.toNumber(item)
+            }),
+            client: client && _.map(_.split(client, '-'), (item) => {
+                return _.toNumber(item)
+            }),
+            marketType: marketType && _.map(_.split(marketType, '-'), (item) => {
+                return _.toNumber(item)
+            }),
             isActive: {
                 value: filterIsActive
             },
-            zone: {
-                value: zone
-            },
             frequency: {
                 value: frequency
-            },
-            category: {
-                value: client
-            },
-            client: {
-                value: client
-            },
-            marketType: {
-                value: marketType
             },
             nullBorder: nullBorder
         },

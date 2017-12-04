@@ -65,17 +65,17 @@ const enhance = compose(
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
             const search = _.get(filterForm, ['values', 'search']) || null
-            const division = _.get(filterForm, ['values', 'division', 'value']) || null
+            const division = _.get(filterForm, ['values', 'division']) || null
             const type = _.get(filterForm, ['values', 'type', 'value']) || null
-            const client = _.get(filterForm, ['values', 'client', 'value']) || null
+            const client = _.get(filterForm, ['values', 'client']) || null
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
 
             filter.filterBy({
                 [CLIENT_INCOME_FILTER_KEY.SEARCH]: search,
                 [CLIENT_INCOME_FILTER_KEY.TYPE]: type,
-                [CLIENT_INCOME_FILTER_KEY.DIVISION]: division,
-                [CLIENT_INCOME_FILTER_KEY.CLIENT]: client,
+                [CLIENT_INCOME_FILTER_KEY.DIVISION]: _.join(division, '-'),
+                [CLIENT_INCOME_FILTER_KEY.CLIENT]: _.join(client, '-'),
                 [CLIENT_INCOME_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [CLIENT_INCOME_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
 
@@ -142,14 +142,14 @@ const ClientIncomeList = enhance((props) => {
                 toDate: moment(lastDayOfMonth)
             },
             search: search,
-            division: {
-                value: division
-            },
+            division: division && _.map(_.split(division, '-'), (item) => {
+                return _.toNumber(item)
+            }),
+            client: client && _.map(_.split(client, '-'), (item) => {
+                return _.toNumber(item)
+            }),
             type: {
                 value: type
-            },
-            client: {
-                value: client
             }
         }
     }

@@ -99,12 +99,12 @@ export const listFilterSerializer = (data) => {
     const nullBorder = toBoolean(_.get(defaultData, 'nullBorder'))
 
     return {
-        'client': _.get(defaultData, 'client'),
-        'created_by': _.get(defaultData, 'createdBy'),
+        'client': _.get(defaultData, 'client') || null,
+        'created_by': _.get(defaultData, 'createdBy') || null,
         'is_active': _.toNumber(_.get(defaultData, 'isActive')) === TWO ? false : _.get(defaultData, 'isActive'),
         'frequency': _.get(defaultData, 'frequency'),
-        'border': _.get(defaultData, 'zone'),
-        'market_type': _.get(defaultData, 'marketType'),
+        'border': _.get(defaultData, 'zone') || null,
+        'market_type': _.get(defaultData, 'marketType') || null,
         'null_border': nullBorder ? 'True' : null,
         'created_date_0': _.get(defaultData, 'fromDate'),
         'created_date_1': _.get(defaultData, 'toDate'),

@@ -109,8 +109,8 @@ const enhance = compose(
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
             filter.filterBy({
                 [STAT_AGENT_FILTER_KEY.SEARCH]: search,
-                [STAT_AGENT_FILTER_KEY.ZONE]: zone,
-                [STAT_AGENT_FILTER_KEY.DIVISION]: division,
+                [STAT_AGENT_FILTER_KEY.ZONE]: _.join(zone, '-'),
+                [STAT_AGENT_FILTER_KEY.DIVISION]: _.join(division, '-'),
                 [STAT_AGENT_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [STAT_AGENT_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
 
@@ -204,12 +204,12 @@ const StatAgentList = enhance((props) => {
     }
     const initialValues = {
         search: search,
-        zone: {
-            value: zone
-        },
-        division: {
-            value: division
-        },
+        zone: zone && _.map(_.split(zone, '-'), (item) => {
+            return _.toNumber(item)
+        }),
+        division: division && _.map(_.split(division, '-'), (item) => {
+            return _.toNumber(item)
+        }),
         date: {
             fromDate: moment(firstDayOfMonth),
             toDate: moment(lastDayOfMonth)
