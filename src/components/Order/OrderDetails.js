@@ -389,10 +389,6 @@ const OrderDetails = enhance((props) => {
                                     <span>Подразделение:</span>
                                     <span>{division}</span>
                                 </li> : null}
-                                <li>
-                                    <span>Валюта:</span>
-                                    <span>{currency}</span>
-                                </li>
                             </ul>
                         </div>
                     </div>
@@ -437,6 +433,10 @@ const OrderDetails = enhance((props) => {
                         <div className={classes.dataBox}>
                             <ul>
                                 <li>
+                                    <span>Срок запроса:</span>
+                                    <span>{requestDeadline}</span>
+                                </li>
+                                <li>
                                     <span>Текущий статус:</span>
                                     {(status === REQUESTED) ? <span className={classes.yellow}>Запрос отправлен</span>
                                         : (status === READY) ? <span className={classes.green}>Есть на складе</span>
@@ -451,11 +451,7 @@ const OrderDetails = enhance((props) => {
                                 </li>
                                 <li>
                                     <span>Тип передачи:</span>
-                                    <span>{deliveryType > zero ? 'Доставка' : 'Самовывоз'}</span>
-                                </li>
-                                <li>
-                                    <span>Срок запроса:</span>
-                                    <span>{requestDeadline}</span>
+                                    <span>{deliveryType === 'delivery' ? 'Доставка' : 'Самовывоз'}</span>
                                 </li>
                                 <li>
                                     <span>Дата передачи:</span>

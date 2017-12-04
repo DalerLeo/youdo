@@ -19,6 +19,7 @@ export const createSerializer = (data) => {
     const dealType = _.get(data, ['dealType']) === 'standart' ? ZERO : ONE
     const market = _.get(data, ['market', 'value'])
     const contract = _.get(data, ['contract'])
+    const deliveryPrice = _.get(data, ['deliveryPrice'])
     const deliveryType = _.get(data, ['deliveryType', 'value'])
     const priceList = _.get(data, ['priceList', 'value'])
     const user = _.get(data, ['user', 'value'])
@@ -45,6 +46,7 @@ export const createSerializer = (data) => {
         market,
         user,
         products,
+        'delivery_price': deliveryPrice,
         'price_list': priceList === MINUS_ONE ? null : priceList,
         'with_net_cost': priceList === MINUS_ONE ? ONE : false
     }

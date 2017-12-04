@@ -23,7 +23,8 @@ import {
     usersListFetchAction,
     usersDeleteAction,
     usersItemFetchAction,
-    userGroupListFetchAction
+    userGroupListFetchAction,
+    clearPosition
 } from '../../actions/users'
 import {
     priceListSettingGetAllAction
@@ -160,6 +161,7 @@ const enhance = compose(
                 [USERS_FILTER_KEY.GROUP]: group
             })
         },
+
         handleOpenDeleteDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({
@@ -175,6 +177,7 @@ const enhance = compose(
 
         handleOpenCreateDialog: props => () => {
             const {dispatch, location: {pathname}, filter} = props
+            dispatch(clearPosition())
             hashHistory.push({pathname, query: filter.getParams({[USERS_CREATE_DIALOG_OPEN]: true})})
             dispatch(reset('UsersCreateForm'))
         },

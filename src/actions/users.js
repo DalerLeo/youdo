@@ -103,3 +103,9 @@ export const userGroupListFetchAction = () => {
         payload
     }
 }
+export const clearPosition = () => {
+    return {
+        type: actionTypes.POSITION_ITEM,
+        payload: Promise.resolve({})
+    }
+}
