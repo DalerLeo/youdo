@@ -22,14 +22,8 @@ const listHeader = [
     {
         sorting: true,
         name: 'name',
-        xs: 3,
+        xs: 10,
         title: 'Наименование'
-    },
-    {
-        sorting: false,
-        name: 'type',
-        xs: 7,
-        title: 'Тип'
     },
     {
         sorting: false,
@@ -141,33 +135,7 @@ const DivisionGridList = enhance((props) => {
 
         return (
             <Row key={id} className={classes.listRow}>
-                <Col xs={3}>{name}</Col>
-                <Col xs={7}>
-                    <div className={classes.personalWrap}>
-                        {_.map(_.get(item, 'users'), (user) => {
-                            const username = _.get(user, 'firstName') + ' ' + _.get(user, 'secondName')
-
-                            return (
-                                <div className={classes.person}>
-                                    {username}
-                                    <div className={classes.deletePers}>
-                                        <CloseIcon
-                                            color="#5d6474"/>
-                                    </div>
-                                </div>
-                            )
-                        })}
-                        <FlatButton
-                            backgroundColor={'#12aaeb'}
-                            hoverColor={'#12aaeb'}
-                            rippleColor={'#fff'}
-                            style={{height: '28px', lineHeight: '28px', minWidth: '60px'}}
-                            labelStyle={{textTransform: 'none', color: '#fff', verticalAlign: 'baseline'}}
-                            className={classes.addPerson}
-                            label="добавить"
-                        />
-                    </div>
-                </Col>
+                <Col xs={10}>{name}</Col>
                 <Col xs={2}>
                     <div className={classes.iconBtn}>
                         <Tooltip position="bottom" text="Изменить">

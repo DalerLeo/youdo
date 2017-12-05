@@ -27,8 +27,14 @@ const listHeader = [
     {
         sorting: true,
         name: 'name',
-        xs: 8,
+        xs: 5,
         title: 'Категории'
+    },
+    {
+        sorting: true,
+        name: 'division',
+        xs: 3,
+        title: 'Подразделения'
     },
     {
         sorting: true,
@@ -219,6 +225,7 @@ const ProductTypeGridList = enhance((props) => {
     const productTypeList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
+        const division = _.get(item, ['division', 'name'])
         const createdDate = dateFormat(_.get(item, 'createdDate'))
         const hasChild = !_.isEmpty(_.get(item, 'children'))
         const iconButton = (
@@ -233,7 +240,8 @@ const ProductTypeGridList = enhance((props) => {
             return (
                 <Row key={id} className={classes.rowWithParent}>
                     <div className={classes.parentCategory}>
-                        <Col xs={8}>{name}</Col>
+                        <Col xs={5}>{name}</Col>
+                        <Col xs={3}>{division}</Col>
                         <Col xs={3}>{createdDate}</Col>
                         <Col xs={1} className={classes.right}>
                             <div className={classes.iconBtn}>
@@ -300,7 +308,8 @@ const ProductTypeGridList = enhance((props) => {
         }
         return (
             <Row key={id} className={classes.rowWithoutParent}>
-                <Col xs={8}>{name}</Col>
+                <Col xs={5}>{name}</Col>
+                <Col xs={3}>{division}</Col>
                 <Col xs={3}>{createdDate}</Col>
                 <Col xs={1} className={classes.right}>
                     <IconMenu

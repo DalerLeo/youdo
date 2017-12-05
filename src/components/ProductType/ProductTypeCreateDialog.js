@@ -8,7 +8,7 @@ import FlatButton from 'material-ui/FlatButton'
 import Loader from '../Loader'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, ProductTypeParentSearchField} from '../ReduxForm'
+import {TextField, ProductTypeParentSearchField, DivisionSearchField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
@@ -84,6 +84,13 @@ const ProductTypeCreateDialog = enhance((props) => {
                             <Field
                                 name="name"
                                 component={TextField}
+                                className={classes.inputFieldCustom}
+                                label="Наименование категории"
+                                fullWidth={true}
+                            />
+                            <Field
+                                name="division"
+                                component={DivisionSearchField}
                                 className={classes.inputFieldCustom}
                                 label="Наименование категории"
                                 fullWidth={true}
