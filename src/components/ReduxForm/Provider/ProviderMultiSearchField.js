@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import sprintf from 'sprintf'
 import React from 'react'
-import SearchField from '../Basic/SearchField'
+import MultiSelectField from '../Basic/MultiSelectField'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
@@ -9,15 +9,15 @@ import * as actionTypes from '../../../constants/actionTypes'
 import {connect} from 'react-redux'
 
 const getOptions = (search) => {
-    return axios().get(`${PATH.CLIENT_LIST}?search=${search || ''}&page_size=100`)
+    return axios().get(`${PATH.PROVIDER_LIST}?search=${search || ''}&page_size=100`)
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
         })
 }
 
-const setItemAction = (data, loading) => {
+export const setItemAction = (data, loading) => {
     return {
-        type: actionTypes.CLIENT_CONTACTS,
+        type: actionTypes.PROVIDER_CONTACTS,
         data: data,
         loading: loading
     }
@@ -26,28 +26,30 @@ const setItemAction = (data, loading) => {
 const getItem = (id, dispatch) => {
     dispatch(setItemAction(null, true))
 
-    return axios().get(sprintf(PATH.CLIENT_ITEM, id))
+    return axios().get(sprintf(PATH.PROVIDER_ITEM, id))
         .then(({data}) => {
             dispatch(setItemAction(_.get(data, 'contacts'), false))
             return Promise.resolve(toCamelCase(data))
         })
 }
 
-const ClientSearchField = connect()((props) => {
+const ProviderMultiSearchField = connect()((props) => {
     const {dispatch} = props
     const test = (id) => {
         return getItem(id, dispatch)
     }
+
     return (
-        <SearchField
-            getValue={SearchField.defaultGetValue('id')}
-            getText={SearchField.defaultGetText('name')}
+        <MultiSelectField
+            getValue={MultiSelectField.defaultGetValue('id')}
+            getText={MultiSelectField.defaultGetText('name')}
             getOptions={getOptions}
             getItem={test}
-            getItemText={SearchField.defaultGetText('name')}
+            getItemText={MultiSelectField.defaultGetText('name')}
+            withDetails={true}
             {...props}
         />
     )
 })
 
-export default ClientSearchField
+export default ProviderMultiSearchField

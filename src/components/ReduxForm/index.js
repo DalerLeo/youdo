@@ -13,7 +13,8 @@ import ProductTypeSearchField from './Product/ProductTypeSearchField'
 import ProductTypeParentSearchField from './Product/ProductTypeParentSearchField'
 import ProductTypeChildSearchField from './Product/ProductTypeChildSearchField'
 import BrandSearchField from './BrandSearchField'
-import MeasurementSearchField from './MeasurementSearchField'
+import MeasurementSearchField from './Measurement/MeasurementSearchField'
+import MeasurementMultiSearchField from './Measurement/MeasurementMultiSearchField'
 import CurrencySearchField from './CurrencySearchField'
 import ProviderSearchField from './Provider/ProviderSearchField'
 import ClientSearchField from './Client/ClientSearchField'
@@ -28,7 +29,8 @@ import PricesListProductField from './Promotions/PricesListProductField'
 import PricesBonusProductField from './Promotions/PricesBonusProductField'
 import OrderListReturnField from './Order/OrderListReturnField'
 import OrderListProductField from './Order/OrderListProductField'
-import ExpensiveCategorySearchField from './ExpensiveCategorySearchField'
+import ExpensiveCategorySearchField from './ExpenseCategory/ExpensiveCategorySearchField'
+import ExpensiveCategoryMultiSearchField from './ExpenseCategory/ExpensiveCategoryMultiSearchField'
 import PaymentTypeSearchField from './PaymentTypeSearchField'
 import StockTypeSearchField from './Stock/StockTypeSearchField'
 import CashboxSearchField from './Cashbox/CashboxSearchField'
@@ -52,6 +54,7 @@ import VisitFrequencySearchField from './Shop/VisitFrequencySearchField'
 import ShopStatusSearchField from './Shop/ShopStatusSearchField'
 import DealTypeSearchField from './DealTypeSearchField'
 import MarketTypeSearchField from './Shop/MarketTypeSearchField'
+import MarketTypeMultiSearchField from './Shop/MarketTypeMultiSearchField'
 import MarketSearchField from './Shop/MarketSearchField'
 import DeptSearchField from './DeptTypeSearchField'
 import StockReceiveProductSearchField from './StockReceive/StockReceiveProductSearchField'
@@ -64,7 +67,7 @@ import ZoneSearchField from './ZoneSearchField'
 import InOutTypeSearchField from './InOutTypeSearchFiled'
 import RemainderProductTypeSearchField from './Remainder/RemainderProductTypeSearchField'
 import PositionSearchField from './PositionSearchField'
-import DivisionSearchField from './DivisionSearchField'
+import DivisionSearchField from './Division/DivisionSearchField'
 import Pagination from './Pagination'
 import ClientBalanceReturnProductList from './ClientBalance/ClientBalanceReturnProductList'
 import ReturnStatusSearchField from './ReturnStatusSearchField'
@@ -87,7 +90,7 @@ import DeliveryManMultiSearchField from './DeliveryManMultiSearchField'
 import PriceListSearchField from './PriceListSearchField'
 import ClientMultiSearchField from './Client/ClientMultiSearchField'
 import ZoneMultiSearchField from './ZoneMultiSearchField'
-import DivisionMultiSearchField from './DivisionMultiSearchField'
+import DivisionMultiSearchField from './Division/DivisionMultiSearchField'
 import UsersAgentMultiSearchField from './Users/UsersAgentMultiSearchField'
 import MarketMultiSearchField from './Shop/MarketMultiSearchField'
 import ProductMultiSearchField from './Product/ProductMultiSearchField'
@@ -95,6 +98,9 @@ import OrderStatusMultiSearchField from './Order/OrderStatusMultiSearchField'
 import ReturnStatusMultiSearch from './ReturnStatusMultiSearch'
 import UserCurrenciesSearchField from './UserCurrenciesSearchField'
 import CashboxTypeCurrencyField from './CashboxTypeCurrencyField'
+import StockMultiSearchField from './Stock/StockMultiSearchField'
+import ProductTypeParentMultiSearchField from './Product/ProductTypeParentMultiSearchField'
+import ProviderMultiSearchField from './Provider/ProviderMultiSearchField'
 
 export {
     CashboxTypeCurrencyField,
@@ -144,6 +150,7 @@ export {
     StockSearchField,
     SupplyListProductField,
     ExpensiveCategorySearchField,
+    ExpensiveCategoryMultiSearchField,
     ProviderContactsField,
     PaymentTypeSearchField,
     StockTypeSearchField,
@@ -193,5 +200,10 @@ export {
     DivisionMultiSearchField,
     OrderStatusMultiSearchField,
     ReturnStatusMultiSearch,
-    UserCurrenciesSearchField
+    UserCurrenciesSearchField,
+    StockMultiSearchField,
+    ProductTypeParentMultiSearchField,
+    ProviderMultiSearchField,
+    MeasurementMultiSearchField,
+    MarketTypeMultiSearchField
 }

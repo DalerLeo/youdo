@@ -489,6 +489,11 @@ const enhance = compose(
                         })})
                     dispatch(orderListFetchAction(filter))
                 })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
+                })
         },
 
         handleOpenTransactionsDialog: props => () => {
@@ -1074,7 +1079,7 @@ const OrderList = enhance((props) => {
                     value: _.toInteger(_.get(detail, ['market', 'id']))
                 },
                 deliveryMan: {
-                    value: _.get(detail, ['deliveryMan', 'id'])
+                    value: _.get(detail, ['deliveryMan', 'id'] || ZERO)
                 },
                 deliveryType: {
                     value: deliveryType,
@@ -1082,10 +1087,9 @@ const OrderList = enhance((props) => {
                 },
                 dealType: dealType,
                 paymentType: paymentType,
-                deliveryDate: moment(_.get(detail, ['dateDelivery'])).toDate(),
+                deliveryDate: _.get(detail, ['dateDelivery']) ? moment(_.get(detail, ['dateDelivery'])).toDate() : '',
                 requestDeadline: _.get(detail, ['requestDeadline']) && moment(_.get(detail, ['requestDeadline'])).toDate(),
                 deliveryPrice: numberFormat(_.get(detail, 'deliveryPrice')),
-                contract: _.get(detail, 'contract'),
                 discountPrice: discount,
                 paymentDate: moment(_.get(detail, ['paymentDate'])).toDate(),
                 products: forUpdateProducts,
