@@ -41,7 +41,8 @@ import {
     transactionInfoFetchAction,
     transactionEditPaymentAction,
     deleteTransactionAction,
-    transactionConvertAction
+    transactionConvertAction,
+    usersListFetchAction
 } from '../../actions/transaction'
 import {
     cashboxListFetchAction
@@ -50,6 +51,7 @@ import {openSnackbarAction} from '../../actions/snackbar'
 import {openErrorAction} from '../../actions/error'
 
 const ZERO = 0
+const ONE = 1
 const DELETE_TRANSACTION = 'deleteTransaction'
 const UPDATE_TRANSACTION = 'updateTransaction'
 const enhance = compose(
@@ -84,6 +86,9 @@ const enhance = compose(
 
         const filter = filterHelper(list, pathname, query)
         const filterItem = filterHelper(payment, pathname, query, {'page': 'dPage'})
+
+        const usersList = _.get(state, ['users', 'list', 'data'])
+        const usersListLoading = _.get(state, ['users', 'list', 'loading'])
         return {
             list,
             query,
@@ -111,13 +116,26 @@ const enhance = compose(
             updateForm,
             date,
             cashbox,
-            convertAmount
+            convertAmount,
+            usersList,
+            usersListLoading
         }
     }),
     withPropsOnChange((props, nextProps) => {
         return !nextProps.cashboxListLoading && _.isNil(nextProps.cashboxList)
     }, ({dispatch, filterCashbox}) => {
         dispatch(cashboxListFetchAction(filterCashbox))
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const prevExpenseCat = _.get(props, ['createForm', 'values', 'expanseCategory', 'value'])
+        const nextExpenseCat = _.get(nextProps, ['createForm', 'values', 'expanseCategory', 'value'])
+        return prevExpenseCat !== nextExpenseCat && nextExpenseCat === ONE
+    }, ({dispatch, createForm}) => {
+        const expenseCat = _.get(createForm, ['values', 'expanseCategory', 'value'])
+        if (expenseCat === ONE) {
+            dispatch(usersListFetchAction())
+        }
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -614,7 +632,9 @@ const TransactionList = enhance((props) => {
         paymentLoading,
         transactionInfoLoading,
         transactionInfo,
-        isSuperUser
+        isSuperUser,
+        usersList,
+        usersListLoading
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', TRANSACTION_FILTER_OPEN]))
@@ -838,6 +858,11 @@ const TransactionList = enhance((props) => {
         handleSubmitDeleteTransaction: props.handleSubmitDeleteTransaction
     }
 
+    const usersData = {
+        data: _.get(usersList, 'results'),
+        loading: usersListLoading
+    }
+
     const hasRightCashbox = _.find(_.get(cashboxList, 'results'), {'type': 'cash'})
     return (
         <Layout {...layout}>
@@ -862,6 +887,7 @@ const TransactionList = enhance((props) => {
                 superUser={superUser}
                 hasRightCashbox={hasRightCashbox}
                 updateTransactionDialog={updateTransactionDialog}
+                usersData={usersData}
             />
         </Layout>
     )

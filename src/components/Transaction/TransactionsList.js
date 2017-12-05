@@ -201,11 +201,12 @@ const TransactionsList = enhance((props) => {
         showOnlyList,
         listShadow,
         hasRightCashbox,
-        updateTransactionDialog
+        updateTransactionDialog,
+        usersData
     } = props
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const transactionFilterDialog = showOnlyList
-        ? (<div></div>)
+        ? null
         : (<TransactionFilterForm
                 initialValues={filterDialog.initialValues}
                 filter={filter}
@@ -419,6 +420,7 @@ const TransactionsList = enhance((props) => {
                     loading={createExpenseDialog.loading}
                     onClose={createExpenseDialog.handleCloseDialog}
                     onSubmit={createExpenseDialog.handleSubmitDialog}
+                    usersData={usersData}
                 />
                 <TransactionCreateDialog
                     initialValues={{date: currentDay}}
@@ -428,6 +430,7 @@ const TransactionsList = enhance((props) => {
                     loading={createIncomeDialog.loading}
                     onClose={createIncomeDialog.handleCloseDialog}
                     onSubmit={createIncomeDialog.handleSubmitDialog}
+                    usersData={usersData}
                 />
                 <TransactionCreateDialog
                     isUpdate={true}
@@ -442,6 +445,7 @@ const TransactionsList = enhance((props) => {
                         ? updateTransactionDialog.handleExpenseSumbit
                         : updateTransactionDialog.handleIncomeSubmit
                     }
+                    usersData={usersData}
                 />
 
                 <TransactionSendDialog
