@@ -489,11 +489,6 @@ const enhance = compose(
                         })})
                     dispatch(orderListFetchAction(filter))
                 })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
-                })
         },
 
         handleOpenTransactionsDialog: props => () => {
@@ -1057,10 +1052,9 @@ const OrderList = enhance((props) => {
             const discountPrice = _.toNumber(_.get(detail, 'discountPrice'))
             const totalPrice = _.toNumber(_.get(detail, 'totalPrice'))
             const discount = (discountPrice / (discountPrice + totalPrice)) * HUND
-
-            const deliveryType = _.toInteger(_.get(detail, ['deliveryType', 'id']))
+            const deliveryType = _.get(detail, ['deliveryType'])
             let deliveryTypeText = 'Доставка'
-            if (deliveryType === ZERO) {
+            if (deliveryType === 'self') {
                 deliveryTypeText = 'Самовывоз'
             }
             const dealType = _.toInteger(_.get(detail, 'dealType')) === ONE ? 'consignment' : 'standart'
@@ -1091,6 +1085,7 @@ const OrderList = enhance((props) => {
                 deliveryDate: moment(_.get(detail, ['dateDelivery'])).toDate(),
                 requestDeadline: _.get(detail, ['requestDeadline']) && moment(_.get(detail, ['requestDeadline'])).toDate(),
                 deliveryPrice: numberFormat(_.get(detail, 'deliveryPrice')),
+                contract: _.get(detail, 'contract'),
                 discountPrice: discount,
                 paymentDate: moment(_.get(detail, ['paymentDate'])).toDate(),
                 products: forUpdateProducts,
