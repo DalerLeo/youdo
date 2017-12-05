@@ -274,3 +274,19 @@ export const transactionConvertAction = (date, currency) => {
         payload
     }
 }
+
+export const usersListFetchAction = () => {
+    const payload = axios()
+        .get(API.USERS_LIST, {params: {page_size: 50}})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.USERS_LIST,
+        payload
+    }
+}

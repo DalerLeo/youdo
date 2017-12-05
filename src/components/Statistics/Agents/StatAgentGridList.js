@@ -438,14 +438,15 @@ const StatAgentGridList = enhance((props) => {
     })
     const tableList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const salesTotalSum = numberFormat(_.get(item, 'salesTotalSum'), primaryCurrency)
-        const salesFactSum = numberFormat(_.get(item, 'salesFactSum'), primaryCurrency)
-        const returnOrdersSum = numberFormat(_.get(item, 'returnOrdersSum'), primaryCurrency)
-        const returnTotalSum = numberFormat(_.get(item, 'returnTotalSum'), primaryCurrency)
-        const paymentOrdersSum = numberFormat(_.get(item, 'paymentOrdersSum'), primaryCurrency)
-        const paymentTotalSum = numberFormat(_.get(item, 'paymentTotalSum'), primaryCurrency)
-        const planTotal = numberFormat(_.get(item, 'planTotal'), primaryCurrency)
-        const planLeft = numberFormat(_.get(item, 'planLeft'), primaryCurrency)
+        const salesTotal = numberFormat(Math.abs(_.get(item, 'salesTotal')), primaryCurrency)
+        const salesFact = numberFormat(Math.abs(_.get(item, 'salesFact')), primaryCurrency)
+        const returnOrders = numberFormat(Math.abs(_.get(item, 'returnOrders')), primaryCurrency)
+        const returnTotal = numberFormat(Math.abs(_.get(item, 'returnTotal')), primaryCurrency)
+        const paymentOrders = numberFormat(Math.abs(_.get(item, 'paymentOrders')), primaryCurrency)
+        const paymentTotal = numberFormat(Math.abs(_.get(item, 'paymentTotal')), primaryCurrency)
+        const planTotal = numberFormat(Math.abs(_.get(item, 'planTotal')), primaryCurrency)
+        const planLeft = numberFormat(Math.abs(_.get(item, 'planLeft')), primaryCurrency)
+        const planDebt = numberFormat(Math.abs(_.get(item, 'planDebt')), primaryCurrency)
 
         return (
             <tr
@@ -454,18 +455,18 @@ const StatAgentGridList = enhance((props) => {
                 style={id === currentRow ? styleOnHover : {}}
                 onMouseEnter={() => { updateRow(id) }}
                 onMouseLeave={() => { updateRow(null) }}>
-                <td>{salesTotalSum}</td>
-                <td>{salesFactSum}</td>
+                <td>{salesTotal}</td>
+                <td>{salesFact}</td>
 
-                <td>{returnOrdersSum}</td>
-                <td>{returnTotalSum}</td>
+                <td>{returnOrders}</td>
+                <td>{returnTotal}</td>
 
-                <td>{paymentOrdersSum}</td>
-                <td>{paymentTotalSum}</td>
+                <td>{paymentOrders}</td>
+                <td>{paymentTotal}</td>
 
                 <td>{planTotal}</td>
                 <td style={{border: 'none'}}>{planLeft}</td>
-                <td>{planLeft}</td>
+                <td>{planDebt}</td>
             </tr>
         )
     })
