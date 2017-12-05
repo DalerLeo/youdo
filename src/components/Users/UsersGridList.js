@@ -246,6 +246,7 @@ const UsersGridList = enhance((props) => {
                 </div>
             </div>
 
+            {createDialog.openCreateDialog &&
             <UsersCreateDialog
                 initialValues={createDialog.initialValues}
                 open={createDialog.openCreateDialog}
@@ -257,8 +258,9 @@ const UsersGridList = enhance((props) => {
                 stockListData={stockListData}
                 marketTypeData={marketTypeData}
                 currencyData={currencyData}
-            />
+            />}
 
+            {updateDialog.openUpdateDialog &&
             <UsersCreateDialog
                 initialValues={updateDialog.initialValues}
                 isUpdate={true}
@@ -271,7 +273,7 @@ const UsersGridList = enhance((props) => {
                 marketTypeData={marketTypeData}
                 currencyData={currencyData}
                 errorData={updateDialog.errorData}
-            />
+            />}
 
             {detailData.data && <ConfirmDialog
                 type="delete"
