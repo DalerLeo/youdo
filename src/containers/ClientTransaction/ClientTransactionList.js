@@ -349,9 +349,9 @@ const ClientTransactionList = enhance((props) => {
 
     const filterDialog = {
         initialValues: {
-            category: {
-                value: categoryExpense
-            },
+            category: categoryExpense && _.map(_.split(categoryExpense, '-'), (item) => {
+                return _.toNumber(item)
+            }),
             type: {
                 value: type
             },

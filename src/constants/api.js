@@ -3,7 +3,7 @@ export const API_ROOT = 'api'
 export const API_VERSION = 'v1'
 export const API_PROTOCOL = process.env.API_PROTOCOL ? process.env.API_PROTOCOL : 'https'
 
-export const API_URL = `${API_PROTOCOL}://${API_HOST}/${API_ROOT}/${API_VERSION}`
+export const API_URL = `${API_PROTOCOL}://apitest1.wienerdeming.com/api/v1`
 
 export const USER = 'main/user'
 export const SIGN_IN = `/${USER}/auth/`
@@ -43,6 +43,12 @@ export const EXPENSIVE_CATEGORY_CREATE = `/${EXPENSIVE_CATEGORY}/`
 export const EXPENSIVE_CATEGORY_LIST = `/${EXPENSIVE_CATEGORY}/`
 export const EXPENSIVE_CATEGORY_ITEM = `/${EXPENSIVE_CATEGORY}/%d/`
 export const EXPENSIVE_CATEGORY_DELETE = `/${EXPENSIVE_CATEGORY}/%d/`
+
+export const POST = 'main/jobs'
+export const POST_CREATE = `/${POST}/`
+export const POST_LIST = `/${POST}/`
+export const POST_ITEM = `/${POST}/%d/`
+export const POST_DELETE = `/${POST}/%d/`
 
 export const PROVIDER = 'stock/provider'
 export const PROVIDER_CREATE = `/${PROVIDER}/`

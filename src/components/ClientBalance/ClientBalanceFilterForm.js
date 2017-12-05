@@ -9,7 +9,7 @@ import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
-import {ClientBalanceTypeSearchField, PaymentTypeSearchField, DivisionSearchField} from '../ReduxForm'
+import {ClientBalanceTypeSearchField, PaymentTypeSearchField, DivisionMultiSearchField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
@@ -25,7 +25,7 @@ const enhance = compose(
     injectSheet({
         wrapper: {
             position: 'absolute',
-            minWidth: '300px',
+            width: '310px',
             background: '#fff',
             zIndex: 99,
             top: 0,
@@ -172,7 +172,7 @@ const ClientBalanceFilterForm = enhance((props) => {
                         <Field
                             className={classes.inputFieldCustom}
                             name="division"
-                            component={DivisionSearchField}
+                            component={DivisionMultiSearchField}
                             label="Подразделение"
                             fullWidth={true}/>
                     </div>

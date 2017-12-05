@@ -80,7 +80,7 @@ const enhance = compose(
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
             filter.filterBy({
                 [STAT_MARKET_FILTER_KEY.SEARCH]: search,
-                [STAT_MARKET_FILTER_KEY.USER]: user,
+                [STAT_MARKET_FILTER_KEY.USER]: _.join(user, '-'),
                 [STAT_MARKET_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [STAT_MARKET_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
 
@@ -177,9 +177,9 @@ const StatMarketList = enhance((props) => {
     }
     const initialValues = {
         search: search,
-        user: {
-            value: user
-        },
+        user: user && _.map(_.split(user, '-'), (item) => {
+            return _.toNumber(item)
+        }),
         date: {
             fromDate: moment(firstDayOfMonth),
             toDate: moment(lastDayOfMonth)

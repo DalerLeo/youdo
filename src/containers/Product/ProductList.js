@@ -127,10 +127,10 @@ const enhance = compose(
 
             filter.filterBy({
                 [PRODUCT_FILTER_OPEN]: false,
-                [PRODUCT_FILTER_KEY.TYPE_PARENT]: typeParent,
-                [PRODUCT_FILTER_KEY.TYPE_CHILD]: typeChild,
-                [PRODUCT_FILTER_KEY.MEASUREMENT]: measurement,
-                [PRODUCT_FILTER_KEY.BRAND]: brand
+                [PRODUCT_FILTER_KEY.TYPE_PARENT]: _.join(typeParent, '-'),
+                [PRODUCT_FILTER_KEY.TYPE_CHILD]: _.join(typeChild, '-'),
+                [PRODUCT_FILTER_KEY.MEASUREMENT]: _.join(measurement, '-'),
+                [PRODUCT_FILTER_KEY.BRAND]: _.join(brand, '-')
             })
         },
 
@@ -296,10 +296,18 @@ const ProductList = enhance((props) => {
 
     const filterDialog = {
         initialValues: {
-            brand: {value: brand},
-            typeParent: {value: typeParent},
-            typeChild: {value: typeChild},
-            measurement: {value: measurement}
+            brand: brand && _.map(_.split(brand, '-'), (item) => {
+                return _.toNumber(item)
+            }),
+            typeParent: typeParent && _.map(_.split(typeParent, '-'), (item) => {
+                return _.toNumber(item)
+            }),
+            typeChild: typeChild && _.map(_.split(typeChild, '-'), (item) => {
+                return _.toNumber(item)
+            }),
+            measurement: measurement && _.map(_.split(measurement, '-'), (item) => {
+                return _.toNumber(item)
+            })
         },
         filterLoading: false,
         openFilterDialog,

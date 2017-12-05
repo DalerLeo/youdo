@@ -312,7 +312,7 @@ const enhance = compose(
         enableReinitialize: true
     }),
     connect((state) => {
-        const typeParent = _.get(state, ['form', 'StatisticsFilterForm', 'values', 'typeParent', 'value'])
+        const typeParent = _.get(state, ['form', 'StatisticsFilterForm', 'values', 'typeParent'])
         return {
             typeParent
         }

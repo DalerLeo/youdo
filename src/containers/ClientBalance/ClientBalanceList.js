@@ -353,9 +353,9 @@ const ClientBalanceList = enhance((props) => {
             balanceType: {
                 value: balanceType
             },
-            division: {
-                value: divisionValue
-            }
+            division: divisionValue && _.map(_.split(divisionValue, '-'), (item) => {
+                return _.toNumber(item)
+            })
         },
         filterLoading: false,
         openFilterDialog,

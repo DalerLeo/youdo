@@ -153,6 +153,7 @@ const enhance = compose(
     })
 )
 
+const TWO = 2
 const SupplyGridList = enhance((props) => {
     const {
         filter,
@@ -203,9 +204,10 @@ const SupplyGridList = enhance((props) => {
             data={_.get(detailData, 'data') || {}}
             defectDialog={defectDialog}
             deleteDialog={deleteDialog}
-            confirmDialog={confirmDialog}
+            confirmDialog={!_.get(detailData, 'detailLoading') && confirmDialog}
             confirmExpenseDialog={confirmExpenseDialog}
             updateDialog={updateDialog}
+            comlated={_.get(detailData, 'status') === TWO}
             loading={_.get(detailData, 'detailLoading')}
             handleSupplyExpenseOpenCreateDialog={supplyExpenseCreateDialog.handleSupplyExpenseOpenCreateDialog}
             supplyListData={supplyListData}

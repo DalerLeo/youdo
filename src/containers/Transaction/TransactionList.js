@@ -254,18 +254,18 @@ const enhance = compose(
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
             const type = _.get(filterForm, ['values', 'type', 'value']) || null
-            const division = _.get(filterForm, ['values', 'division', 'value']) || null
-            const client = _.get(filterForm, ['values', 'client', 'value']) || null
+            const division = _.get(filterForm, ['values', 'division']) || null
+            const client = _.get(filterForm, ['values', 'client']) || null
             const withDeleted = _.get(filterForm, ['values', 'with_deleted']) || null
-            const categoryExpense = _.get(filterForm, ['values', 'categoryExpense', 'value']) || null
+            const categoryExpense = _.get(filterForm, ['values', 'categoryExpense']) || null
 
             filter.filterBy({
                 [TRANSACTION_FILTER_OPEN]: false,
                 [TRANSACTION_FILTER_KEY.TYPE]: type,
-                [TRANSACTION_FILTER_KEY.CLIENT]: client,
+                [TRANSACTION_FILTER_KEY.CLIENT]: _.join(client, '-'),
                 [TRANSACTION_FILTER_KEY.WITH_DELETED]: withDeleted,
-                [TRANSACTION_FILTER_KEY.DIVISION]: division,
-                [TRANSACTION_FILTER_KEY.CATEGORY_EXPENSE]: categoryExpense,
+                [TRANSACTION_FILTER_KEY.DIVISION]: _.join(division, '-'),
+                [TRANSACTION_FILTER_KEY.CATEGORY_EXPENSE]: _.join(categoryExpense, '-'),
                 [TRANSACTION_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [TRANSACTION_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
             })
@@ -632,7 +632,9 @@ const TransactionList = enhance((props) => {
     const openDeleteTransaction = _.toInteger(_.get(location, ['query', DELETE_TRANSACTION])) > ZERO
     const openUpdateTransaction = _.toInteger(_.get(location, ['query', UPDATE_TRANSACTION]))
     const categoryExpense = _.toInteger(filter.getParam(TRANSACTION_FILTER_KEY.CATEGORY_EXPENSE))
+    const division = _.toInteger(filter.getParam(TRANSACTION_FILTER_KEY.DIVISION))
     const type = _.toInteger(filter.getParam(TRANSACTION_FILTER_KEY.TYPE))
+    const client = _.toInteger(filter.getParam(TRANSACTION_FILTER_KEY.CLIENT))
     const withDeleted = toBoolean(filter.getParam(TRANSACTION_FILTER_KEY.WITH_DELETED))
     const fromDate = filter.getParam(TRANSACTION_FILTER_KEY.FROM_DATE)
     const toDate = filter.getParam(TRANSACTION_FILTER_KEY.TO_DATE)
@@ -687,8 +689,8 @@ const TransactionList = enhance((props) => {
     const MINUS_ONE = -1
     const updateExpenseDialog = {
         initialValues: (() => {
-            const client = _.get(detail, ['clientTransaction', 'client', 'id'])
-            const showClients = _.toInteger(client || ZERO) > ZERO
+            const clientExpense = _.get(detail, ['clientTransaction', 'client', 'id'])
+            const showClients = _.toInteger(clientExpense || ZERO) > ZERO
             let amount = _.toNumber(_.get(detail, 'amount'))
             if (amount < ZERO) {
                 amount *= MINUS_ONE
@@ -723,8 +725,8 @@ const TransactionList = enhance((props) => {
             if (amount < ZERO) {
                 amount *= MINUS_ONE
             }
-            const client = _.get(detail, ['clientTransaction', 'client', 'id'])
-            const showIncomeClients = _.toInteger(client || ZERO) > ZERO
+            const clientIncome = _.get(detail, ['clientTransaction', 'client', 'id'])
+            const showIncomeClients = _.toInteger(clientIncome || ZERO) > ZERO
             if (!detailId || openCreateIncomeDialog) {
                 return {
                     date: moment()
@@ -734,7 +736,7 @@ const TransactionList = enhance((props) => {
             return {
                 comment: _.get(detail, 'comment'),
                 amount: amount,
-                client: {value: client},
+                client: {value: clientIncome},
                 showClients: showIncomeClients,
                 expanseCategory: {
                     value: _.get(detail, ['expanseCategory', 'id']),
@@ -761,9 +763,15 @@ const TransactionList = enhance((props) => {
 
     const filterDialog = {
         initialValues: {
-            category: {
-                value: categoryExpense
-            },
+            category: categoryExpense && _.map(_.split(categoryExpense, '-'), (item) => {
+                return _.toNumber(item)
+            }),
+            client: client && _.map(_.split(client, '-'), (item) => {
+                return _.toNumber(item)
+            }),
+            division: division && _.map(_.split(division, '-'), (item) => {
+                return _.toNumber(item)
+            }),
             type: {
                 value: type
             },

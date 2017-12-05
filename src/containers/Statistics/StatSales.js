@@ -22,6 +22,7 @@ import {
     orderListPintFetchAction
 } from '../../actions/statSales'
 import {OrderPrint} from '../../components/Order'
+
 const ONE = 1
 const enhance = compose(
     connect((state, props) => {
@@ -85,12 +86,18 @@ const enhance = compose(
     withHandlers({
         handleOpenStatSaleDialog: props => (id) => {
             const {filter} = props
-            hashHistory.push({pathname: sprintf(ROUTER.STATISTICS_SALES_ITEM_PATH, id), query: filter.getParams({[STAT_SALES_DIALOG_OPEN]: true})})
+            hashHistory.push({
+                pathname: sprintf(ROUTER.STATISTICS_SALES_ITEM_PATH, id),
+                query: filter.getParams({[STAT_SALES_DIALOG_OPEN]: true})
+            })
         },
 
         handleCloseStatSaleDialog: props => () => {
             const {filter} = props
-            hashHistory.push({pathname: ROUTER.STATISTICS_SALES_URL, query: filter.getParams({[STAT_SALES_DIALOG_OPEN]: false})})
+            hashHistory.push({
+                pathname: ROUTER.STATISTICS_SALES_URL,
+                query: filter.getParams({[STAT_SALES_DIALOG_OPEN]: false})
+            })
         },
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
@@ -100,12 +107,12 @@ const enhance = compose(
             const deliveryToDate = _.get(filterForm, ['values', 'deliveryDate', 'toDate']) || null
             const deadlineFromDate = _.get(filterForm, ['values', 'deadlineDate', 'fromDate']) || null
             const deadlineToDate = _.get(filterForm, ['values', 'deadlineDate', 'toDate']) || null
-            const client = _.get(filterForm, ['values', 'client', 'value']) || null
-            const status = _.get(filterForm, ['values', 'status', 'value']) || null
-            const product = _.get(filterForm, ['values', 'product', 'value']) || null
-            const shop = _.get(filterForm, ['values', 'shop', 'value']) || null
-            const division = _.get(filterForm, ['values', 'division', 'value']) || null
-            const zone = _.get(filterForm, ['values', 'zone', 'value']) || null
+            const client = _.get(filterForm, ['values', 'client']) || null
+            const status = _.get(filterForm, ['values', 'status']) || null
+            const product = _.get(filterForm, ['values', 'product']) || null
+            const shop = _.get(filterForm, ['values', 'shop']) || null
+            const division = _.get(filterForm, ['values', 'division']) || null
+            const zone = _.get(filterForm, ['values', 'zone']) || null
             const dept = _.get(filterForm, ['values', 'dept', 'value']) || null
             const initiator = _.get(filterForm, ['values', 'initiator']) || null
             const deliveryMan = _.get(filterForm, ['values', 'deliveryMan']) || null
@@ -113,13 +120,13 @@ const enhance = compose(
             const exclude = _.get(filterForm, ['values', 'exclude']) || null
 
             filter.filterBy({
-                [STAT_SALES_FILTER_KEY.CLIENT]: client,
-                [STAT_SALES_FILTER_KEY.STATUS]: status,
-                [STAT_SALES_FILTER_KEY.PRODUCT]: product,
+                [STAT_SALES_FILTER_KEY.CLIENT]: _.join(client, '-'),
+                [STAT_SALES_FILTER_KEY.STATUS]: _.join(status, '-'),
+                [STAT_SALES_FILTER_KEY.PRODUCT]: _.join(product, '-'),
                 [STAT_SALES_FILTER_KEY.INITIATOR]: _.join(initiator, '-'),
-                [STAT_SALES_FILTER_KEY.ZONE]: zone,
-                [STAT_SALES_FILTER_KEY.SHOP]: shop,
-                [STAT_SALES_FILTER_KEY.DIVISION]: division,
+                [STAT_SALES_FILTER_KEY.ZONE]: _.join(zone, '-'),
+                [STAT_SALES_FILTER_KEY.SHOP]: _.join(shop, '-'),
+                [STAT_SALES_FILTER_KEY.DIVISION]: _.join(division, '-'),
                 [STAT_SALES_FILTER_KEY.DEPT]: dept,
                 [STAT_SALES_FILTER_KEY.ONLY_BONUS]: onlyBonus,
                 [STAT_SALES_FILTER_KEY.EXCLUDE]: exclude,
@@ -181,7 +188,6 @@ const StatSalesList = enhance((props) => {
     const initiator = filter.getParam(STAT_SALES_FILTER_KEY.INITIATOR)
     const zone = _.toInteger(filter.getParam(STAT_SALES_FILTER_KEY.ZONE))
     const deliveryMan = filter.getParam(STAT_SALES_FILTER_KEY.DELIVERY_MAN)
-    const orderStatus = _.toInteger(filter.getParam(STAT_SALES_FILTER_KEY.STATUS))
     const shop = _.toInteger(filter.getParam(STAT_SALES_FILTER_KEY.SHOP))
     const product = _.toInteger(filter.getParam(STAT_SALES_FILTER_KEY.PRODUCT))
     const division = _.toInteger(filter.getParam(STAT_SALES_FILTER_KEY.DIVISION))
@@ -216,54 +222,51 @@ const StatSalesList = enhance((props) => {
 
     const filterForm = {
         initialValues: {
-            client: {
-                value: client
-            },
-            orderStatus: {
-                value: orderStatus
-            },
-            division: {
-                value: division
-            },
-            status: {
-                value: status
-            },
-            shop: {
-                value: shop
-            },
-            product: {
-                value: product
-            },
-            initiator: initiator && _.map(_.split(initiator, '-'), (item) => {
+            client: client && _.map(_.split(client, '-'), (item) => {
                 return _.toNumber(item)
             }),
-            dept: {
-                value: dept
-            },
-            zone: {
-                value: zone
-            },
-            deliveryMan: deliveryMan && _.map(_.split(deliveryMan, '-'), (item) => {
+            status: status && _.map(_.split(status, '-'), (item) => {
                 return _.toNumber(item)
             }),
-            deliveryDate: {
-                fromDate: deliveryFromDate && moment(deliveryFromDate, 'YYYY-MM-DD'),
-                toDate: deliveryToDate && moment(deliveryToDate, 'YYYY-MM-DD')
-            },
-            createdDate: {
-                fromDate: createdFromDate && moment(createdFromDate, 'YYYY-MM-DD'),
-                toDate: createdToDate && moment(createdToDate, 'YYYY-MM-DD')
-            },
-            deadlineDate: {
-                fromDate: deadlineFromDate && moment(deadlineFromDate, 'YYYY-MM-DD'),
-                toDate: deadlineToDate && moment(deadlineToDate, 'YYYY-MM-DD')
-            },
-            onlyBonus: onlyBonus,
-            exclude: true,
-            date: {
-                fromDate: moment(firstDayOfMonth),
-                toDate: moment(lastDayOfMonth)
-            }
+            division: division && _.map(_.split(division, '-'), (item) => {
+                return _.toNumber(item)
+            })
+        },
+        shop: shop && _.map(_.split(shop, '-'), (item) => {
+            return _.toNumber(item)
+        }),
+        product: product && _.map(_.split(product, '-'), (item) => {
+            return _.toNumber(item)
+        }),
+        initiator: initiator && _.map(_.split(initiator, '-'), (item) => {
+            return _.toNumber(item)
+        }),
+        dept: {
+            value: dept
+        },
+        zone: zone && _.map(_.split(zone, '-'), (item) => {
+            return _.toNumber(item)
+        }),
+        deliveryMan: deliveryMan && _.map(_.split(deliveryMan, '-'), (item) => {
+            return _.toNumber(item)
+        }),
+        deliveryDate: {
+            fromDate: deliveryFromDate && moment(deliveryFromDate, 'YYYY-MM-DD'),
+            toDate: deliveryToDate && moment(deliveryToDate, 'YYYY-MM-DD')
+        },
+        createdDate: {
+            fromDate: createdFromDate && moment(createdFromDate, 'YYYY-MM-DD'),
+            toDate: createdToDate && moment(createdToDate, 'YYYY-MM-DD')
+        },
+        deadlineDate: {
+            fromDate: deadlineFromDate && moment(deadlineFromDate, 'YYYY-MM-DD'),
+            toDate: deadlineToDate && moment(deadlineToDate, 'YYYY-MM-DD')
+        },
+        onlyBonus: onlyBonus,
+        exclude: true,
+        date: {
+            fromDate: moment(firstDayOfMonth),
+            toDate: moment(lastDayOfMonth)
         }
     }
     const mergedGraph = {}

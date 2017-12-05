@@ -280,9 +280,9 @@ const enhance = compose(
 
             filter.filterBy({
                 [SUPPLY_FILTER_OPEN]: false,
-                [SUPPLY_FILTER_KEY.PROVIDER]: provider,
-                [SUPPLY_FILTER_KEY.PRODUCT]: product,
-                [SUPPLY_FILTER_KEY.STOCK]: stock,
+                [SUPPLY_FILTER_KEY.PROVIDER]: _.join(provider, '-'),
+                [SUPPLY_FILTER_KEY.PRODUCT]: _.join(product, '-'),
+                [SUPPLY_FILTER_KEY.STOCK]: _.join(stock, '-'),
                 [SUPPLY_FILTER_KEY.STATUS]: status,
                 [SUPPLY_FILTER_KEY.PAYMENT_TYPE]: paymentType,
                 [SUPPLY_FILTER_KEY.CONTRACT]: contract,
@@ -572,6 +572,7 @@ const SupplyList = enhance((props) => {
     const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
     const provider = _.toInteger(filter.getParam(SUPPLY_FILTER_KEY.PROVIDER))
     const stock = _.toInteger(filter.getParam(SUPPLY_FILTER_KEY.STOCK))
+    const product = _.toInteger(filter.getParam(SUPPLY_FILTER_KEY.PRODUCT))
     const status = _.toInteger(filter.getParam(SUPPLY_FILTER_KEY.STATUS))
     const contract = filter.getParam(SUPPLY_FILTER_KEY.CONTRACT)
     const deliveryFromDate = filter.getParam(SUPPLY_FILTER_KEY.DELIVERY_FROM_DATE)
@@ -691,12 +692,15 @@ const SupplyList = enhance((props) => {
 
     const filterDialog = {
         initialValues: {
-            provider: {
-                value: provider
-            },
-            stock: {
-                value: stock
-            },
+            provider: provider && _.map(_.split(provider, '-'), (item) => {
+                return _.toNumber(item)
+            }),
+            product: product && _.map(_.split(product, '-'), (item) => {
+                return _.toNumber(item)
+            }),
+            stock: stock && _.map(_.split(stock, '-'), (item) => {
+                return _.toNumber(item)
+            }),
             status: {
                 value: status
             },
@@ -722,10 +726,12 @@ const SupplyList = enhance((props) => {
         data: _.get(list, 'results'),
         listLoading
     }
+    const statusCompeled = _.toNumber(_.get(_.find(_.get(list, 'results'), {'id': detailId}), 'status'))
     const detailData = {
         id: detailId,
         data: detail,
         defect: defectData,
+        status: statusCompeled,
         detailLoading,
         handleCloseDetail: props.handleCloseDetail
     }

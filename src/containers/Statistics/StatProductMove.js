@@ -86,8 +86,8 @@ const enhance = compose(
             filter.filterBy({
                 [STAT_PRODUCT_MOVE_FILTER_KEY.SEARCH]: search,
                 [STAT_PRODUCT_MOVE_FILTER_KEY.TYPE]: type,
-                [STAT_PRODUCT_MOVE_FILTER_KEY.TYPE_PARENT]: typeParent,
-                [STAT_PRODUCT_MOVE_FILTER_KEY.STOCK]: stock,
+                [STAT_PRODUCT_MOVE_FILTER_KEY.TYPE_PARENT]: _.join(typeParent, '-'),
+                [STAT_PRODUCT_MOVE_FILTER_KEY.STOCK]: _.join(stock, '-'),
                 [STAT_PRODUCT_MOVE_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [STAT_PRODUCT_MOVE_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
 
@@ -166,12 +166,12 @@ const StatProductMoveList = enhance((props) => {
         type: {
             value: type
         },
-        typeParent: {
-            value: typeParent
-        },
-        stock: {
-            value: stock
-        },
+        typeParent: typeParent && _.map(_.split(typeParent, '-'), (item) => {
+            return _.toNumber(item)
+        }),
+        stock: stock && _.map(_.split(stock, '-'), (item) => {
+            return _.toNumber(item)
+        }),
         date: {
             fromDate: moment(firstDayOfMonth),
             toDate: moment(lastDayOfMonth)

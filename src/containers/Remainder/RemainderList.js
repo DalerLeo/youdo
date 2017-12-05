@@ -183,17 +183,17 @@ const enhance = compose(
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
             const stock = _.get(filterForm, ['values', 'stock', 'value']) || null
-            const typeParent = _.get(filterForm, ['values', 'typeParent', 'value']) || null
+            const typeParent = _.get(filterForm, ['values', 'typeParent']) || null
             const typeChild = _.get(filterForm, ['values', 'typeChild', 'value']) || null
-            const measurement = _.get(filterForm, ['values', 'measurement', 'value']) || null
-            const brand = _.get(filterForm, ['values', 'brand', 'value']) || null
+            const measurement = _.get(filterForm, ['values', 'measurement']) || null
+            const brand = _.get(filterForm, ['values', 'brand']) || null
             filter.filterBy({
                 [REMAINDER_FILTER_OPEN]: false,
-                [REMAINDER_FILTER_KEY.STOCK]: stock,
-                [REMAINDER_FILTER_KEY.TYPE_PARENT]: typeParent,
+                [REMAINDER_FILTER_KEY.STOCK]: _.join(stock, '-'),
+                [REMAINDER_FILTER_KEY.TYPE_PARENT]: _.join(typeParent, '-'),
                 [REMAINDER_FILTER_KEY.TYPE_CHILD]: typeChild,
-                [REMAINDER_FILTER_KEY.MEASUREMENT]: measurement,
-                [REMAINDER_FILTER_KEY.BRAND]: brand
+                [REMAINDER_FILTER_KEY.MEASUREMENT]: _.join(measurement, '-'),
+                [REMAINDER_FILTER_KEY.BRAND]: _.join(brand, '-')
             })
         },
         handleSubmitSearch: props => () => {
@@ -418,15 +418,15 @@ const RemainderList = enhance((props) => {
 
     const filterDialog = {
         initialValues: {
-            stock: {
-                value: stock
-            },
-            type: {
-                value: type
-            },
-            status: {
-                value: status
-            }
+            stock: stock && _.map(_.split(stock, '-'), (item) => {
+                return _.toNumber(item)
+            }),
+            type: type && _.map(_.split(type, '-'), (item) => {
+                return _.toNumber(item)
+            }),
+            status: status && _.map(_.split(status, '-'), (item) => {
+                return _.toNumber(item)
+            })
         },
         openFilterDialog: openFilterDialog,
         handleOpenFilterDialog: props.handleOpenFilterDialog,

@@ -119,16 +119,16 @@ const enhance = compose(
         },
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
-            const typeParent = _.get(filterForm, ['values', 'typeParent', 'value']) || null
-            const typeChild = _.get(filterForm, ['values', 'typeChild', 'value']) || null
-            const measurement = _.get(filterForm, ['values', 'measurement', 'value']) || null
+            const typeParent = _.get(filterForm, ['values', 'typeParent']) || null
+            const typeChild = _.get(filterForm, ['values', 'typeChild']) || null
+            const measurement = _.get(filterForm, ['values', 'measurement']) || null
             const withoutNetCost = _.get(filterForm, ['values', 'withoutNetCost']) || null
 
             filter.filterBy({
                 [PRICE_FILTER_OPEN]: false,
-                [PRICE_FILTER_KEY.TYPE_PARENT]: typeParent,
-                [PRICE_FILTER_KEY.TYPE_CHILD]: typeChild,
-                [PRICE_FILTER_KEY.MEASUREMENT]: measurement,
+                [PRICE_FILTER_KEY.TYPE_PARENT]: _.join(typeParent, '-'),
+                [PRICE_FILTER_KEY.TYPE_CHILD]: _.join(typeChild, '-'),
+                [PRICE_FILTER_KEY.MEASUREMENT]: _.join(measurement, '-'),
                 [PRICE_FILTER_KEY.WITHOUT_NET_COST]: withoutNetCost
             })
         },
@@ -241,15 +241,15 @@ const PriceList = enhance((props) => {
     }
     const filterDialog = {
         initialValues: {
-            typeParent: {
-                value: typeParent
-            },
-            typeChild: {
-                value: typeChild
-            },
-            measurement: {
-                value: measurement
-            },
+            typeParent: typeParent && _.map(_.split(typeParent, '-'), (item) => {
+                return _.toNumber(item)
+            }),
+            typeChild: typeChild && _.map(_.split(typeChild, '-'), (item) => {
+                return _.toNumber(item)
+            }),
+            measurement: measurement && _.map(_.split(measurement, '-'), (item) => {
+                return _.toNumber(item)
+            }),
             withoutNetCost: withoutNetCost
         },
         filterLoading: false,

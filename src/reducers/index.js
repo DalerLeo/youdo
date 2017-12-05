@@ -159,6 +159,12 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.EXPENSIVE_CATEGORY_UPDATE),
         item: createThunkReducer(actionTypes.EXPENSIVE_CATEGORY_ITEM)
     }),
+    post: combineReducers({
+        create: createThunkReducer(actionTypes.POST_CREATE),
+        list: createThunkReducer(actionTypes.POST_LIST),
+        update: createThunkReducer(actionTypes.POST_UPDATE),
+        item: createThunkReducer(actionTypes.POST_ITEM)
+    }),
     users: combineReducers({
         create: createThunkReducer(actionTypes.USERS_CREATE),
         list: createThunkReducer(actionTypes.USERS_LIST),
