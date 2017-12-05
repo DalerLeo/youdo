@@ -11,9 +11,9 @@ import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import {
-    MeasurementSearchField,
+    MeasurementMultiSearchField,
     ProductTypeChildSearchField,
-    ProductTypeParentSearchField,
+    ProductTypeParentMultiSearchField,
     CheckBox
 } from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
@@ -169,7 +169,7 @@ const PriceFilterForm = enhance((props) => {
                     <Field
                         name="typeParent"
                         className={classes.inputFieldCustom}
-                        component={ProductTypeParentSearchField}
+                        component={ProductTypeParentMultiSearchField}
                         label="Тип продукта"
                         fullWidth={true}
                     />
@@ -185,7 +185,7 @@ const PriceFilterForm = enhance((props) => {
                         <Field
                             className={classes.inputFieldCustom}
                             name="measurement"
-                            component={MeasurementSearchField}
+                            component={MeasurementMultiSearchField}
                             label="Мера"/>
                     </div>
                     <div>

@@ -9,8 +9,7 @@ import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
-import MarketTypeField from '../ReduxForm/Shop/MarketTypeSearchField'
-import {ClientSearchField, ShopStatusSearchField, FrequencySearchField, UsersSearchField, ZoneSearchField, CheckBox} from '../ReduxForm'
+import {ClientMultiSearchField, MarketTypeMultiSearchField, ShopStatusSearchField, FrequencySearchField, UsersMultiSearchField, ZoneMultiSearchField, CheckBox} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
@@ -162,7 +161,7 @@ const ShopFilterForm = enhance((props) => {
                     <Field
                         className={classes.inputFieldCustom}
                         name="marketType"
-                        component={MarketTypeField}
+                        component={MarketTypeMultiSearchField}
                         label="Тип магазина"
                         fullWidth={true}/>
                     <Field
@@ -174,16 +173,16 @@ const ShopFilterForm = enhance((props) => {
                     <Field
                         className={classes.inputFieldCustom}
                         name="createdBy"
-                        component={UsersSearchField}
+                        component={UsersMultiSearchField}
                         label="Создал"/>
                     <Field
                         className={classes.inputFieldCustom}
                         name="client"
-                        component={ClientSearchField}
+                        component={ClientMultiSearchField}
                         label="Клиент"/>
                     <Field className={classes.inputFieldCustom}
                            name="zone"
-                           component={ZoneSearchField}
+                           component={ZoneMultiSearchField}
                            label="Зона"/>
                     <Field
                         className={classes.inputFieldCustom}

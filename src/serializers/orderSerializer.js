@@ -11,7 +11,8 @@ const MINUS_ONE = -1
 export const createSerializer = (data) => {
     const client = _.get(data, ['client', 'value'])
     const paymentType = _.get(data, ['paymentType'])
-    const deliveryMan = _.get(data, ['deliveryMan', 'value'])
+    const deliveryType = _.get(data, ['deliveryType', 'value'])
+    const deliveryMan = deliveryType === 'self' ? null : _.get(data, ['deliveryMan', 'value'])
     const paymentTerm = 1
     const paymentDate = _.get(data, ['paymentDate']) ? moment(_.get(data, ['paymentDate'])).format('YYYY-MM-DD') : null
     const deliveryDate = _.get(data, ['deliveryDate']) ? moment(_.get(data, ['deliveryDate'])).format('YYYY-MM-DD') : null
@@ -20,7 +21,6 @@ export const createSerializer = (data) => {
     const market = _.get(data, ['market', 'value'])
     const contract = _.get(data, ['contract'])
     const deliveryPrice = _.get(data, ['deliveryPrice'])
-    const deliveryType = _.get(data, ['deliveryType', 'value'])
     const priceList = _.get(data, ['priceList', 'value'])
     const user = _.get(data, ['user', 'value'])
     const currency = _.get(data, ['currency', 'value'])

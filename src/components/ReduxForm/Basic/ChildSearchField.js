@@ -86,9 +86,9 @@ const enhance = compose(
         }
     }),
     withPropsOnChange((props, nextProps) => {
-        return _.get(props, ['parent']) !== _.get(nextProps, ['parent'])
+        return _.get(props, ['parent']) !== _.get(nextProps, ['parent']) && _.get(nextProps, ['parent'])
     }, (props) => {
-        !_.isEmpty(_.get(props, ['state', 'dataSource'])) && _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props, true)
+        _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props, true)
     }),
     withPropsOnChange((props, nextProps) => {
         return _.get(props, ['state', 'text']) !== _.get(nextProps, ['state', 'text'])
