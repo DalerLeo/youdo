@@ -1,35 +1,35 @@
 import sprintf from 'sprintf'
 import React from 'react'
-import SearchField from '../Basic/SearchField'
+import MultiSelectField from '../Basic/MultiSelectField'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
 
 const getOptions = (search) => {
-    return axios().get(`${PATH.MARKET_TYPE_LIST}?search=${search || ''}&page_size=100`)
+    return axios().get(`${PATH.EXPENSIVE_CATEGORY_LIST}?search=${search || ''}&page_size=100`)
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
         })
 }
 
 const getItem = (id) => {
-    return axios().get(sprintf(PATH.MARKET_TYPE_ITEM, id))
+    return axios().get(sprintf(PATH.EXPENSIVE_CATEGORY_ITEM, id))
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data))
         })
 }
 
-const MarketTypeSearchField = (props) => {
+const ExpensiveCategoryMultiSearchField = (props) => {
     return (
-        <SearchField
-            getValue={SearchField.defaultGetValue('id')}
-            getText={SearchField.defaultGetText('name')}
+        <MultiSelectField
+            getValue={MultiSelectField.defaultGetValue('id')}
+            getText={MultiSelectField.defaultGetText('name')}
             getOptions={getOptions}
             getItem={getItem}
-            getItemText={SearchField.defaultGetText('name')}
+            getItemText={MultiSelectField.defaultGetText('name')}
             {...props}
         />
     )
 }
 
-export default MarketTypeSearchField
+export default ExpensiveCategoryMultiSearchField

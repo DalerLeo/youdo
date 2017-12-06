@@ -6,6 +6,7 @@ import SearchFieldCustom from '../Basic/SearchFieldCustom'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
+import numberFormat from '../../../helpers/numberFormat'
 import * as actionTypes from '../../../constants/actionTypes'
 import {connect} from 'react-redux'
 
@@ -57,7 +58,17 @@ const ProductCustomSearchField = enhance((props) => {
                 return _.get(value, 'id')
             }}
             getText={(value) => {
-                return _.get(value, ['title'])
+                const name = _.get(value, ['title'])
+                const measurement = _.get(value, ['measurement', 'name'])
+                const available = numberFormat(_.toNumber(_.get(value, 'available')), measurement)
+                const defects = numberFormat(_.toNumber(_.get(value, 'defects')), measurement)
+                return (
+                    <div>
+                        <div><strong>{name}</strong></div>
+                        <div>Доступно: {available}</div>
+                        <div>Браковано: {defects}</div>
+                    </div>
+                )
             }}
             getOptions={ (search) => { return getOptions(search, type, stock) }}
             getItem={test}

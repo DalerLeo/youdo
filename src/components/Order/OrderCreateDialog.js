@@ -25,6 +25,7 @@ import {
 } from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 import numberFormat from '../../helpers/numberFormat'
+import checkPermission from '../../helpers/checkPermission'
 import OrderDealTypeRadio from '../ReduxForm/Order/OrderDealTypeRadio'
 import OrderPaymentTypeRadio from '../ReduxForm/Order/OrderPaymentTypeRadio'
 import MarketSearchField from '../ReduxForm/ClientBalance/MarketSearchField'
@@ -256,6 +257,7 @@ const OrderCreateDialog = enhance((props) => {
         handleOpenAddProduct,
         deliveryType
     } = props
+    const canSetDeliveryMan = checkPermission('can_set_delivery_man')
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const totalCost = _.sumBy(orderProducts, (item) => {
         const amount = _.toNumber(_.get(item, 'amount'))
@@ -275,6 +277,7 @@ const OrderCreateDialog = enhance((props) => {
         scrollable: true,
         maxHeight: '150px'
     }
+
     return (
         <Dialog
             modal={true}
@@ -379,7 +382,7 @@ const OrderCreateDialog = enhance((props) => {
                                             className={classes.inputDateCustom}
                                             label="Тип доставки"
                                             fullWidth={true}/>
-                                        {deliveryType === 'delivery' &&
+                                        {deliveryType === 'delivery' && canSetDeliveryMan &&
                                         <Field
                                             name="deliveryMan"
                                             component={DeliveryManSearchField}
