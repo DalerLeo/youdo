@@ -11,7 +11,7 @@ import Loader from '../Loader'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, ImageUploadField, CheckBox, PositionSearchField, UserStockRadioButtonField} from '../ReduxForm'
+import {TextField, ImageUploadField, CheckBox, PositionSearchField, UserStockRadioButtonField, PostSearchField} from '../ReduxForm'
 import MainStyles from '../Styles/MainStyles'
 import getConfig from '../../helpers/getConfig'
 import {connect} from 'react-redux'
@@ -210,6 +210,12 @@ const UsersCreateDialog = enhance((props) => {
                                     name="phoneNumber"
                                     component={TextField}
                                     label="Телефон"
+                                    className={classes.inputFieldCustom}
+                                    fullWidth={true}/>
+                                <Field
+                                    name="job"
+                                    component={PostSearchField}
+                                    label="Должность"
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
                                 <Field

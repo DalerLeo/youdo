@@ -12,6 +12,7 @@ import toBoolean from '../../helpers/toBoolean'
 import {openErrorAction} from '../../actions/error'
 import updateStore from '../../helpers/updateStore'
 import * as actionTypes from '../../constants/actionTypes'
+import checkPermission from '../../helpers/checkPermission'
 
 import {
     RETURN_FILTER_KEY,
@@ -347,6 +348,8 @@ const ReturnList = enhance((props) => {
     const deliveryToDate = filter.getParam(RETURN_FILTER_KEY.DELIVERY_TO_DATE)
     const detailId = _.toInteger(_.get(params, 'returnId'))
 
+    const canChangeAnyReturn = checkPermission('frontend_add_client_return')
+
     const cancelReturnDialog = {
         openCancelDialog,
         handleOpenCancelReturnDialog: props.handleOpenCancelReturnDialog,
@@ -525,6 +528,7 @@ const ReturnList = enhance((props) => {
     return (
         <Layout {...layout}>
             <ReturnGridList
+                canChangeAnyReturn={canChangeAnyReturn}
                 filter={filter}
                 listData={listData}
                 detailData={detailData}

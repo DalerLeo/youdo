@@ -197,6 +197,9 @@ const ExpensiveCategoryGridList = enhance((props) => {
             </div>
 
             <ExpensiveCategoryCreateDialog
+                initialValues={createDialog.initialValues}
+                data={_.get(createDialog, ['optionsList', 'results'])}
+                dataLoading={_.get(createDialog, 'optionsListLoading')}
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
                 onClose={createDialog.handleCloseCreateDialog}

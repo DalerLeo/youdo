@@ -180,6 +180,7 @@ const iconStyle = {
         padding: 0
     }
 }
+const TWO = 2
 const ReturnDetails = enhance((props) => {
     const {
         classes,
@@ -192,7 +193,8 @@ const ReturnDetails = enhance((props) => {
         getDocument,
         handleCloseDetail,
         stat,
-        isAdmin
+        isAdmin,
+        canChangeAnyReturn
     } = props
 
     const id = _.get(data, 'id')
@@ -218,6 +220,7 @@ const ReturnDetails = enhance((props) => {
     const CANCELLED = 3
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const totalPrice = numberFormat(_.get(data, 'totalPrice'), primaryCurrency)
+    const typeClient = _.toInteger(_.get(data, 'type'))
 
     const products = _.get(data, 'returnedProducts')
     if (loading) {
@@ -249,19 +252,19 @@ const ReturnDetails = enhance((props) => {
                             <PrintIcon />
                         </IconButton>
                     </Tooltip>}
-                    {isAdmin && <Tooltip position="bottom" text="Изменить">
+                    {isAdmin && <Tooltip position="bottom" text={!canChangeAnyReturn && typeClient === TWO ? 'У вас нет доступа' : 'Изменить'}>
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
-                            disabled={status === CANCELLED || (order && status === COMPLETED)}
+                            disabled={status === CANCELLED || (order && status === COMPLETED) || (!canChangeAnyReturn && typeClient === TWO)}
                             touch={true}
                             onTouchTap={() => { updateDialog.handleOpenUpdateDialog() }}>
                             <Edit />
                         </IconButton>
                     </Tooltip>}
-                    {confirmDialog && !stat && <Tooltip position="bottom" text="Отменить">
+                    {confirmDialog && !stat && <Tooltip position="bottom" text={!canChangeAnyReturn && typeClient === TWO ? 'У вас нет доступа' : 'Отменить'}>
                         <IconButton
-                            disabled={!(status === IN_PROGRESS || status === PENDING)}
+                            disabled={!(status === IN_PROGRESS || status === PENDING) || (!canChangeAnyReturn && typeClient === TWO)}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}

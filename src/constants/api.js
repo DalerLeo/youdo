@@ -44,6 +44,8 @@ export const EXPENSIVE_CATEGORY_LIST = `/${EXPENSIVE_CATEGORY}/`
 export const EXPENSIVE_CATEGORY_ITEM = `/${EXPENSIVE_CATEGORY}/%d/`
 export const EXPENSIVE_CATEGORY_DELETE = `/${EXPENSIVE_CATEGORY}/%d/`
 
+export const OPTIONS_LIST = 'main/options/'
+
 export const POST = 'main/jobs'
 export const POST_CREATE = `/${POST}/`
 export const POST_LIST = `/${POST}/`

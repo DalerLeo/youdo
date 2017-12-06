@@ -67,6 +67,7 @@ import ZoneSearchField from './ZoneSearchField'
 import InOutTypeSearchField from './InOutTypeSearchFiled'
 import RemainderProductTypeSearchField from './Remainder/RemainderProductTypeSearchField'
 import PositionSearchField from './PositionSearchField'
+import PostSearchField from './PostSearchField'
 import DivisionSearchField from './Division/DivisionSearchField'
 import Pagination from './Pagination'
 import ClientBalanceReturnProductList from './ClientBalance/ClientBalanceReturnProductList'
@@ -175,6 +176,7 @@ export {
     InOutTypeSearchField,
     RemainderProductTypeSearchField,
     PositionSearchField,
+    PostSearchField,
     DivisionSearchField,
     Pagination,
     ClientBalanceReturnProductList,
