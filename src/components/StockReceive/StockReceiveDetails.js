@@ -200,7 +200,8 @@ const TransferDetail = enhance((props) => {
         popover
     } = props
 
-    const currentBy = _.get(detailData, ['currentDetail', 'by']) || _.get(detailData, ['data', 'acceptedBy', 'firstName']) + ' ' + _.get(detailData, ['data', 'acceptedBy', 'secondName'])
+    const currentBy = _.get(detailData, ['currentDetail', 'by']) ||
+        (_.get(detailData, ['data', 'acceptedBy']) ? _.get(detailData, ['data', 'acceptedBy', 'firstName']) + ' ' + _.get(detailData, ['data', 'acceptedBy', 'secondName']) : false) || 'Не найдено'
     const currentDate = dateFormat(_.get(detailData, ['currentDetail', 'date']))
     const currentStock = _.get(detailData, ['currentDetail', 'stock', 'name'])
 
