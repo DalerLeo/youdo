@@ -65,7 +65,7 @@ export const createExpenseSerializer = (data, cashboxId) => {
     }
     const staffs = _.filter(_.map(_.get(data, 'users'), (item, index) => {
         return {
-            staff_id: index,
+            staff: _.toInteger(index),
             amount: numberWithoutSpaces(_.get(item, 'amount'))
         }
     }), (item) => {
