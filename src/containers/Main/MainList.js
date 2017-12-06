@@ -134,14 +134,17 @@ const enhance = compose(
 
         handleUpdateRate: props => (currency) => {
             const {dispatch, currencyForm, filter} = props
-            return dispatch(courseCreateAction(_.get(currencyForm, ['values']), currency))
-                .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Курс обновлен'}))
-                })
-                .then(() => {
-                    dispatch(currencyListFetchAction(filter))
-                    dispatch(reset('DashboardCurrencyForm'))
-                })
+            const rate = _.get(currencyForm, ['values', 'rate'])
+            return rate
+                ? dispatch(courseCreateAction(_.get(currencyForm, ['values']), currency))
+                    .then(() => {
+                        return dispatch(openSnackbarAction({message: 'Курс обновлен'}))
+                    })
+                    .then(() => {
+                        dispatch(currencyListFetchAction(filter))
+                        dispatch(reset('DashboardCurrencyForm'))
+                    })
+                : Promise.resolve()
         }
     })
 )

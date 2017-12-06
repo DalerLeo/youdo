@@ -63,6 +63,14 @@ export const createExpenseSerializer = (data, cashboxId) => {
     if (amount > ZERO) {
         amount *= MINUS_ONE
     }
+    const staffs = _.filter(_.map(_.get(data, 'users'), (item, index) => {
+        return {
+            staff_id: index,
+            amount: numberWithoutSpaces(_.get(item, 'amount'))
+        }
+    }), (item) => {
+        return _.toNumber(_.get(item, 'amount')) > ZERO
+    })
     const comment = _.get(data, 'comment')
     const showClients = _.get(data, 'showClients')
     const objectId = _.get(data, ['expanseCategory', 'value'])
@@ -80,14 +88,16 @@ export const createExpenseSerializer = (data, cashboxId) => {
             'client': clientId,
             'custom_rate': customRate,
             'division': division,
-            'date': date
+            'date': date,
+            staffs
         }
         : {
             amount: amount,
             comment,
             'cashbox': _.toInteger(cashboxId) === ZERO ? cashbox : cashboxId,
             'expanse_category': objectId,
-            'custom_rate': customRate
+            'custom_rate': customRate,
+            staffs
         }
 }
 const HUNDRED = 100

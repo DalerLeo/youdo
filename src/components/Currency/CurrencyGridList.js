@@ -236,8 +236,8 @@ const CurrencyGridList = enhance((props) => {
     const currencyList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const rate = numberFormat(_.get(item, 'rate'))
-        const createdDate = dateTimeFormat(_.get(item, 'createdDate'))
+        const rate = numberFormat(_.get(item, ['rate', 'rate']))
+        const createdDate = dateTimeFormat(_.get(item, ['rate', 'createdDate']))
         if (name !== currentCurrency) {
             return (
                 <Row key={id} className={classes.listRow}>

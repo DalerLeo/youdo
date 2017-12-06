@@ -119,8 +119,8 @@ const Currencies = enhance((props) => {
                         : _.map(currencyList, (item) => {
                             const id = _.get(item, 'id')
                             const name = _.get(item, 'name')
-                            const createdDate = dateTimeFormat(_.get(item, 'createdDate'))
-                            const rate = _.get(item, 'rate')
+                            const createdDate = dateTimeFormat(_.get(item, ['rate', 'createdDate']))
+                            const rate = _.get(item, ['rate', 'rate'])
                             if (id === currentUpdateCurrency) {
                                 return (
                                     <Row key={id}>
