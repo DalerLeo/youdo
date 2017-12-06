@@ -355,7 +355,6 @@ const TransactionCreateDialog = enhance((props) => {
                                                 component={TextField}
                                                 label={'Курс ' + primaryCurrency}
                                                 className={classes.inputFieldCustom}
-                                                normalize={normalizeNumber}
                                                 fullWidth={true}/>}
                                         </div>
                                 </div>

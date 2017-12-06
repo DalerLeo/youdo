@@ -242,7 +242,7 @@ const Dashboard = enhance((props) => {
     // CURRENCY DATA //
     const currencyListActive = _.get(currencyData, 'active')
 
-    const noWidgets = !orderChartActive && !orderReturnActive && !agentsChartActive && !financeChartActive
+    const noWidgets = !orderChartActive && !orderReturnActive && !agentsChartActive && !financeChartActive && !currencyListActive
     const emptySales = _.isEmpty(orderChartSales) && !orderChartLoading
     const emptyOrders = _.isEmpty(orderChartReturns) && !orderReturnLoading
     const emptyAgents = _.isEmpty(agentsList) && !agentsChartLoading
