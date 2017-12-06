@@ -181,7 +181,7 @@ const OrderSalesPrint = enhance((props) => {
                         const productId = _.get(item, 'id')
                         const measurment = _.get(item, ['product', 'measurement', 'name'])
                         const name = _.get(item, ['product', 'name'])
-                        const price = _.get(item, 'price')
+                        const price = numberFormat(_.get(item, 'price'), primaryCurrency)
                         const totalPrice = numberFormat(_.get(item, 'totalPrice'), primaryCurrency)
                         const amount = numberFormat(_.get(item, 'amount'), measurment)
                         if (measurementCheck) {

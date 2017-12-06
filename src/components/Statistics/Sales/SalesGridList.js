@@ -10,6 +10,7 @@ import Delivered from 'material-ui/svg-icons/action/assignment-turned-in'
 import Payment from 'material-ui/svg-icons/action/credit-card'
 import InProcess from 'material-ui/svg-icons/device/access-time'
 import Transfered from 'material-ui/svg-icons/maps/local-shipping'
+import InfoIcon from 'material-ui/svg-icons/action/info-outline'
 import * as ROUTES from '../../../constants/routes'
 import Container from '../../Container/index'
 import injectSheet from 'react-jss'
@@ -19,6 +20,7 @@ import StatSideMenu from '../StatSideMenu'
 import Pagination from '../../GridList/GridListNavPagination'
 import numberFormat from '../../../helpers/numberFormat'
 import StatSaleDialog from './SalesDialog'
+import SalesInfoDialog from './SalesInfoDialog'
 import {StatisticsFilterExcel, StatisticsChart} from '../../Statistics'
 import Loader from '../../Loader'
 import getConfig from '../../../helpers/getConfig'
@@ -188,10 +190,14 @@ const enhance = compose(
                 paddingRight: '0'
             }
         },
+        salesSummary: {
+            position: 'relative'
+        },
         mainSummary: {
             paddingBottom: '10px',
             marginBottom: '10px',
             borderBottom: '1px #efefef solid',
+            position: 'relative',
             '& > div:nth-child(odd)': {
                 color: '#666'
             },
@@ -221,6 +227,11 @@ const enhance = compose(
         buttons: {
             display: 'flex',
             justifyContent: 'space-around'
+        },
+        infoButton: {
+            position: 'absolute !important',
+            right: '0',
+            bottom: '8px'
         }
     })
 )
@@ -233,7 +244,7 @@ const iconStyle = {
     button: {
         width: 30,
         height: 30,
-        padding: 0,
+        padding: 5,
         zIndex: 0
     }
 }
@@ -250,7 +261,9 @@ const StatSalesGridList = enhance((props) => {
         detailData,
         handleGetDocument,
         initialValues,
-        printDialog
+        printDialog,
+        salesInfoDialog,
+        setSalesInfoDialog
     } = props
     const graphLoading = _.get(graphData, 'graphLoading')
     const divisionStatus = _.get('DIVISION')
@@ -453,6 +466,15 @@ const StatSalesGridList = enhance((props) => {
                                         <div className={classes.mainSummary}>
                                             <div>Фактические продажи</div>
                                             <div>{numberFormat(sum - returnSum, getConfig('PRIMARY_CURRENCY'))}</div>
+                                            <IconButton
+                                                className={classes.infoButton}
+                                                disableTouchRipple={true}
+                                                iconStyle={iconStyle.icon}
+                                                style={iconStyle.button}
+                                                onMouseEnter={() => { setSalesInfoDialog(true) }}
+                                                onMouseLeave={() => { setSalesInfoDialog(false) }}>
+                                                <InfoIcon color="#666"/>
+                                            </IconButton>
                                         </div>
                                         <div className={classes.secondarySummary}>
                                             <div>Сумма продаж за период</div>
@@ -460,6 +482,7 @@ const StatSalesGridList = enhance((props) => {
                                             <div>Сумма возврата за период</div>
                                             <div>{numberFormat(returnSum, getConfig('PRIMARY_CURRENCY'))}</div>
                                         </div>
+                                        {salesInfoDialog && <SalesInfoDialog/>}
                                     </Col>
                                     <Col xs={9}>
                                         <StatisticsChart

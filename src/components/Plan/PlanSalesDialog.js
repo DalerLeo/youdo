@@ -227,7 +227,7 @@ const PlanSalesDialog = enhance((props) => {
                                 <div key={id} className={classes.division}>
                                     <div>{name}</div>
                                     <Field
-                                        name={'divisions[' + id + '][amount]'}
+                                        name={'divisions[_' + id + '][amount]'}
                                         component={TextField}
                                         className={classes.inputFieldSimple}
                                         style={{width: '100px'}}

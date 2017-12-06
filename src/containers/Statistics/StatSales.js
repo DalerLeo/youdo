@@ -82,6 +82,7 @@ const enhance = compose(
 
     withState('openPrint', 'setOpenPrint', false),
     withState('openDeliveryPrint', 'setOpenDeliveryPrint', false),
+    withState('salesInfoDialog', 'setSalesInfoDialog', false),
 
     withHandlers({
         handleOpenStatSaleDialog: props => (id) => {
@@ -177,7 +178,9 @@ const StatSalesList = enhance((props) => {
         graphLoading,
         openPrint,
         listPrint,
-        listPrintLoading
+        listPrintLoading,
+        salesInfoDialog,
+        setSalesInfoDialog
     } = props
 
     const detailId = _.toInteger(_.get(params, 'statSaleId'))
@@ -323,6 +326,8 @@ const StatSalesList = enhance((props) => {
                 graphData={graphData}
                 handleGetDocument={props.handleGetDocument}
                 printDialog={printDialog}
+                salesInfoDialog={salesInfoDialog}
+                setSalesInfoDialog={setSalesInfoDialog}
             />
         </Layout>
     )
