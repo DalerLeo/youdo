@@ -52,6 +52,12 @@ const listHeader = [
     },
     {
         sorting: false,
+        name: 'job',
+        title: 'Должность',
+        xs: 1
+    },
+    {
+        sorting: false,
         name: 'status',
         title: 'Статус',
         xs: 1
@@ -162,6 +168,7 @@ const UsersGridList = enhance((props) => {
         const firstName = _.get(item, 'firstName')
         const secondName = _.get(item, 'secondName')
         const phoneNumber = _.get(item, 'phoneNumber') || 'N/A'
+        const job = _.get(item, ['job', 'name']) || 'N/A'
         const position = _.get(item, ['position', 'name']) || 'Не выбрано'
         const isActive = _.get(item, 'isActive')
         return (
@@ -171,7 +178,8 @@ const UsersGridList = enhance((props) => {
                 <Col xs={2} title={username}>{username}</Col>
                 <Col xs={2}>{position}</Col>
                 <Col xs={2}>{phoneNumber}</Col>
-                <Col xs={2}>{isActive ? 'Активный' : 'Неактивный'}</Col>
+                <Col xs={1}>{job}</Col>
+                <Col xs={1}>{isActive ? 'Активный' : 'Неактивный'}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
                     <div className={classes.iconBtn}>
                         <Tooltip position="bottom" text="Изменить">

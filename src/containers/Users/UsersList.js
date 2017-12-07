@@ -354,6 +354,9 @@ const UsersList = enhance((props) => {
                 username: _.get(detail, 'username'),
                 firstName: _.get(detail, 'firstName'),
                 secondName: _.get(detail, 'secondName'),
+                job: {
+                    value: _.get(detail, ['job', 'id'])
+                },
                 phoneNumber: _.get(detail, 'phoneNumber'),
                 groups: isSelectedGroups,
                 radioStock: _.get(_.find(_.get(detail, 'stocks')), 'id'),

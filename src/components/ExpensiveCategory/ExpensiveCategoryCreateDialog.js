@@ -8,7 +8,7 @@ import FlatButton from 'material-ui/FlatButton'
 import Loader from '../Loader'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField} from '../ReduxForm'
+import {TextField, CheckBox} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
@@ -49,7 +49,7 @@ const enhance = compose(
 )
 
 const ExpensiveCategoryCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, isUpdate} = props
+    const {open, loading, handleSubmit, onClose, classes, isUpdate, data, dataLoading} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
     return (
@@ -69,9 +69,9 @@ const ExpensiveCategoryCreateDialog = enhance((props) => {
             </div>
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit} className={classes.form} style={{minHeight: 'auto'}}>
-                    <div className={classes.loader}>
+                    {dataLoading && <div className={classes.load}>
                         <Loader size={0.75}/>
-                    </div>
+                    </div>}
                     <div className={classes.inContent} style={{minHeight: '100px', paddingTop: '15px'}}>
                         <div className={classes.field}>
                             <Field
@@ -81,6 +81,20 @@ const ExpensiveCategoryCreateDialog = enhance((props) => {
                                 label="Наименование"
                                 fullWidth={true}
                             />
+                        </div>
+                        <div className={classes.perms}>
+                            {_.map(data, (item) => {
+                                const name = _.get(item, 'name')
+                                const id = _.get(item, 'id')
+                                return (
+                                    <div key={id}>
+                                        <Field
+                                            name={'options[' + id + ']'}
+                                            label={name}
+                                            component={CheckBox}/>
+                                    </div>
+                                )
+                            })}
                         </div>
                     </div>
                     <div className={classes.bottomButton}>

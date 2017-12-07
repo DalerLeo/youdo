@@ -20,7 +20,8 @@ import {
     expensiveCategoryUpdateAction,
     expensiveCategoryListFetchAction,
     expensiveCategoryDeleteAction,
-    expensiveCategoryItemFetchAction
+    expensiveCategoryItemFetchAction,
+    optionsListFetchAction
 } from '../../actions/expensiveCategory'
 import {openSnackbarAction} from '../../actions/snackbar'
 
@@ -34,6 +35,8 @@ const enhance = compose(
         const updateLoading = _.get(state, ['expensiveCategory', 'update', 'loading'])
         const list = _.get(state, ['expensiveCategory', 'list', 'data'])
         const listLoading = _.get(state, ['expensiveCategory', 'list', 'loading'])
+        const optionsList = _.get(state, ['expensiveCategory', 'options', 'data'])
+        const optionsListLoading = _.get(state, ['expensiveCategory', 'options', 'loading'])
         const createForm = _.get(state, ['form', 'ExpensiveCategoryCreateForm'])
         const filter = filterHelper(list, pathname, query)
 
@@ -44,6 +47,8 @@ const enhance = compose(
             detailLoading,
             createLoading,
             updateLoading,
+            optionsList,
+            optionsListLoading,
             filter,
             createForm
         }
@@ -52,6 +57,7 @@ const enhance = compose(
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
         dispatch(expensiveCategoryListFetchAction(filter))
+        dispatch(optionsListFetchAction())
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -60,6 +66,21 @@ const enhance = compose(
     }, ({dispatch, params}) => {
         const expensiveCategoryId = _.toInteger(_.get(params, 'expensiveCategoryId'))
         expensiveCategoryId && dispatch(expensiveCategoryItemFetchAction(expensiveCategoryId))
+    }),
+    withPropsOnChange((props, nextProps) => {
+        const prevCreateDialog = toBoolean(_.get(props, ['location', 'query', EXPENSIVE_CATEGORY_CREATE_DIALOG_OPEN]))
+        const nextCreateDialog = toBoolean(_.get(nextProps, ['location', 'query', EXPENSIVE_CATEGORY_CREATE_DIALOG_OPEN]))
+        const prevUpdateDialog = toBoolean(_.get(props, ['location', 'query', EXPENSIVE_CATEGORY_UPDATE_DIALOG_OPEN]))
+        const nextUpdateDialog = toBoolean(_.get(nextProps, ['location', 'query', EXPENSIVE_CATEGORY_UPDATE_DIALOG_OPEN]))
+        return (prevCreateDialog !== nextCreateDialog || prevUpdateDialog !== nextUpdateDialog) &&
+            (nextUpdateDialog === true || nextCreateDialog === true)
+    }, ({dispatch, location}) => {
+        const createDialogDialog = toBoolean(_.get(location, ['query', EXPENSIVE_CATEGORY_UPDATE_DIALOG_OPEN]))
+        const updateDialogDialog = toBoolean(_.get(location, ['query', EXPENSIVE_CATEGORY_UPDATE_DIALOG_OPEN]))
+
+        if (createDialogDialog || updateDialogDialog) {
+            dispatch(optionsListFetchAction())
+        }
     }),
 
     withHandlers({
@@ -154,6 +175,8 @@ const ExpensiveCategoryList = enhance((props) => {
         detailLoading,
         createLoading,
         updateLoading,
+        optionsList,
+        optionsListLoading,
         filter,
         layout,
         params
@@ -166,8 +189,13 @@ const ExpensiveCategoryList = enhance((props) => {
     const detailId = _.toInteger(_.get(params, 'expensiveCategoryId'))
 
     const createDialog = {
+        initialValues: (() => {
+            return {}
+        })(),
         createLoading,
         openCreateDialog,
+        optionsList,
+        optionsListLoading,
         handleOpenCreateDialog: props.handleOpenCreateDialog,
         handleCloseCreateDialog: props.handleCloseCreateDialog,
         handleSubmitCreateDialog: props.handleSubmitCreateDialog
@@ -183,11 +211,18 @@ const ExpensiveCategoryList = enhance((props) => {
 
     const updateDialog = {
         initialValues: (() => {
+            let option = []
+            const options = _.get(detail, 'options')
+            _.each(options, (item) => {
+                option[item.id] = true
+            })
             if (!detail || openCreateDialog) {
                 return {}
             }
             return {
-                name: _.get(detail, 'name')
+                name: _.get(detail, 'name'),
+                options: options
+
             }
         })(),
         updateLoading: detailLoading || updateLoading,

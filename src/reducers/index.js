@@ -155,6 +155,7 @@ const rootReducer = combineReducers({
     }),
     expensiveCategory: combineReducers({
         create: createThunkReducer(actionTypes.EXPENSIVE_CATEGORY_CREATE),
+        options: createThunkReducer(actionTypes.OPTIONS_LIST),
         list: createThunkReducer(actionTypes.EXPENSIVE_CATEGORY_LIST),
         update: createThunkReducer(actionTypes.EXPENSIVE_CATEGORY_UPDATE),
         item: createThunkReducer(actionTypes.EXPENSIVE_CATEGORY_ITEM)

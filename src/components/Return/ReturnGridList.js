@@ -128,7 +128,8 @@ const OrderGridList = enhance((props) => {
         updateDialog,
         cancelReturnDialog,
         createDialog,
-        isAdmin
+        isAdmin,
+        canChangeAnyReturn
     } = props
 
     const showCheckboxes = toBoolean(_.get(filter.getParams(), 'showCheckboxes'))
@@ -158,6 +159,7 @@ const OrderGridList = enhance((props) => {
             getDocument={getDocument}
             updateDialog={updateDialog}
             confirmDialog={confirmDialog}
+            canChangeAnyReturn={canChangeAnyReturn}
             loading={_.get(detailData, 'detailLoading')}
             handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
             cancelReturnDialog={cancelReturnDialog}
@@ -251,13 +253,15 @@ const OrderGridList = enhance((props) => {
         </div>
     )
 
+    const toolText = canChangeAnyReturn ? 'Возврат с клиента' : 'У вас нет доступа'
     return (
         <Container>
             <SubMenu url={ROUTES.RETURN_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Возврат с клиента">
+                <Tooltip position="left" text={toolText}>
                     <FloatingActionButton
                         mini={true}
+                        disabled={!canChangeAnyReturn}
                         zDepth={1}
                         backgroundColor="#12aaeb"
                         onTouchTap={createDialog.handleOpenCreateDialog}>

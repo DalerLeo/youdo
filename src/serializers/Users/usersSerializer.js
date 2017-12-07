@@ -13,6 +13,7 @@ export const createSerializer = (data) => {
     const password = _.get(data, 'password')
     const isActive = _.get(data, 'isActive')
     const position = _.get(data, ['position', 'value'])
+    const job = _.get(data, ['job', 'value'])
     const stocks = _.filter(_.get(data, ['stocks']), (o) => {
         return _.get(o, 'selected')
     })
@@ -41,6 +42,7 @@ export const createSerializer = (data) => {
         'second_name': secondName,
         'phone_number': phoneNumber,
         image,
+        job,
         password,
         position,
         'is_active': isActive,
