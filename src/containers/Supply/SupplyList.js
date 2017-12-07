@@ -219,7 +219,7 @@ const enhance = compose(
                 })
                 .catch(() => {
                     dispatch(openErrorAction({
-                        message: 'Поставка не может быть отменена из за связки к доп расходу или к чему нибудь другому'
+                        message: 'Поставка не может быть отменена из за связки к доп. расходу или к чему-нибудь другому'
                     }))
                 })
         },
@@ -439,7 +439,7 @@ const enhance = compose(
                 const price = _.get(item, 'price')
                 if (amount && price) {
                     newProductsArray.push({
-                        amount: _.get(item, 'amount'),
+                        amount: numberWithoutSpaces(_.get(item, 'amount')),
                         cost: numberWithoutSpaces(_.get(item, 'price')),
                         product: {
                             id: id,
@@ -486,7 +486,7 @@ const enhance = compose(
                 const price = _.get(item, 'price')
                 if (amount && price) {
                     newProductsArray.push({
-                        amount: _.get(item, 'amount'),
+                        amount: numberWithoutSpaces(_.get(item, 'amount')),
                         cost: numberWithoutSpaces(_.get(item, 'price')),
                         product: {
                             id: id,
