@@ -14,8 +14,6 @@ import getConfig from '../../helpers/getConfig'
 import {convertCurrency} from '../../helpers/convertCurrency'
 import {
     TextField,
-    ExpensiveCategorySearchField,
-    CheckBox,
     ClientSearchField,
     normalizeNumber,
     DivisionSearchField,
@@ -23,6 +21,7 @@ import {
 } from '../ReduxForm'
 
 import CashboxSearchField from '../ReduxForm/Cashbox/CashBoxSimpleSearch'
+import ExpensiveCategoryCustomSearchField from '../ReduxForm/ExpenseCategory/ExpensiveCategoryCustomSearchField'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import {openErrorAction} from '../../actions/error'
 
@@ -213,19 +212,19 @@ const enhance = compose(
         enableReinitialize: true
     }),
     connect((state) => {
-        const showClients = _.get(state, ['form', 'TransactionCreateForm', 'values', 'showClients'])
         const rate = _.get(state, ['form', 'TransactionCreateForm', 'values', 'custom_rate'])
         const amount = _.get(state, ['form', 'TransactionCreateForm', 'values', 'amount'])
         const chosenCashbox = _.get(state, ['form', 'TransactionCreateForm', 'values', 'cashbox', 'value'])
         const date = _.get(state, ['form', 'TransactionCreateForm', 'values', 'date'])
-        const expenseCategory = _.get(state, ['form', 'TransactionCreateForm', 'values', 'expanseCategory', 'value'])
+        const optionsList = _.get(state, ['expensiveCategory', 'options', 'data', 'results'])
+        const expenseCategoryOptions = _.get(state, ['form', 'TransactionCreateForm', 'values', 'expanseCategory', 'value', 'options'])
         return {
-            showClients,
             rate,
             amount,
             chosenCashbox,
             date,
-            expenseCategory
+            optionsList,
+            expenseCategoryOptions
         }
     }),
     withHandlers({
@@ -242,7 +241,6 @@ const enhance = compose(
         }
     })
 )
-const ONE = 1
 const TransactionCreateDialog = enhance((props) => {
     const {
         open,
@@ -252,15 +250,17 @@ const TransactionCreateDialog = enhance((props) => {
         classes,
         cashboxData,
         isExpense,
-        showClients,
         rate,
         amount,
         noCashbox,
         chosenCashbox,
-        expenseCategory,
         usersData,
-        date
+        date,
+        optionsList,
+        expenseCategoryOptions
     } = props
+    const clientOptionId = _.get(_.find(optionsList, {'keyName': 'client'}), 'id')
+    const showClients = _.includes(expenseCategoryOptions, clientOptionId)
     const onSubmit = handleSubmit(() => props.onSubmit().catch(props.validate))
     const cashboxId = noCashbox ? chosenCashbox : _.get(cashboxData, 'cashboxId')
     const cashbox = _.find(_.get(cashboxData, 'data'), {'id': cashboxId})
@@ -268,7 +268,7 @@ const TransactionCreateDialog = enhance((props) => {
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const divisionStatus = getConfig('DIVISIONS')
     const convert = convertCurrency(amount, rate)
-    const isSalary = expenseCategory === ONE
+    const isSalary = _.get(usersData, 'open')
     return (
         <Dialog
             modal={true}
@@ -312,11 +312,6 @@ const TransactionCreateDialog = enhance((props) => {
                             label="Дата создания"/>
                         {isExpense
                             ? <div className={classes.field}>
-                                <Field
-                                    name="showClients"
-                                    className={classes.checkbox}
-                                    component={CheckBox}
-                                    label="Снять со счета клиента"/>
                                 {showClients ? <div>
                                     <Field
                                         name="client"
@@ -333,7 +328,7 @@ const TransactionCreateDialog = enhance((props) => {
                                 </div> : null}
                                 <Field
                                     name="expanseCategory"
-                                    component={ExpensiveCategorySearchField}
+                                    component={ExpensiveCategoryCustomSearchField}
                                     label="Категория расхода"
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
@@ -372,11 +367,6 @@ const TransactionCreateDialog = enhance((props) => {
                                     fullWidth={true}/>
                             </div>
                             : <div className={classes.field}>
-                                <Field
-                                    name="showClients"
-                                    className={classes.checkbox}
-                                    component={CheckBox}
-                                    label="Оплата с клиента"/>
                                 {showClients && <div>
                                     <Field
                                         name="client"

@@ -259,7 +259,7 @@ const ShopCreateDialog = enhance((props) => {
                                         name="newClientName"
                                         component={TextField}
                                         className={classes.inputFieldCustom}
-                                        label="Имя клиента"
+                                        label="Наименование фирмы"
                                         fullWidth={true}/>)
                                     : <Field
                                         name="client"

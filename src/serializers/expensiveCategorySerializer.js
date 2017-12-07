@@ -3,9 +3,15 @@ import {orderingSnakeCase} from '../helpers/serializer'
 
 export const createSerializer = (data) => {
     const name = _.get(data, ['name'])
+    const options = _.filter(_.map(_.get(data, 'options'), (item, index) => {
+        return item ? _.toInteger(index) : null
+    }), (item) => {
+        return !_.isNull(item)
+    })
 
     return {
-        name
+        name,
+        options
     }
 }
 

@@ -364,7 +364,6 @@ const UsersList = enhance((props) => {
                 types: isSelectedPriceLists,
                 currencies: isSelectedCurrencies,
                 region: _.get(detail, 'region'),
-                password: _.get(detail, 'password'),
                 typeUser: _.get(detail, 'typeUser'),
                 image: _.get(detail, 'image'),
                 isActive: _.get(detail, 'isActive'),
