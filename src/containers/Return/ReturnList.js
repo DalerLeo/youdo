@@ -55,7 +55,7 @@ const enhance = compose(
         const updateForm = _.get(state, ['form', 'OrderReturnForm'])
         const updateClientForm = _.get(state, ['form', 'ReturnCreateForm'])
         const isAdmin = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
-        const hasMarket = getConfig('MARKETS_MODULE')
+        const hasMarket = toBoolean(getConfig('MARKETS_MODULE'))
         return {
             list,
             listLoading,

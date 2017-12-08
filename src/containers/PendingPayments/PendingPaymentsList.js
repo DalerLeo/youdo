@@ -39,7 +39,7 @@ const enhance = compose(
         const createForm = _.get(state, ['form', 'PendingPaymentsCreateForm'])
         const convert = _.get(state, ['pendingPayments', 'convert'])
         const filter = filterHelper(list, pathname, query)
-        const hasMarket = getConfig('MARKET_MODULE')
+        const hasMarket = toBoolean(getConfig('MARKETS_MODULE'))
         return {
             list,
             listLoading,

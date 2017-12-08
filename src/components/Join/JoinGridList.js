@@ -119,7 +119,7 @@ const JoinGridList = enhance((props) => {
         joinClientDialog,
         hasMarket
     } = props
-    const tab = _.get(tabData, 'tab') || 'clients'
+    const tab = _.get(tabData, 'tab')
     const tabList = (
         <div className={classes.tabWrapper}>
             <Tabs

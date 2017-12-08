@@ -48,7 +48,7 @@ const enhance = compose(
         const marketData = _.get(state, ['shop', 'item', 'data'])
         const marketDataLoading = _.get(state, ['shop', 'item', 'loading'])
         const selectedDate = _.get(query, DATE) || defaultDate
-        const hasMarket = getConfig('MARKET_MODULE')
+        const hasMarket = toBoolean(getConfig('MARKETS_MODULE'))
 
         return {
             query,

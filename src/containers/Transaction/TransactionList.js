@@ -91,7 +91,7 @@ const enhance = compose(
         const usersList = _.get(state, ['users', 'list', 'data'])
         const usersListLoading = _.get(state, ['users', 'list', 'loading'])
 
-        const hasMarket = getConfig('MARKET_MODULE')
+        const hasMarket = toBoolean(getConfig('MARKETS_MODULE'))
         return {
             list,
             query,

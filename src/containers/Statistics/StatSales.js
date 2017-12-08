@@ -41,7 +41,7 @@ const enhance = compose(
         const listPrintLoading = _.get(state, ['order', 'listPrint', 'loading'])
         const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
         const filter = filterHelper(list, pathname, query)
-        const hasMarket = getConfig('MARKET_MODULE')
+        const hasMarket = toBoolean(getConfig('MARKETS_MODULE'))
         return {
             query,
             list,

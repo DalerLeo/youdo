@@ -34,7 +34,7 @@ const enhance = compose(
         const createForm = _.get(state, ['form', 'JoinForm'])
         const marketFilter = filterHelper(marketsList, pathname, query)
         const clientFilter = filterHelper(clientsList, pathname, query)
-        const hasMarket = getConfig('MARKET_MODULE')
+        const hasMarket = toBoolean(getConfig('MARKETS_MODULE'))
         return {
             marketsList,
             marketsListLoading,

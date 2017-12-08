@@ -114,7 +114,7 @@ const enhance = compose(
         const paymentType = _.get(state, ['form', 'OrderCreateForm', 'values', 'paymentType'])
         const isSuperUser = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
         const addProductsForm = _.get(state, ['form', 'OrderAddProductsForm'])
-        const hasMarket = getConfig('MARKETS_MODULE')
+        const hasMarket = toBoolean(getConfig('MARKETS_MODULE'))
 
         return {
             list,
