@@ -40,6 +40,14 @@ const enhance = compose(
             zIndex: '999',
             textAlign: 'center',
             display: ({loading}) => loading ? 'flex' : 'none'
+        },
+        expenseCategoryOptions: {
+            padding: '10px 30px',
+            display: 'flex',
+            flexWrap: 'wrap',
+            '& > div': {
+                whiteSpace: 'nowrap'
+            }
         }
     })),
     reduxForm({
@@ -72,7 +80,7 @@ const ExpensiveCategoryCreateDialog = enhance((props) => {
                     {dataLoading && <div className={classes.load}>
                         <Loader size={0.75}/>
                     </div>}
-                    <div className={classes.inContent} style={{minHeight: '100px', paddingTop: '15px'}}>
+                    <div className={classes.inContent} style={{minHeight: 'unset', paddingTop: '10px'}}>
                         <div className={classes.field}>
                             <Field
                                 name="name"
@@ -82,20 +90,21 @@ const ExpensiveCategoryCreateDialog = enhance((props) => {
                                 fullWidth={true}
                             />
                         </div>
-                        <div className={classes.perms}>
-                            {_.map(data, (item) => {
-                                const name = _.get(item, 'name')
-                                const id = _.get(item, 'id')
-                                return (
-                                    <div key={id}>
-                                        <Field
-                                            name={'options[' + id + ']'}
-                                            label={name}
-                                            component={CheckBox}/>
-                                    </div>
-                                )
-                            })}
-                        </div>
+                    </div>
+                    <div style={{margin: '10px 30px -10px', fontWeight: '600'}}>Дополнительные параметры</div>
+                    <div className={classes.expenseCategoryOptions}>
+                        {_.map(data, (item) => {
+                            const name = _.get(item, 'title')
+                            const id = _.get(item, 'id')
+                            return (
+                                <div key={id}>
+                                    <Field
+                                        name={'options[' + id + ']'}
+                                        label={name}
+                                        component={CheckBox}/>
+                                </div>
+                            )
+                        })}
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton

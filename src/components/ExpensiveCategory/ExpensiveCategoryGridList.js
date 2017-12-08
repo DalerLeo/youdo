@@ -20,16 +20,16 @@ import dateFormat from '../../helpers/dateFormat'
 
 const listHeader = [
     {
-        sorting: true,
-        name: 'id',
-        xs: 2,
-        title: 'Id'
+        sorting: false,
+        name: 'name',
+        xs: 3,
+        title: 'Наименование'
     },
     {
         sorting: false,
-        name: 'name',
-        xs: 6,
-        title: 'Наименование'
+        name: 'options',
+        xs: 5,
+        title: 'Параметры'
     },
     {
         sorting: true,
@@ -82,13 +82,34 @@ const enhance = compose(
                 justifyContent: 'center'
             }
         },
+        option: {
+            minHeight: '50px',
+            display: 'flex',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            '& > span': {
+                padding: '0 10px',
+                height: '28px',
+                borderRadius: '2px',
+                lineHeight: '1',
+                display: 'inline-flex',
+                alignItems: 'center',
+                backgroundColor: '#e9ecef',
+                margin: '5px 10px 5px 0'
+            }
+        },
         listRow: {
             margin: '0 -30px !important',
+            minHeight: '50px',
             width: 'auto !important',
             padding: '0 30px',
             '&:hover > div:last-child > div ': {
                 opacity: '1'
             }
+        },
+        optionsWrapper: {
+            display: 'flex',
+            flexWrap: 'wrap'
         },
         iconBtn: {
             display: 'flex',
@@ -126,14 +147,28 @@ const ExpensiveCategoryGridList = enhance((props) => {
         <span>a</span>
     )
 
+    const optionsList = _.get(listData, 'options')
+    const optionsListLoading = _.get(listData, 'optionsListLoading')
     const expensiveCategoryList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
+        const options = _.map(_.get(item, 'options'), (obj) => {
+            const optionItem = _.find(optionsList, {'id': obj})
+            const optionName = _.get(optionItem, 'title')
+            const description = _.get(optionItem, 'description')
+            return (
+                <Tooltip key={obj} position={'bottom'} text={description}>
+                    <div className={classes.option}>
+                        <span>{optionName}</span>
+                    </div>
+                </Tooltip>
+            )
+        })
         const createdDate = dateFormat(_.get(item, 'createdDate'))
         return (
             <Row key={id} className={classes.listRow}>
-                <Col xs={2}>{id}</Col>
-                <Col xs={6}>{name}</Col>
+                <Col xs={3}>{name}</Col>
+                <Col xs={5} className={classes.optionsWrapper}>{options}</Col>
                 <Col xs={3}>{createdDate}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
                     <div className={classes.iconBtn}>
@@ -192,14 +227,14 @@ const ExpensiveCategoryGridList = enhance((props) => {
                         detail={expensiveCategoryDetail}
                         addButton={addButton}
                         listShadow={false}
+                        flexibleRow={true}
                     />
                 </div>
             </div>
 
             <ExpensiveCategoryCreateDialog
-                initialValues={createDialog.initialValues}
-                data={_.get(createDialog, ['optionsList', 'results'])}
-                dataLoading={_.get(createDialog, 'optionsListLoading')}
+                data={optionsList}
+                dataLoading={optionsListLoading}
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
                 onClose={createDialog.handleCloseCreateDialog}
@@ -208,6 +243,8 @@ const ExpensiveCategoryGridList = enhance((props) => {
 
             <ExpensiveCategoryCreateDialog
                 isUpdate={true}
+                data={optionsList}
+                dataLoading={optionsListLoading}
                 initialValues={updateDialog.initialValues}
                 open={updateDialog.openUpdateDialog}
                 loading={updateDialog.updateLoading}

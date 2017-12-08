@@ -56,7 +56,9 @@ export const usersUpdateAction = (id, formValues) => {
 }
 
 export const usersListFetchAction = (filter) => {
-    const params = serializers.listFilterSerializer(_.get(filter, 'getParams'))
+    const params = filter
+        ? serializers.listFilterSerializer(filter.getParams())
+        : {}
     const payload = axios()
         .get(API.USERS_LIST, {params})
         .then((response) => {
