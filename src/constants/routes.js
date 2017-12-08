@@ -236,7 +236,6 @@ export const STATISTICS_OUTCOME_URL = `/${STATISTICS_OUTCOME}`
 export const STATISTICS_OUTCOME_CATEGORY = 'statistics/outcomeCategory'
 export const STATISTICS_OUTCOME_CATEGORY_URL = `/${STATISTICS_OUTCOME_CATEGORY}`
 
-// ------------------------------------------------------------------------
 export const STATISTICS_STOCK_URL = `/${STATISTICS}/stock`
 
 export const STATISTICS_REMAINDER_URL = `${STATISTICS}/remainder`
@@ -246,6 +245,11 @@ export const STATISTICS_REMAINDER_ITEM_PATH = `/${STATISTICS_REMAINDER_URL}/%d`
 export const STATISTICS_CASHBOX_URL = `${STATISTICS}/cashbox`
 export const STATISTICS_CASHBOX_ITEM_URL = `/${STATISTICS_CASHBOX_URL}/:cashboxId`
 export const STATISTICS_CASHBOX_ITEM_PATH = `/${STATISTICS_CASHBOX_URL}/%d`
+
+export const STATISTICS_DEBTORS = 'statistics/debtors'
+export const STATISTICS_DEBTORS_URL = `/${STATISTICS_DEBTORS}`
+export const STATISTICS_DEBTORS_ITEM_URL = `/${STATISTICS_DEBTORS}/:statDebtorsId`
+export const STATISTICS_DEBTORS_ITEM_PATH = `/${STATISTICS_DEBTORS}/%d`
 
 export const STOCK_IN_OUT = 'stockReceives'
 export const STOCK_IN_OUT_LIST_URL = `/${STOCK_IN_OUT}`

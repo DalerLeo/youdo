@@ -1,12 +1,12 @@
 import StatSideMenu from './StatSideMenu'
 import StatSalesGridList from './Sales/SalesGridList'
-import StatAgentGridList from './Agents/StatAgentGridList'
+import StatAgentGridList from './Agents/AgentGridList'
 import StatProductGridList from './Products/StatProductGridList'
 import StatMarketGridList from './Markets/StatMarketGridList'
 import StatFinanceGridList from './Finance/StatFinanceGridList'
 import StatOutcomeCategoryGridList from './Outcome/StatOutcomeCategoryGridList'
 import StatRemainderGridList from './Remainder/StatRemainderGridLIst'
-import StatCashboxGridList from './Cashbox/StatCashboxGridList'
+import StatCashboxGridList from './Cashbox/CashboxGridList'
 import StatProductMoveGridList from './ProductMove/StatProductMoveGridList'
 import StatReportGridList from './StatReportGridLIst'
 import StatReturnGridList from './Return/StatReturnGridList'
@@ -14,6 +14,7 @@ import StatReturnDialog from './Return/StatReturnDialog'
 import ClientIncomeGridList from './ClientIncome/ClientIncomeGridList'
 import StatisticsFilterExcel from './StatisticsFilterExcel'
 import StatisticsChart from './StatisticsChart'
+import StatDebtorsGridList from './Debtors/DebtorsGridList'
 
 const STAT_AGENT_DIALOG_OPEN = 'openStatAgentDialog'
 const STAT_RETURN_DIALOG_OPEN = 'openStatReturnDialog'
@@ -43,6 +44,7 @@ export {
     StatProductMoveGridList,
     StatReportGridList,
     ClientIncomeGridList,
+    StatDebtorsGridList,
     StatisticsFilterExcel,
     StatisticsChart,
     BEGIN_DATE,

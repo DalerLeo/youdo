@@ -19,7 +19,7 @@ import {
     BEGIN_DATE,
     END_DATE
 } from '../../components/Statistics'
-import {STAT_AGENT_FILTER_KEY} from '../../components/Statistics/Agents/StatAgentGridList'
+import {STAT_AGENT_FILTER_KEY} from '../../components/Statistics/Agents/AgentGridList'
 import {
     statAgentListFetchAction,
     statAgentItemFetchAction

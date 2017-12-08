@@ -453,6 +453,11 @@ export const STAT_PRODUCT_MOVE_LIST = 'stats/stock/products/'
 export const STAT_PRODUCT_MOVE_SUM = 'stats/stock/sum/'
 export const STAT_PRODUCT_MOVE_GET_DOCUMENT = '/stats/stock/products/export/'
 
+export const STAT_DEBTORS_DATA = 'stats/debtors_stats/'
+export const STAT_DEBTORS_LIST = 'stats/debtors/'
+export const STAT_DEBTORS_ITEM = 'sales/order/'
+export const STAT_DEBTORS_GET_DOCUMENT = 'stats/debtors/export'
+
 export const STAT_REPORT_LIST = 'stats/general/'
 export const STAT_REPORT_ITEM = 'sales/order/'
 export const STAT_REPORT_GET_DOCUMENT = '/stats/general/excel/'

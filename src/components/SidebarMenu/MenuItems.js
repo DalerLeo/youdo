@@ -132,6 +132,7 @@ export const MenuItems = [
             {section: STATS_FINANCE, name: 'Кассы', url: ROUTES.STATISTICS_CASHBOX_URL, permission: 'frontend_stat_cashbox'},
             {section: STATS_CLIENTS, name: 'Оборот клиентов', url: ROUTES.STATISTICS_CLIENT_INCOME_URL, permission: 'frontend_stat_client_income'},
             {section: STATS_CLIENTS, name: 'Баланс клиентов', url: ROUTES.STATISTICS_CLIENT_BALANCE_URL, permission: 'frontend_stat_client_balance', query: {pageSize: 25}},
+            {section: STATS_CLIENTS, name: 'Должники', url: ROUTES.STATISTICS_DEBTORS_URL, permission: 'frontend_stat_debtors'},
             {section: STATS_STOCK, name: 'Остаток', url: ROUTES.STATISTICS_REMAINDER_URL, permission: 'frontend_stat_remainder', query: {pageSize: 25}},
             {section: STATS_STOCK, name: 'Движение товаров', url: ROUTES.STATISTICS_PRODUCT_MOVE_URL, permission: 'frontend_stat_product_move', query: {pageSize: 25}},
             {section: STATS_OVERALL, name: 'Генеральный отчет', url: ROUTES.STATISTICS_REPORT_URL, permission: 'frontend_stat_report'}
