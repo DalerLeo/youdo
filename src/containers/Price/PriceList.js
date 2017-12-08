@@ -119,15 +119,15 @@ const enhance = compose(
         },
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
-            const typeParent = _.get(filterForm, ['values', 'typeParent']) || null
-            const typeChild = _.get(filterForm, ['values', 'typeChild']) || null
+            const typeParent = _.get(filterForm, ['values', 'typeParent', 'value']) || null
+            const typeChild = _.get(filterForm, ['values', 'typeChild', 'value']) || null
             const measurement = _.get(filterForm, ['values', 'measurement']) || null
             const withoutNetCost = _.get(filterForm, ['values', 'withoutNetCost']) || null
 
             filter.filterBy({
                 [PRICE_FILTER_OPEN]: false,
-                [PRICE_FILTER_KEY.TYPE_PARENT]: _.join(typeParent, '-'),
-                [PRICE_FILTER_KEY.TYPE_CHILD]: _.join(typeChild, '-'),
+                [PRICE_FILTER_KEY.TYPE_PARENT]: typeParent,
+                [PRICE_FILTER_KEY.TYPE_CHILD]: typeChild,
                 [PRICE_FILTER_KEY.MEASUREMENT]: _.join(measurement, '-'),
                 [PRICE_FILTER_KEY.WITHOUT_NET_COST]: withoutNetCost
             })
@@ -230,7 +230,7 @@ const PriceList = enhance((props) => {
     const openPriceSetDefault = toBoolean(_.get(location, ['query', PRICE_SET_DEFAULT_OPEN]))
     const typeParent = _.toNumber(_.get(location, ['query', PRICE_FILTER_KEY.TYPE_PARENT]))
     const typeChild = _.toNumber(_.get(location, ['query', PRICE_FILTER_KEY.TYPE_CHILD]))
-    const measurement = _.toNumber(_.get(location, ['query', PRICE_FILTER_KEY.MEASUREMENT]))
+    const measurement = (_.get(location, ['query', PRICE_FILTER_KEY.MEASUREMENT]))
     const withoutNetCost = toBoolean(_.get(location, ['query', PRICE_FILTER_KEY.WITHOUT_NET_COST]))
     const detailId = _.toInteger(_.get(params, 'priceId'))
 
@@ -241,12 +241,8 @@ const PriceList = enhance((props) => {
     }
     const filterDialog = {
         initialValues: {
-            typeParent: typeParent && _.map(_.split(typeParent, '-'), (item) => {
-                return _.toNumber(item)
-            }),
-            typeChild: typeChild && _.map(_.split(typeChild, '-'), (item) => {
-                return _.toNumber(item)
-            }),
+            typeParent: {value: typeParent},
+            typeChild: {value: typeChild},
             measurement: measurement && _.map(_.split(measurement, '-'), (item) => {
                 return _.toNumber(item)
             }),

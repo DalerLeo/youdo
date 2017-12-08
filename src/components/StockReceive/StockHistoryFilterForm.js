@@ -12,11 +12,11 @@ import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 
 import {
-    ProductSearchField,
+    ProductMultiSearchField,
     DateToDateField,
     StockHistoryTypeSearchField,
     StockStatusSearchField,
-    StockSearchField,
+    StockMultiSearchField,
     ProductTypeParentSearchField,
     ProductTypeChildSearchField
 } from '../ReduxForm'
@@ -208,7 +208,7 @@ const HistoryFilterForm = enhance((props) => {
                         <Field
                             className={classes.inputFieldCustom}
                             name="product"
-                            component={ProductSearchField}
+                            component={ProductMultiSearchField}
                             label="Товар"
                             fullWidth={true}/>
                     </div>
@@ -216,7 +216,7 @@ const HistoryFilterForm = enhance((props) => {
                         <Field
                             className={classes.inputFieldCustom}
                             name="stock"
-                            component={StockSearchField}
+                            component={StockMultiSearchField}
                             label="Склад"
                             fullWidth={true}/>
                     </div>

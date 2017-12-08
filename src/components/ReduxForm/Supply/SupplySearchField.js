@@ -1,6 +1,5 @@
-import sprintf from 'sprintf'
 import React from 'react'
-import SearchField from '../Basic/MultiSelectField'
+import MultiSelectField from '../Basic/MultiSelectField'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
@@ -12,21 +11,21 @@ const getOptions = (search) => {
         })
 }
 
-const getItem = (id) => {
-    return axios().get(sprintf(PATH.SUPPLY_ITEM, id))
+const getIdsOption = (ids) => {
+    return axios().get(`${PATH.SUPPLY_LIST}?ids=${ids || ''}`)
         .then(({data}) => {
-            return Promise.resolve(toCamelCase(data))
+            return Promise.resolve(toCamelCase(data.results))
         })
 }
 
 const SupplySearchField = (props) => {
     return (
-        <SearchField
-            getValue={SearchField.defaultGetValue('id')}
-            getText={SearchField.defaultGetText('id')}
+        <MultiSelectField
+            getValue={MultiSelectField.defaultGetValue('id')}
+            getText={MultiSelectField.defaultGetText('id')}
             getOptions={getOptions}
-            getItem={getItem}
-            getItemText={SearchField.defaultGetText('name')}
+            getIdsOption={getIdsOption}
+            getItemText={MultiSelectField.defaultGetText('name')}
             {...props}
         />
     )

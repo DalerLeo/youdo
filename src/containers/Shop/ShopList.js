@@ -7,6 +7,7 @@ import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
+import {joinArray, splitToArray} from '../../helpers/joinSplitValues'
 import updateStore from '../../helpers/updateStore'
 import * as actionTypes from '../../constants/actionTypes'
 import toBoolean from '../../helpers/toBoolean'
@@ -195,17 +196,17 @@ const enhance = compose(
             const marketType = _.get(filterForm, ['values', 'marketType']) || null
             const zone = _.get(filterForm, ['values', 'zone']) || null
             const isActive = _.get(filterForm, ['values', 'isActive', 'value']) || null
-            const frequency = _.get(filterForm, ['values', 'frequency', 'value']) || null
+            const frequency = _.get(filterForm, ['values', 'frequency']) || null
             const nullBorder = _.get(filterForm, ['values', 'nullBorder']) || null
 
             filter.filterBy({
                 [SHOP_FILTER_OPEN]: false,
-                [SHOP_FILTER_KEY.CLIENT]: _.join(client, '-'),
-                [SHOP_FILTER_KEY.CREATED_BY]: _.join(createdBy, '-'),
-                [SHOP_FILTER_KEY.MARKET_TYPE]: _.join(marketType, '-'),
+                [SHOP_FILTER_KEY.CLIENT]: joinArray(client),
+                [SHOP_FILTER_KEY.CREATED_BY]: joinArray(createdBy),
+                [SHOP_FILTER_KEY.MARKET_TYPE]: joinArray(marketType),
                 [SHOP_FILTER_KEY.STATUS]: isActive,
-                [SHOP_FILTER_KEY.FREQUENCY]: frequency,
-                [SHOP_FILTER_KEY.ZONE]: _.join(zone, '-'),
+                [SHOP_FILTER_KEY.FREQUENCY]: joinArray(frequency),
+                [SHOP_FILTER_KEY.ZONE]: joinArray(zone),
                 [SHOP_FILTER_KEY.NULL_BORDER]: nullBorder
             })
         },
@@ -396,11 +397,11 @@ const ShopList = enhance((props) => {
     const openAddPhotoDialog = toBoolean(_.get(location, ['query', ADD_PHOTO_DIALOG_OPEN]))
     const openSlideShowDialog = _.toInteger(_.get(location, ['query', SHOP_SLIDESHOW_DIALOG_OPEN]) || MINUS_ONE) > MINUS_ONE
 
-    const client = _.toInteger(filter.getParam(SHOP_FILTER_KEY.CLIENT))
-    const marketType = _.toInteger(filter.getParam(SHOP_FILTER_KEY.MARKET_TYPE))
-    const createdBy = _.toInteger(filter.getParam(SHOP_FILTER_KEY.CREATED_BY))
-    const zone = _.toInteger(filter.getParam(SHOP_FILTER_KEY.ZONE))
-    const frequency = _.toInteger(filter.getParam(SHOP_FILTER_KEY.FREQUENCY))
+    const client = (filter.getParam(SHOP_FILTER_KEY.CLIENT))
+    const marketType = (filter.getParam(SHOP_FILTER_KEY.MARKET_TYPE))
+    const createdBy = _(filter.getParam(SHOP_FILTER_KEY.CREATED_BY))
+    const zone = (filter.getParam(SHOP_FILTER_KEY.ZONE))
+    const frequency = (filter.getParam(SHOP_FILTER_KEY.FREQUENCY))
     const filterIsActive = _.toInteger(filter.getParam(SHOP_FILTER_KEY.STATUS))
     const nullBorder = toBoolean(filter.getParam(SHOP_FILTER_KEY.NULL_BORDER))
 
@@ -537,24 +538,14 @@ const ShopList = enhance((props) => {
 
     const filterDialog = {
         initialValues: {
-            createdBy: createdBy && _.map(_.split(createdBy, '-'), (item) => {
-                return _.toNumber(item)
-            }),
-            zone: zone && _.map(_.split(zone, '-'), (item) => {
-                return _.toNumber(item)
-            }),
-            client: client && _.map(_.split(client, '-'), (item) => {
-                return _.toNumber(item)
-            }),
-            marketType: marketType && _.map(_.split(marketType, '-'), (item) => {
-                return _.toNumber(item)
-            }),
+            createdBy: createdBy && splitToArray(createdBy),
+            zone: zone && splitToArray(zone),
+            client: client && splitToArray(client),
+            marketType: marketType && splitToArray(marketType),
             isActive: {
                 value: filterIsActive
             },
-            frequency: {
-                value: frequency
-            },
+            frequency: frequency && splitToArray(frequency),
             nullBorder: nullBorder
         },
         filterLoading: false,

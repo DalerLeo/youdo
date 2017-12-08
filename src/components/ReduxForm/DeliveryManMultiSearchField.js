@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import sprintf from 'sprintf'
 import React from 'react'
 import SearchField from './Basic/MultiSelectField'
 import axios from '../../helpers/axios'
@@ -13,10 +12,10 @@ const getOptions = (search) => {
         })
 }
 
-const getItem = (id) => {
-    return axios().get(sprintf(PATH.USERS_ITEM, id))
+const getIdsOption = (ids) => {
+    return axios().get(`${PATH.USERS_LIST}?ids=${ids || ''}`)
         .then(({data}) => {
-            return Promise.resolve(toCamelCase(data))
+            return Promise.resolve(toCamelCase(data.results))
         })
 }
 
@@ -29,7 +28,7 @@ const DeliveryManSearchField = (props) => {
             getValue={SearchField.defaultGetValue('id')}
             getText={getText}
             getOptions={getOptions}
-            getItem={getItem}
+            getIdsOption={getIdsOption}
             getItemText={SearchField.defaultGetText('secontName')}
             multi={true}
             {...props}

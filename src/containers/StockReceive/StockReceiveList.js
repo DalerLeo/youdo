@@ -8,6 +8,7 @@ import {compose, withPropsOnChange, withHandlers, withState} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
+import {splitToArray, joinArray} from '../../helpers/joinSplitValues'
 import TabReceive from '../../components/StockReceive/StockTabReceive'
 import sprintf from 'sprintf'
 import moment from 'moment'
@@ -183,13 +184,15 @@ const enhance = compose(
         handleSubmitTabReceiveFilterDialog: props => () => {
             const {filter, filterForm} = props
             const stock = _.get(filterForm, ['values', 'stock']) || null
-            const type = _.get(filterForm, ['values', 'type', 'value']) || null
+            const type = _.get(filterForm, ['values', 'type']) || null
+            const acceptedBy = _.get(filterForm, ['values', 'acceptedBy']) || null
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
             filter.filterBy({
                 [TAB_RECEIVE_FILTER_OPEN]: false,
-                [TAB_TRANSFER_FILTER_KEY.STOCK]: _.join(stock, '-'),
-                [TAB_TRANSFER_FILTER_KEY.TYPE]: type,
+                [TAB_TRANSFER_FILTER_KEY.STOCK]: joinArray(stock),
+                [TAB_TRANSFER_FILTER_KEY.TYPE]: joinArray(type),
+                [TAB_TRANSFER_FILTER_KEY.ACCEPTED_BY]: joinArray(acceptedBy),
                 [TAB_TRANSFER_FILTER_KEY.FROM_DATE]: fromDate && moment(fromDate).format('YYYY-MM-DD'),
                 [TAB_TRANSFER_FILTER_KEY.TO_DATE]: toDate && moment(toDate).format('YYYY-MM-DD')
 
@@ -399,8 +402,9 @@ const StockReceiveListContent = enhance((props) => {
     const detailId = _.toInteger(_.get(params, 'stockReceiveId'))
     const openConfirmDialog = _.toInteger(_.get(location, ['query', STOCK_CONFIRM_DIALOG_OPEN]))
     const openFilterDialog = toBoolean(_.get(location, ['query', TAB_RECEIVE_FILTER_OPEN]))
-    const stock = _.toInteger(filter.getParam(TAB_RECEIVE_FILTER_KEY.STOCK))
-    const type = _.toInteger(filter.getParam(TAB_RECEIVE_FILTER_KEY.TYPE))
+    const stock = (filter.getParam(TAB_RECEIVE_FILTER_KEY.STOCK))
+    const type = (filter.getParam(TAB_RECEIVE_FILTER_KEY.TYPE))
+    const acceptedBy = (filter.getParam(TAB_RECEIVE_FILTER_KEY.ACCEPTED_BY))
     const fromDate = filter.getParam(TAB_RECEIVE_FILTER_KEY.FROM_DATE)
     const toDate = filter.getParam(TAB_RECEIVE_FILTER_KEY.TO_DATE)
     const handleCloseDetail = _.get(props, 'handleCloseDetail')
@@ -472,16 +476,13 @@ const StockReceiveListContent = enhance((props) => {
     }
     const filterDialog = {
         initialValues: {
-            type: {
-                value: type
-            },
+            type: type && splitToArray(type),
+            acceptedBy: acceptedBy && splitToArray(acceptedBy),
             date: {
                 fromDate: fromDate && moment(fromDate),
                 toDate: toDate && moment(toDate)
             },
-            stock: _.map(_.split(stock, '-'), (item) => {
-                return _.toNumber(item)
-            })
+            stock: stock && splitToArray(stock)
         },
         filterLoading: false,
         openFilterDialog,

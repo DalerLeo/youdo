@@ -1,36 +1,35 @@
+import sprintf from 'sprintf'
 import React from 'react'
 import SearchField from '../Basic/MultiSelectField'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
-import {connect} from 'react-redux'
 
 const getOptions = (search) => {
-    return axios().get(`${PATH.PRODUCT_LIST}?search=${search || ''}&page_size=100`)
+    return axios().get(`${PATH.BRAND_LIST}?search=${search || ''}&page_size=100`)
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
         })
 }
 
-const getIdsOption = (ids) => {
-    return axios().get(`${PATH.PRODUCT_LIST}?ids=${ids || ''}`)
+const getItem = (id) => {
+    return axios().get(sprintf(PATH.BRAND_ITEM, id))
         .then(({data}) => {
-            return Promise.resolve(toCamelCase(data.results))
+            return Promise.resolve(toCamelCase(data))
         })
 }
 
-const ProductSearchField = connect()((props) => {
-    const {...defaultProps} = props
+const BrandSearchField = (props) => {
     return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
             getText={SearchField.defaultGetText('name')}
             getOptions={getOptions}
-            getIdsOption={getIdsOption}
+            getItem={getItem}
             getItemText={SearchField.defaultGetText('name')}
-            {...defaultProps}
+            {...props}
         />
     )
-})
+}
 
-export default ProductSearchField
+export default BrandSearchField

@@ -8,6 +8,7 @@ import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
+import {splitToArray, joinArray} from '../../helpers/joinSplitValues'
 import toBoolean from '../../helpers/toBoolean'
 import {
     PRODUCT_CREATE_DIALOG_OPEN,
@@ -122,15 +123,15 @@ const enhance = compose(
             const {filter, filterForm} = props
             const typeParent = _.get(filterForm, ['values', 'typeParent', 'value']) || null
             const typeChild = _.get(filterForm, ['values', 'typeChild', 'value']) || null
-            const measurement = _.get(filterForm, ['values', 'measurement', 'value']) || null
-            const brand = _.get(filterForm, ['values', 'brand', 'value']) || null
+            const measurement = _.get(filterForm, ['values', 'measurement']) || null
+            const brand = _.get(filterForm, ['values', 'brand']) || null
 
             filter.filterBy({
                 [PRODUCT_FILTER_OPEN]: false,
-                [PRODUCT_FILTER_KEY.TYPE_PARENT]: _.join(typeParent, '-'),
-                [PRODUCT_FILTER_KEY.TYPE_CHILD]: _.join(typeChild, '-'),
-                [PRODUCT_FILTER_KEY.MEASUREMENT]: _.join(measurement, '-'),
-                [PRODUCT_FILTER_KEY.BRAND]: _.join(brand, '-')
+                [PRODUCT_FILTER_KEY.TYPE_PARENT]: typeParent,
+                [PRODUCT_FILTER_KEY.TYPE_CHILD]: typeChild,
+                [PRODUCT_FILTER_KEY.MEASUREMENT]: joinArray(measurement),
+                [PRODUCT_FILTER_KEY.BRAND]: joinArray(brand)
             })
         },
 
@@ -225,10 +226,10 @@ const ProductList = enhance((props) => {
     const openShowBigImg = toBoolean(_.get(location, ['query', PRODUCT_SHOW_PHOTO_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', PRODUCT_UPDATE_DIALOG_OPEN]))
     const openConfirmDialog = toBoolean(_.get(location, ['query', PRODUCT_DELETE_DIALOG_OPEN]))
-    const brand = _.toInteger(filter.getParam(PRODUCT_FILTER_KEY.BRAND))
+    const brand = (filter.getParam(PRODUCT_FILTER_KEY.BRAND))
     const typeParent = _.toInteger(filter.getParam(PRODUCT_FILTER_KEY.TYPE_PARENT))
     const typeChild = _.toInteger(filter.getParam(PRODUCT_FILTER_KEY.TYPE_CHILD))
-    const measurement = _.toInteger(filter.getParam(PRODUCT_FILTER_KEY.MEASUREMENT))
+    const measurement = (filter.getParam(PRODUCT_FILTER_KEY.MEASUREMENT))
     const detailId = _.toInteger(_.get(params, 'productId'))
 
     const createDialog = {
@@ -296,18 +297,10 @@ const ProductList = enhance((props) => {
 
     const filterDialog = {
         initialValues: {
-            brand: brand && _.map(_.split(brand, '-'), (item) => {
-                return _.toNumber(item)
-            }),
-            typeParent: typeParent && _.map(_.split(typeParent, '-'), (item) => {
-                return _.toNumber(item)
-            }),
-            typeChild: typeChild && _.map(_.split(typeChild, '-'), (item) => {
-                return _.toNumber(item)
-            }),
-            measurement: measurement && _.map(_.split(measurement, '-'), (item) => {
-                return _.toNumber(item)
-            })
+            brand: brand && splitToArray(brand),
+            typeParent: {value: typeParent},
+            typeChild: {value: typeChild},
+            measurement: measurement && splitToArray(measurement)
         },
         filterLoading: false,
         openFilterDialog,

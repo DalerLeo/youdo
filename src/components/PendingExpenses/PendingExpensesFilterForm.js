@@ -11,7 +11,7 @@ import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import {
     DateToDateField,
-    ProviderSearchField,
+    ProviderMultiSearchField,
     PendingExpensesTypeSearchField,
     PaymentTypeSearchField,
     SupplySearchField
@@ -20,7 +20,6 @@ import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
 export const PENDING_EXPENSES_FILTER_OPEN = 'openFilterDialog'
-
 export const PENDING_EXPENSES_FILTER_KEY = {
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate',
@@ -181,7 +180,7 @@ const PendingExpensesFilterForm = enhance((props) => {
                                fullWidth={true}/>
                         <Field className={classes.inputFieldCustom}
                                name="provider"
-                               component={ProviderSearchField}
+                               component={ProviderMultiSearchField}
                                label="Поставщик"
                                fullWidth={true}/>
                         <Field className={classes.inputFieldCustom}

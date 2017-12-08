@@ -9,6 +9,7 @@ import * as ROUTER from '../../constants/routes'
 import * as API from '../../constants/api'
 import Layout from '../../components/Layout'
 import filterHelper from '../../helpers/filter'
+import {joinArray, splitToArray} from '../../helpers/joinSplitValues'
 import toBoolean from '../../helpers/toBoolean'
 import TabTransfer from '../../components/StockReceive/StockTabTransfer'
 import {OrderPrint} from '../../components/Order'
@@ -238,7 +239,7 @@ const enhance = compose(
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
             filter.filterBy({
                 [TAB_TRANSFER_FILTER_OPEN]: false,
-                [TAB_TRANSFER_FILTER_KEY.STOCK]: _.join(stock, '-'),
+                [TAB_TRANSFER_FILTER_KEY.STOCK]: joinArray(stock),
                 [TAB_TRANSFER_FILTER_KEY.TYPE]: type,
                 [TAB_TRANSFER_FILTER_KEY.FROM_DATE]: fromDate && moment(fromDate).format('YYYY-MM-DD'),
                 [TAB_TRANSFER_FILTER_KEY.TO_DATE]: toDate && moment(toDate).format('YYYY-MM-DD')
@@ -410,8 +411,8 @@ const StockTransferList = enhance((props) => {
     const openConfirmDialog = _.get(location, ['query', STOCK_CONFIRM_DIALOG_OPEN])
     const openFilterDialog = toBoolean(_.get(location, ['query', TAB_TRANSFER_FILTER_OPEN]))
     const key = _.get(location, ['query', KEY])
-    const stock = _.toInteger(filter.getParam(TAB_TRANSFER_FILTER_KEY.STOCK))
-    const type = _.toInteger(filter.getParam(TAB_TRANSFER_FILTER_KEY.TYPE))
+    const stock = (filter.getParam(TAB_TRANSFER_FILTER_KEY.STOCK))
+    const type = (filter.getParam(TAB_TRANSFER_FILTER_KEY.TYPE))
     const handleCloseDetail = _.get(props, 'handleCloseDetail')
 
     const toggleData = {
@@ -472,9 +473,7 @@ const StockTransferList = enhance((props) => {
                 startDate: moment(beginDate),
                 endDate: moment(endDate)
             },
-            stock: _.map(_.split(stock, '-'), (item) => {
-                return _.toNumber(item)
-            })
+            stock: stock && splitToArray(stock)
         },
         filterLoading: false,
         openFilterDialog,

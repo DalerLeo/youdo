@@ -9,6 +9,7 @@ import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
+import {splitToArray, joinArray} from '../../helpers/joinSplitValues'
 import toBoolean from '../../helpers/toBoolean'
 import {
     TRANSACTION_CREATE_EXPENSE_DIALOG_OPEN,
@@ -271,7 +272,7 @@ const enhance = compose(
             const {filter, filterForm} = props
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
-            const type = _.get(filterForm, ['values', 'type', 'value']) || null
+            const type = _.get(filterForm, ['values', 'type']) || null
             const division = _.get(filterForm, ['values', 'division']) || null
             const client = _.get(filterForm, ['values', 'client']) || null
             const withDeleted = _.get(filterForm, ['values', 'with_deleted']) || null
@@ -279,11 +280,11 @@ const enhance = compose(
 
             filter.filterBy({
                 [TRANSACTION_FILTER_OPEN]: false,
-                [TRANSACTION_FILTER_KEY.TYPE]: type,
-                [TRANSACTION_FILTER_KEY.CLIENT]: _.join(client, '-'),
+                [TRANSACTION_FILTER_KEY.TYPE]: joinArray(type),
+                [TRANSACTION_FILTER_KEY.CLIENT]: joinArray(client),
                 [TRANSACTION_FILTER_KEY.WITH_DELETED]: withDeleted,
-                [TRANSACTION_FILTER_KEY.DIVISION]: _.join(division, '-'),
-                [TRANSACTION_FILTER_KEY.CATEGORY_EXPENSE]: _.join(categoryExpense, '-'),
+                [TRANSACTION_FILTER_KEY.DIVISION]: joinArray(division),
+                [TRANSACTION_FILTER_KEY.CATEGORY_EXPENSE]: joinArray(categoryExpense),
                 [TRANSACTION_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [TRANSACTION_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
             })
@@ -651,10 +652,10 @@ const TransactionList = enhance((props) => {
     const openSuperUser = _.toInteger(_.get(location, ['query', TRANSACTION_EDIT_PRICE_OPEN])) > ZERO
     const openDeleteTransaction = _.toInteger(_.get(location, ['query', DELETE_TRANSACTION])) > ZERO
     const openUpdateTransaction = _.toInteger(_.get(location, ['query', UPDATE_TRANSACTION]))
-    const categoryExpense = _.toInteger(filter.getParam(TRANSACTION_FILTER_KEY.CATEGORY_EXPENSE))
-    const division = _.toInteger(filter.getParam(TRANSACTION_FILTER_KEY.DIVISION))
-    const type = _.toInteger(filter.getParam(TRANSACTION_FILTER_KEY.TYPE))
-    const client = _.toInteger(filter.getParam(TRANSACTION_FILTER_KEY.CLIENT))
+    const categoryExpense = (filter.getParam(TRANSACTION_FILTER_KEY.CATEGORY_EXPENSE))
+    const division = (filter.getParam(TRANSACTION_FILTER_KEY.DIVISION))
+    const type = (filter.getParam(TRANSACTION_FILTER_KEY.TYPE))
+    const client = (filter.getParam(TRANSACTION_FILTER_KEY.CLIENT))
     const withDeleted = toBoolean(filter.getParam(TRANSACTION_FILTER_KEY.WITH_DELETED))
     const fromDate = filter.getParam(TRANSACTION_FILTER_KEY.FROM_DATE)
     const toDate = filter.getParam(TRANSACTION_FILTER_KEY.TO_DATE)
@@ -783,18 +784,10 @@ const TransactionList = enhance((props) => {
 
     const filterDialog = {
         initialValues: {
-            category: categoryExpense && _.map(_.split(categoryExpense, '-'), (item) => {
-                return _.toNumber(item)
-            }),
-            client: client && _.map(_.split(client, '-'), (item) => {
-                return _.toNumber(item)
-            }),
-            division: division && _.map(_.split(division, '-'), (item) => {
-                return _.toNumber(item)
-            }),
-            type: {
-                value: type
-            },
+            categoryExpense: categoryExpense && splitToArray(categoryExpense),
+            type: type && splitToArray(type),
+            client: client && splitToArray(client),
+            division: division && splitToArray(division),
             date: {
                 fromDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),
                 toDate: toDate && moment(toDate, 'YYYY-MM-DD')

@@ -8,8 +8,13 @@ import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import PropTypes from 'prop-types'
-import {ProductTypeParentSearchField, ProductTypeChildSearchField, BrandSearchField, MeasurementSearchField} from '../ReduxForm'
-import StockSearchField from '../ReduxForm/Stock/StockSearchField'
+import {
+    ProductTypeParentSearchField,
+    ProductTypeChildSearchField,
+    BrandMultiSearchField,
+    MeasurementMultiSearchField,
+    StockMultiSearchField
+} from '../ReduxForm'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import {Link} from 'react-router'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
@@ -166,7 +171,7 @@ const RemainderFilterForm = enhance((props) => {
                         <Field
                             className={classes.inputFieldCustom}
                             name="stock"
-                            component={StockSearchField}
+                            component={StockMultiSearchField}
                             label="Склад"
                             fullWidth={true}/>
                         <Field
@@ -188,14 +193,14 @@ const RemainderFilterForm = enhance((props) => {
                             <Field
                                 className={classes.inputFieldCustom}
                                 name="measurement"
-                                component={MeasurementSearchField}
+                                component={MeasurementMultiSearchField}
                                 label="Мера"/>
                         </div>
                         <div>
                             <Field
                                 className={classes.inputFieldCustom}
                                 name="brand"
-                                component={BrandSearchField}
+                                component={BrandMultiSearchField}
                                 label="Бренд"/>
                         </div>
                     </div>

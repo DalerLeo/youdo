@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import sprintf from 'sprintf'
 import React from 'react'
 import SearchField from './Basic/MultiSelectField'
 import axios from '../../helpers/axios'
@@ -13,8 +12,8 @@ const getOptions = (search) => {
         })
 }
 
-const getItem = (id) => {
-    return axios().get(sprintf(PATH.SHIFT_ITEM, id))
+const getIdsOption = (ids) => {
+    return axios().get(`${PATH.CONTENT_TYPE_SEARCH}?ids=${ids || ''}`)
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data))
         })
@@ -34,7 +33,7 @@ const StockHistoryTypeSearchField = (props) => {
             getValue={SearchField.defaultGetValue('id')}
             getText={getRussianText}
             getOptions={getOptions}
-            getItem={getItem}
+            getIdsOption={getIdsOption}
             getItemText={getRussianText}
             {...props}
         />

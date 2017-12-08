@@ -11,8 +11,8 @@ import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import {
-    BrandSearchField,
-    MeasurementSearchField,
+    MeasurementMultiSearchField,
+    BrandMultiSearchField,
     ProductTypeChildSearchField,
     ProductTypeParentSearchField
 } from '../ReduxForm'
@@ -185,14 +185,14 @@ const ProductFilterForm = enhance((props) => {
                         <Field
                             className={classes.inputFieldCustom}
                             name="measurement"
-                            component={MeasurementSearchField}
+                            component={MeasurementMultiSearchField}
                             label="Мера"/>
                     </div>
                     <div>
                         <Field
                             className={classes.inputFieldCustom}
                             name="brand"
-                            component={BrandSearchField}
+                            component={BrandMultiSearchField}
                             label="Бренд"/>
                     </div>
                     <RaisedButton

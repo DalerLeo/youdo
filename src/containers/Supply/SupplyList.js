@@ -9,6 +9,7 @@ import Layout from '../../components/Layout'
 import * as ROUTER from '../../constants/routes'
 import * as SUPPLY_TAB from '../../constants/supplyTab'
 import filterHelper from '../../helpers/filter'
+import {splitToArray, joinArray} from '../../helpers/joinSplitValues'
 import toBoolean from '../../helpers/toBoolean'
 import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
 import {DELETE_DIALOG_OPEN} from '../../components/DeleteDialog'
@@ -271,19 +272,19 @@ const enhance = compose(
             const deliveryToDate = _.get(filterForm, ['values', 'dateDelivery', 'toDate']) || null
             const createdFromDate = _.get(filterForm, ['values', 'dateCreated', 'fromDate']) || null
             const createdToDate = _.get(filterForm, ['values', 'dateCreated', 'toDate']) || null
-            const provider = _.get(filterForm, ['values', 'provider', 'value']) || null
-            const product = _.get(filterForm, ['values', 'product', 'value']) || null
-            const stock = _.get(filterForm, ['values', 'stock', 'value']) || null
-            const status = _.get(filterForm, ['values', 'status', 'value']) || null
+            const provider = _.get(filterForm, ['values', 'provider']) || null
+            const product = _.get(filterForm, ['values', 'product']) || null
+            const stock = _.get(filterForm, ['values', 'stock']) || null
+            const status = _.get(filterForm, ['values', 'status']) || null
             const paymentType = _.get(filterForm, ['values', 'paymentType', 'value']) || null
             const contract = _.get(filterForm, ['values', 'contract']) || null
 
             filter.filterBy({
                 [SUPPLY_FILTER_OPEN]: false,
-                [SUPPLY_FILTER_KEY.PROVIDER]: _.join(provider, '-'),
-                [SUPPLY_FILTER_KEY.PRODUCT]: _.join(product, '-'),
-                [SUPPLY_FILTER_KEY.STOCK]: _.join(stock, '-'),
-                [SUPPLY_FILTER_KEY.STATUS]: status,
+                [SUPPLY_FILTER_KEY.PROVIDER]: joinArray(provider),
+                [SUPPLY_FILTER_KEY.PRODUCT]: joinArray(product),
+                [SUPPLY_FILTER_KEY.STOCK]: joinArray(stock),
+                [SUPPLY_FILTER_KEY.STATUS]: joinArray(status),
                 [SUPPLY_FILTER_KEY.PAYMENT_TYPE]: paymentType,
                 [SUPPLY_FILTER_KEY.CONTRACT]: contract,
                 [SUPPLY_FILTER_KEY.DELIVERY_FROM_DATE]: deliveryFromDate && deliveryFromDate.format('YYYY-MM-DD'),
@@ -570,10 +571,11 @@ const SupplyList = enhance((props) => {
     const openDefectDialog = _.toInteger(_.get(location, ['query', 'openDefectDialog']) || MINUS_ONE) > MINUS_ONE
     const openUpdateDialog = toBoolean(_.get(location, ['query', SUPPLY_UPDATE_DIALOG_OPEN]))
     const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
-    const provider = _.toInteger(filter.getParam(SUPPLY_FILTER_KEY.PROVIDER))
-    const stock = _.toInteger(filter.getParam(SUPPLY_FILTER_KEY.STOCK))
-    const product = _.toInteger(filter.getParam(SUPPLY_FILTER_KEY.PRODUCT))
-    const status = _.toInteger(filter.getParam(SUPPLY_FILTER_KEY.STATUS))
+    const provider = (filter.getParam(SUPPLY_FILTER_KEY.PROVIDER))
+    const stock = (filter.getParam(SUPPLY_FILTER_KEY.STOCK))
+    const product = (filter.getParam(SUPPLY_FILTER_KEY.PRODUCT))
+    const status = (filter.getParam(SUPPLY_FILTER_KEY.STATUS))
+    const paymentType = (filter.getParam(SUPPLY_FILTER_KEY.PAYMENT_TYPE))
     const contract = filter.getParam(SUPPLY_FILTER_KEY.CONTRACT)
     const deliveryFromDate = filter.getParam(SUPPLY_FILTER_KEY.DELIVERY_FROM_DATE)
     const deliveryToDate = filter.getParam(SUPPLY_FILTER_KEY.DELIVERY_TO_DATE)
@@ -692,18 +694,10 @@ const SupplyList = enhance((props) => {
 
     const filterDialog = {
         initialValues: {
-            provider: provider && _.map(_.split(provider, '-'), (item) => {
-                return _.toNumber(item)
-            }),
-            product: product && _.map(_.split(product, '-'), (item) => {
-                return _.toNumber(item)
-            }),
-            stock: stock && _.map(_.split(stock, '-'), (item) => {
-                return _.toNumber(item)
-            }),
-            status: {
-                value: status
-            },
+            provider: provider && splitToArray(provider),
+            product: product && splitToArray(product),
+            stock: stock && splitToArray(stock),
+            status: status && splitToArray(status),
             contract: contract,
             dateDelivery: {
                 fromDate: deliveryFromDate && moment(deliveryFromDate, 'YYYY-MM-DD'),
@@ -712,7 +706,8 @@ const SupplyList = enhance((props) => {
             dateCreated: {
                 fromDate: createdFromDate && moment(createdFromDate, 'YYYY-MM-DD'),
                 toDate: createdToDate && moment(createdToDate, 'YYYY-MM-DD')
-            }
+            },
+            paymentType: {value: paymentType}
         },
         filterLoading: false,
         openFilterDialog,

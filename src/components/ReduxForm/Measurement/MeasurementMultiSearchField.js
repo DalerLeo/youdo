@@ -1,4 +1,3 @@
-import sprintf from 'sprintf'
 import React from 'react'
 import MultiSelectField from '../Basic/MultiSelectField'
 import axios from '../../../helpers/axios'
@@ -12,10 +11,10 @@ const getOptions = (search) => {
         })
 }
 
-const getItem = (id) => {
-    return axios().get(sprintf(PATH.MEASUREMENT_ITEM, id))
+const getIdsOption = (ids) => {
+    return axios().get(`${PATH.MEASUREMENT_LIST}?ids=${ids || ''}`)
         .then(({data}) => {
-            return Promise.resolve(toCamelCase(data))
+            return Promise.resolve(toCamelCase(data.results))
         })
 }
 
@@ -25,7 +24,7 @@ const MeasurementMultiSearchField = (props) => {
             getValue={MultiSelectField.defaultGetValue('id')}
             getText={MultiSelectField.defaultGetText('name')}
             getOptions={getOptions}
-            getItem={getItem}
+            getIdsOption={getIdsOption}
             getItemText={MultiSelectField.defaultGetText('name')}
             {...props}
         />

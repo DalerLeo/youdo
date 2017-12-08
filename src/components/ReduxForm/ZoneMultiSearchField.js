@@ -1,4 +1,3 @@
-import sprintf from 'sprintf'
 import _ from 'lodash'
 import React from 'react'
 import SearchField from './Basic/MultiSelectField'
@@ -13,10 +12,10 @@ const getOptions = (search) => {
         })
 }
 
-const getItem = (id) => {
-    return axios().get(sprintf(PATH.ZONE_ITEM, id))
+const getIdsOption = (ids) => {
+    return axios().get(`${PATH.ZONE_LIST}?ids=${ids || ''}`)
         .then(({data}) => {
-            return Promise.resolve(toCamelCase(data))
+            return Promise.resolve(toCamelCase(data.results))
         })
 }
 
@@ -29,7 +28,7 @@ const ZoneSearchField = (props) => {
             getValue={SearchField.defaultGetValue('id')}
             getText={SearchField.defaultGetText('title')}
             getOptions={getOptions}
-            getItem={getItem}
+            getIdsOption={getIdsOption}
             getItemText={itemText}
             {...props}
         />

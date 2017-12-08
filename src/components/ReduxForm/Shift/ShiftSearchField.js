@@ -1,25 +1,25 @@
 import sprintf from 'sprintf'
 import React from 'react'
-import SearchField from './Basic/MultiSelectField'
-import axios from '../../helpers/axios'
-import * as PATH from '../../constants/api'
-import toCamelCase from '../../helpers/toCamelCase'
+import SearchField from '../Basic/SearchField'
+import axios from '../../../helpers/axios'
+import * as PATH from '../../../constants/api'
+import toCamelCase from '../../../helpers/toCamelCase'
 
 const getOptions = (search) => {
-    return axios().get(`${PATH.BRAND_LIST}?search=${search || ''}&page_size=100`)
+    return axios().get(`${PATH.SHIFT_LIST}?search=${search || ''}`)
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
         })
 }
 
 const getItem = (id) => {
-    return axios().get(sprintf(PATH.BRAND_ITEM, id))
+    return axios().get(sprintf(PATH.SHIFT_ITEM, id))
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data))
         })
 }
 
-const BrandSearchField = (props) => {
+const ShiftSearchField = (props) => {
     return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
@@ -32,4 +32,4 @@ const BrandSearchField = (props) => {
     )
 }
 
-export default BrandSearchField
+export default ShiftSearchField

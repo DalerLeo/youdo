@@ -8,6 +8,7 @@ import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
+import {splitToArray, joinArray} from '../../helpers/joinSplitValues'
 import toBoolean from '../../helpers/toBoolean'
 import getDocuments from '../../helpers/getDocument'
 import {
@@ -124,13 +125,13 @@ const enhance = compose(
             const {filter, filterForm} = props
             const paymentType = _.get(filterForm, ['values', 'paymentType', 'value']) || null
             const balanceType = _.get(filterForm, ['values', 'balanceType', 'value']) || null
-            const division = _.get(filterForm, ['values', 'division', 'value']) || null
+            const division = _.get(filterForm, ['values', 'division']) || null
 
             filter.filterBy({
                 [CLIENT_BALANCE_FILTER_OPEN]: false,
                 [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: paymentType,
                 [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: balanceType,
-                [CLIENT_BALANCE_FILTER_KEY.DIVISION]: division
+                [CLIENT_BALANCE_FILTER_KEY.DIVISION]: joinArray(division)
             })
         },
 
@@ -353,9 +354,7 @@ const ClientBalanceList = enhance((props) => {
             balanceType: {
                 value: balanceType
             },
-            division: divisionValue && _.map(_.split(divisionValue, '-'), (item) => {
-                return _.toNumber(item)
-            })
+            division: divisionValue && splitToArray(divisionValue)
         },
         filterLoading: false,
         openFilterDialog,
