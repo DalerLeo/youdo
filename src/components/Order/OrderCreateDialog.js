@@ -29,6 +29,7 @@ import checkPermission from '../../helpers/checkPermission'
 import OrderDealTypeRadio from '../ReduxForm/Order/OrderDealTypeRadio'
 import OrderPaymentTypeRadio from '../ReduxForm/Order/OrderPaymentTypeRadio'
 import MarketSearchField from '../ReduxForm/ClientBalance/MarketSearchField'
+import CheckBox from '../ReduxForm/Basic/CheckBox'
 
 export const ORDER_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const SHOP_CREATE_DIALOG_OPEN = 'openCreateDialog'
@@ -408,6 +409,13 @@ const OrderCreateDialog = enhance((props) => {
                                             floatingLabelText="Дата доставки"
                                             container="inline"
                                             fullWidth={true}/>}
+                                        <Field
+                                            name="isConfirmed"
+                                            component={CheckBox}
+                                            className={classes.inputDateCustom}
+                                            label="Неподтвержденный"
+                                            container="inline"
+                                            fullWidth={true}/>
                                     </div>
                                 </div>
                                 <div className={classes.rightOrderPart}>

@@ -144,7 +144,7 @@ export const MenuItems = [
         url: ROUTES.USERS_LIST_URL,
         bottom: true,
         childs: [
-            {section: SETTINGS_STAFF, name: 'Пользователи', url: ROUTES.USERS_LIST_URL, permission: 'frontend_settings_users'},
+            {section: SETTINGS_STAFF, name: 'Сотрудник', url: ROUTES.USERS_LIST_URL, permission: 'frontend_settings_users'},
             {section: SETTINGS_STAFF, name: 'Смена', url: ROUTES.SHIFT_LIST_URL, permission: 'frontend_settings_shift'},
             {section: SETTINGS_STAFF, name: 'Должность ', url: ROUTES.POST_LIST_URL, permission: 'frontend_settings_post'},
             {section: SETTINGS_STAFF, name: 'Права доступа', url: ROUTES.POSITION_LIST_URL, permission: 'frontend_settings_position'},

@@ -18,6 +18,7 @@ import UsersCreateDialog from './UsersCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SettingSideMenu from '../Settings/SettingsSideMenu'
 import Tooltip from '../ToolTip'
+import toBoolean from '../../helpers/toBoolean'
 
 const listHeader = [
     {
@@ -29,7 +30,7 @@ const listHeader = [
     {
         sorting: false,
         name: 'username',
-        title: 'Пользователь',
+        title: 'Сотрудник',
         xs: 2
     },
     {
@@ -164,13 +165,13 @@ const UsersGridList = enhance((props) => {
     )
     const usersList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const username = _.get(item, 'username')
+        const isActive = toBoolean(_.get(item, 'isActive'))
+        const username = isActive ? _.get(item, 'username') : 'Не указано'
         const firstName = _.get(item, 'firstName')
         const secondName = _.get(item, 'secondName')
         const phoneNumber = _.get(item, 'phoneNumber') || 'N/A'
         const job = _.get(item, ['job', 'name']) || 'N/A'
         const position = _.get(item, ['position', 'name']) || 'Не выбрано'
-        const isActive = _.get(item, 'isActive')
         return (
             <Row key={id} className={classes.listRow}>
                 <Col xs={1}>{id}</Col>
