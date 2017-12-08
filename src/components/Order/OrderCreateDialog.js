@@ -32,6 +32,7 @@ import MarketSearchField from '../ReduxForm/ClientBalance/MarketSearchField'
 
 export const ORDER_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const SHOP_CREATE_DIALOG_OPEN = 'openCreateDialog'
+const CLIENT_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -255,7 +256,8 @@ const OrderCreateDialog = enhance((props) => {
         isSuperUser,
         editProductsLoading,
         handleOpenAddProduct,
-        deliveryType
+        deliveryType,
+        hasMarket
     } = props
     const canSetDeliveryMan = checkPermission('can_set_delivery_man')
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
@@ -302,15 +304,24 @@ const OrderCreateDialog = enhance((props) => {
                             <div style={{minHeight: '470px'}} className={classes.inContent}>
                                 <div className={classes.leftOrderPart}>
                                     <div className={classes.subTitleOrder}>
-                                        <span>Выбор магазина</span>
-                                        <Link style={{color: '#12aaeb'}}
+                                        {hasMarket && <span>Выбор магазина</span>}
+                                        {!hasMarket && <span>Выбор клиента</span>}
+                                        {hasMarket && <Link style={{color: '#12aaeb'}}
                                               target="_blank"
                                               to={{
                                                   pathname: [ROUTES.SHOP_LIST_URL],
                                                   query: {[SHOP_CREATE_DIALOG_OPEN]: true}
                                               }}>
                                             + добавить
-                                        </Link>
+                                        </Link>}
+                                        {!hasMarket && <Link style={{color: '#12aaeb'}}
+                                                            target="_blank"
+                                                            to={{
+                                                                pathname: [ROUTES.CLIENT_LIST_URL],
+                                                                query: {[CLIENT_CREATE_DIALOG_OPEN]: true}
+                                                            }}>
+                                            + добавить
+                                        </Link>}
                                     </div>
                                     <div>
                                         <Field
@@ -319,13 +330,13 @@ const OrderCreateDialog = enhance((props) => {
                                             className={classes.inputFieldCustom}
                                             label="Клиент"
                                             fullWidth={true}/>
-                                        <Field
+                                        {hasMarket && <Field
                                             name="market"
                                             component={MarketSearchField}
                                             className={classes.inputFieldCustom}
                                             label="Название магазина"
                                             clientId={clientId}
-                                            fullWidth={true}/>
+                                            fullWidth={true}/>}
                                     </div>
 
                                     {notEnough && <div className={classes.notEnough}>Недостаточно товаров на складе</div>}

@@ -116,7 +116,8 @@ const JoinGridList = enhance((props) => {
         marketsData,
         clientsData,
         joinMarketDialog,
-        joinClientDialog
+        joinClientDialog,
+        hasMarket
     } = props
     const tab = _.get(tabData, 'tab')
     const tabList = (
@@ -127,10 +128,10 @@ const JoinGridList = enhance((props) => {
                 value={tab}
                 className={classes.tabs}
                 onChange={(value) => tabData.handleTabChange(value)}>
-                <Tab label="Магазины" value={TAB.JOIN_TAB_MARKETS}/>
+                {hasMarket && <Tab label="Магазины" value={TAB.JOIN_TAB_MARKETS}/>}
                 <Tab label="Клиенты" value={TAB.JOIN_TAB_CLIENTS}/>
             </Tabs>
-            {TAB.JOIN_TAB_MARKETS === tab &&
+            {TAB.JOIN_TAB_MARKETS === tab && hasMarket &&
             <TabMarkets
                 filter={marketFilter}
                 listData={marketsData}

@@ -1,21 +1,22 @@
 import React from 'react'
 import _ from 'lodash'
 import {connect} from 'react-redux'
+import {reset} from 'redux-form'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
-import filterHelper from '../../helpers/filter'
-import * as JOIN_TAB from '../../constants/joinTab'
-import toBoolean from '../../helpers/toBoolean'
 import {
-    JoinGridList,
-    TAB, JOIN_CLIENT, JOIN_MARKET
+JoinGridList,
+TAB, JOIN_CLIENT, JOIN_MARKET
 } from '../../components/Join'
 import {openSnackbarAction} from '../../actions/snackbar'
 import {shopDublicateListFetchAction, shopJoinListFetchAction} from '../../actions/shop'
 import {clientJoinListFetchAction, clientDublicateListFetchAction} from '../../actions/client'
 import {joinMarketsAction, joinClientsAction} from '../../actions/join'
-import {reset} from 'redux-form'
+import * as JOIN_TAB from '../../constants/joinTab'
+import filterHelper from '../../helpers/filter'
+import toBoolean from '../../helpers/toBoolean'
+import getConfig from '../../helpers/getConfig'
 
 const enhance = compose(
     connect((state, props) => {
@@ -33,7 +34,7 @@ const enhance = compose(
         const createForm = _.get(state, ['form', 'JoinForm'])
         const marketFilter = filterHelper(marketsList, pathname, query)
         const clientFilter = filterHelper(clientsList, pathname, query)
-
+        const hasMarket = toBoolean(getConfig('MARKETS_MODULE'))
         return {
             marketsList,
             marketsListLoading,
@@ -47,7 +48,8 @@ const enhance = compose(
             joinLoading,
             marketFilter,
             clientFilter,
-            createForm
+            createForm,
+            hasMarket
         }
     }),
 
@@ -153,7 +155,8 @@ const JoinList = enhance((props) => {
         clientsItemLoading,
         joinLoading,
         location,
-        layout
+        layout,
+        hasMarket
     } =
     props
 
@@ -237,6 +240,7 @@ const JoinList = enhance((props) => {
                 clientsData={clientsData}
                 joinMarketDialog={joinMarketDialog}
                 joinClientDialog={joinClientDialog}
+                hasMarket={hasMarket}
             />
         </Layout>
     )

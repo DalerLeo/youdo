@@ -137,7 +137,7 @@ const enhance = compose(
 )
 
 const OrderPrint = enhance((props) => {
-    const {classes, printDialog, listPrintData} = props
+    const {classes, printDialog, listPrintData, hasMarket} = props
     const loading = _.get(listPrintData, 'listPrintLoading')
     let formattedAmount = true
     if (loading) {
@@ -178,7 +178,7 @@ const OrderPrint = enhance((props) => {
                         <div className={classes.info}>
                             <div className={classes.block}>
                                 <ul>
-                                    <li>Название магазина:</li>
+                                    {hasMarket && <li>Название магазина:</li>}
                                     <li>Адрес:</li>
                                     <li>Ориентир:</li>
                                     <li>Телефон:</li>
@@ -186,7 +186,7 @@ const OrderPrint = enhance((props) => {
                                     <li>Доставщик:</li>
                                 </ul>
                                 <ul>
-                                    <li>{marketName}</li>
+                                    {hasMarket && <li>{marketName}</li>}
                                     <li>{marketAddress}</li>
                                     <li>{marketGuide}</li>
                                     <li>{marketPhone}</li>

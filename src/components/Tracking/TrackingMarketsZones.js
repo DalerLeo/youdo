@@ -111,7 +111,8 @@ const TrackingMarketsZones = enhance((props) => {
         openCheck,
         setOpenCheck,
         openDetail,
-        openAgentsInfo
+        openAgentsInfo,
+        hasMarket
     } = props
 
     const styles = {
@@ -159,7 +160,7 @@ const TrackingMarketsZones = enhance((props) => {
             <div className={classes.content}>
                 <div className={classes.filter}>
                     <form>
-                        <MUICheckbox
+                        {hasMarket && <MUICheckbox
                             label="Магазины"
                             className={classes.checkBox}
                             style={checkboxStyle}
@@ -167,7 +168,7 @@ const TrackingMarketsZones = enhance((props) => {
                             labelStyle={{lineHeight: '20px', left: '-10px'}}
                             checked={showMarkets}
                             onCheck={props.marketCheck}
-                        />
+                        />}
 
                         <MUICheckbox
                             label="Зоны"

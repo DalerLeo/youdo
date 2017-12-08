@@ -52,6 +52,7 @@ import {
 } from '../../actions/expensiveCategory'
 import {openSnackbarAction} from '../../actions/snackbar'
 import {openErrorAction} from '../../actions/error'
+import getConfig from '../../helpers/getConfig'
 
 const ZERO = 0
 const DELETE_TRANSACTION = 'deleteTransaction'
@@ -91,6 +92,8 @@ const enhance = compose(
 
         const usersList = _.get(state, ['users', 'list', 'data'])
         const usersListLoading = _.get(state, ['users', 'list', 'loading'])
+
+        const hasMarket = toBoolean(getConfig('MARKETS_MODULE'))
         const optionsList = _.get(state, ['expensiveCategory', 'options', 'data'])
         const optionsListLoading = _.get(state, ['expensiveCategory', 'options', 'loading'])
         return {
@@ -123,6 +126,7 @@ const enhance = compose(
             convertAmount,
             usersList,
             usersListLoading,
+            hasMarket,
             optionsList,
             optionsListLoading
         }
@@ -650,7 +654,8 @@ const TransactionList = enhance((props) => {
         isSuperUser,
         openStaff,
         usersList,
-        usersListLoading
+        usersListLoading,
+        hasMarket
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', TRANSACTION_FILTER_OPEN]))
@@ -913,6 +918,7 @@ const TransactionList = enhance((props) => {
                 hasRightCashbox={hasRightCashbox}
                 updateTransactionDialog={updateTransactionDialog}
                 usersData={usersData}
+                hasMarket={hasMarket}
             />
         </Layout>
     )

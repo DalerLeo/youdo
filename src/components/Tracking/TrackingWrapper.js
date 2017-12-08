@@ -255,7 +255,8 @@ const TrackingWrapper = enhance((props) => {
         searchQuery,
         setSearchQuery,
         openAgentsInfo,
-        toggleAgentsInfo
+        toggleAgentsInfo,
+        hasMarket
     } = props
 
     const listLoading = _.get(listData, 'listLoading')
@@ -484,7 +485,8 @@ const TrackingWrapper = enhance((props) => {
                 filterForm={filterForm}
                 agentId={agentId}
                 openAgentsInfo={openAgentsInfo}
-                openDetail={openDetail}/>
+                openDetail={openDetail}
+                hasMarket={hasMarket}/>
             <TrackingTime
                 openAgentsInfo={openAgentsInfo}
                 sliderValue={sliderValue}

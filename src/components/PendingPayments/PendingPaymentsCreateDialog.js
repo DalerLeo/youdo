@@ -107,7 +107,7 @@ const enhance = compose(
 )
 
 const PendingPaymentsCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, detailData, classes, currencyRate, convert, amountValue, customRate, currency} = props
+    const {open, loading, handleSubmit, onClose, detailData, classes, currencyRate, convert, amountValue, customRate, currency, hasMarket} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const ZERO = 0
     const id = _.get(detailData, 'id')
@@ -147,7 +147,7 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                             <div className={classes.info}>
                                 <div className={classes.infoHeader}>
                                     <div><span className={classes.infoSummary}>Клиент:</span> {clientName}</div>
-                                    <div><span className={classes.infoSummary}>Магазин:</span> {marketName}</div>
+                                    {hasMarket && <div><span className={classes.infoSummary}>Магазин:</span> {marketName}</div>}
                                     <div><span className={classes.infoSummary}>Заказ №:</span> {id}</div>
                                 </div>
                                 <div className={classes.infoHeader}>

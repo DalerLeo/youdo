@@ -250,7 +250,7 @@ const customContentStyle = {
     maxWidth: 'none'
 }
 const ReturnCreateDialog = enhance((props) => {
-    const {open, handleSubmit, onClose, classes, clientId, isUpdate, name, editOnlyCost, totalCost, initialValues, currency} = props
+    const {open, handleSubmit, onClose, classes, clientId, isUpdate, name, editOnlyCost, totalCost, initialValues, currency, hasMarket} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     return (
         <Dialog
@@ -284,7 +284,7 @@ const ReturnCreateDialog = enhance((props) => {
                                         label="Клиент"
                                         fullWidth={true}/>
                                 </div>
-                                <div className={classes.condition}>
+                                {hasMarket && <div className={classes.condition}>
                                     <Field
                                         name="market"
                                         style={{lineHeight: '20px', fontSize: '13px'}}
@@ -295,7 +295,7 @@ const ReturnCreateDialog = enhance((props) => {
                                         initialVal={_.get(initialValues, ['market', 'value'])}
                                         disabled={!clientId}
                                         fullWidth={true}/>
-                                </div>
+                                </div>}
                                 <div className={classes.condition}>
                                     <Field
                                         name="stock"
