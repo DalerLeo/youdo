@@ -84,7 +84,7 @@ const enhance = compose(
     }),
 
     withHandlers({
-        handleActionEdit: props => () => {
+        handleActionEdit: () => {
             return null
         },
 
@@ -194,8 +194,6 @@ const ExpensiveCategoryList = enhance((props) => {
         })(),
         createLoading,
         openCreateDialog,
-        optionsList,
-        optionsListLoading,
         handleOpenCreateDialog: props.handleOpenCreateDialog,
         handleCloseCreateDialog: props.handleCloseCreateDialog,
         handleSubmitCreateDialog: props.handleSubmitCreateDialog
@@ -211,10 +209,9 @@ const ExpensiveCategoryList = enhance((props) => {
 
     const updateDialog = {
         initialValues: (() => {
-            let option = []
-            const options = _.get(detail, 'options')
-            _.each(options, (item) => {
-                option[item.id] = true
+            const options = []
+            _.each(_.get(detail, 'options'), (item) => {
+                options[item] = true
             })
             if (!detail || openCreateDialog) {
                 return {}
@@ -234,7 +231,9 @@ const ExpensiveCategoryList = enhance((props) => {
 
     const listData = {
         data: _.get(list, 'results'),
-        listLoading
+        options: _.get(optionsList, 'results'),
+        listLoading,
+        optionsListLoading
     }
 
     const detailData = {

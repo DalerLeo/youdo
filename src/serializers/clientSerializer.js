@@ -9,7 +9,6 @@ export const createSerializer = (data) => {
         .filter((item) => {
             return !_.isEmpty(item)
         })
-
     return {
         name,
         address,

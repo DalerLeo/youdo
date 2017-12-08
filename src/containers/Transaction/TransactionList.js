@@ -6,7 +6,7 @@ import {reset, change} from 'redux-form'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
-import {compose, withPropsOnChange, withHandlers} from 'recompose'
+import {compose, withPropsOnChange, withHandlers, withState} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
@@ -47,12 +47,14 @@ import {
 import {
     cashboxListFetchAction
 } from '../../actions/cashbox'
+import {
+    optionsListFetchAction
+} from '../../actions/expensiveCategory'
 import {openSnackbarAction} from '../../actions/snackbar'
 import {openErrorAction} from '../../actions/error'
 import getConfig from '../../helpers/getConfig'
 
 const ZERO = 0
-const ONE = 1
 const DELETE_TRANSACTION = 'deleteTransaction'
 const UPDATE_TRANSACTION = 'updateTransaction'
 const enhance = compose(
@@ -92,6 +94,8 @@ const enhance = compose(
         const usersListLoading = _.get(state, ['users', 'list', 'loading'])
 
         const hasMarket = toBoolean(getConfig('MARKETS_MODULE'))
+        const optionsList = _.get(state, ['expensiveCategory', 'options', 'data'])
+        const optionsListLoading = _.get(state, ['expensiveCategory', 'options', 'loading'])
         return {
             list,
             query,
@@ -122,7 +126,9 @@ const enhance = compose(
             convertAmount,
             usersList,
             usersListLoading,
-            hasMarket
+            hasMarket,
+            optionsList,
+            optionsListLoading
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -131,15 +137,24 @@ const enhance = compose(
         dispatch(cashboxListFetchAction(filterCashbox))
     }),
 
+    withState('openStaff', 'setOpenStaff', false),
     withPropsOnChange((props, nextProps) => {
         const prevExpenseCat = _.get(props, ['createForm', 'values', 'expanseCategory', 'value'])
         const nextExpenseCat = _.get(nextProps, ['createForm', 'values', 'expanseCategory', 'value'])
-        return prevExpenseCat !== nextExpenseCat && nextExpenseCat === ONE
-    }, ({dispatch, createForm}) => {
-        const expenseCat = _.get(createForm, ['values', 'expanseCategory', 'value'])
-        if (expenseCat === ONE) {
-            dispatch(usersListFetchAction())
-        }
+        return prevExpenseCat !== nextExpenseCat && nextExpenseCat
+    }, ({dispatch, createForm, optionsList, setOpenStaff}) => {
+        const expenseOptions = _.get(createForm, ['values', 'expanseCategory', 'value', 'options'])
+        dispatch(optionsListFetchAction())
+            .then(() => {
+                const options = _.get(optionsList, 'results')
+                const staffExpenseOptionId = _.get(_.find(options, {'keyName': 'staff_expanse'}), 'id')
+                if (_.includes(expenseOptions, staffExpenseOptionId)) {
+                    setOpenStaff(true)
+                    dispatch(usersListFetchAction())
+                } else {
+                    setOpenStaff(false)
+                }
+            })
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -637,6 +652,7 @@ const TransactionList = enhance((props) => {
         transactionInfoLoading,
         transactionInfo,
         isSuperUser,
+        openStaff,
         usersList,
         usersListLoading,
         hasMarket
@@ -872,6 +888,7 @@ const TransactionList = enhance((props) => {
     }
 
     const usersData = {
+        open: openStaff,
         data: _.get(usersList, 'results'),
         loading: usersListLoading
     }

@@ -72,19 +72,18 @@ export const createExpenseSerializer = (data, cashboxId) => {
         return _.toNumber(_.get(item, 'amount')) > ZERO
     })
     const comment = _.get(data, 'comment')
-    const showClients = _.get(data, 'showClients')
-    const objectId = _.get(data, ['expanseCategory', 'value'])
+    const expenseId = _.get(data, ['expanseCategory', 'value', 'id'])
     const clientId = _.get(data, ['client', 'value'])
     const customRate = numberWithoutSpaces(_.get(data, 'custom_rate'))
     const division = _.get(data, ['division', 'value'])
     const cashbox = _.get(data, ['cashbox', 'value'])
     const date = moment(_.get(data, 'date')).format('YYYY-MM-DD HH:00:00')
-    return (showClients)
+    return (clientId)
         ? {
             amount: amount,
             comment,
             'cashbox': _.toInteger(cashboxId) === ZERO ? cashbox : cashboxId,
-            'expanse_category': objectId,
+            'expanse_category': expenseId,
             'client': clientId,
             'custom_rate': customRate,
             'division': division,
@@ -95,7 +94,7 @@ export const createExpenseSerializer = (data, cashboxId) => {
             amount: amount,
             comment,
             'cashbox': _.toInteger(cashboxId) === ZERO ? cashbox : cashboxId,
-            'expanse_category': objectId,
+            'expanse_category': expenseId,
             'custom_rate': customRate,
             staffs
         }

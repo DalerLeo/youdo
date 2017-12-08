@@ -281,7 +281,7 @@ const PositionList = enhance((props) => {
     const updateDialog = {
         initialValues: (() => {
             const name = _.get(detail, 'name')
-            let group = []
+            const group = []
             const groups = _.get(detail, 'groups')
             _.each(groups, (item) => {
                 group[item.id] = true

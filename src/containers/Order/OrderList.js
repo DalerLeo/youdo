@@ -676,7 +676,7 @@ const enhance = compose(
                 const price = _.get(item, 'price')
                 if (amount) {
                     newProductsArray.push({
-                        amount: _.get(item, 'amount'),
+                        amount: numberWithoutSpaces(amount),
                         cost: numberWithoutSpaces(price),
                         customPrice: _.get(product, 'customPrice'),
                         price: _.get(item, 'price'),
@@ -827,7 +827,7 @@ const enhance = compose(
                 const price = _.get(item, 'price')
                 if (amount) {
                     newProductsArray.push({
-                        amount: _.get(item, 'amount'),
+                        amount: numberWithoutSpaces(amount),
                         cost: numberWithoutSpaces(price),
                         customPrice: _.get(product, 'customPrice'),
                         price: {
