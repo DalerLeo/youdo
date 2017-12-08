@@ -194,7 +194,8 @@ const ReturnDetails = enhance((props) => {
         handleCloseDetail,
         stat,
         isAdmin,
-        canChangeAnyReturn
+        canChangeAnyReturn,
+        hasMarket
     } = props
 
     const id = _.get(data, 'id')
@@ -287,7 +288,7 @@ const ReturnDetails = enhance((props) => {
                                     <span>Клиент:</span>
                                     <span>{client}</span>
                                 </li>}
-                                {market && <li>
+                                {market && hasMarket && <li>
                                     <span>Магазин:</span>
                                     <span>{_.get(market, 'name')}</span>
                                 </li>}

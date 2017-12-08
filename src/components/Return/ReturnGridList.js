@@ -129,7 +129,8 @@ const OrderGridList = enhance((props) => {
         cancelReturnDialog,
         createDialog,
         isAdmin,
-        canChangeAnyReturn
+        canChangeAnyReturn,
+        hasMarket
     } = props
 
     const showCheckboxes = toBoolean(_.get(filter.getParams(), 'showCheckboxes'))
@@ -137,7 +138,8 @@ const OrderGridList = enhance((props) => {
         <ReturnFilterForm
             initialValues={filterDialog.initialValues}
             filter={filter}
-            filterDialog={filterDialog}/>
+            filterDialog={filterDialog}
+            hasMarket={hasMarket}/>
     )
     const iconStyle = {
         icon: {
@@ -164,6 +166,7 @@ const OrderGridList = enhance((props) => {
             handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
             cancelReturnDialog={cancelReturnDialog}
             isAdmin={isAdmin}
+            hasMarket={hasMarket}
         />
     )
     const CLIENT_RETURN = 2
@@ -295,6 +298,7 @@ const OrderGridList = enhance((props) => {
                 open={_.get(createDialog, 'openCreateDialog')}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
+                hasMarket={hasMarket}
             />
             {(returnType === CLIENT_RETURN)
                 ? (isAdmin && <ReturnCreateDialog
@@ -306,6 +310,7 @@ const OrderGridList = enhance((props) => {
                     open={updateDialog.openUpdateDialog}
                     onClose={updateDialog.handleCloseUpdateDialog}
                     onSubmit={updateDialog.handleSubmitUpdateDialog}
+                    hasMarket={hasMarket}
                 />)
                 : (isAdmin && <ReturnUpdateDialog
                     isUpdate={true}

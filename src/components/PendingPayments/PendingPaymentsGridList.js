@@ -65,7 +65,50 @@ const listHeader = [
         xs: 1
     }
 ]
-
+const listHeaderHasMarket = [
+    {
+        sorting: true,
+        name: 'id',
+        title: '№ зак.',
+        xs: 1
+    },
+    {
+        sorting: false,
+        name: 'clientName',
+        title: 'Клиент',
+        xs: 3
+    },
+    {
+        sorting: true,
+        name: 'created_date',
+        title: 'Дата созд.',
+        xs: 2
+    },
+    {
+        sorting: false,
+        name: 'paymentType',
+        title: 'Тип опл.',
+        xs: 2
+    },
+    {
+        sorting: true,
+        name: 'total_price',
+        alignRight: true,
+        title: 'Сумма заказа',
+        xs: 2
+    },
+    {
+        sorting: true,
+        name: 'totalBalance',
+        alignRight: true,
+        title: 'Остаток',
+        xs: 1
+    },
+    {
+        sorting: false,
+        xs: 1
+    }
+]
 const enhance = compose(
     injectSheet({
         addButton: {
@@ -94,6 +137,9 @@ const iconStyle = {
         padding: 0
     }
 }
+const ONE = 1
+const TWO = 2
+const THREE = 3
 const PendingPaymentsGridList = enhance((props) => {
     const {
         filter,
@@ -101,13 +147,15 @@ const PendingPaymentsGridList = enhance((props) => {
         filterDialog,
         listData,
         detailData,
-        convert
+        convert,
+        hasMarket
     } = props
     const pendingPaymentsFilterDialog = (
         <PendingPaymentsFilterForm
             initialValues={filterDialog.initialValues}
             filter={filter}
             filterDialog={filterDialog}
+            hasMarket={hasMarket}
         />
     )
     const pendingPaymentsDetail = (
@@ -126,10 +174,10 @@ const PendingPaymentsGridList = enhance((props) => {
         return (
             <Row key={id}>
                 <Col xs={1}>{id}</Col>
-                <Col xs={2}>{clientName}</Col>
-                <Col xs={2}>{market}</Col>
+                <Col xs={hasMarket ? TWO : THREE}>{clientName}</Col>
+                {hasMarket && <Col xs={2}>{market}</Col>}
                 <Col xs={2}>{createdDate}</Col>
-                <Col xs={1}>{paymentType}</Col>
+                <Col xs={hasMarket ? ONE : TWO}>{paymentType}</Col>
                 <Col xs={2} style={{textAlign: 'right'}}>{totalPrice}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>{totalBalance}</Col>
                 <Col xs={1} style={{textAlign: 'right', padding: '0'}}>
@@ -148,7 +196,7 @@ const PendingPaymentsGridList = enhance((props) => {
     })
 
     const list = {
-        header: listHeader,
+        header: hasMarket ? listHeader : listHeaderHasMarket,
         list: pendingPaymentsList,
         loading: _.get(listData, 'listLoading')
     }
@@ -172,6 +220,7 @@ const PendingPaymentsGridList = enhance((props) => {
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
                 convert={convert}
+                hasMarket={hasMarket}
             />
         </Container>
     )

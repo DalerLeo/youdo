@@ -158,7 +158,7 @@ const enhance = compose(
 )
 
 const ReturnFilterForm = enhance((props) => {
-    const {classes, filterDialog, getCount, handleSubmit} = props
+    const {classes, filterDialog, getCount, handleSubmit, hasMarket} = props
     const filterCounts = getCount()
     const divisionStatus = getConfig('DIVISIONS')
 
@@ -208,7 +208,7 @@ const ReturnFilterForm = enhance((props) => {
                         <Field className={classes.inputFieldCustom} name="status" component={ReturnStatusMultiSearch} label="Статус"/>
                         <Field className={classes.inputFieldCustom} name="type" component={ReturnTypeSearchField} label="Тип"/>
                         <Field className={classes.inputFieldCustom} name="client" component={ClientMultiSearchField} label="Клиент"/>
-                        <Field className={classes.inputFieldCustom} name="market" component={MarketMultiSearchField} label="Магазин"/>
+                        {hasMarket && <Field className={classes.inputFieldCustom} name="market" component={MarketMultiSearchField} label="Магазин"/>}
                         <Field className={classes.inputFieldCustom} name="initiator" component={UsersMultiSearchField} label="Инициатор "/>
                         <Field className={classes.inputFieldCustom} name="code" component={TextField} label="Код"/>
                         <Field className={classes.inputDateCustom} name="data" component={DateToDateField} label="Период создания"/>

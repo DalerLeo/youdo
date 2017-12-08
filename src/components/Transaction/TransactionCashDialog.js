@@ -196,6 +196,9 @@ const iconStyle = {
     }
 }
 
+const ONE = 1
+const TWO = 2
+const THREE = 3
 const TransactionCashDialog = enhance((props) => {
     const {
         open,
@@ -208,8 +211,9 @@ const TransactionCashDialog = enhance((props) => {
         acceptCashDialog,
         superUser,
         setItem,
-        currentItem
-    } = props
+        currentItem,
+        hasMarket
+} = props
     const openEditDialog = (thisItem) => {
         superUser.handleOpenSuperUserDialog(thisItem.id)
         setItem(thisItem)
@@ -256,10 +260,10 @@ const TransactionCashDialog = enhance((props) => {
                 return (
                     <Row key={id} className={classes.detailsRow}>
                         <Col xs={1}>{id}</Col>
-                        <Col xs={2}>{clientName}</Col>
-                        <Col xs={2}>{marketName}</Col>
+                        <Col xs={hasMarket ? TWO : THREE}>{clientName}</Col>
+                        {hasMarket && <Col xs={2}>{marketName}</Col>}
                         <Col xs={2}>{division}</Col>
-                        <Col xs={1}>{order}</Col>
+                        <Col xs={hasMarket ? ONE : TWO}>{order}</Col>
                         <Col xs={1} style={{whiteSpace: 'nowrap'}}>{createdDate}</Col>
                         <Col xs={2} style={{textAlign: 'right', paddingRight: '0'}}>
                             <div>{numberFormat(amount, currency)}</div>
@@ -361,10 +365,10 @@ const TransactionCashDialog = enhance((props) => {
                                         <div>
                                             <Row className={classes.detailsRow}>
                                                 <Col xs={1}>№</Col>
-                                                <Col xs={2}>Клиент</Col>
-                                                <Col xs={2}>Магазин</Col>
+                                                <Col xs={hasMarket ? TWO : THREE}>Клиент</Col>
+                                                {hasMarket && <Col xs={2}>Магазин</Col>}
                                                 <Col xs={2}>Подразделение</Col>
-                                                <Col xs={1}>Заказ</Col>
+                                                <Col xs={hasMarket ? ONE : THREE}>Заказ</Col>
                                                 <Col xs={1}>Дата</Col>
                                                 <Col xs={2} style={{textAlign: 'right', paddingRight: '0'}}>Сумма</Col>
                                                 <Col xs={1}> </Col>

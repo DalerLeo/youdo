@@ -22,6 +22,7 @@ import {
     orderListPintFetchAction
 } from '../../actions/statSales'
 import {OrderPrint} from '../../components/Order'
+import getConfig from '../../helpers/getConfig'
 
 const ONE = 1
 const enhance = compose(
@@ -40,6 +41,7 @@ const enhance = compose(
         const listPrintLoading = _.get(state, ['order', 'listPrint', 'loading'])
         const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
         const filter = filterHelper(list, pathname, query)
+        const hasMarket = getConfig('MARKET_MODULE')
         return {
             query,
             list,
@@ -53,7 +55,8 @@ const enhance = compose(
             graphList,
             graphLoading,
             listPrint,
-            listPrintLoading
+            listPrintLoading,
+            hasMarket
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -180,7 +183,8 @@ const StatSalesList = enhance((props) => {
         listPrint,
         listPrintLoading,
         salesInfoDialog,
-        setSalesInfoDialog
+        setSalesInfoDialog,
+        hasMarket
     } = props
 
     const detailId = _.toInteger(_.get(params, 'statSaleId'))
@@ -328,6 +332,7 @@ const StatSalesList = enhance((props) => {
                 printDialog={printDialog}
                 salesInfoDialog={salesInfoDialog}
                 setSalesInfoDialog={setSalesInfoDialog}
+                hasMarket={hasMarket}
             />
         </Layout>
     )

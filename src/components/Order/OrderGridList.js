@@ -100,6 +100,51 @@ const listHeader = [
     }
 ]
 
+const listHeaderHasMarket = [
+    {
+        sorting: true,
+        name: 'id',
+        title: 'Заказ №',
+        width: '10%'
+    },
+    {
+        sorting: false,
+        name: 'client',
+        title: 'Клиент',
+        width: '25%'
+    },
+    {
+        sorting: false,
+        name: 'user',
+        title: 'Инициатор',
+        width: '15%'
+    },
+    {
+        sorting: true,
+        name: 'totalPrice',
+        alignRight: true,
+        title: 'Сумма заказа',
+        width: '15%'
+    },
+    {
+        sorting: true,
+        name: 'dateDelivery',
+        title: 'Дата доставки',
+        width: '15%'
+    },
+    {
+        sorting: true,
+        name: 'createdDate',
+        title: 'Дата создания',
+        width: '15%'
+    },
+    {
+        sorting: false,
+        title: 'Статус',
+        width: '5%'
+    }
+]
+
 const enhance = compose(
     injectSheet({
         addButtonWrapper: {
@@ -225,7 +270,8 @@ const OrderGridList = enhance((props) => {
         releaseDialog,
         addProductDialog,
         printSalesDialog,
-        printContractDialog
+        printContractDialog,
+        hasMarket
     } = props
 
     const showCheckboxes = toBoolean(_.get(filter.getParams(), 'showCheckboxes'))
@@ -239,7 +285,8 @@ const OrderGridList = enhance((props) => {
         <OrderFilterForm
             initialValues={filterDialog.initialValues}
             filter={filter}
-            filterDialog={filterDialog}/>
+            filterDialog={filterDialog}
+            hasMarket={hasMarket}/>
     )
 
     const orderDetail = (
@@ -268,6 +315,7 @@ const OrderGridList = enhance((props) => {
             clientId={clientId}
             isSuperUser={isSuperUser}
             handleOpenPrintContract={printContractDialog.handleOpenContractPrint}
+            hasMarket={hasMarket}
         />
     )
     const iconButton = (
@@ -307,9 +355,9 @@ const OrderGridList = enhance((props) => {
                 }}>
                 </Link>
                 <div style={{width: '10%'}}>{id}</div>
-                <div style={{width: '17.5%'}}>{client}</div>
-                <div style={{width: '17.5%'}}>{market}</div>
-                <div style={{width: '10%'}}>{user}</div>
+                <div style={hasMarket ? {width: '17.5%'} : {width: '25%'}}>{client}</div>
+                {hasMarket && <div style={{width: '17.5%'}}>{market}</div>}
+                <div style={hasMarket ? {width: '10%'} : {width: '15%'}}>{user}</div>
                 <div style={{width: '15%', textAlign: 'right'}}>{totalPrice}</div>
                 <div style={{width: '15%'}}>{dateDelivery}</div>
                 <div style={{width: '15%'}}>{createdDate}</div>
@@ -426,7 +474,7 @@ const OrderGridList = enhance((props) => {
     }
 
     const list = {
-        header: listHeader,
+        header: hasMarket ? listHeader : listHeaderHasMarket,
         list: orderList,
         loading: _.get(listData, 'listLoading') || orderCountsLoading
     }
@@ -545,6 +593,7 @@ const OrderGridList = enhance((props) => {
             />
 
             {createDialog.openCreateDialog && <OrderCreateDialog
+                hasMarket={true}
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
                 createClientDialog={createClientDialog}
@@ -561,6 +610,7 @@ const OrderGridList = enhance((props) => {
             />}
 
             {updateDialog.openUpdateDialog && <OrderCreateDialog
+                hasMarket={hasMarket}
                 isUpdate={true}
                 status={_.toInteger(_.get(detailData, ['data', 'status'])) || {}}
                 canChangeAnyPrice={canChangeAnyPrice}

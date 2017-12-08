@@ -24,6 +24,7 @@ import {
 
 import {openErrorAction} from '../../actions/error'
 import {openSnackbarAction} from '../../actions/snackbar'
+import getConfig from '../../helpers/getConfig'
 
 const enhance = compose(
     connect((state, props) => {
@@ -38,7 +39,7 @@ const enhance = compose(
         const createForm = _.get(state, ['form', 'PendingPaymentsCreateForm'])
         const convert = _.get(state, ['pendingPayments', 'convert'])
         const filter = filterHelper(list, pathname, query)
-
+        const hasMarket = getConfig('MARKET_MODULE')
         return {
             list,
             listLoading,
@@ -48,7 +49,8 @@ const enhance = compose(
             filter,
             filterForm,
             createForm,
-            convert
+            convert,
+            hasMarket
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -151,7 +153,8 @@ const PendingPaymentsList = enhance((props) => {
         filter,
         layout,
         convert,
-        params
+        params,
+        hasMarket
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', PENDING_PAYMENTS_FILTER_OPEN]))
@@ -224,6 +227,7 @@ const PendingPaymentsList = enhance((props) => {
                 updateDialog={updateDialog}
                 filterDialog={filterDialog}
                 convert={convert}
+                hasMarket={hasMarket}
             />
         </Layout>
     )

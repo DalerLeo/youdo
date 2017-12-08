@@ -202,7 +202,8 @@ const TransactionsList = enhance((props) => {
         listShadow,
         hasRightCashbox,
         updateTransactionDialog,
-        usersData
+        usersData,
+        hasMarket
     } = props
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const transactionFilterDialog = showOnlyList
@@ -474,12 +475,14 @@ const TransactionsList = enhance((props) => {
                     cashBoxDialog={cashBoxDialog}
                     acceptCashDialog={acceptCashDialog}
                     superUser={superUser}
-                />
+                    hasMarket={hasMarket}
+            />
                 <TransactionInfoDialog
                     open={transactionInfoDialog.open}
                     onClose={transactionInfoDialog.handleCloseDialog}
                     data={transactionInfoDialog.data}
                     loading={transactionInfoDialog.loading}
+                    hasMarket={hasMarket}
                 />
             </section>}
         </div>

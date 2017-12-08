@@ -49,6 +49,7 @@ import {
 } from '../../actions/cashbox'
 import {openSnackbarAction} from '../../actions/snackbar'
 import {openErrorAction} from '../../actions/error'
+import getConfig from '../../helpers/getConfig'
 
 const ZERO = 0
 const ONE = 1
@@ -89,6 +90,8 @@ const enhance = compose(
 
         const usersList = _.get(state, ['users', 'list', 'data'])
         const usersListLoading = _.get(state, ['users', 'list', 'loading'])
+
+        const hasMarket = getConfig('MARKET_MODULE')
         return {
             list,
             query,
@@ -118,7 +121,8 @@ const enhance = compose(
             cashbox,
             convertAmount,
             usersList,
-            usersListLoading
+            usersListLoading,
+            hasMarket
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -634,7 +638,8 @@ const TransactionList = enhance((props) => {
         transactionInfo,
         isSuperUser,
         usersList,
-        usersListLoading
+        usersListLoading,
+        hasMarket
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', TRANSACTION_FILTER_OPEN]))
@@ -896,6 +901,7 @@ const TransactionList = enhance((props) => {
                 hasRightCashbox={hasRightCashbox}
                 updateTransactionDialog={updateTransactionDialog}
                 usersData={usersData}
+                hasMarket={hasMarket}
             />
         </Layout>
     )

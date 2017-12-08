@@ -17,7 +17,7 @@ import {
 } from '../../actions/tracking'
 import {shopItemFetchAction} from '../../actions/shop'
 import {zoneListFetchAction} from '../../actions/zones'
-
+import getConfig from '../../helpers/getConfig'
 const TRACKING_FILTER_KEY = {
     DATE: 'date',
     SHOW_MARKETS: 'showMarkets',
@@ -48,6 +48,7 @@ const enhance = compose(
         const marketData = _.get(state, ['shop', 'item', 'data'])
         const marketDataLoading = _.get(state, ['shop', 'item', 'loading'])
         const selectedDate = _.get(query, DATE) || defaultDate
+        const hasMarket = getConfig('MARKET_MODULE')
 
         return {
             query,
@@ -66,7 +67,8 @@ const enhance = compose(
             isOpenMarkets,
             marketData,
             marketDataLoading,
-            selectedDate
+            selectedDate,
+            hasMarket
         }
     }),
 
@@ -212,7 +214,8 @@ const Tracking = enhance((props) => {
         marketData,
         marketDataLoading,
         selectedDate,
-        layout
+        layout,
+        hasMarket
     } = props
 
     const openDetail = !_.isEmpty(_.get(params, 'agentId'))
@@ -288,6 +291,7 @@ const Tracking = enhance((props) => {
                 handleOpenDetails={props.handleOpenDetails}
                 isOpenTrack={isOpenTrack}
                 isOpenMarkets={isOpenMarkets}
+                hasMarket={hasMarket}
             />
         </Layout>
     )

@@ -163,7 +163,7 @@ const enhance = compose(
 )
 
 const OrderFilterForm = enhance((props) => {
-    const {classes, filterDialog, getCount, handleSubmit} = props
+    const {classes, filterDialog, getCount, handleSubmit, hasMarket} = props
     const filterCounts = getCount()
     const divisionStatus = getConfig('DIVISIONS')
 
@@ -210,7 +210,7 @@ const OrderFilterForm = enhance((props) => {
                         <Field className={classes.inputFieldCustom} name="deliveryMan" component={DeliveryManMultiSearchField} label="Доставщик"/>
                         <Field className={classes.inputFieldCustom} name="product" component={ProductMultiSearchField} label="Товар"/>
                         <Field className={classes.inputFieldCustom} name="status" component={OrderStatusMultiSearchField} label="Статус"/>
-                        <Field className={classes.inputFieldCustom} name="shop" component={MarketMultiSearchField} label="Магазин"/>
+                        {hasMarket && <Field className={classes.inputFieldCustom} name="shop" component={MarketMultiSearchField} label="Магазин"/>}
                         {divisionStatus && <Field className={classes.inputFieldCustom} name="division" component={DivisionMultiSearchField} label="Подразделение"/>}
                         <Field className={classes.inputFieldCustom} name="initiator" component={UsersAgentMultiSearchField} label="Инициатор"/>
                         <Field className={classes.inputFieldCustom} name="dept" component={DeptSearchField} label="Статус оплаты"/>

@@ -13,6 +13,7 @@ import {openErrorAction} from '../../actions/error'
 import updateStore from '../../helpers/updateStore'
 import * as actionTypes from '../../constants/actionTypes'
 import checkPermission from '../../helpers/checkPermission'
+import getConfig from '../../helpers/getConfig'
 
 import {
     RETURN_FILTER_KEY,
@@ -54,6 +55,7 @@ const enhance = compose(
         const updateForm = _.get(state, ['form', 'OrderReturnForm'])
         const updateClientForm = _.get(state, ['form', 'ReturnCreateForm'])
         const isAdmin = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
+        const hasMarket = getConfig('MARKETS_MODULE')
         return {
             list,
             listLoading,
@@ -68,7 +70,8 @@ const enhance = compose(
             updateClientForm,
             isAdmin,
             createForm,
-            listInfo
+            listInfo,
+            hasMarket
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -328,7 +331,8 @@ const ReturnList = enhance((props) => {
         params,
         listPrint,
         listPrintLoading,
-        isAdmin
+        isAdmin,
+        hasMarket
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', RETURN_FILTER_OPEN]))
@@ -543,6 +547,7 @@ const ReturnList = enhance((props) => {
                 cancelReturnDialog={cancelReturnDialog}
                 isAdmin={isAdmin}
                 createDialog={createDialog}
+                hasMarket={hasMarket}
             />
         </Layout>
     )

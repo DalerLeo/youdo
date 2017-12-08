@@ -32,7 +32,22 @@ export const createSerializer = (data) => {
             product: _.get(item, ['product', 'value', 'id'])
         }
     })
-    const request = {
+    const request = deliveryType === 'self' ? {
+        client,
+        currency,
+        contract,
+        'payment_date': paymentDate,
+        'payment_type': paymentType,
+        'payment_term': paymentTerm,
+        'deal_type': dealType,
+        'delivery_type': deliveryType,
+        market,
+        user,
+        products,
+        'delivery_price': deliveryPrice,
+        'price_list': priceList === MINUS_ONE ? null : priceList,
+        'with_net_cost': priceList === MINUS_ONE ? ONE : false
+    } : {
         client,
         currency,
         contract,

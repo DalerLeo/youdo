@@ -250,6 +250,8 @@ const iconStyle = {
 }
 
 const ZERO = 0
+const TWO = 2
+const THREE = 3
 const StatSalesGridList = enhance((props) => {
     const {
         classes,
@@ -263,7 +265,8 @@ const StatSalesGridList = enhance((props) => {
         initialValues,
         printDialog,
         salesInfoDialog,
-        setSalesInfoDialog
+        setSalesInfoDialog,
+        hasMarket
     } = props
     const graphLoading = _.get(graphData, 'graphLoading')
     const divisionStatus = _.get('DIVISION')
@@ -295,9 +298,9 @@ const StatSalesGridList = enhance((props) => {
         <Row style={headerStyle} className="dottedList">
             <Col xs={1}>№ Сделки</Col>
             <Col xs={2}>Дата</Col>
-            <Col xs={2}>Магазин</Col>
-            <Col xs={2}>Агент</Col>
-            <Col xs={2}>Тип оплаты</Col>
+            {hasMarket && <Col xs={2}>Магазин</Col>}
+            <Col xs={hasMarket ? TWO : THREE}>Агент</Col>
+            <Col xs={hasMarket ? TWO : THREE}>Тип оплаты</Col>
             <Col xs={2} style={{justifyContent: 'flex-end'}}>Сумма</Col>
             <Col xs={1} style={{justifyContent: 'flex-end'}}>Cтатус</Col>
         </Row>
@@ -333,11 +336,11 @@ const StatSalesGridList = enhance((props) => {
                 <Row key={id} className="dottedList" style={status === CANCELED ? {color: '#999'} : {}}>
                     <Col xs={1}><a onClick={() => { statSaleDialog.handleOpenStatSaleDialog(id) }}>{id}</a></Col>
                     <Col xs={2}>{createdDate}</Col>
-                    <Col xs={2}>{marketName}</Col>
-                    <Col xs={2}>
+                    {hasMarket && <Col xs={2}>{marketName}</Col>}
+                    <Col xs={hasMarket ? TWO : THREE}>
                         <div>{firstName} {secondName}</div>
                     </Col>
-                    <Col xs={2}>{paymentType}</Col>
+                    <Col xs={hasMarket ? TWO : THREE}>{paymentType}</Col>
                     <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(totalPrice, currency)}</Col>
                     <Col xs={1} style={{justifyContent: 'flex-end'}}>
                         <div className={classes.buttons}>
@@ -425,7 +428,7 @@ const StatSalesGridList = enhance((props) => {
             <Field name="deliveryMan" className={classes.inputFieldCustom} component={DeliveryManMultiSearchField} label="Доставщик"/>
             <Field name="product" className={classes.inputFieldCustom} component={ProductSearchField} label="Товар"/>
             <Field name="status" className={classes.inputFieldCustom} component={OrderStatusSearchField} label="Статус"/>
-            <Field name="shop" className={classes.inputFieldCustom} component={MarketSearchField} label="Магазин"/>
+            {hasMarket && <Field name="shop" className={classes.inputFieldCustom} component={MarketSearchField} label="Магазин"/>}
             {divisionStatus && <Field name="division" className={classes.inputFieldCustom} component={DivisionSearchField} label="Подразделение"/>}
             <Field name="initiator" className={classes.inputFieldCustom} component={UsersMultiSearchField} label="Инициатор"/>
             <Field name="dept" className={classes.inputFieldCustom} component={DeptSearchField} label="Статус оплаты"/>

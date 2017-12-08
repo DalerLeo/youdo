@@ -219,7 +219,8 @@ const OrderDetails = enhance((props) => {
         setOpenDiscountDialog,
         handleSubmitDiscountDialog,
         handleSubmitSetZeroDiscountDialog,
-        handleOpenPrintContract
+        handleOpenPrintContract,
+        hasMarket
     } = props
     const id = _.get(data, 'id')
     const market = _.get(data, ['market', 'name'])
@@ -363,7 +364,7 @@ const OrderDetails = enhance((props) => {
                                     <span title={client}>{client}</span>
                                 </li>
 
-                                <li>
+                                {hasMarket && <li>
                                     <span>Магазин:</span>
                                     <span title={market}>
                                         <Link to={{
@@ -371,7 +372,7 @@ const OrderDetails = enhance((props) => {
                                             query: {search: market}
                                         }} target='_blank'>{market}</Link>
                                     </span>
-                                </li>
+                                </li>}
                                 <li>
                                     <span>Инициатор:</span>
                                     <span>{agent}</span>
