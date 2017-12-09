@@ -5,6 +5,7 @@ import {connect} from 'react-redux'
 import Layout from '../../components/Layout'
 import {compose, withHandlers, withPropsOnChange} from 'recompose'
 import filterHelper from '../../helpers/filter'
+import {splitToArray, joinArray} from '../../helpers/joinSplitValues'
 import getDocuments from '../../helpers/getDocument'
 import * as serializers from '../../serializers/Statistics/statClientIncomeSerializer'
 import * as API from '../../constants/api'
@@ -66,16 +67,16 @@ const enhance = compose(
             const {filter, filterForm} = props
             const search = _.get(filterForm, ['values', 'search']) || null
             const division = _.get(filterForm, ['values', 'division']) || null
-            const type = _.get(filterForm, ['values', 'type', 'value']) || null
+            const type = _.get(filterForm, ['values', 'type']) || null
             const client = _.get(filterForm, ['values', 'client']) || null
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
 
             filter.filterBy({
                 [CLIENT_INCOME_FILTER_KEY.SEARCH]: search,
-                [CLIENT_INCOME_FILTER_KEY.TYPE]: type,
-                [CLIENT_INCOME_FILTER_KEY.DIVISION]: _.join(division, '-'),
-                [CLIENT_INCOME_FILTER_KEY.CLIENT]: _.join(client, '-'),
+                [CLIENT_INCOME_FILTER_KEY.TYPE]: joinArray(type),
+                [CLIENT_INCOME_FILTER_KEY.DIVISION]: joinArray(division),
+                [CLIENT_INCOME_FILTER_KEY.CLIENT]: joinArray(client),
                 [CLIENT_INCOME_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [CLIENT_INCOME_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
 
@@ -106,9 +107,9 @@ const ClientIncomeList = enhance((props) => {
     const firstDayOfMonth = _.get(location, ['query', 'fromDate']) || moment().format('YYYY-MM-01')
     const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
     const search = !_.isNull(_.get(location, ['query', 'search'])) ? _.get(location, ['query', 'search']) : null
-    const division = !_.isNull(_.get(location, ['query', 'division'])) && _.toInteger(_.get(location, ['query', 'division']))
-    const type = !_.isNull(_.get(location, ['query', 'type'])) && _.toInteger(_.get(location, ['query', 'type']))
-    const client = !_.isNull(_.get(location, ['query', 'client'])) && _.toInteger(_.get(location, ['query', 'client']))
+    const division = !_.isNull(_.get(location, ['query', 'division'])) && _.get(location, ['query', 'division'])
+    const type = !_.isNull(_.get(location, ['query', 'type'])) && _.get(location, ['query', 'type'])
+    const client = !_.isNull(_.get(location, ['query', 'client'])) && _.get(location, ['query', 'client'])
 
     let mergedGraph = {}
 
@@ -142,15 +143,9 @@ const ClientIncomeList = enhance((props) => {
                 toDate: moment(lastDayOfMonth)
             },
             search: search,
-            division: division && _.map(_.split(division, '-'), (item) => {
-                return _.toNumber(item)
-            }),
-            client: client && _.map(_.split(client, '-'), (item) => {
-                return _.toNumber(item)
-            }),
-            type: {
-                value: type
-            }
+            division: division && splitToArray(division),
+            client: client && splitToArray(client),
+            type: type && splitToArray(type)
         }
     }
 

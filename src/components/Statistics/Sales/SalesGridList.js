@@ -28,17 +28,18 @@ import NotFound from '../../Images/not-found.png'
 import Tooltip from '../../ToolTip'
 import {
     DateToDateField,
-    MarketSearchField,
-    UsersSearchField,
+    MarketMultiSearchField,
+    ClientMultiSearchField,
+    UsersMultiSearchField,
     DeptSearchField,
-    ZoneSearchField,
-    DivisionSearchField,
+    ZoneMultiSearchField,
+    DivisionMultiSearchField,
     DeliveryManMultiSearchField,
     ProductSearchField,
-    UsersMultiSearchField,
+    ProductMultiSearchField,
+    OrderStatusMultiSearchField,
     CheckBox
 } from '../../ReduxForm'
-import OrderStatusSearchField from '../../ReduxForm/Order/OrderStatusSearchField'
 import dateFormat from '../../../helpers/dateFormat'
 
 export const STAT_SALES_FILTER_KEY = {
@@ -424,15 +425,15 @@ const StatSalesGridList = enhance((props) => {
 
     const fields = (
         <div>
-            <Field name="client" className={classes.inputFieldCustom} component={UsersSearchField} label="Клиент"/>
+            <Field name="client" className={classes.inputFieldCustom} component={ClientMultiSearchField} label="Клиент"/>
             <Field name="deliveryMan" className={classes.inputFieldCustom} component={DeliveryManMultiSearchField} label="Доставщик"/>
-            <Field name="product" className={classes.inputFieldCustom} component={ProductSearchField} label="Товар"/>
-            <Field name="status" className={classes.inputFieldCustom} component={OrderStatusSearchField} label="Статус"/>
-            {hasMarket && <Field name="shop" className={classes.inputFieldCustom} component={MarketSearchField} label="Магазин"/>}
-            {divisionStatus && <Field name="division" className={classes.inputFieldCustom} component={DivisionSearchField} label="Подразделение"/>}
+            <Field name="product" className={classes.inputFieldCustom} component={ProductMultiSearchField} label="Товар"/>
+            <Field name="status" className={classes.inputFieldCustom} component={OrderStatusMultiSearchField} label="Статус"/>
+            {hasMarket && <Field name="shop" className={classes.inputFieldCustom} component={MarketMultiSearchField} label="Магазин"/>}
+            {divisionStatus && <Field name="division" className={classes.inputFieldCustom} component={DivisionMultiSearchField} label="Подразделение"/>}
             <Field name="initiator" className={classes.inputFieldCustom} component={UsersMultiSearchField} label="Инициатор"/>
             <Field name="dept" className={classes.inputFieldCustom} component={DeptSearchField} label="Статус оплаты"/>
-            <Field name="zone" className={classes.inputFieldCustom} component={ZoneSearchField} label="Зона"/>
+            <Field name="zone" className={classes.inputFieldCustom} component={ZoneMultiSearchField} label="Зона"/>
             <Field name="createdDate" className={classes.inputDateCustom} component={DateToDateField} label="Период создания"/>
             <Field name="deliveryDate" className={classes.inputDateCustom} component={DateToDateField} label="Дата доставки"/>
             <Field name="deadlineDate" className={classes.inputDateCustom} component={DateToDateField} label="Период изготовления"/>

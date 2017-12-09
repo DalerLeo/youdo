@@ -53,14 +53,14 @@ const enhance = compose(
             const {filter, filterForm} = props
 
             const search = _.get(filterForm, ['values', 'search']) || null
-            const productType = _.get(filterForm, ['values', 'productType']) || null
+            const productType = _.get(filterForm, ['values', 'productType', 'value']) || null
             const productTypeChild = _.get(filterForm, ['values', 'productTypeChild', 'value']) || null
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
 
             filter.filterBy({
                 [STAT_PRODUCT_FILTER_KEY.SEARCH]: search,
-                [STAT_PRODUCT_FILTER_KEY.PRODUCT_TYPE]: _.join(productType, '-'),
+                [STAT_PRODUCT_FILTER_KEY.PRODUCT_TYPE]: (productType),
                 [STAT_PRODUCT_FILTER_KEY.PRODUCT_TYPE_CHILD]: productTypeChild,
                 [STAT_PRODUCT_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [STAT_PRODUCT_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
@@ -107,9 +107,7 @@ const StatProductList = enhance((props) => {
     const filterForm = {
         initialValues: {
             search: search,
-            productType: productType && _.map(_.split(productType, '-'), (item) => {
-                return _.toNumber(item)
-            }),
+            productType: {value: productType},
             productTypeChild: {
                 value: productTypeChild
             },

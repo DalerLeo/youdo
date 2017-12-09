@@ -7,6 +7,7 @@ import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
+import {splitToArray, joinArray} from '../../helpers/joinSplitValues'
 import toBoolean from '../../helpers/toBoolean'
 import getDocuments from '../../helpers/getDocument'
 import * as API from '../../constants/api'
@@ -109,8 +110,8 @@ const enhance = compose(
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
             filter.filterBy({
                 [STAT_AGENT_FILTER_KEY.SEARCH]: search,
-                [STAT_AGENT_FILTER_KEY.ZONE]: _.join(zone, '-'),
-                [STAT_AGENT_FILTER_KEY.DIVISION]: _.join(division, '-'),
+                [STAT_AGENT_FILTER_KEY.ZONE]: joinArray(zone),
+                [STAT_AGENT_FILTER_KEY.DIVISION]: joinArray(division),
                 [STAT_AGENT_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [STAT_AGENT_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
 
@@ -172,8 +173,8 @@ const StatAgentList = enhance((props) => {
     const firstDayOfMonth = _.get(location, ['query', 'fromDate']) || moment().format('YYYY-MM-01')
     const lastDay = moment().daysInMonth()
     const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
-    const zone = !_.isNull(_.get(location, ['query', 'zone'])) && _.toInteger(_.get(location, ['query', 'zone']))
-    const division = !_.isNull(_.get(location, ['query', 'zone'])) && _.toInteger(_.get(location, ['query', 'division']))
+    const zone = !_.isNull(_.get(location, ['query', 'zone'])) && _.get(location, ['query', 'zone'])
+    const division = !_.isNull(_.get(location, ['query', 'zone'])) && _.get(location, ['query', 'division'])
     const search = !_.isNull(_.get(location, ['query', 'search'])) ? _.get(location, ['query', 'search']) : null
 
     const statAgentDialog = {
@@ -204,12 +205,8 @@ const StatAgentList = enhance((props) => {
     }
     const initialValues = {
         search: search,
-        zone: zone && _.map(_.split(zone, '-'), (item) => {
-            return _.toNumber(item)
-        }),
-        division: division && _.map(_.split(division, '-'), (item) => {
-            return _.toNumber(item)
-        }),
+        zone: zone && splitToArray(zone),
+        division: division && splitToArray(division),
         date: {
             fromDate: moment(firstDayOfMonth),
             toDate: moment(lastDayOfMonth)

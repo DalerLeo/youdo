@@ -9,9 +9,9 @@ import {compose} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
 import {
     DateToDateField,
-    TransactionTypeSearchField,
-    ExpensiveCategorySearchField,
-    ClientSearchField
+    TransactionTypeMultiSearchField,
+    ExpensiveCategoryMultiSearchField,
+    ClientMultiSearchField
 } from '../../ReduxForm'
 import StatSideMenu from '../StatSideMenu'
 import getConfig from '../../../helpers/getConfig'
@@ -193,9 +193,9 @@ const StatFinanceGridList = enhance((props) => {
     const fields = (
         <div>
             <Field className={classes.inputFieldCustom} name="date" component={DateToDateField} label="Диапазон дат" fullWidth={true}/>
-            <Field className={classes.inputFieldCustom} name="categoryExpense" component={ExpensiveCategorySearchField} label="Категории расходов" fullWidth={true}/>
-            <Field className={classes.inputFieldCustom} name="type" component={TransactionTypeSearchField} label="Тип" fullWidth={true}/>
-            <Field className={classes.inputFieldCustom} name="client" component={ClientSearchField} label="Клиент" fullWidth={true}/>
+            <Field className={classes.inputFieldCustom} name="categoryExpense" component={ExpensiveCategoryMultiSearchField} label="Категории расходов" fullWidth={true}/>
+            <Field className={classes.inputFieldCustom} name="type" component={TransactionTypeMultiSearchField} label="Тип" fullWidth={true}/>
+            <Field className={classes.inputFieldCustom} name="client" component={ClientMultiSearchField} label="Клиент" fullWidth={true}/>
         </div>
     )
 

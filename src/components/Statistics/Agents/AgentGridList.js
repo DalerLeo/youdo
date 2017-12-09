@@ -7,7 +7,7 @@ import Container from '../../Container'
 import injectSheet from 'react-jss'
 import {compose, withState, lifecycle} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
-import {TextField, ZoneSearchField, DivisionSearchField, DateToDateField} from '../../ReduxForm'
+import {TextField, ZoneMultiSearchField, DivisionMultiSearchField, DateToDateField} from '../../ReduxForm'
 import StatAgentDialog from './AgentDialog'
 import StatSideMenu from '../StatSideMenu'
 import Loader from '../../Loader'
@@ -481,13 +481,13 @@ const StatAgentGridList = enhance((props) => {
             <Field
                 className={classes.inputFieldCustom}
                 name="zone"
-                component={ZoneSearchField}
+                component={ZoneMultiSearchField}
                 label="Зона"
                 fullWidth={true}/>
             {divisionStatus && <Field
                 className={classes.inputFieldCustom}
                 name="division"
-                component={DivisionSearchField}
+                component={DivisionMultiSearchField}
                 label="Подразделение"
                 fullWidth={true}/>}
         </div>

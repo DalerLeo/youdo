@@ -74,7 +74,7 @@ const enhance = compose(
             const {filter, filterForm} = props
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
-            const division = _.get(filterForm, ['values', 'division', 'value']) || null
+            const division = _.get(filterForm, ['values', 'division']) || null
 
             filter.filterBy({
                 [STAT_RETURN_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
@@ -111,7 +111,7 @@ const StatReturnList = enhance((props) => {
     const firstDayOfMonth = _.get(location, ['query', 'fromDate']) || moment().format('YYYY-MM-01')
     const lastDay = moment().daysInMonth()
     const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
-    const division = !_.isNull(_.get(location, ['query', 'division'])) && _.toInteger(_.get(location, ['query', 'division']))
+    const division = !_.isNull(_.get(location, ['query', 'division'])) && _.get(location, ['query', 'division'])
 
     const listData = {
         data: _.get(list, 'results') || {},

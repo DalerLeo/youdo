@@ -86,7 +86,7 @@ const enhance = compose(
             filter.filterBy({
                 [STAT_PRODUCT_MOVE_FILTER_KEY.SEARCH]: search,
                 [STAT_PRODUCT_MOVE_FILTER_KEY.TYPE]: type,
-                [STAT_PRODUCT_MOVE_FILTER_KEY.TYPE_PARENT]: _.join(typeParent, '-'),
+                [STAT_PRODUCT_MOVE_FILTER_KEY.TYPE_PARENT]: typeParent,
                 [STAT_PRODUCT_MOVE_FILTER_KEY.STOCK]: _.join(stock, '-'),
                 [STAT_PRODUCT_MOVE_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [STAT_PRODUCT_MOVE_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
@@ -122,7 +122,7 @@ const StatProductMoveList = enhance((props) => {
     const firstDayOfMonth = _.get(location, ['query', 'fromDate']) || moment().format('YYYY-MM-01')
     const lastDay = moment().daysInMonth()
     const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
-    const stock = !_.isNull(_.get(location, ['query', 'stock'])) && _.toInteger(_.get(location, ['query', 'stock']))
+    const stock = !_.isNull(_.get(location, ['query', 'stock'])) && _.get(location, ['query', 'stock'])
     const type = !_.isNull(_.get(location, ['query', 'type'])) && _.toInteger(_.get(location, ['query', 'type']))
     const typeParent = !_.isNull(_.get(location, ['query', 'typeParent'])) && _.toInteger(_.get(location, ['query', 'typeParent']))
     const search = !_.isNull(_.get(location, ['query', 'search'])) ? _.get(location, ['query', 'search']) : null
@@ -166,9 +166,7 @@ const StatProductMoveList = enhance((props) => {
         type: {
             value: type
         },
-        typeParent: typeParent && _.map(_.split(typeParent, '-'), (item) => {
-            return _.toNumber(item)
-        }),
+        typeParent: {value: typeParent},
         stock: stock && _.map(_.split(stock, '-'), (item) => {
             return _.toNumber(item)
         }),

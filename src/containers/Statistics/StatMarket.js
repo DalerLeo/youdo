@@ -75,7 +75,7 @@ const enhance = compose(
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
             const search = _.get(filterForm, ['values', 'search']) || null
-            const user = _.get(filterForm, ['values', 'user', 'value']) || null
+            const user = _.get(filterForm, ['values', 'user']) || null
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
             filter.filterBy({
@@ -139,7 +139,7 @@ const StatMarketList = enhance((props) => {
     const firstDayOfMonth = _.get(location, ['query', 'fromDate']) || moment().format('YYYY-MM-01')
     const lastDay = moment().daysInMonth()
     const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
-    const user = !_.isNull(_.get(location, ['query', 'user'])) && _.toInteger(_.get(location, ['query', 'user']))
+    const user = !_.isNull(_.get(location, ['query', 'user'])) && _.get(location, ['query', 'user'])
     const search = !_.isNull(_.get(location, ['query', 'search'])) ? _.get(location, ['query', 'search']) : null
 
     const statMarketDialog = {

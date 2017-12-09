@@ -1,6 +1,5 @@
-import _ from 'lodash'
 import React from 'react'
-import SearchField from './Basic/SearchField'
+import SearchField from '../Basic/MultiSelectField'
 import {
     PAYMENT,
     CANCEL,
@@ -12,7 +11,7 @@ import {
     ORDER,
     NONE_TYPE,
     formattedType
-} from '../../constants/clientBalanceInfo'
+} from '../../../constants/clientBalanceInfo'
 
 const Items = [
     {id: PAYMENT, name: formattedType[PAYMENT]},
@@ -31,22 +30,17 @@ const getOptions = () => {
     return Promise.resolve(Items)
 }
 
-const getItem = (id) => {
-    return Promise.resolve(
-        _.find(Items, (o) => { return o.id === _.toInteger(id) }))
-}
-
-const ClientTransactionTypeSearchField = (props) => {
+const ClientTransactionTypeMultiSearchField = (props) => {
     return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
             getText={SearchField.defaultGetText('name')}
             getOptions={getOptions}
-            getItem={getItem}
+            getIdsOption={getOptions}
             getItemText={SearchField.defaultGetText('name')}
             {...props}
         />
     )
 }
 
-export default ClientTransactionTypeSearchField
+export default ClientTransactionTypeMultiSearchField
