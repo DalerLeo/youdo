@@ -69,6 +69,7 @@ const ZERO = 0
 const TWO = 2
 const THREE = 3
 const FOUR = 4
+const FIVE = 5
 const HUNDRED = 1000
 const enhance = compose(
     connect((state, props) => {
@@ -1089,6 +1090,7 @@ const OrderList = enhance((props) => {
                     value: deliveryType,
                     text: deliveryTypeText
                 },
+                isConfirmed: _.toNumber(_.get(detail, 'status')) === FIVE,
                 dealType: dealType,
                 paymentType: paymentType,
                 deliveryDate: _.get(detail, ['dateDelivery']) ? moment(_.get(detail, ['dateDelivery'])).toDate() : '',

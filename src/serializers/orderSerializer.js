@@ -24,6 +24,7 @@ export const createSerializer = (data) => {
     const priceList = _.get(data, ['priceList', 'value'])
     const user = _.get(data, ['user', 'value'])
     const currency = _.get(data, ['currency', 'value'])
+    const isConfirmed = _.get(data, ['isConfirmed'])
     const products = _.map(_.get(data, ['products']), (item) => {
         return {
             id: _.get(item, ['product', 'id']),
@@ -45,6 +46,7 @@ export const createSerializer = (data) => {
         user,
         products,
         'delivery_price': deliveryPrice,
+        'is_confirmed': isConfirmed,
         'price_list': priceList === MINUS_ONE ? null : priceList,
         'with_net_cost': priceList === MINUS_ONE ? ONE : false
     } : {
@@ -58,6 +60,7 @@ export const createSerializer = (data) => {
         'deal_type': dealType,
         'delivery_type': deliveryType,
         'delivery_man': deliveryMan,
+        'is_confirmed': isConfirmed,
         market,
         user,
         products,

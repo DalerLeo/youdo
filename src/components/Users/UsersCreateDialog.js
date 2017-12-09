@@ -181,7 +181,7 @@ const UsersCreateDialog = enhance((props) => {
             contentStyle={loading ? {width: '400px'} : {width: '600px'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>{isUpdate ? 'Изменить пользователя' : 'Добавить пользователя'}</span>
+                <span>{isUpdate ? 'Изменить cотрудник' : 'Добавить cотрудник'}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
