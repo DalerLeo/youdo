@@ -31,6 +31,7 @@ import Transferred from 'material-ui/svg-icons/maps/local-shipping'
 import Delivered from 'material-ui/svg-icons/action/assignment-turned-in'
 import Payment from 'material-ui/svg-icons/action/credit-card'
 import InProcess from 'material-ui/svg-icons/device/access-time'
+import NotConfirmed from 'material-ui/svg-icons/alert/warning'
 import Print from 'material-ui/svg-icons/action/print'
 import Excel from 'material-ui/svg-icons/action/assessment'
 import GetRelease from 'material-ui/svg-icons/action/description'
@@ -49,6 +50,8 @@ const READY = 1
 const GIVEN = 2
 const DELIVERED = 3
 const CANCELED = 4
+const NOT_CONFIRMED = 5
+
 const listHeader = [
     {
         sorting: true,
@@ -277,9 +280,11 @@ const OrderGridList = enhance((props) => {
     const showCheckboxes = toBoolean(_.get(filter.getParams(), 'showCheckboxes'))
     const statusIsReady = !_.isNil(_.get(filter.getParams(), 'status')) && _.toNumber(_.get(filter.getParams(), 'status')) === READY
     const statusIsRequested = !_.isNil(_.get(filter.getParams(), 'status')) && _.toNumber(_.get(filter.getParams(), 'status')) === REQUESTED
+    const statusIsUnconfirmed = !_.isNil(_.get(filter.getParams(), 'status')) && _.toNumber(_.get(filter.getParams(), 'status')) === NOT_CONFIRMED
     const orderCounts = _.get(listData, 'orderCounts')
     const readyCount = _.get(orderCounts, 'readyCount')
     const requestedCount = _.get(orderCounts, 'requestedCount')
+    const unconfirmedCount = _.get(orderCounts, 'unconfirmedCount')
     const orderCountsLoading = _.get(listData, 'orderCountsLoading')
     const orderFilterDialog = (
         <OrderFilterForm
@@ -332,7 +337,7 @@ const OrderGridList = enhance((props) => {
         const now = moment().format('YYYY-MM-DD')
         const currentCurrency = _.get(item, ['currency', 'name'])
         const user = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName']) || 'N/A'
-        const dateDelivery = dateFormat((_.get(item, 'dateDelivery')), '')
+        const dateDelivery = dateFormat(_.get(item, 'dateDelivery'), '', 'Самовывоз')
         const createdDate = dateTimeFormat(_.get(item, 'createdDate'), true)
         const totalBalance = _.toNumber(_.get(item, 'totalBalance'))
         const balanceTooltip = numberFormat(totalBalance, currentCurrency)
@@ -380,7 +385,6 @@ const OrderGridList = enhance((props) => {
                                     <Available color="#f0ad4e"/>
                                 </IconButton>
                             </Tooltip>
-
                             : (status === DELIVERED) ? <Tooltip position="bottom" text="Доставлен">
                                     <IconButton
                                         disableTouchRipple={true}
@@ -399,15 +403,24 @@ const OrderGridList = enhance((props) => {
                                             <Transferred color="#f0ad4e"/>
                                         </IconButton>
                                     </Tooltip>
-                                    : <Tooltip position="bottom" text="Заказ отменен">
-                                        <IconButton
-                                            disableTouchRipple={true}
-                                            iconStyle={iconStyle.icon}
-                                            style={iconStyle.button}
-                                            touch={true}>
-                                            <Canceled color='#e57373'/>
-                                        </IconButton>
-                                    </Tooltip>
+                                    : (status === CANCELED) ? <Tooltip position="bottom" text="Заказ отменен">
+                                            <IconButton
+                                                disableTouchRipple={true}
+                                                iconStyle={iconStyle.icon}
+                                                style={iconStyle.button}
+                                                touch={true}>
+                                                <Canceled color='#e57373'/>
+                                            </IconButton>
+                                        </Tooltip>
+                                        : (status === NOT_CONFIRMED) ? <Tooltip position="bottom" text="Не подтвержден">
+                                            <IconButton
+                                                disableTouchRipple={true}
+                                                iconStyle={iconStyle.icon}
+                                                style={iconStyle.button}
+                                                touch={true}>
+                                                <NotConfirmed color='#999'/>
+                                            </IconButton>
+                                        </Tooltip> : null
                     }
                     {!(status === CANCELED) &&
                     <Tooltip position="bottom" text={(totalBalance > ZERO) && ((moment(_.get(item, 'paymentDate')).diff(now, 'days') <= ZERO))
@@ -470,6 +483,21 @@ const OrderGridList = enhance((props) => {
         },
         iconRequested: {
             color: statusIsRequested ? '#81c784' : '#5d6474'
+        },
+        badgeUnconfirmed: {
+            top: 4,
+            right: 4,
+            width: 18,
+            height: 18,
+            fontSize: 9,
+            fontWeight: 600,
+            border: statusIsUnconfirmed ? 'none' : '1px #fff solid',
+            background: statusIsUnconfirmed ? '#fff' : '#e57373',
+            transition: 'all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms',
+            zIndex: 1
+        },
+        iconUnconfirmed: {
+            color: statusIsUnconfirmed ? '#81c784' : '#5d6474'
         }
     }
 
@@ -485,6 +513,9 @@ const OrderGridList = enhance((props) => {
     const filterByRequested = () => {
         return hashHistory.push(filter.createURL({status: REQUESTED}))
     }
+    const filterByUnconfirmed = () => {
+        return hashHistory.push(filter.createURL({status: NOT_CONFIRMED}))
+    }
 
     const extraButtons = (
         <div className={classes.buttons}>
@@ -496,16 +527,16 @@ const OrderGridList = enhance((props) => {
                 </IconButton>
             </Tooltip>
 
-            {readyCount > ZERO && <Tooltip position="left" text="Отфильтровать по доступным заказам">
+            {unconfirmedCount > ZERO && <Tooltip position="left" text="Отфильтровать неподтвержденным заказам">
                 <Badge
                     primary={true}
-                    badgeContent={statusIsReady ? <Done style={badgeStyle.icon}/> : readyCount}
+                    badgeContent={statusIsUnconfirmed ? <Done style={badgeStyle.iconUnconfirmed}/> : unconfirmedCount}
                     style={badgeStyle.wrapper}
-                    badgeStyle={badgeStyle.badge}>
+                    badgeStyle={badgeStyle.badgeUnconfirmed}>
                     <IconButton
-                        onTouchTap={filterByReady}
-                        iconStyle={badgeStyle.icon}>
-                        <Available/>
+                        onTouchTap={filterByUnconfirmed}
+                        iconStyle={badgeStyle.iconUnconfirmed}>
+                        <NotConfirmed/>
                     </IconButton>
                 </Badge>
             </Tooltip>}
@@ -519,6 +550,19 @@ const OrderGridList = enhance((props) => {
                         onTouchTap={filterByRequested}
                         iconStyle={badgeStyle.iconRequested}>
                         <InProcess/>
+                    </IconButton>
+                </Badge>
+            </Tooltip>}
+            {readyCount > ZERO && <Tooltip position="left" text="Отфильтровать по доступным заказам">
+                <Badge
+                    primary={true}
+                    badgeContent={statusIsReady ? <Done style={badgeStyle.icon}/> : readyCount}
+                    style={badgeStyle.wrapper}
+                    badgeStyle={badgeStyle.badge}>
+                    <IconButton
+                        onTouchTap={filterByReady}
+                        iconStyle={badgeStyle.icon}>
+                        <Available/>
                     </IconButton>
                 </Badge>
             </Tooltip>}
@@ -593,7 +637,7 @@ const OrderGridList = enhance((props) => {
             />
 
             {createDialog.openCreateDialog && <OrderCreateDialog
-                hasMarket={true}
+                hasMarket={hasMarket}
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
                 createClientDialog={createClientDialog}
