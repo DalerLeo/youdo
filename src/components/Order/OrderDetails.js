@@ -60,6 +60,9 @@ const enhance = compose(
         yellow: {
             color: '#f0ad4e !important'
         },
+        grey: {
+            color: '#999 !important'
+        },
         loader: {
             width: '100%',
             background: '#fff',
@@ -231,10 +234,11 @@ const OrderDetails = enhance((props) => {
     const divisionBool = _.toInteger(_.get(data, 'division'))
     const deliveryMan = _.get(data, ['deliveryMan', 'firstName']) && _.get(data, ['deliveryMan', 'firstName'])
         ? _.get(data, ['deliveryMan', 'firstName']) + ' ' + _.get(data, ['deliveryMan', 'secondName'])
-        : 'Не указан'
+        : null
     const client = _.get(data, ['client', 'name'])
+    const contract = _.get(data, ['contract']) || 'Не указан'
     const deliveryType = _.get(data, 'deliveryType')
-    const dateDelivery = dateFormat(_.get(data, 'dateDelivery'))
+    const dateDelivery = dateFormat(_.get(data, 'dateDelivery'), '', false)
     const createdDate = dateFormat(_.get(data, 'createdDate'))
     const paymentDate = dateFormat(_.get(data, 'paymentDate'))
     const requestDeadline = _.get(data, 'requestDeadline') ? dateFormat(_.get(data, 'requestDeadline')) : 'Не задан'
@@ -245,6 +249,7 @@ const OrderDetails = enhance((props) => {
     const GIVEN = 2
     const DELIVERED = 3
     const CANCELED = 4
+    const NOT_CONFIRMED = 5
     const status = _.toInteger(_.get(data, 'status'))
 
     const zero = 0
@@ -260,9 +265,7 @@ const OrderDetails = enhance((props) => {
         return (
             <div className={classes.wrapper} style={loading && {maxHeight: '200px'}}>
                 <div className={classes.loader}>
-                    <div>
-                        <LinearProgress/>
-                    </div>
+                    <LinearProgress/>
                 </div>
             </div>
         )
@@ -363,7 +366,6 @@ const OrderDetails = enhance((props) => {
                                     <span>Клиент:</span>
                                     <span title={client}>{client}</span>
                                 </li>
-
                                 {hasMarket && <li>
                                     <span>Магазин:</span>
                                     <span title={market}>
@@ -390,6 +392,10 @@ const OrderDetails = enhance((props) => {
                                     <span>Подразделение:</span>
                                     <span>{division}</span>
                                 </li> : null}
+                                <li>
+                                    <span>Номер договора:</span>
+                                    <span>{contract}</span>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -441,23 +447,28 @@ const OrderDetails = enhance((props) => {
                                     <span>Текущий статус:</span>
                                     {(status === REQUESTED) ? <span className={classes.yellow}>Запрос отправлен</span>
                                         : (status === READY) ? <span className={classes.green}>Есть на складе</span>
-                                            : (status === GIVEN) ? <span className={classes.yellow}>Передан доставщику</span>
-                                            : (status === DELIVERED) ? <span className={classes.green}>Доставлен</span>
-                                                : <span className={classes.red}>Отменен</span>
+                                            : (status === GIVEN)
+                                                ? <span className={classes.yellow}>Передан доставщику</span>
+                                                : (status === DELIVERED)
+                                                    ? <span className={classes.green}>Доставлен</span>
+                                                    : (status === CANCELED)
+                                                        ? <span className={classes.red}>Отменен</span>
+                                                        : (status === NOT_CONFIRMED)
+                                                            ? <span className={classes.grey}>Не подтвержден</span> : null
                                     }
                                 </li>
-                                <li>
+                                {deliveryMan ? <li>
                                     <span>Доставщик:</span>
                                     <span>{deliveryMan}</span>
-                                </li>
+                                </li> : null}
                                 <li>
                                     <span>Тип передачи:</span>
                                     <span>{deliveryType === 'delivery' ? 'Доставка' : 'Самовывоз'}</span>
                                 </li>
-                                <li>
-                                    <span>Дата передачи:</span>
+                                {dateDelivery ? <li>
+                                    <span>Дата доставки:</span>
                                     <span>{dateDelivery}</span>
-                                </li>
+                                </li> : null}
                             </ul>
                         </div>
                     </div>

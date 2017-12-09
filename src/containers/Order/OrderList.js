@@ -1076,6 +1076,7 @@ const OrderList = enhance((props) => {
                 contact: {
                     value: _.toInteger(_.get(detail, ['contact', 'id']))
                 },
+                contract: _.get(detail, 'contract'),
                 currency: {
                     value: _.get(detail, ['currency', 'id']),
                     text: _.get(detail, ['currency', 'name'])
@@ -1090,7 +1091,7 @@ const OrderList = enhance((props) => {
                     value: deliveryType,
                     text: deliveryTypeText
                 },
-                isConfirmed: _.toNumber(_.get(detail, 'status')) === FIVE,
+                isConfirmed: _.toNumber(_.get(detail, 'status')) !== FIVE,
                 dealType: dealType,
                 paymentType: paymentType,
                 deliveryDate: _.get(detail, ['dateDelivery']) ? moment(_.get(detail, ['dateDelivery'])).toDate() : '',

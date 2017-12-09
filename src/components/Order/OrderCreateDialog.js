@@ -153,7 +153,7 @@ const enhance = compose(
         },
         leftOrderPart: {
             width: '275px',
-            padding: '20px 30px',
+            padding: '20px 30px 5px',
             borderRight: '1px #efefef solid',
             '& .Select-menu-outer': {
                 minWidth: 'unset !important'
@@ -226,10 +226,12 @@ const enhance = compose(
         const orderProducts = _.get(state, ['form', 'OrderCreateForm', 'values', 'products'])
         const currencyItem = _.get(state, ['form', 'OrderCreateForm', 'values', 'currency', 'text'])
         const deliveryType = _.get(state, ['form', 'OrderCreateForm', 'values', 'deliveryType', 'value'])
+        const isConfirmed = _.get(state, ['form', 'OrderCreateForm', 'values', 'isConfirmed'])
         return {
             orderProducts,
             currencyItem,
-            deliveryType
+            deliveryType,
+            isConfirmed
         }
     }),
 )
@@ -258,7 +260,8 @@ const OrderCreateDialog = enhance((props) => {
         editProductsLoading,
         handleOpenAddProduct,
         deliveryType,
-        hasMarket
+        hasMarket,
+        isConfirmed
     } = props
     const canSetDeliveryMan = checkPermission('can_set_delivery_man')
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
@@ -412,10 +415,7 @@ const OrderCreateDialog = enhance((props) => {
                                         <Field
                                             name="isConfirmed"
                                             component={CheckBox}
-                                            className={classes.inputDateCustom}
-                                            label="Неподтвержденный"
-                                            container="inline"
-                                            fullWidth={true}/>
+                                            label="Подтвержденный"/>
                                     </div>
                                 </div>
                                 <div className={classes.rightOrderPart}>
@@ -436,12 +436,13 @@ const OrderCreateDialog = enhance((props) => {
                         <div className={classes.commentField}>
                             Общая сумма заказа: <b>{numberFormat(totalCost, currencyItem)}</b>
                         </div>
-                        {(notEnough) ? <FlatButton
-                            label="Далее"
-                            labelStyle={{fontSize: '13px'}}
-                            className={classes.actionButton}
-                            primary={true}
-                            onTouchTap={shortageDialog.handleOpenShortageDialog}/>
+                        {(notEnough && isConfirmed)
+                            ? <FlatButton
+                                label="Далее"
+                                labelStyle={{fontSize: '13px'}}
+                                className={classes.actionButton}
+                                primary={true}
+                                onTouchTap={shortageDialog.handleOpenShortageDialog}/>
 
                             : <FlatButton
                                 label={isUpdate ? 'Изменить заказ' : 'Оформить заказ'}

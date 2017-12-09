@@ -91,6 +91,7 @@ export const listFilterSerializer = (data, id, withOrderReturn, print) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
     const dept = _.toInteger(_.get(defaultData, 'dept'))
+    const status = _.get(defaultData, 'status')
 
     if (id && print) {
         return {
@@ -118,7 +119,7 @@ export const listFilterSerializer = (data, id, withOrderReturn, print) => {
         'delivery_man': _.get(defaultData, 'deliveryMan') || null,
         'total_price': _.get(defaultData, 'totalPrice'),
         'total_balance': _.get(defaultData, 'totalBalance'),
-        'status': _.get(defaultData, 'status') || null,
+        'status': status,
         'only_bonus': _.get(defaultData, 'onlyBonus') ? 'True' : null,
         'exclude_cancelled': _.get(defaultData, 'exclude') ? 'True' : null,
         'created_date_0': _.get(defaultData, 'fromDate'),
@@ -140,7 +141,7 @@ export const priceListFilterSerializer = (orderId, priceList, size, products, cu
         return {
             'net_cost': ONE,
             'page_size': size,
-            'ids': products,
+            products,
             currency
         }
     }
@@ -148,7 +149,7 @@ export const priceListFilterSerializer = (orderId, priceList, size, products, cu
         'order': orderId,
         'price_list': priceList,
         'page_size': size,
-        'ids': products,
+        products,
         currency
     }
 }
