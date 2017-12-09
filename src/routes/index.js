@@ -61,7 +61,8 @@ import {
     StatProductMoveList,
     StatReportList,
     StatClientIncomeList,
-    StatClientBalance
+    StatClientBalance,
+    StatDebtorsList
 } from '../containers/Statistics'
 import {ClientBalanceList} from '../containers/ClientBalance'
 import {StockReceiveHistoryList, StockReceiveList, StockTransferList, StockTransferHistoryList, StockOutHistoryList} from '../containers/StockReceive'
@@ -614,6 +615,17 @@ export default {
             path: ROUTES.STATISTICS_CLIENT_INCOME_URL,
             component: userIsAdminChain(StatClientIncomeList),
             childRoutes: []
+        },
+        // Statistics/debtors
+        {
+            path: ROUTES.STATISTICS_DEBTORS_URL,
+            component: userIsAdminChain(StatDebtorsList),
+            childRoutes: [
+                {
+                    path: ROUTES.STATISTICS_DEBTORS_ITEM_URL,
+                    component: userIsAuth(StatDebtorsList)
+                }
+            ]
         },
         // Stock Receive
         {

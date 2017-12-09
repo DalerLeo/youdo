@@ -11,6 +11,7 @@ import StatReportList from './StatReport'
 import StatReturnList from './StatReturn'
 import StatClientIncomeList from './StatClientIncome'
 import StatClientBalance from './StatClientBalance'
+import StatDebtorsList from './StatDebtors'
 
 export {
     StatReturnList,
@@ -25,5 +26,6 @@ export {
     StatProductMoveList,
     StatReportList,
     StatClientIncomeList,
-    StatClientBalance
+    StatClientBalance,
+    StatDebtorsList
 }
