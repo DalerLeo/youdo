@@ -27,7 +27,7 @@ const setExtraData = (data, loading) => {
 
 const getItem = (id, dispatch, priceList, currency) => {
     dispatch(setExtraData(null, true))
-    return axios().get(PATH.PRODUCT_MOBILE_ITEM, {params: {price_list: priceList, ids: id, currency: currency}})
+    return axios().get(PATH.PRODUCT_MOBILE_ITEM, {params: {price_list: priceList, products: id, currency: currency}})
         .then(({data}) => {
             const obj = _.get(data, ['results', ZERO])
             dispatch(setExtraData(obj, false))
