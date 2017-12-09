@@ -12,7 +12,6 @@ import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
 import * as API from '../../constants/api'
 import * as serializers from '../../serializers/priceSerializer'
 import getDocuments from '../../helpers/getDocument'
-
 import {reset} from 'redux-form'
 import {
     PRICE_FILTER_KEY,
@@ -230,7 +229,7 @@ const PriceList = enhance((props) => {
     const openPriceSetDefault = toBoolean(_.get(location, ['query', PRICE_SET_DEFAULT_OPEN]))
     const typeParent = _.toNumber(_.get(location, ['query', PRICE_FILTER_KEY.TYPE_PARENT]))
     const typeChild = _.toNumber(_.get(location, ['query', PRICE_FILTER_KEY.TYPE_CHILD]))
-    const measurement = (_.get(location, ['query', PRICE_FILTER_KEY.MEASUREMENT]))
+    const measurement = _.get(location, ['query', PRICE_FILTER_KEY.MEASUREMENT])
     const withoutNetCost = toBoolean(_.get(location, ['query', PRICE_FILTER_KEY.WITHOUT_NET_COST]))
     const detailId = _.toInteger(_.get(params, 'priceId'))
 

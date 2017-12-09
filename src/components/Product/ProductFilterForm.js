@@ -12,7 +12,6 @@ import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import {
     MeasurementMultiSearchField,
-    BrandMultiSearchField,
     ProductTypeChildSearchField,
     ProductTypeParentSearchField
 } from '../ReduxForm'
@@ -22,7 +21,6 @@ import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-dow
 export const PRODUCT_FILTER_OPEN = 'openFilterDialog'
 
 export const PRODUCT_FILTER_KEY = {
-    BRAND: 'brand',
     TYPE_PARENT: 'typeParent',
     TYPE_CHILD: 'typeChild',
     MEASUREMENT: 'measurement'
@@ -107,7 +105,7 @@ const enhance = compose(
         enableReinitialize: true
     }),
     connect((state) => {
-        const typeParent = _.get(state, ['form', 'ProductFilterForm', 'values', 'typeParent'])
+        const typeParent = _.get(state, ['form', 'ProductFilterForm', 'values', 'typeParent', 'value'])
         return {
             typeParent
         }
@@ -187,13 +185,6 @@ const ProductFilterForm = enhance((props) => {
                             name="measurement"
                             component={MeasurementMultiSearchField}
                             label="Мера"/>
-                    </div>
-                    <div>
-                        <Field
-                            className={classes.inputFieldCustom}
-                            name="brand"
-                            component={BrandMultiSearchField}
-                            label="Бренд"/>
                     </div>
                     <RaisedButton
                         type="submit"
