@@ -8,7 +8,10 @@ import FlatButton from 'material-ui/FlatButton'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
-import {ShiftSearchField, UsersSearchField} from '../ReduxForm'
+import {
+    ShiftSearchField,
+    UsersSearchField
+} from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 
 export const OPEN_USER_CREATE_DIALOG = 'openCreateDialog'

@@ -11,8 +11,8 @@ import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import {
     PaymentTypeSearchField,
-    MarketSearchField,
-    ClientSearchField,
+    MarketMultiSearchField,
+    ClientMultiSearchField,
     DateToDateField
 } from '../ReduxForm'
 
@@ -34,6 +34,7 @@ const enhance = compose(
         wrapper: {
             position: 'absolute',
             minWidth: '300px',
+            width: '300px',
             background: '#fff',
             zIndex: 99,
             top: 0,
@@ -166,7 +167,7 @@ const PendingPaymentsFilterForm = enhance((props) => {
                         <Field
                             className={classes.inputFieldCustom}
                             name="market"
-                            component={MarketSearchField}
+                            component={MarketMultiSearchField}
                             label="Магазин"
                             fullWidth={true}/>
                     </div>}
@@ -174,7 +175,7 @@ const PendingPaymentsFilterForm = enhance((props) => {
                         <Field
                             className={classes.inputFieldCustom}
                             name="client"
-                            component={ClientSearchField}
+                            component={ClientMultiSearchField}
                             label="Клиент"
                             fullWidth={true}/>
                     </div>

@@ -10,7 +10,13 @@ import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
-import {TransactionTypeSearchField, ExpensiveCategorySearchField, ClientSearchField, DivisionSearchField, CheckBox} from '../ReduxForm'
+import {
+    TransactionTypeMultiSearchField,
+    ExpensiveCategoryMultiSearchField,
+    ClientMultiSearchField,
+    DivisionMultiSearchField,
+    CheckBox
+} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 import getConfig from '../../helpers'
@@ -32,6 +38,7 @@ const enhance = compose(
         wrapper: {
             position: 'absolute',
             minWidth: '300px',
+            width: '300px',
             background: '#fff',
             zIndex: 99,
             top: 0,
@@ -160,12 +167,40 @@ const TransactionFilterForm = enhance((props) => {
                     </IconButton>
                 </div>
                 <form onSubmit={handleSubmit(filterDialog.handleSubmitFilterDialog)}>
-                    <Field className={classes.inputFieldCustom} name="categoryExpense" component={ExpensiveCategorySearchField} label="Категории расходов"/>
-                    <Field className={classes.inputFieldCustom} name="type" component={TransactionTypeSearchField} label="Тип"/>
-                    <Field className={classes.inputFieldCustom} name="client" component={ClientSearchField} label="Клиент" fullWidth={true}/>
-                    {getConfig && <Field className={classes.inputFieldCustom} name="division" component={DivisionSearchField} label="Подразделение" fullWidth={true}/>}
-                    <Field className={classes.inputFieldCustom} name="date" component={DateToDateField} label="Диапазон дат" fullWidth={true}/>
-                    <Field name="with_deleted" component={CheckBox} defaultChecked = {true} label="Показать удаленные транзакции"/>
+                    <Field
+                        className={classes.inputFieldCustom}
+                        name="categoryExpense"
+                        component={ExpensiveCategoryMultiSearchField}
+                        label="Категории расходов"/>
+                    <Field
+                        className={classes.inputFieldCustom}
+                        name="type"
+                        component={TransactionTypeMultiSearchField}
+                        label="Тип"/>
+                    <Field
+                        className={classes.inputFieldCustom}
+                        name="client"
+                        component={ClientMultiSearchField}
+                        label="Клиент"
+                        fullWidth={true}/>
+                    {getConfig &&
+                    <Field
+                        className={classes.inputFieldCustom}
+                        name="division"
+                        component={DivisionMultiSearchField}
+                        label="Подразделение"
+                        fullWidth={true}/>}
+                    <Field
+                        className={classes.inputFieldCustom}
+                        name="date"
+                        component={DateToDateField}
+                        label="Диапазон дат"
+                        fullWidth={true}/>
+                    <Field
+                        name="with_deleted"
+                        component={CheckBox}
+                        defaultChecked={true}
+                        label="Показать удаленные транзакции"/>
 
                     <RaisedButton
                         type="submit"

@@ -8,6 +8,7 @@ import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
+import {joinArray, splitToArray} from '../../helpers/joinSplitValues'
 import toBoolean from '../../helpers/toBoolean'
 import {
     PENDING_EXPENSES_UPDATE_DIALOG_OPEN,
@@ -81,8 +82,8 @@ const enhance = compose(
                 [PENDING_EXPENSES_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD'),
                 [PENDING_EXPENSES_FILTER_KEY.TYPE]: type,
                 [PENDING_EXPENSES_FILTER_KEY.PAYMENT_TYPE]: paymentType,
-                [PENDING_EXPENSES_FILTER_KEY.PROVIDER]: _.join(provider, '-'),
-                [PENDING_EXPENSES_FILTER_KEY.SUPPLY]: _.join(supply, '-')
+                [PENDING_EXPENSES_FILTER_KEY.PROVIDER]: joinArray(provider),
+                [PENDING_EXPENSES_FILTER_KEY.SUPPLY]: joinArray(supply)
             })
         },
 
@@ -165,12 +166,8 @@ const PendingExpensesList = enhance((props) => {
             paymentType: {
                 value: paymentType
             },
-            provider: provider && _.map(_.split(provider, '-'), (item) => {
-                return _.toNumber(item)
-            }),
-            supply: supply && _.map(_.split(supply, '-'), (item) => {
-                return _.toNumber(item)
-            })
+            provider: provider && splitToArray(provider),
+            supply: supply && splitToArray(supply)
         },
         filterLoading: false,
         openFilterDialog,

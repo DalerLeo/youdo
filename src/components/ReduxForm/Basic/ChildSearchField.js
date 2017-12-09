@@ -115,6 +115,7 @@ const SearchField = enhance((props) => {
                 placeholder={label}
                 noResultsText={'Не найдено'}
                 isLoading={state.loading}
+                clearValueText='Очистить'
                 valueRenderer={valueRenderer}
                 labelKey={'text'}
                 filterOptions={options => options}

@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
-import SearchField from './Basic/SearchField'
+import SearchField from '../Basic/SearchField'
 import {
     ORDER,
     INCOME_FROM_AGENT,
@@ -8,11 +8,11 @@ import {
     INCOME,
     OUTCOME_FOR_SUPPLY_EXPANSE,
     OUTCOME,
-    OUTCOME_TO_CLIENT,
+    OUTCOME_FROM_CLIENT,
     TO_TRANSFER,
     FROM_TRANSFER,
     INCOME_TO_CLIENT
-} from '../../constants/transactionTypes'
+} from '../../../constants/transactionTypes'
 
 const Items = [
     {id: FROM_TRANSFER, name: formattedType[FROM_TRANSFER]},
@@ -21,7 +21,7 @@ const Items = [
     {id: INCOME, name: formattedType[INCOME]},
     {id: OUTCOME, name: formattedType[OUTCOME]},
     {id: INCOME_TO_CLIENT, name: formattedType[INCOME_TO_CLIENT]},
-    {id: OUTCOME_TO_CLIENT, name: formattedType[OUTCOME_TO_CLIENT]},
+    {id: OUTCOME_FROM_CLIENT, name: formattedType[OUTCOME_FROM_CLIENT]},
     {id: INCOME_FROM_AGENT, name: formattedType[INCOME_FROM_AGENT]},
     {id: OUTCOME_FOR_SUPPLY_EXPANSE, name: formattedType[OUTCOME_FOR_SUPPLY_EXPANSE]}
 ]

@@ -5,6 +5,7 @@ import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers, withState} from 'recompose'
 import filterHelper from '../../helpers/filter'
+import {splitToArray, joinArray} from '../../helpers/joinSplitValues'
 import toBoolean from '../../helpers/toBoolean'
 import moment from 'moment'
 import {OrderPrint} from '../../components/Order'
@@ -178,16 +179,16 @@ const enhance = compose(
             const fromDate = _.get(historyFilterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(historyFilterForm, ['values', 'date', 'toDate']) || null
             const typeChild = _.get(historyFilterForm, ['values', 'typeChild', 'value']) || null
-            const typeParent = _.get(historyFilterForm, ['values', 'typeParent']) || null
+            const typeParent = _.get(historyFilterForm, ['values', 'typeParent', 'value']) || null
 
             filter.filterBy({
                 [OUT_HISTORY_FILTER_OPEN]: false,
-                [OUT_HISTORY_FILTER_KEY.STOCK]: _.join(stock, '-'),
-                [OUT_HISTORY_FILTER_KEY.TYPE]: _.join(type, '-'),
+                [OUT_HISTORY_FILTER_KEY.STOCK]: joinArray(stock),
+                [OUT_HISTORY_FILTER_KEY.TYPE]: joinArray(type),
                 [OUT_HISTORY_FILTER_KEY.STATUS]: status,
-                [OUT_HISTORY_FILTER_KEY.PRODUCT]: _.join(product, '-'),
+                [OUT_HISTORY_FILTER_KEY.PRODUCT]: joinArray(product),
                 [OUT_HISTORY_FILTER_KEY.TYPE_CHILD]: typeChild,
-                [OUT_HISTORY_FILTER_KEY.TYPE_PARENT]: _.join(typeParent, '-'),
+                [OUT_HISTORY_FILTER_KEY.TYPE_PARENT]: joinArray(typeParent),
                 [OUT_HISTORY_FILTER_KEY.FROM_DATE]: fromDate && moment(fromDate).format('YYYY-MM-DD'),
                 [OUT_HISTORY_FILTER_KEY.TO_DATE]: toDate && moment(toDate).format('YYYY-MM-DD')
 
@@ -263,13 +264,13 @@ const StockOutHistoryList = enhance((props) => {
 
     const openFilterDialog = toBoolean(_.get(location, ['query', OUT_HISTORY_FILTER_OPEN]))
     const openHistoryInfoDialog = _.toNumber(_.get(location, ['query', STOCK_RECEIVE_HISTORY_INFO_DIALOG_OPEN]))
-    const brand = _.toInteger(filter.getParam(OUT_HISTORY_FILTER_KEY.BRAND))
-    const stock = _.toInteger(filter.getParam(OUT_HISTORY_FILTER_KEY.STOCK))
-    const type = _.toInteger(filter.getParam(OUT_HISTORY_FILTER_KEY.TYPE))
+    const brand = (filter.getParam(OUT_HISTORY_FILTER_KEY.BRAND))
+    const stock = (filter.getParam(OUT_HISTORY_FILTER_KEY.STOCK))
+    const type = (filter.getParam(OUT_HISTORY_FILTER_KEY.TYPE))
     const typeParent = _.toInteger(filter.getParam(OUT_HISTORY_FILTER_KEY.TYPE_PARENT))
     const typeChild = _.toInteger(filter.getParam(OUT_HISTORY_FILTER_KEY.TYPE_CHILD))
-    const product = _.toInteger(filter.getParam(OUT_HISTORY_FILTER_KEY.PRODUCT))
-    const status = _.toInteger(filter.getParam(OUT_HISTORY_FILTER_KEY.STATUS))
+    const product = (filter.getParam(OUT_HISTORY_FILTER_KEY.PRODUCT))
+    const status = (filter.getParam(OUT_HISTORY_FILTER_KEY.STATUS))
     const fromDate = filter.getParam(OUT_HISTORY_FILTER_KEY.FROM_DATE)
     const toDate = filter.getParam(OUT_HISTORY_FILTER_KEY.TO_DATE)
 
@@ -304,28 +305,16 @@ const StockOutHistoryList = enhance((props) => {
 
     const filterDialog = {
         initialValues: {
-            brand: brand && _.map(_.split(brand, '-'), (item) => {
-                return _.toNumber(item)
-            }),
-            type: type && _.map(_.split(type, '-'), (item) => {
-                return _.toNumber(item)
-            }),
-            product: product && _.map(_.split(product, '-'), (item) => {
-                return _.toNumber(item)
-            }),
+            brand: brand && splitToArray(brand),
+            type: type && splitToArray(type),
+            product: product && splitToArray(product),
             date: {
                 fromDate: fromDate && moment(fromDate),
                 toDate: toDate && moment(toDate)
             },
-            typeParent: typeParent && _.map(_.split(typeParent, '-'), (item) => {
-                return _.toNumber(item)
-            }),
-            typeChild: {
-                value: typeChild
-            },
-            stock: stock && _.map(_.split(stock, '-'), (item) => {
-                return _.toNumber(item)
-            }),
+            typeParent: {value: typeParent},
+            typeChild: {value: typeChild},
+            stock: stock && splitToArray(stock),
             status: {
                 value: status
             }

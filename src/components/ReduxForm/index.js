@@ -12,7 +12,8 @@ import UsersMultiSearchField from './Users/UsersMultiSearchField'
 import ProductTypeSearchField from './Product/ProductTypeSearchField'
 import ProductTypeParentSearchField from './Product/ProductTypeParentSearchField'
 import ProductTypeChildSearchField from './Product/ProductTypeChildSearchField'
-import BrandSearchField from './BrandSearchField'
+import BrandSearchField from './Brand/BrandSearchField'
+import BrandMultiSearchField from './Brand/BrandMultiSearchField'
 import MeasurementSearchField from './Measurement/MeasurementSearchField'
 import MeasurementMultiSearchField from './Measurement/MeasurementMultiSearchField'
 import CurrencySearchField from './CurrencySearchField'
@@ -40,13 +41,16 @@ import CashboxTypeSearchField from './Cashbox/CashboxTypeSearchField'
 import TransitionSendCashboxTypeSearchField from './Cashbox/TransitionSendCashboxTypeSearchField'
 import DeliveryTypeSearchField from './DeliveryTypeSearchField'
 import ManufactureSearchField from './Manufacture/ManufactureSearchField'
+import ManufactureMultiSearchField from './Manufacture/ManufactureMultiSearchField'
 import ManufactureListMaterialField from './Manufacture/ManufactureListMaterialField'
 import ProviderContactsField from './Provider/ProviderContactsField'
 import ClientContactsField from './Client/ClientContactsField'
 import UsersGroupSearchField from './Users/UsersGroupSearchField'
-import TransactionTypeSearchField from './TransactionTypeSearchField'
+import TransactionTypeSearchField from './Transaction/TransactionTypeSearchField'
+import TransactionTypeMultiSearchField from './Transaction/TransactionTypeMultiSearchField'
 import ProductMeasurementField from './Product/ProductMeasurementField'
-import ShiftSearchField from './ShiftSearchField'
+import ShiftSearchField from './Shift/ShiftSearchField'
+import ShiftMultiSearchField from './Shift/ShiftMultiSearchField'
 import CashboxCustomField from './PendingPayments/CashboxCustomField'
 import CashboxCashCustomField from './PendingPayments/CashboxCashCustomField'
 import CashboxBankCustomField from './PendingPayments/CashboxBankCustomField'
@@ -82,7 +86,7 @@ import PermissionTimeSearchField from './PermissionTimeSearchField'
 import AgentSearchField from './AgentSearchField'
 import ClientTransactionTypeSearchField from './ClientTransactionTypeSearchField'
 import StockReceiveTypeSearchFiled from './StockReceiveTypeSearchFiled'
-import SupplyTypeSearchField from './Supply/SupplyTypeSearchField'
+import SupplyTypeMultiSearchField from './Supply/SupplyTypeMultiSearchField'
 import ClientBalanceTypeSearchField from './ClientBalance/ClientBalanceTypeSearchField'
 import EquipmentSearchField from './EquipmentSearchField'
 import PendingExpensesTypeSearchField from './PendingExpensesTypeSearchField'
@@ -109,7 +113,7 @@ export {
     DeliveryManSearchField,
     PendingExpensesTypeSearchField,
     EquipmentSearchField,
-    SupplyTypeSearchField,
+    SupplyTypeMultiSearchField,
     StockHistoryTypeSearchField,
     StockReceiveTypeSearchFiled,
     ReturnStatusSearchField,
@@ -119,6 +123,7 @@ export {
     normalizeDiscount,
     normalizeNumber,
     ShiftSearchField,
+    ShiftMultiSearchField,
     StockStatusSearchField,
     ProductMeasurementField,
     TransactionTypeSearchField,
@@ -207,5 +212,8 @@ export {
     ProductTypeParentMultiSearchField,
     ProviderMultiSearchField,
     MeasurementMultiSearchField,
-    MarketTypeMultiSearchField
+    MarketTypeMultiSearchField,
+    BrandMultiSearchField,
+    TransactionTypeMultiSearchField,
+    ManufactureMultiSearchField
 }

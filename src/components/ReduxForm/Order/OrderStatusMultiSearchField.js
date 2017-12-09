@@ -1,6 +1,5 @@
-import _ from 'lodash'
 import React from 'react'
-import SearchField from '../Basic/MultiSelectField'
+import MultiSelectField from '../Basic/MultiSelectField'
 
 const Items = [
     {id: 5, name: 'Запрос отправлен'},
@@ -14,19 +13,14 @@ const getOptions = () => {
     return Promise.resolve(Items)
 }
 
-const getItem = (id) => {
-    return Promise.resolve(
-        _.find(Items, (o) => { return o.id === _.toInteger(id) }))
-}
-
 const CurrencySearchField = (props) => {
     return (
-        <SearchField
-            getValue={SearchField.defaultGetValue('id')}
-            getText={SearchField.defaultGetText('name')}
+        <MultiSelectField
+            getValue={MultiSelectField.defaultGetValue('id')}
+            getText={MultiSelectField.defaultGetText('name')}
             getOptions={getOptions}
-            getItem={getItem}
-            getItemText={SearchField.defaultGetText('name')}
+            getIdsOption={getOptions}
+            getItemText={MultiSelectField.defaultGetText('name')}
             {...props}
         />
     )

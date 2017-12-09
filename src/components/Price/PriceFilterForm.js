@@ -13,7 +13,7 @@ import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import {
     MeasurementMultiSearchField,
     ProductTypeChildSearchField,
-    ProductTypeParentMultiSearchField,
+    ProductTypeParentSearchField,
     CheckBox
 } from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
@@ -107,7 +107,7 @@ const enhance = compose(
         enableReinitialize: true
     }),
     connect((state) => {
-        const typeParent = _.get(state, ['form', 'PriceFilterForm', 'values', 'typeParent'])
+        const typeParent = _.get(state, ['form', 'PriceFilterForm', 'values', 'typeParent', 'value'])
         return {
             typeParent
         }
@@ -169,7 +169,7 @@ const PriceFilterForm = enhance((props) => {
                     <Field
                         name="typeParent"
                         className={classes.inputFieldCustom}
-                        component={ProductTypeParentMultiSearchField}
+                        component={ProductTypeParentSearchField}
                         label="Тип продукта"
                         fullWidth={true}
                     />

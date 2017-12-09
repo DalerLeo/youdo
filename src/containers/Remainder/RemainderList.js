@@ -7,6 +7,7 @@ import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers, withState} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
+import {splitToArray, joinArray} from '../../helpers/joinSplitValues'
 import toBoolean from '../../helpers/toBoolean'
 import sprintf from 'sprintf'
 import {openSnackbarAction} from '../../actions/snackbar'
@@ -182,18 +183,18 @@ const enhance = compose(
         },
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
-            const stock = _.get(filterForm, ['values', 'stock', 'value']) || null
-            const typeParent = _.get(filterForm, ['values', 'typeParent']) || null
+            const stock = _.get(filterForm, ['values', 'stock']) || null
+            const typeParent = _.get(filterForm, ['values', 'typeParent', 'value']) || null
             const typeChild = _.get(filterForm, ['values', 'typeChild', 'value']) || null
             const measurement = _.get(filterForm, ['values', 'measurement']) || null
             const brand = _.get(filterForm, ['values', 'brand']) || null
             filter.filterBy({
                 [REMAINDER_FILTER_OPEN]: false,
-                [REMAINDER_FILTER_KEY.STOCK]: _.join(stock, '-'),
-                [REMAINDER_FILTER_KEY.TYPE_PARENT]: _.join(typeParent, '-'),
+                [REMAINDER_FILTER_KEY.STOCK]: joinArray(stock),
+                [REMAINDER_FILTER_KEY.TYPE_PARENT]: typeParent,
                 [REMAINDER_FILTER_KEY.TYPE_CHILD]: typeChild,
-                [REMAINDER_FILTER_KEY.MEASUREMENT]: _.join(measurement, '-'),
-                [REMAINDER_FILTER_KEY.BRAND]: _.join(brand, '-')
+                [REMAINDER_FILTER_KEY.MEASUREMENT]: joinArray(measurement),
+                [REMAINDER_FILTER_KEY.BRAND]: joinArray(brand)
             })
         },
         handleSubmitSearch: props => () => {
@@ -394,9 +395,11 @@ const RemainderList = enhance((props) => {
         openAddProductConfirm
     } = props
 
-    const stock = _.toInteger(filter.getParam(REMAINDER_FILTER_KEY.STOCK))
-    const type = _.toInteger(filter.getParam(REMAINDER_FILTER_KEY.TYPE))
-    const status = filter.getParam(REMAINDER_FILTER_KEY.STATUS)
+    const stock = (filter.getParam(REMAINDER_FILTER_KEY.STOCK))
+    const brand = (filter.getParam(REMAINDER_FILTER_KEY.BRAND))
+    const measurement = (filter.getParam(REMAINDER_FILTER_KEY.MEASUREMENT))
+    const typeParent = _.toInteger(filter.getParam(REMAINDER_FILTER_KEY.TYPE_PARENT))
+    const typeChild = _.toInteger(filter.getParam(REMAINDER_FILTER_KEY.TYPE_CHILD))
     const openFilterDialog = toBoolean(_.get(location, ['query', REMAINDER_FILTER_OPEN]))
     const openTransferDialog = toBoolean(_.get(location, ['query', REMAINDER_TRANSFER_DIALOG_OPEN]))
     const openReversedDialog = _.toNumber(_.get(location, ['query', REMAINDER_RESERVED_DIALOG_OPEN]))
@@ -418,15 +421,11 @@ const RemainderList = enhance((props) => {
 
     const filterDialog = {
         initialValues: {
-            stock: stock && _.map(_.split(stock, '-'), (item) => {
-                return _.toNumber(item)
-            }),
-            type: type && _.map(_.split(type, '-'), (item) => {
-                return _.toNumber(item)
-            }),
-            status: status && _.map(_.split(status, '-'), (item) => {
-                return _.toNumber(item)
-            })
+            stock: stock && splitToArray(stock),
+            brand: brand && splitToArray(brand),
+            measurement: measurement && splitToArray(measurement),
+            typeParent: {value: typeParent},
+            typeChild: {value: typeChild}
         },
         openFilterDialog: openFilterDialog,
         handleOpenFilterDialog: props.handleOpenFilterDialog,

@@ -12,7 +12,7 @@ const getOptions = () => {
 
 const getItem = (id) => {
     return Promise.resolve(
-        _.find(Items, (o) => { return o.id === _.toInteger(id) }))
+        _.find(Items, (o) => { return o.id === id }))
 }
 
 const ClientBalanceTypeSearchField = (props) => {

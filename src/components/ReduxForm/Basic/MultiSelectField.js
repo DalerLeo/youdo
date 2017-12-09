@@ -25,7 +25,7 @@ const fetchList = ({state, dispatch, getOptions, getText, getValue, input}) => {
         })
         .then((data) => {
             const selectedValues = _.intersectionBy(state.dataSource, newValues, 'value')
-            dispatch({dataSource: _.union(data, selectedValues), loading: false})
+            dispatch({dataSource: _.unionBy(data, selectedValues), loading: false})
         })
 }
 
@@ -125,13 +125,6 @@ const enhance = compose(
         }
     }),
     withPropsOnChange((props, nextProps) => {
-        return _.get(props, ['input', 'value', 'value']) !== _.get(nextProps, ['input', 'value', 'value']) && _.get(nextProps, ['withDetails'])
-    }, (props) => {
-        _.get(props, ['withDetails']) &&
-        _.get(props, ['input', 'value', 'value']) &&
-        props.getItem(_.get(props, ['input', 'value', 'value']))
-    }),
-    withPropsOnChange((props, nextProps) => {
         return (_.get(props, ['state', 'text']) !== _.get(nextProps, ['state', 'text']) ||
             _.get(props, ['state', 'open']) !== _.get(nextProps, ['state', 'open'])) &&
             _.get(nextProps, ['state', 'open'])
@@ -141,16 +134,29 @@ const enhance = compose(
         return !_.isEmpty(_.get(nextProps, ['state', 'dataSource'])) && _.get(nextProps, ['input', 'value']) &&
             _.get(props, ['state', 'loading']) !== _.get(nextProps, ['state', 'loading'])
     }, (props) => {
-        const {state, input, getItem, dispatch, getText, getValue} = props
-        const finder = _.find(state.dataSource, {'value': input.value.value})
-        if (_.isEmpty(finder) && input.value.value) {
-            getItem(input.value.value).then((data) => {
-                return dispatch({
-                    dataSource: _.union(props.state.dataSource, [{
-                        text: getText(data), value: getValue(data)
-                    }])
+        const {state, input, dispatch, getText, getValue, getIdsOption} = props
+        const items = _.join(_.get(input, 'value'), '-')
+        let notFound = true
+
+        for (let i = 0; i < _.size(input.value); i++) {
+            if (!_.find(state.dataSource, {'value': input.value[i]})) {
+                notFound = true
+                break
+            }
+            notFound = false
+        }
+        if (!_.isEmpty(input.value) && notFound) {
+            getIdsOption(items)
+                .then((data) => {
+                    return dispatch({
+                        dataSource: _.unionBy(state.dataSource, _.map(data, (item) => {
+                            return {
+                                text: getText(item),
+                                value: getValue(item)
+                            }
+                        }), 'value')
+                    })
                 })
-            })
         }
     }),
 )

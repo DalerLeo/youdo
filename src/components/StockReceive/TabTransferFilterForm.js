@@ -11,9 +11,9 @@ import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import {
     DateToDateField,
-    StockSearchField,
+    StockMultiSearchField,
     OrderTransferTypeSearchField,
-    UsersSearchField
+    UsersMultiSearchField
 } from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
@@ -162,7 +162,7 @@ const TabTransferFilterForm = enhance((props) => {
                         <Field
                             className={classes.inputFieldCustom}
                             name="stock"
-                            component={StockSearchField}
+                            component={StockMultiSearchField}
                             label="Склад"
                             fullWidth={true}/>
                     </div>
@@ -178,7 +178,7 @@ const TabTransferFilterForm = enhance((props) => {
                         <Field
                             className={classes.inputFieldCustom}
                             name="acceptedBy"
-                            component={UsersSearchField}
+                            component={UsersMultiSearchField}
                             label="Передал"
                             fullWidth={true}/>
                     </div>}
