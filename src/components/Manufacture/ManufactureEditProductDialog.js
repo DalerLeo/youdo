@@ -212,6 +212,8 @@ const enhance = compose(
         enableReinitialize: true
     })
 )
+const ELEVEN = 11
+const THREE = 3
 const validate = (data) => {
     const errors = toCamelCase(data)
     const nonFieldErrors = _.get(errors, 'nonFieldErrors')
@@ -233,7 +235,7 @@ const ManufactureEditProductDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '135px'} : {width: '600px'}}
+            contentStyle={loading || isUpdate ? {width: '300px'} : {width: '600px'}}
             bodyClassName={classes.popUp}>
             <form onSubmit={onSubmit} className={classes.form}>
                 <div className={classes.titleContent}>
@@ -247,17 +249,16 @@ const ManufactureEditProductDialog = enhance((props) => {
                         <div style={{width: '100%', paddingTop: '10px'}}>
                             <div className={classes.addMaterials}>
                                 <Row className={classes.addRaw} style={{width: '100%'}}>
-                                    <Col xs={8}>
+                                    {!isUpdate && <Col xs={8}>
                                         <Field
                                             label="Наименование товара"
                                             name="ingredient"
                                             component={ProductSearchField}
                                             className={classes.inputFieldCustom}
                                             fullWidth={true}
-                                            disabled={isUpdate}
                                         />
-                                    </Col>
-                                    <Col xs={3}>
+                                    </Col>}
+                                    <Col xs={isUpdate ? ELEVEN : THREE}>
                                         <Field
                                             name="amount"
                                             style={{textAlign: 'right', marginTop: '-2px'}}

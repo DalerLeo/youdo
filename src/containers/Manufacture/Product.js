@@ -403,9 +403,6 @@ const ManufactureProductList = enhance((props) => {
     const selectProduct = _.find(_.get(productDetail, 'ingredient'), {'id': _.toInteger(ingredientId)})
     const editMaterials = {
         initialValues: {
-            ingredient: {
-                value: _.get(selectProduct, ['ingredient', 'id'])
-            },
             amount: _.get(selectProduct, 'amount')
         },
         measurement: _.get(selectProduct, ['ingredient', 'measurement', 'name']),

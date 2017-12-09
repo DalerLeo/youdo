@@ -270,7 +270,6 @@ const TrackingWrapper = enhance((props) => {
         openShopDetail = true
     }
     const orderedData = _.orderBy(_.get(listData, 'data'), ['registeredDate'], ['desc'])
-
     const iconStyle = {
         icon: {
             color: '#fff',

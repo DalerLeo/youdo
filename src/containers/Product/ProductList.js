@@ -275,11 +275,10 @@ const ProductList = enhance((props) => {
                 code: _.get(detail, 'code'),
                 priority: _.get(detail, 'priority'),
                 productTypeParent: {
-                    value: parentType || childType
+                    value: parentType
                 },
                 type: {
-                    text: _.get(detail, ['type', 'name']),
-                    value: parentType && childType
+                    value: childType
                 },
                 measurement: {
                     text: _.get(detail, ['measurement', 'name']),
