@@ -7,7 +7,7 @@ import Container from '../../Container/index'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
-import {TextField, DivisionSearchField} from '../../ReduxForm'
+import {TextField, DivisionMultiSearchField} from '../../ReduxForm'
 import StatSideMenu from '../StatSideMenu'
 import Loader from '../../Loader'
 import Pagination from '../../GridList/GridListNavPagination'
@@ -227,7 +227,8 @@ const StatDebtorsGridList = enhance((props) => {
         handleSubmit,
         handleOpenCloseDetail,
         getDocument,
-        handleSubmitMultiUpdate
+        handleSubmitMultiUpdate,
+        initialValues
     } = props
 
     const divisionStatus = getConfig('DIVISIONS')
@@ -276,7 +277,7 @@ const StatDebtorsGridList = enhance((props) => {
         <div>
             {divisionStatus && <Field
                 name="division"
-                component={DivisionSearchField}
+                component={DivisionMultiSearchField}
                 className={classes.inputFieldCustom}
                 label="Подразделение"
                 fullWidth={true}
@@ -299,6 +300,7 @@ const StatDebtorsGridList = enhance((props) => {
                             filter={filter}
                             fields={fields}
                             filterKeys={STAT_DEBTORS_FILTER_KEY}
+                            initialValues={initialValues}
                             handleSubmitFilterDialog={handleSubmitFilterDialog}
                             handleGetDocument={getDocument.handleGetDocument}
                             withoutDate={true}

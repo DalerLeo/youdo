@@ -12,7 +12,7 @@ import ordering from '../../../helpers/ordering'
 import horizontalScroll from '../../../helpers/horizontalScroll'
 import {
     DateToDateField,
-    StockSearchField,
+    StockMultiSearchField,
     ProductTypeParentSearchField,
     ProductTypeChildSearchField,
     TextField
@@ -520,7 +520,7 @@ const StatProductMoveGridList = enhance((props) => {
             <Field
                 className={classes.inputFieldCustom}
                 name="stock"
-                component={StockSearchField}
+                component={StockMultiSearchField}
                 label="Склад"
                 fullWidth={true}/>
             <Field

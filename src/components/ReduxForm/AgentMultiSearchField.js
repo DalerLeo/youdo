@@ -1,4 +1,3 @@
-import sprintf from 'sprintf'
 import React from 'react'
 import SearchField from './Basic/MultiSelectField'
 import axios from '../../helpers/axios'
@@ -12,10 +11,10 @@ const getOptions = (search) => {
         })
 }
 
-const getItem = (id) => {
-    return axios().get(sprintf(PATH.USERS_ITEM, id))
+const getIdsOption = (ids) => {
+    return axios().get(`${PATH.USERS_LIST}?ids=${ids || ''}`)
         .then(({data}) => {
-            return Promise.resolve(toCamelCase(data))
+            return Promise.resolve(toCamelCase(data.results))
         })
 }
 
@@ -25,7 +24,7 @@ const AgentSearchField = (props) => {
             getValue={SearchField.defaultGetValue('id')}
             getText={SearchField.defaultGetText('username')}
             getOptions={getOptions}
-            getItem={getItem}
+            getIdsOption={getIdsOption}
             getItemText={SearchField.defaultGetText('username')}
             {...props}
         />

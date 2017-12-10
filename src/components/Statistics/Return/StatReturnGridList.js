@@ -15,7 +15,7 @@ import StatSideMenu from '../StatSideMenu'
 import DateToDateField from '../../ReduxForm/Basic/DateToDateField'
 import Container from '../../Container/index'
 import Pagination from '../../GridList/GridListNavPagination/index'
-import DivisionSearchField from '../../ReduxForm/Division/DivisionSearchField'
+import DivisionMultiSearchField from '../../ReduxForm/Division/DivisionMultiSearchField'
 import NotFound from '../../Images/not-found.png'
 import * as ROUTES from '../../../constants/routes'
 import numberFormat from '../../../helpers/numberFormat'
@@ -309,7 +309,7 @@ const StatReturnGridList = enhance((props) => {
                 fullWidth={true}/>
             {divisionStatus && <Field
                 name="division"
-                component={DivisionSearchField}
+                component={DivisionMultiSearchField}
                 className={classes.inputFieldCustom}
                 label="Подразделение"
                 fullWidth={true}/>}

@@ -8,6 +8,7 @@ import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
+import {splitToArray, joinArray} from '../../helpers/joinSplitValues'
 import toBoolean from '../../helpers/toBoolean'
 import {ManufactureShipmentWrapper, OPEN_FILTER} from '../../components/Manufacture'
 import * as SHIPMENT_TAB from '../../constants/manufactureShipmentTab'
@@ -156,10 +157,10 @@ const enhance = compose(
         },
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
-            const shift = _.get(filterForm, ['values', 'shift', 'value']) || null
+            const shift = _.get(filterForm, ['values', 'shift']) || null
             filter.filterBy({
                 [OPEN_FILTER]: false,
-                [MANUF_ACTIVITY_FILTER_KEY.SHIFT]: shift
+                [MANUF_ACTIVITY_FILTER_KEY.SHIFT]: joinArray(shift)
             })
         },
 
@@ -209,6 +210,7 @@ const ManufactureShipmentList = enhance((props) => {
     const shipmentId = _.toNumber(_.get(props, ['location', 'query', 'shipmentId']) || MINUS_ONE)
     const tab = _.get(location, ['query', TAB]) || SHIPMENT_TAB.DEFAULT_TAB
     const openFilterDialog = toBoolean(_.get(location, ['query', OPEN_FILTER]))
+    const shift = _.get(location, ['query', MANUF_ACTIVITY_FILTER_KEY.SHIFT])
 
     const tabData = {
         tab,
@@ -248,6 +250,7 @@ const ManufactureShipmentList = enhance((props) => {
 
     const filterDialog = {
         initialValues: {
+            shift: shift && splitToArray(shift),
             dateRange: {
                 startDate: moment(beginDate),
                 endDate: moment(endDate)

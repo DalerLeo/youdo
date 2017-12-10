@@ -12,7 +12,7 @@ const getOptions = (search) => {
 }
 
 const getIdsOption = (ids) => {
-    return axios().get(`${PATH.USERS_LIST}?ids=${ids || ''}`)
+    return axios().get(`${PATH.SHIFT_LIST}?ids=${ids || ''}`)
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
         })

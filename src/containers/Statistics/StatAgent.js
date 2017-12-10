@@ -7,6 +7,7 @@ import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
+import {splitToArray} from '../../helpers/joinSplitValues'
 import toBoolean from '../../helpers/toBoolean'
 import getDocuments from '../../helpers/getDocument'
 import * as API from '../../constants/api'
@@ -101,10 +102,10 @@ const enhance = compose(
         },
 
         handleSubmitFilterDialog: props => () => {
-            const {filter, filterForm, setOpenFilter} = props
+            const {filter, filterForm} = props
             const search = _.get(filterForm, ['values', 'search']) || null
-            const zone = _.get(filterForm, ['values', 'zone', 'value']) || null
-            const division = _.get(filterForm, ['values', 'division', 'value']) || null
+            const zone = _.get(filterForm, ['values', 'zone']) || null
+            const division = _.get(filterForm, ['values', 'division']) || null
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
             filter.filterBy({
@@ -115,7 +116,6 @@ const enhance = compose(
                 [STAT_AGENT_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
 
             })
-            setOpenFilter(false)
         },
         handleGetDocument: props => () => {
             const {filter} = props
@@ -172,8 +172,8 @@ const StatAgentList = enhance((props) => {
     const firstDayOfMonth = _.get(location, ['query', 'fromDate']) || moment().format('YYYY-MM-01')
     const lastDay = moment().daysInMonth()
     const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
-    const zone = !_.isNull(_.get(location, ['query', 'zone'])) && _.toInteger(_.get(location, ['query', 'zone']))
-    const division = !_.isNull(_.get(location, ['query', 'zone'])) && _.toInteger(_.get(location, ['query', 'division']))
+    const zone = !_.isNull(_.get(location, ['query', 'zone'])) && _.get(location, ['query', 'zone'])
+    const division = !_.isNull(_.get(location, ['query', 'zone'])) && _.get(location, ['query', 'division'])
     const search = !_.isNull(_.get(location, ['query', 'search'])) ? _.get(location, ['query', 'search']) : null
 
     const statAgentDialog = {
@@ -204,12 +204,8 @@ const StatAgentList = enhance((props) => {
     }
     const initialValues = {
         search: search,
-        zone: zone && _.map(_.split(zone, '-'), (item) => {
-            return _.toNumber(item)
-        }),
-        division: division && _.map(_.split(division, '-'), (item) => {
-            return _.toNumber(item)
-        }),
+        zone: zone && splitToArray(zone),
+        division: division && splitToArray(division),
         date: {
             fromDate: moment(firstDayOfMonth),
             toDate: moment(lastDayOfMonth)

@@ -22,7 +22,7 @@ import Choose from '../../Images/choose-menu.png'
 import NotFound from '../../Images/not-found.png'
 import dateTimeFormat from '../../../helpers/dateTimeFormat'
 import numberFormat from '../../../helpers/numberFormat'
-import {ShiftSearchField} from '../../ReduxForm'
+import {ShiftMultiSearchField} from '../../ReduxForm'
 const enhance = compose(
     injectSheet({
         shipmentContent: {
@@ -370,7 +370,7 @@ const ManufactureShipment = enhance((props) => {
             <Field
                 className={classes.inputFieldCustom}
                 name="shift"
-                component={ShiftSearchField}
+                component={ShiftMultiSearchField}
                 label="Смена"
                 fullWidth={true}/>
         </div>

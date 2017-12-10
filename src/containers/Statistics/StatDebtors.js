@@ -33,7 +33,7 @@ const enhance = compose(
         const statLoading = _.get(state, ['statisticsDebtors', 'data', 'loading'])
         const list = _.get(state, ['statisticsDebtors', 'list', 'data'])
         const listLoading = _.get(state, ['statisticsDebtors', 'list', 'loading'])
-        const filterForm = _.get(state, ['form', 'StatDebtorsFilterForm'])
+        const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
         const filter = filterHelper(list, pathname, query)
         const filterItem = filterHelper(detail, pathname, query)
         const multiUpdateForm = _.get(state, ['form', 'StatDebtorsForm'])
@@ -95,11 +95,10 @@ const enhance = compose(
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
             const search = _.get(filterForm, ['values', 'search']) || null
-            const division = _.get(filterForm, ['values', 'division', 'value']) || null
-
+            const division = _.get(filterForm, ['values', 'division']) || null
             filter.filterBy({
                 [STAT_DEBTORS_FILTER_KEY.SEARCH]: search,
-                [STAT_DEBTORS_FILTER_KEY.DIVISION]: division
+                [STAT_DEBTORS_FILTER_KEY.DIVISION]: _.join(division, '-')
 
             })
         },
@@ -162,6 +161,7 @@ const StatDebtorsList = enhance((props) => {
     const detailId = _.toInteger(_.get(params, 'statDebtorsId'))
     const openDetailId = _.toInteger(_.get(location, ['query', 'detailId']))
     const openStatDebtorsDialog = _.toInteger(_.get(location, ['query', 'orderId']))
+    const division = _.get(location, ['query', 'division'])
 
     const statDebtorsDialog = {
         openStatDebtorsDialog,
@@ -176,6 +176,11 @@ const StatDebtorsList = enhance((props) => {
         listLoading
     }
 
+    const initialValues = {
+        division: division && _.map(_.split(division, '-'), (item) => {
+            return _.toNumber(item)
+        })
+    }
     const detailData = {
         openDetailId: openDetailId,
         id: detailId,
@@ -196,6 +201,7 @@ const StatDebtorsList = enhance((props) => {
             <StatDebtorsGridList
                 filter={filter}
                 listData={listData}
+                initialValues={initialValues}
                 detailData={detailData}
                 handleSubmitFilterDialog={props.handleSubmitFilterDialog}
                 statDebtorsDialog={statDebtorsDialog}

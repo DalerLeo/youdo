@@ -8,6 +8,7 @@ import Layout from '../../components/Layout'
 import * as ROUTER from '../../constants/routes'
 import {compose, withHandlers, withPropsOnChange, withState} from 'recompose'
 import filterHelper from '../../helpers/filter'
+import {joinArray, splitToArray} from '../../helpers/joinSplitValues'
 import toBoolean from '../../helpers/toBoolean'
 import * as serializers from '../../serializers/Statistics/statSalesSerializer'
 import getDocuments from '../../helpers/getDocument'
@@ -124,13 +125,13 @@ const enhance = compose(
             const exclude = _.get(filterForm, ['values', 'exclude']) || null
 
             filter.filterBy({
-                [STAT_SALES_FILTER_KEY.CLIENT]: _.join(client, '-'),
-                [STAT_SALES_FILTER_KEY.STATUS]: _.join(status, '-'),
-                [STAT_SALES_FILTER_KEY.PRODUCT]: _.join(product, '-'),
-                [STAT_SALES_FILTER_KEY.INITIATOR]: _.join(initiator, '-'),
-                [STAT_SALES_FILTER_KEY.ZONE]: _.join(zone, '-'),
-                [STAT_SALES_FILTER_KEY.SHOP]: _.join(shop, '-'),
-                [STAT_SALES_FILTER_KEY.DIVISION]: _.join(division, '-'),
+                [STAT_SALES_FILTER_KEY.CLIENT]: joinArray(client),
+                [STAT_SALES_FILTER_KEY.STATUS]: joinArray(status),
+                [STAT_SALES_FILTER_KEY.PRODUCT]: joinArray(product),
+                [STAT_SALES_FILTER_KEY.INITIATOR]: joinArray(initiator),
+                [STAT_SALES_FILTER_KEY.ZONE]: joinArray(zone),
+                [STAT_SALES_FILTER_KEY.SHOP]: joinArray(shop),
+                [STAT_SALES_FILTER_KEY.DIVISION]: joinArray(division),
                 [STAT_SALES_FILTER_KEY.DEPT]: dept,
                 [STAT_SALES_FILTER_KEY.ONLY_BONUS]: onlyBonus,
                 [STAT_SALES_FILTER_KEY.EXCLUDE]: exclude,
@@ -190,15 +191,15 @@ const StatSalesList = enhance((props) => {
     const detailId = _.toInteger(_.get(params, 'statSaleId'))
     const openStatSaleDialog = toBoolean(_.get(location, ['query', STAT_SALES_DIALOG_OPEN]))
 
-    const client = _.toInteger(filter.getParam(STAT_SALES_FILTER_KEY.CLIENT))
+    const client = filter.getParam(STAT_SALES_FILTER_KEY.CLIENT)
     const dept = _.toInteger(filter.getParam(STAT_SALES_FILTER_KEY.DEPT))
     const initiator = filter.getParam(STAT_SALES_FILTER_KEY.INITIATOR)
-    const zone = _.toInteger(filter.getParam(STAT_SALES_FILTER_KEY.ZONE))
+    const zone = filter.getParam(STAT_SALES_FILTER_KEY.ZONE)
     const deliveryMan = filter.getParam(STAT_SALES_FILTER_KEY.DELIVERY_MAN)
-    const shop = _.toInteger(filter.getParam(STAT_SALES_FILTER_KEY.SHOP))
-    const product = _.toInteger(filter.getParam(STAT_SALES_FILTER_KEY.PRODUCT))
-    const division = _.toInteger(filter.getParam(STAT_SALES_FILTER_KEY.DIVISION))
-    const status = _.toInteger(filter.getParam(STAT_SALES_FILTER_KEY.STATUS))
+    const shop = filter.getParam(STAT_SALES_FILTER_KEY.SHOP)
+    const product = filter.getParam(STAT_SALES_FILTER_KEY.PRODUCT)
+    const division = filter.getParam(STAT_SALES_FILTER_KEY.DIVISION)
+    const status = filter.getParam(STAT_SALES_FILTER_KEY.STATUS)
     const deliveryFromDate = filter.getParam(STAT_SALES_FILTER_KEY.DELIVERY_FROM_DATE)
     const deliveryToDate = filter.getParam(STAT_SALES_FILTER_KEY.DELIVERY_TO_DATE)
     const createdFromDate = filter.getParam(STAT_SALES_FILTER_KEY.FROM_DATE)
@@ -229,52 +230,37 @@ const StatSalesList = enhance((props) => {
 
     const filterForm = {
         initialValues: {
-            client: client && _.map(_.split(client, '-'), (item) => {
-                return _.toNumber(item)
-            }),
-            status: status && _.map(_.split(status, '-'), (item) => {
-                return _.toNumber(item)
-            }),
-            division: division && _.map(_.split(division, '-'), (item) => {
-                return _.toNumber(item)
-            })
-        },
-        shop: shop && _.map(_.split(shop, '-'), (item) => {
-            return _.toNumber(item)
-        }),
-        product: product && _.map(_.split(product, '-'), (item) => {
-            return _.toNumber(item)
-        }),
-        initiator: initiator && _.map(_.split(initiator, '-'), (item) => {
-            return _.toNumber(item)
-        }),
-        dept: {
-            value: dept
-        },
-        zone: zone && _.map(_.split(zone, '-'), (item) => {
-            return _.toNumber(item)
-        }),
-        deliveryMan: deliveryMan && _.map(_.split(deliveryMan, '-'), (item) => {
-            return _.toNumber(item)
-        }),
-        deliveryDate: {
-            fromDate: deliveryFromDate && moment(deliveryFromDate, 'YYYY-MM-DD'),
-            toDate: deliveryToDate && moment(deliveryToDate, 'YYYY-MM-DD')
-        },
-        createdDate: {
-            fromDate: createdFromDate && moment(createdFromDate, 'YYYY-MM-DD'),
-            toDate: createdToDate && moment(createdToDate, 'YYYY-MM-DD')
-        },
-        deadlineDate: {
-            fromDate: deadlineFromDate && moment(deadlineFromDate, 'YYYY-MM-DD'),
-            toDate: deadlineToDate && moment(deadlineToDate, 'YYYY-MM-DD')
-        },
-        onlyBonus: onlyBonus,
-        exclude: true,
-        date: {
-            fromDate: moment(firstDayOfMonth),
-            toDate: moment(lastDayOfMonth)
+            client: client && splitToArray(client),
+            status: status && splitToArray(status),
+            division: division && splitToArray(division),
+            shop: shop && splitToArray(shop),
+            product: product && splitToArray(product),
+            initiator: initiator && splitToArray(initiator),
+            dept: {
+                value: dept
+            },
+            zone: zone && splitToArray(zone),
+            deliveryMan: deliveryMan && splitToArray(deliveryMan),
+            deliveryDate: {
+                fromDate: deliveryFromDate && moment(deliveryFromDate, 'YYYY-MM-DD'),
+                toDate: deliveryToDate && moment(deliveryToDate, 'YYYY-MM-DD')
+            },
+            createdDate: {
+                fromDate: createdFromDate && moment(createdFromDate, 'YYYY-MM-DD'),
+                toDate: createdToDate && moment(createdToDate, 'YYYY-MM-DD')
+            },
+            deadlineDate: {
+                fromDate: deadlineFromDate && moment(deadlineFromDate, 'YYYY-MM-DD'),
+                toDate: deadlineToDate && moment(deadlineToDate, 'YYYY-MM-DD')
+            },
+            onlyBonus: onlyBonus,
+            exclude: true,
+            date: {
+                fromDate: moment(firstDayOfMonth),
+                toDate: moment(lastDayOfMonth)
+            }
         }
+
     }
     const mergedGraph = {}
     if (!graphReturnLoading) {

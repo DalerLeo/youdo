@@ -15,8 +15,8 @@ import numberFormat from '../../../helpers/numberFormat'
 import {
   TextField,
   DateToDateField,
-  DivisionSearchField,
-  ClientSearchField,
+  DivisionMultiSearchField,
+  ClientMultiSearchField,
   ClientTransactionTypeSearchField
 } from '../../ReduxForm'
 import Loader from '../../Loader'
@@ -326,13 +326,13 @@ const ClientIncomeGridList = enhance((props) => {
         fullWidth={true}/>
       {divisionStatus && <Field
         name="division"
-        component={DivisionSearchField}
+        component={DivisionMultiSearchField}
         className={classes.inputFieldCustom}
         label="Подразделение"
         fullWidth={true}/>}
       <Field
         name="client"
-        component={ClientSearchField}
+        component={ClientMultiSearchField}
         className={classes.inputFieldCustom}
         label="Клиент"
         fullWidth={true}/>

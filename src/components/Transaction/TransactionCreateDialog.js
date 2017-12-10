@@ -210,7 +210,7 @@ const enhance = compose(
             padding: '10px 30px'
         },
         search: {
-            border: '2px #efefef dashed',
+            borderBottom: '2px #efefef solid',
             position: 'relative',
             display: 'flex',
             alignItems: 'center',
@@ -224,8 +224,7 @@ const enhance = compose(
             '& > input': {
                 border: 'none',
                 outline: 'none',
-                height: '35px !important',
-                padding: '0 35px 0 10px'
+                height: '35px !important'
             }
         },
         searchButton: {
@@ -317,7 +316,8 @@ const TransactionCreateDialog = enhance((props) => {
     const filterData = _.orderBy(_.get(usersData, 'data'), ['firstName', 'secondName'], ['desc', 'desc'])
     const filteredList = filterData.filter((el) => {
         const searchValue = el.firstName.toLowerCase()
-        return searchValue.indexOf(searchQuery) !== NOT_FOUND
+        const searchValue2 = el.secondName.toLowerCase()
+        return searchValue.indexOf(searchQuery) !== NOT_FOUND || searchValue2.indexOf(searchQuery) !== NOT_FOUND
     })
     return (
         <Dialog
