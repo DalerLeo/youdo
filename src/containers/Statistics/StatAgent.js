@@ -7,7 +7,7 @@ import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
-import {splitToArray, joinArray} from '../../helpers/joinSplitValues'
+import {splitToArray} from '../../helpers/joinSplitValues'
 import toBoolean from '../../helpers/toBoolean'
 import getDocuments from '../../helpers/getDocument'
 import * as API from '../../constants/api'
@@ -102,21 +102,20 @@ const enhance = compose(
         },
 
         handleSubmitFilterDialog: props => () => {
-            const {filter, filterForm, setOpenFilter} = props
+            const {filter, filterForm} = props
             const search = _.get(filterForm, ['values', 'search']) || null
-            const zone = _.get(filterForm, ['values', 'zone', 'value']) || null
-            const division = _.get(filterForm, ['values', 'division', 'value']) || null
+            const zone = _.get(filterForm, ['values', 'zone']) || null
+            const division = _.get(filterForm, ['values', 'division']) || null
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
             filter.filterBy({
                 [STAT_AGENT_FILTER_KEY.SEARCH]: search,
-                [STAT_AGENT_FILTER_KEY.ZONE]: joinArray(zone),
-                [STAT_AGENT_FILTER_KEY.DIVISION]: joinArray(division),
+                [STAT_AGENT_FILTER_KEY.ZONE]: _.join(zone, '-'),
+                [STAT_AGENT_FILTER_KEY.DIVISION]: _.join(division, '-'),
                 [STAT_AGENT_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [STAT_AGENT_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
 
             })
-            setOpenFilter(false)
         },
         handleGetDocument: props => () => {
             const {filter} = props
