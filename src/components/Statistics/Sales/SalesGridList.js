@@ -35,7 +35,6 @@ import {
     ZoneMultiSearchField,
     DivisionMultiSearchField,
     DeliveryManMultiSearchField,
-    ProductSearchField,
     ProductMultiSearchField,
     OrderStatusMultiSearchField,
     CheckBox
