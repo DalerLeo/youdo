@@ -38,7 +38,7 @@ export const ingredientDeleteAction = (id) => {
 }
 
 export const ingredientUpdateAction = (formValues, id, productId) => {
-    const requestData = serializers.updateSerializer(formValues, productId)
+    const requestData = serializers.updateSerializer(formValues, id, productId)
     const payload = axios()
         .put(sprintf(API.INGREDIENT_ITEM, id), requestData)
         .then((response) => {

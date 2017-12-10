@@ -3,6 +3,7 @@ import {orderingSnakeCase} from '../helpers/serializer'
 
 export const createSerializer = (data) => {
     const name = _.get(data, 'name')
+    const fromWhom = _.get(data, ['from', 'value'])
     const address = _.get(data, 'address')
     const contacts = _(data)
         .get('contacts')
@@ -12,7 +13,9 @@ export const createSerializer = (data) => {
     return {
         name,
         address,
-        contacts
+        contacts,
+        'from_whom': fromWhom
+
     }
 }
 

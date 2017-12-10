@@ -223,6 +223,9 @@ const ClientList = enhance((props) => {
 
             return {
                 name: _.get(detail, 'name'),
+                from: {
+                    value: _.get(detail, 'from')
+                },
                 address: _.get(detail, 'address'),
                 contacts: _.union(contacts, [{}])
             }

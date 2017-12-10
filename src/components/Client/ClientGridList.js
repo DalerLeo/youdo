@@ -27,8 +27,14 @@ const listHeader = [
     {
         sorting: false,
         name: 'name',
-        xs: 6,
+        xs: 3,
         title: 'Наименование'
+    },
+    {
+        sorting: false,
+        name: 'fromWhom',
+        xs: 3,
+        title: 'От кого'
     },
     {
         sorting: true,
@@ -171,6 +177,7 @@ const ClientGridList = enhance((props) => {
     const clientList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
+        const fromWhom = _.get(item, ['fromWhom', 'firstName']) + ' ' + _.get(item, ['fromWhom', 'secondName'])
         const address = _.get(item, 'address')
         return (
             <Row key={id} className={classes.listRow}>
@@ -179,7 +186,8 @@ const ClientGridList = enhance((props) => {
                     query: filter.getParams()
                 }}>
                     <Col xs={2}>{id}</Col>
-                    <Col xs={6}>{name}</Col>
+                    <Col xs={3}>{name}</Col>
+                    <Col xs={3}>{fromWhom}</Col>
                     <Col xs={3}>{address}</Col>
             </Link>
             </Row>
