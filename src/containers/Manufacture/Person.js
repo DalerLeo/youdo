@@ -55,8 +55,8 @@ const enhance = compose(
         }
     }),
     withPropsOnChange((props, nextProps) => {
-        const manufactureId = _.get(props, ['params', 'manufactureId'])
-        const nextManufactureId = _.get(nextProps, ['params', 'manufactureId'])
+        const manufactureId = _.toInteger(_.get(props, ['params', 'manufactureId']))
+        const nextManufactureId = _.toInteger(_.get(nextProps, ['params', 'manufactureId']))
         return (props.filterUser.filterRequest() !== nextProps.filterUser.filterRequest() && nextManufactureId > ZERO) ||
             (manufactureId !== nextManufactureId && nextManufactureId)
     }, ({dispatch, filterUser, params}) => {
@@ -81,10 +81,11 @@ const enhance = compose(
         },
         handleSubmitPersonFilterDialog: props => () => {
             const {filterUser, filterPersonForm} = props
-            const shift = _.get(filterPersonForm, ['values', 'shift', 'value']) || null
+            const shift = _.get(filterPersonForm, ['values', 'shift']) || null
 
             filterUser.filterBy({
-                [PERSON_FILTER_KEY.SHIFT]: shift
+                [PERSON_FILTER_OPEN]: false,
+                [PERSON_FILTER_KEY.SHIFT]: _.join(shift, '-')
             })
         },
 
@@ -189,7 +190,7 @@ const ManufacturePersonList = enhance((props) => {
     } = props
 
     const detailId = _.toInteger(_.get(params, 'manufactureId'))
-    const shift = _.toInteger(filterUser.getParam(PERSON_FILTER_KEY.SHIFT))
+    const shift = filterUser.getParam(PERSON_FILTER_KEY.SHIFT)
     const openCreateUser = toBoolean(_.get(location, ['query', OPEN_USER_CREATE_DIALOG]))
     const openPersonFilterDialog = toBoolean(_.get(location, ['query', PERSON_FILTER_OPEN]))
     const openUpdateUserDialog = toBoolean(_.get(location, ['query', OPEN_USER_UPDATE_DIALOG]))

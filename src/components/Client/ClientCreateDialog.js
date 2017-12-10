@@ -8,7 +8,7 @@ import FlatButton from 'material-ui/FlatButton'
 import Loader from '../Loader'
 import {Field, FieldArray, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField} from '../ReduxForm'
+import {TextField, UsersSearchField} from '../ReduxForm'
 import ClientContactsListField from '../ReduxForm/Client/ClientContactsListField'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
@@ -93,6 +93,12 @@ const ClientCreateDialog = enhance((props) => {
                                 component={TextField}
                                 className={classes.inputFieldCustom}
                                 label="Местположение"
+                                fullWidth={true}/>
+                            <Field
+                                name="from"
+                                component={UsersSearchField}
+                                className={classes.inputFieldCustom}
+                                label="От кого"
                                 fullWidth={true}/>
 
                             <div className={classes.contacts}>

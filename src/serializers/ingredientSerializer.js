@@ -10,8 +10,7 @@ export const createSerializer = (data, id, manufacture) => {
     }
 }
 
-export const updateSerializer = (data, product) => {
-    const ingredient = _.get(data, ['ingredient', 'value'])
+export const updateSerializer = (data, ingredient, product) => {
     const amount = _.get(data, 'amount')
     return {
         product,

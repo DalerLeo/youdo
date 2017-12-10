@@ -53,15 +53,15 @@ const enhance = compose(
         enableReinitialize: true
     }),
     connect((state) => {
-        const type = _.get(state, ['form', 'ProductCreateForm', 'values', 'productTypeParent', 'value'])
+        const typeParent = _.get(state, ['form', 'ProductCreateForm', 'values', 'productTypeParent', 'value'])
         return {
-            type
+            typeParent
         }
     }),
 )
 
 const ProductCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, isUpdate, type} = props
+    const {open, loading, handleSubmit, onClose, classes, isUpdate, typeParent} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
     return (
@@ -107,11 +107,11 @@ const ProductCreateDialog = enhance((props) => {
                                 label="Тип продукта"
                                 fullWidth={true}
                             />
-                            {type && <Field
+                            {typeParent && <Field
                                 name="type"
                                 className={classes.inputFieldCustom}
                                 component={ProductTypeChildSearchField}
-                                parentType={type}
+                                parentType={typeParent}
                                 label="Подкатегория"
                                 fullWidth={true}
                             />}

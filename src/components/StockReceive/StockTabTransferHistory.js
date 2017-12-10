@@ -117,7 +117,7 @@ const StockTabTransferHistory = enhance((props) => {
     )
     const historyTransferDetail = (
         <TransferHistoryTransferDetail
-            key={_.get(detailData, 'id') + '_' + _.get(detailData, 'type')}
+            key={_.get(detailData, 'id') + '_' + _.get(detailData, 'type') + '_' + _.toNumber(_.get(detailData, 'stockId'))}
             handleCloseDetail={handleCloseDetail}
             detailData={detailData}
             transferType={transferType}
@@ -141,7 +141,7 @@ const StockTabTransferHistory = enhance((props) => {
         const stockName = _.get(item, ['stock', 'name'])
         return (
             <Row
-                key={id + '_' + typeOrg}
+                key={id + '_' + typeOrg + '_' + stockId}
                 style={{position: 'relative', cursor: 'pointer'}}
                 onClick={() => { listData.handleOpenDetail(id, stockId, typeOrg) }}>
                 <Col xs={2} >{id}</Col>

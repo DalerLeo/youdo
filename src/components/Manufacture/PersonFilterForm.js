@@ -9,7 +9,7 @@ import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
-import {ShiftSearchField} from '../ReduxForm'
+import {ShiftMultiSearchField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
@@ -153,7 +153,7 @@ const UsersFilterForm = enhance((props) => {
                 </div>
                 <form onSubmit={handleSubmit(filterDialog.handleSubmitFilterDialog)}>
                     <div>
-                        <Field className={classes.inputFieldCustom} name="shift" component={ShiftSearchField} label="Смена" fullWidth={true}/>
+                        <Field className={classes.inputFieldCustom} name="shift" component={ShiftMultiSearchField} label="Смена" fullWidth={true}/>
                     </div>
 
                     <RaisedButton

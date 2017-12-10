@@ -76,10 +76,10 @@ const enhance = compose(
         }
     }),
     withPropsOnChange((props, nextProps) => {
-        const manufactureId = _.get(props, ['params', 'manufactureId'])
-        const nextManufactureId = _.get(nextProps, ['params', 'manufactureId'])
+        const manufactureId = _.toNumber(_.get(props, ['params', 'manufactureId']))
+        const nextManufactureId = _.toNumber(_.get(nextProps, ['params', 'manufactureId']))
         return (manufactureId !== nextManufactureId && nextManufactureId) ||
-            (props.listLoading && props.filterProduct.filterRequest() !== nextProps.filterProduct.filterRequest() && nextManufactureId > ZERO)
+            (props.list && props.filterProduct.filterRequest() !== nextProps.filterProduct.filterRequest() && nextManufactureId > ZERO)
     }, ({dispatch, filterProduct, params}) => {
         const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
         if (manufactureId > ZERO) {
@@ -122,20 +122,17 @@ const enhance = compose(
                 })
         },
         handleSubmitProductFilterDialog: props => () => {
-            const {dispatch, filterProduct, filterProductForm, params} = props
-            const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
+            const {filterProduct, filterProductForm} = props
             const typeParent = _.get(filterProductForm, ['values', 'typeParent', 'value']) || null
             const typeChild = _.get(filterProductForm, ['values', 'typeChild', 'value']) || null
-            const measurement = _.get(filterProductForm, ['values', 'measurement', 'value']) || null
-            const brand = _.get(filterProductForm, ['values', 'brand', 'value']) || null
+            const measurement = _.get(filterProductForm, ['values', 'measurement']) || null
 
             filterProduct.filterBy({
+                [PRODUCT_FILTER_OPEN]: false,
                 [PRODUCT_FILTER_KEY.TYPE_PARENT]: typeParent,
                 [PRODUCT_FILTER_KEY.TYPE_CHILD]: typeChild,
-                [PRODUCT_FILTER_KEY.MEASUREMENT]: measurement,
-                [PRODUCT_FILTER_KEY.BRAND]: brand
+                [PRODUCT_FILTER_KEY.MEASUREMENT]: _.join(measurement, '-')
             })
-            dispatch(productListFetchAction(filterProduct, manufactureId))
         },
 
         handleOpenAddProductDialog: props => () => {
@@ -359,8 +356,9 @@ const ManufactureProductList = enhance((props) => {
     const openShowBom = toBoolean(_.get(location, ['query', MANUFACTURE_SHOW_BOM_DIALOG_OPEN]))
     const openEditMaterials = toBoolean(_.get(location, ['query', MANUFACTURE_EDIT_PRODUCT_DIALOG_OPEN]))
     const openCreateMaterials = toBoolean(_.get(location, ['query', MANUFACTURE_CREATE_PRODUCT_DIALOG_OPEN]))
-    const type = _.toInteger(filterProduct.getParam(PRODUCT_FILTER_KEY.TYPE))
-    const brand = _.toInteger(filterProduct.getParam(PRODUCT_FILTER_KEY.BRAND))
+    const typeParent = _.toInteger(filterProduct.getParam(PRODUCT_FILTER_KEY.TYPE_PARENT))
+    const typeChild = _.toInteger(filterProduct.getParam(PRODUCT_FILTER_KEY.TYPE_CHILD))
+    const measurement = filterProduct.getParam(PRODUCT_FILTER_KEY.MEASUREMENT)
     const openDeleteMaterialsDialog = toBoolean(_.get(location, ['query', OPEN_DELETE_MATERIALS_DIALOG]))
     const openAddProductDialog = toBoolean(_.get(location, ['query', MANUFACTURE_ADD_PRODUCT_DIALOG_OPEN]))
     const openProductConfirmDialog = toBoolean(_.get(location, ['query', OPEN_DELETE_PRODUCT_DIALOG]))
@@ -405,9 +403,6 @@ const ManufactureProductList = enhance((props) => {
     const selectProduct = _.find(_.get(productDetail, 'ingredient'), {'id': _.toInteger(ingredientId)})
     const editMaterials = {
         initialValues: {
-            ingredient: {
-                value: _.get(selectProduct, ['ingredient', 'id'])
-            },
             amount: _.get(selectProduct, 'amount')
         },
         measurement: _.get(selectProduct, ['ingredient', 'measurement', 'name']),
@@ -427,12 +422,11 @@ const ManufactureProductList = enhance((props) => {
 
     const productFilterDialog = {
         initialValues: {
-            type: {
-                value: type
-            },
-            brand: {
-                value: brand
-            }
+            typeParent: {value: typeParent},
+            typeChild: {value: typeChild},
+            measurement: measurement && _.map(_.split(measurement, '-'), (item) => {
+                return _.toNumber(item)
+            })
         },
         filterLoading: false,
         openFilterDialog: openProductFilterDialog,
