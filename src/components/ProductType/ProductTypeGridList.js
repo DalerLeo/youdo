@@ -34,7 +34,7 @@ const listHeader = [
         sorting: true,
         name: 'division',
         xs: 3,
-        title: 'Подразделения'
+        title: 'Подразделение'
     },
     {
         sorting: true,
@@ -269,12 +269,14 @@ const ProductTypeGridList = enhance((props) => {
                         </Col>
                     </div>
                     {_.map(_.get(item, 'children'), (child) => {
-                        const childName = _.get(child, 'name')
                         const childId = _.get(child, 'id')
+                        const childName = _.get(child, 'name')
+                        const childDivision = _.get(child, ['division', 'name']) || 'Не указано'
                         const childCreatedDate = dateFormat(_.get(child, 'createdDate'))
                         return (
                             <div key={childId} className={classes.subCategory}>
-                                <Col xs={8}>{childName}</Col>
+                                <Col xs={5}>{childName}</Col>
+                                <Col xs={3}>{childDivision}</Col>
                                 <Col xs={3}>{childCreatedDate}</Col>
                                 <Col xs={1} className={classes.right}>
                                     <div className={classes.iconBtn}>

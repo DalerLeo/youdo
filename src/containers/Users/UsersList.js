@@ -88,7 +88,9 @@ const enhance = compose(
         return usersId && _.get(props, ['params', 'usersId']) !== usersId
     }, ({dispatch, params}) => {
         const usersId = _.toInteger(_.get(params, 'usersId'))
-        usersId && dispatch(usersItemFetchAction(usersId))
+        if (usersId) {
+            dispatch(usersItemFetchAction(usersId))
+        }
     }),
 
     withPropsOnChange((props, nextProps) => {

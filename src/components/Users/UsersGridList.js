@@ -112,6 +112,7 @@ const enhance = compose(
             },
             '& > div': {
                 overflow: 'hidden',
+                wordBreak: 'normal',
                 textOverflow: 'ellipsis'
             }
         }
@@ -169,8 +170,8 @@ const UsersGridList = enhance((props) => {
         const username = isActive ? _.get(item, 'username') : 'Не указано'
         const firstName = _.get(item, 'firstName')
         const secondName = _.get(item, 'secondName')
-        const phoneNumber = _.get(item, 'phoneNumber') || 'N/A'
-        const job = _.get(item, ['job', 'name']) || 'N/A'
+        const phoneNumber = _.get(item, 'phoneNumber') || '-'
+        const job = _.get(item, ['job', 'name']) || 'Не указана'
         const position = _.get(item, ['position', 'name']) || 'Не выбрано'
         return (
             <Row key={id} className={classes.listRow}>
@@ -257,6 +258,7 @@ const UsersGridList = enhance((props) => {
 
             {createDialog.openCreateDialog &&
             <UsersCreateDialog
+                detailData={_.get(detailData, 'data')}
                 initialValues={createDialog.initialValues}
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
@@ -271,6 +273,7 @@ const UsersGridList = enhance((props) => {
 
             {updateDialog.openUpdateDialog &&
             <UsersCreateDialog
+                detailData={_.get(detailData, 'data')}
                 initialValues={updateDialog.initialValues}
                 isUpdate={true}
                 open={updateDialog.openUpdateDialog}

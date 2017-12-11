@@ -163,8 +163,11 @@ const UsersCreateDialog = enhance((props) => {
         currencyData,
         positionGroups,
         positionLoading,
-        isActive
+        isActive,
+        detailData
     } = props
+    const groups = _.map(_.get(detailData, 'groups'), item => _.get(item, 'name'))
+    const userIsAgent = _.includes(groups, 'agent')
     const errorText = _.get(errorData, 'errorText')
     const show = _.get(errorData, 'show')
     const multiStock = getConfig('MULTI_SELECT_STOCK')
@@ -272,7 +275,7 @@ const UsersCreateDialog = enhance((props) => {
                                 <Loader size={0.75}/>
                             </div>
                             }
-                            {(manager || manufacture) && !positionLoading &&
+                            {(userIsAgent || manager || manufacture) && !positionLoading &&
                             <div>
                                 <div className={classes.subTitle} style={{margin: '15px 0 10px'}}>{multiStock ? 'Связанные склады' : 'Связанный склад'}</div>
                                 {(!loading) && _.get(stockListData, 'stockListLoading')
