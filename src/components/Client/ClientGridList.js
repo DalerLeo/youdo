@@ -16,12 +16,13 @@ import Container from '../Container'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import Tooltip from '../ToolTip'
+import dateFormat from '../../helpers/dateFormat'
 
 const listHeader = [
     {
         sorting: true,
         name: 'id',
-        xs: 2,
+        xs: 1,
         title: 'Id'
     },
     {
@@ -34,7 +35,7 @@ const listHeader = [
         sorting: false,
         name: 'fromWhom',
         xs: 3,
-        title: 'От кого'
+        title: 'По рекомендации'
     },
     {
         sorting: true,
@@ -44,9 +45,9 @@ const listHeader = [
     },
     {
         sorting: false,
-        xs: 1,
-        name: 'actions',
-        title: ''
+        xs: 2,
+        name: 'createdDate',
+        title: 'Дата добавления'
     }
 ]
 
@@ -177,18 +178,22 @@ const ClientGridList = enhance((props) => {
     const clientList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const fromWhom = _.get(item, ['fromWhom', 'firstName']) + ' ' + _.get(item, ['fromWhom', 'secondName'])
+        const fromWhom = _.get(item, 'fromWhom')
+            ? _.get(item, ['fromWhom', 'firstName']) + ' ' + _.get(item, ['fromWhom', 'secondName'])
+            : 'Неизвестно'
         const address = _.get(item, 'address')
+        const createdDate = dateFormat(_.get(item, 'createdDate'))
         return (
             <Row key={id} className={classes.listRow}>
                 <Link to={{
                     pathname: sprintf(ROUTES.CLIENT_ITEM_PATH, id),
                     query: filter.getParams()
                 }}>
-                    <Col xs={2}>{id}</Col>
+                    <Col xs={1}>{id}</Col>
                     <Col xs={3}>{name}</Col>
                     <Col xs={3}>{fromWhom}</Col>
                     <Col xs={3}>{address}</Col>
+                    <Col xs={2}>{createdDate}</Col>
             </Link>
             </Row>
         )

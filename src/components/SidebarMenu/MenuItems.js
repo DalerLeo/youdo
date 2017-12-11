@@ -145,23 +145,23 @@ export const MenuItems = [
         url: ROUTES.USERS_LIST_URL,
         bottom: true,
         childs: [
-            {section: SETTINGS_STAFF, name: 'Сотрудник', url: ROUTES.USERS_LIST_URL, permission: 'frontend_settings_users'},
-            {section: SETTINGS_STAFF, name: 'Смена', url: ROUTES.SHIFT_LIST_URL, permission: 'frontend_settings_shift'},
-            {section: SETTINGS_STAFF, name: 'Должность ', url: ROUTES.POST_LIST_URL, permission: 'frontend_settings_post'},
+            {section: SETTINGS_STAFF, name: 'Сотрудники', url: ROUTES.USERS_LIST_URL, permission: 'frontend_settings_users'},
+            {section: SETTINGS_STAFF, name: 'Смены', url: ROUTES.SHIFT_LIST_URL, permission: 'frontend_settings_shift'},
+            {section: SETTINGS_STAFF, name: 'Должности ', url: ROUTES.POST_LIST_URL, permission: 'frontend_settings_post'},
             {section: SETTINGS_STAFF, name: 'Права доступа', url: ROUTES.POSITION_LIST_URL, permission: 'frontend_settings_position'},
             {section: SETTINGS_FINANCE, name: 'Валюты', url: ROUTES.CURRENCY_LIST_URL, permission: 'frontend_settings_currency'},
             {section: SETTINGS_FINANCE, name: 'Кассы', url: ROUTES.CASHBOX_LIST_URL, permission: 'frontend_settings_cashbox'},
             {section: SETTINGS_FINANCE, name: 'Категории расходов', url: ROUTES.EXPENSIVE_CATEGORY_LIST_URL, permission: 'frontend_settings_expense_category'},
             {section: SETTINGS_PRODUCTS, name: 'Типы продуктов', url: ROUTES.PRODUCT_TYPE_LIST_URL, permission: 'frontend_settings_product_type'},
             {section: SETTINGS_PRODUCTS, name: 'Измерения', url: ROUTES.MEASUREMENT_LIST_URL, permission: 'frontend_settings_measurement'},
-            {section: SETTINGS_PRODUCTS, name: 'Тип магазина', url: ROUTES.MARKET_TYPE_LIST_URL, permission: 'frontend_settings_market_type'},
-            {section: SETTINGS_MISC, name: 'Прайс-лист', url: ROUTES.PRICE_LIST_SETTING_LIST_URL, permission: 'frontend_settings_price_list'},
+            {section: SETTINGS_PRODUCTS, name: 'Типы магазинов', url: ROUTES.MARKET_TYPE_LIST_URL, permission: 'frontend_settings_market_type'},
+            {section: SETTINGS_MISC, name: 'Прайс-листы', url: ROUTES.PRICE_LIST_SETTING_LIST_URL, permission: 'frontend_settings_price_list'},
             {section: SETTINGS_MISC, name: 'Склады', url: ROUTES.STOCK_LIST_URL, permission: 'frontend_settings_stock'},
-            {section: SETTINGS_MISC, name: 'Оборудование', url: ROUTES.EQUIPMENT_LIST_URL, permission: 'frontend_settings_equipment'},
-            {section: SETTINGS_MISC, name: 'Подразделение', url: ROUTES.DIVISION_LIST_URL, permission: 'frontend_settings_division'},
+            {section: SETTINGS_MISC, name: 'Оборудования', url: ROUTES.EQUIPMENT_LIST_URL, permission: 'frontend_settings_equipment'},
+            {section: SETTINGS_MISC, name: 'Подразделения', url: ROUTES.DIVISION_LIST_URL, permission: 'frontend_settings_division'},
             {section: SETTINGS_MISC, name: 'Объединение', url: ROUTES.JOIN_LIST_URL, permission: 'frontend_settings_join'},
             {section: SETTINGS_MISC, name: 'Ограничение времени', url: ROUTES.PERMISSION_LIST_URL, permission: 'frontend_settings_permissions'},
-            {section: SETTINGS_MISC, name: 'Уведомление', url: ROUTES.NOTIFICATION_TEMPLATE_LIST_URL, permission: 'frontend_settings_notifications'}
+            {section: SETTINGS_MISC, name: 'Уведомления', url: ROUTES.NOTIFICATION_TEMPLATE_LIST_URL, permission: 'frontend_settings_notifications'}
         ]
     }
 ]

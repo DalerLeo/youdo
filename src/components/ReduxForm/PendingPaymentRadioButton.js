@@ -1,6 +1,7 @@
 import React from 'react'
 import {compose} from 'recompose'
 import _ from 'lodash'
+import moment from 'moment'
 import {connect} from 'react-redux'
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton'
 import getConfig from '../../helpers/getConfig'
@@ -24,7 +25,7 @@ const PendingPaymentRadioButton = enhance((props) => {
     const data = {
         fromCurrency: primaryCurrencyId,
         toCurrency: currencyId,
-        createdDate
+        createdDate: createdDate ? moment(createdDate).format('YYYY-MM-DD') : moment().format('YYYY-MM-DD')
     }
 
     if (currencyName === primaryCurrency || !currencyName) {

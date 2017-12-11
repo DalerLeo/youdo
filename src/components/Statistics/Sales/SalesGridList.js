@@ -10,6 +10,7 @@ import Delivered from 'material-ui/svg-icons/action/assignment-turned-in'
 import Payment from 'material-ui/svg-icons/action/credit-card'
 import InProcess from 'material-ui/svg-icons/device/access-time'
 import Transfered from 'material-ui/svg-icons/maps/local-shipping'
+import NotConfirmed from 'material-ui/svg-icons/alert/warning'
 import InfoIcon from 'material-ui/svg-icons/action/info-outline'
 import * as ROUTES from '../../../constants/routes'
 import Container from '../../Container/index'
@@ -323,6 +324,7 @@ const StatSalesGridList = enhance((props) => {
             const GIVEN = 2
             const DELIVERED = 3
             const CANCELED = 4
+            const NOT_CONFIRMED = 5
             const now = moment().format('YYYY-MM-DD')
             const paymentDate = dateFormat(_.get(item, 'paymentDate'))
             const balanceTooltip = numberFormat(totalBalance, currentCurrency)
@@ -362,7 +364,6 @@ const StatSalesGridList = enhance((props) => {
                                             <Available color="#f0ad4e"/>
                                         </IconButton>
                                     </Tooltip>
-
                                     : (status === DELIVERED) ? <Tooltip position="bottom" text="Доставлен">
                                             <IconButton
                                                 disableTouchRipple={true}
@@ -381,15 +382,24 @@ const StatSalesGridList = enhance((props) => {
                                                     <Transfered color="#f0ad4e"/>
                                                 </IconButton>
                                             </Tooltip>
-                                            : <Tooltip position="bottom" text="Заказ отменен">
-                                                <IconButton
-                                                    disableTouchRipple={true}
-                                                    iconStyle={iconStyle.icon}
-                                                    style={iconStyle.button}
-                                                    touch={true}>
-                                                    <Canceled color='#e57373'/>
-                                                </IconButton>
-                                            </Tooltip>
+                                            : (status === CANCELED) ? <Tooltip position="bottom" text="Заказ отменен">
+                                                    <IconButton
+                                                        disableTouchRipple={true}
+                                                        iconStyle={iconStyle.icon}
+                                                        style={iconStyle.button}
+                                                        touch={true}>
+                                                        <Canceled color='#e57373'/>
+                                                    </IconButton>
+                                                </Tooltip>
+                                                : (status === NOT_CONFIRMED) ? <Tooltip position="bottom" text="Не подтвержден">
+                                                    <IconButton
+                                                        disableTouchRipple={true}
+                                                        iconStyle={iconStyle.icon}
+                                                        style={iconStyle.button}
+                                                        touch={true}>
+                                                        <NotConfirmed color='#999'/>
+                                                    </IconButton>
+                                                </Tooltip> : null
                             }
                             {!(status === CANCELED) &&
                             <Tooltip position="bottom" text={(totalPrice > ZERO) && ((moment(_.get(item, 'paymentDate')).diff(now, 'days') <= ZERO))

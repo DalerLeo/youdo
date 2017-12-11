@@ -88,7 +88,9 @@ const enhance = compose(
         return usersId && _.get(props, ['params', 'usersId']) !== usersId
     }, ({dispatch, params}) => {
         const usersId = _.toInteger(_.get(params, 'usersId'))
-        usersId && dispatch(usersItemFetchAction(usersId))
+        if (usersId) {
+            dispatch(usersItemFetchAction(usersId))
+        }
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -231,6 +233,7 @@ const enhance = compose(
                         query: filter.getParams({[USERS_UPDATE_DIALOG_OPEN]: false, 'passErr': false})
                     })
                     dispatch(usersListFetchAction(filter))
+                    dispatch(usersItemFetchAction(usersId))
                 })
                 .catch((error) => {
                     dispatch(openErrorAction({

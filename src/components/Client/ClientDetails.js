@@ -91,7 +91,10 @@ const enhance = compose(
         },
         bodyTitle: {
             fontWeight: '600',
-            marginBottom: '10px'
+            marginBottom: '5px 0',
+            '&:first-child': {
+                marginTop: '0'
+            }
         },
         closeDetail: {
             position: 'absolute',
@@ -130,8 +133,11 @@ const ClientDetails = enhance((props) => {
     const detId = _.get(data, 'id')
     const contacts = _.get(data, 'contacts')
     const date = dateFormat(_.get(data, 'createdDate'))
-    const address = _.get(data, 'address') || 'N/A'
+    const address = _.get(data, 'address') || 'Не указан'
     const providerName = _.get(data, 'name')
+    const fromWhom = _.get(data, 'fromWhom')
+        ? _.get(data, ['fromWhom', 'firstName']) + ' ' + _.get(data, ['fromWhom', 'secondName'])
+        : 'Неизвестно'
 
     if (loading) {
         return (
@@ -173,7 +179,9 @@ const ClientDetails = enhance((props) => {
             </div>
             <div className={classes.container}>
                 <div className={classes.leftSide}>
-                    <div className={classes.bodyTitle}>Адрес</div>
+                    <div className={classes.bodyTitle}>По рекомендации:</div>
+                    <div>{fromWhom}</div>
+                    <div className={classes.bodyTitle}>Адрес:</div>
                     <div>{address}</div>
                 </div>
                 <div className={classes.body}>
