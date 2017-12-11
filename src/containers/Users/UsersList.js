@@ -233,6 +233,7 @@ const enhance = compose(
                         query: filter.getParams({[USERS_UPDATE_DIALOG_OPEN]: false, 'passErr': false})
                     })
                     dispatch(usersListFetchAction(filter))
+                    dispatch(usersItemFetchAction(usersId))
                 })
                 .catch((error) => {
                     dispatch(openErrorAction({
