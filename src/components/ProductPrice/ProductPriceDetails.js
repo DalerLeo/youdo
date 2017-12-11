@@ -178,7 +178,7 @@ const ProductPriceDetails = enhance((props) => {
                     <ul className={classes.rawMaterials}>
                         <li className="dottedList">
                             <Col xs={7}><b>Сырье</b></Col>
-                            <Col xs={2}><b>Обьем</b></Col>
+                            <Col xs={2}><b>Объем</b></Col>
                             <Col xs={3}><b>Стоимость</b></Col>
                         </li>
                         <li className="dottedList">

@@ -351,17 +351,14 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleEdit
                             const product = _.get(item, ['product', 'value', 'name'])
                             const itemMeasurement = _.get(item, ['product', 'value', 'measurement', 'name'])
                             const cost = _.toNumber(_.get(item, 'cost'))
-                            const amount = numberFormat(_.toNumber(_.get(item, 'amount')), itemMeasurement)
+                            const amount = _.toNumber(_.get(item, 'amount'))
 
                             if (editItem === index) {
                                 if (editOnlyPrice) {
                                     return (
                                         <TableRow key={index} className={classes.tableRow}>
-                                            <TableRowColumn>
-                                                {product}
-                                            </TableRowColumn>
-                                            <TableRowColumn>
-                                                {amount}</TableRowColumn>
+                                            <TableRowColumn>{product}</TableRowColumn>
+                                            <TableRowColumn>{numberFormat(amount, itemMeasurement)}</TableRowColumn>
                                             <TableRowColumn>
                                                 <TextField
                                                     label={cost}
@@ -382,12 +379,10 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleEdit
                                 }
                                 return (
                                     <TableRow key={index} className={classes.tableRow}>
-                                        <TableRowColumn>
-                                            {product}
-                                        </TableRowColumn>
+                                        <TableRowColumn>{product}</TableRowColumn>
                                         <TableRowColumn>
                                             <TextField
-                                                hintText={amount}
+                                                hintText={numberFormat(amount, itemMeasurement)}
                                                 className={classes.inputFieldCustom}
                                                 fullWidth={true}
                                                 {..._.get(defaultProps, 'editAmount')}
@@ -415,8 +410,7 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleEdit
                             return (
                                 <TableRow key={index} className={classes.tableRow}>
                                     <TableRowColumn>{product}</TableRowColumn>
-                                    <TableRowColumn>
-                                        {amount}</TableRowColumn>
+                                    <TableRowColumn>{numberFormat(amount, itemMeasurement)}</TableRowColumn>
                                     <TableRowColumn>{numberFormat(cost, currency)}</TableRowColumn>
                                     <TableRowColumn>{numberFormat(cost * amount, currency)}</TableRowColumn>
                                     <TableRowColumn style={{textAlign: 'right'}}>

@@ -37,6 +37,7 @@ const enhance = compose(
                 alignItems: 'center',
                 height: '100%',
                 margin: '0',
+                wordBreak: 'break-word',
                 '& > div:first-child': {
                     paddingLeft: '0'
                 },

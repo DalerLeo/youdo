@@ -66,7 +66,6 @@ const enhance = compose(
         loader: {
             width: '100%',
             background: '#fff',
-            height: '200px',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center'
@@ -223,7 +222,8 @@ const OrderDetails = enhance((props) => {
         handleSubmitDiscountDialog,
         handleSubmitSetZeroDiscountDialog,
         handleOpenPrintContract,
-        hasMarket
+        hasMarket,
+        isSuperUser
     } = props
     const id = _.get(data, 'id')
     const market = _.get(data, ['market', 'name'])
@@ -251,6 +251,7 @@ const OrderDetails = enhance((props) => {
     const CANCELED = 4
     const NOT_CONFIRMED = 5
     const status = _.toInteger(_.get(data, 'status'))
+    const editableWhenGiven = status === GIVEN && isSuperUser
 
     const zero = 0
     const totalPaid = _.toNumber(_.get(data, 'totalPaid'))
@@ -263,7 +264,7 @@ const OrderDetails = enhance((props) => {
 
     if (loading) {
         return (
-            <div className={classes.wrapper} style={loading && {maxHeight: '200px'}}>
+            <div className={classes.wrapper} style={loading ? {maxHeight: '100px'} : {}}>
                 <div className={classes.loader}>
                     <LinearProgress/>
                 </div>
@@ -327,7 +328,7 @@ const OrderDetails = enhance((props) => {
                     </Tooltip>
                     <Tooltip position="bottom" text="Изменить">
                         <IconButton
-                            disabled={(status === CANCELED)}
+                            disabled={status === CANCELED ? true : status === GIVEN ? !editableWhenGiven : false}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}

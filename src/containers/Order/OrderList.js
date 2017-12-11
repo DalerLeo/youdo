@@ -1249,15 +1249,16 @@ const OrderList = enhance((props) => {
             if (!editProducts) {
                 return {}
             }
+            const FLOOR = 2
             const paymentType = _.get(props, ['createForm', 'values', 'paymentType'])
             const productType = _.get(props, ['addProductsForm', 'values', 'productType', 'value'])
             const productValue = {}
             _.map(_.get(editProducts, 'results'), (item) => {
                 const id = _.get(item, 'id')
                 const price = paymentType === 'cash'
-                    ? _.toNumber(_.get(item, 'cashPrice'))
+                    ? _.floor(_.toNumber(_.get(item, 'cashPrice')), FLOOR)
                     : paymentType === 'bank'
-                        ? _.toNumber(_.get(item, 'transferPrice'))
+                        ? _.floor(_.toNumber(_.get(item, 'transferPrice')), FLOOR)
                         : ''
                 productValue[id] = {price: price}
             })
