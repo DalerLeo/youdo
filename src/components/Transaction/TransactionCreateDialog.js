@@ -20,7 +20,7 @@ import {
     DivisionSearchField,
     DateField
 } from '../ReduxForm'
-
+import NotFound from '../Images/not-found.png'
 import CashboxSearchField from '../ReduxForm/Cashbox/CashBoxSimpleSearch'
 import ExpensiveCategoryCustomSearchField from '../ReduxForm/ExpenseCategory/ExpensiveCategoryCustomSearchField'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
@@ -207,7 +207,8 @@ const enhance = compose(
             }
         },
         searchWrapper: {
-            padding: '10px 30px'
+            padding: '0 30px',
+            marginBottom: '10px'
         },
         search: {
             borderBottom: '2px #efefef solid',
@@ -235,6 +236,13 @@ const enhance = compose(
             alignItems: 'center',
             justifyContent: 'center',
             right: '0'
+        },
+        emptyQuery: {
+            background: 'url(' + NotFound + ') no-repeat center 20px',
+            backgroundSize: '165px',
+            padding: '135px 0 20px',
+            textAlign: 'center',
+            color: '#999'
         }
     }),
     reduxForm({
@@ -313,7 +321,7 @@ const TransactionCreateDialog = enhance((props) => {
     const handleSearch = (event) => {
         setSearchQuery(event.target.value.toLowerCase())
     }
-    const filterData = _.orderBy(_.get(usersData, 'data'), ['firstName', 'secondName'], ['desc', 'desc'])
+    const filterData = _.orderBy(_.get(usersData, 'data'), ['firstName', 'secondName'], ['asc', 'asc'])
     const filteredList = filterData.filter((el) => {
         const searchValue = el.firstName.toLowerCase()
         const searchValue2 = el.secondName.toLowerCase()
@@ -492,25 +500,29 @@ const TransactionCreateDialog = enhance((props) => {
                             ? <div className={classes.usersLoader}>
                                 <Loader size={0.75}/>
                             </div>
-                            : _.map(filteredList, (item) => {
-                                const id = _.get(item, 'id')
-                                const userName = _.get(item, 'firstName') + ' ' + _.get(item, 'secondName')
-                                return (
-                                    <div key={id} className={classes.user}>
-                                        {userName}
-                                        <Field
-                                            hintText={'Сумма'}
-                                            name={'users[' + id + '][amount]'}
-                                            component={TextField}
-                                            normalize={normalizeNumber}
-                                            hintStyle={{left: 'auto', right: '0'}}
-                                            inputStyle={{textAlign: 'right'}}
-                                            className={classes.inputFieldCustom}
-                                            style={{width: '150px'}}
-                                        />
-                                    </div>
-                                )
-                            })
+                            : _.isEmpty(filteredList)
+                                ? <div className={classes.emptyQuery}>
+                                    <div>Сотрудников не найдено...</div>
+                                </div>
+                                : _.map(filteredList, (item) => {
+                                    const id = _.get(item, 'id')
+                                    const userName = _.get(item, 'firstName') + ' ' + _.get(item, 'secondName')
+                                    return (
+                                        <div key={id} className={classes.user}>
+                                            {userName}
+                                            <Field
+                                                hintText={'Сумма'}
+                                                name={'users[' + id + '][amount]'}
+                                                component={TextField}
+                                                normalize={normalizeNumber}
+                                                hintStyle={{left: 'auto', right: '0'}}
+                                                inputStyle={{textAlign: 'right'}}
+                                                className={classes.inputFieldCustom}
+                                                style={{width: '150px'}}
+                                            />
+                                        </div>
+                                    )
+                                })
                         }
 
                     </div>}

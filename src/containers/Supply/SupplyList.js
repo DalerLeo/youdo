@@ -677,7 +677,8 @@ const SupplyList = enhance((props) => {
                     value: _.get(detail, ['paymentType'])
                 },
                 currency: {
-                    value: _.get(detail, ['currency', 'id'])
+                    value: _.get(detail, ['currency', 'id']),
+                    text: _.get(detail, ['currency', 'name'])
                 },
                 contact: _.get(detail, ['contact', 'id']),
                 date_delivery: moment(_.get(detail, ['dateDelivery'])).toDate(),

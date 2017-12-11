@@ -228,7 +228,7 @@ const ManufactureDetails = enhance((props) => {
                                     <strong>Сырье</strong>
                                 </Col>
                                 <Col xs={3}>
-                                    <strong>Обьем</strong>
+                                    <strong>Объем</strong>
                                 </Col>
                             </li>
                             {ingredientList}

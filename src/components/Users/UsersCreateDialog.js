@@ -181,7 +181,7 @@ const UsersCreateDialog = enhance((props) => {
             contentStyle={loading ? {width: '400px'} : {width: '600px'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>{isUpdate ? 'Изменить cотрудник' : 'Добавить cотрудник'}</span>
+                <span>{isUpdate ? 'Изменить cотрудника' : 'Добавить cотрудника'}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -221,7 +221,7 @@ const UsersCreateDialog = enhance((props) => {
                                 <Field
                                     name="isActive"
                                     component={CheckBox}
-                                    label="Может пользоваться системой"/>
+                                    label="Доступ к системе"/>
                             </Col>
                             <Col xs={5}>
                                 <Field
@@ -276,22 +276,23 @@ const UsersCreateDialog = enhance((props) => {
                             <div>
                                 <div className={classes.subTitle} style={{margin: '15px 0 10px'}}>{multiStock ? 'Связанные склады' : 'Связанный склад'}</div>
                                 {(!loading) && _.get(stockListData, 'stockListLoading')
-                                ? <div className={classes.groupLoader}>
-                                    <Loader size={0.75}/>
-                                </div>
-                                : (multiStock) ? <div className={classes.stocksCheckList}>
-                                        {_.map(_.get(stockListData, 'data'), (item, index) => {
-                                            const name = _.get(item, 'name')
-                                            const id = _.get(item, 'id')
-                                            return (
-                                                <Field
-                                                    key={id}
-                                                    name={'stocks[' + index + '][selected]'}
-                                                    component={CheckBox}
-                                                    label={name}/>
-                                            )
-                                        })}
+                                    ? <div className={classes.groupLoader}>
+                                        <Loader size={0.75}/>
                                     </div>
+                                    : (multiStock)
+                                        ? <div className={classes.stocksCheckList}>
+                                            {_.map(_.get(stockListData, 'data'), (item, index) => {
+                                                const name = _.get(item, 'name')
+                                                const id = _.get(item, 'id')
+                                                return (
+                                                    <Field
+                                                        key={id}
+                                                        name={'stocks[' + index + '][selected]'}
+                                                        component={CheckBox}
+                                                        label={name}/>
+                                                )
+                                            })}
+                                        </div>
                                         : <div className={classes.radioStock}>
                                             <Field
                                                 name='radioStock'
@@ -343,34 +344,6 @@ const UsersCreateDialog = enhance((props) => {
                                         )
                                     })}
                                 </Row>
-                                <div>
-                                    <div className={classes.subTitle} style={{margin: '15px 0 10px'}}>{multiStock ? 'Связанные склады' : 'Связанный склад'}</div>
-                                    {(!loading) && _.get(stockListData, 'stockListLoading')
-                                        ? <div className={classes.groupLoader}>
-                                            <Loader size={0.75}/>
-                                        </div>
-                                        : (multiStock) ? <div className={classes.stocksCheckList}>
-                                            {_.map(_.get(stockListData, 'data'), (item, index) => {
-                                                const name = _.get(item, 'name')
-                                                const id = _.get(item, 'id')
-                                                return (
-                                                    <Field
-                                                        key={id}
-                                                        name={'stocks[' + index + '][selected]'}
-                                                        component={CheckBox}
-                                                        label={name}/>
-                                                )
-                                            })}
-                                        </div>
-                                            : <div className={classes.radioStock}>
-                                                <Field
-                                                    name='radioStock'
-                                                    stockList={_.get(stockListData, 'data')}
-                                                    loading={loading}
-                                                    component={UserStockRadioButtonField}/>
-                                            </div>
-                                    }
-                                </div>
                             </div>}
                         </div>}
                     </div>

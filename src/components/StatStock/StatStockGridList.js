@@ -69,7 +69,7 @@ const transactionHeader = [
         sorting: true,
         xs: 2,
         name: 'money',
-        title: 'Обьем'
+        title: 'Объем'
     }
 ]
 
