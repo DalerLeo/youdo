@@ -18,7 +18,6 @@ import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
 import {convertCurrency} from '../../helpers/convertCurrency'
 import CashboxCurrencyField from '../ReduxForm/CashboxCurrencyField'
 import PendingPaymentRadioButton from '../ReduxForm/PendingPaymentRadioButton'
-import getConfig from '../../helpers/getConfig'
 
 export const PENDING_PAYMENTS_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const ORDERING_CURRENCY = 1
@@ -110,7 +109,8 @@ const PendingPaymentsCreateDialog = enhance((props) => {
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const ZERO = 0
     const id = _.get(detailData, 'id')
-    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
+    const primaryCurrency = _.get(detailData, ['data', 'currency', 'name'])
+    const primaryCurrencyId = _.get(detailData, ['data', 'currency', 'id'])
     const client = _.get(detailData, ['data', 'client'])
     const marketName = _.get(detailData, ['data', 'market', 'name'])
     const paymentType = _.get(detailData, ['data', 'paymentType'])
@@ -121,6 +121,7 @@ const PendingPaymentsCreateDialog = enhance((props) => {
     const currentRate = (currencyRate === INDIVIDUAL) ? customRate : _.get(convert, ['data', 'amount'])
     const convertAmount = convertCurrency(amountValue, currentRate)
     const createdDate = _.get(detailData, ['data', 'createdDate'])
+
     return (
         <Dialog
             modal={true}
@@ -156,7 +157,8 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                                 </div>
                             </div>
                             <div className={classes.cashbox}>
-                                {!_.get(detailData, 'detailLoading') && <Field
+                                {!_.get(detailData, 'detailLoading') &&
+                                <Field
                                     name="cashbox"
                                     className={classes.inputFieldCustom}
                                     component={CashboxTypeCurrencyField}
@@ -177,16 +179,18 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                                         <CashboxCurrencyField/>
                                     </div>
                                     {(currency !== primaryCurrency && _.toNumber(numberWithoutSpaces(amountValue)) > ZERO) && <div className={classes.halfSecond}>
-                                        <div> После конвертации: <span className={classes.bold}>{convertAmount} {getConfig('PRIMARY_CURRENCY')}</span></div>
+                                        <div> После конвертации: <span className={classes.bold}>{convertAmount} {primaryCurrency}</span></div>
                                     </div>}
                                 </div>
 
                                 <Field
                                     name="currencyRate"
                                     createdDate={(currencyRate === ORDERING_CURRENCY) && createdDate}
+                                    primaryCurrency={primaryCurrency}
+                                    primaryCurrencyId={primaryCurrencyId}
                                     component={PendingPaymentRadioButton}
                                 />
-                                {(currencyRate === INDIVIDUAL && _.get(currency, 'name') !== primaryCurrency)
+                                {(currencyRate === INDIVIDUAL && currency !== primaryCurrency)
                                     ? <div className={classes.customCurrency}>
                                         <Field
                                             component={TextField}
