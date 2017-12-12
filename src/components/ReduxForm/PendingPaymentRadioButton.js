@@ -4,7 +4,6 @@ import _ from 'lodash'
 import moment from 'moment'
 import {connect} from 'react-redux'
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton'
-import getConfig from '../../helpers/getConfig'
 import {pendingPaymentsConvertAction} from '../../actions/pendingPayments'
 
 const enhance = compose(
@@ -16,9 +15,7 @@ const enhance = compose(
     }),
 )
 const PendingPaymentRadioButton = enhance((props) => {
-    const {input, currency, dispatch, createdDate} = props
-    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
-    const primaryCurrencyId = getConfig('PRIMARY_CURRENCY_ID')
+    const {input, currency, dispatch, createdDate, primaryCurrency, primaryCurrencyId} = props
     const currencyName = _.get(currency, 'name')
     const currencyId = _.toInteger(_.get(currency, 'id'))
 

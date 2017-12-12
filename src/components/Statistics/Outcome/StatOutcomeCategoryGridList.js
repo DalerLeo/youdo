@@ -210,7 +210,7 @@ const StatOutcomeCategoryGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const percent = _.get(item, 'percent')
-        const amount = numberFormat(_.get(item, 'amount'), getConfig('PRIMARY_CURRENCY'))
+        const amount = numberFormat(Math.abs(_.get(item, 'amount')), getConfig('PRIMARY_CURRENCY'))
 
         return (
             <Row key={id} className="dottedList">
