@@ -82,7 +82,7 @@ const SubMenu = enhance((props) => {
             </Link>
         )
     })
-    const dynamic = _.get(parent, 'dynamic')
+    const dynamic = _.get(parent, 'dynamic') && !isAdmin
     const icon = dynamic
         ? _.get(_.first(_.get(parent, 'childs')), 'icon')
         : _.get(parent, 'icon')

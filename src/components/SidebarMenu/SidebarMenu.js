@@ -119,7 +119,7 @@ const SideBarMenu = enhance((props) => {
     const menu = getMenus(permissions, isAdmin)
     const items = _.map(menu, (item, index) => {
         const atBottom = _.get(item, 'bottom')
-        const dynamic = _.get(item, 'dynamic')
+        const dynamic = _.get(item, 'dynamic') && !isAdmin
         const icon = dynamic
             ? _.get(_.first(_.get(item, 'childs')), 'icon')
             : _.get(item, 'icon')
