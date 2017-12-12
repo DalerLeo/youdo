@@ -4,11 +4,22 @@ import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
 import {connect} from 'react-redux'
+import caughtCancel from '../../../helpers/caughtCancel'
+
+const CancelToken = axios().CancelToken
+let productListToken = null
 
 const getOptions = (search) => {
-    return axios().get(`${PATH.PRODUCT_LIST}?search=${search || ''}&page_size=100`)
+    if (productListToken) {
+        productListToken.cancel()
+    }
+    productListToken = CancelToken.source()
+    return axios().get(`${PATH.PRODUCT_LIST}?search=${search || ''}&page_size=100`, {cancelToken: productListToken.token})
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
+        })
+        .catch((error) => {
+            caughtCancel(error)
         })
 }
 

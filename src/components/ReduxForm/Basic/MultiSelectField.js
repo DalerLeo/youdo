@@ -110,16 +110,15 @@ const enhance = compose(
             })
             return _.differenceBy(options, newValues, 'value')
         },
-        handleChange: props => (value) => {
+        handleChange: props => (options) => {
             const {input} = props
-            const arrValues = _.map(_.split(value, ','), (item) => {
-                return _.toNumber(item)
+            const arrValues = _.map(options, (item) => {
+                return item.value
             })
-
-            if (value) {
+            if (!_.isEmpty(options)) {
                 input.onChange(arrValues)
             }
-            if (!value) {
+            if (_.isEmpty(options)) {
                 input.onChange([])
             }
         }
@@ -190,7 +189,6 @@ const MultiSelectField = enhance((props) => {
                 valueRenderer={valueRenderer}
                 labelKey={'text'}
                 multi
-                simpleValue
                 disabled={disabled}
                 rtl={true}
                 filterOptions={filterOptionRender}

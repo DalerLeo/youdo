@@ -72,6 +72,10 @@ const enhance = compose(
                 borderRight: '1px #efefef solid',
                 textAlign: 'right'
             },
+            '& td:last-child': {
+                borderRight: '1px #efefef solid',
+                textAlign: 'right'
+            },
             '& td:nth-child(1)': {
                 textAlign: 'left'
             },
@@ -165,6 +169,10 @@ const enhance = compose(
             extend: 'title',
             '& td:nth-child(odd)': {
                 borderRight: 'none'
+            },
+            '& td:last-child': {
+                borderRight: '1px #efefef solid',
+                textAlign: 'right'
             },
             '& td:nth-child(even)': {
                 borderLeft: 'none',
@@ -405,10 +413,6 @@ const listHeader = [
     {
         sorting: true,
         title: 'По заказам'
-    },
-    {
-        sorting: true,
-        title: 'Общее'
     }
 ]
 
@@ -490,7 +494,6 @@ const StatMarketGridList = enhance((props) => {
                 <td>{numberFormat(paidItem, primaryCurrency)}</td>
                 <td>{numberFormat(deptItem, primaryCurrency)}</td>
 
-                <td>{numberFormat(deptItem, primaryCurrency)}</td>
                 <td>{numberFormat(deptItem, primaryCurrency)}</td>
                 <td>{numberFormat(deptItem, primaryCurrency)}</td>
             </tr>

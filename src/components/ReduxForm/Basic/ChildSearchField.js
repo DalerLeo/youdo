@@ -8,10 +8,10 @@ import 'react-select/dist/react-select.css'
 const DELAY_FOR_TYPE_ATTACK = 300
 
 const fetchList = ({state, dispatch, getOptions, getText, getValue, input}, parent) => {
-    if (parent) {
+    if (parent && !state.firstTime) {
         input.onChange(null)
     }
-    dispatch({loading: true})
+    dispatch({loading: true, firstTime: false})
     getOptions(state.text)
         .then((data) => {
             return _.map(data, (item) => {
@@ -74,7 +74,7 @@ const enhance = compose(
 
     withReducer('state', 'dispatch', (state, action) => {
         return {...state, ...action}
-    }, {dataSource: [], text: '', loading: false}),
+    }, {dataSource: [], text: '', loading: false, firstTime: true}),
 
     withHandlers({
         valueRenderer: props => (option) => {
@@ -111,7 +111,7 @@ const SearchField = enhance((props) => {
                 options={state.dataSource}
                 value={input.value.value || null}
                 onInputChange={text => dispatch({text: text})}
-                onChange={value => input.onChange(value)}
+                onChange={value => { input.onChange(value) }}
                 placeholder={label}
                 noResultsText={'Не найдено'}
                 isLoading={state.loading}

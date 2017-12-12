@@ -19,10 +19,8 @@ import * as API from '../../constants/api'
 import {
     statSalesDataFetchAction,
     statSalesReturnDataFetchAction,
-    orderListFetchAction,
-    orderListPintFetchAction
+    orderListFetchAction
 } from '../../actions/statSales'
-import {OrderPrint} from '../../components/Order'
 import getConfig from '../../helpers/getConfig'
 
 const ONE = 1
@@ -38,8 +36,6 @@ const enhance = compose(
         const detailLoading = _.get(state, ['order', 'item', 'loading'])
         const list = _.get(state, ['order', 'list', 'data'])
         const listLoading = _.get(state, ['order', 'list', 'loading'])
-        const listPrint = _.get(state, ['order', 'listPrint', 'data'])
-        const listPrintLoading = _.get(state, ['order', 'listPrint', 'loading'])
         const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
         const filter = filterHelper(list, pathname, query)
         const hasMarket = toBoolean(getConfig('MARKETS_MODULE'))
@@ -55,8 +51,6 @@ const enhance = compose(
             filterForm,
             graphList,
             graphLoading,
-            listPrint,
-            listPrintLoading,
             hasMarket
         }
     }),
@@ -83,9 +77,6 @@ const enhance = compose(
         const saleId = _.toInteger(_.get(params, 'statSaleId'))
         saleId && dispatch(orderItemFetchAction(saleId))
     }),
-
-    withState('openPrint', 'setOpenPrint', false),
-    withState('openDeliveryPrint', 'setOpenDeliveryPrint', false),
     withState('salesInfoDialog', 'setSalesInfoDialog', false),
 
     withHandlers({
@@ -144,23 +135,21 @@ const enhance = compose(
                 [STAT_SALES_FILTER_KEY.DELIVERY_TO_DATE]: deliveryToDate && deliveryToDate.format('YYYY-MM-DD')
             })
         },
-        handleGetDocument: props => () => {
+        handleGetOrderListDocument: props => () => {
             const {filter} = props
             const params = serializers.orderListFilterSerializer(filter.getParams())
             getDocuments(API.STAT_SALES_GET_DOCUMENT, params)
         },
-        handleOpenPrintDialog: props => () => {
-            const {setOpenPrint, dispatch, filter} = props
-            setOpenPrint(true)
-            dispatch(orderListPintFetchAction(filter))
-                .then(() => {
-                    window.print()
-                })
+        handleGetDocument: props => () => {
+            const {filter} = props
+            const print = true
+            const params = serializers.listFilterSerializer(filter.getParams(), null, null, print)
+            getDocuments(API.ORDER_EXCEL, params)
         },
-
-        handleClosePrintDialog: props => () => {
-            const {setOpenPrint} = props
-            setOpenPrint(false)
+        handleGetReleaseDocument: props => () => {
+            const {filter} = props
+            const params = serializers.listFilterSerializer(filter.getParams(), null)
+            getDocuments(API.ORDER_SALES_RELEASE, params)
         }
     })
 )
@@ -180,9 +169,6 @@ const StatSalesList = enhance((props) => {
         params,
         graphList,
         graphLoading,
-        openPrint,
-        listPrint,
-        listPrintLoading,
         salesInfoDialog,
         setSalesInfoDialog,
         hasMarket
@@ -284,21 +270,10 @@ const StatSalesList = enhance((props) => {
         graphReturnList
     }
 
-    const printDialog = {
-        openPrint,
-        handleOpenPrintDialog: props.handleOpenPrintDialog,
-        handleClosePrintDialog: props.handleClosePrintDialog
-    }
-    const listPrintData = {
-        data: listPrint,
-        listPrintLoading
-    }
-    if (openPrint) {
-        document.getElementById('wrapper').style.height = 'auto'
-
-        return <OrderPrint
-            printDialog={printDialog}
-            listPrintData={listPrintData}/>
+    const downloadDocuments = {
+        handleGetReleaseDocument: props.handleGetReleaseDocument,
+        handleGetOrderListDocument: props.handleGetOrderListDocument,
+        handleGetDocument: props.handleGetDocument
     }
 
     const order = false
@@ -314,11 +289,10 @@ const StatSalesList = enhance((props) => {
                 filterForm={filterForm}
                 onSubmit={props.handleSubmitFilterDialog}
                 graphData={graphData}
-                handleGetDocument={props.handleGetDocument}
-                printDialog={printDialog}
                 salesInfoDialog={salesInfoDialog}
                 setSalesInfoDialog={setSalesInfoDialog}
                 hasMarket={hasMarket}
+                downloadDocuments={downloadDocuments}
             />
         </Layout>
     )
