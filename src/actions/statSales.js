@@ -55,10 +55,10 @@ export const orderListFetchAction = (filter, withOrderReturn) => {
     }
 }
 
-export const orderListPintFetchAction = (filter) => {
+export const orderStatsFetchAction = (filter) => {
     const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
-        .get(API.ORDER_LIST_PRINT, {params})
+        .get(API.STAT_SALES_STATS, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -67,7 +67,7 @@ export const orderListPintFetchAction = (filter) => {
         })
 
     return {
-        type: actionTypes.ORDER_LIST_PRINT,
+        type: actionTypes.STAT_SALES_STATS,
         payload
     }
 }

@@ -266,9 +266,11 @@ const StatSalesGridList = enhance((props) => {
         salesInfoDialog,
         setSalesInfoDialog,
         hasMarket,
-        downloadDocuments
+        downloadDocuments,
+        statsData
     } = props
-    const graphLoading = _.get(graphData, 'graphLoading')
+    const statsLoading = _.get(statsData, 'loading')
+    const graphLoading = _.get(graphData, 'graphLoading') || statsLoading
     const divisionStatus = _.get('DIVISION')
 
     const loading = _.get(listData, 'listLoading')
@@ -493,7 +495,8 @@ const StatSalesGridList = enhance((props) => {
                                             <div>Сумма возврата за период</div>
                                             <div>{numberFormat(returnSum, getConfig('PRIMARY_CURRENCY'))}</div>
                                         </div>
-                                        {salesInfoDialog && <SalesInfoDialog/>}
+                                        {salesInfoDialog &&
+                                        <SalesInfoDialog statsData={statsData}/>}
                                     </Col>
                                     <Col xs={9}>
                                         <StatisticsChart
