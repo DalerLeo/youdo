@@ -319,6 +319,60 @@ const enhance = compose(
         },
         fullScreen: {
             marginLeft: '10px !important'
+        },
+        summary: {
+            padding: '30px 0'
+        },
+        summaryWrapper: {
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'space-between',
+            '& > div': {
+                padding: '10px 20px',
+                borderRadius: '2px',
+                border: '1px solid #efefef',
+                '& > div:nth-child(odd)': {
+                    color: '#666'
+                },
+                '& > div:nth-child(even)': {
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    marginBottom: '10px'
+                },
+                '& > div:last-child': {
+                    marginBottom: '0'
+                },
+                '&:last-child': {
+                    textAlign: 'right'
+                }
+            }
+        },
+        summaryPlan: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            padding: '10px 15px',
+            marginTop: '15px',
+            borderRadius: '2px',
+            border: 'solid 1px #efefef',
+            '& > div': {
+                display: 'grid',
+                '& > span:first-child': {
+                    color: '#666'
+                },
+                '& > span:last-child': {
+                    fontSize: '16px',
+                    fontWeight: '600'
+                }
+            }
+        },
+        summaryLoader: {
+            width: '100%',
+            background: '#fff',
+            display: 'flex',
+            alignItems: 'center',
+            zIndex: '999',
+            justifyContent: 'center',
+            padding: '0'
         }
     }),
     withState('currentRow', 'updateRow', null),
@@ -415,7 +469,8 @@ const StatAgentGridList = enhance((props) => {
         currentRow,
         updateRow,
         expandedTable,
-        setExpandedTable
+        setExpandedTable,
+        sumData
     } = props
 
     const listLoading = _.get(listData, 'listLoading')
@@ -423,6 +478,16 @@ const StatAgentGridList = enhance((props) => {
     const divisionStatus = getConfig('DIVISIONS')
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
 
+    // Summary
+    const totalSales = numberFormat(Math.abs(_.get(sumData, ['data', 'totalSales'])), primaryCurrency)
+    const actualSales = numberFormat(Math.abs(_.get(sumData, ['data', 'actualSales'])), primaryCurrency)
+    const refundsOfSales = numberFormat(Math.abs(_.get(sumData, ['data', 'refundsOfSales'])), primaryCurrency)
+    const totalRefunds = numberFormat(Math.abs(_.get(sumData, ['data', 'totalRefunds'])), primaryCurrency)
+    const paymentOfOrders = numberFormat(Math.abs(_.get(sumData, ['data', 'paymentOfOrders'])), primaryCurrency)
+    const totalPayment = numberFormat(Math.abs(_.get(sumData, ['data', 'totalPayment'])), primaryCurrency)
+    const totalPlan = numberFormat(Math.abs(_.get(sumData, ['data', 'totalPlan'])), primaryCurrency)
+    const leftPlan = numberFormat(Math.abs(_.get(sumData, ['data', 'leftPlan'])), primaryCurrency)
+    const debtPlan = numberFormat(Math.abs(_.get(sumData, ['data', 'debtPlan'])), primaryCurrency)
     const tableLeft = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
@@ -510,6 +575,39 @@ const StatAgentGridList = enhance((props) => {
                             handleSubmitFilterDialog={handleSubmitFilterDialog}
                             handleGetDocument={getDocument.handleGetDocument}
                         />
+                        <div className={classes.summary}>
+                            {listLoading
+                                ? <div className={classes.summaryLoader}>
+                                    <Loader size={0.75}/>
+                                </div>
+                                : <div>
+                                    <div className={classes.summaryWrapper}>
+                                        <div>
+                                            <div>Обшая сумма продаж</div>
+                                            <div>{totalSales}</div>
+                                            <div>Фактическая сумма продаж</div>
+                                            <div>{actualSales}</div>
+                                        </div>
+                                        <div>
+                                            <div>Сумма возвратов от продаж</div>
+                                            <div>{totalRefunds}</div>
+                                            <div>Сумма возвратов за этот период</div>
+                                            <div>{refundsOfSales}</div>
+                                        </div>
+                                        <div>
+                                            <div>Сумма оплат с заказов</div>
+                                            <div>{paymentOfOrders}</div>
+                                            <div>Общая сумма оплат</div>
+                                            <div>{totalPayment}</div>
+                                        </div>
+                                    </div>
+                                    <div className={classes.summaryPlan}>
+                                        <div><span>План агента</span> <span>{totalPlan}</span></div>
+                                        <div><span>План остаток</span> <span>{leftPlan}</span></div>
+                                        <div><span>План долг</span> <span>{debtPlan}</span></div>
+                                    </div>
+                                </div>}
+                        </div>
                         <div className={expandedTable ? classes.expandedTable : ''}>
                             <div className={classes.filters}>
                                 <form onSubmit={handleSubmit(handleSubmitFilterDialog)}>
@@ -552,7 +650,7 @@ const StatAgentGridList = enhance((props) => {
                                                 <td colSpan={2}>Продажа</td>
                                                 <td colSpan={2}>Возврат</td>
                                                 <td colSpan={2}>Оплачено</td>
-                                                <td colSpan={3}>План</td>
+                                                <td colSpan={3}>План агента</td>
                                             </tr>
                                             <tr className={classes.subTitle}>
                                                 {_.map(listHeader, (header, index) => {

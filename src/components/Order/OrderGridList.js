@@ -587,7 +587,7 @@ const OrderGridList = enhance((props) => {
                     />
                 </IconMenu>
             </Tooltip>
-            <Tooltip position="left" text="Скачать Excel">
+            <Tooltip position="left" text="Скачать накладные">
                 <IconButton onTouchTap={getExcelDocument}>
                     <Excel color="#666"/>
                 </IconButton>

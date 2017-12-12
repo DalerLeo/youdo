@@ -135,8 +135,7 @@ const StatisticsFilterExcel = enhance((props) => {
         handleGetDocument,
         withoutDate,
         extraButton,
-        sales,
-        handleOpenprintDialog
+        sales
     } = props
 
     const iconStyle = {
@@ -211,15 +210,15 @@ const StatisticsFilterExcel = enhance((props) => {
                     targetOrigin={{horizontal: 'right', vertical: 'top'}}>
                     <MenuItem
                         primaryText="Накладные"
-                        onTouchTap={handleOpenprintDialog}
+                        onTouchTap={() => { handleGetDocument.handleGetDocument() }}
                     />
                     <MenuItem
                         primaryText="Список заказов"
-                        onTouchTap={() => { handleGetDocument() }}
+                        onTouchTap={() => { handleGetDocument.handleGetOrderListDocument() }}
                     />
                     <MenuItem
                         primaryText="Релиз"
-                        onTouchTap={() => { handleGetDocument() }}
+                        onTouchTap={() => { handleGetDocument.handleGetReleaseDocument() }}
                     />
                 </IconMenu>
                     : <a className={classes.excel} onClick={handleGetDocument}>
