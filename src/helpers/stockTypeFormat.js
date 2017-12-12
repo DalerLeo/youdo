@@ -7,7 +7,9 @@ const types = {
     writeoff: 'Cписание',
     delivery_return: 'Отсрочка доставки',
     'order return accept': 'Возврат',
-    order: 'Заказ'
+    order: 'Заказ',
+    manufacture_return: 'Произведено',
+    manufacture_writeoff: 'Использвано'
 
 }
 
