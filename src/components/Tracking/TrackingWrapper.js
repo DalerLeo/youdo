@@ -215,7 +215,7 @@ const enhance = compose(
         },
         activeAgent: {
             extend: 'agent',
-            background: '#f4f4f4'
+            background: '#f2f5f8'
         },
         emptyQuery: {
             background: 'url(' + NotFound + ') no-repeat center center',

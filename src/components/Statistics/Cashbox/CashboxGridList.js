@@ -43,10 +43,6 @@ const enhance = compose(
         wrapper: {
             height: '100%',
             padding: '20px 30px',
-            '& > div:nth-child(2)': {
-                marginTop: '10px',
-                borderTop: '1px #efefef solid'
-            },
             '& .row': {
                 margin: '0 !important'
             }
@@ -96,7 +92,7 @@ const enhance = compose(
                     marginBottom: '5px'
                 },
                 '& div': {
-                    fontSize: '20px',
+                    fontSize: '17px',
                     fontWeight: '600'
                 },
                 '&:last-child': {

@@ -331,6 +331,7 @@ const enhance = compose(
                 padding: '10px 20px',
                 borderRadius: '2px',
                 border: '1px solid #efefef',
+                width: 'calc((100% / 3) - 10px)',
                 '& > div:nth-child(odd)': {
                     color: '#666'
                 },
@@ -362,6 +363,9 @@ const enhance = compose(
                 '& > span:last-child': {
                     fontSize: '16px',
                     fontWeight: '600'
+                },
+                '&:last-child': {
+                    textAlign: 'right'
                 }
             }
         },

@@ -119,17 +119,24 @@ const SideBarMenu = enhance((props) => {
     const menu = getMenus(permissions, isAdmin)
     const items = _.map(menu, (item, index) => {
         const atBottom = _.get(item, 'bottom')
+        const dynamic = _.get(item, 'dynamic') && !isAdmin
+        const icon = dynamic
+            ? _.get(_.first(_.get(item, 'childs')), 'icon')
+            : _.get(item, 'icon')
+        const tooltip = dynamic
+            ? _.get(_.first(_.get(item, 'childs')), 'name')
+            : _.get(item, 'name')
         if (atBottom) {
-            return false
+            return null
         }
         return (
             <div key={index}>
                 <Link to={item.url}>
-                    <ToolTip position="right" text={item.name}>
+                    <ToolTip position="right" text={tooltip}>
                         <FlatButton
                             rippleColor="#fff"
                             style={style.style}>
-                            {item.icon}
+                            {icon}
                         </FlatButton>
                     </ToolTip>
                 </Link>

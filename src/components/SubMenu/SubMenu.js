@@ -82,12 +82,19 @@ const SubMenu = enhance((props) => {
             </Link>
         )
     })
+    const dynamic = _.get(parent, 'dynamic') && !isAdmin
+    const icon = dynamic
+        ? _.get(_.first(_.get(parent, 'childs')), 'icon')
+        : _.get(parent, 'icon')
+    const tooltip = dynamic
+        ? _.get(_.first(_.get(parent, 'childs')), 'name')
+        : _.get(parent, 'name')
 
     return (
         <div className={opacity ? classes.transparentWrapper : classes.wrapper}>
-                <ToolTip position="right" text={parent.name}>
+                <ToolTip position="right" text={tooltip}>
                     <div className={classes.subParentIco}>
-                        {parent.icon}
+                        {icon}
                     </div>
                 </ToolTip>
             <HardwareKeyboardArrowRight style={{color: '#66696f', height: '12px', marginRight: '15px', width: 'auto'}} />

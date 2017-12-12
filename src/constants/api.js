@@ -359,6 +359,7 @@ export const STAT_OUTCOME_LIST = 'finance/transaction/'
 export const STAT_OUTCOME_GET_DOCUMENT = 'stats/transactions/export'
 
 export const STAT_SALES_DATA = '/stats/orders/'
+export const STAT_SALES_STATS = '/stats/orders/statistics'
 export const STAT_SALES_GET_DOCUMENT = '/sales/order/export/'
 
 export const STAT_PRODUCT_LIST = 'stats/products/'

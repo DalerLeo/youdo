@@ -8,6 +8,7 @@ import Settings from 'material-ui/svg-icons/action/settings'
 import Statistics from 'material-ui/svg-icons/action/timeline'
 import Store from 'material-ui/svg-icons/device/storage'
 import Markets from 'material-ui/svg-icons/action/store'
+import Clients from 'material-ui/svg-icons/social/group'
 import Supply from 'material-ui/svg-icons/action/swap-horiz'
 import Products from 'material-ui/svg-icons/device/widgets'
 
@@ -44,9 +45,10 @@ export const MenuItems = [
         name: 'Магазины',
         icon: (<Markets/>),
         url: ROUTES.SHOP_LIST_URL,
+        dynamic: true,
         childs: [
-            {name: 'Магазины', url: ROUTES.SHOP_LIST_URL, permission: 'frontend_shops'},
-            {name: 'Клиенты', url: ROUTES.CLIENT_LIST_URL, permission: 'frontend_clients'}
+            {name: 'Магазины', url: ROUTES.SHOP_LIST_URL, permission: 'frontend_shops', icon: (<Markets/>)},
+            {name: 'Клиенты', url: ROUTES.CLIENT_LIST_URL, permission: 'frontend_clients', icon: (<Clients/>)}
         ]
     },
     {
@@ -196,6 +198,7 @@ export const getNeedMenu = (userPermissions) => {
                 name: _.get(parent, 'name'),
                 icon: _.get(parent, 'icon'),
                 section: _.get(parent, 'section') || '',
+                dynamic: _.get(parent, 'dynamic'),
                 bottom: _.get(parent, 'name') === 'Настройки',
                 childs: _.filter(_.get(parent, 'childs'), (ch) => {
                     return _.includes(userPermissions, ch.permission)

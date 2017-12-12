@@ -256,22 +256,21 @@ const OrderGridList = enhance((props) => {
         </div>
     )
 
-    const toolText = canChangeAnyReturn ? 'Возврат с клиента' : 'У вас нет доступа'
     return (
         <Container>
             <SubMenu url={ROUTES.RETURN_LIST_URL}/>
+            {canChangeAnyReturn &&
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text={toolText}>
+                <Tooltip position="left" text={'Возврат с клиента'}>
                     <FloatingActionButton
                         mini={true}
-                        disabled={!canChangeAnyReturn}
                         zDepth={1}
                         backgroundColor="#12aaeb"
                         onTouchTap={createDialog.handleOpenCreateDialog}>
                         <ContentAdd />
                     </FloatingActionButton>
                 </Tooltip>
-            </div>
+            </div>}
 
             <GridList
                 filter={filter}

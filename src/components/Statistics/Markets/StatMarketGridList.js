@@ -49,7 +49,7 @@ const enhance = compose(
             justifyContent: 'center',
             display: 'flex',
             padding: '0',
-            height: '75px'
+            height: '72px'
         },
         mainWrapper: {
             background: '#fff',
@@ -60,9 +60,6 @@ const enhance = compose(
         wrapper: {
             height: 'calc(100% - 40px)',
             padding: '20px 30px',
-            '& > div:nth-child(2)': {
-                marginTop: '10px'
-            },
             '& .row': {
                 margin: '0 !important'
             }
@@ -274,13 +271,12 @@ const enhance = compose(
         summary: {
             display: 'flex',
             justifyContent: 'space-between',
-            borderTop: 'solid 1px #efefef',
             borderBottom: 'solid 1px #efefef',
-            padding: '14px 0',
+            padding: '15px 0',
             color: '#666',
             '& > div': {
                 '& div': {
-                    fontSize: '20px',
+                    fontSize: '17px',
                     color: '#333',
                     fontWeight: '600'
                 },

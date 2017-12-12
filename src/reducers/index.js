@@ -396,6 +396,7 @@ const rootReducer = combineReducers({
 
     statSales: combineReducers({
         data: createThunkReducer(actionTypes.STAT_SALES_DATA),
+        stats: createThunkReducer(actionTypes.STAT_SALES_STATS),
         returnList: createThunkReducer(actionTypes.STAT_RETURN_LIST)
     }),
     statReturn: combineReducers({

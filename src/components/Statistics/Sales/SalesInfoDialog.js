@@ -10,13 +10,13 @@ const enhance = compose(
     injectSheet({
         wrapper: {
             position: 'absolute',
-            top: '15px',
+            top: '0',
             left: '100%',
             whiteSpace: 'nowrap',
             zIndex: '999'
         },
         salesType: {
-            padding: '10px 15px',
+            padding: '10px 20px',
             borderBottom: '1px #efefef solid',
             '&:last-child': {
                 borderBottom: 'none'
@@ -40,65 +40,103 @@ const enhance = compose(
     })
 )
 
-const listData = [
-    {
-        type: 'Фактические продажи',
-        summary: {
-            cash: [
-                {currency: {id: 1, name: 'UZS'}, amount: 10000},
-                {currency: {id: 2, name: 'USD'}, amount: 200}
-            ],
-            bank: [
-                {currency: {id: 1, name: 'UZS'}, amount: 10000},
-                {currency: {id: 2, name: 'USD'}, amount: 200}
-            ]
-        }
-    },
-    {
-        type: 'Сумма продаж',
-        summary: {
-            cash: [
-                {currency: {id: 1, name: 'UZS'}, amount: 10000},
-                {currency: {id: 2, name: 'USD'}, amount: 200}
-            ],
-            bank: [
-                {currency: {id: 1, name: 'UZS'}, amount: 10000},
-                {currency: {id: 2, name: 'USD'}, amount: 200}
-            ]
-        }
-    }
-]
-
 const SalesInfoDialog = enhance((props) => {
     const {
-        classes
+        classes,
+        statsData
     } = props
+    const data = _.get(statsData, 'data')
+    const cashList = _.filter(data, {'paymentType': 'cash'})
+    const bankList = _.filter(data, {'paymentType': 'bank'})
+    const getCurrency = (obj) => {
+        return _.get(obj, ['currency', 'name'])
+    }
+    const cashSummary = _.map(cashList, (item) => {
+        const currency = getCurrency(item)
+        const fact = _.toNumber(_.get(item, 'factTotal'))
+        const total = _.toNumber(_.get(item, 'total'))
+        const returns = _.toNumber(_.get(item, 'returnTotal'))
+        return {
+            fact,
+            total,
+            returns,
+            currency
+        }
+    })
+    const bankSummary = _.map(bankList, (item) => {
+        const currency = getCurrency(item)
+        const fact = _.toNumber(_.get(item, 'factTotal'))
+        const total = _.toNumber(_.get(item, 'total'))
+        const returns = _.toNumber(_.get(item, 'returnTotal'))
+        return {
+            fact,
+            total,
+            returns,
+            currency
+        }
+    })
 
     return (
          <Paper zDepth={2} className={classes.wrapper}>
-             {_.map(listData, (item, index) => {
-                 return (
-                     <div className={classes.salesType} key={index}>
-                         <div className={classes.title}>{item.type}</div>
-                         <div>
-                             <span>Нал:</span>
-                             {_.map(item.summary.cash, (obj, i) => {
-                                 const currency = _.get(obj, ['currency', 'name'])
-                                 const amount = _.get(obj, 'amount')
-                                 return <span className={classes.amount} key={i}>{numberFormat(amount, currency)}</span>
-                             })}
-                         </div>
-                         <div>
-                             <span>Переч:</span>
-                             {_.map(item.summary.bank, (obj, i) => {
-                                 const currency = _.get(obj, ['currency', 'name'])
-                                 const amount = _.get(obj, 'amount')
-                                 return <span className={classes.amount} key={i}>{numberFormat(amount, currency)}</span>
-                             })}
-                         </div>
-                     </div>
-                 )
-             })}
+             <div className={classes.salesType}>
+                 <div className={classes.title}>Фактические продажи</div>
+                 <div>
+                     <span>Нал:</span>
+                     {_.map(cashSummary, (obj, i) => {
+                         const currency = _.get(obj, 'currency')
+                         const amount = _.get(obj, 'fact')
+                         return <span className={classes.amount} key={i}>{numberFormat(amount, currency)}</span>
+                     })}
+                 </div>
+                 <div>
+                     <span>Переч:</span>
+                     {_.map(bankSummary, (obj, i) => {
+                         const currency = _.get(obj, 'currency')
+                         const amount = _.get(obj, 'fact')
+                         return <span className={classes.amount} key={i}>{numberFormat(amount, currency)}</span>
+                     })}
+                 </div>
+             </div>
+
+             <div className={classes.salesType}>
+                 <div className={classes.title}>Сумма продаж</div>
+                 <div>
+                     <span>Нал:</span>
+                     {_.map(cashSummary, (obj, i) => {
+                         const currency = _.get(obj, 'currency')
+                         const amount = _.get(obj, 'total')
+                         return <span className={classes.amount} key={i}>{numberFormat(amount, currency)}</span>
+                     })}
+                 </div>
+                 <div>
+                     <span>Переч:</span>
+                     {_.map(bankSummary, (obj, i) => {
+                         const currency = _.get(obj, 'currency')
+                         const amount = _.get(obj, 'total')
+                         return <span className={classes.amount} key={i}>{numberFormat(amount, currency)}</span>
+                     })}
+                 </div>
+             </div>
+
+             <div className={classes.salesType}>
+                 <div className={classes.title}>Сумма возвратов</div>
+                 <div>
+                     <span>Нал:</span>
+                     {_.map(cashSummary, (obj, i) => {
+                         const currency = _.get(obj, 'currency')
+                         const amount = _.get(obj, 'returns')
+                         return <span className={classes.amount} key={i}>{numberFormat(amount, currency)}</span>
+                     })}
+                 </div>
+                 <div>
+                     <span>Переч:</span>
+                     {_.map(bankSummary, (obj, i) => {
+                         const currency = _.get(obj, 'currency')
+                         const amount = _.get(obj, 'returns')
+                         return <span className={classes.amount} key={i}>{numberFormat(amount, currency)}</span>
+                     })}
+                 </div>
+             </div>
          </Paper>
     )
 })

@@ -51,7 +51,6 @@ const enhance = compose(
         loader: {
             width: '100%',
             background: '#fff',
-            height: '200px',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center'
@@ -226,11 +225,9 @@ const ReturnDetails = enhance((props) => {
     const products = _.get(data, 'returnedProducts')
     if (loading) {
         return (
-            <div className={classes.wrapper} style={loading && {maxHeight: '200px'}}>
+            <div className={classes.wrapper} style={loading ? {maxHeight: '100px'} : {}}>
                 <div className={classes.loader}>
-                    <div>
-                        <LinearProgress/>
-                    </div>
+                    <LinearProgress/>
                 </div>
             </div>
         )

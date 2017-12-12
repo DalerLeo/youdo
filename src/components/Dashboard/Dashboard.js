@@ -173,7 +173,7 @@ const Dashboard = enhance((props) => {
 
     // USER DATA //
     const username = _.get(userData, 'username')
-    const position = _.get(userData, 'position')
+    const position = _.get(userData, 'position') || 'Без должности'
 
     // SALES //
     const orderChartActive = _.get(orderChart, 'active')

@@ -46,6 +46,17 @@ const enhance = compose(
             background: '#fff',
             zIndex: '30'
         },
+        sumLoader: {
+            width: '100%',
+            margin: '0 !important',
+            background: '#fff',
+            alignItems: 'center',
+            zIndex: '999',
+            justifyContent: 'center',
+            display: 'flex',
+            padding: '0',
+            height: '72px'
+        },
         mainWrapper: {
             background: '#fff',
             margin: '0 -28px',
@@ -171,9 +182,7 @@ const enhance = compose(
         },
         filters: {
             display: 'flex',
-            justifyContent: 'space-between',
-            marginTop: '10px',
-            borderTop: '1px #efefef solid'
+            justifyContent: 'space-between'
         },
         container: {
             position: 'relative'
@@ -236,6 +245,27 @@ const enhance = compose(
         },
         icon: {
             height: '15px !important'
+        },
+        summary: {
+            display: 'flex',
+            borderBottom: 'solid 1px #efefef',
+            padding: '15px 0',
+            color: '#666',
+            '& > div': {
+                marginRight: '60px',
+                '& div': {
+                    fontSize: '17px',
+                    color: '#333',
+                    fontWeight: '600'
+                },
+                '& span': {
+                    display: 'block'
+                },
+                '&:last-child': {
+                    marginRight: '0'
+                }
+
+            }
         },
         expandedTable: {
             background: '#fff',
@@ -346,6 +376,7 @@ const StatProductGridList = enhance((props) => {
     const styleOnHover = {
         background: '#efefef'
     }
+    const sumLoading = _.get(listData, 'listLoading')
     const listLoading = _.get(listData, 'listLoading')
     const currency = getConfig('PRIMARY_CURRENCY')
     const tableLeft = _.map(_.get(listData, 'data'), (item) => {
@@ -434,6 +465,24 @@ const StatProductGridList = enhance((props) => {
                             fields={fields}
                             filterKeys={STAT_PRODUCT_FILTER_KEY}
                         />
+                        {sumLoading
+                            ? <div className={classes.sumLoader}>
+                                <Loader size={0.75}/>
+                            </div>
+                            : <div className={classes.summary}>
+                                <div>
+                                    <span>Сумма от продаж</span>
+                                    <div>{numberFormat('24000', currency)}</div>
+                                </div>
+                                <div>
+                                    <span>Фактические продажи</span>
+                                    <div>{numberFormat('20000', currency)}</div>
+                                </div>
+                                <div>
+                                    <span>Сумма возвратов</span>
+                                    <div>{numberFormat('4000', currency)}</div>
+                                </div>
+                            </div>}
                         <div className={expandedTable ? classes.expandedTable : ''}>
                             <div className={classes.filters}>
                                 <form className={classes.form} onSubmit={handleSubmit(searchSubmit)}>
