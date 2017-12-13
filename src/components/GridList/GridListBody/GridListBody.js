@@ -99,7 +99,8 @@ const enhance = compose(
             alignItems: 'center',
             position: 'relative',
             minHeight: '100px',
-            transition: 'all 400ms ease-out !important'
+            transition: 'all 400ms ease-out !important',
+            zIndex: '11'
         },
         emptyQuery: {
             background: 'url(' + NotFound + ') no-repeat center center',

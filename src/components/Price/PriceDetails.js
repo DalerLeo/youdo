@@ -187,7 +187,7 @@ const PriceDetails = enhance((props) => {
     const priceHistoryLoading = _.get(detailData, 'priceItemHistoryLoading')
     const name = _.get(detailData, ['data', 'name'])
     const measurement = _.get(detailData, ['data', 'measurement', 'name'])
-    const priceUpdated = _.get(listDetailData, ['0', 'priceUpdated']) ? moment(_.get(listDetailData, ['0', 'priceUpdated'])).format('DD.MM.YYYY') : 'Не установлено'
+    const priceUpdated = _.get(listDetailData, ['0', 'priceUpdated']) ? moment(_.get(listDetailData, ['0', 'priceUpdated'])).format('DD.MM.YYYY') : 'Не установлены'
     const averageCost = _.get(listDetailData, ['0', 'netCost'])
     const minPrice = numberFormat(_.get(detailData, ['data', 'minPrice']))
     const maxPrice = numberFormat(_.get(detailData, ['data', 'maxPrice']))

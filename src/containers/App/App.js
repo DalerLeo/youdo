@@ -5,7 +5,7 @@ import {setTokenAction, signOutAction, setAuthConfirmAction} from '../../actions
 import {trackingListFetchAction} from '../../actions/tracking'
 import DocumentTitle from 'react-document-title'
 import {hashHistory} from 'react-router'
-import {compose, withHandlers} from 'recompose'
+import {compose, withHandlers, withState} from 'recompose'
 import * as ROUTES from '../../constants/routes'
 
 const refreshAgentsList = 45000
@@ -20,7 +20,8 @@ const refreshAgentsList = 45000
                 hashHistory.push(ROUTES.SIGN_IN)
             })
         }
-    })
+    }),
+    withState('scrollValue', 'updateScrollValue', false)
 )
 class App extends React.Component {
     constructor (props) {
@@ -37,8 +38,8 @@ class App extends React.Component {
     }
 
     render () {
-        const {handleSignOut} = this.props
-        const layout = {handleSignOut}
+        const {handleSignOut, scrollValue, updateScrollValue} = this.props
+        const layout = {handleSignOut, scrollValue, updateScrollValue}
         const title = 'Rhythm ERP'
 
         return (

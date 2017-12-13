@@ -26,7 +26,7 @@ const enhance = compose(
             fontWeight: '600',
             color: '#fff',
             display: 'flex',
-            transition: 'all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms',
+            transition: 'padding 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms',
             '& .row': {
                 width: '100%',
                 alignItems: 'center',
@@ -156,10 +156,9 @@ const muiTheme = getMuiTheme({
 const GridListHeader = enhance((props) => {
     const {classes, filter, column, listIds, onChecked, activeCheckboxes, withoutRow, statistics, scrollData} = props
 
-    const THRESHOLD = 110
     const LEFT_OFFSET = 112
     const RIGHT_OFFSET = 32
-    const fixedHeader = scrollData.value >= THRESHOLD
+    const fixedHeader = _.get(scrollData, 'value', false)
     const leftOffset = _.get(scrollData, 'leftOffset') === 'standart' ? LEFT_OFFSET : _.get(scrollData, 'leftOffset')
     const rightOffset = _.get(scrollData, 'rightOffset') === 'standart' ? RIGHT_OFFSET : _.get(scrollData, 'rightOffset')
 
@@ -186,9 +185,11 @@ const GridListHeader = enhance((props) => {
         if (sortable) {
             const name = _.get(item, 'name')
             const sortingType = filter.getSortingType(name)
-            const Icon = !_.isNull(sortingType) ? sortingType ? (
-                <ArrowUpIcon style={alignRight && {right: 'auto', left: '0'}} className={classes.icon}/>
-            ) : (<ArrowDownIcon style={alignRight && {right: 'auto', left: '0'}} className={classes.icon}/>) : null
+            const Icon = !_.isNull(sortingType)
+                ? sortingType
+                    ? (<ArrowUpIcon style={alignRight && {right: 'auto', left: '0'}} className={classes.icon}/>)
+                    : (<ArrowDownIcon style={alignRight && {right: 'auto', left: '0'}} className={classes.icon}/>)
+                : null
 
             if (withoutRow) {
                 return (
