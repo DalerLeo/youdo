@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import moment from 'moment'
 import filterHelper from '../../helpers/filter'
-import {compose, withState, withHandlers} from 'recompose'
+import {compose, withState, withHandlers, lifecycle} from 'recompose'
 import React from 'react'
 import injectSheet from 'react-jss'
 import SideBarMenu from '../SidebarMenu'
@@ -245,6 +245,16 @@ const enhance = compose(
             color: '#999',
             fontWeight: 'bold'
         }
+    }),
+    lifecycle({
+        componentDidMount () {
+            const content = this.refs.content
+            const updateScrollValue = _.get(this, ['props', 'updateScrollValue'])
+            content.addEventListener('scroll', () => {
+                const scrollValue = content.scrollTop
+                updateScrollValue(scrollValue)
+            })
+        }
     })
 )
 
@@ -302,8 +312,7 @@ const Layout = enhance((props) => {
                     style={iconStyle.button}
                     onTouchTap={ () => {
                         notificationData.handleOpenConfirmDialog(id)
-                    }}
-                >
+                    }}>
                     <Clear color="#dadada"/>
                 </IconButton>
             </div>
@@ -343,7 +352,7 @@ const Layout = enhance((props) => {
                 <SideBarMenu handleSignOut={handleSignOut}
                              handleOpenNotificationBar={notificationData.handleOpenNotificationBar}/>
             </div>
-            <div className={classes.content}>
+            <div className={classes.content} ref="content">
                 {children}
             </div>
 

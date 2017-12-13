@@ -61,11 +61,11 @@ const enhance = compose(
         },
         fixedHeader: {
             extend: 'header',
+            transition: 'unset !important',
             position: 'fixed',
             width: 'auto',
             top: '0',
-            left: '112px',
-            right: '32px'
+            zIndex: '10'
         },
         sortingButton: {
             color: '#ffffff',
@@ -154,7 +154,14 @@ const muiTheme = getMuiTheme({
 })
 
 const GridListHeader = enhance((props) => {
-    const {classes, filter, column, listIds, onChecked, activeCheckboxes, withoutRow, statistics} = props
+    const {classes, filter, column, listIds, onChecked, activeCheckboxes, withoutRow, statistics, scrollData} = props
+
+    const THRESHOLD = 110
+    const LEFT_OFFSET = 112
+    const RIGHT_OFFSET = 32
+    const fixedHeader = scrollData.value >= THRESHOLD
+    const leftOffset = _.get(scrollData, 'leftOffset') === 'standart' ? LEFT_OFFSET : _.get(scrollData, 'leftOffset')
+    const rightOffset = _.get(scrollData, 'rightOffset') === 'standart' ? RIGHT_OFFSET : _.get(scrollData, 'rightOffset')
 
     // Calculate row size for correct showing grid list
     const rowSize = 12
@@ -242,10 +249,22 @@ const GridListHeader = enhance((props) => {
             </Col>
         )
     })
+
+    const fixedHeaderStyle = {
+        left: leftOffset,
+        right: rightOffset
+    }
+
     return (
         <div
-            className={statistics ? classes.header2 : classes.header}
-            style={activeCheckboxes ? {paddingLeft: '20px'} : {}}>
+            className={statistics
+                ? classes.header2
+                : fixedHeader
+                    ? classes.fixedHeader
+                    : classes.header}
+            style={activeCheckboxes
+                ? fixedHeader ? _.merge({paddingLeft: '20px'}, fixedHeaderStyle) : {paddingLeft: '20px'}
+                : fixedHeader ? fixedHeaderStyle : {}}>
             <div className={classes.checkbox}>
                 {activeCheckboxes &&
                 <MuiThemeProvider muiTheme={getMuiTheme(muiTheme)}>

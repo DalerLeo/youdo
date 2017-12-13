@@ -82,13 +82,14 @@ const enhance = compose(
         const manufacture = _.toInteger(_.get(props, ['params', 'manufactureId']))
         const nextManufacture = _.toInteger(_.get(nextProps, ['params', 'manufactureId']))
         return (beginDate !== nextBeginDate) || (endDate !== nextEndDate) || (manufacture !== nextManufacture)
-    }, ({dispatch, beginDate, endDate}) => {
+    }, ({dispatch, beginDate, endDate, params}) => {
+        const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
         const dateRange = {
             beginDate,
             endDate
         }
-        dispatch(shipmentProductsListFetchAction(dateRange))
-        dispatch(shipmentMaterialsListFetchAction(dateRange))
+        dispatch(shipmentProductsListFetchAction(dateRange, manufactureId))
+        dispatch(shipmentMaterialsListFetchAction(dateRange, manufactureId))
     }),
 
     // LOGS LIST

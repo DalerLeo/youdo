@@ -55,11 +55,11 @@ export const shipmentLogsListFetchAction = (filter, manufacture, dateRange) => {
     }
 }
 
-export const shipmentProductsListFetchAction = (dateRange) => {
+export const shipmentProductsListFetchAction = (dateRange, manufactureId) => {
     const beginDate = _.get(dateRange, 'beginDate')
     const endDate = _.get(dateRange, 'endDate')
     const payload = axios()
-        .get(API.SHIPMENT_PRODUCTS_LIST, {params: {begin_date: beginDate, end_date: endDate}})
+        .get(API.SHIPMENT_PRODUCTS_LIST, {params: {manufacture: manufactureId, begin_date: beginDate, end_date: endDate}})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -73,11 +73,11 @@ export const shipmentProductsListFetchAction = (dateRange) => {
     }
 }
 
-export const shipmentMaterialsListFetchAction = (dateRange) => {
+export const shipmentMaterialsListFetchAction = (dateRange, manufactureId) => {
     const beginDate = _.get(dateRange, 'beginDate')
     const endDate = _.get(dateRange, 'endDate')
     const payload = axios()
-        .get(API.SHIPMENT_MATERIALS_LIST, {params: {begin_date: beginDate, end_date: endDate}})
+        .get(API.SHIPMENT_MATERIALS_LIST, {params: {manufacture: manufactureId, begin_date: beginDate, end_date: endDate}})
         .then((response) => {
             return _.get(response, 'data')
         })

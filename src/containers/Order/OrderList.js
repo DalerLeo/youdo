@@ -288,6 +288,7 @@ const enhance = compose(
 
     withState('openAddProductDialog', 'setOpenAddProductDialog', false),
     withState('openAddProductConfirm', 'setOpenAddProductConfirm', false),
+    withState('scrollValue', 'updateScrollValue', null),
     withPropsOnChange((props, nextProps) => {
         const except = {
             page: null,
@@ -922,7 +923,9 @@ const OrderList = enhance((props) => {
         openContractPrint,
         marketDetailsLoading,
         marketDetails,
-        hasMarket
+        hasMarket,
+        scrollValue,
+        updateScrollValue
     } = props
     const openFilterDialog = toBoolean(_.get(location, ['query', ORDER_FILTER_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', ORDER_CREATE_DIALOG_OPEN]))
@@ -1326,7 +1329,7 @@ const OrderList = enhance((props) => {
     document.getElementById('wrapper').style.height = '100%'
     const order = true
     return (
-        <Layout {...layout}>
+        <Layout {...layout} updateScrollValue={updateScrollValue}>
             <OrderGridList
                 filter={filter}
                 listData={listData}
@@ -1362,6 +1365,7 @@ const OrderList = enhance((props) => {
                 printSalesDialog={printSalesDialog}
                 printContractDialog={printContractDialog}
                 hasMarket={hasMarket}
+                scrollValue={scrollValue}
             />
         </Layout>
     )
