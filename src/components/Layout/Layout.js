@@ -250,10 +250,18 @@ const enhance = compose(
         componentDidMount () {
             const content = this.refs.content
             const updateScrollValue = _.get(this, ['props', 'updateScrollValue'])
-            content.addEventListener('scroll', () => {
-                const scrollValue = content.scrollTop
-                updateScrollValue(scrollValue)
-            })
+            const THRESHOLD = 110
+            if (updateScrollValue) {
+                let fixed = false
+                content.addEventListener('scroll', () => {
+                    const value = content.scrollTop
+                    const newValue = value >= THRESHOLD
+                    if (fixed !== newValue) {
+                        updateScrollValue(newValue)
+                        fixed = newValue
+                    }
+                })
+            }
         }
     })
 )

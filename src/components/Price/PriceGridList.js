@@ -195,12 +195,12 @@ const PriceGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const currency = getConfig('PRIMARY_CURRENCY')
-        const codeProduct = _.get(item, 'code') || 'не установлен'
-        const netCost = _.get(item, 'netCost') ? numberFormat(_.get(item, 'netCost'), currency) : 'Не установлено'
+        const codeProduct = _.get(item, 'code') || 'Не установлен'
+        const netCost = _.get(item, 'netCost') ? numberFormat(_.get(item, 'netCost'), currency) : 'Не установлена'
         const minPrice = _.get(item, 'minPrice')
         const maxPrice = _.get(item, 'maxPrice')
-        const price = (minPrice && maxPrice) ? numberFormat(minPrice) + ' - ' + numberFormat(maxPrice, getConfig('PRIMARY_CURRENCY')) : 'Не установлено'
-        const priceUpdate = _.get(item, 'priceUpdated') ? dataFormat(_.get(item, 'priceUpdated')) : 'Не установлено'
+        const price = (minPrice && maxPrice) ? numberFormat(minPrice) + ' - ' + numberFormat(maxPrice, getConfig('PRIMARY_CURRENCY')) : 'Не установлена'
+        const priceUpdate = _.get(item, 'priceUpdated') ? dataFormat(_.get(item, 'priceUpdated')) : 'Не установлена'
         const customPrice = _.get(item, 'customPrice')
 
         const internalMinPrice = numberFormat(_.get(item, 'internalMinPrice'))

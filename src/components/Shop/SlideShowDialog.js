@@ -1,9 +1,9 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {compose, withState} from 'recompose'
+import {compose} from 'recompose'
 import injectSheet from 'react-jss'
-import Dialog from 'material-ui/Dialog'
+import Paper from 'material-ui/Paper'
 import Loader from '../Loader'
 import IconButton from 'material-ui/IconButton'
 import Star from 'material-ui/svg-icons/toggle/star'
@@ -11,7 +11,6 @@ import StarBorder from 'material-ui/svg-icons/toggle/star-border'
 import ArrowLeft from 'material-ui/svg-icons/navigation/chevron-left'
 import ArrowRight from 'material-ui/svg-icons/navigation/chevron-right'
 
-const ZERO = 0
 const enhance = compose(
     injectSheet({
         loader: {
@@ -24,34 +23,40 @@ const enhance = compose(
             display: 'flex'
         },
         dialog: {
-            cursor: 'pointer',
-            '& > div:first-child > div > div': {
-                background: 'transparent !important',
-                boxShadow: 'none !important'
-            }
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            position: 'fixed',
+            top: '0',
+            left: '0',
+            right: '0',
+            bottom: '0',
+            zIndex: '1000'
         },
         popUp: {
-            cursor: 'default',
-            overflowY: 'hidden !important',
-            fontSize: '13px !important',
-            position: 'relative',
-            padding: '0 !important',
-            overflowX: 'hidden',
-            height: '100%',
-            marginBottom: '64px'
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: '10'
+        },
+        overlay: {
+            position: 'fixed',
+            background: 'rgba(0,0,0, 0.54)',
+            top: '0',
+            left: '0',
+            right: '0',
+            bottom: '0',
+            cursor: 'pointer',
+            zIndex: '5'
         },
         inContent: {
-            minWidth: '500px',
-            minHeight: '500px',
-            maxHeight: '500px',
-            margin: 'auto',
             display: 'flex',
             position: 'relative',
-            backgroundRepeat: 'no-repeat',
-            backgroundSize: 'cover',
-            zIndex: '1',
+            minWidth: '500px',
+            minHeight: '500px',
             '& img': {
-                margin: 'auto'
+                margin: 'auto',
+                display: 'block'
             }
         },
         favourite: {
@@ -77,9 +82,7 @@ const enhance = compose(
             extend: 'arrows',
             right: '0'
         }
-    }),
-    withState('contentWidth', 'setContentWidth', ZERO),
-    withState('contentHeight', 'setContentHeight', ZERO)
+    })
 )
 const iconStyle = {
     icon: {
@@ -103,14 +106,9 @@ const SlideShowDialog = enhance((props) => {
         images,
         prevBtn,
         nextBtn,
-        handleSetPrimaryImage,
-        contentWidth,
-        setContentWidth,
-        contentHeight,
-        setContentHeight
+        handleSetPrimaryImage
     } = props
 
-    const buttonsWidth = 140
     const imgURL = _.get(image, 'file')
     const lastIndex = _.get(images, 'length')
     const currentIndex = _.findIndex(images, (o) => {
@@ -118,52 +116,49 @@ const SlideShowDialog = enhance((props) => {
         return fileId === _.get(image, 'id')
     })
     const isPrimary = _.get(_.find(images, {'fileId': _.get(image, 'id')}), 'isPrimary')
-    const handleImageLoad = ({target: img}) => {
-        const imageWidth = img.offsetWidth
-        const imageHeight = img.offsetHeight
-        setContentWidth(imageWidth)
-        setContentHeight(imageHeight)
-    }
-    return (
-        <Dialog
-            open={open}
-            onRequestClose={onClose}
-            className={classes.dialog}
-            contentStyle={{maxWidth: 'none', width: contentWidth + buttonsWidth + 'px', transition: 'none'}}
-            bodyStyle={{minHeight: 'auto'}}
-            bodyClassName={classes.popUp}>
-            <div className={classes.titleContent}>
-            </div>
-            <div className={classes.inContent} style={{width: contentWidth + 'px', height: contentHeight + 'px'}}>
-                {loading ? <div className={classes.loader}>
-                    <Loader size={0.75}/>
+    if (open) {
+        return (
+            <div className={classes.dialog}>
+                <div className={classes.overlay} onClick={onClose}>{null}</div>
+                <div className={classes.popUp}>
+                    <Paper zDepth={3} className={classes.inContent}>
+                        {!loading &&
+                        <div className={classes.navLeft}>
+                            <IconButton
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}
+                                disableTouchRipple={true}
+                                onTouchTap={() => { prevBtn(currentIndex, lastIndex) }}>
+                                <ArrowLeft/>
+                            </IconButton>
+                        </div>}
+
+                        {loading
+                            ? <div className={classes.loader}>
+                                <Loader size={0.75}/>
+                            </div>
+                            : <img src={imgURL} alt=""/>}
+                        <IconButton className={classes.favourite}>
+                            {isPrimary ? <Star color="#ffad36"/>
+                                : <StarBorder color="#e9e9e9" onTouchTap={handleSetPrimaryImage}/>}
+                        </IconButton>
+
+                        {!loading &&
+                        <div className={classes.navRight}>
+                            <IconButton
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}
+                                disableTouchRipple={true}
+                                onTouchTap={() => { nextBtn(currentIndex, lastIndex) }}>
+                                <ArrowRight/>
+                            </IconButton>
+                        </div>}
+                    </Paper>
                 </div>
-                : imgURL && <img src={imgURL} alt="" onLoad={handleImageLoad}/>}
-                <IconButton className={classes.favourite}>
-                    {isPrimary ? <Star color="#ffad36"/>
-                        : <StarBorder color="#e9e9e9" onTouchTap={handleSetPrimaryImage}/>}
-                </IconButton>
             </div>
-            <div className={classes.navLeft}>
-                <IconButton
-                    iconStyle={iconStyle.icon}
-                    style={iconStyle.button}
-                    disableTouchRipple={true}
-                    onTouchTap={() => { prevBtn(currentIndex, lastIndex) }}>
-                    <ArrowLeft/>
-                </IconButton>
-            </div>
-            <div className={classes.navRight}>
-                <IconButton
-                    iconStyle={iconStyle.icon}
-                    style={iconStyle.button}
-                    disableTouchRipple={true}
-                    onTouchTap={() => { nextBtn(currentIndex, lastIndex) }}>
-                    <ArrowRight/>
-                </IconButton>
-            </div>
-        </Dialog>
-    )
+        )
+    }
+    return null
 })
 SlideShowDialog.propTyeps = {
     images: PropTypes.array.isRequired,
