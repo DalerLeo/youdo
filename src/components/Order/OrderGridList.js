@@ -274,7 +274,8 @@ const OrderGridList = enhance((props) => {
         addProductDialog,
         printSalesDialog,
         printContractDialog,
-        hasMarket
+        hasMarket,
+        scrollValue
     } = props
 
     const showCheckboxes = toBoolean(_.get(filter.getParams(), 'showCheckboxes'))
@@ -606,6 +607,12 @@ const OrderGridList = enhance((props) => {
         </div>
     )
 
+    const scrollData = {
+        value: scrollValue,
+        leftOffset: 'standart',
+        rightOffset: 'standart'
+    }
+
     return (
         <Container>
             <SubMenu url={ROUTES.ORDER_LIST_URL}/>
@@ -634,6 +641,7 @@ const OrderGridList = enhance((props) => {
                 activeCheckboxes={showCheckboxes}
                 withCheckboxes={true}
                 checkboxActions={checkboxActions}
+                scrollData={scrollData}
             />
 
             {createDialog.openCreateDialog && <OrderCreateDialog

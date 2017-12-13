@@ -56,7 +56,8 @@ const GridList = enhance((props) => {
         withoutPagination,
         listShadow,
         transparentLoading,
-        hoverableList
+        hoverableList,
+        scrollData
     } = props
 
     const header = _.get(list, 'header')
@@ -109,6 +110,7 @@ const GridList = enhance((props) => {
                     withoutRow={withoutRow}
                     column={header}
                     listShadow={listShadow}
+                    scrollData={scrollData}
                 />
             </Paper>
             {loaderOrList(loading)}

@@ -17,7 +17,7 @@ const NOT_FOUND = -1
 const SETTINGS_STAFF = 'Персонал'
 const SETTINGS_FINANCE = 'Финансы'
 const SETTINGS_PRODUCTS = 'Продукты'
-const SETTINGS_MISC = 'Другие'
+const SETTINGS_MISC = 'Разное'
 
 const STATS_SALES = 'Продажи'
 const STATS_FINANCE = 'Финансы'

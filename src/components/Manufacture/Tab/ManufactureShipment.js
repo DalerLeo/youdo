@@ -387,14 +387,15 @@ const ManufactureShipment = enhance((props) => {
         <Paper transitionEnabled={false} zDepth={1} className={classes.shipmentContent}>
             <header>
                 <ManufactureActivityDateRange filter={filter} initialValues={filterDialog.initialValues}/>
+                {tab === TAB.TAB_SHIFT &&
                 <a className={classes.filterBtn} onClick={filterDialog.handleOpenFilterDialog}>
                     <Filter/>
                     <span>Фильтр</span>
-                </a>
+                </a>}
             </header>
             <ManufactureActivityFilterDialog
                 filterDialog={filterDialog}
-                fields={tab === TAB.TAB_SHIFT ? fields : null}
+                fields={fields}
                 initialValues={filterDialog.initialValues}/>
             <div className={classes.details}>
                 <div className={classes.rightSide}>
