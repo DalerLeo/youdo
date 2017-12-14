@@ -18,7 +18,8 @@ import {
     REMAINDER_FILTER_OPEN,
     REMAINDER_FILTER_KEY,
     REMAINDER_DISCARD_DIALOG_OPEN,
-    REMAINDER_RESERVED_DIALOG_OPEN
+    REMAINDER_RESERVED_DIALOG_OPEN,
+    REMAINDER_INVENTORY_DIALOG_OPEN
 } from '../../components/Remainder'
 import {
     remainderListFetchAction,
@@ -26,7 +27,8 @@ import {
     remainderTransferAction,
     remainderDiscardAction,
     remainderReversedListFetchAction,
-    addProductsListAction
+    addProductsListAction,
+    inventoryProductsFetchAction
 } from '../../actions/remainder'
 
 const ZERO = 0
@@ -37,13 +39,16 @@ const enhance = compose(
         const detail = _.get(state, ['remainder', 'item', 'data'])
         const detailLoading = _.get(state, ['remainder', 'item', 'loading'])
         const list = _.get(state, ['remainder', 'list', 'data'])
+        const listLoading = _.get(state, ['remainder', 'list', 'loading'])
+        const inventoryList = _.get(state, ['remainder', 'inventory', 'data', 'results'])
+        const inventoryListLoading = _.get(state, ['remainder', 'inventory', 'loading'])
         const reserved = _.get(state, ['remainder', 'reserved', 'data'])
         const reservedLoading = _.get(state, ['remainder', 'reserved', 'loading'])
-        const listLoading = _.get(state, ['remainder', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'RemainderFilterForm'])
         const searchForm = _.get(state, ['form', 'RemainderSearchForm'])
         const transferForm = _.get(state, ['form', 'RemainderTransferForm'])
         const discardForm = _.get(state, ['form', 'RemainderDiscardForm'])
+        const inventoryForm = _.get(state, ['form', 'RemainderInventoryForm'])
         const addProducts = _.get(state, ['remainder', 'addProducts', 'data'])
         const addProductsLoading = _.get(state, ['remainder', 'addProducts', 'loading'])
         const addProductsForm = _.get(state, ['form', 'RemainderAddProductsForm'])
@@ -62,6 +67,7 @@ const enhance = compose(
             transferForm,
             discardForm,
             searchForm,
+            inventoryForm,
             filterItem,
             reserved,
             reservedLoading,
@@ -69,18 +75,26 @@ const enhance = compose(
             filterProducts,
             addProducts,
             addProductsLoading,
-            addProductsForm
+            addProductsForm,
+            inventoryList,
+            inventoryListLoading
         }
     }),
     withState('openAddProductDialog', 'setOpenAddProductDialog', false),
     withState('openAddProductConfirm', 'setOpenAddProductConfirm', false),
+    withState('stockChooseDialog', 'setStockChooseDialog', true),
+
+    withState('inventoryData', 'updateInventoryData', []),
+    withState('loading', 'setLoading', false),
     withPropsOnChange((props, nextProps) => {
         const except = {
             openDiscardDialog: null,
+            openInventoryDialog: null,
             dPage: null,
             pdPage: null,
             pdPageSize: null,
-            pdSearch: null
+            pdSearch: null,
+            pdStock: null
         }
         return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
@@ -157,6 +171,51 @@ const enhance = compose(
             setOpenAddProductConfirm(false)
             dispatch(addProductsListAction(filterProducts, productType, stock))
         }
+    }),
+    withPropsOnChange((props, nextProps) => {
+        const except = {
+            page: null,
+            pageSize: null,
+            contract: null,
+            createdFromDate: null,
+            createdToDate: null,
+            deliveryFromDate: null,
+            deliveryToDate: null,
+            paymentType: null,
+            openCreateDialog: null,
+            openFilterDialog: null,
+            product: null,
+            provider: null,
+            status: null,
+            stock: null,
+            pdPage: null,
+            pdPageSize: null,
+            openDiscardDialog: null
+        }
+        const nextDialog = toBoolean(_.get(nextProps, ['location', 'query', REMAINDER_INVENTORY_DIALOG_OPEN]))
+        const productType = _.get(props, ['inventoryForm', 'values', 'productType', 'value'])
+        const productTypeNext = _.get(nextProps, ['inventoryForm', 'values', 'productType', 'value'])
+        return ((props.filterProducts.filterRequest(except) !== nextProps.filterProducts.filterRequest(except)) ||
+            (productType !== productTypeNext && nextDialog))
+    }, ({dispatch, inventoryForm, filterProducts, location: {query}, updateInventoryData, setLoading}) => {
+        updateInventoryData([])
+        setLoading(true)
+        const productType = _.get(inventoryForm, ['values', 'productType', 'value'])
+        const openDialog = toBoolean(_.get(query, REMAINDER_INVENTORY_DIALOG_OPEN))
+        const hasStock = _.toInteger(_.get(query, 'pdStock')) > ZERO
+        if (openDialog && hasStock) {
+            dispatch(inventoryProductsFetchAction(filterProducts, productType))
+                .then(() => {
+                    setLoading(false)
+                })
+        }
+    }),
+    withPropsOnChange((props, nextProps) => {
+        const prevLoading = _.get(props, 'inventoryListLoading')
+        const nextLoading = _.get(nextProps, 'inventoryListLoading')
+        return prevLoading !== nextLoading && nextLoading === false
+    }, ({inventoryData, inventoryList, updateInventoryData}) => {
+        updateInventoryData(_.union(inventoryData, inventoryList))
     }),
     withHandlers({
         handleOpenRemainderReservedDialog: props => (id) => {
@@ -370,6 +429,28 @@ const enhance = compose(
             }
             dispatch(addProductsListAction(filterProducts, productType))
             setOpenAddProductConfirm(false)
+        },
+
+        handleOpenInventoryDialog: props => () => {
+            const {location: {pathname}, filter, dispatch, setStockChooseDialog} = props
+            dispatch(reset('RemainderInventoryForm'))
+            hashHistory.push({pathname, query: filter.getParams({[REMAINDER_INVENTORY_DIALOG_OPEN]: true})})
+            setStockChooseDialog(true)
+        },
+        handleCloseInventoryDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[REMAINDER_INVENTORY_DIALOG_OPEN]: false, 'pdSearch': null, 'pdStock': null})})
+        },
+        handleFilterInventoryStock: props => () => {
+            const {filter, inventoryForm, setStockChooseDialog} = props
+            const stock = _.get(inventoryForm, ['values', 'stock', 'value']) || null
+            filter.filterBy({'pdStock': stock})
+            setStockChooseDialog(false)
+        },
+        handleLoadMoreItems: props => (page) => {
+            const {dispatch, filter, inventoryForm} = props
+            const productType = _.get(inventoryForm, ['values', 'productType', 'value']) || null
+            dispatch(inventoryProductsFetchAction(filter, productType, page))
         }
     })
 )
@@ -392,7 +473,10 @@ const RemainderList = enhance((props) => {
         openAddProductDialog,
         addProducts,
         addProductsLoading,
-        openAddProductConfirm
+        openAddProductConfirm,
+        inventoryListLoading,
+        inventoryData,
+        stockChooseDialog
     } = props
 
     const stock = (filter.getParam(REMAINDER_FILTER_KEY.STOCK))
@@ -404,6 +488,7 @@ const RemainderList = enhance((props) => {
     const openTransferDialog = toBoolean(_.get(location, ['query', REMAINDER_TRANSFER_DIALOG_OPEN]))
     const openReversedDialog = _.toNumber(_.get(location, ['query', REMAINDER_RESERVED_DIALOG_OPEN]))
     const openDiscardDialog = toBoolean(_.get(location, ['query', REMAINDER_DISCARD_DIALOG_OPEN]))
+    const openInventoryDialog = toBoolean(_.get(location, ['query', REMAINDER_INVENTORY_DIALOG_OPEN]))
     const detailId = _.toInteger(_.get(params, 'remainderId'))
 
     const reservedDetail = _.filter(_.get(list, 'results'), (item) => {
@@ -441,10 +526,21 @@ const RemainderList = enhance((props) => {
         handleSubmitDiscardDialog: props.handleSubmitDiscardDialog
     }
     const transferDialog = {
-        openTransferDialog: openTransferDialog,
+        openTransferDialog,
         handleOpenTransferDialog: props.handleOpenTransferDialog,
         handleCloseTransferDialog: props.handleCloseTransferDialog,
         handleSubmitTransferDialog: props.handleSubmitTransferDialog
+    }
+    const inventoryDialog = {
+        data: inventoryData,
+        loading: props.loading,
+        loadMore: props.handleLoadMoreItems,
+        moreLoading: inventoryListLoading,
+        openInventoryDialog,
+        stockChooseDialog,
+        filterStock: props.handleFilterInventoryStock,
+        handleOpenInventoryDialog: props.handleOpenInventoryDialog,
+        handleCloseInventoryDialog: props.handleCloseInventoryDialog
     }
     const listData = {
         data: _.get(list, 'results'),
@@ -489,6 +585,7 @@ const RemainderList = enhance((props) => {
                 filterItem={filterItem}
                 reservedDialog={reservedDialog}
                 addProductDialog={addProductDialog}
+                inventoryDialog={inventoryDialog}
             />
         </Layout>
     )
