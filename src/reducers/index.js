@@ -307,6 +307,7 @@ const rootReducer = combineReducers({
     remainder: combineReducers({
         create: createThunkReducer(actionTypes.REMAINDER_CREATE),
         list: createThunkReducer(actionTypes.REMAINDER_LIST),
+        inventory: createThunkReducer(actionTypes.REMAINDER_INVENTORY),
         update: createThunkReducer(actionTypes.REMAINDER_UPDATE),
         item: createThunkReducer(actionTypes.REMAINDER_ITEM),
         reserved: createThunkReducer(actionTypes.REMAINDER_RESERVED),

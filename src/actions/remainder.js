@@ -112,3 +112,20 @@ export const addProductsListAction = (filter, productType, stock) => {
     }
 }
 
+export const inventoryProductsFetchAction = (filter, productType, page) => {
+    const params = serializers.inventoryFilterSerializer(filter.getParams(), productType, page)
+    const payload = axios()
+        .get((API.REMAINDER_LIST), {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.REMAINDER_INVENTORY,
+        payload
+    }
+}
+

@@ -69,3 +69,13 @@ export const discardSerializer = (data) => {
     }
 }
 
+export const inventoryFilterSerializer = (data, productType, page) => {
+    const {...defaultData} = data
+    return {
+        'page': page,
+        'page_size': 50,
+        'type': productType,
+        'stock': _.get(defaultData, 'pdStock'),
+        'search': _.get(defaultData, 'pdSearch')
+    }
+}
