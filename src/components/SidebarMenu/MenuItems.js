@@ -48,7 +48,8 @@ export const MenuItems = [
         dynamic: true,
         childs: [
             {name: 'Магазины', url: ROUTES.SHOP_LIST_URL, permission: 'frontend_shops', icon: (<Markets/>)},
-            {name: 'Клиенты', url: ROUTES.CLIENT_LIST_URL, permission: 'frontend_clients', icon: (<Clients/>)}
+            {name: 'Клиенты', url: ROUTES.CLIENT_LIST_URL, permission: 'frontend_clients', icon: (<Clients/>)},
+            {name: 'Телеграм', url: ROUTES.TELEGRAM_LIST_URL, permission: 'frontend_clients', icon: (<Clients/>)}
         ]
     },
     {
