@@ -6,10 +6,9 @@ import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import Loader from '../Loader'
-import {Field, FieldArray, reduxForm, SubmissionError} from 'redux-form'
+import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, UsersSearchField} from '../ReduxForm'
-import TelegramContactsListField from '../ReduxForm/Client/ClientContactsListField'
+import {MarketSearchField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
@@ -57,7 +56,7 @@ const enhance = compose(
 )
 
 const TelegramCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, isUpdate} = props
+    const {open, loading, handleSubmit, onClose, classes} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
     return (
@@ -66,11 +65,11 @@ const TelegramCreateDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '300px'} : {width: '500px'}}
+            contentStyle={loading ? {width: '200px'} : {width: '300px'}}
             bodyClassName={classes.popUp}>
 
             <div className={classes.titleContent}>
-                <span>{isUpdate ? 'Изменение клиента' : 'Добавление клиента'}</span>
+                <span>{'Получить ключ'}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -80,39 +79,19 @@ const TelegramCreateDialog = enhance((props) => {
                     <div className={classes.loader}>
                         <Loader size={0.75}/>
                     </div>
-                    <div className={classes.inContent} style={{minHeight: '300px'}}>
-                        <div className={classes.field} style={{padding: '10px 0 0'}}>
+                    <div className={classes.inContent} style={{minHeight: 'unset'}}>
+                        <div className={classes.field} style={{padding: '10px'}}>
                             <Field
-                                name="name"
-                                component={TextField}
+                                name="market"
+                                component={MarketSearchField}
                                 className={classes.inputFieldCustom}
-                                label="Организация"
+                                label="Магазин"
                                 fullWidth={true}/>
-                            <Field
-                                name="address"
-                                component={TextField}
-                                className={classes.inputFieldCustom}
-                                label="Местположение"
-                                fullWidth={true}/>
-                            <Field
-                                name="from"
-                                component={UsersSearchField}
-                                className={classes.inputFieldCustom}
-                                label="От кого"
-                                fullWidth={true}/>
-
-                            <div className={classes.contacts}>
-                                Контактные данные
-                                <FieldArray
-                                    name="contacts"
-                                    component={TelegramContactsListField}
-                                />
-                            </div>
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
-                            label="Сохранить"
+                            label="Ок"
                             className={classes.actionButton}
                             primary={true}
                             type="submit"

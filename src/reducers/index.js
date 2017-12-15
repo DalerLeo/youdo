@@ -460,10 +460,10 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.ACCESS_UPDATE)
     }),
     telegram: combineReducers({
-        create: createThunkReducer(actionTypes.CLIENT_CREATE),
-        list: createThunkReducer(actionTypes.CLIENT_LIST),
-        update: createThunkReducer(actionTypes.CLIENT_UPDATE),
-        item: createThunkReducer(actionTypes.CLIENT_ITEM)
+        create: createThunkReducer(actionTypes.TELEGRAM_CREATE),
+        list: createThunkReducer(actionTypes.TELEGRAM_LIST),
+        update: createThunkReducer(actionTypes.TELEGRAM_UPDATE),
+        item: createThunkReducer(actionTypes.TELEGRAM_ITEM)
     }),
     snackbar: snackbarReducer(),
     error: errorReducer(),

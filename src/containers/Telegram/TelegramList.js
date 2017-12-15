@@ -32,12 +32,12 @@ const enhance = compose(
         const detail = _.get(state, ['telegram', 'item', 'data'])
         const detailLoading = _.get(state, ['telegram', 'item', 'loading'])
         const createLoading = _.get(state, ['telegram', 'create', 'loading'])
+        const createData = _.get(state, ['telegram', 'create', 'data'])
         const updateLoading = _.get(state, ['telegram', 'update', 'loading'])
         const list = _.get(state, ['telegram', 'list', 'data'])
         const listLoading = _.get(state, ['telegram', 'list', 'loading'])
         const createForm = _.get(state, ['form', 'TelegramCreateForm'])
         const filter = filterHelper(list, pathname, query)
-
         return {
             list,
             listLoading,
@@ -46,7 +46,8 @@ const enhance = compose(
             createLoading,
             updateLoading,
             filter,
-            createForm
+            createForm,
+            createData
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -64,15 +65,25 @@ const enhance = compose(
     }),
 
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
+    withState('openLinkDialog', 'setOpenLinkDialog', false),
 
     withHandlers({
         handleActionEdit: props => () => {
             return null
         },
 
-        handleOpenConfirmDialog: props => () => {
+        handleOpenLinkDialog: props => () => {
             const {setOpenConfirmDialog} = props
             setOpenConfirmDialog(true)
+        },
+
+        handleCloseLinkDialog: props => () => {
+            const {setOpenLinkDialog} = props
+            setOpenLinkDialog(false)
+        },
+        handleOpenConfirmDialog: props => () => {
+            const {setOpenLinkDialog} = props
+            setOpenLinkDialog(true)
         },
 
         handleCloseConfirmDialog: props => () => {
@@ -104,7 +115,7 @@ const enhance = compose(
         },
 
         handleSubmitCreateDialog: props => () => {
-            const {dispatch, createForm, filter} = props
+            const {dispatch, createForm, filter, setOpenLinkDialog} = props
 
             return dispatch(telegramCreateAction(_.get(createForm, ['values'])))
                 .then(() => {
@@ -113,6 +124,7 @@ const enhance = compose(
                 .then(() => {
                     dispatch(telegramListFetchAction(filter))
                     hashHistory.push(filter.createURL({[TELEGRAM_CREATE_DIALOG_OPEN]: false}))
+                    setOpenLinkDialog(true)
                 })
                 .catch((error) => {
                     dispatch(openErrorAction({
@@ -165,6 +177,17 @@ const enhance = compose(
         handleCloseDetail: props => () => {
             const {filter} = props
             hashHistory.push({pathname: ROUTER.TELEGRAM_LIST_URL, query: filter.getParams()})
+        },
+        handleCopyToken: props => () => {
+            const {createData, dispatch} = props
+            const value = 't.me/markets_bot?start=' + _.get(createData, 'token')
+            let textField = document.createElement('textarea')
+            textField.innerText = value
+            document.body.appendChild(textField)
+            textField.select()
+            const copy = document.execCommand('copy')
+            textField.remove()
+            copy ? dispatch(openSnackbarAction({message: 'Cкопировано'})) : null
         }
     })
 )
@@ -180,7 +203,8 @@ const TelegramList = enhance((props) => {
         updateLoading,
         filter,
         layout,
-        params
+        params,
+        createData
     } = props
 
     const openCreateDialog = toBoolean(_.get(location, ['query', TELEGRAM_CREATE_DIALOG_OPEN]))
@@ -201,6 +225,11 @@ const TelegramList = enhance((props) => {
         handleOpenConfirmDialog: props.handleOpenConfirmDialog,
         handleCloseConfirmDialog: props.handleCloseConfirmDialog,
         handleSendConfirmDialog: props.handleSendConfirmDialog
+    }
+    const linkDialog = {
+        openLinkDialog: props.openLinkDialog,
+        handleOpenLinkDialog: props.handleOpenLinkDialog,
+        handleCloseLinkDialog: props.handleCloseLinkDialog
     }
 
     const updateDialog = {
@@ -253,6 +282,10 @@ const TelegramList = enhance((props) => {
         detailLoading,
         handleCloseDetail: props.handleCloseDetail
     }
+    const createDetails = {
+        createData,
+        createLoading
+    }
 
     return (
         <Layout {...layout}>
@@ -264,6 +297,9 @@ const TelegramList = enhance((props) => {
                 createDialog={createDialog}
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
+                linkDialog={linkDialog}
+                createDetails={createDetails}
+                copyToClipBoard={props.handleCopyToken}
             />
         </Layout>
     )

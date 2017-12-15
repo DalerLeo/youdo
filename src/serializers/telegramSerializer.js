@@ -2,20 +2,9 @@ import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
 
 export const createSerializer = (data) => {
-    const name = _.get(data, 'name')
-    const fromWhom = _.get(data, ['from', 'value'])
-    const address = _.get(data, 'address')
-    const contacts = _(data)
-        .get('contacts')
-        .filter((item) => {
-            return !_.isEmpty(item)
-        })
+    const market = _.get(data, ['market', 'value'])
     return {
-        name,
-        address,
-        contacts,
-        'from_whom': fromWhom
-
+        market
     }
 }
 
