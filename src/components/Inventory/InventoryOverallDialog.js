@@ -1,6 +1,5 @@
 import _ from 'lodash'
 import React from 'react'
-import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import {Row, Col} from 'react-flexbox-grid'
@@ -65,7 +64,7 @@ const enhance = compose(
     })
 )
 
-const RemainderInventoryDialog = enhance((props) => {
+const InventoryOverallDialog = enhance((props) => {
     const {
         classes,
         data,
@@ -144,16 +143,5 @@ const RemainderInventoryDialog = enhance((props) => {
         </div>
     )
 })
-RemainderInventoryDialog.defaultProps = {
-    withoutCustomPrice: false,
-    fromAllBalances: false,
-    canChangeAnyPrice: false
-}
-RemainderInventoryDialog.propTyeps = {
-    products: PropTypes.array,
-    open: PropTypes.bool.isRequired,
-    onClose: PropTypes.func.isRequired,
-    onSubmit: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired
-}
-export default RemainderInventoryDialog
+
+export default InventoryOverallDialog

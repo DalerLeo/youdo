@@ -74,8 +74,21 @@ export const inventoryFilterSerializer = (data, productType, page) => {
     return {
         'page': page,
         'page_size': 50,
-        'type': productType,
+        'product_type': productType,
         'stock': _.get(defaultData, 'pdStock'),
         'search': _.get(defaultData, 'pdSearch')
+    }
+}
+
+export const inventoryCreateSerializer = (form, query) => {
+    return {
+        stock: _.get(query, ['pdStock']),
+        inventory_products: _.map(form, (item) => {
+            return {
+                product: _.get(item, 'id'),
+                amount: _.get(item, 'amount'),
+                defect_amount: _.get(item, 'defect')
+            }
+        })
     }
 }

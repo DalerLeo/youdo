@@ -129,3 +129,20 @@ export const inventoryProductsFetchAction = (filter, productType, page) => {
     }
 }
 
+export const inventoryCreateFetchAction = (formData, queryData) => {
+    const requestData = serializers.inventoryCreateSerializer(formData, queryData)
+    const payload = axios()
+        .post((API.REMAINDER_INVENTORY_CREATE), requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.REMAINDER_INVENTORY_CREATE,
+        payload
+    }
+}
+
