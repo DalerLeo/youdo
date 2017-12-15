@@ -339,3 +339,7 @@ export const GOOGLE_CUSTOM_LIST_URL = `/${GOOGLE_CUSTOM}`
 export const GOOGLE_CUSTOM_ITEM_URL = `/${GOOGLE_CUSTOM}/:itemId`
 export const GOOGLE_CUSTOM_ITEM_PATH = `/${GOOGLE_CUSTOM}/%d`
 
+export const TELEGRAM = 'telegram'
+export const TELEGRAM_LIST_URL = `/${TELEGRAM}`
+export const TELEGRAM_ITEM_URL = `${TELEGRAM_LIST_URL}/:telegramId`
+export const TELEGRAM_ITEM_PATH = `${TELEGRAM}/%d`

@@ -64,6 +64,8 @@ import {
     StatClientBalance,
     StatDebtorsList
 } from '../containers/Statistics'
+import {TelegramList} from '../containers/Telegram'
+
 import {ClientBalanceList} from '../containers/ClientBalance'
 import {StockReceiveHistoryList, StockReceiveList, StockTransferList, StockTransferHistoryList, StockOutHistoryList} from '../containers/StockReceive'
 import {PlanList} from '../containers/Plan'
@@ -808,6 +810,17 @@ export default {
                 {
                     path: ROUTES.STATISTICS_CLIENT_BALANCE_ITEM_URL,
                     component: userIsAuth(StatClientBalance)
+                }
+            ]
+        },
+        // Telegram
+        {
+            path: ROUTES.TELEGRAM_LIST_URL,
+            component: userIsAdminChain(TelegramList),
+            childRoutes: [
+                {
+                    path: ROUTES.TELEGRAM_ITEM_URL,
+                    component: userIsAuth(TelegramList)
                 }
             ]
         },

@@ -281,7 +281,6 @@ const SupplyDetails = enhance((props) => {
     const totalAdditionalCosts = _.get(data, 'totalAdditionalCosts')
     const totalAdditionalCostsPaid = _.get(data, 'totalAdditionalCostsPaid')
     const currency = _.get(data, ['currency', 'name'])
-
     if (loading) {
         return (
             <div className={classes.wrapper}>
@@ -306,7 +305,6 @@ const SupplyDetails = enhance((props) => {
             paid: asd
         }
     })
-
     return (
         <div className={classes.wrapper}>
             <div className={classes.title}>
@@ -330,7 +328,7 @@ const SupplyDetails = enhance((props) => {
                         <Link target="_blank" to={{pathname: ROUTE.PENDING_EXPENSES_LIST_URL, query: {supply: id}}}>
                             <IconButton
                                 iconStyle={iconStyle.icon}
-                                disabled={(status === CANCELLED || comlated)}
+                                disabled={status === CANCELLED}
                                 style={iconStyle.button}
                                 touch={true}>
                                 <AddPayment/>
@@ -340,7 +338,7 @@ const SupplyDetails = enhance((props) => {
                     <Tooltip position="bottom" text="Добавить расход">
                         <IconButton
                             iconStyle={iconStyle.icon}
-                            disabled={(status === CANCELLED || comlated)}
+                            disabled={(status === CANCELLED)}
                             style={iconStyle.button}
                             touch={true}
                             onTouchTap={() => { handleSupplyExpenseOpenCreateDialog(id) }}>
@@ -350,7 +348,7 @@ const SupplyDetails = enhance((props) => {
                     <Tooltip position="bottom" text="Синхронизировать кол-во товаров с приёмкой">
                         <IconButton
                             iconStyle={iconStyle.icon}
-                            disabled={!(status === COMPLETED) || comlated}
+                            disabled={status === CANCELLED}
                             style={iconStyle.button}
                             touch={true}
                             onTouchTap={() => { confirmSyncDialog.handleOpenConfirmDialog() }}>
@@ -369,7 +367,7 @@ const SupplyDetails = enhance((props) => {
                     </Tooltip>}
                     {confirmDialog && <Tooltip position="bottom" text="Отменить">
                         <IconButton
-                            disabled={ !(PENDING === status || ((status === IN_PROGRESS || status === COMPLETED) && isAdmin)) || status === CANCELLED || comlated}
+                            disabled={ (!(PENDING === status || ((status === IN_PROGRESS || status === COMPLETED))) || status === CANCELLED || comlated) && !isAdmin}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}

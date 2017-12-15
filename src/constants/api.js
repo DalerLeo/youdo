@@ -488,3 +488,9 @@ export const ACCESS = 'main/access'
 export const ACCESS_LIST = `${ACCESS}/`
 export const ACCESS_ITEM = `${ACCESS}/%d/`
 export const ACCESS_UPDATE = `${ACCESS}/%d/`
+
+export const TELEGRAM = 'telegram'
+export const TELEGRAM_CREATE = `/${TELEGRAM}/`
+export const TELEGRAM_DELETE = `/${TELEGRAM}/%d/`
+export const TELEGRAM_LIST = `/${TELEGRAM}/`
+export const TELEGRAM_ITEM = `/${TELEGRAM}/%d/`
