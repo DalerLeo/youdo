@@ -408,6 +408,7 @@ const RemainderGridList = enhance((props) => {
                 loadMore={inventoryDialog.loadMore}
                 open={inventoryDialog.openInventoryDialog}
                 onClose={inventoryDialog.handleCloseInventoryDialog}
+                onSubmit={inventoryDialog.handleSubmitInventoryDialog}
                 stockChooseDialog={inventoryDialog.stockChooseDialog}
                 filterStock={inventoryDialog.filterStock}
                 filter={filter}
@@ -456,7 +457,8 @@ RemainderGridList.propTypes = {
         filterStock: PropTypes.func.isRequired,
         loadMore: PropTypes.func.isRequired,
         handleOpenInventoryDialog: PropTypes.func.isRequired,
-        handleCloseInventoryDialog: PropTypes.func.isRequired
+        handleCloseInventoryDialog: PropTypes.func.isRequired,
+        handleSubmitInventoryDialog: PropTypes.func.isRequired
     }).isRequired
 }
 

@@ -48,6 +48,7 @@ import {PricesList} from '../containers/Prices'
 import {PriceList} from '../containers/Price'
 import NotFound from '../containers/NotFound'
 import {RemainderList} from '../containers/Remainder'
+import {InventoryList} from '../containers/Inventory'
 import {
     StatSalesList,
     StatAgentList,
@@ -473,6 +474,17 @@ export default {
                 {
                     path: ROUTES.REMAINDER_ITEM_URL,
                     component: userIsAuth(visibleOnlyAdmin(RemainderList))
+                }
+            ]
+        },
+        // Inventory
+        {
+            path: ROUTES.INVENTORY_LIST_URL,
+            component: userIsAdminChain(InventoryList),
+            childRoutes: [
+                {
+                    path: ROUTES.INVENTORY_ITEM_URL,
+                    component: userIsAuth(visibleOnlyAdmin(InventoryList))
                 }
             ]
         },

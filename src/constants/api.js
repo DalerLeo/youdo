@@ -245,6 +245,11 @@ export const REMAINDER_STOCK_LIST = `/${REMAINDER_STOCK}/all_balances/`
 export const REMAINDER_STOCK_ITEM = `/${REMAINDER_STOCK}/all_balances/balances/%d`
 export const REMAINDER_STOCK_DELETE = `/${REMAINDER_STOCK}/all_balances/%d`
 
+export const REMAINDER_INVENTORY = 'stock/inventory'
+export const REMAINDER_INVENTORY_LIST = `/${REMAINDER_INVENTORY}/`
+export const REMAINDER_INVENTORY_ITEM = `/${REMAINDER_INVENTORY}/%d/`
+export const REMAINDER_INVENTORY_CREATE = `/${REMAINDER_INVENTORY}/`
+
 export const TRANSACTION_STOCK = 'stock/barcode_history'
 export const TRANSACTION_STOCK_LIST = `/${TRANSACTION_STOCK}/`
 

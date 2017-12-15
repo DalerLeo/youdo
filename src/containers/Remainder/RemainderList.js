@@ -28,7 +28,8 @@ import {
     remainderDiscardAction,
     remainderReversedListFetchAction,
     addProductsListAction,
-    inventoryProductsFetchAction
+    inventoryProductsFetchAction,
+    inventoryCreateFetchAction
 } from '../../actions/remainder'
 
 const ZERO = 0
@@ -441,6 +442,22 @@ const enhance = compose(
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[REMAINDER_INVENTORY_DIALOG_OPEN]: false, 'pdSearch': null, 'pdStock': null})})
         },
+        handleSubmitInventoryDialog: props => (items) => {
+            const {location: {pathname, query}, dispatch, filter} = props
+            return dispatch(inventoryCreateFetchAction(items, query))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                })
+                .then(() => {
+                    hashHistory.push({pathname, query: filter.getParams({[REMAINDER_INVENTORY_DIALOG_OPEN]: false, 'pdSearch': null, 'pdStock': null})})
+                    dispatch(remainderListFetchAction(filter))
+                })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
+                })
+        },
         handleFilterInventoryStock: props => () => {
             const {filter, inventoryForm, setStockChooseDialog} = props
             const stock = _.get(inventoryForm, ['values', 'stock', 'value']) || null
@@ -540,7 +557,8 @@ const RemainderList = enhance((props) => {
         stockChooseDialog,
         filterStock: props.handleFilterInventoryStock,
         handleOpenInventoryDialog: props.handleOpenInventoryDialog,
-        handleCloseInventoryDialog: props.handleCloseInventoryDialog
+        handleCloseInventoryDialog: props.handleCloseInventoryDialog,
+        handleSubmitInventoryDialog: props.handleSubmitInventoryDialog
     }
     const listData = {
         data: _.get(list, 'results'),

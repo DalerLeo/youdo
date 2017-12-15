@@ -273,7 +273,7 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'RemainderInventoryForm',
+        form: 'InventoryForm',
         enableReinitialize: true
     }),
     withState('pdSearch', 'setSearch', ({filter}) => filter.getParam('pdSearch')),
@@ -286,8 +286,8 @@ const enhance = compose(
         }
     }),
     connect((state) => {
-        const formProducts = _.get(state, ['form', 'RemainderInventoryForm', 'values', 'product'])
-        const formStock = _.get(state, ['form', 'RemainderInventoryForm', 'values', 'stock'])
+        const formProducts = _.get(state, ['form', 'InventoryForm', 'values', 'product'])
+        const formStock = _.get(state, ['form', 'InventoryForm', 'values', 'stock'])
         const itemsCount = _.get(state, ['remainder', 'inventory', 'data', 'count'])
         return {
             formProducts,
@@ -322,7 +322,7 @@ const flatButtonStyle = {
     }
 }
 
-const RemainderInventoryDialog = enhance((props) => {
+const InventoryDialog = enhance((props) => {
     const {
         open,
         data,
@@ -514,16 +514,16 @@ const RemainderInventoryDialog = enhance((props) => {
         </div>
     )
 })
-RemainderInventoryDialog.defaultProps = {
+InventoryDialog.defaultProps = {
     withoutCustomPrice: false,
     fromAllBalances: false,
     canChangeAnyPrice: false
 }
-RemainderInventoryDialog.propTyeps = {
+InventoryDialog.propTyeps = {
     products: PropTypes.array,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired
 }
-export default RemainderInventoryDialog
+export default InventoryDialog

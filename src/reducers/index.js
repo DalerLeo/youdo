@@ -313,6 +313,11 @@ const rootReducer = combineReducers({
         reserved: createThunkReducer(actionTypes.REMAINDER_RESERVED),
         addProducts: createThunkReducer(actionTypes.REMAINDER_ADD_PRODUCTS)
     }),
+    inventory: combineReducers({
+        list: createThunkReducer(actionTypes.REMAINDER_INVENTORY_LIST),
+        item: createThunkReducer(actionTypes.REMAINDER_INVENTORY_ITEM),
+        inventory: createThunkReducer(actionTypes.REMAINDER_INVENTORY)
+    }),
     statAgent: combineReducers({
         list: createThunkReducer(actionTypes.STAT_AGENT_LIST),
         item: createThunkReducer(actionTypes.STAT_AGENT_ITEM)

@@ -65,6 +65,7 @@ export const MenuItems = [
         url: ROUTES.REMAINDER_LIST_URL,
         childs: [
             {name: 'Остаток', url: ROUTES.REMAINDER_LIST_URL, permission: 'frontend_remainder'},
+            {name: 'Инвентаризация', url: ROUTES.INVENTORY_LIST_URL, permission: 'frontend_inventory'},
             {
                 name: 'Приемка / Передача',
                 url: ROUTES.STOCK_RECEIVE_LIST_URL,

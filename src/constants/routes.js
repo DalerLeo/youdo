@@ -206,6 +206,11 @@ export const REMAINDER_LIST_URL = `/${REMAINDER}`
 export const REMAINDER_ITEM_URL = `${REMAINDER_LIST_URL}/:remainderId`
 export const REMAINDER_ITEM_PATH = `/${REMAINDER}/%d`
 
+export const INVENTORY = 'inventory'
+export const INVENTORY_LIST_URL = `/${INVENTORY}`
+export const INVENTORY_ITEM_URL = `${INVENTORY_LIST_URL}/:inventoryId`
+export const INVENTORY_ITEM_PATH = `/${INVENTORY}/%d`
+
 export const STATISTICS = 'statistics'
 export const STATISTICS_LIST_URL = `/${STATISTICS}`
 
