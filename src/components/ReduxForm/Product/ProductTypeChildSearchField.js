@@ -5,11 +5,22 @@ import SearchField from '../Basic/ChildSearchField'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
+import caughtCancel from '../../../helpers/caughtCancel'
+
+const CancelToken = axios().CancelToken
+let productyTypeChildListToken = null
 
 const getOptions = (search, parentType) => {
-    return axios().get(`${PATH.PRODUCT_TYPE_LIST}?search=${search || ''}&page_size=100`, {'params': {'parent': parentType}})
+    if (productyTypeChildListToken) {
+        productyTypeChildListToken.cancel()
+    }
+    productyTypeChildListToken = CancelToken.source()
+    return axios().get(`${PATH.PRODUCT_TYPE_LIST}?search=${search || ''}&page_size=100`, {'params': {'parent': parentType, cancelToken: productyTypeChildListToken.token}})
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
+        })
+        .catch((error) => {
+            caughtCancel(error)
         })
 }
 const custom = (parentType) => {

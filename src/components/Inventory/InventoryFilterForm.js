@@ -11,7 +11,6 @@ import PropTypes from 'prop-types'
 import {
     ProductTypeParentSearchField,
     ProductTypeChildSearchField,
-    BrandMultiSearchField,
     MeasurementMultiSearchField,
     StockMultiSearchField
 } from '../ReduxForm'
@@ -195,13 +194,6 @@ const InventoryFilterForm = enhance((props) => {
                                 name="measurement"
                                 component={MeasurementMultiSearchField}
                                 label="Мера"/>
-                        </div>
-                        <div>
-                            <Field
-                                className={classes.inputFieldCustom}
-                                name="brand"
-                                component={BrandMultiSearchField}
-                                label="Бренд"/>
                         </div>
                     </div>
 

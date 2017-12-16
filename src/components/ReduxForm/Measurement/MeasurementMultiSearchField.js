@@ -3,11 +3,22 @@ import MultiSelectField from '../Basic/MultiSelectField'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
+import caughtCancel from '../../../helpers/caughtCancel'
+
+const CancelToken = axios().CancelToken
+let measurementListToken = null
 
 const getOptions = (search) => {
-    return axios().get(`${PATH.MEASUREMENT_LIST}?search=${search || ''}&page_size=100`)
+    if (measurementListToken) {
+        measurementListToken.cancel()
+    }
+    measurementListToken = CancelToken.source()
+    return axios().get(`${PATH.MEASUREMENT_LIST}?search=${search || ''}&page_size=100`, {cancelToken: measurementListToken.token})
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
+        })
+        .catch((error) => {
+            caughtCancel(error)
         })
 }
 
