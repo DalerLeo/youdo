@@ -8,13 +8,13 @@ import caughtCancel from '../../../helpers/caughtCancel'
 
 const CancelToken = axios().CancelToken
 
-let clientListToken = null
+let clientMultiListToken = null
 const getOptions = (search) => {
-    if (clientListToken) {
-        clientListToken.cancel('Daler')
+    if (clientMultiListToken) {
+        clientMultiListToken.cancel('Daler')
     }
-    clientListToken = CancelToken.source()
-    return axios().get(`${PATH.CLIENT_LIST}?search=${search || ''}&page_size=100`, {cancelToken: clientListToken.token})
+    clientMultiListToken = CancelToken.source()
+    return axios().get(`${PATH.CLIENT_LIST}?search=${search || ''}&page_size=100`, {cancelToken: clientMultiListToken.token})
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
         })

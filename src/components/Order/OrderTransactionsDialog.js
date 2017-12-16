@@ -134,6 +134,7 @@ const enhance = compose(
     }, {open: false}),
 )
 const ZERO = 0
+const TWO = 2
 const OrderTransactionsDialog = enhance((props) => {
     const {open, loading, onClose, classes, paymentData} = props
     const orderId = _.get(paymentData, 'id')
@@ -177,10 +178,14 @@ const OrderTransactionsDialog = enhance((props) => {
                                         const comment = _.get(item, ['fromTransaction', 'comment'])
                                         const client = _.get(item, ['fromTransaction', 'client', 'name'])
                                         const currency = _.get(item, ['fromTransaction', 'currency', 'name'])
+                                        const fromCurrency = _.get(item, ['fromTransaction', 'currency', 'name'])
+                                        const toCurrency = _.get(item, ['toTransaction', 'currency', 'name'])
                                         const userName = !_.isNull(user) ? user.firstName + ' ' + user.secondName : 'Не известно'
                                         const date = moment(_.get(item, ['fromTransaction', 'createdDate'])).format('DD:MM:YYYY')
                                         const amount = _.toNumber(_.get(item, ['fromTransaction', 'amount']))
-                                        const amountOrder = _.toNumber(_.get(item, 'amount'))
+                                        const fromAmount = _.toNumber(_.get(item, 'fromAmount'))
+                                        const toAmount = _.toNumber(_.get(item, 'toAmount'))
+                                        const toRate = fromAmount / toAmount
                                         const internal = _.toNumber(_.get(item, ['fromTransaction', 'internal']))
                                         const customRate = _.get(item, ['fromTransaction', 'customRate']) ? _.toInteger(_.get(item, ['fromTransaction', 'customRate'])) : _.toInteger(amount / internal)
                                         const type = _.get(item, ['fromTransaction', 'type'])
@@ -194,18 +199,41 @@ const OrderTransactionsDialog = enhance((props) => {
                                                 <Col xs={2}>{userName}</Col>
                                                 <Col xs={2}>
                                                     {type && <div>
-                                                        <ClientBalanceFormat type={type} order={orderIdItem} orderReturn={orderReturnId}/>
+                                                        <ClientBalanceFormat type={type} order={orderIdItem}
+                                                                             orderReturn={orderReturnId}/>
                                                     </div>}
                                                     {comment && <div><strong>Комментарий:</strong> {comment}</div>}
                                                 </Col>
                                                 <Col xs={2} style={{textAlign: 'right'}}>
-                                                    <div className={amount > ZERO ? 'greenFont' : (amount === ZERO ? '' : 'redFont')}>
+                                                    <div
+                                                        className={amount > ZERO ? 'greenFont' : (amount === ZERO ? '' : 'redFont')}>
                                                         <span>{numberFormat(amount, currency)}</span>
-                                                        {primaryCurrency !== currency && <div>{numberFormat(internal, primaryCurrency)} <span
-                                                            style={{fontSize: 11, color: '#666', fontWeight: 600}}>({customRate})</span></div>}
+                                                        {primaryCurrency !== currency &&
+                                                        <div>{numberFormat(internal, primaryCurrency)} <span
+                                                            style={{
+                                                                fontSize: 11,
+                                                                color: '#666',
+                                                                fontWeight: 600
+                                                            }}>({customRate})</span></div>}
                                                     </div>
                                                 </Col>
-                                                <Col xs={2}><strong>{numberFormat(amountOrder, currency)}</strong></Col>
+                                                <Col xs={2}>
+                                                    { fromCurrency !== toCurrency
+                                                        ? <div>
+                                                            <p>{numberFormat(fromAmount, fromCurrency)}</p>
+                                                            <p>{numberFormat(toAmount, toCurrency)}
+                                                                <span
+                                                                    style={{
+                                                                        fontSize: 11,
+                                                                        color: '#666',
+                                                                        fontWeight: 600
+                                                                    }}> ({_.round(toRate, TWO)})</span></p>
+                                                        </div>
+                                                        : <div>
+                                                            <p>{numberFormat(toAmount, toCurrency)}</p>
+                                                        </div>
+                                                }
+                                                </Col>
                                             </Row>
                                         )
                                     })}

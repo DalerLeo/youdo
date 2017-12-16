@@ -7,14 +7,14 @@ import toCamelCase from '../../helpers/toCamelCase'
 import caughtCancel from '../../helpers/caughtCancel'
 
 const CancelToken = axios().CancelToken
-let deliveryManListToken = null
+let deliveryManMultiListToken = null
 
 const getOptions = (search) => {
-    if (deliveryManListToken) {
-        deliveryManListToken.cancel()
+    if (deliveryManMultiListToken) {
+        deliveryManMultiListToken.cancel()
     }
-    deliveryManListToken = CancelToken.source()
-    return axios().get(`${PATH.USERS_LIST}?search=${search || ''}&page_size=100&group=delivery`, {cancelToken: deliveryManListToken.token})
+    deliveryManMultiListToken = CancelToken.source()
+    return axios().get(`${PATH.USERS_LIST}?search=${search || ''}&page_size=100&group=delivery`, {cancelToken: deliveryManMultiListToken.token})
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
         })

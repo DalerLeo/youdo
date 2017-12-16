@@ -5,9 +5,17 @@ import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
 import _ from 'lodash'
+import caughtCancel from '../../../helpers/caughtCancel'
+
+const CancelToken = axios().CancelToken
+let orderProductListToken = null
 
 const getOptions = (search) => {
-    return axios().get(`${PATH.PRODUCT_TYPE_LIST}?page_size=100000&search=${search || ''}`)
+    if (orderProductListToken) {
+        orderProductListToken.cancel()
+    }
+    orderProductListToken = CancelToken.source()
+    return axios().get(`${PATH.PRODUCT_TYPE_LIST}?page_size=100000&search=${search || ''}`, {cancelToken: orderProductListToken.token})
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
         }).then((data) => {
@@ -17,6 +25,9 @@ const getOptions = (search) => {
                     value: item.id
                 }
             })}
+        })
+        .catch((error) => {
+            caughtCancel(error)
         })
 }
 
