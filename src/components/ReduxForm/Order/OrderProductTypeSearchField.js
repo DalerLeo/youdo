@@ -29,7 +29,6 @@ const getOptions = (search) => {
         .catch((error) => {
             caughtCancel(error)
         })
-
 }
 
 const getItem = (id) => {
