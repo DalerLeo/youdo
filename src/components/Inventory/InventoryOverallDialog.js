@@ -136,7 +136,7 @@ const InventoryOverallDialog = enhance((props) => {
                 <footer>
                     <FlatButton
                         label={'Сохранить'}
-                        onTouchTap={() => { submitDialog(items) }}
+                        onTouchTap={() => { submitDialog(items, closeDialog) }}
                         className={classes.actionButton}/>
                 </footer>
             </div>

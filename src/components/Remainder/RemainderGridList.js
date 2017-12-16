@@ -18,7 +18,6 @@ import NotFound from '../Images/not-found.png'
 import RemainderReservedDialog from './RemainderReservedDialog'
 import GridList from '../GridList'
 import AddProductDialog from './AddProductsDialog'
-import RemainderInventoryDialog from './InventoryDialog'
 import FlatButton from 'material-ui/FlatButton'
 
 const ZERO = 0
@@ -278,8 +277,7 @@ const RemainderGridList = enhance((props) => {
         filterItem,
         filterDialog,
         reservedDialog,
-        addProductDialog,
-        inventoryDialog
+        addProductDialog
     } = props
     const listLoading = _.get(listData, 'listLoading')
 
@@ -346,10 +344,6 @@ const RemainderGridList = enhance((props) => {
 
             <div className={classes.buttons}>
                 <FlatButton
-                    label={'Инвентаризация'}
-                    labelStyle={{color: '#12aaeb'}}
-                    onClick={inventoryDialog.handleOpenInventoryDialog}/>
-                <FlatButton
                     label={'Передача товаров'}
                     labelStyle={{color: '#12aaeb'}}
                     onClick={transferDialog.handleOpenTransferDialog}/>
@@ -400,19 +394,6 @@ const RemainderGridList = enhance((props) => {
                 withoutCustomPrice={true}
                 withoutValidations={true}
             />}
-
-            <RemainderInventoryDialog
-                data={inventoryDialog.data}
-                loading={inventoryDialog.loading}
-                moreLoading={inventoryDialog.moreLoading}
-                loadMore={inventoryDialog.loadMore}
-                open={inventoryDialog.openInventoryDialog}
-                onClose={inventoryDialog.handleCloseInventoryDialog}
-                onSubmit={inventoryDialog.handleSubmitInventoryDialog}
-                stockChooseDialog={inventoryDialog.stockChooseDialog}
-                filterStock={inventoryDialog.filterStock}
-                filter={filter}
-            />
         </Container>
     )
 })
@@ -447,18 +428,6 @@ RemainderGridList.propTypes = {
         openReversedDialog: PropTypes.number.isRequired,
         handleOpenRemainderReservedDialog: PropTypes.func.isRequired,
         handleCloseRemainderReservedDialog: PropTypes.func.isRequired
-    }).isRequired,
-    inventoryDialog: PropTypes.shape({
-        data: PropTypes.array,
-        loading: PropTypes.bool,
-        moreLoading: PropTypes.bool,
-        openInventoryDialog: PropTypes.bool,
-        stockChooseDialog: PropTypes.bool,
-        filterStock: PropTypes.func.isRequired,
-        loadMore: PropTypes.func.isRequired,
-        handleOpenInventoryDialog: PropTypes.func.isRequired,
-        handleCloseInventoryDialog: PropTypes.func.isRequired,
-        handleSubmitInventoryDialog: PropTypes.func.isRequired
     }).isRequired
 }
 
