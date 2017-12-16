@@ -436,9 +436,16 @@ const listHeader = [
         sorting: true,
         title: 'Осталось'
     },
+    // Debt
     {
         sorting: true,
-        title: 'Долг'
+        title: 'По заказам',
+        tooltip: 'Долг по заказов'
+    },
+    {
+        sorting: true,
+        title: 'Общее',
+        tooltip: 'Общая сумма долга'
     }
 ]
 
@@ -516,6 +523,7 @@ const StatAgentGridList = enhance((props) => {
         const planTotal = numberFormat(Math.abs(_.get(item, 'planTotal')), primaryCurrency)
         const planLeft = numberFormat(Math.abs(_.get(item, 'planLeft')), primaryCurrency)
         const planDebt = numberFormat(Math.abs(_.get(item, 'planDebt')), primaryCurrency)
+        const debt = numberFormat(Math.abs(_.get(item, 'planDebt')), primaryCurrency)
 
         return (
             <tr
@@ -534,8 +542,9 @@ const StatAgentGridList = enhance((props) => {
                 <td>{paymentTotal}</td>
 
                 <td>{planTotal}</td>
-                <td style={{border: 'none'}}>{planLeft}</td>
+                <td>{planLeft}</td>
                 <td>{planDebt}</td>
+                <td>{debt}</td>
             </tr>
         )
     })
@@ -608,7 +617,8 @@ const StatAgentGridList = enhance((props) => {
                                     <div className={classes.summaryPlan}>
                                         <div><span>План агента</span> <span>{totalPlan}</span></div>
                                         <div><span>План остаток</span> <span>{leftPlan}</span></div>
-                                        <div><span>План долг</span> <span>{debtPlan}</span></div>
+                                        <div><span>Долг по заказов</span> <span>{debtPlan}</span></div>
+                                        <div><span>Общая сумма долга</span> <span>{debtPlan}</span></div>
                                     </div>
                                 </div>}
                         </div>
@@ -654,7 +664,8 @@ const StatAgentGridList = enhance((props) => {
                                                 <td colSpan={2}>Продажа</td>
                                                 <td colSpan={2}>Возврат</td>
                                                 <td colSpan={2}>Оплачено</td>
-                                                <td colSpan={3}>План агента</td>
+                                                <td colSpan={2}>План агента</td>
+                                                <td colSpan={2}>Долг</td>
                                             </tr>
                                             <tr className={classes.subTitle}>
                                                 {_.map(listHeader, (header, index) => {

@@ -408,7 +408,13 @@ const listHeader = [
     // Debt
     {
         sorting: true,
-        title: 'По заказам'
+        title: 'По заказам',
+        tooltip: 'Долг по заказов'
+    },
+    {
+        sorting: true,
+        title: 'Общее',
+        tooltip: 'Общая сумма долга'
     }
 ]
 
@@ -468,11 +474,14 @@ const StatMarketGridList = enhance((props) => {
     })
     const tableList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const income = _.toNumber(_.get(item, 'income'))
-        const actual = _.toNumber(_.get(item, 'actualSales'))
-        const paidItem = _.get(item, 'paid')
-        const deptItem = _.get(item, 'dept')
-        const returns = _.toNumber(_.get(item, 'orderReturns'))
+        const salesFact = _.toNumber(_.get(item, 'salesFact'))
+        const salesTotal = _.toNumber(_.get(item, 'salesTotal'))
+        const returnOrders = _.toNumber(_.get(item, 'returnOrders'))
+        const returnTotal = _.toNumber(_.get(item, 'returnTotal'))
+        const paymentOrders = _.toNumber(_.get(item, 'paymentOrders'))
+        const paymentTotal = _.toNumber(_.get(item, 'paymentTotal'))
+        const deptTotal = _.toNumber(_.get(item, 'deptTotal'))
+        const deptOrders = _.toNumber(_.get(item, 'deptOrders'))
         const clientName = _.get(item, 'clientName')
 
         return (
@@ -484,14 +493,14 @@ const StatMarketGridList = enhance((props) => {
                 onMouseLeave={() => { updateRow(null) }}>
                 <td>{clientName}</td>
 
-                <td>{numberFormat(income, primaryCurrency)}</td>
-                <td>{numberFormat(returns, primaryCurrency)}</td>
-                <td>{numberFormat(actual, primaryCurrency)}</td>
-                <td>{numberFormat(paidItem, primaryCurrency)}</td>
-                <td>{numberFormat(deptItem, primaryCurrency)}</td>
-
-                <td>{numberFormat(deptItem, primaryCurrency)}</td>
-                <td>{numberFormat(deptItem, primaryCurrency)}</td>
+                <td>{numberFormat(salesTotal, primaryCurrency)}</td>
+                <td>{numberFormat(salesFact, primaryCurrency)}</td>
+                <td>{numberFormat(returnOrders, primaryCurrency)}</td>
+                <td>{numberFormat(returnTotal, primaryCurrency)}</td>
+                <td>{numberFormat(paymentOrders, primaryCurrency)}</td>
+                <td>{numberFormat(paymentTotal, primaryCurrency)}</td>
+                <td>{numberFormat(deptTotal, primaryCurrency)}</td>
+                <td>{numberFormat(deptOrders, primaryCurrency)}</td>
             </tr>
         )
     })

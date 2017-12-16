@@ -6,6 +6,7 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
+import Cancel from 'material-ui/svg-icons/content/remove-circle'
 import TelegramCreateDialog from './TelegramCreateDialog'
 import TelegramLinkDialog from './TelegramLinkDialog'
 import * as ROUTES from '../../constants/routes'
@@ -14,37 +15,39 @@ import Container from '../Container'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import Tooltip from '../ToolTip'
+import dateFormat from '../../helpers/dateFormat'
+import IconButton from 'material-ui/IconButton'
 
 const listHeader = [
     {
         sorting: true,
-        name: 'chatId',
-        xs: 2,
-        title: 'Чат ID'
-    },
-    {
-        sorting: false,
         name: 'market',
-        xs: 3,
+        xs: 2,
         title: 'Магазин'
     },
     {
         sorting: false,
-        name: 'username',
-        xs: 2,
-        title: 'Пользователи'
+        name: 'createBy',
+        xs: 3,
+        title: 'Создал'
     },
     {
-        sorting: true,
-        xs: 3,
-        name: 'name',
-        title: 'Ф.И.О'
+        sorting: false,
+        name: 'username',
+        xs: 4,
+        title: 'Пользователи'
     },
     {
         sorting: false,
         xs: 2,
-        name: 'createdBy',
-        title: 'Создал'
+        name: 'activated_date',
+        title: 'Дата активации'
+    },
+    {
+        sorting: false,
+        xs: 1,
+        name: '',
+        title: ''
     }
 ]
 
@@ -126,6 +129,20 @@ const enhance = compose(
         },
         listRow: {
             position: 'relative',
+            '& > div:last-child': {
+                '& > div': {
+                    opacity: '0'
+                }
+            },
+            '&:hover': {
+                '& > div:last-child > div': {
+                    opacity: '1',
+                    '& > div': {
+                        justifyContent: 'flex-end'
+                    }
+                }
+            },
+
             '& > a': {
                 display: 'flex',
                 alignItems: 'center',
@@ -148,6 +165,18 @@ const enhance = compose(
         }
     })
 )
+
+const iconStyle = {
+    icon: {
+        width: 22,
+        height: 22
+    },
+    button: {
+        width: 30,
+        height: 30,
+        padding: 4
+    }
+}
 const TelegramGridList = enhance((props) => {
     const {
         filter,
@@ -166,19 +195,30 @@ const TelegramGridList = enhance((props) => {
     )
 
     const telegramList = _.map(_.get(listData, 'data'), (item) => {
-        const chatId = _.get(item, 'chatId') || 'N/A'
         const id = _.get(item, 'id')
         const fullName = _.get(item, 'lastName') ? _.get(item, 'lastName') + ' ' + _.get(item, 'firstName') : 'Неизвестно'
         const username = _.get(item, 'username') || 'Неизвестно'
-        const createdBy = _.get(item, 'username') || 'Неизвестно'
+        const createdBy = _.get(item, ['createdBy', 'firstName']) + ' ' + _.get(item, ['createdBy', 'secondName']) || ''
+        const createdDate = _.get(item, 'createdDate') ? dateFormat(_.get(item, 'createdDate'), true) : ''
+        const activatedDate = _.get(item, 'activated_date') ? dateFormat(_.get(item, 'activated_date')) : ''
         const market = _.get(item, ['market', 'name']) || 'Неизвестно'
         return (
             <Row key={id} className={classes.listRow}>
-                <Col xs={2}>{chatId}</Col>
-                <Col xs={3}>{market}</Col>
-                <Col xs={2}>{username}</Col>
-                <Col xs={3}>{fullName}</Col>
-                <Col xs={2}>{createdBy}</Col>
+                <Col xs={2}>{market}</Col>
+                <Col xs={3}><div style={{fontWeight: '600'}}>{createdBy}</div><div>{createdDate}</div></Col>
+                <Col xs={4}><div>{username}</div><div>{fullName}</div></Col>
+                <Col xs={2}>{activatedDate}</Col>
+                <Col xs={1}>
+                    <Tooltip position="left" text="Деактивировать">
+                        <IconButton
+                            disableTouchRipple={true}
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            touch={true}>
+                            <Cancel color='#ff584b'/>
+                        </IconButton>
+                    </Tooltip>
+                </Col>
             </Row>
         )
     })
