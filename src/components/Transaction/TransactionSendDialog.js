@@ -120,10 +120,10 @@ const TransactionSendDialog = enhance((props) => {
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit} className={classes.form}>
                     <div className={classes.inContent} style={{minHeight: '235px'}}>
-                        <div className={classes.loader}>
+                        {loading ? <div className={classes.loader}>
                             <Loader size={0.75}/>
                         </div>
-                        <div className={classes.field}>
+                        : <div className={classes.field}>
                             {noCashbox
                                 ? <div style={{marginTop: '15px'}}>
                                     <Field
@@ -214,7 +214,7 @@ const TransactionSendDialog = enhance((props) => {
                                 label="Комментарий..."
                                 fullWidth={true}/>
 
-                        </div>
+                        </div>}
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
