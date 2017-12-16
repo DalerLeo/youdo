@@ -4,14 +4,16 @@ import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
-import Pagination from '../GridList/GridListNavPagination'
 import numberFormat from '../../helpers/numberFormat'
-import dateTimeFormat from '../../helpers/dateTimeFormat'
+import dateFormat from '../../helpers/dateFormat'
 import NotFound from '../Images/not-found.png'
 import LinearProgress from '../LinearProgress'
 
 const enhance = compose(
     injectSheet({
+        defect: {
+            color: '#ff526d !important'
+        },
         loader: {
             display: 'flex',
             justifyContent: 'center',
@@ -21,71 +23,64 @@ const enhance = compose(
         wrapper: {
             width: '100%',
             height: 'auto',
-            transition: 'max-height 500ms ease !important',
+            alignSelf: 'baseline',
             overflowY: 'auto',
             '& .progress': {
                 background: 'transparent'
             }
         },
-        title: {
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            width: '100%',
-            height: '48px',
-            fontWeight: '600',
-            borderBottom: '1px #efefef solid'
-
-        },
         content: {
             width: '100%',
             overflow: 'hidden',
-            padding: '0 30px 5px',
-            '& > .row': {
-                overflowY: 'auto',
-                overflowX: 'hidden',
-                margin: '0 -0.5rem',
-                padding: '15px 0'
-            },
-            '& > .row:first-child': {
-                fontWeight: '600',
-                lineHeight: '20px'
-            },
-            '& .dottedList:last-child:after': {
-                content: '""',
-                backgroundImage: 'none'
+            display: 'flex'
+        },
+        leftSide: {
+            padding: '20px 30px',
+            borderRight: '1px #efefef solid',
+            width: '350px',
+            '& > div': {
+                marginBottom: '5px',
+                '&:last-child': {
+                    marginBottom: '0'
+                }
+            }
+        },
+        rightSide: {
+            width: 'calc(100% - 350px)',
+            padding: '5px 30px',
+            '& .dottedList': {
+                margin: '0',
+                padding: '15px 0',
+                '&:first-child': {
+                    fontWeight: '600'
+                },
+                '& > div': {
+                    textAlign: 'right',
+                    '&:first-child': {
+                        textAlign: 'left',
+                        paddingLeft: '0'
+                    },
+                    '&:last-child': {
+                        paddingRight: '0'
+                    }
+                },
+                '&:last-child': {
+                    '&:after': {display: 'none'}
+                }
             }
         },
         header: {
-            height: '47px',
+            display: 'flex',
+            alignItems: 'center',
+            height: '65px',
             borderBottom: '1px #efefef solid',
             position: 'relative',
             padding: '0 30px',
-            width: '100%'
-        },
-        error: {
-            color: '#e57373'
-        },
-        success: {
-            color: '#81c784'
-        },
-        semibold: {
-            fontWeight: '600',
-            cursor: 'pointer',
-            position: 'relative',
-            alignItems: 'center',
-            height: '47px'
-        },
-        itemData: {
-            textAlign: 'left',
-            fontWeight: '600',
-            fontSize: '16px'
-        },
-        itemOpenData: {
-            extend: 'itemData',
-            color: '#129fdd',
-            zIndex: '2',
-            cursor: 'pointer'
+            width: '100%',
+            '& span': {
+                fontSize: '16px',
+                fontWeight: 'bold'
+            }
         },
         closeDetail: {
             position: 'absolute',
@@ -97,18 +92,13 @@ const enhance = compose(
             zIndex: '1'
         },
         emptyQuery: {
-            background: 'url(' + NotFound + ') no-repeat center 25px',
-            backgroundSize: '200px',
-            padding: '170px 0 30px',
+            background: 'url(' + NotFound + ') no-repeat center 20px',
+            backgroundSize: '160px',
+            padding: '135px 0 20px',
             textAlign: 'center',
             fontSize: '13px',
-            color: '#999',
-            width: '100%',
-            '& svg': {
-                width: '50px !important',
-                height: '50px !important',
-                color: '#999 !important'
-            }
+            color: '#666',
+            width: '100%'
         }
 
     }),
@@ -116,16 +106,14 @@ const enhance = compose(
 )
 
 const InventoryDetails = enhance((props) => {
-    const {classes, filterItem, detailData, handleCloseDetail, reservedOpen} = props
     const ZERO = 0
+    const {classes, detailData, handleCloseDetail} = props
     const isLoading = _.get(detailData, 'detailLoading')
-    const detailId = _.get(detailData, 'id')
-    const title = _.get(detailData, ['currentRow', '0', 'title'])
-    const defects = _.get(detailData, ['currentRow', '0', 'defects'])
-    const balance = _.toNumber(_.get(detailData, ['currentRow', '0', 'balance'])) + _.toNumber(_.get(detailData, ['currentRow', '0', 'defects']))
-    const reserved = _.toNumber(_.get(detailData, ['currentRow', '0', 'reserved']))
-    const measurement = _.get(detailData, ['currentRow', '0', 'measurement', 'name'])
-    const type = _.get(detailData, ['currentRow', '0', 'type', 'name'])
+    const createdBy = _.get(detailData, ['data', 'createdBy', 'firstName']) + ' ' + _.get(detailData, ['data', 'createdBy', 'secondName'])
+    const createdDate = dateFormat(_.get(detailData, ['data', 'createdDate']))
+    const stock = _.get(detailData, ['data', 'stock', 'name'])
+    const comment = _.get(detailData, ['data', 'comment']) || 'Комментариев нет'
+    const products = _.get(detailData, ['data', 'inventoryProducts'])
 
     if (isLoading) {
         return (
@@ -136,63 +124,55 @@ const InventoryDetails = enhance((props) => {
     }
     return (
         <div className={classes.wrapper}>
-            {_.isEmpty(_.get(detailData, ['data', 'results']))
-                ? <div className={classes.emptyQuery}>
-                    <div>Товаров не найдено</div>
+            <div style={{width: '100%'}}>
+                <div className={classes.header}>
+                    <div className={classes.closeDetail} onClick={handleCloseDetail}/>
+                    <span>{createdBy}</span>
                 </div>
-                : <div style={{width: '100%'}}>
-                    <div className={classes.header}>
-                        <div className={classes.closeDetail}
-                             onClick={handleCloseDetail}>
-                        </div>
-                        <Row className={classes.semibold}>
-                            <Col xs={3}>{title}</Col>
-                            <Col xs={2}>{type}</Col>
-                            <Col xs={2} className={classes.itemData}>{numberFormat(balance, measurement)}</Col>
-                            <Col xs={3} className={classes.itemData}>{numberFormat(defects, measurement)}</Col>
-                            {reserved > ZERO
-                                ? <Col xs={2}
-                                       className={classes.itemOpenData} onClick={() => { reservedOpen(detailId) }}>
-                                    {numberFormat(reserved, measurement)}
-                                </Col>
-                                : <Col xs={2} className={classes.itemData}>{numberFormat(reserved, measurement)}</Col>}
-                        </Row>
+                <div className={classes.content}>
+                    <div className={classes.leftSide}>
+                        <div>Склад: <strong>{stock}</strong></div>
+                        <div>Дата создания: <strong>{createdDate}</strong></div>
+                        <div>Комментарий: <strong>{comment}</strong></div>
                     </div>
-                    <div className={classes.content}>
-                        <div className={classes.title}>
-                            <div className={classes.titleLabel}>Парти товаров</div>
-                            <Pagination filter={filterItem}/>
+                    {_.isEmpty(_.get(detailData, ['data', 'inventoryProducts']))
+                        ? <div className={classes.emptyQuery}>
+                            <div>Товаров не найдено</div>
                         </div>
-                        <Row className='dottedList'>
-                            <Col xs={4}>Код</Col>
-                            <Col xs={4}>Дата приемки</Col>
-                            <Col xs={3}>Кол-во</Col>
-                            <Col xs={1}>Статус</Col>
-                        </Row>
-                        {_.map(_.get(detailData, ['data', 'results']), (item) => {
-                            const barcode = _.get(item, 'barcode')
-                            const productBalance = numberFormat(_.get(item, 'balance'), measurement)
-                            const createdDate = dateTimeFormat(_.get(item, 'createdDate'))
-                            const isDefect = _.get(item, 'isDefect') ? 'Брак' : 'OK'
-                            return (
-                                <Row key={barcode} className='dottedList'>
-                                    <Col xs={4}>{barcode}</Col>
-                                    <Col xs={4}>{createdDate}</Col>
-                                    <Col xs={3}>{productBalance} </Col>
-                                    <Col xs={1}> <span
-                                        className={_.get(item, 'isDefect') ? classes.error : classes.success}>{isDefect}</span></Col>
-                                </Row>
-                            )
-                        })}
-                    </div>
+                        : <div className={classes.rightSide}>
+                            <Row className={'dottedList'}>
+                                <Col xs={3}>Наименование</Col>
+                                <Col xs={3}>Баланс (до)</Col>
+                                <Col xs={3}>Баланс (после)</Col>
+                                <Col xs={3}>Разница</Col>
+                            </Row>
+                            {_.map(products, (item) => {
+                                const id = _.get(item, 'id')
+                                const name = _.get(item, ['product', 'name'])
+                                const measurement = _.get(item, ['product', 'measurement', 'name'])
+                                const amount = _.toNumber(_.get(item, 'amount'))
+                                const defectAmount = _.toNumber(_.get(item, 'defectAmount'))
+                                const balanceAmount = _.toNumber(_.get(item, 'balanceAmount'))
+                                const balanceDefectAmount = _.toNumber(_.get(item, 'balanceDefectAmount'))
+                                const amountDiff = amount - balanceAmount > ZERO ? '+' + amount - balanceAmount : amount - balanceAmount
+                                const defectDiff = defectAmount - balanceDefectAmount > ZERO ? '+' + defectAmount - balanceDefectAmount : defectAmount - balanceDefectAmount
+                                return (
+                                    <Row key={id} className={'dottedList'}>
+                                        <Col xs={3}>{name}</Col>
+                                        <Col xs={3}>{balanceAmount} / <span className={classes.defect}>{numberFormat(balanceDefectAmount, measurement)}</span></Col>
+                                        <Col xs={3}>{amount} / <span className={classes.defect}>{numberFormat(defectAmount, measurement)}</span></Col>
+                                        <Col xs={3}>{amountDiff} / <span className={classes.defect}>{numberFormat(defectDiff, measurement)}</span></Col>
+                                    </Row>
+                                )
+                            })}
+                        </div>}
                 </div>
-            }
+            </div>
         </div>
     )
 })
 
 InventoryDetails.propTypes = {
-    filterItem: PropTypes.object.isRequired,
     detailData: PropTypes.object.isRequired,
     handleCloseDetail: PropTypes.func.isRequired
 }

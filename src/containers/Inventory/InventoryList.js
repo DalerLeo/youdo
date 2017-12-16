@@ -34,8 +34,11 @@ const enhance = compose(
         const detailLoading = _.get(state, ['inventory', 'item', 'loading'])
         const list = _.get(state, ['inventory', 'list', 'data'])
         const listLoading = _.get(state, ['inventory', 'list', 'loading'])
+        const inventoryList = _.get(state, ['inventory', 'inventory', 'data', 'results'])
+        const inventoryListLoading = _.get(state, ['inventory', 'inventory', 'loading'])
         const filterForm = _.get(state, ['form', 'InventoryFilterForm'])
         const searchForm = _.get(state, ['form', 'InventorySearchForm'])
+        const inventoryForm = _.get(state, ['form', 'InventoryForm'])
         const filter = filterHelper(list, pathname, query)
 
         return {
@@ -43,9 +46,12 @@ const enhance = compose(
             listLoading,
             detail,
             detailLoading,
+            inventoryList,
+            inventoryListLoading,
             filter,
             filterForm,
-            searchForm
+            searchForm,
+            inventoryForm
         }
     }),
     withState('openAddProductDialog', 'setOpenAddProductDialog', false),
@@ -55,7 +61,12 @@ const enhance = compose(
     withState('inventoryData', 'updateInventoryData', []),
     withState('loading', 'setLoading', false),
     withPropsOnChange((props, nextProps) => {
-        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
+        const except = {
+            openInventoryDialog: null,
+            pdSearch: null,
+            pdStock: null
+        }
+        return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
         dispatch(inventoryListFetchAction(filter))
     }),
@@ -94,14 +105,14 @@ const enhance = compose(
         const productTypeNext = _.get(nextProps, ['inventoryForm', 'values', 'productType', 'value'])
         return ((props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)) ||
             (productType !== productTypeNext && nextDialog))
-    }, ({dispatch, inventoryForm, filterProducts, location: {query}, updateInventoryData, setLoading}) => {
+    }, ({dispatch, inventoryForm, filter, location: {query}, updateInventoryData, setLoading}) => {
         updateInventoryData([])
         setLoading(true)
         const productType = _.get(inventoryForm, ['values', 'productType', 'value'])
         const openDialog = toBoolean(_.get(query, INVENTORY_INVENTORY_DIALOG_OPEN))
         const hasStock = _.toInteger(_.get(query, 'pdStock')) > ZERO
         if (openDialog && hasStock) {
-            dispatch(inventoryProductsFetchAction(filterProducts, productType))
+            dispatch(inventoryProductsFetchAction(filter, productType))
                 .then(() => {
                     setLoading(false)
                 })
@@ -174,7 +185,7 @@ const enhance = compose(
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[INVENTORY_INVENTORY_DIALOG_OPEN]: false, 'pdSearch': null, 'pdStock': null})})
         },
-        handleSubmitInventoryDialog: props => (items) => {
+        handleSubmitInventoryDialog: props => (items, closeDialog) => {
             const {location: {pathname, query}, dispatch, filter} = props
             return dispatch(inventoryCreateFetchAction(items, query))
                 .then(() => {
@@ -182,6 +193,7 @@ const enhance = compose(
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[INVENTORY_INVENTORY_DIALOG_OPEN]: false, 'pdSearch': null, 'pdStock': null})})
+                    closeDialog(false)
                     dispatch(inventoryListFetchAction(filter))
                 })
                 .catch((error) => {
@@ -215,11 +227,6 @@ const InventoryList = enhance((props) => {
         layout,
         params,
         filterItem,
-        filterProducts,
-        openAddProductDialog,
-        addProducts,
-        addProductsLoading,
-        openAddProductConfirm,
         inventoryListLoading,
         inventoryData,
         stockChooseDialog
@@ -272,18 +279,6 @@ const InventoryList = enhance((props) => {
         detailLoading,
         currentRow
     }
-    const addProductDialog = {
-        openAddProductDialog,
-        filter: filterProducts,
-        data: _.get(addProducts, 'results'),
-        loading: addProductsLoading,
-        handleOpenAddProduct: props.handleOpenAddProduct,
-        handleCloseAddProduct: props.handleCloseAddProduct,
-        handleSubmitAddProduct: props.handleSubmitAddProduct,
-        openAddProductConfirm,
-        handleCloseAddProductConfirm: props.handleCloseAddProductConfirm,
-        handleSubmitAddProductConfirm: props.handleSubmitAddProductConfirm
-    }
 
     return (
         <Layout {...layout}>
@@ -297,7 +292,6 @@ const InventoryList = enhance((props) => {
                 resetFilter={props.handleResetFilter}
                 searchSubmit={props.handleSubmitSearch}
                 filterItem={filterItem}
-                addProductDialog={addProductDialog}
                 inventoryDialog={inventoryDialog}
             />
         </Layout>

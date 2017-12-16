@@ -14,12 +14,28 @@ import dateFormat from '../../helpers/dateFormat'
 import FilterForm from './InventoryFilterForm'
 import {reduxForm} from 'redux-form'
 import GridList from '../GridList'
+import Tooltip from '../ToolTip'
 import InventoryDialog from './InventoryDialog'
-import FlatButton from 'material-ui/FlatButton'
+import FloatingActionButton from 'material-ui/FloatingActionButton'
+import ContentAdd from 'material-ui/svg-icons/communication/clear-all'
 
 const enhance = compose(
     injectSheet({
+        addButtonWrapper: {
+            position: 'absolute',
+            top: '10px',
+            right: '0',
+            marginBottom: '0px'
+        },
         listRow: {
+            '& > div': {
+                '&:first-child': {
+                    paddingLeft: '0'
+                },
+                '&:last-child': {
+                    paddingRight: '0'
+                }
+            },
             '& a': {
                 position: 'absolute',
                 top: '0',
@@ -86,7 +102,6 @@ const InventoryGridList = enhance((props) => {
         filter,
         listData,
         handleCloseDetail,
-        filterItem,
         filterDialog,
         inventoryDialog
     } = props
@@ -103,9 +118,7 @@ const InventoryGridList = enhance((props) => {
         <InventoryDetails
             key={_.get(detailData, 'id')}
             detailData={detailData || {}}
-            filterItem={filterItem}
-            handleCloseDetail={handleCloseDetail}
-        />
+            handleCloseDetail={handleCloseDetail}/>
 
     )
 
@@ -117,14 +130,14 @@ const InventoryGridList = enhance((props) => {
         const createdBy = _.get(item, ['createdBy', 'firstName']) + ' ' + _.get(item, ['createdBy', 'secondName'])
         return (
             <Row key={id} className={classes.listRow}>
+                <Col xs={3}>{stock}</Col>
+                <Col xs={3}>{createdBy}</Col>
                 <Link to={{
                     pathname: sprintf(ROUTES.INVENTORY_ITEM_PATH, id),
                     query: filter.getParams()
                 }}/>
-                    <Col xs={3}>{stock}</Col>
-                    <Col xs={3}>{createdBy}</Col>
-                    <Col xs={2}>{createdDate}</Col>
-                    <Col xs={4}>{comment}</Col>
+                <Col xs={2}>{createdDate}</Col>
+                <Col xs={4}>{comment}</Col>
             </Row>
         )
     })
@@ -139,11 +152,16 @@ const InventoryGridList = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.INVENTORY_LIST_URL}/>
 
-            <div className={classes.buttons}>
-                <FlatButton
-                    label={'Инвентаризация'}
-                    labelStyle={{color: '#12aaeb'}}
-                    onClick={inventoryDialog.handleOpenInventoryDialog}/>
+            <div className={classes.addButtonWrapper}>
+                <Tooltip position="left" text="Инвентаризация">
+                    <FloatingActionButton
+                        mini={true}
+                        zDepth={1}
+                        backgroundColor="#12aaeb"
+                        onTouchTap={inventoryDialog.handleOpenInventoryDialog}>
+                        <ContentAdd/>
+                    </FloatingActionButton>
+                </Tooltip>
             </div>
 
             <GridList

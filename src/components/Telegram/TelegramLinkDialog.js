@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
@@ -10,10 +9,8 @@ import {TextField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import CopyContent from 'material-ui/svg-icons/content/content-copy'
 import IconButton from 'material-ui/IconButton'
-import MainStyles from '../Styles/MainStyles'
-
 const enhance = compose(
-    injectSheet(_.merge(MainStyles, {
+    injectSheet({
         loader: {
             position: 'absolute',
             width: '100%',
@@ -23,13 +20,64 @@ const enhance = compose(
             left: '0'
         },
         inContent: {
+            color: '#333',
+            display: 'flex',
+            padding: '0 30px',
+            overflow: 'unset',
             '& > div': {
                 width: '100%',
                 display: 'flex',
                 alignItems: 'center'
             }
+        },
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important',
+                textAlign: 'right'
+            }
+        },
+        dialog: {
+            overflowY: 'auto !important'
+        },
+        popUp: {
+            color: '#333 !important',
+            overflowY: 'hidden !important',
+            fontSize: '13px !important',
+            position: 'relative',
+            padding: '0 !important',
+            overflowX: 'hidden',
+            height: '100%',
+            marginBottom: '64px',
+            maxHeight: '575px !important'
+        },
+        titleContent: {
+            background: '#fff',
+            color: '#333',
+            fontWeight: 'bold',
+            textTransform: 'uppercase',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            borderBottom: '1px solid #efefef',
+            padding: '20px 30px',
+            zIndex: '999',
+            '& button': {
+                right: '13px',
+                padding: '0 !important',
+                position: 'absolute !important'
+            }
         }
-    })),
+    }),
     reduxForm({
         form: 'TelegramCreateForm',
         enableReinitialize: true
@@ -53,7 +101,7 @@ const TelegramCreateDialog = enhance((props) => {
                 </IconButton>
             </div>
             <div className={classes.bodyContent}>
-                <div className={classes.form}>
+                <div>
                     {loading
                     ? <div className={classes.loader}>
                         <Loader size={0.75}/>
