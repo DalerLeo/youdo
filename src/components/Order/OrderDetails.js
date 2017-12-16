@@ -26,6 +26,7 @@ import getConfig from '../../helpers/getConfig'
 import dateFormat from '../../helpers/dateFormat'
 import MenuItem from 'material-ui/MenuItem'
 import IconMenu from 'material-ui/IconMenu'
+import {connect} from 'react-redux'
 const ZERO = 0
 
 const popupWidth = 210
@@ -182,7 +183,13 @@ const enhance = compose(
             zIndex: '1'
         }
     }),
-    withState('openDiscountDialog', 'setOpenDiscountDialog', false)
+    withState('openDiscountDialog', 'setOpenDiscountDialog', false),
+    connect((state) => {
+        const userCurrencies = _.get(state, ['authConfirm', 'data', 'currencies'])
+        return {
+            userCurrencies
+        }
+    })
 )
 
 const iconStyle = {
@@ -223,7 +230,8 @@ const OrderDetails = enhance((props) => {
         handleSubmitSetZeroDiscountDialog,
         handleOpenPrintContract,
         hasMarket,
-        isSuperUser
+        isSuperUser,
+        userCurrencies
     } = props
     const id = _.get(data, 'id')
     const market = _.get(data, ['market', 'name'])
@@ -243,7 +251,7 @@ const OrderDetails = enhance((props) => {
     const paymentDate = dateFormat(_.get(data, 'paymentDate'))
     const requestDeadline = _.get(data, 'requestDeadline') ? dateFormat(_.get(data, 'requestDeadline')) : 'Не задан'
     const currency = _.get(data, ['currency', 'name'])
-
+    const currencyAccess = _.isEmpty(_.find(userCurrencies, {'id': _.get(data, ['currency', 'id'])}))
     const REQUESTED = 0
     const READY = 1
     const GIVEN = 2
@@ -252,7 +260,6 @@ const OrderDetails = enhance((props) => {
     const NOT_CONFIRMED = 5
     const status = _.toInteger(_.get(data, 'status'))
     const editableWhenGiven = status === GIVEN && isSuperUser
-
     const zero = 0
     const totalPaid = _.toNumber(_.get(data, 'totalPaid'))
     const priceList = _.get(data, ['priceList', 'name'])
@@ -328,7 +335,7 @@ const OrderDetails = enhance((props) => {
                     </Tooltip>
                     <Tooltip position="bottom" text="Изменить">
                         <IconButton
-                            disabled={status === CANCELED ? true : status === GIVEN ? !editableWhenGiven : false}
+                            disabled={(status === CANCELED ? true : status === GIVEN ? !editableWhenGiven : currencyAccess)}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
