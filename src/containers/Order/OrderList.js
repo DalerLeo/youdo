@@ -603,6 +603,7 @@ const enhance = compose(
                             market: {name: _.get(detail, ['market', 'name']), id: _.get(detail, ['market', 'id'])},
                             user: _.get(detail, 'user'),
                             status: _.get(detail, 'status'),
+                            currency: _.get(detail, 'currency'),
                             totalPrice: _.get(detail, 'total_price'),
                             totalBalance: _.get(detail, 'total_balance'),
                             dateDelivery: _.get(detail, 'date_delivery'),
