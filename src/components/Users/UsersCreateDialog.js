@@ -163,18 +163,15 @@ const UsersCreateDialog = enhance((props) => {
         currencyData,
         positionGroups,
         positionLoading,
-        isActive,
-        detailData
+        isActive
     } = props
-    const groups = _.map(_.get(detailData, 'groups'), item => _.get(item, 'name'))
-    const userIsAgent = _.includes(groups, 'agent')
     const errorText = _.get(errorData, 'errorText')
     const show = _.get(errorData, 'show')
     const multiStock = getConfig('MULTI_SELECT_STOCK')
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
-    const agent = _.find(positionGroups, {'name': 'agent'})
-    const manufacture = _.find(positionGroups, {'name': 'manufacture'})
-    const manager = _.find(positionGroups, {'name': 'manager'})
+    const agent = _.some(positionGroups, {'name': 'agent'})
+    const manufacture = _.some(positionGroups, {'name': 'manufacture'})
+    const manager = _.some(positionGroups, {'name': 'manager'})
     return (
         <Dialog
             modal={true}
@@ -275,7 +272,7 @@ const UsersCreateDialog = enhance((props) => {
                                 <Loader size={0.75}/>
                             </div>
                             }
-                            {(userIsAgent || manager || manufacture) && !positionLoading &&
+                            {(agent || manager || manufacture) && !positionLoading &&
                             <div>
                                 <div className={classes.subTitle} style={{margin: '15px 0 10px'}}>{multiStock ? 'Связанные склады' : 'Связанный склад'}</div>
                                 {(!loading) && _.get(stockListData, 'stockListLoading')
