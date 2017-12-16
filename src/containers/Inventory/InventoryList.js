@@ -135,14 +135,12 @@ const enhance = compose(
             const typeParent = _.get(filterForm, ['values', 'typeParent', 'value']) || null
             const typeChild = _.get(filterForm, ['values', 'typeChild', 'value']) || null
             const measurement = _.get(filterForm, ['values', 'measurement']) || null
-            const brand = _.get(filterForm, ['values', 'brand']) || null
             filter.filterBy({
                 [INVENTORY_FILTER_OPEN]: false,
                 [INVENTORY_FILTER_KEY.STOCK]: joinArray(stock),
                 [INVENTORY_FILTER_KEY.TYPE_PARENT]: typeParent,
                 [INVENTORY_FILTER_KEY.TYPE_CHILD]: typeChild,
-                [INVENTORY_FILTER_KEY.MEASUREMENT]: joinArray(measurement),
-                [INVENTORY_FILTER_KEY.BRAND]: joinArray(brand)
+                [INVENTORY_FILTER_KEY.MEASUREMENT]: joinArray(measurement)
             })
         },
         handleSubmitSearch: props => () => {
@@ -228,7 +226,6 @@ const InventoryList = enhance((props) => {
     } = props
 
     const stock = (filter.getParam(INVENTORY_FILTER_KEY.STOCK))
-    const brand = (filter.getParam(INVENTORY_FILTER_KEY.BRAND))
     const measurement = (filter.getParam(INVENTORY_FILTER_KEY.MEASUREMENT))
     const typeParent = _.toInteger(filter.getParam(INVENTORY_FILTER_KEY.TYPE_PARENT))
     const typeChild = _.toInteger(filter.getParam(INVENTORY_FILTER_KEY.TYPE_CHILD))
@@ -239,7 +236,6 @@ const InventoryList = enhance((props) => {
     const filterDialog = {
         initialValues: {
             stock: stock && splitToArray(stock),
-            brand: brand && splitToArray(brand),
             measurement: measurement && splitToArray(measurement),
             typeParent: {value: typeParent},
             typeChild: {value: typeChild}

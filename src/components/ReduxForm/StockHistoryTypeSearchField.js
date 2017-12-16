@@ -4,11 +4,22 @@ import SearchField from './Basic/MultiSelectField'
 import axios from '../../helpers/axios'
 import * as PATH from '../../constants/api'
 import toCamelCase from '../../helpers/toCamelCase'
+import caughtCancel from '../../helpers/caughtCancel'
+
+const CancelToken = axios().CancelToken
+let usersAgentListToken = null
 
 const getOptions = (search) => {
-    return axios().get(`${PATH.CONTENT_TYPE_SEARCH}?search=${search || ''}&page_size=100`)
+    if (usersAgentListToken) {
+        usersAgentListToken.cancel()
+    }
+    usersAgentListToken = CancelToken.source()
+    return axios().get(`${PATH.CONTENT_TYPE_SEARCH}?search=${search || ''}&page_size=100`, {cancelToken: usersAgentListToken.token})
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data))
+        })
+        .catch((error) => {
+            caughtCancel(error)
         })
 }
 
