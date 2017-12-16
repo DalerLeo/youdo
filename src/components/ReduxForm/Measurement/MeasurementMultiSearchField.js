@@ -6,14 +6,14 @@ import toCamelCase from '../../../helpers/toCamelCase'
 import caughtCancel from '../../../helpers/caughtCancel'
 
 const CancelToken = axios().CancelToken
-let measurementListToken = null
+let measurementMultiListToken = null
 
 const getOptions = (search) => {
-    if (measurementListToken) {
-        measurementListToken.cancel()
+    if (measurementMultiListToken) {
+        measurementMultiListToken.cancel()
     }
-    measurementListToken = CancelToken.source()
-    return axios().get(`${PATH.MEASUREMENT_LIST}?search=${search || ''}&page_size=100`, {cancelToken: measurementListToken.token})
+    measurementMultiListToken = CancelToken.source()
+    return axios().get(`${PATH.MEASUREMENT_LIST}?search=${search || ''}&page_size=100`, {cancelToken: measurementMultiListToken.token})
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
         })

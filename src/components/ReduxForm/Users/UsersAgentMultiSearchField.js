@@ -7,14 +7,14 @@ import toCamelCase from '../../../helpers/toCamelCase'
 import caughtCancel from '../../../helpers/caughtCancel'
 
 const CancelToken = axios().CancelToken
-let usersListToken = null
+let usersAgentListToken = null
 
 const getOptions = (search) => {
-    if (usersListToken) {
-        usersListToken.cancel()
+    if (usersAgentListToken) {
+        usersAgentListToken.cancel()
     }
-    usersListToken = CancelToken.source()
-    return axios().get(`${PATH.USERS_LIST}?search=${search || ''}&page_size=100&group=agent`, {cancelToken: usersListToken.token})
+    usersAgentListToken = CancelToken.source()
+    return axios().get(`${PATH.USERS_LIST}?search=${search || ''}&page_size=100&group=agent`, {cancelToken: usersAgentListToken.token})
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
         })

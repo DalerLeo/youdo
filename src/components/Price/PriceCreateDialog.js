@@ -8,7 +8,7 @@ import FlatButton from 'material-ui/FlatButton'
 import Loader from '../Loader'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, BrandSearchField, MeasurementSearchField, ImageUploadField} from '../ReduxForm'
+import {TextField, MeasurementSearchField, ImageUploadField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
@@ -76,13 +76,6 @@ const PriceCreateDialog = enhance((props) => {
                                 className={classes.inputFieldCustom}
                                 component={TextField}
                                 label="Наименование"
-                                fullWidth={true}
-                            />
-                            <Field
-                                name="brand"
-                                className={classes.inputFieldCustom}
-                                component={BrandSearchField}
-                                label="Бренд"
                                 fullWidth={true}
                             />
                             <Field
