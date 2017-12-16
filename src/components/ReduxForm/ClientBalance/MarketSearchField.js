@@ -8,14 +8,14 @@ import toCamelCase from '../../../helpers/toCamelCase'
 import caughtCancel from '../../../helpers/caughtCancel'
 
 const CancelToken = axios().CancelToken
-let marketListToken = null
+let marketListBalanceToken = null
 
 const getOptions = (search, clientId) => {
-    if (marketListToken) {
-        marketListToken.cancel()
+    if (marketListBalanceToken) {
+        marketListBalanceToken.cancel()
     }
-    marketListToken = CancelToken.source()
-    return axios().get(`${PATH.SHOP_LIST}?search=${search || ''}&page_size=100`, {'params': {'client': clientId}, cancelToken: marketListToken.token})
+    marketListBalanceToken = CancelToken.source()
+    return axios().get(`${PATH.SHOP_LIST}?search=${search || ''}&page_size=100`, {'params': {'client': clientId}, cancelToken: marketListBalanceToken.token})
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
         })
