@@ -6,6 +6,8 @@ import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/orderSerializer'
 import * as returnSerializers from '../serializers/orderReturnSerializer'
 
+const MINUS_ONE = -1
+const ONE = 1
 export const orderCreateAction = (formValues) => {
     const requestData = serializers.createSerializer(formValues)
 
@@ -304,7 +306,16 @@ export const orderMultiUpdateAction = (data, orders, release) => {
 }
 
 export const orderAddProductsListAction = (priceList, filter, productType, currency) => {
-    const params = {
+    const params = priceList === MINUS_ONE
+        ? {
+            'with_net_cost': ONE,
+            currency: currency,
+            page_size: _.get(filter.getParams(), 'pdPageSize'),
+            page: _.get(filter.getParams(), 'pdPage'),
+            search: _.get(filter.getParams(), 'pdSearch'),
+            type: productType
+        }
+    : {
         price_list: priceList,
         currency: currency,
         page_size: _.get(filter.getParams(), 'pdPageSize'),

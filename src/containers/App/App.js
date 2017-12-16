@@ -37,6 +37,16 @@ class App extends React.Component {
         }
     }
 
+    componentWillReceiveProps (nextProps) {
+        const props = this.props
+        const prevLocation = _.get(props, ['location', 'pathname'])
+        const nextLocation = _.get(nextProps, ['location', 'pathname'])
+        const updateScrollValue = _.get(nextProps, 'updateScrollValue')
+        if (prevLocation !== nextLocation) {
+            updateScrollValue(false)
+        }
+    }
+
     render () {
         const {handleSignOut, scrollValue, updateScrollValue} = this.props
         const layout = {handleSignOut, scrollValue, updateScrollValue}
