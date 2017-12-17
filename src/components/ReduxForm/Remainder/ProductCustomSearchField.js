@@ -9,11 +9,22 @@ import toCamelCase from '../../../helpers/toCamelCase'
 import numberFormat from '../../../helpers/numberFormat'
 import * as actionTypes from '../../../constants/actionTypes'
 import {connect} from 'react-redux'
+import caughtCancel from '../../../helpers/caughtCancel'
+
+const CancelToken = axios().CancelToken
+let customProductListToken = null
 
 const getOptions = (search, type, stock) => {
-    return axios().get(`${PATH.REMAINDER_LIST}?type=${type || ''}&page_size=1000&stock=${stock || ''}&search=${search || ''}`)
+    if (customProductListToken) {
+        customProductListToken.cancel()
+    }
+    customProductListToken = CancelToken.source()
+    return axios().get(`${PATH.REMAINDER_LIST}?type=${type || ''}&page_size=1000&stock=${stock || ''}&search=${search || ''}`, {cancelToken: customProductListToken.token})
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
+        })
+        .catch((error) => {
+            caughtCancel(error)
         })
 }
 

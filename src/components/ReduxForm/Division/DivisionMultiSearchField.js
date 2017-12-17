@@ -6,14 +6,14 @@ import toCamelCase from '../../../helpers/toCamelCase'
 import caughtCancel from '../../../helpers/caughtCancel'
 
 const CancelToken = axios().CancelToken
-let divisionListToken = null
+let divisionMultiListToken = null
 
 const getOptions = (search) => {
-    if (divisionListToken) {
-        divisionListToken.cancel()
+    if (divisionMultiListToken) {
+        divisionMultiListToken.cancel()
     }
-    divisionListToken = CancelToken.source()
-    return axios().get(`${PATH.DIVISION_LIST}?search=${search || ''}&page_size=100`, {cancelToken: divisionListToken.token})
+    divisionMultiListToken = CancelToken.source()
+    return axios().get(`${PATH.DIVISION_LIST}?search=${search || ''}&page_size=100`, {cancelToken: divisionMultiListToken.token})
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
         })

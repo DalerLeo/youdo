@@ -4,11 +4,22 @@ import SearchField from '../Basic/SearchField'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
+import caughtCancel from '../../../helpers/caughtCancel'
+
+const CancelToken = axios().CancelToken
+let manufatureListToken = null
 
 const getOptions = (search) => {
-    return axios().get(`${PATH.MANUFACTURE_LIST}?search=${search || ''}&page_size=100`)
+    if (manufatureListToken) {
+        manufatureListToken.cancel()
+    }
+    manufatureListToken = CancelToken.source()
+    return axios().get(`${PATH.MANUFACTURE_LIST}?search=${search || ''}&page_size=100`, {cancelToken: manufatureListToken.token})
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
+        })
+        .catch((error) => {
+            caughtCancel(error)
         })
 }
 

@@ -6,14 +6,14 @@ import toCamelCase from '../../../helpers/toCamelCase'
 import caughtCancel from '../../../helpers/caughtCancel'
 
 const CancelToken = axios().CancelToken
-let marketTypeListToken = null
+let marketTypeMultiListToken = null
 
 const getOptions = (search) => {
-    if (marketTypeListToken) {
-        marketTypeListToken.cancel()
+    if (marketTypeMultiListToken) {
+        marketTypeMultiListToken.cancel()
     }
-    marketTypeListToken = CancelToken.source()
-    return axios().get(`${PATH.MARKET_TYPE_LIST}?search=${search || ''}&page_size=100`, {cancelToken: marketTypeListToken.token})
+    marketTypeMultiListToken = CancelToken.source()
+    return axios().get(`${PATH.MARKET_TYPE_LIST}?search=${search || ''}&page_size=100`, {cancelToken: marketTypeMultiListToken.token})
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
         })
