@@ -15,7 +15,6 @@ import StatSideMenu from '../StatSideMenu'
 import DateToDateField from '../../ReduxForm/Basic/DateToDateField'
 import Container from '../../Container/index'
 import Pagination from '../../GridList/GridListNavPagination/index'
-import DivisionMultiSearchField from '../../ReduxForm/Division/DivisionMultiSearchField'
 import NotFound from '../../Images/not-found.png'
 import * as ROUTES from '../../../constants/routes'
 import numberFormat from '../../../helpers/numberFormat'
@@ -23,11 +22,30 @@ import dateFormat from '../../../helpers/dateFormat'
 import getConfig from '../../../helpers/getConfig'
 import {StatisticsFilterExcel, StatisticsChart} from '../../Statistics'
 import Tooltip from '../../ToolTip'
-
+import {
+    ClientMultiSearchField,
+    MarketMultiSearchField,
+    UsersMultiSearchField,
+    TextField,
+    ProductMultiSearchField,
+    ReturnStatusMultiSearch,
+    ReturnTypeSearchField,
+    DivisionMultiSearchField,
+    PaymentTypeSearchField
+} from '../../ReduxForm'
 export const STAT_RETURN_FILTER_KEY = {
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate',
-    DIVISION: 'division'
+    DIVISION: 'division',
+    ORDER: 'order',
+    TYPE: 'type',
+    CLIENT: 'client',
+    STATUS: 'status',
+    INITIATOR: 'initiator',
+    MARKET: 'market',
+    CODE: 'code',
+    PRODUCT: 'product',
+    PAYMENT_TYPE: 'paymentType'
 }
 
 const enhance = compose(
@@ -202,7 +220,8 @@ const StatReturnGridList = enhance((props) => {
         detailData,
         handleGetDocument,
         graphData,
-        initialValues
+        initialValues,
+        hasMarket
     } = props
 
     const loading = _.get(listData, 'listLoading')
@@ -307,6 +326,62 @@ const StatReturnGridList = enhance((props) => {
                 component={DateToDateField}
                 label="Диапазон дат"
                 fullWidth={true}/>
+            <Field
+                className={classes.inputFieldCustom}
+                name="order"
+                component={TextField}
+                label="№ Заказа"/>
+            <Field
+                className={classes.inputFieldCustom}
+                name="product"
+                component={ProductMultiSearchField}
+                label="Продукт"/>
+            {divisionStatus && <Field
+                className={classes.inputFieldCustom}
+                name="division"
+                component={DivisionMultiSearchField}
+                label="Подразделение"/>}
+            <Field
+                className={classes.inputFieldCustom}
+                name="paymentType"
+                component={PaymentTypeSearchField}
+                label="Тип оплаты"/>
+            <Field
+                className={classes.inputFieldCustom}
+                name="status"
+                component={ReturnStatusMultiSearch}
+                label="Статус"/>
+            <Field
+                className={classes.inputFieldCustom}
+                name="type"
+                component={ReturnTypeSearchField}
+                label="Тип"/>
+            <Field
+                className={classes.inputFieldCustom}
+                name="client"
+                component={ClientMultiSearchField}
+                label="Клиент"/>
+            {hasMarket &&
+            <Field
+                className={classes.inputFieldCustom}
+                name="market"
+                component={MarketMultiSearchField}
+                label="Магазин"/>}
+            <Field
+                className={classes.inputFieldCustom}
+                name="initiator"
+                component={UsersMultiSearchField}
+                label="Инициатор "/>
+            <Field
+                className={classes.inputFieldCustom}
+                name="code"
+                component={TextField}
+                label="Код"/>
+            <Field
+                className={classes.inputDateCustom}
+                name="data"
+                component={DateToDateField}
+                label="Период создания"/>
             {divisionStatus && <Field
                 name="division"
                 component={DivisionMultiSearchField}
