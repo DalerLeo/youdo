@@ -38,7 +38,7 @@ const validateForm = values => {
     return errors
 }
 
-const ZERO =0
+const ZERO = 0
 const enhance = compose(
     injectSheet({
         loader: {
@@ -275,7 +275,7 @@ const enhance = compose(
             if (_.get(item, 'amount')) {
                 totalStafAmount += _.toNumber(numberWithoutSpaces(_.get(item, 'amount')))
             } else {
-                totalStafAmount += 0
+                totalStafAmount += ZERO
             }
         })
         return {

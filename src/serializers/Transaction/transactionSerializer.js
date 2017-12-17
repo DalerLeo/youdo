@@ -71,7 +71,6 @@ export const createExpenseSerializer = (data, cashboxId) => {
     const division = _.get(data, ['division', 'value'])
     const cashbox = _.get(data, ['cashbox', 'value'])
     const date = moment(_.get(data, 'date')).format('YYYY-MM-DD HH:00:00')
-    console.log(amount1, 'ting')
     return (clientId)
         ? {
             amount: amount,
