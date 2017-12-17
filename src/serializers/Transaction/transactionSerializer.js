@@ -61,7 +61,11 @@ export const createExpenseSerializer = (data, cashboxId) => {
             amount: numberWithoutSpaces(_.get(item, 'amount'))
         }
     }), (item) => {
-        amount1 += _.toNumber(_.get(item, 'amount'))
+        if (_.toNumber(_.get(item, 'amount')) > ZERO) {
+            amount1 += _.toNumber(_.get(item, 'amount')) * MINUS_ONE
+        } else {
+            amount1 += _.toNumber(_.get(item, 'amount'))
+        }
         return _.toNumber(_.get(item, 'amount')) > ZERO
     })
     const comment = _.get(data, 'comment')
