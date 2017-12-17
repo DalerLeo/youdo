@@ -10,7 +10,6 @@ import caughtCancel from '../../../helpers/caughtCancel'
 const CancelToken = axios().CancelToken
 let usersListToken = null
 
-
 const getOptions = (search) => {
     if (usersListToken) {
         usersListToken.cancel()
