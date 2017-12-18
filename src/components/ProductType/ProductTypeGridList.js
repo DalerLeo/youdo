@@ -10,9 +10,6 @@ import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import FlatButton from 'material-ui/FlatButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Edit from 'material-ui/svg-icons/image/edit'
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
-import IconMenu from 'material-ui/IconMenu'
-import MenuItem from 'material-ui/MenuItem'
 import * as ROUTES from '../../constants/routes'
 import dateFormat from '../../helpers/dateFormat'
 import GridList from '../GridList'
@@ -156,7 +153,10 @@ const enhance = compose(
         },
         rowWithoutParent: {
             extend: 'rowWithParent',
-            flexWrap: 'none'
+            flexWrap: 'none',
+            '&:hover > div:last-child > div': {
+                opacity: '1'
+            }
         },
         iconBtn: {
             display: 'flex',
@@ -167,21 +167,6 @@ const enhance = compose(
     })
 )
 
-const vertMenuStyle = {
-    button: {
-        padding: 0,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: 30,
-        height: 30
-    },
-    icon: {
-        color: '#666',
-        width: 18,
-        height: 18
-    }
-}
 const iconStyle = {
     icon: {
         color: '#666',
@@ -228,14 +213,6 @@ const ProductTypeGridList = enhance((props) => {
         const division = _.get(item, ['division', 'name'])
         const createdDate = dateFormat(_.get(item, 'createdDate'))
         const hasChild = !_.isEmpty(_.get(item, 'children'))
-        const iconButton = (
-            <IconButton
-                disableTouchRipple={true}
-                className={classes.verticalButton}
-                style={vertMenuStyle.button}>
-                <MoreVertIcon />
-            </IconButton>
-        )
         if (hasChild) {
             return (
                 <Row key={id} className={classes.rowWithParent}>
@@ -314,23 +291,28 @@ const ProductTypeGridList = enhance((props) => {
                 <Col xs={3}>{division}</Col>
                 <Col xs={3}>{createdDate}</Col>
                 <Col xs={1} className={classes.right}>
-                    <IconMenu
-                        iconButtonElement={iconButton}
-                        iconStyle={vertMenuStyle.icon}
-                        menuItemStyle={{fontSize: '13px'}}
-                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                        <MenuItem
-                            primaryText="Изменить"
-                            leftIcon={<Edit />}
-                            onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}
-                        />
-                        <MenuItem
-                            primaryText="Удалить"
-                            leftIcon={<DeleteIcon />}
-                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
-                        />
-                    </IconMenu>
+                    <div className={classes.iconBtn}>
+                        <Tooltip position="bottom" text="Изменить">
+                            <IconButton
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}
+                                disableTouchRipple={true}
+                                touch={true}
+                                onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
+                                <Edit />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip position="bottom" text="Удалить">
+                            <IconButton
+                                disableTouchRipple={true}
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}
+                                onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
+                                touch={true}>
+                                <DeleteIcon />
+                            </IconButton>
+                        </Tooltip>
+                    </div>
                 </Col>
             </Row>
         )

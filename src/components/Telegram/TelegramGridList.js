@@ -8,6 +8,7 @@ import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Cancel from 'material-ui/svg-icons/content/remove-circle'
 import TelegramCreateDialog from './TelegramCreateDialog'
+import TelegramFilterForm from './TelegramFilterForm'
 import TelegramLinkDialog from './TelegramLinkDialog'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
@@ -22,7 +23,7 @@ const listHeader = [
     {
         sorting: true,
         name: 'market',
-        xs: 2,
+        xs: 3,
         title: 'Магазин'
     },
     {
@@ -34,7 +35,7 @@ const listHeader = [
     {
         sorting: false,
         name: 'username',
-        xs: 4,
+        xs: 3,
         title: 'Пользователи'
     },
     {
@@ -188,30 +189,45 @@ const TelegramGridList = enhance((props) => {
         classes,
         linkDialog,
         createDetails,
-        copyToClipBoard
+        copyToClipBoard,
+        filterDialog
     } = props
     const telegramDetail = (
         <span>sd</span>
     )
 
+    const telegramFilterDialog = (
+        <TelegramFilterForm
+            initialValues={filterDialog.initialValues}
+            filter={filter}
+            filterDialog={filterDialog}
+        />
+    )
     const telegramList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
+        const token = _.get(item, 'token')
         const fullName = _.get(item, 'lastName') ? _.get(item, 'lastName') + ' ' + _.get(item, 'firstName') : 'Неизвестно'
         const username = _.get(item, 'username') || 'Неизвестно'
         const createdBy = _.get(item, ['createdBy', 'firstName']) + ' ' + _.get(item, ['createdBy', 'secondName']) || ''
         const createdDate = _.get(item, 'createdDate') ? dateFormat(_.get(item, 'createdDate'), true) : ''
-        const activatedDate = _.get(item, 'activated_date') ? dateFormat(_.get(item, 'activated_date')) : ''
+        const activatedDate = _.get(item, 'activatedDate') ? dateFormat(_.get(item, 'activatedDate')) : false
         const market = _.get(item, ['market', 'name']) || 'Неизвестно'
         return (
             <Row key={id} className={classes.listRow}>
-                <Col xs={2}>{market}</Col>
+                <Col xs={3}>{market}</Col>
                 <Col xs={3}><div style={{fontWeight: '600'}}>{createdBy}</div><div>{createdDate}</div></Col>
-                <Col xs={4}><div>{username}</div><div>{fullName}</div></Col>
-                <Col xs={2}>{activatedDate}</Col>
+                <Col xs={3}><div>{username}</div><div>{fullName}</div></Col>
+                <Col xs={2}>{activatedDate || <Tooltip position="left" text="Скопироват ссылку">
+                                                <span
+                                                    style={{color: '#12aaeb', cursor: 'pointer'}}
+                                                    onClick={() => copyToClipBoard.handleCopyLinkInList(token)}>
+                                                    Не активирован
+                                                </span>
+                                              </Tooltip>}
+                </Col>
                 <Col xs={1}>
                     <Tooltip position="left" text="Деактивировать">
                         <IconButton
-                            disableTouchRipple={true}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}>
@@ -247,6 +263,7 @@ const TelegramGridList = enhance((props) => {
                 filter={filter}
                 list={list}
                 detail={telegramDetail}
+                filterDialog={telegramFilterDialog}
             />
 
             <TelegramCreateDialog
@@ -260,7 +277,7 @@ const TelegramGridList = enhance((props) => {
                 loading={createDetails.createLoading}
                 onClose={linkDialog.handleCloseLinkDialog}
                 data={createDetails.createData}
-                copyToClipBoard={copyToClipBoard}
+                copyToClipBoard={copyToClipBoard.handleCopyToken}
                 initialValues={{link: 't.me/markets_bot?start=' + createDetails.createData.token}}
             />
 
