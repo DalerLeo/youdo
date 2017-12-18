@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import moment from 'moment'
 import filterHelper from '../../helpers/filter'
+import {formattedType} from '../../constants/notificationTypes'
 import {compose, withState, withHandlers, lifecycle} from 'recompose'
 import React from 'react'
 import injectSheet from 'react-jss'
@@ -19,7 +20,8 @@ import Balance from 'material-ui/svg-icons/action/account-balance-wallet'
 import Loader from '../Loader'
 import {
     notificationListFetchAction,
-    notificationDeleteAction
+    notificationDeleteAction,
+    notificationCountFetchAction
 } from '../../actions/notifications'
 import {openSnackbarAction} from '../../actions/snackbar'
 import Notifications from '../Images/Notification.png'
@@ -58,7 +60,7 @@ const enhance = compose(
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
     withState('notificationId', 'setNotificationId', null),
     withState('openNotifications', 'setOpenNotifications', false),
-    withState('clickNotifications', 'setClickNotifications', false),
+    withState('clickNotifications', 'setClickNotifications', null),
 
     withHandlers({
         handleOpenConfirmDialog: props => (id) => {
@@ -88,6 +90,9 @@ const enhance = compose(
             setOpenNotifications(status)
             if (status) {
                 dispatch(notificationListFetchAction())
+                    .then(() => {
+                        dispatch(notificationCountFetchAction())
+                    })
             }
         }
 
@@ -128,7 +133,6 @@ const enhance = compose(
             background: '#fff',
             color: '#333 !important',
             position: 'absolute',
-            left: '84px',
             top: '0',
             bottom: '0',
             width: '400px'
@@ -138,8 +142,8 @@ const enhance = compose(
             color: '#fff',
             fontSize: '15px',
             fontWeight: '600',
-            padding: '0 20px',
-            height: '70px',
+            padding: '0 10px 0 20px',
+            height: '65px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between'
@@ -149,77 +153,87 @@ const enhance = compose(
             height: 'calc(100% - 70px)'
         },
         notif: {
-            padding: '10px 20px',
+            padding: '10px 10px 10px 20px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
             borderBottom: '1px #efefef solid',
-            cursor: 'pointer',
-            '& .notifIcon': {
-                display: 'flex',
-                position: 'relative',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '36px',
-                height: '20.78px',
-                backgroundColor: '#dadada',
-                margin: '10.39px 0',
-                '&:before': {
-                    content: '""',
-                    position: 'absolute',
-                    width: '0',
-                    borderLeft: '18px solid transparent',
-                    borderRight: '18px solid transparent',
-                    bottom: '100%',
-                    left: '0',
-                    borderBottom: '10.39px solid #dadada'
-                },
-                '&:after': {
-                    content: '""',
-                    position: 'absolute',
-                    width: '0',
-                    borderLeft: '18px solid transparent',
-                    borderRight: '18px solid transparent',
-                    top: '100%',
-                    left: '0',
-                    borderTop: '10.39px solid #dadada'
-                },
-                '& svg': {
-                    width: '17px !important',
-                    height: '17px !important',
-                    color: '#fff !important'
-                }
+            cursor: 'pointer'
+        },
+        notifIcon: {
+            display: 'flex',
+            position: 'relative',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '36px',
+            height: '20.78px',
+            backgroundColor: '#dadada',
+            margin: '10.39px 0',
+            '&:before': {
+                content: '""',
+                position: 'absolute',
+                width: '0',
+                borderLeft: '18px solid transparent',
+                borderRight: '18px solid transparent',
+                bottom: '100%',
+                left: '0',
+                borderBottom: '10.39px solid #dadada'
             },
-            '& .notifIcon.money': {
-                backgroundColor: moneyIcon,
-                '&:before': {
-                    borderBottomColor: moneyIcon
-                },
-                '&:after': {
-                    borderTopColor: moneyIcon
-                }
+            '&:after': {
+                content: '""',
+                position: 'absolute',
+                width: '0',
+                borderLeft: '18px solid transparent',
+                borderRight: '18px solid transparent',
+                top: '100%',
+                left: '0',
+                borderTop: '10.39px solid #dadada'
             },
-            '& .notifIcon.balance': {
-                backgroundColor: balanceIcon,
-                '&:before': {
-                    borderBottomColor: balanceIcon
-                },
-                '&:after': {
-                    borderTopColor: balanceIcon
-                }
+            '& svg': {
+                width: '17px !important',
+                height: '17px !important',
+                color: '#fff !important'
+            }
+        },
+        money: {
+            backgroundColor: moneyIcon,
+            '&:before': {
+                borderBottomColor: moneyIcon
             },
-            '& .notifIcon.store': {
-                backgroundColor: storeIcon,
-                '&:before': {
-                    borderBottomColor: storeIcon
-                },
-                '&:after': {
-                    borderTopColor: storeIcon
-                }
+            '&:after': {
+                borderTopColor: moneyIcon
+            }
+        },
+        balance: {
+            backgroundColor: balanceIcon,
+            '&:before': {
+                borderBottomColor: balanceIcon
+            },
+            '&:after': {
+                borderTopColor: balanceIcon
+            }
+        },
+        store: {
+            backgroundColor: storeIcon,
+            '&:before': {
+                borderBottomColor: storeIcon
+            },
+            '&:after': {
+                borderTopColor: storeIcon
             }
         },
         notifContent: {
             flexBasis: '250px'
+        },
+        notificationText: {
+            display: '-webkit-box',
+            WebkitLineClamp: '2',
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis'
+        },
+        notificationTextExpanded: {
+            display: 'block'
         },
         notifTitle: {
             display: 'flex',
@@ -273,6 +287,7 @@ const Layout = enhance((props) => {
         children,
         notificationId,
         openNotifications,
+        clickNotifications,
         setClickNotifications,
         notificationsList,
         notificationsLoading
@@ -288,37 +303,43 @@ const Layout = enhance((props) => {
     }
     const notificationListExp = _.map(notificationsList, (item) => {
         const id = _.get(item, 'id')
-        const title = _.get(item, 'title')
+        const title = formattedType[_.get(item, ['template', 'name'])]
         const text = _.get(item, 'text')
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY HH:mm')
         const viewed = _.get(item, 'viewed')
         const template = _.get(item, ['template', 'name']) === 'accountant'
-            ? <div className="notifIcon balance"><Balance/></div>
+            ? <div className={classes.notifIcon + ' ' + classes.balance}><Balance/></div>
             : (_.get(item, ['template', 'name']) === 'order'
-                    ? <div className="notifIcon money"><Money/></div>
+                    ? <div className={classes.notifIcon + ' ' + classes.money}><Money/></div>
                     : (_.get(item, ['template', 'name']) === 'supply'
-                        ? <div className="notifIcon store"><Storehouse/></div>
-                        : <div className="notifIcon store"><Storehouse/></div>)
+                        ? <div className={classes.notifIcon + ' ' + classes.store}><Storehouse/></div>
+                        : <div className={classes.notifIcon + ' ' + classes.store}><Storehouse/></div>)
             )
 
         return (
-            <div key={id} className={classes.notif} onClick={() => {
-                setClickNotifications(true)
-            }} style={viewed ? {opacity: '0.5'} : {opacity: '1'}}>
+            <div key={id} className={classes.notif}
+                 onClick={() => {
+                     id === clickNotifications
+                         ? setClickNotifications(null)
+                         : setClickNotifications(id)
+                 }}
+                 style={viewed ? {opacity: '0.5'} : {opacity: '1'}}>
                 {template}
                 <div className={classes.notifContent}>
                     <div className={classes.notifTitle}>
                         <div>{title}</div>
                         <span>{createdDate}</span>
                     </div>
-                    <div className="notificationText">
+                    <div className={id === clickNotifications
+                        ? classes.notificationTextExpanded
+                        : classes.notificationText}>
                         {text}
                     </div>
                 </div>
                 <IconButton
                     iconStyle={iconStyle.icon}
                     style={iconStyle.button}
-                    onTouchTap={ () => {
+                    onTouchTap={() => {
                         notificationData.handleOpenConfirmDialog(id)
                     }}>
                     <Clear color="#dadada"/>
@@ -326,10 +347,26 @@ const Layout = enhance((props) => {
             </div>
         )
     })
+    const wrapperStyle = {
+        containerOpen: {
+            opacity: 1,
+            zIndex: 100
+        },
+        containerClose: {
+            opacity: 0,
+            zIndex: -99
+        },
+        wrapperOpen: {
+            left: 84
+        },
+        wrapperClose: {
+            left: '-100%'
+        }
+    }
     return (
         <div className={classes.wrapper}>
-            <div className={classes.notifications} style={openNotifications ? {opacity: '1', zIndex: '100'} : {opacity: '0', zIndex: '-99'}}>
-                <Paper className={classes.notificationsWrapper} zDepth={4}>
+            <div className={classes.notifications} style={openNotifications ? wrapperStyle.containerOpen : wrapperStyle.containerClose}>
+                <Paper className={classes.notificationsWrapper} zDepth={4} style={openNotifications ? wrapperStyle.wrapperOpen : wrapperStyle.wrapperClose}>
                     <div className={classes.header}>
                         <div>Уведомления</div>
                         <div>
@@ -344,15 +381,15 @@ const Layout = enhance((props) => {
                         </div>
                     </div>
                     <div className={classes.notifBody}>
-                        {
-                            notificationsLoading ? <div className={classes.loading}>
+                        {notificationsLoading
+                            ? <div className={classes.loading}>
                                 <Loader size={0.75}/>
                             </div>
-                                : (notificationListExp.length > ZERO ? notificationListExp
+                            : (notificationListExp.length > ZERO
+                                ? notificationListExp
                                 : <div className={classes.emptyQuery}>
                                     <div>Нет уведомлений</div>
-                                </div>)
-                        }
+                                </div>)}
                     </div>
                 </Paper>
             </div>
@@ -368,7 +405,7 @@ const Layout = enhance((props) => {
             <ErrorDialog />
             {notificationsList && <ConfirmDialog
                 type="delete"
-                message={_.get(_.find(notificationsList, {'id': notificationId}), 'title')}
+                message={_.get(_.find(notificationsList, {'id': notificationId}), 'title') || ''}
                 onClose={notificationData.handleCloseConfirmDialog}
                 onSubmit={notificationData.handleSendConfirmDialog}
                 open={notificationData.open}

@@ -10,6 +10,7 @@ import * as ROUTER from '../../constants/routes'
 import {reset} from 'redux-form'
 import toBoolean from '../../helpers/toBoolean'
 import filterHelper from '../../helpers/filter'
+
 import {
     PENDING_PAYMENTS_UPDATE_DIALOG_OPEN,
     PENDING_PAYMENTS_FILTER_KEY,

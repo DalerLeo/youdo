@@ -1,75 +1,67 @@
 import React from 'react'
 import _ from 'lodash'
+import {connect} from 'react-redux'
+import {compose, lifecycle} from 'recompose'
 import Badge from 'material-ui/Badge'
 import ToolTip from '../ToolTip'
 import FlatButton from 'material-ui/FlatButton'
 import Notification from 'material-ui/svg-icons/social/notifications'
-import axios from '../../helpers/axios'
+import {notificationCountFetchAction} from '../../actions/notifications'
 
 const ZERO = 0
-const TIMER = 1800000
+const TIMER = 60000
 
-export default class CustomBadge extends React.Component {
-    constructor (props) {
-        super(props)
-        this.state = {count: 0}
-    }
-
-    componentDidMount () {
-        setInterval(
-            () => this.setCount(),
-            TIMER
-        )
-    }
-
-    setCount () {
-        axios()
-            .get('notification/notifications/get_not_viewed')
-            .then((response) => {
-                this.setState({
-                    count: _.get(response, ['data', 'count'])
-                })
-            })
-    }
-
-    componentWillUnmount () {
-        this.setState({
-            count: null
-        })
-    }
-
-    render () {
-        const {classBadge, style, handleOpen} = this.props
-        if (this.state.count <= ZERO) {
-            return (
-                <ToolTip position="right" text="Уведомления">
-                    <FlatButton
-                        rippleColor="#fff"
-                        style={style}
-                        onTouchTap={() => {
-                            handleOpen(true)
-                        }}>
-                        <Notification />
-                    </FlatButton>
-                </ToolTip>
-            )
+const enhance = compose(
+    lifecycle({
+        componentDidMount () {
+            const dispatch = this.props.dispatch
+            dispatch(notificationCountFetchAction())
+            setInterval(() => {
+                dispatch(notificationCountFetchAction())
+            }, TIMER)
         }
+    }),
+    connect((state) => {
+        const count = _.get(state, ['notifications', 'count', 'data', 'count']) || ZERO
+        return {
+            count
+        }
+    })
+)
+
+const CustomBadge = enhance((props) => {
+    const {classBadge, style, handleOpen, count} = props
+    if (count <= ZERO) {
         return (
-            <Badge
-                className={classBadge}
-                badgeContent={this.state.count}
-                badgeStyle={{top: 8, right: 10}}>
-                <ToolTip position="right" text="Уведомления">
-                    <FlatButton
-                        rippleColor="#fff"
-                        style={style}
-                        onTouchTap={() => {
-                            handleOpen(true)
-                        }}>
-                        <Notification />
-                    </FlatButton>
-                </ToolTip>
-            </Badge>
+            <ToolTip position="right" text="Уведомления">
+                <FlatButton
+                    rippleColor="#fff"
+                    style={style}
+                    onTouchTap={() => {
+                        handleOpen(true)
+                    }}>
+                    <Notification />
+                </FlatButton>
+            </ToolTip>
         )
     }
-}
+    return (
+        <Badge
+            className={classBadge}
+            badgeContent={count}
+            badgeStyle={{top: 8, right: 10}}>
+            <ToolTip position="right" text="Уведомления">
+                <FlatButton
+                    rippleColor="#fff"
+                    style={style}
+                    onTouchTap={() => {
+                        handleOpen(true)
+                    }}>
+                    <Notification />
+                </FlatButton>
+            </ToolTip>
+        </Badge>
+    )
+})
+
+export default CustomBadge

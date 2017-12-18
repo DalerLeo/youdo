@@ -6,7 +6,8 @@ const checkPermission = (key) => {
     const permissions = _.map(_.get(userData, 'permissions'), (item) => {
         return _.get(item, 'codename')
     })
-    return _.includes(permissions, key)
+    const isSuperuser = _.get(userData, 'is_superuser')
+    return isSuperuser ? true : _.includes(permissions, key)
 }
 
 export default checkPermission

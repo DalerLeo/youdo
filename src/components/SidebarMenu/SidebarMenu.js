@@ -115,7 +115,7 @@ const enhance = compose(
 )
 
 const SideBarMenu = enhance((props) => {
-    const {classes, handleSignOut, handleOpenNotificationBar, permissions, isAdmin, loading} = props
+    const {classes, handleSignOut, handleOpenNotificationBar, permissions, isAdmin, loading, dispatch} = props
     const menu = getMenus(permissions, isAdmin)
     const items = _.map(menu, (item, index) => {
         const atBottom = _.get(item, 'bottom')
@@ -176,6 +176,7 @@ const SideBarMenu = enhance((props) => {
                 </div>
                 <div className={classes.notifications}>
                     <CustomBadge
+                        dispatch={dispatch}
                         classBadge={classes.badge}
                         handleOpen={handleOpenNotificationBar}
                         style={style.style}/>
@@ -187,7 +188,7 @@ const SideBarMenu = enhance((props) => {
                     {afterLine}
                 </div>}
             </div>}
-            {!loading && <div className={classes.logout} ref="logoutBtn">
+            {!loading && <div ref="logoutBtn">
                 <ToolTip position="right" text="Выйти">
                     <FlatButton
                         rippleColor="#fff"

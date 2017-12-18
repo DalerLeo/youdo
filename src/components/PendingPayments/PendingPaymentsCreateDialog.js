@@ -9,11 +9,12 @@ import FlatButton from 'material-ui/FlatButton'
 import Loader from '../Loader'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, CashboxTypeCurrencyField, normalizeNumber} from '../ReduxForm'
+import {TextField, CashboxSearchField, normalizeNumber} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 import numberformat from '../../helpers/numberFormat'
+import getConfig from '../../helpers/getConfig'
 import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
 import {convertCurrency} from '../../helpers/convertCurrency'
 import CashboxCurrencyField from '../ReduxForm/CashboxCurrencyField'
@@ -109,6 +110,7 @@ const PendingPaymentsCreateDialog = enhance((props) => {
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const ZERO = 0
     const id = _.get(detailData, 'id')
+    const configCurrencyId = _.toInteger(getConfig('PRIMARY_CURRENCY_ID'))
     const primaryCurrency = _.get(detailData, ['data', 'currency', 'name'])
     const primaryCurrencyId = _.get(detailData, ['data', 'currency', 'id'])
     const client = _.get(detailData, ['data', 'client'])
@@ -119,9 +121,8 @@ const PendingPaymentsCreateDialog = enhance((props) => {
     const totalPrice = numberformat(_.get(detailData, ['data', 'totalPrice']), primaryCurrency)
     const clientName = _.get(client, 'name')
     const currentRate = (currencyRate === INDIVIDUAL) ? customRate : _.get(convert, ['data', 'amount'])
-    const convertAmount = convertCurrency(amountValue, currentRate)
+    const convertAmount = convertCurrency(amountValue, currentRate, primaryCurrencyId === configCurrencyId)
     const createdDate = _.get(detailData, ['data', 'createdDate'])
-
     return (
         <Dialog
             modal={true}
@@ -161,7 +162,7 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                                 <Field
                                     name="cashbox"
                                     className={classes.inputFieldCustom}
-                                    component={CashboxTypeCurrencyField}
+                                    component={CashboxSearchField}
                                     currency={_.get(detailData, ['data', 'currency', 'id'])}
                                     paymentType={_.get(detailData, ['data', 'paymentType'])}
                                     label="Касса получатель"

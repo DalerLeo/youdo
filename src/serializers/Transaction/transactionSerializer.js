@@ -50,23 +50,17 @@ export const createIncomeSerializer = (data, cashboxId) => {
 }
 
 export const createExpenseSerializer = (data, cashboxId) => {
-    let amount = numberWithoutSpaces(_.get(data, 'amount'))
-    let amount1 = 0
-    if (amount > ZERO) {
-        amount *= MINUS_ONE
-    }
     const staffs = _.filter(_.map(_.get(data, 'users'), (item, index) => {
         return {
             staff: _.toInteger(index),
-            amount: numberWithoutSpaces(_.get(item, 'amount'))
+            amount: _.toNumber(numberWithoutSpaces(_.get(item, 'amount')))
         }
     }), (item) => {
-        if (_.toNumber(_.get(item, 'amount')) > ZERO) {
-            amount1 += _.toNumber(_.get(item, 'amount')) * MINUS_ONE
-        } else {
-            amount1 += _.toNumber(_.get(item, 'amount'))
-        }
         return _.toNumber(_.get(item, 'amount')) > ZERO
+    })
+    const amount = Math.abs(numberWithoutSpaces(_.get(data, 'amount'))) * MINUS_ONE
+    const salaryAmount = _.sumBy(staffs, (item) => {
+        return _.get(item, 'amount') * MINUS_ONE
     })
     const comment = _.get(data, 'comment')
     const expenseId = _.get(data, ['expanseCategory', 'value', 'id'])
@@ -84,11 +78,10 @@ export const createExpenseSerializer = (data, cashboxId) => {
             'client': clientId,
             'custom_rate': customRate,
             'division': division,
-            'date': date,
-            staffs
+            'date': date
         }
         : {
-            amount: amount1,
+            amount: _.isEmpty(staffs) ? amount : salaryAmount,
             comment,
             'cashbox': _.toInteger(cashboxId) === ZERO ? cashbox : cashboxId,
             'expanse_category': expenseId,
@@ -115,9 +108,9 @@ export const createSendSerializer = (data, cashboxId, withPersent) => {
 }
 
 export const convertSerializer = (date, currency) => {
-    const toCurrency = _.toInteger(getConfig('PRIMARY_CURRENCY_ID'))
+    const fromCurrency = _.toInteger(getConfig('PRIMARY_CURRENCY_ID'))
     return {
-        'from_currency': toCurrency,
+        'from_currency': fromCurrency,
         'to_currency': currency,
         'amount': '1',
         'date': moment(date).format('YYYY-MM-DD HH:mm:ss')

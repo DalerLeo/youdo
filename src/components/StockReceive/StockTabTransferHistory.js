@@ -108,7 +108,7 @@ const StockTabTransferHistory = enhance((props) => {
     const historyOrderDetail = (
         <TransferHistoryOrderDetail
             detailData={detailData || {}}
-            key={_.get(detailData, 'id') + '_' + _.get(detailData, 'type')}
+            key={_.get(detailData, 'id') + '_' + _.get(detailData, 'type') + '_' + _.get(detailData, 'stockId')}
             handleCloseDetail={handleCloseDetail}
             loading={_.get(detailData, 'detailLoading')}
             handleOpenPrint={printDialog.handleOpenPrintDialog}
@@ -117,7 +117,7 @@ const StockTabTransferHistory = enhance((props) => {
     )
     const historyTransferDetail = (
         <TransferHistoryTransferDetail
-            key={_.get(detailData, 'id') + '_' + _.get(detailData, 'type') + '_' + _.toNumber(_.get(detailData, 'stockId'))}
+            key={_.get(detailData, 'id') + '_' + _.get(detailData, 'type') + '_' + _.get(detailData, 'stockId')}
             handleCloseDetail={handleCloseDetail}
             detailData={detailData}
             transferType={transferType}

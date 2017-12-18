@@ -10,6 +10,7 @@ import filterHelper from '../../helpers/filter'
 import {splitToArray, joinArray} from '../../helpers/joinSplitValues'
 import toBoolean from '../../helpers/toBoolean'
 import sprintf from 'sprintf'
+import moment from 'moment'
 import {openSnackbarAction} from '../../actions/snackbar'
 import {openErrorAction} from '../../actions/error'
 import {
@@ -143,15 +144,15 @@ const enhance = compose(
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
             const stock = _.get(filterForm, ['values', 'stock']) || null
-            const typeParent = _.get(filterForm, ['values', 'typeParent', 'value']) || null
-            const typeChild = _.get(filterForm, ['values', 'typeChild', 'value']) || null
-            const measurement = _.get(filterForm, ['values', 'measurement']) || null
+            const createdBy = _.get(filterForm, ['values', 'createdBy']) || null
+            const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
+            const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
             filter.filterBy({
                 [INVENTORY_FILTER_OPEN]: false,
                 [INVENTORY_FILTER_KEY.STOCK]: joinArray(stock),
-                [INVENTORY_FILTER_KEY.TYPE_PARENT]: typeParent,
-                [INVENTORY_FILTER_KEY.TYPE_CHILD]: typeChild,
-                [INVENTORY_FILTER_KEY.MEASUREMENT]: joinArray(measurement)
+                [INVENTORY_FILTER_KEY.CREATED_BY]: joinArray(createdBy),
+                [INVENTORY_FILTER_KEY.DATE_FROM]: fromDate && moment(fromDate).format('YYYY-MM-DD'),
+                [INVENTORY_FILTER_KEY.DATE_TO]: toDate && moment(toDate).format('YYYY-MM-DD')
             })
         },
         handleSubmitSearch: props => () => {
@@ -233,9 +234,9 @@ const InventoryList = enhance((props) => {
     } = props
 
     const stock = (filter.getParam(INVENTORY_FILTER_KEY.STOCK))
-    const measurement = (filter.getParam(INVENTORY_FILTER_KEY.MEASUREMENT))
-    const typeParent = _.toInteger(filter.getParam(INVENTORY_FILTER_KEY.TYPE_PARENT))
-    const typeChild = _.toInteger(filter.getParam(INVENTORY_FILTER_KEY.TYPE_CHILD))
+    const createdBy = (filter.getParam(INVENTORY_FILTER_KEY.CREATED_BY))
+    const fromDate = (filter.getParam(INVENTORY_FILTER_KEY.DATE_FROM))
+    const toDate = (filter.getParam(INVENTORY_FILTER_KEY.DATE_TO))
     const openFilterDialog = toBoolean(_.get(location, ['query', INVENTORY_FILTER_OPEN]))
     const openInventoryDialog = toBoolean(_.get(location, ['query', INVENTORY_INVENTORY_DIALOG_OPEN]))
     const detailId = _.toInteger(_.get(params, 'inventoryId'))
@@ -243,9 +244,11 @@ const InventoryList = enhance((props) => {
     const filterDialog = {
         initialValues: {
             stock: stock && splitToArray(stock),
-            measurement: measurement && splitToArray(measurement),
-            typeParent: {value: typeParent},
-            typeChild: {value: typeChild}
+            createdBy: createdBy && splitToArray(createdBy),
+            date: {
+                fromDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),
+                toDate: toDate && moment(toDate, 'YYYY-MM-DD')
+            }
         },
         openFilterDialog: openFilterDialog,
         handleOpenFilterDialog: props.handleOpenFilterDialog,

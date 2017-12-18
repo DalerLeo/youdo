@@ -178,7 +178,10 @@ const enhance = compose(
             marginTop: '20px'
         },
         convert: {
-            margin: '10px 0'
+            margin: '10px 0',
+            '& strong': {
+                marginLeft: '5px'
+            }
         },
         bottomButton: {
             bottom: '0',
@@ -330,7 +333,8 @@ const TransactionCreateDialog = enhance((props) => {
         searchQuery,
         setSearchQuery,
         incomeFromClient,
-        totalStafAmount
+        totalStafAmount,
+        canSetCustomRate
     } = props
     const clientOptionId = _.get(_.find(optionsList, {'keyName': 'client'}), 'id')
     const showClients = _.includes(expenseCategoryOptions, clientOptionId)
@@ -432,7 +436,7 @@ const TransactionCreateDialog = enhance((props) => {
                                         </div>
                                     }
                                     <div className={classes.flex} style={{alignItems: 'baseline', width: '48%'}}>
-                                        {(primaryCurrency !== currency && currency && date) &&
+                                        {(primaryCurrency !== currency && currency && date && canSetCustomRate) &&
                                         <Field
                                             name="custom_rate"
                                             component={TextField}
@@ -483,7 +487,7 @@ const TransactionCreateDialog = enhance((props) => {
                                         <div>{_.get(cashbox, ['currency', 'name'])}</div>
                                     </div>
                                     <div className={classes.flex} style={{alignItems: 'baseline', width: '48%'}}>
-                                        {(primaryCurrency !== currency && currency && date)
+                                        {(primaryCurrency !== currency && currency && date && canSetCustomRate)
                                             ? <Field
                                                 name="custom_rate"
                                                 component={TextField}
@@ -495,7 +499,7 @@ const TransactionCreateDialog = enhance((props) => {
                                 </div>
                                 {(convert && rate && primaryCurrency !== currency)
                                     ? <div className={classes.convert}>После конвертации:
-                                        <strong>{convert} {primaryCurrency}</strong>
+                                        <strong> {convert} {primaryCurrency}</strong>
                                     </div> : null}
                                 <Field
                                     name="comment"

@@ -153,6 +153,7 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
     } = props
 
     const ZERO = 0
+    const PENDING = 0
     const MINUS_ONE = -1
     const tab = _.get(tabData, 'tab')
     const id = _.get(data, 'id')
@@ -173,7 +174,7 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
     const wholeCost = _.sumBy(products, (o) => {
         return _.toNumber(_.get(o, 'cost'))
     })
-    const wholeNotAccepted = wholeAmount - wholePostedAmount - wholeDefectAmount
+    const wholeNotAccepted = status === PENDING ? ZERO : wholeAmount - wholeDefectAmount - wholePostedAmount
     const wholeMeasurement = _.get(_.first(products), ['product', 'measurement', 'name'])
 
     return (
@@ -197,7 +198,7 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
 
                             {_.map(products, (item) => {
                                 const product = _.get(item, 'product')
-                                const productId = _.get(product, 'id')
+                                const productId = _.get(item, 'id')
                                 const productName = _.get(product, 'name')
                                 const cost = _.toNumber(_.get(item, 'cost'))
                                 const amount = _.toNumber(_.get(item, 'amount'))
@@ -217,7 +218,7 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                                                 : <span>{numberFormat(defectAmount, measurement)}</span>}
                                         </Col>
                                         <Col xs={1}>
-                                            {status === ZERO
+                                            {status === PENDING
                                                 ? numberFormat(ZERO, measurement)
                                                 : notAccepted}
                                         </Col>

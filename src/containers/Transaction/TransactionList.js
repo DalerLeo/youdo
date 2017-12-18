@@ -9,6 +9,7 @@ import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers, withState} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
+import checkPermission from '../../helpers/checkPermission'
 import {splitToArray, joinArray} from '../../helpers/joinSplitValues'
 import toBoolean from '../../helpers/toBoolean'
 import {
@@ -149,6 +150,10 @@ const enhance = compose(
             .then(() => {
                 const options = _.get(optionsList, 'results')
                 const staffExpenseOptionId = _.get(_.find(options, {'keyName': 'staff_expanse'}), 'id')
+                const clientOptionId = _.get(_.find(options, {'keyName': 'client'}), 'id')
+                if (!_.includes(expenseOptions, clientOptionId)) {
+                    dispatch(change('TransactionCreateForm', 'client', null))
+                }
                 if (_.includes(expenseOptions, staffExpenseOptionId)) {
                     setOpenStaff(true)
                     dispatch(usersListFetchAction())
@@ -161,6 +166,20 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         return (props.date !== nextProps.date && nextProps.date) || (props.cashbox !== nextProps.cashbox && nextProps.cashbox)
     }, ({dispatch, date, cashbox, cashboxList}) => {
+        const currency = _.get(_.find(_.get(cashboxList, 'results'), {'id': cashbox}), ['currency', 'id'])
+        if (date && cashbox) {
+            dispatch(transactionConvertAction(date, currency))
+        }
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const cashbox = _.get(props, ['createForm', 'values', 'cashbox', 'value'])
+        const nextCashbox = _.get(nextProps, ['createForm', 'values', 'cashbox', 'value'])
+        const date = _.get(props, ['createForm', 'values', 'date'])
+        const nextDate = _.get(nextProps, ['createForm', 'values', 'date'])
+        return (cashbox !== nextCashbox && nextCashbox) || (date !== nextDate && nextDate)
+    }, ({dispatch, date, createForm, cashboxList}) => {
+        const cashbox = _.get(createForm, ['values', 'cashbox', 'value'])
         const currency = _.get(_.find(_.get(cashboxList, 'results'), {'id': cashbox}), ['currency', 'id'])
         if (date && cashbox) {
             dispatch(transactionConvertAction(date, currency))
@@ -210,7 +229,8 @@ const enhance = compose(
         const except = {
             updateTransaction: null
         }
-        return (props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except) && _.isNil(nextProps.query.dPage || nextProps.query.dPageSize || props.query.dPage || props.query.dPageSize)) ||
+        return (props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except) &&
+            _.isNil(nextProps.query.dPage || nextProps.query.dPageSize || props.query.dPage || props.query.dPageSize)) ||
             (_.get(props, ['location', 'query', 'cashboxId']) !== _.get(nextProps, ['location', 'query', 'cashboxId']))
     }, ({dispatch, filter, location, isSuperUser}) => {
         const cashboxId = _.get(location, ['query', 'cashboxId'])
@@ -887,6 +907,7 @@ const TransactionList = enhance((props) => {
     }
 
     const hasRightCashbox = _.find(_.get(cashboxList, 'results'), {'type': 'cash'})
+    const canSetCustomRate = checkPermission('can_set_custom_rate')
     return (
         <Layout {...layout}>
             <TransactionGridList
@@ -912,6 +933,7 @@ const TransactionList = enhance((props) => {
                 updateTransactionDialog={updateTransactionDialog}
                 usersData={usersData}
                 hasMarket={hasMarket}
+                canSetCustomRate={canSetCustomRate}
             />
         </Layout>
     )
