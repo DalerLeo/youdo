@@ -348,7 +348,7 @@ const SupplyDetails = enhance((props) => {
                     <Tooltip position="bottom" text="Синхронизировать кол-во товаров с приёмкой">
                         <IconButton
                             iconStyle={iconStyle.icon}
-                            disabled={status === CANCELLED}
+                            disabled={status !== COMPLETED}
                             style={iconStyle.button}
                             touch={true}
                             onTouchTap={() => { confirmSyncDialog.handleOpenConfirmDialog() }}>

@@ -9,12 +9,16 @@ import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
+import {splitToArray, joinArray} from '../../helpers/joinSplitValues'
 import updateStore from '../../helpers/updateStore'
+import moment from 'moment'
 import * as actionTypes from '../../constants/actionTypes'
 import {
     TELEGRAM_CREATE_DIALOG_OPEN,
     TELEGRAM_UPDATE_DIALOG_OPEN,
-    TelegramGridList
+    TelegramGridList,
+    TELEGRAM_FILTER_OPEN,
+    TELEGRAM_FILTER_KEY
 } from '../../components/Telegram'
 import {
     telegramCreateAction,
@@ -37,6 +41,7 @@ const enhance = compose(
         const list = _.get(state, ['telegram', 'list', 'data'])
         const listLoading = _.get(state, ['telegram', 'list', 'loading'])
         const createForm = _.get(state, ['form', 'TelegramCreateForm'])
+        const filterForm = _.get(state, ['form', 'TelegramFilterForm'])
         const filter = filterHelper(list, pathname, query)
         return {
             list,
@@ -47,7 +52,8 @@ const enhance = compose(
             updateLoading,
             filter,
             createForm,
-            createData
+            createData,
+            filterForm
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -188,6 +194,49 @@ const enhance = compose(
             const copy = document.execCommand('copy')
             textField.remove()
             copy ? dispatch(openSnackbarAction({message: 'Cкопировано'})) : null
+        },
+        handleCopyLinkInList: props => (token) => {
+            const {dispatch} = props
+            const value = 't.me/markets_bot?start=' + token
+            let textField = document.createElement('textarea')
+            textField.innerText = value
+            document.body.appendChild(textField)
+            textField.select()
+            const copy = document.execCommand('copy')
+            textField.remove()
+            copy ? dispatch(openSnackbarAction({message: 'Cкопировано'})) : null
+        },
+        handleOpenFilterDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[TELEGRAM_FILTER_OPEN]: true})})
+        },
+
+        handleCloseFilterDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[TELEGRAM_FILTER_OPEN]: false})})
+        },
+
+        handleClearFilterDialog: props => () => {
+            const {location: {pathname}} = props
+            hashHistory.push({pathname, query: {}})
+        },
+        handleSubmitFilterDialog: props => () => {
+            const {filter, filterForm} = props
+            const createdBy = _.get(filterForm, ['values', 'createdBy']) || null
+            const market = _.get(filterForm, ['values', 'market']) || null
+            const createdFromDate = _.get(filterForm, ['values', 'createdDate', 'fromDate']) || null
+            const createdToDate = _.get(filterForm, ['values', 'createdDate', 'toDate']) || null
+            const activatedFromDate = _.get(filterForm, ['values', 'activatedDate', 'fromDate']) || null
+            const activatedToDate = _.get(filterForm, ['values', 'activatedDate', 'toDate']) || null
+            filter.filterBy({
+                [TELEGRAM_FILTER_OPEN]: false,
+                [TELEGRAM_FILTER_KEY.CREATED_BY]: joinArray(createdBy),
+                [TELEGRAM_FILTER_KEY.MARKET]: joinArray(market),
+                [TELEGRAM_FILTER_KEY.ACTIVATED_FROM_DATE]: activatedFromDate && activatedFromDate.format('YYYY-MM-DD'),
+                [TELEGRAM_FILTER_KEY.ACTIVATED_TO_DATE]: activatedToDate && activatedToDate.format('YYYY-MM-DD'),
+                [TELEGRAM_FILTER_KEY.CREATED_FROM_DATE]: createdFromDate && createdFromDate.format('YYYY-MM-DD'),
+                [TELEGRAM_FILTER_KEY.CREATED_TO_DATE]: createdToDate && createdToDate.format('YYYY-MM-DD')
+            })
         }
     })
 )
@@ -208,16 +257,43 @@ const TelegramList = enhance((props) => {
     } = props
 
     const openCreateDialog = toBoolean(_.get(location, ['query', TELEGRAM_CREATE_DIALOG_OPEN]))
+    const openFilterDialog = toBoolean(_.get(location, ['query', TELEGRAM_FILTER_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', TELEGRAM_UPDATE_DIALOG_OPEN]))
     const detailId = _.toInteger(_.get(params, 'telegramId'))
     const tab = _.get(params, 'tab')
-
+    const market = (filter.getParam(TELEGRAM_FILTER_KEY.MARKET))
+    const createdBy = filter.getParam(TELEGRAM_FILTER_KEY.CREATED_BY)
+    const activatedFromDate = filter.getParam(TELEGRAM_FILTER_KEY.ACTIVATED_FROM_DATE)
+    const activatedToDate = filter.getParam(TELEGRAM_FILTER_KEY.ACTIVATED_TO_DATE)
+    const createdFromDate = filter.getParam(TELEGRAM_FILTER_KEY.CREATED_FROM_DATE)
+    const createdToDate = filter.getParam(TELEGRAM_FILTER_KEY.CREATED_TO_DATE)
     const createDialog = {
         createLoading,
         openCreateDialog,
         handleOpenCreateDialog: props.handleOpenCreateDialog,
         handleCloseCreateDialog: props.handleCloseCreateDialog,
         handleSubmitCreateDialog: props.handleSubmitCreateDialog
+    }
+
+    const filterDialog = {
+        initialValues: {
+            market: market && splitToArray(market),
+            createdBy: createdBy && splitToArray(createdBy),
+            activatedDate: {
+                fromDate: activatedFromDate && moment(activatedFromDate, 'YYYY-MM-DD'),
+                toDate: activatedToDate && moment(activatedToDate, 'YYYY-MM-DD')
+            },
+            createdDate: {
+                fromDate: createdFromDate && moment(createdFromDate, 'YYYY-MM-DD'),
+                toDate: createdToDate && moment(createdToDate, 'YYYY-MM-DD')
+            }
+        },
+        filterLoading: false,
+        openFilterDialog,
+        handleOpenFilterDialog: props.handleOpenFilterDialog,
+        handleCloseFilterDialog: props.handleCloseFilterDialog,
+        handleClearFilterDialog: props.handleClearFilterDialog,
+        handleSubmitFilterDialog: props.handleSubmitFilterDialog
     }
 
     const confirmDialog = {
@@ -287,6 +363,10 @@ const TelegramList = enhance((props) => {
         createLoading
     }
 
+    const copyToClipBoard = {
+        handleCopyToken: props.handleCopyToken,
+        handleCopyLinkInList: props.handleCopyLinkInList
+    }
     return (
         <Layout {...layout}>
             <TelegramGridList
@@ -299,7 +379,8 @@ const TelegramList = enhance((props) => {
                 updateDialog={updateDialog}
                 linkDialog={linkDialog}
                 createDetails={createDetails}
-                copyToClipBoard={props.handleCopyToken}
+                copyToClipBoard={copyToClipBoard}
+                filterDialog={filterDialog}
             />
         </Layout>
     )

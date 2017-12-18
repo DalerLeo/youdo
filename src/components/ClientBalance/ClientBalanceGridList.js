@@ -763,7 +763,7 @@ const ClientBalanceGridList = enhance((props) => {
                             <div className={classes.summary}>
                                 {summary}
                             </div>
-                            {groupBy}
+                            {false && groupBy}
                             <div className={expandedTable ? classes.expandedTable : ''}>
                                 {navigation}
                                 {lists}
