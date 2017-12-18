@@ -149,7 +149,8 @@ const TransactionGridList = enhance((props) => {
         hasRightCashbox,
         updateTransactionDialog,
         usersData,
-        hasMarket
+        hasMarket,
+        canSetCustomRate
     } = props
 
     const AllCashboxId = 0
@@ -240,6 +241,7 @@ const TransactionGridList = enhance((props) => {
                     updateTransactionDialog={updateTransactionDialog}
                     usersData={usersData}
                     hasMarket={hasMarket}
+                    canSetCustomRate={canSetCustomRate}
                 />
             </div>
         </Container>

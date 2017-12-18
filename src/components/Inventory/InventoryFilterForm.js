@@ -1,7 +1,6 @@
 import React from 'react'
 import _ from 'lodash'
 import {compose, withHandlers} from 'recompose'
-import {connect} from 'react-redux'
 import {reduxForm, Field} from 'redux-form'
 import injectSheet from 'react-jss'
 import Paper from 'material-ui/Paper'
@@ -9,10 +8,9 @@ import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import PropTypes from 'prop-types'
 import {
-    ProductTypeParentSearchField,
-    ProductTypeChildSearchField,
-    MeasurementMultiSearchField,
-    StockMultiSearchField
+    StockMultiSearchField,
+    UsersMultiSearchField,
+    DateToDateField
 } from '../ReduxForm'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import {Link} from 'react-router'
@@ -21,11 +19,10 @@ import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 export const INVENTORY_FILTER_OPEN = 'openFilterDialog'
 
 export const INVENTORY_FILTER_KEY = {
-    BRAND: 'brand',
     STOCK: 'stock',
-    TYPE_PARENT: 'typeParent',
-    TYPE_CHILD: 'typeChild',
-    MEASUREMENT: 'measurement'
+    CREATED_BY: 'createdBy',
+    DATE_FROM: 'fromDate',
+    DATE_TO: 'toDate'
 }
 
 const enhance = compose(
@@ -106,12 +103,6 @@ const enhance = compose(
         form: 'InventoryFilterForm',
         enableReinitialize: true
     }),
-    connect((state) => {
-        const typeParent = _.get(state, ['form', 'InventoryFilterForm', 'values', 'typeParent'])
-        return {
-            typeParent
-        }
-    }),
     withHandlers({
         getCount: props => () => {
             const {filter} = props
@@ -126,7 +117,7 @@ const enhance = compose(
 )
 
 const InventoryFilterForm = enhance((props) => {
-    const {classes, filterDialog, getCount, typeParent, handleSubmit} = props
+    const {classes, filterDialog, getCount, handleSubmit} = props
     const filterCounts = getCount()
 
     if (!filterDialog.openFilterDialog) {
@@ -174,27 +165,17 @@ const InventoryFilterForm = enhance((props) => {
                             label="Склад"
                             fullWidth={true}/>
                         <Field
-                            name="typeParent"
                             className={classes.inputFieldCustom}
-                            component={ProductTypeParentSearchField}
-                            label="Тип продукта"
-                            fullWidth={true}
-                        />
-                        {typeParent ? <Field
-                            name="typeChild"
+                            name="createdBy"
+                            component={UsersMultiSearchField}
+                            label="Создал"
+                            fullWidth={true}/>
+                        <Field
                             className={classes.inputFieldCustom}
-                            component={ProductTypeChildSearchField}
-                            parentType={typeParent}
-                            label="Подкатегория"
-                            fullWidth={true}
-                        /> : null}
-                        <div>
-                            <Field
-                                className={classes.inputFieldCustom}
-                                name="measurement"
-                                component={MeasurementMultiSearchField}
-                                label="Мера"/>
-                        </div>
+                            name="date"
+                            component={DateToDateField}
+                            label="Период создания"
+                            fullWidth={true}/>
                     </div>
 
                     <RaisedButton

@@ -212,7 +212,7 @@ export const NOTIFICATIONS = 'notification/notifications'
 export const NOTIFICATIONS_LIST = `/${NOTIFICATIONS}/`
 export const NOTIFICATIONS_ITEM = `/${NOTIFICATIONS}/%d/`
 export const NOTIFICATIONS_DELETE = `/${NOTIFICATIONS}/%d/`
-export const NOTIFICATIONS_GET_NOT_VIEWED = 'notification/notifications/get_not_viewed'
+export const NOTIFICATIONS_GET_COUNT = 'notification/notifications/get_not_viewed'
 
 export const SHIFT = 'staff/shift'
 export const SHIFT_CREATE = `/${SHIFT}/`

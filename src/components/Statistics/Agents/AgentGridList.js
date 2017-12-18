@@ -440,7 +440,7 @@ const listHeader = [
     {
         sorting: true,
         title: 'По заказам',
-        tooltip: 'Долг по заказов'
+        tooltip: 'Долг по заказам'
     },
     {
         sorting: true,
@@ -617,7 +617,7 @@ const StatAgentGridList = enhance((props) => {
                                     <div className={classes.summaryPlan}>
                                         <div><span>План агента</span> <span>{totalPlan}</span></div>
                                         <div><span>План остаток</span> <span>{leftPlan}</span></div>
-                                        <div><span>Долг по заказов</span> <span>{debtPlan}</span></div>
+                                        <div><span>Долг по заказам</span> <span>{debtPlan}</span></div>
                                         <div><span>Общая сумма долга</span> <span>{debtPlan}</span></div>
                                     </div>
                                 </div>}

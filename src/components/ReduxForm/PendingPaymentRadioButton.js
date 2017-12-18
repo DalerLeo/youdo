@@ -5,6 +5,7 @@ import moment from 'moment'
 import {connect} from 'react-redux'
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton'
 import {pendingPaymentsConvertAction} from '../../actions/pendingPayments'
+import getConfig from '../../helpers/getConfig'
 
 const enhance = compose(
     connect((state) => {
@@ -18,10 +19,10 @@ const PendingPaymentRadioButton = enhance((props) => {
     const {input, currency, dispatch, createdDate, primaryCurrency, primaryCurrencyId} = props
     const currencyName = _.get(currency, 'name')
     const currencyId = _.toInteger(_.get(currency, 'id'))
-
+    const configCurrencyId = _.toInteger(getConfig('PRIMARY_CURRENCY_ID'))
     const data = {
-        fromCurrency: primaryCurrencyId,
-        toCurrency: currencyId,
+        fromCurrency: configCurrencyId,
+        toCurrency: primaryCurrencyId === configCurrencyId ? currencyId : primaryCurrencyId,
         createdDate: createdDate ? moment(createdDate).format('YYYY-MM-DD') : moment().format('YYYY-MM-DD')
     }
 

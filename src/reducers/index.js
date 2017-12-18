@@ -38,15 +38,11 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.CLIENT_TRANSACTION_UPDATE),
         list: createThunkReducer(actionTypes.CLIENT_TRANSACTION_LIST)
     }),
-    notification: combineReducers({
-        list: createThunkReducer(actionTypes.NOTIFICATION_LIST),
-        item: createThunkReducer(actionTypes.NOTIFICATION_ITEM),
-        update: createThunkReducer(actionTypes.NOTIFICATION_UPDATE)
-    }),
     notifications: combineReducers({
         list: createThunkReducer(actionTypes.NOTIFICATIONS_LIST),
         item: createThunkReducer(actionTypes.NOTIFICATIONS_ITEM),
-        update: createThunkReducer(actionTypes.NOTIFICATIONS_UPDATE)
+        update: createThunkReducer(actionTypes.NOTIFICATIONS_UPDATE),
+        count: createThunkReducer(actionTypes.NOTIFICATIONS_GET_COUNT)
     }),
     shipment: combineReducers({
         list: createThunkReducer(actionTypes.SHIPMENT_LIST),

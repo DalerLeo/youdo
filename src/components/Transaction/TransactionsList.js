@@ -203,7 +203,8 @@ const TransactionsList = enhance((props) => {
         hasRightCashbox,
         updateTransactionDialog,
         usersData,
-        hasMarket
+        hasMarket,
+        canSetCustomRate
     } = props
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const transactionFilterDialog = showOnlyList
@@ -422,6 +423,7 @@ const TransactionsList = enhance((props) => {
                     onClose={createExpenseDialog.handleCloseDialog}
                     onSubmit={createExpenseDialog.handleSubmitDialog}
                     usersData={usersData}
+                    canSetCustomRate={canSetCustomRate}
                 />
                 <TransactionCreateDialog
                     initialValues={{date: currentDay}}
@@ -432,6 +434,7 @@ const TransactionsList = enhance((props) => {
                     onClose={createIncomeDialog.handleCloseDialog}
                     onSubmit={createIncomeDialog.handleSubmitDialog}
                     usersData={usersData}
+                    canSetCustomRate={canSetCustomRate}
                 />
                 <TransactionCreateDialog
                     isUpdate={true}
@@ -447,6 +450,7 @@ const TransactionsList = enhance((props) => {
                         : updateTransactionDialog.handleIncomeSubmit
                     }
                     usersData={usersData}
+                    canSetCustomRate={canSetCustomRate}
                 />
 
                 <TransactionSendDialog
