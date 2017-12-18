@@ -33,33 +33,25 @@ export const updateTransactionSerializer = (data, client) => {
 export const createIncomeSerializer = (data, cashboxId) => {
     const amount = _.get(data, 'amount') < ZERO ? _.get(data, 'amount') * MINUS_ONE : _.get(data, 'amount')
     const comment = _.get(data, 'comment')
-    const showClients = _.get(data, 'showClients')
     const clientId = _.get(data, ['client', 'value'])
     const customRate = numberWithoutSpaces(_.get(data, 'custom_rate'))
     const division = _.get(data, ['division', 'value'])
     const cashbox = _.get(data, ['cashbox', 'value'])
     const date = moment(_.get(data, 'date')).format('YYYY-MM-DD HH:00:00')
-    return (showClients)
-    ? {
+    return {
         'amount': numberWithoutSpaces(amount),
         comment,
         'cashbox': _.toInteger(cashboxId) === ZERO ? cashbox : cashboxId,
+        'custom_rate': customRate,
         'client': clientId,
-        'custom_rate': customRate,
         'division': division,
-        'date': date
-    }
-    : {
-        'amount': numberWithoutSpaces(amount),
-        comment,
-        'cashbox': _.toInteger(cashboxId) === ZERO ? cashbox : cashboxId,
-        'custom_rate': customRate,
         'date': date
     }
 }
 
 export const createExpenseSerializer = (data, cashboxId) => {
     let amount = numberWithoutSpaces(_.get(data, 'amount'))
+    let amount1 = 0
     if (amount > ZERO) {
         amount *= MINUS_ONE
     }
@@ -69,6 +61,11 @@ export const createExpenseSerializer = (data, cashboxId) => {
             amount: numberWithoutSpaces(_.get(item, 'amount'))
         }
     }), (item) => {
+        if (_.toNumber(_.get(item, 'amount')) > ZERO) {
+            amount1 += _.toNumber(_.get(item, 'amount')) * MINUS_ONE
+        } else {
+            amount1 += _.toNumber(_.get(item, 'amount'))
+        }
         return _.toNumber(_.get(item, 'amount')) > ZERO
     })
     const comment = _.get(data, 'comment')
@@ -91,7 +88,7 @@ export const createExpenseSerializer = (data, cashboxId) => {
             staffs
         }
         : {
-            amount: amount,
+            amount: amount1,
             comment,
             'cashbox': _.toInteger(cashboxId) === ZERO ? cashbox : cashboxId,
             'expanse_category': expenseId,

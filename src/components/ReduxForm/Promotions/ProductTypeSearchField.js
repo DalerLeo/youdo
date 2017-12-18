@@ -1,10 +1,10 @@
+import _ from 'lodash'
 import sprintf from 'sprintf'
 import React from 'react'
 import SearchFieldCustom from '../Basic/ParentSearchField'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
-import _ from 'lodash'
 import caughtCancel from '../../../helpers/caughtCancel'
 
 const CancelToken = axios().CancelToken
