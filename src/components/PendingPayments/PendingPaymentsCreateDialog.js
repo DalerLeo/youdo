@@ -16,6 +16,7 @@ import MainStyles from '../Styles/MainStyles'
 import numberformat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
 import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
+import checkPermission from '../../helpers/checkPermission'
 import {convertCurrency} from '../../helpers/convertCurrency'
 import CashboxCurrencyField from '../ReduxForm/CashboxCurrencyField'
 import PendingPaymentRadioButton from '../ReduxForm/PendingPaymentRadioButton'
@@ -123,6 +124,7 @@ const PendingPaymentsCreateDialog = enhance((props) => {
     const currentRate = (currencyRate === INDIVIDUAL) ? customRate : _.get(convert, ['data', 'amount'])
     const convertAmount = convertCurrency(amountValue, currentRate, primaryCurrencyId === configCurrencyId)
     const createdDate = _.get(detailData, ['data', 'createdDate'])
+    const canSetCustomRate = checkPermission('can_set_custom_rate')
     return (
         <Dialog
             modal={true}
@@ -189,6 +191,7 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                                     createdDate={(currencyRate === ORDERING_CURRENCY) && createdDate}
                                     primaryCurrency={primaryCurrency}
                                     primaryCurrencyId={primaryCurrencyId}
+                                    canSetCustomRate={canSetCustomRate}
                                     component={PendingPaymentRadioButton}
                                 />
                                 {(currencyRate === INDIVIDUAL && currency !== primaryCurrency)

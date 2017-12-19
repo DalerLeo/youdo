@@ -3,7 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
-import {Field, reduxForm, SubmissionError} from 'redux-form'
+import {Field, reduxForm} from 'redux-form'
 import Dialog from 'material-ui/Dialog'
 import Loader from '../Loader'
 import {connect} from 'react-redux'
@@ -12,18 +12,10 @@ import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import {TextField, CheckBox} from '../ReduxForm'
-import toCamelCase from '../../helpers/toCamelCase'
 import numberFormat from '../../helpers/numberFormat'
 import Tooltip from '../ToolTip'
 
-const validate = (data) => {
-    const errors = toCamelCase(data)
-    const nonFieldErrors = _.get(errors, 'nonFieldErrors')
-    throw new SubmissionError({
-        ...errors,
-        _error: nonFieldErrors
-    })
-}
+const ZERO = 0
 const enhance = compose(
     injectSheet({
         loader: {
@@ -157,7 +149,6 @@ const enhance = compose(
             '& span': {
                 fontSize: '13px !important',
                 fontWeight: '600 !important',
-                color: '#129fdd',
                 verticalAlign: 'inherit !important'
             }
         },
@@ -171,18 +162,18 @@ const enhance = compose(
         enableReinitialize: true
     }),
     connect((state) => {
-        const showClients = _.get(state, ['form', 'StockReceiveCreateForm', 'values', 'showClients'])
-        const rate = _.get(state, ['form', 'StockReceiveCreateForm', 'values', 'custom_rate'])
-        const amount = _.get(state, ['form', 'StockReceiveCreateForm', 'values', 'amount'])
         const values = _.get(state, ['form', 'StockReceiveCreateForm', 'values'])
+        const formProducts = _.filter(_.get(values, 'product'), (item) => {
+            const accepted = _.toNumber(_.get(item, 'accepted'))
+            const defected = _.toNumber(_.get(item, 'defected'))
+            return accepted > ZERO || defected || ZERO
+        })
         const stock = _.map(_.get(values, 'stocks'), (item) => {
             return _.get(item, 'selected') && true
         })
         return {
-            showClients,
-            rate,
-            amount,
-            stock
+            stock,
+            formProducts
         }
     })
 )
@@ -204,9 +195,10 @@ const OrderCreateDialog = enhance((props) => {
         handleCheckedForm,
         handleCheckedDefect,
         handleCheckNoDefect,
-        stock
+        stock,
+        formProducts
     } = props
-    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+    const onSubmit = handleSubmit(() => props.onSubmit())
     const supplyId = _.get(detailProducts, 'id')
     const products = _.get(detailProducts, 'products')
     return (
@@ -312,6 +304,8 @@ const OrderCreateDialog = enhance((props) => {
                         <FlatButton
                             label="Принять товар"
                             className={classes.actionButton}
+                            labelStyle={_.isEmpty(formProducts) ? {color: '#b3b3b3'} : {color: '#129fdd'}}
+                            disabled={_.isEmpty(formProducts)}
                             primary={true}
                             type="submit"/>
                     </div>

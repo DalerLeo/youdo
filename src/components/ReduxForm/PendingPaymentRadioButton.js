@@ -16,7 +16,7 @@ const enhance = compose(
     }),
 )
 const PendingPaymentRadioButton = enhance((props) => {
-    const {input, currency, dispatch, createdDate, primaryCurrency, primaryCurrencyId} = props
+    const {input, currency, dispatch, createdDate, primaryCurrency, primaryCurrencyId, canSetCustomRate} = props
     const currencyName = _.get(currency, 'name')
     const currencyId = _.toInteger(_.get(currency, 'id'))
     const configCurrencyId = _.toInteger(getConfig('PRIMARY_CURRENCY_ID'))
@@ -46,6 +46,7 @@ const PendingPaymentRadioButton = enhance((props) => {
             />
             <RadioButton
                 value={2}
+                disabled={!canSetCustomRate}
                 style={{margin: '10px 0 0'}}
                 label="Индивидуальный"
             />
