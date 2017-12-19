@@ -8,6 +8,7 @@ import Layout from '../../components/Layout'
 import {hashHistory} from 'react-router'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
+import numberFormat from '../../helpers/numberFormat'
 import {
     ADD_PLAN,
     PlanWrapper,
@@ -187,7 +188,7 @@ const enhance = compose(
         const priority = _.get(planDetails, 'priority')
         const weekday = _.map(_.get(planDetails, 'recurrences'), (item) => {
             return {
-                id: _.toString(_.get(item, 'weekDay')) || _.toString(_.get(item, 'monthDay')),
+                id: String(_.get(item, 'weekDay')) || String(_.get(item, 'monthDay')),
                 active: true
             }
         })
@@ -228,7 +229,7 @@ const enhance = compose(
         const priority = _.get(weekdayByAgent, 'priority')
         const weekdayCombo = _.map(_.get(weekdayByAgent, 'recurrences'), (item) => {
             return {
-                id: _.toString(_.get(item, 'weekDay')) || _.toString(_.get(item, 'monthDay')),
+                id: String(_.get(item, 'weekDay')) || String(_.get(item, 'monthDay')),
                 active: true
             }
         })
@@ -618,13 +619,13 @@ const PlanList = enhance((props) => {
             const comboPlanType = _.get(comboPlanDetails, ['recurrences', '0', 'type'])
             const comboWeekday = _.map(_.get(comboPlanDetails, 'recurrences'), (item) => {
                 return {
-                    id: _.toString(_.get(item, 'weekDay')) || _.toString(_.get(item, 'monthDay')),
+                    id: String(_.get(item, 'weekDay')) || String(_.get(item, 'monthDay')),
                     active: true
                 }
             })
             const weekday = _.map(_.get(planDetails, 'recurrences'), (item) => {
                 return {
-                    id: _.toString(_.get(item, 'weekDay')) || _.toString(_.get(item, 'monthDay')),
+                    id: String(_.get(item, 'weekDay')) || String(_.get(item, 'monthDay')),
                     active: true
                 }
             })
@@ -661,6 +662,17 @@ const PlanList = enhance((props) => {
     }
 
     const planSalesDialog = {
+        initialValues: (() => {
+            const divisionsObject = {}
+            _.map(monthlyPlanItem, (item) => {
+                divisionsObject['_' + _.get(item, ['division', 'id'])] = {
+                    amount: String(numberFormat(_.get(item, 'amount')))
+                }
+            })
+            return {
+                divisions: divisionsObject
+            }
+        })(),
         divisions,
         divisionsLoading,
         openPlanSales,

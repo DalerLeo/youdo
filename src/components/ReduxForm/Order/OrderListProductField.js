@@ -703,7 +703,7 @@ const OrderListProductField = enhance((props) => {
                                     return (
                                         <TableRow key={index} className={classes.tableRow}>
                                             <TableRowColumn><strong style={{marginRight: '5px'}}>{index + ONE}.</strong> {product}</TableRowColumn>
-                                            <TableRowColumn><span style={amount > balance ? {color: 'red'} : {}}>{amount} {itemMeasurement}</span></TableRowColumn>
+                                            <TableRowColumn><span style={amount > balance ? {color: '#ff2626'} : {}}>{amount} {itemMeasurement}</span></TableRowColumn>
                                             <TableRowColumn>{numberFormat(balance, itemMeasurement)}</TableRowColumn>
                                             <TableRowColumn style={{textAlign: 'right'}}>{numberFormat(cost)}</TableRowColumn>
                                             <TableRowColumn

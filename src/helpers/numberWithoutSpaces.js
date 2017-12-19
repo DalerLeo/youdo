@@ -2,7 +2,7 @@ import _ from 'lodash'
 const ZERO = 0
 const TWO = 2
 const numberWithoutSpaces = (amount) => {
-    const first = _.replace(_.replace(_.replace(amount, ',', '.'), / /g, ''), '&nbsp;', '')
+    const first = _.replace(_.replace(_.replace(amount, ',', '.'), /\s/g, ''), '&nbsp;', '')
     if (_.isEmpty(first)) {
         return ZERO
     }

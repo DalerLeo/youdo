@@ -393,6 +393,7 @@ const PlanWrapper = enhance((props) => {
                 open={planSalesDialog.openPlanSales}
                 onClose={planSalesDialog.handleClosePlanSales}
                 onSubmit={planSalesDialog.handleSubmitPlanSales}
+                initialValues={planSalesDialog.initialValues}
             />
         </Container>
     )
