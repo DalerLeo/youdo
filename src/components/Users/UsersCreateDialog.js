@@ -124,12 +124,6 @@ const enhance = compose(
                     maxWidth: 'calc(100% / 3)'
                 }
             }
-        },
-        position: {
-            marginTop: '9px',
-            '& .Select-placeholder': {
-                marginTop: '4px'
-            }
         }
     })),
     reduxForm({
@@ -241,13 +235,11 @@ const UsersCreateDialog = enhance((props) => {
                                         label="Логин"
                                         className={classes.inputFieldCustom}
                                         fullWidth={true}/>
-                                    <div className={classes.position}>
-                                        <Field
-                                            name="position"
-                                            component={PositionSearchField}
-                                            label="Права доступа"
-                                            fullWidth={true}/>
-                                    </div>
+                                    <Field
+                                        name="position"
+                                        component={PositionSearchField}
+                                        label="Права доступа"
+                                        fullWidth={true}/>
                                 </Col>
                                 <Col xs={6}>
                                     <Field

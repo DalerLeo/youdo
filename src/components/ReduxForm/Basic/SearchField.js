@@ -41,7 +41,8 @@ const enhance = compose(
             '& .Select-menu-outer': {
                 maxHeight: '200px',
                 zIndex: '99',
-                boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px 3px, rgba(0, 0, 0, 0.12) 0px 1px 4px',
+                boxShadow: 'rgba(0, 0, 0, 0.16) 0px 3px 10px, rgba(0, 0, 0, 0.23) 0px 3px 10px',
+                border: 'none',
                 '& ::-webkit-scrollbar': {
                     width: '4px'
                 }
@@ -51,15 +52,20 @@ const enhance = compose(
                 border: '0',
                 borderBottom: '1px solid #e8e8e8',
                 backgroundColor: 'unset',
+                height: '44px',
+                marginBottom: '8px',
                 '& .Select-value': {
-                    paddingLeft: '0'
+                    paddingLeft: '0',
+                    marginTop: '12px'
                 },
                 '& .Select-placeholder': {
                     color: 'rgba(0,0,0,0.3)',
-                    paddingLeft: '0'
+                    paddingLeft: '0',
+                    top: '12px'
                 },
                 '& .Select-input': {
-                    paddingLeft: '0'
+                    paddingLeft: '0',
+                    paddingTop: '12px'
                 }
             },
             '& .Select-input > input': {
@@ -68,6 +74,12 @@ const enhance = compose(
             },
             '& .Select-option.is-focused, .Select-option.is-selected': {
                 background: 'unset'
+            },
+            '& .Select-arrow-zone': {
+                paddingTop: '12px'
+            },
+            '& .Select-clear-zone': {
+                paddingTop: '12px'
             }
         }
     }),

@@ -33,7 +33,7 @@ const enhance = compose(
             alignItems: 'center',
             zIndex: '999',
             justifyContent: 'center',
-            display: ({loading}) => loading ? 'flex' : 'none'
+            display: ({loading, divisionsLoading}) => (loading || divisionsLoading) ? 'flex' : 'none'
         },
         popUp: {
             color: '#333 !important',

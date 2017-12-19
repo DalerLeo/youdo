@@ -1257,9 +1257,9 @@ const OrderList = enhance((props) => {
             _.map(_.get(editProducts, 'results'), (item) => {
                 const id = _.get(item, 'id')
                 const price = paymentType === 'cash'
-                    ? _.floor(_.toNumber(_.get(item, 'cashPrice')), FLOOR)
+                    ? numberFormat(_.floor(_.toNumber(_.get(item, 'cashPrice')), FLOOR))
                     : paymentType === 'bank'
-                        ? _.floor(_.toNumber(_.get(item, 'transferPrice')), FLOOR)
+                        ? numberFormat(_.floor(_.toNumber(_.get(item, 'transferPrice')), FLOOR))
                         : ''
                 productValue[id] = {price: price}
             })
