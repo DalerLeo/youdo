@@ -120,7 +120,7 @@ const enhance = compose(
             dispatch(change(form, 'product', _.map(products, (item) => {
                 return {
                     accepted: _.toNumber(_.get(item, 'amount')),
-                    defected: ''
+                    defected: null
                 }
             })))
         }
@@ -230,7 +230,7 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[STOCK_CONFIRM_DIALOG_OPEN]: false})})
                     dispatch(stockTransferListFetchAction(filter))
-                    return dispatch(openSnackbarAction({message: 'Успешно принять'}))
+                    return dispatch(openSnackbarAction({message: 'Успешно принято'}))
                 })
                 .catch((error) => {
                     dispatch(openErrorAction({
@@ -355,10 +355,10 @@ const enhance = compose(
         },
         handleCheckedForm: props => (index, value, selected) => {
             const {dispatch} = props
-            const val = !selected ? _.toNumber(value) : ''
+            const val = !selected ? _.toNumber(value) : null
             const form = 'StockReceiveCreateForm'
             dispatch(change(form, 'product[' + index + '][accepted]', val))
-            dispatch(change(form, 'product[' + index + '][defected]', ''))
+            dispatch(change(form, 'product[' + index + '][defected]', null))
         },
         handleCheckedDefect: props => (index, value) => {
             const {dispatch} = props

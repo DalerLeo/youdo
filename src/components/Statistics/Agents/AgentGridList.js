@@ -514,16 +514,16 @@ const StatAgentGridList = enhance((props) => {
     })
     const tableList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const salesTotal = numberFormat(Math.abs(_.get(item, 'salesTotal')), primaryCurrency)
-        const salesFact = numberFormat(Math.abs(_.get(item, 'salesFact')), primaryCurrency)
-        const returnOrders = numberFormat(Math.abs(_.get(item, 'returnOrders')), primaryCurrency)
-        const returnTotal = numberFormat(Math.abs(_.get(item, 'returnTotal')), primaryCurrency)
-        const paymentOrders = numberFormat(Math.abs(_.get(item, 'paymentOrders')), primaryCurrency)
-        const paymentTotal = numberFormat(Math.abs(_.get(item, 'paymentTotal')), primaryCurrency)
-        const planTotal = numberFormat(Math.abs(_.get(item, 'planTotal')), primaryCurrency)
-        const planLeft = numberFormat(Math.abs(_.get(item, 'planLeft')), primaryCurrency)
-        const planDebt = numberFormat(Math.abs(_.get(item, 'planDebt')), primaryCurrency)
-        const debt = numberFormat(Math.abs(_.get(item, 'planDebt')), primaryCurrency)
+        const salesTotal = numberFormat(_.get(item, 'salesTotal'), primaryCurrency)
+        const salesFact = numberFormat(_.get(item, 'salesFact'), primaryCurrency)
+        const returnOrders = numberFormat(_.get(item, 'returnOrders'), primaryCurrency)
+        const returnTotal = numberFormat(_.get(item, 'returnTotal'), primaryCurrency)
+        const paymentOrders = numberFormat(_.get(item, 'paymentOrders'), primaryCurrency)
+        const paymentTotal = numberFormat(_.get(item, 'paymentTotal'), primaryCurrency)
+        const planTotal = numberFormat(_.get(item, 'planTotal'), primaryCurrency)
+        const planLeft = numberFormat(_.get(item, 'planLeft'), primaryCurrency)
+        const planDebt = numberFormat(_.get(item, 'planDebt'), primaryCurrency)
+        const debt = numberFormat(_.get(item, 'planDebt'), primaryCurrency)
 
         return (
             <tr
