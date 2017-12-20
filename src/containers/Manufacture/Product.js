@@ -76,10 +76,14 @@ const enhance = compose(
         }
     }),
     withPropsOnChange((props, nextProps) => {
+        const except = {
+            addProduct: null,
+            productId: null
+        }
         const manufactureId = _.toNumber(_.get(props, ['params', 'manufactureId']))
         const nextManufactureId = _.toNumber(_.get(nextProps, ['params', 'manufactureId']))
         return (manufactureId !== nextManufactureId && nextManufactureId) ||
-            (props.list && props.filterProduct.filterRequest() !== nextProps.filterProduct.filterRequest() && nextManufactureId > ZERO)
+            (props.list && props.filterProduct.filterRequest(except) !== nextProps.filterProduct.filterRequest(except) && nextManufactureId > ZERO)
     }, ({dispatch, filterProduct, params}) => {
         const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
         if (manufactureId > ZERO) {
