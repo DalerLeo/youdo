@@ -25,6 +25,7 @@ import {
 } from '../../actions/notifications'
 import {openSnackbarAction} from '../../actions/snackbar'
 import Notifications from '../Images/Notification.png'
+import InfiniteScroll from 'react-infinite-scroller'
 
 const iconStyle = {
     icon: {
@@ -42,13 +43,15 @@ const moneyIcon = '#64b5f6'
 const balanceIcon = '#4db6ac'
 const storeIcon = '#f06292'
 const ZERO = 0
+const ONE = 1
+const TWO = 2
 
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
         const filter = filterHelper(pathname, query)
-        const notificationsList = _.get(state, ['notifications', 'list', 'data', 'results'])
+        const notificationsList = _.get(state, ['notifications', 'list', 'data'])
         const notificationsLoading = _.get(state, ['notifications', 'list', 'loading'])
 
         return {
@@ -61,6 +64,9 @@ const enhance = compose(
     withState('notificationId', 'setNotificationId', null),
     withState('openNotifications', 'setOpenNotifications', false),
     withState('clickNotifications', 'setClickNotifications', null),
+    withState('defaultPage', 'updateDefaultPage', TWO),
+    withState('loading', 'setLoading', false),
+    withState('list', 'updateList', null),
 
     withHandlers({
         handleOpenConfirmDialog: props => (id) => {
@@ -86,11 +92,15 @@ const enhance = compose(
         },
 
         handleOpenNotificationBar: props => (status) => {
-            const {setOpenNotifications, dispatch} = props
+            const {setOpenNotifications, dispatch, setLoading, updateList} = props
             setOpenNotifications(status)
+            setLoading(true)
             if (status) {
                 dispatch(notificationListFetchAction())
-                    .then(() => {
+                    .then((data) => {
+                        const list = _.get(data, ['value', 'results'])
+                        setLoading(false)
+                        updateList(list)
                         dispatch(notificationCountFetchAction())
                     })
             }
@@ -102,6 +112,9 @@ const enhance = compose(
             height: '100%',
             width: '100%',
             display: 'flex'
+        },
+        loader: {
+            padding: '100px 0'
         },
         sidenav: {
             position: 'fixed',
@@ -150,7 +163,7 @@ const enhance = compose(
         },
         notifBody: {
             overflowY: 'auto',
-            height: 'calc(100% - 70px)'
+            height: 'calc(100% - 65px)'
         },
         notif: {
             padding: '10px 10px 10px 20px',
@@ -288,12 +301,17 @@ const Layout = enhance((props) => {
         classes,
         handleSignOut,
         children,
+        dispatch,
         notificationId,
         openNotifications,
         clickNotifications,
         setClickNotifications,
         notificationsList,
-        notificationsLoading
+        defaultPage,
+        updateDefaultPage,
+        loading,
+        list,
+        updateList
     } = props
 
     const notificationData = {
@@ -304,7 +322,9 @@ const Layout = enhance((props) => {
         handleSendConfirmDialog: props.handleSendConfirmDialog,
         handleOpenNotificationBar: props.handleOpenNotificationBar
     }
-    const notificationListExp = _.map(notificationsList, (item) => {
+    const notificationsCount = _.get(notificationsList, 'count')
+    const currentListCount = _.get(notificationsList, ['results', 'length'])
+    const notificationListExp = _.map(list, (item) => {
         const id = _.get(item, 'id')
         const title = formattedType[_.get(item, ['template', 'name'])]
         const text = _.get(item, 'text')
@@ -366,6 +386,16 @@ const Layout = enhance((props) => {
             left: '-100%'
         }
     }
+    const loadMore = () => {
+        if (openNotifications && !loading) {
+            return dispatch(notificationListFetchAction(defaultPage))
+                .then(() => {
+                    updateList(_.union(list, _.get(notificationsList, 'results')))
+                    updateDefaultPage(defaultPage + ONE)
+                })
+        }
+        return false
+    }
     return (
         <div className={classes.wrapper}>
             <div className={classes.notifications} style={openNotifications ? wrapperStyle.containerOpen : wrapperStyle.containerClose}>
@@ -378,21 +408,26 @@ const Layout = enhance((props) => {
                                 style={iconStyle.button}
                                 onTouchTap={() => {
                                     notificationData.handleOpenNotificationBar(false)
+                                    props.setLoading(false)
                                 }}>
                                 <CloseIcon color="#fff"/>
                             </IconButton>
                         </div>
                     </div>
                     <div className={classes.notifBody}>
-                        {notificationsLoading
-                            ? <div className={classes.loading}>
-                                <Loader size={0.75}/>
-                            </div>
-                            : (notificationListExp.length > ZERO
-                                ? notificationListExp
-                                : <div className={classes.emptyQuery}>
-                                    <div>Нет уведомлений</div>
-                                </div>)}
+                         <InfiniteScroll
+                                loadMore={loadMore}
+                                hasMore={notificationsCount > currentListCount}
+                                loader={<div style={{clear: 'both'}}><Loader size={0.5}/></div>}
+                                initialLoad={loading}
+                                useWindow={false}
+                                threshold={10}>
+                                {(notificationListExp.length > ZERO
+                                    ? notificationListExp
+                                    : <div className={classes.emptyQuery}>
+                                        <div>Нет уведомлений</div>
+                                    </div>)}
+                            </InfiniteScroll>
                     </div>
                 </Paper>
             </div>

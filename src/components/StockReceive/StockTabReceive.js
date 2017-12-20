@@ -178,8 +178,6 @@ const StockTabReceive = enhance((props) => {
         createDialog,
         updateDialog,
         history,
-        handleCheckedForm,
-        handleCheckedDefect,
         handleCheckNoDefect,
         repealDialog
     } = props
@@ -292,8 +290,7 @@ const StockTabReceive = enhance((props) => {
                 listLoading={createDialog.detailLoading}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
-                handleCheckNoDefect={handleCheckNoDefect}
-                handleCheckedForm={handleCheckedForm}/>}
+                handleCheckNoDefect={handleCheckNoDefect}/>}
 
             {!history && <CreateDialog
                 loading={updateDialog.updateLoading}
@@ -304,8 +301,7 @@ const StockTabReceive = enhance((props) => {
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
                 isUpdate={true}
                 initialValues={updateDialog.initialValues}
-                handleCheckNoDefect={handleCheckNoDefect}
-                handleCheckedDefect={handleCheckedDefect}/>}
+                handleCheckNoDefect={handleCheckNoDefect}/>}
         </div>
     )
 })

@@ -15,7 +15,8 @@ import Log from 'material-ui/svg-icons/content/content-paste'
 import Shift from 'material-ui/svg-icons/av/loop'
 import Product from 'material-ui/svg-icons/device/widgets'
 import {Field} from 'redux-form'
-import Material from 'material-ui/svg-icons/action/exit-to-app'
+import Raw from 'material-ui/svg-icons/action/exit-to-app'
+import Material from 'material-ui/svg-icons/maps/layers'
 import Defected from 'material-ui/svg-icons/image/broken-image'
 import Pagination from '../../GridList/GridListNavPagination'
 import Choose from '../../Images/choose-menu.png'
@@ -276,6 +277,7 @@ const ManufactureShipment = enhance((props) => {
     const ZERO = 0
     const filter = _.get(shipmentData, 'filter')
     const PRODUCT = 'return'
+    const MATERIAL = 'material'
     const tab = _.get(tabData, 'tab')
     const detailData = _.get(shipmentData, 'detailData')
     const shipmentList = _.get(shipmentData, 'shipmentList')
@@ -340,13 +342,29 @@ const ManufactureShipment = enhance((props) => {
         const createdDate = dateTimeFormat(_.get(item, 'createdDate'))
         const amount = _.get(item, 'amount')
         const type = _.get(item, 'type')
+        const kind = _.get(item, 'kind')
         const isDefect = _.get(item, 'isDefect')
         return (
             <Row key={index} className={isDefect ? classes.productDefected : classes.product}>
                 {type === PRODUCT
-                    ? <Col xs={6}><span>{isDefect ? <Defected style={iconStyles.defected}/> : <Product style={iconStyles.product}/>}{product}</span></Col>
-                    : <Col xs={6}><span>{isDefect ? <Defected style={iconStyles.defected}/> : <Material style={iconStyles.material}/>}{product}</span></Col>}
-                <Col xs={2}>{type === PRODUCT ? 'Продукт' : 'Сырье'}</Col>
+                    ? <Col xs={6}><span>
+                        {isDefect
+                            ? <Defected style={iconStyles.defected}/>
+                            : kind === MATERIAL
+                                ? <Material style={iconStyles.material}/>
+                                : <Product style={iconStyles.product}/>
+                        }
+                        {product}
+                        </span>
+                    </Col>
+                    : <Col xs={6}><span><Raw style={iconStyles.material}/>{product}</span></Col>}
+                <Col xs={2}>
+                    {type === PRODUCT
+                        ? (kind === MATERIAL)
+                            ? 'Материал'
+                            : 'Продукт'
+                        : 'Сырье'}
+                </Col>
                 <Col xs={2}>{numberFormat(amount, measurement)}</Col>
                 <Col xs={2}>{createdDate}</Col>
             </Row>

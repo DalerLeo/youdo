@@ -114,39 +114,38 @@ const enhance = compose(
         const products = _.get(detail, 'products')
         const form = 'StockReceiveCreateForm'
         if (checked) {
-            // dispatch(change(form, 'stocks', _.map(products, () => {
-            //     return {selected: true}
-            // })))
-            // dispatch(change(form, 'product', _.map(products, (item) => {
-            //     return {
-            //         accepted: _.toNumber(_.get(item, 'amount')),
-            //         defected: null
-            //     }
-            // })))
+            _.map(products, (item, index) => {
+                dispatch(change(form, 'stocks[' + index + ']', {
+                    selected: true
+                }))
+            })
         }
     }),
 
-    // .. withPropsOnChange((props, nextProps) => {
-    // ..     const selects = _.get(props, ['createForm', 'values', 'stocks'])
-    // ..     const nextSelects = _.get(nextProps, ['createForm', 'values', 'stocks'])
-    // ..     const details = !_.isEmpty(_.get(nextProps, 'detail'))
-    // ..     console.warn(!_.isEqual(selects, nextSelects) && details)
-    // ..     return false
-    // .. }, ({dispatch, detail, createForm}) => {
-    // ..     const selects = _.get(createForm, ['values', 'stocks'])
-    // ..     const form = 'StockReceiveCreateForm'
-    // ..     if (!_.isEmpty(selects)) {
-    // ..         const selectsCount = _.filter(selects, (item) => {
-    // ..             return _.get(item, 'selected') === true
-    // ..         }).length
-    // ..         const products = _.get(detail, 'products').length
-    // ..         if (selectsCount === products) {
-    // ..             dispatch(change(form, 'noDefects', true))
-    // ..         } else {
-    // ..             dispatch(change(form, 'noDefects', false))
-    // ..         }
-    // ..     }
-    // .. }),
+    withPropsOnChange((props, nextProps) => {
+        const check = _.get(props, ['createForm', 'values', 'stocks'])
+        const nextCheck = _.get(nextProps, ['createForm', 'values', 'stocks'])
+        const details = _.get(nextProps, 'detail')
+        return !_.isEqual(check, nextCheck) && details
+    }, ({dispatch, createForm, detail}) => {
+        const products = _.get(detail, 'products')
+        const checkbox = _.get(createForm, ['values', 'stocks'])
+        const form = 'StockReceiveCreateForm'
+        const indexesOfChecked = _.filter(_.map(checkbox, (item, index) => {
+            if (_.get(item, 'selected')) {
+                return index
+            }
+            return null
+        }), item => item !== null)
+        _.map(products, (item, index) => {
+            if (_.includes(indexesOfChecked, index)) {
+                dispatch(change(form, 'product[' + index + ']', {
+                    accepted: _.toNumber(_.get(item, 'amount')),
+                    defected: null
+                }))
+            }
+        })
+    }),
 
     withState('openPrint', 'setOpenPrint', false),
 
@@ -353,20 +352,6 @@ const enhance = compose(
                     return dispatch(openErrorAction({message: error}))
                 })
         },
-        handleCheckedForm: props => (index, value, selected) => {
-            const {dispatch} = props
-            const val = !selected ? _.toNumber(value) : null
-            const form = 'StockReceiveCreateForm'
-            dispatch(change(form, 'product[' + index + '][accepted]', val))
-            dispatch(change(form, 'product[' + index + '][defected]', null))
-        },
-        handleCheckedDefect: props => (index, value) => {
-            const {dispatch} = props
-            const val = _.toNumber(value)
-            const form = 'StockReceiveCreateForm'
-            dispatch(change(form, 'product[' + index + '][accepted]', val))
-            dispatch(change(form, 'product[' + index + '][defected]', ZERO))
-        },
         handleCheckNoDefect: props => () => {
             const {dispatch, createForm} = props
             const form = 'StockReceiveCreateForm'
@@ -519,8 +504,6 @@ const StockReceiveListContent = enhance((props) => {
                 filterDialog={filterDialog}
                 createDialog={createDialog}
                 updateDialog={updateDialog}
-                handleCheckedForm={props.handleCheckedForm}
-                handleCheckedDefect={props.handleCheckedDefect}
                 handleCheckNoDefect={props.handleCheckNoDefect}
                 history={false}/>
         </Layout>
