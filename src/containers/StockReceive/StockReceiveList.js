@@ -114,15 +114,15 @@ const enhance = compose(
         const products = _.get(detail, 'products')
         const form = 'StockReceiveCreateForm'
         if (checked) {
-            dispatch(change(form, 'stocks', _.map(products, () => {
-                return {selected: true}
-            })))
-            dispatch(change(form, 'product', _.map(products, (item) => {
-                return {
-                    accepted: _.toNumber(_.get(item, 'amount')),
-                    defected: null
-                }
-            })))
+            // dispatch(change(form, 'stocks', _.map(products, () => {
+            //     return {selected: true}
+            // })))
+            // dispatch(change(form, 'product', _.map(products, (item) => {
+            //     return {
+            //         accepted: _.toNumber(_.get(item, 'amount')),
+            //         defected: null
+            //     }
+            // })))
         }
     }),
 
