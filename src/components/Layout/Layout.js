@@ -158,7 +158,10 @@ const enhance = compose(
             alignItems: 'center',
             justifyContent: 'space-between',
             borderBottom: '1px #efefef solid',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            '&:hover': {
+                opacity: '1 !important'
+            }
         },
         notifIcon: {
             display: 'flex',
