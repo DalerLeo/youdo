@@ -392,6 +392,9 @@ const StatProductGridList = enhance((props) => {
             </div>
         )
     })
+
+    const totalCostSale = numberFormat(Math.abs(_.get(listData, ['data', 'salesIncome'])), currency)
+    const totalCountSale = numberFormat(Math.abs(_.get(listData, ['data', 'salesCount'])), currency)
     const tableList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const type = _.get(item, ['type', 'name'])
@@ -472,7 +475,7 @@ const StatProductGridList = enhance((props) => {
                             : <div className={classes.summary}>
                                 <div>
                                     <span>Сумма от продаж</span>
-                                    <div>{numberFormat('24000', currency)}</div>
+                                    <div>{totalCostSale}<span>({totalCountSale} sht)</span> </div>
                                 </div>
                                 <div>
                                     <span>Фактические продажи</span>

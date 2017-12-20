@@ -315,7 +315,7 @@ const StatSalesGridList = enhance((props) => {
             const marketName = _.get(item, ['market', 'name'])
             const currency = _.get(item, ['currency', 'name'])
             const id = _.get(item, 'id')
-            const createdDate = moment(_.get(item, 'createdDate')).locale('ru').format('DD MMM YYYY HH:MM')
+            const createdDate = _.get(item, 'createdDate') ? moment(_.get(item, 'createdDate')).locale('ru').format('DD MMM YYYY HH:MM') : 'Не указана'
             const firstName = _.get(item, ['user', 'firstName'])
             const totalPrice = _.get(item, 'totalPrice')
             const totalBalance = _.get(item, 'totalBalance')
@@ -336,8 +336,8 @@ const StatSalesGridList = enhance((props) => {
                 ? 'Оплата ожидалась: ' + paymentDate + '<br/>Долг: ' + balanceTooltip
                 : 'Оплата ожидается сегодня <br/>Сумма: ' + balanceTooltip
             return (
-                <Row key={id} className="dottedList" style={status === CANCELED ? {color: '#999'} : {}}>
-                    <Col xs={1}><a onClick={() => { statSaleDialog.handleOpenStatSaleDialog(id) }}>{id}</a></Col>
+                <Row key={id} className="dottedList" style={status === CANCELED ? {color: '#999', cursor: 'pointer'} : {cursor: 'pointer'}} onClick={() => { statSaleDialog.handleOpenStatSaleDialog(id) }}>
+                    <Col xs={1}>{id}</Col>
                     <Col xs={2}>{createdDate}</Col>
                     {hasMarket && <Col xs={2}>{marketName}</Col>}
                     <Col xs={hasMarket ? TWO : THREE}>
