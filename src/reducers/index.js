@@ -57,7 +57,8 @@ const rootReducer = combineReducers({
         item: createThunkReducer(actionTypes.TRANSACTION_ITEM),
         update: createThunkReducer(actionTypes.TRANSACTION_UPDATE),
         acceptCash: createThunkReducer(actionTypes.TRANSACTION_ACCEPT_CASH),
-        info: createThunkReducer(actionTypes.TRANSACTION_INFO)
+        info: createThunkReducer(actionTypes.TRANSACTION_INFO),
+        categoryPopopData: createThunkReducer(actionTypes.TRANSACTION_CATEGORY_DATA_LIST)
     }),
     supply: combineReducers({
         create: createThunkReducer(actionTypes.SUPPLY_CREATE),

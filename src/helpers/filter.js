@@ -218,6 +218,7 @@ const filter = (data, pathname, query = {}, newKeys = {}) => {
             openRepealDialog: null,
             currentType: null,
             openRepealHistoryDialog: null,
+            openCategoryPopop: null,
             key: null
         }
         return paramsToQueryUrl(_.assign({}, params, _.merge(except, defaultExcept)))
