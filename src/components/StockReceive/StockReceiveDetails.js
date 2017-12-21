@@ -17,6 +17,7 @@ import toBoolean from '../../helpers/toBoolean'
 import Tooltip from '../ToolTip'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import getConfig from '../../helpers/getConfig'
+
 const RETURN = 3
 const APPROVE = 1
 const CANCEL = 2
@@ -200,6 +201,7 @@ const TransferDetail = enhance((props) => {
         popover
     } = props
 
+    let count = 0
     const currentBy = _.get(detailData, ['currentDetail', 'by']) ||
         (_.get(detailData, ['data', 'acceptedBy']) ? _.get(detailData, ['data', 'acceptedBy', 'firstName']) + ' ' + _.get(detailData, ['data', 'acceptedBy', 'secondName']) : false) || 'Не найдено'
     const currentDate = dateFormat(_.get(detailData, ['currentDetail', 'date']))
@@ -224,6 +226,8 @@ const TransferDetail = enhance((props) => {
     const tooltipUpdateText = 'Изменить Запрос №' + id
     const detailLoading = _.get(detailData, 'detailLoading')
     const products = (type === 'order_return') ? _.get(detailData, ['data', 'returnedProducts']) : _.get(detailData, ['data', 'products'])
+    let showCount = true
+    const showCountChange = _.get(_.head(products), ['product', 'measurement', 'name'])
     const comment = _.get(detailData, ['data', 'comment']) || 'Комментарий отсутствует'
 
     if (_.isEmpty(products) && !detailLoading) {
@@ -252,8 +256,10 @@ const TransferDetail = enhance((props) => {
                             <Col xs={2}>{id}</Col>
                             <Col xs={(history && transferHistory) ? TWO : THREE}>{currentBy}</Col>
                             <Col xs={2}>{(history && transferHistory) ? currentStock : formattedType}</Col>
-                            <Col xs={2}>{(history && transferHistory) ? formattedType : (history ? currentDate : date)}</Col>
-                            <Col xs={2}>{(history && transferHistory) ? currentReceiver : (history ? currentStock : stockName)}</Col>
+                            <Col
+                                xs={2}>{(history && transferHistory) ? formattedType : (history ? currentDate : date)}</Col>
+                            <Col
+                                xs={2}>{(history && transferHistory) ? currentReceiver : (history ? currentStock : stockName)}</Col>
                             <Col xs={(history && transferHistory) ? TWO : ONE} style={{textAlign: 'right'}}>
                                 {(history && transferHistory) && currentRequestDate}
                                 <div className={classes.titleButtons}>
@@ -263,8 +269,10 @@ const TransferDetail = enhance((props) => {
                                                 iconStyle={iconStyleCheck.icon}
                                                 style={iconStyleCheck.button}
                                                 touch={true}
-                                                onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(APPROVE) }}>
-                                                <CheckCircleIcon />
+                                                onTouchTap={() => {
+                                                    confirmDialog.handleOpenConfirmDialog(APPROVE)
+                                                }}>
+                                                <CheckCircleIcon/>
                                             </IconButton>
                                         </Tooltip>
                                         : (!history && type === 'delivery_return')
@@ -273,8 +281,10 @@ const TransferDetail = enhance((props) => {
                                                     iconStyle={iconStyleCheck.icon}
                                                     style={iconStyleCheck.button}
                                                     touch={true}
-                                                    onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(DELIVERY) }}>
-                                                    <CheckCircleIcon />
+                                                    onTouchTap={() => {
+                                                        confirmDialog.handleOpenConfirmDialog(DELIVERY)
+                                                    }}>
+                                                    <CheckCircleIcon/>
                                                 </IconButton>
                                             </Tooltip>
                                             : (!history && type === 'order_return')
@@ -283,8 +293,10 @@ const TransferDetail = enhance((props) => {
                                                         iconStyle={iconStyleCheck.icon}
                                                         style={iconStyleCheck.button}
                                                         touch={true}
-                                                        onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(RETURN) }}>
-                                                        <CheckCircleIcon />
+                                                        onTouchTap={() => {
+                                                            confirmDialog.handleOpenConfirmDialog(RETURN)
+                                                        }}>
+                                                        <CheckCircleIcon/>
                                                     </IconButton>
                                                 </Tooltip>
                                                 : (type === 'supply')
@@ -294,8 +306,10 @@ const TransferDetail = enhance((props) => {
                                                                 iconStyle={iconStyleCheck.icon}
                                                                 style={iconStyleCheck.button}
                                                                 touch={true}
-                                                                onTouchTap={() => { createDialog.handleOpenCreateDialog() }}>
-                                                                <CheckCircleIcon />
+                                                                onTouchTap={() => {
+                                                                    createDialog.handleOpenCreateDialog()
+                                                                }}>
+                                                                <CheckCircleIcon/>
                                                             </IconButton>
                                                         </Tooltip>
                                                         : <Tooltip position="right" text={tooltipUpdateText}>
@@ -304,8 +318,10 @@ const TransferDetail = enhance((props) => {
                                                                 style={iconStyle.button}
                                                                 touch={true}
                                                                 disabled={history}
-                                                                onTouchTap={() => { updateDialog.handleOpenUpdateDialog() }}>
-                                                                <EditIcon />
+                                                                onTouchTap={() => {
+                                                                    updateDialog.handleOpenUpdateDialog()
+                                                                }}>
+                                                                <EditIcon/>
                                                             </IconButton>
                                                         </Tooltip>)
                                                     : null
@@ -316,9 +332,11 @@ const TransferDetail = enhance((props) => {
                                         <IconButton
                                             iconStyle={iconStyleCancell.icon}
                                             style={iconStyleCancell.button}
-                                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(CANCEL) }}
+                                            onTouchTap={() => {
+                                                confirmDialog.handleOpenConfirmDialog(CANCEL)
+                                            }}
                                             touch={true}>
-                                            <RemoveCircleIcon />
+                                            <RemoveCircleIcon/>
                                         </IconButton>
                                     </Tooltip>}
                                     {!history && type === 'delivery_return' &&
@@ -326,23 +344,28 @@ const TransferDetail = enhance((props) => {
                                         <IconButton
                                             iconStyle={iconStyleCancell.icon}
                                             style={iconStyleCancell.button}
-                                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(DELIVERY) }}
+                                            onTouchTap={() => {
+                                                confirmDialog.handleOpenConfirmDialog(DELIVERY)
+                                            }}
                                             touch={true}>
-                                            <RemoveCircleIcon />
+                                            <RemoveCircleIcon/>
                                         </IconButton>
                                     </Tooltip>}
-                                    {history && type !== 'transfer' && type !== 'delivery_return' && <Tooltip position="right" text={tooltipCancelText}>
+                                    {history && type !== 'transfer' && type !== 'delivery_return' &&
+                                    <Tooltip position="right" text={tooltipCancelText}>
                                         <IconButton
                                             iconStyle={iconStyleCancell.icon}
                                             style={iconStyleCancell.button}
-                                            onTouchTap={() => { repealDialog.handleOpenRepealDialog(id) }}
+                                            onTouchTap={() => {
+                                                repealDialog.handleOpenRepealDialog(id)
+                                            }}
                                             touch={true}>
-                                            <RemoveCircleIcon />
+                                            <RemoveCircleIcon/>
                                         </IconButton>
                                     </Tooltip>}
                                     {popover && !history && <IconButton onTouchTap={onClose}>
-                                            <CloseIcon color="#666666"/>
-                                        </IconButton>}
+                                        <CloseIcon color="#666666"/>
+                                    </IconButton>}
                                 </div>
                             </Col>
 
@@ -399,6 +422,10 @@ const TransferDetail = enhance((props) => {
                                 const productType = _.get(item, ['product', 'type', 'name'])
                                 const isDefect = toBoolean(_.get(item, 'isDefect')) ? 'Брак' : 'ОК'
                                 const amount = numberFormat(_.get(item, 'amount'), measurement)
+                                count += _.toNumber(_.get(item, 'amount'))
+                                if (measurement !== showCountChange) {
+                                    showCount = false
+                                }
                                 return (
                                     <Row key={productId} className='dottedList'>
                                         <Col xs={4}>{name}</Col>
@@ -408,6 +435,9 @@ const TransferDetail = enhance((props) => {
                                     </Row>
                                 )
                             })}
+                            {showCount && <Row className='dottedList'>
+                                <b>Общий количество {count} {showCountChange}</b>
+                            </Row>}
                         </div>
                         }
                         <div className={classes.rightSide}>

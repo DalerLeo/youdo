@@ -28,6 +28,7 @@ export const REMAINDER_FILTER_KEY = {
     MEASUREMENT: 'measurement'
 }
 
+const ZERO = 0
 const enhance = compose(
     injectSheet({
         wrapper: {
@@ -107,7 +108,7 @@ const enhance = compose(
         enableReinitialize: true
     }),
     connect((state) => {
-        const typeParent = _.get(state, ['form', 'RemainderFilterForm', 'values', 'typeParent'])
+        const typeParent = _.get(state, ['form', 'RemainderFilterForm', 'values', 'typeParent', 'value'])
         return {
             typeParent
         }
@@ -180,14 +181,14 @@ const RemainderFilterForm = enhance((props) => {
                             label="Тип продукта"
                             fullWidth={true}
                         />
-                        {typeParent ? <Field
+                        {_.toNumber(typeParent) > ZERO && <Field
                             name="typeChild"
                             className={classes.inputFieldCustom}
                             component={ProductTypeChildSearchField}
                             parentType={typeParent}
                             label="Подкатегория"
                             fullWidth={true}
-                        /> : null}
+                        />}
                         <div>
                             <Field
                                 className={classes.inputFieldCustom}
