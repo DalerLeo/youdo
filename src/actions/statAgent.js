@@ -22,6 +22,23 @@ export const statAgentListFetchAction = (filter) => {
     }
 }
 
+export const statAgentSummaryFetchAction = (filter) => {
+    const params = serializers.summaryFilterSerializer(filter.getParams())
+    const payload = axios()
+        .get((API.STAT_AGENT_SUM), {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STAT_AGENT_SUM,
+        payload
+    }
+}
+
 export const statAgentItemFetchAction = (filter, filterItem, id) => {
     const params = serializers.itemSerializer(filter.getParams(), filterItem.getParams(), id)
     const payload = axios()

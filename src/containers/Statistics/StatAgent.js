@@ -23,6 +23,7 @@ import {
 import {STAT_AGENT_FILTER_KEY} from '../../components/Statistics/Agents/AgentGridList'
 import {
     statAgentListFetchAction,
+    statAgentSummaryFetchAction,
     statAgentItemFetchAction
 } from '../../actions/statAgent'
 
@@ -37,6 +38,8 @@ const enhance = compose(
         const detailLoading = _.get(state, ['statAgent', 'item', 'loading'])
         const list = _.get(state, ['statAgent', 'list', 'data'])
         const listLoading = _.get(state, ['statAgent', 'list', 'loading'])
+        const summary = _.get(state, ['statAgent', 'sum', 'data'])
+        const summaryLoading = _.get(state, ['statAgent', 'sum', 'loading'])
         const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
         const filter = filterHelper(list, pathname, query)
         const filterItem = filterHelper(detail, pathname, query, {'page': 'dPage', 'pageSize': 'dPageSize'})
@@ -46,6 +49,8 @@ const enhance = compose(
         return {
             list,
             listLoading,
+            summary,
+            summaryLoading,
             detail,
             detailLoading,
             filter,
@@ -65,6 +70,20 @@ const enhance = compose(
         return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
         dispatch(statAgentListFetchAction(filter))
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const except = {
+            openStatAgentDialog: null,
+            dPage: null,
+            dPageSize: null,
+            search: null,
+            page: null,
+            pageSize: null
+        }
+        return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
+    }, ({dispatch, filter}) => {
+        dispatch(statAgentSummaryFetchAction(filter))
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -157,6 +176,8 @@ const StatAgentList = enhance((props) => {
         location,
         list,
         listLoading,
+        summary,
+        summaryLoading,
         detail,
         detailLoading,
         filter,
@@ -184,6 +205,10 @@ const StatAgentList = enhance((props) => {
     const listData = {
         data: _.get(list, 'results'),
         listLoading
+    }
+    const summaryData = {
+        data: summary,
+        loading: summaryLoading
     }
     const agentDetail = _.filter(_.get(list, 'results'), (item) => {
         return _.get(item, 'id') === detailId
@@ -228,6 +253,7 @@ const StatAgentList = enhance((props) => {
                 filter={filter}
                 handleSubmitFilterDialog={props.handleSubmitFilterDialog}
                 listData={listData}
+                summaryData={summaryData}
                 detailData={detailData}
                 statAgentDialog={statAgentDialog}
                 getDocument={getDocument}

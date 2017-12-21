@@ -317,6 +317,7 @@ const rootReducer = combineReducers({
     }),
     statAgent: combineReducers({
         list: createThunkReducer(actionTypes.STAT_AGENT_LIST),
+        sum: createThunkReducer(actionTypes.STAT_AGENT_SUM),
         item: createThunkReducer(actionTypes.STAT_AGENT_ITEM)
     }),
     statisticsDebtors: combineReducers({

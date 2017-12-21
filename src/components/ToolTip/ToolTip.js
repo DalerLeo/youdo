@@ -19,11 +19,15 @@ const enhance = compose(
         tooltip: {
             zIndex: '999999 !important',
             borderRadius: '2px !important',
+            background: '#2d3037 !important',
             lineHeight: '1.3',
             '&.place-left': {
                 '&:after': {
                     right: '-5px !important'
                 }
+            },
+            '&:after': {
+                display: 'none !important'
             }
         }
     }),
