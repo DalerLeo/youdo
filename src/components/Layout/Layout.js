@@ -13,10 +13,12 @@ import ErrorDialog from '../ErrorDialog'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import Paper from 'material-ui/Paper'
-import Money from 'material-ui/svg-icons/editor/attach-money'
 import Clear from 'material-ui/svg-icons/action/delete'
-import Storehouse from 'material-ui/svg-icons/action/home'
-import Balance from 'material-ui/svg-icons/action/account-balance-wallet'
+import SupplyAccept from 'material-ui/svg-icons/content/archive'
+import OrderReady from 'material-ui/svg-icons/social/whatshot'
+import OrderRequest from 'material-ui/svg-icons/device/access-time'
+import GoodsDemand from 'material-ui/svg-icons/alert/warning'
+import OrderDelivered from 'material-ui/svg-icons/action/assignment-turned-in'
 import Loader from '../Loader'
 import {
     notificationListFetchAction,
@@ -39,9 +41,10 @@ const iconStyle = {
         padding: 0
     }
 }
-const moneyIcon = '#64b5f6'
+const moneyIcon = '#8dc572'
 const balanceIcon = '#4db6ac'
-const storeIcon = '#f06292'
+const supplyIcon = '#f0ad4e'
+const stockIcon = '#e57373'
 const ZERO = 0
 const ONE = 1
 const TWO = 2
@@ -211,7 +214,7 @@ const enhance = compose(
                 color: '#fff !important'
             }
         },
-        money: {
+        order: {
             backgroundColor: moneyIcon,
             '&:before': {
                 borderBottomColor: moneyIcon
@@ -229,13 +232,22 @@ const enhance = compose(
                 borderTopColor: balanceIcon
             }
         },
-        store: {
-            backgroundColor: storeIcon,
+        supply: {
+            backgroundColor: supplyIcon,
             '&:before': {
-                borderBottomColor: storeIcon
+                borderBottomColor: supplyIcon
             },
             '&:after': {
-                borderTopColor: storeIcon
+                borderTopColor: supplyIcon
+            }
+        },
+        stock: {
+            backgroundColor: stockIcon,
+            '&:before': {
+                borderBottomColor: stockIcon
+            },
+            '&:after': {
+                borderTopColor: stockIcon
             }
         },
         notifContent: {
@@ -324,20 +336,27 @@ const Layout = enhance((props) => {
     }
     const notificationsCount = _.get(notificationsList, 'count')
     const currentListCount = _.get(notificationsList, ['results', 'length'])
-    const notificationListExp = _.map(list, (item) => {
+    const notificationListExp = _.map(_.uniqBy(list, 'id'), (item) => {
         const id = _.get(item, 'id')
         const title = formattedType[_.get(item, ['template', 'name'])]
         const text = _.get(item, 'text')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY HH:mm')
         const viewed = _.get(item, 'viewed')
-        const template = _.get(item, ['template', 'name']) === 'accountant'
-            ? <div className={classes.notifIcon + ' ' + classes.balance}><Balance/></div>
-            : (_.get(item, ['template', 'name']) === 'order'
-                    ? <div className={classes.notifIcon + ' ' + classes.money}><Money/></div>
-                    : (_.get(item, ['template', 'name']) === 'supply'
-                        ? <div className={classes.notifIcon + ' ' + classes.store}><Storehouse/></div>
-                        : <div className={classes.notifIcon + ' ' + classes.store}><Storehouse/></div>)
-            )
+        const template = _.get(item, ['template', 'name'])
+        let icon = null
+        switch (template) {
+            case 'supply_accepted': icon = <div className={classes.notifIcon + ' ' + classes.supply}><SupplyAccept/></div>
+                break
+            case 'order_ready': icon = <div className={classes.notifIcon + ' ' + classes.order}><OrderReady/></div>
+                break
+            case 'order_delivered': icon = <div className={classes.notifIcon + ' ' + classes.order}><OrderDelivered/></div>
+                break
+            case 'order_request': icon = <div className={classes.notifIcon + ' ' + classes.order}><OrderRequest/></div>
+                break
+            case 'goods_on_demand': icon = <div className={classes.notifIcon + ' ' + classes.stock}><GoodsDemand/></div>
+                break
+            default: icon = null
+        }
 
         return (
             <div key={id} className={classes.notif}
@@ -347,7 +366,7 @@ const Layout = enhance((props) => {
                          : setClickNotifications(id)
                  }}
                  style={viewed ? {opacity: '0.5'} : {opacity: '1'}}>
-                {template}
+                {icon}
                 <div className={classes.notifContent}>
                     <div className={classes.notifTitle}>
                         <div>{title}</div>
@@ -418,7 +437,7 @@ const Layout = enhance((props) => {
                          <InfiniteScroll
                                 loadMore={loadMore}
                                 hasMore={notificationsCount > currentListCount}
-                                loader={<div style={{clear: 'both'}}><Loader size={0.5}/></div>}
+                                loader={<div><Loader size={0.5}/></div>}
                                 initialLoad={loading}
                                 useWindow={false}
                                 threshold={10}>
