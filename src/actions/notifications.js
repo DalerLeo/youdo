@@ -20,9 +20,9 @@ export const notificationDeleteAction = (id) => {
     }
 }
 
-export const notificationListFetchAction = () => {
+export const notificationListFetchAction = (page) => {
     const payload = axios()
-        .get(API.NOTIFICATIONS_LIST)
+        .get(API.NOTIFICATIONS_LIST, {params: {page: page, page_size: 15}})
         .then((response) => {
             return _.get(response, 'data')
         })

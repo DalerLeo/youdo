@@ -15,7 +15,6 @@ import {TextField, CheckBox} from '../ReduxForm'
 import numberFormat from '../../helpers/numberFormat'
 import Tooltip from '../ToolTip'
 
-const ZERO = 0
 const enhance = compose(
     injectSheet({
         loader: {
@@ -163,17 +162,11 @@ const enhance = compose(
     }),
     connect((state) => {
         const values = _.get(state, ['form', 'StockReceiveCreateForm', 'values'])
-        const formProducts = _.filter(_.get(values, 'product'), (item) => {
-            const accepted = _.toNumber(_.get(item, 'accepted'))
-            const defected = _.toNumber(_.get(item, 'defected'))
-            return accepted > ZERO || defected || ZERO
-        })
         const stock = _.map(_.get(values, 'stocks'), (item) => {
             return _.get(item, 'selected') && true
         })
         return {
-            stock,
-            formProducts
+            stock
         }
     })
 )
@@ -192,11 +185,8 @@ const OrderCreateDialog = enhance((props) => {
         detailProducts,
         listLoading,
         isUpdate,
-        handleCheckedForm,
-        handleCheckedDefect,
         handleCheckNoDefect,
-        stock,
-        formProducts
+        stock
     } = props
     const onSubmit = handleSubmit(() => props.onSubmit())
     const supplyId = _.get(detailProducts, 'id')
@@ -256,7 +246,7 @@ const OrderCreateDialog = enhance((props) => {
                                             <Col xs={2}>{type}</Col>
                                             <Col xs={2}>{amount} {measurement}</Col>
                                             {isUpdate
-                                                ? <Col xs={1} onTouchTap={() => { handleCheckedDefect(index, _.get(item, 'amount')) }}>
+                                                ? <Col xs={1}>
                                                     <Tooltip position="left" text='Без браков'>
                                                         <Field
                                                             key={id}
@@ -266,7 +256,7 @@ const OrderCreateDialog = enhance((props) => {
                                                 </Col>
                                                 : <Col xs={1}>
                                                     <Tooltip position="left" text='Без браков'>
-                                                        <div onClick={() => { handleCheckedForm(index, _.get(item, 'amount'), disable) }}>
+                                                        <div>
                                                             <Field
                                                                 key={id}
                                                                 name={'stocks[' + index + '][selected]'}
@@ -304,8 +294,7 @@ const OrderCreateDialog = enhance((props) => {
                         <FlatButton
                             label="Принять товар"
                             className={classes.actionButton}
-                            labelStyle={_.isEmpty(formProducts) ? {color: '#b3b3b3'} : {color: '#129fdd'}}
-                            disabled={_.isEmpty(formProducts)}
+                            labelStyle={{color: '#129fdd'}}
                             primary={true}
                             type="submit"/>
                     </div>
