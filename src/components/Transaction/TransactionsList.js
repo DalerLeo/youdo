@@ -4,12 +4,14 @@ import PropTypes from 'prop-types'
 import IconButton from 'material-ui/IconButton'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import EditIcon from 'material-ui/svg-icons/editor/mode-edit'
+import {Link} from 'react-router'
 import GridList from '../GridList'
 import TransactionFilterForm from './TransactionFilterForm'
 import TransactionCreateDialog from './TransactionCreateDialog'
 import TransactionSendDialog from './TransactionSendDialog'
 import TransactionCashDialog from './TransactionCashDialog'
 import TransactionInfoDialog from './TransactionInfoDialog'
+import TransactionCategoryPopop from './TransactionCategoryPopop'
 import TransactionsFormat from './TransactionsFormat'
 import ConfirmDialog from '../ConfirmDialog'
 import injectSheet from 'react-jss'
@@ -25,6 +27,7 @@ import {
     INCOME_TO_CLIENT,
     OUTCOME_FROM_CLIENT
 } from '../../constants/transactionTypes'
+
 const currentDay = new Date()
 const enhance = compose(
     injectSheet({
@@ -204,16 +207,17 @@ const TransactionsList = enhance((props) => {
         updateTransactionDialog,
         usersData,
         hasMarket,
-        canSetCustomRate
+        canSetCustomRate,
+        categryPopop
     } = props
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const transactionFilterDialog = showOnlyList
         ? null
         : (<TransactionFilterForm
-                initialValues={filterDialog.initialValues}
-                filter={filter}
-                filterDialog={filterDialog}
-            />)
+            initialValues={filterDialog.initialValues}
+            filter={filter}
+            filterDialog={filterDialog}
+        />)
 
     const transactionDetail = (
         <span>a</span>
@@ -320,6 +324,8 @@ const TransactionsList = enhance((props) => {
         const rate = customRate > ZERO ? customRate : _.toInteger(amount / internal)
         const isDeleted = _.get(item, 'isDelete')
         const supply = _.get(item, 'supply')
+
+        const categoryPopopShow = _.find(_.get(item, ['expanseCategory', 'options']), {'keyName': 'staff_expanse'})
         return (
             <div key={id} className={isDeleted ? classes.deletedRow : classes.listRow}>
                 <div style={{flexBasis: '10%', maxWidth: '10%'}}>{id}</div>
@@ -328,10 +334,23 @@ const TransactionsList = enhance((props) => {
                     {!showCashbox ? <div>{clientName || 'Не указан'}</div> : null}
                 </div>
                 <div style={{flexBasis: '30%', maxWidth: '30%'}}>
-                    {expanseCategory
-                        ? <div><span className={classes.label}>Категория: </span> {expanseCategory}</div> : ''}
+                    {expanseCategory && categoryPopopShow ? <div>
+                            <span className={classes.label}>Категория: </span>
+                            <Link onClick={() => {
+                                categryPopop.handleOpenCategoryPopop(id)
+                            }}>
+                                {expanseCategory}
+                            </Link>
+                        </div>
+                        : (expanseCategory) ? <div>
+                            <span className={classes.label}>Категория: </span>
+                            <span>{expanseCategory}</span>
+                        </div> : null
+                    }
                     {transType && <TransactionsFormat
-                        handleClickAgentIncome={() => { transactionInfoDialog.handleOpenDialog(id) }}
+                        handleClickAgentIncome={() => {
+                            transactionInfoDialog.handleOpenDialog(id)
+                        }}
                         type={transType}
                         order={order}
                         supply={supply}
@@ -341,11 +360,12 @@ const TransactionsList = enhance((props) => {
                     {comment && <div><strong>Комментарий:</strong> {comment}</div>}
                 </div>
                 <div style={{flexBasis: '18%', maxWidth: '18%'}}>{date}</div>
-                <div style={{flexBasis: '20%', maxWidth: '20%', textAlign: 'right'}} className={type >= zero ? classes.green : classes.red}>
+                <div style={{flexBasis: '20%', maxWidth: '20%', textAlign: 'right'}}
+                     className={type >= zero ? classes.green : classes.red}>
                     {numberFormat(amount, currentCurrency)}
                     {(currentCurrency !== primaryCurrency) && <div>{numberFormat(internal, primaryCurrency)}
-                    {internal !== ZERO &&
-                    <span style={{fontSize: 11, color: '#333', fontWeight: 600}}> ({rate})</span>}</div>}
+                        {internal !== ZERO &&
+                        <span style={{fontSize: 11, color: '#333', fontWeight: 600}}> ({rate})</span>}</div>}
                 </div>
                 {!isDeleted && <div className={classes.actionButtons}>
                     <IconButton
@@ -354,7 +374,9 @@ const TransactionsList = enhance((props) => {
                         disabled={transType === TWO}
                         iconStyle={iconStyle.icon}
                         disableTouchRipple={true}
-                        onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}>
+                        onTouchTap={() => {
+                            confirmDialog.handleOpenConfirmDialog(id)
+                        }}>
                         <DeleteIcon/>
                     </IconButton>
                     <IconButton
@@ -363,7 +385,9 @@ const TransactionsList = enhance((props) => {
                         style={iconStyle.button}
                         iconStyle={iconStyle.icon}
                         disableTouchRipple={true}
-                        onTouchTap={() => { updateTransactionDialog.handleOpenDialog(id) }}>
+                        onTouchTap={() => {
+                            updateTransactionDialog.handleOpenDialog(id)
+                        }}>
                         <EditIcon/>
                     </IconButton>
                 </div>}
@@ -382,7 +406,9 @@ const TransactionsList = enhance((props) => {
                 <div className={classes.outerTitle}>{cashboxName}</div>
                 <div className={classes.outerTitle}>
                     <div className={classes.buttons}>
-                        {hasRightCashbox && <a onClick={acceptCashDialog.handleOpenCashDialog} className={classes.btnSend}>Принять наличные</a>}
+                        {hasRightCashbox &&
+                        <a onClick={acceptCashDialog.handleOpenCashDialog} className={classes.btnSend}>Принять
+                            наличные</a>}
                         <div>
                             <a onClick={createSendDialog.handleOpenDialog}
                                className={classes.btnSend}>Перевод</a>
@@ -446,8 +472,8 @@ const TransactionsList = enhance((props) => {
                     onClose={updateTransactionDialog.handleCloseDialog}
                     onSubmit={
                         Number(_.get(currentItem, 'amount')) < ZERO
-                        ? updateTransactionDialog.handleExpenseSumbit
-                        : updateTransactionDialog.handleIncomeSubmit
+                            ? updateTransactionDialog.handleExpenseSumbit
+                            : updateTransactionDialog.handleIncomeSubmit
                     }
                     usersData={usersData}
                     canSetCustomRate={canSetCustomRate}
@@ -480,13 +506,19 @@ const TransactionsList = enhance((props) => {
                     acceptCashDialog={acceptCashDialog}
                     superUser={superUser}
                     hasMarket={hasMarket}
-            />
+                />
                 <TransactionInfoDialog
                     open={transactionInfoDialog.open}
                     onClose={transactionInfoDialog.handleCloseDialog}
                     data={transactionInfoDialog.data}
                     loading={transactionInfoDialog.loading}
                     hasMarket={hasMarket}
+                />
+                <TransactionCategoryPopop
+                    open={categryPopop.open}
+                    onClose={categryPopop.handleCloseCategoryPopop}
+                    data={categryPopop.data}
+                    loading={categryPopop.loading}
                 />
             </section>}
         </div>

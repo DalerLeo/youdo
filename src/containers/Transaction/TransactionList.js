@@ -23,6 +23,7 @@ import {
     TRANSACTION_FILTER_OPEN,
     TRANSACTION_CASH_DIALOG_OPEN,
     TRANSACTION_ACCEPT_DIALOG_OPEN,
+    TRANSACTION_CATEGORY_POPOP_OPEN,
     TransactionGridList,
     TRANSACTION_ACCEPT_CASH_DETAIL_OPEN,
     TRANSACTION_INFO_OPEN,
@@ -44,7 +45,8 @@ import {
     transactionEditPaymentAction,
     deleteTransactionAction,
     transactionConvertAction,
-    usersListFetchAction
+    usersListFetchAction,
+    transactionCategoryPopopDataActoin
 } from '../../actions/transaction'
 import {
     cashboxListFetchAction
@@ -84,6 +86,8 @@ const enhance = compose(
         const filterCashbox = filterHelper(cashboxList, pathname, query)
         const cashboxId = _.get(props, ['location', 'query', 'cashboxId'])
         const isSuperUser = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
+        const categoeyPopopData = _.get(state, ['transaction', 'categoryPopopData', 'data'])
+        const categoeyPopopDataLoading = _.get(state, ['transaction', 'categoryPopopData', 'loading'])
 
         const date = _.get(state, ['form', 'TransactionCreateForm', 'values', 'date'])
         const cashbox = _.get(state, ['form', 'TransactionCreateForm', 'values', 'cashbox', 'value', 'id'])
@@ -130,7 +134,9 @@ const enhance = compose(
             usersListLoading,
             hasMarket,
             optionsList,
-            optionsListLoading
+            optionsListLoading,
+            categoeyPopopData,
+            categoeyPopopDataLoading
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -236,7 +242,14 @@ const enhance = compose(
         const cashboxId = _.get(location, ['query', 'cashboxId'])
         dispatch(transactionListFetchAction(filter, cashboxId, isSuperUser))
     }),
-
+    withPropsOnChange((props, nextProps) => {
+        const prevCategoryPopop = _.toNumber(_.get(props, ['location', 'query', TRANSACTION_CATEGORY_POPOP_OPEN]))
+        const nextCategoryPopop = _.toNumber(_.get(nextProps, ['location', 'query', TRANSACTION_CATEGORY_POPOP_OPEN]))
+        return prevCategoryPopop !== nextCategoryPopop && nextCategoryPopop > ZERO
+    }, ({dispatch, location}) => {
+        const id = _.toNumber(_.get(location, ['query', TRANSACTION_CATEGORY_POPOP_OPEN]))
+        dispatch(transactionCategoryPopopDataActoin(id))
+    }),
     withHandlers({
         handleOpenConfirmDialog: props => (id) => {
             const {filter} = props
@@ -330,7 +343,8 @@ const enhance = compose(
         },
 
         handleOpenCreateExpenseDialog: props => () => {
-            const {dispatch, location: {pathname}, filter} = props
+            const {dispatch, location: {pathname}, filter, setOpenStaff} = props
+            setOpenStaff(false)
             hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_CREATE_EXPENSE_DIALOG_OPEN]: true})})
             dispatch(reset('TransactionCreateForm'))
         },
@@ -645,8 +659,17 @@ const enhance = compose(
                         message: error
                     }))
                 })
-        }
+        },
 
+        handleOpenCategoryPopop: props => (id) => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname: pathname, query: filter.getParams({[TRANSACTION_CATEGORY_POPOP_OPEN]: id})})
+        },
+
+        handleCloseCategoryPopop: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_CATEGORY_POPOP_OPEN]: false})})
+        }
     })
 )
 
@@ -676,7 +699,9 @@ const TransactionList = enhance((props) => {
         openStaff,
         usersList,
         usersListLoading,
-        hasMarket
+        hasMarket,
+        categoeyPopopData,
+        categoeyPopopDataLoading
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', TRANSACTION_FILTER_OPEN]))
@@ -689,6 +714,7 @@ const TransactionList = enhance((props) => {
     const openCashDialog = toBoolean(_.get(location, ['query', TRANSACTION_CASH_DIALOG_OPEN]))
     const openAcceptCashDetail = (_.get(location, ['query', TRANSACTION_ACCEPT_CASH_DETAIL_OPEN]))
     const openCashBoxDialog = toBoolean(_.get(location, ['query', TRANSACTION_ACCEPT_DIALOG_OPEN]))
+    const openCategoryPopop = _.toNumber(_.get(location, ['query', TRANSACTION_CATEGORY_POPOP_OPEN]))
     const openTransactionInfo = _.toInteger(_.get(location, ['query', TRANSACTION_INFO_OPEN]))
     const openSuperUser = _.toInteger(_.get(location, ['query', TRANSACTION_EDIT_PRICE_OPEN])) > ZERO
     const openDeleteTransaction = _.toInteger(_.get(location, ['query', DELETE_TRANSACTION])) > ZERO
@@ -906,6 +932,14 @@ const TransactionList = enhance((props) => {
         loading: usersListLoading
     }
 
+    const categryPopop = {
+        data: _.get(categoeyPopopData, 'results'),
+        loading: categoeyPopopDataLoading,
+        open: openCategoryPopop > ZERO,
+        handleOpenCategoryPopop: props.handleOpenCategoryPopop,
+        handleCloseCategoryPopop: props.handleCloseCategoryPopop
+    }
+
     const hasRightCashbox = _.find(_.get(cashboxList, 'results'), {'type': 'cash'})
     const canSetCustomRate = checkPermission('can_set_custom_rate')
     return (
@@ -934,6 +968,7 @@ const TransactionList = enhance((props) => {
                 usersData={usersData}
                 hasMarket={hasMarket}
                 canSetCustomRate={canSetCustomRate}
+                categryPopop={categryPopop}
             />
         </Layout>
     )

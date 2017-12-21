@@ -290,3 +290,19 @@ export const usersListFetchAction = () => {
         payload
     }
 }
+
+export const transactionCategoryPopopDataActoin = (id) => {
+    const payload = axios()
+        .get(API.TRANSACTION_CATEGORY_DATA_LIST, {params: {transaction: id}})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.TRANSACTION_CATEGORY_DATA_LIST,
+        payload
+    }
+}
