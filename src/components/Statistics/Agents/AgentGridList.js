@@ -470,6 +470,7 @@ const StatAgentGridList = enhance((props) => {
         classes,
         statAgentDialog,
         listData,
+        summaryData,
         filter,
         handleSubmitFilterDialog,
         detailData,
@@ -480,8 +481,7 @@ const StatAgentGridList = enhance((props) => {
         currentRow,
         updateRow,
         expandedTable,
-        setExpandedTable,
-        sumData
+        setExpandedTable
     } = props
 
     const listLoading = _.get(listData, 'listLoading')
@@ -490,15 +490,16 @@ const StatAgentGridList = enhance((props) => {
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
 
     // Summary
-    const totalSales = numberFormat(Math.abs(_.get(sumData, ['data', 'totalSales'])), primaryCurrency)
-    const actualSales = numberFormat(Math.abs(_.get(sumData, ['data', 'actualSales'])), primaryCurrency)
-    const refundsOfSales = numberFormat(Math.abs(_.get(sumData, ['data', 'refundsOfSales'])), primaryCurrency)
-    const totalRefunds = numberFormat(Math.abs(_.get(sumData, ['data', 'totalRefunds'])), primaryCurrency)
-    const paymentOfOrders = numberFormat(Math.abs(_.get(sumData, ['data', 'paymentOfOrders'])), primaryCurrency)
-    const totalPayment = numberFormat(Math.abs(_.get(sumData, ['data', 'totalPayment'])), primaryCurrency)
-    const totalPlan = numberFormat(Math.abs(_.get(sumData, ['data', 'totalPlan'])), primaryCurrency)
-    const leftPlan = numberFormat(Math.abs(_.get(sumData, ['data', 'leftPlan'])), primaryCurrency)
-    const debtPlan = numberFormat(Math.abs(_.get(sumData, ['data', 'debtPlan'])), primaryCurrency)
+    const salesTotalSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'salesTotal'])), primaryCurrency)
+    const salesFactSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'salesFact'])), primaryCurrency)
+    const returnOrdersSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'returnOrders'])), primaryCurrency)
+    const returnTotalSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'returnTotal'])), primaryCurrency)
+    const paymentOrdersSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'paymentOrders'])), primaryCurrency)
+    const paymentTotalSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'paymentTotal'])), primaryCurrency)
+    const planTotalSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'planTotal'])), primaryCurrency)
+    const planLeftSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'planLeft'])), primaryCurrency)
+    const debtFromOrderSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'debtFromOrder'])), primaryCurrency)
+    const debtTotalSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'debtTotal'])), primaryCurrency)
     const tableLeft = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
@@ -597,28 +598,28 @@ const StatAgentGridList = enhance((props) => {
                                     <div className={classes.summaryWrapper}>
                                         <div>
                                             <div>Обшая сумма продаж</div>
-                                            <div>{totalSales}</div>
+                                            <div>{salesTotalSum}</div>
                                             <div>Фактическая сумма продаж</div>
-                                            <div>{actualSales}</div>
+                                            <div>{salesFactSum}</div>
                                         </div>
                                         <div>
                                             <div>Сумма возвратов от продаж</div>
-                                            <div>{totalRefunds}</div>
+                                            <div>{returnOrdersSum}</div>
                                             <div>Сумма возвратов за этот период</div>
-                                            <div>{refundsOfSales}</div>
+                                            <div>{returnTotalSum}</div>
                                         </div>
                                         <div>
                                             <div>Сумма оплат с заказов</div>
-                                            <div>{paymentOfOrders}</div>
+                                            <div>{paymentOrdersSum}</div>
                                             <div>Общая сумма оплат</div>
-                                            <div>{totalPayment}</div>
+                                            <div>{paymentTotalSum}</div>
                                         </div>
                                     </div>
                                     <div className={classes.summaryPlan}>
-                                        <div><span>План агента</span> <span>{totalPlan}</span></div>
-                                        <div><span>План остаток</span> <span>{leftPlan}</span></div>
-                                        <div><span>Долг по заказам</span> <span>{debtPlan}</span></div>
-                                        <div><span>Общая сумма долга</span> <span>{debtPlan}</span></div>
+                                        <div><span>План агента</span> <span>{planTotalSum}</span></div>
+                                        <div><span>План остаток</span> <span>{planLeftSum}</span></div>
+                                        <div><span>Долг по заказам</span> <span>{debtFromOrderSum}</span></div>
+                                        <div><span>Общая сумма долга</span> <span>{debtTotalSum}</span></div>
                                     </div>
                                 </div>}
                         </div>

@@ -22,6 +22,20 @@ export const listFilterSerializer = (query) => {
     }
 }
 
+export const summaryFilterSerializer = (query) => {
+    const {...defaultData} = query
+    const firstDayOfMonth = moment().format('YYYY-MM-01')
+    const lastDay = moment().daysInMonth()
+    const lastDayOfMonth = moment().format('YYYY-MM-' + lastDay)
+
+    return {
+        'begin_date': firstDayOfMonth,
+        'end_date': lastDayOfMonth,
+        'zone': _.get(defaultData, 'zone') || null,
+        'division': _.get(defaultData, 'division') || null
+    }
+}
+
 export const itemSerializer = (data, filterItem, id) => {
     const {...defaultData} = data
     const daysInMonth = moment(_.get(defaultData, 'end_date')).daysInMonth()

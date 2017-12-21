@@ -344,6 +344,7 @@ export const REMAINDER_DISCARD = '/stock/writeoff/'
 export const REMAINDER_RESERVED = '/stock/reserved_product/'
 
 export const STAT_AGENT_LIST = 'stats/agents/statistics/all/'
+export const STAT_AGENT_SUM = 'stats/agents/statistics/all/sum/'
 export const STAT_AGENT_ITEM = 'sales/order/'
 export const STAT_AGENT_GET_DOCUMENT = '/stats/agents/export/'
 

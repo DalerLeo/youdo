@@ -175,7 +175,7 @@ const enhance = compose(
             color: '#999'
         },
         itemList: {
-            marginTop: '20px'
+            margin: '15px 0'
         },
         convert: {
             margin: '10px 0',
@@ -201,7 +201,7 @@ const enhance = compose(
         },
         commentField: {
             padding: '5px 20px',
-            fontSize: '16px !important',
+            fontSize: '14px',
             textAlign: 'left',
             width: '50%',
             float: 'left'
@@ -563,7 +563,7 @@ const TransactionCreateDialog = enhance((props) => {
                 </form>
                 <div className={classes.bottomButton}>
                     {isSalary && <div className={classes.commentField}>
-                        Общая сумма заказа: <b>{numberFormat(totalStafAmount, _.get(cashbox, ['currency', 'name']))}</b>
+                        Сумма расхода: <b>{numberFormat(totalStafAmount, _.get(cashbox, ['currency', 'name']))}</b>
                     </div>}
                     <FlatButton
                         label="Сохранить"

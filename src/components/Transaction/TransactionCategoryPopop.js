@@ -112,14 +112,14 @@ const TransactionCategoryPopop = enhance((props) => {
     return (
         <Dialog
             modal={true}
-            contentStyle={{width: '450px', maxWidth: 'unset'}}
+            contentStyle={{width: '550px', maxWidth: 'unset'}}
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>Транзакции</span>
+                <span>Расходы на сотрудников</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -131,11 +131,11 @@ const TransactionCategoryPopop = enhance((props) => {
                 <div className={classes.inContent} style={{minHeight: 'initial'}}>
                     <div className={classes.list}>
                         <Row className="dottedList">
-                            <Col xs={7}>Клиент</Col>
+                            <Col xs={7}>Сотрудник</Col>
                             <Col xs={5}>Сумма</Col>
                         </Row>
                         {_.map(data, (item) => {
-                            const clientName = _.get(item, ['staff', 'firstName']) + _.get(item, ['staff', 'secondName'])
+                            const clientName = _.get(item, ['staff', 'firstName']) + ' ' + _.get(item, ['staff', 'secondName'])
                             const amount = numberFormat(_.get(item, 'amount'), _.get(item, ['currency', 'name']))
                             return (
                                 <Row key={_.get(item, 'id')} className='dottedList'>
