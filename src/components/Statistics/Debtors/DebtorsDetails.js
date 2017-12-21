@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
-import {Row, Col} from 'react-flexbox-grid'
+import {Row} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
 import {compose, withState} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
@@ -20,6 +20,10 @@ import dateFormat from '../../../helpers/dateFormat'
 
 const enhance = compose(
     injectSheet({
+        wrapper: {
+            margin: 'auto',
+            width: '1000px'
+        },
         loader: {
             width: '100%',
             padding: '100px 0',
@@ -55,11 +59,16 @@ const enhance = compose(
             extend: 'list',
             background: '#fcfcfc !important',
             position: 'relative',
-            cursor: 'auto',
-            '& > div:first-child': {
-                fontWeight: '600',
-                cursor: 'pointer'
-            }
+            cursor: 'auto'
+        },
+        header: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            fontWeight: 'bold',
+            textTransform: 'uppercase',
+            padding: '0 10px 0 30px',
+            height: '60px'
         },
         editButton: {
             height: '55px',
@@ -77,12 +86,22 @@ const enhance = compose(
             display: 'block !important',
             borderTop: '1px #efefef solid',
             '& .dottedList': {
+                height: '50px',
+                padding: '0 30px',
+                margin: '0',
                 '&:first-child': {
                     color: '#666',
                     fontWeight: '600'
                 },
                 '& > div': {
-                    padding: '0 5px'
+                    padding: '0 5px',
+                    '&:first-child': {
+                        paddingLeft: '0'
+                    },
+                    '&:last-child': {
+                        paddingRight: '0',
+                        textAlign: 'right'
+                    }
                 },
                 '& > div:nth-child(2)': {
                     textAlign: 'left'
@@ -188,13 +207,13 @@ const DebtorsDetails = enhance((props) => {
                 <div style={{flexBasis: '9%', maxWidth: '9%'}}>{detailId}</div>
                 <div style={{flexBasis: '21%', maxWidth: '21%'}}>{createdDate}</div>
                 <div style={{flexBasis: '14%', maxWidth: '14%'}}>{(paymentType === 'cash') ? 'Нал.' : 'Переч.'}</div>
-                <div style={{flexBasis: '19%', maxWidth: '19%'}}>{totalPrice}</div>
-                <div style={{flexBasis: '15%', maxWidth: '15%'}}>{totalBalance}</div>
-                <div style={{flexBasis: '15%', maxWidth: '15%'}}>{totalExpected}</div>
+                <div style={{flexBasis: '19%', maxWidth: '19%', textAlign: 'right'}}>{totalPrice}</div>
+                <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>{totalBalance}</div>
+                <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>{totalExpected}</div>
                 <div style={{flexBasis: '7%', maxWidth: '7%', paddingRight: '0'}}>
                     <IconButton
                         disableTouchRipple={true}
-                        onTouchTap={() => { statDebtorsDialog.handleOpenStatDebtorsDialog(id) }}>
+                        onTouchTap={() => { statDebtorsDialog.handleOpenStatDebtorsDialog(detailId) }}>
                         <List color="#12aaeb"/>
                     </IconButton>
                 </div>
@@ -203,27 +222,26 @@ const DebtorsDetails = enhance((props) => {
     })
     const ordersArray = _.map(_.get(detailData, 'data'), item => _.get(item, 'id'))
     const client = _.get(detail, ['client', 'name'])
-    const deptSum = numberFormat(_.get(detail, 'debtSum'), getConfig('PRIMARY_CURRENCY'))
-    const expectSum = numberFormat(_.get(detail, 'expectSum'), getConfig('PRIMARY_CURRENCY'))
 
     return (
-        <div>
-            <Paper zDepth={1} className={classes.expandedList}>
-                <Row onTouchTap={() => { handleOpenCloseDetail.handleCloseDetail(id) }}>
-                    <Col xs={4}>{client}</Col>
-                    <Col xs={2}>{deptSum}</Col>
-                    <Col xs={2}>{expectSum}</Col>
-                    <Col xs={2}>{deptSum}</Col>
-                    <Col xs={2}>{expectSum}</Col>
-                </Row>
+        <div className={classes.wrapper}>
+            <Paper zDepth={2} className={classes.expandedList}>
+                <div className={classes.header}>
+                    <span>{client}</span>
+                    <IconButton
+                        onTouchTap={handleOpenCloseDetail.handleCloseDetail}
+                        disableTouchRipple={true}>
+                        <CloseButton color="#666"/>
+                    </IconButton>
+                </div>
                 <div className={classes.detail}>
                     <Row className="dottedList">
                         <div style={{flexBasis: '9%', maxWidth: '9%'}}>№ заказа</div>
                         <div style={{flexBasis: '21%', maxWidth: '21%'}}>Ожидаемая дата оплаты</div>
                         <div style={{flexBasis: '14%', maxWidth: '14%'}}>Тип оплаты</div>
-                        <div style={{flexBasis: '19%', maxWidth: '19%'}}>Сумма заказа</div>
-                        <div style={{flexBasis: '15%', maxWidth: '15%'}}>Оплачено</div>
-                        <div style={{flexBasis: '15%', maxWidth: '15%'}}>Долг</div>
+                        <div style={{flexBasis: '19%', maxWidth: '19%', textAlign: 'right'}}>Сумма заказа</div>
+                        <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>Оплачено</div>
+                        <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>Долг</div>
                         <div style={{flexBasis: '7%', maxWidth: '7%', paddingRight: '0'}}>
                             <div className={classes.editButton}>
                                 <ToolTip position="left" text={'Изменить дату оплаты'}>

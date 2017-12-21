@@ -11,6 +11,7 @@ import {
     statDebtorsOrderItemFetchAction,
     orderMultiUpdateAction
 } from '../../actions/statDebtors'
+import {currencyListFetchAction} from '../../actions/currency'
 import filterHelper from '../../helpers/filter'
 import {StatDebtorsGridList} from '../../components/Statistics'
 import {STAT_DEBTORS_FILTER_KEY} from '../../components/Statistics/Debtors/DebtorsGridList'
@@ -33,6 +34,8 @@ const enhance = compose(
         const statLoading = _.get(state, ['statisticsDebtors', 'data', 'loading'])
         const list = _.get(state, ['statisticsDebtors', 'list', 'data'])
         const listLoading = _.get(state, ['statisticsDebtors', 'list', 'loading'])
+        const currencyList = _.get(state, ['currency', 'list', 'data', 'results'])
+        const currencyListLoading = _.get(state, ['currency', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
         const filter = filterHelper(list, pathname, query)
         const filterItem = filterHelper(detail, pathname, query)
@@ -40,6 +43,8 @@ const enhance = compose(
         return {
             list,
             listLoading,
+            currencyList,
+            currencyListLoading,
             detail,
             detailLoading,
             filter,
@@ -58,6 +63,19 @@ const enhance = compose(
     }, ({dispatch, filter}) => {
         dispatch(statDebtorsListFetchAction(filter))
     }),
+
+    withPropsOnChange((props, nextProps) => {
+        const except = {
+            page: null,
+            pageSize: null,
+            search: null,
+            division: null
+        }
+        return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
+    }, ({dispatch, filter}) => {
+        dispatch(currencyListFetchAction(filter))
+    }),
+
     withPropsOnChange((props, nextProps) => {
         const except = {
             page: null,
@@ -147,6 +165,8 @@ const StatDebtorsList = enhance((props) => {
         location,
         list,
         listLoading,
+        currencyList,
+        currencyListLoading,
         detail,
         detailLoading,
         detailOrder,
@@ -154,11 +174,11 @@ const StatDebtorsList = enhance((props) => {
         filter,
         layout,
         statData,
-        statLoading,
-        params
+        statLoading
     } = props
 
-    const detailId = _.toInteger(_.get(params, 'statDebtorsId'))
+    const detailId = _.toInteger(_.get(location, ['query', 'statDebtorsId']))
+    const orderId = _.toInteger(_.get(location, ['query', 'orderId']))
     const openDetailId = _.toInteger(_.get(location, ['query', 'detailId']))
     const openStatDebtorsDialog = _.toInteger(_.get(location, ['query', 'orderId']))
     const division = _.get(location, ['query', 'division'])
@@ -173,7 +193,9 @@ const StatDebtorsList = enhance((props) => {
         statData: statData || {},
         statLoading,
         data: _.get(list, 'results') || {},
-        listLoading
+        listLoading,
+        currencyList,
+        currencyListLoading
     }
 
     const initialValues = {
@@ -184,6 +206,7 @@ const StatDebtorsList = enhance((props) => {
     const detailData = {
         openDetailId: openDetailId,
         id: detailId,
+        orderId: orderId,
         data: _.get(detail, 'results') || {},
         detailLoading,
         detailOrder: _.get(detailOrder, 'data') || {},
