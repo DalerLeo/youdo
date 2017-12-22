@@ -334,9 +334,10 @@ const Layout = enhance((props) => {
         handleSendConfirmDialog: props.handleSendConfirmDialog,
         handleOpenNotificationBar: props.handleOpenNotificationBar
     }
+    const uniqList = _.uniqBy(list, 'id')
     const notificationsCount = _.get(notificationsList, 'count')
     const currentListCount = _.get(notificationsList, ['results', 'length'])
-    const notificationListExp = _.map(_.uniqBy(list, 'id'), (item) => {
+    const notificationListExp = _.map(uniqList, (item) => {
         const id = _.get(item, 'id')
         const title = formattedType[_.get(item, ['template', 'name'])]
         const text = _.get(item, 'text')

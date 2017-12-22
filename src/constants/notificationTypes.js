@@ -6,5 +6,5 @@ export const formattedType = {
     supply_accepted: 'Приемка поставки',
     order_ready: 'Заказ готов',
     order_delivered: 'Заказ доставлен',
-    order_request: 'Запрос заказа'
+    order_request: 'Запрос к производству'
 }
