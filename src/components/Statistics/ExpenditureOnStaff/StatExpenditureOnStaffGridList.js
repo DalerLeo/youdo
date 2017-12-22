@@ -7,7 +7,7 @@ import Container from '../../Container/index'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import {Field} from 'redux-form'
-import {DateToDateField} from '../../ReduxForm'
+import {DateToDateField, ExpensiveCategoryMultiSearchField} from '../../ReduxForm'
 import StatSideMenu from '../StatSideMenu'
 import ExpenditureTransactionDialog from '../ExpenditureOnStaff/ExpenditureTransactionDialog'
 import Loader from '../../Loader'
@@ -19,7 +19,7 @@ import NotFound from '../../Images/not-found.png'
 import {StatisticsFilterExcel} from '../../Statistics'
 
 export const STAT_EXPENDITURE_ON_STAFF_FILTER_KEY = {
-    DIVISION: 'division',
+    CATEGORY_EXPENSE: 'categoryExpense',
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate'
 }
@@ -241,6 +241,12 @@ const StatExpenditureOnStaffGridList = enhance((props) => {
                 name="date"
                 component={DateToDateField}
                 label="Диапазон дат"
+                fullWidth={true}/>
+            <Field
+                className={classes.inputFieldCustom}
+                name="categoryExpense"
+                component={ExpensiveCategoryMultiSearchField}
+                label="Категории расходов"
                 fullWidth={true}/>
         </div>
     )

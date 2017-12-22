@@ -4,6 +4,7 @@ import moment from 'moment'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
+import {joinArray, splitToArray} from '../../helpers/joinSplitValues'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import filterHelper from '../../helpers/filter'
 import {StatExpenditureOnStaffGridList} from '../../components/Statistics'
@@ -65,8 +66,8 @@ const enhance = compose(
         const prevOpen = toBoolean(_.get(props, ['localation', 'query', [OPEN_TRANSACTION_DIALOG]]))
         const nextOpen = toBoolean(_.get(nextProps, ['localation', 'query', [OPEN_TRANSACTION_DIALOG]]))
         return prevOpen !== nextOpen && nextOpen
-    }, ({dispatch}) => {
-        dispatch(getTransactionData())
+    }, ({dispatch, filter}) => {
+        dispatch(getTransactionData(filter))
     }),
 
     withHandlers({
@@ -75,11 +76,14 @@ const enhance = compose(
 
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
+            const categoryExpense = _.get(filterForm, ['values', 'categoryExpense']) || null
+
             filter.filterBy({
                 [STAT_EXPENDITURE_ON_STAFF_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
-                [STAT_EXPENDITURE_ON_STAFF_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
+                [STAT_EXPENDITURE_ON_STAFF_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD'),
+                [STAT_EXPENDITURE_ON_STAFF_FILTER_KEY.CATEGORY_EXPENSE]: joinArray(categoryExpense)
 
-            })
+        })
         },
         handleGetDocument: props => () => {
             const {dispatch, filter} = props
@@ -117,6 +121,7 @@ const StatExpenditureOnStaffList = enhance((props) => {
     const firstDayOfMonth = _.get(location, ['query', 'fromDate']) || moment().format('YYYY-MM-01')
     const lastDay = moment().daysInMonth()
     const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
+    const categoryExpense = !_.isNull(_.get(location, ['query', 'categoryExpense'])) && _.get(location, ['query', 'categoryExpense'])
 
     const listData = {
         data: _.get(list, 'results'),
@@ -126,6 +131,7 @@ const StatExpenditureOnStaffList = enhance((props) => {
         return _.get(item, 'id') === detailId
     })
     const filterDateRange = {
+        categoryExpense: categoryExpense && splitToArray(categoryExpense),
         'fromDate': _.get(filterForm, ['values', 'date', 'fromDate']) || null,
         'toDate': _.get(filterForm, ['values', 'date', 'toDate']) || null
     }
