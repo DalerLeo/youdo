@@ -111,7 +111,7 @@ export const addProductsListAction = (filter, productType) => {
         page_size: _.get(filter.getParams(), 'pdPageSize'),
         page: _.get(filter.getParams(), 'pdPage'),
         search: _.get(filter.getParams(), 'pdSearch'),
-        type: productType
+        product_type: productType
     }
     const payload = axios()
         .get(API.REMAINDER_LIST, {params})
