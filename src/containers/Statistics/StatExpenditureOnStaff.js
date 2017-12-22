@@ -82,7 +82,6 @@ const enhance = compose(
                 [STAT_EXPENDITURE_ON_STAFF_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [STAT_EXPENDITURE_ON_STAFF_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD'),
                 [STAT_EXPENDITURE_ON_STAFF_FILTER_KEY.CATEGORY_EXPENSE]: joinArray(categoryExpense)
-
         })
         },
         handleGetDocument: props => () => {
