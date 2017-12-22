@@ -57,6 +57,7 @@ import {
     StatMarketList,
     StatFinanceList,
     StatOutcomeCategoryList,
+    StatExpenditureOnStaffList,
     StatRemainderList,
     StatCashboxList,
     StatProductMoveList,
@@ -622,6 +623,12 @@ export default {
         {
             path: ROUTES.STATISTICS_OUTCOME_CATEGORY_URL,
             component: userIsAdminChain(StatOutcomeCategoryList),
+            childRoutes: []
+        },
+        // Statistics/expenditureOnStaff
+        {
+            path: ROUTES.STATISTICS_EXPENDITURE_ON_STAFF_URL,
+            component: userIsAdminChain(StatExpenditureOnStaffList),
             childRoutes: []
         },
         // Statistics/ client income

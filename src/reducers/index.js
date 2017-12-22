@@ -341,6 +341,10 @@ const rootReducer = combineReducers({
     statOutcomeCategory: combineReducers({
         list: createThunkReducer(actionTypes.STAT_OUTCOME_CATEGORY_LIST)
     }),
+    statExpenditureOnStaff: combineReducers({
+        list: createThunkReducer(actionTypes.STAT_EXPENDITURE_ON_STAFF_LIST),
+        transactionData: createThunkReducer(actionTypes.STAT_EXPENDITURE_ON_STAFF_TRANSACTION_DATA)
+    }),
     stockReceive: combineReducers({
         list: createThunkReducer(actionTypes.STOCK_RECEIVE_LIST),
         print: createThunkReducer(actionTypes.ORDER_LIST_PRINT),
