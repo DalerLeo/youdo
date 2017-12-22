@@ -85,7 +85,7 @@ const enhance = compose(
             const {dispatch, filter} = props
             return dispatch(getTransactionData(filter))
         },
-        handleOpenTransactionDialog: props => (id) => {
+        handleOpenTransactionDialog: props => () => {
             const {filter, location: {pathname}} = props
             hashHistory.push({pathname, query: filter.getParams({[OPEN_TRANSACTION_DIALOG]: true})})
         },
