@@ -19,6 +19,9 @@ import {
     TextField,
     DateField
 } from '../ReduxForm'
+import {PROVIDER_CREATE_DIALOG_OPEN} from '../Provider'
+import {Link} from 'react-router'
+import * as ROUTES from '../../constants/routes'
 import toCamelCase from '../../helpers/toCamelCase'
 
 export const SUPPLY_CREATE_DIALOG_OPEN = 'openCreateDialog'
@@ -260,7 +263,14 @@ const SupplyCreateDialog = enhance((props) => {
                     <div className={classes.innerWrap}>
                         <div className={classes.inContent} style={{minHeight: '350px'}}>
                             <div className={classes.leftOrderPart}>
-                                <div className={classes.subTitleOrder}>Выбор поставщика</div>
+                                <div className={classes.subTitleOrder}>Выбор поставщика <Link style={{color: '#12aaeb'}}
+                                                                                              target="_blank"
+                                                                                              to={{
+                                                                                                  pathname: [ROUTES.PROVIDER_LIST_URL],
+                                                                                                  query: {[PROVIDER_CREATE_DIALOG_OPEN]: true}
+                                                                                              }}>
+                                    + добавить
+                                </Link></div>
                                 <div className={classes.selectContent}>
                                     <Field
                                         name="provider"

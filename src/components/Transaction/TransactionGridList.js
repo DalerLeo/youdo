@@ -81,6 +81,17 @@ const enhance = compose(
         },
         title: {
             fontWeight: '600',
+            maxWidth: '70px',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            overflow: 'hidden',
+            '&:hover': {
+                overflow: 'unset',
+                maxWidth: 'unset',
+                textOverflow: 'ellipsis',
+                backgroundColor: '#f2f5f8',
+                zIndex: '1'
+            },
             '& span': {
                 fontSize: '11px !important',
                 display: 'block',
@@ -169,7 +180,7 @@ const TransactionGridList = enhance((props) => {
             }}
                  style={isActive ? {backgroundColor: '#ffffff'} : {backgroundColor: '#f2f5f8'}}>
                 <div>
-                    <div className={classes.title}>{name}</div>
+                    <div className={classes.title}>{name}dasasd dasdas</div>
                     <div className={item.id === cashboxData.cashboxId}>
                         {type === 'bank'
                             ? <div className={classes.flex}>
@@ -206,7 +217,7 @@ const TransactionGridList = enhance((props) => {
                                      cashboxData.handleClickCashbox(AllCashboxId)
                                  }}
                                  style={_.get(cashboxData, 'cashboxId') === AllCashboxId ? {backgroundColor: '#ffffff'} : {backgroundColor: '#f2f5f8'}}>
-                                <div className={classes.title}>
+                                <div className={classes.title} style={{maxWidth: 'unset'}}>
                                     Общий объем
                                     <span>во всех кассах</span>
                                 </div>
