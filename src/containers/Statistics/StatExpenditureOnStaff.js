@@ -46,9 +46,7 @@ const enhance = compose(
         }
     }),
     withPropsOnChange((props, nextProps) => {
-        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest() &&
-            (!_.get(props, ['params', 'statExpenditureOnStaffId'])) &&
-            (!_.get(nextProps, ['params', 'statExpenditureOnStaffId']))
+        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
         dispatch(statExpenditureOnStaffListFetchAction(filter))
     }),
@@ -63,11 +61,14 @@ const enhance = compose(
         }
     }),
     withPropsOnChange((props, nextProps) => {
-        const prevOpen = toBoolean(_.get(props, ['localation', 'query', [OPEN_TRANSACTION_DIALOG]]))
-        const nextOpen = toBoolean(_.get(nextProps, ['localation', 'query', [OPEN_TRANSACTION_DIALOG]]))
-        return prevOpen !== nextOpen && nextOpen
-    }, ({dispatch, filter}) => {
-        dispatch(getTransactionData(filter))
+        const prevOpen = toBoolean(_.get(props, ['location', 'query', 'openTransactionDialog']))
+        const nextOpen = toBoolean(_.get(nextProps, ['location', 'query', 'openTransactionDialog']))
+        return prevOpen !== nextOpen && nextOpen === true
+    }, ({dispatch, filter, location}) => {
+        const nextOpen = toBoolean(_.get(location, ['query', [OPEN_TRANSACTION_DIALOG]]))
+        if (nextOpen) {
+            dispatch(getTransactionData(filter))
+        }
     }),
 
     withHandlers({
@@ -82,10 +83,11 @@ const enhance = compose(
                 [STAT_EXPENDITURE_ON_STAFF_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [STAT_EXPENDITURE_ON_STAFF_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD'),
                 [STAT_EXPENDITURE_ON_STAFF_FILTER_KEY.CATEGORY_EXPENSE]: joinArray(categoryExpense)
-        })
+            })
         },
         handleGetDocument: props => () => {
             const {dispatch, filter} = props
+            // You must change action function
             return dispatch(getTransactionData(filter))
         },
         handleOpenTransactionDialog: props => () => {

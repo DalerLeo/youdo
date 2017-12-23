@@ -202,27 +202,22 @@ const StatExpenditureOnStaffGridList = enhance((props) => {
 
     const headers = (
         <Row style={headerStyle} className="dottedList">
-            <Col xs={3}>Расходы на персонал</Col>
             <Col xs={3}>Сотрудник</Col>
-            <Col xs={3}>Процентное соотношение</Col>
+            <Col xs={6}>Процентное соотношение</Col>
             <Col xs={3} style={{justifyContent: 'flex-end'}}>Сумма ({currentCurrency})</Col>
         </Row>
     )
 
     const list = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const name = _.get(item, 'name')
         const employee = _.get(item, ['employee', 'name']) || 'Не указан'
         const percent = _.get(item, 'percent')
         const amount = numberFormat(Math.abs(_.get(item, 'amount')), getConfig('PRIMARY_CURRENCY'))
 
         return (
-            <Row key={id + percent} className="dottedList" onClick={() => {
-                transactionData.handleOpenTransactionDialog(id)
-            }}>
-                <Col xs={3}>{name}</Col>
+            <Row key={id + percent} className="dottedList" onClick={() => { transactionData.handleOpenTransactionDialog() }}>
                 <Col xs={3}>{employee}</Col>
-                <Col xs={3}>
+                <Col xs={6}>
                     <LinearProgress
                         color="#58bed9"
                         mode="determinate"

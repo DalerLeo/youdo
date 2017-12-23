@@ -38,3 +38,20 @@ export const statOutcomeCategoryItemFetchAction = (filter, filterItem, id) => {
         payload
     }
 }
+
+export const getTransactionData = (filter) => {
+    const params = serializers.transactionSerializer(filter.getParams())
+    const payload = axios()
+        .get(API.STAT_FINANCE_LIST, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STAT_OUTCOME_CATEGORY_TRANSACTION_DATA,
+        payload
+    }
+}

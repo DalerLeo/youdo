@@ -1,6 +1,7 @@
 import React from 'react'
 import _ from 'lodash'
 import moment from 'moment'
+import {hashHistory} from 'react-router'
 import {connect} from 'react-redux'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
@@ -10,11 +11,13 @@ import {STAT_OUTCOME_CATEGORY_FILTER_KEY} from '../../components/Statistics/Outc
 import {
     statOutcomeCategoryListFetchAction,
     statOutcomeCategoryItemFetchAction,
+    getTransactionData,
     getDocumentAction
 } from '../../actions/statOutcomeCategory'
+import toBoolean from '../../helpers/toBoolean'
 
 const ZERO = 0
-
+const OPEN_TRANSACTION_DIALOG = 'openTransactionDialog'
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -23,6 +26,8 @@ const enhance = compose(
         const detailLoading = _.get(state, ['statOutcomeCategory', 'item', 'loading'])
         const list = _.get(state, ['statOutcomeCategory', 'list', 'data'])
         const listLoading = _.get(state, ['statOutcomeCategory', 'list', 'loading'])
+        const transactionData = _.get(state, ['statOutcomeCategory', 'transactionData', 'data'])
+        const transactionDataLoading = _.get(state, ['statOutcomeCategory', 'transactionData', 'loading'])
         const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
         const filter = filterHelper(list, pathname, query)
         const filterItem = filterHelper(detail, pathname, query)
@@ -31,6 +36,8 @@ const enhance = compose(
             listLoading,
             detail,
             detailLoading,
+            transactionData,
+            transactionDataLoading,
             filter,
             query,
             filterForm,
@@ -54,6 +61,16 @@ const enhance = compose(
             dispatch(statOutcomeCategoryItemFetchAction(filter, filterItem, statOutcomeCategoryId))
         }
     }),
+    withPropsOnChange((props, nextProps) => {
+        const prevOpen = toBoolean(_.get(props, ['location', 'query', 'openTransactionDialog']))
+        const nextOpen = toBoolean(_.get(nextProps, ['location', 'query', 'openTransactionDialog']))
+        return prevOpen !== nextOpen && nextOpen === true
+    }, ({dispatch, filter, location}) => {
+        const nextOpen = toBoolean(_.get(location, ['query', [OPEN_TRANSACTION_DIALOG]]))
+        if (nextOpen) {
+            dispatch(getTransactionData(filter))
+        }
+    }),
 
     withHandlers({
         handleSubmitFilterDialog: props => () => {
@@ -70,6 +87,14 @@ const enhance = compose(
         handleGetDocument: props => () => {
             const {dispatch, filter} = props
             return dispatch(getDocumentAction(filter))
+        },
+        handleOpenTransactionDialog: props => () => {
+            const {filter, location: {pathname}} = props
+            hashHistory.push({pathname, query: filter.getParams({[OPEN_TRANSACTION_DIALOG]: true})})
+        },
+        handleCloseTransactionDialog: props => () => {
+            const {filter, location: {pathname}} = props
+            hashHistory.push({pathname, query: filter.getParams({[OPEN_TRANSACTION_DIALOG]: false})})
         }
     })
 )
@@ -84,6 +109,8 @@ const StatOutcomeCategoryList = enhance((props) => {
         layout,
         filterItem,
         filterForm,
+        transactionData,
+        transactionDataLoading,
         location,
         params
     } = props
@@ -92,6 +119,7 @@ const StatOutcomeCategoryList = enhance((props) => {
     const firstDayOfMonth = _.get(location, ['query', 'fromDate']) || moment().format('YYYY-MM-01')
     const lastDay = moment().daysInMonth()
     const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
+    const openTransactionDialog = toBoolean(_.get(location, ['query', [OPEN_TRANSACTION_DIALOG]]))
 
     const listData = {
         data: _.get(list, 'results'),
@@ -123,6 +151,13 @@ const StatOutcomeCategoryList = enhance((props) => {
             toDate: moment(lastDayOfMonth)
         }
     }
+    const transactionDialog = {
+        open: openTransactionDialog,
+        data: _.get(transactionData, 'results'),
+        loading: transactionDataLoading,
+        handleOpenTransactionDialog: props.handleOpenTransactionDialog,
+        handleCloseTransactionDialog: props.handleCloseTransactionDialog
+    }
 
     return (
         <Layout {...layout}>
@@ -134,6 +169,7 @@ const StatOutcomeCategoryList = enhance((props) => {
                 getDocument={getDocument}
                 initialValues={initialValues}
                 filterForm={filterForm}
+                transactionData={transactionDialog}
             />
         </Layout>
     )

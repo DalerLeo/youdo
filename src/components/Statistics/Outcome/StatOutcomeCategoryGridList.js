@@ -12,6 +12,7 @@ import StatSideMenu from '../StatSideMenu'
 import Loader from '../../Loader'
 import LinearProgress from 'material-ui/LinearProgress'
 import Pagination from '../../GridList/GridListNavPagination/index'
+import ExpenditureTransactionDialog from '../ExpenditureOnStaff/ExpenditureTransactionDialog'
 import numberFormat from '../../../helpers/numberFormat.js'
 import getConfig from '../../../helpers/getConfig'
 import NotFound from '../../Images/not-found.png'
@@ -186,7 +187,8 @@ const StatOutcomeCategoryGridList = enhance((props) => {
         filter,
         handleSubmitFilterDialog,
         getDocument,
-        initialValues
+        initialValues,
+        transactionData
     } = props
 
     const currentCurrency = getConfig('PRIMARY_CURRENCY')
@@ -213,7 +215,7 @@ const StatOutcomeCategoryGridList = enhance((props) => {
         const amount = numberFormat(Math.abs(_.get(item, 'amount')), getConfig('PRIMARY_CURRENCY'))
 
         return (
-            <Row key={id} className="dottedList">
+            <Row key={id} className="dottedList" onClick={() => { transactionData.handleOpenTransactionDialog() }}>
                 <Col xs={3}>{name}</Col>
                 <Col xs={6}>
                     <LinearProgress
@@ -280,6 +282,12 @@ const StatOutcomeCategoryGridList = enhance((props) => {
     return (
         <Container>
             {page}
+            <ExpenditureTransactionDialog
+                data={transactionData.data}
+                open={transactionData.open}
+                loading={transactionData.loading}
+                onClose={transactionData.handleCloseTransactionDialog}
+            />
         </Container>
     )
 })
