@@ -10,13 +10,11 @@ import {StatOutcomeCategoryGridList} from '../../components/Statistics'
 import {STAT_OUTCOME_CATEGORY_FILTER_KEY} from '../../components/Statistics/Outcome/StatOutcomeCategoryGridList'
 import {
     statOutcomeCategoryListFetchAction,
-    statOutcomeCategoryItemFetchAction,
     getTransactionData,
     getDocumentAction
 } from '../../actions/statOutcomeCategory'
 import toBoolean from '../../helpers/toBoolean'
 
-const ZERO = 0
 const OPEN_TRANSACTION_DIALOG = 'openTransactionDialog'
 const enhance = compose(
     connect((state, props) => {
@@ -30,7 +28,7 @@ const enhance = compose(
         const transactionDataLoading = _.get(state, ['statOutcomeCategory', 'transactionData', 'loading'])
         const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
         const filter = filterHelper(list, pathname, query)
-        const filterItem = filterHelper(detail, pathname, query)
+        const filterTransaction = filterHelper(transactionData, pathname, query)
         return {
             list,
             listLoading,
@@ -41,7 +39,7 @@ const enhance = compose(
             filter,
             query,
             filterForm,
-            filterItem
+            filterTransaction
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -53,22 +51,13 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const statOutcomeCategoryId = _.get(nextProps, ['params', 'statOutcomeCategoryId']) || ZERO
-        return statOutcomeCategoryId > ZERO && _.get(props, ['params', 'statOutcomeCategoryId']) !== statOutcomeCategoryId
-    }, ({dispatch, params, filter, filterItem}) => {
-        const statOutcomeCategoryId = _.toInteger(_.get(params, 'statOutcomeCategoryId'))
-        if (statOutcomeCategoryId > ZERO) {
-            dispatch(statOutcomeCategoryItemFetchAction(filter, filterItem, statOutcomeCategoryId))
-        }
-    }),
-    withPropsOnChange((props, nextProps) => {
         const prevOpen = toBoolean(_.get(props, ['location', 'query', 'openTransactionDialog']))
         const nextOpen = toBoolean(_.get(nextProps, ['location', 'query', 'openTransactionDialog']))
         return prevOpen !== nextOpen && nextOpen === true
-    }, ({dispatch, filter, location}) => {
+    }, ({dispatch, filter, filterTransaction, location}) => {
         const nextOpen = toBoolean(_.get(location, ['query', [OPEN_TRANSACTION_DIALOG]]))
         if (nextOpen) {
-            dispatch(getTransactionData(filter))
+            dispatch(getTransactionData(filter, filterTransaction))
         }
     }),
 
@@ -103,19 +92,15 @@ const StatOutcomeCategoryList = enhance((props) => {
     const {
         list,
         listLoading,
-        detail,
-        detailLoading,
         filter,
         layout,
-        filterItem,
         filterForm,
         transactionData,
         transactionDataLoading,
         location,
-        params
+        filterTransaction
     } = props
 
-    const detailId = _.toInteger(_.get(params, 'statOutcomeCategoryId'))
     const firstDayOfMonth = _.get(location, ['query', 'fromDate']) || moment().format('YYYY-MM-01')
     const lastDay = moment().daysInMonth()
     const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
@@ -125,23 +110,7 @@ const StatOutcomeCategoryList = enhance((props) => {
         data: _.get(list, 'results'),
         listLoading
     }
-    const outcomeCategoryDetail = _.filter(_.get(list, 'results'), (item) => {
-        return _.get(item, 'id') === detailId
-    })
-    const filterDateRange = {
-        'fromDate': _.get(filterForm, ['values', 'date', 'fromDate']) || null,
-        'toDate': _.get(filterForm, ['values', 'date', 'toDate']) || null
-    }
-    const detailData = {
-        filter: filterItem,
-        id: detailId,
-        data: detail,
-        outcomeCategoryDetail,
-        detailLoading,
-        handleCloseDetail: props.handleCloseDetail,
-        filterDateRange
 
-    }
     const getDocument = {
         handleGetDocument: props.handleGetDocument
     }
@@ -165,11 +134,11 @@ const StatOutcomeCategoryList = enhance((props) => {
                 filter={filter}
                 handleSubmitFilterDialog={props.handleSubmitFilterDialog}
                 listData={listData}
-                detailData={detailData}
                 getDocument={getDocument}
                 initialValues={initialValues}
                 filterForm={filterForm}
                 transactionData={transactionDialog}
+                filterTransaction={filterTransaction}
             />
         </Layout>
     )

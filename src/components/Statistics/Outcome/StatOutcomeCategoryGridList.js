@@ -185,6 +185,7 @@ const StatOutcomeCategoryGridList = enhance((props) => {
         classes,
         listData,
         filter,
+        filterTransaction,
         handleSubmitFilterDialog,
         getDocument,
         initialValues,
@@ -256,7 +257,7 @@ const StatOutcomeCategoryGridList = enhance((props) => {
                             initialValues={initialValues}
                             handleGetDocument={getDocument.handleGetDocument}
                         />
-                        <Pagination filter={filter}/>
+                        <Pagination filter={filterTransaction}/>
                         {listLoading
                             ? <div className={classes.tableWrapper}>
                                 <div className={classes.loader}>
@@ -287,6 +288,7 @@ const StatOutcomeCategoryGridList = enhance((props) => {
                 open={transactionData.open}
                 loading={transactionData.loading}
                 onClose={transactionData.handleCloseTransactionDialog}
+                filterTransaction={filterTransaction}
             />
         </Container>
     )

@@ -17,7 +17,7 @@ import getConfig from '../../../helpers/getConfig'
 import dateFormat from '../../../helpers/dateFormat'
 import numberFormat from '../../../helpers/numberFormat'
 import * as ROUTES from '../../../constants/routes'
-
+import GridListNavPagination from '../../../components/GridList/GridListNavPagination'
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
         loader: {
@@ -44,7 +44,7 @@ const enhance = compose(
 
 const ZERO = 0
 const ExpenditureTransactionDialog = enhance((props) => {
-    const {open, loading, onClose, classes, data} = props
+    const {open, loading, onClose, classes, data, filterTransaction} = props
 
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const list = _.map(data, (item) => {
@@ -114,7 +114,10 @@ const ExpenditureTransactionDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>Трансакции</span>
+                <span>Трансакции
+                <GridListNavPagination filter={filterTransaction}/>
+                </span>
+
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>

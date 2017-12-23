@@ -126,7 +126,7 @@ const enhance = compose(
         }
     }),
     lifecycle({
-        componentWillReceiveProps () {
+        componentWillReceiveProps() {
             const wrapper = this.refs.wrapper
             const firstChild = wrapper.firstChild
             const lastChild = wrapper.lastChild
@@ -181,12 +181,22 @@ const Dashboard = enhance((props) => {
     const orderChartDate = _.map(_.get(orderChart, 'data'), (item) => {
         return _.get(item, 'date')
     })
-    const orderChartSales = _.map(_.get(orderChart, 'data'), (item) => {
-        return _.toNumber(_.get(item, 'amount'))
+    const orderChartSalesCash = _.map(_.get(orderChart, 'data'), (item) => {
+        return _.toNumber(_.get(item, 'amountCash'))
     })
-    const orderChartSalesSum = _.sumBy(_.get(orderChart, 'data'), (item) => {
-        return _.toNumber(_.get(item, 'amount'))
+    const orderChartSalesBank = _.map(_.get(orderChart, 'data'), (item) => {
+        return _.toNumber(_.get(item, 'amountBank'))
     })
+    const orderChartSalesBankCash = _.map(_.get(orderChart, 'data'), (item) => {
+        return _.toNumber(_.get(item, 'amountBank')) + _.toNumber(_.get(item, 'amountCash'))
+    })
+    const orderChartSalesBankSum = _.sumBy(_.get(orderChart, 'data'), (item) => {
+        return _.toNumber(_.get(item, 'amountBank'))
+    })
+    const orderChartSalesCashSum = _.sumBy(_.get(orderChart, 'data'), (item) => {
+        return _.toNumber(_.get(item, 'amountCash'))
+    })
+    const orderChartSalesTotalSum = orderChartSalesCashSum + orderChartSalesBankSum
 
     // ORDERS & RETURNS //
     const orderReturnActive = _.get(ordersReturnsChart, 'active')
@@ -197,8 +207,11 @@ const Dashboard = enhance((props) => {
     const orderReturnDate = _.map(_.get(ordersReturnsChart, 'data'), (item, index) => {
         return index
     })
-    const orderChartReturnsSum = _.sumBy(_.get(ordersReturnsChart, 'data'), (item) => {
-        return _.toNumber(_.get(item, 'returns'))
+    let orderChartReturnsSum = 0
+    _.map(_.get(ordersReturnsChart, 'data'), (item) => {
+        if (_.get(item, 'returns')) {
+            orderChartReturnsSum += _.toNumber(_.get(item, 'returns'))
+        }
     })
 
     // AGENTS //
@@ -243,7 +256,7 @@ const Dashboard = enhance((props) => {
     const currencyListActive = _.get(currencyData, 'active')
 
     const noWidgets = !orderChartActive && !orderReturnActive && !agentsChartActive && !financeChartActive && !currencyListActive
-    const emptySales = _.isEmpty(orderChartSales) && !orderChartLoading
+    const emptySales = _.isEmpty(orderChartSalesCash) && !orderChartLoading
     const emptyOrders = _.isEmpty(orderChartReturns) && !orderReturnLoading
     const emptyAgents = _.isEmpty(agentsList) && !agentsChartLoading
     const emptyFinance = _.isEmpty(financeIncome) && _.isEmpty(financeExpense) && !financeChartLoading
@@ -284,9 +297,9 @@ const Dashboard = enhance((props) => {
                                 ? noData
                                 : <div className={classes.chart}>
                                     <div className={classes.chartStats}>
-                                        <div>Нал: {numberFormat(orderChartSalesSum, primaryCurrency)}</div>
-                                        <div>Пер: {numberFormat(orderChartSalesSum, primaryCurrency)}</div>
-                                        <div>Сумма: {numberFormat(orderChartSalesSum, primaryCurrency)}</div>
+                                        <div>Нал: {numberFormat(orderChartSalesCashSum, primaryCurrency)}</div>
+                                        <div>Пер: {numberFormat(orderChartSalesBankSum, primaryCurrency)}</div>
+                                        <div>Сумма: {numberFormat(orderChartSalesTotalSum, primaryCurrency)}</div>
                                     </div>
                                     {orderChartLoading || loading
                                         ? <div className={classes.chartLoader}>
@@ -296,8 +309,8 @@ const Dashboard = enhance((props) => {
                                             height={250}
                                             primaryText="Нал"
                                             secondaryText="Переч"
-                                            primaryValues={orderChartSales}
-                                            secondaryValues={orderChartSales}
+                                            primaryValues={orderChartSalesCash}
+                                            secondaryValues={orderChartSalesBank}
                                             tooltipTitle={orderChartDate}
                                         />}
                                 </div>}
@@ -311,7 +324,7 @@ const Dashboard = enhance((props) => {
                                 ? noData
                                 : <div className={classes.chart}>
                                     <div className={classes.chartStats}>
-                                        <div>Продажи: {numberFormat(orderChartSalesSum, primaryCurrency)}</div>
+                                        <div>Продажи: {numberFormat(orderChartSalesTotalSum, primaryCurrency)}</div>
                                         <div>Возвраты: {numberFormat(orderChartReturnsSum, primaryCurrency)}</div>
                                     </div>
                                     {orderReturnLoading || loading
@@ -322,7 +335,7 @@ const Dashboard = enhance((props) => {
                                             height={250}
                                             primaryText="Продажа"
                                             secondaryText="Возврат"
-                                            primaryValues={orderChartSales}
+                                            primaryValues={orderChartSalesBankCash}
                                             secondaryValues={orderChartReturns}
                                             tooltipTitle={orderReturnDate}
                                         />}
