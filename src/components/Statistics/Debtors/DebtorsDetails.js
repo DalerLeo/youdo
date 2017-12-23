@@ -4,14 +4,13 @@ import React from 'react'
 import {Row} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
 import {compose, withState} from 'recompose'
-import {reduxForm, Field} from 'redux-form'
+import {reduxForm, Field, reset} from 'redux-form'
 import {DateField} from '../../ReduxForm'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import Loader from '../../Loader'
 import ToolTip from '../../ToolTip'
 import Paper from 'material-ui/Paper'
-import List from 'material-ui/svg-icons/action/list'
 import EditButton from 'material-ui/svg-icons/editor/mode-edit'
 import CloseButton from 'material-ui/svg-icons/navigation/close'
 import numberFormat from '../../../helpers/numberFormat'
@@ -40,12 +39,6 @@ const enhance = compose(
         list: {
             cursor: 'pointer',
             transition: 'all 200ms ease',
-            '&:hover': {
-                background: '#fafafa',
-                '& div:last-child': {
-                    opacity: '1 !important'
-                }
-            },
             '&:last-child:after': {
                 display: 'none'
             }
@@ -91,16 +84,21 @@ const enhance = compose(
                 margin: '0',
                 '&:first-child': {
                     color: '#666',
-                    fontWeight: '600'
+                    fontWeight: '600',
+                    '& > div:last-child': {
+                        opacity: '1'
+                    }
                 },
                 '& > div': {
                     padding: '0 5px',
+
                     '&:first-child': {
                         paddingLeft: '0'
                     },
                     '&:last-child': {
                         paddingRight: '0',
-                        textAlign: 'right'
+                        textAlign: 'right',
+                        opacity: '0'
                     }
                 },
                 '& > div:nth-child(2)': {
@@ -111,6 +109,15 @@ const enhance = compose(
                 },
                 '&:last-child:after': {
                     display: 'none'
+                },
+                '&:first-child:hover': {
+                    background: 'unset'
+                },
+                '&:hover': {
+                    background: '#f2f5f8',
+                    '& > div:last-child': {
+                        opacity: '1'
+                    }
                 }
             }
         },
@@ -169,13 +176,22 @@ const enhance = compose(
             justifyContent: 'flex-end',
             padding: '8px',
             borderTop: '1px #efefef solid'
+        },
+        openDetails: {
+            position: 'absolute',
+            top: '0',
+            bottom: '0',
+            right: '0',
+            left: '0',
+            cursor: 'pointer'
         }
     }),
     reduxForm({
         form: 'StatDebtorsForm',
         enableReinitialize: true
     }),
-    withState('editDates', 'setEditDates', false)
+    withState('editDates', 'setEditDates', false),
+    withState('editId', 'setEditId', null)
 )
 
 const DebtorsDetails = enhance((props) => {
@@ -188,41 +204,52 @@ const DebtorsDetails = enhance((props) => {
         handleOpenCloseDetail,
         editDates,
         setEditDates,
-        handleSubmitMultiUpdate
+        handleSubmitMultiUpdate,
+        editId,
+        setEditId
     } = props
-
+    const resetDateField = () => {
+        return props.dispatch(reset('StatDebtorsForm'))
+    }
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const detail = _.find(_.get(listData, 'data'), (item) => {
         return _.get(item, ['client', 'id']) === id
     })
+    const ordersArray = editId ? [editId] : _.map(_.get(detailData, 'data'), item => _.get(item, 'id'))
+
     const detailList = _.map(_.get(detailData, 'data'), (item) => {
         const detailId = _.get(item, 'id')
-        const createdDate = dateFormat(_.get(item, 'createdDate'))
+        const paymentDate = dateFormat(_.get(item, 'paymentDate'))
         const totalPrice = numberFormat(_.get(item, 'totalPrice'), primaryCurrency)
         const totalBalance = numberFormat(_.get(item, 'totalBalance'), primaryCurrency)
         const paymentType = _.get(item, 'paymentType')
         const totalExpected = numberFormat(_.toInteger(_.get(item, 'totalPrice')) - _.toInteger(_.get(item, 'totalBalance')), primaryCurrency)
         return (
             <Row key={detailId} className="dottedList">
+                <a onClick={() => statDebtorsDialog.handleOpenStatDebtorsDialog(detailId)} className={classes.openDetails}></a>
                 <div style={{flexBasis: '9%', maxWidth: '9%'}}>{detailId}</div>
-                <div style={{flexBasis: '21%', maxWidth: '21%'}}>{createdDate}</div>
+                <div style={{flexBasis: '21%', maxWidth: '21%'}}>{paymentDate}</div>
                 <div style={{flexBasis: '14%', maxWidth: '14%'}}>{(paymentType === 'cash') ? 'Нал.' : 'Переч.'}</div>
                 <div style={{flexBasis: '19%', maxWidth: '19%', textAlign: 'right'}}>{totalPrice}</div>
                 <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>{totalBalance}</div>
                 <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>{totalExpected}</div>
                 <div style={{flexBasis: '7%', maxWidth: '7%', paddingRight: '0'}}>
-                    <IconButton
-                        disableTouchRipple={true}
-                        onTouchTap={() => { statDebtorsDialog.handleOpenStatDebtorsDialog(detailId) }}>
-                        <List color="#12aaeb"/>
-                    </IconButton>
+                    <ToolTip position="left" text={'Изменить дату оплаты'}>
+                        <IconButton
+                            onTouchTap={() => {
+                                setEditDates(true)
+                                setEditId(detailId)
+                                resetDateField()
+                            }}
+                            disableTouchRipple={true}>
+                            <EditButton color="#666"/>
+                        </IconButton>
+                    </ToolTip>
                 </div>
             </Row>
         )
     })
-    const ordersArray = _.map(_.get(detailData, 'data'), item => _.get(item, 'id'))
     const client = _.get(detail, ['client', 'name'])
-
     return (
         <div className={classes.wrapper}>
             <Paper zDepth={2} className={classes.expandedList}>
@@ -246,7 +273,11 @@ const DebtorsDetails = enhance((props) => {
                             <div className={classes.editButton}>
                                 <ToolTip position="left" text={'Изменить дату оплаты'}>
                                     <IconButton
-                                        onTouchTap={() => { setEditDates(true) }}
+                                        onTouchTap={() => {
+                                            setEditDates(true)
+                                            setEditId(null)
+                                            resetDateField()
+                                        }}
                                         disableTouchRipple={true}>
                                         <EditButton color="#666"/>
                                     </IconButton>
@@ -266,7 +297,7 @@ const DebtorsDetails = enhance((props) => {
             <div className={classes.editDatesDialog}>
                 <Paper zDepth={2} className={classes.dialogWrapper}>
                     <div className={classes.dialogHeader}>
-                        <span>Изменение даты оплаты</span>
+                        <span>Изменение даты оплаты {editId ? 'заказа: № ' + editId : 'всех заказов'}</span>
                         <IconButton
                             onTouchTap={() => { setEditDates(false) }}
                             className={classes.closeButton}>
