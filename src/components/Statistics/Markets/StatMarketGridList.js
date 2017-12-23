@@ -275,13 +275,18 @@ const enhance = compose(
             padding: '15px 0',
             color: '#666',
             '& > div': {
+                border: '1px solid #efefef',
+                borderRadius: '2px',
+                padding: '0 15px',
+                paddingBottom: '10px',
                 '& div': {
                     fontSize: '17px',
                     color: '#333',
                     fontWeight: '600'
                 },
                 '& span': {
-                    display: 'block'
+                    display: 'block',
+                    marginTop: '10px'
                 },
                 '&:last-child': {
                     textAlign: 'right'
@@ -356,6 +361,7 @@ const enhance = compose(
         fullScreen: {
             marginLeft: '10px !important'
         }
+
     }),
     withState('currentRow', 'updateRow', null),
     withState('expandedTable', 'setExpandedTable', false),
@@ -433,14 +439,19 @@ const StatMarketGridList = enhance((props) => {
         setExpandedTable
     } = props
 
+    const sumData = _.get(listData, 'sumData')
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const listLoading = _.get(listData, 'listLoading')
-    const sumIncome = _.get(listData, ['sumData', 'income'])
-    const sumFact = _.get(listData, ['sumData', 'fact'])
-    const sumReturn = _.get(listData, ['sumData', 'returnSum'])
-    const paid = _.get(listData, ['sumData', 'paid']) || ''
-    const dept = _.get(listData, ['sumData', 'dept'])
     const sumLoading = _.get(listData, 'sumLoading')
+
+    const salesFactSum = _.toNumber(_.get(sumData, 'salesFactSum'))
+    const salesTotalSum = _.toNumber(_.get(sumData, 'salesTotalSum'))
+    const returnOrdersSum = _.toNumber(_.get(sumData, 'returnOrdersSum'))
+    const returnTotalSum = _.toNumber(_.get(sumData, 'returnTotalSum'))
+    const paymentOrdersSum = _.toNumber(_.get(sumData, 'paymentOrdersSum'))
+    const paymentTotalSum = _.toNumber(_.get(sumData, 'paymentTotalSum'))
+    const debtTotalSum = _.toNumber(_.get(sumData, 'debtTotalSum'))
+    const debtOrdersSum = _.toNumber(_.get(sumData, 'deptOrdersSum'))
 
     const styleOnHover = {
         background: '#efefef'
@@ -480,10 +491,9 @@ const StatMarketGridList = enhance((props) => {
         const returnTotal = _.toNumber(_.get(item, 'returnTotal'))
         const paymentOrders = _.toNumber(_.get(item, 'paymentOrders'))
         const paymentTotal = _.toNumber(_.get(item, 'paymentTotal'))
-        const deptTotal = _.toNumber(_.get(item, 'deptTotal'))
+        const deptTotal = _.toNumber(_.get(item, 'debtTotal'))
         const deptOrders = _.toNumber(_.get(item, 'deptOrders'))
         const clientName = _.get(item, 'clientName')
-
         return (
             <tr
                 key={id}
@@ -544,25 +554,30 @@ const StatMarketGridList = enhance((props) => {
                                 <Loader size={0.75}/>
                             </div>
                             : <div className={classes.summary}>
-                                <div>
+                                <div className={classes.sumTitle}>
                                     <span>Сумма от продаж</span>
-                                    <div>{numberFormat(sumIncome, primaryCurrency)}</div>
-                                </div>
-                                <div>
+                                    <div>{numberFormat(salesTotalSum, primaryCurrency)}</div>
                                     <span>Фактические продажи</span>
-                                    <div>{numberFormat(sumFact, primaryCurrency)}</div>
+                                    <div>{numberFormat(salesFactSum, primaryCurrency)}</div>
                                 </div>
+
                                 <div>
                                     <span>Сумма возвратов</span>
-                                    <div>{numberFormat(sumReturn, primaryCurrency)}</div>
+                                    <div>{numberFormat(returnTotalSum, primaryCurrency)}</div>
+                                    <span>Сумма возвратов Fact</span>
+                                    <div>{numberFormat(returnOrdersSum, primaryCurrency)}</div>
                                 </div>
                                 <div>
-                                    <span>Оплачено</span>
-                                    <div>{numberFormat(paid, primaryCurrency)}</div>
+                                    <span>Оплачено total</span>
+                                    <div>{numberFormat(paymentTotalSum, primaryCurrency)}</div>
+                                    <span>Оплачено fact</span>
+                                    <div>{numberFormat(paymentOrdersSum, primaryCurrency)}</div>
                                 </div>
                                 <div>
-                                    <span>Долг</span>
-                                    <div>{numberFormat(dept, primaryCurrency)}</div>
+                                    <span>Долг order</span>
+                                    <div>{numberFormat(debtOrdersSum, primaryCurrency)}</div>
+                                    <span>Долг total</span>
+                                    <div>{numberFormat(debtTotalSum, primaryCurrency)}</div>
                                 </div>
                             </div>}
                         <div className={expandedTable ? classes.expandedTable : ''}>
