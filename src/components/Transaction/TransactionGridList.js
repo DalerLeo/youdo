@@ -12,6 +12,7 @@ import CashPayment from 'material-ui/svg-icons/maps/local-atm'
 import BankPayment from 'material-ui/svg-icons/action/credit-card'
 import Loader from '../Loader'
 import numberFormat from '../../helpers/numberFormat'
+import Tooltip from '../ToolTip'
 
 const enhance = compose(
     injectSheet({
@@ -36,11 +37,9 @@ const enhance = compose(
         },
         list: {
             borderBottom: '1px solid #efefef',
-            display: 'flex',
-            padding: '20px 30px',
+            padding: '20px 15px 15px 30px',
             margin: '0',
             cursor: 'pointer',
-            justifyContent: 'space-between',
             position: 'relative'
         },
         flex: {
@@ -81,17 +80,7 @@ const enhance = compose(
         },
         title: {
             fontWeight: '600',
-            maxWidth: '70px',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            overflow: 'hidden',
-            '&:hover': {
-                overflow: 'unset',
-                maxWidth: 'unset',
-                textOverflow: 'ellipsis',
-                backgroundColor: '#f2f5f8',
-                zIndex: '1'
-            },
+            maxWidth: '180px',
             '& span': {
                 fontSize: '11px !important',
                 display: 'block',
@@ -132,6 +121,11 @@ const enhance = compose(
             cursor: 'pointer',
             color: '#12aaeb !important',
             fontWeight: '600'
+        },
+        icons: {
+            position: 'absolute',
+            top: '21px',
+            right: '20px'
         }
     }),
 )
@@ -180,23 +174,17 @@ const TransactionGridList = enhance((props) => {
             }}
                  style={isActive ? {backgroundColor: '#ffffff'} : {backgroundColor: '#f2f5f8'}}>
                 <div>
-                    <div className={classes.title}>{name}dasasd dasdas</div>
-                    <div className={item.id === cashboxData.cashboxId}>
-                        {type === 'bank'
-                            ? <div className={classes.flex}>
-                                <BankPayment style={{height: '16px', width: '16px', color: '#6261b0'}}/>
-                                <span style={{marginLeft: '5px', color: '#6261b0'}}>банковский счет</span>
-                            </div>
-                            : <div className={classes.flex}>
-                                <CashPayment style={{height: '16px', width: '16px', color: '#12aaeb'}}/>
-                                <span style={{marginLeft: '5px', color: '#12aaeb'}}>наличные</span>
-                            </div>
-                        }
+                    <div className={classes.title}>{name}</div>
+                    <div className={classes.icons}>
+                        <Tooltip position="bottom" text={type === 'bank' ? 'банковский счет' : 'наличные'}>
+                            {type === 'bank'
+                                ? <BankPayment style={{height: '18px', width: '18px', color: '#6261b0'}}/>
+                                : <CashPayment style={{height: '18px', width: '18px', color: '#12aaeb'}}/>}
+                        </Tooltip>
                     </div>
                 </div>
-                <div className={classes.balance}>
-                    <div className={balance >= ZERO_NUM ? classes.green : classes.red}>{numberFormat(balance)}</div>
-                    <div>{currency}</div>
+                <div>
+                    <div className={balance >= ZERO_NUM ? classes.green : classes.red}>{numberFormat(balance, currency)}</div>
                 </div>
             </div>
         )
@@ -217,7 +205,7 @@ const TransactionGridList = enhance((props) => {
                                      cashboxData.handleClickCashbox(AllCashboxId)
                                  }}
                                  style={_.get(cashboxData, 'cashboxId') === AllCashboxId ? {backgroundColor: '#ffffff'} : {backgroundColor: '#f2f5f8'}}>
-                                <div className={classes.title} style={{maxWidth: 'unset'}}>
+                                <div className={classes.title}>
                                     Общий объем
                                     <span>во всех кассах</span>
                                 </div>
