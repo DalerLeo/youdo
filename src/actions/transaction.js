@@ -291,7 +291,7 @@ export const usersListFetchAction = () => {
     }
 }
 
-export const transactionCategoryPopopDataActoin = (id) => {
+export const transactionCategoryPopopDataAction = (id) => {
     const payload = axios()
         .get(API.TRANSACTION_CATEGORY_DATA_LIST, {params: {transaction: id}})
         .then((response) => {
