@@ -3,12 +3,12 @@ import sprintf from 'sprintf'
 import axios from '../helpers/axios'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
-import * as serializers from '../serializers/Statistics/statOutcomeCategorySerializer'
+import * as serializers from '../serializers/Statistics/statExpenditureOnStaffSerializer'
 
-export const statOutcomeCategoryListFetchAction = (filter) => {
+export const statExpenditureOnStaffListFetchAction = (filter) => {
     const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
-        .get((API.STAT_OUTCOME_CATEGORY_LIST), {params})
+        .get((API.STAT_EXPENDITURE_ON_STAFF_LIST), {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -17,15 +17,15 @@ export const statOutcomeCategoryListFetchAction = (filter) => {
         })
 
     return {
-        type: actionTypes.STAT_OUTCOME_CATEGORY_LIST,
+        type: actionTypes.STAT_EXPENDITURE_ON_STAFF_LIST,
         payload
     }
 }
 
-export const statOutcomeCategoryItemFetchAction = (filter, filterItem, id) => {
+export const statExpenditureOnStaffItemFetchAction = (filter, filterItem, id) => {
     const params = serializers.itemSerializer(filter.getParams(), filterItem.getParams(), id)
     const payload = axios()
-        .get(sprintf(API.STAT_OUTCOME_CATEGORY_ITEM, id), {params})
+        .get(sprintf(API.STAT_EXPENDITURE_ON_STAFF_ITEM, id), {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -34,11 +34,10 @@ export const statOutcomeCategoryItemFetchAction = (filter, filterItem, id) => {
         })
 
     return {
-        type: actionTypes.STAT_OUTCOME_CATEGORY_ITEM,
+        type: actionTypes.STAT_EXPENDITURE_ON_STAFF_ITEM,
         payload
     }
 }
-
 export const getTransactionData = (filter) => {
     const params = serializers.transactionSerializer(filter.getParams())
     const payload = axios()
@@ -51,7 +50,7 @@ export const getTransactionData = (filter) => {
         })
 
     return {
-        type: actionTypes.STAT_OUTCOME_CATEGORY_TRANSACTION_DATA,
+        type: actionTypes.STAT_EXPENDITURE_ON_STAFF_TRANSACTION_DATA,
         payload
     }
 }

@@ -6,14 +6,11 @@ import rxjsconfig from 'recompose/rxjsObservableConfig'
 import {setObservableConfig} from 'recompose'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-
 import {Router, hashHistory} from 'react-router'
 import {syncHistoryWithStore} from 'react-router-redux'
 import injectTapEventPlugin from 'react-tap-event-plugin'
-
 import createStore from './store/createStore'
 import routes from './routes'
-
 import './styles'
 
 const store = createStore()

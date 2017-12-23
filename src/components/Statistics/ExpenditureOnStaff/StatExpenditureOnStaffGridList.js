@@ -7,19 +7,19 @@ import Container from '../../Container/index'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import {Field} from 'redux-form'
-import {DateToDateField} from '../../ReduxForm'
+import {DateToDateField, ExpensiveCategoryMultiSearchField} from '../../ReduxForm'
 import StatSideMenu from '../StatSideMenu'
+import ExpenditureTransactionDialog from '../ExpenditureOnStaff/ExpenditureTransactionDialog'
 import Loader from '../../Loader'
 import LinearProgress from 'material-ui/LinearProgress'
 import Pagination from '../../GridList/GridListNavPagination/index'
-import ExpenditureTransactionDialog from '../ExpenditureOnStaff/ExpenditureTransactionDialog'
 import numberFormat from '../../../helpers/numberFormat.js'
 import getConfig from '../../../helpers/getConfig'
 import NotFound from '../../Images/not-found.png'
 import {StatisticsFilterExcel} from '../../Statistics'
 
-export const STAT_OUTCOME_CATEGORY_FILTER_KEY = {
-    DIVISION: 'division',
+export const STAT_EXPENDITURE_ON_STAFF_FILTER_KEY = {
+    CATEGORY_EXPENSE: 'categoryExpense',
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate'
 }
@@ -180,7 +180,7 @@ const enhance = compose(
     })
 )
 
-const StatOutcomeCategoryGridList = enhance((props) => {
+const StatExpenditureOnStaffGridList = enhance((props) => {
     const {
         classes,
         listData,
@@ -202,7 +202,7 @@ const StatOutcomeCategoryGridList = enhance((props) => {
 
     const headers = (
         <Row style={headerStyle} className="dottedList">
-            <Col xs={3}>Категория</Col>
+            <Col xs={3}>Сотрудник</Col>
             <Col xs={6}>Процентное соотношение</Col>
             <Col xs={3} style={{justifyContent: 'flex-end'}}>Сумма ({currentCurrency})</Col>
         </Row>
@@ -210,13 +210,13 @@ const StatOutcomeCategoryGridList = enhance((props) => {
 
     const list = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const name = _.get(item, 'name')
+        const employee = _.get(item, ['employee', 'name']) || 'Не указан'
         const percent = _.get(item, 'percent')
         const amount = numberFormat(Math.abs(_.get(item, 'amount')), getConfig('PRIMARY_CURRENCY'))
 
         return (
             <Row key={id} className="dottedList" onClick={() => { transactionData.handleOpenTransactionDialog() }}>
-                <Col xs={3}>{name}</Col>
+                <Col xs={3}>{employee}</Col>
                 <Col xs={6}>
                     <LinearProgress
                         color="#58bed9"
@@ -237,6 +237,12 @@ const StatOutcomeCategoryGridList = enhance((props) => {
                 component={DateToDateField}
                 label="Диапазон дат"
                 fullWidth={true}/>
+            <Field
+                className={classes.inputFieldCustom}
+                name="categoryExpense"
+                component={ExpensiveCategoryMultiSearchField}
+                label="Категории расходов"
+                fullWidth={true}/>
         </div>
     )
 
@@ -244,14 +250,14 @@ const StatOutcomeCategoryGridList = enhance((props) => {
         <div className={classes.mainWrapper}>
             <Row style={{margin: '0', height: '100%'}}>
                 <div className={classes.leftPanel}>
-                    <StatSideMenu currentUrl={ROUTES.STATISTICS_OUTCOME_CATEGORY_URL} filter={filter}/>
+                    <StatSideMenu currentUrl={ROUTES.STATISTICS_EXPENDITURE_ON_STAFF_URL} filter={filter}/>
                 </div>
                 <div className={classes.rightPanel}>
                     <div className={classes.wrapper}>
                         <StatisticsFilterExcel
                             filter={filter}
                             fields={fields}
-                            filterKeys={STAT_OUTCOME_CATEGORY_FILTER_KEY}
+                            filterKeys={STAT_EXPENDITURE_ON_STAFF_FILTER_KEY}
                             handleSubmitFilterDialog={handleSubmitFilterDialog}
                             initialValues={initialValues}
                             handleGetDocument={getDocument.handleGetDocument}
@@ -292,9 +298,9 @@ const StatOutcomeCategoryGridList = enhance((props) => {
     )
 })
 
-StatOutcomeCategoryGridList.propTypes = {
+StatExpenditureOnStaffGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object
 }
 
-export default StatOutcomeCategoryGridList
+export default StatExpenditureOnStaffGridList
