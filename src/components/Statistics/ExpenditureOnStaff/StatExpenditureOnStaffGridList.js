@@ -215,7 +215,7 @@ const StatExpenditureOnStaffGridList = enhance((props) => {
         const amount = numberFormat(Math.abs(_.get(item, 'amount')), getConfig('PRIMARY_CURRENCY'))
 
         return (
-            <Row key={id + percent} className="dottedList" onClick={() => { transactionData.handleOpenTransactionDialog() }}>
+            <Row key={id} className="dottedList" onClick={() => { transactionData.handleOpenTransactionDialog() }}>
                 <Col xs={3}>{employee}</Col>
                 <Col xs={6}>
                     <LinearProgress
