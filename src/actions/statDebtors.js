@@ -42,7 +42,7 @@ export const statDebtorsDataFetchAction = () => {
 export const statDebtorsItemFetchAction = (id, filter) => {
     const params = serializers.itemSerializer(id, filter.getParams())
     const payload = axios()
-        .get(sprintf(API.STAT_DEBTORS_ITEM, id), {params})
+        .get(API.STAT_DEBTORS_ITEM, {params})
         .then((response) => {
             return _.get(response, 'data')
         })

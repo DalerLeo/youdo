@@ -155,14 +155,14 @@ const enhance = compose(
         },
 
         handleSubmitMultiUpdate: props => (orders) => {
-            const {dispatch, multiUpdateForm, location: {query}} = props
+            const {dispatch, multiUpdateForm, location: {query}, filterItem} = props
             const id = _.toInteger(_.get(query, ['detailId']))
             return dispatch(orderMultiUpdateAction(_.get(multiUpdateForm, 'values'), orders))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Заказы успешно изменены'}))
                 })
                 .then(() => {
-                    dispatch(statDebtorsItemFetchAction(id))
+                    dispatch(statDebtorsItemFetchAction(id, filterItem))
                 }).catch((error) => {
                     dispatch(openErrorAction({message: error}))
                 })
