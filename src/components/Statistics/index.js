@@ -15,6 +15,7 @@ import ClientIncomeGridList from './ClientIncome/ClientIncomeGridList'
 import StatisticsFilterExcel from './StatisticsFilterExcel'
 import StatisticsChart from './StatisticsChart'
 import StatDebtorsGridList from './Debtors/DebtorsGridList'
+import StatExpenditureOnStaffGridList from './ExpenditureOnStaff/StatExpenditureOnStaffGridList'
 
 const STAT_AGENT_DIALOG_OPEN = 'openStatAgentDialog'
 const STAT_RETURN_DIALOG_OPEN = 'openStatReturnDialog'
@@ -47,6 +48,7 @@ export {
     StatDebtorsGridList,
     StatisticsFilterExcel,
     StatisticsChart,
+    StatExpenditureOnStaffGridList,
     BEGIN_DATE,
     END_DATE,
     STAT_AGENT_DIALOG_OPEN,

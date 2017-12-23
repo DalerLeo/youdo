@@ -1,33 +1,34 @@
 import React from 'react'
 import _ from 'lodash'
 import moment from 'moment'
-import {hashHistory} from 'react-router'
 import {connect} from 'react-redux'
+import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
+import {joinArray, splitToArray} from '../../helpers/joinSplitValues'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import filterHelper from '../../helpers/filter'
-import {StatOutcomeCategoryGridList} from '../../components/Statistics'
-import {STAT_OUTCOME_CATEGORY_FILTER_KEY} from '../../components/Statistics/Outcome/StatOutcomeCategoryGridList'
+import {StatExpenditureOnStaffGridList} from '../../components/Statistics'
+import {STAT_EXPENDITURE_ON_STAFF_FILTER_KEY} from '../../components/Statistics/ExpenditureOnStaff/StatExpenditureOnStaffGridList'
 import {
-    statOutcomeCategoryListFetchAction,
-    statOutcomeCategoryItemFetchAction,
-    getTransactionData,
-    getDocumentAction
-} from '../../actions/statOutcomeCategory'
+    statExpenditureOnStaffListFetchAction,
+    statExpenditureOnStaffItemFetchAction,
+    getTransactionData
+} from '../../actions/statExpenditureOnStaff'
 import toBoolean from '../../helpers/toBoolean'
 
 const ZERO = 0
 const OPEN_TRANSACTION_DIALOG = 'openTransactionDialog'
+
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
-        const detail = _.get(state, ['statOutcomeCategory', 'item', 'data'])
-        const detailLoading = _.get(state, ['statOutcomeCategory', 'item', 'loading'])
-        const list = _.get(state, ['statOutcomeCategory', 'list', 'data'])
-        const listLoading = _.get(state, ['statOutcomeCategory', 'list', 'loading'])
-        const transactionData = _.get(state, ['statOutcomeCategory', 'transactionData', 'data'])
-        const transactionDataLoading = _.get(state, ['statOutcomeCategory', 'transactionData', 'loading'])
+        const detail = _.get(state, ['statExpenditureOnStaff', 'item', 'data'])
+        const detailLoading = _.get(state, ['statExpenditureOnStaff', 'item', 'loading'])
+        const list = _.get(state, ['statExpenditureOnStaff', 'list', 'data'])
+        const listLoading = _.get(state, ['statExpenditureOnStaff', 'list', 'loading'])
+        const transactionData = _.get(state, ['statExpenditureOnStaff', 'transactionData', 'data'])
+        const transactionDataLoading = _.get(state, ['statExpenditureOnStaff', 'transactionData', 'loading'])
         const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
         const filter = filterHelper(list, pathname, query)
         const filterItem = filterHelper(detail, pathname, query)
@@ -45,20 +46,18 @@ const enhance = compose(
         }
     }),
     withPropsOnChange((props, nextProps) => {
-        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest() &&
-            (!_.get(props, ['params', 'statOutcomeCategoryId'])) &&
-            (!_.get(nextProps, ['params', 'statOutcomeCategoryId']))
+        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
-        dispatch(statOutcomeCategoryListFetchAction(filter))
+        dispatch(statExpenditureOnStaffListFetchAction(filter))
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const statOutcomeCategoryId = _.get(nextProps, ['params', 'statOutcomeCategoryId']) || ZERO
-        return statOutcomeCategoryId > ZERO && _.get(props, ['params', 'statOutcomeCategoryId']) !== statOutcomeCategoryId
+        const statExpenditureOnStaffId = _.get(nextProps, ['params', 'statExpenditureOnStaffId']) || ZERO
+        return statExpenditureOnStaffId > ZERO && _.get(props, ['params', 'statExpenditureOnStaffId']) !== statExpenditureOnStaffId
     }, ({dispatch, params, filter, filterItem}) => {
-        const statOutcomeCategoryId = _.toInteger(_.get(params, 'statOutcomeCategoryId'))
-        if (statOutcomeCategoryId > ZERO) {
-            dispatch(statOutcomeCategoryItemFetchAction(filter, filterItem, statOutcomeCategoryId))
+        const statExpenditureOnStaffId = _.toInteger(_.get(params, 'statExpenditureOnStaffId'))
+        if (statExpenditureOnStaffId > ZERO) {
+            dispatch(statExpenditureOnStaffItemFetchAction(filter, filterItem, statExpenditureOnStaffId))
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -78,15 +77,18 @@ const enhance = compose(
 
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
-            filter.filterBy({
-                [STAT_OUTCOME_CATEGORY_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
-                [STAT_OUTCOME_CATEGORY_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
+            const categoryExpense = _.get(filterForm, ['values', 'categoryExpense']) || null
 
+            filter.filterBy({
+                [STAT_EXPENDITURE_ON_STAFF_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
+                [STAT_EXPENDITURE_ON_STAFF_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD'),
+                [STAT_EXPENDITURE_ON_STAFF_FILTER_KEY.CATEGORY_EXPENSE]: joinArray(categoryExpense)
             })
         },
         handleGetDocument: props => () => {
             const {dispatch, filter} = props
-            return dispatch(getDocumentAction(filter))
+            // You must change action function
+            return dispatch(getTransactionData(filter))
         },
         handleOpenTransactionDialog: props => () => {
             const {filter, location: {pathname}} = props
@@ -99,7 +101,7 @@ const enhance = compose(
     })
 )
 
-const StatOutcomeCategoryList = enhance((props) => {
+const StatExpenditureOnStaffList = enhance((props) => {
     const {
         list,
         listLoading,
@@ -109,17 +111,18 @@ const StatOutcomeCategoryList = enhance((props) => {
         layout,
         filterItem,
         filterForm,
-        transactionData,
-        transactionDataLoading,
         location,
-        params
+        params,
+        transactionData,
+        transactionDataLoading
     } = props
 
-    const detailId = _.toInteger(_.get(params, 'statOutcomeCategoryId'))
+    const detailId = _.toInteger(_.get(params, 'statExpenditureOnStaffId'))
+    const openTransactionDialog = toBoolean(_.get(location, ['query', [OPEN_TRANSACTION_DIALOG]]))
     const firstDayOfMonth = _.get(location, ['query', 'fromDate']) || moment().format('YYYY-MM-01')
     const lastDay = moment().daysInMonth()
     const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
-    const openTransactionDialog = toBoolean(_.get(location, ['query', [OPEN_TRANSACTION_DIALOG]]))
+    const categoryExpense = !_.isNull(_.get(location, ['query', 'categoryExpense'])) && _.get(location, ['query', 'categoryExpense'])
 
     const listData = {
         data: _.get(list, 'results'),
@@ -129,6 +132,7 @@ const StatOutcomeCategoryList = enhance((props) => {
         return _.get(item, 'id') === detailId
     })
     const filterDateRange = {
+        categoryExpense: categoryExpense && splitToArray(categoryExpense),
         'fromDate': _.get(filterForm, ['values', 'date', 'fromDate']) || null,
         'toDate': _.get(filterForm, ['values', 'date', 'toDate']) || null
     }
@@ -161,7 +165,7 @@ const StatOutcomeCategoryList = enhance((props) => {
 
     return (
         <Layout {...layout}>
-            <StatOutcomeCategoryGridList
+            <StatExpenditureOnStaffGridList
                 filter={filter}
                 handleSubmitFilterDialog={props.handleSubmitFilterDialog}
                 listData={listData}
@@ -175,4 +179,4 @@ const StatOutcomeCategoryList = enhance((props) => {
     )
 })
 
-export default StatOutcomeCategoryList
+export default StatExpenditureOnStaffList

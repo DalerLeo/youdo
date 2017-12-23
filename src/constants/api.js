@@ -385,6 +385,10 @@ export const STAT_REMAINDER_GET_DOCUMENT = `/${REMAINDER_STOCK}/all_balances_exp
 export const STATISTICS_CASHBOX_LIST = `/${CASHBOX}/`
 export const STATISTICS_CASHBOX_ITEM = `/${CASHBOX}/%d/`
 
+export const STAT_EXPENDITURE_ON_STAFF_LIST = 'stats/expenses/'
+export const STAT_EXPENDITURE_ON_STAFF_ITEM = 'sales/order/'
+export const STAT_EXPENDITURE_ON_STAFFGET_DOCUMENT = 'stats/agents/export/'
+
 export const CONTENT_TYPE_SEARCH = 'stock/barcode_history/types/'
 export const STOCK_RECEIVE = 'stock/supply'
 export const STOCK_HISTORY = 'stock/barcode_history'

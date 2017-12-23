@@ -133,6 +133,7 @@ export const MenuItems = [
             {section: STATS_SALES, name: 'Возврат', url: ROUTES.STATISTICS_RETURN_URL, permission: 'frontend_stat_order_returns'},
             {section: STATS_FINANCE, name: 'Оборот', url: ROUTES.STATISTICS_FINANCE_URL, permission: 'frontend_stat_finance'},
             {section: STATS_FINANCE, name: 'Расходы по категориям', url: ROUTES.STATISTICS_OUTCOME_CATEGORY_URL, permission: 'frontend_stat_outcome_category'},
+            {section: STATS_FINANCE, name: 'Расходы на персонал', url: ROUTES.STATISTICS_EXPENDITURE_ON_STAFF_URL, permission: 'frontend_stat_expenditure_on_staff'},
             {section: STATS_FINANCE, name: 'Кассы', url: ROUTES.STATISTICS_CASHBOX_URL, permission: 'frontend_stat_cashbox'},
             {section: STATS_CLIENTS, name: 'Оборот клиентов', url: ROUTES.STATISTICS_CLIENT_INCOME_URL, permission: 'frontend_stat_client_income'},
             {section: STATS_CLIENTS, name: 'Баланс клиентов', url: ROUTES.STATISTICS_CLIENT_BALANCE_URL, permission: 'frontend_stat_client_balance', query: {pageSize: 25}},
