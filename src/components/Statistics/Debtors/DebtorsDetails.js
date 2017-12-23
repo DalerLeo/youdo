@@ -16,6 +16,7 @@ import CloseButton from 'material-ui/svg-icons/navigation/close'
 import numberFormat from '../../../helpers/numberFormat'
 import getConfig from '../../../helpers/getConfig'
 import dateFormat from '../../../helpers/dateFormat'
+import Pagination from '../../GridList/GridListNavPagination'
 
 const enhance = compose(
     injectSheet({
@@ -184,6 +185,10 @@ const enhance = compose(
             right: '0',
             left: '0',
             cursor: 'pointer'
+        },
+        pagination: {
+            padding: '0 30px',
+            borderTop: 'solid 1px #efefef'
         }
     }),
     reduxForm({
@@ -206,7 +211,8 @@ const DebtorsDetails = enhance((props) => {
         setEditDates,
         handleSubmitMultiUpdate,
         editId,
-        setEditId
+        setEditId,
+        filter
     } = props
     const resetDateField = () => {
         return props.dispatch(reset('StatDebtorsForm'))
@@ -290,6 +296,9 @@ const DebtorsDetails = enhance((props) => {
                             <Loader size={0.75}/>
                         </div>
                         : detailList}
+                </div>
+                <div className={classes.pagination}>
+                    <Pagination filter={filter}/>
                 </div>
             </Paper>
 

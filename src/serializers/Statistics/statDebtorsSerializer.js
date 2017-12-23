@@ -14,8 +14,11 @@ export const listFilterSerializer = (data) => {
     }
 }
 
-export const itemSerializer = (id) => {
+export const itemSerializer = (id, data) => {
+    const {...defaultData} = data
     return {
+        page: _.get(defaultData, 'dPage'),
+        'page_size': _.get(defaultData, 'dPageSize'),
         'client': id,
         'dept': true
     }

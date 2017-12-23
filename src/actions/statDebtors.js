@@ -39,8 +39,8 @@ export const statDebtorsDataFetchAction = () => {
     }
 }
 
-export const statDebtorsItemFetchAction = (id) => {
-    const params = serializers.itemSerializer(id)
+export const statDebtorsItemFetchAction = (id, filter) => {
+    const params = serializers.itemSerializer(id, filter.getParams())
     const payload = axios()
         .get(sprintf(API.STAT_DEBTORS_ITEM, id), {params})
         .then((response) => {

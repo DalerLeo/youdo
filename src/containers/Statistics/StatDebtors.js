@@ -38,7 +38,8 @@ const enhance = compose(
         const currencyListLoading = _.get(state, ['currency', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
         const filter = filterHelper(list, pathname, query)
-        const filterItem = filterHelper(detail, pathname, query)
+        const filterItem = filterHelper(detail, pathname, query, {'page': 'dPage', 'pageSize': 'dPageSize'})
+
         const multiUpdateForm = _.get(state, ['form', 'StatDebtorsForm'])
         return {
             list,
@@ -59,13 +60,19 @@ const enhance = compose(
     }),
     withState('openDetail', 'setOpenDetail', false),
     withPropsOnChange((props, nextProps) => {
-        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
+        const except = {
+            dPage: null,
+            dPageSize: null
+        }
+        return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
         dispatch(statDebtorsListFetchAction(filter))
     }),
 
     withPropsOnChange((props, nextProps) => {
         const except = {
+            dPage: null,
+            dPageSize: null,
             page: null,
             pageSize: null,
             search: null,
@@ -80,7 +87,9 @@ const enhance = compose(
         const except = {
             page: null,
             pageSize: null,
-            search: null
+            search: null,
+            dPage: null,
+            dPageSize: null
         }
         return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch}) => {
@@ -100,12 +109,13 @@ const enhance = compose(
 
     withPropsOnChange((props, nextProps) => {
         const detailId = _.toInteger(_.get(props, ['location', 'query', 'detailId']))
-        return _.toInteger(_.get(nextProps, ['location', 'query', 'detailId'])) !== detailId &&
+        return (_.toInteger(_.get(nextProps, ['location', 'query', 'detailId'])) !== detailId ||
+            props.filterItem.filterRequest() !== nextProps.filterItem.filterRequest()) &&
             _.toInteger(_.get(nextProps, ['location', 'query', 'detailId'])) !== ZERO
-    }, ({dispatch, location}) => {
+    }, ({dispatch, location, filterItem}) => {
         const id = _.toInteger(_.get(location, ['query', 'detailId']))
         if (id > ZERO) {
-            dispatch(statDebtorsItemFetchAction(id))
+            dispatch(statDebtorsItemFetchAction(id, filterItem))
         }
     }),
 
@@ -131,12 +141,12 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({'orderId': ZERO})})
         },
         handleCloseDetail: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({'detailId': ZERO})})
+            const {location: {pathname}, filterItem} = props
+            hashHistory.push({pathname, query: filterItem.getParams({'detailId': ZERO})})
         },
         handleOpenDetail: props => (id) => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({'detailId': id})})
+            const {location: {pathname}, filterItem} = props
+            hashHistory.push({pathname, query: filterItem.getParams({'detailId': id})})
         },
         handleGetDocument: props => () => {
             const {filter} = props
@@ -174,7 +184,8 @@ const StatDebtorsList = enhance((props) => {
         filter,
         layout,
         statData,
-        statLoading
+        statLoading,
+        filterItem
     } = props
 
     const detailId = _.toInteger(_.get(location, ['query', 'statDebtorsId']))
@@ -223,6 +234,7 @@ const StatDebtorsList = enhance((props) => {
         <Layout {...layout}>
             <StatDebtorsGridList
                 filter={filter}
+                filterItem={filterItem}
                 listData={listData}
                 initialValues={initialValues}
                 detailData={detailData}

@@ -166,8 +166,8 @@ const enhance = compose(
             }
         },
         tableRow: {
+            cursor: 'pointer',
             '& td:nth-child(odd)': {
-                cursor: 'pointer',
                 textAlign: 'left',
                 borderLeft: '1px #efefef solid',
                 '&:first-child': {
@@ -381,7 +381,8 @@ const StatDebtorsGridList = enhance((props) => {
         currentRow,
         updateRow,
         expandedTable,
-        setExpandedTable
+        setExpandedTable,
+        filterItem
     } = props
 
     const currencyList = _.get(listData, 'currencyList')
@@ -525,25 +526,25 @@ const StatDebtorsGridList = enhance((props) => {
                                         <div><span>Клиент</span></div>
                                         {tableLeft}
                                     </div>
-                                    {_.isEmpty(tableList) && !listLoading &&
-                                    <div className={classes.emptyQuery}>
-                                        <div>По вашему запросу ничего не найдено</div>
-                                    </div>}
-                                    <div ref="horizontalTable">
-                                        <table className={classes.mainTable}>
-                                            <tbody className={classes.tableBody}>
-                                            <tr className={classes.title}>
-                                                <td colSpan={2}>Просроченные</td>
-                                                <td colSpan={2}>Ожидаемые</td>
-                                            </tr>
-                                            <tr className={classes.subTitle}>
-                                                {listHeader}
-                                                {listHeader}
-                                            </tr>
-                                            {tableList}
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                    {_.isEmpty(tableList) && !listLoading
+                                        ? <div className={classes.emptyQuery}>
+                                            <div>По вашему запросу ничего не найдено</div>
+                                          </div>
+                                        : <div ref="horizontalTable">
+                                            <table className={classes.mainTable}>
+                                                <tbody className={classes.tableBody}>
+                                                <tr className={classes.title}>
+                                                    <td colSpan={2}>Просроченные</td>
+                                                    <td colSpan={2}>Ожидаемые</td>
+                                                </tr>
+                                                <tr className={classes.subTitle}>
+                                                    {listHeader}
+                                                    {listHeader}
+                                                </tr>
+                                                {tableList}
+                                                </tbody>
+                                            </table>
+                                        </div>}
                                 </div>
                             </div>
                         </div>
@@ -565,7 +566,7 @@ const StatDebtorsGridList = enhance((props) => {
             <div className={classes.details} style={openOrderDetails ? {zIndex: '-99'} : {zIndex: '1000'}}>
                 <DebtorsDetails
                     id={_.get(detailData, 'openDetailId')}
-                    filter={filter}
+                    filter={filterItem}
                     listData={listData}
                     detailData={detailData}
                     statDebtorsDialog={statDebtorsDialog}
