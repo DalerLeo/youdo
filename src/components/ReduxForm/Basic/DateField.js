@@ -3,6 +3,8 @@ import _ from 'lodash'
 import injectSheet from 'react-jss'
 import DatePicker from 'material-ui/DatePicker'
 import DateRange from 'material-ui/svg-icons/action/date-range'
+import IntlPolyfill from 'intl'
+import 'intl/locale-data/jsonp/ru'
 
 const errorStyle = {
     textAlign: 'left'
@@ -13,6 +15,9 @@ const DateField = ({classes, input, label, meta: {error}, ...defaultProps}) => {
     if (!_.isObject(input.value)) {
         _.unset(input, 'value')
     }
+
+    let DateTimeFormat = IntlPolyfill.DateTimeFormat
+
     return (
         <div className={classes.wrapper}>
             <div style={{position: 'relative'}}>
@@ -24,6 +29,8 @@ const DateField = ({classes, input, label, meta: {error}, ...defaultProps}) => {
                     onChange={(event, value) => input.onChange(value)}
                     {...defaultProps}
                     okLabel="Ок"
+                    DateTimeFormat={DateTimeFormat}
+                    locale="ru"
                     cancelLabel="Отмена"
                 />
                 <div className={classes.icon}>

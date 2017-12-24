@@ -1,8 +1,15 @@
 import _ from 'lodash'
 import moment from 'moment'
+import sprintf from 'sprintf'
 import filterHelper from '../../helpers/filter'
 import {formattedType} from '../../constants/notificationTypes'
-import {compose, withState, withHandlers, lifecycle} from 'recompose'
+import {
+    compose,
+    withState,
+    withHandlers,
+    withPropsOnChange,
+    lifecycle
+} from 'recompose'
 import React from 'react'
 import injectSheet from 'react-jss'
 import SideBarMenu from '../SidebarMenu'
@@ -28,6 +35,8 @@ import {
 import {openSnackbarAction} from '../../actions/snackbar'
 import Notifications from '../Images/Notification.png'
 import InfiniteScroll from 'react-infinite-scroller'
+import * as ROUTE from '../../constants/routes'
+import {Link} from 'react-router'
 
 const iconStyle = {
     icon: {
@@ -38,7 +47,8 @@ const iconStyle = {
     button: {
         width: 48,
         height: 48,
-        padding: 0
+        padding: 0,
+        zIndex: 2
     }
 }
 const moneyIcon = '#8dc572'
@@ -71,6 +81,14 @@ const enhance = compose(
     withState('loading', 'setLoading', false),
     withState('list', 'updateList', null),
 
+    withPropsOnChange((props, nextProps) => {
+        const prevLoading = _.get(props, 'notificationsLoading')
+        const nextLoading = _.get(nextProps, 'notificationsLoading')
+        return prevLoading !== nextLoading && nextLoading === false
+    }, ({list, notificationsList, updateList}) => {
+        updateList(_.union(list, _.get(notificationsList, 'results')))
+    }),
+
     withHandlers({
         handleOpenConfirmDialog: props => (id) => {
             const {setOpenConfirmDialog, setNotificationId} = props
@@ -83,27 +101,31 @@ const enhance = compose(
             setOpenConfirmDialog(false)
         },
         handleSendConfirmDialog: props => () => {
-            const {dispatch, setOpenConfirmDialog, notificationId} = props
+            const {dispatch, setOpenConfirmDialog, notificationId, list, updateList} = props
             dispatch(notificationDeleteAction(notificationId))
-                .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
-                })
                 .then(() => {
                     setOpenConfirmDialog(false)
-                    dispatch(notificationListFetchAction())
+                    const removedList = _.remove(list, (item) => {
+                        return _.get(item, 'id') === notificationId
+                    })
+                    updateList(_.differenceBy(list, removedList, 'id'))
+                })
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
+                })
+                .catch(() => {
+                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
                 })
         },
 
         handleOpenNotificationBar: props => (status) => {
-            const {setOpenNotifications, dispatch, setLoading, updateList} = props
+            const {setOpenNotifications, dispatch, setLoading} = props
             setOpenNotifications(status)
             setLoading(true)
             if (status) {
                 dispatch(notificationListFetchAction())
-                    .then((data) => {
-                        const list = _.get(data, ['value', 'results'])
+                    .then(() => {
                         setLoading(false)
-                        updateList(list)
                         dispatch(notificationCountFetchAction())
                     })
             }
@@ -169,15 +191,24 @@ const enhance = compose(
             height: 'calc(100% - 65px)'
         },
         notif: {
+            color: '#333 !important',
             padding: '10px 10px 10px 20px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
             borderBottom: '1px #efefef solid',
             cursor: 'pointer',
+            position: 'relative',
             '&:hover': {
                 opacity: '1 !important'
             }
+        },
+        link: {
+            position: 'absolute',
+            top: '0',
+            left: '0',
+            right: '0',
+            bottom: '0'
         },
         notifIcon: {
             display: 'flex',
@@ -322,8 +353,8 @@ const Layout = enhance((props) => {
         defaultPage,
         updateDefaultPage,
         loading,
-        list,
-        updateList
+        notificationsLoading,
+        list
     } = props
 
     const notificationData = {
@@ -334,14 +365,16 @@ const Layout = enhance((props) => {
         handleSendConfirmDialog: props.handleSendConfirmDialog,
         handleOpenNotificationBar: props.handleOpenNotificationBar
     }
+    const uniqList = _.uniqBy(list, 'id')
     const notificationsCount = _.get(notificationsList, 'count')
-    const currentListCount = _.get(notificationsList, ['results', 'length'])
-    const notificationListExp = _.map(_.uniqBy(list, 'id'), (item) => {
+    const currentListCount = _.get(uniqList, 'length')
+    const notificationListExp = _.map(uniqList, (item) => {
         const id = _.get(item, 'id')
         const title = formattedType[_.get(item, ['template', 'name'])]
         const text = _.get(item, 'text')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY HH:mm')
         const viewed = _.get(item, 'viewed')
+        const objectId = _.toInteger(_.get(item, 'object_id'))
         const template = _.get(item, ['template', 'name'])
         let icon = null
         switch (template) {
@@ -357,16 +390,27 @@ const Layout = enhance((props) => {
                 break
             default: icon = null
         }
+        const isOrder = _.includes(template, 'order')
+        const isSupply = _.includes(template, 'supply')
+        const pathName = isOrder
+            ? sprintf(ROUTE.ORDER_ITEM_PATH, objectId)
+            : isSupply
+                ? sprintf(ROUTE.SUPPLY_ITEM_PATH, objectId)
+                : null
 
         return (
             <div key={id} className={classes.notif}
-                 onClick={() => {
-                     id === clickNotifications
-                         ? setClickNotifications(null)
-                         : setClickNotifications(id)
-                 }}
+                 onMouseEnter={() => { setClickNotifications(id) }}
+                 onMouseLeave={() => { setClickNotifications(null) }}
                  style={viewed ? {opacity: '0.5'} : {opacity: '1'}}>
                 {icon}
+                <Link
+                    target={'_blank'}
+                    to={{
+                        pathname: pathName,
+                        query: {search: objectId}
+                    }}
+                    className={classes.link}/>
                 <div className={classes.notifContent}>
                     <div className={classes.notifTitle}>
                         <div>{title}</div>
@@ -406,10 +450,9 @@ const Layout = enhance((props) => {
         }
     }
     const loadMore = () => {
-        if (openNotifications && !loading) {
+        if (openNotifications && !loading && !notificationsLoading) {
             return dispatch(notificationListFetchAction(defaultPage))
                 .then(() => {
-                    updateList(_.union(list, _.get(notificationsList, 'results')))
                     updateDefaultPage(defaultPage + ONE)
                 })
         }
@@ -462,7 +505,7 @@ const Layout = enhance((props) => {
             <ErrorDialog />
             {notificationsList && <ConfirmDialog
                 type="delete"
-                message={_.get(_.find(notificationsList, {'id': notificationId}), 'title') || ''}
+                message={_.get(_.find(list, {'id': notificationId}), 'text') || ''}
                 onClose={notificationData.handleCloseConfirmDialog}
                 onSubmit={notificationData.handleSendConfirmDialog}
                 open={notificationData.open}

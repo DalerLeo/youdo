@@ -61,6 +61,8 @@ const enhance = compose(
         },
         debtors: {
             display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
             margin: '15px 0',
             '& > div': {
                 marginRight: '60px',
@@ -144,7 +146,7 @@ const enhance = compose(
             },
             '& td': {
                 padding: '0 20px',
-                minWidth: '175px'
+                minWidth: '140px'
             }
         },
         title: {
@@ -164,6 +166,7 @@ const enhance = compose(
             }
         },
         tableRow: {
+            cursor: 'pointer',
             '& td:nth-child(odd)': {
                 textAlign: 'left',
                 borderLeft: '1px #efefef solid',
@@ -378,7 +381,8 @@ const StatDebtorsGridList = enhance((props) => {
         currentRow,
         updateRow,
         expandedTable,
-        setExpandedTable
+        setExpandedTable,
+        filterItem
     } = props
 
     const currencyList = _.get(listData, 'currencyList')
@@ -386,7 +390,6 @@ const StatDebtorsGridList = enhance((props) => {
     const divisionStatus = getConfig('DIVISIONS')
     const listLoading = _.get(listData, 'listLoading') || currencyListLoading
     const statLoading = _.get(listData, 'statLoading')
-
     const listHeader = _.map(_.sortBy(currencyList, ['id']), (item) => {
         return <td key={_.get(item, 'id')}>{_.get(item, 'name')}</td>
     })
@@ -417,7 +420,8 @@ const StatDebtorsGridList = enhance((props) => {
                 className={classes.tableRow}
                 style={id === currentRow ? styleOnHover : {}}
                 onMouseEnter={() => { updateRow(id) }}
-                onMouseLeave={() => { updateRow(null) }}>
+                onMouseLeave={() => { updateRow(null) }}
+                onClick={() => { handleOpenCloseDetail.handleOpenDetail(id) }}>
                 {_.map(currencies, (obj, currency) => {
                     const debt = numberFormat(_.get(obj, 'debt'))
                     return (
@@ -447,8 +451,10 @@ const StatDebtorsGridList = enhance((props) => {
     )
 
     const countDebtors = _.get(listData, ['statData', 'debtors'])
-    const deptSum = numberFormat(_.get(listData, ['statData', 'debtsSum']), getConfig('PRIMARY_CURRENCY'))
-    const expectSum = numberFormat(_.get(listData, ['statData', 'expectSum']), getConfig('PRIMARY_CURRENCY'))
+    const sums = _.map(_.get(listData, ['statData', 'currencies']), (item, currency) => {
+        item.currency = _.find(currencyList, {'id': Number(currency)})
+        return item
+    })
     const page = (
         <div className={classes.mainWrapper}>
             <Row style={{margin: '0', height: '100%'}}>
@@ -477,11 +483,15 @@ const StatDebtorsGridList = enhance((props) => {
                                 </div>
                                 <div>
                                     <span>Просроченные платежи</span>
-                                    <div>{deptSum}</div>
+                                    {_.map(sums, (item, index) => {
+                                        return <div key={index}>{numberFormat(item.debts, _.get(item, ['currency', 'name']))}</div>
+                                    })}
                                 </div>
                                 <div>
                                     <span>Ожидаемые поступления</span>
-                                    <div>{expectSum}</div>
+                                    {_.map(sums, (item, index) => {
+                                        return <div key={index}>{numberFormat(item.debts, _.get(item, ['currency', 'name']))}</div>
+                                    })}
                                 </div>
                             </div>}
                         <div className={expandedTable ? classes.expandedTable : ''}>
@@ -516,25 +526,25 @@ const StatDebtorsGridList = enhance((props) => {
                                         <div><span>Клиент</span></div>
                                         {tableLeft}
                                     </div>
-                                    {_.isEmpty(tableList) && !listLoading &&
-                                    <div className={classes.emptyQuery}>
-                                        <div>По вашему запросу ничего не найдено</div>
-                                    </div>}
-                                    <div ref="horizontalTable">
-                                        <table className={classes.mainTable}>
-                                            <tbody className={classes.tableBody}>
-                                            <tr className={classes.title}>
-                                                <td colSpan={2}>Просроченные</td>
-                                                <td colSpan={2}>Ожидаемые</td>
-                                            </tr>
-                                            <tr className={classes.subTitle}>
-                                                {listHeader}
-                                                {listHeader}
-                                            </tr>
-                                            {tableList}
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                    {_.isEmpty(tableList) && !listLoading
+                                        ? <div className={classes.emptyQuery}>
+                                            <div>По вашему запросу ничего не найдено</div>
+                                          </div>
+                                        : <div ref="horizontalTable">
+                                            <table className={classes.mainTable}>
+                                                <tbody className={classes.tableBody}>
+                                                <tr className={classes.title}>
+                                                    <td colSpan={2}>Просроченные</td>
+                                                    <td colSpan={2}>Ожидаемые</td>
+                                                </tr>
+                                                <tr className={classes.subTitle}>
+                                                    {listHeader}
+                                                    {listHeader}
+                                                </tr>
+                                                {tableList}
+                                                </tbody>
+                                            </table>
+                                        </div>}
                                 </div>
                             </div>
                         </div>
@@ -556,7 +566,7 @@ const StatDebtorsGridList = enhance((props) => {
             <div className={classes.details} style={openOrderDetails ? {zIndex: '-99'} : {zIndex: '1000'}}>
                 <DebtorsDetails
                     id={_.get(detailData, 'openDetailId')}
-                    filter={filter}
+                    filter={filterItem}
                     listData={listData}
                     detailData={detailData}
                     statDebtorsDialog={statDebtorsDialog}

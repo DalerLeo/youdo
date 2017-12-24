@@ -10,14 +10,19 @@ import getDocuments from '../../helpers/getDocument'
 import * as API from '../../constants/api'
 import * as serializers from '../../serializers/Statistics/statFinanceSerializer'
 import {StatFinanceGridList} from '../../components/Statistics'
+import {hashHistory} from 'react-router'
 import {STAT_FINANCE_FILTER_KEY} from '../../components/Statistics/Finance/StatFinanceGridList'
+import {
+    TRANSACTION_CATEGORY_POPOP_OPEN
+} from '../../components/Transaction'
 
 import {
     statFinanceInDataFetchAction,
     statFinanceOutDataFetchAction,
     statFinanceListFetchAction
 } from '../../actions/statFianace'
-
+import {transactionCategoryPopopDataAction} from '../../actions/transaction'
+const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -29,6 +34,8 @@ const enhance = compose(
         const list = _.get(state, ['statFinance', 'list', 'data'])
         const listLoading = _.get(state, ['statFinance', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
+        const categoryPopopData = _.get(state, ['transaction', 'categoryPopopData', 'data'])
+        const categoryPopopDataLoading = _.get(state, ['transaction', 'categoryPopopData', 'loading'])
         const filter = filterHelper(list, pathname, query)
         return {
             query,
@@ -39,7 +46,9 @@ const enhance = compose(
             graphInLoading,
             graphOutLoading,
             filter,
-            filterForm
+            filterForm,
+            categoryPopopData,
+            categoryPopopDataLoading
         }
     }),
 
@@ -59,6 +68,14 @@ const enhance = compose(
     }, ({dispatch, filter}) => {
         dispatch(statFinanceInDataFetchAction(filter))
         dispatch(statFinanceOutDataFetchAction(filter))
+    }),
+    withPropsOnChange((props, nextProps) => {
+        const prevCategoryPopop = _.toNumber(_.get(props, ['location', 'query', TRANSACTION_CATEGORY_POPOP_OPEN]))
+        const nextCategoryPopop = _.toNumber(_.get(nextProps, ['location', 'query', TRANSACTION_CATEGORY_POPOP_OPEN]))
+        return prevCategoryPopop !== nextCategoryPopop && nextCategoryPopop > ZERO
+    }, ({dispatch, location}) => {
+        const id = _.toInteger(_.get(location, ['query', TRANSACTION_CATEGORY_POPOP_OPEN]))
+        id && dispatch(transactionCategoryPopopDataAction(id))
     }),
 
     withHandlers({
@@ -84,6 +101,15 @@ const enhance = compose(
             const {filter} = props
             const params = serializers.listFilterSerializer(filter.getParams())
             getDocuments(API.STAT_FINANCE_GET_DOCUMENT, params)
+        },
+        handleOpenCategoryPopop: props => (id) => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname: pathname, query: filter.getParams({[TRANSACTION_CATEGORY_POPOP_OPEN]: id})})
+        },
+
+        handleCloseCategoryPopop: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_CATEGORY_POPOP_OPEN]: false})})
         }
     })
 )
@@ -98,7 +124,9 @@ const StatFinanceList = enhance((props) => {
         graphOut,
         graphInLoading,
         graphOutLoading,
-        location
+        location,
+        categoryPopopData,
+        categoryPopopDataLoading
     } = props
     const firstDayOfMonth = _.get(location, ['query', 'fromDate']) || moment().format('YYYY-MM-01')
     const lastDay = moment().daysInMonth()
@@ -107,6 +135,7 @@ const StatFinanceList = enhance((props) => {
     const client = !_.isNull(_.get(location, ['query', 'client'])) && _.get(location, ['query', 'client'])
     const categoryExpense = !_.isNull(_.get(location, ['query', 'categoryExpense'])) && _.get(location, ['query', 'categoryExpense'])
     const search = !_.isNull(_.get(location, ['query', 'search'])) ? _.get(location, ['query', 'search']) : null
+    const openCategoryPopop = _.toNumber(_.get(location, ['query', TRANSACTION_CATEGORY_POPOP_OPEN]))
 
     const graphData = {
         dataIn: graphIn,
@@ -117,6 +146,13 @@ const StatFinanceList = enhance((props) => {
     const listData = {
         data: _.get(list, 'results'),
         listLoading
+    }
+    const categoryPopUp = {
+        data: _.get(categoryPopopData, 'results'),
+        loading: categoryPopopDataLoading,
+        open: openCategoryPopop > ZERO,
+        handleOpen: props.handleOpenCategoryPopop,
+        handleClose: props.handleCloseCategoryPopop
     }
     const filterForm = {
         initialValues: {
@@ -144,6 +180,7 @@ const StatFinanceList = enhance((props) => {
                 handleSubmitFilterDialog={props.handleSubmitFilterDialog}
                 initialValues={filterForm.initialValues}
                 filterForm={filterForm}
+                categoryPopUp={categoryPopUp}
 
             />
         </Layout>

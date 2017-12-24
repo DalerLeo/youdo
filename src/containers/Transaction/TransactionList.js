@@ -46,7 +46,7 @@ import {
     deleteTransactionAction,
     transactionConvertAction,
     usersListFetchAction,
-    transactionCategoryPopopDataActoin
+    transactionCategoryPopopDataAction
 } from '../../actions/transaction'
 import {
     cashboxListFetchAction
@@ -247,8 +247,8 @@ const enhance = compose(
         const nextCategoryPopop = _.toNumber(_.get(nextProps, ['location', 'query', TRANSACTION_CATEGORY_POPOP_OPEN]))
         return prevCategoryPopop !== nextCategoryPopop && nextCategoryPopop > ZERO
     }, ({dispatch, location}) => {
-        const id = _.toNumber(_.get(location, ['query', TRANSACTION_CATEGORY_POPOP_OPEN]))
-        dispatch(transactionCategoryPopopDataActoin(id))
+        const id = _.toInteger(_.get(location, ['query', TRANSACTION_CATEGORY_POPOP_OPEN]))
+        id && dispatch(transactionCategoryPopopDataAction(id))
     }),
     withHandlers({
         handleOpenConfirmDialog: props => (id) => {
