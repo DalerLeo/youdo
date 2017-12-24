@@ -126,7 +126,7 @@ const enhance = compose(
         }
     }),
     lifecycle({
-        componentWillReceiveProps() {
+        componentWillReceiveProps () {
             const wrapper = this.refs.wrapper
             const firstChild = wrapper.firstChild
             const lastChild = wrapper.lastChild

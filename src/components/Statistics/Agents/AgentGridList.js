@@ -450,7 +450,8 @@ const listHeader = [
 ]
 
 const styleOnHover = {
-    background: '#efefef'
+    background: '#efefef',
+    cursor: 'pointer'
 }
 
 const iconStyle = {
@@ -508,7 +509,8 @@ const StatAgentGridList = enhance((props) => {
                 key={id}
                 style={id === currentRow ? styleOnHover : {}}
                 onMouseEnter={() => { updateRow(id) }}
-                onMouseLeave={() => { updateRow(null) }}>
+                onMouseLeave={() => { updateRow(null) }}
+                onClick={ () => { statAgentDialog.handleOpenStatAgentDialog(id) }}>
                 <span>{name}</span>
             </div>
         )

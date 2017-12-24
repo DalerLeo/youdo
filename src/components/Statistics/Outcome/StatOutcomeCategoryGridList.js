@@ -289,6 +289,8 @@ const StatOutcomeCategoryGridList = enhance((props) => {
                 loading={transactionData.loading}
                 onClose={transactionData.handleCloseTransactionDialog}
                 filterTransaction={filterTransaction}
+                beginDate={transactionData.beginDate}
+                endDate={transactionData.endDate}
             />
         </Container>
     )

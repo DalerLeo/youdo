@@ -16,34 +16,41 @@ import {
 import toBoolean from '../../helpers/toBoolean'
 
 const OPEN_TRANSACTION_DIALOG = 'openTransactionDialog'
+const defaultDate = moment().format('YYYY-MM-DD')
+const BEGIN_DATE = 'fromDate'
+const END_DATE = 'toDate'
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
-        const detail = _.get(state, ['statOutcomeCategory', 'item', 'data'])
-        const detailLoading = _.get(state, ['statOutcomeCategory', 'item', 'loading'])
         const list = _.get(state, ['statOutcomeCategory', 'list', 'data'])
         const listLoading = _.get(state, ['statOutcomeCategory', 'list', 'loading'])
         const transactionData = _.get(state, ['statOutcomeCategory', 'transactionData', 'data'])
         const transactionDataLoading = _.get(state, ['statOutcomeCategory', 'transactionData', 'loading'])
         const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
         const filter = filterHelper(list, pathname, query)
-        const filterTransaction = filterHelper(transactionData, pathname, query)
+        const filterTransaction = filterHelper(transactionData, pathname, query, {'page': 'dPage', 'pageSize': 'dPageSize'})
+        const beginDate = _.get(query, BEGIN_DATE) || defaultDate
+        const endDate = _.get(query, END_DATE) || defaultDate
         return {
             list,
             listLoading,
-            detail,
-            detailLoading,
             transactionData,
             transactionDataLoading,
             filter,
             query,
+            beginDate,
+            endDate,
             filterForm,
             filterTransaction
         }
     }),
     withPropsOnChange((props, nextProps) => {
-        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest() &&
+        const except = {
+            dPage: null,
+            dPageSize: null
+        }
+        return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except) &&
             (!_.get(props, ['params', 'statOutcomeCategoryId'])) &&
             (!_.get(nextProps, ['params', 'statOutcomeCategoryId']))
     }, ({dispatch, filter}) => {
@@ -53,7 +60,7 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         const prevOpen = toBoolean(_.get(props, ['location', 'query', 'openTransactionDialog']))
         const nextOpen = toBoolean(_.get(nextProps, ['location', 'query', 'openTransactionDialog']))
-        return prevOpen !== nextOpen && nextOpen === true
+        return props.filterTransaction.filterRequest() !== nextProps.filterTransaction.filterRequest() || (prevOpen !== nextOpen && nextOpen === true)
     }, ({dispatch, filter, filterTransaction, location}) => {
         const nextOpen = toBoolean(_.get(location, ['query', [OPEN_TRANSACTION_DIALOG]]))
         if (nextOpen) {
@@ -98,7 +105,9 @@ const StatOutcomeCategoryList = enhance((props) => {
         transactionData,
         transactionDataLoading,
         location,
-        filterTransaction
+        filterTransaction,
+        beginDate,
+        endDate
     } = props
 
     const firstDayOfMonth = _.get(location, ['query', 'fromDate']) || moment().format('YYYY-MM-01')
@@ -125,7 +134,9 @@ const StatOutcomeCategoryList = enhance((props) => {
         data: _.get(transactionData, 'results'),
         loading: transactionDataLoading,
         handleOpenTransactionDialog: props.handleOpenTransactionDialog,
-        handleCloseTransactionDialog: props.handleCloseTransactionDialog
+        handleCloseTransactionDialog: props.handleCloseTransactionDialog,
+        beginDate,
+        endDate
     }
 
     return (

@@ -39,8 +39,8 @@ export const transactionSerializer = (data, dataTransaction) => {
     const lastDayOfMonth = moment().format('YYYY-MM-' + lastDay)
 
     return {
-        'page': _.get(defaultData, 'page'),
-        'page_size': _.get(defaultDataTransaction, 'pageSize'),
+        'page': _.get(defaultData, 'dPage'),
+        'page_size': _.get(defaultDataTransaction, 'dPageSize'),
         'begin_date': _.get(defaultDataTransaction, 'fromDate') || firstDayOfMonth,
         'end_date': _.get(defaultData, 'toDate') || lastDayOfMonth,
         'expanse_category': _.get(defaultData, 'categoryExpense')

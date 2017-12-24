@@ -188,7 +188,8 @@ const StatExpenditureOnStaffGridList = enhance((props) => {
         handleSubmitFilterDialog,
         getDocument,
         initialValues,
-        transactionData
+        transactionData,
+        filterTransaction
     } = props
 
     const currentCurrency = getConfig('PRIMARY_CURRENCY')
@@ -293,6 +294,9 @@ const StatExpenditureOnStaffGridList = enhance((props) => {
                 open={transactionData.open}
                 loading={transactionData.loading}
                 onClose={transactionData.handleCloseTransactionDialog}
+                filterTransaction={filterTransaction}
+                beginDate={transactionData.beginDate}
+                endDate={transactionData.endDate}
             />
         </Container>
     )
