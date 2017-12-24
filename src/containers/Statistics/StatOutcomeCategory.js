@@ -13,7 +13,6 @@ import {
     getTransactionData,
     getDocumentAction
 } from '../../actions/statOutcomeCategory'
-import toBoolean from '../../helpers/toBoolean'
 
 const OPEN_TRANSACTION_DIALOG = 'openTransactionDialog'
 const defaultDate = moment().format('YYYY-MM-DD')

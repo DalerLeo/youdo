@@ -130,7 +130,7 @@ export const listFilterSerializer = (data, cashbox) => {
         'type': type,
         'cashbox': newCashbox,
         'client': _.get(data, 'client'),
-        'staff':  _.get(data, 'staff'),
+        'staff': _.get(data, 'staff'),
         'with_deleted': withDeleted ? '1' : null,
         'own': 'True',
         'search': _.get(defaultData, 'search'),

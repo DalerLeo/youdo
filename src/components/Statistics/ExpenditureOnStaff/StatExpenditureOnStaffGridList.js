@@ -208,7 +208,9 @@ const StatExpenditureOnStaffGridList = enhance((props) => {
             <Col xs={3} style={{justifyContent: 'flex-end'}}>Сумма ({currentCurrency})</Col>
         </Row>
     )
-    const userName = _.find(_.get(listData, 'data'), (item) => {return _.toNumber(_.get(item, ['staff', 'id'])) === _.toNumber(transactionData.open)})
+    const userName = _.find(_.get(listData, 'data'), (item) => {
+        return _.toNumber(_.get(item, ['staff', 'id'])) === _.toNumber(transactionData.open)
+    })
     const list = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const employee = _.get(item, ['staff', 'firstName']) + ' ' + _.get(item, ['staff', 'secondName']) || 'Не указан'
