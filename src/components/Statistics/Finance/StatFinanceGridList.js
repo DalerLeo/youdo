@@ -19,6 +19,7 @@ import numberFormat from '../../../helpers/numberFormat'
 import Loader from '../../Loader'
 import {StatisticsFilterExcel, StatisticsChart} from '../../Statistics'
 import TransactionsList from './TransactionsList'
+import TransactionCategoryPopop from '../../Transaction/TransactionCategoryPopop'
 
 export const STAT_FINANCE_FILTER_KEY = {
     FROM_DATE: 'fromDate',
@@ -164,7 +165,8 @@ const StatFinanceGridList = enhance((props) => {
         handleSubmitFilterDialog,
         listData,
         initialValues,
-        getDocument
+        getDocument,
+        categoryPopUp
     } = props
 
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
@@ -246,6 +248,7 @@ const StatFinanceGridList = enhance((props) => {
                         <TransactionsList
                             filter={filter}
                             handleSubmitFilterDialog={handleSubmitFilterDialog}
+                            handleOpenCategoryPopup={categoryPopUp.handleOpen}
                             listData={listData}
                         />
                     </div>
@@ -257,6 +260,12 @@ const StatFinanceGridList = enhance((props) => {
     return (
         <Container>
             {page}
+            <TransactionCategoryPopop
+                open={categoryPopUp.open}
+                onClose={categoryPopUp.handleClose}
+                data={categoryPopUp.data}
+                loading={categoryPopUp.loading}
+            />
         </Container>
     )
 })

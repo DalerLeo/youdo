@@ -102,7 +102,8 @@ const TransactionsList = enhance((props) => {
         filter,
         handleSubmit,
         handleSubmitFilterDialog,
-        listData
+        listData,
+        handleOpenCategoryPopup
     } = props
 
     const loading = _.get(listData, 'listLoading')
@@ -133,6 +134,7 @@ const TransactionsList = enhance((props) => {
         const customRate = _.get(item, 'customRate') ? _.toInteger(_.get(item, 'customRate')) : _.toInteger(amount / internal)
         const comment = _.get(item, 'comment')
         const cashbox = _.get(item, ['cashbox', 'name'])
+        const expanseCategory = _.get(item, ['expanseCategory', 'name'])
         const order = _.get(item, 'order')
         const transType = _.toInteger(_.get(item, 'type'))
         const user = _.get(item, 'user')
@@ -169,6 +171,13 @@ const TransactionsList = enhance((props) => {
                         </Link>}
                     </strong>
                     }
+                    {expanseCategory && <div><strong>Категория&nbsp;
+                        <Link
+                            className={classes.clickable}
+                            onClick={() => handleOpenCategoryPopup(id) }>
+                            {expanseCategory}
+                        </Link>
+                    </strong></div>}
                     {comment && <div><strong>Комментарий:</strong> {comment}</div>}
                 </Col>
                 <Col xs={3} style={{textAlign: 'right'}}>
