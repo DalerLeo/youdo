@@ -159,7 +159,7 @@ const headerStyle = {
 }
 const ZERO = 0
 const ExpenditureTransactionDialog = enhance((props) => {
-    const {open, loading, onClose, classes, data, filterTransaction, beginDate, endDate} = props
+    const {open, loading, onClose, classes, data, filterTransaction, beginDate, endDate, userName} = props
 
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const list = _.map(data, (item) => {
@@ -235,7 +235,7 @@ const ExpenditureTransactionDialog = enhance((props) => {
                 : <div>
                     <div className={classes.titleContent}>
                         <div>
-                            <div>Трансакции</div>
+                            <div>{userName}</div>
                         </div>
                         <IconButton onTouchTap={onClose}>
                             <CloseIcon color="#666666"/>

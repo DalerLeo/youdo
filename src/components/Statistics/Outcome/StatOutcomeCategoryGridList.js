@@ -23,7 +23,7 @@ export const STAT_OUTCOME_CATEGORY_FILTER_KEY = {
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate'
 }
-
+const ZERO = 0
 const enhance = compose(
     injectSheet({
         loader: {
@@ -208,6 +208,7 @@ const StatOutcomeCategoryGridList = enhance((props) => {
             <Col xs={3} style={{justifyContent: 'flex-end'}}>Сумма ({currentCurrency})</Col>
         </Row>
     )
+    const userName = _.find(_.get(listData, 'data'), {'id': _.toNumber(transactionData.open)})
 
     const list = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
@@ -216,7 +217,7 @@ const StatOutcomeCategoryGridList = enhance((props) => {
         const amount = numberFormat(Math.abs(_.get(item, 'amount')), getConfig('PRIMARY_CURRENCY'))
 
         return (
-            <Row key={id} className="dottedList" onClick={() => { transactionData.handleOpenTransactionDialog() }}>
+            <Row key={id} className="dottedList" onClick={() => { transactionData.handleOpenTransactionDialog(id) }}>
                 <Col xs={3}>{name}</Col>
                 <Col xs={6}>
                     <LinearProgress
@@ -279,18 +280,18 @@ const StatOutcomeCategoryGridList = enhance((props) => {
             </Row>
         </div>
     )
-
     return (
         <Container>
             {page}
             <ExpenditureTransactionDialog
                 data={transactionData.data}
-                open={transactionData.open}
+                open={transactionData.open > ZERO}
                 loading={transactionData.loading}
                 onClose={transactionData.handleCloseTransactionDialog}
                 filterTransaction={filterTransaction}
                 beginDate={transactionData.beginDate}
                 endDate={transactionData.endDate}
+                userName={_.get(userName, 'name')}
             />
         </Container>
     )

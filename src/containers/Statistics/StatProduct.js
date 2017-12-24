@@ -14,7 +14,8 @@ import getDocuments from '../../helpers/getDocument'
 import {StatProductGridList} from '../../components/Statistics'
 import {STAT_PRODUCT_FILTER_KEY} from '../../components/Statistics/Products/StatProductGridList'
 import {
-    statProductListFetchAction
+    statProductListFetchAction,
+    statProductSumDatFetchAction
 } from '../../actions/statProduct'
 
 const enhance = compose(
@@ -25,6 +26,8 @@ const enhance = compose(
         const detailLoading = _.get(state, ['statProduct', 'item', 'loading'])
         const list = _.get(state, ['statProduct', 'list', 'data'])
         const listLoading = _.get(state, ['statProduct', 'list', 'loading'])
+        const sumData = _.get(state, ['statProduct', 'sumData', 'data'])
+        const sumDataLoading = _.get(state, ['statProduct', 'sumData', 'loading'])
         const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
         const searchForm = _.get(state, ['form', 'StatProductForm'])
         const filter = filterHelper(list, pathname, query)
@@ -39,6 +42,8 @@ const enhance = compose(
             filterForm,
             searchForm,
             pathname,
+            sumData,
+            sumDataLoading,
             query
         }
     }),
@@ -46,6 +51,7 @@ const enhance = compose(
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
         dispatch(statProductListFetchAction(filter))
+        dispatch(statProductSumDatFetchAction(filter))
     }),
 
     withHandlers({
@@ -94,6 +100,8 @@ const StatProductList = enhance((props) => {
         layout,
         location,
         params,
+        sumData,
+        sumDataLoading,
         query
     } = props
     const detailId = _.toInteger(_.get(params, 'statProductId'))
@@ -145,6 +153,8 @@ const StatProductList = enhance((props) => {
                 searchSubmit={props.handleSubmitSearch}
                 pathname={_.get(location, 'pathname')}
                 query={query}
+                sumData={sumData}
+                sumDataLoading={sumDataLoading}
             />
         </Layout>
     )

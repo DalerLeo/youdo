@@ -19,6 +19,7 @@ const OPEN_TRANSACTION_DIALOG = 'openTransactionDialog'
 const defaultDate = moment().format('YYYY-MM-DD')
 const BEGIN_DATE = 'fromDate'
 const END_DATE = 'toDate'
+const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -58,13 +59,13 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const prevOpen = toBoolean(_.get(props, ['location', 'query', 'openTransactionDialog']))
-        const nextOpen = toBoolean(_.get(nextProps, ['location', 'query', 'openTransactionDialog']))
-        return props.filterTransaction.filterRequest() !== nextProps.filterTransaction.filterRequest() || (prevOpen !== nextOpen && nextOpen === true)
+        const prevOpen = _.get(props, ['location', 'query', 'openTransactionDialog'])
+        const nextOpen = _.get(nextProps, ['location', 'query', 'openTransactionDialog'])
+        return props.filterTransaction.filterRequest() !== nextProps.filterTransaction.filterRequest() || (prevOpen !== nextOpen && _.toNumber(nextOpen) > ZERO)
     }, ({dispatch, filter, filterTransaction, location}) => {
-        const nextOpen = toBoolean(_.get(location, ['query', [OPEN_TRANSACTION_DIALOG]]))
-        if (nextOpen) {
-            dispatch(getTransactionData(filter, filterTransaction))
+        const nextOpen = _.toNumber(_.get(location, ['query', [OPEN_TRANSACTION_DIALOG]]))
+        if (nextOpen > ZERO) {
+            dispatch(getTransactionData(filter, filterTransaction, nextOpen))
         }
     }),
 
@@ -84,9 +85,9 @@ const enhance = compose(
             const {dispatch, filter} = props
             return dispatch(getDocumentAction(filter))
         },
-        handleOpenTransactionDialog: props => () => {
+        handleOpenTransactionDialog: props => (id) => {
             const {filter, location: {pathname}} = props
-            hashHistory.push({pathname, query: filter.getParams({[OPEN_TRANSACTION_DIALOG]: true})})
+            hashHistory.push({pathname, query: filter.getParams({[OPEN_TRANSACTION_DIALOG]: id})})
         },
         handleCloseTransactionDialog: props => () => {
             const {filter, location: {pathname}} = props
@@ -113,7 +114,7 @@ const StatOutcomeCategoryList = enhance((props) => {
     const firstDayOfMonth = _.get(location, ['query', 'fromDate']) || moment().format('YYYY-MM-01')
     const lastDay = moment().daysInMonth()
     const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
-    const openTransactionDialog = toBoolean(_.get(location, ['query', [OPEN_TRANSACTION_DIALOG]]))
+    const openTransactionDialog = _.toNumber(_.get(location, ['query', [OPEN_TRANSACTION_DIALOG]]))
 
     const listData = {
         data: _.get(list, 'results'),

@@ -357,6 +357,8 @@ const StatProductGridList = enhance((props) => {
         updateRow,
         expandedTable,
         setExpandedTable,
+        sumData,
+        sumDataLoading,
         query
     } = props
 
@@ -393,8 +395,8 @@ const StatProductGridList = enhance((props) => {
         )
     })
 
-    const totalCostSale = numberFormat(Math.abs(_.get(listData, ['data', 'salesIncome'])), currency)
-    const totalCountSale = numberFormat(Math.abs(_.get(listData, ['data', 'salesCount'])), currency)
+    const totalCountSale = numberFormat(_.get(sumData, 'salesCountTotal'), currency)
+    const totalCostSale = numberFormat(_.get(sumData, 'salesCountTotal'), currency)
     const tableList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const type = _.get(item, ['type', 'name'])
@@ -475,7 +477,7 @@ const StatProductGridList = enhance((props) => {
                             : <div className={classes.summary}>
                                 <div>
                                     <span>Сумма от продаж</span>
-                                    <div>{totalCostSale}<span>({totalCountSale} sht)</span> </div>
+                                    <div>{totalCostSale}<span>({totalCountSale})</span> </div>
                                 </div>
                                 <div>
                                     <span>Фактические продажи</span>

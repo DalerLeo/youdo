@@ -31,7 +31,7 @@ export const itemSerializer = (data, filterItem, id) => {
         'created_date_1': _.get(defaultData, 'toDate')
     }
 }
-export const transactionSerializer = (data, transactionData) => {
+export const transactionSerializer = (data, transactionData, staff) => {
     const {...defaultData} = data
     const {...defaultTransactionData} = transactionData
 
@@ -44,7 +44,8 @@ export const transactionSerializer = (data, transactionData) => {
         'page_size': _.get(defaultTransactionData, 'dPageSize'),
         'begin_date': _.get(defaultData, 'fromDate') || firstDayOfMonth,
         'end_date': _.get(defaultData, 'toDate') || lastDayOfMonth,
-        'expanse_category': _.get(defaultData, 'categoryExpense')
+        'expanse_category': _.get(defaultData, 'categoryExpense'),
+        'staff': staff
     }
 }
 
