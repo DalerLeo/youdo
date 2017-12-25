@@ -43,6 +43,7 @@ import dateTimeFormat from '../../helpers/dateTimeFormat'
 import toBoolean from '../../helpers/toBoolean'
 import MenuItem from 'material-ui/MenuItem'
 import IconMenu from 'material-ui/IconMenu'
+import getConfig from '../../helpers/getConfig'
 
 const ZERO = 0
 const REQUESTED = 0
@@ -274,10 +275,10 @@ const OrderGridList = enhance((props) => {
         addProductDialog,
         printSalesDialog,
         printContractDialog,
-        hasMarket,
         scrollValue
     } = props
 
+    const hasMarket = toBoolean(getConfig('MARKETS_MODULE'))
     const showCheckboxes = toBoolean(_.get(filter.getParams(), 'showCheckboxes'))
     const statusIsReady = !_.isNil(_.get(filter.getParams(), 'status')) && _.toNumber(_.get(filter.getParams(), 'status')) === READY
     const statusIsRequested = !_.isNil(_.get(filter.getParams(), 'status')) && _.toNumber(_.get(filter.getParams(), 'status')) === REQUESTED

@@ -327,6 +327,7 @@ const enhance = compose(
             const type = _.get(filterForm, ['values', 'type']) || null
             const division = _.get(filterForm, ['values', 'division']) || null
             const client = _.get(filterForm, ['values', 'client']) || null
+            const staff = _.get(filterForm, ['values', 'staff']) || null
             const withDeleted = _.get(filterForm, ['values', 'with_deleted']) || null
             const categoryExpense = _.get(filterForm, ['values', 'categoryExpense']) || null
 
@@ -334,6 +335,7 @@ const enhance = compose(
                 [TRANSACTION_FILTER_OPEN]: false,
                 [TRANSACTION_FILTER_KEY.TYPE]: joinArray(type),
                 [TRANSACTION_FILTER_KEY.CLIENT]: joinArray(client),
+                [TRANSACTION_FILTER_KEY.STAFF]: joinArray(staff),
                 [TRANSACTION_FILTER_KEY.WITH_DELETED]: withDeleted,
                 [TRANSACTION_FILTER_KEY.DIVISION]: joinArray(division),
                 [TRANSACTION_FILTER_KEY.CATEGORY_EXPENSE]: joinArray(categoryExpense),
@@ -723,6 +725,7 @@ const TransactionList = enhance((props) => {
     const division = (filter.getParam(TRANSACTION_FILTER_KEY.DIVISION))
     const type = (filter.getParam(TRANSACTION_FILTER_KEY.TYPE))
     const client = (filter.getParam(TRANSACTION_FILTER_KEY.CLIENT))
+    const staff = (filter.getParam(TRANSACTION_FILTER_KEY.STAFF))
     const withDeleted = toBoolean(filter.getParam(TRANSACTION_FILTER_KEY.WITH_DELETED))
     const fromDate = filter.getParam(TRANSACTION_FILTER_KEY.FROM_DATE)
     const toDate = filter.getParam(TRANSACTION_FILTER_KEY.TO_DATE)
@@ -854,6 +857,7 @@ const TransactionList = enhance((props) => {
             categoryExpense: categoryExpense && splitToArray(categoryExpense),
             type: type && splitToArray(type),
             client: client && splitToArray(client),
+            staff: staff && splitToArray(staff),
             division: division && splitToArray(division),
             date: {
                 fromDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),

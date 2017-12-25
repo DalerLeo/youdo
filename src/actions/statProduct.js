@@ -20,3 +20,19 @@ export const statProductListFetchAction = (filter) => {
         payload
     }
 }
+export const statProductSumDatFetchAction = (filter) => {
+    const params = serializers.listFilterSerializer(filter.getParams())
+    const payload = axios()
+        .get((API.STAT_PRODUCT_SUM_DATA), {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STAT_PRODUCT_SUM_DATA,
+        payload
+    }
+}

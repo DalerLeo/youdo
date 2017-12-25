@@ -10,42 +10,47 @@ import {StatOutcomeCategoryGridList} from '../../components/Statistics'
 import {STAT_OUTCOME_CATEGORY_FILTER_KEY} from '../../components/Statistics/Outcome/StatOutcomeCategoryGridList'
 import {
     statOutcomeCategoryListFetchAction,
-    statOutcomeCategoryItemFetchAction,
     getTransactionData,
     getDocumentAction
 } from '../../actions/statOutcomeCategory'
-import toBoolean from '../../helpers/toBoolean'
 
-const ZERO = 0
 const OPEN_TRANSACTION_DIALOG = 'openTransactionDialog'
+const defaultDate = moment().format('YYYY-MM-DD')
+const BEGIN_DATE = 'fromDate'
+const END_DATE = 'toDate'
+const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
-        const detail = _.get(state, ['statOutcomeCategory', 'item', 'data'])
-        const detailLoading = _.get(state, ['statOutcomeCategory', 'item', 'loading'])
         const list = _.get(state, ['statOutcomeCategory', 'list', 'data'])
         const listLoading = _.get(state, ['statOutcomeCategory', 'list', 'loading'])
         const transactionData = _.get(state, ['statOutcomeCategory', 'transactionData', 'data'])
         const transactionDataLoading = _.get(state, ['statOutcomeCategory', 'transactionData', 'loading'])
         const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
         const filter = filterHelper(list, pathname, query)
-        const filterItem = filterHelper(detail, pathname, query)
+        const filterTransaction = filterHelper(transactionData, pathname, query, {'page': 'dPage', 'pageSize': 'dPageSize'})
+        const beginDate = _.get(query, BEGIN_DATE) || defaultDate
+        const endDate = _.get(query, END_DATE) || defaultDate
         return {
             list,
             listLoading,
-            detail,
-            detailLoading,
             transactionData,
             transactionDataLoading,
             filter,
             query,
+            beginDate,
+            endDate,
             filterForm,
-            filterItem
+            filterTransaction
         }
     }),
     withPropsOnChange((props, nextProps) => {
-        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest() &&
+        const except = {
+            dPage: null,
+            dPageSize: null
+        }
+        return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except) &&
             (!_.get(props, ['params', 'statOutcomeCategoryId'])) &&
             (!_.get(nextProps, ['params', 'statOutcomeCategoryId']))
     }, ({dispatch, filter}) => {
@@ -53,22 +58,13 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const statOutcomeCategoryId = _.get(nextProps, ['params', 'statOutcomeCategoryId']) || ZERO
-        return statOutcomeCategoryId > ZERO && _.get(props, ['params', 'statOutcomeCategoryId']) !== statOutcomeCategoryId
-    }, ({dispatch, params, filter, filterItem}) => {
-        const statOutcomeCategoryId = _.toInteger(_.get(params, 'statOutcomeCategoryId'))
-        if (statOutcomeCategoryId > ZERO) {
-            dispatch(statOutcomeCategoryItemFetchAction(filter, filterItem, statOutcomeCategoryId))
-        }
-    }),
-    withPropsOnChange((props, nextProps) => {
-        const prevOpen = toBoolean(_.get(props, ['location', 'query', 'openTransactionDialog']))
-        const nextOpen = toBoolean(_.get(nextProps, ['location', 'query', 'openTransactionDialog']))
-        return prevOpen !== nextOpen && nextOpen === true
-    }, ({dispatch, filter, location}) => {
-        const nextOpen = toBoolean(_.get(location, ['query', [OPEN_TRANSACTION_DIALOG]]))
-        if (nextOpen) {
-            dispatch(getTransactionData(filter))
+        const prevOpen = _.get(props, ['location', 'query', 'openTransactionDialog'])
+        const nextOpen = _.get(nextProps, ['location', 'query', 'openTransactionDialog'])
+        return props.filterTransaction.filterRequest() !== nextProps.filterTransaction.filterRequest() || (prevOpen !== nextOpen && _.toNumber(nextOpen) > ZERO)
+    }, ({dispatch, filter, filterTransaction, location}) => {
+        const nextOpen = _.toNumber(_.get(location, ['query', [OPEN_TRANSACTION_DIALOG]]))
+        if (nextOpen > ZERO) {
+            dispatch(getTransactionData(filter, filterTransaction, nextOpen))
         }
     }),
 
@@ -88,9 +84,9 @@ const enhance = compose(
             const {dispatch, filter} = props
             return dispatch(getDocumentAction(filter))
         },
-        handleOpenTransactionDialog: props => () => {
+        handleOpenTransactionDialog: props => (id) => {
             const {filter, location: {pathname}} = props
-            hashHistory.push({pathname, query: filter.getParams({[OPEN_TRANSACTION_DIALOG]: true})})
+            hashHistory.push({pathname, query: filter.getParams({[OPEN_TRANSACTION_DIALOG]: id})})
         },
         handleCloseTransactionDialog: props => () => {
             const {filter, location: {pathname}} = props
@@ -103,45 +99,27 @@ const StatOutcomeCategoryList = enhance((props) => {
     const {
         list,
         listLoading,
-        detail,
-        detailLoading,
         filter,
         layout,
-        filterItem,
         filterForm,
         transactionData,
         transactionDataLoading,
         location,
-        params
+        filterTransaction,
+        beginDate,
+        endDate
     } = props
 
-    const detailId = _.toInteger(_.get(params, 'statOutcomeCategoryId'))
     const firstDayOfMonth = _.get(location, ['query', 'fromDate']) || moment().format('YYYY-MM-01')
     const lastDay = moment().daysInMonth()
     const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
-    const openTransactionDialog = toBoolean(_.get(location, ['query', [OPEN_TRANSACTION_DIALOG]]))
+    const openTransactionDialog = _.toNumber(_.get(location, ['query', [OPEN_TRANSACTION_DIALOG]]))
 
     const listData = {
         data: _.get(list, 'results'),
         listLoading
     }
-    const outcomeCategoryDetail = _.filter(_.get(list, 'results'), (item) => {
-        return _.get(item, 'id') === detailId
-    })
-    const filterDateRange = {
-        'fromDate': _.get(filterForm, ['values', 'date', 'fromDate']) || null,
-        'toDate': _.get(filterForm, ['values', 'date', 'toDate']) || null
-    }
-    const detailData = {
-        filter: filterItem,
-        id: detailId,
-        data: detail,
-        outcomeCategoryDetail,
-        detailLoading,
-        handleCloseDetail: props.handleCloseDetail,
-        filterDateRange
 
-    }
     const getDocument = {
         handleGetDocument: props.handleGetDocument
     }
@@ -156,7 +134,9 @@ const StatOutcomeCategoryList = enhance((props) => {
         data: _.get(transactionData, 'results'),
         loading: transactionDataLoading,
         handleOpenTransactionDialog: props.handleOpenTransactionDialog,
-        handleCloseTransactionDialog: props.handleCloseTransactionDialog
+        handleCloseTransactionDialog: props.handleCloseTransactionDialog,
+        beginDate,
+        endDate
     }
 
     return (
@@ -165,11 +145,11 @@ const StatOutcomeCategoryList = enhance((props) => {
                 filter={filter}
                 handleSubmitFilterDialog={props.handleSubmitFilterDialog}
                 listData={listData}
-                detailData={detailData}
                 getDocument={getDocument}
                 initialValues={initialValues}
                 filterForm={filterForm}
                 transactionData={transactionDialog}
+                filterTransaction={filterTransaction}
             />
         </Layout>
     )
