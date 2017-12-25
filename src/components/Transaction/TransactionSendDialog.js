@@ -109,7 +109,7 @@ const TransactionSendDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '300px'} : {width: '400px'}}
+            contentStyle={loading ? {width: '250px'} : {width: '350px'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
                 <span>Перевод</span>
@@ -117,7 +117,7 @@ const TransactionSendDialog = enhance((props) => {
                     <CloseIcon color="#666666"/>
                 </IconButton>
             </div>
-            <div className={classes.bodyContent}>
+            <div className={classes.bodyContent} style={{padding: '0'}}>
                 <form onSubmit={onSubmit} className={classes.form}>
                     <div className={classes.inContent} style={{minHeight: '235px'}}>
                         {loading ? <div className={classes.loader}>
@@ -202,7 +202,7 @@ const TransactionSendDialog = enhance((props) => {
                                 </div>
                                 {(amountFromPersent && amountToPersent) &&
                                 <div style={{padding: '10px 0'}}>
-                                    Касса <i>{_.get(chosenCashbox, 'name')}</i> получает: <strong>{_.round(customRatePersent, ROUND_VAL)}</strong>
+                                    Касса <i>{_.get(chosenCashbox, 'name')}</i> получает: <strong>{_.round(customRatePersent, ROUND_VAL) + ' ' + chosenCurrencyName}</strong>
                                 </div>}
                             </div>
                             }

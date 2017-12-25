@@ -1,24 +1,21 @@
 import _ from 'lodash'
-import sprintf from 'sprintf'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import {reduxForm} from 'redux-form'
-import {Link} from 'react-router'
 import Dialog from 'material-ui/Dialog'
 import IconButton from 'material-ui/IconButton'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
-import {formattedType, ORDER, INCOME_FROM_AGENT} from '../../../constants/transactionTypes'
 import Loader from '../../Loader'
 import NotFound from '../../Images/not-found.png'
 import MainStyles from '../../Styles/MainStyles'
 import getConfig from '../../../helpers/getConfig'
 import dateFormat from '../../../helpers/dateFormat'
 import numberFormat from '../../../helpers/numberFormat'
-import * as ROUTES from '../../../constants/routes'
 import GridListNavPagination from '../../../components/GridList/GridListNavPagination'
+import {TransactionsFormat} from '../../Transaction'
 
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
@@ -172,42 +169,29 @@ const ExpenditureTransactionDialog = enhance((props) => {
         const comment = _.get(item, 'comment')
         const cashbox = _.get(item, ['cashbox', 'name'])
         const order = _.get(item, 'order')
+        const supply = _.get(item, 'supply')
+        const supplyExpanseId = _.get(item, 'supplyExpanseId')
         const transType = _.toInteger(_.get(item, 'type'))
         const user = _.get(item, 'user')
-        const clientName = _.get(item, ['client', 'name'])
-        const clientId = _.get(item, ['client', 'id'])
-        const type = formattedType[transType]
+        const client = _.get(item, ['client'])
+        const expenseCategory = _.get(item, ['expanseCategory'])
         return (
             <Row key={id} className="dottedList">
                 <Col xs={1}>{id}</Col>
                 <Col xs={2}>{cashbox}</Col>
                 <Col xs={2}>{date}</Col>
                 <Col xs={4}>
-                    {transType === ORDER
-                        ? <Link target="_blank" to={{
-                            pathname: sprintf(ROUTES.ORDER_ITEM_PATH, order),
-                            query: {search: order}
-                        }}><span className={classes.clickable}> Оплата заказа № {order}</span>
-                        </Link>
-                        : transType === INCOME_FROM_AGENT
-                            ? <Link target="_blank" to={{
-                                pathname: ROUTES.TRANSACTION_LIST_URL,
-                                query: {openTransactionInfo: id}
-                            }}>{'Приемка наличных с  ' + user.firstName + ' ' + user.secondName}</Link>
-                            : <strong>{type}&nbsp;
-                                {clientName &&
-                                <Link
-                                    target="_blank"
-                                    className={classes.clickable}
-                                    to={{
-                                        pathname: ROUTES.CLIENT_BALANCE_LIST_URL,
-                                        query: {search: clientId}
-                                    }}>
-                                    {clientName}
-                                </Link>}
-                            </strong>
-                    }
-                    {comment && <div><strong>Комментарий:</strong> {comment}</div>}
+                    <TransactionsFormat
+                        type={transType}
+                        id={id}
+                        expenseCategory={expenseCategory}
+                        comment={comment}
+                        client={client}
+                        supply={supply}
+                        order={order}
+                        supplyExpanseId={supplyExpanseId}
+                        user={user}
+                    />
                 </Col>
                 <Col xs={3} style={{textAlign: 'right'}}>
                     <div className={amount > ZERO ? 'greenFont' : (amount === ZERO ? '' : 'redFont')}>

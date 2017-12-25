@@ -1,6 +1,6 @@
 import TransactionGridList from './TransactionGridList'
 import {TRANSACTION_FILTER_KEY, TRANSACTION_FILTER_OPEN} from './TransactionFilterForm'
-
+import TransactionsFormat from './TransactionsFormat'
 const TRANSACTION_CREATE_EXPENSE_DIALOG_OPEN = 'openCreateExpenseDialog'
 const TRANSACTION_CREATE_INCOME_DIALOG_OPEN = 'openCreateIncomeDialog'
 const TRANSACTION_UPDATE_EXPENSE_DIALOG_OPEN = 'openUpdateExpenseDialog'
@@ -30,5 +30,6 @@ export {
     TRANSACTION_ACCEPT_CASH_DETAIL_OPEN,
     TRANSACTION_CATEGORY_POPOP_OPEN,
     TRANSACTION_INFO_OPEN,
-    TRANSACTION_EDIT_PRICE_OPEN
+    TRANSACTION_EDIT_PRICE_OPEN,
+    TransactionsFormat
 }

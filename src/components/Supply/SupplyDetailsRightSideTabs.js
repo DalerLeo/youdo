@@ -322,7 +322,7 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                                         const internal = _.toNumber(_.get(item, 'internalAmount')) < ZERO ? _.toNumber(_.get(item, 'internalAmount')) * MINUS_ONE : _.toNumber(_.get(item, 'internalAmount'))
                                         const date = dateFormat(_.get(item, 'date'), true)
                                         const currentCurrency = _.get(item, ['currency', 'name'])
-                                        const expanseCategory = _.get(item, ['expanseCategory', 'name'])
+                                        const expanseCategory = _.get(item, ['expanseCategory'])
                                         const transType = _.get(item, ['type'])
                                         const customRate = _.toNumber(_.get(item, 'customRate'))
                                         const rate = customRate > ZERO ? customRate : _.toInteger(amount / internal)
@@ -333,19 +333,18 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                                                 <div style={{flexBasis: '10%', maxWidth: '10%'}}>{idItem}</div>
                                                 <div style={{flexBasis: '22%', maxWidth: '24%'}}>{cashbox}</div>
                                                 <div style={{flexBasis: '30%', maxWidth: '30%'}}>
-                                                    {expanseCategory
-                                                        ? <div><span
-                                                            className={classes.label}>Категория: </span> {expanseCategory}
-                                                        </div> : ''}
-                                                    {transType && <TransactionsFormat
+                                                    <TransactionsFormat
                                                         type={transType}
                                                         order={order}
                                                         supply={supply}
                                                         supplyExpanseId={supplyExpanse}
                                                         client={_.get(item, 'client')}
-                                                        user={user}/>
-                                                    }
-                                                    {comment && <div><strong>Комментарий:</strong> {comment}</div>}
+                                                        id={id}
+                                                        expenseCategory={expanseCategory}
+                                                        user={user}
+                                                        comment={comment}
+
+                                                    />
                                                 </div>
                                                 <div style={{flexBasis: '18%', maxWidth: '18%'}}>{date}</div>
                                                 <div style={{flexBasis: '20%', maxWidth: '20%', textAlign: 'right'}}>
