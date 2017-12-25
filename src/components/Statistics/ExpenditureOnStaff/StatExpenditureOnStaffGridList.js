@@ -13,7 +13,7 @@ import ExpenditureTransactionDialog from '../ExpenditureOnStaff/ExpenditureTrans
 import Loader from '../../Loader'
 import LinearProgress from 'material-ui/LinearProgress'
 import Pagination from '../../GridList/GridListNavPagination/index'
-import numberFormat from '../../../helpers/numberFormat.js'
+import moduleFormat from '../../../helpers/moduleFormat.js'
 import getConfig from '../../../helpers/getConfig'
 import NotFound from '../../Images/not-found.png'
 import {StatisticsFilterExcel} from '../../Statistics'
@@ -23,7 +23,7 @@ export const STAT_EXPENDITURE_ON_STAFF_FILTER_KEY = {
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate'
 }
-
+const ZERO = 0
 const enhance = compose(
     injectSheet({
         loader: {
@@ -188,7 +188,8 @@ const StatExpenditureOnStaffGridList = enhance((props) => {
         handleSubmitFilterDialog,
         getDocument,
         initialValues,
-        transactionData
+        transactionData,
+        filterTransaction
     } = props
 
     const currentCurrency = getConfig('PRIMARY_CURRENCY')
@@ -207,15 +208,17 @@ const StatExpenditureOnStaffGridList = enhance((props) => {
             <Col xs={3} style={{justifyContent: 'flex-end'}}>Сумма ({currentCurrency})</Col>
         </Row>
     )
-
+    const userName = _.find(_.get(listData, 'data'), (item) => {
+        return _.toNumber(_.get(item, ['staff', 'id'])) === _.toNumber(transactionData.open)
+    })
     const list = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const employee = _.get(item, ['employee', 'name']) || 'Не указан'
-        const percent = _.get(item, 'percent')
-        const amount = numberFormat(Math.abs(_.get(item, 'amount')), getConfig('PRIMARY_CURRENCY'))
-
+        const employee = _.get(item, ['staff', 'firstName']) + ' ' + _.get(item, ['staff', 'secondName']) || 'Не указан'
+        const staffId = _.get(item, ['staff', 'id'])
+        const percent = _.get(item, 'percentage')
+        const amount = moduleFormat(_.get(item, 'total'), getConfig('PRIMARY_CURRENCY'))
         return (
-            <Row key={id} className="dottedList" onClick={() => { transactionData.handleOpenTransactionDialog() }}>
+            <Row key={id} className="dottedList" onClick={() => { transactionData.handleOpenTransactionDialog(staffId) }}>
                 <Col xs={3}>{employee}</Col>
                 <Col xs={6}>
                     <LinearProgress
@@ -284,15 +287,18 @@ const StatExpenditureOnStaffGridList = enhance((props) => {
             </Row>
         </div>
     )
-
     return (
         <Container>
             {page}
             <ExpenditureTransactionDialog
                 data={transactionData.data}
-                open={transactionData.open}
+                open={transactionData.open > ZERO}
                 loading={transactionData.loading}
                 onClose={transactionData.handleCloseTransactionDialog}
+                filterTransaction={filterTransaction}
+                beginDate={transactionData.beginDate}
+                endDate={transactionData.endDate}
+                userName={_.get(userName, ['staff', 'firstName']) + ' ' + _.get(userName, ['staff', 'secondName'])}
             />
         </Container>
     )

@@ -562,22 +562,22 @@ const StatMarketGridList = enhance((props) => {
                                 </div>
 
                                 <div>
-                                    <span>Сумма возвратов</span>
+                                    <span>Общий возврат</span>
                                     <div>{numberFormat(returnTotalSum, primaryCurrency)}</div>
-                                    <span>Сумма возвратов Fact</span>
+                                    <span>Возврат по заказам</span>
                                     <div>{numberFormat(returnOrdersSum, primaryCurrency)}</div>
                                 </div>
                                 <div>
-                                    <span>Оплачено total</span>
+                                    <span>Общие оплачено</span>
                                     <div>{numberFormat(paymentTotalSum, primaryCurrency)}</div>
-                                    <span>Оплачено fact</span>
+                                    <span>Оплачено по заказам</span>
                                     <div>{numberFormat(paymentOrdersSum, primaryCurrency)}</div>
                                 </div>
                                 <div>
-                                    <span>Долг order</span>
-                                    <div>{numberFormat(debtOrdersSum, primaryCurrency)}</div>
-                                    <span>Долг total</span>
+                                    <span>Общий долг</span>
                                     <div>{numberFormat(debtTotalSum, primaryCurrency)}</div>
+                                    <span>Долг по заказам</span>
+                                    <div>{numberFormat(debtOrdersSum, primaryCurrency)}</div>
                                 </div>
                             </div>}
                         <div className={expandedTable ? classes.expandedTable : ''}>

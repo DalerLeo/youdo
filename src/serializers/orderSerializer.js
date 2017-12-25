@@ -3,7 +3,9 @@ import moment from 'moment'
 import {orderingSnakeCase} from '../helpers/serializer'
 import numberWithoutSpaces from '../helpers/numberWithoutSpaces'
 
-const ZERO = 0
+const STANDART = 0
+const CONSIGNMENT = 1
+const INDIVIDUAL_DEAL_TYPE = 2
 const ONE = 1
 const TWO = 2
 const MINUS_ONE = -1
@@ -17,7 +19,7 @@ export const createSerializer = (data) => {
     const paymentDate = _.get(data, ['paymentDate']) ? moment(_.get(data, ['paymentDate'])).format('YYYY-MM-DD') : null
     const deliveryDate = _.get(data, ['deliveryDate']) ? moment(_.get(data, ['deliveryDate'])).format('YYYY-MM-DD') : null
     const requestDeadline = _.get(data, ['requestDeadline']) ? moment(_.get(data, ['requestDeadline'])).format('YYYY-MM-DD') : null
-    const dealType = _.get(data, ['dealType']) === 'standart' ? ZERO : ONE
+    const dealType = _.get(data, ['dealType']) === 'standart' ? STANDART : (_.get(data, ['dealType']) === 'consignment' ? CONSIGNMENT : INDIVIDUAL_DEAL_TYPE)
     const market = _.get(data, ['market', 'value'])
     const contract = _.get(data, ['contract'])
     const deliveryPrice = _.get(data, ['deliveryPrice'])

@@ -31,19 +31,21 @@ export const itemSerializer = (data, filterItem, id) => {
         'created_date_1': _.get(defaultData, 'toDate')
     }
 }
-export const transactionSerializer = (data) => {
+export const transactionSerializer = (data, transactionData, staff) => {
     const {...defaultData} = data
+    const {...defaultTransactionData} = transactionData
 
     const firstDayOfMonth = moment().format('YYYY-MM-01')
     const lastDay = moment().daysInMonth()
     const lastDayOfMonth = moment().format('YYYY-MM-' + lastDay)
 
     return {
-        'page': _.get(defaultData, 'page'),
-        'page_size': _.get(defaultData, 'pageSize'),
+        'page': _.get(defaultTransactionData, 'dPage'),
+        'page_size': _.get(defaultTransactionData, 'dPageSize'),
         'begin_date': _.get(defaultData, 'fromDate') || firstDayOfMonth,
         'end_date': _.get(defaultData, 'toDate') || lastDayOfMonth,
-        'expanse_category': _.get(defaultData, 'categoryExpense')
+        'expanse_category': _.get(defaultData, 'categoryExpense'),
+        'staff': staff
     }
 }
 

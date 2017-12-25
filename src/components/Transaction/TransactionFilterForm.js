@@ -15,7 +15,8 @@ import {
     ExpensiveCategoryMultiSearchField,
     ClientMultiSearchField,
     DivisionMultiSearchField,
-    CheckBox
+    CheckBox,
+    UsersMultiSearchField
 } from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
@@ -29,6 +30,7 @@ export const TRANSACTION_FILTER_KEY = {
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate',
     CLIENT: 'client',
+    STAFF: 'staff',
     DIVISION: 'division',
     WITH_DELETED: 'with_deleted'
 }
@@ -182,6 +184,12 @@ const TransactionFilterForm = enhance((props) => {
                         name="client"
                         component={ClientMultiSearchField}
                         label="Клиент"
+                        fullWidth={true}/>
+                    <Field
+                        className={classes.inputFieldCustom}
+                        name="staff"
+                        component={UsersMultiSearchField}
+                        label="Сотрудник"
                         fullWidth={true}/>
                     {getConfig &&
                     <Field

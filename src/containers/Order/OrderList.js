@@ -18,7 +18,6 @@ import * as ORDER_TAB from '../../constants/orderTab'
 import * as serializers from '../../serializers/orderSerializer'
 import * as API from '../../constants/api'
 import {openErrorAction} from '../../actions/error'
-import getConfig from '../../helpers/getConfig'
 
 import {
     ORDER_CREATE_DIALOG_OPEN,
@@ -115,7 +114,6 @@ const enhance = compose(
         const paymentType = _.get(state, ['form', 'OrderCreateForm', 'values', 'paymentType'])
         const isSuperUser = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
         const addProductsForm = _.get(state, ['form', 'OrderAddProductsForm'])
-        const hasMarket = toBoolean(getConfig('MARKETS_MODULE'))
 
         return {
             list,
@@ -157,8 +155,7 @@ const enhance = compose(
             salesPrintData,
             salesPrintDataLoading,
             marketDetails,
-            marketDetailsLoading,
-            hasMarket
+            marketDetailsLoading
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -922,8 +919,7 @@ const OrderList = enhance((props) => {
         salesPrintDataLoading,
         openContractPrint,
         marketDetailsLoading,
-        marketDetails,
-        hasMarket
+        marketDetails
     } = props
     const openFilterDialog = toBoolean(_.get(location, ['query', ORDER_FILTER_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', ORDER_CREATE_DIALOG_OPEN]))
@@ -1287,8 +1283,7 @@ const OrderList = enhance((props) => {
 
         return <OrderPrint
             printDialog={printDialog}
-            listPrintData={listPrintData}
-            hasMarket={hasMarket}/>
+            listPrintData={listPrintData}/>
     }
 
     if (openSalesPrint) {
@@ -1362,7 +1357,6 @@ const OrderList = enhance((props) => {
                 addProductDialog={addProductDialog}
                 printSalesDialog={printSalesDialog}
                 printContractDialog={printContractDialog}
-                hasMarket={hasMarket}
                 scrollValue={_.get(layout, 'scrollValue')}
             />
         </Layout>

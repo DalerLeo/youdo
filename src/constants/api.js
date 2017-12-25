@@ -372,6 +372,8 @@ export const STAT_SALES_GET_DOCUMENT = '/sales/order/export/'
 export const STAT_PRODUCT_LIST = 'stats/products/'
 export const STAT_PRODUCT_GET_DOCUMENT = '/stats/products/export'
 
+export const STAT_PRODUCT_SUM_DATA = 'stats/products/total/'
+
 export const STAT_RETURN_LIST = '/stats/order_returns/'
 export const STAT_RETURN_GET_DOCUMENT = '/sales/order_return/excel/'
 
@@ -385,8 +387,8 @@ export const STAT_REMAINDER_GET_DOCUMENT = `/${REMAINDER_STOCK}/all_balances_exp
 export const STATISTICS_CASHBOX_LIST = `/${CASHBOX}/`
 export const STATISTICS_CASHBOX_ITEM = `/${CASHBOX}/%d/`
 
-export const STAT_EXPENDITURE_ON_STAFF_LIST = 'stats/expenses/'
-export const STAT_EXPENDITURE_ON_STAFF_ITEM = 'sales/order/'
+export const STAT_EXPENDITURE_ON_STAFF_LIST = '/stats/staff_expenses/'
+export const STAT_EXPENDITURE_ON_STAFF_ITEM = '/sales/order/'
 export const STAT_EXPENDITURE_ON_STAFFGET_DOCUMENT = 'stats/agents/export/'
 
 export const CONTENT_TYPE_SEARCH = 'stock/barcode_history/types/'

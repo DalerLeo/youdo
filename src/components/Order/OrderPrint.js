@@ -10,6 +10,7 @@ import numberFormat from '../../helpers/numberFormat'
 import dateFormat from '../../helpers/dateFormat'
 import paymentTypeFormat from '../../helpers/paymentTypeFormat'
 import dealTypeFormat from '../../helpers/dealTypeFormat'
+import toBoolean from '../../helpers/toBoolean'
 import getConfig from '../../helpers/getConfig'
 
 const ONE = 1
@@ -137,7 +138,8 @@ const enhance = compose(
 )
 
 const OrderPrint = enhance((props) => {
-    const {classes, printDialog, listPrintData, hasMarket} = props
+    const {classes, printDialog, listPrintData} = props
+    const hasMarket = toBoolean(getConfig('MARKETS_MODULE'))
     const loading = _.get(listPrintData, 'listPrintLoading')
     let formattedAmount = true
     if (loading) {

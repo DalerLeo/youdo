@@ -4,70 +4,66 @@ import moment from 'moment'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
-import {joinArray, splitToArray} from '../../helpers/joinSplitValues'
+import {joinArray} from '../../helpers/joinSplitValues'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import filterHelper from '../../helpers/filter'
 import {StatExpenditureOnStaffGridList} from '../../components/Statistics'
 import {STAT_EXPENDITURE_ON_STAFF_FILTER_KEY} from '../../components/Statistics/ExpenditureOnStaff/StatExpenditureOnStaffGridList'
 import {
     statExpenditureOnStaffListFetchAction,
-    statExpenditureOnStaffItemFetchAction,
     getTransactionData
 } from '../../actions/statExpenditureOnStaff'
-import toBoolean from '../../helpers/toBoolean'
 
-const ZERO = 0
 const OPEN_TRANSACTION_DIALOG = 'openTransactionDialog'
-
+const defaultDate = moment().format('YYYY-MM-DD')
+const BEGIN_DATE = 'fromDate'
+const END_DATE = 'toDate'
+const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
-        const detail = _.get(state, ['statExpenditureOnStaff', 'item', 'data'])
-        const detailLoading = _.get(state, ['statExpenditureOnStaff', 'item', 'loading'])
         const list = _.get(state, ['statExpenditureOnStaff', 'list', 'data'])
         const listLoading = _.get(state, ['statExpenditureOnStaff', 'list', 'loading'])
         const transactionData = _.get(state, ['statExpenditureOnStaff', 'transactionData', 'data'])
         const transactionDataLoading = _.get(state, ['statExpenditureOnStaff', 'transactionData', 'loading'])
         const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
         const filter = filterHelper(list, pathname, query)
-        const filterItem = filterHelper(detail, pathname, query)
+        const filterTransaction = filterHelper(transactionData, pathname, query, {'page': 'dPage', 'pageSize': 'dPageSize'})
+        const beginDate = _.get(query, BEGIN_DATE) || defaultDate
+        const endDate = _.get(query, END_DATE) || defaultDate
+
         return {
             list,
             listLoading,
-            detail,
-            detailLoading,
             transactionData,
             transactionDataLoading,
             filter,
             query,
             filterForm,
-            filterItem
+            filterTransaction,
+            beginDate,
+            endDate
         }
     }),
     withPropsOnChange((props, nextProps) => {
-        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
+        const except = {
+            dPage: null,
+            dPageSize: null
+        }
+        return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
         dispatch(statExpenditureOnStaffListFetchAction(filter))
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const statExpenditureOnStaffId = _.get(nextProps, ['params', 'statExpenditureOnStaffId']) || ZERO
-        return statExpenditureOnStaffId > ZERO && _.get(props, ['params', 'statExpenditureOnStaffId']) !== statExpenditureOnStaffId
-    }, ({dispatch, params, filter, filterItem}) => {
-        const statExpenditureOnStaffId = _.toInteger(_.get(params, 'statExpenditureOnStaffId'))
-        if (statExpenditureOnStaffId > ZERO) {
-            dispatch(statExpenditureOnStaffItemFetchAction(filter, filterItem, statExpenditureOnStaffId))
-        }
-    }),
-    withPropsOnChange((props, nextProps) => {
-        const prevOpen = toBoolean(_.get(props, ['location', 'query', 'openTransactionDialog']))
-        const nextOpen = toBoolean(_.get(nextProps, ['location', 'query', 'openTransactionDialog']))
-        return prevOpen !== nextOpen && nextOpen === true
-    }, ({dispatch, filter, location}) => {
-        const nextOpen = toBoolean(_.get(location, ['query', [OPEN_TRANSACTION_DIALOG]]))
-        if (nextOpen) {
-            dispatch(getTransactionData(filter))
+        const prevOpen = _.get(props, ['location', 'query', 'openTransactionDialog'])
+        const nextOpen = _.get(nextProps, ['location', 'query', 'openTransactionDialog'])
+        return props.filterTransaction.filterRequest() !== nextProps.filterTransaction.filterRequest() || (prevOpen !== nextOpen && _.toNumber(nextOpen) > ZERO)
+    }, ({dispatch, filter, location, filterTransaction}) => {
+        const nextOpen = _.toNumber(_.get(location, ['query', [OPEN_TRANSACTION_DIALOG]]))
+        if (nextOpen > ZERO) {
+            dispatch(getTransactionData(filter, filterTransaction, nextOpen))
         }
     }),
 
@@ -90,9 +86,9 @@ const enhance = compose(
             // You must change action function
             return dispatch(getTransactionData(filter))
         },
-        handleOpenTransactionDialog: props => () => {
+        handleOpenTransactionDialog: props => (id) => {
             const {filter, location: {pathname}} = props
-            hashHistory.push({pathname, query: filter.getParams({[OPEN_TRANSACTION_DIALOG]: true})})
+            hashHistory.push({pathname, query: filter.getParams({[OPEN_TRANSACTION_DIALOG]: id})})
         },
         handleCloseTransactionDialog: props => () => {
             const {filter, location: {pathname}} = props
@@ -105,47 +101,27 @@ const StatExpenditureOnStaffList = enhance((props) => {
     const {
         list,
         listLoading,
-        detail,
-        detailLoading,
         filter,
         layout,
-        filterItem,
         filterForm,
         location,
-        params,
         transactionData,
-        transactionDataLoading
+        transactionDataLoading,
+        filterTransaction,
+        beginDate,
+        endDate
     } = props
 
-    const detailId = _.toInteger(_.get(params, 'statExpenditureOnStaffId'))
-    const openTransactionDialog = toBoolean(_.get(location, ['query', [OPEN_TRANSACTION_DIALOG]]))
+    const openTransactionDialog = _.toNumber(_.get(location, ['query', [OPEN_TRANSACTION_DIALOG]]))
     const firstDayOfMonth = _.get(location, ['query', 'fromDate']) || moment().format('YYYY-MM-01')
     const lastDay = moment().daysInMonth()
     const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
-    const categoryExpense = !_.isNull(_.get(location, ['query', 'categoryExpense'])) && _.get(location, ['query', 'categoryExpense'])
 
     const listData = {
         data: _.get(list, 'results'),
         listLoading
     }
-    const outcomeCategoryDetail = _.filter(_.get(list, 'results'), (item) => {
-        return _.get(item, 'id') === detailId
-    })
-    const filterDateRange = {
-        categoryExpense: categoryExpense && splitToArray(categoryExpense),
-        'fromDate': _.get(filterForm, ['values', 'date', 'fromDate']) || null,
-        'toDate': _.get(filterForm, ['values', 'date', 'toDate']) || null
-    }
-    const detailData = {
-        filter: filterItem,
-        id: detailId,
-        data: detail,
-        outcomeCategoryDetail,
-        detailLoading,
-        handleCloseDetail: props.handleCloseDetail,
-        filterDateRange
 
-    }
     const getDocument = {
         handleGetDocument: props.handleGetDocument
     }
@@ -160,7 +136,9 @@ const StatExpenditureOnStaffList = enhance((props) => {
         data: _.get(transactionData, 'results'),
         loading: transactionDataLoading,
         handleOpenTransactionDialog: props.handleOpenTransactionDialog,
-        handleCloseTransactionDialog: props.handleCloseTransactionDialog
+        handleCloseTransactionDialog: props.handleCloseTransactionDialog,
+        beginDate,
+        endDate
     }
 
     return (
@@ -169,11 +147,11 @@ const StatExpenditureOnStaffList = enhance((props) => {
                 filter={filter}
                 handleSubmitFilterDialog={props.handleSubmitFilterDialog}
                 listData={listData}
-                detailData={detailData}
                 getDocument={getDocument}
                 initialValues={initialValues}
                 filterForm={filterForm}
                 transactionData={transactionDialog}
+                filterTransaction={filterTransaction}
             />
         </Layout>
     )

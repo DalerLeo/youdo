@@ -72,18 +72,6 @@ const enhance = compose(
                 margin: '0 !important'
             }
         },
-        excel: {
-            background: '#71ce87',
-            borderRadius: '2px',
-            color: '#fff',
-            fontWeight: '600',
-            display: 'flex',
-            alignItems: 'center',
-            padding: '5px 15px',
-            '& svg': {
-                width: '18px !important'
-            }
-        },
         leftPanel: {
             backgroundColor: '#f2f5f8',
             flexBasis: '250px',
@@ -246,25 +234,31 @@ const enhance = compose(
         icon: {
             height: '15px !important'
         },
-        summary: {
+        summaryWrapper: {
+            width: '100%',
             display: 'flex',
-            borderBottom: 'solid 1px #efefef',
-            padding: '15px 0',
-            color: '#666',
+            paddingTop: '30px',
+            justifyContent: 'space-between',
             '& > div': {
-                marginRight: '60px',
-                '& div': {
-                    fontSize: '17px',
-                    color: '#333',
-                    fontWeight: '600'
+                '& > div:nth-child(odd)': {
+                    color: '#666'
                 },
-                '& span': {
-                    display: 'block'
+                '& > div:nth-child(even)': {
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    marginBottom: '10px',
+                    '& > span': {
+                        fontWeight: '500',
+                        fontSize: '13px'
+
+                    }
+                },
+                '& > div:last-child': {
+                    marginBottom: '0'
                 },
                 '&:last-child': {
-                    marginRight: '0'
+                    textAlign: 'right'
                 }
-
             }
         },
         expandedTable: {
@@ -357,6 +351,8 @@ const StatProductGridList = enhance((props) => {
         updateRow,
         expandedTable,
         setExpandedTable,
+        sumData,
+        sumDataLoading,
         query
     } = props
 
@@ -376,7 +372,6 @@ const StatProductGridList = enhance((props) => {
     const styleOnHover = {
         background: '#efefef'
     }
-    const sumLoading = _.get(listData, 'listLoading')
     const listLoading = _.get(listData, 'listLoading')
     const currency = getConfig('PRIMARY_CURRENCY')
     const tableLeft = _.map(_.get(listData, 'data'), (item) => {
@@ -393,8 +388,13 @@ const StatProductGridList = enhance((props) => {
         )
     })
 
-    const totalCostSale = numberFormat(Math.abs(_.get(listData, ['data', 'salesIncome'])), currency)
-    const totalCountSale = numberFormat(Math.abs(_.get(listData, ['data', 'salesCount'])), currency)
+    const summaryMeasurement = 'шт'
+    const totalCostSale = numberFormat(_.get(sumData, 'salesIncomeTotal'), currency)
+    const totalCountSale = numberFormat(_.get(sumData, 'salesCountTotal'))
+    const actualSalesSumTotal = numberFormat(_.get(sumData, 'actualSalesSumTotal'), currency)
+    const actualSalesCountTotal = numberFormat(_.get(sumData, 'actualSalesCountTotal'))
+    const orderReturnsSumTotal = numberFormat(_.get(sumData, 'orderReturnsTotal'), currency)
+    const orderReturnsCountTotal = numberFormat(_.get(sumData, 'orderReturnsCountTotal'))
     const tableList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const type = _.get(item, ['type', 'name'])
@@ -468,22 +468,22 @@ const StatProductGridList = enhance((props) => {
                             fields={fields}
                             filterKeys={STAT_PRODUCT_FILTER_KEY}
                         />
-                        {sumLoading
+                        {sumDataLoading
                             ? <div className={classes.sumLoader}>
                                 <Loader size={0.75}/>
                             </div>
-                            : <div className={classes.summary}>
+                            : <div className={classes.summaryWrapper}>
                                 <div>
-                                    <span>Сумма от продаж</span>
-                                    <div>{totalCostSale}<span>({totalCountSale} sht)</span> </div>
+                                    <div>Сумма от продаж</div>
+                                    <div>{totalCostSale} <span>({totalCountSale} {summaryMeasurement})</span></div>
                                 </div>
                                 <div>
-                                    <span>Фактические продажи</span>
-                                    <div>{numberFormat('20000', currency)}</div>
+                                    <div>Фактические продажи</div>
+                                    <div>{actualSalesSumTotal} <span>({actualSalesCountTotal} {summaryMeasurement})</span></div>
                                 </div>
                                 <div>
-                                    <span>Сумма возвратов</span>
-                                    <div>{numberFormat('4000', currency)}</div>
+                                    <div>Сумма возвратов</div>
+                                    <div>{orderReturnsSumTotal} <span>({orderReturnsCountTotal} {summaryMeasurement})</span></div>
                                 </div>
                             </div>}
                         <div className={expandedTable ? classes.expandedTable : ''}>
