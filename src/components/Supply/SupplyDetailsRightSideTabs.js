@@ -13,6 +13,7 @@ import getConfig from '../../helpers/getConfig'
 import TransactionsFormat from '../../components/Transaction/TransactionsFormat'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import dateFormat from '../../helpers/dateFormat'
+import moduleFormat from '../../helpers/moduleFormat'
 import IconButton from 'material-ui/IconButton'
 
 const enhance = compose(
@@ -206,7 +207,7 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                                 const postedAmount = _.get(item, 'postedAmount')
                                 const measurement = _.get(product, ['measurement', 'name'])
                                 const defectAmount = _.toNumber(_.get(item, 'defectAmount'))
-                                const notAccepted = postedAmount + defectAmount < amount ? numberFormat(amount - defectAmount - postedAmount, measurement) : numberFormat(ZERO, measurement)
+                                const notAccepted = postedAmount + defectAmount < amount ? numberFormat(amount - defectAmount - postedAmount, measurement) : numberFormat(postedAmount - amount, measurement)
                                 return (
                                     <Row className="dataInfo dottedList" key={productId}>
                                         <Col xs={4}>{productName}</Col>
@@ -237,7 +238,7 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                             <Col xs={1}>{numberFormat(wholeAmount, wholeMeasurement)}</Col>
                             <Col xs={1}>{numberFormat(wholePostedAmount, wholeMeasurement)}</Col>
                             <Col xs={1}>{numberFormat(wholeDefectAmount, wholeMeasurement)}</Col>
-                            <Col xs={1}>{numberFormat(wholeNotAccepted, wholeMeasurement)}</Col>
+                            <Col xs={1}>{numberFormat(moduleFormat(wholeNotAccepted), wholeMeasurement)}</Col>
                             <Col xs={2}>{null}</Col>
                             <Col xs={2}>
                                 <div style={{textAlign: 'right'}}>{numberFormat(wholeCost, currency)}</div>
