@@ -6,12 +6,44 @@ import {compose} from 'recompose'
 import {Link} from 'react-router'
 import sprintf from 'sprintf'
 import * as TRANS_TYPE from '../../constants/transactionTypes'
+import {TRANSACTION_CATEGORY_POPOP_OPEN, TRANSACTION_INFO_OPEN} from './index'
 
 const enhance = compose()
 const TransactionsFormat = enhance((props) => {
-    const {type, order, user, client, handleClickAgentIncome, supply, supplyExpanseId} = props
+    const {
+        type,
+        order,
+        user,
+        client,
+        handleClickAgentIncome,
+        supply,
+        supplyExpanseId,
+        expenseCategory,
+        handleOpenCategoryPopop,
+        id,
+        comment
+    } = props
     const clientName = _.get(client, 'name')
     const userName = _.get(user, 'firstName') + ' ' + _.get(user, 'secondName')
+    const categoryPopopShow = _.find(_.get(expenseCategory, 'options'), {'keyName': 'staff_expanse'})
+
+    const category = (
+        expenseCategory &&
+             <div>
+                <strong >Категория: </strong>
+                 {categoryPopopShow
+                 ? (handleOpenCategoryPopop)
+                         ? <Link onClick={() => handleOpenCategoryPopop(id)}>
+                            {_.get(expenseCategory, 'name')}
+                           </Link>
+                         : <Link
+                             target={'_blank'}
+                             to={{pathname: ROUTES.TRANSACTION_LIST_URL, query: {[TRANSACTION_CATEGORY_POPOP_OPEN]: id}}}>
+                             {_.get(expenseCategory, 'name')}
+                         </Link>
+                 : <span>{_.get(expenseCategory, 'name')}</span>}
+              </div>
+    )
 
     let output = null
     switch (type) {
@@ -34,23 +66,36 @@ const TransactionsFormat = enhance((props) => {
             break
         case TRANS_TYPE.OUTCOME_FROM_CLIENT: output = <span>Снято со счета клиента</span>
             break
-        case TRANS_TYPE.INCOME_FROM_AGENT: output = <a onClick={handleClickAgentIncome}><strong>Приемка наличных с агента {userName}</strong></a>
+        case TRANS_TYPE.INCOME_FROM_AGENT: output = handleClickAgentIncome
+            ? <a onClick={handleClickAgentIncome}><strong>Приемка наличных с агента {userName}</strong></a>
+            : <Link target={'_blank'} to={{pathname: ROUTES.TRANSACTION_LIST_URL, query: {[TRANSACTION_INFO_OPEN]: id}}}>Приемка наличных с агента {userName}</Link>
             break
         case TRANS_TYPE.OUTCOME_FOR_SUPPLY_EXPANSE: output = <span>Расход на поставку<Link target="_blank" to={{
-            pathname: sprintf(ROUTES.SUPPLY_ITEM_PATH, supply), query: {search: supply}}}> №{supply}</Link></span>
+            pathname: sprintf(ROUTES.SUPPLY_ITEM_PATH, supply), query: {supply}}}> №{supply}</Link></span>
             break
         case TRANS_TYPE.SUPPLY_EXPENCE: output = <span>Доп. расход {supplyExpanseId ? '№' + supplyExpanseId : ''} на поставку <Link target="_blank" to={{
-            pathname: sprintf(ROUTES.SUPPLY_ITEM_PATH, supply), query: {search: supply}}}>№ {supply}</Link></span>
+            pathname: sprintf(ROUTES.SUPPLY_ITEM_PATH, supply), query: {supply}}}>№ {supply}</Link></span>
             break
         default: output = null
     }
-
-    return (<span>{output}</span>)
+    return (
+        <div>
+            <div>{type && output}</div>
+            <div>{category}</div>
+            {comment && <div><strong>Комментарий:</strong> {comment}</div>}
+        </div>
+    )
 })
 
 TransactionsFormat.propTypes = {
     type: PropTypes.number.isRequired,
-    order: PropTypes.number
+    order: PropTypes.number,
+    id: PropTypes.number.isRequired,
+    expenseCategory: PropTypes.object,
+    client: PropTypes.object,
+    user: PropTypes.object,
+    supply: PropTypes.number,
+    supplyExpanseId: PropTypes.number
 }
 
 export default TransactionsFormat

@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import IconButton from 'material-ui/IconButton'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import EditIcon from 'material-ui/svg-icons/editor/mode-edit'
-import {Link} from 'react-router'
 import GridList from '../GridList'
 import TransactionFilterForm from './TransactionFilterForm'
 import TransactionCreateDialog from './TransactionCreateDialog'
@@ -318,14 +317,13 @@ const TransactionsList = enhance((props) => {
         const currentCurrency = _.get(_.find(_.get(cashboxData, 'data'), {'id': cashbox}), ['currency', 'name'])
         const client = showCashbox ? _.get(_.find(_.get(cashboxData, 'data'), {'id': cashbox}), 'name') : null
         const clientName = _.get(item, ['client', 'name'])
-        const expanseCategory = _.get(item, ['expanseCategory', 'name'])
+        const expenseCategory = _.get(item, ['expanseCategory'])
         const transType = _.get(item, ['type'])
         const customRate = _.toNumber(_.get(item, 'customRate'))
         const rate = customRate > ZERO ? customRate : _.toInteger(amount / internal)
         const isDeleted = _.get(item, 'isDelete')
         const supply = _.get(item, 'supply')
-
-        const categoryPopopShow = _.find(_.get(item, ['expanseCategory', 'options']), {'keyName': 'staff_expanse'})
+        const supplyExpanseId = _.get(item, 'supplyExpanseId')
         return (
             <div key={id} className={isDeleted ? classes.deletedRow : classes.listRow}>
                 <div style={{flexBasis: '10%', maxWidth: '10%'}}>{id}</div>
@@ -334,30 +332,22 @@ const TransactionsList = enhance((props) => {
                     {!showCashbox ? <div>{clientName || 'Не указан'}</div> : null}
                 </div>
                 <div style={{flexBasis: '30%', maxWidth: '30%'}}>
-                    {expanseCategory && categoryPopopShow ? <div>
-                            <span className={classes.label}>Категория: </span>
-                            <Link onClick={() => {
-                                categryPopop.handleOpenCategoryPopop(id)
-                            }}>
-                                {expanseCategory}
-                            </Link>
-                        </div>
-                        : (expanseCategory) ? <div>
-                            <span className={classes.label}>Категория: </span>
-                            <span>{expanseCategory}</span>
-                        </div> : null
-                    }
-                    {transType && <TransactionsFormat
+
+                    <TransactionsFormat
                         handleClickAgentIncome={() => {
                             transactionInfoDialog.handleOpenDialog(id)
                         }}
+                        handleOpenCategoryPopop={categryPopop.handleOpenCategoryPopop}
                         type={transType}
+                        id={id}
                         order={order}
                         supply={supply}
                         client={_.get(item, 'client')}
-                        user={user}/>
-                    }
-                    {comment && <div><strong>Комментарий:</strong> {comment}</div>}
+                        expenseCategory={expenseCategory}
+                        user={user}
+                        comment={comment}
+                        supplyExpanseId={supplyExpanseId}
+                    />
                 </div>
                 <div style={{flexBasis: '18%', maxWidth: '18%'}}>{date}</div>
                 <div style={{flexBasis: '20%', maxWidth: '20%', textAlign: 'right'}}

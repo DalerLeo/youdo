@@ -74,6 +74,7 @@ export const listFilterSerializer = (data) => {
     const ordering = _.get(data, 'ordering')
     return {
         'provider': _.get(defaultData, 'provider'),
+        'supply': _.get(defaultData, 'supply') || null,
         'payment_type': _.get(defaultData, 'paymentType'),
         'product': _.get(defaultData, 'product'),
         'stock': _.get(defaultData, 'stock'),

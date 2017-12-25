@@ -4,8 +4,6 @@ import {Row, Col} from 'react-flexbox-grid'
 import {compose} from 'recompose'
 import _ from 'lodash'
 import injectSheet from 'react-jss'
-import sprintf from 'sprintf'
-import {Link} from 'react-router'
 import {reduxForm, Field} from 'redux-form'
 import Loader from '../../Loader'
 import {TextField} from '../../ReduxForm'
@@ -13,10 +11,8 @@ import Pagination from '../../GridList/GridListNavPagination/index'
 import getConfig from '../../../helpers/getConfig'
 import dateFormat from '../../../helpers/dateFormat'
 import numberFormat from '../../../helpers/numberFormat'
-import {formattedType, ORDER, INCOME_FROM_AGENT} from '../../../constants/transactionTypes'
 import NotFound from '../../Images/not-found.png'
-import * as ROUTES from '../../../constants/routes'
-import {TRANSACTION_CATEGORY_POPOP_OPEN} from '../../Transaction'
+import {TransactionsFormat} from '../../Transaction'
 
 const enhance = compose(
     injectSheet({
@@ -134,59 +130,29 @@ const TransactionsList = enhance((props) => {
         const customRate = _.get(item, 'customRate') ? _.toInteger(_.get(item, 'customRate')) : _.toInteger(amount / internal)
         const comment = _.get(item, 'comment')
         const cashbox = _.get(item, ['cashbox', 'name'])
-        const expanseCategory = _.get(item, ['expanseCategory', 'name'])
+        const expenseCategory = _.get(item, ['expanseCategory'])
         const order = _.get(item, 'order')
         const transType = _.toInteger(_.get(item, 'type'))
         const user = _.get(item, 'user')
-        const clientName = _.get(item, ['client', 'name'])
-        const clientId = _.get(item, ['client', 'id'])
-        const type = formattedType[transType]
-        const categoryPopopShow = _.find(_.get(item, ['expanseCategory', 'options']), {'keyName': 'staff_expanse'})
+        const client = _.get(item, ['client'])
+        const supply = _.get(item, ['supply'])
         return (
             <Row key={id} className="dottedList">
                 <Col xs={1}>{id}</Col>
                 <Col xs={2}>{cashbox}</Col>
                 <Col xs={2}>{date}</Col>
                 <Col xs={4}>
-                    {transType === ORDER
-                    ? <Link target="_blank" to={{
-                        pathname: sprintf(ROUTES.ORDER_ITEM_PATH, order),
-                        query: {search: order}
-                    }}><span className={classes.clickable}> Оплата заказа № {order}</span>
-                    </Link>
-                    : transType === INCOME_FROM_AGENT
-                    ? <Link target="_blank" to={{
-                        pathname: ROUTES.TRANSACTION_LIST_URL,
-                        query: {openTransactionInfo: id}
-                    }}>{'Приемка наличных с  ' + user.firstName + ' ' + user.secondName}</Link>
-                    : <strong>{type}&nbsp;
-                        {clientName &&
-                        <Link
-                            target="_blank"
-                            className={classes.clickable}
-                            to={{
-                                pathname: ROUTES.CLIENT_BALANCE_LIST_URL,
-                                query: {search: clientId}
-                            }}>
-                        {clientName}
-                        </Link>}
-                    </strong>
-                    }
-                    {expanseCategory &&
-                    <div>
-                        <strong>Категория:&nbsp;
-                            {categoryPopopShow
-                                ? <Link
-                                target={'_blank'}
-                                to={{pathname: ROUTES.TRANSACTION_LIST_URL, query: {[TRANSACTION_CATEGORY_POPOP_OPEN]: id}}}
-                                className={classes.clickable}>
-                                {expanseCategory}
-                              </Link>
-                            : <span style={{fontWeight: '500'}}>{expanseCategory}</span>
-                            }
-                        </strong>
-                    </div>}
-                    {comment && <div><strong>Комментарий:</strong> {comment}</div>}
+                    <TransactionsFormat
+                        type={transType}
+                        order={order}
+                        id={id}
+                        expenseCategory={expenseCategory}
+                        client={client}
+                        user={user}
+                        comment={comment}
+                        supply={supply}
+                    />
+
                 </Col>
                 <Col xs={3} style={{textAlign: 'right'}}>
                     <div className={amount > ZERO ? 'greenFont' : (amount === ZERO ? '' : 'redFont')}>
