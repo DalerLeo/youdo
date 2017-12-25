@@ -367,7 +367,7 @@ const TransactionCashDialog = enhance((props) => {
                                                 <Col xs={1}>№</Col>
                                                 <Col xs={hasMarket ? TWO : THREE}>Клиент</Col>
                                                 {hasMarket && <Col xs={2}>Магазин</Col>}
-                                                <Col xs={2}>Подразделение</Col>
+                                                <Col xs={2}>Организация</Col>
                                                 <Col xs={hasMarket ? ONE : THREE}>Заказ</Col>
                                                 <Col xs={1}>Дата</Col>
                                                 <Col xs={2} style={{textAlign: 'right', paddingRight: '0'}}>Сумма</Col>

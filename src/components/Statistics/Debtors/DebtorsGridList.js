@@ -444,7 +444,7 @@ const StatDebtorsGridList = enhance((props) => {
                 name="division"
                 component={DivisionMultiSearchField}
                 className={classes.inputFieldCustom}
-                label="Подразделение"
+                label="Организация"
                 fullWidth={true}
             />}
         </div>

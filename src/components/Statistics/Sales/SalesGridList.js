@@ -440,7 +440,7 @@ const StatSalesGridList = enhance((props) => {
             <Field name="product" className={classes.inputFieldCustom} component={ProductMultiSearchField} label="Товар"/>
             <Field name="status" className={classes.inputFieldCustom} component={OrderStatusMultiSearchField} label="Статус"/>
             {hasMarket && <Field name="shop" className={classes.inputFieldCustom} component={MarketMultiSearchField} label="Магазин"/>}
-            {divisionStatus && <Field name="division" className={classes.inputFieldCustom} component={DivisionMultiSearchField} label="Подразделение"/>}
+            {divisionStatus && <Field name="division" className={classes.inputFieldCustom} component={DivisionMultiSearchField} label="Организация"/>}
             <Field name="initiator" className={classes.inputFieldCustom} component={UsersMultiSearchField} label="Инициатор"/>
             <Field name="dept" className={classes.inputFieldCustom} component={DeptSearchField} label="Статус оплаты"/>
             <Field name="zone" className={classes.inputFieldCustom} component={ZoneMultiSearchField} label="Зона"/>

@@ -418,7 +418,7 @@ const TransactionCreateDialog = enhance((props) => {
                                     {divisionStatus && <Field
                                         name="division"
                                         component={DivisionSearchField}
-                                        label="Подразделение"
+                                        label="Организация"
                                         className={classes.inputFieldCustom}
                                         fullWidth={true}/>}
                                 </div> : null}
@@ -470,7 +470,7 @@ const TransactionCreateDialog = enhance((props) => {
                                     {divisionStatus ? <Field
                                         name="division"
                                         component={DivisionSearchField}
-                                        label="Подразделение"
+                                        label="Организация"
                                         className={classes.inputFieldCustom}
                                         fullWidth={true}/> : null}
                                 </div>

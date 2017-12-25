@@ -136,7 +136,7 @@ const ClientBalanceCreateDialog = enhance((props) => {
                                 {divisionStatus && <Field
                                     name="division"
                                     component={DivisionSearchField}
-                                    label="Подразделение"
+                                    label="Организация"
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>}
                                 <Field

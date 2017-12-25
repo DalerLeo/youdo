@@ -203,7 +203,7 @@ const ReturnFilterForm = enhance((props) => {
                     <div>
                         <Field className={classes.inputFieldCustom} name="order" component={TextField} label="№ Заказа"/>
                         <Field className={classes.inputFieldCustom} name="product" component={ProductMultiSearchField} label="Продукт"/>
-                        {divisionStatus && <Field className={classes.inputFieldCustom} name="division" component={DivisionMultiSearchField} label="Подразделение"/>}
+                        {divisionStatus && <Field className={classes.inputFieldCustom} name="division" component={DivisionMultiSearchField} label="Организация"/>}
                         <Field className={classes.inputFieldCustom} name="paymentType" component={PaymentTypeSearchField} label="Тип оплаты"/>
                         <Field className={classes.inputFieldCustom} name="status" component={ReturnStatusMultiSearch} label="Статус"/>
                         <Field className={classes.inputFieldCustom} name="type" component={ReturnTypeSearchField} label="Тип"/>

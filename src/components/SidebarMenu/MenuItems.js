@@ -163,7 +163,7 @@ export const MenuItems = [
             {section: SETTINGS_MISC, name: 'Прайс-листы', url: ROUTES.PRICE_LIST_SETTING_LIST_URL, permission: 'frontend_settings_price_list'},
             {section: SETTINGS_MISC, name: 'Склады', url: ROUTES.STOCK_LIST_URL, permission: 'frontend_settings_stock'},
             {section: SETTINGS_MISC, name: 'Оборудования', url: ROUTES.EQUIPMENT_LIST_URL, permission: 'frontend_settings_equipment'},
-            {section: SETTINGS_MISC, name: 'Подразделения', url: ROUTES.DIVISION_LIST_URL, permission: 'frontend_settings_division'},
+            {section: SETTINGS_MISC, name: 'Организация', url: ROUTES.DIVISION_LIST_URL, permission: 'frontend_settings_division'},
             {section: SETTINGS_MISC, name: 'Объединение', url: ROUTES.JOIN_LIST_URL, permission: 'frontend_settings_join'},
             {section: SETTINGS_MISC, name: 'Ограничение времени', url: ROUTES.PERMISSION_LIST_URL, permission: 'frontend_settings_permissions'},
             {section: SETTINGS_MISC, name: 'Уведомления', url: ROUTES.NOTIFICATION_TEMPLATE_LIST_URL, permission: 'frontend_settings_notifications'}

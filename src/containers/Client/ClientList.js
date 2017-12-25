@@ -227,7 +227,8 @@ const ClientList = enhance((props) => {
                     value: _.get(detail, 'from')
                 },
                 address: _.get(detail, 'address'),
-                contacts: _.union(contacts, [{}])
+                contacts: _.union(contacts, [{}]),
+                inBlacklist: _.get(detail, 'inBlacklist')
             }
         })(),
         updateLoading: detailLoading || updateLoading,

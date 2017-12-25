@@ -10,6 +10,7 @@ import IconButton from 'material-ui/IconButton'
 import {Row, Col} from 'react-flexbox-grid'
 import Tooltip from '../ToolTip'
 import dateFormat from '../../helpers/dateFormat'
+import BlackList from 'material-ui/svg-icons/communication/contacts'
 
 const colorBlue = '#12aaeb !important'
 const enhance = compose(
@@ -133,6 +134,7 @@ const ClientDetails = enhance((props) => {
     const detId = _.get(data, 'id')
     const contacts = _.get(data, 'contacts')
     const date = dateFormat(_.get(data, 'createdDate'))
+    const inBlacklist = dateFormat(_.get(data, 'inBlacklist'))
     const address = _.get(data, 'address') || 'Не указан'
     const providerName = _.get(data, 'name')
     const fromWhom = _.get(data, 'fromWhom')
@@ -157,6 +159,15 @@ const ClientDetails = enhance((props) => {
                      onClick={handleCloseDetail}>
                 </div>
                 <div className={classes.titleButtons}>
+                    {inBlacklist &&
+                    <Tooltip position="bottom" text="Добавлен в черный список">
+                        <IconButton
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            touch={true}>
+                            <BlackList/>
+                        </IconButton>
+                    </Tooltip>}
                     <Tooltip position="bottom" text="Изменить">
                         <IconButton
                             iconStyle={iconStyle.icon}
