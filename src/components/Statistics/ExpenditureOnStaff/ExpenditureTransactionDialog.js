@@ -17,7 +17,7 @@ import getConfig from '../../../helpers/getConfig'
 import dateFormat from '../../../helpers/dateFormat'
 import numberFormat from '../../../helpers/numberFormat'
 import * as ROUTES from '../../../constants/routes'
-
+import {TRANSACTION_CATEGORY_POPOP_OPEN} from '../../Transaction'
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
         loader: {
@@ -62,6 +62,8 @@ const ExpenditureTransactionDialog = enhance((props) => {
         const clientName = _.get(item, ['client', 'name'])
         const clientId = _.get(item, ['client', 'id'])
         const type = formattedType[transType]
+        const expanseCategory = _.get(item, ['expanseCategory', 'name'])
+        const categoryPopopShow = _.find(_.get(item, ['expanseCategory', 'options']), {'keyName': 'staff_expanse'})
         return (
             <Row key={id} className="dottedList">
                 <Col xs={1}>{id}</Col>
@@ -92,6 +94,20 @@ const ExpenditureTransactionDialog = enhance((props) => {
                                 </Link>}
                             </strong>
                     }
+                    {expanseCategory &&
+                    <div>
+                        <strong>Категория:&nbsp;
+                            {categoryPopopShow
+                                ? <Link
+                                    target={'_blank'}
+                                    to={{pathname: ROUTES.TRANSACTION_LIST_URL, query: {[TRANSACTION_CATEGORY_POPOP_OPEN]: id}}}
+                                    className={classes.clickable}>
+                                    {expanseCategory}
+                                </Link>
+                                : <span style={{fontWeight: '500'}}>{expanseCategory}</span>
+                            }
+                        </strong>
+                    </div>}
                     {comment && <div><strong>Комментарий:</strong> {comment}</div>}
                 </Col>
                 <Col xs={3} style={{textAlign: 'right'}}>

@@ -16,6 +16,7 @@ import numberFormat from '../../../helpers/numberFormat'
 import {formattedType, ORDER, INCOME_FROM_AGENT} from '../../../constants/transactionTypes'
 import NotFound from '../../Images/not-found.png'
 import * as ROUTES from '../../../constants/routes'
+import {TRANSACTION_CATEGORY_POPOP_OPEN} from '../../Transaction'
 
 const enhance = compose(
     injectSheet({
@@ -102,8 +103,7 @@ const TransactionsList = enhance((props) => {
         filter,
         handleSubmit,
         handleSubmitFilterDialog,
-        listData,
-        handleOpenCategoryPopup
+        listData
     } = props
 
     const loading = _.get(listData, 'listLoading')
@@ -141,6 +141,7 @@ const TransactionsList = enhance((props) => {
         const clientName = _.get(item, ['client', 'name'])
         const clientId = _.get(item, ['client', 'id'])
         const type = formattedType[transType]
+        const categoryPopopShow = _.find(_.get(item, ['expanseCategory', 'options']), {'keyName': 'staff_expanse'})
         return (
             <Row key={id} className="dottedList">
                 <Col xs={1}>{id}</Col>
@@ -171,13 +172,20 @@ const TransactionsList = enhance((props) => {
                         </Link>}
                     </strong>
                     }
-                    {expanseCategory && <div><strong>Категория&nbsp;
-                        <Link
-                            className={classes.clickable}
-                            onClick={() => handleOpenCategoryPopup(id) }>
-                            {expanseCategory}
-                        </Link>
-                    </strong></div>}
+                    {expanseCategory &&
+                    <div>
+                        <strong>Категория:&nbsp;
+                            {categoryPopopShow
+                                ? <Link
+                                target={'_blank'}
+                                to={{pathname: ROUTES.TRANSACTION_LIST_URL, query: {[TRANSACTION_CATEGORY_POPOP_OPEN]: id}}}
+                                className={classes.clickable}>
+                                {expanseCategory}
+                              </Link>
+                            : <span style={{fontWeight: '500'}}>{expanseCategory}</span>
+                            }
+                        </strong>
+                    </div>}
                     {comment && <div><strong>Комментарий:</strong> {comment}</div>}
                 </Col>
                 <Col xs={3} style={{textAlign: 'right'}}>
