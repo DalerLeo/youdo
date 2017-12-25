@@ -214,7 +214,7 @@ const enhance = compose(
         notEnough: {
             padding: '20px 30px',
             color: '#ff2626',
-            margin: '0 -30px -15px',
+            margin: '10px -30px -15px',
             background: '#ffecec'
         }
     }),

@@ -315,14 +315,14 @@ export const orderAddProductsListAction = (priceList, filter, productType, curre
             search: _.get(filter.getParams(), 'pdSearch'),
             type: productType
         }
-    : {
-        price_list: priceList,
-        currency: currency,
-        page_size: _.get(filter.getParams(), 'pdPageSize'),
-        page: _.get(filter.getParams(), 'pdPage'),
-        search: _.get(filter.getParams(), 'pdSearch'),
-        type: productType
-    }
+        : {
+            price_list: priceList,
+            currency: currency,
+            page_size: _.get(filter.getParams(), 'pdPageSize'),
+            page: _.get(filter.getParams(), 'pdPage'),
+            search: _.get(filter.getParams(), 'pdSearch'),
+            type: productType
+        }
     const payload = axios()
         .get(API.PRODUCT_MOBILE_URL, {params})
         .then((response) => {
