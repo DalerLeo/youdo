@@ -569,7 +569,7 @@ const StatAgentGridList = enhance((props) => {
                 className={classes.inputFieldCustom}
                 name="division"
                 component={DivisionMultiSearchField}
-                label="Подразделение"
+                label="Организация"
                 fullWidth={true}/>}
         </div>
 

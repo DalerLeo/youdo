@@ -18,6 +18,7 @@ import numberFormat from '../../helpers/numberFormat'
 import dateFormat from '../../helpers/dateFormat'
 import SupplySetDiscountDialog from './SupplySetDiscountDialog'
 import * as ROUTE from '../../constants/routes'
+import checkPermission from '../../helpers/checkPermission'
 
 const popupWidth = 210
 const enhance = compose(
@@ -240,6 +241,9 @@ const SupplyDetails = enhance((props) => {
         isAdmin,
         confirmSyncDialog
     } = props
+
+    const canUpdatePrice = checkPermission('can_update_price')
+
     const zero = 0
     const id = _.get(data, 'id')
     const agent = _.get(data, ['user', 'firstName']) + ' ' + _.get(data, ['user', 'secondName'])
@@ -357,7 +361,7 @@ const SupplyDetails = enhance((props) => {
                     </Tooltip>
                     {updateDialog && <Tooltip position="bottom" text="Изменить">
                         <IconButton
-                            disabled={status === CANCELLED || comlated}
+                            disabled={(status === CANCELLED || comlated) && !canUpdatePrice}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}

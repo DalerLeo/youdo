@@ -639,7 +639,7 @@ const ClientBalanceGridList = enhance((props) => {
             <div className={classes.checkboxes}>
                 <Field
                     name="[groupBy][division][active]"
-                    label="Подразделениям"
+                    label="Организациям"
                     component={CheckBox}
                 />
                 <Field

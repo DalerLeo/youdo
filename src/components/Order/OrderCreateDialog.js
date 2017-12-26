@@ -278,6 +278,7 @@ const OrderCreateDialog = enhance((props) => {
 
     const GIVEN = 2
     const DELIVERED = 3
+    const CANCELLED = 4
 
     const selectFieldScroll = {
         scrollable: true,
@@ -436,7 +437,7 @@ const OrderCreateDialog = enhance((props) => {
                         <div className={classes.commentField}>
                             Общая сумма заказа: <b>{numberFormat(totalCost, currencyItem)}</b>
                         </div>
-                        {(notEnough && isConfirmed)
+                        {(notEnough && isConfirmed && (status !== GIVEN && status !== DELIVERED && status !== CANCELLED))
                             ? <FlatButton
                                 label="Далее"
                                 labelStyle={{fontSize: '13px'}}
