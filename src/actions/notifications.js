@@ -3,6 +3,7 @@ import sprintf from 'sprintf'
 import axios from '../helpers/axios'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
+import caughtCancel from '../helpers/caughtCancel'
 
 const CancelToken = axios().CancelToken
 
@@ -34,6 +35,7 @@ export const notificationListFetchAction = (page) => {
             return _.get(response, 'data')
         })
         .catch((error) => {
+            caughtCancel(error)
             return Promise.reject(_.get(error, ['response', 'data']))
         })
     return {

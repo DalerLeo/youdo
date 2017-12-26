@@ -308,19 +308,19 @@ const enhance = compose(
             shop: null,
             zone: null
         }
-        const productType = _.get(props, ['addProductsForm', 'values', 'productType', 'value'])
-        const productTypeNext = _.get(nextProps, ['addProductsForm', 'values', 'productType', 'value'])
+        const productType = _.get(props, ['addProductsForm', 'values', 'type', 'value'])
+        const productTypeNext = _.get(nextProps, ['addProductsForm', 'values', 'type', 'value'])
         return ((props.filterProducts.filterRequest(except) !== nextProps.filterProducts.filterRequest(except)) ||
-            (productType !== productTypeNext && nextProps.openAddProductDialog)) && !(props.openAddProductDialog !== nextProps.openAddProductDialog && nextProps.openAddProductDialog)
+                (productType !== productTypeNext && nextProps.openAddProductDialog)) && !(props.openAddProductDialog !== nextProps.openAddProductDialog && nextProps.openAddProductDialog)
     },
         ({setOpenAddProductConfirm, addProductsForm, openAddProductDialog, dispatch, filterProducts, createForm}) => {
             const products = _.filter(_.get(addProductsForm, ['values', 'product']), (item) => {
-                const amount = _.toNumber(_.get(item, 'amount'))
+                const amount = _.toNumber(numberWithoutSpaces(_.get(item, 'amount')))
                 return amount > ZERO
             })
             const priceList = _.get(createForm, ['values', 'priceList', 'value'])
             const currency = _.get(createForm, ['values', 'currency', 'value'])
-            const productType = _.get(addProductsForm, ['values', 'productType', 'value'])
+            const productType = _.get(addProductsForm, ['values', 'type', 'value'])
             if (!_.isEmpty(products)) {
                 setOpenAddProductConfirm(true)
             } else if (priceList && openAddProductDialog && _.isEmpty(products)) {
@@ -331,13 +331,30 @@ const enhance = compose(
 
     withPropsOnChange((props, nextProps) => {
         return props.openAddProductDialog !== nextProps.openAddProductDialog && nextProps.openAddProductDialog
-    }, ({dispatch, createForm, addProductsForm, openAddProductDialog, filterProducts, setOpenAddProductConfirm}) => {
+    }, ({dispatch, createForm, openAddProductDialog, filterProducts, setOpenAddProductConfirm, editProducts}) => {
         const priceList = _.get(createForm, ['values', 'priceList', 'value'])
         const currency = _.get(createForm, ['values', 'currency', 'value'])
-        const productType = _.get(addProductsForm, ['values', 'productType', 'value'])
-        if (priceList && openAddProductDialog) {
+        if (openAddProductDialog) {
             setOpenAddProductConfirm(false)
-            dispatch(orderAddProductsListAction(priceList, filterProducts, productType, currency))
+            dispatch(orderAddProductsListAction(priceList, filterProducts, null, currency))
+        }
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        return props.editProductsLoading !== nextProps.editProductsLoading && nextProps.editProductsLoading === false
+    }, ({dispatch, createForm, openAddProductDialog, editProducts}) => {
+        if (openAddProductDialog) {
+            const FLOOR = 2
+            const paymentType = _.get(createForm, ['values', 'paymentType'])
+            _.map(_.get(editProducts, 'results'), (item) => {
+                const id = _.get(item, 'id')
+                const price = paymentType === 'cash'
+                    ? numberFormat(_.floor(_.toNumber(_.get(item, 'cashPrice')), FLOOR))
+                    : paymentType === 'bank'
+                        ? numberFormat(_.floor(_.toNumber(_.get(item, 'transferPrice')), FLOOR))
+                        : ''
+                dispatch(change('OrderAddProductsForm', 'product[' + id + ']', {price: price}))
+            })
         }
     }),
 
@@ -868,7 +885,7 @@ const enhance = compose(
             setOpenContractPrint(true)
             const id = _.get(detail, ['market', 'id'])
             return dispatch(shopItemFetchAction(id))
-                .then(({value}) => {
+                .then(() => {
                     setTimeout(() => {
                         window.print()
                     }, HUNDRED)
@@ -949,7 +966,7 @@ const OrderList = enhance((props) => {
     const deadlineFromDate = filter.getParam(ORDER_FILTER_KEY.DEADLINE_FROM_DATE)
     const deadlineToDate = filter.getParam(ORDER_FILTER_KEY.DEADLINE_TO_DATE)
     const onlyBonus = filter.getParam(ORDER_FILTER_KEY.ONLY_BONUS)
-    const exclude = filter.getParam(ORDER_FILTER_KEY.EXCLUDE)
+    const exclude = _.isUndefined(filter.getParam(ORDER_FILTER_KEY.EXCLUDE)) ? true : filter.getParam(ORDER_FILTER_KEY.EXCLUDE)
 
     const detailId = _.toInteger(_.get(params, 'orderId'))
     const tab = _.get(location, ['query', TAB]) || ORDER_TAB.ORDER_DEFAULT_TAB
@@ -1242,30 +1259,6 @@ const OrderList = enhance((props) => {
     }
 
     const addProductDialog = {
-        initialValues: (() => {
-            if (!editProducts) {
-                return {}
-            }
-            const FLOOR = 2
-            const paymentType = _.get(props, ['createForm', 'values', 'paymentType'])
-            const productType = _.get(props, ['addProductsForm', 'values', 'productType', 'value'])
-            const productValue = {}
-            _.map(_.get(editProducts, 'results'), (item) => {
-                const id = _.get(item, 'id')
-                const price = paymentType === 'cash'
-                    ? numberFormat(_.floor(_.toNumber(_.get(item, 'cashPrice')), FLOOR))
-                    : paymentType === 'bank'
-                        ? numberFormat(_.floor(_.toNumber(_.get(item, 'transferPrice')), FLOOR))
-                        : ''
-                productValue[id] = {price: price}
-            })
-            return {
-                product: productValue,
-                productType: {
-                    value: productType
-                }
-            }
-        })(),
         openAddProductDialog,
         filter: filterProducts,
         data: _.get(editProducts, 'results'),

@@ -62,7 +62,7 @@ export const orderListFilterSerializer = (data, withOrderReturn) => {
     const ordering = _.get(data, 'ordering')
     const debt = _.toInteger(_.get(defaultData, 'dept'))
     const status = _.get(defaultData, 'status') ? (_.toInteger(_.get(defaultData, 'status')) === FIVE ? ZERO : _.toInteger(_.get(defaultData, 'status'))) : null
-    const excludeCanceled = !_.isUndefined(_.get(defaultData, 'exclude')) ? toBoolean(_.get(defaultData, 'exclude')) : true
+    const excludeCanceled = _.isUndefined(_.get(defaultData, 'exclude')) ? 'True' : _.get(defaultData, 'exclude')
     return {
         'client': _.get(defaultData, 'client'),
         'division': _.get(defaultData, 'division'),
