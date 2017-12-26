@@ -99,7 +99,10 @@ const enhance = compose(
                     '&:last-child': {
                         paddingRight: '0',
                         textAlign: 'right',
-                        opacity: '0'
+                        opacity: '0',
+                        '& div': {
+                            justifyContent: 'flex-end'
+                        }
                     }
                 },
                 '& > div:nth-child(2)': {
@@ -232,7 +235,7 @@ const DebtorsDetails = enhance((props) => {
         const totalExpected = numberFormat(_.toInteger(_.get(item, 'totalPrice')) - _.toInteger(_.get(item, 'totalBalance')), primaryCurrency)
         return (
             <Row key={detailId} className="dottedList">
-                <a onClick={() => statDebtorsDialog.handleOpenStatDebtorsDialog(detailId)} className={classes.openDetails}></a>
+                <a onClick={() => statDebtorsDialog.handleOpenStatDebtorsDialog(detailId)} className={classes.openDetails}/>
                 <div style={{flexBasis: '9%', maxWidth: '9%'}}>{detailId}</div>
                 <div style={{flexBasis: '21%', maxWidth: '21%'}}>{paymentDate}</div>
                 <div style={{flexBasis: '14%', maxWidth: '14%'}}>{(paymentType === 'cash') ? 'Нал.' : 'Переч.'}</div>
@@ -267,6 +270,9 @@ const DebtorsDetails = enhance((props) => {
                         <CloseButton color="#666"/>
                     </IconButton>
                 </div>
+                <div className={classes.pagination}>
+                    <Pagination filter={filter}/>
+                </div>
                 <div className={classes.detail}>
                     <Row className="dottedList">
                         <div style={{flexBasis: '9%', maxWidth: '9%'}}>№ заказа</div>
@@ -277,7 +283,7 @@ const DebtorsDetails = enhance((props) => {
                         <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>Долг</div>
                         <div style={{flexBasis: '7%', maxWidth: '7%', paddingRight: '0'}}>
                             <div className={classes.editButton}>
-                                <ToolTip position="left" text={'Изменить дату оплаты'}>
+                                <ToolTip position="left" text={'Изменить дату оплаты всех заказов'}>
                                     <IconButton
                                         onTouchTap={() => {
                                             setEditDates(true)
@@ -297,16 +303,13 @@ const DebtorsDetails = enhance((props) => {
                         </div>
                         : detailList}
                 </div>
-                <div className={classes.pagination}>
-                    <Pagination filter={filter}/>
-                </div>
             </Paper>
 
             {editDates &&
             <div className={classes.editDatesDialog}>
                 <Paper zDepth={2} className={classes.dialogWrapper}>
                     <div className={classes.dialogHeader}>
-                        <span>Изменение даты оплаты {editId ? 'заказа: № ' + editId : 'всех заказов'}</span>
+                        <span>Изменение даты оплаты {editId ? 'заказа: №' + editId : 'всех заказов'}</span>
                         <IconButton
                             onTouchTap={() => { setEditDates(false) }}
                             className={classes.closeButton}>

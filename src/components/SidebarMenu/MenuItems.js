@@ -22,6 +22,7 @@ const SETTINGS_MISC = 'Разное'
 const STATS_SALES = 'Продажи'
 const STATS_FINANCE = 'Финансы'
 const STATS_CLIENTS = 'Клиенты'
+const STATS_PROVIDERS = 'Поставщики'
 const STATS_STOCK = 'Склад'
 const STATS_OVERALL = 'Общее'
 
@@ -139,8 +140,9 @@ export const MenuItems = [
             // -------------------------------------------------------------------------------------------------- //
             {section: STATS_CLIENTS, name: 'Оборот клиентов', url: ROUTES.STATISTICS_CLIENT_INCOME_URL, permission: 'frontend_stat_client_income'},
             {section: STATS_CLIENTS, name: 'Баланс клиентов', url: ROUTES.STATISTICS_CLIENT_BALANCE_URL, permission: 'frontend_stat_client_balance', query: {pageSize: 25}},
-            {section: STATS_CLIENTS, name: 'Баланс поставщиков', url: ROUTES.STATISTICS_PROVIDERS_URL, permission: 'frontend_stat_providers', query: {pageSize: 25}},
             {section: STATS_CLIENTS, name: 'Должники', url: ROUTES.STATISTICS_DEBTORS_URL, permission: 'frontend_stat_debtors'},
+            // -------------------------------------------------------------------------------------------------- //
+            {section: STATS_PROVIDERS, name: 'Баланс поставщиков', url: ROUTES.STATISTICS_PROVIDERS_URL, permission: 'frontend_stat_providers', query: {pageSize: 25}},
             // -------------------------------------------------------------------------------------------------- //
             {section: STATS_STOCK, name: 'Остаток', url: ROUTES.STATISTICS_REMAINDER_URL, permission: 'frontend_stat_remainder', query: {pageSize: 25}},
             {section: STATS_STOCK, name: 'Движение товаров', url: ROUTES.STATISTICS_PRODUCT_MOVE_URL, permission: 'frontend_stat_product_move', query: {pageSize: 25}},

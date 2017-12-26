@@ -311,7 +311,7 @@ const UsersList = enhance((props) => {
     })
 
     const isSelectedCurrencies = _.map(_.get(currencyList, 'results'), (obj) => {
-        const userSelectedCurrencies = _.find(_.get(detail, 'priceLists'), {'id': obj.id})
+        const userSelectedCurrencies = _.find(_.get(detail, 'currencies'), {'id': obj.id})
         if (!openCreateDialog && _.get(userSelectedCurrencies, 'id') === obj.id) {
             return {id: obj.id, selected: true}
         }
