@@ -19,51 +19,7 @@ import ConfirmDialog from '../ConfirmDialog'
 import SettingSideMenu from '../Settings/SettingsSideMenu'
 import Tooltip from '../ToolTip'
 import toBoolean from '../../helpers/toBoolean'
-
-const listHeader = [
-    {
-        sorting: true,
-        name: 'id',
-        title: '№',
-        xs: 1
-    },
-    {
-        sorting: false,
-        name: 'username',
-        title: 'Сотрудник',
-        xs: 2
-    },
-    {
-        sorting: false,
-        name: 'login',
-        title: 'Логин',
-        xs: 2
-    },
-    {
-        sorting: false,
-        name: 'typeUser',
-        title: 'Права доступа',
-        xs: 2
-    },
-    {
-        sorting: false,
-        name: 'phoneNumber',
-        title: 'Телефон',
-        xs: 2
-    },
-    {
-        sorting: false,
-        name: 'job',
-        title: 'Должность',
-        xs: 1
-    },
-    {
-        sorting: false,
-        name: 'status',
-        title: 'Статус',
-        xs: 1
-    }
-]
+import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -148,7 +104,50 @@ const UsersGridList = enhance((props) => {
         currencyData,
         classes
     } = props
-
+    const listHeader = [
+        {
+            sorting: true,
+            name: 'id',
+            title: '№',
+            xs: 1
+        },
+        {
+            sorting: false,
+            name: 'username',
+            title: t('Сотрудник'),
+            xs: 2
+        },
+        {
+            sorting: false,
+            name: 'login',
+            title: t('Логин'),
+            xs: 2
+        },
+        {
+            sorting: false,
+            name: 'typeUser',
+            title: t('Права доступа'),
+            xs: 2
+        },
+        {
+            sorting: false,
+            name: 'phoneNumber',
+            title: t('Телефон'),
+            xs: 2
+        },
+        {
+            sorting: false,
+            name: 'job',
+            title: t('Должность'),
+            xs: 1
+        },
+        {
+            sorting: false,
+            name: 'status',
+            title: t('Статус'),
+            xs: 1
+        }
+    ]
     const actions = (
         <div>
             <IconButton onTouchTap={actionsDialog.handleActionEdit}>
