@@ -49,8 +49,10 @@ const enhance = compose(
             zIndex: '30'
         },
         statLoader: {
-            extend: 'loader',
-            padding: '0'
+            background: '#fff',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
         },
         wrapper: {
             padding: '20px 30px',
@@ -62,7 +64,6 @@ const enhance = compose(
         debtors: {
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'center',
             margin: '15px 0',
             '& > div': {
                 marginRight: '60px',
@@ -83,6 +84,9 @@ const enhance = compose(
             justifyContent: 'space-between',
             borderTop: '1px #efefef solid',
             borderBottom: '1px #efefef solid'
+        },
+        container: {
+            position: 'relative'
         },
         tableWrapper: {
             display: 'flex',
@@ -526,25 +530,25 @@ const StatDebtorsGridList = enhance((props) => {
                                         <div><span>Клиент</span></div>
                                         {tableLeft}
                                     </div>
-                                    {_.isEmpty(tableList) && !listLoading
-                                        ? <div className={classes.emptyQuery}>
-                                            <div>По вашему запросу ничего не найдено</div>
-                                          </div>
-                                        : <div ref="horizontalTable">
-                                            <table className={classes.mainTable}>
-                                                <tbody className={classes.tableBody}>
-                                                <tr className={classes.title}>
-                                                    <td colSpan={2}>Просроченные</td>
-                                                    <td colSpan={2}>Ожидаемые</td>
-                                                </tr>
-                                                <tr className={classes.subTitle}>
-                                                    {listHeader}
-                                                    {listHeader}
-                                                </tr>
-                                                {tableList}
-                                                </tbody>
-                                            </table>
-                                        </div>}
+                                    {_.isEmpty(tableList) && !listLoading &&
+                                    <div className={classes.emptyQuery}>
+                                        <div>По вашему запросу ничего не найдено</div>
+                                    </div>}
+                                    <div ref="horizontalTable">
+                                        <table className={classes.mainTable}>
+                                            <tbody className={classes.tableBody}>
+                                            <tr className={classes.title}>
+                                                <td colSpan={2}>Просроченные</td>
+                                                <td colSpan={2}>Ожидаемые</td>
+                                            </tr>
+                                            <tr className={classes.subTitle}>
+                                                {listHeader}
+                                                {listHeader}
+                                            </tr>
+                                            {tableList}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>

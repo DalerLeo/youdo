@@ -12,6 +12,16 @@ const enhance = compose(
     injectSheet({
         wrapper: {
             padding: '20px 30px',
+            overflowY: 'auto',
+            height: '100%',
+            '&::-webkit-scrollbar': {
+                width: '0'
+            },
+            '&:hover': {
+                '&::-webkit-scrollbar': {
+                    width: '4px !important'
+                }
+            },
             '& .row': {
                 margin: '0rem !important',
                 '& div': {
