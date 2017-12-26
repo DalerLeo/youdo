@@ -18,7 +18,6 @@ import numberFormat from '../../helpers/numberFormat'
 import dateFormat from '../../helpers/dateFormat'
 import SupplySetDiscountDialog from './SupplySetDiscountDialog'
 import * as ROUTE from '../../constants/routes'
-import getConfig from '../../helpers/getConfig'
 import checkPermission from '../../helpers/checkPermission'
 
 const popupWidth = 210

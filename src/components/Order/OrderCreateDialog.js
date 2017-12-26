@@ -278,7 +278,7 @@ const OrderCreateDialog = enhance((props) => {
 
     const GIVEN = 2
     const DELIVERED = 3
-    const CANCELED = 4
+    const CANCELLED = 4
 
     const selectFieldScroll = {
         scrollable: true,
