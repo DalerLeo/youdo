@@ -1041,24 +1041,24 @@ const OrderList = enhance((props) => {
             transferPrice: _.get(foundProduct, 'transferPrice')
         }
     }
-    const forUpdateProducts = _.map(withoutBonusProducts, (item) => {
+    const groupById = _.groupBy(withoutBonusProducts, item => _.get(item, ['product', 'id']))
+    const groupedProducts = _.map(groupById, (item) => {
         return {
-            amount: _.get(item, 'amount'),
-            cost: _.get(item, 'price'),
-            customPrice: _.get(item, ['product', 'customPrice']),
-            price: getPrice(_.get(item, ['product', 'id'])),
+            amount: _.sumBy(item, obj => _.toNumber(_.get(obj, 'amount'))),
+            cost: _.get(_.first(item), 'price'),
+            customPrice: _.get(_.first(item), ['product', 'customPrice']),
+            price: getPrice(_.get(_.first(item), ['product', 'id'])),
             product: {
-                id: _.get(item, 'id'),
+                id: _.get(_.first(item), 'id'),
                 value: {
-                    id: _.get(item, ['product', 'id']),
-                    name: _.get(item, ['product', 'name']),
-                    balance: getBalance(_.get(item, ['product', 'id'])),
+                    id: _.get(_.first(item), ['product', 'id']),
+                    name: _.get(_.first(item), ['product', 'name']),
+                    balance: getBalance(_.get(_.first(item), ['product', 'id'])),
                     measurement: {
-                        id: _.get(item, ['product', 'measurement', 'id']),
-                        name: _.get(item, ['product', 'measurement', 'name'])
+                        id: _.get(_.first(item), ['product', 'measurement', 'id']),
+                        name: _.get(_.first(item), ['product', 'measurement', 'name'])
                     }
-                },
-                text: _.get(item, ['product', 'name'])
+                }
             }
         }
     })
@@ -1113,7 +1113,7 @@ const OrderList = enhance((props) => {
                 deliveryPrice: numberFormat(_.get(detail, 'deliveryPrice')),
                 discountPrice: discount,
                 paymentDate: moment(_.get(detail, ['paymentDate'])).toDate(),
-                products: forUpdateProducts,
+                products: groupedProducts,
                 priceList: {
                     value: _.get(detail, ['priceList', 'id']),
                     text: _.get(detail, ['priceList', 'name'])
