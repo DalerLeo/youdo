@@ -211,7 +211,7 @@ const OrderFilterForm = enhance((props) => {
                         <Field className={classes.inputFieldCustom} name="product" component={ProductMultiSearchField} label="Товар"/>
                         <Field className={classes.inputFieldCustom} name="status" component={OrderStatusMultiSearchField} label="Статус"/>
                         {hasMarket && <Field className={classes.inputFieldCustom} name="shop" component={MarketMultiSearchField} label="Магазин"/>}
-                        {divisionStatus && <Field className={classes.inputFieldCustom} name="division" component={DivisionMultiSearchField} label="Подразделение"/>}
+                        {divisionStatus && <Field className={classes.inputFieldCustom} name="division" component={DivisionMultiSearchField} label="Организация"/>}
                         <Field className={classes.inputFieldCustom} name="initiator" component={UsersAgentMultiSearchField} label="Инициатор"/>
                         <Field className={classes.inputFieldCustom} name="dept" component={DeptSearchField} label="Статус оплаты"/>
                         <Field className={classes.inputFieldCustom} name="zone" component={ZoneMultiSearchField} label="Зона"/>

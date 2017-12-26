@@ -2,13 +2,13 @@ import _ from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
 import {Row} from 'react-flexbox-grid'
-import {compose, withState, lifecycle} from 'recompose'
-import injectSheet from 'react-jss'
-import {reduxForm, Field} from 'redux-form'
 import * as ROUTES from '../../../constants/routes'
-import Container from '../../Container/index'
-import {TextField, AgentSearchField} from '../../ReduxForm'
-import DateToDateField from '../../ReduxForm/Basic/DateToDateField'
+import Container from '../../Container'
+import injectSheet from 'react-jss'
+import {compose, withState, lifecycle} from 'recompose'
+import {reduxForm, Field} from 'redux-form'
+import {TextField, ZoneMultiSearchField, DivisionMultiSearchField, DateToDateField} from '../../ReduxForm'
+import StatProviderDialog from './ProviderDialog'
 import StatSideMenu from '../StatSideMenu'
 import Loader from '../../Loader'
 import ToolTip from '../../ToolTip'
@@ -22,11 +22,12 @@ import IconButton from 'material-ui/IconButton'
 import FullScreen from 'material-ui/svg-icons/navigation/fullscreen'
 import FullScreenExit from 'material-ui/svg-icons/navigation/fullscreen-exit'
 
-export const STAT_MARKET_FILTER_KEY = {
-    SEARCH: 'search',
-    USER: 'user',
+export const STAT_PROVIDER_FILTER_KEY = {
+    FROM_DATE: 'fromDate',
     TO_DATE: 'toDate',
-    FROM_DATE: 'fromDate'
+    ZONE: 'zone',
+    DIVISION: 'division',
+    SEARCH: 'search'
 }
 const enhance = compose(
     injectSheet({
@@ -40,17 +41,6 @@ const enhance = compose(
             background: '#fff',
             zIndex: '30'
         },
-        sumLoader: {
-            width: '100%',
-            margin: '0 !important',
-            background: '#fff',
-            alignItems: 'center',
-            zIndex: '999',
-            justifyContent: 'center',
-            display: 'flex',
-            padding: '0',
-            height: '72px'
-        },
         mainWrapper: {
             background: '#fff',
             margin: '0 -28px',
@@ -58,26 +48,31 @@ const enhance = compose(
             boxShadow: 'rgba(0, 0, 0, 0.09) 0px -1px 6px, rgba(0, 0, 0, 0.10) 0px -1px 4px'
         },
         wrapper: {
-            height: 'calc(100% - 40px)',
             padding: '20px 30px',
+            height: '100%',
             '& .row': {
                 margin: '0 !important'
             }
         },
-        tableRow: {
-            '& td:nth-child(odd)': {
-                borderRight: '1px #efefef solid',
-                textAlign: 'right'
+        container: {
+            position: 'relative'
+        },
+        tableWrapper: {
+            display: 'flex',
+            margin: '0 -30px',
+            paddingLeft: '30px',
+            position: 'relative',
+            overflow: 'hidden',
+            minHeight: '200px',
+            '& > div:first-child': {
+                zIndex: '20',
+                boxShadow: '5px 0 8px -3px #CCC',
+                width: '350px'
             },
-            '& td:last-child': {
-                borderRight: '1px #efefef solid',
-                textAlign: 'right'
-            },
-            '& td:nth-child(1)': {
-                textAlign: 'left'
-            },
-            '&:nth-child(odd)': {
-                backgroundColor: '#f9f9f9'
+            '& > div:last-child': {
+                width: 'calc(100% - 350px)',
+                overflowX: 'auto',
+                overflowY: 'hidden'
             }
         },
         leftTable: {
@@ -113,39 +108,9 @@ const enhance = compose(
                 }
             }
         },
-        container: {
-            position: 'relative'
-        },
-        tableWrapper: {
-            display: 'flex',
-            margin: '0 -30px',
-            paddingLeft: '30px',
-            position: 'relative',
-            overflow: 'hidden',
-            minHeight: '200px',
-            '& > div:first-child': {
-                zIndex: '20',
-                boxShadow: '5px 0 8px -3px #CCC',
-                width: '350px'
-            },
-            '& > div:last-child': {
-                width: 'calc(100% - 350px)',
-                overflowX: 'auto',
-                overflowY: 'hidden'
-            }
-        },
-        tableBody: {
-            '& > tr:first-child > td:first-child': {
-                minWidth: '220px'
-            },
-            '& tr:first-child > td:first-child': {
-                verticalAlign: 'bottom',
-                padding: '0 20px 15px'
-            }
-        },
         mainTable: {
             width: '100%',
-            minWidth: '950px',
+            minWidth: '1600px',
             color: '#666',
             borderCollapse: 'collapse',
             '& tr, td': {
@@ -164,17 +129,45 @@ const enhance = compose(
         },
         subTitle: {
             extend: 'title',
-            '& td:nth-child(odd)': {
-                borderRight: 'none'
-            },
             '& td:last-child': {
-                borderRight: '1px #efefef solid',
                 textAlign: 'right'
             },
             '& td:nth-child(even)': {
                 borderLeft: 'none',
                 textAlign: 'right'
             }
+        },
+        tableRow: {
+            '& td:nth-child(odd)': {
+                textAlign: 'left',
+                borderLeft: '1px #efefef solid',
+                '&:first-child': {
+                    borderLeft: 'none'
+                }
+            },
+            '& td:nth-child(even)': {
+                borderRight: '1px #efefef solid',
+                textAlign: 'right',
+                '&:first-child': {
+                    borderRight: 'none'
+                }
+            },
+            '&:nth-child(odd)': {
+                backgroundColor: '#f9f9f9'
+            },
+            '& td:last-child': {
+                textAlign: 'right',
+                borderRight: '1px #efefef solid',
+                borderLeft: 'none'
+            }
+        },
+        balanceInfo: {
+            padding: '15px 0'
+        },
+        balance: {
+            paddingRight: '10px',
+            fontSize: '24px!important',
+            fontWeight: '600'
         },
         inputFieldCustom: {
             fontSize: '13px !important',
@@ -191,17 +184,10 @@ const enhance = compose(
                 marginTop: '0 !important'
             }
         },
-        excel: {
-            background: '#71ce87',
-            borderRadius: '2px',
-            color: '#fff',
-            fontWeight: '600',
+        balanceButtonWrap: {
             display: 'flex',
             alignItems: 'center',
-            padding: '5px 15px',
-            '& svg': {
-                width: '18px !important'
-            }
+            justifyContent: 'space-between'
         },
         form: {
             display: 'flex',
@@ -215,6 +201,9 @@ const enhance = compose(
                 width: '170px!important',
                 position: 'relative',
                 marginRight: '40px',
+                '&:last-child': {
+                    margin: '0'
+                },
                 '&:after': {
                     content: '""',
                     position: 'absolute',
@@ -225,12 +214,16 @@ const enhance = compose(
                     marginTop: '-15px',
                     background: '#efefef'
                 },
-                '&:last-child': {
-                    '&:after': {
-                        content: '""',
-                        background: 'none'
-                    }
+                '&:last-child:after': {
+                    display: 'none'
                 }
+            }
+        },
+        dateFilter: {
+            display: 'flex',
+            alignItems: 'center',
+            '& span': {
+                fontWeight: '600'
             }
         },
         leftPanel: {
@@ -242,9 +235,7 @@ const enhance = compose(
         rightPanel: {
             flexBasis: 'calc(100% - 250px)',
             maxWidth: 'calc(100% - 250px)',
-            overflow: 'hidden',
-            overflowY: 'auto',
-            overflowX: 'hidden'
+            overflowY: 'auto'
         },
         searchButton: {
             marginLeft: '-10px !important',
@@ -252,6 +243,18 @@ const enhance = compose(
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center'
+            }
+        },
+        excel: {
+            background: '#71ce87',
+            borderRadius: '2px',
+            color: '#fff',
+            fontWeight: '600',
+            display: 'flex',
+            alignItems: 'center',
+            padding: '5px 15px',
+            '& svg': {
+                width: '18px !important'
             }
         },
         emptyQuery: {
@@ -266,79 +269,34 @@ const enhance = compose(
             textAlign: 'center',
             fontSize: '13px',
             color: '#666',
-            zIndex: '20'
-        },
-        summary: {
-            display: 'flex',
-            justifyContent: 'space-between',
-            borderBottom: 'solid 1px #efefef',
-            padding: '15px 0',
-            color: '#666',
-            '& > div': {
-                border: '1px solid #efefef',
-                borderRadius: '2px',
-                padding: '0 15px',
-                paddingBottom: '10px',
-                width: 'calc((100% / 4) - 10px)',
-                '& div': {
-                    fontSize: '17px',
-                    color: '#333',
-                    fontWeight: '600'
-                },
-                '& span': {
-                    display: 'block',
-                    marginTop: '10px'
-                },
-                '&:last-child': {
-                    textAlign: 'right'
-                }
-
+            zIndex: '30',
+            '& svg': {
+                width: '50px !important',
+                height: '50px !important',
+                color: '#999 !important'
             }
         },
-        pagination: {
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            '& > div:first-child': {
-                fontWeight: '600'
-            }
+        pointer: {
+            cursor: 'pointer'
         },
-        details: {
-            background: '#fefefe',
+        header: {
             position: 'relative',
-            margin: '0 -30px',
-            padding: '0 30px',
-            '&:before': {
-                content: '""',
-                position: 'absolute',
-                top: '-1px',
-                left: '0',
-                right: '0',
-                background: '#efefef',
-                height: '2px',
-                zIndex: '9'
-            },
-            '&:after': {
-                content: '""',
-                position: 'absolute',
-                bottom: '-1px',
-                left: '0',
-                right: '0',
-                background: '#efefef',
-                height: '2px',
-                zIndex: '9'
-            },
-            '& .row': {
-                position: 'relative'
-            }
+            top: 'auto'
         },
-        closeDetail: {
-            position: 'absolute',
-            cursor: 'pointer',
-            top: '0',
-            left: '-30px',
-            right: '-30px',
-            bottom: '0'
+        alignRightFlex: {
+            justifyContent: 'flex-end'
+        },
+        filters: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            marginTop: '10px',
+            borderTop: '1px #efefef solid'
+        },
+        opacity: {
+            '& span': {
+                color: '#777',
+                margin: '0 2px'
+            }
         },
         expandedTable: {
             background: '#fff',
@@ -361,8 +319,65 @@ const enhance = compose(
         },
         fullScreen: {
             marginLeft: '10px !important'
+        },
+        summary: {
+            padding: '30px 0'
+        },
+        summaryWrapper: {
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'space-between',
+            '& > div': {
+                padding: '10px 20px',
+                borderRadius: '2px',
+                border: '1px solid #efefef',
+                width: 'calc((100% / 3) - 10px)',
+                '& > div:nth-child(odd)': {
+                    color: '#666'
+                },
+                '& > div:nth-child(even)': {
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    marginBottom: '10px'
+                },
+                '& > div:last-child': {
+                    marginBottom: '0'
+                },
+                '&:last-child': {
+                    textAlign: 'right'
+                }
+            }
+        },
+        summaryPlan: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            padding: '10px 15px',
+            marginTop: '15px',
+            borderRadius: '2px',
+            border: 'solid 1px #efefef',
+            '& > div': {
+                display: 'grid',
+                '& > span:first-child': {
+                    color: '#666'
+                },
+                '& > span:last-child': {
+                    fontSize: '16px',
+                    fontWeight: '600'
+                },
+                '&:last-child': {
+                    textAlign: 'right'
+                }
+            }
+        },
+        summaryLoader: {
+            width: '100%',
+            background: '#fff',
+            display: 'flex',
+            alignItems: 'center',
+            zIndex: '999',
+            justifyContent: 'center',
+            padding: '0'
         }
-
     }),
     withState('currentRow', 'updateRow', null),
     withState('expandedTable', 'setExpandedTable', false),
@@ -412,11 +427,20 @@ const listHeader = [
         title: 'Общее',
         tooltip: 'Общая сумма оплат'
     },
+    // Plan
+    {
+        sorting: true,
+        title: 'План'
+    },
+    {
+        sorting: true,
+        title: 'Осталось'
+    },
     // Debt
     {
         sorting: true,
         title: 'По заказам',
-        tooltip: 'Долг по заказов'
+        tooltip: 'Долг по заказам'
     },
     {
         sorting: true,
@@ -425,76 +449,85 @@ const listHeader = [
     }
 ]
 
-const StatMarketGridList = enhance((props) => {
+const styleOnHover = {
+    background: '#efefef',
+    cursor: 'pointer'
+}
+
+const iconStyle = {
+    icon: {
+        width: 24,
+        height: 24
+    },
+    button: {
+        width: 36,
+        height: 36,
+        padding: 6
+    }
+}
+
+const StatProviderGridList = enhance((props) => {
     const {
-        listData,
         classes,
+        statProviderDialog,
+        listData,
+        summaryData,
         filter,
         handleSubmitFilterDialog,
-        initialValues,
+        detailData,
         getDocument,
+        initialValues,
         handleSubmit,
+        filterOpen,
         currentRow,
         updateRow,
         expandedTable,
         setExpandedTable
     } = props
 
-    const sumData = _.get(listData, 'sumData')
-    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const listLoading = _.get(listData, 'listLoading')
-    const sumLoading = _.get(listData, 'sumLoading')
+    const salesSummary = numberFormat(_.get(_.find(_.get(listData, 'data'), {'id': _.get(detailData, 'id')}), 'ordersTotalPrice'))
+    const divisionStatus = getConfig('DIVISIONS')
+    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
 
-    const salesFactSum = _.toNumber(_.get(sumData, 'salesFactSum'))
-    const salesTotalSum = _.toNumber(_.get(sumData, 'salesTotalSum'))
-    const returnOrdersSum = _.toNumber(_.get(sumData, 'returnOrdersSum'))
-    const returnTotalSum = _.toNumber(_.get(sumData, 'returnTotalSum'))
-    const paymentOrdersSum = _.toNumber(_.get(sumData, 'paymentOrdersSum'))
-    const paymentTotalSum = _.toNumber(_.get(sumData, 'paymentTotalSum'))
-    const debtTotalSum = _.toNumber(_.get(sumData, 'debtTotalSum'))
-    const debtOrdersSum = _.toNumber(_.get(sumData, 'deptOrdersSum'))
-
-    const styleOnHover = {
-        background: '#efefef'
-    }
-    const iconStyle = {
-        icon: {
-            color: '#5d6474',
-            width: 22,
-            height: 22
-        },
-        button: {
-            minWidth: 40,
-            width: 40,
-            height: 40,
-            padding: 9
-        }
-    }
-
+    // Summary
+    const salesTotalSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'salesTotal'])), primaryCurrency)
+    const salesFactSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'salesFact'])), primaryCurrency)
+    const returnOrdersSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'returnOrders'])), primaryCurrency)
+    const returnTotalSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'returnTotal'])), primaryCurrency)
+    const paymentOrdersSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'paymentOrders'])), primaryCurrency)
+    const paymentTotalSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'paymentTotal'])), primaryCurrency)
+    const planTotalSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'planTotal'])), primaryCurrency)
+    const planLeftSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'planLeft'])), primaryCurrency)
+    const debtFromOrderSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'debtFromOrder'])), primaryCurrency)
+    const debtTotalSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'debtTotal'])), primaryCurrency)
     const tableLeft = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const name = _.get(item, 'name') || 'No'
+        const name = _.get(item, 'name')
         return (
             <div
                 key={id}
                 style={id === currentRow ? styleOnHover : {}}
                 onMouseEnter={() => { updateRow(id) }}
-                onMouseLeave={() => { updateRow(null) }}>
+                onMouseLeave={() => { updateRow(null) }}
+                onClick={ () => { statProviderDialog.handleOpenStatProviderDialog(id) }}>
                 <span>{name}</span>
             </div>
         )
     })
     const tableList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const salesFact = _.toNumber(_.get(item, 'salesFact'))
-        const salesTotal = _.toNumber(_.get(item, 'salesTotal'))
-        const returnOrders = _.toNumber(_.get(item, 'returnOrders'))
-        const returnTotal = _.toNumber(_.get(item, 'returnTotal'))
-        const paymentOrders = _.toNumber(_.get(item, 'paymentOrders'))
-        const paymentTotal = _.toNumber(_.get(item, 'paymentTotal'))
-        const deptTotal = _.toNumber(_.get(item, 'debtTotal'))
-        const deptOrders = _.toNumber(_.get(item, 'deptOrders'))
-        const clientName = _.get(item, 'clientName')
+        const salesTotal = numberFormat(_.get(item, 'salesTotal'), primaryCurrency)
+        const salesFact = numberFormat(_.get(item, 'salesFact'), primaryCurrency)
+        const returnOrders = numberFormat(_.get(item, 'returnOrders'), primaryCurrency)
+        const returnTotal = numberFormat(_.get(item, 'returnTotal'), primaryCurrency)
+        const paymentOrders = numberFormat(_.get(item, 'paymentOrders'), primaryCurrency)
+        const paymentTotal = numberFormat(_.get(item, 'paymentTotal'), primaryCurrency)
+        const planTotal = numberFormat(_.get(item, 'planTotal'), primaryCurrency)
+        const planLeft = numberFormat(_.get(item, 'planLeft'), primaryCurrency)
+        const planDebt = numberFormat(_.get(item, 'planDebt'), primaryCurrency)
+        const debt = numberFormat(_.get(item, 'planDebt'), primaryCurrency)
+
         return (
             <tr
                 key={id}
@@ -502,20 +535,22 @@ const StatMarketGridList = enhance((props) => {
                 style={id === currentRow ? styleOnHover : {}}
                 onMouseEnter={() => { updateRow(id) }}
                 onMouseLeave={() => { updateRow(null) }}>
-                <td>{clientName}</td>
+                <td>{salesTotal}</td>
+                <td>{salesFact}</td>
 
-                <td>{numberFormat(salesTotal, primaryCurrency)}</td>
-                <td>{numberFormat(salesFact, primaryCurrency)}</td>
-                <td>{numberFormat(returnOrders, primaryCurrency)}</td>
-                <td>{numberFormat(returnTotal, primaryCurrency)}</td>
-                <td>{numberFormat(paymentOrders, primaryCurrency)}</td>
-                <td>{numberFormat(paymentTotal, primaryCurrency)}</td>
-                <td>{numberFormat(deptTotal, primaryCurrency)}</td>
-                <td>{numberFormat(deptOrders, primaryCurrency)}</td>
+                <td>{returnOrders}</td>
+                <td>{returnTotal}</td>
+
+                <td>{paymentOrders}</td>
+                <td>{paymentTotal}</td>
+
+                <td>{planTotal}</td>
+                <td>{planLeft}</td>
+                <td>{planDebt}</td>
+                <td>{debt}</td>
             </tr>
         )
     })
-
     const fields = (
         <div>
             <Field
@@ -525,71 +560,79 @@ const StatMarketGridList = enhance((props) => {
                 label="Диапазон дат"
                 fullWidth={true}/>
             <Field
-                name="user"
-                component={AgentSearchField}
                 className={classes.inputFieldCustom}
-                label="Агент"
-                fullWidth={true}
-            />
+                name="zone"
+                component={ZoneMultiSearchField}
+                label="Зона"
+                fullWidth={true}/>
+            {divisionStatus && <Field
+                className={classes.inputFieldCustom}
+                name="division"
+                component={DivisionMultiSearchField}
+                label="Организация"
+                fullWidth={true}/>}
         </div>
-    )
 
+    )
     const page = (
         <div className={classes.mainWrapper}>
             <Row style={{margin: '0', height: '100%'}}>
                 <div className={classes.leftPanel}>
-                    <StatSideMenu currentUrl={ROUTES.STATISTICS_MARKET_URL} filter={filter}/>
+                    <StatSideMenu currentUrl={ROUTES.STATISTICS_PROVIDERS_URL} filter={filter}/>
                 </div>
                 <div className={classes.rightPanel}>
                     <div className={classes.wrapper}>
                         <StatisticsFilterExcel
                             filter={filter}
-                            filterKeys={STAT_MARKET_FILTER_KEY}
-                            handleSubmitFilterDialog={handleSubmitFilterDialog}
+                            filterOpen={filterOpen}
                             fields={fields}
+                            filterKeys={STAT_PROVIDER_FILTER_KEY}
                             initialValues={initialValues}
+                            handleSubmitFilterDialog={handleSubmitFilterDialog}
                             handleGetDocument={getDocument.handleGetDocument}
                         />
-                        {sumLoading
-                            ? <div className={classes.sumLoader}>
-                                <Loader size={0.75}/>
-                            </div>
-                            : <div className={classes.summary}>
-                                <div className={classes.sumTitle}>
-                                    <span>Сумма от продаж</span>
-                                    <div>{numberFormat(salesTotalSum, primaryCurrency)}</div>
-                                    <span>Фактические продажи</span>
-                                    <div>{numberFormat(salesFactSum, primaryCurrency)}</div>
+                        <div className={classes.summary}>
+                            {listLoading
+                                ? <div className={classes.summaryLoader}>
+                                    <Loader size={0.75}/>
                                 </div>
-
-                                <div>
-                                    <span>Общий возврат</span>
-                                    <div>{numberFormat(returnTotalSum, primaryCurrency)}</div>
-                                    <span>Возврат по заказам</span>
-                                    <div>{numberFormat(returnOrdersSum, primaryCurrency)}</div>
-                                </div>
-                                <div>
-                                    <span>Общие оплачено</span>
-                                    <div>{numberFormat(paymentTotalSum, primaryCurrency)}</div>
-                                    <span>Оплачено по заказам</span>
-                                    <div>{numberFormat(paymentOrdersSum, primaryCurrency)}</div>
-                                </div>
-                                <div>
-                                    <span>Общий долг</span>
-                                    <div>{numberFormat(debtTotalSum, primaryCurrency)}</div>
-                                    <span>Долг по заказам</span>
-                                    <div>{numberFormat(debtOrdersSum, primaryCurrency)}</div>
-                                </div>
-                            </div>}
+                                : <div>
+                                    <div className={classes.summaryWrapper}>
+                                        <div>
+                                            <div>Обшая сумма продаж</div>
+                                            <div>{salesTotalSum}</div>
+                                            <div>Фактическая сумма продаж</div>
+                                            <div>{salesFactSum}</div>
+                                        </div>
+                                        <div>
+                                            <div>Сумма возвратов от продаж</div>
+                                            <div>{returnOrdersSum}</div>
+                                            <div>Сумма возвратов за этот период</div>
+                                            <div>{returnTotalSum}</div>
+                                        </div>
+                                        <div>
+                                            <div>Сумма оплат с заказов</div>
+                                            <div>{paymentOrdersSum}</div>
+                                            <div>Общая сумма оплат</div>
+                                            <div>{paymentTotalSum}</div>
+                                        </div>
+                                    </div>
+                                    <div className={classes.summaryPlan}>
+                                        <div><span>План агента</span> <span>{planTotalSum}</span></div>
+                                        <div><span>План остаток</span> <span>{planLeftSum}</span></div>
+                                        <div><span>Долг по заказам</span> <span>{debtFromOrderSum}</span></div>
+                                        <div><span>Общая сумма долга</span> <span>{debtTotalSum}</span></div>
+                                    </div>
+                                </div>}
+                        </div>
                         <div className={expandedTable ? classes.expandedTable : ''}>
-                            <div className={classes.pagination}>
-                                <div>Продажи по магазинам в зоне</div>
+                            <div className={classes.filters}>
                                 <form onSubmit={handleSubmit(handleSubmitFilterDialog)}>
                                     <Field
                                         className={classes.inputFieldCustom}
                                         name="search"
                                         component={TextField}
-                                        hintText="Магазин"/>
+                                        hintText="Поиск"/>
                                 </form>
                                 <div className={classes.flexCenter}>
                                     <Pagination filter={filter}/>
@@ -610,7 +653,7 @@ const StatMarketGridList = enhance((props) => {
                                 </div>}
                                 <div className={classes.tableWrapper}>
                                     <div className={classes.leftTable}>
-                                        <div><span>Магазин</span></div>
+                                        <div><span>Агент</span></div>
                                         {tableLeft}
                                     </div>
                                     {_.isEmpty(tableList) && !listLoading &&
@@ -621,10 +664,10 @@ const StatMarketGridList = enhance((props) => {
                                         <table className={classes.mainTable}>
                                             <tbody className={classes.tableBody}>
                                             <tr className={classes.title}>
-                                                <td rowSpan={2}>Клиент</td>
                                                 <td colSpan={2}>Продажа</td>
                                                 <td colSpan={2}>Возврат</td>
                                                 <td colSpan={2}>Оплачено</td>
+                                                <td colSpan={2}>План агента</td>
                                                 <td colSpan={2}>Долг</td>
                                             </tr>
                                             <tr className={classes.subTitle}>
@@ -671,18 +714,27 @@ const StatMarketGridList = enhance((props) => {
     return (
         <Container>
             {page}
+            <StatProviderDialog
+                loading={_.get(detailData.detailLoading)}
+                detailData={detailData}
+                salesSummary={salesSummary}
+                open={statProviderDialog.openStatProviderDialog}
+                onClose={statProviderDialog.handleCloseStatProviderDialog}
+                filter={filter}/>
         </Container>
     )
 })
 
-StatMarketGridList.propTypes = {
+StatProviderGridList.propTypes = {
+    filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
-    statMarketDialog: PropTypes.shape({
-        openStatMarketDialog: PropTypes.bool.isRequired,
-        handleOpenStatMarketDialog: PropTypes.func.isRequired,
-        handleCloseStatMarketDialog: PropTypes.func.isRequired
+    getDocument: PropTypes.object.isRequired,
+    statProviderDialog: PropTypes.shape({
+        openStatProviderDialog: PropTypes.bool.isRequired,
+        handleOpenStatProviderDialog: PropTypes.func.isRequired,
+        handleCloseStatProviderDialog: PropTypes.func.isRequired
     }).isRequired
 }
 
-export default StatMarketGridList
+export default StatProviderGridList

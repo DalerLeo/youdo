@@ -340,7 +340,7 @@ const StatReturnGridList = enhance((props) => {
                 className={classes.inputFieldCustom}
                 name="division"
                 component={DivisionMultiSearchField}
-                label="Подразделение"/>}
+                label="Организация"/>}
             <Field
                 className={classes.inputFieldCustom}
                 name="paymentType"
@@ -386,7 +386,7 @@ const StatReturnGridList = enhance((props) => {
                 name="division"
                 component={DivisionMultiSearchField}
                 className={classes.inputFieldCustom}
-                label="Подразделение"
+                label="Организация"
                 fullWidth={true}/>}
         </div>
     )

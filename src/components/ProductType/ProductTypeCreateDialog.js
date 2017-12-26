@@ -92,7 +92,7 @@ const ProductTypeCreateDialog = enhance((props) => {
                                 name="division"
                                 component={DivisionSearchField}
                                 className={classes.inputFieldCustom}
-                                label="Подразделения"
+                                label="Организация"
                                 fullWidth={true}
                             />
                         </div>

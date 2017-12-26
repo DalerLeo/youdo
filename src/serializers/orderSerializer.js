@@ -94,6 +94,7 @@ export const listFilterSerializer = (data, id, withOrderReturn, print) => {
     const ordering = _.get(data, 'ordering')
     const dept = _.toInteger(_.get(defaultData, 'dept'))
     const status = _.get(defaultData, 'status')
+    const excludeCanceled = _.isUndefined(_.get(defaultData, 'exclude')) ? 'True' : _.get(defaultData, 'exclude')
 
     if (id && print) {
         return {
@@ -123,7 +124,7 @@ export const listFilterSerializer = (data, id, withOrderReturn, print) => {
         'total_balance': _.get(defaultData, 'totalBalance'),
         'status': status,
         'only_bonus': _.get(defaultData, 'onlyBonus') ? 'True' : null,
-        'exclude_cancelled': _.get(defaultData, 'exclude') ? 'True' : null,
+        'exclude_cancelled': excludeCanceled,
         'created_date_0': _.get(defaultData, 'fromDate'),
         'created_date_1': _.get(defaultData, 'toDate') || _.get(defaultData, 'fromDate'),
         'delivery_date_0': _.get(defaultData, 'deliveryFromDate'),

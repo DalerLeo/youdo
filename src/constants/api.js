@@ -1,15 +1,16 @@
+export const API_LANG = 'ru'
 export const API_HOST = process.env.API_HOST
 export const API_ROOT = 'api'
 export const API_VERSION = 'v1'
 export const API_PROTOCOL = process.env.API_PROTOCOL ? process.env.API_PROTOCOL : 'https'
 
-export const API_URL = `${API_PROTOCOL}://${API_HOST}/${API_ROOT}/${API_VERSION}`
+export const API_URL = `${API_PROTOCOL}://${API_HOST}/${API_LANG}/${API_ROOT}/${API_VERSION}`
 
 export const USER = 'main/user'
 export const SIGN_IN = `/${USER}/auth/`
 export const AUTH_CONFIRM = `/${USER}/auth-confirm/`
 export const SIGN_OUT = `/${USER}/unauth/`
-export const CONFIG = 'config/'
+export const CONFIG = 'config'
 
 export const CLIENT_TRANSACTION = 'sales/client_transaction'
 export const CLIENT_TRANSACTION_CREATE = `/${CLIENT_TRANSACTION}/`

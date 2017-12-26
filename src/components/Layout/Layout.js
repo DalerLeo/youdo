@@ -86,7 +86,10 @@ const enhance = compose(
         const nextLoading = _.get(nextProps, 'notificationsLoading')
         return prevLoading !== nextLoading && nextLoading === false
     }, ({list, notificationsList, updateList}) => {
-        updateList(_.union(list, _.get(notificationsList, 'results')))
+        Promise.resolve('aaa')
+            .then(() => {
+                updateList(_.union(list, _.get(notificationsList, 'results')))
+            })
     }),
 
     withHandlers({
@@ -374,7 +377,7 @@ const Layout = enhance((props) => {
         const text = _.get(item, 'text')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY HH:mm')
         const viewed = _.get(item, 'viewed')
-        const objectId = _.toInteger(_.get(item, 'object_id'))
+        const objectId = _.toInteger(_.get(item, 'objectId'))
         const template = _.get(item, ['template', 'name'])
         let icon = null
         switch (template) {

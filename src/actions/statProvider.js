@@ -1,15 +1,13 @@
 import _ from 'lodash'
-import sprintf from 'sprintf'
 import axios from '../helpers/axios'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
-import caughtCancel from '../helpers/caughtCancel'
+import * as serializers from '../serializers/Statistics/statProviderSerializer'
 
-const CancelToken = axios().CancelToken
-
-export const notificationDeleteAction = (id) => {
+export const statProviderListFetchAction = (filter) => {
+    const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
-        .delete(sprintf(API.NOTIFICATIONS_DELETE, id))
+        .get((API.STAT_AGENT_LIST), {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -18,43 +16,41 @@ export const notificationDeleteAction = (id) => {
         })
 
     return {
-        type: actionTypes.NOTIFICATIONS_DELETE,
+        type: actionTypes.STAT_AGENT_LIST,
         payload
     }
 }
 
-let notificationListFetchToken = null
-export const notificationListFetchAction = (page) => {
-    if (notificationListFetchToken) {
-        notificationListFetchToken.cancel()
-    }
-    notificationListFetchToken = CancelToken.source()
+export const statProviderSummaryFetchAction = (filter) => {
+    const params = serializers.summaryFilterSerializer(filter.getParams())
     const payload = axios()
-        .get(API.NOTIFICATIONS_LIST, {params: {page: page, page_size: 15}, cancelToken: notificationListFetchToken.token})
+        .get((API.STAT_AGENT_SUM), {params})
         .then((response) => {
             return _.get(response, 'data')
         })
         .catch((error) => {
-            caughtCancel(error)
             return Promise.reject(_.get(error, ['response', 'data']))
         })
+
     return {
-        type: actionTypes.NOTIFICATIONS_LIST,
+        type: actionTypes.STAT_AGENT_SUM,
         payload
     }
 }
 
-export const notificationCountFetchAction = () => {
+export const statProviderItemFetchAction = (filter, filterItem, id) => {
+    const params = serializers.itemSerializer(filter.getParams(), filterItem.getParams(), id)
     const payload = axios()
-        .get(API.NOTIFICATIONS_GET_COUNT)
+        .get(API.STAT_AGENT_ITEM, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
         .catch((error) => {
             return Promise.reject(_.get(error, ['response', 'data']))
         })
+
     return {
-        type: actionTypes.NOTIFICATIONS_GET_COUNT,
+        type: actionTypes.STAT_AGENT_ITEM,
         payload
     }
 }

@@ -15,9 +15,11 @@ import ClientIncomeGridList from './ClientIncome/ClientIncomeGridList'
 import StatisticsFilterExcel from './StatisticsFilterExcel'
 import StatisticsChart from './StatisticsChart'
 import StatDebtorsGridList from './Debtors/DebtorsGridList'
+import StatProviderGridList from './Providers/ProviderGridList'
 import StatExpenditureOnStaffGridList from './ExpenditureOnStaff/StatExpenditureOnStaffGridList'
 
 const STAT_AGENT_DIALOG_OPEN = 'openStatAgentDialog'
+const STAT_PROVIDER_DIALOG_OPEN = 'openStatProviderDialog'
 const STAT_RETURN_DIALOG_OPEN = 'openStatReturnDialog'
 const STAT_REMAINDER_DIALOG_OPEN = 'openStatAgentDialog'
 const STAT_SALES_DIALOG_OPEN = 'openStatSalesDialog'
@@ -49,6 +51,7 @@ export {
     StatisticsFilterExcel,
     StatisticsChart,
     StatExpenditureOnStaffGridList,
+    StatProviderGridList,
     BEGIN_DATE,
     END_DATE,
     STAT_AGENT_DIALOG_OPEN,
@@ -60,5 +63,6 @@ export {
     STAT_SALES_DIALOG_OPEN,
     STAT_REMAINDER_DIALOG_OPEN,
     STAT_PRODUCT_MOVE_DIALOG_OPEN,
-    STAT_RETURN_DIALOG_OPEN
+    STAT_RETURN_DIALOG_OPEN,
+    STAT_PROVIDER_DIALOG_OPEN
 }

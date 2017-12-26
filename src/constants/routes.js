@@ -259,6 +259,11 @@ export const STATISTICS_DEBTORS_URL = `/${STATISTICS_DEBTORS}`
 export const STATISTICS_DEBTORS_ITEM_URL = `/${STATISTICS_DEBTORS}/:statDebtorsId`
 export const STATISTICS_DEBTORS_ITEM_PATH = `/${STATISTICS_DEBTORS}/%d`
 
+export const STATISTICS_PROVIDERS = 'statistics/providers'
+export const STATISTICS_PROVIDERS_URL = `/${STATISTICS_PROVIDERS}`
+export const STATISTICS_PROVIDERS_ITEM_URL = `/${STATISTICS_PROVIDERS}/:statProviderId`
+export const STATISTICS_PROVIDERS_ITEM_PATH = `/${STATISTICS_PROVIDERS}/%d`
+
 export const STOCK_IN_OUT = 'stockReceives'
 export const STOCK_IN_OUT_LIST_URL = `/${STOCK_IN_OUT}`
 export const STOCK_RECEIVE = `${STOCK_IN_OUT}/receive`

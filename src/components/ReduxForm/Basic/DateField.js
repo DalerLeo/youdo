@@ -16,7 +16,7 @@ const DateField = ({classes, input, label, meta: {error}, ...defaultProps}) => {
         _.unset(input, 'value')
     }
 
-    let DateTimeFormat = IntlPolyfill.DateTimeFormat
+    const DateTimeFormat = IntlPolyfill.DateTimeFormat
 
     return (
         <div className={classes.wrapper}>

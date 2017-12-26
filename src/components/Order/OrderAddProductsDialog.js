@@ -386,7 +386,7 @@ const OrderAddProductsDialog = enhance((props) => {
                         <header>
                             <div style={{width: '250px'}}>
                                 <Field
-                                    name="productType"
+                                    name="type"
                                     component={ProductTypeSearchField}
                                     label="Фильтр по типу"
                                     fullWidth={true}
@@ -395,6 +395,7 @@ const OrderAddProductsDialog = enhance((props) => {
                             <form onSubmit={handleSubmit(props.onSubmitSearch)} className={classes.search}>
                                 <TextFieldSearch
                                     fullWidth={true}
+                                    name={'search'}
                                     hintText="Поиск товаров..."
                                     className={classes.searchField}
                                     value={pdSearch}

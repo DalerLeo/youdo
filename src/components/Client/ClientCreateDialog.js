@@ -8,7 +8,7 @@ import FlatButton from 'material-ui/FlatButton'
 import Loader from '../Loader'
 import {Field, FieldArray, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, UsersSearchField} from '../ReduxForm'
+import {TextField, UsersSearchField, CheckBox} from '../ReduxForm'
 import ClientContactsListField from '../ReduxForm/Client/ClientContactsListField'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
@@ -71,7 +71,7 @@ const ClientCreateDialog = enhance((props) => {
 
             <div className={classes.titleContent}>
                 <span>{isUpdate ? 'Изменение клиента' : 'Добавление клиента'}</span>
-                <IconButton onTouchTap={onClose}>
+                <IconButton onTouchTap={onClose} style={{padding: 'auto'}}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
             </div>
@@ -98,7 +98,7 @@ const ClientCreateDialog = enhance((props) => {
                                 name="from"
                                 component={UsersSearchField}
                                 className={classes.inputFieldCustom}
-                                label="От кого"
+                                label="По рекомендации"
                                 fullWidth={true}/>
 
                             <div className={classes.contacts}>
@@ -107,6 +107,14 @@ const ClientCreateDialog = enhance((props) => {
                                     name="contacts"
                                     component={ClientContactsListField}
                                 />
+                            </div>
+                            <div style={{padding: '10px 0'}}>
+                                <Field
+                                    name="inBlacklist"
+                                    component={CheckBox}
+                                    className={classes.inputFieldCustom}
+                                    label="Добавить в черный список"
+                                    fullWidth={true}/>
                             </div>
                         </div>
                     </div>
