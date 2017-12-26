@@ -636,15 +636,26 @@ const StatProviderGridList = enhance((props) => {
                                 </form>
                                 <div className={classes.flexCenter}>
                                     <Pagination filter={filter}/>
-                                    <ToolTip position="left" text={expandedTable ? 'Обычный вид' : 'Расширенный вид'}>
+                                    {expandedTable &&
+                                    <ToolTip position="left" text={'Обычный вид'}>
                                         <IconButton
                                             className={classes.fullScreen}
                                             onTouchTap={() => { setExpandedTable(!expandedTable) }}
                                             iconStyle={iconStyle.icon}
                                             style={iconStyle.button}>
-                                            {expandedTable ? <FullScreenExit color="#666"/> : <FullScreen color="#666"/>}
+                                            <FullScreenExit color="#666"/>
                                         </IconButton>
-                                    </ToolTip>
+                                    </ToolTip>}
+                                    {!expandedTable &&
+                                    <ToolTip position="left" text={'Расширенный вид'}>
+                                        <IconButton
+                                            className={classes.fullScreen}
+                                            onTouchTap={() => { setExpandedTable(!expandedTable) }}
+                                            iconStyle={iconStyle.icon}
+                                            style={iconStyle.button}>
+                                            <FullScreen color="#666"/>
+                                        </IconButton>
+                                    </ToolTip>}
                                 </div>
                             </div>
                             <div className={classes.container}>
