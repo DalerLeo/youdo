@@ -10,7 +10,7 @@ import IconButton from 'material-ui/IconButton'
 import {Row, Col} from 'react-flexbox-grid'
 import Tooltip from '../ToolTip'
 import dateFormat from '../../helpers/dateFormat'
-import BlackList from 'material-ui/svg-icons/communication/contacts'
+import Blacklist from 'material-ui/svg-icons/alert/warning'
 
 const colorBlue = '#12aaeb !important'
 const enhance = compose(
@@ -42,6 +42,11 @@ const enhance = compose(
             padding: '0 30px',
             borderBottom: '1px #efefef solid',
             position: 'relative'
+        },
+        blacklistTitle: {
+            extend: 'title',
+            background: '#ff4747',
+            color: '#fff'
         },
         container: {
             display: 'flex',
@@ -82,7 +87,6 @@ const enhance = compose(
         },
         titleLabel: {
             fontSize: '18px',
-            color: '#333',
             fontWeight: '700',
             cursor: 'pointer'
         },
@@ -109,19 +113,6 @@ const enhance = compose(
     }),
     withState('openDetails', 'setOpenDetails', false)
 )
-
-const iconStyle = {
-    icon: {
-        color: '#666',
-        width: 20,
-        height: 20
-    },
-    button: {
-        width: 48,
-        height: 48,
-        padding: 0
-    }
-}
 
 const ClientDetails = enhance((props) => {
     const {classes,
@@ -151,21 +142,35 @@ const ClientDetails = enhance((props) => {
         )
     }
 
+    const iconStyle = {
+        icon: {
+            color: inBlacklist ? '#fff' : '#666',
+            width: 22,
+            height: 22
+        },
+        button: {
+            width: 48,
+            height: 48,
+            padding: 0
+        }
+    }
+
     return (
         <div className={classes.wrapper} key={detId}>
-            <div className={classes.title}>
+            <div className={inBlacklist ? classes.blacklistTitle : classes.title}>
                 <div className={classes.titleLabel}>{providerName}</div>
                 <div className={classes.closeDetail}
                      onClick={handleCloseDetail}>
                 </div>
                 <div className={classes.titleButtons}>
                     {inBlacklist &&
-                    <Tooltip position="bottom" text="Добавлен в черный список">
+                    <Tooltip position="bottom" text="Клиент в черном списке">
                         <IconButton
+                            disableTouchRipple={true}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}>
-                            <BlackList/>
+                            <Blacklist/>
                         </IconButton>
                     </Tooltip>}
                     <Tooltip position="bottom" text="Изменить">
