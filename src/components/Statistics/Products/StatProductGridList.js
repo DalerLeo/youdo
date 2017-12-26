@@ -237,7 +237,7 @@ const enhance = compose(
         summaryWrapper: {
             width: '100%',
             display: 'flex',
-            paddingTop: '30px',
+            marginTop: '15px',
             justifyContent: 'space-between',
             '& > div': {
                 '& > div:nth-child(odd)': {

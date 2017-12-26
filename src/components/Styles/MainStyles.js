@@ -44,7 +44,6 @@ const MainStyles = {
         zIndex: '999',
         '& button': {
             right: '13px',
-            padding: '0 !important',
             position: 'absolute !important'
         }
     },

@@ -71,7 +71,7 @@ const ClientCreateDialog = enhance((props) => {
 
             <div className={classes.titleContent}>
                 <span>{isUpdate ? 'Изменение клиента' : 'Добавление клиента'}</span>
-                <IconButton onTouchTap={onClose}>
+                <IconButton onTouchTap={onClose} style={{padding: 'auto'}}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
             </div>
@@ -98,7 +98,7 @@ const ClientCreateDialog = enhance((props) => {
                                 name="from"
                                 component={UsersSearchField}
                                 className={classes.inputFieldCustom}
-                                label="От кого"
+                                label="По рекомендации"
                                 fullWidth={true}/>
 
                             <div className={classes.contacts}>
@@ -113,7 +113,7 @@ const ClientCreateDialog = enhance((props) => {
                                     name="inBlacklist"
                                     component={CheckBox}
                                     className={classes.inputFieldCustom}
-                                    label="Добавит в черный список"
+                                    label="Добавить в черный список"
                                     fullWidth={true}/>
                             </div>
                         </div>
