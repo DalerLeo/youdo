@@ -131,15 +131,20 @@ export const MenuItems = [
             {section: STATS_SALES, name: 'Товары', url: ROUTES.STATISTICS_PRODUCT_URL, permission: 'frontend_stat_product', query: {pageSize: 25}},
             {section: STATS_SALES, name: 'Магазины', url: ROUTES.STATISTICS_MARKET_URL, permission: 'frontend_stat_markets', query: {pageSize: 25}},
             {section: STATS_SALES, name: 'Возврат', url: ROUTES.STATISTICS_RETURN_URL, permission: 'frontend_stat_order_returns'},
+            // -------------------------------------------------------------------------------------------------- //
             {section: STATS_FINANCE, name: 'Оборот', url: ROUTES.STATISTICS_FINANCE_URL, permission: 'frontend_stat_finance'},
             {section: STATS_FINANCE, name: 'Расходы по категориям', url: ROUTES.STATISTICS_OUTCOME_CATEGORY_URL, permission: 'frontend_stat_outcome_category'},
             {section: STATS_FINANCE, name: 'Расходы на персонал', url: ROUTES.STATISTICS_EXPENDITURE_ON_STAFF_URL, permission: 'frontend_stat_expenditure_on_staff'},
             {section: STATS_FINANCE, name: 'Кассы', url: ROUTES.STATISTICS_CASHBOX_URL, permission: 'frontend_stat_cashbox'},
+            // -------------------------------------------------------------------------------------------------- //
             {section: STATS_CLIENTS, name: 'Оборот клиентов', url: ROUTES.STATISTICS_CLIENT_INCOME_URL, permission: 'frontend_stat_client_income'},
             {section: STATS_CLIENTS, name: 'Баланс клиентов', url: ROUTES.STATISTICS_CLIENT_BALANCE_URL, permission: 'frontend_stat_client_balance', query: {pageSize: 25}},
+            {section: STATS_CLIENTS, name: 'Баланс поставщиков', url: ROUTES.STATISTICS_PROVIDERS_URL, permission: 'frontend_stat_providers', query: {pageSize: 25}},
             {section: STATS_CLIENTS, name: 'Должники', url: ROUTES.STATISTICS_DEBTORS_URL, permission: 'frontend_stat_debtors'},
+            // -------------------------------------------------------------------------------------------------- //
             {section: STATS_STOCK, name: 'Остаток', url: ROUTES.STATISTICS_REMAINDER_URL, permission: 'frontend_stat_remainder', query: {pageSize: 25}},
             {section: STATS_STOCK, name: 'Движение товаров', url: ROUTES.STATISTICS_PRODUCT_MOVE_URL, permission: 'frontend_stat_product_move', query: {pageSize: 25}},
+            // -------------------------------------------------------------------------------------------------- //
             {section: STATS_OVERALL, name: 'Генеральный отчет', url: ROUTES.STATISTICS_REPORT_URL, permission: 'frontend_stat_report'}
         ]
     },

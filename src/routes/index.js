@@ -64,7 +64,8 @@ import {
     StatReportList,
     StatClientIncomeList,
     StatClientBalance,
-    StatDebtorsList
+    StatDebtorsList,
+    StatProviderList
 } from '../containers/Statistics'
 import {TelegramList} from '../containers/Telegram'
 
@@ -645,6 +646,17 @@ export default {
                 {
                     path: ROUTES.STATISTICS_DEBTORS_ITEM_URL,
                     component: userIsAuth(StatDebtorsList)
+                }
+            ]
+        },
+        // Statistics/debtors
+        {
+            path: ROUTES.STATISTICS_PROVIDERS_URL,
+            component: userIsAdminChain(StatProviderList),
+            childRoutes: [
+                {
+                    path: ROUTES.STATISTICS_PROVIDERS_ITEM_URL,
+                    component: userIsAuth(StatProviderList)
                 }
             ]
         },
