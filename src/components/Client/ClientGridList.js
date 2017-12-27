@@ -17,39 +17,7 @@ import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import Tooltip from '../ToolTip'
 import dateFormat from '../../helpers/dateFormat'
-
-const listHeader = [
-    {
-        sorting: true,
-        name: 'id',
-        xs: 1,
-        title: 'Id'
-    },
-    {
-        sorting: false,
-        name: 'name',
-        xs: 3,
-        title: 'Наименование'
-    },
-    {
-        sorting: false,
-        name: 'fromWhom',
-        xs: 3,
-        title: 'По рекомендации'
-    },
-    {
-        sorting: true,
-        xs: 3,
-        name: 'address',
-        title: 'Адрес'
-    },
-    {
-        sorting: false,
-        xs: 2,
-        name: 'createdDate',
-        title: 'Дата добавления'
-    }
-]
+import t from '../../helpers/translate'
 
 const colorBlue = '#12aaeb !important'
 const enhance = compose(
@@ -127,7 +95,7 @@ const enhance = compose(
             display: 'flex',
             justifyContent: 'flex-end'
         },
-        bodyTitle: {
+        bodytitle: {
             fontWeight: '600',
             marginBottom: '10px'
         },
@@ -176,6 +144,39 @@ const ClientGridList = enhance((props) => {
         detailData,
         classes
     } = props
+    const listHeader = [
+        {
+            sorting: true,
+            name: 'id',
+            xs: 1,
+            title: 'Id'
+        },
+        {
+            sorting: false,
+            name: 'name',
+            xs: 3,
+            title: t('Наименование')
+        },
+        {
+            sorting: false,
+            name: 'fromWhom',
+            xs: 3,
+            title: t('По рекомендации')
+        },
+        {
+            sorting: true,
+            xs: 3,
+            name: 'address',
+            title: t('Адрес')
+        },
+        {
+            sorting: false,
+            xs: 2,
+            name: 'createdDate',
+            title: t('Дата добавления')
+        }
+    ]
+
     const clientDetail = (
         <ClientDetails
             key={_.get(detailData, 'id')}

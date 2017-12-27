@@ -1,4 +1,4 @@
-import {TOKEN_KEY, USER_GROUPS, IS_SUPERUSER, PAGE_SIZE} from '../constants/storage'
+import {TOKEN_KEY, USER_GROUPS, IS_SUPERUSER, PAGE_SIZE, LANGUAGE} from '../constants/storage'
 
 export const getStorage = (local) => {
     return local ? localStorage : sessionStorage
@@ -34,6 +34,16 @@ export const getValue = (key) => {
 
 export const getPageSize = () => {
     return localStorage.getItem(PAGE_SIZE) || sessionStorage.getItem(PAGE_SIZE)
+}
+
+export const setLanguage = (language, local = false) => {
+    const storage = getStorage(local)
+
+    storage.setItem(LANGUAGE, language)
+}
+
+export const getLanguage = () => {
+    return localStorage.getItem(LANGUAGE) || sessionStorage.getItem(LANGUAGE)
 }
 
 export const removeToken = () => {
