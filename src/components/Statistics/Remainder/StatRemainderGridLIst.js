@@ -329,6 +329,7 @@ const StatRemainderGridList = enhance((props) => {
         const measurement = _.get(item, ['measurement', 'name'])
         const defects = numberFormat(_.get(item, 'defects'), measurement)
         const price = numberFormat(_.get(item, 'price'), primaryCurrency)
+        const netCost = numberFormat(_.get(item, 'netCost'), primaryCurrency)
         const balance = numberFormat(Number(_.get(item, 'balance')) + Number(_.get(item, 'defects')), measurement)
         const reserved = numberFormat(Number(_.get(item, 'reserved')), measurement)
         const available = numberFormat(Number(_.get(item, 'balance')) - Number(_.get(item, 'reserved')), measurement)
@@ -349,7 +350,11 @@ const StatRemainderGridList = enhance((props) => {
                         </Tooltip>
                     </Col>
                     <Col xs={2} className={classes.boldFont}>{available}</Col>
-                    <Col xs={2} className={classes.boldFont}>{price}</Col>
+                    <Col xs={2} className={classes.boldFont}>
+                        <Tooltip position="top" text={'Цена доступных товаров<br/> Себестоимость: ' + netCost}>
+                            {price}
+                        </Tooltip>
+                    </Col>
                 </Row>
             </Link>
         )

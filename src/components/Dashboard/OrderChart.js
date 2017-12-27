@@ -21,8 +21,8 @@ const enhance = compose(
 const OrderChart = enhance((props) => {
     const {
         tooltipTitle,
-        primaryValues,
-        secondaryValues,
+        cashValues,
+        bankValues,
         primaryText,
         secondaryText,
         height
@@ -97,13 +97,13 @@ const OrderChart = enhance((props) => {
         },
         series: [{
             name: primaryText,
-            data: primaryValues,
+            data: cashValues,
             color: '#12aaeb'
 
         },
         {
             name: secondaryText,
-            data: secondaryValues,
+            data: bankValues,
             color: '#5d6474'
         }]
     }
@@ -115,7 +115,8 @@ const OrderChart = enhance((props) => {
 
 OrderChart.propTypes = {
     tooltipTitle: PropTypes.any.isRequired,
-    primaryValues: PropTypes.array.isRequired,
+    cashValues: PropTypes.array.isRequired,
+    bankValues: PropTypes.array.isRequired,
     primaryText: PropTypes.string.isRequired,
     height: PropTypes.number.isRequired
 }
