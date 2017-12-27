@@ -125,7 +125,7 @@ const ClientDetails = enhance((props) => {
     const detId = _.get(data, 'id')
     const contacts = _.get(data, 'contacts')
     const date = dateFormat(_.get(data, 'createdDate'))
-    const inBlacklist = dateFormat(_.get(data, 'inBlacklist'))
+    const inBlacklist = _.get(data, 'inBlacklist')
     const address = _.get(data, 'address') || 'Не указан'
     const providerName = _.get(data, 'name')
     const fromWhom = _.get(data, 'fromWhom')

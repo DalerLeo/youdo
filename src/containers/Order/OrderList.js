@@ -457,7 +457,7 @@ const enhance = compose(
             const initiator = _.get(filterForm, ['values', 'initiator']) || null
             const deliveryMan = _.get(filterForm, ['values', 'deliveryMan']) || null
             const onlyBonus = _.get(filterForm, ['values', 'onlyBonus']) || null
-            const exclude = _.get(filterForm, ['values', 'exclude']) || null
+            const exclude = _.get(filterForm, ['values', 'exclude']) || false
 
             filter.filterBy({
                 [ORDER_FILTER_OPEN]: false,
@@ -1296,6 +1296,7 @@ const OrderList = enhance((props) => {
             marketData={marketDetails}
             data={{
                 client: _.get(detail, 'client'),
+                currency: _.get(detail, 'currency'),
                 market: _.get(detail, 'market'),
                 products: _.get(detail, 'products'),
                 id: _.get(detail, 'id')

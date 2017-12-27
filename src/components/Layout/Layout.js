@@ -299,6 +299,7 @@ const enhance = compose(
         },
         notifTitle: {
             display: 'flex',
+            alignItems: 'center',
             justifyContent: 'space-between',
             fontWeight: '600',
             marginBottom: '5px',

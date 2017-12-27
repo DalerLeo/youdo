@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {compose, withReducer} from 'recompose'
@@ -11,6 +10,7 @@ import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import numberFormat from '../../helpers/numberFormat'
+import dateTimeFormat from '../../helpers/dateTimeFormat'
 import noPayment from '../Images/noPayment.png'
 import NotFound from '../Images/not-found.png'
 import ClientBalanceFormat from '../../components/Statistics/ClientIncome/ClientBalanceFormat'
@@ -31,9 +31,6 @@ const enhance = compose(
         transactions: {
             padding: '10px 0 0',
             '& .row': {
-                '& > div': {
-                    textAlign: 'left !important'
-                },
                 '&:after': {
                     left: '0.5rem',
                     right: '0.5rem'
@@ -43,17 +40,11 @@ const enhance = compose(
                 },
                 '&:last-child:after': {
                     position: 'static'
-                },
-                '& > div:nth-child(3)': {
-                    textAlign: 'right !important'
-                },
-                '& > div:nth-child(4)': {
-                    textAlign: 'right !important'
-                },
-                '& > div:nth-child(7)': {
-                    textAlign: 'right !important'
                 }
             }
+        },
+        rightAlign: {
+            textAlign: 'right !important'
         },
         popUp: {
             color: '#333 !important',
@@ -164,16 +155,14 @@ const OrderTransactionsDialog = enhance((props) => {
                         <div className={classes.field}>
                             {!_.isEmpty(data) ? <div className={classes.transactions}>
                                     <Row className="dottedList">
-                                        <Col xs={1}>№</Col>
-                                        <Col xs={1}>Дата</Col>
+                                        <Col xs={2}>Дата</Col>
                                         <Col xs={2}>Клиент</Col>
                                         <Col xs={2}>Пользователь</Col>
                                         <Col xs={2}>Описание</Col>
-                                        <Col xs={2}>Сумма</Col>
-                                        <Col xs={2}>На заказ</Col>
+                                        <Col xs={2} className={classes.rightAlign}>Сумма</Col>
+                                        <Col xs={2} className={classes.rightAlign}>На заказ</Col>
                                     </Row>
                                     {_.map(data, (item, index) => {
-                                        const transId = _.get(item, 'id')
                                         const user = _.get(item, ['fromTransaction', 'user'])
                                         const comment = _.get(item, ['fromTransaction', 'comment'])
                                         const client = _.get(item, ['fromTransaction', 'client', 'name'])
@@ -181,7 +170,7 @@ const OrderTransactionsDialog = enhance((props) => {
                                         const fromCurrency = _.get(item, ['fromTransaction', 'currency', 'name'])
                                         const toCurrency = _.get(item, ['toTransaction', 'currency', 'name'])
                                         const userName = !_.isNull(user) ? user.firstName + ' ' + user.secondName : 'Не известно'
-                                        const date = moment(_.get(item, ['fromTransaction', 'createdDate'])).format('DD:MM:YYYY')
+                                        const date = dateTimeFormat(_.get(item, ['fromTransaction', 'createdDate']))
                                         const amount = _.toNumber(_.get(item, ['fromTransaction', 'amount']))
                                         const fromAmount = _.toNumber(_.get(item, 'fromAmount'))
                                         const toAmount = _.toNumber(_.get(item, 'toAmount'))
@@ -193,18 +182,19 @@ const OrderTransactionsDialog = enhance((props) => {
                                         const orderReturnId = _.get(item, ['fromTransaction', 'orderReturn'])
                                         return (
                                             <Row key={index} className="dottedList">
-                                                <Col xs={1}>{transId}</Col>
-                                                <Col xs={1}>{date}</Col>
+                                                <Col xs={2}>{date}</Col>
                                                 <Col xs={2}>{client}</Col>
                                                 <Col xs={2}>{userName}</Col>
                                                 <Col xs={2}>
                                                     {type && <div>
-                                                        <ClientBalanceFormat type={type} order={orderIdItem}
-                                                                             orderReturn={orderReturnId}/>
+                                                        <ClientBalanceFormat
+                                                            type={type}
+                                                            order={orderIdItem}
+                                                            orderReturn={orderReturnId}/>
                                                     </div>}
                                                     {comment && <div><strong>Комментарий:</strong> {comment}</div>}
                                                 </Col>
-                                                <Col xs={2} style={{textAlign: 'right'}}>
+                                                <Col xs={2} className={classes.rightAlign}>
                                                     <div
                                                         className={amount > ZERO ? 'greenFont' : (amount === ZERO ? '' : 'redFont')}>
                                                         <span>{numberFormat(amount, currency)}</span>
@@ -217,7 +207,7 @@ const OrderTransactionsDialog = enhance((props) => {
                                                             }}>({customRate})</span></div>}
                                                     </div>
                                                 </Col>
-                                                <Col xs={2}>
+                                                <Col xs={2} className={classes.rightAlign}>
                                                     { fromCurrency !== toCurrency
                                                         ? <div>
                                                             <p>{numberFormat(fromAmount, fromCurrency)}</p>

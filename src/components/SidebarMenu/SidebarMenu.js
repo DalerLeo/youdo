@@ -235,7 +235,13 @@ export default injectSheet({
         '& svg': {
             color: '#fff !important',
             width: '25px !important',
-            height: '25px !important'
+            height: '25px !important',
+            '&:after': {
+                content: '""',
+                width: '3px',
+                height: '3px',
+                background: '#fff'
+            }
         },
         '&::-webkit-scrollbar': {
             width: '0'

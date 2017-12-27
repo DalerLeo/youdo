@@ -9,7 +9,7 @@ import FlatButton from 'material-ui/FlatButton'
 import Loader from '../Loader'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, CashboxSearchField, normalizeNumber} from '../ReduxForm'
+import {TextField, CashboxPaymentTypeSearchField, normalizeNumber} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
@@ -117,7 +117,7 @@ const PendingPaymentsCreateDialog = enhance((props) => {
     const client = _.get(detailData, ['data', 'client'])
     const marketName = _.get(detailData, ['data', 'market', 'name'])
     const paymentType = _.get(detailData, ['data', 'paymentType'])
-    const paymentTypeOutput = paymentType === 'bank' ? 'банковский счет' : 'наличный'
+    const paymentTypeOutput = paymentType === 'bank' ? 'перечислением' : 'наличнымми'
     const totalBalance = numberformat(_.get(detailData, ['data', 'totalBalance']), primaryCurrency)
     const totalPrice = numberformat(_.get(detailData, ['data', 'totalPrice']), primaryCurrency)
     const clientName = _.get(client, 'name')
@@ -164,9 +164,8 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                                 <Field
                                     name="cashbox"
                                     className={classes.inputFieldCustom}
-                                    component={CashboxSearchField}
-                                    currency={_.get(detailData, ['data', 'currency', 'id'])}
-                                    paymentType={_.get(detailData, ['data', 'paymentType'])}
+                                    component={CashboxPaymentTypeSearchField}
+                                    data-payment-type={_.get(detailData, ['data', 'paymentType'])}
                                     label="Касса получатель"
                                     fullWidth={true}/>}
                                 <div className={classes.flex} style={{justifyContent: 'space-between'}}>
