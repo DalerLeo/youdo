@@ -151,6 +151,18 @@ const enhance = compose(
                     }
                 }
             }
+        },
+        blacklistRow: {
+            extend: 'listRow',
+            background: '#eceff1',
+            margin: '0 -30px !important',
+            width: 'auto !important',
+            padding: '0 30px',
+            '& > a': {
+                borderLeft: '3px #ff4747 solid',
+                left: '0',
+                right: '0'
+            }
         }
     })
 )
@@ -182,19 +194,19 @@ const ClientGridList = enhance((props) => {
             ? _.get(item, ['fromWhom', 'firstName']) + ' ' + _.get(item, ['fromWhom', 'secondName'])
             : 'Неизвестно'
         const address = _.get(item, 'address')
+        const inBlacklist = _.get(item, 'inBlacklist')
         const createdDate = dateFormat(_.get(item, 'createdDate'))
         return (
-            <Row key={id} className={classes.listRow}>
+            <Row key={id} className={inBlacklist ? classes.blacklistRow : classes.listRow}>
+                <Col xs={1}>{id}</Col>
+                <Col xs={3}>{name}</Col>
                 <Link to={{
                     pathname: sprintf(ROUTES.CLIENT_ITEM_PATH, id),
                     query: filter.getParams()
-                }}>
-                    <Col xs={1}>{id}</Col>
-                    <Col xs={3}>{name}</Col>
-                    <Col xs={3}>{fromWhom}</Col>
-                    <Col xs={3}>{address}</Col>
-                    <Col xs={2}>{createdDate}</Col>
-            </Link>
+                }}/>
+                <Col xs={3}>{fromWhom}</Col>
+                <Col xs={3}>{address}</Col>
+                <Col xs={2}>{createdDate}</Col>
             </Row>
         )
     })
