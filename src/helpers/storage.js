@@ -38,12 +38,11 @@ export const getPageSize = () => {
 
 export const setLanguage = (language, local = false) => {
     const storage = getStorage(local)
-
     storage.setItem(LANGUAGE, language)
 }
 
 export const getLanguage = () => {
-    return localStorage.getItem(LANGUAGE) || sessionStorage.getItem(LANGUAGE)
+    return localStorage.getItem(LANGUAGE) || 'ru'
 }
 
 export const removeToken = () => {
