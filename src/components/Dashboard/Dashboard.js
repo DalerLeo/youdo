@@ -309,8 +309,8 @@ const Dashboard = enhance((props) => {
                                             height={250}
                                             primaryText="Нал"
                                             secondaryText="Переч"
-                                            primaryValues={orderChartSalesCash}
-                                            secondaryValues={orderChartSalesBank}
+                                            cashValues={orderChartSalesCash}
+                                            bankValues={orderChartSalesBank}
                                             tooltipTitle={orderChartDate}
                                         />}
                                 </div>}
