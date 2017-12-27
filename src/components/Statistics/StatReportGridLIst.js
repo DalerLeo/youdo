@@ -156,8 +156,16 @@ const StatReportGridList = enhance((props) => {
                     <span>{numberFormat(_.get(stockData, 'inPriceSum'), currency)}</span>
                 </li>
                 <li>
-                    <span>Выдано со склада</span>
+                    <span>Возврат за период</span>
+                    <span>{numberFormat(_.get(stockData, 'returnedSum'), currency)}</span>
+                </li>
+                <li>
+                    <span>Выдано по заказам</span>
                     <span>{numberFormat(_.get(stockData, 'outPriceSum'), currency)}</span>
+                </li>
+                <li>
+                    <span>Списано со склада</span>
+                    <span>{numberFormat(_.get(stockData, 'writeoffSum'), currency)}</span>
                 </li>
                 <li>
                     <span>Сумма товаров на конец периода</span>
@@ -176,11 +184,15 @@ const StatReportGridList = enhance((props) => {
                     <span>{numberFormat(_.get(salesData, 'salesSum'), currency)}</span>
                 </li>
                 <li>
-                    <span>Себистоимость товара</span>
+                    <span>Себестоимость товара</span>
                     <span>{numberFormat(_.get(salesData, 'netCost'), currency)}</span>
                 </li>
                 <li>
-                    <span>Доход от продаж</span>
+                    <span>Сумма товаров, проданных<br/> дешевле себестоимости</span>
+                    <span>{numberFormat(_.get(salesData, 'lessNetCostSum'), currency)}</span>
+                </li>
+                <li>
+                    <span>Прибыль от продаж</span>
                     <span>{numberFormat(_.get(salesData, 'salesProfit'), currency)}</span>
                 </li>
             </ul>
@@ -201,7 +213,7 @@ const StatReportGridList = enhance((props) => {
                 </li>
                 <li>
                     <span>Прочие расходы фирмы</span>
-                    <span>{numberFormat(_.get(transferData, 'expenses'), currency)}</span>
+                    <span>{numberFormat(_.get(transferData, 'expanses'), currency)}</span>
                 </li>
                 <li>
                     <span>Прибыль фирмы</span>

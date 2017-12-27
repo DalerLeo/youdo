@@ -280,9 +280,9 @@ const OrderGridList = enhance((props) => {
 
     const hasMarket = toBoolean(getConfig('MARKETS_MODULE'))
     const showCheckboxes = toBoolean(_.get(filter.getParams(), 'showCheckboxes'))
-    const statusIsReady = !_.isNil(_.get(filter.getParams(), 'status')) && _.toNumber(_.get(filter.getParams(), 'status')) === READY
-    const statusIsRequested = !_.isNil(_.get(filter.getParams(), 'status')) && _.toNumber(_.get(filter.getParams(), 'status')) === REQUESTED
-    const statusIsUnconfirmed = !_.isNil(_.get(filter.getParams(), 'status')) && _.toNumber(_.get(filter.getParams(), 'status')) === NOT_CONFIRMED
+    const statusIsReady = _.get(filter.getParams(), 'status') && _.toNumber(_.get(filter.getParams(), 'status')) === READY
+    const statusIsRequested = _.get(filter.getParams(), 'status') && _.toNumber(_.get(filter.getParams(), 'status')) === REQUESTED
+    const statusIsUnconfirmed = _.get(filter.getParams(), 'status') && _.toNumber(_.get(filter.getParams(), 'status')) === NOT_CONFIRMED
     const orderCounts = _.get(listData, 'orderCounts')
     const readyCount = _.get(orderCounts, 'readyCount')
     const requestedCount = _.get(orderCounts, 'requestedCount')

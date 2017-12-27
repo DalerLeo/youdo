@@ -6,14 +6,19 @@ import SearchFieldCustom from '../Basic/SearchFieldCustom'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
+import getConfig from '../../../helpers/getConfig'
+import toBoolean from '../../../helpers/toBoolean'
 import * as actionTypes from '../../../constants/actionTypes'
 import {connect} from 'react-redux'
 
-const getOptions = (search, type, market, priceList, currency) => {
+const configMarkets = toBoolean(getConfig('MARKETS_MODULE'))
+
+const getOptions = (search, type, market, client, priceList, currency) => {
     return axios().get(PATH.RETURN_CREATE_PRODUCTS_LIST,
         {params: {
             type: type,
             market: market,
+            client: !configMarkets ? client : null,
             price_list: priceList,
             currency: currency,
             search: search
@@ -54,6 +59,7 @@ const ProductCustomSearchField = enhance((props) => {
     const {dispatch, state, ...defaultProps} = props
     const type = _.get(state, ['form', 'ReturnCreateForm', 'values', 'type', 'value'])
     const market = _.get(state, ['form', 'ReturnCreateForm', 'values', 'market', 'value'])
+    const client = _.get(state, ['form', 'ReturnCreateForm', 'values', 'client', 'value'])
     const priceList = _.get(state, ['form', 'ReturnCreateForm', 'values', 'priceList', 'value'])
     const currency = _.get(state, ['form', 'ReturnCreateForm', 'values', 'currency', 'value'])
     const test = (id) => {
@@ -71,7 +77,7 @@ const ProductCustomSearchField = enhance((props) => {
                     <div>{name} <strong>Продажи {sales}</strong></div>
                 )
             }}
-            getOptions={ (search) => { return getOptions(search, type, market, priceList, currency) }}
+            getOptions={ (search) => { return getOptions(search, type, market, client, priceList, currency) }}
             getItem={test}
             getItemText={(value) => {
                 return _.get(value, ['name'])

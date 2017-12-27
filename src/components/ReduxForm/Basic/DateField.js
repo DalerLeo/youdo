@@ -30,6 +30,11 @@ const DateField = ({classes, input, label, meta: {error}, ...defaultProps}) => {
                     {...defaultProps}
                     okLabel="Ок"
                     DateTimeFormat={DateTimeFormat}
+                    formatDate={new DateTimeFormat('ru', {
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric'
+                    }).format}
                     locale="ru"
                     cancelLabel="Отмена"
                 />

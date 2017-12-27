@@ -9,7 +9,6 @@ import Loader from '../Loader'
 import numberFormat from '../../helpers/numberFormat'
 import dateFormat from '../../helpers/dateFormat'
 import numberToWords from '../../helpers/numberToWords'
-import getConfig from '../../helpers/getConfig'
 import moment from 'moment'
 
 const enhance = compose(
@@ -130,7 +129,7 @@ const OrderSalesPrint = enhance((props) => {
     const inn = _.get(marketData, 'inn')
     const mfo = _.get(marketData, 'mfo')
     let measurementCheck = true
-    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
+    const primaryCurrency = _.get(data, ['currency', 'name'])
     const firstMeasure = _.get(data, ['products', '0', 'product', 'measurement', 'name'])
     const totalCalPrice = _.sumBy(_.get(data, ['products']), (item) => {
         return _.toNumber(item.totalPrice)
@@ -199,11 +198,11 @@ const OrderSalesPrint = enhance((props) => {
                         )
                     })}
                     <Row>
-                        <Col xs={1}></Col>
-                        <Col xs={3}><span style={{fontWeight: '600'}}>Итого :</span></Col>
-                        <Col xs={2}>{measurementCheck ? <span style={{fontWeight: '600'}}>{numberFormat(totalAmount, firstMeasure)}</span> : null}</Col>
-                        <Col xs={3}></Col>
-                        <Col xs={2}><span style={{fontWeight: '600'}}>{numberFormat(totalCalPrice, primaryCurrency)}</span></Col>
+                        <Col xs={1}/>
+                        <Col xs={3}><strong>Итого :</strong></Col>
+                        <Col xs={2}>{measurementCheck ? <strong>{numberFormat(totalAmount, firstMeasure)}</strong> : null}</Col>
+                        <Col xs={3}/>
+                        <Col xs={2}><strong>{numberFormat(totalCalPrice, primaryCurrency)}</strong></Col>
                     </Row>
                 </div>
                 <div>
@@ -319,8 +318,8 @@ const OrderSalesPrint = enhance((props) => {
                                 <td height={'29px'}> </td>
                             </tr>
                             <tr>
-                                <td><div style={{float: 'left'}}>Ген.Директор</div><div style={{borderBottom: '1px solid'}}>:</div></td>
-                                <td><div style={{float: 'left'}}>Директор</div><div style={{borderBottom: '1px solid'}}>:</div></td>
+                                <td><div style={{float: 'left'}}>Ген.Директор:</div><div style={{borderBottom: '1px solid'}}/></td>
+                                <td><div style={{float: 'left'}}>Директор:</div><div style={{borderBottom: '1px solid'}}/></td>
                             </tr>
                             <tr>
                                 <td> М.П.</td>

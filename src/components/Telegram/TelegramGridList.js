@@ -217,13 +217,14 @@ const TelegramGridList = enhance((props) => {
                 <Col xs={3}>{market}</Col>
                 <Col xs={3}><div style={{fontWeight: '600'}}>{createdBy}</div><div>{createdDate}</div></Col>
                 <Col xs={3}><div>{username}</div><div>{fullName}</div></Col>
-                <Col xs={2}>{activatedDate || <Tooltip position="left" text="Скопироват ссылку">
-                                                <span
-                                                    style={{color: '#12aaeb', cursor: 'pointer'}}
-                                                    onClick={() => copyToClipBoard.handleCopyLinkInList(token)}>
-                                                    Не активирован
-                                                </span>
-                                              </Tooltip>}
+                <Col xs={2}>{activatedDate ||
+                    <Tooltip position="left" text="Скопировать ссылку">
+                        <span
+                            style={{color: '#12aaeb', cursor: 'pointer'}}
+                            onClick={() => copyToClipBoard.handleCopyLinkInList(token)}>
+                            Не активирован
+                        </span>
+                    </Tooltip>}
                 </Col>
                 <Col xs={1}>
                     <Tooltip position="left" text="Деактивировать">

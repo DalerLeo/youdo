@@ -30,6 +30,7 @@ import OrderDealTypeRadio from '../ReduxForm/Order/OrderDealTypeRadio'
 import OrderPaymentTypeRadio from '../ReduxForm/Order/OrderPaymentTypeRadio'
 import MarketSearchField from '../ReduxForm/ClientBalance/MarketSearchField'
 import CheckBox from '../ReduxForm/Basic/CheckBox'
+import moment from 'moment'
 
 export const ORDER_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const SHOP_CREATE_DIALOG_OPEN = 'openCreateDialog'
@@ -227,11 +228,15 @@ const enhance = compose(
         const currencyItem = _.get(state, ['form', 'OrderCreateForm', 'values', 'currency', 'text'])
         const deliveryType = _.get(state, ['form', 'OrderCreateForm', 'values', 'deliveryType', 'value'])
         const isConfirmed = _.get(state, ['form', 'OrderCreateForm', 'values', 'isConfirmed'])
+        const dealType = _.get(state, ['form', 'OrderCreateForm', 'values', 'dealType'])
+        const paymentDate = _.get(state, ['form', 'OrderCreateForm', 'values', 'paymentDate'])
         return {
             orderProducts,
             currencyItem,
             deliveryType,
-            isConfirmed
+            isConfirmed,
+            dealType,
+            paymentDate
         }
     }),
 )
@@ -261,7 +266,9 @@ const OrderCreateDialog = enhance((props) => {
         handleOpenAddProduct,
         deliveryType,
         hasMarket,
-        isConfirmed
+        isConfirmed,
+        dealType,
+        paymentDate
     } = props
     const canSetDeliveryMan = checkPermission('can_set_delivery_man')
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
@@ -284,6 +291,7 @@ const OrderCreateDialog = enhance((props) => {
         scrollable: true,
         maxHeight: '150px'
     }
+    const maxDate = moment(paymentDate).toDate()
 
     return (
         <Dialog
@@ -319,13 +327,14 @@ const OrderCreateDialog = enhance((props) => {
                                               }}>
                                             + добавить
                                         </Link>}
-                                        {!hasMarket && <Link style={{color: '#12aaeb'}}
-                                                            target="_blank"
-                                                            to={{
-                                                                pathname: [ROUTES.CLIENT_LIST_URL],
-                                                                query: {[CLIENT_CREATE_DIALOG_OPEN]: true}
-                                                            }}>
-                                            + добавить
+                                        {!hasMarket &&
+                                        <Link style={{color: '#12aaeb'}}
+                                              target="_blank"
+                                              to={{
+                                                  pathname: [ROUTES.CLIENT_LIST_URL],
+                                                  query: {[CLIENT_CREATE_DIALOG_OPEN]: true}
+                                              }}>
+                                            <span>+ добавить</span>
                                         </Link>}
                                     </div>
                                     <div>
@@ -374,7 +383,7 @@ const OrderCreateDialog = enhance((props) => {
                                             name="paymentDate"
                                             component={DateField}
                                             className={classes.inputDateCustom}
-                                            floatingLabelText="Дата оплаты"
+                                            floatingLabelText="Дата окончательной оплаты"
                                             container="inline"
                                             fullWidth={true}/>
                                     </div>
@@ -383,6 +392,15 @@ const OrderCreateDialog = enhance((props) => {
                                         <Field
                                             name="dealType"
                                             component={OrderDealTypeRadio}/>
+                                        {dealType === 'consignment' &&
+                                        <Field
+                                            name="nextPaymentDate"
+                                            component={DateField}
+                                            className={classes.inputDateCustom}
+                                            floatingLabelText="Дата следующей оплаты"
+                                            maxDate={maxDate}
+                                            container="inline"
+                                            fullWidth={true}/>}
                                         <Field
                                             name="contract"
                                             component={TextField}
