@@ -193,7 +193,7 @@ const ClientGridList = enhance((props) => {
         const name = _.get(item, 'name')
         const fromWhom = _.get(item, 'fromWhom')
             ? _.get(item, ['fromWhom', 'firstName']) + ' ' + _.get(item, ['fromWhom', 'secondName'])
-            : 'Неизвестно'
+            : t('Неизвестно')
         const address = _.get(item, 'address')
         const inBlacklist = _.get(item, 'inBlacklist')
         const createdDate = dateFormat(_.get(item, 'createdDate'))
@@ -222,7 +222,7 @@ const ClientGridList = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.CLIENT_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить клиента">
+                <Tooltip position="left" text={t('Добавить клиента')}>
                     <FloatingActionButton
                         mini={true}
                         zDepth={1}

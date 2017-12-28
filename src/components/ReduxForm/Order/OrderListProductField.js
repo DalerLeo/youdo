@@ -459,16 +459,16 @@ const OrderListProductField = enhance((props) => {
                 className={classes.confirm}
                 style={{zIndex: -10}}>
                 <div className={classes.confirmButtons}>
-                    <div>Цены товаров будут изменены на {(paymentType === 'cash' ? 'наличные' : 'банковский счет')}</div>
+                    <div>{t('Цены товаров будут изменены на')} {(paymentType === 'cash' ? t('наличные') : t('банковский счет'))}</div>
                     <FlatButton
-                        label="Нет"
+                        label={t('Нет')}
                         ref="cancel"
                         labelStyle={flatButton.label}
                         className={classes.actionButton}
                         primary={true}
                     />
                     <FlatButton
-                        label="Да"
+                        label={t('Да')}
                         ref="confirm"
                         labelStyle={flatButton.label}
                         className={classes.actionButton}
@@ -482,16 +482,16 @@ const OrderListProductField = enhance((props) => {
                 className={classes.confirm}
                 style={{zIndex: -10}}>
                 <div className={classes.confirmButtons}>
-                    <div>Цены товаров будут изменены на {_.get(priceList, 'text')} {_.get(formCurerncy, 'text')}</div>
+                    <div>{t('Цены товаров будут изменены на')} {_.get(priceList, 'text')} {_.get(formCurerncy, 'text')}</div>
                     <FlatButton
-                        label="Нет"
+                        label={t('Нет')}
                         ref="cancelPriceList"
                         labelStyle={flatButton.label}
                         className={classes.actionButton}
                         primary={true}
                     />
                     <FlatButton
-                        label="Да"
+                        label={t('Да')}
                         ref="confirmPriceList"
                         labelStyle={flatButton.label}
                         className={classes.actionButton}
@@ -505,21 +505,21 @@ const OrderListProductField = enhance((props) => {
                     <div className={classes.title}>Список товаров</div>
                     <div>
                         {!editOnlyCost && (paymentType && priceList && formCurerncy) && <FlatButton
-                            label="добавить товар"
+                            label={t('добавить товар')}
                             labelStyle={{fontSize: '13px', color: '#12aaeb'}}
                             className={classes.span}
                             onTouchTap={() => dispatch({open: !state.open})}
                         />}
                         {!editOnlyCost && (paymentType && priceList && formCurerncy) && handleOpenAddProduct && <FlatButton
-                            label="добавить из списка"
+                            label={t('добавить из списка')}
                             labelStyle={{fontSize: '13px', color: '#12aaeb'}}
                             className={classes.span}
                             onTouchTap={handleOpenAddProduct}
                         />}
                         {!editOnlyCost && !(paymentType && priceList && formCurerncy) &&
-                        <Tooltip position="bottom" text="Выберите прайс лист">
+                        <Tooltip position="bottom" text={t('Выберите прайс лист')}>
                             <FlatButton
-                                label="+ добавить товар"
+                                label={'+ ' + t('добавить товар')}
                                 disabled={true}
                                 labelStyle={{fontSize: '13px', color: '#999'}}
                                 className={classes.span}
@@ -530,7 +530,7 @@ const OrderListProductField = enhance((props) => {
                 {state.open && <Row className={classes.background}>
                     <Col xs={3}>
                         <Field
-                            label="Тип товара"
+                            label={t('Тип товара')}
                             name="type"
                             component={OrderProductTypeSearchField}
                             className={classes.searchFieldCustom}
@@ -541,7 +541,7 @@ const OrderListProductField = enhance((props) => {
                     <Col xs={3}>
                         <ProductCustomSearchField
                             name="product"
-                            label="Наименование"
+                            label={t('Наименование')}
                             className={classes.searchFieldCustom}
                             fullWidth={true}
                             {..._.get(props, 'product')}
@@ -550,7 +550,7 @@ const OrderListProductField = enhance((props) => {
                     <Col xs={2}>
                         <Field
                             component={TextField}
-                            label="Кол-во"
+                            label={t('Кол-во')}
                             name="amount"
                             type="number"
                             normalize={normalizeNumber}
@@ -567,7 +567,7 @@ const OrderListProductField = enhance((props) => {
                     <Col xs={2}>
                         <Field
                             component={TextField}
-                            label="Сумма за ед"
+                            label={t('Сумма за ед')}
                             name="cost"
                             disabled={!userCanChangePrice}
                             className={classes.inputFieldCustom}
@@ -601,12 +601,12 @@ const OrderListProductField = enhance((props) => {
                                 className={classes.title}>
                                 <TableRow className={classes.tableRow}>
                                     <TableHeaderColumn
-                                        className={classes.tableTitle}>Наименование</TableHeaderColumn>
-                                    <TableHeaderColumn className={classes.tableTitle}>Кол-во</TableHeaderColumn>
-                                    <TableHeaderColumn className={classes.tableTitle}>На складе</TableHeaderColumn>
-                                    <TableHeaderColumn className={classes.tableTitle} style={{textAlign: 'right'}}>Цена
+                                        className={classes.tableTitle}>{t('Наименование')}</TableHeaderColumn>
+                                    <TableHeaderColumn className={classes.tableTitle}>{t('Кол-во')}</TableHeaderColumn>
+                                    <TableHeaderColumn className={classes.tableTitle}>{t('На складе')}</TableHeaderColumn>
+                                    <TableHeaderColumn className={classes.tableTitle} style={{textAlign: 'right'}}>{t('Цена')}
                                         ({currency})</TableHeaderColumn>
-                                    <TableHeaderColumn className={classes.tableTitle} style={{textAlign: 'right'}}>Всего
+                                    <TableHeaderColumn className={classes.tableTitle} style={{textAlign: 'right'}}>{t('Всего')}
                                         ({currency})</TableHeaderColumn>
                                     <TableHeaderColumn></TableHeaderColumn>
                                 </TableRow>
@@ -745,10 +745,10 @@ const OrderListProductField = enhance((props) => {
                     <div style={{textAlign: 'center', color: '#adadad'}}>
                         <img src={Groceries} alt=""/>
                         {(paymentType && priceList && formCurerncy)
-                            ? <div>Вы еще не выбрали ни одного товара. <br/> <a onClick={() => dispatch({open: !state.open})}>Добавить</a>
-                                товар?
+                            ? <div>{t('Вы еще не выбрали ни одного товара')}. <br/> <a onClick={() => dispatch({open: !state.open})}>{t('Добавить')}</a>
+                                {t('товар')}?
                             </div>
-                            : <div>Для добавления товаров, <br/> выберите тип оплаты, валюту и прайс лист</div>}
+                            : <div>{t('Для добавления товаров')}, <br/> {t('выберите тип оплаты, валюту и прайс лист')}</div>}
                     </div>
                 </div>
             }

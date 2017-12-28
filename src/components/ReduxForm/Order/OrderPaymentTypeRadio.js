@@ -1,5 +1,6 @@
 import React from 'react'
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton'
+import t from '../../../helpers/translate'
 
 const OrderPaymentTypeRadio = (props) => {
     const {input} = props
@@ -9,12 +10,12 @@ const OrderPaymentTypeRadio = (props) => {
                 <RadioButton
                     value={'cash'}
                     style={{margin: '10px 0'}}
-                    label="Наличными"
+                    label={t('Наличными')}
                 />
                 <RadioButton
                     value={'bank'}
                     style={{margin: '10px 0'}}
-                    label="Перечислением"
+                    label={t('Перечислением')}
                 />
             </RadioButtonGroup>
         </div>
