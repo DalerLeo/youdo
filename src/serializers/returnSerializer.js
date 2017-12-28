@@ -59,6 +59,12 @@ export const updateSerializer = (data, detail, CLIENT_RETURN) => {
 export const listFilterSerializer = (data, id) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
+    const exclude = _.get(defaultData, 'exclude')
+    const excludeCanceled = _.isUndefined(exclude)
+        ? 'True'
+        : exclude === 'true'
+            ? 'True'
+            : null
 
     if (id) {
         return {
@@ -79,6 +85,7 @@ export const listFilterSerializer = (data, id) => {
         'status': _.get(defaultData, 'status') || null,
         'created_date_0': _.get(defaultData, 'fromDate'),
         'created_date_1': _.get(defaultData, 'toDate') || _.get(defaultData, 'fromDate'),
+        'exclude_cancelled': excludeCanceled,
         'search': _.get(defaultData, 'search'),
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),

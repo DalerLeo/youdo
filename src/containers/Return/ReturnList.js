@@ -165,6 +165,7 @@ const enhance = compose(
             const division = _.get(filterForm, ['values', 'division']) || null
             const paymentType = _.get(filterForm, ['values', 'paymentType', 'value']) || null
             const code = _.get(filterForm, ['values', 'code']) || null
+            const exclude = _.get(filterForm, ['values', 'exclude']) || false
 
             filter.filterBy({
                 [RETURN_FILTER_OPEN]: false,
@@ -179,7 +180,8 @@ const enhance = compose(
                 [RETURN_FILTER_KEY.PAYMENT_TYPE]: paymentType,
                 [RETURN_FILTER_KEY.CODE]: code,
                 [RETURN_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
-                [RETURN_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
+                [RETURN_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD'),
+                [RETURN_FILTER_KEY.EXCLUDE]: exclude
             })
         },
 
@@ -339,6 +341,7 @@ const ReturnList = enhance((props) => {
     const openCancelDialog = _.toInteger(_.get(location, ['query', CANCEL_RETURN_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', RETURN_UPDATE_DIALOG_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', RETURN_CREATE_DIALOG_OPEN]))
+
     const client = filter.getParam(RETURN_FILTER_KEY.CLIENT)
     const division = filter.getParam(RETURN_FILTER_KEY.DIVISION)
     const returnStatus = filter.getParam(RETURN_FILTER_KEY.STATUS)
@@ -350,6 +353,8 @@ const ReturnList = enhance((props) => {
     const deliveryFromDate = filter.getParam(RETURN_FILTER_KEY.DELIVERY_FROM_DATE)
     const toDate = filter.getParam(RETURN_FILTER_KEY.TO_DATE)
     const deliveryToDate = filter.getParam(RETURN_FILTER_KEY.DELIVERY_TO_DATE)
+    const exclude = _.isUndefined(filter.getParam(RETURN_FILTER_KEY.EXCLUDE)) ? true : filter.getParam(RETURN_FILTER_KEY.EXCLUDE)
+
     const detailId = _.toInteger(_.get(params, 'returnId'))
 
     const canChangeAnyReturn = checkPermission('frontend_add_client_return')
@@ -402,7 +407,8 @@ const ReturnList = enhance((props) => {
             date: {
                 fromDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),
                 toDate: toDate && moment(toDate, 'YYYY-MM-DD')
-            }
+            },
+            exclude: exclude
         },
         filterLoading: false,
         openFilterDialog,
