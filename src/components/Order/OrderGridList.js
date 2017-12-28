@@ -109,43 +109,43 @@ const listHeaderHasMarket = [
     {
         sorting: true,
         name: 'id',
-        title: 'Заказ №',
+        title: t('Заказ') + ' №',
         width: '10%'
     },
     {
         sorting: false,
         name: 'client',
-        title: 'Клиент',
+        title: t('Клиент'),
         width: '25%'
     },
     {
         sorting: false,
         name: 'user',
-        title: 'Инициатор',
+        title: t('Инициатор'),
         width: '15%'
     },
     {
         sorting: true,
         name: 'totalPrice',
         alignRight: true,
-        title: 'Сумма заказа',
+        title: t('Сумма заказа'),
         width: '15%'
     },
     {
         sorting: true,
         name: 'dateDelivery',
-        title: 'Дата доставки',
+        title: t('Дата доставки'),
         width: '15%'
     },
     {
         sorting: true,
         name: 'createdDate',
-        title: 'Дата создания',
+        title: t('Дата создания'),
         width: '15%'
     },
     {
         sorting: false,
-        title: 'Статус',
+        title: t('Статус'),
         width: '5%'
     }
 ]

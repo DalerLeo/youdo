@@ -28,6 +28,7 @@ import {TextField} from '../../ReduxForm'
 import Check from 'material-ui/svg-icons/navigation/check'
 import ProductCustomSearchField from './ProductCustomSearchField'
 import OrderProductTypeSearchField from './OrderProductTypeSearchField'
+import t from '../../../helpers/translate'
 
 let initialPaymentType = ''
 let initialPriceList = ''
