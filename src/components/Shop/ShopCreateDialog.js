@@ -3,6 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
+import {connect} from 'react-redux'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import Loader from '../Loader'
@@ -13,7 +14,8 @@ import {
     MarketTypeSearchField,
     ClientSearchField,
     VisitFrequencySearchField,
-    ShopStatusSearchField
+    ShopStatusSearchField,
+    MarketTypeParentSearchField
 } from '../ReduxForm'
 import IconButton from 'material-ui/IconButton'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
@@ -204,6 +206,14 @@ const enhance = compose(
         form: 'ShopCreateForm',
         enableReinitialize: true
     }),
+    connect((state) => {
+        const typeParent = _.get(state, ['form', 'ShopCreateForm', 'values', 'marketTypeParent', 'value'])
+        const marketType = _.get(state, ['form', 'ShopCreateForm', 'values', 'marketType', 'value'])
+        return {
+            typeParent,
+            marketType
+        }
+    }),
     withState('openClient', 'setOpenClient', false)
 )
 const ShopCreateDialog = enhance((props) => {
@@ -218,7 +228,9 @@ const ShopCreateDialog = enhance((props) => {
         setOpenClient,
         mapDialog,
         updateMapDialog,
-        mapLocation
+        mapLocation,
+        typeParent,
+        marketType
     } = props
     const onSubmit = handleSubmit(() => props.onSubmit(openClient).catch(validate))
     const lat = _.get(mapLocation, 'lat')
@@ -281,11 +293,19 @@ const ShopCreateDialog = enhance((props) => {
                                     label="Наименование"
                                     fullWidth={true}/>
                                 <Field
-                                    name="marketType"
-                                    component={MarketTypeSearchField}
+                                    name="marketTypeParent"
+                                    component={MarketTypeParentSearchField}
                                     className={classes.inputFieldCustom}
                                     label="Тип заведения"
                                     fullWidth={true}/>
+                                {(typeParent || marketType) &&
+                                <Field
+                                    name="marketType"
+                                    component={MarketTypeSearchField}
+                                    className={classes.inputFieldCustom}
+                                    parentType={typeParent}
+                                    label="Подкатегория"
+                                    fullWidth={true}/>}
                             </div>
                             <div className={classes.divider}>
                                 <Field
