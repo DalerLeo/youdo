@@ -12,6 +12,7 @@ import ClientDetails from './ClientDetails'
 import ClientCreateDialog from './ClientCreateDialog'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
+import ClientFilterDialog from './ClientFilterDialog'
 import Container from '../Container'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
@@ -137,6 +138,7 @@ const enhance = compose(
 const ClientGridList = enhance((props) => {
     const {
         filter,
+        filterDialog,
         createDialog,
         updateDialog,
         confirmDialog,
@@ -176,6 +178,14 @@ const ClientGridList = enhance((props) => {
             title: t('Дата добавления')
         }
     ]
+
+    const clientFilterDialog = (
+        <ClientFilterDialog
+            initialValues={filterDialog.initialValues}
+            filter={filter}
+            filterDialog={filterDialog}
+        />
+    )
 
     const clientDetail = (
         <ClientDetails
@@ -235,6 +245,7 @@ const ClientGridList = enhance((props) => {
 
             <GridList
                 filter={filter}
+                filterDialog={clientFilterDialog}
                 list={list}
                 detail={clientDetail}
             />

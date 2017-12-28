@@ -1,4 +1,3 @@
-import {getLanguage} from '../helpers/storage'
 
 const uz = {
     'Клиенты': 'Mijozlar',
@@ -208,14 +207,16 @@ const en = {
 
 
 }
+import {getLanguage} from '../helpers/storage'
+import uz from './uz.json'
+import en from './en.json'
 
 const translate = (string) => {
     if (getLanguage() === 'uz') {
-        return uz[string] || string
+        return uz ? uz[string] || string : string
     } else if (getLanguage() === 'en') {
-        return en[string] || string
+        return en ? en[string] || string : string
     }
     return string
 }
-
 export default translate

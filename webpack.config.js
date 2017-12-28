@@ -30,7 +30,8 @@ let webpackConfig = {
 
     output: {
         filename: '[hash]-[id].[name].js',
-        path: path.join(__dirname, 'dist')
+        path: path.join(__dirname, 'dist'),
+        chunkFilename: '[hash]-[name]-[id].lang.js'
     },
 
     module: {
@@ -44,7 +45,7 @@ let webpackConfig = {
     plugins: [
         new webpack.optimize.CommonsChunkPlugin({
             minChunks: 3,
-            name: 'vendor' // Specify the common bundle's name.
+            name: 'vendor', // Specify the common bundle's name.
         }),
         new webpack.DefinePlugin({
             'process.env': {

@@ -19,12 +19,12 @@ const ClientBalanceFormat = enhance((props) => {
         case TRANS_TYPE.ORDER_RETURN: output = <Link to={{
             pathname: sprintf(ROUTES.RETURN_ITEM_PATH, orderReturn),
             query: {search: orderReturn}
-        }} target="_blank">Возврат № {orderReturn}</Link>
+        }} target="_blank">Возврат №{orderReturn}</Link>
             break
         case TRANS_TYPE.ORDER: output = <Link to={{
             pathname: sprintf(ROUTES.ORDER_ITEM_PATH, order),
             query: {search: order}
-        }} target="_blank">Заказ {order}</Link>
+        }} target="_blank">Заказ №{order}</Link>
             break
         case TRANS_TYPE.EXPENSE: output = <span>Расход</span>
             break
@@ -33,12 +33,12 @@ const ClientBalanceFormat = enhance((props) => {
         case TRANS_TYPE.CANCEL_ORDER: output = <Link to={{
             pathname: sprintf(ROUTES.ORDER_ITEM_PATH, order),
             query: {search: order}
-        }} target="_blank">Отмена заказа № {order}</Link>
+        }} target="_blank">Отмена заказа №{order}</Link>
             break
         case TRANS_TYPE.CANCEL_ORDER_RETURN: output = <Link to={{
             pathname: sprintf(ROUTES.RETURN_ITEM_PATH, orderReturn),
             query: {search: orderReturn}
-        }} target="_blank">Отмена возврата № {orderReturn}</Link>
+        }} target="_blank">Отмена возврата №{orderReturn}</Link>
             break
         case TRANS_TYPE.NONE_TYPE: output = <span>Нет типа</span>
             break

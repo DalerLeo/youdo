@@ -9,6 +9,8 @@ import FlatButton from 'material-ui/FlatButton'
 import Groceries from '../../Images/groceries.svg'
 import {connect} from 'react-redux'
 import numberFormat from '../../../helpers/numberFormat'
+import getConfig from '../../../helpers/getConfig'
+import toBoolean from '../../../helpers/toBoolean'
 import numberWithoutSpaces from '../../../helpers/numberWithoutSpaces'
 import {
     Table,
@@ -142,7 +144,7 @@ const enhance = compose(
     connect((state) => {
         const currency = _.get(state, ['form', 'ReturnCreateForm', 'values', 'currency', 'text'])
         const measurement = _.get(state, ['form', 'ReturnCreateForm', 'values', 'product', 'value', 'measurement', 'name'])
-        const market = _.get(state, ['form', 'ReturnCreateForm', 'values', 'market', 'value'])
+        const market = _.get(state, ['form', 'ReturnCreateForm', 'values', 'market', 'value']) || _.get(state, ['form', 'ReturnCreateForm', 'values', 'client', 'value'])
         const priceList = _.get(state, ['form', 'ReturnCreateForm', 'values', 'priceList', 'value'])
         return {
             currency,
@@ -239,12 +241,14 @@ const iconStyle = {
 const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, handleEdit, handleRemove, editItem, setEditItem, measurement, isUpdate, editOnlyCost, market, priceList, currency, ...defaultProps}) => {
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
     const error = _.get(defaultProps, ['products', 'meta', 'error'])
+    const configMarkets = toBoolean(getConfig('MARKETS_MODULE'))
+    const withMarket = configMarkets ? market : true
     return (
         <div className={classes.wrapper}>
             <div>
                 <div className={classes.headers} style={{marginTop: '-10px'}}>
                     <div className={classes.title}>Список товаров</div>
-                    {!isUpdate && (market && priceList) && <FlatButton
+                    {!isUpdate && (withMarket && priceList) && <FlatButton
                         label="+ добавить товар"
                         style={{color: '#12aaeb'}}
                         labelStyle={{fontSize: '13px'}}
@@ -325,7 +329,7 @@ const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, h
                             <TableHeaderColumn className={classes.tableTitle}>Кол-во</TableHeaderColumn>
                             <TableHeaderColumn className={classes.tableTitle}>Сумма (ед.)</TableHeaderColumn>
                             <TableHeaderColumn className={classes.tableTitle}>Всего</TableHeaderColumn>
-                            <TableHeaderColumn></TableHeaderColumn>
+                            <TableHeaderColumn/>
                         </TableRow>
                     </TableHeader>
                     <TableBody

@@ -204,7 +204,7 @@ const enhance = compose(
             textField.select()
             const copy = document.execCommand('copy')
             textField.remove()
-            copy ? dispatch(openSnackbarAction({message: 'Cкопировано'})) : null
+            copy ? dispatch(openSnackbarAction({message: 'Ссылка скопирована'})) : null
         },
         handleOpenFilterDialog: props => () => {
             const {location: {pathname}, filter} = props

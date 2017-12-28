@@ -144,7 +144,7 @@ export const orderListPintFetchAction = (filter, id) => {
 }
 export const orderSalesPrintFetchAction = (orders) => {
     const payload = axios()
-        .get(API.ORDER_SALES_PRINT, {params: {orders}})
+        .get(API.ORDER_SALES_PRINT, {params: {ids: orders}})
         .then((response) => {
             return _.get(response, 'data')
         })

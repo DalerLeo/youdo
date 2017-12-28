@@ -3,13 +3,14 @@ import {API_URL} from '../constants/api'
 import * as storageHelper from '../helpers/storage'
 import {hashHistory} from 'react-router'
 import * as ROUTES from '../constants/routes'
+import sprintf from 'sprintf'
 
 const axiosRequest = (useToken = true) => {
     const TOKEN = storageHelper.getToken()
     const UNAUTHORIZATE_STATUS = 401
     const NORM_STATUS_BEGIN = 200
     const NORM_STATUS_END = 300
-    axios.defaults.baseURL = API_URL
+    axios.defaults.baseURL = sprintf(API_URL, storageHelper.getLanguage())
 
     if (TOKEN) {
         if (useToken) {

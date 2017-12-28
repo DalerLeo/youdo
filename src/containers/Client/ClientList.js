@@ -1,6 +1,7 @@
 import React from 'react'
 import _ from 'lodash'
 import sprintf from 'sprintf'
+import moment from 'moment'
 import {connect} from 'react-redux'
 import {reset} from 'redux-form'
 import {hashHistory} from 'react-router'
@@ -10,12 +11,14 @@ import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import updateStore from '../../helpers/updateStore'
+import {joinArray, splitToArray} from '../../helpers/joinSplitValues'
 import * as actionTypes from '../../constants/actionTypes'
 import {
     CLIENT_CREATE_DIALOG_OPEN,
     CLIENT_UPDATE_DIALOG_OPEN,
     ClientGridList
 } from '../../components/Client'
+import {CLIENT_FILTER_KEY, CLIENT_FILTER_OPEN} from '../../components/Client/ClientFilterDialog'
 import {
     clientCreateAction,
     clientUpdateAction,
@@ -36,6 +39,7 @@ const enhance = compose(
         const list = _.get(state, ['client', 'list', 'data'])
         const listLoading = _.get(state, ['client', 'list', 'loading'])
         const createForm = _.get(state, ['form', 'ClientCreateForm'])
+        const filterForm = _.get(state, ['form', 'ClientFilterForm'])
         const filter = filterHelper(list, pathname, query)
 
         return {
@@ -46,7 +50,8 @@ const enhance = compose(
             createLoading,
             updateLoading,
             filter,
-            createForm
+            createForm,
+            filterForm
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -66,6 +71,35 @@ const enhance = compose(
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
 
     withHandlers({
+        handleOpenFilterDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[CLIENT_FILTER_OPEN]: true})})
+        },
+
+        handleCloseFilterDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[CLIENT_FILTER_OPEN]: false})})
+        },
+
+        handleClearFilterDialog: props => () => {
+            const {location: {pathname}} = props
+            hashHistory.push({pathname, query: {}})
+        },
+        handleSubmitFilterDialog: props => () => {
+            const {filter, filterForm} = props
+            const fromWho = _.get(filterForm, ['values', 'fromWho']) || null
+            const inBlacklist = _.get(filterForm, ['values', 'inBlacklist']) || null
+            const createdFromDate = _.get(filterForm, ['values', 'createdDate', 'fromDate']) || null
+            const createdToDate = _.get(filterForm, ['values', 'createdDate', 'toDate']) || null
+            filter.filterBy({
+                [CLIENT_FILTER_OPEN]: false,
+                [CLIENT_FILTER_KEY.FROM_WHO]: joinArray(fromWho),
+                [CLIENT_FILTER_KEY.IN_BLACKLIST]: inBlacklist,
+                [CLIENT_FILTER_KEY.FROM_DATE]: createdFromDate && createdFromDate.format('YYYY-MM-DD'),
+                [CLIENT_FILTER_KEY.TO_DATE]: createdToDate && createdToDate.format('YYYY-MM-DD')
+            })
+        },
+
         handleActionEdit: props => () => {
             return null
         },
@@ -183,10 +217,33 @@ const ClientList = enhance((props) => {
         params
     } = props
 
+    const openFilterDialog = toBoolean(_.get(location, ['query', CLIENT_FILTER_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', CLIENT_CREATE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', CLIENT_UPDATE_DIALOG_OPEN]))
     const detailId = _.toInteger(_.get(params, 'clientId'))
     const tab = _.get(params, 'tab')
+
+    const createdFromDate = filter.getParam(CLIENT_FILTER_KEY.FROM_DATE)
+    const createdToDate = filter.getParam(CLIENT_FILTER_KEY.TO_DATE)
+    const inBlacklist = filter.getParam(CLIENT_FILTER_KEY.IN_BLACKLIST)
+    const fromWho = filter.getParam(CLIENT_FILTER_KEY.FROM_WHO)
+
+    const filterDialog = {
+        initialValues: {
+            inBlacklist,
+            fromWho: fromWho && splitToArray(fromWho),
+            createdDate: {
+                fromDate: createdFromDate && moment(createdFromDate, 'YYYY-MM-DD'),
+                toDate: createdToDate && moment(createdToDate, 'YYYY-MM-DD')
+            }
+        },
+        filterLoading: false,
+        openFilterDialog,
+        handleOpenFilterDialog: props.handleOpenFilterDialog,
+        handleCloseFilterDialog: props.handleCloseFilterDialog,
+        handleClearFilterDialog: props.handleClearFilterDialog,
+        handleSubmitFilterDialog: props.handleSubmitFilterDialog
+    }
 
     const createDialog = {
         createLoading,
@@ -259,6 +316,7 @@ const ClientList = enhance((props) => {
         <Layout {...layout}>
             <ClientGridList
                 filter={filter}
+                filterDialog={filterDialog}
                 listData={listData}
                 detailData={detailData}
                 tabData={tabData}

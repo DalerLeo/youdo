@@ -35,41 +35,48 @@ export const createSerializer = (data) => {
             product: _.get(item, ['product', 'value', 'id'])
         }
     })
-    const request = deliveryType === 'self' ? {
-        client,
-        currency,
-        contract,
-        'payment_date': paymentDate,
-        'payment_type': paymentType,
-        'payment_term': paymentTerm,
-        'deal_type': dealType,
-        'delivery_type': deliveryType,
-        market,
-        user,
-        products,
-        'delivery_price': deliveryPrice,
-        'is_confirmed': isConfirmed,
-        'price_list': priceList === MINUS_ONE ? null : priceList,
-        'with_net_cost': priceList === MINUS_ONE ? ONE : false
-    } : {
-        client,
-        currency,
-        contract,
-        'date_delivery': deliveryDate,
-        'payment_date': paymentDate,
-        'payment_type': paymentType,
-        'payment_term': paymentTerm,
-        'deal_type': dealType,
-        'delivery_type': deliveryType,
-        'delivery_man': deliveryMan,
-        'is_confirmed': isConfirmed,
-        market,
-        user,
-        products,
-        'delivery_price': deliveryPrice,
-        'price_list': priceList === MINUS_ONE ? null : priceList,
-        'with_net_cost': priceList === MINUS_ONE ? ONE : false
-    }
+    const nextPaymentDate = _.get(data, ['dealType']) === 'consignment'
+        ? moment(_.get(data, ['nextPaymentDate'])).format('YYYY-MM-DD')
+        : null
+    const request = deliveryType === 'self'
+        ? {
+            client,
+            currency,
+            contract,
+            'payment_date': paymentDate,
+            'payment_type': paymentType,
+            'payment_term': paymentTerm,
+            'deal_type': dealType,
+            'delivery_type': deliveryType,
+            'next_payment_date': nextPaymentDate,
+            market,
+            user,
+            products,
+            'delivery_price': deliveryPrice,
+            'is_confirmed': isConfirmed,
+            'price_list': priceList === MINUS_ONE ? null : priceList,
+            'with_net_cost': priceList === MINUS_ONE ? ONE : false
+        }
+        : {
+            client,
+            currency,
+            contract,
+            'date_delivery': deliveryDate,
+            'payment_date': paymentDate,
+            'payment_type': paymentType,
+            'payment_term': paymentTerm,
+            'deal_type': dealType,
+            'next_payment_date': nextPaymentDate,
+            'delivery_type': deliveryType,
+            'delivery_man': deliveryMan,
+            'is_confirmed': isConfirmed,
+            market,
+            user,
+            products,
+            'delivery_price': deliveryPrice,
+            'price_list': priceList === MINUS_ONE ? null : priceList,
+            'with_net_cost': priceList === MINUS_ONE ? ONE : false
+        }
     if (requestDeadline) {
         return _.merge(request, {'request_deadline': requestDeadline})
     }
@@ -94,7 +101,12 @@ export const listFilterSerializer = (data, id, withOrderReturn, print) => {
     const ordering = _.get(data, 'ordering')
     const dept = _.toInteger(_.get(defaultData, 'dept'))
     const status = _.get(defaultData, 'status')
-    const excludeCanceled = _.isUndefined(_.get(defaultData, 'exclude')) ? 'True' : _.get(defaultData, 'exclude')
+    const exclude = _.get(defaultData, 'exclude')
+    const excludeCanceled = _.isUndefined(exclude)
+        ? 'True'
+        : exclude === 'true'
+            ? 'True'
+            : null
 
     if (id && print) {
         return {

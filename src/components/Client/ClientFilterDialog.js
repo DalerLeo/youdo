@@ -7,41 +7,23 @@ import injectSheet from 'react-jss'
 import {Link} from 'react-router'
 import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
-import getConfig from '../../helpers/getConfig'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
-import DateToDateField from '../ReduxForm/Basic/DateToDateField'
 import {
-    ClientMultiSearchField,
-    MarketMultiSearchField,
+    DateToDateField,
     UsersMultiSearchField,
-    TextField,
-    ProductMultiSearchField,
-    ReturnStatusMultiSearch,
-    ReturnTypeSearchField,
-    DivisionMultiSearchField,
-    PaymentTypeSearchField,
     CheckBox
 } from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
-export const RETURN_FILTER_OPEN = 'openFilterDialog'
+export const CLIENT_FILTER_OPEN = 'openFilterDialog'
 
-export const RETURN_FILTER_KEY = {
-    ORDER: 'order',
-    TYPE: 'type',
-    CLIENT: 'client',
-    STATUS: 'status',
-    INITIATOR: 'initiator',
-    MARKET: 'market',
-    CODE: 'code',
-    PRODUCT: 'product',
+export const CLIENT_FILTER_KEY = {
+    IN_BLACKLIST: 'inBlacklist',
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate',
-    DIVISION: 'division',
-    PAYMENT_TYPE: 'paymentType',
-    EXCLUDE: 'exclude'
+    FROM_WHO: 'fromWho'
 }
 
 const enhance = compose(
@@ -102,9 +84,6 @@ const enhance = compose(
         submit: {
             color: '#fff !important'
         },
-        inputField: {
-            fontSize: '13px !important'
-        },
         inputFieldCustom: {
             fontSize: '13px !important',
             height: '45px !important',
@@ -143,15 +122,15 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'ReturnFilterForm',
+        form: 'ClientFilterForm',
         enableReinitialize: true
     }),
     withHandlers({
         getCount: props => () => {
             const {filter} = props
-            return _(RETURN_FILTER_KEY)
+            return _(CLIENT_FILTER_KEY)
                 .values()
-                .filter(item => item !== RETURN_FILTER_KEY.FROM_DATE)
+                .filter(item => item !== CLIENT_FILTER_KEY.FROM_DATE)
                 .filter(item => filter.getParam(item))
                 .value()
                 .length
@@ -159,10 +138,9 @@ const enhance = compose(
     })
 )
 
-const ReturnFilterForm = enhance((props) => {
-    const {classes, filterDialog, getCount, handleSubmit, hasMarket} = props
+const ClientFilterForm = enhance((props) => {
+    const {classes, filterDialog, getCount, handleSubmit} = props
     const filterCounts = getCount()
-    const divisionStatus = getConfig('DIVISIONS')
 
     if (!filterDialog.openFilterDialog) {
         if (filterCounts) {
@@ -202,27 +180,27 @@ const ReturnFilterForm = enhance((props) => {
                     </IconButton>
                 </div>
                 <form onSubmit={handleSubmit(filterDialog.handleSubmitFilterDialog)}>
-                    <div>
-                        <Field className={classes.inputFieldCustom} name="order" component={TextField} label="№ Заказа"/>
-                        <Field className={classes.inputFieldCustom} name="product" component={ProductMultiSearchField} label="Продукт"/>
-                        {divisionStatus && <Field className={classes.inputFieldCustom} name="division" component={DivisionMultiSearchField} label="Организация"/>}
-                        <Field className={classes.inputFieldCustom} name="paymentType" component={PaymentTypeSearchField} label="Тип оплаты"/>
-                        <Field className={classes.inputFieldCustom} name="status" component={ReturnStatusMultiSearch} label="Статус"/>
-                        <Field className={classes.inputFieldCustom} name="type" component={ReturnTypeSearchField} label="Тип"/>
-                        <Field className={classes.inputFieldCustom} name="client" component={ClientMultiSearchField} label="Клиент"/>
-                        {hasMarket && <Field className={classes.inputFieldCustom} name="market" component={MarketMultiSearchField} label="Магазин"/>}
-                        <Field className={classes.inputFieldCustom} name="initiator" component={UsersMultiSearchField} label="Инициатор "/>
-                        <Field className={classes.inputFieldCustom} name="code" component={TextField} label="Код"/>
-                        <Field className={classes.inputDateCustom} name="data" component={DateToDateField} label="Период создания"/>
-                        <Field name="exclude" component={CheckBox} label="Исключить отмененные заказы"/>
-                    </div>
-
+                    <Field
+                        className={classes.inputFieldCustom}
+                        name="fromWho"
+                        component={UsersMultiSearchField}
+                        label="По рекомендации"/>
+                    <Field
+                        className={classes.inputDateCustom}
+                        name="createdDate"
+                        component={DateToDateField}
+                        label="Дата создания"/>
+                    <Field
+                        className={classes.inputDateCustom}
+                        name="inBlacklist"
+                        component={CheckBox}
+                        label="В черном списке"/>
                     <RaisedButton
                         type="submit"
                         primary={true}
-                        labelStyle={{fontSize: '13px'}}
                         buttonStyle={{color: '#fff'}}
                         label="Применить"
+                        labelStyle={{fontSize: '13px'}}
                         style={{marginTop: '15px'}}>
                     </RaisedButton>
                 </form>
@@ -231,7 +209,7 @@ const ReturnFilterForm = enhance((props) => {
     )
 })
 
-ReturnFilterForm.propTypes = {
+ClientFilterForm.propTypes = {
     filter: PropTypes.object.isRequired,
     filterDialog: PropTypes.shape({
         filterLoading: PropTypes.bool.isRequired,
@@ -242,4 +220,4 @@ ReturnFilterForm.propTypes = {
     })
 }
 
-export default ReturnFilterForm
+export default ClientFilterForm

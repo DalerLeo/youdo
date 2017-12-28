@@ -26,6 +26,10 @@ export const listFilterSerializer = (data) => {
     const ordering = _.get(data, 'ordering')
 
     return {
+        'created_date_0': _.get(defaultData, 'fromDate'),
+        'created_date_1': _.get(defaultData, 'toDate'),
+        'in_blacklist': _.get(defaultData, 'inBlacklist'),
+        'from_whom': _.get(defaultData, 'fromWho'),
         'search': _.get(defaultData, 'search'),
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),

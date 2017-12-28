@@ -118,13 +118,15 @@ const OrderSalesPrint = enhance((props) => {
             </div>
         )
     }
+    const orders = _.join(_.get(data, 'orders'), ', ')
+    const ordersCount = _.size(_.get(data, 'orders'))
     return (
         <div className={classes.wrapper}>
             <div className="printItem">
                 <header>
                     <div><strong>Доставщики:</strong> <span>{_.join(deliveryMans, ', ')}</span></div>
                     <div><strong>Агенты:</strong> <span>{_.join(agents, ', ')}</span></div>
-                    <div><strong>Показаны товары по следующим заказам ( {_.size(_.get(data, 'orders'))} ):</strong> <span>{_.join(_.get(data, 'orders'), ', ')}</span></div>
+                    <div><strong>Показаны товары по следующим заказам ({ordersCount}):</strong> <span>{orders}</span></div>
                 </header>
                 <div className={classes.products}>
                     <Row>
@@ -157,9 +159,9 @@ const OrderSalesPrint = enhance((props) => {
                         )
                     })}
                     <Row>
-                        <Col xs={3}><span style={{fontWeight: '600'}}>Итого :</span></Col>
-                        <Col xs={1}></Col>
-                        <Col xs={3}></Col>
+                        <Col xs={3}><strong>Итого:</strong></Col>
+                        <Col xs={1}/>
+                        <Col xs={3}/>
                         <Col xs={2}>{measurementCheck ? <span style={{fontWeight: '600'}}>{numberFormat(totalAmount, firstMeasure)}</span> : null}</Col>
                         <Col xs={2}><span style={{fontWeight: '600'}}>{numberFormat(totalCalPrice, primaryCurrency)}</span></Col>
                     </Row>
