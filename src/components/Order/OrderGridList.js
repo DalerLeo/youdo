@@ -429,7 +429,7 @@ const OrderGridList = enhance((props) => {
                         ? PAY_DELAY
                         : ((totalBalance > ZERO) && moment(_.get(item, 'paymentDate')).diff(now, 'days') > ZERO)
                             ? PAY_PENDING
-                            : totalBalance === ZERO ? 'Оплачено' : ''}>
+                            : totalBalance === ZERO ? 'Оплачен' : ''}>
                         <IconButton
                             disableTouchRipple={true}
                             iconStyle={iconStyle.icon}

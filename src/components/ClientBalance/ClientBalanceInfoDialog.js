@@ -18,6 +18,10 @@ import dateTimeFormat from '../../helpers/dateTimeFormat'
 import Tooltip from '../ToolTip'
 import NotFound from '../Images/not-found.png'
 import ClientBalanceFormat from '../Statistics/ClientIncome/ClientBalanceFormat'
+import Accepted from 'material-ui/svg-icons/action/done-all'
+import Rejected from 'material-ui/svg-icons/content/block'
+import Requested from 'material-ui/svg-icons/action/schedule'
+import AutoAccepted from 'material-ui/svg-icons/action/spellcheck'
 
 import {
     FIRST_BALANCE,
@@ -186,10 +190,17 @@ const iconStyle = {
         padding: 0
     }
 }
+const iconsArray = [
+    <Accepted color={'#81c784'}/>,
+    <Rejected color={'#e57373'}/>,
+    <Requested color={'#f0ad4e'}/>,
+    <AutoAccepted color={'#12aaeb'}/>
+]
 const ClientBalanceInfoDialog = enhance((props) => {
     const {open, filterItem, onClose, classes, detailData, name, balance, paymentType, superUser, setItem, stat} = props
     const isSuperUser = _.get(superUser, 'isSuperUser')
     const ZERO = 0
+    const RANDOM = 3
     const currentCurrency = getConfig('PRIMARY_CURRENCY')
     const currentCurrencyId = _.toInteger(getConfig('PRIMARY_CURRENCY_ID'))
     const loading = _.get(detailData, 'detailLoading')
@@ -206,6 +217,7 @@ const ClientBalanceInfoDialog = enhance((props) => {
         const type = _.get(item, 'type')
         const order = _.get(item, 'order')
         const orderReturn = _.get(item, 'orderReturn')
+        const icon = _.get(iconsArray, _.random(RANDOM))
 
         const openEditDialog = (thisItem) => {
             superUser.handleOpenSuperUserDialog(thisItem.id)
@@ -215,7 +227,7 @@ const ClientBalanceInfoDialog = enhance((props) => {
         return (
             <Row key={index} className='dottedList'>
                 <div style={{flexBasis: '4%', maxWidth: '4%'}}>
-                    {(amount > ZERO) ? <ArrowUpIcon color="#92ce95"/> : <ArrowDownIcon color="#e27676"/>}
+                    {icon}
                 </div>
                 <div style={{flexBasis: '16%', maxWidth: '16%'}}>{createdDate}</div>
                 <div style={{flexBasis: '20%', maxWidth: '20%'}}>{user}</div>
@@ -225,7 +237,7 @@ const ClientBalanceInfoDialog = enhance((props) => {
                     <ClientBalanceFormat type={type} order={order} orderReturn={orderReturn}/>
                 </div>
                 <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>
-                    <div>{numberFormat(amount, currency)}</div>
+                    <div className={amount > ZERO ? classes.green : classes.red}>{numberFormat(amount, currency)}</div>
                     {currencyId !== currentCurrencyId &&
                     <div>
                         <div>{numberFormat(internal, currentCurrency)} <span
@@ -280,8 +292,13 @@ const ClientBalanceInfoDialog = enhance((props) => {
                             </div>
                             <div>
                                 <span>Баланс {paymentType}</span>
-                                <div
-                                    className={balance > ZERO ? classes.green : (balance < ZERO ? classes.red : classes.black)}>{numberFormat(balance, currentCurrency)}</div>
+                                <div className={balance > ZERO
+                                    ? classes.green
+                                    : (balance < ZERO
+                                        ? classes.red
+                                        : classes.black)}>
+                                    {numberFormat(balance, currentCurrency)}
+                                </div>
                             </div>
                         </div>
                         <Pagination filter={filterItem}/>
@@ -297,7 +314,8 @@ const ClientBalanceInfoDialog = enhance((props) => {
                             <div style={{flexBasis: '5%', maxWidth: '5%', textAlign: 'right'}}/>
                         </Row>
 
-                        {!_.isEmpty(_.get(detailData, 'data')) ? detailList
+                        {!_.isEmpty(_.get(detailData, 'data'))
+                            ? detailList
                             : <div className={classes.emptyQuery}>Пока транзакции нет</div>}
                     </div>
                 </div>
