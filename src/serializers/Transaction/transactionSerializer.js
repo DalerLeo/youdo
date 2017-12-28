@@ -99,8 +99,8 @@ export const createSendSerializer = (data, cashboxId, withPersent) => {
     const comment = _.get(data, 'comment')
     const cashbox = _.get(data, ['cashbox', 'value'])
     return {
-        amountFrom: withPersent ? amountFromPersent : amountFrom,
-        amountTo: withPersent ? amountFromPersent * amountToPersent / HUNDRED : amountTo,
+        amount_from: withPersent ? amountFromPersent : amountFrom,
+        amount_to: withPersent ? amountFromPersent * amountToPersent / HUNDRED : amountTo,
         from_cashbox: _.toInteger(cashboxId) === ZERO ? cashbox : cashboxId,
         to_cashbox: _.toInteger(toCashbox),
         comment
