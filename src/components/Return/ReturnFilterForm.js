@@ -20,7 +20,8 @@ import {
     ReturnStatusMultiSearch,
     ReturnTypeSearchField,
     DivisionMultiSearchField,
-    PaymentTypeSearchField
+    PaymentTypeSearchField,
+    CheckBox
 } from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
@@ -39,7 +40,8 @@ export const RETURN_FILTER_KEY = {
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate',
     DIVISION: 'division',
-    PAYMENT_TYPE: 'paymentType'
+    PAYMENT_TYPE: 'paymentType',
+    EXCLUDE: 'exclude'
 }
 
 const enhance = compose(
@@ -212,6 +214,7 @@ const ReturnFilterForm = enhance((props) => {
                         <Field className={classes.inputFieldCustom} name="initiator" component={UsersMultiSearchField} label="Инициатор "/>
                         <Field className={classes.inputFieldCustom} name="code" component={TextField} label="Код"/>
                         <Field className={classes.inputDateCustom} name="data" component={DateToDateField} label="Период создания"/>
+                        <Field name="exclude" component={CheckBox} label="Исключить отмененные заказы"/>
                     </div>
 
                     <RaisedButton
