@@ -599,7 +599,7 @@ const StatProviderGridList = enhance((props) => {
                                 : <div>
                                     <div className={classes.summaryWrapper}>
                                         <div>
-                                            <div>Обшая сумма продаж</div>
+                                            <div>Общая сумма продаж</div>
                                             <div>{salesTotalSum}</div>
                                             <div>Фактическая сумма продаж</div>
                                             <div>{salesFactSum}</div>
