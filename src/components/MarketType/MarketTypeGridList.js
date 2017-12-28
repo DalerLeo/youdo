@@ -18,6 +18,7 @@ import ConfirmDialog from '../ConfirmDialog'
 import SettingSideMenu from '../Settings/SettingsSideMenu'
 import Tooltip from '../ToolTip'
 import dateFormat from '../../helpers/dateFormat'
+import Dot from '../Images/dot.png'
 
 const listHeader = [
     {
@@ -108,6 +109,65 @@ const enhance = compose(
             display: 'flex',
             opacity: '0',
             transition: 'all 200ms ease-out'
+        },
+        rowWithParent: {
+            flexWrap: 'wrap',
+            margin: '0 -30px !important',
+            width: 'auto !important',
+            padding: '0 30px',
+            '& > div': {
+                height: '50px',
+                display: 'flex',
+                alignItems: 'center',
+                '&:hover button': {
+                    opacity: '1'
+                }
+            },
+            '& > div:first-child': {
+                fontWeight: '600'
+            }
+        },
+        rowWithoutParent: {
+            extend: 'rowWithParent',
+            flexWrap: 'none',
+            '&:hover > div:last-child > div': {
+                opacity: '1'
+            }
+        },
+        parentCategory: {
+            width: '100%',
+            '& > div:first-child': {
+                paddingLeft: '0'
+            },
+            '&:hover > div:last-child > div ': {
+                opacity: '1'
+            }
+        },
+        subCategory: {
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            position: 'relative',
+            '&:hover > div:last-child > div ': {
+                opacity: '1'
+            },
+            '& > div:first-child': {
+                paddingLeft: '50px'
+            },
+            '& > div:last-child': {
+                paddingRight: '0'
+            },
+            '&:after': {
+                content: '""',
+                opacity: '0.5',
+                background: 'url(' + Dot + ')',
+                position: 'absolute',
+                height: '2px',
+                top: '0',
+                left: '0',
+                right: '0',
+                marginTop: '1px'
+            }
         }
     })
 )
@@ -152,13 +212,84 @@ const MarketTypeGridList = enhance((props) => {
     const marketTypeDetail = (
         <span>a</span>
     )
-
     const marketTypeList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const createdDate = dateFormat(_.get(item, 'createdDate'))
+        const hasChild = !_.isEmpty(_.get(item, 'children'))
+        if (hasChild) {
+            return (
+                <Row key={id} className={classes.rowWithParent}>
+                    <div className={classes.parentCategory}>
+                        <Col xs={2}>{id}</Col>
+                        <Col xs={5}>{name}</Col>
+                        <Col xs={4}>{createdDate}</Col>
+                        <Col xs={1} className={classes.right}>
+                            <div className={classes.iconBtn}>
+                                <Tooltip position="bottom" text="Изменить">
+                                    <IconButton
+                                        iconStyle={iconStyle.icon}
+                                        style={iconStyle.button}
+                                        disableTouchRipple={true}
+                                        touch={true}
+                                        onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
+                                        <Edit />
+                                    </IconButton>
+                                </Tooltip>
+                                <Tooltip position="bottom" text="Удалить">
+                                    <IconButton
+                                        disableTouchRipple={true}
+                                        iconStyle={iconStyle.icon}
+                                        style={iconStyle.button}
+                                        onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
+                                        touch={true}>
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            </div>
+                        </Col>
+                    </div>
+                    {_.map(_.get(item, 'children'), (child) => {
+                        const childId = _.get(child, 'id')
+                        const childName = _.get(child, 'name')
+                        const childCreatedDate = dateFormat(_.get(child, 'createdDate'))
+                        return (
+                            <div key={childId} className={classes.subCategory}>
+                                <Col xs={2}>{childId}</Col>
+                                <Col xs={5}>{childName}</Col>
+                                <Col xs={4}>{childCreatedDate}</Col>
+                                <Col xs={1} className={classes.right}>
+                                    <div className={classes.iconBtn}>
+                                        <Tooltip position="bottom" text="Изменить">
+                                            <IconButton
+                                                iconStyle={iconStyle.icon}
+                                                style={iconStyle.button}
+                                                disableTouchRipple={true}
+                                                touch={true}
+                                                onTouchTap={() => { updateDialog.handleOpenUpdateDialog(childId) }}>
+                                                <Edit />
+                                            </IconButton>
+                                        </Tooltip>
+                                        <Tooltip position="bottom" text="Удалить">
+                                            <IconButton
+                                                disableTouchRipple={true}
+                                                iconStyle={iconStyle.icon}
+                                                style={iconStyle.button}
+                                                onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(childId) }}
+                                                touch={true}>
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </div>
+                                </Col>
+                            </div>
+                        )
+                    })}
+                </Row>
+            )
+        }
         return (
-            <Row key={id} className={classes.listRow}>
+            <Row key={id} className={classes.rowWithoutParent}>
                 <Col xs={2}>{id}</Col>
                 <Col xs={5}>{name}</Col>
                 <Col xs={4}>{createdDate}</Col>
@@ -218,6 +349,8 @@ const MarketTypeGridList = enhance((props) => {
                         list={list}
                         detail={marketTypeDetail}
                         actionsDialog={actions}
+                        flexibleRow={true}
+                        hoverableList={false}
                         addButton={addButton}
                         listShadow={false}
                     />

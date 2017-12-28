@@ -2,6 +2,7 @@ import _ from 'lodash'
 import React from 'react'
 import {compose, withHandlers} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
+import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import {Link} from 'react-router'
@@ -11,11 +12,12 @@ import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import {
     ClientMultiSearchField,
-    MarketTypeMultiSearchField,
     ShopStatusSearchField,
     FrequencySearchField,
     UsersMultiSearchField,
     ZoneMultiSearchField,
+    MarketTypeParentSearchField,
+    MarketTypeSearchField,
     CheckBox} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
@@ -25,6 +27,7 @@ export const SHOP_FILTER_OPEN = 'openFilterDialog'
 export const SHOP_FILTER_KEY = {
     CLIENT: 'client',
     MARKET_TYPE: 'marketType',
+    MARKET_TYPE_PARENT: 'marketTypeParent',
     STATUS: 'isActive',
     FREQUENCY: 'frequency',
     ZONE: 'zone',
@@ -110,6 +113,12 @@ const enhance = compose(
         form: 'ShopFilterForm',
         enableReinitialize: true
     }),
+    connect((state) => {
+        const typeParent = _.get(state, ['form', 'ShopFilterForm', 'values', 'marketTypeParent', 'value'])
+        return {
+            typeParent
+        }
+    }),
     withHandlers({
         getCount: props => () => {
             const {filter} = props
@@ -124,7 +133,7 @@ const enhance = compose(
 )
 
 const ShopFilterForm = enhance((props) => {
-    const {classes, filterDialog, getCount, handleSubmit} = props
+    const {classes, filterDialog, getCount, handleSubmit, typeParent} = props
     const filterCounts = getCount()
 
     if (!filterDialog.openFilterDialog) {
@@ -167,10 +176,19 @@ const ShopFilterForm = enhance((props) => {
                 <form onSubmit={handleSubmit(filterDialog.handleSubmitFilterDialog)}>
                     <Field
                         className={classes.inputFieldCustom}
-                        name="marketType"
-                        component={MarketTypeMultiSearchField}
+                        name="marketTypeParent"
+                        component={MarketTypeParentSearchField}
                         label="Тип магазина"
                         fullWidth={true}/>
+                    {typeParent
+                    ? <Field
+                        className={classes.inputFieldCustom}
+                        name="marketType"
+                        component={MarketTypeSearchField}
+                        label="Подкатегория"
+                        parentType={typeParent}
+                        fullWidth={true}/>
+                    : null}
                     <Field
                         className={classes.inputFieldCustom}
                         name="isActive"

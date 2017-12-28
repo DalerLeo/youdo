@@ -58,6 +58,7 @@ import VisitFrequencySearchField from './Shop/VisitFrequencySearchField'
 import ShopStatusSearchField from './Shop/ShopStatusSearchField'
 import DealTypeSearchField from './DealTypeSearchField'
 import MarketTypeSearchField from './Shop/MarketTypeSearchField'
+import MarketTypeParentSearchField from './Shop/MarketTypeParentSearchField'
 import MarketTypeMultiSearchField from './Shop/MarketTypeMultiSearchField'
 import MarketSearchField from './Shop/MarketSearchField'
 import DeptSearchField from './DeptTypeSearchField'
@@ -217,5 +218,6 @@ export {
     BrandMultiSearchField,
     TransactionTypeMultiSearchField,
     CashboxPaymentTypeSearchField,
-    ManufactureMultiSearchField
+    ManufactureMultiSearchField,
+    MarketTypeParentSearchField
 }
