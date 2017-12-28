@@ -57,7 +57,7 @@ export const marketTypeUpdateAction = (id, formValues) => {
 export const marketTypeListFetchAction = (filter) => {
     const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
-        .get(API.MARKET_TYPE_LIST, {params})
+        .get(API.MARKET_TYPE_HIERARCHY, {params})
         .then((response) => {
             return _.get(response, 'data')
         })

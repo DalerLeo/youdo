@@ -8,10 +8,9 @@ import FlatButton from 'material-ui/FlatButton'
 import Loader from '../Loader'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField} from '../ReduxForm'
+import {TextField, MarketTypeParentSearchField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
-import MainStyles from '../Styles/MainStyles'
 
 export const MARKET_TYPE_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -28,20 +27,92 @@ const validate = (data) => {
 }
 
 const enhance = compose(
-    injectSheet(_.merge(MainStyles, {
+    injectSheet({
         loader: {
-            position: 'absolute',
+            height: '70px',
             width: '100%',
-            height: '100%',
             background: '#fff',
-            top: '0',
-            left: '0',
             alignItems: 'center',
+            justifyContent: 'center',
+            display: 'flex'
+        },
+        popUp: {
+            color: '#333 !important',
+            overflow: 'unset !important',
+            fontSize: '13px !important',
+            position: 'relative',
+            padding: '0 !important',
+            height: '100%',
+            maxHeight: 'none !important',
+            marginBottom: '64px'
+        },
+        inContent: {
+            display: 'flex',
+            minHeight: '184px',
+            overflow: 'unset',
+            padding: '0 30px',
+            color: '#333'
+        },
+        bodyContent: {
+            width: '100%'
+        },
+        form: {
+            position: 'relative'
+        },
+        field: {
+            width: '100%'
+        },
+        bottomButton: {
+            bottom: '0',
+            left: '0',
+            right: '0',
+            padding: '10px',
             zIndex: '999',
-            textAlign: 'center',
-            display: ({loading}) => loading ? 'flex' : 'none'
+            borderTop: '1px solid #efefef',
+            background: '#fff',
+            textAlign: 'right',
+            '& span': {
+                fontSize: '13px !important',
+                fontWeight: '600 !important',
+                color: '#129fdd',
+                verticalAlign: 'inherit !important'
+            }
+        },
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
+        },
+        actionButton: {
+            margin: '0 !important'
+        },
+        titleContent: {
+            background: '#fff',
+            color: '#333',
+            fontWeight: 'bold',
+            textTransform: 'uppercase',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            borderBottom: '1px solid #efefef',
+            padding: '20px 30px',
+            zIndex: '999',
+            '& button': {
+                right: '13px',
+                position: 'absolute !important'
+            }
         }
-    })),
+    }),
     reduxForm({
         form: 'MarketTypeCreateForm',
         enableReinitialize: true
@@ -57,9 +128,8 @@ const MarketTypeCreateDialog = enhance((props) => {
             modal={true}
             open={open}
             onRequestClose={onClose}
-            className={classes.dialog}
             contentStyle={loading ? {width: '300px'} : {width: '500px'}}
-            bodyStyle={{minHeight: 'auto'}}
+            bodyStyle={{minHeight: 'auto', overflowY: 'unset'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
                 <span>{isUpdate ? 'Изменить тип магазина' : 'Добавить тип магазина'}</span>
@@ -69,11 +139,19 @@ const MarketTypeCreateDialog = enhance((props) => {
             </div>
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit} className={classes.form} style={{minHeight: 'auto'}}>
-                    <div className={classes.loader}>
+                    {loading
+                    ? <div className={classes.loader}>
                         <Loader size={0.75}/>
-                    </div>
-                    <div className={classes.inContent} style={{minHeight: '100px', paddingTop: '15px'}}>
+                      </div>
+                    : <div className={classes.inContent} style={{minHeight: '100px', paddingTop: '15px'}}>
                         <div className={classes.field}>
+                            <Field
+                                name="parent"
+                                component={MarketTypeParentSearchField}
+                                className={classes.inputFieldCustom}
+                                label="Радительская категория"
+                                fullWidth={true}
+                            />
                             <Field
                                 name="name"
                                 component={TextField}
@@ -82,7 +160,7 @@ const MarketTypeCreateDialog = enhance((props) => {
                                 fullWidth={true}
                             />
                         </div>
-                    </div>
+                    </div>}
                     <div className={classes.bottomButton}>
                         <FlatButton
                             label="Сохранить"

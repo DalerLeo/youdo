@@ -9,7 +9,7 @@ export const createSerializer = (data, location, newClient) => {
     const name = _.get(data, 'name')
     const client = !newClient ? _.get(data, ['client', 'value']) : _.get(data, 'undefined')
     const newClientName = newClient ? _.get(data, ['newClientName']) : _.get(data, 'undefined')
-    const marketType = _.get(data, ['marketType', 'value'])
+    const marketType = _.get(data, ['marketType', 'value']) || _.get(data, ['marketTypeParent', 'value'])
     const address = _.get(data, 'address')
     const guide = _.get(data, 'guide')
     const frequency = _.get(data, ['frequency', 'value'])
@@ -50,7 +50,7 @@ export const updateSerializer = (data, location, detail) => {
     const client = _.get(detail, ['client', 'id'])
     const name = _.get(data, 'name')
     const clientName = _.get(data, 'client')
-    const marketType = _.get(data, ['marketType', 'value'])
+    const marketType = _.get(data, ['marketType', 'value']) || _.get(data, ['marketTypeParent', 'value'])
     const address = _.get(data, 'address')
     const guide = _.get(data, 'guide')
     const frequency = _.get(data, ['frequency', 'value'])
@@ -104,7 +104,7 @@ export const listFilterSerializer = (data) => {
         'is_active': _.toNumber(_.get(defaultData, 'isActive')) === TWO ? false : _.get(defaultData, 'isActive'),
         'frequency': _.get(defaultData, 'frequency'),
         'border': _.get(defaultData, 'zone') || null,
-        'market_type': _.get(defaultData, 'marketType') || null,
+        'market_type': _.get(defaultData, 'marketType') || _.get(defaultData, 'marketTypeParent') || null,
         'null_border': nullBorder ? 'True' : null,
         'created_date_0': _.get(defaultData, 'fromDate'),
         'created_date_1': _.get(defaultData, 'toDate'),
