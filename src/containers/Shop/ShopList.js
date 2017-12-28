@@ -481,7 +481,8 @@ const ShopList = enhance((props) => {
             if (!detail || openCreateDialog) {
                 return {
                     frequency: {value: 1},
-                    status: {value: 2}
+                    status: {value: 2},
+                    phones: [{}]
                 }
             }
             const statusCur = _.get(detail, 'status')
@@ -506,11 +507,10 @@ const ShopList = enhance((props) => {
                     lng: _.get(detail, ['location', 'lon'])
                 },
                 marketTypeParent: {
-                    value: _.get(detail, ['marketType', 'parent'])
+                    value: _.get(detail, ['marketType', 'parent']) || _.get(detail, ['marketType', 'id'])
                 },
                 marketType: {
-                    value: _.get(detail, ['marketType', 'id']),
-                    text: _.get(detail, ['marketType', 'name'])
+                    value: _.get(detail, ['marketType', 'parent']) && _.get(detail, ['marketType', 'id'])
                 },
                 status: {
                     value: isActive
