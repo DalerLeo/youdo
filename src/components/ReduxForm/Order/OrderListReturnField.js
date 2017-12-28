@@ -27,6 +27,7 @@ import ProductReturnCostField from './ProductReturnCostField'
 import TextField from '../Basic/TextField'
 import Check from 'material-ui/svg-icons/navigation/check'
 import EditIcon from 'material-ui/svg-icons/editor/mode-edit'
+import t from '../../../helpers/translate'
 
 const ZERO = 0
 const enhance = compose(
@@ -232,9 +233,9 @@ const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove
         <div className={classes.wrapper}>
             <div>
                 <div className={classes.headers}>
-                    <div className={classes.title}>Список товаров</div>
+                    <div className={classes.title}>{t('Список товаров')}</div>
                     {!isUpdate && <FlatButton
-                        label="+ добавить товар"
+                        label={t('+ добавить товар')}
                         style={{color: '#12aaeb'}}
                         labelStyle={{fontSize: '13px'}}
                         className={classes.span}
@@ -245,7 +246,7 @@ const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove
                     <div style={{width: '35%', paddingRight: '20px'}}>
                         <ReturnProductsSearchField
                             name="product"
-                            label="Наименование товара"
+                            label={t('Наименование товара')}
                             selectFieldScroll={selectFieldScroll}
                             className={classes.inputFieldCustom}
                             style={{width: '100%'}}
@@ -254,7 +255,7 @@ const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove
                     </div>
                     <div style={{width: '20%', paddingRight: '20px'}}>
                         <Field
-                            label="Кол-во"
+                            label={t('Кол-во')}
                             disabled={(normalizeAmount === ZERO || !normalizeAmount)}
                             normalize={normalizeReturn}
                             component={TextField}
@@ -270,7 +271,7 @@ const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove
                         <ProductReturnCostField />
                     </div>
                     <div style={{width: '20%', textAlign: 'right', paddingTop: '9px'}}>
-                        <FlatButton label="Применить" onTouchTap={handleAdd} labelStyle={{fontSize: '13px'}} style={{color: '#12aaeb'}}/>
+                        <FlatButton label={t('Применить')} onTouchTap={handleAdd} labelStyle={{fontSize: '13px'}} style={{color: '#12aaeb'}}/>
                     </div>
                 </div>}
             </div>
@@ -288,9 +289,9 @@ const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove
                             className={classes.title}>
                             <TableRow className={classes.tableRow}>
                                 <TableHeaderColumn
-                                    className={classes.tableTitle}>Наименование</TableHeaderColumn>
-                                <TableHeaderColumn className={classes.tableTitle}>Кол-во</TableHeaderColumn>
-                                <TableHeaderColumn className={classes.tableTitle}>Сумма</TableHeaderColumn>
+                                    className={classes.tableTitle}>{t('Наименование')}</TableHeaderColumn>
+                                <TableHeaderColumn className={classes.tableTitle}>{t('Кол-во')}</TableHeaderColumn>
+                                <TableHeaderColumn className={classes.tableTitle}>{t('Сумма')}</TableHeaderColumn>
                                 <TableHeaderColumn></TableHeaderColumn>
                             </TableRow>
                         </TableHeader>
@@ -365,8 +366,8 @@ const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove
                     <div style={{textAlign: 'center', color: '#adadad'}}>
                         <img src={Groceries} alt=""/>
                         {isUpdate
-                        ? <div>Список возвращаемого товара пуст.</div>
-                        : <div>Вы еще не выбрали ни одного товара. <br/> <a onClick={() => dispatch({open: !state.open})}>Добавить</a> товар?</div>}
+                        ? <div>{t('Список возвращаемого товара пуст')}.</div>
+                        : <div>{t('Вы еще не выбрали ни одного товара')}. <br/> <a onClick={() => dispatch({open: !state.open})}>{t('Добавить')}</a> {t('товар')}?</div>}
                     </div>
                 </div>
             }

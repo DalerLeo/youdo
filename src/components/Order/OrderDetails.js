@@ -8,6 +8,9 @@ import injectSheet from 'react-jss'
 import Edit from 'material-ui/svg-icons/image/edit'
 import Delete from 'material-ui/svg-icons/action/delete'
 import Return from 'material-ui/svg-icons/content/reply'
+import MenuItem from 'material-ui/MenuItem'
+import IconMenu from 'material-ui/IconMenu'
+import {connect} from 'react-redux'
 import PrintIcon from 'material-ui/svg-icons/action/print'
 import MoneyOffIcon from 'material-ui/svg-icons/editor/money-off'
 import IconButton from 'material-ui/IconButton'
@@ -22,11 +25,9 @@ import Tooltip from '../ToolTip'
 import * as ROUTES from '../../constants/routes'
 import LinearProgress from '../LinearProgress'
 import numberFormat from '../../helpers/numberFormat'
-import getConfig from '../../helpers/getConfig'
 import dateFormat from '../../helpers/dateFormat'
-import MenuItem from 'material-ui/MenuItem'
-import IconMenu from 'material-ui/IconMenu'
-import {connect} from 'react-redux'
+import getConfig from '../../helpers/getConfig'
+import t from '../../helpers/translate'
 const ZERO = 0
 
 const popupWidth = 210
@@ -285,7 +286,7 @@ const OrderDetails = enhance((props) => {
     return (
         <div className={classes.wrapper}>
             {type && <div className={classes.title}>
-                <div className={classes.titleLabel}>Заказ №{id}</div>
+                <div className={classes.titleLabel}>{t('Заказ')} №{id}</div>
                 <div className={classes.closeDetail}
                      onClick={handleCloseDetail}>
                 </div>
@@ -300,7 +301,7 @@ const OrderDetails = enhance((props) => {
                     <div className={classes.arrowShadow}> </div>
                 </div>
                 <div className={classes.titleButtons}>
-                    <Tooltip position="bottom" text="Добавить возврат">
+                    <Tooltip position="bottom" text={t('Добавить возврат')}>
                         <IconButton
                             disabled={!(status === DELIVERED || status === GIVEN)}
                             iconStyle={iconStyle.icon}
@@ -310,7 +311,7 @@ const OrderDetails = enhance((props) => {
                             <Return />
                         </IconButton>
                     </Tooltip>
-                    <Tooltip position="left" text="Распечатать">
+                    <Tooltip position="left" text={t('Распечатать')}>
                         <IconMenu
                             menuItemStyle={{fontSize: '13px'}}
                             iconButtonElement={<IconButton
@@ -323,17 +324,17 @@ const OrderDetails = enhance((props) => {
                             anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
                             targetOrigin={{horizontal: 'right', vertical: 'top'}}>
                             <MenuItem
-                                primaryText="Накладную"
+                                primaryText={t('Накладную')}
                                 onTouchTap={() => { getDocument.handleGetDocument(id) }}
                             />
                             <MenuItem
                                 disabled={currency !== 'SUM' && currency !== 'СУМ'}
-                                primaryText={currency === 'SUM' || currency === 'СУМ' ? 'Договор' : 'Договор (валюта должна быть в сумах)'}
+                                primaryText={currency === 'SUM' || currency === 'СУМ' ? t('Договор') : t('Договор (валюта должна быть в сумах)')}
                                 onTouchTap={() => { handleOpenPrintContract() }}
                             />
                         </IconMenu>
                     </Tooltip>
-                    <Tooltip position="bottom" text="Изменить">
+                    <Tooltip position="bottom" text={t('Изменить')}>
                         <IconButton
                             disabled={(status === CANCELED ? true : status === GIVEN ? !editableWhenGiven : currencyAccess)}
                             iconStyle={iconStyle.icon}
@@ -343,7 +344,7 @@ const OrderDetails = enhance((props) => {
                             <Edit />
                         </IconButton>
                     </Tooltip>
-                    <Tooltip position="bottom" text="Скидка">
+                    <Tooltip position="bottom" text={t('Скидка')}>
                         <IconButton
                             disabled={(status === CANCELED) || (totalReturned > zero)}
                             iconStyle={iconStyle.icon}
@@ -353,7 +354,7 @@ const OrderDetails = enhance((props) => {
                             <MoneyOffIcon />
                         </IconButton>
                     </Tooltip>
-                    <Tooltip position="bottom" text="Отменить">
+                    <Tooltip position="bottom" text={t('Отменить')}>
                         <IconButton
                             disabled={(status === CANCELED || status === GIVEN || status === DELIVERED)}
                             iconStyle={iconStyle.icon}
@@ -371,11 +372,11 @@ const OrderDetails = enhance((props) => {
                         <div className={classes.dataBox}>
                             <ul>
                                 <li>
-                                    <span>Клиент:</span>
+                                    <span>{t('Клиент')}:</span>
                                     <span title={client}>{client}</span>
                                 </li>
                                 {hasMarket && <li>
-                                    <span>Магазин:</span>
+                                    <span>{t('Магазин')}:</span>
                                     <span title={market}>
                                         <Link to={{
                                             pathname: sprintf(ROUTES.SHOP_ITEM_PATH, marketId),
@@ -384,24 +385,24 @@ const OrderDetails = enhance((props) => {
                                     </span>
                                 </li>}
                                 <li>
-                                    <span>Инициатор:</span>
+                                    <span>{t('Инициатор')}:</span>
                                     <span>{agent}</span>
                                 </li>
                                 <li>
-                                    <span>Дата создания</span>
+                                    <span>{t('Дата создания')}</span>
                                     <span>{createdDate}</span>
                                 </li>
 
                                 <li>
-                                    <span>Тип сделки:</span>
-                                    <span>{(dealType === '0') ? 'Стандартная' : 'Консигнация'}</span>
+                                    <span>{t('Тип сделки')}:</span>
+                                    <span>{(dealType === '0') ? t('Стандартная') : t('Консигнация')}</span>
                                 </li>
                                 {(configDivisions && divisionBool) ? <li>
-                                    <span>Организация:</span>
+                                    <span>{t('Организация')}:</span>
                                     <span>{division}</span>
                                 </li> : null}
                                 <li>
-                                    <span>Номер договора:</span>
+                                    <span>{t('Номер договора')}:</span>
                                     <span>{contract}</span>
                                 </li>
                             </ul>
@@ -409,34 +410,34 @@ const OrderDetails = enhance((props) => {
                     </div>
 
                     <div className={classes.subBlock}>
-                        <div className={classes.subtitle}>Баланс</div>
+                        <div className={classes.subtitle}>{t('Баланс')}</div>
                         <div className={classes.dataBox}>
                             <ul>
                                 <li>
-                                    <span>Прайс-лист:</span>
+                                    <span>{t('Прайс-лист')}:</span>
                                     <span>{priceList}</span>
                                 </li>
                                 <li>
-                                    <span>Дата ожидаемой оплаты:</span>
+                                    <span>{t('Дата ожидаемой оплаты')}:</span>
                                     <span>{paymentDate}</span>
                                 </li>
                                 <li>
-                                    <span>Тип оплаты:</span>
-                                    <span>{(paymentType === 'cash') ? 'Наличными' : 'Перечислением'}</span>
+                                    <span>{t('Тип оплаты')}:</span>
+                                    <span>{(paymentType === 'cash') ? t('Наличными') : t('Перечислением')}</span>
                                 </li>
                                 <li>
-                                    <span>Общая стоимость</span>
+                                    <span>{t('Общая стоимость')}</span>
                                     <span>{numberFormat(productTotal, currency)}</span>
                                 </li>
                                 <li>
-                                    <span>Оплачено:</span>
+                                    <span>{t('Оплачено')}:</span>
                                     {(totalPaid !== zero && type) ? <span>
                                         <a onClick={transactionsDialog.handleOpenTransactionsDialog} className={classes.link}>{numberFormat(totalPaid)} {currency}</a>
                                     </span>
                                         : <span>{numberFormat(totalPaid)} {currency}</span>}
                                 </li>
                                 <li>
-                                    <span>Остаток:</span>
+                                    <span>{t('Остаток')}:</span>
                                     <span className={totalBalance > zero ? classes.red : classes.green}>{numberFormat(totalBalance)} {currency}</span>
                                 </li>
                             </ul>
@@ -444,37 +445,37 @@ const OrderDetails = enhance((props) => {
                     </div>
 
                     <div className={classes.subBlock}>
-                        <div className={classes.subtitle}>Исполнение</div>
+                        <div className={classes.subtitle}>{t('Исполнение')}</div>
                         <div className={classes.dataBox}>
                             <ul>
                                 <li>
-                                    <span>Срок запроса:</span>
+                                    <span>{t('Срок запроса')}:</span>
                                     <span>{requestDeadline}</span>
                                 </li>
                                 <li>
-                                    <span>Текущий статус:</span>
-                                    {(status === REQUESTED) ? <span className={classes.yellow}>Запрос отправлен</span>
-                                        : (status === READY) ? <span className={classes.green}>Есть на складе</span>
+                                    <span>{t('Текущий статус')}:</span>
+                                    {(status === REQUESTED) ? <span className={classes.yellow}>{t('Запрос отправлен')}</span>
+                                        : (status === READY) ? <span className={classes.green}>{t('Есть на складе')}</span>
                                             : (status === GIVEN)
-                                                ? <span className={classes.yellow}>Передан доставщику</span>
+                                                ? <span className={classes.yellow}>{t('Передан доставщику')}</span>
                                                 : (status === DELIVERED)
-                                                    ? <span className={classes.green}>Доставлен</span>
+                                                    ? <span className={classes.green}>{t('Доставлен')}</span>
                                                     : (status === CANCELED)
-                                                        ? <span className={classes.red}>Отменен</span>
+                                                        ? <span className={classes.red}>{t('Отменен')}</span>
                                                         : (status === NOT_CONFIRMED)
-                                                            ? <span className={classes.grey}>Не подтвержден</span> : null
+                                                            ? <span className={classes.grey}>{t('Не подтвержден')}</span> : null
                                     }
                                 </li>
                                 {deliveryMan ? <li>
-                                    <span>Доставщик:</span>
+                                    <span>{t('Доставщик')}:</span>
                                     <span>{deliveryMan}</span>
                                 </li> : null}
                                 <li>
-                                    <span>Тип передачи:</span>
-                                    <span>{deliveryType === 'delivery' ? 'Доставка' : 'Самовывоз'}</span>
+                                    <span>{t('Тип передачи')}:</span>
+                                    <span>{deliveryType === 'delivery' ? t('Доставка') : t('Самовывоз')}</span>
                                 </li>
                                 {dateDelivery ? <li>
-                                    <span>Дата доставки:</span>
+                                    <span>{t('Дата доставки')}:</span>
                                     <span>{dateDelivery}</span>
                                 </li> : null}
                             </ul>
@@ -515,7 +516,7 @@ const OrderDetails = enhance((props) => {
             />}
             {type && <ConfirmDialog
                 type="cancel"
-                message={'Возврат № ' + cancelOrderReturnDialog.openCancelOrderReturnDialog}
+                message={t('Возврат') + ' № ' + cancelOrderReturnDialog.openCancelOrderReturnDialog}
                 onClose={cancelOrderReturnDialog.handleCloseCancelOrderReturnDialog}
                 onSubmit={cancelOrderReturnDialog.handleSubmitCancelOrderReturnDialog}
                 open={cancelOrderReturnDialog.openCancelOrderReturnDialog > ZERO}/>

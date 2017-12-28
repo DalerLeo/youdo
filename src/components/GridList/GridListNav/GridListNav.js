@@ -12,7 +12,7 @@ import Uncheck from 'material-ui/svg-icons/toggle/indeterminate-check-box'
 import Tooltip from '../../ToolTip'
 import {hashHistory} from 'react-router'
 import toBoolean from '../../../helpers/toBoolean'
-
+import t from '../../../helpers/translate'
 const GridListNav = ({classes, filter, filterDialog, addButton, withoutSearch, checkboxActions, extraButtons, customData, withCheckboxes, withoutPagination}) => {
     const selectIsEmpty = _.isEmpty(filter.getSelects())
     const filterIsEmpty = _.isEmpty(filterDialog)
@@ -59,7 +59,7 @@ const GridListNav = ({classes, filter, filterDialog, addButton, withoutSearch, c
                     </Col>
                     <Col xs={6} className={classes.flex}>
                         {!withoutPagination && <GridListNavPagination filter={filter}/>}
-                        {withCheckboxes && <Tooltip position="left" text={showCheckboxes ? 'Спрятать флажки' : 'Выбрать из списка для распечатки накладного'}>
+                        {withCheckboxes && <Tooltip position="left" text={showCheckboxes ? t('Спрятать флажки') : t('Выбрать из списка для распечатки накладного')}>
                             <IconButton onTouchTap={toggleCheckboxes}>
                                 {showCheckboxes
                                     ? <HideCheck color="#5d6474"/>
@@ -78,7 +78,7 @@ const GridListNav = ({classes, filter, filterDialog, addButton, withoutSearch, c
                         {!withoutPagination && <GridListNavPagination filter={filter}/>}
                         <div className={classes.buttons}>
                             {checkboxActions}
-                            <Tooltip position="left" text="Снять выделение">
+                            <Tooltip position="left" text={t('Снять выделение')}>
                                 <IconButton onTouchTap={clearSelects}>
                                     <Uncheck color="#666"/>
                                 </IconButton>

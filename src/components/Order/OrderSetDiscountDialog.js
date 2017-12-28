@@ -91,7 +91,7 @@ const OrderSetDiscountDialog = enhance((props) => {
                     floatingLabelStyle={{right: 0, transformOrigin: 'right top 0'}}
                     hintStyle={{bottom: 10, right: 0}}
                     normalize={normalizeDiscount}
-                    label="Размер скидки"
+                    label={t('Размер скидки')}
                     className={classes.inputFieldCustom}
 
                 /> <span>%</span>
@@ -103,7 +103,7 @@ const OrderSetDiscountDialog = enhance((props) => {
                     primary={true}
                     type="submit"
                 />
-                {percent > ZERO && <a onClick={() => { handleSubmitSetZeroDiscountDialog(id) }}>Отменить скидку</a>}
+                {percent > ZERO && <a onClick={() => { handleSubmitSetZeroDiscountDialog(id) }}>{t('Отменить скидку')}</a>}
             </form>
         </Paper>
     )
