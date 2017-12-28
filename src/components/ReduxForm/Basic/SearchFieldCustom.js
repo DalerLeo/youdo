@@ -105,7 +105,25 @@ const enhance = compose(
             _.get(nextProps, ['state', 'open'])
     }, (props) => {
         props.state.open && _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)
-    })
+    }),
+    withPropsOnChange((props, nextProps) => {
+        return (!_.isEmpty(_.get(nextProps, ['state', 'dataSource'])) && _.get(props, ['input', 'value']) !== _.get(nextProps, ['input', 'value'])) &&
+            _.get(nextProps, ['input', 'value'])
+    }, (props) => {
+        const {state, input, getItem, dispatch, getText, getValue} = props
+        const finder = _.find(state.dataSource, {'value': input.value.value})
+
+        if (_.isEmpty(finder) && input.value.value) {
+            getItem(input.value.value).then((data) => {
+                const dataSource = _.unionBy(props.state.dataSource, [{
+                    text: getText(data), value: getValue(data)
+                }], 'value')
+                return dispatch({
+                    dataSource: dataSource
+                })
+            })
+        }
+    }),
 )
 
 const SearchFieldCustom = enhance((props) => {
