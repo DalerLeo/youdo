@@ -275,10 +275,10 @@ const StatSalesGridList = enhance((props) => {
 
     const loading = _.get(listData, 'listLoading')
     const value = _.map(_.get(graphData, 'data'), (item) => {
-        return _.toNumber(_.get(item, 'amount'))
+        return _.toNumber(_.get(item, 'amountCash')) + _.toNumber(_.get(item, 'amountBank'))
     })
     const sum = _.sumBy(_.get(graphData, 'data'), (item) => {
-        return _.toNumber(_.get(item, 'amount'))
+        return _.toNumber(_.get(item, 'amountCash')) + _.toNumber(_.get(item, 'amountBank'))
     })
     const returnedValue = _.map(_.get(graphData, 'graphReturnList'), (item) => {
         return _.toNumber(_.get(item, 'totalAmount'))
