@@ -108,6 +108,7 @@ import StockMultiSearchField from './Stock/StockMultiSearchField'
 import ProductTypeParentMultiSearchField from './Product/ProductTypeParentMultiSearchField'
 import ProviderMultiSearchField from './Provider/ProviderMultiSearchField'
 import CashboxPaymentTypeSearchField from './Cashbox/CashboxPaymentTypeSearchField'
+import MarketPhoneListField from './Shop/MarketPhoneListField'
 
 export {
     CashboxTypeCurrencyField,
@@ -219,5 +220,6 @@ export {
     TransactionTypeMultiSearchField,
     CashboxPaymentTypeSearchField,
     ManufactureMultiSearchField,
-    MarketTypeParentSearchField
+    MarketTypeParentSearchField,
+    MarketPhoneListField
 }
