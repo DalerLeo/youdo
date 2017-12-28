@@ -147,11 +147,12 @@ const enhance = compose(
 
     withState('openStaff', 'setOpenStaff', false),
     withPropsOnChange((props, nextProps) => {
-        const prevExpenseCat = _.get(props, ['createForm', 'values', 'expanseCategory', 'value'])
-        const nextExpenseCat = _.get(nextProps, ['createForm', 'values', 'expanseCategory', 'value'])
+        const prevExpenseCat = _.get(props, ['createForm', 'values', 'expanseCategory', 'value', 'id'])
+        const nextExpenseCat = _.get(nextProps, ['createForm', 'values', 'expanseCategory', 'value', 'id'])
         return prevExpenseCat !== nextExpenseCat && nextExpenseCat
-    }, ({dispatch, createForm, optionsList, setOpenStaff}) => {
+    }, ({dispatch, createForm, optionsList, setOpenStaff, location: {query}}) => {
         const expenseOptions = _.get(createForm, ['values', 'expanseCategory', 'value', 'options'])
+        const updateTransactionID = _.toInteger(_.get(query, UPDATE_TRANSACTION))
         dispatch(optionsListFetchAction())
             .then(() => {
                 const options = _.get(optionsList, 'results')
@@ -163,6 +164,9 @@ const enhance = compose(
                 if (_.includes(expenseOptions, staffExpenseOptionId)) {
                     setOpenStaff(true)
                     dispatch(usersListFetchAction())
+                    if (updateTransactionID > ZERO) {
+                        dispatch(transactionCategoryPopopDataAction(updateTransactionID))
+                    }
                 } else {
                     setOpenStaff(false)
                 }
@@ -703,7 +707,8 @@ const TransactionList = enhance((props) => {
         usersListLoading,
         hasMarket,
         categoeyPopopData,
-        categoeyPopopDataLoading
+        categoeyPopopDataLoading,
+        optionsList
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', TRANSACTION_FILTER_OPEN]))
@@ -973,6 +978,7 @@ const TransactionList = enhance((props) => {
                 hasMarket={hasMarket}
                 canSetCustomRate={canSetCustomRate}
                 categryPopop={categryPopop}
+                optionsList={optionsList}
             />
         </Layout>
     )
