@@ -185,7 +185,7 @@ const ShopFilterForm = enhance((props) => {
                         className={classes.inputFieldCustom}
                         name="marketType"
                         component={MarketTypeSearchField}
-                        label="Тип магазина"
+                        label="Подкатегория"
                         parentType={typeParent}
                         fullWidth={true}/>
                     : null}

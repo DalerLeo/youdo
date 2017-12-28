@@ -506,7 +506,7 @@ const ShopList = enhance((props) => {
                     lng: _.get(detail, ['location', 'lon'])
                 },
                 marketTypeParent: {
-                    value: _.get(detail, ['marketTypeParent', 'id'])
+                    value: _.get(detail, ['marketType', 'parent'])
                 },
                 marketType: {
                     value: _.get(detail, ['marketType', 'id']),
