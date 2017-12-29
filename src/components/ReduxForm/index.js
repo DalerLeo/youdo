@@ -16,7 +16,8 @@ import BrandSearchField from './Brand/BrandSearchField'
 import BrandMultiSearchField from './Brand/BrandMultiSearchField'
 import MeasurementSearchField from './Measurement/MeasurementSearchField'
 import MeasurementMultiSearchField from './Measurement/MeasurementMultiSearchField'
-import CurrencySearchField from './CurrencySearchField'
+import CurrencySearchField from './Currency/CurrencySearchField'
+import CurrencyMultiSearchField from './Currency/CurrencyMultiSearchField'
 import ProviderSearchField from './Provider/ProviderSearchField'
 import ClientSearchField from './Client/ClientSearchField'
 import StockSearchField from './Stock/StockSearchField'
@@ -109,6 +110,7 @@ import ProductTypeParentMultiSearchField from './Product/ProductTypeParentMultiS
 import ProviderMultiSearchField from './Provider/ProviderMultiSearchField'
 import CashboxPaymentTypeSearchField from './Cashbox/CashboxPaymentTypeSearchField'
 import MarketPhoneListField from './Shop/MarketPhoneListField'
+import TransactionIncomeCategory from './Transaction/TransactionIncomeCategory'
 
 export {
     CashboxTypeCurrencyField,
@@ -221,5 +223,7 @@ export {
     CashboxPaymentTypeSearchField,
     ManufactureMultiSearchField,
     MarketTypeParentSearchField,
-    MarketPhoneListField
+    MarketPhoneListField,
+    CurrencyMultiSearchField,
+    TransactionIncomeCategory
 }

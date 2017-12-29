@@ -314,6 +314,16 @@ const enhance = compose(
             top: '40% !important',
             position: 'relative !important'
         },
+        loader2: {
+            position: 'absolute',
+            top: '65px',
+            bottom: '0',
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            background: '#fff',
+            zIndex: '5'
+        },
         emptyQuery: {
             background: 'url(' + Notifications + ') no-repeat center center',
             backgroundSize: '115px',
@@ -466,6 +476,9 @@ const Layout = enhance((props) => {
         <div className={classes.wrapper}>
             <div className={classes.notifications} style={openNotifications ? wrapperStyle.containerOpen : wrapperStyle.containerClose}>
                 <Paper className={classes.notificationsWrapper} zDepth={4} style={openNotifications ? wrapperStyle.wrapperOpen : wrapperStyle.wrapperClose}>
+                    {!loading && <div className={classes.loader2}>
+                        <Loader/>
+                    </div>}
                     <div className={classes.header}>
                         <div>Уведомления</div>
                         <div>

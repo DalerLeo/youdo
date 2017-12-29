@@ -16,7 +16,8 @@ import {
     ProductMultiSearchField,
     TextField,
     SupplyTypeMultiSearchField,
-    PaymentTypeSearchField
+    PaymentTypeSearchField,
+    DivisionMultiSearchField
 } from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
@@ -27,6 +28,7 @@ export const SUPPLY_FILTER_KEY = {
     PROVIDER: 'provider',
     PRODUCT: 'product',
     STOCK: 'stock',
+    DIVISION: 'division',
     CONTRACT: 'contract',
     STATUS: 'status',
     PAYMENT_TYPE: 'paymentType',
@@ -173,6 +175,7 @@ const SupplyFilterForm = enhance((props) => {
                         <Field className={classes.inputFieldCustom} name="provider" component={ProviderMultiSearchField} label="Поставщик"/>
                         <Field className={classes.inputFieldCustom} name="stock" component={StockMultiSearchField} label="Склад"/>
                         <Field className={classes.inputFieldCustom} name="product" component={ProductMultiSearchField} label="Товар"/>
+                        <Field className={classes.inputFieldCustom} name="division" component={DivisionMultiSearchField} label="Организация"/>
                         <Field className={classes.inputFieldCustom} name="paymentType" component={PaymentTypeSearchField} label="Тип оплаты"/>
                         <Field className={classes.inputFieldCustom} name="status" component={SupplyTypeMultiSearchField} label="Тип"/>
                         <Field className={classes.inputFieldCustom} name="contract" component={TextField} label="Номер договора"/>

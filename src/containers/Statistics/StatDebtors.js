@@ -13,6 +13,7 @@ import {
 } from '../../actions/statDebtors'
 import {currencyListFetchAction} from '../../actions/currency'
 import filterHelper from '../../helpers/filter'
+import {joinArray, splitToArray} from '../../helpers/joinSplitValues'
 import {StatDebtorsGridList} from '../../components/Statistics'
 import {STAT_DEBTORS_FILTER_KEY} from '../../components/Statistics/Debtors/DebtorsGridList'
 import getDocuments from '../../helpers/getDocument'
@@ -92,8 +93,8 @@ const enhance = compose(
             dPageSize: null
         }
         return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
-    }, ({dispatch}) => {
-        dispatch(statDebtorsDataFetchAction())
+    }, ({dispatch, filter}) => {
+        dispatch(statDebtorsDataFetchAction(filter))
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -124,9 +125,13 @@ const enhance = compose(
             const {filter, filterForm} = props
             const search = _.get(filterForm, ['values', 'search']) || null
             const division = _.get(filterForm, ['values', 'division']) || null
+            const paymentType = _.get(filterForm, ['values', 'paymentType', 'value']) || null
+            const currency = _.get(filterForm, ['values', 'currency']) || null
             filter.filterBy({
                 [STAT_DEBTORS_FILTER_KEY.SEARCH]: search,
-                [STAT_DEBTORS_FILTER_KEY.DIVISION]: _.join(division, '-')
+                [STAT_DEBTORS_FILTER_KEY.DIVISION]: joinArray(division),
+                [STAT_DEBTORS_FILTER_KEY.PAYMENT_TYPE]: paymentType,
+                [STAT_DEBTORS_FILTER_KEY.CURRENCY]: joinArray(currency)
 
             })
         },
@@ -193,6 +198,8 @@ const StatDebtorsList = enhance((props) => {
     const openDetailId = _.toInteger(_.get(location, ['query', 'detailId']))
     const openStatDebtorsDialog = _.toInteger(_.get(location, ['query', 'orderId']))
     const division = _.get(location, ['query', 'division'])
+    const paymentType = _.get(location, ['query', 'paymentType'])
+    const currency = _.get(location, ['query', 'currency'])
 
     const statDebtorsDialog = {
         openStatDebtorsDialog,
@@ -210,9 +217,9 @@ const StatDebtorsList = enhance((props) => {
     }
 
     const initialValues = {
-        division: division && _.map(_.split(division, '-'), (item) => {
-            return _.toNumber(item)
-        })
+        currency: currency && splitToArray(currency),
+        division: division && splitToArray(division),
+        paymentType: {value: paymentType}
     }
     const detailData = {
         openDetailId: openDetailId,

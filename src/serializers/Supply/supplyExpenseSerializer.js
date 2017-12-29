@@ -16,6 +16,7 @@ export const createSerializer = (data, id) => {
         amount,
         currency,
         comment,
+        'bind_to_provider': _.get(data, 'bindToProvider') || false,
         'payment_type': paymentType,
         'supply_product': supplyProduct
     }

@@ -34,6 +34,7 @@ export const createIncomeSerializer = (data, cashboxId) => {
     const amount = _.get(data, 'amount') < ZERO ? _.get(data, 'amount') * MINUS_ONE : _.get(data, 'amount')
     const comment = _.get(data, 'comment')
     const clientId = _.get(data, ['client', 'value'])
+    const provider = _.get(data, ['provider', 'value'])
     const customRate = numberWithoutSpaces(_.get(data, 'custom_rate'))
     const division = _.get(data, ['division', 'value'])
     const cashbox = _.get(data, ['cashbox', 'value'])
@@ -45,7 +46,8 @@ export const createIncomeSerializer = (data, cashboxId) => {
         'custom_rate': customRate,
         'client': clientId,
         'division': division,
-        'date': date
+        'date': date,
+        provider
     }
 }
 
@@ -65,6 +67,7 @@ export const createExpenseSerializer = (data, cashboxId) => {
     const comment = _.get(data, 'comment')
     const expenseId = _.get(data, ['expanseCategory', 'value', 'id'])
     const clientId = _.get(data, ['client', 'value'])
+    const providerId = _.get(data, ['provider', 'value'])
     const customRate = numberWithoutSpaces(_.get(data, 'custom_rate'))
     const division = _.get(data, ['division', 'value'])
     const cashbox = _.get(data, ['cashbox', 'value'])
@@ -80,14 +83,25 @@ export const createExpenseSerializer = (data, cashboxId) => {
             'division': division,
             'date': date
         }
-        : {
-            amount: _.isEmpty(staffs) ? amount : salaryAmount,
-            comment,
-            'cashbox': _.toInteger(cashboxId) === ZERO ? cashbox : cashboxId,
-            'expanse_category': expenseId,
-            'custom_rate': customRate,
-            staffs
-        }
+        : (providerId)
+            ? {
+                amount: amount,
+                comment,
+                'cashbox': _.toInteger(cashboxId) === ZERO ? cashbox : cashboxId,
+                'expanse_category': expenseId,
+                'provider': providerId,
+                'custom_rate': customRate,
+                'division': division,
+                'date': date
+            }
+            : {
+                amount: _.isEmpty(staffs) ? amount : salaryAmount,
+                comment,
+                'cashbox': _.toInteger(cashboxId) === ZERO ? cashbox : cashboxId,
+                'expanse_category': expenseId,
+                'custom_rate': customRate,
+                staffs
+            }
 }
 const HUNDRED = 100
 export const createSendSerializer = (data, cashboxId, withPersent) => {

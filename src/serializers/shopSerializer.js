@@ -55,11 +55,13 @@ export const updateSerializer = (data, location, detail) => {
     const address = _.get(data, 'address')
     const guide = _.get(data, 'guide')
     const frequency = _.get(data, ['frequency', 'value'])
-    const phone = _.get(data, 'phone')
     const status = _.get(data, ['status', 'value'])
     const lat = _.get(location, 'lat')
     const lon = _.get(location, 'lng')
     const contactName = _.get(data, ['contactName'])
+    const phones = _.map(_.get(data, 'phones'), (item) => {
+        return item.phone
+    })
     let isActive = false
     if (status === ONE) {
         isActive = true
@@ -73,7 +75,7 @@ export const updateSerializer = (data, location, detail) => {
         address,
         guide,
         'visit_frequency': frequency,
-        phone,
+        phones,
         'contact_name': contactName,
         'location': {
             'lat': lat,

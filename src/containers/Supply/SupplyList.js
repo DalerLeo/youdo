@@ -273,6 +273,7 @@ const enhance = compose(
             const createdFromDate = _.get(filterForm, ['values', 'dateCreated', 'fromDate']) || null
             const createdToDate = _.get(filterForm, ['values', 'dateCreated', 'toDate']) || null
             const provider = _.get(filterForm, ['values', 'provider']) || null
+            const division = _.get(filterForm, ['values', 'division']) || null
             const product = _.get(filterForm, ['values', 'product']) || null
             const stock = _.get(filterForm, ['values', 'stock']) || null
             const status = _.get(filterForm, ['values', 'status']) || null
@@ -282,6 +283,7 @@ const enhance = compose(
             filter.filterBy({
                 [SUPPLY_FILTER_OPEN]: false,
                 [SUPPLY_FILTER_KEY.PROVIDER]: joinArray(provider),
+                [SUPPLY_FILTER_KEY.DIVISION]: joinArray(division),
                 [SUPPLY_FILTER_KEY.PRODUCT]: joinArray(product),
                 [SUPPLY_FILTER_KEY.STOCK]: joinArray(stock),
                 [SUPPLY_FILTER_KEY.STATUS]: joinArray(status),
@@ -572,6 +574,7 @@ const SupplyList = enhance((props) => {
     const openUpdateDialog = toBoolean(_.get(location, ['query', SUPPLY_UPDATE_DIALOG_OPEN]))
     const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
     const provider = (filter.getParam(SUPPLY_FILTER_KEY.PROVIDER))
+    const division = (filter.getParam(SUPPLY_FILTER_KEY.DIVISION))
     const stock = (filter.getParam(SUPPLY_FILTER_KEY.STOCK))
     const product = (filter.getParam(SUPPLY_FILTER_KEY.PRODUCT))
     const status = (filter.getParam(SUPPLY_FILTER_KEY.STATUS))
@@ -666,6 +669,9 @@ const SupplyList = enhance((props) => {
                 return {}
             }
             return {
+                division: {
+                    value: _.get(detail, ['division', 'id'])
+                },
                 provider: {
                     value: _.get(detail, ['provider', 'id'])
                 },
@@ -698,6 +704,7 @@ const SupplyList = enhance((props) => {
             provider: provider && splitToArray(provider),
             product: product && splitToArray(product),
             stock: stock && splitToArray(stock),
+            division: division && splitToArray(division),
             status: status && splitToArray(status),
             contract: contract,
             dateDelivery: {
