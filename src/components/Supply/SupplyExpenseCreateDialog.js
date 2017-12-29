@@ -125,6 +125,12 @@ const ExpenseCreateDialog = enhance((props) => {
                                 label="Тип оплаты"
                                 fullWidth={true}/>
                             <Field
+                                name="bindToProvider"
+                                style={{margin: '20px 0 10px'}}
+                                component={CheckBox}
+                                label="Привязать к балансу поставщика"
+                            />
+                            <Field
                                 name="linkToProduct"
                                 style={{margin: '20px 0 10px'}}
                                 component={CheckBox}

@@ -101,5 +101,10 @@
   "Всего": "Total",
   "Вы еще не выбрали ни одного товара": "You have not selected any items yet",
   "Для добавления товаров": "To add products",
-  "выберите тип оплаты, валюту и прайс лист": "Choose the type of payment, currency and price list"
+  "выберите тип оплаты, валюту и прайс лист": "Choose the type of payment, currency and price list",
+  "Приход на счет клиента": "Income to client's account",
+  "Приход с поставшика": "Income from provider",
+  "Категория прихода": "Income category",
+  "Поставщик": "Provider"
+
 }

@@ -6,6 +6,7 @@ import moment from 'moment'
 export const createSerializer = (data) => {
     const provider = _.get(data, ['provider', 'value'])
     const stock = _.get(data, ['stock', 'value'])
+    const division = _.get(data, ['division', 'value'])
     const currency = _.get(data, ['currency', 'value'])
     const comment = _.get(data, ['comment'])
     const contact = _.get(data, ['contact'])
@@ -29,6 +30,7 @@ export const createSerializer = (data) => {
         contact,
         contract,
         comment,
+        division,
         'payment_type': paymentType,
         'date_delivery': moment(_.get(data, ['date_delivery'])).format('YYYY-MM-DD'),
         currency,
@@ -41,6 +43,7 @@ export const updateSerializer = (data, id) => {
     const stock = _.get(data, ['stock', 'value'])
     const currency = _.get(data, ['currency', 'value'])
     const comment = _.get(data, ['comment'])
+    const division = _.get(data, ['division', 'value'])
     const contact = _.get(data, ['contact'])
     const paymentType = _.get(data, ['paymentType', 'value'])
     const products = _.map(_.get(data, ['products']), (item) => {
@@ -62,6 +65,7 @@ export const updateSerializer = (data, id) => {
         stock,
         contact,
         comment,
+        division,
         'date_delivery': moment(_.get(data, ['date_delivery'])).format('YYYY-MM-DD'),
         currency,
         products,
@@ -78,6 +82,7 @@ export const listFilterSerializer = (data) => {
         'payment_type': _.get(defaultData, 'paymentType'),
         'product': _.get(defaultData, 'product'),
         'stock': _.get(defaultData, 'stock'),
+        'division': _.get(defaultData, 'division'),
         'status': _.get(defaultData, 'status'),
         'contract': _.get(defaultData, 'contract'),
         'date_delivery_0': _.get(defaultData, 'deliveryFromDate'),

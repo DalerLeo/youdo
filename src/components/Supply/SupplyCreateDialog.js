@@ -17,7 +17,8 @@ import {
     PaymentTypeSearchField,
     SupplyListProductField,
     TextField,
-    DateField
+    DateField,
+    DivisionSearchField
 } from '../ReduxForm'
 import {PROVIDER_CREATE_DIALOG_OPEN} from '../Provider'
 import {Link} from 'react-router'
@@ -263,12 +264,13 @@ const SupplyCreateDialog = enhance((props) => {
                     <div className={classes.innerWrap}>
                         <div className={classes.inContent} style={{minHeight: '350px'}}>
                             <div className={classes.leftOrderPart}>
-                                <div className={classes.subTitleOrder}>Выбор поставщика <Link style={{color: '#12aaeb'}}
-                                                                                              target="_blank"
-                                                                                              to={{
-                                                                                                  pathname: [ROUTES.PROVIDER_LIST_URL],
-                                                                                                  query: {[PROVIDER_CREATE_DIALOG_OPEN]: true}
-                                                                                              }}>
+                                <div className={classes.subTitleOrder}>Выбор поставщика
+                                    <Link style={{color: '#12aaeb'}}
+                                        target="_blank"
+                                        to={{
+                                            pathname: [ROUTES.PROVIDER_LIST_URL],
+                                            query: {[PROVIDER_CREATE_DIALOG_OPEN]: true}
+                                        }}>
                                     + добавить
                                 </Link></div>
                                 <div className={classes.selectContent}>
@@ -291,6 +293,12 @@ const SupplyCreateDialog = enhance((props) => {
                                         className={classes.inputDateCustom}
                                         floatingLabelText="Дата поставки"
                                         container="inline"
+                                        fullWidth={true}/>
+                                    <Field
+                                        name="division"
+                                        component={DivisionSearchField}
+                                        className={classes.searchFieldCustom}
+                                        label="Организация"
                                         fullWidth={true}/>
                                     <Field
                                         name="stock"

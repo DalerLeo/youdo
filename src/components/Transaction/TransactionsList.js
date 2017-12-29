@@ -305,6 +305,9 @@ const TransactionsList = enhance((props) => {
             client: {
                 value: _.get(currentItem, ['client', 'id'])
             },
+            incomeCategory: {
+                value: (_.get(currentItem, ['client', 'id']) && 'client') || (_.get(currentItem, ['provider', 'id']) && 'provider')
+            },
             showClients: _.get(currentItem, ['client', 'id']) && true,
             incomeFromClient: _.get(currentItem, ['client', 'id']) && true,
             custom_rate: _.get(currentItem, 'customRate'),
