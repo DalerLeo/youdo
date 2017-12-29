@@ -8,6 +8,8 @@ export const listFilterSerializer = (data) => {
     return {
         'search': _.get(defaultData, 'search'),
         'division': _.get(defaultData, 'division'),
+        'paymentType': _.get(defaultData, 'paymentType'),
+        'currency': _.get(defaultData, 'currency'),
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),
         'ordering': ordering && orderingSnakeCase(ordering)

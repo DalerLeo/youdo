@@ -3,18 +3,17 @@ import MultiSelectField from '../Basic/MultiSelectField'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
-import {connect} from 'react-redux'
 import caughtCancel from '../../../helpers/caughtCancel'
 
 const CancelToken = axios().CancelToken
+let currencyMultiListToken = null
 
-let clientMultiListToken = null
 const getOptions = (search) => {
-    if (clientMultiListToken) {
-        clientMultiListToken.cancel()
+    if (currencyMultiListToken) {
+        currencyMultiListToken.cancel()
     }
-    clientMultiListToken = CancelToken.source()
-    return axios().get(`${PATH.CLIENT_LIST}?search=${search || ''}&page_size=100`, {cancelToken: clientMultiListToken.token})
+    currencyMultiListToken = CancelToken.source()
+    return axios().get(`${PATH.CURRENCY_LIST}?search=${search || ''}&page_size=100`, {cancelToken: currencyMultiListToken.token})
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
         })
@@ -22,14 +21,15 @@ const getOptions = (search) => {
             caughtCancel(error)
         })
 }
+
 const getIdsOption = (ids) => {
-    return axios().get(`${PATH.CLIENT_LIST}?ids=${ids || ''}`)
+    return axios().get(`${PATH.DIVISION_LIST}?ids=${ids || ''}`)
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
         })
 }
 
-const ClientSearchField = connect()((props) => {
+const CurrencyMultiSearchField = (props) => {
     return (
         <MultiSelectField
             getValue={MultiSelectField.defaultGetValue('id')}
@@ -40,6 +40,6 @@ const ClientSearchField = connect()((props) => {
             {...props}
         />
     )
-})
+}
 
-export default ClientSearchField
+export default CurrencyMultiSearchField

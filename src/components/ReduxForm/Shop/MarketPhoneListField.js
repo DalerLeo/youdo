@@ -75,7 +75,7 @@ const iconStyle = {
         justifyContent: 'center'
     }
 }
-const ClientContactsListField = (props) => {
+const MarketPhoneListField = (props) => {
     const {classes, fields} = props
     const ONE = 1
 
@@ -117,4 +117,4 @@ const ClientContactsListField = (props) => {
     )
 }
 
-export default enhance(ClientContactsListField)
+export default enhance(MarketPhoneListField)
