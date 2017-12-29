@@ -16,36 +16,36 @@ import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
 import dateFormat from '../../helpers/dateFormat'
-
+import t from '../../helpers/translate'
 const listHeader = [
     {
         sorting: true,
         name: 'id',
-        title: '№ акции',
+        title: '№ ' + t('акции'),
         xs: 1
     },
     {
         sorting: false,
         name: 'name',
-        title: 'Наименование',
+        title: t('Наименование'),
         xs: 5
     },
     {
         sorting: true,
         name: 'beginDate',
-        title: 'Дата начала',
+        title: t('Дата начала'),
         xs: 2
     },
     {
         sorting: true,
         name: 'tillDate',
-        title: 'Дата завершения',
+        title: t('Дата завершения'),
         xs: 2
     },
     {
         sorting: false,
         name: 'discount',
-        title: 'Мар. акция',
+        title: t('Мар. акция'),
         xs: 2
     }
 ]
@@ -147,7 +147,7 @@ const PricesGridList = enhance((props) => {
             <SubMenu url={ROUTES.PRICES_LIST_URL}/>
 
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить акцию">
+                <Tooltip position="left" text={t('Добавить акцию')}>
                     <FloatingActionButton
                         mini={true}
                         zDepth={1}

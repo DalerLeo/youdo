@@ -25,49 +25,49 @@ import numberFormat from '../../helpers/numberFormat'
 import dateFormat from '../../helpers/dateTimeFormat'
 import ReturnUpdateDialog from '../Order/OrderReturnDialog'
 import Print from 'material-ui/svg-icons/action/print'
-
+import t from '../../helpers/translate'
 const listHeader = [
     {
         sorting: true,
         name: 'id',
-        title: 'Возврат',
+        title: t('Возврат'),
         width: '10%'
     },
     {
         sorting: false,
         name: 'client',
-        title: 'От кого',
+        title: t('От кого'),
         width: '15%'
     },
     {
         sorting: true,
         name: 'order',
-        title: 'Заказ',
+        title: t('Заказ'),
         width: '10%'
     },
     {
         sorting: false,
         name: 'stock',
-        title: 'Склад',
+        title: t('Склад'),
         width: '15%'
     },
     {
         sorting: false,
         name: 'user',
-        title: 'Добавил',
+        title: t('Добавил'),
         width: '15%'
     },
     {
         sorting: true,
         name: 'createdDate',
-        title: 'Дата возврата',
+        title: t('Дата возврата'),
         width: '15%'
     },
     {
         sorting: true,
         name: 'totalPrice',
         alignRight: true,
-        title: 'Сумма возврата',
+        title: t('Сумма возврата'),
         width: '15%'
     },
     {
@@ -205,7 +205,7 @@ const OrderGridList = enhance((props) => {
                 <div style={{width: '5%'}}>
                     <div className={classes.buttons}>
                         {(status === PENDING || status === IN_PROGRESS)
-                            ? <Tooltip position="bottom" text="Ожидает">
+                            ? <Tooltip position="bottom" text={t('Ожидает')}>
                                 <IconButton
                                     disableTouchRipple={true}
                                     iconStyle={iconStyle.icon}
@@ -215,7 +215,7 @@ const OrderGridList = enhance((props) => {
                                 </IconButton>
                             </Tooltip>
                             : (status === COMPLETED)
-                                ? <Tooltip position="bottom" text="Завершен">
+                                ? <Tooltip position="bottom" text={t('Завершен')}>
                                     <IconButton
                                         disableTouchRipple={true}
                                         iconStyle={iconStyle.icon}
@@ -225,7 +225,7 @@ const OrderGridList = enhance((props) => {
                                     </IconButton>
                                 </Tooltip>
                                 : (status === CANCELLED)
-                                    ? <Tooltip position="bottom" text="Отменен">
+                                    ? <Tooltip position="bottom" text={t('Отменен')}>
                                         <IconButton
                                             disableTouchRipple={true}
                                             iconStyle={iconStyle.icon}
@@ -248,7 +248,7 @@ const OrderGridList = enhance((props) => {
     }
     const checkboxActions = (
         <div className={classes.buttons}>
-            <Tooltip position="left" text="Распечатать накладные">
+            <Tooltip position="left" text={t('Распечатать накладные')}>
                 <IconButton onTouchTap={printDialog.handleOpenPrintDialog}>
                     <Print color="#666"/>
                 </IconButton>
@@ -261,7 +261,7 @@ const OrderGridList = enhance((props) => {
             <SubMenu url={ROUTES.RETURN_LIST_URL}/>
             {canChangeAnyReturn &&
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text={'Возврат с клиента'}>
+                <Tooltip position="left" text={t('Возврат с клиента')}>
                     <FloatingActionButton
                         mini={true}
                         zDepth={1}
@@ -288,7 +288,7 @@ const OrderGridList = enhance((props) => {
 
             {detailData.data && <ConfirmDialog
                 type="cancel"
-                message={'Заказ № ' + _.get(detailData, ['data', 'id'])}
+                message={t('Заказ') + ' № ' + _.get(detailData, ['data', 'id'])}
                 onClose={confirmDialog.handleCloseConfirmDialog}
                 onSubmit={confirmDialog.handleSendConfirmDialog}
                 open={confirmDialog.openConfirmDialog}

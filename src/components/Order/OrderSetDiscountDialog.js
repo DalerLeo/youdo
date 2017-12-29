@@ -9,6 +9,7 @@ import {TextField, normalizeDiscount} from '../ReduxForm'
 import Paper from 'material-ui/Paper'
 import toCamelCase from '../../helpers/toCamelCase'
 import numberFormat from '../../helpers/numberFormat'
+import t from '../../helpers/translate'
 
 const validate = (data) => {
     const errors = toCamelCase(data)

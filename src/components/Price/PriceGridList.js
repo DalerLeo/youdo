@@ -19,38 +19,39 @@ import SubMenu from '../SubMenu'
 import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat'
 import dataFormat from '../../helpers/dateFormat'
+import t from '../../helpers/translate'
 
 const listHeader = [
     {
         sorting: false,
         name: 'name',
-        title: 'Название',
+        title: t('Название'),
         xs: 3
     },
     {
         sorting: true,
         name: 'code',
-        title: 'Код товара',
+        title: t('Код товара'),
         xs: 2
     },
     {
         sorting: true,
         name: 'netCost',
-        title: 'Себестоимость',
+        title: t('Себестоимость'),
         alignRight: true,
         xs: 2
     },
     {
         sorting: false,
         name: 'minPrice',
-        title: 'Цена',
+        title: t('Цена'),
         alignRight: true,
         xs: 2
     },
     {
         sorting: true,
         name: 'priceUpdated',
-        title: 'Дата обновления',
+        title: t('Дата обновления'),
         xs: 2
     }
 ]
@@ -186,27 +187,27 @@ const PriceGridList = enhance((props) => {
 
     const excelButton = (
         <div className={classes.excelButton}>
-                <a className={classes.excel} onClick={getDocument}>
-                    <Excel color="#fff"/> <span>Excel</span>
-                </a>
+            <a className={classes.excel} onClick={getDocument}>
+                <Excel color="#fff"/> <span>Excel</span>
+            </a>
         </div>
     )
     const priceList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const currency = getConfig('PRIMARY_CURRENCY')
-        const codeProduct = _.get(item, 'code') || 'Не установлен'
-        const netCost = _.get(item, 'netCost') ? numberFormat(_.get(item, 'netCost'), currency) : 'Не установлена'
+        const codeProduct = _.get(item, 'code') || t('Не установлен')
+        const netCost = _.get(item, 'netCost') ? numberFormat(_.get(item, 'netCost'), currency) : t('Не установлена')
         const minPrice = _.get(item, 'minPrice')
         const maxPrice = _.get(item, 'maxPrice')
-        const price = (minPrice && maxPrice) ? numberFormat(minPrice) + ' - ' + numberFormat(maxPrice, getConfig('PRIMARY_CURRENCY')) : 'Не установлена'
-        const priceUpdate = _.get(item, 'priceUpdated') ? dataFormat(_.get(item, 'priceUpdated')) : 'Не установлена'
+        const price = (minPrice && maxPrice) ? numberFormat(minPrice) + ' - ' + numberFormat(maxPrice, getConfig('PRIMARY_CURRENCY')) : t('Не установлена')
+        const priceUpdate = _.get(item, 'priceUpdated') ? dataFormat(_.get(item, 'priceUpdated')) : t('Не установлена')
         const customPrice = _.get(item, 'customPrice')
 
         const internalMinPrice = numberFormat(_.get(item, 'internalMinPrice'))
         const internalMaxPrice = numberFormat(_.get(item, 'internalMaxPrice'), currency)
-        const tooltipText = 'Агент может устанавливать цены <br/>' + internalMinPrice + ' - ' + internalMaxPrice
-        const tooltipText2 = 'Агент не может устанавливать цены'
+        const tooltipText = t('Агент может устанавливать цены') + '<br/>' + internalMinPrice + ' - ' + internalMaxPrice
+        const tooltipText2 = t('Агент не может устанавливать цены')
 
         return (
             <Row key={id} className={classes.listRow}>

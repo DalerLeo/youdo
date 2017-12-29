@@ -19,6 +19,7 @@ import {
 } from '../ReduxForm'
 import PromotionsRadioButton from '../ReduxForm/Promotions/PromotionsRadioButton'
 import toCamelCase from '../../helpers/toCamelCase'
+import t from '../../helpers/translate'
 
 export const PRICES_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const validate = (data) => {
@@ -252,7 +253,7 @@ const PricesCreateDialog = enhance((props) => {
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>{isUpdate ? 'Изменение акции' : 'Новая акция'}</span>
+                <span>{isUpdate ? t('Изменение акции') : t('Новая акция')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -270,7 +271,7 @@ const PricesCreateDialog = enhance((props) => {
                                         name="name"
                                         component={TextField}
                                         className={classes.inputFieldCustom}
-                                        label="Название новой акции"
+                                        label={t('Название новой акции')}
                                         fullWidth={true}/>
                                     <div className={classes.radioButton}>
                                         <Field
@@ -282,19 +283,19 @@ const PricesCreateDialog = enhance((props) => {
                                     </div>
                                 </div>
                                 <div className={classes.condition}>
-                                    <div className={classes.subTitleOrder}>Условия акции</div>
+                                    <div className={classes.subTitleOrder}>{t('Условия акции')}</div>
                                     <Field
                                         name="beginDate"
                                         component={DateField}
                                         className={classes.inputDateCustom}
-                                        floatingLabelText="Дата начала акции"
+                                        floatingLabelText={t('Дата начала акции')}
                                         container="inline"
                                         fullWidth={true}/>
                                     <Field
                                         name="tillDate"
                                         component={DateField}
                                         className={classes.inputDateCustom}
-                                        floatingLabelText="Дата завершения акции"
+                                        floatingLabelText={t('Дата завершения акции')}
                                         container="inline"
                                         fullWidth={true}/>
                                     <div className={classes.halfField}>
@@ -304,7 +305,7 @@ const PricesCreateDialog = enhance((props) => {
                                             component={TextField}
                                             className={classes.inputFieldCustom}
                                             fullWidth={true}
-                                            label="Размер скидки"
+                                            label={t('Размер скидки')}
                                             hintText="10%"
                                         />
                                         : <Field
@@ -312,7 +313,7 @@ const PricesCreateDialog = enhance((props) => {
                                             component={TextField}
                                             className={classes.inputFieldCustom}
                                             fullWidth={true}
-                                            label="Кол-во"
+                                            label={t('Кол-во')}
                                         />}
                                     </div>
                                     <Field
@@ -321,7 +322,7 @@ const PricesCreateDialog = enhance((props) => {
                                         className={classes.inputFieldCustom}
                                         fullWidth={true}
                                         isUpdate={isUpdate}
-                                        label="Выберите тип магазинов "
+                                        label={t('Выберите тип магазинов')}
                                     />
                                 </div>
                             </div>
@@ -339,7 +340,7 @@ const PricesCreateDialog = enhance((props) => {
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
-                            label="Применить акцию"
+                            label={t('Применить акцию')}
                             className={classes.actionButton}
                             primary={true}
                             type="submit"

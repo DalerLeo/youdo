@@ -29,6 +29,7 @@ import {
 
 import {openSnackbarAction} from '../../actions/snackbar'
 import {openErrorAction} from '../../actions/error'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     connect((state, props) => {
@@ -84,14 +85,14 @@ const enhance = compose(
             const detailId = _.toNumber(_.get(params, 'pricesId'))
             dispatch(pricesDeleteAction(detailId))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно отменено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно отменено')}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[PRICES_DELETE_DIALOG_OPEN]: false})})
                     dispatch(pricesListFetchAction(filter))
                 })
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
+                    return dispatch(openSnackbarAction({message: t('Ошибка при удалении')}))
                 })
         },
 
@@ -137,7 +138,7 @@ const enhance = compose(
             const {location: {pathname}, dispatch, createForm, filter} = props
             return dispatch(pricesCreateAction(_.get(createForm, ['values'])))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[PRICES_CREATE_DIALOG_OPEN]: false})})
@@ -169,7 +170,7 @@ const enhance = compose(
                     return dispatch(pricesItemFetchAction(pricesId))
                 })
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push(filter.createURL({[PRICES_UPDATE_DIALOG_OPEN]: false}))

@@ -13,6 +13,7 @@ import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
 import Tooltip from '../ToolTip'
 import dateFormat from '../../helpers/dateFormat'
+import t from '../../helpers/translate'
 
 const ZERO = 0
 const colorBlue = '#12aaeb'
@@ -284,7 +285,7 @@ const PricesDetails = enhance((props) => {
                      onClick={() => { handleCloseDetail() }}>
                 </div>
                 <div className={classes.titleButtons}>
-                    <Tooltip position="bottom" text="Изменить">
+                    <Tooltip position="bottom" text={t('Изменить')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
@@ -293,7 +294,7 @@ const PricesDetails = enhance((props) => {
                             <Edit />
                         </IconButton>
                     </Tooltip>
-                    <Tooltip position="bottom" text="Отменить">
+                    <Tooltip position="bottom" text={t('Отменить')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
@@ -308,13 +309,13 @@ const PricesDetails = enhance((props) => {
             <div className={classes.details}>
                 <div className={classes.storeInfo}>
                     <div className={classes.store}>
-                        {(type === 'discount') ? <span>Размер <b>акции - {discount}%</b></span>
-                            : <span><b>Бонусная акция</b></span>}
+                        {(type === 'discount') ? <span>{t('Размер')} <b>{t('акции')} - {discount}%</b></span>
+                            : <span><b>{t('Бонусная акция')}</b></span>}
                     </div>
                 </div>
                 {_.get(data, 'marketTypes') && _.get(data, 'marketTypes').length > ZERO && <div className={classes.storeInfo}>
                     <div className={classes.store}>
-                        <span className={classes.market}><b>Действует для:</b></span>
+                        <span className={classes.market}><b>{t('Действует для')}:</b></span>
                         {_.map(_.get(data, 'marketTypes'), (item) => {
                             return (
                                 <Chip
@@ -328,8 +329,8 @@ const PricesDetails = enhance((props) => {
                     </div>
                 </div>}
                 <div className={classes.dateInfo}>
-                    <div>Начало акции: <span style={{marginRight: '30px'}}>{beginDate}</span></div>
-                    <div>Завершение акции: <span>{tillDate}</span></div>
+                    <div>{t('Начало акции')}: <span style={{marginRight: '30px'}}>{beginDate}</span></div>
+                    <div>{t('Завершение акции')}: <span>{tillDate}</span></div>
                 </div>
             </div>
 
@@ -338,7 +339,7 @@ const PricesDetails = enhance((props) => {
                     <div className={classes.half}>
                         <div className="dataHeader">
                             <Row>
-                                <Col xs={12}>Бонусный товар</Col>
+                                <Col xs={12}>{t('Бонусный товар')}</Col>
                             </Row>
                         </div>
                         <div>
@@ -355,13 +356,13 @@ const PricesDetails = enhance((props) => {
                                 return false
                             })}
                         </div>
-                        <div className={classes.totalAmount}>Общее количество: <strong>{totalAmount}</strong></div>
+                        <div className={classes.totalAmount}>{t('Общее количество')}: <strong>{totalAmount}</strong></div>
                     </div>
                     <div className={classes.half}>
                         <div className="dataHeader">
                             <Row>
-                                <Col xs={9}>Подарок</Col>
-                                <Col xs={3}>Кол-во</Col>
+                                <Col xs={9}>{t('Подарок')}</Col>
+                                <Col xs={3}>{t('Кол-во')}</Col>
                             </Row>
                         </div>
                         <div>
@@ -386,10 +387,10 @@ const PricesDetails = enhance((props) => {
                 : <div className={classes.data}>
                     <div className="dataHeader">
                         <Row>
-                            <Col xs={5}>Товар</Col>
-                            <Col xs={3}>Кол-во</Col>
-                            <Col xs={2}>Реальная стоимость</Col>
-                            <Col xs={2}>Стоимость по акции</Col>
+                            <Col xs={5}>{t('Товар')}</Col>
+                            <Col xs={3}>{t('Кол-во')}</Col>
+                            <Col xs={2}>{t('Реальная стоимость')}</Col>
+                            <Col xs={2}>{t('Стоимость по акции')}</Col>
                         </Row>
                     </div>
                     <div>

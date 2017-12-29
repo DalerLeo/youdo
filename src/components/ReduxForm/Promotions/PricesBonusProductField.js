@@ -13,6 +13,7 @@ import ProductCustomGiftSearchField from '../Promotions/ProductCustomGiftSearchF
 import ProductCustomBonusSearchField from '../Promotions/ProductCustomBonusSearchField'
 import TextField from '../Basic/TextField'
 import numberFormat from '../../../helpers/numberFormat'
+import t from '../../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -211,9 +212,9 @@ const PricesBonusProductField = ({classes, state, dispatch, handleAddBonus, hand
         <div className={classes.wrapper}>
             <div>
                 {!state.open && <div className={classes.headers} style={{marginTop: '-10px'}}>
-                    <div className={classes.title}>Список товаров</div>
+                    <div className={classes.title}>{t('Список товаров')}</div>
                     <FlatButton
-                        label="+ добавить товар"
+                        label={'+ ' + t('добавить товар')}
                         style={{color: '#12aaeb'}}
                         className={classes.span}
                         labelStyle={{fontSize: '13px'}}
@@ -222,9 +223,9 @@ const PricesBonusProductField = ({classes, state, dispatch, handleAddBonus, hand
                 </div>}
                 {state.open && <Row className={classes.background}>
                     <div className={classes.bonusProduct}>
-                        <div className={classes.subTitle}>Бонусный товар</div>
+                        <div className={classes.subTitle}>{t('Бонусный товар')}</div>
                         <Field
-                            label="Тип товара"
+                            label={t('Тип товара')}
                             name="bonusType"
                             component={ProductTypeSearchField}
                             className={classes.searchFieldCustom}
@@ -233,7 +234,7 @@ const PricesBonusProductField = ({classes, state, dispatch, handleAddBonus, hand
                         <div className={classes.productAmount}>
                             <div style={{width: '100%', marginTop: '8px'}}>
                                 <Field
-                                    label="Наименование"
+                                    label={t('Наименование')}
                                     name="bonusProduct"
                                     component={ProductCustomBonusSearchField}
                                     className={classes.searchFieldCustom}
@@ -242,13 +243,13 @@ const PricesBonusProductField = ({classes, state, dispatch, handleAddBonus, hand
                             </div>
                         </div>
                         <div className={classes.addProduct}>
-                            <a onClick={handleAddBonus}>Добавить</a>
+                            <a onClick={handleAddBonus}>{t('Добавить')}</a>
                         </div>
                     </div>
                     <div className={classes.giftProduct}>
-                        <div className={classes.subTitle}>Товар в подарок</div>
+                        <div className={classes.subTitle}>{t('Товар в подарок')}</div>
                         <Field
-                            label="Тип товара"
+                            label={t('Тип товара')}
                             name="giftType"
                             component={ProductTypeSearchField}
                             className={classes.searchFieldCustom}
@@ -257,7 +258,7 @@ const PricesBonusProductField = ({classes, state, dispatch, handleAddBonus, hand
                         <div className={classes.productAmount}>
                             <div style={{width: '70%'}}>
                                 <Field
-                                    label="Наименование"
+                                    label={t('Наименование')}
                                     name="giftProduct"
                                     component={ProductCustomGiftSearchField}
                                     className={classes.searchFieldCustom}
@@ -266,7 +267,7 @@ const PricesBonusProductField = ({classes, state, dispatch, handleAddBonus, hand
                             </div>
                             <div style={{width: '25%'}}>
                                 <Field
-                                    label="Кол-во"
+                                    label={t('Кол-во')}
                                     name="giftAmount"
                                     component={TextField}
                                     className={classes.inputFieldCustom}
@@ -275,7 +276,7 @@ const PricesBonusProductField = ({classes, state, dispatch, handleAddBonus, hand
                             </div>
                         </div>
                         <div className={classes.addProduct}>
-                            <a onClick={handleAddGift}>Добавить</a>
+                            <a onClick={handleAddGift}>{t('Добавить')}</a>
                         </div>
                     </div>
                 </Row>}
@@ -283,7 +284,7 @@ const PricesBonusProductField = ({classes, state, dispatch, handleAddBonus, hand
             {(!_.isEmpty(bonusProducts) || !_.isEmpty(giftProducts))
             ? <div className={classes.table}>
                     {(!_.isEmpty(bonusProducts)) && <div className={classes.halfTable}>
-                        <div className={classes.subTitle}>При покупке:</div>
+                        <div className={classes.subTitle}>{t('При покупке')}:</div>
                         {_.map(bonusProducts, (item, index) => {
                             const bonusProduct = _.get(item, ['bonusProduct', 'value', 'name'])
                             return (
@@ -295,7 +296,7 @@ const PricesBonusProductField = ({classes, state, dispatch, handleAddBonus, hand
                         })}
                     </div>}
                     {(!_.isEmpty(giftProducts)) && <div className={classes.halfTable}>
-                        <div className={classes.subTitle}>Клиент получает в подарок:</div>
+                        <div className={classes.subTitle}>{t('Клиент получает в подарок')}:</div>
                         {_.map(giftProducts, (item, index) => {
                             const giftProduct = _.get(item, ['giftProduct', 'value', 'name'])
                             const giftMeasurement = _.get(item, ['giftProduct', 'value', 'measurement', 'name'])
@@ -312,8 +313,8 @@ const PricesBonusProductField = ({classes, state, dispatch, handleAddBonus, hand
             : <div className={classes.imagePlaceholder}>
                     <div style={{textAlign: 'center', color: '#adadad'}}>
                         <img src={Groceries} alt=""/>
-                        <div>Вы еще не выбрали ни одного товара. <br/> <a onClick={() => dispatch({open: !state.open})}>Добавить</a>
-                            товар?
+                        <div>{t('Вы еще не выбрали ни одного товара')}. <br/> <a onClick={() => dispatch({open: !state.open})}>{t('Добавить')}</a>
+                            {t('товар')}?
                         </div>
                     </div>
                 </div>}

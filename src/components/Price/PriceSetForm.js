@@ -19,7 +19,7 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import {Row, Col} from 'react-flexbox-grid'
 import Tooltip from '../ToolTip'
-
+import t from '../../helpers/translate'
 const validate = (data) => {
     const errors = toCamelCase(data)
     const nonFieldErrors = _.get(errors, 'nonFieldErrors')
@@ -198,18 +198,18 @@ const PriceSetForm = enhance((props) => {
         <div>
             <form onSubmit={onSubmit} className={classes.form}>
                 <div className={classes.bodyTitle}>
-                    <div>Цены на товар
+                    <div>{t('Цены на товар')}
                         <span className={classes.rightSideTitleDate}> ({priceUpdatedDate})</span>
                     </div>
                     <div className={classes.actionButton}>
                         <FlatButton
-                            label="Сохранить"
+                            label={t('Сохранить')}
                             labelStyle={{fontSize: '13px'}}
                             primary={true}
                             type="submit"
                             onTouchTap={onSubmit}
                         />
-                        <Tooltip position="bottom" text="Закрыть">
+                        <Tooltip position="bottom" text={t('Закрыть')}>
                             <IconButton
                                 className={classes.closeBtn}
                                 iconStyle={iconStyle.icon}
@@ -226,7 +226,7 @@ const PriceSetForm = enhance((props) => {
                     <div className={classes.checkbox}>
                         <Field
                             name="agentCanChange"
-                            label="Агент может устанавливать цены"
+                            label={t('Агент может устанавливать цены')}
                             component={CheckBox}
                         />
                     </div>
@@ -237,7 +237,7 @@ const PriceSetForm = enhance((props) => {
                                     name="minPrice"
                                     className={classes.inputFieldCustom}
                                     component={TextField}
-                                    label="Мин"
+                                    label={t('Мин')}
                                     fullWidth={true}
                                 />
                             </Col>
@@ -246,7 +246,7 @@ const PriceSetForm = enhance((props) => {
                                     name="maxPrice"
                                     className={classes.inputFieldCustom}
                                     component={TextField}
-                                    label="Макс"
+                                    label={t('Макс')}
                                     fullWidth={true}
                                 />
                             </Col>
@@ -255,7 +255,7 @@ const PriceSetForm = enhance((props) => {
                                     name="priceCurrency"
                                     className={classes.inputFieldCustom}
                                     component={CurrencySearchField}
-                                    label="Валюта"
+                                    label={t('Валюта')}
                                     hintText={currentCurrency}
                                     fullWidth={true}/>
                             </Col>
@@ -278,10 +278,10 @@ const PriceSetForm = enhance((props) => {
                     <div className={classes.tableContent}>
                         <Row className={classes.priceRow}>
                             <Col xs={3}>Тип обьекта</Col>
-                            <Col style={{textAlign: 'left'}} xs={2}>Нал</Col>
-                            <Col style={{textAlign: 'left'}} xs={2}>Валюта</Col>
-                            <Col style={{textAlign: 'left'}} xs={2}>Безнал</Col>
-                            <Col style={{textAlign: 'left'}} xs={2}>Валюта</Col>
+                            <Col style={{textAlign: 'left'}} xs={2}>{t('Нал')}</Col>
+                            <Col style={{textAlign: 'left'}} xs={2}>{t('Валюта')}</Col>
+                            <Col style={{textAlign: 'left'}} xs={2}>{t('Безнал')}</Col>
+                            <Col style={{textAlign: 'left'}} xs={2}>{t('Валюта')}</Col>
                         </Row>
                         {_.map(mergedList, (item, index) => {
                             const priceListName = _.get(item, 'priceListName')
@@ -305,7 +305,7 @@ const PriceSetForm = enhance((props) => {
                                             name={'prices[' + index + '][cashCurrency]'}
                                             className={classes.inputField}
                                             clearValue={false}
-                                            placeholder="Выберите"
+                                            placeholder={t('Выберите')}
                                             component={CurrencySearchField}
                                             fullWidth={true}/>
                                     </Col>
@@ -324,7 +324,7 @@ const PriceSetForm = enhance((props) => {
                                             name={'prices[' + index + '][transferCurrency]'}
                                             className={classes.inputField}
                                             component={CurrencySearchField}
-                                            placeholder="Выберите"
+                                            placeholder={t('Выберите')}
                                             clearValue={false}
                                             fullWidth={true}/>
                                     </Col>

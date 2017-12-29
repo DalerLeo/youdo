@@ -12,6 +12,7 @@ import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
+import t from '../../helpers/translate'
 
 export const PRICES_FILTER_OPEN = 'openFilterDialog'
 
@@ -119,7 +120,7 @@ const PricesFilterForm = enhance((props) => {
         if (filterCounts) {
             return (
                 <div className={classes.afterFilter}>
-                    <div>Фильтр: {filterCounts} элемента</div>
+                    <div>{t('Фильтр')}: {filterCounts} {t('элемента')}</div>
                     <div>
                         <IconButton onTouchTap={filterDialog.handleOpenFilterDialog}>
                             <BorderColorIcon color="#8f8f8f"/>
@@ -137,7 +138,7 @@ const PricesFilterForm = enhance((props) => {
                 <Link
                     className={classes.arrow}
                     onTouchTap={filterDialog.handleOpenFilterDialog}>
-                    <div>Показать фильтр <KeyboardArrowDown color="#12aaeb"/></div>
+                    <div>{t('Показать фильтр')} <KeyboardArrowDown color="#12aaeb"/></div>
                 </Link>
             </div>
         )
@@ -147,21 +148,21 @@ const PricesFilterForm = enhance((props) => {
         <div>
             <Paper className={classes.wrapper} zDepth={2}>
                 <div className={classes.header}>
-                    <span className={classes.title}>Фильтр</span>
+                    <span className={classes.title}>{t('Фильтр')}</span>
                     <IconButton onTouchTap={filterDialog.handleCloseFilterDialog}>
                         <CloseIcon className={classes.icon}/>
                     </IconButton>
                 </div>
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
                     <Field className={classes.inputField} name="date" component={DateToDateField}
-                           label="Дата создания" fullWidth={true}/>
+                           label={t('Дата создания')} fullWidth={true}/>
                     <div>
                         <RaisedButton
                             type="submit"
                             primary={true}
                             labelStyle={{fontSize: '13px'}}
                             buttonStyle={{color: '#fff'}}
-                            label="Применить"
+                            label={t('Применить')}
                         />
                     </div>
                 </form>

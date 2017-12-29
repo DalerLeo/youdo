@@ -27,6 +27,7 @@ import ProductCustomSearchField from './ProductCustomSearchField'
 import {TextField} from '../../ReduxForm'
 import ClientBalanceProductTypeSearchField from './ClientBalanceProductTypeSearchField'
 import Check from 'material-ui/svg-icons/navigation/check'
+import t from '../../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -247,9 +248,9 @@ const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, h
         <div className={classes.wrapper}>
             <div>
                 <div className={classes.headers} style={{marginTop: '-10px'}}>
-                    <div className={classes.title}>Список товаров</div>
+                    <div className={classes.title}>{t('Список товаров')}</div>
                     {!isUpdate && (withMarket && priceList) && <FlatButton
-                        label="+ добавить товар"
+                        label={'+ ' + t('добавить товар')}
                         style={{color: '#12aaeb'}}
                         labelStyle={{fontSize: '13px'}}
                         className={classes.span}
@@ -259,7 +260,7 @@ const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, h
                 {state.open && <Row className={classes.background}>
                     <Col xs={3}>
                         <Field
-                            label="Тип товара"
+                            label={t('Тип товара')}
                             name="type"
                             component={ClientBalanceProductTypeSearchField}
                             className={classes.searchFieldCustom}
@@ -270,7 +271,7 @@ const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, h
                     <Col xs={3}>
                         <ProductCustomSearchField
                             name="product"
-                            label="Наименование"
+                            label={t('Наименование')}
                             className={classes.searchFieldCustom}
                             fullWidth={true}
                             {..._.get(defaultProps, 'product')}
@@ -279,7 +280,7 @@ const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, h
                     <Col xs={2}>
                         <Field
                             component={TextField}
-                            label="Кол-во"
+                            label={t('Кол-во')}
                             name="amount"
                             className={classes.inputFieldCustom}
                             fullWidth={true}
@@ -294,7 +295,7 @@ const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, h
                     <Col xs={2}>
                         <Field
                             component={TextField}
-                            label="Сумма за ед"
+                            label={t('Сумма за ед')}
                             name="cost"
                             className={classes.inputFieldCustom}
                             fullWidth={true}
@@ -304,7 +305,7 @@ const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, h
                     </Col>
                     <Col xs={1}>
                         <IconButton
-                            label="Применить"
+                            label={t('Применить')}
                             onTouchTap={handleAdd}>
                             <Check color="#12aaeb"/>
                         </IconButton>
@@ -325,10 +326,10 @@ const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, h
                         className={classes.title}>
                         <TableRow className={classes.tableRow}>
                             <TableHeaderColumn
-                                className={classes.tableTitle}>Наименование</TableHeaderColumn>
-                            <TableHeaderColumn className={classes.tableTitle}>Кол-во</TableHeaderColumn>
-                            <TableHeaderColumn className={classes.tableTitle}>Сумма (ед.)</TableHeaderColumn>
-                            <TableHeaderColumn className={classes.tableTitle}>Всего</TableHeaderColumn>
+                                className={classes.tableTitle}>{t('Наименование')}</TableHeaderColumn>
+                            <TableHeaderColumn className={classes.tableTitle}>{t('Кол-во')}</TableHeaderColumn>
+                            <TableHeaderColumn className={classes.tableTitle}>{t('Сумма')} ({t('ед')}.)</TableHeaderColumn>
+                            <TableHeaderColumn className={classes.tableTitle}>{t('Всего')}</TableHeaderColumn>
                             <TableHeaderColumn/>
                         </TableRow>
                     </TableHeader>
@@ -432,10 +433,10 @@ const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, h
                     <div style={{textAlign: 'center', color: '#adadad'}}>
                         <img src={Groceries} alt=""/>
                         {isUpdate
-                            ? <div>Список возвращаемого товара пуст.</div>
+                            ? <div>{t('Список возвращаемого товара пуст')}.</div>
                             : (market && priceList)
-                                ? <div>Вы еще не выбрали ни одного товара. <br/> <a onClick={() => dispatch({open: !state.open})}>Добавить</a> товар?</div>
-                                : <div>Для добавления товаров <br/>выберите магазин и прайс-лист.</div>}
+                                ? <div>{t('Вы еще не выбрали ни одного товара')}. <br/> <a onClick={() => dispatch({open: !state.open})}>{t('Добавить')}</a> {t('товар')}?</div>
+                                : <div>{t('Для добавления товаров')} <br/>{t('выберите магазин и прайс-лист')}.</div>}
                     </div>
                 </div>
             }
