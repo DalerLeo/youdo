@@ -11,7 +11,7 @@ import {Row, Col} from 'react-flexbox-grid'
 import Tooltip from '../ToolTip'
 import dateFormat from '../../helpers/dateFormat'
 import Blacklist from 'material-ui/svg-icons/alert/warning'
-
+import t from '../../helpers/translate'
 const colorBlue = '#12aaeb !important'
 const enhance = compose(
     injectSheet({
@@ -130,7 +130,7 @@ const ClientDetails = enhance((props) => {
     const providerName = _.get(data, 'name')
     const fromWhom = _.get(data, 'fromWhom')
         ? _.get(data, ['fromWhom', 'firstName']) + ' ' + _.get(data, ['fromWhom', 'secondName'])
-        : 'Неизвестно'
+        : t('Неизвестно')
 
     if (loading) {
         return (
@@ -164,7 +164,7 @@ const ClientDetails = enhance((props) => {
                 </div>
                 <div className={classes.titleButtons}>
                     {inBlacklist &&
-                    <Tooltip position="bottom" text="Клиент в черном списке">
+                    <Tooltip position="bottom" text={t('Клиент в черном списке')}>
                         <IconButton
                             disableTouchRipple={true}
                             iconStyle={iconStyle.icon}
@@ -173,7 +173,7 @@ const ClientDetails = enhance((props) => {
                             <Blacklist/>
                         </IconButton>
                     </Tooltip>}
-                    <Tooltip position="bottom" text="Изменить">
+                    <Tooltip position="bottom" text={t('Изменить')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
@@ -182,7 +182,7 @@ const ClientDetails = enhance((props) => {
                             <Edit />
                         </IconButton>
                     </Tooltip>
-                    <Tooltip position="bottom" text="Удалить">
+                    <Tooltip position="bottom" text={t('Удалить')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
@@ -195,18 +195,18 @@ const ClientDetails = enhance((props) => {
             </div>
             <div className={classes.container}>
                 <div className={classes.leftSide}>
-                    <div className={classes.bodyTitle}>По рекомендации:</div>
+                    <div className={classes.bodyTitle}>{t('По рекомендации')}:</div>
                     <div>{fromWhom}</div>
-                    <div className={classes.bodyTitle}>Адрес:</div>
+                    <div className={classes.bodyTitle}>{t('Адрес')}:</div>
                     <div>{address}</div>
                 </div>
                 <div className={classes.body}>
-                    <div className={classes.bodyTitle}>Контакты</div>
+                    <div className={classes.bodyTitle}>{t('Контакты')}</div>
                     <div>
                         {_.map(contacts, (item) => {
                             const name = _.get(item, 'name')
-                            const phone = _.get(item, 'telephone') || 'Не указан'
-                            const email = _.get(item, 'email') || 'Не указан'
+                            const phone = _.get(item, 'telephone') || t('Не указан')
+                            const email = _.get(item, 'email') || t('Не указан')
                             return (
                                 <Row key={item.id} className="dottedList">
                                     <Col xs={4}><span>Имя:</span> <br/>{name}</Col>
@@ -218,7 +218,7 @@ const ClientDetails = enhance((props) => {
                     </div>
                 </div>
                 <div className={classes.rightSide}>
-                    <div className={classes.bodyTitle}>Дата добавления</div>
+                    <div className={classes.bodyTitle}>{t('Дата добавления')}</div>
                     <div>{date}</div>
                 </div>
             </div>

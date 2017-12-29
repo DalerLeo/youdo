@@ -5,6 +5,7 @@ import {connect} from 'react-redux'
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton'
 import getConfig from '../../../helpers/getConfig'
 import toBoolean from '../../../helpers/toBoolean'
+import t from '../../../helpers/translate'
 
 const enhance = compose(
     connect((state) => {
@@ -25,17 +26,17 @@ const OrderDealTypeRadio = enhance((props) => {
                     <RadioButton
                         value={'standart'}
                         style={{margin: '10px 0'}}
-                        label="Стандартная"
+                        label={t('Стандартная')}
                     />
                     <RadioButton
                         value={'consignment'}
                         style={{margin: '10px 0'}}
-                        label="Консигнация"
+                        label={t('Консигнация')}
                     />
                     <RadioButton
                         value={'individualDealType'}
                         style={{margin: '10px 0'}}
-                        label="Индивидуальный"
+                        label={t('Индивидуальный')}
                     />
                 </RadioButtonGroup>
             </div>
@@ -47,12 +48,12 @@ const OrderDealTypeRadio = enhance((props) => {
                 <RadioButton
                     value={'standart'}
                     style={{margin: '10px 0'}}
-                    label="Стандартная"
+                    label={t('Стандартная')}
                 />
                 <RadioButton
                     value={'consignment'}
                     style={{margin: '10px 0'}}
-                    label="Консигнация"
+                    label={t('Консигнация')}
                 />
             </RadioButtonGroup>
         </div>

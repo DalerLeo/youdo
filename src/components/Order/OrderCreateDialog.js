@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
@@ -30,7 +31,7 @@ import OrderDealTypeRadio from '../ReduxForm/Order/OrderDealTypeRadio'
 import OrderPaymentTypeRadio from '../ReduxForm/Order/OrderPaymentTypeRadio'
 import MarketSearchField from '../ReduxForm/ClientBalance/MarketSearchField'
 import CheckBox from '../ReduxForm/Basic/CheckBox'
-import moment from 'moment'
+import t from '../../helpers/translate'
 
 export const ORDER_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const SHOP_CREATE_DIALOG_OPEN = 'openCreateDialog'
@@ -303,7 +304,7 @@ const OrderCreateDialog = enhance((props) => {
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>{isUpdate ? 'Изменение заказа' : 'Добавление заказа'}</span>
+                <span>{isUpdate ? t('Изменение заказа') : t('Добавление заказа')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -317,24 +318,23 @@ const OrderCreateDialog = enhance((props) => {
                             <div style={{minHeight: '470px'}} className={classes.inContent}>
                                 <div className={classes.leftOrderPart}>
                                     <div className={classes.subTitleOrder}>
-                                        {hasMarket && <span>Выбор магазина</span>}
-                                        {!hasMarket && <span>Выбор клиента</span>}
+                                        {hasMarket && <span>{t('Выбор магазина')}</span>}
+                                        {!hasMarket && <span>{t('Выбор клиента')}</span>}
                                         {hasMarket && <Link style={{color: '#12aaeb'}}
                                               target="_blank"
                                               to={{
                                                   pathname: [ROUTES.SHOP_LIST_URL],
                                                   query: {[SHOP_CREATE_DIALOG_OPEN]: true}
                                               }}>
-                                            + добавить
+                                            + {t('добавить')}
                                         </Link>}
-                                        {!hasMarket &&
-                                        <Link style={{color: '#12aaeb'}}
-                                              target="_blank"
-                                              to={{
-                                                  pathname: [ROUTES.CLIENT_LIST_URL],
-                                                  query: {[CLIENT_CREATE_DIALOG_OPEN]: true}
-                                              }}>
-                                            <span>+ добавить</span>
+                                        {!hasMarket && <Link style={{color: '#12aaeb'}}
+                                                            target="_blank"
+                                                            to={{
+                                                                pathname: [ROUTES.CLIENT_LIST_URL],
+                                                                query: {[CLIENT_CREATE_DIALOG_OPEN]: true}
+                                                            }}>
+                                            + {t('добавить')}
                                         </Link>}
                                     </div>
                                     <div>
@@ -342,13 +342,13 @@ const OrderCreateDialog = enhance((props) => {
                                             name="client"
                                             component={ClientSearchField}
                                             className={classes.inputFieldCustom}
-                                            label="Клиент"
+                                            label={t('Клиент')}
                                             fullWidth={true}/>
                                         {hasMarket && <Field
                                             name="market"
                                             component={MarketSearchField}
                                             className={classes.inputFieldCustom}
-                                            label="Название магазина"
+                                            label={t('Название магазина')}
                                             clientId={clientId}
                                             fullWidth={true}/>}
                                     </div>
@@ -364,19 +364,19 @@ const OrderCreateDialog = enhance((props) => {
                                             name="currency"
                                             component={UserCurrenciesSearchField}
                                             className={classes.inputFieldCustom}
-                                            label="Валюта"
+                                            label={t('Валюта')}
                                             fullWidth={true}/>
                                         <Field
                                             name="priceList"
                                             component={PriceListSearchField}
                                             className={classes.inputFieldCustom}
-                                            label="Прайс лист"
+                                            label={t('Прайс лист')}
                                             fullWidth={true}/>
                                         {isSuperUser && <Field
                                             name="user"
                                             component={UsersSearchField}
                                             className={classes.inputFieldCustom}
-                                            label="Агент"
+                                            label={t('Агент')}
                                             selectFieldScroll={selectFieldScroll}
                                             fullWidth={true}/>}
                                         <Field
@@ -405,7 +405,7 @@ const OrderCreateDialog = enhance((props) => {
                                             name="contract"
                                             component={TextField}
                                             className={classes.inputDateCustom}
-                                            label="Номер договора"
+                                            label={t('Номер договора')}
                                             fullWidth={true}/>
                                     </div>
                                     <div className={classes.condition}>
@@ -414,27 +414,27 @@ const OrderCreateDialog = enhance((props) => {
                                             name="deliveryType"
                                             component={DeliveryTypeSearchField}
                                             className={classes.inputDateCustom}
-                                            label="Тип доставки"
+                                            label={t('Тип доставки')}
                                             fullWidth={true}/>
                                         {deliveryType === 'delivery' && canSetDeliveryMan &&
                                         <Field
                                             name="deliveryMan"
                                             component={DeliveryManSearchField}
                                             className={classes.inputDateCustom}
-                                            label="Доставщик"
+                                            label={t('Доставщик')}
                                             fullWidth={true}/>}
                                         {deliveryType === 'delivery' &&
                                         <Field
                                             name="deliveryDate"
                                             component={DateField}
                                             className={classes.inputDateCustom}
-                                            floatingLabelText="Дата доставки"
+                                            floatingLabelText={t('Дата доставки')}
                                             container="inline"
                                             fullWidth={true}/>}
                                         <Field
                                             name="isConfirmed"
                                             component={CheckBox}
-                                            label="Подтвержденный"/>
+                                            label={t('Подтвержденный')}/>
                                     </div>
                                 </div>
                                 <div className={classes.rightOrderPart}>
@@ -453,18 +453,18 @@ const OrderCreateDialog = enhance((props) => {
                         </div>}
                     <div className={classes.bottomButton}>
                         <div className={classes.commentField}>
-                            Общая сумма заказа: <b>{numberFormat(totalCost, currencyItem)}</b>
+                            {t('Общая сумма заказа')}: <b>{numberFormat(totalCost, currencyItem)}</b>
                         </div>
                         {(notEnough && isConfirmed && (status !== GIVEN && status !== DELIVERED && status !== CANCELLED))
                             ? <FlatButton
-                                label="Далее"
+                                label={t('Далее')}
                                 labelStyle={{fontSize: '13px'}}
                                 className={classes.actionButton}
                                 primary={true}
                                 onTouchTap={shortageDialog.handleOpenShortageDialog}/>
 
                             : <FlatButton
-                                label={isUpdate ? 'Изменить заказ' : 'Оформить заказ'}
+                                label={isUpdate ? t('Изменить заказ') : t('Оформить заказ')}
                                 labelStyle={{fontSize: '13px'}}
                                 className={classes.actionButton}
                                 primary={true}

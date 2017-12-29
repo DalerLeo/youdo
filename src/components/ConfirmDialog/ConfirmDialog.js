@@ -8,6 +8,7 @@ import FlatButton from 'material-ui/FlatButton'
 import IconButton from 'material-ui/IconButton'
 import Loader from '../Loader'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -133,13 +134,13 @@ const ConfirmDialog = enhance((props) => {
     const {open, onClose, classes, type, message, onSubmit, loading, warning} = props
     const typesList = {
         delete: {
-            name: 'Подтверждение удаления', submitName: 'Удалить', text: 'Вы уверены что хотите удалить эти данные?'
+            name: t('Подтверждение удаления'), submitName: t('Удалить'), text: t('Вы уверены что хотите удалить эти данные?')
         },
         cancel: {
-            name: 'Подтверждение отмены', submitName: 'Подтвердить', text: 'Вы уверены что хотите отменить эти данные?'
+            name: t('Подтверждение отмены'), submitName: t('Подтвердить'), text: t('Вы уверены что хотите отменить эти данные?')
         },
         submit: {
-            name: 'Выполнить', submitName: 'Да', text: 'Подтверждение запроса'
+            name: t('Выполнить'), submitName: t('Да'), text: t('Подтверждение запроса')
         }
     }
     const title = _.get(typesList, [type, 'name'])

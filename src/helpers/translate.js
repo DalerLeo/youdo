@@ -1,4 +1,3 @@
-
 import {getLanguage} from '../helpers/storage'
 import uz from './uz.json'
 import en from './en.json'

@@ -12,7 +12,7 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import {TextField, OrderListReturnField, StockSearchField} from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 import OrderReturnTotalSum from '../ReduxForm/Order/OrderReturnTotalSum'
-
+import t from '../../helpers/translate'
 export const ORDER_RETURN_DIALOG_OPEN = 'openReturnDialog'
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -203,7 +203,7 @@ const OrderReturnDialog = enhance((props) => {
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>{isUpdate ? 'Изменение возврата №' + returnId : 'Возврат товаров заказа №' + returnId}</span>
+                <span>{isUpdate ? t('Изменение возврата') + ' №' + returnId : t('Возврат товаров заказа') + ' №' + returnId}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -245,7 +245,7 @@ const OrderReturnDialog = enhance((props) => {
                     <div className={classes.bottomButton}>
                         <div className={classes.summary}>Общая сумма возврата: <OrderReturnTotalSum/></div>
                         <FlatButton
-                            label={isUpdate ? 'Изменить' : 'Возврат'}
+                            label={isUpdate ? t('Изменить') : t('Возврат')}
                             className={classes.actionButton}
                             primary={true}
                             type="submit"
