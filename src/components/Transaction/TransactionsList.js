@@ -207,7 +207,8 @@ const TransactionsList = enhance((props) => {
         usersData,
         hasMarket,
         canSetCustomRate,
-        categryPopop
+        categryPopop,
+        optionsList
     } = props
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const transactionFilterDialog = showOnlyList
@@ -280,6 +281,16 @@ const TransactionsList = enhance((props) => {
     const currentTransaction = _.get(updateTransactionDialog, 'open')
     const currentItem = _.find(_.get(listData, 'data'), {'id': currentTransaction})
 
+    const options = _.map(_.get(currentItem, ['expanseCategory', 'options']), (item) => {
+        return _.get(_.find(optionsList, {'keyName': _.get(item, 'keyName')}), 'id')
+    })
+    const staffExpense = {}
+    _.map(_.get(categryPopop, 'data'), (item) => {
+        staffExpense[_.get(item, 'id')] = {
+            amount: numberFormat(_.get(item, 'amount'))
+        }
+    })
+
     /* Forming initial value in order to Update Transaction */
     const TransactionInitialValues = currentTransaction
         ? {
@@ -298,8 +309,13 @@ const TransactionsList = enhance((props) => {
             custom_rate: _.get(currentItem, 'customRate'),
             comment: _.get(currentItem, 'comment'),
             expanseCategory: {
-                value: _.get(currentItem, ['expanseCategory', 'id'])
-            }
+                value: {
+                    id: _.get(currentItem, ['expanseCategory', 'id']),
+                    name: _.get(currentItem, ['expanseCategory', 'name']),
+                    options
+                }
+            },
+            users: staffExpense
         }
         : null
 

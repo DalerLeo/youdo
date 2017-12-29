@@ -183,7 +183,7 @@ const TransactionInfoDialog = enhance((props) => {
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>Транзакция № {open}</span>
+                <span>Транзакция №{open}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -195,16 +195,16 @@ const TransactionInfoDialog = enhance((props) => {
                 <div className={classes.inContent} style={{minHeight: 'initial'}}>
                     <div className={classes.list}>
                         <Row className="dottedList">
-                            <Col xs={4}>Клиент</Col>
+                            <Col xs={5}>Клиент</Col>
                             {hasMarket && <Col xs={3}>Магазин</Col>}
-                            <Col xs={2}>№ заказа </Col>
+                            <Col xs={4}>№ заказа </Col>
                             <Col xs={3}>Сумма</Col>
                         </Row>
                         {_.map(data, (item) => {
                             const clientName = _.get(item, ['client', 'name'])
                             const marketName = _.get(item, ['market', 'name'])
                             const currency = _.get(item, ['currency', 'name'])
-                            const order = _.get(item, ['order'])
+                            const order = _.get(item, 'order') || 'Не определен'
                             const customRate = _.get(item, ['customRate'])
                             const internal = _.toNumber(_.get(item, 'internal'))
                             const amount = _.toNumber(_.get(item, 'amount'))

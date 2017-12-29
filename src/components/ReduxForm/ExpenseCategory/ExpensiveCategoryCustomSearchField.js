@@ -26,8 +26,9 @@ const getOptions = (search) => {
         })
 }
 
-const getItem = (id) => {
-    return axios().get(sprintf(PATH.EXPENSIVE_CATEGORY_ITEM, id))
+const getItem = (item) => {
+    const ID = _.isObject(item) ? _.get(item, 'id') : item
+    return axios().get(sprintf(PATH.EXPENSIVE_CATEGORY_ITEM, ID))
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data))
         })

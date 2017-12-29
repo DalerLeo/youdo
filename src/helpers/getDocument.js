@@ -1,10 +1,12 @@
 import axios from 'axios'
+import sprintf from 'sprintf'
 import {API_URL} from '../constants/api'
 import * as storageHelper from '../helpers/storage'
 
 const getDocument = (url, params) => {
     const TOKEN = storageHelper.getToken()
-    axios.defaults.baseURL = API_URL
+    const LANG = storageHelper.getLanguage()
+    axios.defaults.baseURL = sprintf(API_URL, LANG)
     if (!TOKEN) {
         return
     }
@@ -14,7 +16,7 @@ const getDocument = (url, params) => {
             str += '&' + key + '=' + encodeURIComponent(params[key])
         }
     }
-    window.location = API_URL + url + '?token=' + TOKEN + str
+    window.location = sprintf(API_URL, LANG) + url + '?token=' + TOKEN + str
 }
 
 export default getDocument

@@ -204,6 +204,7 @@ const MarketTypeList = enhance((props) => {
             }
 
             return {
+                parent: {value: _.get(detail, 'parent')},
                 name: _.get(detail, 'name')
             }
         })(),
@@ -215,7 +216,7 @@ const MarketTypeList = enhance((props) => {
     }
 
     const listData = {
-        data: _.get(list, 'results'),
+        data: list,
         listLoading
     }
     const detailData = {

@@ -32,9 +32,9 @@ const StatisticsChart = enhance((props) => {
         merged
     } = props
 
-    let clientIn = []
-    let clientOut = []
-    let clientDate = []
+    const clientIn = []
+    const clientOut = []
+    const clientDate = []
     _.map(mergedGraph, (item) => {
         const dataIn = _.toNumber(_.get(item, 'in'))
         const dataOut = _.toNumber(_.get(item, 'out')) < ZERO ? _.toNumber(_.get(item, 'out')) * MINUS_ONE : _.toNumber(_.get(item, 'out'))

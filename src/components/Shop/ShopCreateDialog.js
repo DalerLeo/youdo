@@ -3,17 +3,20 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
+import {connect} from 'react-redux'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import Loader from '../Loader'
-import {Field, reduxForm, SubmissionError} from 'redux-form'
+import {Field, reduxForm, SubmissionError, FieldArray} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import {
     TextField,
     MarketTypeSearchField,
     ClientSearchField,
     VisitFrequencySearchField,
-    ShopStatusSearchField
+    ShopStatusSearchField,
+    MarketTypeParentSearchField,
+    MarketPhoneListField
 } from '../ReduxForm'
 import IconButton from 'material-ui/IconButton'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
@@ -92,7 +95,9 @@ const enhance = compose(
         rightSide: {
             flexBasis: '50%',
             maxWidth: '50%',
-            extend: 'padding'
+            extend: 'padding',
+            maxHeight: '540px',
+            overflowY: 'auto'
         },
         bodyContent: {
             color: '#333',
@@ -204,6 +209,14 @@ const enhance = compose(
         form: 'ShopCreateForm',
         enableReinitialize: true
     }),
+    connect((state) => {
+        const typeParent = _.get(state, ['form', 'ShopCreateForm', 'values', 'marketTypeParent', 'value'])
+        const marketType = _.get(state, ['form', 'ShopCreateForm', 'values', 'marketType', 'value'])
+        return {
+            typeParent,
+            marketType
+        }
+    }),
     withState('openClient', 'setOpenClient', false)
 )
 const ShopCreateDialog = enhance((props) => {
@@ -218,7 +231,9 @@ const ShopCreateDialog = enhance((props) => {
         setOpenClient,
         mapDialog,
         updateMapDialog,
-        mapLocation
+        mapLocation,
+        typeParent,
+        marketType
     } = props
     const onSubmit = handleSubmit(() => props.onSubmit(openClient).catch(validate))
     const lat = _.get(mapLocation, 'lat')
@@ -281,11 +296,19 @@ const ShopCreateDialog = enhance((props) => {
                                     label="Наименование"
                                     fullWidth={true}/>
                                 <Field
-                                    name="marketType"
-                                    component={MarketTypeSearchField}
+                                    name="marketTypeParent"
+                                    component={MarketTypeParentSearchField}
                                     className={classes.inputFieldCustom}
                                     label="Тип заведения"
                                     fullWidth={true}/>
+                                {(typeParent || marketType) &&
+                                <Field
+                                    name="marketType"
+                                    component={MarketTypeSearchField}
+                                    className={classes.inputFieldCustom}
+                                    parentType={typeParent}
+                                    label="Подкатегория"
+                                    fullWidth={true}/>}
                             </div>
                             <div className={classes.divider}>
                                 <Field
@@ -338,48 +361,48 @@ const ShopCreateDialog = enhance((props) => {
                             </div>
                         </div>
                         <div className={classes.rightSide}>
-                            <Field
-                                name="phone"
-                                component={TextField}
-                                className={classes.inputFieldCustom}
-                                label="Телефон"
-                                fullWidth={true}/>
-                            <Field
-                                name="contactName"
-                                component={TextField}
-                                className={classes.inputFieldCustom}
-                                label="Контактное лицо"
-                                fullWidth={true}/>
-                            <Field
-                                name="mfo"
-                                component={TextField}
-                                className={classes.inputFieldCustom}
-                                label="МФО"
-                                fullWidth={true}/>
-                            <Field
-                                name="inn"
-                                component={TextField}
-                                className={classes.inputFieldCustom}
-                                label="ИНН"
-                                fullWidth={true}/>
-                            <Field
-                                name="okad"
-                                component={TextField}
-                                className={classes.inputFieldCustom}
-                                label="ОКАД"
-                                fullWidth={true}/>
-                            <Field
-                                name="bankAddress"
-                                component={TextField}
-                                className={classes.inputFieldCustom}
-                                label="Адрес банка"
-                                fullWidth={true}/>
-                            <Field
-                                name="checkingAccount"
-                                component={TextField}
-                                className={classes.inputFieldCustom}
-                                label="Р/с"
-                                fullWidth={true}/>
+                            <div>
+                                <FieldArray
+                                    name="phones"
+                                    component={MarketPhoneListField}
+                                />
+                                <Field
+                                    name="contactName"
+                                    component={TextField}
+                                    className={classes.inputFieldCustom}
+                                    label="Контактное лицо"
+                                    fullWidth={true}/>
+                                <Field
+                                    name="mfo"
+                                    component={TextField}
+                                    className={classes.inputFieldCustom}
+                                    label="МФО"
+                                    fullWidth={true}/>
+                                <Field
+                                    name="inn"
+                                    component={TextField}
+                                    className={classes.inputFieldCustom}
+                                    label="ИНН"
+                                    fullWidth={true}/>
+                                <Field
+                                    name="okad"
+                                    component={TextField}
+                                    className={classes.inputFieldCustom}
+                                    label="ОКАД"
+                                    fullWidth={true}/>
+                                <Field
+                                    name="bankAddress"
+                                    component={TextField}
+                                    className={classes.inputFieldCustom}
+                                    label="Адрес банка"
+                                    fullWidth={true}/>
+                                <Field
+                                    name="checkingAccount"
+                                    component={TextField}
+                                    className={classes.inputFieldCustom}
+                                    label="Р/с"
+                                    fullWidth={true}/>
+                            </div>
                         </div>
                     </div>
                     <div className={classes.bottomButton}>

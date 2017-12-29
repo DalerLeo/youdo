@@ -9,20 +9,21 @@ export const createSerializer = (data, location, newClient) => {
     const name = _.get(data, 'name')
     const client = !newClient ? _.get(data, ['client', 'value']) : _.get(data, 'undefined')
     const newClientName = newClient ? _.get(data, ['newClientName']) : _.get(data, 'undefined')
-    const marketType = _.get(data, ['marketType', 'value'])
+    const marketType = _.get(data, ['marketType', 'value']) || _.get(data, ['marketTypeParent', 'value'])
     const address = _.get(data, 'address')
     const guide = _.get(data, 'guide')
     const frequency = _.get(data, ['frequency', 'value'])
-    const phone = _.get(data, 'phone')
     const status = _.get(data, ['status', 'value'])
     const lat = _.get(location, 'lat')
+    const phones = _.map(_.get(data, 'phones'), (item) => {
+        return item.phone
+    })
     const lon = _.get(location, 'lng')
     const contactName = _.get(data, ['contactName'])
     let isActive = false
     if (status === ONE) {
         isActive = true
     }
-
     return {
         name,
         client,
@@ -30,7 +31,6 @@ export const createSerializer = (data, location, newClient) => {
         address,
         guide,
         'visit_frequency': frequency,
-        phone,
         'contact_name': contactName,
         'location': {
             'lat': lat,
@@ -42,7 +42,8 @@ export const createSerializer = (data, location, newClient) => {
         mfo: _.get(data, 'mfo'),
         inn: _.get(data, 'inn'),
         'bank_address': _.get(data, 'bankAddress'),
-        'checking_account': _.get(data, 'checkingAccount')
+        'checking_account': _.get(data, 'checkingAccount'),
+        phones
     }
 }
 
@@ -50,7 +51,7 @@ export const updateSerializer = (data, location, detail) => {
     const client = _.get(detail, ['client', 'id'])
     const name = _.get(data, 'name')
     const clientName = _.get(data, 'client')
-    const marketType = _.get(data, ['marketType', 'value'])
+    const marketType = _.get(data, ['marketType', 'value']) || _.get(data, ['marketTypeParent', 'value'])
     const address = _.get(data, 'address')
     const guide = _.get(data, 'guide')
     const frequency = _.get(data, ['frequency', 'value'])
@@ -104,7 +105,7 @@ export const listFilterSerializer = (data) => {
         'is_active': _.toNumber(_.get(defaultData, 'isActive')) === TWO ? false : _.get(defaultData, 'isActive'),
         'frequency': _.get(defaultData, 'frequency'),
         'border': _.get(defaultData, 'zone') || null,
-        'market_type': _.get(defaultData, 'marketType') || null,
+        'market_type': _.get(defaultData, 'marketType') || _.get(defaultData, 'marketTypeParent') || null,
         'null_border': nullBorder ? 'True' : null,
         'created_date_0': _.get(defaultData, 'fromDate'),
         'created_date_1': _.get(defaultData, 'toDate'),

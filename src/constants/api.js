@@ -300,6 +300,7 @@ export const MARKET_TYPE_CREATE = `/${MARKET_TYPE}/`
 export const MARKET_TYPE_LIST = `/${MARKET_TYPE}/`
 export const MARKET_TYPE_ITEM = `/${MARKET_TYPE}/%d/`
 export const MARKET_TYPE_DELETE = `/${MARKET_TYPE}/%d/`
+export const MARKET_TYPE_HIERARCHY = `/${MARKET_TYPE}/hierarchy`
 
 export const PRICE_LIST_SETTING = 'sales/price_list'
 export const PRICE_LIST_SETTING_CREATE = `/${PRICE_LIST_SETTING}/`

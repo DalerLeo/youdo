@@ -1,3 +1,4 @@
+
 import React from 'react'
 import _ from 'lodash'
 import moment from 'moment'
@@ -265,7 +266,10 @@ const StatSalesList = enhance((props) => {
     const mergedGraph = {}
     if (!graphReturnLoading) {
         _.map(graphList, (item) => {
-            mergedGraph[item.date] = {'in': item.amount, date: item.date}
+            mergedGraph[item.date] = {
+                in: _.toNumber(_.get(item, 'amountCash')) + _.toNumber(_.get(item, 'amountBank')),
+                date: item.date
+            }
         })
 
         _.map(graphReturnList, (item) => {
