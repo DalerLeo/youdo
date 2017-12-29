@@ -168,7 +168,8 @@ const MainList = enhance((props) => {
         userPosition,
         isAdmin,
         filter,
-        loading
+        loading,
+        dispatch
     } = props
 
     const sales = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.SALES)) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.SALES))
@@ -301,6 +302,7 @@ const MainList = enhance((props) => {
                     dateInitialValues={dateInitialValues}
                     widgetsForm={widgetsForm}
                     loading={loading}
+                    dispatch={dispatch}
                 />
             : <WelcomeERP/>}
         </Layout>
