@@ -501,7 +501,9 @@ const ShopList = enhance((props) => {
                     value: _.toNumber(_.get(detail, 'visitFrequency'))
                 },
                 guide: _.get(detail, 'guide'),
-                phone: _.get(detail, 'phone'),
+                phones: _.map(_.get(detail, 'phones'), (item) => {
+                    return {phone: item}
+                }),
                 latLng: {
                     lat: _.get(detail, ['location', 'lat']),
                     lng: _.get(detail, ['location', 'lon'])
