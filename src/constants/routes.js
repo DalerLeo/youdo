@@ -105,7 +105,7 @@ export const PROVIDER_ITEM_PATH = `${PROVIDER}/%d`
 
 export const CLIENT_TRANSACTION = 'clientTransaction'
 export const CLIENT_TRANSACTION_LIST_URL = `/${CLIENT_TRANSACTION}`
-export const CLIENT_TRANSACTION_ITEM_URL = `${CLIENT_TRANSACTION_LIST_URL}/:clientId`
+export const CLIENT_TRANSACTION_ITEM_URL = `${CLIENT_TRANSACTION_LIST_URL}/:transactionId`
 export const CLIENT_TRANSACTION_ITEM_PATH = `${CLIENT_TRANSACTION}/%d`
 
 export const CLIENT = 'client'

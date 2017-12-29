@@ -11,7 +11,6 @@ import toCamelCase from '../../helpers/toCamelCase'
 import {MarketSearchField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
-import MainStyles from '../Styles/MainStyles'
 
 export const TELEGRAM_CREATE_DIALOG_OPEN = 'openCreateDialog'
 export const TELEGRAM_UPDATE_DIALOG_OPEN = 'openUpdateDialog'
@@ -29,7 +28,7 @@ const validate = (data) => {
 }
 
 const enhance = compose(
-    injectSheet(_.merge(MainStyles, {
+    injectSheet({
         loader: {
             position: 'absolute',
             width: '100%',
@@ -39,16 +38,80 @@ const enhance = compose(
             left: '0',
             alignItems: 'center',
             zIndex: '999',
-            textAlign: 'center',
+            justifyContent: 'center',
             display: ({loading}) => loading ? 'flex' : 'none'
+        },
+        popUp: {
+            color: '#333 !important',
+            overflow: 'unset !important',
+            fontSize: '13px !important',
+            position: 'relative',
+            padding: '0 !important',
+            height: '100%',
+            maxHeight: 'none !important',
+            marginBottom: '64px'
+        },
+        titleContent: {
+            background: '#fff',
+            color: '#333',
+            fontWeight: 'bold',
+            textTransform: 'uppercase',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            borderBottom: '1px solid #efefef',
+            padding: '20px 30px',
+            zIndex: '999',
+            '& button': {
+                right: '13px',
+                position: 'absolute !important'
+            }
+        },
+        field: {
+            padding: '0 30px 20px'
+        },
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
         },
         contacts: {
             background: '#f1f5f8',
             color: '#333',
             margin: '12px -30px 0',
             padding: '20px 30px'
+        },
+        bottomButton: {
+            bottom: '0',
+            left: '0',
+            right: '0',
+            padding: '10px',
+            zIndex: '999',
+            borderTop: '1px solid #efefef',
+            background: '#fff',
+            textAlign: 'right',
+            '& span': {
+                fontSize: '13px !important',
+                fontWeight: '600 !important',
+                color: '#129fdd',
+                verticalAlign: 'inherit !important'
+            }
+        },
+        actionButton: {
+            fontSize: '13px !important',
+            margin: '0 !important'
         }
-    })),
+    }),
     reduxForm({
         form: 'TelegramCreateForm',
         enableReinitialize: true
@@ -65,7 +128,7 @@ const TelegramCreateDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '200px'} : {width: '300px'}}
+            contentStyle={loading ? {width: '400px'} : {width: '400px'}}
             bodyClassName={classes.popUp}>
 
             <div className={classes.titleContent}>
@@ -79,8 +142,8 @@ const TelegramCreateDialog = enhance((props) => {
                     <div className={classes.loader}>
                         <Loader size={0.75}/>
                     </div>
-                    <div className={classes.inContent} style={{minHeight: 'unset'}}>
-                        <div className={classes.field} style={{padding: '10px'}}>
+                    <div className={classes.inContent}>
+                        <div className={classes.field}>
                             <Field
                                 name="market"
                                 component={MarketSearchField}

@@ -5,7 +5,7 @@ import {Row, Col} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
-import ContentAdd from 'material-ui/svg-icons/content/add'
+import KeyIcon from 'material-ui/svg-icons/communication/vpn-key'
 import Cancel from 'material-ui/svg-icons/content/remove-circle'
 import TelegramCreateDialog from './TelegramCreateDialog'
 import TelegramFilterForm from './TelegramFilterForm'
@@ -249,13 +249,13 @@ const TelegramGridList = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.TELEGRAM_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить клиента">
+                <Tooltip position="left" text="Получить ключ">
                     <FloatingActionButton
                         mini={true}
                         zDepth={1}
                         backgroundColor="#12aaeb"
                         onTouchTap={createDialog.handleOpenCreateDialog}>
-                        <ContentAdd />
+                        <KeyIcon/>
                     </FloatingActionButton>
                 </Tooltip>
             </div>
