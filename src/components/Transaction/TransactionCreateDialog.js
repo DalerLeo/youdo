@@ -401,8 +401,7 @@ const TransactionCreateDialog = enhance((props) => {
                             container="inline"
                             label="Дата создания"/>
 
-                        { // logic for EXPENSE DIALOG
-                        isExpense
+                        {isExpense
                             ? <div className={classes.field}>
                                 <Field
                                     name="expanseCategory"
@@ -469,14 +468,13 @@ const TransactionCreateDialog = enhance((props) => {
                                     fullWidth={true}/>
                             </div>
                             : <div className={classes.field}>
-                                { /*logic for INCOME DIALOG*/ }
                                 <Field
                                     name="incomeCategory"
                                     component={TransactionIncomeCategory}
                                     label={t('Категория прихода')}
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
-                                {// check If client or Provider for INCOME
+                                {
                                 incomeCategory === 'client'
                                 ? <div>
                                     <Field
