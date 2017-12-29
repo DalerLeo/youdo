@@ -306,6 +306,7 @@ const TransactionsList = enhance((props) => {
                 value: _.get(currentItem, ['client', 'id'])
             },
             showClients: _.get(currentItem, ['client', 'id']) && true,
+            incomeFromClient: _.get(currentItem, ['client', 'id']) && true,
             custom_rate: _.get(currentItem, 'customRate'),
             comment: _.get(currentItem, 'comment'),
             expanseCategory: {
