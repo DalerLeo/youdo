@@ -44,6 +44,7 @@ import toBoolean from '../../helpers/toBoolean'
 import MenuItem from 'material-ui/MenuItem'
 import IconMenu from 'material-ui/IconMenu'
 import getConfig from '../../helpers/getConfig'
+import t from '../../helpers/translate'
 
 const ZERO = 0
 const REQUESTED = 0
@@ -57,49 +58,49 @@ const listHeader = [
     {
         sorting: true,
         name: 'id',
-        title: 'Заказ №',
+        title: t('Заказ') + ' №',
         width: '10%'
     },
     {
         sorting: false,
         name: 'client',
-        title: 'Клиент',
+        title: t('Клиент'),
         width: '17.5%'
     },
     {
         sorting: false,
         name: 'market',
-        title: 'Магазин',
+        title: t('Магазин'),
         width: '17.5%'
     },
     {
         sorting: false,
         name: 'user',
-        title: 'Инициатор',
+        title: t('Инициатор'),
         width: '10%'
     },
     {
         sorting: true,
         name: 'totalPrice',
         alignRight: true,
-        title: 'Сумма заказа',
+        title: t('Сумма заказа'),
         width: '15%'
     },
     {
         sorting: true,
         name: 'dateDelivery',
-        title: 'Дата доставки',
+        title: t('Дата доставки'),
         width: '15%'
     },
     {
         sorting: true,
         name: 'createdDate',
-        title: 'Дата создания',
+        title: t('Дата создания'),
         width: '15%'
     },
     {
         sorting: false,
-        title: 'Статус',
+        title: t('Статус'),
         width: '5%'
     }
 ]
@@ -108,43 +109,43 @@ const listHeaderHasMarket = [
     {
         sorting: true,
         name: 'id',
-        title: 'Заказ №',
+        title: t('Заказ') + ' №',
         width: '10%'
     },
     {
         sorting: false,
         name: 'client',
-        title: 'Клиент',
+        title: t('Клиент'),
         width: '25%'
     },
     {
         sorting: false,
         name: 'user',
-        title: 'Инициатор',
+        title: t('Инициатор'),
         width: '15%'
     },
     {
         sorting: true,
         name: 'totalPrice',
         alignRight: true,
-        title: 'Сумма заказа',
+        title: t('Сумма заказа'),
         width: '15%'
     },
     {
         sorting: true,
         name: 'dateDelivery',
-        title: 'Дата доставки',
+        title: t('Дата доставки'),
         width: '15%'
     },
     {
         sorting: true,
         name: 'createdDate',
-        title: 'Дата создания',
+        title: t('Дата создания'),
         width: '15%'
     },
     {
         sorting: false,
-        title: 'Статус',
+        title: t('Статус'),
         width: '5%'
     }
 ]
@@ -348,10 +349,10 @@ const OrderGridList = enhance((props) => {
         const isNew = _.get(item, 'isNew')
 
         const paymentDifference = moment(_.get(item, 'paymentDate')).diff(now, 'days')
-        const PAY_PENDING = 'Оплата ожидается: ' + paymentDate + '<br/>Ожидаемый платеж: ' + balanceTooltip
+        const PAY_PENDING = t('Оплата ожидается') + ': ' + paymentDate + '<br/>' + t('Ожидаемый платеж') + ': ' + balanceTooltip
         const PAY_DELAY = paymentDifference !== ZERO
-            ? 'Оплата ожидалась: ' + paymentDate + '<br/>Долг: ' + balanceTooltip
-            : 'Оплата ожидается сегодня <br/>Сумма: ' + balanceTooltip
+            ? t('Оплата ожидалась') + ': ' + paymentDate + '<br/>' + t('Долг') + ': ' + balanceTooltip
+            : t('Оплата ожидается сегодня') + '<br/>' + t('Сумма') + ': ' + balanceTooltip
 
         return (
             <div key={id}
@@ -369,7 +370,7 @@ const OrderGridList = enhance((props) => {
                 <div style={{width: '15%'}}>{dateDelivery}</div>
                 <div style={{width: '15%'}}>{createdDate}</div>
                 <div style={{width: '5%'}} className={classes.buttons}>
-                    {(status === REQUESTED) ? <Tooltip position="bottom" text="В процессе">
+                    {(status === REQUESTED) ? <Tooltip position="bottom" text={t('В процессе')}>
                             <IconButton
                                 disableTouchRipple={true}
                                 iconStyle={iconStyle.icon}
@@ -378,7 +379,7 @@ const OrderGridList = enhance((props) => {
                                 <InProcess color="#f0ad4e"/>
                             </IconButton>
                         </Tooltip>
-                        : (status === READY) ? <Tooltip position="bottom" text="Есть на складе">
+                        : (status === READY) ? <Tooltip position="bottom" text={t('Есть на складе')}>
                                 <IconButton
                                     disableTouchRipple={true}
                                     iconStyle={iconStyle.icon}
@@ -387,7 +388,7 @@ const OrderGridList = enhance((props) => {
                                     <Available color="#f0ad4e"/>
                                 </IconButton>
                             </Tooltip>
-                            : (status === DELIVERED) ? <Tooltip position="bottom" text="Доставлен">
+                            : (status === DELIVERED) ? <Tooltip position="bottom" text={t('Доставлен')}>
                                     <IconButton
                                         disableTouchRipple={true}
                                         iconStyle={iconStyle.icon}
@@ -396,7 +397,7 @@ const OrderGridList = enhance((props) => {
                                         <Delivered color="#81c784"/>
                                     </IconButton>
                                 </Tooltip>
-                                : (status === GIVEN) ? <Tooltip position="bottom" text="Передан доставщику">
+                                : (status === GIVEN) ? <Tooltip position="bottom" text={t('Передан доставщику')}>
                                         <IconButton
                                             disableTouchRipple={true}
                                             iconStyle={iconStyle.icon}
@@ -405,7 +406,7 @@ const OrderGridList = enhance((props) => {
                                             <Transferred color="#f0ad4e"/>
                                         </IconButton>
                                     </Tooltip>
-                                    : (status === CANCELED) ? <Tooltip position="bottom" text="Заказ отменен">
+                                    : (status === CANCELED) ? <Tooltip position="bottom" text={t('Заказ отменен')}>
                                             <IconButton
                                                 disableTouchRipple={true}
                                                 iconStyle={iconStyle.icon}
@@ -414,7 +415,7 @@ const OrderGridList = enhance((props) => {
                                                 <Canceled color='#e57373'/>
                                             </IconButton>
                                         </Tooltip>
-                                        : (status === NOT_CONFIRMED) ? <Tooltip position="bottom" text="Не подтвержден">
+                                        : (status === NOT_CONFIRMED) ? <Tooltip position="bottom" text={t('Не подтвержден')}>
                                             <IconButton
                                                 disableTouchRipple={true}
                                                 iconStyle={iconStyle.icon}
@@ -429,7 +430,7 @@ const OrderGridList = enhance((props) => {
                         ? PAY_DELAY
                         : ((totalBalance > ZERO) && moment(_.get(item, 'paymentDate')).diff(now, 'days') > ZERO)
                             ? PAY_PENDING
-                            : totalBalance === ZERO ? 'Оплачен' : ''}>
+                            : totalBalance === ZERO ? t('Оплачено') : ''}>
                         <IconButton
                             disableTouchRipple={true}
                             iconStyle={iconStyle.icon}
@@ -521,7 +522,7 @@ const OrderGridList = enhance((props) => {
 
     const extraButtons = (
         <div className={classes.buttons}>
-            <Tooltip position="left" text="Обновить список">
+            <Tooltip position="left" text={t('Обновить список')}>
                 <IconButton
                     disabled={false}
                     onTouchTap={refreshAction}>
@@ -529,7 +530,7 @@ const OrderGridList = enhance((props) => {
                 </IconButton>
             </Tooltip>
 
-            {unconfirmedCount > ZERO && <Tooltip position="left" text="Отфильтровать неподтвержденным заказам">
+            {unconfirmedCount > ZERO && <Tooltip position="left" text={t('Отфильтровать неподтвержденным заказам')}>
                 <Badge
                     primary={true}
                     badgeContent={statusIsUnconfirmed ? <Done style={badgeStyle.iconUnconfirmed}/> : unconfirmedCount}
@@ -542,7 +543,7 @@ const OrderGridList = enhance((props) => {
                     </IconButton>
                 </Badge>
             </Tooltip>}
-            {requestedCount > ZERO && <Tooltip position="left" text="Отфильтровать по запрошенным заказам">
+            {requestedCount > ZERO && <Tooltip position="left" text={t('Отфильтровать по запрошенным заказам')}>
                 <Badge
                     primary={true}
                     badgeContent={statusIsRequested ? <Done style={badgeStyle.iconRequested}/> : requestedCount}
@@ -555,7 +556,7 @@ const OrderGridList = enhance((props) => {
                     </IconButton>
                 </Badge>
             </Tooltip>}
-            {readyCount > ZERO && <Tooltip position="left" text="Отфильтровать по доступным заказам">
+            {readyCount > ZERO && <Tooltip position="left" text={t('Отфильтровать по доступным заказам')}>
                 <Badge
                     primary={true}
                     badgeContent={statusIsReady ? <Done style={badgeStyle.icon}/> : readyCount}
@@ -580,27 +581,27 @@ const OrderGridList = enhance((props) => {
                     anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
                     targetOrigin={{horizontal: 'right', vertical: 'top'}}>
                     <MenuItem
-                        primaryText="Распечатать накладные"
+                        primaryText={t('Распечатать накладные')}
                         onTouchTap={() => { printDialog.handleOpenPrintDialog() }}
                     />
                     <MenuItem
-                        primaryText="Продажа товаров"
+                        primaryText={t('Продажа товаров')}
                         onTouchTap={() => { printSalesDialog.handleOpenSalesPrintDialog() }}
                     />
                 </IconMenu>
             </Tooltip>
-            <Tooltip position="left" text="Скачать накладные">
+            <Tooltip position="left" text={t('Скачать накладные')}>
                 <IconButton onTouchTap={getExcelDocument}>
                     <Excel color="#666"/>
                 </IconButton>
             </Tooltip>
-            <Tooltip position="left" text="Изменить выбранные заказы">
+            <Tooltip position="left" text={t('Изменить выбранные заказы')}>
                 <IconButton onTouchTap={multiUpdateDialog.handleOpenMultiUpdate}
                             disabled={multiUpdateDialog.cancelled}>
                     <Edit color="#666"/>
                 </IconButton>
             </Tooltip>
-            <Tooltip position="left" text="Сформировать Релиз">
+            <Tooltip position="left" text={t('Сформировать Релиз')}>
                 <IconButton onTouchTap={releaseDialog.handleOpenReleaseDialog}>
                     <GetRelease color="#666"/>
                 </IconButton>
@@ -619,7 +620,7 @@ const OrderGridList = enhance((props) => {
             <SubMenu url={ROUTES.ORDER_LIST_URL}/>
 
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить заказ">
+                <Tooltip position="left" text={t('Добавить заказ')}>
                     <FloatingActionButton
                         mini={true}
                         zDepth={1}
@@ -721,7 +722,7 @@ const OrderGridList = enhance((props) => {
 
             {detailData.data && <ConfirmDialog
                 type="cancel"
-                message={'Заказ № ' + _.get(detailData, ['data', 'id'])}
+                message={t('Заказ') + '№ ' + _.get(detailData, ['data', 'id'])}
                 onClose={confirmDialog.handleCloseConfirmDialog}
                 onSubmit={confirmDialog.handleSendConfirmDialog}
                 open={confirmDialog.openConfirmDialog}

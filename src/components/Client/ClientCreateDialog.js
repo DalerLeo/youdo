@@ -13,6 +13,7 @@ import ClientContactsListField from '../ReduxForm/Client/ClientContactsListField
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
+import t from '../../helpers/translate'
 
 export const CLIENT_CREATE_DIALOG_OPEN = 'openCreateDialog'
 export const CLIENT_UPDATE_DIALOG_OPEN = 'openUpdateDialog'
@@ -70,7 +71,7 @@ const ClientCreateDialog = enhance((props) => {
             bodyClassName={classes.popUp}>
 
             <div className={classes.titleContent}>
-                <span>{isUpdate ? 'Изменение клиента' : 'Добавление клиента'}</span>
+                <span>{isUpdate ? t('Изменение клиента') : t('Добавление клиента')}</span>
                 <IconButton onTouchTap={onClose} style={{padding: 'auto'}}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -86,23 +87,23 @@ const ClientCreateDialog = enhance((props) => {
                                 name="name"
                                 component={TextField}
                                 className={classes.inputFieldCustom}
-                                label="Организация"
+                                label={t('Организация')}
                                 fullWidth={true}/>
                             <Field
                                 name="address"
                                 component={TextField}
                                 className={classes.inputFieldCustom}
-                                label="Местположение"
+                                label={t('Местположение')}
                                 fullWidth={true}/>
                             <Field
                                 name="from"
                                 component={UsersSearchField}
                                 className={classes.inputFieldCustom}
-                                label="По рекомендации"
+                                label={t('По рекомендации')}
                                 fullWidth={true}/>
 
                             <div className={classes.contacts}>
-                                Контактные данные
+                                {t('Контактные данные')}
                                 <FieldArray
                                     name="contacts"
                                     component={ClientContactsListField}
@@ -113,14 +114,14 @@ const ClientCreateDialog = enhance((props) => {
                                     name="inBlacklist"
                                     component={CheckBox}
                                     className={classes.inputFieldCustom}
-                                    label="Добавить в черный список"
+                                    label={t('Добавить в черный список')}
                                     fullWidth={true}/>
                             </div>
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
-                            label="Сохранить"
+                            label={t('Сохранить')}
                             className={classes.actionButton}
                             primary={true}
                             type="submit"

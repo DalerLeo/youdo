@@ -12,6 +12,7 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
 import dateFormat from '../../helpers/dateFormat'
+import t from '../../helpers/translate'
 
 export const ORDER_ITEM_RETURN_DIALOG_OPEN = 'openOrderItemReturnDialog'
 const enhance = compose(
@@ -218,7 +219,7 @@ const OrderItemReturnDialog = enhance((props) => {
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>Возврат №{id}</span>
+                <span>{t('Возврат')} №{id}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -232,26 +233,26 @@ const OrderItemReturnDialog = enhance((props) => {
                         <div className={classes.returnInfo}>
                             <div className={classes.flex} style={{justifyContent: 'space-between'}}>
                                 <div>
-                                    <span>Причина возврата</span>
+                                    <span>{t('Причина возврата')}</span>
                                     <span>{comment}</span>
                                 </div>
-                                <div style={{textAlign: 'right'}}>Добавил: <span style={{fontWeight: '600'}}>{firstName} {secondName}</span></div>
+                                <div style={{textAlign: 'right'}}>{t('Добавил')}: <span style={{fontWeight: '600'}}>{firstName} {secondName}</span></div>
                             </div>
                             <div style={{marginTop: '20px'}}>
-                                <span>Дата возврата</span>
+                                <span>{t('Дата возврата')}</span>
                                 <span>{date}</span>
                             </div>
                         </div>
                         <div className={classes.returnedItems}>
                             <Row className="dottedList">
-                                <Col xs={4}>Товар</Col>
-                                <Col xs={2}>Количество</Col>
-                                <Col xs={3}>Цена ({getConfig('PRIMARY_CURRENCY')})</Col>
-                                <Col xs={3}>Сумма ({getConfig('PRIMARY_CURRENCY')})</Col>
+                                <Col xs={4}>{t('Товар')}</Col>
+                                <Col xs={2}>{t('Количество')}</Col>
+                                <Col xs={3}>{t('Цена')} ({getConfig('PRIMARY_CURRENCY')})</Col>
+                                <Col xs={3}>{t('Сумма')} ({getConfig('PRIMARY_CURRENCY')})</Col>
                             </Row>
                             {productList}
                         </div>
-                        <div className={classes.returnSummary}>Общая сумма возврата: {totalPrice}</div>
+                        <div className={classes.returnSummary}>{t('Общая сумма возврата')}: {totalPrice}</div>
                     </div>
                 </div>
             </div>
