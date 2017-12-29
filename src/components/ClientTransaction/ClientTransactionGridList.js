@@ -119,6 +119,7 @@ const ClientTransactionGridList = enhance((props) => {
         filter,
         filterDialog,
         confirmDialog,
+        resendDialog,
         listData,
         transactionID,
         classes,
@@ -191,6 +192,7 @@ const ClientTransactionGridList = enhance((props) => {
                         {confirmation === REJECTED &&
                         <ToolTip position={'left'} text={'Переотправить запрос'}>
                             <IconButton
+                                onTouchTap={() => { resendDialog.handleOpenResendDialog(id) }}
                                 style={iconStyle.button}
                                 iconStyle={iconStyle.icon}>
                                 <ResendIcon/>
@@ -253,6 +255,13 @@ const ClientTransactionGridList = enhance((props) => {
                 onClose={confirmDialog.handleCloseConfirmDialog}
                 onSubmit={confirmDialog.handleSubmitConfirmDialog}
                 open={confirmDialog.open}
+            />
+            <ConfirmDialog
+                type="submit"
+                message={'Транзакция №' + transactionID}
+                onClose={resendDialog.handleCloseResendDialog}
+                onSubmit={resendDialog.handleSubmitResendDialog}
+                open={resendDialog.open}
             />
         </Container>
     )

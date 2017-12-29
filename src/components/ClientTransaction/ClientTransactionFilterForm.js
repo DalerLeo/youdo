@@ -9,18 +9,18 @@ import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
-import DateToDateField from '../ReduxForm/Basic/DateToDateField'
-import {TransactionTypeSearchField, ExpensiveCategorySearchField} from '../ReduxForm'
+import {TransactionTypeMultiSearchField, DivisionMultiSearchField, UsersMultiSearchField} from '../ReduxForm'
+import ClientTransactionStatusSearchField from '../ReduxForm/ClientTransactionStatusSearchField'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
 export const CLIENT_TRANSACTION_FILTER_OPEN = 'openFilterDialog'
 
 export const CLIENT_TRANSACTION_FILTER_KEY = {
+    DIVISION: 'division',
     TYPE: 'type',
-    CATEGORY_EXPENSE: 'categoryExpense',
-    FROM_DATE: 'fromDate',
-    TO_DATE: 'toDate'
+    CLIENT: 'client',
+    STATUS: 'status'
 }
 
 const enhance = compose(
@@ -115,7 +115,7 @@ const enhance = compose(
 )
 
 const ClientTransactionFilterForm = enhance((props) => {
-    const {classes, filterDialog, getCount} = props
+    const {classes, filterDialog, getCount, handleSubmit} = props
     const filterCounts = getCount()
 
     if (!filterDialog.openFilterDialog) {
@@ -155,16 +155,11 @@ const ClientTransactionFilterForm = enhance((props) => {
                         <CloseIcon className={classes.icon} />
                     </IconButton>
                 </div>
-                <form onSubmit={filterDialog.handleSubmitFilterDialog}>
-                    <div>
-                        <Field className={classes.inputFieldCustom} name="categoryExpense" component={ExpensiveCategorySearchField} label="Категории расходов"/>
-                    </div>
-                    <div>
-                        <Field className={classes.inputFieldCustom} name="type" component={TransactionTypeSearchField} label="Тип"/>
-                    </div>
-                    <div>
-                        <Field className={classes.inputFieldCustom} name="date" component={DateToDateField} label="Диапазон дат" fullWidth={true}/>
-                    </div>
+                <form onSubmit={handleSubmit(filterDialog.handleSubmitFilterDialog)}>
+                    <Field className={classes.inputFieldCustom} name="type" component={TransactionTypeMultiSearchField} label="Тип транзакции"/>
+                    <Field className={classes.inputFieldCustom} name="division" component={DivisionMultiSearchField} label="Организация"/>
+                    <Field className={classes.inputFieldCustom} name="client" component={UsersMultiSearchField} label="Клиент"/>
+                    <Field className={classes.inputFieldCustom} name="status" component={ClientTransactionStatusSearchField} label="Статус"/>
 
                     <RaisedButton
                         type="submit"

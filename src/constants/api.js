@@ -20,6 +20,7 @@ export const CLIENT_TRANSACTION_LIST = `/${CLIENT_TRANSACTION}/`
 export const CLIENT_TRANSACTION_ITEM = `/${CLIENT_TRANSACTION}/%d/`
 export const CLIENT_TRANSACTION_SEND = '/transfer/'
 export const CLIENT_TRANSACTION_DELETE = `/${CLIENT_TRANSACTION}/%d/`
+export const CLIENT_TRANSACTION_RESEND = 'telegram/resend_client_transaction/'
 
 export const EQUIPMENT = 'manufacture/equipment'
 export const EQUIPMENT_CREATE = `/${EQUIPMENT}/`

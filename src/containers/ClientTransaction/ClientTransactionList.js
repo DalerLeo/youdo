@@ -1,14 +1,15 @@
 import React from 'react'
 import _ from 'lodash'
 import sprintf from 'sprintf'
-import moment from 'moment'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
-import {compose, withPropsOnChange, withHandlers} from 'recompose'
+import {compose, withPropsOnChange, withHandlers, withState} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
+import {splitToArray, joinArray} from '../../helpers/joinSplitValues'
+
 import {
     CLIENT_TRANSACTION_DELETE_DIALOG_OPEN,
     CLIENT_TRANSACTION_FILTER_KEY,
@@ -17,7 +18,8 @@ import {
 } from '../../components/ClientTransaction'
 import {
     clientTransactionListFetchAction,
-    clientTransactionDeleteAction
+    clientTransactionDeleteAction,
+    clientTransactionResendAction
 } from '../../actions/clientTransaction'
 import {openSnackbarAction} from '../../actions/snackbar'
 
@@ -40,6 +42,7 @@ const enhance = compose(
         }
     }),
 
+    withState('openResendDialog', 'setOpenResendDialog', false),
     withPropsOnChange((props, nextProps) => {
         return (props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()) ||
             (_.get(props, ['params', 'clientTransactionId']) !== _.get(nextProps, ['params', 'clientTransactionId']))
@@ -78,6 +81,33 @@ const enhance = compose(
                 })
         },
 
+        handleOpenResendDialog: props => (id) => {
+            const {filter, setOpenResendDialog} = props
+            hashHistory.push({
+                pathname: sprintf(ROUTER.CLIENT_TRANSACTION_ITEM_PATH, id),
+                query: filter.getParams()
+            })
+            setOpenResendDialog(true)
+        },
+
+        handleCloseResendDialog: props => () => {
+            const {setOpenResendDialog} = props
+            setOpenResendDialog(false)
+        },
+        handleSubmitResendDialog: props => () => {
+            const {dispatch, filter, clientId, params, setOpenResendDialog} = props
+            const transactionID = _.toInteger(_.get(params, 'transactionId'))
+            dispatch(clientTransactionResendAction(transactionID))
+                .then(() => {
+                    setOpenResendDialog(false)
+                    dispatch(clientTransactionListFetchAction(filter, clientId))
+                    return dispatch(openSnackbarAction({message: 'Транзакция переотправлена'}))
+                })
+                .catch(() => {
+                    return dispatch(openSnackbarAction({message: 'Ошибка при отправке запроса'}))
+                })
+        },
+
         handleOpenFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[CLIENT_TRANSACTION_FILTER_OPEN]: true})})
@@ -95,17 +125,17 @@ const enhance = compose(
 
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
-            const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
-            const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
-            const type = _.get(filterForm, ['values', 'type', 'value']) || null
-            const categoryExpense = _.get(filterForm, ['values', 'categoryExpense', 'value']) || null
+            const division = _.get(filterForm, ['values', 'division']) || null
+            const type = _.get(filterForm, ['values', 'type']) || null
+            const client = _.get(filterForm, ['values', 'client']) || null
+            const status = _.get(filterForm, ['values', 'status', 'value']) || null
 
             filter.filterBy({
                 [CLIENT_TRANSACTION_FILTER_OPEN]: false,
-                [CLIENT_TRANSACTION_FILTER_KEY.TYPE]: type,
-                [CLIENT_TRANSACTION_FILTER_KEY.CATEGORY_EXPENSE]: categoryExpense,
-                [CLIENT_TRANSACTION_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
-                [CLIENT_TRANSACTION_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
+                [CLIENT_TRANSACTION_FILTER_KEY.TYPE]: joinArray(type),
+                [CLIENT_TRANSACTION_FILTER_KEY.DIVISION]: joinArray(division),
+                [CLIENT_TRANSACTION_FILTER_KEY.CLIENT]: joinArray(client),
+                [CLIENT_TRANSACTION_FILTER_KEY.STATUS]: status
             })
         },
 
@@ -129,10 +159,10 @@ const ClientTransactionList = enhance((props) => {
     const openFilterDialog = toBoolean(_.get(location, ['query', CLIENT_TRANSACTION_FILTER_OPEN]))
     const openConfirmDialog = toBoolean(_.get(location, ['query', CLIENT_TRANSACTION_DELETE_DIALOG_OPEN]))
 
-    const categoryExpense = _.toInteger(filter.getParam(CLIENT_TRANSACTION_FILTER_KEY.CATEGORY_EXPENSE))
     const type = _.toInteger(filter.getParam(CLIENT_TRANSACTION_FILTER_KEY.TYPE))
-    const fromDate = filter.getParam(CLIENT_TRANSACTION_FILTER_KEY.FROM_DATE)
-    const toDate = filter.getParam(CLIENT_TRANSACTION_FILTER_KEY.TO_DATE)
+    const status = filter.getParam(CLIENT_TRANSACTION_FILTER_KEY.STATUS)
+    const division = _.toInteger(filter.getParam(CLIENT_TRANSACTION_FILTER_KEY.DIVISION))
+    const client = _.toInteger(filter.getParam(CLIENT_TRANSACTION_FILTER_KEY.CLIENT))
     const transactionID = _.toInteger(_.get(params, 'transactionId'))
 
     const confirmDialog = {
@@ -141,18 +171,20 @@ const ClientTransactionList = enhance((props) => {
         handleCloseConfirmDialog: props.handleCloseConfirmDialog,
         handleSubmitConfirmDialog: props.handleSubmitConfirmDialog
     }
+    const resendDialog = {
+        open: props.openResendDialog,
+        handleOpenResendDialog: props.handleOpenResendDialog,
+        handleCloseResendDialog: props.handleCloseResendDialog,
+        handleSubmitResendDialog: props.handleSubmitResendDialog
+    }
 
     const filterDialog = {
         initialValues: {
-            category: categoryExpense && _.map(_.split(categoryExpense, '-'), (item) => {
-                return _.toNumber(item)
-            }),
-            type: {
-                value: type
-            },
-            date: {
-                fromDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),
-                toDate: toDate && moment(toDate, 'YYYY-MM-DD')
+            type: type && splitToArray(type),
+            division: division && splitToArray(division),
+            client: client && splitToArray(client),
+            status: {
+                value: status
             }
         },
         filterLoading: false,
@@ -175,6 +207,7 @@ const ClientTransactionList = enhance((props) => {
                 listData={listData}
                 transactionID={transactionID}
                 confirmDialog={confirmDialog}
+                resendDialog={resendDialog}
                 filterDialog={filterDialog}
                 isAdmin={isAdmin}
             />

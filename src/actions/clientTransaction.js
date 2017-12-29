@@ -23,7 +23,7 @@ export const clientTransactionDeleteAction = (id) => {
 
 export const clientTransactionResendAction = (id) => {
     const payload = axios()
-        .delete(sprintf(API.CLIENT_TRANSACTION_DELETE, id))
+        .post(API.CLIENT_TRANSACTION_RESEND, {client_transaction: id})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -32,7 +32,7 @@ export const clientTransactionResendAction = (id) => {
         })
 
     return {
-        type: actionTypes.CLIENT_TRANSACTION_DELETE,
+        type: actionTypes.CLIENT_TRANSACTION_RESEND,
         payload
     }
 }
