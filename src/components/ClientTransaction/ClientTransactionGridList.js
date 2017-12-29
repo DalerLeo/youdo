@@ -1,52 +1,65 @@
 import _ from 'lodash'
-import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import Paper from 'material-ui/Paper'
-import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
-import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
 import ClientTransactionFilterForm from './ClientTransactionFilterForm'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
+import ToolTip from '../ToolTip'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
+import dateTimeFormat from '../../helpers/dateTimeFormat'
 import Accepted from 'material-ui/svg-icons/action/done-all'
 import Rejected from 'material-ui/svg-icons/content/block'
 import Requested from 'material-ui/svg-icons/action/schedule'
 import AutoAccepted from 'material-ui/svg-icons/action/spellcheck'
+import ResendIcon from 'material-ui/svg-icons/content/reply'
+import DeleteIcon from 'material-ui/svg-icons/action/delete'
+import {
+    REQUESTED,
+    CONFIRMED,
+    REJECTED,
+    AUTO
+} from './index'
 
 const listHeader = [
     {
         sorting: false,
         name: 'icon',
-        title: '',
+        title: 'Статус',
         xs: 1
     },
     {
         sorting: true,
-        name: 'comment',
-        title: 'Описание',
-        xs: 4
+        name: 'client',
+        title: 'Клиент',
+        xs: 3
+    },
+    {
+        sorting: true,
+        name: 'user',
+        title: 'Пользователь',
+        xs: 3
     },
     {
         sorting: true,
         name: 'date',
         title: 'Дата',
-        xs: 3
+        xs: 2
     },
     {
         sorting: true,
         alignRight: true,
         name: 'amount',
         title: 'Сумма',
-        xs: 3
+        xs: 2
     },
     {
         sorting: false,
@@ -54,13 +67,6 @@ const listHeader = [
         title: '',
         xs: 1
     }
-]
-
-const iconsArray = [
-    <Accepted color={'#81c784'}/>,
-    <Rejected color={'#e57373'}/>,
-    <Requested color={'#f0ad4e'}/>,
-    <AutoAccepted color={'#12aaeb'}/>
 ]
 
 const enhance = compose(
@@ -88,33 +94,40 @@ const enhance = compose(
                 width: '20px !important',
                 height: '20px !important'
             }
+        },
+        buttons: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-end'
         }
     }),
 )
+
+const iconStyle = {
+    icon: {
+        color: '#666'
+    },
+    button: {
+        width: 40,
+        height: 40,
+        padding: 10
+    }
+}
 
 const ClientTransactionGridList = enhance((props) => {
     const {
         filter,
         filterDialog,
-        actionsDialog,
         confirmDialog,
         listData,
-        detailData,
-        classes
+        transactionID,
+        classes,
+        isAdmin
     } = props
 
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
-    const actions = (
-        <div>
-            <IconButton onTouchTap={actionsDialog.handleActionEdit}>
-                <ModEditorIcon />
-            </IconButton>
-
-            <IconButton onTouchTap={actionsDialog.handleActionDelete}>
-                <DeleteIcon />
-            </IconButton>
-        </div>
-    )
+    const primaryCurrencyID = _.toInteger(getConfig('PRIMARY_CURRENCY_ID'))
+    const actions = <div/>
 
     const clientTransactionFilterDialog = (
         <ClientTransactionFilterForm
@@ -130,22 +143,70 @@ const ClientTransactionGridList = enhance((props) => {
 
     const clientTransactionList = _.map(_.get(listData, 'data'), (item) => {
         const ZERO = 0
-        const RANDOM = 3
         const id = _.get(item, 'id')
-        const comment = _.get(item, 'comment')
+        const client = _.get(item, ['client', 'name'])
+        const user = _.get(item, 'user')
+        const userName = user ? _.get(user, 'firstName') + ' ' + _.get(user, 'secondName') : 'Неизвестно'
         const type = _.get(item, 'amount') || 'N/A'
-        const amount = numberFormat(_.get(item, 'amount')) || 'N/A'
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY HH:mm')
-        const currency = _.get(item, ['currency', 'name']) || 'N/A'
-        const status = _.get(iconsArray, _.random(RANDOM))
-
+        const amount = _.toNumber(_.get(item, 'amount'))
+        const createdDate = dateTimeFormat(_.get(item, 'createdDate'))
+        const currency = _.get(item, ['currency', 'name'])
+        const currencyID = _.get(item, ['currency', 'id'])
+        const internal = _.toNumber(_.get(item, 'internal'))
+        const customRate = _.get(item, 'customRate') ? _.toNumber(_.get(item, 'customRate')) : _.toInteger(amount / internal)
+        const confirmation = _.get(item, 'clientConfirmation')
+        const statusIcon = (status) => {
+            switch (status) {
+                case CONFIRMED: return <ToolTip position={'right'} text={'Подтвержден'}>
+                    <Accepted color={'#81c784'}/>
+                </ToolTip>
+                case REJECTED: return <ToolTip position={'right'} text={'Отменен'}>
+                    <Rejected color={'#e57373'}/>
+                </ToolTip>
+                case REQUESTED: return <ToolTip position={'right'} text={'В ожидании'}>
+                    <Requested color={'#f0ad4e'}/>
+                </ToolTip>
+                case AUTO: return <ToolTip position={'right'} text={'Автоматически подтвержден системой'}>
+                    <AutoAccepted color={'#12aaeb'}/>
+                </ToolTip>
+                default: return null
+            }
+        }
         return (
             <Row key={id} className={classes.listRow}>
-                <Col xs={1}>{status}</Col>
-                <Col xs={4}>{comment}</Col>
-                <Col xs={3}>{createdDate}</Col>
-                <Col xs={1}></Col>
-                <Col style={{textAlign: 'right'}} className={type >= ZERO ? classes.green : classes.red} xs={3}>{amount} {currency}</Col>
+                <Col xs={1}>{statusIcon(confirmation)}</Col>
+                <Col xs={3}>{client}</Col>
+                <Col xs={3}>{userName}</Col>
+                <Col xs={2}>{createdDate}</Col>
+                <Col style={{textAlign: 'right'}} className={type >= ZERO ? classes.green : classes.red} xs={2}>
+                    <span style={amount > ZERO ? {color: '#81c784'} : {color: '#e57373'}}>{numberFormat(amount, currency)}</span>
+                    {currencyID !== primaryCurrencyID &&
+                    <div>
+                        <div>{numberFormat(internal, primaryCurrency)} <span
+                            style={{fontSize: 11, color: '#666'}}>({customRate})</span></div>
+                    </div>}
+                </Col>
+                <Col xs={1} style={{textAlign: 'right'}}>
+                    <div className={classes.buttons}>
+                        {confirmation === REJECTED &&
+                        <ToolTip position={'left'} text={'Переотправить запрос'}>
+                            <IconButton
+                                style={iconStyle.button}
+                                iconStyle={iconStyle.icon}>
+                                <ResendIcon/>
+                            </IconButton>
+                        </ToolTip>}
+                        {isAdmin &&
+                        <ToolTip position={'left'} text={'Удалить транзакцию'}>
+                            <IconButton
+                                onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
+                                style={iconStyle.button}
+                                iconStyle={iconStyle.icon}>
+                                <DeleteIcon/>
+                            </IconButton>
+                        </ToolTip>}
+                    </div>
+                </Col>
             </Row>
         )
     })
@@ -186,13 +247,13 @@ const ClientTransactionGridList = enhance((props) => {
                 filterDialog={clientTransactionFilterDialog}
             />
 
-            {detailData.data && <ConfirmDialog
+            <ConfirmDialog
                 type="delete"
-                message={_.get(detailData, ['data', 'comment'])}
+                message={'Транзакция №' + transactionID}
                 onClose={confirmDialog.handleCloseConfirmDialog}
-                onSubmit={confirmDialog.handleExpenseConfirmDialog}
+                onSubmit={confirmDialog.handleSubmitConfirmDialog}
                 open={confirmDialog.open}
-            />}
+            />
         </Container>
     )
 })
@@ -206,11 +267,7 @@ ClientTransactionGridList.propTypes = {
         open: PropTypes.bool.isRequired,
         handleOpenConfirmDialog: PropTypes.func.isRequired,
         handleCloseConfirmDialog: PropTypes.func.isRequired,
-        handleExpenseConfirmDialog: PropTypes.func.isRequired
-    }).isRequired,
-    actionsDialog: PropTypes.shape({
-        handleActionEdit: PropTypes.func.isRequired,
-        handleActionDelete: PropTypes.func.isRequired
+        handleSubmitConfirmDialog: PropTypes.func.isRequired
     }).isRequired,
     filterDialog: PropTypes.shape({
         initialValues: PropTypes.object,

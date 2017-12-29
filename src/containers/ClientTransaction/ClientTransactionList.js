@@ -26,19 +26,17 @@ const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
-        const detail = _.get(state, ['clientTransaction', 'item', 'data'])
-        const detailLoading = _.get(state, ['clientTransaction', 'item', 'loading'])
         const list = _.get(state, ['clientTransaction', 'list', 'data'])
         const listLoading = _.get(state, ['clientTransaction', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'ClientTransactionFilterForm'])
         const filter = filterHelper(list, pathname, query)
+        const isAdmin = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
         return {
             list,
             listLoading,
-            detail,
-            detailLoading,
             filter,
-            filterForm
+            filterForm,
+            isAdmin
         }
     }),
 
@@ -51,14 +49,6 @@ const enhance = compose(
     }),
 
     withHandlers({
-        handleActionEdit: props => () => {
-            return null
-        },
-
-        handleOpenDeleteDialog: props => () => {
-            return null
-        },
-
         handleOpenConfirmDialog: props => (id) => {
             const {filter} = props
             hashHistory.push({
@@ -71,18 +61,20 @@ const enhance = compose(
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[CLIENT_TRANSACTION_DELETE_DIALOG_OPEN]: false})})
         },
-        handleExpenseConfirmDialog: props => () => {
-            const {dispatch, detail, filter, location: {pathname}, clientId} = props
-            dispatch(clientTransactionDeleteAction(detail.id))
-                .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
-                })
+        handleSubmitConfirmDialog: props => () => {
+            const {dispatch, filter, location: {pathname}, clientId, params} = props
+            const transactionID = _.toInteger(_.get(params, 'transactionId'))
+            dispatch(clientTransactionDeleteAction(transactionID))
                 .then(() => {
                     hashHistory.push({
                         pathname,
                         query: filter.getParams({[CLIENT_TRANSACTION_DELETE_DIALOG_OPEN]: false})
                     })
                     dispatch(clientTransactionListFetchAction(filter, clientId))
+                    return dispatch(openSnackbarAction({message: 'Транзакция успешно удалена'}))
+                })
+                .catch(() => {
+                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
                 })
         },
 
@@ -128,11 +120,10 @@ const ClientTransactionList = enhance((props) => {
         location,
         list,
         listLoading,
-        detail,
-        detailLoading,
         filter,
         layout,
-        params
+        params,
+        isAdmin
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', CLIENT_TRANSACTION_FILTER_OPEN]))
@@ -142,18 +133,13 @@ const ClientTransactionList = enhance((props) => {
     const type = _.toInteger(filter.getParam(CLIENT_TRANSACTION_FILTER_KEY.TYPE))
     const fromDate = filter.getParam(CLIENT_TRANSACTION_FILTER_KEY.FROM_DATE)
     const toDate = filter.getParam(CLIENT_TRANSACTION_FILTER_KEY.TO_DATE)
-    const detailId = _.toInteger(_.get(params, 'clientTransactionId'))
-
-    const actionsDialog = {
-        handleActionEdit: props.handleActionEdit,
-        handleActionDelete: props.handleOpenDeleteDialog
-    }
+    const transactionID = _.toInteger(_.get(params, 'transactionId'))
 
     const confirmDialog = {
         open: openConfirmDialog,
         handleOpenConfirmDialog: props.handleOpenConfirmDialog,
         handleCloseConfirmDialog: props.handleCloseConfirmDialog,
-        handleExpenseConfirmDialog: props.handleExpenseConfirmDialog
+        handleSubmitConfirmDialog: props.handleSubmitConfirmDialog
     }
 
     const filterDialog = {
@@ -182,21 +168,15 @@ const ClientTransactionList = enhance((props) => {
         listLoading
     }
 
-    const detailData = {
-        id: detailId,
-        data: detail,
-        detailLoading
-    }
-
     return (
         <Layout {...layout}>
             <ClientTransactionGridList
                 filter={filter}
                 listData={listData}
-                detailData={detailData}
+                transactionID={transactionID}
                 confirmDialog={confirmDialog}
-                actionsDialog={actionsDialog}
                 filterDialog={filterDialog}
+                isAdmin={isAdmin}
             />
         </Layout>
     )
