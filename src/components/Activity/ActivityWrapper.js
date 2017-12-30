@@ -18,6 +18,7 @@ import ActivityReport from './ActivityReport'
 import ActivityReturn from './ActivityReturn'
 import ActivityPayment from './ActivityPayment'
 import ActivityDelivery from './ActivityDelivery'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -231,7 +232,7 @@ const ActivityWrapper = enhance((props) => {
                     handleClickDay={handleClickDay}/>
                 {(emptyQuery && !(loading)
                     ? <div className={classes.emptyQuery}>
-                        <div>По вашему запросу ничего не найдено...</div>
+                        <div>{t('По вашему запросу ничего не найдено')}...</div>
                     </div>
                     : tubeWrapper)}
             </div>

@@ -12,6 +12,7 @@ import {TextField, CurrencySearchField, UsersSearchField, PaymentTypeSearchField
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
+import t from '../../helpers/translate'
 
 export const CASHBOX_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -64,7 +65,7 @@ const CashboxCreateDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>{isUpdate ? 'Изменить кассу' : 'Добавить кассу'}</span>
+                <span>{isUpdate ? t('Изменить кассу') : t('Добавить кассу')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -80,35 +81,35 @@ const CashboxCreateDialog = enhance((props) => {
                                 name="name"
                                 component={TextField}
                                 className={classes.inputFieldCustom}
-                                label="Наименование"
+                                label={t('Наименование')}
                                 fullWidth={true}
                             />
                             <Field
                                 name="currency"
                                 component={CurrencySearchField}
                                 className={classes.inputFieldCustom}
-                                label="Валюта"
+                                label={t('Валюта')}
                                 fullWidth={true}
                             />
                             <Field
                                 name="cashier"
                                 component={UsersSearchField}
                                 className={classes.inputFieldCustom}
-                                label="Кассир"
+                                label={t('Кассир')}
                                 fullWidth={true}
                             />
                             <Field
                                 name="type"
                                 component={PaymentTypeSearchField}
                                 className={classes.inputFieldCustom}
-                                label="Тип оплаты"
+                                label={t('Тип оплаты')}
                                 fullWidth={true}
                             />
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
-                            label="Сохранить"
+                            label={t('Сохранить')}
                             className={classes.actionButton}
                             labelStyle={{fontSize: '13px'}}
                             primary={true}

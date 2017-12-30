@@ -4,6 +4,7 @@ import {compose} from 'recompose'
 import NoAccess from '../../components/Images/no-access.png'
 import * as ROUTES from '../../constants/routes'
 import {Link} from 'react-router'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -62,10 +63,10 @@ const AccessList = enhance((props) => {
                 </div>
 
                 <div className={classes.text}>
-                    <h1>403 <span>ошибка</span></h1>
-                    <p>У вас нет прав для просмотра этой страницы</p>
-                    <p>Вернуться на <Link to={{
-                        pathname: ROUTES.DASHBOARD_URL}}>главную</Link>
+                    <h1>403 <span>{t('ошибка')}</span></h1>
+                    <p>{t('У вас нет прав для просмотра этой страницы')}</p>
+                    <p>{t('Вернуться на')} <Link to={{
+                        pathname: ROUTES.DASHBOARD_URL}}>{t('главную')}</Link>
                     </p>
                 </div>
             </div>

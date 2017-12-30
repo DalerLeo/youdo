@@ -19,7 +19,6 @@ import SubMenu from '../SubMenu'
 import Tooltip from '../ToolTip'
 import dateFormat from '../../helpers/dateFormat'
 import t from '../../helpers/translate'
-
 const colorBlue = '#12aaeb !important'
 const enhance = compose(
     injectSheet({

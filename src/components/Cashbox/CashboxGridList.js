@@ -17,6 +17,7 @@ import FlatButton from 'material-ui/FlatButton'
 import Edit from 'material-ui/svg-icons/image/edit'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import SettingSideMenu from '../Settings/SettingsSideMenu'
+import t from '../../helpers/translate'
 
 const listHeader = [
     {
@@ -28,25 +29,25 @@ const listHeader = [
     {
         sorting: false,
         name: 'name',
-        title: 'Наименование',
+        title: t('Наименование'),
         xs: 3
     },
     {
         sorting: false,
         name: 'currency',
-        title: 'Валюта',
+        title: t('Валюта'),
         xs: 3
     },
     {
         sorting: false,
         name: 'cashier',
-        title: 'Кассир',
+        title: t('Кассир'),
         xs: 2
     },
     {
         sorting: false,
         name: 'type',
-        title: 'Тип',
+        title: t('Тип'),
         xs: 2
     }
 ]
@@ -156,7 +157,7 @@ const CashboxGridList = enhance((props) => {
         const name = _.get(item, 'name')
         const currency = _.get(item, ['currency', 'name']) || 'N/A'
         const cashier = _.get(item, ['cashier', 'firstName']) + ' ' + _.get(item, ['cashier', 'secondName'])
-        const type = _.get(item, 'type') === 'bank' ? 'банковский счет' : 'наличный'
+        const type = _.get(item, 'type') === 'bank' ? t('банковский счет') : t('наличный')
         return (
             <Row key={id} className={classes.listRow}>
                 <Col xs={1}>{id}</Col>
@@ -166,7 +167,7 @@ const CashboxGridList = enhance((props) => {
                 <Col xs={2}>{type}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
                     <div className={classes.iconBtn}>
-                        <Tooltip position="bottom" text="Изменить">
+                        <Tooltip position="bottom" text={t('Изменить')}>
                             <IconButton
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
@@ -176,7 +177,7 @@ const CashboxGridList = enhance((props) => {
                                 <Edit />
                             </IconButton>
                         </Tooltip>
-                        <Tooltip position="bottom" text="Удалить">
+                        <Tooltip position="bottom" text={t('Удалить')}>
                             <IconButton
                                 disableTouchRipple={true}
                                 iconStyle={iconStyle.icon}
@@ -203,7 +204,7 @@ const CashboxGridList = enhance((props) => {
                 backgroundColor="#fff"
                 labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb', fontSize: '13px'}}
                 className={classes.addButton}
-                label="добавить кассу"
+                label={t('добавить кассу')}
                 onTouchTap={createDialog.handleOpenCreateDialog}
                 icon={<ContentAdd color="#12aaeb"/>}>
             </FlatButton>

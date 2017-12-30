@@ -22,6 +22,7 @@ import {
     clientTransactionResendAction
 } from '../../actions/clientTransaction'
 import {openSnackbarAction} from '../../actions/snackbar'
+import t from '../../helpers/translate'
 
 const ZERO = 0
 const enhance = compose(
@@ -74,10 +75,10 @@ const enhance = compose(
                         query: filter.getParams({[CLIENT_TRANSACTION_DELETE_DIALOG_OPEN]: false})
                     })
                     dispatch(clientTransactionListFetchAction(filter, clientId))
-                    return dispatch(openSnackbarAction({message: 'Транзакция успешно удалена'}))
+                    return dispatch(openSnackbarAction({message: t('Транзакция успешно удалена')}))
                 })
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
+                    return dispatch(openSnackbarAction({message: t('Ошибка при удалении')}))
                 })
         },
 
@@ -101,7 +102,7 @@ const enhance = compose(
                 .then(() => {
                     setOpenResendDialog(false)
                     dispatch(clientTransactionListFetchAction(filter, clientId))
-                    return dispatch(openSnackbarAction({message: 'Транзакция переотправлена'}))
+                    return dispatch(openSnackbarAction({message: t('Транзакция переотправлена')}))
                 })
                 .catch(() => {
                     return dispatch(openSnackbarAction({message: 'Ошибка при отправке запроса'}))

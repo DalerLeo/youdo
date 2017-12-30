@@ -6,6 +6,7 @@ import {compose, withState} from 'recompose'
 import Paper from 'material-ui/Paper'
 import LinearProgress from '../LinearProgress'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
+import t from '../../helpers/translate'
 
 const ONE = 1
 const TWO = 2
@@ -147,7 +148,7 @@ const ActivityVisit = enhance((props) => {
                     <span>{name}</span>
                 </div>
                 <div className={classes.tubeTime}>{createdDate}</div>
-                <div className={classes.tubeInfo}>Причина отказа заказа с магазина "{market}": <strong>{comment}</strong></div>
+                <div className={classes.tubeInfo}>{t('Причина отказа заказа с магазина')} "{market}": <strong>{comment}</strong></div>
             </Paper>
         )
     })
@@ -158,7 +159,7 @@ const ActivityVisit = enhance((props) => {
 
     return (
         <div className={classes.block}>
-            <div className={classes.blockTitle}>Визиты ({countSummary})</div>
+            <div className={classes.blockTitle}>{t('Визиты')} ({countSummary})</div>
             <div className={classes.blockItems}>
                 {visitList}
                 {(visitlistLoading || summaryLoading)
@@ -168,7 +169,7 @@ const ActivityVisit = enhance((props) => {
                     : (countSummary > TEN) && (visitlistData.data.length < countSummary) && <a onClick={() => {
                         handleLoadMoreItems(type, defaultPage)
                         updateDefaultPage(defaultPage + ONE)
-                    }}>Загрузить еще...</a>}
+                    }}>{t('Загрузить еще')}...</a>}
             </div>
         </div>
     )

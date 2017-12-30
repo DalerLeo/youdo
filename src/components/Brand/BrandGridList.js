@@ -21,6 +21,7 @@ import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import Tooltip from '../ToolTip'
 import dateFormat from '../../helpers/dateFormat'
+import t from '../../helpers/translate'
 
 const listHeader = [
     {
@@ -33,13 +34,13 @@ const listHeader = [
         sorting: true,
         name: 'name',
         xs: 5,
-        title: 'Наименование'
+        title: t('Наименование')
     },
     {
         sorting: true,
         xs: 4,
         name: 'created_date',
-        title: 'Дата создания'
+        title: t('Дата создания')
     },
     {
         sorting: true,
@@ -121,12 +122,12 @@ const BrandGridList = enhance((props) => {
                         anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                         targetOrigin={{horizontal: 'right', vertical: 'top'}}>
                         <MenuItem
-                            primaryText="Изменить"
+                            primaryText={t('Изменить')}
                             leftIcon={<Edit />}
                             onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}
                         />
                         <MenuItem
-                            primaryText="Удалить "
+                            primaryText={t('Удалить')}
                             leftIcon={<DeleteIcon />}
                             onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
                         />
@@ -145,7 +146,7 @@ const BrandGridList = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.BRAND_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить бренд">
+                <Tooltip position="left" text={t('Добавить бренд')}>
                     <FloatingActionButton
                         mini={true}
                         className={classes.addButton}

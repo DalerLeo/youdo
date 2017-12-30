@@ -10,6 +10,7 @@ import getConfig from '../../helpers/getConfig'
 import Info from 'material-ui/svg-icons/action/info-outline'
 import Tooltip from '../ToolTip'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
+import t from '../../helpers/translate'
 
 const ONE = 1
 const TWO = 2
@@ -152,7 +153,7 @@ const ActivityPayment = enhance((props) => {
     const countSummary = _.get(summary, 'count')
     const cashSummary = numberFormat(_.get(summary, 'cash'), currentCurrency)
     const bankSummary = numberFormat(_.get(summary, 'bank'), currentCurrency)
-    const tooltipText = '<div>Сумма (нал): ' + cashSummary + '</div> <div>Сумма (пер): ' + bankSummary + '</div>'
+    const tooltipText = '<div>' + t('Сумма (нал)') + ': ' + cashSummary + '</div> <div>' + t('Сумма (пер)') + ': ' + bankSummary + '</div>'
     const paymentList = _.map(_.get(paymentlistData, 'data'), (item) => {
         const id = _.get(item, ['clientTransaction', 'id'])
         const currency = _.get(item, ['clientTransaction', 'currency', 'name'])
@@ -178,7 +179,7 @@ const ActivityPayment = enhance((props) => {
     return (
         <div className={classes.block}>
             <div className={classes.blockTitle}>
-                <strong>Сбор денег ({countSummary})</strong>
+                <strong>{t('Сбор денег')} ({countSummary})</strong>
                 <Tooltip position="left" text={tooltipText}>
                     <Info color="#666"/>
                 </Tooltip>
@@ -192,7 +193,7 @@ const ActivityPayment = enhance((props) => {
                     : (countSummary > TEN) && (paymentlistData.data.length < countSummary) && <a onClick={() => {
                         handleLoadMoreItems(type, defaultPage)
                         updateDefaultPage(defaultPage + ONE)
-                    }}>Загрузить еще...</a>}
+                    }}>{t('Загрузить еще')}...</a>}
             </div>
         </div>
     )

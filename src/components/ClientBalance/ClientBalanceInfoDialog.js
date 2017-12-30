@@ -230,8 +230,8 @@ const ClientBalanceInfoDialog = enhance((props) => {
                 <div style={{flexBasis: '16%', maxWidth: '16%'}}>{createdDate}</div>
                 <div style={{flexBasis: '20%', maxWidth: '20%'}}>{user}</div>
                 <div style={{flexBasis: '40%', maxWidth: '40%'}}>
-                    {market && <div>Магазин: <span>{market}</span></div>}
-                    {comment && <div>Комментарии: <span>{comment}</span></div>}
+                    {market && <div>{t('Магазин')}: <span>{market}</span></div>}
+                    {comment && <div>{t('Комментарии')}: <span>{comment}</span></div>}
                     <ClientBalanceFormat type={type} order={order} orderReturn={orderReturn}/>
                 </div>
                 <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>
@@ -244,7 +244,7 @@ const ClientBalanceInfoDialog = enhance((props) => {
                 </div>
                 {(!stat && isSuperUser && (type === FIRST_BALANCE || type === NONE_TYPE)) &&
                 <div className={classes.iconBtn}>
-                    <Tooltip position="bottom" text="Изменить">
+                    <Tooltip position="bottom" text={t('Изменить')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
@@ -285,11 +285,11 @@ const ClientBalanceInfoDialog = enhance((props) => {
                     <div className={classes.infoBlock}>
                         <div className={classes.info}>
                             <div>
-                                <span>Клиент</span>
+                                <span>{t('Клиент')}</span>
                                 <div>{name}</div>
                             </div>
                             <div>
-                                <span>Баланс {paymentType}</span>
+                                <span>{t('Баланс')} {paymentType}</span>
                                 <div className={balance > ZERO
                                     ? classes.green
                                     : (balance < ZERO
@@ -303,18 +303,17 @@ const ClientBalanceInfoDialog = enhance((props) => {
                     </div>
                     <div className={classes.content}>
                         <Row>
-                            <div style={{flexBasis: '4%', maxWidth: '4%'}}>
-                            </div>
-                            <div style={{flexBasis: '16%', maxWidth: '16%'}}>Дата</div>
-                            <div style={{flexBasis: '20%', maxWidth: '20%'}}>Кто</div>
-                            <div style={{flexBasis: '40%', maxWidth: '40%'}}>Описание</div>
-                            <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>Сумма</div>
+                            <div style={{flexBasis: '4%', maxWidth: '4%'}}></div>
+                            <div style={{flexBasis: '16%', maxWidth: '16%'}}>{t('Дата')}</div>
+                            <div style={{flexBasis: '20%', maxWidth: '20%'}}>{t('Кто')}</div>
+                            <div style={{flexBasis: '40%', maxWidth: '40%'}}>{t('Описание')}</div>
+                            <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>{t('Сумма')}</div>
                             <div style={{flexBasis: '5%', maxWidth: '5%', textAlign: 'right'}}/>
                         </Row>
 
                         {!_.isEmpty(_.get(detailData, 'data'))
                             ? detailList
-                            : <div className={classes.emptyQuery}>Пока транзакции нет</div>}
+                            : <div className={classes.emptyQuery}>{t('Пока транзакции нет')}</div>}
                     </div>
                 </div>
             }

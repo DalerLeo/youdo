@@ -8,6 +8,8 @@ import Paper from 'material-ui/Paper'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
+import t from '../../helpers/translate'
+
 const ONE = 1
 const TWO = 2
 const TEN = 10
@@ -161,7 +163,7 @@ const ActivityDelivery = enhance((props) => {
     return (
         <div className={classes.block}>
             <div className={classes.blockTitle}>
-                <div>Доставки ({summaryCount})</div>
+                <div>{t('Доставки')} ({summaryCount})</div>
             </div>
             <div className={classes.blockItems}>
                 {deliveryList}
@@ -172,7 +174,7 @@ const ActivityDelivery = enhance((props) => {
                 : (summaryCount > TEN) && (deliverylistData.data.length < summaryCount) && <a onClick={() => {
                     handleLoadMoreItems(type, defaultPage)
                     updateDefaultPage(defaultPage + ONE)
-                }}>Загрузить еще...</a>}
+                }}>{t('Загрузить еще')}...</a>}
             </div>
         </div>
     )
