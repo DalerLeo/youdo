@@ -15,9 +15,7 @@ export const createSerializer = (data, location, newClient) => {
     const frequency = _.get(data, ['frequency', 'value'])
     const status = _.get(data, ['status', 'value'])
     const lat = _.get(location, 'lat')
-    const phones = _.map(_.get(data, 'phones'), (item) => {
-        return item.phone
-    })
+    const phones = _.get(data, 'phones')
     const lon = _.get(location, 'lng')
     const contactName = _.get(data, ['contactName'])
     let isActive = false
@@ -59,8 +57,11 @@ export const updateSerializer = (data, location, detail) => {
     const lat = _.get(location, 'lat')
     const lon = _.get(location, 'lng')
     const contactName = _.get(data, ['contactName'])
-    const phones = _.map(_.get(data, 'phones'), (item) => {
-        return item.phone
+    const phones = _.map(_.get(data, 'phones'), (phone) => {
+        return {
+            phone: phone.phone,
+            id: phone.id
+        }
     })
     let isActive = false
     if (status === ONE) {
