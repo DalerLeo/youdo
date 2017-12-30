@@ -32,7 +32,7 @@ const enhance = compose(
 )
 
 const LocationField = (props) => {
-    const {classes, location, setLocation, input, meta: {error}} = props
+    const {classes, location, setLocation, input, meta: {error}, viewOnly} = props
     let value = _.get(input, 'value')
     if (!value.lat && !value.lng) {
         value = location
@@ -41,11 +41,14 @@ const LocationField = (props) => {
         input.onChange({lat: pointer.latLng.lat(), lng: pointer.latLng.lng()})
         setLocation({lat: pointer.latLng.lat(), lng: pointer.latLng.lng()})
     }
+    const nullFunc = () => {
+        return null
+    }
 
     return (
         <div className={classes.wrapper}>
             {error && <div className={classes.error}>{error}</div>}
-            <GoogleMap onClick={handleClick} center={value}>
+            <GoogleMap onClick={viewOnly ? nullFunc : handleClick} center={value}>
                 <Marker position={value} />
             </GoogleMap>
         </div>

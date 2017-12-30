@@ -94,7 +94,7 @@ const enhance = compose(
     }),
 )
 const ShopMapDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes} = props
+    const {open, loading, handleSubmit, onClose, classes, viewOnly} = props
     const onSubmit = handleSubmit(() => props.onSubmit())
     return (
         <Dialog
@@ -120,16 +120,17 @@ const ShopMapDialog = enhance((props) => {
                             component={LocationField}
                             className={classes.map}
                             fullWidth={true}
+                            viewOnly={viewOnly}
                         />
                     </div>
-                    <div className={classes.bottomButton}>
+                    {!viewOnly && <div className={classes.bottomButton}>
                         <span>Кликните по карте, чтобы обозначить локацию</span>
                         <FlatButton
                             label="Сохранить"
                             className={classes.actionButton}
                             primary={true}
                             type="submit"/>
-                    </div>
+                    </div>}
                 </form>
             </div>
         </Dialog>
@@ -142,7 +143,8 @@ ShopMapDialog.propTyeps = {
     onSubmit: PropTypes.func.isRequired
 }
 ShopMapDialog.defaultProps = {
-    isUpdate: false
+    isUpdate: false,
+    viewOnly: true
 }
 
 export default ShopMapDialog

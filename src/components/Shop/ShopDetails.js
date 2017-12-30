@@ -30,8 +30,7 @@ const enhance = compose(
             display: 'flex',
             alignSelf: 'baseline',
             color: '#333 !important',
-            flexWrap: 'wrap',
-            padding: '0 30px'
+            flexWrap: 'wrap'
         },
         title: {
             display: 'flex',
@@ -40,7 +39,6 @@ const enhance = compose(
             alignItems: 'center',
             width: '100%',
             height: '65px',
-            margin: '0 -30px',
             padding: '0 30px',
             position: 'relative',
             boxSizing: 'content-box'
@@ -75,15 +73,28 @@ const enhance = compose(
             textAlign: 'center'
         },
         content: {
-            padding: '20px 0',
             display: 'flex',
-            width: '100%',
+            width: '100%'
+        },
+        sidesStyle: {
+            padding: '20px 30px',
+            display: 'flex',
+            width: '50%',
             '& > div': {
-                marginRight: '7%',
+                marginRight: '50px',
                 '&:last-child': {
                     margin: '0'
                 }
             }
+        },
+        leftSide: {
+            extend: 'sidesStyle',
+            borderRight: '1px #efefef solid',
+            width: '55%'
+        },
+        rightSide: {
+            extend: 'sidesStyle',
+            width: '45%'
         },
         info: {
             display: 'flex'
@@ -96,6 +107,10 @@ const enhance = compose(
             lineHeight: '25px',
             marginRight: '30px',
             marginTop: '10px',
+            '& li span': {
+                fontWeight: '600',
+                marginLeft: '5px'
+            },
             '&:last-child': {
                 marginRight: '0'
             }
@@ -103,7 +118,7 @@ const enhance = compose(
         image: {
             width: '230px',
             height: '165px',
-            marginRight: 'calc(7% + 36px) !important',
+            marginRight: '30px !important',
             position: 'relative',
             '& span:nth-child(4)': {
                 position: 'relative',
@@ -121,9 +136,6 @@ const enhance = compose(
         },
         imageWrapper: {
             height: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            flexWrap: 'wrap',
             '& img': {
                 width: '100%',
                 height: '100%',
@@ -132,11 +144,13 @@ const enhance = compose(
         },
         otherImages: {
             order: '2',
+            display: 'flex',
+            justifyContent: 'space-between',
+            marginTop: '10px',
             '& div': {
                 cursor: 'pointer',
-                width: '36px',
-                height: '36px',
-                marginBottom: '7px',
+                width: '38px',
+                height: '38px',
                 position: 'relative',
                 zIndex: '1',
                 '&:last-child strong': {
@@ -168,8 +182,6 @@ const enhance = compose(
         addImg: {
             background: '#999',
             cursor: 'pointer',
-            width: '36px',
-            height: '36px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -241,12 +253,13 @@ const ShopDetails = enhance((props) => {
         updateDialog,
         addPhotoDialog,
         slideShowDialog,
-        handleCloseDetail
+        handleCloseDetail,
+        handleOpenMapDialog
     } = props
 
     const ZERO = 0
-    const MAX_IMAGE_COUNT = 4
-    const THREE = 3
+    const MAX_IMAGE_COUNT = 5
+    const FOUR = 4
 
     const EVERY_DAY = '1'
     const ONCE_IN_A_WEEK = '2'
@@ -271,24 +284,19 @@ const ShopDetails = enhance((props) => {
     const shopType = _.get(data, ['marketType', 'name'])
     const address = _.get(data, 'address')
     const guide = _.get(data, 'guide')
-    const zone = _.get(data, ['border', 'title'])
+    const zone = _.get(data, ['border', 'title']) || <span className="redFont">Не определена</span>
     const contactName = _.get(data, 'contactName')
     const phone = _.get(data, 'phone')
-    const images = _.get(data, 'images') || {}
+    const images = _.get(data, 'images') || []
     const freq = _.get(data, 'visitFrequency')
     const isActive = _.get(data, 'isActive')
-    let slicedImages = images
-    if (images.length > MAX_IMAGE_COUNT) {
-        slicedImages = _.slice(images, ZERO, MAX_IMAGE_COUNT)
-    }
+    const slicedImages = images.length > MAX_IMAGE_COUNT ? _.slice(images, ZERO, MAX_IMAGE_COUNT) : images
     const moreImages = images.length - slicedImages.length
 
     if (loading) {
         return (
             <div className={classes.loader}>
-                <div>
-                    <LinearProgress/>
-                </div>
+                <LinearProgress/>
             </div>
         )
     }
@@ -309,7 +317,7 @@ const ShopDetails = enhance((props) => {
     const otherImages = _.map(images, (item, index) => {
         const src = _.get(item, 'file')
         const isPrimary = _.get(item, 'isPrimary')
-        if (!isPrimary && (count++) < THREE) {
+        if (!isPrimary && (count++) < FOUR) {
             return (
                 <div key={index} className="smallImages">
                     {moreImages > ZERO && <strong onClick={() => { slideShowDialog.handleOpenSlideShowDialog(index) }}>{moreImages}+</strong>}
@@ -362,72 +370,57 @@ const ShopDetails = enhance((props) => {
                 </div>
             </div>
             <div className={classes.content}>
-                <div className={classes.image}>
-                    {(images.length === ZERO) ? <div className={classes.noImage}>
-                        <div>
-                            <span>Фото <br/> отсутствует</span>
-                            <a onClick={addPhotoDialog.handleOpenAddPhotoDialog}>добавить фото</a>
-                        </div>
+                <div className={classes.leftSide}>
+                    <div className={classes.image}>
+                        {(images.length === ZERO) ? <div className={classes.noImage}>
+                                <div>
+                                    <span>Фото <br/> отсутствует</span>
+                                    <a onClick={addPhotoDialog.handleOpenAddPhotoDialog}>добавить фото</a>
+                                </div>
+                            </div>
+                            : <div className={classes.imageWrapper}>
+                                {primaryImage}
+                                <div className={classes.otherImages}>
+                                    <div onClick={addPhotoDialog.handleOpenAddPhotoDialog} className={classes.addImg}>
+                                        <Add color="#fff"/>
+                                    </div>
+                                    {otherImages}
+                                </div>
+                            </div>}
                     </div>
-                        : <div className={classes.imageWrapper}>
-                            {primaryImage}
-                            <div className={classes.otherImages}>
-                                {otherImages}
-                            </div>
-                            <div onClick={addPhotoDialog.handleOpenAddPhotoDialog} className={classes.addImg}>
-                                <Add color="#fff"/>
-                            </div>
-                        </div>}
+                    <div className={classes.infoBlock}>
+                        <div className={classes.infoTitle}>Детали</div>
+                        <ul className={classes.details}>
+                            <li>Клиент: <span>{client}</span></li>
+                            <li>Создал: <span>{createdBy}</span></li>
+                            <li>Дата создания: <span>{createdDate}</span></li>
+                            <li>Дата изменения: <span>{changedDate}</span></li>
+                            <li>Изменил: <span>{changedBy}</span></li>
+                            <li>Тип заведения: <span>{shopType}</span></li>
+                            <li>Зона: <span>{zone}</span></li>
+                        </ul>
+                    </div>
                 </div>
-                <div className={classes.infoBlock}>
-                    <div className={classes.infoTitle}>Детали</div>
-                    <ul className={classes.details}>
-                        <li>Клиент</li>
-                        <li>Создал</li>
-                        <li>Дата создания</li>
-                        <li>Дата изменения</li>
-                        <li>Изменил</li>
-                        <li>Тип заведения</li>
-                        <li>Зона</li>
-                    </ul>
-                    <ul className={classes.details}>
-                        <li>{client}</li>
-                        <li>{createdBy}</li>
-                        <li>{createdDate}</li>
-                        <li>{changedDate}</li>
-                        <li>{changedBy}</li>
-                        <li>{shopType}</li>
-                        <li>{!zone ? <span className="redFont">Не определена</span> : zone}</li>
-                    </ul>
-                </div>
-                <div className={classes.infoBlock}>
-                    <div className={classes.infoTitle}>Контакты</div>
-                    <ul className={classes.details}>
-                        <li>{contactName}</li>
-                        <li>Адрес</li>
-                        <li>Ориентир</li>
-                    </ul>
-                    <ul className={classes.details}>
-                        <li>{phone}</li>
-                        <li>{address}</li>
-                        <li>{guide}</li>
-                    </ul>
-
-                    <div className={classes.infoTitle} style={{marginTop: '10px'}}>Дополнительно</div>
-                    <ul className={classes.details}>
-                        <li>Р/с</li>
-                        <li>Адрес Банка</li>
-                        <li>ИНН</li>
-                        <li>ОКЭД</li>
-                        <li>МФО</li>
-                    </ul>
-                    <ul className={classes.details}>
-                        <li>{checkAccount}</li>
-                        <li>{bankAddress}</li>
-                        <li>{inn}</li>
-                        <li>{okad}</li>
-                        <li>{mfo}</li>
-                    </ul>
+                <div className={classes.rightSide}>
+                    <div className={classes.infoBlock}>
+                        <div className={classes.infoTitle}>Контакты</div>
+                        <ul className={classes.details}>
+                            <li>Имя контакта: <span>{contactName}</span></li>
+                            <li>Телефон: <span>{phone}</span></li>
+                            <li>Адрес: <span><a onClick={handleOpenMapDialog}>{address}</a></span></li>
+                            <li>Ориентир: <span>{guide}</span></li>
+                        </ul>
+                    </div>
+                    <div className={classes.infoBlock}>
+                        <div className={classes.infoTitle}>Дополнительно</div>
+                        <ul className={classes.details}>
+                            <li>Р/с: <span>{checkAccount}</span></li>
+                            <li>Адрес Банка: <span>{bankAddress}</span></li>
+                            <li>ИНН: <span>{inn}</span></li>
+                            <li>ОКЭД: <span>{okad}</span></li>
+                            <li>МФО: <span>{mfo}</span></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
