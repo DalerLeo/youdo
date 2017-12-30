@@ -163,6 +163,12 @@ const enhance = compose(
                     }
                 }
             }
+        },
+        flex: {
+            display: 'flex',
+            '& a': {
+                color: '#12aaeb'
+            }
         }
     })
 )
@@ -206,17 +212,23 @@ const TelegramGridList = enhance((props) => {
     const telegramList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const token = _.get(item, 'token')
-        const fullName = _.get(item, 'lastName') ? _.get(item, 'lastName') + ' ' + _.get(item, 'firstName') : 'Неизвестно'
-        const username = _.get(item, 'username') || 'Неизвестно'
+        const fullName = _.get(item, 'lastName')
+            ? <a>{_.get(item, 'firstName') + ' ' + _.get(item, 'lastName')}</a>
+            : 'Неизвестно'
+        const username = _.get(item, 'username') ? '@' + _.get(item, 'username') : ''
         const createdBy = _.get(item, ['createdBy', 'firstName']) + ' ' + _.get(item, ['createdBy', 'secondName']) || ''
-        const createdDate = _.get(item, 'createdDate') ? dateFormat(_.get(item, 'createdDate'), true) : ''
-        const activatedDate = _.get(item, 'activatedDate') ? dateFormat(_.get(item, 'activatedDate')) : false
+        const createdDate = dateFormat(_.get(item, 'createdDate'), true)
+        const activatedDate = dateFormat(_.get(item, 'activatedDate'), true)
         const market = _.get(item, ['market', 'name']) || 'Неизвестно'
         return (
             <Row key={id} className={classes.listRow}>
                 <Col xs={3}>{market}</Col>
                 <Col xs={3}><div style={{fontWeight: '600'}}>{createdBy}</div><div>{createdDate}</div></Col>
-                <Col xs={3}><div>{username}</div><div>{fullName}</div></Col>
+                <Col xs={3}>
+                    <div className={classes.flex}>
+                        <Tooltip position={'right'} text={username}>{fullName}</Tooltip>
+                    </div>
+                </Col>
                 <Col xs={2}>{activatedDate ||
                     <Tooltip position="left" text="Скопировать ссылку">
                         <span
