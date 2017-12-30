@@ -25,7 +25,7 @@ import {
     FIRST_BALANCE,
     NONE_TYPE
 } from '../../constants/clientBalanceInfo'
-
+import t from '../../helpers/translate'
 const enhance = compose(
     injectSheet({
         loader: {
