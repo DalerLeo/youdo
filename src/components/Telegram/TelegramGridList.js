@@ -14,6 +14,7 @@ import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
 import ConfirmDialog from '../ConfirmDialog'
+import TelegramLogsDialog from './TelegramLogsDialog'
 import SubMenu from '../SubMenu'
 import Tooltip from '../ToolTip'
 import dateFormat from '../../helpers/dateFormat'
@@ -169,6 +170,15 @@ const enhance = compose(
             '& a': {
                 color: '#12aaeb'
             }
+        },
+        openDetails: {
+            position: 'absolute',
+            top: '0',
+            bottom: '0',
+            right: '0',
+            left: '0',
+            cursor: 'pointer',
+            margin: '0 -30px'
         }
     })
 )
@@ -196,7 +206,9 @@ const TelegramGridList = enhance((props) => {
         linkDialog,
         createDetails,
         copyToClipBoard,
-        filterDialog
+        filterDialog,
+        logsDialog,
+        filterItem
     } = props
     const telegramDetail = (
         <span>sd</span>
@@ -209,6 +221,7 @@ const TelegramGridList = enhance((props) => {
             filterDialog={filterDialog}
         />
     )
+    const currentItem = _.find(_.get(listData, 'data'), {'id': _.toInteger(logsDialog.openLogsDialog)})
     const telegramList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const token = _.get(item, 'token')
@@ -222,6 +235,7 @@ const TelegramGridList = enhance((props) => {
         const market = _.get(item, ['market', 'name']) || 'Неизвестно'
         return (
             <Row key={id} className={classes.listRow}>
+                <div className={classes.openDetails} onClick={() => logsDialog.handleOpenLogsDialog(id)}> </div>
                 <Col xs={3}>{market}</Col>
                 <Col xs={3}><div style={{fontWeight: '600'}}>{createdBy}</div><div>{createdDate}</div></Col>
                 <Col xs={3}>
@@ -302,7 +316,15 @@ const TelegramGridList = enhance((props) => {
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
             />
+            <TelegramLogsDialog
+                open={logsDialog.openLogsDialog}
+                onClose={logsDialog.handleCloseLogsDialog}
+                filter={filterItem}
+                data={logsDialog.logsData}
+                details={currentItem}
+                loading={logsDialog.logsLoading}
 
+            />
             {detailData.data && <ConfirmDialog
                 type="delete"
                 message={_.get(detailData, ['data', 'name'])}
@@ -316,6 +338,7 @@ const TelegramGridList = enhance((props) => {
 
 TelegramGridList.propTypes = {
     filter: PropTypes.object.isRequired,
+    filterItem: PropTypes.object.filterItem,
     listData: PropTypes.object,
     detailData: PropTypes.object,
     tabData: PropTypes.object.isRequired,
@@ -344,6 +367,13 @@ TelegramGridList.propTypes = {
         openLinkDialog: PropTypes.bool.isRequired,
         handleOpenLinkDialog: PropTypes.func.isRequired,
         handleCloseLinkDialog: PropTypes.func.isRequired
+    }).isRequired,
+    logsDialog: PropTypes.shape({
+        logsData: PropTypes.object.Required,
+        logsLoading: PropTypes.bool.Required,
+        openLogsDialog: PropTypes.bool.isRequired,
+        handleOpenLogsDialog: PropTypes.func.isRequired,
+        handleCloseLogsDialog: PropTypes.func.isRequired
     }).isRequired
 }
 

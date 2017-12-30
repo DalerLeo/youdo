@@ -472,7 +472,7 @@ const rootReducer = combineReducers({
         create: createThunkReducer(actionTypes.TELEGRAM_CREATE),
         list: createThunkReducer(actionTypes.TELEGRAM_LIST),
         update: createThunkReducer(actionTypes.TELEGRAM_UPDATE),
-        item: createThunkReducer(actionTypes.TELEGRAM_ITEM)
+        logs: createThunkReducer(actionTypes.TELEGRAM_LOGS)
     }),
     snackbar: snackbarReducer(),
     error: errorReducer(),

@@ -88,3 +88,20 @@ export const telegramItemFetchAction = (id) => {
     }
 }
 
+export const telegramLogsFetchAction = (filter) => {
+    const params = serializers.logsFilterSerializer(filter.getParams())
+    const payload = axios()
+        .get(API.TELEGRAM_LOGS, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.TELEGRAM_LOGS,
+        payload
+    }
+}
+

@@ -25,4 +25,13 @@ export const listFilterSerializer = (data) => {
 
     }
 }
+export const logsFilterSerializer = (data) => {
+    const {...defaultData} = data
+    return {
+        'page': _.get(defaultData, 'dPage'),
+        'page_size': _.get(defaultData, 'dPageSize'),
+        'market_worker': _.get(defaultData, 'openLogsDialog') || null
+
+    }
+}
 
