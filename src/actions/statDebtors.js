@@ -23,9 +23,10 @@ export const statDebtorsListFetchAction = (filter) => {
     }
 }
 
-export const statDebtorsDataFetchAction = () => {
+export const statDebtorsDataFetchAction = (filter) => {
+    const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
-        .get(API.STAT_DEBTORS_DATA)
+        .get(API.STAT_DEBTORS_DATA, {params})
         .then((response) => {
             return _.get(response, 'data')
         })

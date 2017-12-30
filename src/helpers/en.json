@@ -63,7 +63,6 @@
   "Изменить выбранные заказы": "Edit selected orders",
   "Сформировать Релиз": "Generate Release",
   "Добавить заказ": "Add an order",
-  "Добавить заказ": "Add an order",
   "Изменение заказа": "Changing an order",
   "Добавление заказа": "Adding an Order",
   "добавить": "add",
@@ -249,5 +248,9 @@
   "При покупке": "At the time of buying",
   "Вы еще не выбрали ни одного товара": "You have not selected any products yet",
   "Бонусная акция": "Bonus share",
-  "Скидочная акция": "Discount share"
+  "Скидочная акция": "Discount share",
+  "Приход на счет клиента": "Income to client's account",
+  "Приход с поставшика": "Income from provider",
+  "Категория прихода": "Income category",
+  "Поставщик": "Provider"
 }

@@ -7,7 +7,7 @@ import Container from '../../Container/index'
 import injectSheet from 'react-jss'
 import {compose, withState, lifecycle} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
-import {TextField, DivisionMultiSearchField} from '../../ReduxForm'
+import {TextField, DivisionMultiSearchField, CurrencyMultiSearchField, PaymentTypeSearchField} from '../../ReduxForm'
 import StatSideMenu from '../StatSideMenu'
 import Loader from '../../Loader'
 import ToolTip from '../../ToolTip'
@@ -25,6 +25,8 @@ import FullScreenExit from 'material-ui/svg-icons/navigation/fullscreen-exit'
 
 export const STAT_DEBTORS_FILTER_KEY = {
     DIVISION: 'division',
+    PAYMENT_TYPE: 'paymentType',
+    CURRENCY: 'currency',
     SEARCH: 'search'
 }
 
@@ -451,6 +453,20 @@ const StatDebtorsGridList = enhance((props) => {
                 label="Организация"
                 fullWidth={true}
             />}
+            <Field
+                name="paymentType"
+                component={PaymentTypeSearchField}
+                className={classes.inputFieldCustom}
+                label="Тип оплати"
+                fullWidth={true}
+            />
+            <Field
+                name="currency"
+                component={CurrencyMultiSearchField}
+                className={classes.inputFieldCustom}
+                label="Валюта"
+                fullWidth={true}
+            />
         </div>
     )
 

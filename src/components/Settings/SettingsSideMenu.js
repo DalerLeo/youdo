@@ -1,20 +1,11 @@
 import React from 'react'
 import _ from 'lodash'
 import injectSheet from 'react-jss'
-import {compose, withHandlers} from 'recompose'
+import {compose} from 'recompose'
 import {Link} from 'react-router'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {getMenus} from '../SidebarMenu/MenuItems'
-import {setLanguage, getLanguage} from '../../helpers/storage'
-import {SHOP_LIST} from '../../constants/actionTypes'
-
-const usersRefresh = () => {
-    return {
-        type: SHOP_LIST,
-        payload: Promise.resolve({})
-    }
-}
 
 const enhance = compose(
     injectSheet({
@@ -45,16 +36,6 @@ const enhance = compose(
         },
         simple: {
             color: '#333'
-        },
-        language: {
-            padding: '10px 30px 0px',
-            '& > b': {
-                padding: '10px 20px',
-                '&:hover': {
-                    textDecoration: 'underline',
-                    cursor: 'pointer'
-                }
-            }
         }
     }),
     connect((state) => {
@@ -66,28 +47,15 @@ const enhance = compose(
             permissions,
             isAdmin
         }
-    }),
-    withHandlers({
-        setLangAction: props => (lang) => {
-            setLanguage(lang, true)
-            return props.dispatch(usersRefresh())
-        }})
+    })
 )
 
 const SettingsSideMenu = enhance((props) => {
-    const {classes, currentUrl, permissions, isAdmin, setLangAction} = props
+    const {classes, currentUrl, permissions, isAdmin} = props
     const MenuItems = _.find(getMenus(permissions, isAdmin), {'section': 'Settings'})
     const sortedMenu = _.groupBy(MenuItems.childs, 'section')
     return (
         <div className={classes.leftPanel}>
-            <div className={classes.language}>
-                <b onClick={() => setLangAction('uz')}
-                   className={getLanguage() === 'uz' ? classes.active : {}}>uz</b>
-                <b onClick={() => setLangAction('ru')}
-                   className={getLanguage() === 'ru' ? classes.active : {}}>ru</b>
-                <b onClick={() => setLangAction('en')}
-                   className={getLanguage() === 'en' ? classes.active : {}}>en</b>
-            </div>
             <div className={classes.wrapper}>
                 {_.map(sortedMenu, (item, index) => {
                     return (

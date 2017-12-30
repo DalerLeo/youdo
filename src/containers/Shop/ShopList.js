@@ -485,6 +485,13 @@ const ShopList = enhance((props) => {
                     phones: [{}]
                 }
             }
+            const phones = _(detail).get('phones').map((phone) => {
+                return {
+                    phone: _.get(phone, 'phone'),
+                    id: _.get(phone, 'id')
+
+                }
+            })
             const statusCur = _.get(detail, 'status')
             const isActive = statusCur === false ? NOT_ACTIVE : ONE
             return {
@@ -501,7 +508,7 @@ const ShopList = enhance((props) => {
                     value: _.toNumber(_.get(detail, 'visitFrequency'))
                 },
                 guide: _.get(detail, 'guide'),
-                phone: _.get(detail, 'phone'),
+                phones: _.union(phones, [{}]),
                 latLng: {
                     lat: _.get(detail, ['location', 'lat']),
                     lng: _.get(detail, ['location', 'lon'])

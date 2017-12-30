@@ -1,11 +1,12 @@
 import React from 'react'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
-import ContentAdd from 'material-ui/svg-icons/content/add'
-import ContentRemove from 'material-ui/svg-icons/content/remove'
+import ContentAdd from 'material-ui/svg-icons/content/add-circle-outline'
+import ContentRemove from 'material-ui/svg-icons/content/remove-circle-outline'
 import {Field} from 'redux-form'
 import TextField from '../Basic/TextField'
 import IconButton from 'material-ui/IconButton'
+import Tooltip from '../../ToolTip'
 
 /**
  * {['contacts', 'contactName', 'email', 'phoneNumber']}
@@ -63,7 +64,7 @@ const enhance = compose(
 
 const iconStyle = {
     icon: {
-        color: '#bac6ce',
+        color: '#666',
         width: 22,
         height: 22
     },
@@ -75,7 +76,7 @@ const iconStyle = {
         justifyContent: 'center'
     }
 }
-const ClientContactsListField = (props) => {
+const MarketPhoneListField = (props) => {
     const {classes, fields} = props
     const ONE = 1
 
@@ -103,12 +104,14 @@ const ClientContactsListField = (props) => {
                                 />
                             </div>
                         </div>
-                        <IconButton
-                            onTouchTap={() => handleTouchTap(index)}
-                            iconStyle={iconStyle.icon}
-                            style={iconStyle.button}>
-                            {fields.length !== index + ONE ? <ContentRemove/> : <ContentAdd />}
-                        </IconButton>
+                        <Tooltip position="bottom" text={fields.length !== index + ONE ? 'Убрать' : 'Добавить еще'}>
+                            <IconButton
+                                onTouchTap={() => handleTouchTap(index)}
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}>
+                                {fields.length !== index + ONE ? <ContentRemove/> : <ContentAdd />}
+                            </IconButton>
+                        </Tooltip>
 
                     </div>
                 )
@@ -117,4 +120,4 @@ const ClientContactsListField = (props) => {
     )
 }
 
-export default enhance(ClientContactsListField)
+export default enhance(MarketPhoneListField)

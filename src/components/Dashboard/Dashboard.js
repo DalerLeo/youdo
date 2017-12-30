@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
-import {compose, lifecycle} from 'recompose'
+import {compose, lifecycle, withHandlers} from 'recompose'
 import injectSheet from 'react-jss'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
@@ -17,6 +17,20 @@ import AgentsChart from './AgentsChart'
 import FinanceChart from './FinanceChart'
 import Currencies from './Currencies'
 import SalesReturnsChart from './SalesReturnsChart'
+import IconMenu from 'material-ui/IconMenu'
+import MenuItem from 'material-ui/MenuItem'
+import FloatingActionButton from 'material-ui/FloatingActionButton'
+import Language from 'material-ui/svg-icons/social/public'
+import {setLanguage, getLanguage} from '../../helpers/storage'
+
+import {SHOP_LIST} from '../../constants/actionTypes'
+
+const refreshAction = () => {
+    return {
+        type: SHOP_LIST,
+        payload: Promise.resolve({})
+    }
+}
 
 const enhance = compose(
     injectSheet({
@@ -37,6 +51,39 @@ const enhance = compose(
             bottom: '-28px',
             padding: '20px 30px',
             overflowY: 'auto'
+        },
+        languageWrapper: {
+            position: 'fixed',
+            bottom: '20px',
+            right: '34px',
+            zIndex: '2',
+            '&:hover > div:first-child': {
+                opacity: '0.8',
+                visibility: 'visible'
+            },
+            '& button': {
+                width: '52px !important',
+                height: '52px !important',
+                '& svg': {
+                    height: '52px !important'
+                }
+            }
+        },
+        fabTooltip: {
+            borderRadius: '2px',
+            background: '#2d3037',
+            color: '#fff',
+            padding: '8px 21px',
+            opacity: '0',
+            visibility: 'hidden',
+            position: 'absolute',
+            right: '100%',
+            top: '50%',
+            lineHeight: '1.3',
+            marginRight: '10px',
+            transition: 'opacity 0.3s ease-out',
+            transform: 'translate(0, -50%)',
+            whiteSpace: 'nowrap'
         },
         header: {
             padding: '20px 30px',
@@ -125,6 +172,12 @@ const enhance = compose(
             padding: '145px 0 20px !important'
         }
     }),
+    withHandlers({
+        setLangAction: props => (lang) => {
+            setLanguage(lang, true)
+            return props.dispatch(refreshAction())
+        }
+    }),
     lifecycle({
         componentWillReceiveProps () {
             const wrapper = this.refs.wrapper
@@ -165,7 +218,8 @@ const Dashboard = enhance((props) => {
         currencyData,
         dateInitialValues,
         widgetsForm,
-        loading
+        loading,
+        setLangAction
     } = props
     const ZERO = 0
     const MAX_OUTPUT = 10
@@ -265,9 +319,40 @@ const Dashboard = enhance((props) => {
             <div>Нет данных за этот период</div>
         </div>
     )
+    const FAB = (
+            <FloatingActionButton
+                backgroundColor={'#12aaeb'}>
+                <Language/>
+            </FloatingActionButton>
+    )
+    const fabMenuStyle = {
+        defaultMenu: {
+            fontSize: '13px'
+        },
+        activeMenu: {
+            color: '#12aaeb',
+            fontSize: '13px',
+            fontWeight: '600'
+        }
+    }
+    const langIsUZ = getLanguage() === 'uz'
+    const langIsRU = getLanguage() === 'ru'
+    const langIsEN = getLanguage() === 'en'
     return (
         <Container>
             <div className={classes.wrapper}>
+                <div className={classes.languageWrapper}>
+                    <div className={classes.fabTooltip}>язык системы</div>
+                    <IconMenu
+                        anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
+                        targetOrigin={{horizontal: 'right', vertical: 'bottom'}}
+                        iconButtonElement={FAB}>
+                        <MenuItem style={langIsUZ ? fabMenuStyle.activeMenu : fabMenuStyle.defaultMenu} primaryText="Ўзбекча" onTouchTap={() => setLangAction('uz')}/>
+                        <MenuItem style={langIsRU ? fabMenuStyle.activeMenu : fabMenuStyle.defaultMenu} primaryText="Русский" onTouchTap={() => setLangAction('ru')}/>
+                        <MenuItem style={langIsEN ? fabMenuStyle.activeMenu : fabMenuStyle.defaultMenu} primaryText="English" onTouchTap={() => setLangAction('en')}/>
+                    </IconMenu>
+                </div>
+
                 <Paper zDepth={1} className={classes.header}>
                     <div className={classes.user}>
                         <div className={classes.userImage}>{null}</div>
