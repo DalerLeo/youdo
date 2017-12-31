@@ -18,23 +18,26 @@ import {
     TELEGRAM_UPDATE_DIALOG_OPEN,
     TelegramGridList,
     TELEGRAM_FILTER_OPEN,
-    TELEGRAM_FILTER_KEY
+    TELEGRAM_FILTER_KEY,
+    TELEGRAM_LOGS_DIALOG_OPEN
 } from '../../components/Telegram'
 import {
     telegramCreateAction,
     telegramUpdateAction,
     telegramListFetchAction,
     telegramDeleteAction,
-    telegramItemFetchAction
+    telegramItemFetchAction,
+    telegramLogsFetchAction
 } from '../../actions/telegram'
 import {openErrorAction} from '../../actions/error'
 import {openSnackbarAction} from '../../actions/snackbar'
+const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
-        const detail = _.get(state, ['telegram', 'item', 'data'])
-        const detailLoading = _.get(state, ['telegram', 'item', 'loading'])
+        const logsData = _.get(state, ['telegram', 'logs', 'data'])
+        const logsLoading = _.get(state, ['telegram', 'logs', 'loading'])
         const createLoading = _.get(state, ['telegram', 'create', 'loading'])
         const createData = _.get(state, ['telegram', 'create', 'data'])
         const updateLoading = _.get(state, ['telegram', 'update', 'loading'])
@@ -43,21 +46,27 @@ const enhance = compose(
         const createForm = _.get(state, ['form', 'TelegramCreateForm'])
         const filterForm = _.get(state, ['form', 'TelegramFilterForm'])
         const filter = filterHelper(list, pathname, query)
+        const filterItem = filterHelper(logsData, pathname, query, {'page': 'dPage', 'pageSize': 'dPageSize'})
+
         return {
             list,
             listLoading,
-            detail,
-            detailLoading,
             createLoading,
             updateLoading,
             filter,
             createForm,
             createData,
-            filterForm
+            filterForm,
+            filterItem,
+            logsLoading,
+            logsData
         }
     }),
     withPropsOnChange((props, nextProps) => {
-        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
+        const except = {
+            openLogsDialog: null
+        }
+        return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
         dispatch(telegramListFetchAction(filter))
     }),
@@ -68,6 +77,19 @@ const enhance = compose(
     }, ({dispatch, params}) => {
         const telegramId = _.toInteger(_.get(params, 'telegramId'))
         telegramId && dispatch(telegramItemFetchAction(telegramId))
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const except = {
+            page: null,
+            pageSize: null
+        }
+        return props.filterItem.filterRequest(except) !== nextProps.filterItem.filterRequest(except)
+    }, ({dispatch, filterItem, location}) => {
+        const id = _.toInteger(_.get(location, ['query', TELEGRAM_LOGS_DIALOG_OPEN]))
+        if (id > ZERO) {
+            dispatch(telegramLogsFetchAction(filterItem))
+        }
     }),
 
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
@@ -237,6 +259,15 @@ const enhance = compose(
                 [TELEGRAM_FILTER_KEY.CREATED_FROM_DATE]: createdFromDate && createdFromDate.format('YYYY-MM-DD'),
                 [TELEGRAM_FILTER_KEY.CREATED_TO_DATE]: createdToDate && createdToDate.format('YYYY-MM-DD')
             })
+        },
+        handleOpenLogsDialog: props => (id) => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[TELEGRAM_LOGS_DIALOG_OPEN]: id})})
+        },
+
+        handleCloseLogsDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[TELEGRAM_LOGS_DIALOG_OPEN]: false})})
         }
     })
 )
@@ -253,12 +284,16 @@ const TelegramList = enhance((props) => {
         filter,
         layout,
         params,
-        createData
+        createData,
+        filterItem,
+        logsData,
+        logsLoading
     } = props
 
     const openCreateDialog = toBoolean(_.get(location, ['query', TELEGRAM_CREATE_DIALOG_OPEN]))
     const openFilterDialog = toBoolean(_.get(location, ['query', TELEGRAM_FILTER_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', TELEGRAM_UPDATE_DIALOG_OPEN]))
+    const openLogsDialog = _.get(location, ['query', TELEGRAM_LOGS_DIALOG_OPEN])
     const detailId = _.toInteger(_.get(params, 'telegramId'))
     const tab = _.get(params, 'tab')
     const market = (filter.getParam(TELEGRAM_FILTER_KEY.MARKET))
@@ -306,6 +341,13 @@ const TelegramList = enhance((props) => {
         openLinkDialog: props.openLinkDialog,
         handleOpenLinkDialog: props.handleOpenLinkDialog,
         handleCloseLinkDialog: props.handleCloseLinkDialog
+    }
+    const logsDialog = {
+        logsData: _.get(logsData, 'results'),
+        logsLoading,
+        openLogsDialog,
+        handleOpenLogsDialog: props.handleOpenLogsDialog,
+        handleCloseLogsDialog: props.handleCloseLogsDialog
     }
 
     const updateDialog = {
@@ -371,6 +413,7 @@ const TelegramList = enhance((props) => {
         <Layout {...layout}>
             <TelegramGridList
                 filter={filter}
+                filterItem={filterItem}
                 listData={listData}
                 detailData={detailData}
                 tabData={tabData}
@@ -381,6 +424,7 @@ const TelegramList = enhance((props) => {
                 createDetails={createDetails}
                 copyToClipBoard={copyToClipBoard}
                 filterDialog={filterDialog}
+                logsDialog={logsDialog}
             />
         </Layout>
     )

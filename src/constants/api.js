@@ -510,3 +510,4 @@ export const TELEGRAM_CREATE = `/${TELEGRAM}/market_worker/`
 export const TELEGRAM_DELETE = `/${TELEGRAM}/market_worker/%d/`
 export const TELEGRAM_LIST = `/${TELEGRAM}/market_worker/`
 export const TELEGRAM_ITEM = `/${TELEGRAM}/market_worker/%d/`
+export const TELEGRAM_LOGS = `/${TELEGRAM}/client_transaction_log/`
