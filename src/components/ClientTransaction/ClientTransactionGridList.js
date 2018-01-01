@@ -28,37 +28,38 @@ import {
     REJECTED,
     AUTO
 } from './index'
+import t from '../../helpers/translate'
 
 const listHeader = [
     {
         sorting: false,
         name: 'icon',
-        title: 'Статус',
+        title: t('Статус'),
         xs: 1
     },
     {
         sorting: true,
         name: 'client',
-        title: 'Клиент',
+        title: t('Клиент'),
         xs: 3
     },
     {
         sorting: true,
         name: 'user',
-        title: 'Пользователь',
+        title: t('Пользователь'),
         xs: 3
     },
     {
         sorting: true,
         name: 'date',
-        title: 'Дата',
+        title: t('Дата'),
         xs: 2
     },
     {
         sorting: true,
         alignRight: true,
         name: 'amount',
-        title: 'Сумма',
+        title: t('Сумма'),
         xs: 2
     },
     {
@@ -147,7 +148,7 @@ const ClientTransactionGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const client = _.get(item, ['client', 'name'])
         const user = _.get(item, 'user')
-        const userName = user ? _.get(user, 'firstName') + ' ' + _.get(user, 'secondName') : 'Неизвестно'
+        const userName = user ? _.get(user, 'firstName') + ' ' + _.get(user, 'secondName') : t('Неизвестно')
         const type = _.get(item, 'amount') || 'N/A'
         const amount = _.toNumber(_.get(item, 'amount'))
         const createdDate = dateTimeFormat(_.get(item, 'createdDate'))
@@ -158,16 +159,16 @@ const ClientTransactionGridList = enhance((props) => {
         const confirmation = _.get(item, 'clientConfirmation')
         const statusIcon = (status) => {
             switch (status) {
-                case CONFIRMED: return <ToolTip position={'right'} text={'Подтвержден'}>
+                case CONFIRMED: return <ToolTip position={'right'} text={t('Подтвержден')}>
                     <Accepted color={'#81c784'}/>
                 </ToolTip>
-                case REJECTED: return <ToolTip position={'right'} text={'Отменен'}>
+                case REJECTED: return <ToolTip position={'right'} text={t('Отменен')}>
                     <Rejected color={'#e57373'}/>
                 </ToolTip>
-                case REQUESTED: return <ToolTip position={'right'} text={'В ожидании'}>
+                case REQUESTED: return <ToolTip position={'right'} text={t('В ожидании')}>
                     <Requested color={'#f0ad4e'}/>
                 </ToolTip>
-                case AUTO: return <ToolTip position={'right'} text={'Автоматически подтвержден системой'}>
+                case AUTO: return <ToolTip position={'right'} text={t('Автоматически подтвержден системой')}>
                     <AutoAccepted color={'#12aaeb'}/>
                 </ToolTip>
                 default: return null
@@ -190,7 +191,7 @@ const ClientTransactionGridList = enhance((props) => {
                 <Col xs={1} style={{textAlign: 'right'}}>
                     <div className={classes.buttons}>
                         {confirmation === REJECTED &&
-                        <ToolTip position={'left'} text={'Переотправить запрос'}>
+                        <ToolTip position={'left'} text={t('Переотправить запрос')}>
                             <IconButton
                                 onTouchTap={() => { resendDialog.handleOpenResendDialog(id) }}
                                 style={iconStyle.button}
@@ -199,7 +200,7 @@ const ClientTransactionGridList = enhance((props) => {
                             </IconButton>
                         </ToolTip>}
                         {isAdmin &&
-                        <ToolTip position={'left'} text={'Удалить транзакцию'}>
+                        <ToolTip position={'left'} text={t('Удалить транзакцию')}>
                             <IconButton
                                 onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
                                 style={iconStyle.button}
@@ -224,19 +225,19 @@ const ClientTransactionGridList = enhance((props) => {
             <SubMenu url={ROUTES.CLIENT_TRANSACTION_LIST_URL}/>
             <Paper zDepth={1} className={classes.summaryWrapper}>
                 <div className={classes.summary}>
-                    <div>Сумма принятых оплат</div>
+                    <div>{t('Сумма принятых оплат')}</div>
                     <div>{numberFormat('145323', primaryCurrency)}</div>
                 </div>
                 <div className={classes.summary}>
-                    <div>Сумма отклоненных оплат</div>
+                    <div>{t('Сумма отклоненных оплат')}</div>
                     <div>{numberFormat('22451', primaryCurrency)}</div>
                 </div>
                 <div className={classes.summary}>
-                    <div>Сумма ожидаемых оплат</div>
+                    <div>{t('Сумма ожидаемых оплат')}</div>
                     <div>{numberFormat('86541', primaryCurrency)}</div>
                 </div>
                 <div className={classes.summary}>
-                    <div>Сумма автоматически принятых оплат</div>
+                    <div>{t('Сумма автоматически принятых оплат')}</div>
                     <div>{numberFormat('6548', primaryCurrency)}</div>
                 </div>
             </Paper>
@@ -251,14 +252,14 @@ const ClientTransactionGridList = enhance((props) => {
 
             <ConfirmDialog
                 type="delete"
-                message={'Транзакция №' + transactionID}
+                message={t('Транзакция') + ' №' + transactionID}
                 onClose={confirmDialog.handleCloseConfirmDialog}
                 onSubmit={confirmDialog.handleSubmitConfirmDialog}
                 open={confirmDialog.open}
             />
             <ConfirmDialog
                 type="submit"
-                message={'Транзакция №' + transactionID}
+                message={t('Транзакция') + ' №' + transactionID}
                 onClose={resendDialog.handleCloseResendDialog}
                 onSubmit={resendDialog.handleSubmitResendDialog}
                 open={resendDialog.open}

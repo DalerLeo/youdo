@@ -33,6 +33,8 @@ import {
 import {priceListSettingGetAllAction} from '../../actions/priceListSetting'
 import {openErrorAction} from '../../actions/error'
 import {openSnackbarAction} from '../../actions/snackbar'
+import t from '../../helpers/translate'
+
 const ZERO = 0
 const USD = 3
 const enhance = compose(
@@ -161,7 +163,7 @@ const enhance = compose(
                     dispatch(priceListFetchAction(filter))
                     dispatch(priceItemHistoryFetchAction(Number(priceId)))
                     hashHistory.push({pathname, query: filter.getParams({[PRICE_SET_DEFAULT_OPEN]: false})})
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .catch((error) => {
                     dispatch(openErrorAction({
@@ -183,7 +185,7 @@ const enhance = compose(
                     dispatch(priceItemFetchAction(detailId))
                     dispatch(getPriceItemsAction(detailId))
                     hashHistory.push({pathname, query: filter.getParams({[PRICE_SET_FORM_OPEN]: false})})
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .catch((error) => {
                     dispatch(openErrorAction({

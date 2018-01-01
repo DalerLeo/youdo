@@ -32,6 +32,7 @@ import * as API from '../../constants/api'
 import {openSnackbarAction} from '../../actions/snackbar'
 import {openErrorAction} from '../../actions/error'
 import * as serializers from '../../serializers/clientBalanceSerializer'
+import t from '../../helpers/translate'
 
 const ZERO = 0
 const enhance = compose(
@@ -175,7 +176,7 @@ const enhance = compose(
             const clientId = _.get(params, ['clientBalanceId'])
             return dispatch(clientBalanceCreateExpenseAction(_.get(createForm, ['values']), clientId))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push({
@@ -207,7 +208,7 @@ const enhance = compose(
             const clientId = _.get(params, ['clientBalanceId'])
             return dispatch(clientAddAction(_.get(createForm, ['values']), clientId))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push({
@@ -251,7 +252,7 @@ const enhance = compose(
 
             return dispatch(superUserAction(_.get(updateForm, 'values'), clientId, transId))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push({

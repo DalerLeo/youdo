@@ -22,7 +22,7 @@ import {
 import MarketSearchField from '../ReduxForm/ClientBalance/MarketSearchField'
 import toCamelCase from '../../helpers/toCamelCase'
 import numberFormat from '../../helpers/numberFormat'
-
+import t from '../../helpers/translate'
 const validate = (data) => {
     const errors = toCamelCase(data)
     const nonFieldErrors = _.get(errors, 'nonFieldErrors')
@@ -262,7 +262,7 @@ const ReturnCreateDialog = enhance((props) => {
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>Возврат {isUpdate ? 'от ' + name : null}</span>
+                <span>{t('Возврат')} {isUpdate ? t('от') + ' ' + name : null}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -275,13 +275,13 @@ const ReturnCreateDialog = enhance((props) => {
                     <div className={classes.innerWrap}>
                         <div className={classes.inContent} style={{minHeight: '350px'}}>
                             <div className={classes.leftOrderPart}>
-                                <div className={classes.subTitleOrder}>Детали</div>
+                                <div className={classes.subTitleOrder}>{t('Детали')}</div>
                                 <div className={classes.condition}>
                                     <Field
                                         name="client"
                                         component={ClientSearchField}
                                         className={classes.searchFieldCustom}
-                                        label="Клиент"
+                                        label={t('Клиент')}
                                         fullWidth={true}/>
                                 </div>
                                 {hasMarket && <div className={classes.condition}>
@@ -290,7 +290,7 @@ const ReturnCreateDialog = enhance((props) => {
                                         style={{lineHeight: '20px', fontSize: '13px'}}
                                         component={MarketSearchField}
                                         className={classes.searchFieldCustom}
-                                        label="Магазин"
+                                        label={t('Магазин')}
                                         clientId={clientId}
                                         initialVal={_.get(initialValues, ['market', 'value'])}
                                         disabled={!clientId}
@@ -301,7 +301,7 @@ const ReturnCreateDialog = enhance((props) => {
                                         name="stock"
                                         component={StockSearchField}
                                         className={classes.searchFieldCustom}
-                                        label="Склад"
+                                        label={t('Склад')}
                                         fullWidth={true}/>
                                 </div>
                                 <div className={classes.condition}>
@@ -309,7 +309,7 @@ const ReturnCreateDialog = enhance((props) => {
                                         name="currency"
                                         component={CurrencySearchField}
                                         className={classes.searchFieldCustom}
-                                        label="Валюта"
+                                        label={t('Валюта')}
                                         fullWidth={true}/>
                                 </div>
                                 <div className={classes.condition}>
@@ -318,7 +318,7 @@ const ReturnCreateDialog = enhance((props) => {
                                         style={{lineHeight: '20px', fontSize: '13px'}}
                                         component={PaymentTypeSearchField}
                                         className={classes.searchFieldCustom}
-                                        label="Тип оплаты"
+                                        label={t('Тип оплаты')}
                                         fullWidth={true}/>
                                 </div>
                                 <div className={classes.condition}>
@@ -327,7 +327,7 @@ const ReturnCreateDialog = enhance((props) => {
                                         style={{lineHeight: '20px', fontSize: '13px'}}
                                         component={PriceListSearchField}
                                         className={classes.searchFieldCustom}
-                                        label="Прайс лист"
+                                        label={t('Прайс лист')}
                                         fullWidth={true}/>
                                 </div>
                                 <div>
@@ -335,7 +335,7 @@ const ReturnCreateDialog = enhance((props) => {
                                         style={{lineHeight: '20px', fontSize: '13px'}}
                                         name="comment"
                                         component={TextField}
-                                        label="Оставить комментарий..."
+                                        label={t('Оставить комментарий') + '...'}
 
                                         multiLine={true}
                                         rows={1}
@@ -354,9 +354,9 @@ const ReturnCreateDialog = enhance((props) => {
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
-                    <div>Общая сумма возврата: <b>{numberFormat(totalCost, currency)}</b></div>
+                    <div>{t('Общая сумма возврата')}: <b>{numberFormat(totalCost, currency)}</b></div>
                         <FlatButton
-                            label={isUpdate ? 'Изменить возврат' : 'Оформить возврат'}
+                            label={isUpdate ? t('Изменить возврат') : t('Оформить возврат')}
                             className={classes.actionButton}
                             primary={true}
                             type="submit"

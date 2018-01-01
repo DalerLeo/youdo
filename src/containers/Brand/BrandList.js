@@ -23,6 +23,7 @@ import {
     brandItemFetchAction
 } from '../../actions/brand'
 import {openSnackbarAction} from '../../actions/snackbar'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     connect((state, props) => {
@@ -90,10 +91,10 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[BRAND_DELETE_DIALOG_OPEN]: false})})
                     dispatch(brandListFetchAction(filter))
-                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно удалено')}))
                 })
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
+                    return dispatch(openSnackbarAction({message: t('Ошибка при удалении')}))
                 })
         },
 
@@ -113,7 +114,7 @@ const enhance = compose(
 
             return dispatch(brandCreateAction(_.get(createForm, ['values'])))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[BRAND_CREATE_DIALOG_OPEN]: false})})

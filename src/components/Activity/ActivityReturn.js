@@ -10,6 +10,7 @@ import getConfig from '../../helpers/getConfig'
 import Info from 'material-ui/svg-icons/action/info-outline'
 import Tooltip from '../ToolTip'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
+import t from '../../helpers/translate'
 
 const ONE = 1
 const TWO = 2
@@ -160,7 +161,7 @@ const ActivityReturn = enhance((props) => {
                     <span>{name}</span>
                 </div>
                 <div className={classes.tubeTime}>{createdDate}</div>
-                <div className={classes.tubeInfo}>Причина отказа заказа с магазина "{market}": <strong>{comment}</strong></div>
+                <div className={classes.tubeInfo}>{t('Причина отказа заказа с магазина')} "{market}": <strong>{comment}</strong></div>
             </Paper>
         )
     })
@@ -186,7 +187,7 @@ const ActivityReturn = enhance((props) => {
                     : (summaryCount > TEN) && (returnListData.data.length < summaryCount) && <a onClick={() => {
                         handleLoadMoreItems(type, defaultPage)
                         updateDefaultPage(defaultPage + ONE)
-                    }}>Загрузить еще...</a>}
+                    }}>{t('Загрузить еще')}...</a>}
             </div>
         </div>
     )

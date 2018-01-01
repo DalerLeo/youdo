@@ -14,6 +14,7 @@ import updateStore from '../../helpers/updateStore'
 import * as actionTypes from '../../constants/actionTypes'
 import checkPermission from '../../helpers/checkPermission'
 import getConfig from '../../helpers/getConfig'
+import t from '../../helpers/translate'
 
 import {
     RETURN_FILTER_KEY,
@@ -126,7 +127,7 @@ const enhance = compose(
                     setOpenConfirmDialog(false)
                     dispatch(returnItemFetchAction(id))
                     dispatch(returnListFetchAction(filter))
-                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно удалено')}))
                 })
                 .catch((error) => {
                     dispatch(openErrorAction({
@@ -200,7 +201,7 @@ const enhance = compose(
             const orderId = _.toInteger(_.get(params, 'orderId'))
             return dispatch(returnCancelAction(orderReturnId))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно отменена'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно отменена')}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[CANCEL_RETURN_DIALOG_OPEN]: false})})
@@ -246,7 +247,7 @@ const enhance = compose(
                             })
                     })
                     .then(() => {
-                        return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                        return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                     })
                     .then(() => {
                         hashHistory.push({pathname, query: filter.getParams({[RETURN_UPDATE_DIALOG_OPEN]: false})})
@@ -269,7 +270,7 @@ const enhance = compose(
                         })
                 })
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[RETURN_UPDATE_DIALOG_OPEN]: false})})
@@ -293,7 +294,7 @@ const enhance = compose(
             const {location: {pathname}, dispatch, createForm, filter} = props
             return dispatch(clientReturnAction(_.get(createForm, ['values'])))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push({

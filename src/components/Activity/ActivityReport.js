@@ -6,6 +6,7 @@ import {compose, withState} from 'recompose'
 import LinearProgress from '../LinearProgress'
 import Paper from 'material-ui/Paper'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
+import t from '../../helpers/translate'
 
 const ONE = 1
 const TWO = 2
@@ -171,7 +172,7 @@ const ActivityReport = enhance((props) => {
 
     return (
         <div className={classes.block}>
-            <div className={classes.blockTitle}>Отчеты ({summaryCount})</div>
+            <div className={classes.blockTitle}>{t('Отчеты')} ({summaryCount})</div>
             <div className={classes.blockItems}>
                 {reportList}
                 {(reportlistLoading || summaryLoading)
@@ -181,7 +182,7 @@ const ActivityReport = enhance((props) => {
                     : (summaryCount > TEN) && (reportlistData.data.length < summaryCount) && <a onClick={() => {
                         handleLoadMoreItems(type, defaultPage)
                         updateDefaultPage(defaultPage + ONE)
-                    }}>Загрузить еще...</a>}
+                    }}>{t('Загрузить еще')}...</a>}
             </div>
         </div>
     )

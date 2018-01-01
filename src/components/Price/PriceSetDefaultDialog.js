@@ -17,6 +17,7 @@ import {
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import MainStyles from '../Styles/MainStyles'
 import {openErrorAction} from '../../actions/error'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
@@ -103,7 +104,7 @@ const PriceSetDefaultDialog = enhance((props) => {
             contentStyle={loading ? {width: '300px'} : {width: '400px'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>{!isUpdate ? 'Добавить себестоимость' : 'Изменить себестоимость'}</span>
+                <span>{!isUpdate ? t('Добавить себестоимость') : t('Изменить себестоимость')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -117,14 +118,14 @@ const PriceSetDefaultDialog = enhance((props) => {
                         <Field
                             name="amount"
                             component={TextField}
-                            label="Сумма"
+                            label={t('Сумма')}
                             normalize={normalizeNumber}
                             className={classes.inputFieldCustom}
                             fullWidth={true}/>
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
-                            label="Сохранить"
+                            label={t('Сохранить')}
                             className={classes.actionButton}
                             labelStyle={{fontSize: '13px'}}
                             primary={true}

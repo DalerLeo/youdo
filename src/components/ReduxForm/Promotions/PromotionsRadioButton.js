@@ -1,6 +1,6 @@
 import React from 'react'
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton'
-
+import t from '../../../helpers/translate'
 const PromotionsRadioButton = (props) => {
     const {input} = props
     return (
@@ -8,13 +8,13 @@ const PromotionsRadioButton = (props) => {
             <RadioButtonGroup name="promotionType" onChange={input.onChange} defaultSelected="bonus">
                 <RadioButton
                     value="discount"
-                    label="Скидочная акция"
+                    label={t('Скидочная акция')}
                     disabled={true}
                     disableTouchRipple={true}
                 />
                 <RadioButton
                     value="bonus"
-                    label="Бонусная акция"
+                    label={t('Бонусная акция')}
                     disableTouchRipple={true}
                 />
             </RadioButtonGroup>

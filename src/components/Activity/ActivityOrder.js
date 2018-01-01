@@ -11,6 +11,7 @@ import Paper from 'material-ui/Paper'
 import Info from 'material-ui/svg-icons/action/info-outline'
 import Tooltip from '../ToolTip'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
+import t from '../../helpers/translate'
 
 const ONE = 1
 const TWO = 2
@@ -155,8 +156,8 @@ const ActivityOrder = enhance((props) => {
     const countSummary = _.get(summary, 'count')
     const cashSummary = numberFormat(_.get(summary, 'cash'), currentCurrency)
     const bankSummary = numberFormat(_.get(summary, 'bank'), currentCurrency)
-    const tooltipText = '<div>Сумма (нал): ' + cashSummary + '</div> <div>Сумма (пер): ' + bankSummary + '</div>'
-    const orderList = _.map(_.get(orderlistData, 'data'), (item, index) => {
+    const tooltipText = '<div>' + t('Сумма (нал)') + ': ' + cashSummary + '</div> <div>' + t('Сумма (пер)') + ': ' + bankSummary + '</div>'
+    const orderList = _.map(_.get(orderlistData, 'data'), (item) => {
         const id = _.get(item, ['order', 'id'])
         const name = _.get(item, ['order', 'user', 'firstName']) + ' ' + _.get(item, ['order', 'user', 'secondName'])
         const createdDate = dateTimeFormat(_.get(item, ['order', 'createdDate']), true)
@@ -188,7 +189,7 @@ const ActivityOrder = enhance((props) => {
     return (
         <div className={classes.block}>
             <div className={classes.blockTitle}>
-                <strong>Cделки ({countSummary})</strong>
+                <strong>{t('Cделки')} ({countSummary})</strong>
                 <Tooltip position="left" text={tooltipText}>
                     <Info color="#666"/>
                 </Tooltip>
@@ -202,7 +203,7 @@ const ActivityOrder = enhance((props) => {
                 : (countSummary > TEN) && (orderlistData.data.length < countSummary) && <a onClick={() => {
                     handleLoadMoreItems(type, defaultPage)
                     updateDefaultPage(defaultPage + ONE)
-                }}>Загрузить еще...</a>}
+                }}>{t('Загрузить еще')}...</a>}
             </div>
         </div>
     )

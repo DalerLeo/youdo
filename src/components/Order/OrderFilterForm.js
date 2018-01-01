@@ -25,6 +25,8 @@ import {
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 import getConfig from '../../helpers/getConfig'
+import t from '../../helpers/translate'
+
 export const ORDER_FILTER_OPEN = 'openFilterDialog'
 
 export const ORDER_FILTER_KEY = {
@@ -171,7 +173,7 @@ const OrderFilterForm = enhance((props) => {
         if (filterCounts) {
             return (
                 <div className={classes.afterFilter}>
-                    <div>Фильтр: {filterCounts} элемента</div>
+                    <div>{t('Фильтр')}: {filterCounts} {t('элемента')}</div>
                     <div>
                         <IconButton onTouchTap={filterDialog.handleOpenFilterDialog}>
                             <BorderColorIcon color="#8f8f8f" />
@@ -189,7 +191,7 @@ const OrderFilterForm = enhance((props) => {
                 <Link
                     className={classes.arrow}
                     onTouchTap={filterDialog.handleOpenFilterDialog}>
-                    <div>Показать фильтр <KeyboardArrowDown color="#12aaeb" /></div>
+                    <div>{t('Показать фильтр')} <KeyboardArrowDown color="#12aaeb" /></div>
                 </Link>
             </div>
         )
@@ -199,27 +201,27 @@ const OrderFilterForm = enhance((props) => {
         <div>
             <Paper className={classes.wrapper} zDepth={2}>
                 <div className={classes.header}>
-                    <span className={classes.title}>Фильтр</span>
+                    <span className={classes.title}>{t('Фильтр')}</span>
                     <IconButton onTouchTap={filterDialog.handleCloseFilterDialog}>
                         <CloseIcon className={classes.icon} />
                     </IconButton>
                 </div>
                 <form onSubmit={handleSubmit(filterDialog.handleSubmitFilterDialog)}>
                     <div>
-                        <Field className={classes.inputFieldCustom} name="client" component={ClientMultiSearchField} label="Клиент"/>
-                        <Field className={classes.inputFieldCustom} name="deliveryMan" component={DeliveryManMultiSearchField} label="Доставщик"/>
-                        <Field className={classes.inputFieldCustom} name="product" component={ProductMultiSearchField} label="Товар"/>
-                        <Field className={classes.inputFieldCustom} name="status" component={OrderStatusMultiSearchField} label="Статус"/>
-                        {hasMarket && <Field className={classes.inputFieldCustom} name="shop" component={MarketMultiSearchField} label="Магазин"/>}
-                        {divisionStatus && <Field className={classes.inputFieldCustom} name="division" component={DivisionMultiSearchField} label="Организация"/>}
-                        <Field className={classes.inputFieldCustom} name="initiator" component={UsersAgentMultiSearchField} label="Инициатор"/>
-                        <Field className={classes.inputFieldCustom} name="dept" component={DeptSearchField} label="Статус оплаты"/>
-                        <Field className={classes.inputFieldCustom} name="zone" component={ZoneMultiSearchField} label="Зона"/>
-                        <Field className={classes.inputDateCustom} name="data" component={DateToDateField} label="Период создания"/>
-                        <Field className={classes.inputDateCustom} name="deliveryDate" component={DateToDateField} label="Дата доставки"/>
-                        <Field className={classes.inputDateCustom} name="deadlineDate" component={DateToDateField} label="Период изготовления"/>
-                        <Field name="onlyBonus" component={CheckBox} label="Только бонусные заказы"/>
-                        <Field name="exclude" component={CheckBox} label="Исключить отмененные заказы"/>
+                        <Field className={classes.inputFieldCustom} name="client" component={ClientMultiSearchField} label={t('Клиент')}/>
+                        <Field className={classes.inputFieldCustom} name="deliveryMan" component={DeliveryManMultiSearchField} label={t('Доставщик')}/>
+                        <Field className={classes.inputFieldCustom} name="product" component={ProductMultiSearchField} label={t('Товар')}/>
+                        <Field className={classes.inputFieldCustom} name="status" component={OrderStatusMultiSearchField} label={t('Статус')}/>
+                        {hasMarket && <Field className={classes.inputFieldCustom} name="shop" component={MarketMultiSearchField} label={t('Магазин')}/>}
+                        {divisionStatus && <Field className={classes.inputFieldCustom} name="division" component={DivisionMultiSearchField} label={t('Организация')}/>}
+                        <Field className={classes.inputFieldCustom} name="initiator" component={UsersAgentMultiSearchField} label={t('Инициатор')}/>
+                        <Field className={classes.inputFieldCustom} name="dept" component={DeptSearchField} label={t('Статус оплаты')}/>
+                        <Field className={classes.inputFieldCustom} name="zone" component={ZoneMultiSearchField} label={t('Зона')}/>
+                        <Field className={classes.inputDateCustom} name="data" component={DateToDateField} label={t('Период создания')}/>
+                        <Field className={classes.inputDateCustom} name="deliveryDate" component={DateToDateField} label={t('Дата доставки')}/>
+                        <Field className={classes.inputDateCustom} name="deadlineDate" component={DateToDateField} label={t('Период изготовления')}/>
+                        <Field name="onlyBonus" component={CheckBox} label={t('Только бонусные заказы')}/>
+                        <Field name="exclude" component={CheckBox} label={t('Исключить отмененные заказы')}/>
                     </div>
 
                     <RaisedButton

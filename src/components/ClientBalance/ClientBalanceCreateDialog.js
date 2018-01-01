@@ -16,6 +16,7 @@ import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat'
 import Loader from '../Loader'
 import {DivisionSearchField, PaymentTypeSearchField} from '../ReduxForm'
+import t from '../../helpers/translate'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -103,7 +104,7 @@ const ClientBalanceCreateDialog = enhance((props) => {
             contentStyle={loading ? {width: '500px'} : {width: '500px'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>{addDialog ? 'Добавить приход клиенту' : 'Добавить расход клиенту'}</span>
+                <span>{addDialog ? t('Добавить приход клиенту') : t('Добавить расход клиенту')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -113,7 +114,7 @@ const ClientBalanceCreateDialog = enhance((props) => {
                     <Loader size={0.75}/>
                 </div>
                 : <div className={classes.bodyContent}>
-                    <div style={{padding: '10px 30px'}}>Клиент: <strong>{name}</strong></div>
+                    <div style={{padding: '10px 30px'}}>{t('Клиент')}: <strong>{name}</strong></div>
                     {!superUser && <div style={{display: 'flex', flexWrap: 'wrap'}}>
                         {balanceInfo}
                     </div>}
@@ -123,27 +124,27 @@ const ClientBalanceCreateDialog = enhance((props) => {
                                 <Field
                                     name="paymentType"
                                     component={PaymentTypeSearchField}
-                                    label="Тип оплаты"
+                                    label={t('Тип оплаты')}
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
                                 <Field
                                     name="amount"
                                     component={TextField}
-                                    label="Сумма"
+                                    label={t('Сумма')}
                                     normalize={normalizeNumber}
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
                                 {divisionStatus && <Field
                                     name="division"
                                     component={DivisionSearchField}
-                                    label="Организация"
+                                    label={t('Организация')}
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>}
                                 <Field
                                     name="comment"
                                     style={{top: '-20px', lineHeight: '20px', fontSize: '13px'}}
                                     component={TextField}
-                                    label="Комментарий..."
+                                    label={t('Комментарий') + '...'}
                                     multiLine={true}
                                     rows={1}
                                     rowsMax={3}
@@ -152,7 +153,7 @@ const ClientBalanceCreateDialog = enhance((props) => {
                         </div>
                         <div className={classes.bottomButton}>
                             <FlatButton
-                                label="Сохранить"
+                                label={t('Сохранить')}
                                 labelStyle={{fontSize: '13px'}}
                                 type="submit"
                             />

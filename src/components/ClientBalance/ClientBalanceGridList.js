@@ -34,6 +34,7 @@ import ArrowUpIcon from 'material-ui/svg-icons/navigation/arrow-upward'
 import ArrowDownIcon from 'material-ui/svg-icons/navigation/arrow-downward'
 import {StatisticsFilterExcel} from '../Statistics'
 import {CLIENT_BALANCE_FILTER_KEY} from './index'
+import t from '../../helpers/translate'
 
 let amountValues = []
 let head = []
@@ -454,7 +455,7 @@ const ClientBalanceGridList = enhance((props) => {
                         onMouseLeave={() => setCurrentRow(null)}><span>{name}</span>
                         {!stat && isSuperUser &&
                         id === currentRow && <div key={id} className={classes.buttonsWrapper}>
-                            <Tooltip position="bottom" text="Списать">
+                            <Tooltip position="bottom" text={t('Списать')}>
                                 <IconButton
                                     disableTouchRipple={true}
                                     iconStyle={iconStyle.icon}
@@ -466,7 +467,7 @@ const ClientBalanceGridList = enhance((props) => {
                                     <Cancel color='#ff584b'/>
                                 </IconButton>
                             </Tooltip>
-                            <Tooltip position="bottom" text="Добавить">
+                            <Tooltip position="bottom" text={t('Добавить')}>
                                 <IconButton
                                     disableTouchRipple={true}
                                     iconStyle={iconStyle.icon}
@@ -487,11 +488,11 @@ const ClientBalanceGridList = enhance((props) => {
     head = []
     _.map(_.get(listData, ['data', '0', 'divisions']), (item) => {
         if (item.id) {
-            head.push({name: item.name + ' нал.', id: item.id, type: 'cash'})
-            head.push({name: item.name + ' переч.', id: item.id, type: 'bank'})
+            head.push({name: item.name + t(' нал.'), id: item.id, type: t('cash')})
+            head.push({name: item.name + t(' переч.'), id: item.id, type: t('bank')})
         } else {
-            head.push({name: 'Наличный', id: item.id, type: 'cash'})
-            head.push({name: 'Перечисление', id: item.id, type: 'bank'})
+            head.push({name: t('Наличный'), id: item.id, type: t('cash')})
+            head.push({name: t('Перечисление'), id: item.id, type: t('bank')})
         }
     })
 
@@ -511,7 +512,7 @@ const ClientBalanceGridList = enhance((props) => {
                             ordering(filter, 'orders', props.pathname)
                         }
                     }}>
-                    Кол-во заказов {orderNoSorting}
+                    {t('Кол-во заказов')} {orderNoSorting}
                 </td>
                 {_.map(head, (item, index) => {
                     const sortingType = filter.getSortingType(item.type + '_' + item.id)
@@ -585,7 +586,7 @@ const ClientBalanceGridList = enhance((props) => {
             </div>}
             {!listLoading && emptyData &&
             <div className={classes.emptyQuery}>
-                <div>По вашему запросу ничего не найдено</div>
+                <div>{t('По вашему запросу ничего не найдено')}</div>
             </div>}
             {!listLoading && !emptyData && clients}
             <div ref="mainTable" className={classes.mainTableWrapper} style={{width: 'calc(100% - 350px)'}}>
@@ -622,13 +623,13 @@ const ClientBalanceGridList = enhance((props) => {
                 className={classes.inputFieldCustom}
                 name="balanceType"
                 component={ClientBalanceTypeSearchField}
-                label="Тип баланса"
+                label={t('Тип баланса')}
                 fullWidth={true}/>
             <Field
                 className={classes.inputFieldCustom}
                 name="paymentType"
                 component={PaymentTypeSearchField}
-                label="Тип оплаты"
+                label={t('Тип оплаты')}
                 fullWidth={true}/>
         </div>
     )
@@ -639,17 +640,17 @@ const ClientBalanceGridList = enhance((props) => {
             <div className={classes.checkboxes}>
                 <Field
                     name="[groupBy][division][active]"
-                    label="Организациям"
+                    label={t('Организациям')}
                     component={CheckBox}
                 />
                 <Field
                     name="[groupBy][currency][active]"
-                    label="Валюте"
+                    label={t('Валюте')}
                     component={CheckBox}
                 />
                 <Field
                     name="[groupBy][paymentType][active]"
-                    label="Типу оплат"
+                    label={t('Типу оплат')}
                     component={CheckBox}
                 />
             </div>
@@ -667,7 +668,7 @@ const ClientBalanceGridList = enhance((props) => {
                     className={classes.inputFieldCustom}
                     component={TextField}
                     name="searching"
-                    label="Поиск"
+                    label={t('Поиск')}
                 />
                 <IconButton
                     type="submit"
@@ -680,7 +681,7 @@ const ClientBalanceGridList = enhance((props) => {
             <div className={classes.flexCenter}>
                 <Pagination filter={filter}/>
                 {expandedTable &&
-                <Tooltip position="left" text={'Обычный вид'}>
+                <Tooltip position="left" text={t('Обычный вид')}>
                     <IconButton
                         className={classes.fullScreen}
                         onTouchTap={() => { setExpandedTable(!expandedTable) }}
@@ -690,7 +691,7 @@ const ClientBalanceGridList = enhance((props) => {
                     </IconButton>
                 </Tooltip>}
                 {!expandedTable &&
-                <Tooltip position="left" text={'Расширенный вид'}>
+                <Tooltip position="left" text={t('Расширенный вид')}>
                     <IconButton
                         className={classes.fullScreen}
                         onTouchTap={() => { setExpandedTable(!expandedTable) }}
@@ -715,7 +716,7 @@ const ClientBalanceGridList = enhance((props) => {
                         [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: types.cash,
                         [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: types.debtor})
                 })}>
-                Задолжники нал. - {borrowersCashCount}
+                {t('Задолжники нал')}. - {borrowersCashCount}
                 <div>{numberFormat(borrowersCash, primaryCurrency)}</div>
             </div>
             <div
@@ -725,7 +726,7 @@ const ClientBalanceGridList = enhance((props) => {
                         [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: types.bank,
                         [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: types.debtor})
                 })}>
-                Задолжники переч. - {borrowersBankCount}
+                {t('Задолжники переч')}. - {borrowersBankCount}
                 <div>{numberFormat(borrowersBank, primaryCurrency)}</div>
             </div>
             <div
@@ -735,7 +736,7 @@ const ClientBalanceGridList = enhance((props) => {
                         [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: types.cash,
                         [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: types.loaner})
                 })}>
-                Закладчики нал. - {loanersCashCount}
+                {t('Закладчики нал')}. - {loanersCashCount}
                 <div>{numberFormat(loanersCash, primaryCurrency)}</div>
             </div>
             <div
@@ -745,7 +746,7 @@ const ClientBalanceGridList = enhance((props) => {
                         [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: types.bank,
                         [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: types.loaner})
                 })}>
-                Закладчики переч. - {loanersBankCount}
+                {t('Закладчики переч')}. - {loanersBankCount}
                 <div>{numberFormat(loanersBank, primaryCurrency)}</div>
             </div>
         </div>

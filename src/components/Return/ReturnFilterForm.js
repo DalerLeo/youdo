@@ -25,6 +25,7 @@ import {
 } from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
+import t from '../../helpers/translate'
 
 export const RETURN_FILTER_OPEN = 'openFilterDialog'
 
@@ -168,7 +169,7 @@ const ReturnFilterForm = enhance((props) => {
         if (filterCounts) {
             return (
                 <div className={classes.afterFilter}>
-                    <div>Фильтр: {filterCounts} элемента</div>
+                    <div>{t('Фильтр')}: {filterCounts} {t('элемента')}</div>
                     <div>
                         <IconButton onTouchTap={filterDialog.handleOpenFilterDialog}>
                             <BorderColorIcon color="#8f8f8f" />
@@ -186,7 +187,7 @@ const ReturnFilterForm = enhance((props) => {
                 <Link
                     className={classes.arrow}
                     onTouchTap={filterDialog.handleOpenFilterDialog}>
-                    <div>Показать фильтр <KeyboardArrowDown color="#12aaeb" /></div>
+                    <div>{t('Показать фильтр')} <KeyboardArrowDown color="#12aaeb" /></div>
                 </Link>
             </div>
         )
@@ -196,25 +197,25 @@ const ReturnFilterForm = enhance((props) => {
         <div>
             <Paper className={classes.wrapper} zDepth={2}>
                 <div className={classes.header}>
-                    <span className={classes.title}>Фильтр</span>
+                    <span className={classes.title}>{t('Фильтр')}</span>
                     <IconButton onTouchTap={filterDialog.handleCloseFilterDialog}>
                         <CloseIcon className={classes.icon} />
                     </IconButton>
                 </div>
                 <form onSubmit={handleSubmit(filterDialog.handleSubmitFilterDialog)}>
                     <div>
-                        <Field className={classes.inputFieldCustom} name="order" component={TextField} label="№ Заказа"/>
-                        <Field className={classes.inputFieldCustom} name="product" component={ProductMultiSearchField} label="Продукт"/>
-                        {divisionStatus && <Field className={classes.inputFieldCustom} name="division" component={DivisionMultiSearchField} label="Организация"/>}
-                        <Field className={classes.inputFieldCustom} name="paymentType" component={PaymentTypeSearchField} label="Тип оплаты"/>
-                        <Field className={classes.inputFieldCustom} name="status" component={ReturnStatusMultiSearch} label="Статус"/>
-                        <Field className={classes.inputFieldCustom} name="type" component={ReturnTypeSearchField} label="Тип"/>
-                        <Field className={classes.inputFieldCustom} name="client" component={ClientMultiSearchField} label="Клиент"/>
-                        {hasMarket && <Field className={classes.inputFieldCustom} name="market" component={MarketMultiSearchField} label="Магазин"/>}
-                        <Field className={classes.inputFieldCustom} name="initiator" component={UsersMultiSearchField} label="Инициатор "/>
-                        <Field className={classes.inputFieldCustom} name="code" component={TextField} label="Код"/>
-                        <Field className={classes.inputDateCustom} name="data" component={DateToDateField} label="Период создания"/>
-                        <Field name="exclude" component={CheckBox} label="Исключить отмененные заказы"/>
+                        <Field className={classes.inputFieldCustom} name="order" component={TextField} label={'№ ' + t('Заказа')}/>
+                        <Field className={classes.inputFieldCustom} name="product" component={ProductMultiSearchField} label={t('Продукт')}/>
+                        {divisionStatus && <Field className={classes.inputFieldCustom} name="division" component={DivisionMultiSearchField} label={t('Организация')}/>}
+                        <Field className={classes.inputFieldCustom} name="paymentType" component={PaymentTypeSearchField} label={t('Тип оплаты')}/>
+                        <Field className={classes.inputFieldCustom} name="status" component={ReturnStatusMultiSearch} label={t('Статус')}/>
+                        <Field className={classes.inputFieldCustom} name="type" component={ReturnTypeSearchField} label={t('Тип')}/>
+                        <Field className={classes.inputFieldCustom} name="client" component={ClientMultiSearchField} label={t('Клиент')}/>
+                        {hasMarket && <Field className={classes.inputFieldCustom} name="market" component={MarketMultiSearchField} label={t('Магазин')}/>}
+                        <Field className={classes.inputFieldCustom} name="initiator" component={UsersMultiSearchField} label={t('Инициатор')}/>
+                        <Field className={classes.inputFieldCustom} name="code" component={TextField} label={t('Код')}/>
+                        <Field className={classes.inputDateCustom} name="data" component={DateToDateField} label={t('Период создания')}/>
+                        <Field name="exclude" component={CheckBox} label={t('Исключить отмененные заказы')}/>
                     </div>
 
                     <RaisedButton
@@ -222,7 +223,7 @@ const ReturnFilterForm = enhance((props) => {
                         primary={true}
                         labelStyle={{fontSize: '13px'}}
                         buttonStyle={{color: '#fff'}}
-                        label="Применить"
+                        label={t('Применить')}
                         style={{marginTop: '15px'}}>
                     </RaisedButton>
                 </form>

@@ -18,6 +18,9 @@ import PriceSetDefaultDialog from './PriceSetDefaultDialog'
 import numberFormat from '../../helpers/numberFormat'
 import NotFound from '../Images/not-found.png'
 import {Link} from 'react-router'
+import dataFomat from '../../helpers/dateFormat'
+import t from '../../helpers/translate'
+
 const enhance = compose(
     injectSheet({
         loader: {
@@ -187,7 +190,7 @@ const PriceDetails = enhance((props) => {
     const priceHistoryLoading = _.get(detailData, 'priceItemHistoryLoading')
     const name = _.get(detailData, ['data', 'name'])
     const measurement = _.get(detailData, ['data', 'measurement', 'name'])
-    const priceUpdated = _.get(listDetailData, ['0', 'priceUpdated']) ? moment(_.get(listDetailData, ['0', 'priceUpdated'])).format('DD.MM.YYYY') : 'Не установлены'
+    const priceUpdated = _.get(listDetailData, ['0', 'priceUpdated']) ? moment(_.get(listDetailData, ['0', 'priceUpdated'])).format('DD.MM.YYYY') : t('Не установлены')
     const averageCost = _.get(listDetailData, ['0', 'netCost'])
     const minPrice = numberFormat(_.get(detailData, ['data', 'minPrice']))
     const maxPrice = numberFormat(_.get(detailData, ['data', 'maxPrice']))
@@ -225,17 +228,17 @@ const PriceDetails = enhance((props) => {
             </div>
             {_.get(defaultNetCost, 'cost')
                 ? <div className={classes.noSupply}>
-                    Постaвок не найдено, <Link to={{
+                    {t('Постaвок не найдено')}, <Link to={{
                         pathname: ROUTES.SUPPLY_LIST_URL,
                         query: {openCreateDialog: true}
-                    }} target='_blank'>добавить поставку</Link>
+                    }} target='_blank'>{t('добавить поставку')}</Link>
                 </div>
                 : <div className={classes.noSupply}>
-                    Постaвок не найдено, <Link to={{
+                    {t('Постaвок не найдено')}, <Link to={{
                         pathname: ROUTES.SUPPLY_LIST_URL,
                         query: {openCreateDialog: true}
-                    }} target='_blank'>добавьте поставку</Link>
-                    <br/>или <a onClick={defaultDialog.handleOpen}>добавьте себестоимость </a> по умолчанию
+                    }} target='_blank'>{t('добавьте поставку')}</Link>
+                    <br/>{t('или')} <a onClick={defaultDialog.handleOpen}>{t('добавьте себестоимость')} </a> {t('по умолчанию')}
                 </div>}
 
         </div>
@@ -257,7 +260,7 @@ const PriceDetails = enhance((props) => {
                      onClick={handleCloseDetail}>
                 </div>
                 <div className={classes.titleButtons}>
-                    {!priceSetForm.openPriceSetForm && <Tooltip position="bottom" text="Закрыть">
+                    {!priceSetForm.openPriceSetForm && <Tooltip position="bottom" text={t('Закрыть')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
@@ -272,7 +275,7 @@ const PriceDetails = enhance((props) => {
             <div className={classes.content}>
 
                 <div className={classes.leftSide}>
-                    {(!_.isEmpty(priceHistoryList) || _.get(defaultNetCost, 'cost')) && <div className={classes.bodyTitle}>Поставки</div> }
+                    {(!_.isEmpty(priceHistoryList) || _.get(defaultNetCost, 'cost')) && <div className={classes.bodyTitle}>{t('Поставки')}</div> }
                     {priceHistoryLoading &&
                     <div className={classes.loader}>
                         <div>
@@ -287,10 +290,10 @@ const PriceDetails = enhance((props) => {
                     {!priceHistoryLoading && _.get(defaultNetCost, 'cost') &&
                         // If net_cost set show it
                         <div className={classes.netCost}>
-                            <span>Себестоимость по умолчанию:</span>
+                            <span>{t('Себестоимость по умолчанию')}:</span>
                             <div>{numberFormat(_.get(defaultNetCost, 'cost'), getConfig('PRIMARY_CURRENCY'))}
                                 <div className={classes.titleButtons}>
-                                    <Tooltip position="bottom" text="Изменить">
+                                    <Tooltip position="bottom" text={t('Изменить')}>
                                         <IconButton
                                             iconStyle={iconStyle2.icon}
                                             style={iconStyle2.button}
@@ -312,16 +315,17 @@ const PriceDetails = enhance((props) => {
                         ? <div className={classes.tableContent}>
                             <Row>
                                 <Col xs={1} style={{fontSize: '15px'}}>№</Col>
-                                <Col style={{textAlign: 'left'}} xs={3}>Дата</Col>
-                                <Col style={{textAlign: 'left'}} xs={3}>Кол-во</Col>
-                                <Col style={{textAlign: 'left'}} xs={2}>На складе</Col>
-                                <Col xs={3}>Себест.</Col>
+                                <Col style={{textAlign: 'left'}} xs={3}>{t('Дата')}</Col>
+                                <Col style={{textAlign: 'left'}} xs={3}>{t('Кол-во')}</Col>
+                                <Col style={{textAlign: 'left'}} xs={2}>{t('На складе')}</Col>
+                                <Col xs={3}>{t('Себест')}.</Col>
                             </Row>
 
                             {_.map(priceHistoryList, (item) => {
                                 const amount = _.get(item, 'amount')
                                 const balance = _.get(item, 'balance')
                                 const netCost = _.get(item, 'netCost')
+                                const date = dataFomat(_.get(item, 'date'))
                                 const id = _.get(item, 'id')
                                 const supplyId = _.get(item, 'supplyId')
                                 return (
@@ -331,7 +335,7 @@ const PriceDetails = enhance((props) => {
                                                 {supplyId}
                                             </a>
                                         </Col>
-                                        <Col style={{textAlign: 'left'}} xs={3}>23 апр, 2017</Col>
+                                        <Col style={{textAlign: 'left'}} xs={3}>{date}</Col>
                                         <Col style={{textAlign: 'left'}} xs={3}>{numberFormat(amount, measurement)}</Col>
                                         <Col style={{textAlign: 'left'}} xs={2}>{numberFormat(balance, measurement)}</Col>
                                         <Col xs={3}>{numberFormat(netCost, getConfig('PRIMARY_CURRENCY'))}</Col>
@@ -339,7 +343,7 @@ const PriceDetails = enhance((props) => {
                                 )
                             })}
 
-                            <div className={classes.average}> Усредненная себестоимость:
+                            <div className={classes.average}> {t('Усредненная себестоимость')}:
                                 <span className={classes.averagePrice}>{numberFormat(averageCost, getConfig('PRIMARY_CURRENCY'))}</span>
                             </div>
                         </div>
@@ -364,11 +368,11 @@ const PriceDetails = enhance((props) => {
                     }
                     {(!priceListIsLoading && !priceListItemsIsLoading && !priceSetForm.openPriceSetForm) && <div>
                         <div className={classes.bodyTitle}>
-                            <div>Цены на товар
+                            <div>{t('Цены на товар')}
                                 <span className={classes.rightSideTitleDate}> ({priceUpdated})</span>
                             </div>
                             <div className={classes.titleButtons}>
-                                <Tooltip position="bottom" text="Изменить">
+                                <Tooltip position="bottom" text={t('Изменить')}>
                                     <IconButton
                                         iconStyle={iconStyle.icon}
                                         style={iconStyle.button}
@@ -380,12 +384,12 @@ const PriceDetails = enhance((props) => {
                                 </Tooltip>
                             </div>
                         </div>
-                        {customPrice && <div className={classes.agentCanSet}>Агент может устанавливать цены. <br/> Минимальная / максимальная стоимость: {minPrice} / {maxPrice} {currencyName}</div>}
+                        {customPrice && <div className={classes.agentCanSet}>{t('Агент может устанавливать цены')}. <br/> {t('Минимальная / максимальная стоимость')}: {minPrice} / {maxPrice} {currencyName}</div>}
                         <div className={classes.tableContent}>
                             <Row className="dottedList">
-                                <Col xs={6}>Тип обьекта</Col>
-                                <Col xs={3}>Нал</Col>
-                                <Col xs={3}>Безнал</Col>
+                                <Col xs={6}>{t('Тип обьекта')}</Col>
+                                <Col xs={3}>{t('Нал')}</Col>
+                                <Col xs={3}>{t('Безнал')}</Col>
                             </Row>
                             {_.map(mergedList, (item) => {
                                 const id = _.get(item, 'priceListId')

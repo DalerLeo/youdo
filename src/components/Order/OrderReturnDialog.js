@@ -219,14 +219,14 @@ const OrderReturnDialog = enhance((props) => {
                                 <Field
                                     component={StockSearchField}
                                     className={classes.inputFieldCustom}
-                                    label="Cклад"
+                                    label={t('Cклад')}
                                     fullWidth={true}
                                     name="stock"/>
                                 <Field
                                     name="comment"
                                     component={TextField}
                                     className={classes.returnComment}
-                                    label="Комментарий к возврату"
+                                    label={t('Комментарий к возврату')}
                                     fullWidth={true}
                                     multiLine={true}
                                     rows={1}

@@ -14,7 +14,7 @@ import Tooltip from '../ToolTip'
 import numberFormat from '../../helpers/numberFormat'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
 import getConfig from '../../helpers/getConfig'
-
+import t from '../../helpers/translate'
 const ZERO = 0
 
 const enhance = compose(
@@ -200,11 +200,11 @@ const ReturnDetails = enhance((props) => {
     const id = _.get(data, 'id')
     const user = _.get(data, ['createdBy', 'firstName']) + ' ' + _.get(data, ['createdBy', 'secondName'])
     const createdDate = dateTimeFormat(_.get(data, 'createdDate'))
-    const finishedTime = _.get(data, 'acceptedTime') ? dateTimeFormat(_.get(data, 'finishedTime'), true) : 'Не установлен'
+    const finishedTime = _.get(data, 'acceptedTime') ? dateTimeFormat(_.get(data, 'finishedTime'), true) : t('Не установлен')
     const acceptedBy = _.get(data, ['acceptedBy'])
         ? _.get(data, ['acceptedBy', 'firstName']) + ' ' + _.get(data, ['acceptedBy', 'secondName'])
-        : 'Не принят'
-    const acceptedDate = _.get(data, 'acceptedTime') ? dateTimeFormat(_.get(data, 'acceptedTime')) : 'Не установлено'
+        : t('Не принят')
+    const acceptedDate = _.get(data, 'acceptedTime') ? dateTimeFormat(_.get(data, 'acceptedTime')) : t('Не установлено')
     const comment = _.get(data, 'comment')
     const stock = _.get(data, ['stock', 'name'])
     const order = _.get(data, 'order')
@@ -213,7 +213,7 @@ const ReturnDetails = enhance((props) => {
     const priceList = _.get(data, ['priceList', 'name'])
     const market = _.get(data, 'market')
     const status = _.toInteger(_.get(data, 'status'))
-    const paymentType = _.get(data, 'paymentType') === 'cash' ? 'Наличными' : 'Перечислением'
+    const paymentType = _.get(data, 'paymentType') === 'cash' ? t('Наличными') : t('Перечислением')
     const PENDING = 0
     const IN_PROGRESS = 1
     const COMPLETED = 2
@@ -235,12 +235,12 @@ const ReturnDetails = enhance((props) => {
     return (
         <div className={classes.wrapper}>
             <div className={classes.title}>
-                <div className={classes.titleLabel}>Возврат №{id}</div>
+                <div className={classes.titleLabel}>{t('Возврат')} №{id}</div>
                 <div className={classes.closeDetail}
                      onClick={handleCloseDetail}>
                 </div>
                 <div className={classes.titleButtons}>
-                    {getDocument && !stat && <Tooltip position="bottom" text="Распечатать накладную">
+                    {getDocument && !stat && <Tooltip position="bottom" text={t('Распечатать накладную')}>
                         <IconButton
                             disabled={status === CANCELLED}
                             iconStyle={iconStyle.icon}
@@ -250,7 +250,7 @@ const ReturnDetails = enhance((props) => {
                             <PrintIcon />
                         </IconButton>
                     </Tooltip>}
-                    {isAdmin && <Tooltip position="bottom" text={!canChangeAnyReturn && typeClient === TWO ? 'У вас нет доступа' : 'Изменить'}>
+                    {isAdmin && <Tooltip position="bottom" text={!canChangeAnyReturn && typeClient === TWO ? t('У вас нет доступа') : t('Изменить')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
@@ -260,7 +260,7 @@ const ReturnDetails = enhance((props) => {
                             <Edit />
                         </IconButton>
                     </Tooltip>}
-                    {confirmDialog && !stat && <Tooltip position="bottom" text={!canChangeAnyReturn && typeClient === TWO ? 'У вас нет доступа' : 'Отменить'}>
+                    {confirmDialog && !stat && <Tooltip position="bottom" text={!canChangeAnyReturn && typeClient === TWO ? t('У вас нет доступа') : t('Отменить')}>
                         <IconButton
                             disabled={!(status === IN_PROGRESS || status === PENDING) || (!canChangeAnyReturn && typeClient === TWO)}
                             iconStyle={iconStyle.icon}
@@ -278,27 +278,27 @@ const ReturnDetails = enhance((props) => {
                         <div className={classes.dataBox}>
                             <ul>
                                 <li>
-                                    <span>Добавил:</span>
+                                    <span>{t('Добавил')}:</span>
                                     <span>{user}</span>
                                 </li>
                                 {client && <li>
-                                    <span>Клиент:</span>
+                                    <span>{t('Клиент')}:</span>
                                     <span>{client}</span>
                                 </li>}
                                 {market && hasMarket && <li>
-                                    <span>Магазин:</span>
+                                    <span>{t('Магазин')}:</span>
                                     <span>{_.get(market, 'name')}</span>
                                 </li>}
                                 <li>
-                                    <span>Дата возврата:</span>
+                                    <span>{t('Дата возврата')}:</span>
                                     <span>{createdDate}</span>
                                 </li>
                                 <li>
-                                    <span>Валюта:</span>
+                                    <span>{t('Валюта')}:</span>
                                     <span>{currency}</span>
                                 </li>
                                 <li>
-                                    <span>Прайс-лист:</span>
+                                    <span>{t('Прайс-лист')}:</span>
                                     <span>{priceList}</span>
                                 </li>
                             </ul>
@@ -308,38 +308,38 @@ const ReturnDetails = enhance((props) => {
                         <div className={classes.dataBox}>
                             <ul>
                                 <li>
-                                    <span>Склад:</span>
+                                    <span>{t('Склад')}:</span>
                                     <span>{stock}</span>
                                 </li>
                                 <li>
-                                    <span>Тип оплаты</span>
+                                    <span>{t('Тип оплаты')}</span>
                                     <span>{paymentType}</span>
                                 </li>
                                 {order && <li>
-                                    <span>Заказ №:</span>
+                                    <span>{t('Заказ')} №:</span>
                                     <span>{order}</span>
                                 </li>}
                                 <li>
-                                    <span>Начало приемки:</span>
+                                    <span>{t('Начало приемки')}:</span>
                                     <span>{acceptedDate}</span>
                                 </li>
                                 <li>
-                                    <span>Конец приемки:</span>
+                                    <span>{t('Конец приемки')}:</span>
                                     <span>{finishedTime}</span>
                                 </li>
                                 <li>
-                                    <span>Принял:</span>
+                                    <span>{t('Принял')}:</span>
                                     <span>{acceptedBy}</span>
                                 </li>
                                 <li>
-                                    <span>Статус:</span>
+                                    <span>{t('Статус')}:</span>
                                     <span>
                                         {(status === PENDING || status === IN_PROGRESS)
-                                            ? 'Ожидает'
+                                            ? t('Ожидает')
                                             : (status === COMPLETED)
-                                                ? 'Завершен'
+                                                ? t('Завершен')
                                                 : (status === CANCELLED)
-                                                    ? 'Отменен' : null}
+                                                    ? t('Отменен') : null}
                                     </span>
                                 </li>
                             </ul>
@@ -348,7 +348,7 @@ const ReturnDetails = enhance((props) => {
                     <div className={classes.subBlock}>
                         <div className={classes.dataBox}>
                             <ul>
-                                <li style={{display: 'block'}}>Причина возврата:&nbsp;<strong>{comment}</strong></li>
+                                <li style={{display: 'block'}}>{t('Причина возврата')}:&nbsp;<strong>{comment}</strong></li>
                             </ul>
                         </div>
                     </div>
@@ -356,11 +356,11 @@ const ReturnDetails = enhance((props) => {
                 <div className={classes.rightSide}>
                     <div className={classes.list}>
                         <Row className="dottedList">
-                            <Col xs={4}>Товар</Col>
-                            <Col xs={2}>Код товара</Col>
-                            <Col xs={2}>Количество</Col>
-                            <Col xs={2}>Цена ({primaryCurrency})</Col>
-                            <Col xs={2}>Сумма ({primaryCurrency})</Col>
+                            <Col xs={4}>{t('Товар')}</Col>
+                            <Col xs={2}>{t('Код товара')}</Col>
+                            <Col xs={2}>{t('Количество')}</Col>
+                            <Col xs={2}>{t('Цена')} ({primaryCurrency})</Col>
+                            <Col xs={2}>{t('Сумма')} ({primaryCurrency})</Col>
                         </Row>
                         {_.map(products, (item) => {
                             const product = _.get(item, ['product', 'name'])
@@ -381,12 +381,12 @@ const ReturnDetails = enhance((props) => {
                             )
                         })}
                     </div>
-                    <div className={classes.total}>Итого: {totalPrice}</div>
+                    <div className={classes.total}>{t('Итого')}: {totalPrice}</div>
                 </div>
             </div>
             {type && <ConfirmDialog
                 type="cancel"
-                message={'Возврат № ' + cancelReturnDialog.openCancelDialog}
+                message={t('Возврат') + ' № ' + cancelReturnDialog.openCancelDialog}
                 onClose={cancelReturnDialog.handleCloseCancelReturnDialog}
                 onSubmit={cancelReturnDialog.handleSubmitCancelReturnDialog}
                 open={cancelReturnDialog.openCancelDialog > ZERO}/>
