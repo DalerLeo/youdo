@@ -11,12 +11,17 @@ import {notificationCountFetchAction} from '../../actions/notifications'
 const ZERO = 0
 const TIMER = 60000
 
+let notificationCountInterval = null
+
 const enhance = compose(
     lifecycle({
         componentDidMount () {
             const dispatch = this.props.dispatch
             dispatch(notificationCountFetchAction())
-            setInterval(() => {
+            if (notificationCountInterval) {
+                clearInterval(notificationCountInterval)
+            }
+            notificationCountInterval = setInterval(() => {
                 dispatch(notificationCountFetchAction())
             }, TIMER)
         }

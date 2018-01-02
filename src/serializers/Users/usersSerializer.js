@@ -17,7 +17,6 @@ export const createSerializer = (data) => {
     const stocks = _.filter(_.get(data, ['stocks']), (o) => {
         return _.get(o, 'selected')
     })
-
     const currencies = _.map(_.filter(_.get(data, ['currencies']), (o) => {
         return _.get(o, 'selected')
     }), (item) => {
