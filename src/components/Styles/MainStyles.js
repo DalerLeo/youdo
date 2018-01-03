@@ -23,7 +23,8 @@ const MainStyles = {
     },
     popUp: {
         color: '#333 !important',
-        overflow: 'unset !important',
+        overflowY: 'unset !important',
+        overflowX: 'unset !important',
         fontSize: '13px !important',
         position: 'relative',
         padding: '0 !important',

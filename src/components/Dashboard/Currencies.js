@@ -105,7 +105,7 @@ const Currencies = enhance((props) => {
                 <div className={classes.chartStats}>
                     <div>Основная валюта: <strong>{primaryCurrency}</strong></div>
                 </div>
-                <form className={classes.list}>
+                <div className={classes.list}>
                     <Row>
                         <Col xs={3}>Наименование</Col>
                         <Col xs={4}>Курс</Col>
@@ -123,31 +123,38 @@ const Currencies = enhance((props) => {
                             const rate = _.get(item, ['rate', 'rate'])
                             if (id === currentUpdateCurrency) {
                                 return (
-                                    <Row key={id}>
-                                        <Col xs={3}>{name}</Col>
-                                        <Col xs={7} className={classes.editRate}>1 {reversedRate ? name : primaryCurrency} =
-                                            <Field
-                                                name="rate"
-                                                component={TextField}
-                                                className={classes.textField}
-                                                hintText={rate}
-                                            />
-                                            {reversedRate ? primaryCurrency : name}
-                                        </Col>
-                                        <Col xs={2}>
-                                            <Cancel
-                                                onClick={() => {
-                                                    setUpdateCurrency(null)
-                                                }}
-                                                className={classes.button}/>
-                                            <Done
-                                                onClick={() => {
-                                                    handleUpdateRate(id)
-                                                    setUpdateCurrency(null)
-                                                }}
-                                                className={classes.button}/>
-                                        </Col>
-                                    </Row>
+                                    <form key={id} onSubmit={(event) => {
+                                        event.preventDefault()
+                                        handleUpdateRate(id)
+                                        setUpdateCurrency(null)
+                                    }}>
+                                        <Row>
+                                            <Col xs={3}>{name}</Col>
+                                            <Col xs={7} className={classes.editRate}>1 {reversedRate ? name : primaryCurrency} =
+                                                <Field
+                                                    name="rate"
+                                                    component={TextField}
+                                                    className={classes.textField}
+                                                    hintText={rate}
+                                                />
+                                                {reversedRate ? primaryCurrency : name}
+                                            </Col>
+                                            <Col xs={2}>
+                                                <Cancel
+                                                    onClick={() => {
+                                                        setUpdateCurrency(null)
+                                                    }}
+                                                    className={classes.button}/>
+                                                <Done
+                                                    type={'submit'}
+                                                    onClick={() => {
+                                                        handleUpdateRate(id)
+                                                        setUpdateCurrency(null)
+                                                    }}
+                                                    className={classes.button}/>
+                                            </Col>
+                                        </Row>
+                                    </form>
                                 )
                             }
                             return name === primaryCurrency
@@ -165,7 +172,7 @@ const Currencies = enhance((props) => {
                                     </Row>
                                 )
                         })}
-                </form>
+                </div>
             </div>
         </Paper>
     )
