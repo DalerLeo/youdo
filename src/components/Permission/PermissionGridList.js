@@ -125,7 +125,10 @@ const PermissionGridList = enhance((props) => {
         return (
             <Row key={id} className={classes.listRow}>
                 <Col xs={5}>{name}</Col>
-                <Col xs={5}>{getPermName[status]} {(status === ON_TIME || status === OFF_TIME) && ': ' + fromTime + ' - ' + toTime} </Col>
+                <Col xs={5}>
+                    {getPermName[status]}
+                    {(status === ON_TIME || status === OFF_TIME) && ': ' + fromTime + ' - ' + toTime}
+                </Col>
                 <Col xs={2} style={{textAlign: 'right'}}>
                     <div className={classes.iconBtn}>
                         <Tooltip position="bottom" text="Изменить">
