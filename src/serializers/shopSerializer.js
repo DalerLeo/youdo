@@ -2,7 +2,7 @@ import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
 import toBoolean from '../helpers/toBoolean'
 
-const ONE = 1
+const STATUS_ACTIVE = 1
 const TWO = 2
 
 export const createSerializer = (data, location, newClient) => {
@@ -15,13 +15,11 @@ export const createSerializer = (data, location, newClient) => {
     const frequency = _.get(data, ['frequency', 'value'])
     const status = _.get(data, ['status', 'value'])
     const lat = _.get(location, 'lat')
-    const phones = _.get(data, 'phones')
+    const phones = _.filter(_.get(data, 'phones'), item => !_.isEmpty(item))
     const lon = _.get(location, 'lng')
     const contactName = _.get(data, ['contactName'])
-    let isActive = false
-    if (status === ONE) {
-        isActive = true
-    }
+    const isActive = status === STATUS_ACTIVE
+
     return {
         name,
         client,
@@ -63,10 +61,7 @@ export const updateSerializer = (data, location, detail) => {
             id: phone.id
         }
     })
-    let isActive = false
-    if (status === ONE) {
-        isActive = true
-    }
+    const isActive = status === STATUS_ACTIVE
 
     return {
         name,
