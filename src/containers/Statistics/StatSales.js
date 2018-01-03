@@ -247,8 +247,8 @@ const StatSalesList = enhance((props) => {
                 toDate: deliveryToDate && moment(deliveryToDate, 'YYYY-MM-DD')
             },
             createdDate: {
-                fromDate: createdFromDate && moment(createdFromDate, 'YYYY-MM-DD'),
-                toDate: createdToDate && moment(createdToDate, 'YYYY-MM-DD')
+                fromDate: createdFromDate ? moment(createdFromDate, 'YYYY-MM-DD') : moment(firstDayOfMonth),
+                toDate: createdToDate ? moment(createdToDate, 'YYYY-MM-DD') : moment(lastDayOfMonth)
             },
             deadlineDate: {
                 fromDate: deadlineFromDate && moment(deadlineFromDate, 'YYYY-MM-DD'),
