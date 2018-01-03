@@ -24,6 +24,7 @@ import {
     optionsListFetchAction
 } from '../../actions/expensiveCategory'
 import {openSnackbarAction} from '../../actions/snackbar'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     connect((state, props) => {
@@ -106,10 +107,10 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[EXPENSIVE_CATEGORY_DELETE_DIALOG_OPEN]: false})})
                     dispatch(expensiveCategoryListFetchAction(filter))
-                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно удалено')}))
                 })
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
+                    return dispatch(openSnackbarAction({message: t('Ошибка при удалении')}))
                 })
         },
 
@@ -129,7 +130,7 @@ const enhance = compose(
 
             return dispatch(expensiveCategoryCreateAction(_.get(createForm, ['values'])))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[EXPENSIVE_CATEGORY_CREATE_DIALOG_OPEN]: false})})
@@ -156,7 +157,7 @@ const enhance = compose(
 
             return dispatch(expensiveCategoryUpdateAction(expensiveCategoryId, _.get(createForm, ['values'])))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push(filter.createURL({[EXPENSIVE_CATEGORY_UPDATE_DIALOG_OPEN]: false}))

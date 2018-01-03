@@ -11,6 +11,7 @@ import TextField from '../ReduxForm/Basic/TextField'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
+import t from '../../helpers/translate'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -62,7 +63,7 @@ const PrimaryCurrencyDialog = enhance((props) => {
             contentStyle={loading ? {width: '400px'} : {width: '400px'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>Установить курс</span>
+                <span>{t('Установить курс')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -75,7 +76,7 @@ const PrimaryCurrencyDialog = enhance((props) => {
                                 name="rate"
                                 component={TextField}
                                 className={classes.inputFieldCustom}
-                                label="Курс"
+                                label={t('Курс')}
                                 fullWidth={true}
                             />
                         </div>
@@ -83,7 +84,7 @@ const PrimaryCurrencyDialog = enhance((props) => {
                     <div className={classes.bottomButton}>
                         <FlatButton
                             labelStyle={{fontSize: '13px'}}
-                            label="Сохранить"
+                            label={t('Сохранить')}
                             type="submit"
                         />
                     </div>

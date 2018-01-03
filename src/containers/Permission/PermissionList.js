@@ -16,6 +16,7 @@ import {
 import {openSnackbarAction} from '../../actions/snackbar'
 import {openErrorAction} from '../../actions/error'
 import {getPermName} from '../../constants/permissionTime'
+import t from '../../helpers/translate'
 
 const SET_DATE_DIALOG_DATE = 'openSetDateDialog'
 
@@ -70,7 +71,7 @@ const enhance = compose(
             const permissionId = _.toInteger(_.get(props, ['query', 'openSetDateDialog']))
             return dispatch(setDateAction(_.get(setDateForm, ['values']), permissionId))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[SET_DATE_DIALOG_DATE]: false})})

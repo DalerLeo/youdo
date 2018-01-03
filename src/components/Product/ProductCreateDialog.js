@@ -19,6 +19,7 @@ import {
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
+import t from '../../helpers/translate'
 
 export const PRODUCT_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -74,7 +75,7 @@ const ProductCreateDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>{isUpdate ? 'Изменить продукт' : 'Добавить продукт'}</span>
+                <span>{isUpdate ? t('Изменить продукт') : t('Добавить продукт')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -90,21 +91,21 @@ const ProductCreateDialog = enhance((props) => {
                                 name="name"
                                 className={classes.inputFieldCustom}
                                 component={TextField}
-                                label="Наименование"
+                                label={t('Наименование')}
                                 fullWidth={true}
                             />
                             <Field
                                 name="code"
                                 className={classes.inputFieldCustom}
                                 component={TextField}
-                                label="Код товара"
+                                label={t('Код товара')}
                                 fullWidth={true}
                             />
                             <Field
                                 name="productTypeParent"
                                 className={classes.inputFieldCustom}
                                 component={ProductTypeParentSearchField}
-                                label="Тип продукта"
+                                label={t('Тип продукта')}
                                 fullWidth={true}
                             />
                             {typeParent && <Field
@@ -112,21 +113,21 @@ const ProductCreateDialog = enhance((props) => {
                                 className={classes.inputFieldCustom}
                                 component={ProductTypeChildSearchField}
                                 parentType={typeParent}
-                                label="Подкатегория"
+                                label={t('Подкатегория')}
                                 fullWidth={true}
                             />}
                             <Field
                                 name="priority"
                                 className={classes.inputFieldCustom}
                                 component={TextField}
-                                label="Порядок"
+                                label={t('Порядок')}
                                 fullWidth={true}
                             />
                             <Field
                                 name="measurement"
                                 className={classes.inputFieldCustom}
                                 component={MeasurementSearchField}
-                                label="Мера"
+                                label={t('Мера')}
                                 fullWidth={true}
                             />
                         </div>
@@ -134,14 +135,14 @@ const ProductCreateDialog = enhance((props) => {
                             <Field
                                 name="image"
                                 component={ImageUploadField}
-                                label="Изображения"
+                                label={t('Изображения')}
                                 fullWidth={true}
                             />
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
-                            label="Сохранить"
+                            label={t('Сохранить')}
                             labelStyle={{fontSize: '13px'}}
                             className={classes.actionButton}
                             primary={true}

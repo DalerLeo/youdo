@@ -19,6 +19,8 @@ import {reduxForm} from 'redux-form'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Loader from '../Loader'
 import userGroupFormat from '../../helpers/userGroupFormat'
+import t from '../../helpers/translate'
+
 const enhance = compose(
     injectSheet({
         loader: {
@@ -185,8 +187,8 @@ const PositionGridList = enhance((props) => {
 
     const headers = (
         <Row className="dottedList">
-            <Col xs={2}>Права доступа</Col>
-            <Col xs={9}>Возможности</Col>
+            <Col xs={2}>{t('Права доступа')}</Col>
+            <Col xs={9}>{t('Возможности')}</Col>
             <Col xs={1}></Col>
         </Row>
     )
@@ -212,7 +214,7 @@ const PositionGridList = enhance((props) => {
                 </Col>
                 <Col xs={1}>
                     <div className={classes.iconBtn}>
-                        <Tooltip position="bottom" text="Изменить">
+                        <Tooltip position="bottom" text={t('Изменить')}>
                             <IconButton
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
@@ -224,7 +226,7 @@ const PositionGridList = enhance((props) => {
                                 <EditIcon/>
                             </IconButton>
                         </Tooltip>
-                        <Tooltip position="bottom" text="Удалить">
+                        <Tooltip position="bottom" text={t('Удалить')}>
                             <IconButton
                                 disableTouchRipple={true}
                                 iconStyle={iconStyle.icon}
@@ -243,7 +245,7 @@ const PositionGridList = enhance((props) => {
     })
 
     const currentDetail = _.find(_.get(listData, 'data'), {'id': _.toInteger(detailId)})
-    const confirmMessage = 'Валюта: ' + _.get(currentDetail, 'name')
+    const confirmMessage = t('Валюта') + ': ' + _.get(currentDetail, 'name')
     return (
         <Container>
             <div className={classes.wrapper}>
@@ -252,7 +254,7 @@ const PositionGridList = enhance((props) => {
                     <div className={classes.nav}>
                         <div>
                             <FlatButton
-                                label="создать права доступа"
+                                label={t('создать права доступа')}
                                 labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb', fontSize: '13px'}}
                                 className={classes.addButton}
                                 onTouchTap={createDialog.handleOpenCreateDialog}

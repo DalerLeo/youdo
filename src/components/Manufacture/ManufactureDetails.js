@@ -13,6 +13,7 @@ import Map from 'material-ui/svg-icons/maps/map'
 import Tooltip from '../ToolTip'
 import NotFound from '../Images/not-found.png'
 import numberFormat from '../../helpers/numberFormat'
+import t from '../../helpers/translate'
 
 const ZERO = 0
 const iconStyle = {
@@ -158,7 +159,7 @@ const ManufactureDetails = enhance((props) => {
                 <Col xs={3}>{amount}</Col>
                 <Col xs={2}>
                     <div className={classes.listButtons}>
-                        <Tooltip position="bottom" text="Изменить">
+                        <Tooltip position="bottom" text={t('Изменить')}>
                             <IconButton
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
@@ -170,7 +171,7 @@ const ManufactureDetails = enhance((props) => {
                                 <ModEditorIcon />
                             </IconButton>
                         </Tooltip>
-                        <Tooltip position="bottom" text="Удалить">
+                        <Tooltip position="bottom" text={t('Удалить')}>
                             <IconButton
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
@@ -194,7 +195,7 @@ const ManufactureDetails = enhance((props) => {
                 <div className={classes.closeDetail} onClick={handleCloseDetail}> </div>
                 <div className={classes.titleLabel}>{productTitle}</div>
                 <div className={classes.titleButtons}>
-                    <Tooltip position="bottom" text="Изменить производство">
+                    <Tooltip position="bottom" text={t('Изменить производство')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.addButton}
@@ -202,7 +203,7 @@ const ManufactureDetails = enhance((props) => {
                             <Map />
                         </IconButton>
                     </Tooltip>
-                    <Tooltip position="bottom" text="Удалить продукт">
+                    <Tooltip position="bottom" text={t('Удалить продукт')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.addButton}
@@ -210,7 +211,7 @@ const ManufactureDetails = enhance((props) => {
                             <DeleteIcon />
                         </IconButton>
                     </Tooltip>
-                    <Tooltip position="bottom" text="Добавить сырье">
+                    <Tooltip position="bottom" text={t('Добавить сырье')}>
                         <IconButton
                             iconStyle={iconStyle.iconCustom}
                             style={iconStyle.addButton} onClick={ createMaterials.handleOpen }>
@@ -225,17 +226,17 @@ const ManufactureDetails = enhance((props) => {
                         <ul className={classes.rawMaterials}>
                             <li key={id} className="dottedList">
                                 <Col xs={7}>
-                                    <strong>Сырье</strong>
+                                    <strong>{t('Сырье')}</strong>
                                 </Col>
                                 <Col xs={3}>
-                                    <strong>Объем</strong>
+                                    <strong>{t('Объем')}</strong>
                                 </Col>
                             </li>
                             {ingredientList}
                         </ul>
                     </div>
                     : <div className={classes.emptyQuery}>
-                        <div>В данном продукте нет сырья</div>
+                        <div>{t('В данном продукте нет сырья')}</div>
                     </div>}
             </div>
         </div>

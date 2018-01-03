@@ -21,6 +21,7 @@ import {
     shipmentMaterialsListFetchAction
 } from '../../actions/manufactureShipment'
 import ManufactureWrapper from './Wrapper'
+import t from '../../helpers/translate'
 
 const TAB = 'tab'
 const MINUS_ONE = -1

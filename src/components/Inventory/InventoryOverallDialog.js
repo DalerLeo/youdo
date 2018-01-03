@@ -8,6 +8,8 @@ import FlatButton from 'material-ui/FlatButton'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
 import Tooltip from '../ToolTip'
+import t from '../../helpers/translate'
+
 const enhance = compose(
     injectSheet({
         dialog: {
@@ -111,21 +113,21 @@ const InventoryOverallDialog = enhance((props) => {
                 </header>
                 <section>
                     <Row className="dottedList">
-                        <Col xs={6}>Товар</Col>
-                        <Col xs={3}>Кол-во</Col>
-                        <Col xs={3}>Разница</Col>
+                        <Col xs={6}>{t('Товар')}</Col>
+                        <Col xs={3}>{t('Кол-во')}</Col>
+                        <Col xs={3}>{t('Разница')}</Col>
                     </Row>
                     {_.map(items, (item) => {
                         return (
                             <Row key={item.id} className="dottedList">
                                 <Col xs={6}>{item.title}</Col>
                                 <Col xs={3}>
-                                    <Tooltip position={'left'} text={'ОК / Брак'}>
+                                    <Tooltip position={'left'} text={t('ОК / Брак')}>
                                         {item.amount} / {item.defect} {item.measurement}
                                     </Tooltip>
                                 </Col>
                                 <Col xs={3}>
-                                    <Tooltip position={'left'} text={'ОК / Брак'}>
+                                    <Tooltip position={'left'} text={t('ОК / Брак')}>
                                         {item.amountDiff} / {item.defectDiff} {item.measurement}
                                     </Tooltip>
                                 </Col>
@@ -135,7 +137,7 @@ const InventoryOverallDialog = enhance((props) => {
                 </section>
                 <footer>
                     <FlatButton
-                        label={'Сохранить'}
+                        label={t('Сохранить')}
                         onTouchTap={() => { submitDialog(items, closeDialog) }}
                         className={classes.actionButton}/>
                 </footer>

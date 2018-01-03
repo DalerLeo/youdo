@@ -17,6 +17,7 @@ import SettingSideMenu from '../Settings/SettingsSideMenu'
 import Edit from 'material-ui/svg-icons/image/edit'
 import Tooltip from '../ToolTip'
 import dateFormat from '../../helpers/dateFormat'
+import t from '../../helpers/translate'
 
 const listHeader = [
     {
@@ -29,13 +30,13 @@ const listHeader = [
         sorting: false,
         name: 'name',
         xs: 6,
-        title: 'Наименование'
+        title: t('Наименование')
     },
     {
         sorting: true,
         xs: 3,
         name: 'created_date',
-        title: 'Дата создания'
+        title: t('Дата создания')
     },
     {
         sorting: false,
@@ -137,7 +138,7 @@ const PostGridList = enhance((props) => {
                 <Col xs={3}>{createdDate}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
                     <div className={classes.iconBtn}>
-                        <Tooltip position="bottom" text="Изменить">
+                        <Tooltip position="bottom" text={t('Изменить')}>
                             <IconButton
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
@@ -147,7 +148,7 @@ const PostGridList = enhance((props) => {
                                 <Edit />
                             </IconButton>
                         </Tooltip>
-                        <Tooltip position="bottom" text="Удалить">
+                        <Tooltip position="bottom" text={t('Удалить')}>
                             <IconButton
                                 disableTouchRipple={true}
                                 iconStyle={iconStyle.icon}
@@ -175,7 +176,7 @@ const PostGridList = enhance((props) => {
                 backgroundColor="#fff"
                 labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb', fontSize: '13px'}}
                 className={classes.addButton}
-                label="добавить должность"
+                label={t('добавить должность')}
                 onTouchTap={createDialog.handleOpenCreateDialog}
                 icon={<ContentAdd color="#12aaeb"/>}>
             </FlatButton>

@@ -148,7 +148,7 @@ const ManufactureAddStaffDialog = enhance((props) => {
             bodyClassName={classes.popUp}>
             <form onSubmit={onSubmit} className={classes.form}>
                 <div className={classes.titleContent}>
-                    <span>Производство клея: персонал</span>
+                    <span>{t('Производство клея')}: {t('персонал')}</span>
                     <IconButton onTouchTap={onClose}>
                         <CloseIcon color="#666666"/>
                     </IconButton>
@@ -161,19 +161,19 @@ const ManufactureAddStaffDialog = enhance((props) => {
                                 component={UsersSearchField}
                                 className={classes.inputFieldCustom}
                                 disabled={isUpdate}
-                                label="Сотрудник"
+                                label={t('Сотрудник')}
                                 fullWidth={true}/>
                             <Field
                                 name="shift"
                                 component={ShiftSearchField}
                                 className={classes.inputFieldCustom}
-                                label="Смена"
+                                label={t('Смена')}
                                 fullWidth={true}/>
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
-                            label="Сохранить"
+                            label={t('Сохранить')}
                             className={classes.actionButton}
                             primary={true}
                             type="submit"

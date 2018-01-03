@@ -15,6 +15,7 @@ import AgentPath1 from '../Images/agent-path-1.png'
 import AgentPath2 from '../Images/agent-path-2.png'
 import AgentPath3 from '../Images/agent-path-3.png'
 import {AGENT_COLORS} from '../Plan'
+import t from '../../helpers/translate'
 
 const agentPaths = [AgentPath1, AgentPath2, AgentPath3]
 const enhance = compose(
@@ -180,7 +181,7 @@ const GoogleMapWrapper = enhance((
                         getPixelPositionOffset={getPixelPositionOffset}
                         position={{lat: lat, lng: lng}}>
                         <div className={classes.marketInfo}>
-                            <h4>Магазин</h4>
+                            <h4>{t('Магазин')}</h4>
                             <div>{name}</div>
                         </div>
                     </OverlayView>
@@ -243,9 +244,9 @@ const GoogleMapWrapper = enhance((
                 getPixelPositionOffset={getPixelPositionOffset}
                 position={{lat: _.get(marketForOverlay, ['location', 'lat']), lng: _.get(marketForOverlay, ['location', 'lon'])}}>
                 <div className={classes.marketName}>
-                    <div><strong>Магазин:</strong> {_.get(marketForOverlay, 'name')}</div>
-                    <div><strong>Адрес:</strong> {_.get(marketForOverlay, 'address')}</div>
-                    {_.get(marketForOverlay, 'hasPlan') && <div className={classes.hasPlan}><strong>Есть план</strong></div>}
+                    <div><strong>{t('Магазин')}:</strong> {_.get(marketForOverlay, 'name')}</div>
+                    <div><strong>{t('Адрес')}:</strong> {_.get(marketForOverlay, 'address')}</div>
+                    {_.get(marketForOverlay, 'hasPlan') && <div className={classes.hasPlan}><strong>{t('Есть план')}</strong></div>}
                 </div>
             </OverlayView>}
         </DefaultGoogleMap>

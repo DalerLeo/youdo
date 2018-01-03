@@ -12,6 +12,7 @@ import getConfig from '../../helpers/getConfig'
 import {TextField, normalizeNumber} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
+import t from '../../helpers/translate'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -209,7 +210,7 @@ const PlanSalesDialog = enhance((props) => {
             bodyStyle={{minHeight: '100px !important'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>План продаж</span>
+                <span>{t('План продаж')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -242,7 +243,7 @@ const PlanSalesDialog = enhance((props) => {
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
-                            label="Сохранить"
+                            label={t('Сохранить')}
                             labelStyle={{fontSize: '13px'}}
                             className={classes.actionButton}
                             primary={true}

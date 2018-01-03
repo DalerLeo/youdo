@@ -12,6 +12,7 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import toCamelCase from '../../helpers/toCamelCase'
 import {TextField, ProductSearchField} from '../ReduxForm'
+import t from '../../helpers/translate'
 
 export const MANUFACTURE_EDIT_PRODUCT_DIALOG_OPEN = 'editMaterials'
 const enhance = compose(
@@ -239,7 +240,7 @@ const ManufactureEditProductDialog = enhance((props) => {
             bodyClassName={classes.popUp}>
             <form onSubmit={onSubmit} className={classes.form}>
                 <div className={classes.titleContent}>
-                    <span>{isUpdate ? 'Редактирование сырья' : 'Добавление сырья'}</span>
+                    <span>{isUpdate ? t('Редактирование сырья') : t('Добавление сырья')}</span>
                     <IconButton onTouchTap={onClose}>
                         <CloseIcon color="#666666"/>
                     </IconButton>
@@ -251,7 +252,7 @@ const ManufactureEditProductDialog = enhance((props) => {
                                 <Row className={classes.addRaw} style={{width: '100%'}}>
                                     {!isUpdate && <Col xs={8}>
                                         <Field
-                                            label="Наименование товара"
+                                            label={t('Наименование товара')}
                                             name="ingredient"
                                             component={ProductSearchField}
                                             className={classes.inputFieldCustom}
@@ -262,7 +263,7 @@ const ManufactureEditProductDialog = enhance((props) => {
                                         <Field
                                             name="amount"
                                             style={{textAlign: 'right', marginTop: '-2px'}}
-                                            label="Кол-во"
+                                            label={t('Кол-во')}
                                             component={TextField}
                                             className={classes.inputFieldCustom}
                                             fullWidth={true}
@@ -277,7 +278,7 @@ const ManufactureEditProductDialog = enhance((props) => {
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
-                            label="Сохранить"
+                            label={t('Сохранить')}
                             className={classes.actionButton}
                             primary={true}
                             type="submit"

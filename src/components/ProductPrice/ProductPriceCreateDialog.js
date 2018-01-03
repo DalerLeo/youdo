@@ -13,6 +13,7 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 import normalizeNumber from '../ReduxForm/normalizers/normalizeNumber'
+import t from '../../helpers/translate'
 
 export const PRODUCT_PRICE_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -62,7 +63,7 @@ const ProductPriceCreateDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>Изменить стоимость</span>
+                <span>{t('Изменить стоимость')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -78,7 +79,7 @@ const ProductPriceCreateDialog = enhance((props) => {
                                 name="price"
                                 className={classes.inputFieldCustom}
                                 component={TextField}
-                                label="Стоимость"
+                                label={t('Стоимость')}
                                 fullWidth={true}
                                 normalize={normalizeNumber}
                             />
@@ -86,7 +87,7 @@ const ProductPriceCreateDialog = enhance((props) => {
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
-                            label="Сохранить"
+                            label={t('Сохранить')}
                             className={classes.actionButton}
                             labelStyle={{fontSize: '13px'}}
                             primary={true}

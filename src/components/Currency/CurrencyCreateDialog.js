@@ -12,6 +12,8 @@ import {TextField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
+import t from '../../helpers/translate'
+
 export const CURRENCY_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -56,7 +58,7 @@ const CurrencyCreateDialog = enhance((props) => {
             bodyStyle={{minHeight: '100px !important'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>{isUpdate ? 'Изменить валюту' : 'Добавить валюту'}</span>
+                <span>{isUpdate ? t('Изменить валюту') : t('Добавить валюту')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -72,7 +74,7 @@ const CurrencyCreateDialog = enhance((props) => {
                                 name="name"
                                 component={TextField}
                                 className={classes.inputFieldCustom}
-                                label="Наименование"
+                                label={t('Наименование')}
                                 fullWidth={true}
                             />
                             {isUpdate
@@ -81,20 +83,20 @@ const CurrencyCreateDialog = enhance((props) => {
                                     disabled={true}
                                     component={TextField}
                                     className={classes.inputFieldCustom}
-                                    label="Курс"
+                                    label={t('Курс')}
                                     fullWidth={true}/>
                                 : <Field
                                         name="rate"
                                         component={TextField}
                                         className={classes.inputFieldCustom}
-                                        label="Курс"
+                                        label={t('Курс')}
                                         fullWidth={true}/>
                             }
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
-                            label="Сохранить"
+                            label={t('Сохранить')}
                             className={classes.actionButton}
                             labelStyle={{fontSize: '13px'}}
                             primary={true}

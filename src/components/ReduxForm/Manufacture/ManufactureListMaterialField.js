@@ -23,6 +23,7 @@ import TextField from '../Basic/TextField'
 import {connect} from 'react-redux'
 import numberWithoutSpaces from '../../../helpers/numberWithoutSpaces'
 import normalizeNumber from '../normalizers/normalizeNumber'
+import t from '../../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -235,11 +236,11 @@ const ManufactureListMaterialField = ({classes, measurementName, handleAdd, prod
     return (
         <div className={classes.wrapper}>
             <div className={classes.titleAdd}>
-                <h3>Сырье</h3>
+                <h3>{t('Сырье')}</h3>
                 <a onClick={() => { setOpenAddMaterials(!openAddMaterials) }}>
                     <ContentAdd style={{height: '13px', width: '13px', color: 'rgb(18, 170, 235)'}}
                                 viewBox="0 0 24 15"/>
-                    <span>добавить сырье</span>
+                    <span>{t('добавить сырье')}</span>
                 </a>
             </div>
             {openAddMaterials && <div className={classes.addMaterials}>
@@ -247,7 +248,7 @@ const ManufactureListMaterialField = ({classes, measurementName, handleAdd, prod
                     <Col xs={7}>
                         <Field
                             component={ProductCustomSearchField}
-                            label="Наименование товара"
+                            label={t('Наименование товара')}
                             name="ingredient"
                             className={classes.searchFieldCustom}
                             fullWidth={true}
@@ -257,7 +258,7 @@ const ManufactureListMaterialField = ({classes, measurementName, handleAdd, prod
                     <Col xs={2}>
                         <Field
                             component={TextField}
-                            label="Кол-во"
+                            label={t('Кол-во')}
                             name="amount"
                             className={classes.inputFieldCustom}
                             fullWidth={true}
@@ -285,9 +286,9 @@ const ManufactureListMaterialField = ({classes, measurementName, handleAdd, prod
                             className={classes.title}>
                             <TableRow className={classes.tableRow}>
                                 <TableHeaderColumn
-                                    className={classes.tableTitle}>Наименование</TableHeaderColumn>
-                                <TableHeaderColumn className={classes.tableTitle}>Кол-во</TableHeaderColumn>
-                                <TableHeaderColumn className={classes.tableTitle}>Ед</TableHeaderColumn>
+                                    className={classes.tableTitle}>{t('Наименование')}</TableHeaderColumn>
+                                <TableHeaderColumn className={classes.tableTitle}>{t('Кол-во')}</TableHeaderColumn>
+                                <TableHeaderColumn className={classes.tableTitle}>{t('Ед')}</TableHeaderColumn>
                                 <TableHeaderColumn></TableHeaderColumn>
                             </TableRow>
                         </TableHeader>
@@ -351,7 +352,7 @@ const ManufactureListMaterialField = ({classes, measurementName, handleAdd, prod
                 : <div className={classes.imagePlaceholder}>
                     <div style={{textAlign: 'center', color: '#adadad'}}>
                         <img src={Groceries} alt=""/>
-                        <div>Вы еще не выбрали <br/> ни одного сырья</div>
+                        <div>{t('Вы еще не выбрали')} <br/> {t('ни одного сырья')}</div>
                     </div>
                 </div>
             }

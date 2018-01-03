@@ -17,13 +17,14 @@ import ContentAdd from 'material-ui/svg-icons/content/add'
 import SettingSideMenu from '../Settings/SettingsSideMenu'
 import Tooltip from '../ToolTip'
 import Edit from 'material-ui/svg-icons/image/edit'
+import t from '../../helpers/translate'
 
 const listHeader = [
     {
         sorting: true,
         name: 'name',
         xs: 10,
-        title: 'Наименование'
+        title: t('Наименование')
     },
     {
         sorting: false,
@@ -138,7 +139,7 @@ const DivisionGridList = enhance((props) => {
                 <Col xs={10}>{name}</Col>
                 <Col xs={2}>
                     <div className={classes.iconBtn}>
-                        <Tooltip position="bottom" text="Изменить">
+                        <Tooltip position="bottom" text={t('Изменить')}>
                             <IconButton
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
@@ -148,7 +149,7 @@ const DivisionGridList = enhance((props) => {
                                 <Edit />
                             </IconButton>
                         </Tooltip>
-                        <Tooltip position="bottom" text="Удалить">
+                        <Tooltip position="bottom" text={t('Удалить')}>
                             <IconButton
                                 disableTouchRipple={true}
                                 iconStyle={iconStyle.icon}
@@ -176,7 +177,7 @@ const DivisionGridList = enhance((props) => {
                 backgroundColor="#fff"
                 labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb', fontSize: '13px'}}
                 className={classes.addButton}
-                label="добавить организацию"
+                label={t('добавить организацию')}
                 onTouchTap={createDialog.handleOpenCreateDialog}
                 icon={<ContentAdd color="#12aaeb"/>}>
             </FlatButton>

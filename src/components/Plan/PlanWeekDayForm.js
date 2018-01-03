@@ -15,6 +15,7 @@ import Close from 'material-ui/svg-icons/navigation/close'
 import PlanAddPrioritySearchField from '../ReduxForm/PlanAddPrioritySearchField'
 import {MARKET, UPDATE_PLAN} from '../Plan'
 import Loader from '../Loader'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -127,7 +128,7 @@ const PlanWeekDayForm = enhance((props) => {
                     ? <div></div>
                     : combo && !comboLoading &&
                     <div>
-                        <div className={classes.title}>Закрепленные агенты</div>
+                        <div className={classes.title}>{t('Закрепленные агенты')}</div>
                         <Field
                             name="agents"
                             agents={agents}
@@ -135,14 +136,14 @@ const PlanWeekDayForm = enhance((props) => {
                             component={PlanChooseAgentsRadio}
                         />
                     </div>}
-                <div className={classes.title}>Тип плана</div>
+                <div className={classes.title}>{t('Тип плана')}</div>
                 {loading
                 ? <div>{null}</div>
                 : <Field
                     name="planType"
                     isUpdate={isUpdate}
                     component={PlanTypeRadio}/>}
-                <div className={classes.title}>Выберите дни</div>
+                <div className={classes.title}>{t('Выберите дни')}</div>
                 {planType === 'week'
                     ? <Field
                         name="weekday"
@@ -151,14 +152,14 @@ const PlanWeekDayForm = enhance((props) => {
                     : <Field
                         name="weekday"
                         component={PlanChooseMonthDay}/>}
-                <div className={classes.title}>Приоритет</div>
+                <div className={classes.title}>{t('Приоритет')}</div>
                 <Field
                     name="priority"
                     label="1...100"
                     component={PlanAddPrioritySearchField}/>
                 <div className={classes.submitBtn}>
                     <FlatButton
-                        label={(isUpdate || comboPlanId) ? 'Изменить план' : 'Добавить в план агента'}
+                        label={(isUpdate || comboPlanId) ? t('Изменить план') : t('Добавить в план агента')}
                         backgroundColor="#12aaeb"
                         hoverColor="#12aaeb"
                         type="submit"
@@ -168,7 +169,7 @@ const PlanWeekDayForm = enhance((props) => {
                     />
                     {(isUpdate || comboPlanId) && <FlatButton
                         onTouchTap={() => { setOpenConfirmDialog(true) }}
-                        label="Удалить план"
+                        label={t('Удалить план')}
                         backgroundColor="#ff5b57"
                         style={{marginTop: '5px'}}
                         hoverColor="#ff5b57"
@@ -179,15 +180,15 @@ const PlanWeekDayForm = enhance((props) => {
                 </div>
                 {openConfirmDialog && <div className={classes.confirmDialog}>
                     <div className={classes.confirmWrapper}>
-                        <h4>Удалить текущий план?</h4>
+                        <h4>{t('Удалить текущий план')}?</h4>
                         <FlatButton
-                            label="Нет"
+                            label={t('Нет')}
                             hoverColor="#efefef"
                             labelStyle={confirmLabelStyle}
                             onTouchTap={() => { setOpenConfirmDialog(false) }}
                         />
                         <FlatButton
-                            label="Да"
+                            label={t('Да')}
                             hoverColor="#efefef"
                             labelStyle={confirmLabelStyle}
                             onTouchTap={handleSubmit(submitDelete)}

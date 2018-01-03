@@ -23,6 +23,7 @@ import {
 import {openErrorAction} from '../../actions/error'
 import {openSnackbarAction} from '../../actions/snackbar'
 import {reset} from 'redux-form'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     connect((state, props) => {
@@ -105,7 +106,7 @@ const enhance = compose(
             const {dispatch, createForm, filter} = props
             return dispatch(pendingExpensesUpdateAction(detail, _.get(createForm, ['values'])))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push(filter.createURL({[PENDING_EXPENSES_UPDATE_DIALOG_OPEN]: false}))

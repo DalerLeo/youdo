@@ -12,6 +12,7 @@ import {UsersSearchField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
+import t from '../../helpers/translate'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -60,7 +61,7 @@ const ZoneBindAgentDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>{notify ? 'Привязать пользователя' : 'Привязать агента'}</span>
+                <span>{notify ? t('Привязать пользователя') : t('Привязать агента')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -76,14 +77,14 @@ const ZoneBindAgentDialog = enhance((props) => {
                                 name="user"
                                 component={UsersSearchField}
                                 className={classes.inputFieldCustom}
-                                label={notify ? 'Ползователь' : 'Агент'}
+                                label={notify ? t('Ползователь') : t('Агент')}
                                 fullWidth={true}
                             />
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
-                            label="Сохранить"
+                            label={t('Сохранить')}
                             className={classes.actionButton}
                             labelStyle={{fontSize: '13px'}}
                             primary={true}

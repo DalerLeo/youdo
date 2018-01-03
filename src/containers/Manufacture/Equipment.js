@@ -10,6 +10,7 @@ import filterHelper from '../../helpers/filter'
 import {ManufactureEquipmentWrapper} from '../../components/Manufacture'
 import {equipmentListFetchAction} from '../../actions/equipment'
 import ManufactureWrapper from './Wrapper'
+import t from '../../helpers/translate'
 
 const ZERO = 0
 const enhance = compose(

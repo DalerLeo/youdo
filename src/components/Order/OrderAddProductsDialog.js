@@ -23,6 +23,7 @@ import {
     normalizeNumber
 } from '../ReduxForm'
 import {connect} from 'react-redux'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -323,7 +324,7 @@ const OrderAddProductsDialog = enhance((props) => {
                 <Col xs={2}>{code}</Col>
                 <Col xs={2}>
                     {fromAllBalances
-                        ? <Tooltip position="left" text="доступно / брак">{available} / {defects} {measurement}</Tooltip>
+                        ? <Tooltip position="left" text={t('доступно / брак')}>{available} / {defects} {measurement}</Tooltip>
                         : numberFormat(balance, measurement)}
                 </Col>
                 <Col xs={2} className={classes.flex}>
@@ -358,21 +359,21 @@ const OrderAddProductsDialog = enhance((props) => {
             {openAddProductConfirm &&
             <div className={classes.confirm}>
                 <Paper zDepth={2} className={classes.confirmContent}>
-                    <header>Сохранить текущие товары?</header>
+                    <header>{t('Сохранить текущие товары')}?</header>
                     <div>
                         <FlatButton
-                            label="Нет"
+                            label={t('Нет')}
                             labelStyle={flatButtonStyle.label}
                             onClick={handleCloseAddProductConfirm} />
                         <FlatButton
-                            label="Сохранить"
+                            label={t('Сохранить')}
                             labelStyle={flatButtonStyle.label}
                             onClick={handleSubmitAddProductConfirm} />
                     </div>
                 </Paper>
             </div>}
             <div className={classes.titleContent}>
-                <span>Добавление продуктов</span>
+                <span>{t('Добавление продуктов')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -388,7 +389,7 @@ const OrderAddProductsDialog = enhance((props) => {
                                 <Field
                                     name="type"
                                     component={ProductTypeSearchField}
-                                    label="Фильтр по типу"
+                                    label={t('Фильтр по типу')}
                                     fullWidth={true}
                                 />
                             </div>
@@ -396,7 +397,7 @@ const OrderAddProductsDialog = enhance((props) => {
                                 <TextFieldSearch
                                     fullWidth={true}
                                     name={'search'}
-                                    hintText="Поиск товаров..."
+                                    hintText={t('Поиск товаров') + '...'}
                                     className={classes.searchField}
                                     value={pdSearch}
                                     onChange={(event) => setSearch(event.target.value)}
@@ -414,22 +415,22 @@ const OrderAddProductsDialog = enhance((props) => {
                         <form className={classes.productsList}>
                             {!_.isEmpty(products) &&
                             <Row className="dottedList">
-                                <Col xs={4}>Наименование</Col>
-                                <Col xs={2}>Код</Col>
-                                <Col xs={2}>В наличии</Col>
-                                <Col xs={2} className={classes.rightAlign}>Цена</Col>
-                                <Col xs={2} className={classes.rightAlign}>Кол-во</Col>
+                                <Col xs={4}>{t('Наименование')}</Col>
+                                <Col xs={2}>{t('Код')}</Col>
+                                <Col xs={2}>{t('В наличии')}</Col>
+                                <Col xs={2} className={classes.rightAlign}>{t('Цена')}</Col>
+                                <Col xs={2} className={classes.rightAlign}>{t('Кол-во')}</Col>
                             </Row>}
                             {!_.isEmpty(products)
                                 ? products
                                 : <div className={classes.emptyQuery}>
-                                    <div>По вашему запросу ничего не найдено...</div>
+                                    <div>{t('По вашему запросу ничего не найдено')}...</div>
                                 </div>}
                         </form>
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
-                            label={'Сохранить'}
+                            label={t('Сохранить')}
                             labelStyle={{fontSize: '13px'}}
                             className={classes.actionButton}
                             primary={true}

@@ -10,6 +10,7 @@ import EquipmentSearchField from '../ReduxForm/EquipmentSearchField'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import validate from '../../helpers/validate'
+import t from '../../helpers/translate'
 
 export const MANUFACTURE_ADD_PRODUCT_DIALOG_OPEN = 'addProduct'
 
@@ -237,7 +238,7 @@ const ManufactureAddProductDialog = enhance((props) => {
             bodyClassName={classes.popUp}>
             <form onSubmit={onSubmit} className={classes.form}>
                 <div className={classes.titleContent}>
-                    <span>Добавление продукта</span>
+                    <span>{t('Добавление продукта')}</span>
                     <IconButton onTouchTap={onClose}>
                         <CloseIcon color="#666666"/>
                     </IconButton>
@@ -248,13 +249,13 @@ const ManufactureAddProductDialog = enhance((props) => {
                         <div style={{width: '100%', paddingTop: '10px'}}>
                             <Field
                                 name="product"
-                                label="Продукт"
+                                label={t('Продукт')}
                                 className={classes.inputFieldCustom}
                                 component={ProductSearchField}
                                 fullWidth={true}/>
                             {manufacture && <Field
                                 name="equipment"
-                                label="Оборудование"
+                                label={t('Оборудование')}
                                 data-manufacture={manufacture}
                                 className={classes.inputFieldCustom}
                                 component={EquipmentSearchField}
@@ -267,7 +268,7 @@ const ManufactureAddProductDialog = enhance((props) => {
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
-                            label="Сохранить"
+                            label={t('Сохранить')}
                             className={classes.actionButton}
                             primary={true}
                             type="submit"

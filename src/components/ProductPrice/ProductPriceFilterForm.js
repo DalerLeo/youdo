@@ -12,6 +12,7 @@ import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import {ProductTypeSearchField, BrandSearchField, MeasurementSearchField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
+import t from '../../helpers/translate'
 
 export const PRODUCT_PRICE_FILTER_OPEN = 'openFilterDialog'
 
@@ -120,7 +121,7 @@ const ProductPriceFilterForm = enhance((props) => {
         if (filterCounts) {
             return (
                 <div className={classes.afterFilter}>
-                    <div>Фильтр: {filterCounts} элемента</div>
+                    <div>{t('Фильтр')}: {filterCounts} {t('элемента')}</div>
                     <div>
                         <IconButton onTouchTap={filterDialog.handleOpenFilterDialog}>
                             <BorderColorIcon color="#8f8f8f" />
@@ -138,7 +139,7 @@ const ProductPriceFilterForm = enhance((props) => {
                 <Link
                     className={classes.arrow}
                     onTouchTap={filterDialog.handleOpenFilterDialog}>
-                    <div>Показать фильтр <KeyboardArrowDown color="#12aaeb" /></div>
+                    <div>{t('Показать фильтр')} <KeyboardArrowDown color="#12aaeb" /></div>
                 </Link>
             </div>
         )
@@ -148,27 +149,27 @@ const ProductPriceFilterForm = enhance((props) => {
         <div>
             <Paper className={classes.wrapper} zDepth={2}>
                 <div className={classes.header}>
-                    <span className={classes.title}>Фильтр</span>
+                    <span className={classes.title}>{t('Фильтр')}</span>
                     <IconButton onTouchTap={filterDialog.handleCloseFilterDialog}>
                         <CloseIcon className={classes.icon} />
                     </IconButton>
                 </div>
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
                     <div>
-                        <Field className={classes.inputFieldCustom} name="type" component={ProductTypeSearchField} label="Тип продукта"/>
+                        <Field className={classes.inputFieldCustom} name="type" component={ProductTypeSearchField} label={t('Тип продукта')}/>
                     </div>
                     <div>
-                        <Field className={classes.inputFieldCustom} name="measurement" component={MeasurementSearchField} label="Мера"/>
+                        <Field className={classes.inputFieldCustom} name="measurement" component={MeasurementSearchField} label={t('Мера')}/>
                     </div>
                     <div>
-                        <Field className={classes.inputFieldCustom} name="brand" component={BrandSearchField} label="Бренд"/>
+                        <Field className={classes.inputFieldCustom} name="brand" component={BrandSearchField} label={t('Бренд')}/>
                     </div>
                     <RaisedButton
                         type="submit"
                         primary={true}
                         buttonStyle={{color: '#fff'}}
                         labelStyle={{fontSize: '13px'}}
-                        label="Применить"
+                        label={t('Применить')}
                         style={{marginTop: '15px'}}>
                     </RaisedButton>
                 </form>

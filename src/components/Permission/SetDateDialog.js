@@ -16,6 +16,7 @@ import {
     ON_TIME,
     OFF_TIME
 } from '../../constants/permissionTime'
+import t from '../../helpers/translate'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -92,7 +93,7 @@ const SetDateDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.body}>
             <div className={classes.titleContent}>
-                <span>Время работы</span>
+                <span>{t('Время работы')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -105,7 +106,7 @@ const SetDateDialog = enhance((props) => {
                                 name="status"
                                 component={PermissionTimeSearchField}
                                 className={classes.inputFieldTime}
-                                label="Тип"
+                                label={t('Тип')}
                                 fullWidth={true}/>
                             <div style={(status === ON_TIME || status === OFF_TIME)
                                 ? {display: 'flex', justifyContent: 'space-between'}
@@ -115,7 +116,7 @@ const SetDateDialog = enhance((props) => {
                                         name="fromTime"
                                         component={TimeField}
                                         className={classes.inputFieldTime}
-                                        label="Начало"
+                                        label={t('Начало')}
                                         fullWidth={true}/>
                                 </div>
                                 <div style={{width: '48%'}}>
@@ -123,7 +124,7 @@ const SetDateDialog = enhance((props) => {
                                         name="toTime"
                                         component={TimeField}
                                         className={classes.inputFieldTime}
-                                        label="Конец"
+                                        label={t('Конец')}
                                         fullWidth={true}/>
                                 </div>
                             </div>
@@ -131,7 +132,7 @@ const SetDateDialog = enhance((props) => {
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
-                            label="Применить"
+                            label={t('Применить')}
                             className={classes.actionButton}
                             labelStyle={{fontSize: '13px'}}
                             type="submit"

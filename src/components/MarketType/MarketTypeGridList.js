@@ -19,6 +19,7 @@ import SettingSideMenu from '../Settings/SettingsSideMenu'
 import Tooltip from '../ToolTip'
 import dateFormat from '../../helpers/dateFormat'
 import Dot from '../Images/dot.png'
+import t from '../../helpers/translate'
 
 const listHeader = [
     {
@@ -31,13 +32,13 @@ const listHeader = [
         sorting: true,
         name: 'name',
         xs: 5,
-        title: 'Наименование'
+        title: t('Наименование')
     },
     {
         sorting: true,
         xs: 4,
         name: 'createdDate',
-        title: 'Дата создания'
+        title: t('Дата создания')
     },
     {
         sorting: true,
@@ -226,7 +227,7 @@ const MarketTypeGridList = enhance((props) => {
                         <Col xs={4}>{createdDate}</Col>
                         <Col xs={1} className={classes.right}>
                             <div className={classes.iconBtn}>
-                                <Tooltip position="bottom" text="Изменить">
+                                <Tooltip position="bottom" text={t('Изменить')}>
                                     <IconButton
                                         iconStyle={iconStyle.icon}
                                         style={iconStyle.button}
@@ -236,7 +237,7 @@ const MarketTypeGridList = enhance((props) => {
                                         <Edit />
                                     </IconButton>
                                 </Tooltip>
-                                <Tooltip position="bottom" text="Удалить">
+                                <Tooltip position="bottom" text={t('Удалить')}>
                                     <IconButton
                                         disableTouchRipple={true}
                                         iconStyle={iconStyle.icon}
@@ -260,7 +261,7 @@ const MarketTypeGridList = enhance((props) => {
                                 <Col xs={4}>{childCreatedDate}</Col>
                                 <Col xs={1} className={classes.right}>
                                     <div className={classes.iconBtn}>
-                                        <Tooltip position="bottom" text="Изменить">
+                                        <Tooltip position="bottom" text={t('Изменить')}>
                                             <IconButton
                                                 iconStyle={iconStyle.icon}
                                                 style={iconStyle.button}
@@ -270,7 +271,7 @@ const MarketTypeGridList = enhance((props) => {
                                                 <Edit />
                                             </IconButton>
                                         </Tooltip>
-                                        <Tooltip position="bottom" text="Удалить">
+                                        <Tooltip position="bottom" text={t('Удалить')}>
                                             <IconButton
                                                 disableTouchRipple={true}
                                                 iconStyle={iconStyle.icon}
@@ -295,7 +296,7 @@ const MarketTypeGridList = enhance((props) => {
                 <Col xs={4}>{createdDate}</Col>
                 <Col xs={1} className={classes.right}>
                     <div className={classes.iconBtn}>
-                        <Tooltip position="bottom" text="Изменить">
+                        <Tooltip position="bottom" text={t('Изменить')}>
                             <IconButton
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
@@ -305,7 +306,7 @@ const MarketTypeGridList = enhance((props) => {
                                 <Edit />
                             </IconButton>
                         </Tooltip>
-                        <Tooltip position="bottom" text="Удалить">
+                        <Tooltip position="bottom" text={t('Удалить')}>
                             <IconButton
                                 disableTouchRipple={true}
                                 iconStyle={iconStyle.icon}
@@ -333,7 +334,7 @@ const MarketTypeGridList = enhance((props) => {
                 backgroundColor="#fff"
                 labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb', fontSize: '13px'}}
                 className={classes.addButton}
-                label="добавить тип магазина"
+                label={t('добавить тип магазина')}
                 onTouchTap={createDialog.handleOpenCreateDialog}
                 icon={<ContentAdd color="#12aaeb"/>}>
             </FlatButton>

@@ -21,6 +21,7 @@ import {
 } from '../../actions/productPrice'
 
 import {openSnackbarAction} from '../../actions/snackbar'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     connect((state, props) => {
@@ -115,7 +116,7 @@ const enhance = compose(
                     return dispatch(productPriceItemFetchAction(productPriceId))
                 })
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push(filter.createURL({[PRODUCT_PRICE_UPDATE_DIALOG_OPEN]: false}))

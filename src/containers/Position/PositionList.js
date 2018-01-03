@@ -26,6 +26,7 @@ import {
 } from '../../actions/position'
 import {openErrorAction} from '../../actions/error'
 import {openSnackbarAction} from '../../actions/snackbar'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     connect((state, props) => {
@@ -114,10 +115,10 @@ const enhance = compose(
                 .then(() => {
                     setOpenConfirmDialog(false)
                     dispatch(positionListFetchAction(filter))
-                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно удалено')}))
                 })
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
+                    return dispatch(openSnackbarAction({message: t('Ошибка при удалении')}))
                 })
         },
 
@@ -149,7 +150,7 @@ const enhance = compose(
             const position = _.get(params, 'positionId')
             return dispatch(courseCreateAction(_.get(courseForm, ['values']), position))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Курс обновлен'}))
+                    return dispatch(openSnackbarAction({message: t('Курс обновлен')}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[ADD_COURSE_DIALOG_OPEN]: false})})
@@ -173,7 +174,7 @@ const enhance = compose(
 
             return dispatch(positionCreateAction(_.get(createForm, ['values'])))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[POSITION_CREATE_DIALOG_OPEN]: false})})
@@ -205,7 +206,7 @@ const enhance = compose(
             const {dispatch, createForm, filter, detailId} = props
             return dispatch(positionUpdateAction(detailId, _.get(createForm, ['values'])))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push(filter.createURL({[POSITION_UPDATE_DIALOG_OPEN]: false}))

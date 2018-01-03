@@ -155,7 +155,7 @@ const ManufactureShowBom = enhance((props) => {
             contentStyle={loading ? {width: '135px'} : {width: '600px'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>BoM</span>
+                <span>{t('BoM')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -164,14 +164,14 @@ const ManufactureShowBom = enhance((props) => {
                 <div className={classes.inContent}>
                     <div style={{width: '100%'}}>
                         <div className={classes.titleBom}>
-                            <span>Продукт: <strong>Клей для скотча</strong></span><br />
+                            <span>{t('Продукт')}: <strong>{t('Клей для скотча')}</strong></span><br />
                             Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.
                         </div>
                         <div className={classes.titleAdd}>
-                            <h3>Сырье</h3>
+                            <h3>{t('Сырье')}</h3>
                             <a onClick={() => { setOpenAddMaterials(!openAddMaterials) }}>
                                 <ContentAdd style={{height: '13px', width: '13px', color: 'rgb(18, 170, 235)'}} viewBox="0 0 24 15" />
-                                добавить сырье
+                                {t('добавить сырье')}
                             </a>
                         </div>
                         {openAddMaterials && <div className={classes.addMaterials}>
@@ -180,7 +180,7 @@ const ManufactureShowBom = enhance((props) => {
                                     name="nameAdd"
                                     component={TextField}
                                     className={classes.inputFieldCustom}
-                                    label="Наименование"
+                                    label={t('Наименование')}
                                     fullWidth={true}/>
                             </Col>
                             <Col xs={2}>
@@ -188,7 +188,7 @@ const ManufactureShowBom = enhance((props) => {
                                     name="countAdd"
                                     component={TextField}
                                     className={classes.inputFieldCustom}
-                                    label="Кол-во"
+                                    label={t('Кол-во')}
                                     fullWidth={true}/>
                             </Col>
                             <Col xs={1}>
@@ -196,7 +196,7 @@ const ManufactureShowBom = enhance((props) => {
                                     name="edAdd"
                                     component={TextField}
                                     className={classes.inputFieldCustom}
-                                    label="Ед."
+                                    label={t('Ед') + '.'}
                                     fullWidth={true}/>
                             </Col>
                             <Col xs={1}>
@@ -210,28 +210,22 @@ const ManufactureShowBom = enhance((props) => {
                         <ul className={classes.modalListTable}>
                             <li className="dottedList">
                                 <Col xs={8}>
-                                    <strong>Наименование</strong>
+                                    <strong>{t('Наименование')}</strong>
                                 </Col>
                                 <Col xs={2}>
-                                    <strong>Кол-во</strong>
+                                    <strong>{t('Кол-во')}</strong>
                                 </Col>
                                 <Col xs={1}>
-                                    <strong>Ед.</strong>
+                                    <strong>{t('Ед')}.</strong>
                                 </Col>
                                 <Col xs={1}>
                                     &nbsp;
                                 </Col>
                             </li>
                             <li className="dottedList">
-                                <Col xs={8}>
-                                    Дистилированная вода
-                                </Col>
-                                <Col xs={2}>
-                                    100
-                                </Col>
-                                <Col xs={1}>
-                                    л
-                                </Col>
+                                <Col xs={8}>{t('Дистилированная вода')}</Col>
+                                <Col xs={2}>100</Col>
+                                <Col xs={1}>л</Col>
                                 <Col xs={1}>
                                     <IconMenu
                                         iconButtonElement={iconButton}
@@ -239,11 +233,11 @@ const ManufactureShowBom = enhance((props) => {
                                         anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                                         targetOrigin={{horizontal: 'right', vertical: 'top'}}>
                                         <MenuItem
-                                            primaryText="Изменить"
+                                            primaryText={t('Изменить')}
                                             leftIcon={<Edit />}
                                         />
                                         <MenuItem
-                                            primaryText="Удалить "
+                                            primaryText={t('Удалить')}
                                             leftIcon={<DeleteIcon />}
                                         />
                                     </IconMenu>
@@ -281,15 +275,9 @@ const ManufactureShowBom = enhance((props) => {
                                 </Col>
                             </li>
                             <li className="dottedList">
-                                <Col xs={8}>
-                                    Дистилированная вода
-                                </Col>
-                                <Col xs={2}>
-                                    100
-                                </Col>
-                                <Col xs={1}>
-                                    л
-                                </Col>
+                                <Col xs={8}>{t('Дистилированная вода')}</Col>
+                                <Col xs={2}>100</Col>
+                                <Col xs={1}>л</Col>
                                 <Col xs={1}>
                                     <IconMenu
                                         iconButtonElement={iconButton}
@@ -297,11 +285,11 @@ const ManufactureShowBom = enhance((props) => {
                                         anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                                         targetOrigin={{horizontal: 'right', vertical: 'top'}}>
                                         <MenuItem
-                                            primaryText="Изменить"
+                                            primaryText={t('Изменить')}
                                             leftIcon={<Edit />}
                                         />
                                         <MenuItem
-                                            primaryText="Удалить "
+                                            primaryText={t('Удалить')}
                                             leftIcon={<DeleteIcon />}
                                         />
                                     </IconMenu>

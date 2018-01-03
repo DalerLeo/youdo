@@ -26,6 +26,7 @@ import {
     normalizeNumber
 } from '../ReduxForm'
 import InventoryOverallDialog from './InventoryOverallDialog'
+import t from '../../helpers/translate'
 
 const ZERO = 0
 const ONE = 1
@@ -372,7 +373,7 @@ const InventoryDialog = enhance((props) => {
                 <Col xs={4}>{name}</Col>
                 <Col xs={2}>{code}</Col>
                 <Col xs={2}>
-                    <Tooltip position="left" text="остаток / брак">{balance} / {defects} {measurement}</Tooltip>
+                    <Tooltip position="left" text={t('остаток / брак')}>{balance} / {defects} {measurement}</Tooltip>
                 </Col>
                 <Col xs={2} className={classes.flex} style={{justifyContent: 'flex-start'}}>
                     <Field
@@ -394,7 +395,7 @@ const InventoryDialog = enhance((props) => {
                     <span>{measurement}</span>
                 </Col>
                 <Col xs={2} className={classes.flex}>
-                    <Tooltip position="left" text="остаток / брак">{amountDiff} / {defectDiff} {measurement}</Tooltip>
+                    <Tooltip position="left" text={t('остаток / брак')}>{amountDiff} / {defectDiff} {measurement}</Tooltip>
                 </Col>
             </Row>
         )
@@ -411,17 +412,17 @@ const InventoryDialog = enhance((props) => {
                     <div className={classes.fields}>
                         <Field
                             name={'stock'}
-                            label={'Выберите склад'}
+                            label={t('Выберите склад')}
                             component={StockSearchField}
                             fullWidth={true}/>
                     </div>
                     <div className={classes.buttons}>
                         <FlatButton
-                            label="Отмена"
+                            label={t('Отмена')}
                             labelStyle={flatButtonStyle.label}
                             onTouchTap={onClose}/>
                         <FlatButton
-                            label="Сохранить"
+                            label={t('Сохранить')}
                             disabled={!stockValue}
                             labelStyle={stockValue ? flatButtonStyle.label : flatButtonStyle.disabled}
                             onTouchTap={filterStock}/>
@@ -429,7 +430,7 @@ const InventoryDialog = enhance((props) => {
                 </Paper>
             </div>}
             <div className={classes.titleContent}>
-                <span>Инвентаризация</span>
+                <span>{t('Инвентаризация')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -445,14 +446,14 @@ const InventoryDialog = enhance((props) => {
                                 <Field
                                     name="productType"
                                     component={ProductTypeSearchField}
-                                    label="Фильтр по типу"
+                                    label={t('Фильтр по типу')}
                                     fullWidth={true}
                                 />
                             </div>
                             <form onSubmit={onSubmitSearch} className={classes.search}>
                                 <TextFieldSearch
                                     fullWidth={true}
-                                    hintText="Поиск товаров..."
+                                    hintText={t('Поиск товаров') + '...'}
                                     className={classes.searchField}
                                     value={pdSearch}
                                     onChange={(event) => setSearch(event.target.value)}
@@ -465,21 +466,21 @@ const InventoryDialog = enhance((props) => {
                                     <SearchIcon />
                                 </IconButton>
                             </form>
-                            <div>Склад: <strong>{stockName}</strong></div>
+                            <div>{t('Склад')}: <strong>{stockName}</strong></div>
                         </header>
                         <form className={classes.productsList}>
                             {!_.isEmpty(products) &&
                             <Row className="dottedList">
-                                <Col xs={4}>Наименование</Col>
-                                <Col xs={2}>Код</Col>
-                                <Col xs={2}>Зарегистрировано</Col>
-                                <Col xs={2}>ОК / Брак</Col>
-                                <Col xs={2} className={classes.rightAlign}>Разница</Col>
+                                <Col xs={4}>{t('Наименование')}</Col>
+                                <Col xs={2}>{t('Код')}</Col>
+                                <Col xs={2}>{t('Зарегистрировано')}</Col>
+                                <Col xs={2}>{t('ОК / Брак')}</Col>
+                                <Col xs={2} className={classes.rightAlign}>{t('Разница')}</Col>
                             </Row>}
                             {!_.isEmpty(products)
                                 ? products
                                 : <div className={classes.emptyQuery}>
-                                    <div>По вашему запросу ничего не найдено...</div>
+                                    <div>{t('По вашему запросу ничего не найдено')}...</div>
                                 </div>}
                             {moreLoading
                                 ? <div className={classes.linearProgress}>
@@ -489,12 +490,12 @@ const InventoryDialog = enhance((props) => {
                                 <a className={classes.loadMore} onClick={() => {
                                     loadMore(defaultPage)
                                     updateDefaultPage(defaultPage + ONE)
-                                }}>Загрузить еще...</a>}
+                                }}>{t('Загрузить еще')}...</a>}
                         </form>
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
-                            label={'Далее'}
+                            label={t('Далее')}
                             disabled={_.isEmpty(filteredProducts)}
                             labelStyle={_.isEmpty(filteredProducts) ? {fontSize: 13, color: '#b3b3b3'} : {fontSize: 13}}
                             className={classes.actionButton}

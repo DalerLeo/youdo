@@ -35,19 +35,19 @@ const enhance = compose(
 
 const tabs = [
     {
-        title: 'Продукция',
+        title: t('Продукция'),
         url: ROUTES.MANUFACTURE_PRODUCT_LIST_URL
     },
     {
-        title: 'Персонал',
+        title: t('Персонал'),
         url: ROUTES.MANUFACTURE_PERSON_LIST_URL
     },
     {
-        title: 'Оборудование',
+        title: t('Оборудование'),
         url: ROUTES.MANUFACTURE_EQUIPMENT_LIST_URL
     },
     {
-        title: 'Активность',
+        title: t('Активность'),
         url: ROUTES.MANUFACTURE_SHIPMENT_LIST_URL
     }
 ]

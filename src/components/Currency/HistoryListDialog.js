@@ -12,6 +12,7 @@ import {Row, Col} from 'react-flexbox-grid'
 import Pagination from '../GridList/GridListNavPagination'
 import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat.js'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -175,7 +176,7 @@ const HistoryListDialog = enhance((props) => {
                 </div>
                 : <div>
                     <div className={classes.titleContent}>
-                        <div>История обновления курса</div>
+                        <div>{t('История обновления курса')}</div>
                         <IconButton onTouchTap={onClose}>
                             <CloseIcon color="#666666"/>
                         </IconButton>
@@ -184,8 +185,8 @@ const HistoryListDialog = enhance((props) => {
                         <div className={classes.tableWrapper}>
                             <Row className="dottedList">
                                 <Col xs={2}>№</Col>
-                                <Col xs={5}>Курс</Col>
-                                <Col xs={5}>Дата</Col>
+                                <Col xs={5}>{t('Курс')}</Col>
+                                <Col xs={5}>{t('Дата')}</Col>
                             </Row>
                             {historyList}
                         </div>

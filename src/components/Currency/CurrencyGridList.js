@@ -24,6 +24,7 @@ import numberFormat from '../../helpers/numberFormat'
 import toBoolean from '../../helpers/toBoolean'
 import SettingSideMenu from '../Settings/SettingsSideMenu'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
+import t from '../../helpers/translate'
 
 const listHeader = [
     {
@@ -36,19 +37,19 @@ const listHeader = [
         sorting: false,
         name: 'name',
         xs: 3,
-        title: 'Валюта'
+        title: t('Валюта')
     },
     {
         sorting: true,
         xs: 4,
         name: 'rate',
-        title: 'Курс'
+        title: t('Курс')
     },
     {
         sorting: true,
         xs: 3,
         name: 'created_date',
-        title: 'Дата обновления'
+        title: t('Дата обновления')
     },
     {
         sorting: false,
@@ -247,7 +248,7 @@ const CurrencyGridList = enhance((props) => {
                     <Col xs={3} onClick={() => { listData.handleCurrencyClick(id) }}>{createdDate}</Col>
                     <Col xs={1} style={{textAlign: 'right'}}>
                         <div className={classes.iconBtn}>
-                            <Tooltip position="bottom" onClick={courseDialog.handleOpenCourseDialog} text="Установить курс">
+                            <Tooltip position="bottom" onClick={courseDialog.handleOpenCourseDialog} text={t('Установить курс')}>
                                 <IconButton
                                     iconStyle={iconStyle.icon}
                                     style={iconStyle.button}
@@ -257,7 +258,7 @@ const CurrencyGridList = enhance((props) => {
                                     <Dollar/>
                                 </IconButton>
                             </Tooltip>
-                            <Tooltip position="bottom" text="Изменить">
+                            <Tooltip position="bottom" text={t('Изменить')}>
                                 <IconButton
                                     iconStyle={iconStyle.icon}
                                     style={iconStyle.button}
@@ -269,7 +270,7 @@ const CurrencyGridList = enhance((props) => {
                                     <Edit/>
                                 </IconButton>
                             </Tooltip>
-                            <Tooltip position="bottom" text="Удалить">
+                            <Tooltip position="bottom" text={t('Удалить')}>
                                 <IconButton
                                     disableTouchRipple={true}
                                     iconStyle={iconStyle.icon}
@@ -303,7 +304,7 @@ const CurrencyGridList = enhance((props) => {
         loading: _.get(listData, 'listLoading')
     }
     const currentDetail = _.find(_.get(listData, 'data'), {'id': _.toInteger(detailId)})
-    const confirmMessage = 'Валюта: ' + _.get(currentDetail, 'name')
+    const confirmMessage = t('Валюта') + ': ' + _.get(currentDetail, 'name')
     const listLoading = _.get(listData, 'listLoading')
     const detail = <span></span>
 
@@ -313,7 +314,7 @@ const CurrencyGridList = enhance((props) => {
                 backgroundColor="#fff"
                 labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb', fontSize: '13px'}}
                 className={classes.addButton}
-                label="добавить валюту"
+                label={t('добавить валюту')}
                 onTouchTap={createDialog.handleOpenCreateDialog}
                 icon={<ContentAdd color="#12aaeb"/>}>
             </FlatButton>
@@ -327,9 +328,9 @@ const CurrencyGridList = enhance((props) => {
                 <div className={classes.rightPanel}>
                     <div>
                         <div className={classes.editContent}>
-                            <div className={classes.semibold}>Основная валюта: <b>&nbsp;{currentCurrency}</b><i
+                            <div className={classes.semibold}>{t('Основная валюта')}: <b>&nbsp;{currentCurrency}</b><i
                                 style={{fontWeight: '400', color: '#999'}}>
-                                &nbsp;(используется при формировании стоимости продукта / заказа)</i>
+                                &nbsp;({t('используется при формировании стоимости продукта / заказа')}</i>
                             </div>
                         </div>
                     </div>

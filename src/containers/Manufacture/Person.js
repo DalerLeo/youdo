@@ -25,6 +25,7 @@ import {
 } from '../../actions/userShift'
 import {openSnackbarAction} from '../../actions/snackbar'
 import {openErrorAction} from '../../actions/error'
+import t from '../../helpers/translate'
 
 const MINUS_ONE = -1
 const ZERO = 0
@@ -103,7 +104,7 @@ const enhance = compose(
             const manufactureId = _.get(params, 'manufactureId')
             return dispatch(userShiftCreateAction(_.get(staffCreateForm, ['values']), manufactureId))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filterUser.getParams({[OPEN_USER_CREATE_DIALOG]: false})})
@@ -130,7 +131,7 @@ const enhance = compose(
             const personId = _.toNumber(_.get(props, ['location', 'query', 'personId']))
             return dispatch(userShiftUpdateAction(personId, _.get(staffCreateForm, ['values']), manufactureId))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push(filterUser.createURL({[OPEN_USER_UPDATE_DIALOG]: false, 'personId': -1}))
@@ -157,14 +158,14 @@ const enhance = compose(
             const manufactureId = _.toNumber(_.get(params, 'manufactureId'))
             dispatch(userShiftDeleteAction(_.toInteger(personId)))
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
+                    return dispatch(openSnackbarAction({message: t('Ошибка при удалении')}))
                 })
                 .then(() => {
                     hashHistory.push({
                         pathname,
                         query: filterUser.getParams({[OPEN_USER_CONFIRM_DIALOG]: false, 'personId': -1})
                     })
-                    dispatch(openSnackbarAction({message: 'Успешно удалено'}))
+                    dispatch(openSnackbarAction({message: t('Успешно удалено')}))
                     return dispatch(userShiftListFetchAction(filterUser, manufactureId))
                 })
         },

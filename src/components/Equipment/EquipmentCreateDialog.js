@@ -12,6 +12,7 @@ import {TextField, ManufactureSearchField, ImageUploadField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
+import  t from '../../helpers/translate'
 
 export const EQUIPMENT_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -73,7 +74,7 @@ const EquipmentCreateDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>{isUpdate ? 'Изменить оборудование' : 'Добавить оборудование'}</span>
+                <span>{isUpdate ? t('Изменить оборудование') : t('Добавить оборудование')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -89,7 +90,7 @@ const EquipmentCreateDialog = enhance((props) => {
                                 name="name"
                                 component={TextField}
                                 className={classes.inputFieldCustom}
-                                label="Наименование"
+                                label={t('Наименование')}
                                 fullWidth={true}
                             />
                             <Field
@@ -97,7 +98,7 @@ const EquipmentCreateDialog = enhance((props) => {
                                 component={ManufactureSearchField}
                                 isUpdate={true}
                                 className={classes.inputFieldCustom}
-                                label="Производство"
+                                label={t('Производство')}
                                 fullWidth={true}
                             />
                         </div>
@@ -106,14 +107,14 @@ const EquipmentCreateDialog = enhance((props) => {
                                 name="image"
                                 className={classes.imageUpload}
                                 component={ImageUploadField}
-                                label="Изображения"
+                                label={t('Изображения')}
                                 fullWidth={true}
                             />
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
-                            label="Сохранить"
+                            label={t('Сохранить')}
                             className={classes.actionButton}
                             labelStyle={{fontSize: '13px'}}
                             primary={true}

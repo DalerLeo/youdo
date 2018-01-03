@@ -22,6 +22,7 @@ import {
     notificationRemoveUserAction
 } from '../../actions/notificationTemplate'
 import {openSnackbarAction} from '../../actions/snackbar'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     connect((state, props) => {
@@ -75,7 +76,7 @@ const enhance = compose(
 
             return dispatch(notificationTemplateUpdateAction(notificationTemplateId, _.get(updateForm, ['values']), detail))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push(filter.createURL({[NOTIFICATION_UPDATE_DIALOG_OPEN]: false}))
@@ -87,7 +88,7 @@ const enhance = compose(
 
             return dispatch(notificationTemplateChangeStatusAction(_.get(item, 'id'), item))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push(filter.createURL({[NOTIFICATION_UPDATE_DIALOG_OPEN]: false}))
@@ -115,7 +116,7 @@ const enhance = compose(
 
             return dispatch(notificationAddUserAction(item, _.get(userForm, ['values'])))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push(filter.createURL({[NOTIFICATION_ADD_USER_OPEN]: false}))
@@ -143,7 +144,7 @@ const enhance = compose(
 
             return dispatch(notificationRemoveUserAction(id, user))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push(filter.createURL({[NOTIFICATION_CONFIRM_USER_OPEN]: false}))

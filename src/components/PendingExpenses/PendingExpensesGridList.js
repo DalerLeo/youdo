@@ -14,57 +14,57 @@ import {compose} from 'recompose'
 import AddPayment from 'material-ui/svg-icons/av/playlist-add-check'
 import numberFormat from '../../helpers/numberFormat'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
-
+import t from '../../helpers/translate'
 const listHeader = [
     {
         sorting: true,
         name: 'supply',
-        title: '№ поставки',
+        title: '№ ' + t('поставки'),
         xs: 1
     },
     {
         sorting: false,
         name: 'provider',
-        title: 'Поставщик',
+        title: t('Поставщик'),
         xs: 2
     },
     {
         sorting: false,
         name: 'comment',
-        title: 'Описание',
+        title: t('Описание'),
         xs: 2
     },
     {
         sorting: false,
         name: 'type',
-        title: 'Тип',
+        title: t('Тип'),
         xs: 1
     },
     {
         sorting: false,
         name: 'type',
-        title: 'Тип оплаты',
+        title: t('Тип оплаты'),
         xs: 1
     },
     {
         sorting: false,
         name: 'createdDate',
         alignRight: true,
-        title: 'Дата',
+        title: t('Дата'),
         xs: 2
     },
     {
         sorting: true,
         name: 'amount',
         alignRight: true,
-        title: 'Сумма',
+        title: t('Сумма'),
         xs: 1
     },
     {
         sorting: true,
         name: 'balance',
         alignRight: true,
-        title: 'Остаток',
+        title: t('Остаток'),
         xs: 1
     },
     {
@@ -127,8 +127,8 @@ const PendingExpensesGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const supplyNo = _.get(item, 'supplyId')
         const provider = _.get(item, ['provider', 'name'])
-        const paymentType = _.get(item, 'paymentType') === 'cash' ? 'Наличный' : 'Банковский счет'
-        const type = _.get(item, 'type') === 'supply' ? 'Поставка' : 'Доп. расход'
+        const paymentType = _.get(item, 'paymentType') === 'cash' ? t('Наличный') : t('Банковский счет')
+        const type = _.get(item, 'type') === 'supply' ? t('Поставка') : t('Доп. расход')
         const comment = _.get(item, 'comment')
         const createdDate = dateTimeFormat(_.get(item, 'createdDate'), true)
         const currency = _.get(item, ['currency', 'name'])

@@ -11,6 +11,7 @@ import toCamelCase from '../../helpers/toCamelCase'
 import {TextField, MarketTypeParentSearchField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
+import t from '../../helpers/translate'
 
 export const MARKET_TYPE_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -132,7 +133,7 @@ const MarketTypeCreateDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto', overflowY: 'unset'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>{isUpdate ? 'Изменить тип магазина' : 'Добавить тип магазина'}</span>
+                <span>{isUpdate ? t('Изменить тип магазина') : t('Добавить тип магазина')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -149,21 +150,21 @@ const MarketTypeCreateDialog = enhance((props) => {
                                 name="parent"
                                 component={MarketTypeParentSearchField}
                                 className={classes.inputFieldCustom}
-                                label="Радительская категория"
+                                label={t('Радительская категория')}
                                 fullWidth={true}
                             />
                             <Field
                                 name="name"
                                 component={TextField}
                                 className={classes.inputFieldCustom}
-                                label="Наименование"
+                                label={t('Наименование')}
                                 fullWidth={true}
                             />
                         </div>
                     </div>}
                     <div className={classes.bottomButton}>
                         <FlatButton
-                            label="Сохранить"
+                            label={t('Сохранить')}
                             className={classes.actionButton}
                             labelStyle={{fontSize: '13px'}}
                             primary={true}

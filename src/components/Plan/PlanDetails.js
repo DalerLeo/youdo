@@ -15,6 +15,8 @@ import Payments from 'material-ui/svg-icons/editor/monetization-on'
 import Delivery from 'material-ui/svg-icons/maps/local-shipping'
 import Money from 'material-ui/svg-icons/editor/attach-money'
 import Checked from 'material-ui/svg-icons/toggle/check-box'
+import t from '../../helpers/translate'
+
 // Uncomment it when needed ... import Indeterminate from 'material-ui/svg-icons/toggle/indeterminate-check-box'
 // Uncomment it when needed ... import CheckOutline from 'material-ui/svg-icons/toggle/check-box-outline-blank'
 import Agent from '../Images/agent.png'
@@ -520,7 +522,7 @@ const PlanDetails = enhance((props) => {
     const planAmount = _.sumBy(_.get(monthlyPlan, 'monthlyPlanItem'), (item) => {
         return _.toNumber(_.get(item, 'amount'))
     })
-    const agentHoverText = position + '<br> Наименование зоны'
+    const agentHoverText = position + '<br> ' + t('Наименование зоны')
     const monthlyPlanTooltip = _.join(_.map(_.get(monthlyPlan, 'monthlyPlanItem'), (item) => {
         const division = _.get(item, ['division', 'name'])
         const amount = numberFormat(_.get(item, 'amount'), primaryCurrency)
@@ -546,7 +548,7 @@ const PlanDetails = enhance((props) => {
                                     <div>
                                         <Money style={achieveIcon.basic}/>
                                         <div>
-                                            <span>факт. продажи</span>
+                                            <span>{t('факт. продажи')}</span>
                                             <span><big>{numberFormat(factSales)}</big> {primaryCurrency}</span>
                                         </div>
                                     </div>
@@ -554,17 +556,17 @@ const PlanDetails = enhance((props) => {
                                         <div>{null}</div>
                                     </div>
                                     <div>
-                                        <span>план продаж</span>
+                                        <span>{t('план продаж')}</span>
                                         {planAmount > ZERO
                                             ? <Tooltip position="bottom" text={monthlyPlanTooltip}>
                                                 <a className={classes.link} onClick={planSalesDialog.handleOpenPlanSales}><big>{numberFormat(planAmount)}</big> {primaryCurrency}</a>
                                             </Tooltip>
-                                            : <a className={classes.link} onClick={planSalesDialog.handleOpenPlanSales}>добавить</a>
+                                            : <a className={classes.link} onClick={planSalesDialog.handleOpenPlanSales}>{t('добавить')}</a>
                                         }
                                     </div>
                                 </div>
                                 <div className={classes.info}>
-                                    <span>Данные за</span>
+                                    <span>{t('Данные за')}</span>
                                     <span style={{textTransform: 'capitalize'}}>{monthFormat(selectedMonth)} {selectedYear}г.</span>
                                 </div>
                             </div>
@@ -573,21 +575,21 @@ const PlanDetails = enhance((props) => {
                                     {statOrders && <Tooltip
                                         position="bottom"
                                         text={
-                                            'нал: ' + numberFormat(ordersCash, primaryCurrency) +
-                                            '<br>пер: ' + numberFormat(ordersBank, primaryCurrency)}>
+                                            t('нал') + ': ' + numberFormat(ordersCash, primaryCurrency) +
+                                            '<br>' + t('пер') + ': ' + numberFormat(ordersBank, primaryCurrency)}>
                                         <Deals style={achieveIcon.basic}/>
                                         <div>
                                             <span>{numberFormat(ordersCash + ordersBank)} <small>{primaryCurrency}</small></span>
-                                            <span>сделки</span>
+                                            <span>{t('сделки')}</span>
                                         </div>
                                     </Tooltip>}
                                     {statPayments && <Tooltip position="bottom" text={
-                                        'нал: ' + numberFormat(paymentsCash, primaryCurrency) +
-                                        '<br>пер: ' + numberFormat(paymentsBank, primaryCurrency)}>
+                                        t('нал') + ': ' + numberFormat(paymentsCash, primaryCurrency) +
+                                        '<br>' + t('пер') + ': ' + numberFormat(paymentsBank, primaryCurrency)}>
                                         <Payments style={achieveIcon.basic}/>
                                         <div>
                                             <span>{numberFormat(paymentsCash + paymentsBank)} <small>{primaryCurrency}</small></span>
-                                            <span>оплаты</span>
+                                            <span>{t('оплаты')}</span>
                                         </div>
                                     </Tooltip>}
                                 </div>
@@ -596,28 +598,28 @@ const PlanDetails = enhance((props) => {
                                         <Visits style={achieveIcon.basic}/>
                                         <div>
                                             <span>{visitsCount} / {visitsPlan}</span>
-                                            <span>посещено</span>
+                                            <span>{t('посещено')}</span>
                                         </div>
                                     </div>}
                                     {statReports && <div>
                                         <Reports style={achieveIcon.basic}/>
                                         <div>
                                             <span>{reportsCount} / 3</span>
-                                            <span>отчеты</span>
+                                            <span>{t('отчеты')}</span>
                                         </div>
                                     </div>}
                                     {statDeliveries && <div>
                                         <Delivery style={achieveIcon.basic}/>
                                         <div>
                                             <span>{deliveryCount} / {deliveryPlan}</span>
-                                            <span>доставки</span>
+                                            <span>{t('доставки')}</span>
                                         </div>
                                     </div>}
                                     {statReturns && <div>
                                         <Returns style={achieveIcon.basic}/>
                                         <div>
                                             <span>{returnsCount}</span>
-                                            <span>возвраты</span>
+                                            <span>{t('возвраты')}</span>
                                         </div>
                                     </div>}
                                 </div>
@@ -670,7 +672,7 @@ const PlanDetails = enhance((props) => {
                                                             ? <ul>
                                                                 {tasks}
                                                             </ul>
-                                                            : <div>Пока не выполнено заданий</div>}
+                                                            : <div>{t('Пока не выполнено заданий')}</div>}
                                                         {hasPlanTasks && <span className={classes.date}>{time}</span>}
                                                     </Paper>
                                                 </div>
@@ -679,14 +681,14 @@ const PlanDetails = enhance((props) => {
                                     </div>
                                 </div>
                                 : <div className={classes.emptyQuery}>
-                                    <div>Для выбранного агента в эту дату не найдено планов</div>
+                                    <div>{t('Для выбранного агента в эту дату не найдено планов')}</div>
                                 </div>}
                     </div>
                 </div>
                 : <div className={classes.noAgent}>
                     <div>
                         <img src={Agent} alt=""/>
-                        <span>Для отображения статистики <br/> выберите агента</span>
+                        <span>{t('Для отображения статистики')} <br/> {t('выберите агента')}</span>
                     </div>
                 </div>}
         </div>

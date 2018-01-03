@@ -12,6 +12,7 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import JoinShopListField from '../ReduxForm/Join/JoinShopListField'
 import JoinClientListField from '../ReduxForm/Join/JoinClientListField'
 import toCamelCase from '../../helpers/toCamelCase'
+import t from '../../helpers/translate'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -170,7 +171,7 @@ const JoinDialog = enhance((props) => {
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>{isClient ? 'Объединение клиентов' : 'Объединение магазинов'}</span>
+                <span>{isClient ? t('Объединение клиентов') : t('Объединение магазинов')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -182,16 +183,16 @@ const JoinDialog = enhance((props) => {
                 <form onSubmit={onSubmit} scrolling="auto" className={classes.form}>
                     {openConfirm && <div className={classes.confirm}>
                         <div className={classes.confirmButtons}>
-                            <div>Вы уверены?</div>
+                            <div>{t('Вы уверены')}?</div>
                             <FlatButton
-                                label="Нет"
+                                label={t('Нет')}
                                 labelStyle={flatButton.label}
                                 onTouchTap={() => { setOpenConfirm(false) }}
                                 className={classes.actionButton}
                                 primary={true}
                             />
                             <FlatButton
-                                label="Да"
+                                label={t('Да')}
                                 labelStyle={flatButton.label}
                                 className={classes.actionButton}
                                 primary={true}
@@ -214,7 +215,7 @@ const JoinDialog = enhance((props) => {
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
-                            label="Объединить"
+                            label={t('Объединить')}
                             onTouchTap={() => { setOpenConfirm(true) }}
                             className={classes.actionButton}
                             primary={true}

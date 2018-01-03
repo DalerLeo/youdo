@@ -13,6 +13,7 @@ import {ExpensiveCategorySearchField, CashboxTypeSearchField, TextField, normali
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
+import t from '../../helpers/translate'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -93,7 +94,7 @@ const PendingExpensesCreateDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>Расход</span>
+                <span>{t('Расход')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -107,16 +108,16 @@ const PendingExpensesCreateDialog = enhance((props) => {
                         <div className={classes.field}>
                             <div className={classes.info}>
                                 <div className={classes.infoHeader}>
-                                    <div>Поставщик: {supplier}</div>
-                                    <div>Поставка №: {supplyId}</div>
-                                    <div>Тип: {type === 'supply' ? 'Поставка' : 'Доп. расход'}</div>
+                                    <div>{t('Поставщик')}: {supplier}</div>
+                                    <div>{t('Поставка')} №: {supplyId}</div>
+                                    <div>{t('Тип')}: {type === 'supply' ? t('Поставка') : t('Доп. расход')}</div>
                                 </div>
                                 <div className={classes.infoSummary}>
-                                    <div><strong style={{marginRight: '10px'}}>Сумма расхода:</strong>
+                                    <div><strong style={{marginRight: '10px'}}>{t('Сумма расхода')}:</strong>
                                         <span>{numberFormat(summary, currencyName)}</span></div>
-                                    <div><strong style={{marginRight: '10px'}}>Остаток:</strong>
+                                    <div><strong style={{marginRight: '10px'}}>{t('Остаток')}:</strong>
                                         <span>{numberFormat(itemBalance, currencyName)}</span></div>
-                                    <div><strong style={{marginRight: '10px'}}>Описание:</strong> <span>{comment}</span>
+                                    <div><strong style={{marginRight: '10px'}}>{t('Описание')}:</strong> <span>{comment}</span>
                                     </div>
                                 </div>
                             </div>
@@ -124,7 +125,7 @@ const PendingExpensesCreateDialog = enhance((props) => {
                                 <Field
                                     name="categoryId"
                                     component={ExpensiveCategorySearchField}
-                                    label="Категория расхода"
+                                    label={t('Категория расхода')}
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
                                 <Field
@@ -132,28 +133,28 @@ const PendingExpensesCreateDialog = enhance((props) => {
                                     className={classes.inputFieldCustom}
                                     component={CashboxTypeSearchField}
                                     cashbox={cashbox}
-                                    label="Касса получатель"/>
+                                    label={t('Касса получатель')}/>
                                 <div style={{display: 'flex'}}>
                                     <Field
                                         name="amount"
                                         className={classes.inputFieldCustom}
                                         normalize={normalizeNumber}
                                         component={TextField}
-                                        label="Cумма"/>
+                                        label={t('Cумма')}/>
                                     <span style={{alignSelf: 'center'}}> {currencyName}</span>
                                 </div>
                                 <Field
                                     name="comment"
                                     className={classes.inputFieldCustom}
                                     component={TextField}
-                                    label="Комментарий"
+                                    label={t('Комментарий')}
                                     fullWidth={true}/>
                             </div>
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
-                            label="Сохранить"
+                            label={t('Сохранить')}
                             className={classes.actionButton}
                             labelStyle={{fontSize: '13px'}}
                             primary={true}

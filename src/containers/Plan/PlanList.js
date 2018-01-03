@@ -41,6 +41,7 @@ import {
 } from '../../actions/plan'
 import {divisionListFetchAction} from '../../actions/division'
 import {openSnackbarAction} from '../../actions/snackbar'
+import t from '../../helpers/translate'
 
 const ZERO = 0
 const ONE = 1
@@ -357,7 +358,7 @@ const enhance = compose(
 
             return dispatch(planCreateAction(createForm, filter.getParams()))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'План успешно составлен'}))
+                    return dispatch(openSnackbarAction({message: t('План успешно составлен')}))
                 })
                 .then(() => {
                     if (defaultPriority === HUNDRED) {
@@ -417,7 +418,7 @@ const enhance = compose(
                 ? dispatch(planComboAction(createForm, filter.getParams(), comboPlanId))
                 : dispatch(planCreateAction(createForm, filter.getParams(), comboChosenAgent)))
                     .then(() => {
-                        return dispatch(openSnackbarAction({message: 'План успешно изменен'}))
+                        return dispatch(openSnackbarAction({message: t('План успешно изменен')}))
                     })
                     .then(() => {
                         dispatch(change('PlanCreateForm', 'weekday', null))
@@ -463,7 +464,7 @@ const enhance = compose(
 
             return dispatch(planMonthlySetAction(monthlyPlanForm, filter, user))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно обновлено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно обновлено')}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[OPEN_PLAN_SALES]: false})})
