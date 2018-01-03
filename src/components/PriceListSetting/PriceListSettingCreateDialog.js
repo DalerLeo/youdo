@@ -12,6 +12,7 @@ import {TextField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
+import t from '../../helpers/translate'
 
 export const PRICE_LIST_SETTING_CREATE_DIALOG_OPEN = 'openCreateDialog'
 

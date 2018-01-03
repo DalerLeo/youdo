@@ -34,7 +34,6 @@ import {priceListSettingGetAllAction} from '../../actions/priceListSetting'
 import {openErrorAction} from '../../actions/error'
 import {openSnackbarAction} from '../../actions/snackbar'
 import t from '../../helpers/translate'
-import t from '../../helpers/translate'
 
 const ZERO = 0
 const USD = 3
