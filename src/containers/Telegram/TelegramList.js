@@ -19,7 +19,8 @@ import {
     TelegramGridList,
     TELEGRAM_FILTER_OPEN,
     TELEGRAM_FILTER_KEY,
-    TELEGRAM_LOGS_DIALOG_OPEN
+    TELEGRAM_LOGS_DIALOG_OPEN,
+    TELEGRAM_DEACTIVATE_ID
 } from '../../components/Telegram'
 import {
     telegramCreateAction,
@@ -64,7 +65,8 @@ const enhance = compose(
     }),
     withPropsOnChange((props, nextProps) => {
         const except = {
-            openLogsDialog: null
+            openLogsDialog: null,
+            deactivateID: null
         }
         return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
@@ -109,25 +111,29 @@ const enhance = compose(
             const {setOpenLinkDialog} = props
             setOpenLinkDialog(false)
         },
-        handleOpenConfirmDialog: props => () => {
-            const {setOpenLinkDialog} = props
-            setOpenLinkDialog(true)
+        handleOpenConfirmDialog: props => (id) => {
+            const {location: {pathname}, filter, setOpenConfirmDialog} = props
+            hashHistory.push({pathname, query: filter.getParams({[TELEGRAM_DEACTIVATE_ID]: id})})
+            setOpenConfirmDialog(true)
         },
 
         handleCloseConfirmDialog: props => () => {
-            const {setOpenConfirmDialog} = props
+            const {location: {pathname}, filter, setOpenConfirmDialog} = props
+            hashHistory.push({pathname, query: filter.getParams({[TELEGRAM_DEACTIVATE_ID]: null})})
             setOpenConfirmDialog(false)
         },
         handleSendConfirmDialog: props => () => {
-            const {dispatch, detail, setOpenConfirmDialog, filter} = props
-            dispatch(telegramDeleteAction(detail.id))
+            const {location: {pathname}, dispatch, params, setOpenConfirmDialog, filter} = props
+            const detailID = _.toInteger(_.get(params, 'telegramId'))
+            dispatch(telegramDeleteAction(detailID))
                 .then(() => {
                     setOpenConfirmDialog(false)
+                    hashHistory.push({pathname, query: filter.getParams({[TELEGRAM_DEACTIVATE_ID]: null})})
                     dispatch(telegramListFetchAction(filter))
-                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
+                    return dispatch(openSnackbarAction({message: 'Успешно деактивирован'}))
                 })
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
+                    return dispatch(openSnackbarAction({message: 'Ошибка при деактивации'}))
                 })
         },
 
