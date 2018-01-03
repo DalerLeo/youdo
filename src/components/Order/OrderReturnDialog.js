@@ -191,6 +191,7 @@ const enhance = compose(
 const OrderReturnDialog = enhance((props) => {
     const {open, loading, handleSubmit, onClose, classes, orderData, isUpdate} = props
     const returnId = _.get(orderData, 'id')
+    const currency = _.get(orderData, ['currency', 'name'])
 
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     return (
@@ -243,7 +244,7 @@ const OrderReturnDialog = enhance((props) => {
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
-                        <div className={classes.summary}>Общая сумма возврата: <OrderReturnTotalSum/></div>
+                        <div className={classes.summary}>Общая сумма возврата: <OrderReturnTotalSum currency={currency}/></div>
                         <FlatButton
                             label={isUpdate ? t('Изменить') : t('Возврат')}
                             className={classes.actionButton}

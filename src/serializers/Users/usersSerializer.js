@@ -23,9 +23,9 @@ export const createSerializer = (data) => {
         return _.get(item, 'id')
     })
 
-    const newStock = _.map(stocks, (val) => {
+    const newStock = _.filter(_.map(stocks, (val) => {
         return val.id
-    })
+    }), item => !_.isNil(item))
 
     const markets = _.filter(_.get(data, ['types']), (o) => {
         return _.get(o, 'selected')

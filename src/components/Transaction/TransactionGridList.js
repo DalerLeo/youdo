@@ -37,7 +37,7 @@ const enhance = compose(
         },
         list: {
             borderBottom: '1px solid #efefef',
-            padding: '20px 15px 15px 30px',
+            padding: '15px 20px 15px 30px',
             margin: '0',
             cursor: 'pointer',
             position: 'relative'
@@ -173,7 +173,7 @@ const TransactionGridList = enhance((props) => {
             <div key={id} className={classes.list} onClick={() => {
                 cashboxData.handleClickCashbox(id)
             }}
-                 style={isActive ? {backgroundColor: '#ffffff'} : {backgroundColor: '#f2f5f8'}}>
+                 style={isActive ? {backgroundColor: '#f2f5f8'} : {backgroundColor: '#fff'}}>
                 <div>
                     <div className={classes.title}>{name}</div>
                     <div className={classes.icons}>
@@ -205,7 +205,7 @@ const TransactionGridList = enhance((props) => {
                                  onClick={() => {
                                      cashboxData.handleClickCashbox(AllCashboxId)
                                  }}
-                                 style={_.get(cashboxData, 'cashboxId') === AllCashboxId ? {backgroundColor: '#ffffff'} : {backgroundColor: '#f2f5f8'}}>
+                                 style={_.get(cashboxData, 'cashboxId') === AllCashboxId ? {backgroundColor: '#f2f5f8'} : {backgroundColor: '#fff'}}>
                                 <div className={classes.title}>
                                     Общий объем
                                     <span>во всех кассах</span>

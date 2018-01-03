@@ -30,11 +30,9 @@ const enhance = compose(
         },
         popUp: {
             color: '#333 !important',
-            overflowY: 'hidden !important',
             fontSize: '13px !important',
             position: 'relative',
             padding: '0 !important',
-            overflowX: 'hidden',
             height: '100%',
             marginBottom: '64px'
         },

@@ -171,6 +171,9 @@ const enhance = compose(
                 color: '#12aaeb'
             }
         },
+        rightFlex: {
+            justifyContent: 'flex-end'
+        },
         openDetails: {
             position: 'absolute',
             top: '0',
@@ -226,7 +229,7 @@ const TelegramGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const token = _.get(item, 'token')
         const fullName = _.get(item, 'lastName')
-            ? <a>{_.get(item, 'firstName') + ' ' + _.get(item, 'lastName')}</a>
+            ? <a onClick={() => logsDialog.handleOpenLogsDialog(id)}>{_.get(item, 'firstName') + ' ' + _.get(item, 'lastName')}</a>
             : 'Неизвестно'
         const username = _.get(item, 'username') ? '@' + _.get(item, 'username') : ''
         const createdBy = _.get(item, ['createdBy', 'firstName']) + ' ' + _.get(item, ['createdBy', 'secondName']) || ''
@@ -235,7 +238,6 @@ const TelegramGridList = enhance((props) => {
         const market = _.get(item, ['market', 'name']) || 'Неизвестно'
         return (
             <Row key={id} className={classes.listRow}>
-                <div className={classes.openDetails} onClick={() => logsDialog.handleOpenLogsDialog(id)}> </div>
                 <Col xs={3}>{market}</Col>
                 <Col xs={3}><div style={{fontWeight: '600'}}>{createdBy}</div><div>{createdDate}</div></Col>
                 <Col xs={3}>
@@ -253,14 +255,18 @@ const TelegramGridList = enhance((props) => {
                     </Tooltip>}
                 </Col>
                 <Col xs={1}>
-                    <Tooltip position="left" text="Деактивировать">
-                        <IconButton
-                            iconStyle={iconStyle.icon}
-                            style={iconStyle.button}
-                            touch={true}>
-                            <Cancel color='#ff584b'/>
-                        </IconButton>
-                    </Tooltip>
+                    {activatedDate &&
+                    <div className={classes.flex + ' ' + classes.rightFlex}>
+                        <Tooltip position="left" text="Деактивировать">
+                            <IconButton
+                                onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
+                                iconStyle={iconStyle.icon}
+                                style={iconStyle.button}
+                                touch={true}>
+                                <Cancel color='#ff584b'/>
+                            </IconButton>
+                        </Tooltip>
+                    </div>}
                 </Col>
             </Row>
         )
@@ -291,6 +297,7 @@ const TelegramGridList = enhance((props) => {
                 list={list}
                 detail={telegramDetail}
                 filterDialog={telegramFilterDialog}
+                hoverableList={false}
             />
 
             <TelegramCreateDialog
@@ -325,13 +332,13 @@ const TelegramGridList = enhance((props) => {
                 loading={logsDialog.logsLoading}
 
             />
-            {detailData.data && <ConfirmDialog
-                type="delete"
+            <ConfirmDialog
+                type="submit"
                 message={_.get(detailData, ['data', 'name'])}
                 onClose={confirmDialog.handleCloseConfirmDialog}
                 onSubmit={confirmDialog.handleSendConfirmDialog}
                 open={confirmDialog.openConfirmDialog}
-            />}
+            />
         </Container>
     )
 })

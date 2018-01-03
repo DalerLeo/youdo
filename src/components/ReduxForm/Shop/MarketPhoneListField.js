@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React from 'react'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
@@ -91,10 +92,10 @@ const MarketPhoneListField = (props) => {
     }
     return (
         <div>
-            {fields.map((phone, index) => {
+            {_.reverse(fields).map((phone, index) => {
                 return (
-                    <div className={classes.contactBlock}>
-                        <div key={index}>
+                    <div key={index} className={classes.contactBlock}>
+                        <div>
                             <div className={classes.flex}>
                                 <Field
                                     label="Телефон номер"
@@ -112,7 +113,6 @@ const MarketPhoneListField = (props) => {
                                 {fields.length !== index + ONE ? <ContentRemove/> : <ContentAdd />}
                             </IconButton>
                         </Tooltip>
-
                     </div>
                 )
             })}

@@ -23,14 +23,8 @@ import Dot from '../Images/dot.png'
 const listHeader = [
     {
         sorting: true,
-        name: 'id',
-        xs: 2,
-        title: 'Id'
-    },
-    {
-        sorting: true,
         name: 'name',
-        xs: 5,
+        xs: 6,
         title: 'Наименование'
     },
     {
@@ -41,7 +35,7 @@ const listHeader = [
     },
     {
         sorting: true,
-        xs: 1,
+        xs: 2,
         name: 'actions',
         title: ''
     }
@@ -107,6 +101,7 @@ const enhance = compose(
         },
         iconBtn: {
             display: 'flex',
+            justifyContent: 'flex-end',
             opacity: '0',
             transition: 'all 200ms ease-out'
         },
@@ -221,10 +216,9 @@ const MarketTypeGridList = enhance((props) => {
             return (
                 <Row key={id} className={classes.rowWithParent}>
                     <div className={classes.parentCategory}>
-                        <Col xs={2}>{id}</Col>
-                        <Col xs={5}>{name}</Col>
+                        <Col xs={6}>{name}</Col>
                         <Col xs={4}>{createdDate}</Col>
-                        <Col xs={1} className={classes.right}>
+                        <Col xs={2} className={classes.right}>
                             <div className={classes.iconBtn}>
                                 <Tooltip position="bottom" text="Изменить">
                                     <IconButton
@@ -255,10 +249,9 @@ const MarketTypeGridList = enhance((props) => {
                         const childCreatedDate = dateFormat(_.get(child, 'createdDate'))
                         return (
                             <div key={childId} className={classes.subCategory}>
-                                <Col xs={2}>{childId}</Col>
-                                <Col xs={5}>{childName}</Col>
+                                <Col xs={6}>{childName}</Col>
                                 <Col xs={4}>{childCreatedDate}</Col>
-                                <Col xs={1} className={classes.right}>
+                                <Col xs={2} className={classes.right}>
                                     <div className={classes.iconBtn}>
                                         <Tooltip position="bottom" text="Изменить">
                                             <IconButton
@@ -290,10 +283,9 @@ const MarketTypeGridList = enhance((props) => {
         }
         return (
             <Row key={id} className={classes.rowWithoutParent}>
-                <Col xs={2}>{id}</Col>
-                <Col xs={5}>{name}</Col>
+                <Col xs={6}>{name}</Col>
                 <Col xs={4}>{createdDate}</Col>
-                <Col xs={1} className={classes.right}>
+                <Col xs={2} className={classes.right}>
                     <div className={classes.iconBtn}>
                         <Tooltip position="bottom" text="Изменить">
                             <IconButton
