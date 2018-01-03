@@ -37,7 +37,7 @@ const enhance = compose(
         },
         list: {
             borderBottom: '1px solid #efefef',
-            padding: '20px 15px 15px 30px',
+            padding: '15px 20px 15px 30px',
             margin: '0',
             cursor: 'pointer',
             position: 'relative'
