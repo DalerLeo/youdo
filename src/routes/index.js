@@ -67,8 +67,6 @@ import {
     StatDebtorsList,
     StatProviderList
 } from '../containers/Statistics'
-import {TelegramList} from '../containers/Telegram'
-
 import {ClientBalanceList} from '../containers/ClientBalance'
 import {StockReceiveHistoryList, StockReceiveList, StockTransferList, StockTransferHistoryList, StockOutHistoryList} from '../containers/StockReceive'
 import {PlanList} from '../containers/Plan'
@@ -78,6 +76,8 @@ import {JoinList} from '../containers/Join'
 import {PermissionList} from '../containers/Permission'
 import {NotificationTemplateList} from '../containers/NotificationTemplate'
 import {PriceListSetting} from '../containers/PriceListSetting'
+import {TelegramList} from '../containers/Telegram'
+import {TelegramNewsList} from '../containers/TelegramNews'
 
 const userIsAdminChain = compose(userIsAuth, visibleOnlyAdmin)
 
@@ -844,7 +844,7 @@ export default {
                 }
             ]
         },
-        // Telegram
+        // Telegram Users
         {
             path: ROUTES.TELEGRAM_LIST_URL,
             component: userIsAdminChain(TelegramList),
@@ -852,6 +852,17 @@ export default {
                 {
                     path: ROUTES.TELEGRAM_ITEM_URL,
                     component: userIsAuth(TelegramList)
+                }
+            ]
+        },
+        // Telegram Users
+        {
+            path: ROUTES.TELEGRAM_NEWS_LIST_URL,
+            component: userIsAdminChain(TelegramNewsList),
+            childRoutes: [
+                {
+                    path: ROUTES.TELEGRAM_NEWS_ITEM_URL,
+                    component: userIsAuth(TelegramNewsList)
                 }
             ]
         },

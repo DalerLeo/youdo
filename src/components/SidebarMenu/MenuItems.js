@@ -11,6 +11,7 @@ import Markets from 'material-ui/svg-icons/action/store'
 import Clients from 'material-ui/svg-icons/social/group'
 import Supply from 'material-ui/svg-icons/action/swap-horiz'
 import Products from 'material-ui/svg-icons/device/widgets'
+import Telegram from '../CustomIcons/Telegram'
 import {getPageSize} from '../../helpers/storage'
 
 const NOT_FOUND = -1
@@ -54,8 +55,7 @@ export const MenuItems = [
         dynamic: true,
         childs: [
             {name: 'Магазины', url: ROUTES.SHOP_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_shops', icon: (<Markets/>)},
-            {name: 'Клиенты', url: ROUTES.CLIENT_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_clients', icon: (<Clients/>)},
-            {name: 'Телеграм', url: ROUTES.TELEGRAM_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_clients', icon: (<Clients/>)}
+            {name: 'Клиенты', url: ROUTES.CLIENT_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_clients', icon: (<Clients/>)}
         ]
     },
     {
@@ -159,6 +159,15 @@ export const MenuItems = [
             {section: STATS_STOCK, name: 'Движение товаров', url: ROUTES.STATISTICS_PRODUCT_MOVE_URL, permission: 'frontend_stat_product_move', query: {pageSize: 25}},
             // -------------------------------------------------------------------------------------------------- //
             {section: STATS_OVERALL, name: 'Генеральный отчет', url: ROUTES.STATISTICS_REPORT_URL, permission: 'frontend_stat_report'}
+        ]
+    },
+    {
+        name: 'Телеграм',
+        icon: (<Telegram/>),
+        url: ROUTES.TELEGRAM_LIST_URL,
+        childs: [
+            {name: 'Пользователи', url: ROUTES.TELEGRAM_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_telegram_users'},
+            {name: 'Новости', url: ROUTES.TELEGRAM_NEWS_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_telegram_news'}
         ]
     },
     {

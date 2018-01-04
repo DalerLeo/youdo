@@ -48,12 +48,12 @@ export const PRODUCT_LIST_URL = `/${PRODUCT}`
 export const PRODUCT_ITEM_URL = `${PRODUCT_LIST_URL}/:productId`
 export const PRODUCT_ITEM_PATH = `/${PRODUCT}/%d`
 
-export const PRODUCT_TYPE = 'productType'
+export const PRODUCT_TYPE = 'product-type'
 export const PRODUCT_TYPE_LIST_URL = `/${PRODUCT_TYPE}`
 export const PRODUCT_TYPE_ITEM_URL = `${PRODUCT_TYPE_LIST_URL}/:productTypeId`
 export const PRODUCT_TYPE_ITEM_PATH = `/${PRODUCT_TYPE}/%d`
 
-export const PRODUCT_PRICE = 'productPrice'
+export const PRODUCT_PRICE = 'product-price'
 export const PRODUCT_PRICE_LIST_URL = `/${PRODUCT_PRICE}`
 export const PRODUCT_PRICE_ITEM_URL = `${PRODUCT_PRICE_LIST_URL}/:productPriceId`
 export const PRODUCT_PRICE_ITEM_PATH = `/${PRODUCT_PRICE}/%d`
@@ -88,7 +88,7 @@ export const MEASUREMENT_LIST_URL = `/${MEASUREMENT}`
 export const MEASUREMENT_ITEM_URL = `${MEASUREMENT_LIST_URL}/:measurementId`
 export const MEASUREMENT_ITEM_PATH = `${MEASUREMENT}/%d`
 
-export const EXPENSIVE_CATEGORY = 'expensiveCategory'
+export const EXPENSIVE_CATEGORY = 'expensive-category'
 export const EXPENSIVE_CATEGORY_LIST_URL = `/${EXPENSIVE_CATEGORY}`
 export const EXPENSIVE_CATEGORY_ITEM_URL = `${EXPENSIVE_CATEGORY_LIST_URL}/:expensiveCategoryId`
 export const EXPENSIVE_CATEGORY_ITEM_PATH = `${EXPENSIVE_CATEGORY}/%d`
@@ -103,7 +103,7 @@ export const PROVIDER_LIST_URL = `/${PROVIDER}`
 export const PROVIDER_ITEM_URL = `${PROVIDER_LIST_URL}/:providerId`
 export const PROVIDER_ITEM_PATH = `${PROVIDER}/%d`
 
-export const CLIENT_TRANSACTION = 'clientTransaction'
+export const CLIENT_TRANSACTION = 'client-transaction'
 export const CLIENT_TRANSACTION_LIST_URL = `/${CLIENT_TRANSACTION}`
 export const CLIENT_TRANSACTION_ITEM_URL = `${CLIENT_TRANSACTION_LIST_URL}/:transactionId`
 export const CLIENT_TRANSACTION_ITEM_PATH = `${CLIENT_TRANSACTION}/%d`
@@ -146,32 +146,32 @@ export const SHIFT_LIST_URL = `/${SHIFT}`
 export const SHIFT_ITEM_URL = `${SHIFT_LIST_URL}/:shiftId`
 export const SHIFT_ITEM_PATH = `${SHIFT}/%d`
 
-export const PENDING_EXPENSES = 'pendingExpenses'
+export const PENDING_EXPENSES = 'pending-expenses'
 export const PENDING_EXPENSES_LIST_URL = `/${PENDING_EXPENSES}`
 export const PENDING_EXPENSES_ITEM_URL = `${PENDING_EXPENSES_LIST_URL}/:pendingExpensesId`
 export const PENDING_EXPENSES_ITEM_PATH = `${PENDING_EXPENSES}/%d`
 
-export const STATSTOCK = 'stockStat'
+export const STATSTOCK = 'stock-stat'
 export const STATSTOCK_LIST_URL = `/${STATSTOCK}`
 export const STATSTOCK_ITEM_URL = `${STATSTOCK_LIST_URL}/:statStockId`
 export const STATSTOCK_ITEM_PATH = `/${STATSTOCK}/%d`
 
-export const REMAINDER_STOCK = 'stockRemainder'
+export const REMAINDER_STOCK = 'stock-remainder'
 export const REMAINDER_STOCK_LIST_URL = `/${REMAINDER_STOCK}/%d/balances/`
 export const REMAINDER_STOCK_ITEM_URL = `${REMAINDER_STOCK_LIST_URL}/%d/balances/:remainderStockId`
 export const REMAINDER_STOCK_ITEM_PATH = `/${REMAINDER_STOCK}/%d/balances/%d`
 
-export const STAT_MANUFACTURE = 'statManufacture'
+export const STAT_MANUFACTURE = 'stat-manufacture'
 export const STAT_MANUFACTURE_LIST_URL = `/${STAT_MANUFACTURE}`
 export const STAT_MANUFACTURE_ITEM_URL = `${STAT_MANUFACTURE_LIST_URL}/:statManufactureId`
 export const STAT_MANUFACTURE_ITEM_PATH = `/${STAT_MANUFACTURE}/%d`
 
-export const STAT_CASHBOX = 'statCashbox'
+export const STAT_CASHBOX = 'stat-cashbox'
 export const STAT_CASHBOX_LIST_URL = `/${STAT_CASHBOX}`
 export const STAT_CASHBOX_ITEM_URL = `${STAT_CASHBOX_LIST_URL}/:statCashboxId`
 export const STAT_CASHBOX_ITEM_PATH = `/${STAT_CASHBOX}/%d`
 
-export const PENDING_PAYMENTS = 'pendingPayments'
+export const PENDING_PAYMENTS = 'pending-payments'
 export const PENDING_PAYMENTS_LIST_URL = `/${PENDING_PAYMENTS}`
 export const PENDING_PAYMENTS_ITEM_URL = `${PENDING_PAYMENTS_LIST_URL}/:pendingPaymentsId`
 export const PENDING_PAYMENTS_ITEM_PATH = `${PENDING_PAYMENTS}/%d`
@@ -186,12 +186,12 @@ export const TRACKING_LIST_URL = `/${TRACKING}`
 export const TRACKING_ITEM_URL = `${TRACKING_LIST_URL}/:agentId`
 export const TRACKING_ITEM_PATH = `/${TRACKING}/%d`
 
-export const MARKET_TYPE = 'marketType'
+export const MARKET_TYPE = 'market-type'
 export const MARKET_TYPE_LIST_URL = `/${MARKET_TYPE}`
 export const MARKET_TYPE_ITEM_URL = `${MARKET_TYPE_LIST_URL}/:marketTypeId`
 export const MARKET_TYPE_ITEM_PATH = `/${MARKET_TYPE}/%d`
 
-export const PRICE_LIST_SETTING = 'priceListSetting'
+export const PRICE_LIST_SETTING = 'price-list-setting'
 export const PRICE_LIST_SETTING_LIST_URL = `/${PRICE_LIST_SETTING}`
 export const PRICE_LIST_SETTING_ITEM_URL = `${PRICE_LIST_SETTING_LIST_URL}/:priceListSettingId`
 export const PRICE_LIST_SETTING_ITEM_PATH = `${PRICE_LIST_SETTING_LIST_URL}/%d`
@@ -238,10 +238,10 @@ export const STATISTICS_INCOME = 'statistics/income'
 export const STATISTICS_INCOME_URL = `/${STATISTICS_INCOME}`
 export const STATISTICS_OUTCOME = 'statistics/outcome'
 export const STATISTICS_OUTCOME_URL = `/${STATISTICS_OUTCOME}`
-export const STATISTICS_OUTCOME_CATEGORY = 'statistics/outcomeCategory'
+export const STATISTICS_OUTCOME_CATEGORY = 'statistics/outcome-category'
 export const STATISTICS_OUTCOME_CATEGORY_URL = `/${STATISTICS_OUTCOME_CATEGORY}`
 
-export const STATISTICS_EXPENDITURE_ON_STAFF = 'statistics/expenditureOnStaff'
+export const STATISTICS_EXPENDITURE_ON_STAFF = 'statistics/expenditure-on-staff'
 export const STATISTICS_EXPENDITURE_ON_STAFF_URL = `/${STATISTICS_EXPENDITURE_ON_STAFF}`
 
 export const STATISTICS_STOCK_URL = `/${STATISTICS}/stock`
@@ -264,14 +264,14 @@ export const STATISTICS_PROVIDERS_URL = `/${STATISTICS_PROVIDERS}`
 export const STATISTICS_PROVIDERS_ITEM_URL = `/${STATISTICS_PROVIDERS}/:statProviderId`
 export const STATISTICS_PROVIDERS_ITEM_PATH = `/${STATISTICS_PROVIDERS}/%d`
 
-export const STOCK_IN_OUT = 'stockReceives'
+export const STOCK_IN_OUT = 'stock-receives'
 export const STOCK_IN_OUT_LIST_URL = `/${STOCK_IN_OUT}`
 export const STOCK_RECEIVE = `${STOCK_IN_OUT}/receive`
 export const STOCK_RECEIVE_LIST_URL = `/${STOCK_RECEIVE}`
 export const STOCK_RECEIVE_ITEM_URL = `${STOCK_RECEIVE_LIST_URL}/:stockReceiveId`
 export const STOCK_RECEIVE_ITEM_PATH = `/${STOCK_RECEIVE}/%d`
 
-export const STOCK_RECEIVE_HISTORY = `${STOCK_IN_OUT}/receiveHistory`
+export const STOCK_RECEIVE_HISTORY = `${STOCK_IN_OUT}/receive-history`
 export const STOCK_RECEIVE_HISTORY_LIST_URL = `/${STOCK_RECEIVE_HISTORY}`
 export const STOCK_RECEIVE_HISTORY_ITEM_URL = `${STOCK_RECEIVE_HISTORY_LIST_URL}/:stockReceiveHistoryId`
 export const STOCK_RECEIVE_HISTORY_ITEM_PATH = `/${STOCK_RECEIVE_HISTORY}/%d`
@@ -281,17 +281,17 @@ export const STOCK_TRANSFER_LIST_URL = `/${STOCK_TRANSFER}`
 export const STOCK_TRANSFER_ITEM_URL = `${STOCK_TRANSFER_LIST_URL}/:stockTransferId`
 export const STOCK_TRANSFER_ITEM_PATH = `/${STOCK_TRANSFER}/%d`
 
-export const STOCK_TRANSFER_HISTORY = `${STOCK_IN_OUT}/transferHistory`
+export const STOCK_TRANSFER_HISTORY = `${STOCK_IN_OUT}/transfer-history`
 export const STOCK_TRANSFER_HISTORY_LIST_URL = `/${STOCK_TRANSFER_HISTORY}`
 export const STOCK_TRANSFER_HISTORY_ITEM_URL = `${STOCK_TRANSFER_HISTORY_LIST_URL}/:stockTransferHistoryId`
 export const STOCK_TRANSFER_HISTORY_ITEM_PATH = `/${STOCK_TRANSFER_HISTORY}/%d`
 
-export const STOCK_OUT_HISTORY = `${STOCK_IN_OUT}/productMove`
+export const STOCK_OUT_HISTORY = `${STOCK_IN_OUT}/product-move`
 export const STOCK_OUT_HISTORY_LIST_URL = `/${STOCK_OUT_HISTORY}`
 export const STOCK_OUT_HISTORY_ITEM_URL = `${STOCK_OUT_HISTORY_LIST_URL}/:stockOutHistoryId`
 export const STOCK_OUT_HISTORY_ITEM_PATH = `/${STOCK_OUT_HISTORY}/%d`
 
-export const CLIENT_BALANCE = 'clientBalance'
+export const CLIENT_BALANCE = 'client-balance'
 export const CLIENT_BALANCE_LIST_URL = `/${CLIENT_BALANCE}`
 export const CLIENT_BALANCE_ITEM_URL = `${CLIENT_BALANCE_LIST_URL}/:clientBalanceId`
 export const CLIENT_BALANCE_ITEM_PATH = `${CLIENT_BALANCE}/%d`
@@ -311,7 +311,7 @@ export const ACTIVITY_LIST_URL = `${ACTIVITY}`
 export const ACTIVITY_ITEM_URL = `/${ACTIVITY}/:activityId`
 export const ACTIVITY_ITEM_PATH = `${ACTIVITY}/%d`
 
-export const STATISTICS_PRODUCT_MOVE = 'statistics/productMove'
+export const STATISTICS_PRODUCT_MOVE = 'statistics/product-move'
 export const STATISTICS_PRODUCT_MOVE_URL = `/${STATISTICS_PRODUCT_MOVE}`
 export const STATISTICS_PRODUCT_MOVE_ITEM_URL = `/${STATISTICS_PRODUCT_MOVE}/:statProductMoveId`
 export const STATISTICS_PRODUCT_MOVE_ITEM_PATH = `/${STATISTICS_PRODUCT_MOVE}/%d`
@@ -319,12 +319,12 @@ export const STATISTICS_PRODUCT_MOVE_ITEM_PATH = `/${STATISTICS_PRODUCT_MOVE}/%d
 export const STATISTICS_REPORT = 'statistics/report'
 export const STATISTICS_REPORT_URL = `/${STATISTICS_REPORT}`
 
-export const STATISTICS_CLIENT_BALANCE = 'statistics/clientBalance'
+export const STATISTICS_CLIENT_BALANCE = 'statistics/client-balance'
 export const STATISTICS_CLIENT_BALANCE_URL = `/${STATISTICS_CLIENT_BALANCE}`
 export const STATISTICS_CLIENT_BALANCE_ITEM_URL = `/${STATISTICS_CLIENT_BALANCE}/:clientBalanceId`
 export const STATISTICS_CLIENT_BALANCE_ITEM_PATH = `/${STATISTICS_CLIENT_BALANCE}/%d`
 
-export const ACCESS_DENIED = 'access_denied'
+export const ACCESS_DENIED = 'access-denied'
 export const ACCESS_DENIED_URL = `/${ACCESS_DENIED}`
 
 export const DIVISION = 'division'
@@ -347,7 +347,7 @@ export const PERMISSION_LIST_URL = `/${PERMISSION}`
 export const PERMISSION_ITEM_URL = `/${PERMISSION}/:itemId`
 export const PERMISSION_ITEM_PATH = `/${PERMISSION}/%d`
 
-export const GOOGLE_CUSTOM = 'googleMap'
+export const GOOGLE_CUSTOM = 'google-map'
 export const GOOGLE_CUSTOM_LIST_URL = `/${GOOGLE_CUSTOM}`
 export const GOOGLE_CUSTOM_ITEM_URL = `/${GOOGLE_CUSTOM}/:itemId`
 export const GOOGLE_CUSTOM_ITEM_PATH = `/${GOOGLE_CUSTOM}/%d`
@@ -356,3 +356,8 @@ export const TELEGRAM = 'telegram'
 export const TELEGRAM_LIST_URL = `/${TELEGRAM}`
 export const TELEGRAM_ITEM_URL = `${TELEGRAM_LIST_URL}/:telegramId`
 export const TELEGRAM_ITEM_PATH = `${TELEGRAM}/%d`
+
+export const TELEGRAM_NEWS = 'telegram-news'
+export const TELEGRAM_NEWS_LIST_URL = `/${TELEGRAM_NEWS}`
+export const TELEGRAM_NEWS_ITEM_URL = `${TELEGRAM_NEWS_LIST_URL}/:telegramNewsId`
+export const TELEGRAM_NEWS_ITEM_PATH = `${TELEGRAM_NEWS}/%d`

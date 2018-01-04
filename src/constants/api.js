@@ -511,3 +511,9 @@ export const TELEGRAM_DELETE = `/${TELEGRAM}/market_worker/%d/`
 export const TELEGRAM_LIST = `/${TELEGRAM}/market_worker/`
 export const TELEGRAM_ITEM = `/${TELEGRAM}/market_worker/%d/`
 export const TELEGRAM_LOGS = `/${TELEGRAM}/client_transaction_log/`
+
+export const TELEGRAM_NEWS = 'telegram/news'
+export const TELEGRAM_NEWS_CREATE = `/${TELEGRAM_NEWS}/`
+export const TELEGRAM_NEWS_DELETE = `/${TELEGRAM_NEWS}/%d/`
+export const TELEGRAM_NEWS_LIST = `/${TELEGRAM_NEWS}/`
+export const TELEGRAM_NEWS_ITEM = `/${TELEGRAM_NEWS}/%d/`
