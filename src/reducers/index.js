@@ -474,6 +474,12 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.TELEGRAM_UPDATE),
         logs: createThunkReducer(actionTypes.TELEGRAM_LOGS)
     }),
+    telegramNews: combineReducers({
+        create: createThunkReducer(actionTypes.TELEGRAM_NEWS_CREATE),
+        list: createThunkReducer(actionTypes.TELEGRAM_NEWS_LIST),
+        update: createThunkReducer(actionTypes.TELEGRAM_NEWS_UPDATE),
+        item: createThunkReducer(actionTypes.TELEGRAM_NEWS_ITEM)
+    }),
     snackbar: snackbarReducer(),
     error: errorReducer(),
     form: formReducer,

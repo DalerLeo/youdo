@@ -3,7 +3,6 @@ import React from 'react'
 import {compose, withPropsOnChange, withHandlers, withState} from 'recompose'
 import Layout from '../../components/Layout'
 import DashboardWrapper from '../../components/Dashboard'
-import WelcomeERP from '../../components/Dashboard/WelcomeERP'
 import {WIDGETS_FORM_KEY} from '../../components/Dashboard/Widgets'
 import {connect} from 'react-redux'
 import filterHelper from '../../helpers/filter'
@@ -290,21 +289,20 @@ const MainList = enhance((props) => {
 
     return (
         <Layout {...layout}>
-            {isAdmin
-            ? <DashboardWrapper
-                    filter={filter}
-                    orderChart={orderChart}
-                    ordersReturnsChart={ordersReturnsChart}
-                    agentsChart={agentsChart}
-                    financeChart={financeChart}
-                    currencyData={currencyData}
-                    userData={userData}
-                    dateInitialValues={dateInitialValues}
-                    widgetsForm={widgetsForm}
-                    loading={loading}
-                    dispatch={dispatch}
-                />
-            : <WelcomeERP/>}
+            <DashboardWrapper
+                isAdmin={isAdmin}
+                filter={filter}
+                orderChart={orderChart}
+                ordersReturnsChart={ordersReturnsChart}
+                agentsChart={agentsChart}
+                financeChart={financeChart}
+                currencyData={currencyData}
+                userData={userData}
+                dateInitialValues={dateInitialValues}
+                widgetsForm={widgetsForm}
+                loading={loading}
+                dispatch={dispatch}
+            />
         </Layout>
     )
 })
