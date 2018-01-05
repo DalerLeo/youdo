@@ -11,6 +11,8 @@ import Markets from 'material-ui/svg-icons/action/store'
 import Clients from 'material-ui/svg-icons/social/group'
 import Supply from 'material-ui/svg-icons/action/swap-horiz'
 import Products from 'material-ui/svg-icons/device/widgets'
+import Telegram from '../CustomIcons/Telegram'
+import {getPageSize} from '../../helpers/storage'
 
 const NOT_FOUND = -1
 
@@ -26,19 +28,22 @@ const STATS_PROVIDERS = 'Поставщики'
 const STATS_STOCK = 'Склад'
 const STATS_OVERALL = 'Общее'
 
+const DEFAULT_PAGE_SIZE = getPageSize()
+const defaultPageSizeQuery = {pageSize: DEFAULT_PAGE_SIZE}
 export const MenuItems = [
     {
         name: 'Продажи',
         icon: (<AttachMoney/>),
         url: ROUTES.ORDER_LIST_URL,
+        query: defaultPageSizeQuery,
         childs: [
-            {name: 'Заказы', url: ROUTES.ORDER_LIST_URL, permission: 'frontend_orders'},
-            {name: 'Возвраты', url: ROUTES.RETURN_LIST_URL, permission: 'frontend_order_returns'},
+            {name: 'Заказы', url: ROUTES.ORDER_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_orders'},
+            {name: 'Возвраты', url: ROUTES.RETURN_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_order_returns'},
             {name: 'Активность', url: ROUTES.ACTIVITY_LIST_URL, permission: 'frontend_activity'},
             {name: 'План', url: ROUTES.PLAN_LIST_URL, permission: 'frontend_plan'},
-            {name: 'Формирование цен', url: ROUTES.PRICE_LIST_URL, permission: 'frontend_prices'},
+            {name: 'Формирование цен', url: ROUTES.PRICE_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_prices'},
             {name: 'Отслеживание', url: ROUTES.TRACKING_LIST_URL, permission: 'frontend_tracking'},
-            {name: 'Маркетинговые акции', url: ROUTES.PRICES_LIST_URL, permission: 'frontend_bonuses'},
+            {name: 'Маркетинговые акции', url: ROUTES.PRICES_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_bonuses'},
             {name: 'Зоны', url: ROUTES.ZONES_LIST_URL, permission: 'frontend_zones'}
         ]
     },
@@ -46,28 +51,30 @@ export const MenuItems = [
         name: 'Магазины',
         icon: (<Markets/>),
         url: ROUTES.SHOP_LIST_URL,
+        query: defaultPageSizeQuery,
         dynamic: true,
         childs: [
-            {name: 'Магазины', url: ROUTES.SHOP_LIST_URL, permission: 'frontend_shops', icon: (<Markets/>)},
-            {name: 'Клиенты', url: ROUTES.CLIENT_LIST_URL, permission: 'frontend_clients', icon: (<Clients/>)},
-            {name: 'Телеграм', url: ROUTES.TELEGRAM_LIST_URL, permission: 'frontend_clients', icon: (<Clients/>)}
+            {name: 'Магазины', url: ROUTES.SHOP_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_shops', icon: (<Markets/>)},
+            {name: 'Клиенты', url: ROUTES.CLIENT_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_clients', icon: (<Clients/>)}
         ]
     },
     {
         name: 'Продукты',
         icon: (<Products/>),
         url: ROUTES.PRODUCT_LIST_URL,
+        query: defaultPageSizeQuery,
         childs: [
-            {name: 'Продукты', url: ROUTES.PRODUCT_LIST_URL, permission: 'frontend_products'}
+            {name: 'Продукты', url: ROUTES.PRODUCT_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_products'}
         ]
     },
     {
         name: 'Склад',
         icon: (<Store/>),
         url: ROUTES.REMAINDER_LIST_URL,
+        query: defaultPageSizeQuery,
         childs: [
-            {name: 'Остаток', url: ROUTES.REMAINDER_LIST_URL, permission: 'frontend_remainder'},
-            {name: 'Инвентаризация', url: ROUTES.INVENTORY_LIST_URL, permission: 'frontend_inventory'},
+            {name: 'Остаток', url: ROUTES.REMAINDER_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_remainder'},
+            {name: 'Инвентаризация', url: ROUTES.INVENTORY_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_inventory'},
             {
                 name: 'Приемка / Передача',
                 url: ROUTES.STOCK_RECEIVE_LIST_URL,
@@ -86,27 +93,30 @@ export const MenuItems = [
         name: 'Поставки',
         icon: (<Supply/>),
         url: ROUTES.SUPPLY_LIST_URL,
+        query: defaultPageSizeQuery,
         childs: [
-            {name: 'Поставщики', url: ROUTES.PROVIDER_LIST_URL, permission: 'frontend_suppliers'},
-            {name: 'Поставки', url: ROUTES.SUPPLY_LIST_URL, permission: 'frontend_supply'}
+            {name: 'Поставщики', url: ROUTES.PROVIDER_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_suppliers'},
+            {name: 'Поставки', url: ROUTES.SUPPLY_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_supply'}
         ]
     },
     {
         name: 'Финансы',
         icon: (<Finance/>),
         url: ROUTES.TRANSACTION_LIST_URL,
+        query: defaultPageSizeQuery,
         childs: [
-            {name: 'Транзакции', url: ROUTES.TRANSACTION_LIST_URL, permission: 'frontend_transactions'},
-            {name: 'Ожидаемые расходы', url: ROUTES.PENDING_EXPENSES_LIST_URL, permission: 'frontend_pending_expenses'},
-            {name: 'Ожидаeмые оплаты', url: ROUTES.PENDING_PAYMENTS_LIST_URL, permission: 'frontend_pending_payments'},
+            {name: 'Транзакции', url: ROUTES.TRANSACTION_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_transactions'},
+            {name: 'Ожидаемые расходы', url: ROUTES.PENDING_EXPENSES_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_pending_expenses'},
+            {name: 'Ожидаeмые оплаты', url: ROUTES.PENDING_PAYMENTS_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_pending_payments'},
             {name: 'Баланс клиентов', url: ROUTES.CLIENT_BALANCE_LIST_URL, permission: 'frontend_client_balance', query: {pageSize: 25}},
-            {name: 'Транзакции клиентов', url: ROUTES.CLIENT_TRANSACTION_LIST_URL, permission: 'frontend_client_transaction'}
+            {name: 'Транзакции клиентов', url: ROUTES.CLIENT_TRANSACTION_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_client_transaction'}
         ]
     },
     {
         name: 'Производство',
         icon: (<Map/>),
         url: ROUTES.MANUFACTURE_LIST_URL,
+        query: defaultPageSizeQuery,
         childs: [
             {
                 name: 'Производство',
@@ -149,6 +159,15 @@ export const MenuItems = [
             {section: STATS_STOCK, name: 'Движение товаров', url: ROUTES.STATISTICS_PRODUCT_MOVE_URL, permission: 'frontend_stat_product_move', query: {pageSize: 25}},
             // -------------------------------------------------------------------------------------------------- //
             {section: STATS_OVERALL, name: 'Генеральный отчет', url: ROUTES.STATISTICS_REPORT_URL, permission: 'frontend_stat_report'}
+        ]
+    },
+    {
+        name: 'Телеграм',
+        icon: (<Telegram/>),
+        url: ROUTES.TELEGRAM_LIST_URL,
+        childs: [
+            {name: 'Пользователи', url: ROUTES.TELEGRAM_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_telegram_users'},
+            {name: 'Новости', url: ROUTES.TELEGRAM_NEWS_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_telegram_news'}
         ]
     },
     {
@@ -207,6 +226,7 @@ export const getNeedMenu = (userPermissions) => {
         if (!hasIn) {
             const newParent = {
                 name: _.get(parent, 'name'),
+                query: _.get(parent, 'query'),
                 icon: _.get(parent, 'icon'),
                 section: _.get(parent, 'section') || '',
                 dynamic: _.get(parent, 'dynamic'),

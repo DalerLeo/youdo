@@ -191,7 +191,7 @@ const StatAgentDialog = enhance((props) => {
     }
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const name = _.get(details, ['firstName']) + ' ' + _.get(details, ['lastName'])
-    const orderList = _.map(data, (item, index) => {
+    const logsList = _.map(data, (item, index) => {
         const transId = _.get(item, ['clientTransaction', 'id'])
         const status = _.get(item, 'status')
         const paymentType = _.get(item, ['clientTransaction', 'paymentType']) === 'cash' ? t('Наличные') : t('Перечисление')
@@ -256,11 +256,11 @@ const StatAgentDialog = enhance((props) => {
                                 <Col xs={2} style={{textAlign: 'right'}}>{t('Тип оплаты')}</Col>
                                 <Col xs={2}>{t('Сумма')}</Col>
                             </Row>
-                            {_.isEmpty(orderList)
+                            {_.isEmpty(logsList)
                                 ? <div className={classes.emptyQuery}>
                                     <div>{t('У данного агента в этом периоде нет заказов')}</div>
                                 </div>
-                                : orderList}
+                                : logsList}
                         </div>
                         <Pagination filter={filter}/>
                     </div>

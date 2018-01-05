@@ -1,11 +1,12 @@
 import _ from 'lodash'
 import React from 'react'
-import {compose, lifecycle, withHandlers} from 'recompose'
+import {compose, lifecycle, withHandlers, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
 import Container from '../Container'
 import Loader from '../Loader'
+import ToolTip from '../ToolTip'
 import Paper from 'material-ui/Paper'
 import User from '../Images/person.png'
 import NoWidgets from '../Images/choose-menu.png'
@@ -16,9 +17,11 @@ import OrderChart from './OrderChart'
 import AgentsChart from './AgentsChart'
 import FinanceChart from './FinanceChart'
 import Currencies from './Currencies'
+import Password from './Password'
 import SalesReturnsChart from './SalesReturnsChart'
 import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
+import EditIcon from 'material-ui/svg-icons/editor/mode-edit'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import Language from 'material-ui/svg-icons/social/public'
 import {setLanguage, getLanguage} from '../../helpers/storage'
@@ -59,7 +62,7 @@ const enhance = compose(
             right: '34px',
             zIndex: '2',
             '&:hover > div:first-child': {
-                opacity: '0.8',
+                opacity: '0.9',
                 visibility: 'visible'
             },
             '& button': {
@@ -96,7 +99,8 @@ const enhance = compose(
         user: {
             display: 'flex',
             alignItems: 'center',
-            '& div': {
+            '& h4': {
+                marginLeft: '10px',
                 marginRight: '10px',
                 fontSize: '16px',
                 fontWeight: '600'
@@ -105,7 +109,13 @@ const enhance = compose(
                 color: '#999',
                 fontSize: '12px',
                 fontWeight: '600',
-                marginLeft: '-5px'
+                marginLeft: '-5px',
+                marginRight: '10px'
+            },
+            '& svg': {
+                cursor: 'pointer',
+                width: '20px !important',
+                height: '20px !important'
             }
         },
         userImage: {
@@ -179,6 +189,7 @@ const enhance = compose(
             return props.dispatch(refreshAction())
         }
     }),
+    withState('openEditPass', 'setOpenEditPass', false),
     lifecycle({
         componentWillReceiveProps () {
             const wrapper = this.refs.wrapper
@@ -209,6 +220,7 @@ const enhance = compose(
 
 const Dashboard = enhance((props) => {
     const {
+        isAdmin,
         classes,
         userData,
         filter,
@@ -220,7 +232,9 @@ const Dashboard = enhance((props) => {
         dateInitialValues,
         widgetsForm,
         loading,
-        setLangAction
+        setLangAction,
+        openEditPass,
+        setOpenEditPass
     } = props
     const ZERO = 0
     const MAX_OUTPUT = 10
@@ -356,10 +370,15 @@ const Dashboard = enhance((props) => {
 
                 <Paper zDepth={1} className={classes.header}>
                     <div className={classes.user}>
-                        <div className={classes.userImage}>{null}</div>
-                        <div>{username}</div>
+                        <div className={classes.userImage}/>
+                        <h4>{username}</h4>
                         <span>({position})</span>
+                        {!openEditPass &&
+                        <ToolTip position={'right'} text={'Изменить пароль'}>
+                            <EditIcon color={'#666'} onClick={() => { setOpenEditPass(true) }}/>
+                        </ToolTip>}
                     </div>
+                    {isAdmin &&
                     <div className={classes.buttons}>
                         <Filter
                             filter={filter}
@@ -367,14 +386,14 @@ const Dashboard = enhance((props) => {
                         <Widgets
                             submitForm={widgetsForm.handleSubmitWidgetsForm}
                             initialValues={widgetsForm.initialValues}/>
-                    </div>
+                    </div>}
                 </Paper>
 
                 <section className={classes.chartsWrapper} ref="wrapper">
                     <div className={classes.chartHalf}>
-                        {currencyListActive && <Currencies currencyData={currencyData}/>}
+                        {currencyListActive && isAdmin && <Currencies currencyData={currencyData}/>}
 
-                        {orderChartActive &&
+                        {orderChartActive && isAdmin &&
                         <Paper zDepth={1}>
                             <div className={classes.chartHeader}>
                                 <div>{t('Продажи')}</div>
@@ -401,7 +420,7 @@ const Dashboard = enhance((props) => {
                                         />}
                                 </div>}
                         </Paper>}
-                        {orderReturnActive &&
+                        {orderReturnActive && isAdmin &&
                         <Paper zDepth={1}>
                             <div className={classes.chartHeader}>
                                 <div>{t('Заказы и возвраты')}</div>
@@ -429,7 +448,8 @@ const Dashboard = enhance((props) => {
                         </Paper>}
                     </div>
                     <div className={classes.chartHalf}>
-                        {agentsChartActive &&
+                        {openEditPass && <Password setOpenEditPass={setOpenEditPass}/>}
+                        {agentsChartActive && isAdmin &&
                         <Paper zDepth={1}>
                             <div className={classes.chartHeader + ' ' + classes.borderBottom}>
                                 <div>{t('Статистика по агентам')}</div>
@@ -449,7 +469,7 @@ const Dashboard = enhance((props) => {
                                         />}
                                 </div>}
                         </Paper>}
-                        {financeChartActive &&
+                        {financeChartActive && isAdmin &&
                         <Paper zDepth={1}>
                             <div className={classes.chartHeader}>
                                 <div>{t('Оборот')}</div>

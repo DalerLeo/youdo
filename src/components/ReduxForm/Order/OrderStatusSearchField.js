@@ -8,7 +8,6 @@ const Items = [
     {id: 2, name: 'Передан доставщику'},
     {id: 3, name: 'Доставлен'},
     {id: 4, name: 'Отменен'}
-
 ]
 const getOptions = () => {
     return Promise.resolve(Items)

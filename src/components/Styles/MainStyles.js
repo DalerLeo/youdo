@@ -9,21 +9,11 @@ const MainStyles = {
         background: '#f1f5f8',
         color: '#333'
     },
-    dottedList: {
-
-    },
     // MODAL
-    body: {
-        overflowY: 'hidden !important',
-        fontSize: '13px !important',
-        position: 'relative',
-        padding: '0 !important',
-        overflowX: 'hidden',
-        minHeight: '317px !important'
-    },
     popUp: {
         color: '#333 !important',
-        overflow: 'unset !important',
+        overflowY: 'unset !important',
+        overflowX: 'unset !important',
         fontSize: '13px !important',
         position: 'relative',
         padding: '0 !important',

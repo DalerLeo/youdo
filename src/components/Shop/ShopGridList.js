@@ -125,7 +125,7 @@ const ShopGridList = enhance((props) => {
             addPhotoDialog={addPhotoDialog}
             slideShowDialog={slideShowDialog}
             handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
-            handleOpenMapDialog={mapDialog.handleOpenMapDialog}
+            mapDialog={mapDialog}
         />
     )
     const shopList = _.map(_.get(listData, 'data'), (item) => {
@@ -188,6 +188,7 @@ const ShopGridList = enhance((props) => {
                 onSubmit={createDialog.handleSubmitCreateDialog}
             />
             <MapDialog
+                viewOnly={false}
                 initialValues={mapDialog.initialValues}
                 open={mapDialog.openMapDialog}
                 onClose={mapDialog.handleCloseMapDialog}

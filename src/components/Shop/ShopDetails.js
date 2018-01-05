@@ -1,7 +1,7 @@
 import React from 'react'
 import _ from 'lodash'
 import PropTypes from 'prop-types'
-import {compose} from 'recompose'
+import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
 import LinearProgress from '../LinearProgress'
@@ -11,6 +11,7 @@ import Delete from 'material-ui/svg-icons/action/delete'
 import Add from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
 import t from '../../helpers/translate'
+import MapDialog from './ShopMapDialog'
 
 const enhance = compose(
     injectSheet({
@@ -147,12 +148,13 @@ const enhance = compose(
         otherImages: {
             order: '2',
             display: 'flex',
-            justifyContent: 'space-between',
+            flexWrap: 'wrap',
             marginTop: '10px',
             '& div': {
                 cursor: 'pointer',
                 width: '38px',
                 height: '38px',
+                marginRight: '10px',
                 position: 'relative',
                 zIndex: '1',
                 '&:last-child strong': {
@@ -232,7 +234,8 @@ const enhance = compose(
             cursor: 'pointer',
             zIndex: '1'
         }
-    })
+    }),
+    withState('openMapDialog', 'setOpenMapDialog', false)
 )
 const iconStyle = {
     icon: {
@@ -256,7 +259,9 @@ const ShopDetails = enhance((props) => {
         addPhotoDialog,
         slideShowDialog,
         handleCloseDetail,
-        handleOpenMapDialog
+        mapDialog,
+        openMapDialog,
+        setOpenMapDialog
     } = props
 
     const ZERO = 0
@@ -409,7 +414,7 @@ const ShopDetails = enhance((props) => {
                         <ul className={classes.details}>
                             <li>{t('Имя контакта')}: <span>{contactName}</span></li>
                             <li>{t('Телефон')}: <span>{phone}</span></li>
-                            <li>{t('Адрес')}: <span><a onClick={handleOpenMapDialog}>{address}</a></span></li>
+                            <li>{t('Адрес')}: <span><a onClick={() => { setOpenMapDialog(true) }}>{address}</a></span></li>
                             <li>{t('Ориентир')}: <span>{guide}</span></li>
                         </ul>
                     </div>
@@ -425,6 +430,15 @@ const ShopDetails = enhance((props) => {
                     </div>
                 </div>
             </div>
+
+            {openMapDialog &&
+            <MapDialog
+                viewOnly={true}
+                initialValues={mapDialog.initialValues}
+                open={openMapDialog}
+                onClose={() => { setOpenMapDialog(false) }}
+                onSubmit={mapDialog.handleSubmitMapDialog}
+            />}
         </div>
     )
 })

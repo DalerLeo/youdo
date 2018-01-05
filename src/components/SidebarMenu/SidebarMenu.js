@@ -131,7 +131,7 @@ const SideBarMenu = enhance((props) => {
         }
         return (
             <div key={index}>
-                <Link to={item.url}>
+                <Link to={{pathname: _.get(item, 'url'), query: _.get(item, 'query')}}>
                     <ToolTip position="right" text={tooltip}>
                         <FlatButton
                             rippleColor="#fff"
@@ -149,7 +149,7 @@ const SideBarMenu = enhance((props) => {
     const afterLine = _.map(bottomItems, (item, index) => {
         return (
             <div key={index}>
-                <Link to={item.url}>
+                <Link to={{pathname: _.get(item, 'url'), query: _.get(item, 'query')}}>
                     <ToolTip position="right" text={item.name}>
                         <FlatButton
                             rippleColor="#fff"

@@ -26,6 +26,7 @@ import OrderReady from 'material-ui/svg-icons/social/whatshot'
 import OrderRequest from 'material-ui/svg-icons/device/access-time'
 import GoodsDemand from 'material-ui/svg-icons/alert/warning'
 import OrderDelivered from 'material-ui/svg-icons/action/assignment-turned-in'
+import DefaultNotificationIcon from 'material-ui/svg-icons/social/notifications-none'
 import Loader from '../Loader'
 import {
     notificationListFetchAction,
@@ -314,10 +315,10 @@ const enhance = compose(
             top: '40% !important',
             position: 'relative !important'
         },
-        loader2: {
+        listLoader: {
             position: 'absolute',
             top: '65px',
-            bottom: '0',
+            padding: '100px 0',
             width: '100%',
             display: 'flex',
             justifyContent: 'center',
@@ -402,7 +403,7 @@ const Layout = enhance((props) => {
                 break
             case 'goods_on_demand': icon = <div className={classes.notifIcon + ' ' + classes.stock}><GoodsDemand/></div>
                 break
-            default: icon = null
+            default: icon = <div className={classes.notifIcon}><DefaultNotificationIcon/></div>
         }
         const isOrder = _.includes(template, 'order')
         const isSupply = _.includes(template, 'supply')
@@ -476,8 +477,8 @@ const Layout = enhance((props) => {
         <div className={classes.wrapper}>
             <div className={classes.notifications} style={openNotifications ? wrapperStyle.containerOpen : wrapperStyle.containerClose}>
                 <Paper className={classes.notificationsWrapper} zDepth={4} style={openNotifications ? wrapperStyle.wrapperOpen : wrapperStyle.wrapperClose}>
-                    {!loading && <div className={classes.loader2}>
-                        <Loader/>
+                    {loading && <div className={classes.listLoader}>
+                        <Loader size={0.75}/>
                     </div>}
                     <div className={classes.header}>
                         <div>Уведомления</div>
