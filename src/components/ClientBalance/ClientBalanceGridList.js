@@ -514,6 +514,7 @@ const ClientBalanceGridList = enhance((props) => {
                     }}>
                     {t('Кол-во заказов')} {orderNoSorting}
                 </td>
+                <td>{t('Сумма')}</td>
                 {_.map(head, (item, index) => {
                     const sortingType = filter.getSortingType(item.type + '_' + item.id)
                     const icon = _.isNil(sortingType)
@@ -538,7 +539,6 @@ const ClientBalanceGridList = enhance((props) => {
                         </td>
                     )
                 })}
-                <td>{t('Сумма')}</td>
             </tr>
 
             {_.map(_.get(listData, 'data'), (item) => {
@@ -557,6 +557,7 @@ const ClientBalanceGridList = enhance((props) => {
                         onMouseLeave={() => setCurrentRow(null)}
                         className={classes.tableRow}>
                         <td>{orderNo}</td>
+                        <td>{numberFormat(totalSum, primaryCurrency)}</td>
                         {_.map(amountValues, (val, index) => {
                             const amount = _.toNumber(_.get(val, 'amount'))
                             return (
@@ -567,9 +568,6 @@ const ClientBalanceGridList = enhance((props) => {
                                 </td>
                             )
                         })}
-                        <td>
-                            {numberFormat(totalSum, primaryCurrency)}
-                        </td>
                     </tr>
                 )
             })}
