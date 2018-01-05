@@ -480,6 +480,9 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.TELEGRAM_NEWS_UPDATE),
         item: createThunkReducer(actionTypes.TELEGRAM_NEWS_ITEM)
     }),
+    widgets: combineReducers({
+        list: createThunkReducer(actionTypes.WIDGETS_LIST)
+    }),
     snackbar: snackbarReducer(),
     error: errorReducer(),
     form: formReducer,

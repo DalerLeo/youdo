@@ -22,6 +22,7 @@ import Requested from 'material-ui/svg-icons/action/schedule'
 import AutoAccepted from 'material-ui/svg-icons/action/spellcheck'
 import ResendIcon from 'material-ui/svg-icons/content/reply'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
+import {hashHistory} from 'react-router'
 import {
     REQUESTED,
     CONFIRMED,
@@ -29,6 +30,7 @@ import {
     AUTO
 } from './index'
 import t from '../../helpers/translate'
+import ClientBalanceFormat from '../Statistics/ClientIncome/ClientBalanceFormat'
 
 const listHeader = [
     {
@@ -41,13 +43,18 @@ const listHeader = [
         sorting: true,
         name: 'client',
         title: t('Клиент'),
-        xs: 3
+        xs: 2
     },
     {
         sorting: true,
         name: 'user',
         title: t('Пользователь'),
-        xs: 3
+        xs: 2
+    },
+    {
+        sorting: false,
+        title: t('Описание'),
+        xs: 2
     },
     {
         sorting: true,
@@ -84,13 +91,16 @@ const enhance = compose(
             marginBottom: '15px'
         },
         summary: {
-            '& > div:first-child': {},
+            cursor: 'pointer',
             '& > div:last-child': {fontSize: '17px', fontWeight: '600'},
             '&:last-child': {
                 textAlign: 'right'
             }
         },
         listRow: {
+            '& a': {
+                color: '#12aaeb !important'
+            },
             '& svg': {
                 width: '20px !important',
                 height: '20px !important'
@@ -149,7 +159,9 @@ const ClientTransactionGridList = enhance((props) => {
         const client = _.get(item, ['client', 'name'])
         const user = _.get(item, 'user')
         const userName = user ? _.get(user, 'firstName') + ' ' + _.get(user, 'secondName') : t('Неизвестно')
-        const type = _.get(item, 'amount') || 'N/A'
+        const type = _.get(item, 'type')
+        const order = _.get(item, 'order')
+        const orderReturn = _.get(item, 'orderReturn')
         const amount = _.toNumber(_.get(item, 'amount'))
         const createdDate = dateTimeFormat(_.get(item, 'createdDate'))
         const currency = _.get(item, ['currency', 'name'])
@@ -177,10 +189,13 @@ const ClientTransactionGridList = enhance((props) => {
         return (
             <Row key={id} className={classes.listRow}>
                 <Col xs={1}>{statusIcon(confirmation)}</Col>
-                <Col xs={3}>{client}</Col>
-                <Col xs={3}>{userName}</Col>
+                <Col xs={2}>{client}</Col>
+                <Col xs={2}>{userName}</Col>
+                <Col xs={2}>
+                    <ClientBalanceFormat type={type} order={order} orderReturn={orderReturn}/>
+                </Col>
                 <Col xs={2}>{createdDate}</Col>
-                <Col style={{textAlign: 'right'}} className={type >= ZERO ? classes.green : classes.red} xs={2}>
+                <Col style={{textAlign: 'right'}} className={amount >= ZERO ? classes.green : classes.red} xs={2}>
                     <span style={amount > ZERO ? {color: '#81c784'} : {color: '#e57373'}}>{numberFormat(amount, currency)}</span>
                     {currencyID !== primaryCurrencyID &&
                     <div>
@@ -224,19 +239,19 @@ const ClientTransactionGridList = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.CLIENT_TRANSACTION_LIST_URL}/>
             <Paper zDepth={1} className={classes.summaryWrapper}>
-                <div className={classes.summary}>
+                <div className={classes.summary} onClick={() => { hashHistory.push(filter.createURL({status: CONFIRMED})) }}>
                     <div>{t('Сумма принятых оплат')}</div>
                     <div>{numberFormat('145323', primaryCurrency)}</div>
                 </div>
-                <div className={classes.summary}>
+                <div className={classes.summary} onClick={() => { hashHistory.push(filter.createURL({status: REJECTED})) }}>
                     <div>{t('Сумма отклоненных оплат')}</div>
                     <div>{numberFormat('22451', primaryCurrency)}</div>
                 </div>
-                <div className={classes.summary}>
+                <div className={classes.summary} onClick={() => { hashHistory.push(filter.createURL({status: REQUESTED})) }}>
                     <div>{t('Сумма ожидаемых оплат')}</div>
                     <div>{numberFormat('86541', primaryCurrency)}</div>
                 </div>
-                <div className={classes.summary}>
+                <div className={classes.summary} onClick={() => { hashHistory.push(filter.createURL({status: AUTO})) }}>
                     <div>{t('Сумма автоматически принятых оплат')}</div>
                     <div>{numberFormat('6548', primaryCurrency)}</div>
                 </div>

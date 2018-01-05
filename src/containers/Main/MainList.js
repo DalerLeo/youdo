@@ -13,7 +13,9 @@ import {
     statSalesReturnDataFetchAction,
     statAgentDataFetchAction,
     statFinanceIncomeFetchAction,
-    statFinanceExpenseFetchAction
+    statFinanceExpenseFetchAction,
+    widgetsListFetchAction,
+    changePasswordFetchAction
 } from '../../actions/dashboard'
 import {
     courseCreateAction,
@@ -46,6 +48,9 @@ const enhance = compose(
         const filter = filterHelper(orderList, pathname, query)
         const widgetsForm = _.get(state, ['form', 'DashboardWidgetsForm'])
         const currencyForm = _.get(state, ['form', 'DashboardCurrencyForm'])
+        const passwordForm = _.get(state, ['form', 'DashboardPasswordForm'])
+        const widgetsList = _.get(state, ['widgets', 'list', 'data'])
+        const widgetsLoading = _.get(state, ['widgets', 'list', 'loading'])
         return {
             orderList,
             orderLoading,
@@ -63,55 +68,74 @@ const enhance = compose(
             isAdmin,
             filter,
             widgetsForm,
-            currencyForm
+            currencyForm,
+            widgetsList,
+            widgetsLoading,
+            passwordForm
         }
     }),
 
     withState('loading', 'setLoading', false),
+    withState('openEditPass', 'setOpenEditPass', false),
     withPropsOnChange((props, nextProps) => {
-        return props.filter.filterRequest() !== nextProps.filter.filterRequest()
-    }, ({dispatch, filter, setLoading, isAdmin}) => {
-        if (isAdmin) {
-            setLoading(true)
-            const activeSales = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.SALES)) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.SALES))
-            const activeOrders = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.ORDERS)) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.ORDERS))
-            const activeAgents = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.AGENTS)) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.AGENTS))
-            const activeFinance = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.FINANCE)) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.FINANCE))
-            const activeCurrency = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.CURRENCY)) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.CURRENCY))
-            return (activeCurrency
-                ? dispatch(currencyListFetchAction(filter))
-                : Promise.resolve())
-                .then(() => {
-                    return (activeSales
-                        ? dispatch(statSalesDataFetchAction(filter))
-                        : Promise.resolve())
-                        .then(() => {
-                            return (activeOrders
-                                ? dispatch(statSalesReturnDataFetchAction(filter))
-                                    .then(() => {
-                                        dispatch(statSalesDataFetchAction(filter))
-                                    })
-                                : Promise.resolve())
-                                .then(() => {
-                                    return (activeAgents
-                                        ? dispatch(statAgentDataFetchAction(filter))
-                                        : Promise.resolve())
-                                        .then(() => {
-                                            return (activeFinance
-                                                ? dispatch(statFinanceIncomeFetchAction(filter))
-                                                    .then(() => {
-                                                        dispatch(statFinanceExpenseFetchAction(filter))
-                                                    })
-                                                : Promise.resolve())
-                                                .then(() => {
-                                                    setLoading(false)
-                                                })
-                                        })
-                                })
-                        })
-                })
+        const except = {
+            agents: null,
+            currency: null,
+            finance: null,
+            orders: null,
+            sales: null,
+            page: null,
+            beginDate: null,
+            endDate: null
         }
-        return null
+        return props.widgetsList && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
+    }, ({dispatch}) => {
+        dispatch(widgetsListFetchAction())
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        return (props.filter.filterRequest() !== nextProps.filter.filterRequest()) ||
+            (props.widgetsLoading !== nextProps.widgetsLoading && nextProps.widgetsLoading === false)
+    }, ({dispatch, filter, setLoading, widgetsList}) => {
+        const widgetsKeynames = _.map(_.get(widgetsList, 'results'), item => _.get(item, 'keyName'))
+        setLoading(true)
+        const activeSales = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.SALES)) && _.includes(widgetsKeynames, WIDGETS_FORM_KEY.SALES) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.SALES))
+        const activeOrders = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.ORDERS)) && _.includes(widgetsKeynames, WIDGETS_FORM_KEY.ORDERS) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.ORDERS))
+        const activeAgents = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.AGENTS)) && _.includes(widgetsKeynames, WIDGETS_FORM_KEY.AGENTS) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.AGENTS))
+        const activeFinance = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.FINANCE)) && _.includes(widgetsKeynames, WIDGETS_FORM_KEY.FINANCE) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.FINANCE))
+        const activeCurrency = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.CURRENCY)) && _.includes(widgetsKeynames, WIDGETS_FORM_KEY.CURRENCY) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.CURRENCY))
+        return (activeCurrency
+            ? dispatch(currencyListFetchAction(filter))
+            : Promise.resolve())
+            .then(() => {
+                return (activeSales
+                    ? dispatch(statSalesDataFetchAction(filter))
+                    : Promise.resolve())
+                    .then(() => {
+                        return (activeOrders
+                            ? dispatch(statSalesReturnDataFetchAction(filter))
+                                .then(() => {
+                                    dispatch(statSalesDataFetchAction(filter))
+                                })
+                            : Promise.resolve())
+                            .then(() => {
+                                return (activeAgents
+                                    ? dispatch(statAgentDataFetchAction(filter))
+                                    : Promise.resolve())
+                                    .then(() => {
+                                        return (activeFinance
+                                            ? dispatch(statFinanceIncomeFetchAction(filter))
+                                                .then(() => {
+                                                    dispatch(statFinanceExpenseFetchAction(filter))
+                                                })
+                                            : Promise.resolve())
+                                            .then(() => {
+                                                setLoading(false)
+                                            })
+                                    })
+                            })
+                    })
+            })
     }),
 
     withHandlers({
@@ -145,6 +169,15 @@ const enhance = compose(
                         dispatch(reset('DashboardCurrencyForm'))
                     })
                 : Promise.resolve()
+        },
+
+        handleChangePassword: props => () => {
+            const {dispatch, passwordForm, setOpenEditPass} = props
+            return dispatch(changePasswordFetchAction(_.get(passwordForm, ['values'])))
+                .then(() => {
+                    setOpenEditPass(false)
+                    return dispatch(openSnackbarAction({message: 'Пароль успешно изменен'}))
+                })
         }
     })
 )
@@ -169,14 +202,21 @@ const MainList = enhance((props) => {
         isAdmin,
         filter,
         loading,
-        dispatch
+        dispatch,
+        widgetsList,
+        widgetsLoading,
+        openEditPass,
+        setOpenEditPass,
+        handleChangePassword
     } = props
 
-    const sales = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.SALES)) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.SALES))
-    const orders = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.ORDERS)) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.ORDERS))
-    const agents = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.AGENTS)) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.AGENTS))
-    const finance = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.FINANCE)) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.FINANCE))
-    const currency = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.CURRENCY)) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.CURRENCY))
+    const widgetsKeynames = _.map(_.get(widgetsList, 'results'), item => _.get(item, 'keyName'))
+
+    const sales = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.SALES)) && _.includes(widgetsKeynames, WIDGETS_FORM_KEY.SALES) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.SALES))
+    const orders = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.ORDERS)) && _.includes(widgetsKeynames, WIDGETS_FORM_KEY.ORDERS) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.ORDERS))
+    const agents = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.AGENTS)) && _.includes(widgetsKeynames, WIDGETS_FORM_KEY.AGENTS) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.AGENTS))
+    const finance = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.FINANCE)) && _.includes(widgetsKeynames, WIDGETS_FORM_KEY.FINANCE) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.FINANCE))
+    const currency = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.CURRENCY)) && _.includes(widgetsKeynames, WIDGETS_FORM_KEY.CURRENCY) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.CURRENCY))
 
     const mergeFinanceData = (firstData, secondData) => {
         const financeData = {}
@@ -278,6 +318,8 @@ const MainList = enhance((props) => {
     }
 
     const widgetsForm = {
+        list: _.get(widgetsList, 'results'),
+        loading: widgetsLoading,
         initialValues: {
             sales: sales,
             orders: orders,
@@ -303,6 +345,9 @@ const MainList = enhance((props) => {
                 widgetsForm={widgetsForm}
                 loading={loading}
                 dispatch={dispatch}
+                openEditPass={openEditPass}
+                setOpenEditPass={setOpenEditPass}
+                handleChangePassword={handleChangePassword}
             />
         </Layout>
     )

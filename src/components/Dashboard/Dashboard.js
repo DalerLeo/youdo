@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
-import {compose, lifecycle, withHandlers, withState} from 'recompose'
+import {compose, lifecycle, withHandlers} from 'recompose'
 import injectSheet from 'react-jss'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
@@ -189,7 +189,6 @@ const enhance = compose(
             return props.dispatch(refreshAction())
         }
     }),
-    withState('openEditPass', 'setOpenEditPass', false),
     lifecycle({
         componentWillReceiveProps () {
             const wrapper = this.refs.wrapper
@@ -234,7 +233,8 @@ const Dashboard = enhance((props) => {
         loading,
         setLangAction,
         openEditPass,
-        setOpenEditPass
+        setOpenEditPass,
+        handleChangePassword
     } = props
     const ZERO = 0
     const MAX_OUTPUT = 10
@@ -384,6 +384,8 @@ const Dashboard = enhance((props) => {
                             filter={filter}
                             initialValues={dateInitialValues}/>
                         <Widgets
+                            list={widgetsForm.list}
+                            loading={widgetsForm.loading}
                             submitForm={widgetsForm.handleSubmitWidgetsForm}
                             initialValues={widgetsForm.initialValues}/>
                     </div>}
@@ -448,7 +450,10 @@ const Dashboard = enhance((props) => {
                         </Paper>}
                     </div>
                     <div className={classes.chartHalf}>
-                        {openEditPass && <Password setOpenEditPass={setOpenEditPass}/>}
+                        {openEditPass &&
+                        <Password
+                            handleChangePassword={handleChangePassword}
+                            setOpenEditPass={setOpenEditPass}/>}
                         {agentsChartActive && isAdmin &&
                         <Paper zDepth={1}>
                             <div className={classes.chartHeader + ' ' + classes.borderBottom}>

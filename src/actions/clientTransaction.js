@@ -7,7 +7,7 @@ import * as serializers from '../serializers/clientTransactionSerializer'
 
 export const clientTransactionDeleteAction = (id) => {
     const payload = axios()
-        .delete(sprintf(API.CLIENT_TRANSACTION_DELETE, id))
+        .post(sprintf(API.CLIENT_TRANSACTION_DELETE, id))
         .then((response) => {
             return _.get(response, 'data')
         })

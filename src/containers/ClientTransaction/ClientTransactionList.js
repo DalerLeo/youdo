@@ -9,6 +9,8 @@ import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import {splitToArray, joinArray} from '../../helpers/joinSplitValues'
+import {openErrorAction} from '../../actions/error'
+import moment from 'moment'
 
 import {
     CLIENT_TRANSACTION_DELETE_DIALOG_OPEN,
@@ -77,8 +79,10 @@ const enhance = compose(
                     dispatch(clientTransactionListFetchAction(filter, clientId))
                     return dispatch(openSnackbarAction({message: t('Транзакция успешно удалена')}))
                 })
-                .catch(() => {
-                    return dispatch(openSnackbarAction({message: t('Ошибка при удалении')}))
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
                 })
         },
 
@@ -127,16 +131,18 @@ const enhance = compose(
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
             const division = _.get(filterForm, ['values', 'division']) || null
-            const type = _.get(filterForm, ['values', 'type']) || null
             const client = _.get(filterForm, ['values', 'client']) || null
             const status = _.get(filterForm, ['values', 'status', 'value']) || null
+            const fromDate = _.get(filterForm, ['values', 'createdDate', 'fromDate']) || null
+            const toDate = _.get(filterForm, ['values', 'createdDate', 'toDate']) || null
 
             filter.filterBy({
                 [CLIENT_TRANSACTION_FILTER_OPEN]: false,
-                [CLIENT_TRANSACTION_FILTER_KEY.TYPE]: joinArray(type),
                 [CLIENT_TRANSACTION_FILTER_KEY.DIVISION]: joinArray(division),
                 [CLIENT_TRANSACTION_FILTER_KEY.CLIENT]: joinArray(client),
-                [CLIENT_TRANSACTION_FILTER_KEY.STATUS]: status
+                [CLIENT_TRANSACTION_FILTER_KEY.STATUS]: status,
+                [CLIENT_TRANSACTION_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
+                [CLIENT_TRANSACTION_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
             })
         },
 
@@ -160,10 +166,11 @@ const ClientTransactionList = enhance((props) => {
     const openFilterDialog = toBoolean(_.get(location, ['query', CLIENT_TRANSACTION_FILTER_OPEN]))
     const openConfirmDialog = toBoolean(_.get(location, ['query', CLIENT_TRANSACTION_DELETE_DIALOG_OPEN]))
 
-    const type = _.toInteger(filter.getParam(CLIENT_TRANSACTION_FILTER_KEY.TYPE))
     const status = filter.getParam(CLIENT_TRANSACTION_FILTER_KEY.STATUS)
     const division = _.toInteger(filter.getParam(CLIENT_TRANSACTION_FILTER_KEY.DIVISION))
     const client = _.toInteger(filter.getParam(CLIENT_TRANSACTION_FILTER_KEY.CLIENT))
+    const fromDate = filter.getParam(CLIENT_TRANSACTION_FILTER_KEY.FROM_DATE)
+    const toDate = filter.getParam(CLIENT_TRANSACTION_FILTER_KEY.TO_DATE)
     const transactionID = _.toInteger(_.get(params, 'transactionId'))
 
     const confirmDialog = {
@@ -181,11 +188,14 @@ const ClientTransactionList = enhance((props) => {
 
     const filterDialog = {
         initialValues: {
-            type: type && splitToArray(type),
             division: division && splitToArray(division),
             client: client && splitToArray(client),
             status: {
                 value: status
+            },
+            createdDate: {
+                fromDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),
+                toDate: toDate && moment(toDate, 'YYYY-MM-DD')
             }
         },
         filterLoading: false,
