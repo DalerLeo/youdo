@@ -65,3 +65,11 @@ export const expenseFinance = (data) => {
     }
 }
 
+export const passwordSerializer = (data) => {
+    const {...defaultData} = data
+    return {
+        'current_password': _.get(defaultData, 'currentPassword'),
+        'new_password': _.get(defaultData, 'newPassword')
+    }
+}
+

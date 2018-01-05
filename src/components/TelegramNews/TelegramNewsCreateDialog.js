@@ -8,9 +8,10 @@ import FlatButton from 'material-ui/FlatButton'
 import Loader from '../Loader'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField} from '../ReduxForm'
+import {TextField, ImageUploadField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
+import {Tabs, Tab} from 'material-ui/Tabs'
 
 export const TELEGRAM_NEWS_CREATE_DIALOG_OPEN = 'openCreateDialog'
 export const TELEGRAM_NEWS_UPDATE_DIALOG_OPEN = 'openUpdateDialog'
@@ -94,10 +95,8 @@ const enhance = compose(
             display: 'flex',
             width: '100%',
             '& > div': {
-                padding: '10px 30px 20px',
                 width: '50%',
-                '&:first-child': {borderRight: '1px #efefef solid'},
-                '&:last-child': {marginTop: '-18px'}
+                '&:first-child': {borderRight: '1px #efefef solid'}
             }
         },
         bottomButton: {
@@ -119,6 +118,22 @@ const enhance = compose(
         actionButton: {
             fontSize: '13px !important',
             margin: '0 !important'
+        },
+        flexField: {
+            display: 'flex'
+        },
+        tabsWrapper: {
+            width: '100%'
+        },
+        tabsContainer: {
+            padding: '10px 30px 20px'
+        },
+        imageUpload: {
+            padding: '20px 30px',
+            '& .imageDropZone': {
+                margin: '0 auto',
+                width: '100%'
+            }
         }
     }),
     reduxForm({
@@ -147,36 +162,84 @@ const TelegramNewsCreateDialog = enhance((props) => {
                 </IconButton>
             </div>
             <div className={classes.bodyContent}>
-                <form onSubmit={onSubmit} className={classes.form} style={{width: '100%'}}>
-                    <div className={classes.inContent} style={{minHeight: '300px'}}>
+                <form onSubmit={onSubmit} className={classes.form}>
+                    <div className={classes.inContent}>
                         <div className={classes.loader}>
                             <Loader size={0.75}/>
                         </div>
                         <div className={classes.field}>
-                            <div>
+                            <Tabs
+                                inkBarStyle={{background: '#12aaeb'}}
+                                className={classes.tabsWrapper}
+                                contentContainerClassName={classes.tabsContainer}>
+                                <Tab label={'Ру'} disableTouchRipple={true}>
+                                    <Field
+                                        name="[translations][ru][title]"
+                                        component={TextField}
+                                        className={classes.inputFieldCustom}
+                                        label="Заголовок"
+                                        fullWidth={true}/>
+                                    <Field
+                                        name="[translations][ru][description]"
+                                        component={TextField}
+                                        className={classes.inputFieldCustom}
+                                        label="Описание"
+                                        fullWidth={true}/>
+                                    <Field
+                                        name="[translations][ru][telegraph_link]"
+                                        component={TextField}
+                                        className={classes.inputFieldCustom}
+                                        label="Ссылка на статью"
+                                        hintText="http://telegra.ph/"
+                                        fullWidth={true}/>
+                                </Tab>
+                                <Tab label={'Ўз'} disableTouchRipple={true}>
+                                    <Field
+                                        name="[translations][uz][title]"
+                                        component={TextField}
+                                        className={classes.inputFieldCustom}
+                                        label="Sarlavha"
+                                        fullWidth={true}/>
+                                    <Field
+                                        name="[translations][uz][description]"
+                                        component={TextField}
+                                        className={classes.inputFieldCustom}
+                                        label="Tavsif"
+                                        fullWidth={true}/>
+                                    <Field
+                                        name="[translations][uz][telegraph_link]"
+                                        component={TextField}
+                                        className={classes.inputFieldCustom}
+                                        label="Maqolaga havola"
+                                        hintText="http://telegra.ph/"
+                                        fullWidth={true}/>
+                                </Tab>
+                                <Tab label={'En'} disableTouchRipple={true}>
+                                    <Field
+                                        name="[translations][en][title]"
+                                        component={TextField}
+                                        className={classes.inputFieldCustom}
+                                        label="Title"
+                                        fullWidth={true}/>
+                                    <Field
+                                        name="[translations][en][description]"
+                                        component={TextField}
+                                        className={classes.inputFieldCustom}
+                                        label="Description"
+                                        fullWidth={true}/>
+                                    <Field
+                                        name="[translations][en][telegraph_link]"
+                                        component={TextField}
+                                        className={classes.inputFieldCustom}
+                                        label="Telegraph link"
+                                        hintText="http://telegra.ph/"
+                                        fullWidth={true}/>
+                                </Tab>
+                            </Tabs>
+                            <div className={classes.imageUpload}>
                                 <Field
-                                    name="title"
-                                    component={TextField}
-                                    className={classes.inputFieldCustom}
-                                    label="Заголовок"
-                                    fullWidth={true}/>
-                                <Field
-                                    name="description"
-                                    component={TextField}
-                                    className={classes.inputFieldCustom}
-                                    label="Описание"
-                                    fullWidth={true}/>
-                            </div>
-                            <div>
-                                <Field
-                                    name="content"
-                                    component={TextField}
-                                    inputStyle={{fontSize: 13}}
-                                    label="Текст статьи"
-                                    multiLine={true}
-                                    rows={1}
-                                    rowsMax={10}
-                                    fullWidth={true}/>
+                                    name="image"
+                                    component={ImageUploadField}/>
                             </div>
                         </div>
                     </div>

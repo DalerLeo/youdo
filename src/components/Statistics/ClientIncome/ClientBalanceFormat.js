@@ -18,12 +18,12 @@ const ClientBalanceFormat = enhance((props) => {
             break
         case TRANS_TYPE.ORDER_RETURN: output = <Link to={{
             pathname: sprintf(ROUTES.RETURN_ITEM_PATH, orderReturn),
-            query: {search: orderReturn}
+            query: {search: orderReturn, exclude: false}
         }} target="_blank">Возврат №{orderReturn}</Link>
             break
         case TRANS_TYPE.ORDER: output = <Link to={{
             pathname: sprintf(ROUTES.ORDER_ITEM_PATH, order),
-            query: {search: order}
+            query: {search: order, exclude: false}
         }} target="_blank">Заказ №{order}</Link>
             break
         case TRANS_TYPE.EXPENSE: output = <span>Расход</span>
@@ -32,24 +32,24 @@ const ClientBalanceFormat = enhance((props) => {
             break
         case TRANS_TYPE.CANCEL_ORDER: output = <Link to={{
             pathname: sprintf(ROUTES.ORDER_ITEM_PATH, order),
-            query: {search: order}
+            query: {search: order, exclude: false}
         }} target="_blank">Отмена заказа №{order}</Link>
             break
         case TRANS_TYPE.CANCEL_ORDER_RETURN: output = <Link to={{
             pathname: sprintf(ROUTES.RETURN_ITEM_PATH, orderReturn),
-            query: {search: orderReturn}
+            query: {search: orderReturn, exclude: false}
         }} target="_blank">Отмена возврата №{orderReturn}</Link>
             break
         case TRANS_TYPE.NONE_TYPE: output = <span>Нет типа</span>
             break
         case TRANS_TYPE.ORDER_EDIT: output = <Link to={{
             pathname: sprintf(ROUTES.ORDER_ITEM_PATH, order),
-            query: {search: order}
+            query: {search: order, exclude: false}
         }} target="_blank">Редактирование заказа №{order}</Link>
             break
         case TRANS_TYPE.ORDER_DISCOUNT: output = <Link to={{
             pathname: sprintf(ROUTES.ORDER_ITEM_PATH, order),
-            query: {search: order}
+            query: {search: order, exclude: false}
         }} target="_blank">Скидка на заказ №{order}</Link>
             break
         default: output = null

@@ -15,7 +15,7 @@ const enhance = compose(
             position: 'relative',
             width: '100%',
             '& .imageDropZone': {
-                border: '2px #ccc dashed',
+                border: '2px #efefef dashed',
                 cursor: 'pointer',
                 width: '200px',
                 height: '200px',
@@ -86,7 +86,13 @@ const ImageUploadField = ({classes, setFileUploadLoading, fileUploadLoading, set
             }
             return (
                 <p>
-                    <ImageImage style={{color: '#b9b9b9', width: '50px', height: '50px', display: 'block', margin: 'auto'}}/>
+                    <ImageImage style={{
+                        color: '#b9b9b9',
+                        width: '50px',
+                        height: '50px',
+                        display: 'block',
+                        margin: 'auto'
+                    }}/>
                     Добавьте фото
                 </p>)
         }

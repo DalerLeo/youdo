@@ -7,7 +7,15 @@ import Container from '../../Container/index'
 import injectSheet from 'react-jss'
 import {compose, withState, lifecycle} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
-import {TextField, DivisionMultiSearchField, CurrencyMultiSearchField, PaymentTypeSearchField} from '../../ReduxForm'
+import {connect} from 'react-redux'
+import {
+    TextField,
+    DivisionMultiSearchField,
+    CurrencyMultiSearchField,
+    PaymentTypeSearchField,
+    MarketTypeParentSearchField,
+    MarketTypeSearchField
+} from '../../ReduxForm'
 import StatSideMenu from '../StatSideMenu'
 import Loader from '../../Loader'
 import ToolTip from '../../ToolTip'
@@ -27,7 +35,9 @@ export const STAT_DEBTORS_FILTER_KEY = {
     DIVISION: 'division',
     PAYMENT_TYPE: 'paymentType',
     CURRENCY: 'currency',
-    SEARCH: 'search'
+    SEARCH: 'search',
+    MARKET_TYPE: 'marketType',
+    MARKET_TYPE_CHILD: 'marketTypeChild'
 }
 
 const ZERO = 0
@@ -347,6 +357,12 @@ const enhance = compose(
         form: 'StatisticsFilterForm',
         enableReinitialize: true
     }),
+    connect((state) => {
+        const typeParent = _.get(state, ['form', 'StatisticsFilterForm', 'values', 'marketTypeParent', 'value'])
+        return {
+            typeParent
+        }
+    }),
     lifecycle({
         componentDidMount () {
             const horizontalTable = this.refs.horizontalTable
@@ -388,7 +404,8 @@ const StatDebtorsGridList = enhance((props) => {
         updateRow,
         expandedTable,
         setExpandedTable,
-        filterItem
+        filterItem,
+        typeParent
     } = props
 
     const currencyList = _.get(listData, 'currencyList')
@@ -457,9 +474,25 @@ const StatDebtorsGridList = enhance((props) => {
                 name="paymentType"
                 component={PaymentTypeSearchField}
                 className={classes.inputFieldCustom}
-                label="Тип оплати"
+                label="Тип оплаты"
                 fullWidth={true}
             />
+            <Field
+                name="marketTypeParent"
+                component={MarketTypeParentSearchField}
+                className={classes.inputFieldCustom}
+                label="Тип заведения"
+                fullWidth={true}
+            />
+            {typeParent &&
+            <Field
+                name="marketTypeChild"
+                component={MarketTypeSearchField}
+                parentType={typeParent}
+                className={classes.inputFieldCustom}
+                label="Тип заведения"
+                fullWidth={true}
+            />}
             <Field
                 name="currency"
                 component={CurrencyMultiSearchField}

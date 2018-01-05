@@ -514,6 +514,7 @@ const ClientBalanceGridList = enhance((props) => {
                     }}>
                     {t('Кол-во заказов')} {orderNoSorting}
                 </td>
+                <td>{t('Сумма')}</td>
                 {_.map(head, (item, index) => {
                     const sortingType = filter.getSortingType(item.type + '_' + item.id)
                     const icon = _.isNil(sortingType)
@@ -548,6 +549,7 @@ const ClientBalanceGridList = enhance((props) => {
                     amountValues.push({amount: _.get(child, 'cash'), type: 'cash', id: _.get(child, 'id')})
                     amountValues.push({amount: _.get(child, 'bank'), type: 'bank', id: _.get(child, 'id')})
                 })
+                const totalSum = _.sumBy(amountValues, obj => _.toNumber(_.get(obj, 'amount')))
                 return (
                     <tr key={id}
                         style={id === currentRow ? styleOnHover : {}}
@@ -555,13 +557,12 @@ const ClientBalanceGridList = enhance((props) => {
                         onMouseLeave={() => setCurrentRow(null)}
                         className={classes.tableRow}>
                         <td>{orderNo}</td>
+                        <td>{numberFormat(totalSum, primaryCurrency)}</td>
                         {_.map(amountValues, (val, index) => {
                             const amount = _.toNumber(_.get(val, 'amount'))
                             return (
                                 <td key={index}
                                     style={id === currentRow ? {background: '#efefef', cursor: 'pointer'} : {cursor: 'pointer'}}
-                                    onMouseEnter={() => setCurrentRow(id)}
-                                    onMouseLeave={() => setCurrentRow(null)}
                                     onClick={() => { infoDialog.handleOpenInfoDialog(id, _.get(val, 'id'), _.get(val, 'type')) }}>
                                     <span className={(amount > ZERO) ? classes.green : (amount < ZERO) && classes.red}>{numberFormat(amount, primaryCurrency)}</span>
                                 </td>

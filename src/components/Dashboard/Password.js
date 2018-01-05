@@ -8,6 +8,7 @@ import FlatButton from 'material-ui/FlatButton'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import {reduxForm, Field} from 'redux-form'
 import {TextField} from '../ReduxForm'
+import validate from '../../helpers/validate'
 
 const enhance = compose(
     injectSheet({
@@ -78,11 +79,15 @@ const Password = enhance((props) => {
         classes,
         password1,
         password2,
-        setOpenEditPass
+        setOpenEditPass,
+        handleSubmit,
+        handleChangePassword
     } = props
 
-    const showError = password1 !== password2 && password2
+    const showError = Boolean(password1 !== password2 && password2)
     const errorText = 'Пароли не соответствуют'
+    const onSubmit = handleSubmit(() => handleChangePassword().catch(validate))
+    const disabledButton = showError || !password2
 
     return (
         <Paper zDepth={1}>
@@ -90,7 +95,7 @@ const Password = enhance((props) => {
                 <div>Изменение пароля</div>
                 <CloseIcon color={'#666'} onClick={() => { setOpenEditPass(false) }}/>
             </div>
-            <form className={classes.chart}>
+            <form className={classes.chart} onSubmit={onSubmit}>
                 <div className={classes.currentPass}>
                     <Field
                         name="currentPassword"
@@ -118,10 +123,12 @@ const Password = enhance((props) => {
                 <div className={classes.newPass}>
                     <FlatButton
                         label="Сохранить"
-                        backgroundColor={'#12aaeb'}
+                        type={'submit'}
+                        backgroundColor={disabledButton ? '#bebebe' : '#12aaeb'}
                         hoverColor={'#12aaeb'}
                         rippleColor={'#fff'}
                         labelStyle={{color: '#fff', textTransform: 'none', fontWeight: '600', verticalAlign: 'baseline'}}
+                        disabled={disabledButton}
                         fullWidth={true}/>
                 </div>
             </form>

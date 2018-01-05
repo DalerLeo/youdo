@@ -108,8 +108,7 @@ export const MenuItems = [
             {name: 'Транзакции', url: ROUTES.TRANSACTION_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_transactions'},
             {name: 'Ожидаемые расходы', url: ROUTES.PENDING_EXPENSES_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_pending_expenses'},
             {name: 'Ожидаeмые оплаты', url: ROUTES.PENDING_PAYMENTS_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_pending_payments'},
-            {name: 'Баланс клиентов', url: ROUTES.CLIENT_BALANCE_LIST_URL, permission: 'frontend_client_balance', query: {pageSize: 25}},
-            {name: 'Транзакции клиентов', url: ROUTES.CLIENT_TRANSACTION_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_client_transaction'}
+            {name: 'Баланс клиентов', url: ROUTES.CLIENT_BALANCE_LIST_URL, permission: 'frontend_client_balance', query: {pageSize: 25}}
         ]
     },
     {
@@ -167,7 +166,8 @@ export const MenuItems = [
         url: ROUTES.TELEGRAM_LIST_URL,
         childs: [
             {name: 'Пользователи', url: ROUTES.TELEGRAM_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_telegram_users'},
-            {name: 'Новости', url: ROUTES.TELEGRAM_NEWS_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_telegram_news'}
+            {name: 'Новости', url: ROUTES.TELEGRAM_NEWS_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_telegram_news'},
+            {name: 'Оплаты', url: ROUTES.CLIENT_TRANSACTION_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_client_transaction'}
         ]
     },
     {
