@@ -538,6 +538,7 @@ const ClientBalanceGridList = enhance((props) => {
                         </td>
                     )
                 })}
+                <td>{t('Сумма')}</td>
             </tr>
 
             {_.map(_.get(listData, 'data'), (item) => {
@@ -548,6 +549,7 @@ const ClientBalanceGridList = enhance((props) => {
                     amountValues.push({amount: _.get(child, 'cash'), type: 'cash', id: _.get(child, 'id')})
                     amountValues.push({amount: _.get(child, 'bank'), type: 'bank', id: _.get(child, 'id')})
                 })
+                const totalSum = _.sumBy(amountValues, obj => _.toNumber(_.get(obj, 'amount')))
                 return (
                     <tr key={id}
                         style={id === currentRow ? styleOnHover : {}}
@@ -560,13 +562,14 @@ const ClientBalanceGridList = enhance((props) => {
                             return (
                                 <td key={index}
                                     style={id === currentRow ? {background: '#efefef', cursor: 'pointer'} : {cursor: 'pointer'}}
-                                    onMouseEnter={() => setCurrentRow(id)}
-                                    onMouseLeave={() => setCurrentRow(null)}
                                     onClick={() => { infoDialog.handleOpenInfoDialog(id, _.get(val, 'id'), _.get(val, 'type')) }}>
                                     <span className={(amount > ZERO) ? classes.green : (amount < ZERO) && classes.red}>{numberFormat(amount, primaryCurrency)}</span>
                                 </td>
                             )
                         })}
+                        <td>
+                            {numberFormat(totalSum, primaryCurrency)}
+                        </td>
                     </tr>
                 )
             })}

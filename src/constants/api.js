@@ -19,7 +19,7 @@ export const CLIENT_TRANSACTION_RETURN_UPDATE = 'sales/order_return/%d/from_clie
 export const CLIENT_TRANSACTION_LIST = `/${CLIENT_TRANSACTION}/`
 export const CLIENT_TRANSACTION_ITEM = `/${CLIENT_TRANSACTION}/%d/`
 export const CLIENT_TRANSACTION_SEND = '/transfer/'
-export const CLIENT_TRANSACTION_DELETE = `/${CLIENT_TRANSACTION}/%d/`
+export const CLIENT_TRANSACTION_DELETE = `/${CLIENT_TRANSACTION}/%d/cancel/`
 export const CLIENT_TRANSACTION_RESEND = 'telegram/resend_client_transaction/'
 
 export const EQUIPMENT = 'manufacture/equipment'
@@ -517,3 +517,8 @@ export const TELEGRAM_NEWS_CREATE = `/${TELEGRAM_NEWS}/`
 export const TELEGRAM_NEWS_DELETE = `/${TELEGRAM_NEWS}/%d/`
 export const TELEGRAM_NEWS_LIST = `/${TELEGRAM_NEWS}/`
 export const TELEGRAM_NEWS_ITEM = `/${TELEGRAM_NEWS}/%d/`
+
+export const WIDGETS = 'main/widget'
+export const WIDGETS_LIST = `/${WIDGETS}/`
+
+export const DASHBOARD_CHANGE_PASSWORD = `${USERS}/update_password/`

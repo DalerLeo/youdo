@@ -88,3 +88,36 @@ export const statFinanceExpenseFetchAction = (filter) => {
         payload
     }
 }
+
+export const widgetsListFetchAction = () => {
+    const payload = axios()
+        .get(API.WIDGETS_LIST)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.WIDGETS_LIST,
+        payload
+    }
+}
+
+export const changePasswordFetchAction = (formValues) => {
+    const requestData = serializers.passwordSerializer(formValues)
+    const payload = axios()
+        .post(API.DASHBOARD_CHANGE_PASSWORD, requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.DASHBOARD_CHANGE_PASSWORD,
+        payload
+    }
+}

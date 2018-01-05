@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React from 'react'
 import injectSheet from 'react-jss'
 import {compose, withState} from 'recompose'
@@ -6,6 +7,7 @@ import WidgetIcon from 'material-ui/svg-icons/image/tune'
 import Drawer from 'material-ui/Drawer'
 import FlatButton from 'material-ui/FlatButton'
 import {CheckBox} from '../ReduxForm'
+import Loader from '../Loader'
 
 export const WIDGETS_FORM_KEY = {
     SALES: 'sales',
@@ -17,6 +19,12 @@ export const WIDGETS_FORM_KEY = {
 
 const enhance = compose(
     injectSheet({
+        loader: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '100px 0'
+        },
         widgetsWrapper: {
             '& header': {
                 padding: '20px 30px',
@@ -65,7 +73,9 @@ const Widgets = enhance((props) => {
         openDrawer,
         setOpenDrawer,
         submitForm,
-        handleSubmit
+        handleSubmit,
+        list,
+        loading
     } = props
 
     return (
@@ -81,38 +91,24 @@ const Widgets = enhance((props) => {
                     <header>
                         <h4>Настройка виджетов</h4>
                     </header>
-                    <div className={classes.switches}>
-                        <div className={classes.switch}>
-                            <Field
-                                label="Продажи"
-                                name="sales"
-                                component={CheckBox}/>
+                    {loading
+                        ? <div className={classes.loader}>
+                            <Loader size={0.75}/>
                         </div>
-                        <div className={classes.switch}>
-                            <Field
-                                label="Заказы и возвраты"
-                                name="orders"
-                                component={CheckBox}/>
-                        </div>
-                        <div className={classes.switch}>
-                            <Field
-                                label="Агенты"
-                                name="agents"
-                                component={CheckBox}/>
-                        </div>
-                        <div className={classes.switch}>
-                            <Field
-                                label="Оборот"
-                                name="finance"
-                                component={CheckBox}/>
-                        </div>
-                        <div className={classes.switch}>
-                            <Field
-                                label="Валюты"
-                                name="currency"
-                                component={CheckBox}/>
-                        </div>
-                    </div>
+                        : <div className={classes.switches}>
+                            {_.map(list, (item) => {
+                                const name = _.get(item, 'name')
+                                const keyname = _.get(item, 'keyName')
+                                return (
+                                    <div key={keyname} className={classes.switch}>
+                                        <Field
+                                            label={name}
+                                            name={keyname}
+                                            component={CheckBox}/>
+                                    </div>
+                                )
+                            })}
+                        </div>}
                     <footer>
                         <FlatButton
                             label="Применить"

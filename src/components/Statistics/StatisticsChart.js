@@ -136,7 +136,7 @@ const StatisticsChart = enhance((props) => {
             },
             name: secondaryText,
             data: merged ? clientOut : secondaryValues,
-            color: '#e37676'
+            color: '#ff4a4a'
 
         }]
     }

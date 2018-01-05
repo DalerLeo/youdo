@@ -9,7 +9,11 @@ import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
-import {TransactionTypeMultiSearchField, DivisionMultiSearchField, UsersMultiSearchField} from '../ReduxForm'
+import {
+    DivisionMultiSearchField,
+    UsersMultiSearchField,
+    DateToDateField
+} from '../ReduxForm'
 import ClientTransactionStatusSearchField from '../ReduxForm/ClientTransactionStatusSearchField'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
@@ -18,9 +22,10 @@ export const CLIENT_TRANSACTION_FILTER_OPEN = 'openFilterDialog'
 
 export const CLIENT_TRANSACTION_FILTER_KEY = {
     DIVISION: 'division',
-    TYPE: 'type',
     CLIENT: 'client',
-    STATUS: 'status'
+    STATUS: 'status',
+    FROM_DATE: 'fromDate',
+    TO_DATE: 'toDate'
 }
 
 const enhance = compose(
@@ -156,10 +161,10 @@ const ClientTransactionFilterForm = enhance((props) => {
                     </IconButton>
                 </div>
                 <form onSubmit={handleSubmit(filterDialog.handleSubmitFilterDialog)}>
-                    <Field className={classes.inputFieldCustom} name="type" component={TransactionTypeMultiSearchField} label="Тип транзакции"/>
                     <Field className={classes.inputFieldCustom} name="division" component={DivisionMultiSearchField} label="Организация"/>
                     <Field className={classes.inputFieldCustom} name="client" component={UsersMultiSearchField} label="Клиент"/>
                     <Field className={classes.inputFieldCustom} name="status" component={ClientTransactionStatusSearchField} label="Статус"/>
+                    <Field className={classes.inputFieldCustom} name="createdDate" component={DateToDateField} label="Период создания"/>
 
                     <RaisedButton
                         type="submit"

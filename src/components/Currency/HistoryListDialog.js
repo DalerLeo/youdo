@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
@@ -11,6 +10,7 @@ import Loader from '../Loader'
 import {Row, Col} from 'react-flexbox-grid'
 import Pagination from '../GridList/GridListNavPagination'
 import getConfig from '../../helpers/getConfig'
+import dateFormat from '../../helpers/dateFormat'
 import numberFormat from '../../helpers/numberFormat.js'
 
 const enhance = compose(
@@ -150,7 +150,7 @@ const HistoryListDialog = enhance((props) => {
     const reversedRate = !getConfig('REVERSED_CURRENCY_RATE')
     const historyList = _.map(_.get(data, ['data', 'results']), (item) => {
         const id = _.get(item, 'id')
-        const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+        const createdDate = dateFormat(_.get(item, 'createdDate'), true)
         const rate = numberFormat(_.get(item, 'rate')) || 'N/A'
         return (
             <Row key={id} className="dottedList">
