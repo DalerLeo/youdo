@@ -31,6 +31,8 @@ import {
 } from '../../actions/telegram'
 import {openErrorAction} from '../../actions/error'
 import {openSnackbarAction} from '../../actions/snackbar'
+import t from '../../helpers/translate'
+
 const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
@@ -124,10 +126,10 @@ const enhance = compose(
                 .then(() => {
                     setOpenConfirmDialog(false)
                     dispatch(telegramListFetchAction(filter))
-                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно удалено')}))
                 })
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
+                    return dispatch(openSnackbarAction({message: t('Ошибка при удалении')}))
                 })
         },
 
@@ -147,7 +149,7 @@ const enhance = compose(
 
             return dispatch(telegramCreateAction(_.get(createForm, ['values'])))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     dispatch(telegramListFetchAction(filter))
@@ -190,7 +192,7 @@ const enhance = compose(
                         })
                 })
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push(filter.createURL({[TELEGRAM_UPDATE_DIALOG_OPEN]: false}))
@@ -215,7 +217,7 @@ const enhance = compose(
             textField.select()
             const copy = document.execCommand('copy')
             textField.remove()
-            copy ? dispatch(openSnackbarAction({message: 'Cкопировано'})) : null
+            copy ? dispatch(openSnackbarAction({message: t('Cкопировано')})) : null
         },
         handleCopyLinkInList: props => (token) => {
             const {dispatch} = props
@@ -226,7 +228,7 @@ const enhance = compose(
             textField.select()
             const copy = document.execCommand('copy')
             textField.remove()
-            copy ? dispatch(openSnackbarAction({message: 'Ссылка скопирована'})) : null
+            copy ? dispatch(openSnackbarAction({message: t('Ссылка скопирована')})) : null
         },
         handleOpenFilterDialog: props => () => {
             const {location: {pathname}, filter} = props

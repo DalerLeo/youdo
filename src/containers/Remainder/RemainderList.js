@@ -28,6 +28,7 @@ import {
     remainderReversedListFetchAction,
     addProductsListAction
 } from '../../actions/remainder'
+import t from '../../helpers/translate'
 
 const ZERO = 0
 const enhance = compose(
@@ -250,7 +251,7 @@ const enhance = compose(
             const {location: {pathname}, dispatch, discardForm, filter} = props
             return dispatch(remainderDiscardAction(_.get(discardForm, ['values'])))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно списано'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно списано')}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[REMAINDER_DISCARD_DIALOG_OPEN]: false})})

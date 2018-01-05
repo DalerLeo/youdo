@@ -8,6 +8,7 @@ import injectSheet from 'react-jss'
 import {compose, withHandlers, withState} from 'recompose'
 import {Tabs, Tab} from 'material-ui/Tabs'
 import * as TAB from '../../constants/stockReceiveTab'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -68,11 +69,11 @@ const StockReceiveTabList = enhance((props) => {
             className={classes.tabs}
             value={currentTab}
             onChange={(value) => { handleTabChange(value) }}>
-            <Tab label="Приемка" value={TAB.STOCK_RECEIVE_TAB_RECEIVE}/>
-            <Tab label="Передача" value={TAB.STOCK_RECEIVE_TAB_TRANSFER}/>
-            <Tab label="Движение товаров" value={TAB.STOCK_RECEIVE_TAB_OUT_HISTORY}/>
-            <Tab label="История Приемки" value={TAB.STOCK_RECEIVE_TAB_HISTORY}/>
-            <Tab label="История Передачи" value={TAB.STOCK_RECEIVE_TAB_TRANSFER_HISTORY}/>
+            <Tab label={t('Приемка')} value={TAB.STOCK_RECEIVE_TAB_RECEIVE}/>
+            <Tab label={t('Передача')} value={TAB.STOCK_RECEIVE_TAB_TRANSFER}/>
+            <Tab label={t('Движение товаров')} value={TAB.STOCK_RECEIVE_TAB_OUT_HISTORY}/>
+            <Tab label={t('История Приемки')} value={TAB.STOCK_RECEIVE_TAB_HISTORY}/>
+            <Tab label={t('История Передачи')} value={TAB.STOCK_RECEIVE_TAB_TRANSFER_HISTORY}/>
         </Tabs>
     )
 

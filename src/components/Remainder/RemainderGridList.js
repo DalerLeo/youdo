@@ -19,6 +19,7 @@ import RemainderReservedDialog from './RemainderReservedDialog'
 import GridList from '../GridList'
 import AddProductDialog from './AddProductsDialog'
 import FlatButton from 'material-ui/FlatButton'
+import t from '../../helpers/translate'
 
 const ZERO = 0
 const enhance = compose(
@@ -230,37 +231,37 @@ const headerItems = [
     {
         name: 'product_name',
         sorting: true,
-        title: 'Товар',
+        title: t('Товар'),
         xs: 2
     },
     {
         name: 'productType',
         sorting: false,
-        title: 'Тип товара',
+        title: t('Тип товара'),
         xs: 2
     },
     {
         sorting: true,
         name: 'balance',
-        title: 'Остатки',
+        title: t('Остатки'),
         xs: 2
     },
     {
         sorting: true,
         name: 'defect',
-        title: 'Бракованные товары',
+        title: t('Бракованные товары'),
         xs: 2
     },
     {
         sorting: true,
         name: 'reserved',
-        title: 'Забронированые',
+        title: t('Забронированые'),
         xs: 2
     },
     {
         sorting: true,
         name: 'available',
-        title: 'Доступные товары',
+        title: t('Доступные товары'),
         xs: 2
     }
 ]
@@ -344,11 +345,11 @@ const RemainderGridList = enhance((props) => {
 
             <div className={classes.buttons}>
                 <FlatButton
-                    label={'Передача товаров'}
+                    label={t('Передача товаров')}
                     labelStyle={{color: '#12aaeb'}}
                     onClick={transferDialog.handleOpenTransferDialog}/>
                 <FlatButton
-                    label={'Списание товара'}
+                    label={t('Списание товара')}
                     labelStyle={{color: '#e57373'}}
                     onClick={discardDialog.handleOpenDiscardDialog}/>
             </div>

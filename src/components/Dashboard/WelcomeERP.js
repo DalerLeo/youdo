@@ -2,6 +2,7 @@ import React from 'react'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import ChoosMenu from '../../components/Images/choose-menu.png'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet({

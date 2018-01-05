@@ -30,7 +30,6 @@ import ExpensiveCategoryCustomSearchField from '../ReduxForm/ExpenseCategory/Exp
 import {openErrorAction} from '../../actions/error'
 import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
 import numberFormat from '../../helpers/numberFormat'
-
 const validateForm = values => {
     const errors = {}
     if (values.showClients && values.amount && !values.client) {
@@ -370,7 +369,7 @@ const TransactionCreateDialog = enhance((props) => {
                 : isSalary ? {width: '800px', maxWidth: 'none'} : {width: '400px'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>{isExpense ? 'Расход' : 'Приход'}</span>
+                <span>{isExpense ? t('Расход') : t('Приход')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -387,7 +386,7 @@ const TransactionCreateDialog = enhance((props) => {
                                     name="cashbox"
                                     className={classes.inputFieldCustom}
                                     component={CashboxSearchField}
-                                    label="Касса"/>
+                                    label={t('Касса')}/>
                             </div>
                             : <div className={classes.itemList}>
                                 <div className={classes.label}>Касса:</div>
@@ -399,27 +398,27 @@ const TransactionCreateDialog = enhance((props) => {
                             component={DateField}
                             fullWidth={true}
                             container="inline"
-                            label="Дата создания"/>
+                            label={t('Дата создания')}/>
 
                         {isExpense
                             ? <div className={classes.field}>
                                 <Field
                                     name="expanseCategory"
                                     component={ExpensiveCategoryCustomSearchField}
-                                    label="Категория расхода"
+                                    label={t('Категория расхода')}
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
                                 {showClients ? <div>
                                     <Field
                                         name="client"
                                         component={ClientSearchField}
-                                        label="Клиент"
+                                        label={t('Клиент')}
                                         className={classes.inputFieldCustom}
                                         fullWidth={true}/>
                                     {divisionStatus && <Field
                                         name="division"
                                         component={DivisionSearchField}
-                                        label="Организация"
+                                        label={t('Организация')}
                                         className={classes.inputFieldCustom}
                                         fullWidth={true}/>}
                                 </div> : null}
@@ -436,7 +435,7 @@ const TransactionCreateDialog = enhance((props) => {
                                             <Field
                                                 name="amount"
                                                 component={TextField}
-                                                label="Сумма"
+                                                label={t('Сумма')}
                                                 normalize={normalizeNumber}
                                                 className={classes.inputFieldCustom}
                                                 fullWidth={true}/>
@@ -448,7 +447,7 @@ const TransactionCreateDialog = enhance((props) => {
                                         <Field
                                             name="custom_rate"
                                             component={TextField}
-                                            label={'Курс ' + primaryCurrency}
+                                            label={t('Курс ') + primaryCurrency}
                                             className={classes.inputFieldCustom}
                                             fullWidth={true}/>}
                                     </div>
@@ -461,7 +460,7 @@ const TransactionCreateDialog = enhance((props) => {
                                     name="comment"
                                     style={{top: '-20px', lineHeight: '20px', fontSize: '13px'}}
                                     component={TextField}
-                                    label="Комментарий..."
+                                    label={t('Комментарий') + '...'}
                                     multiLine={true}
                                     rows={1}
                                     rowsMax={2}
@@ -486,7 +485,7 @@ const TransactionCreateDialog = enhance((props) => {
                                     {divisionStatus ? <Field
                                         name="division"
                                         component={DivisionSearchField}
-                                        label="Организация"
+                                        label={t('Организация')}
                                         className={classes.inputFieldCustom}
                                         fullWidth={true}/> : null}
                                 </div>
@@ -494,7 +493,7 @@ const TransactionCreateDialog = enhance((props) => {
                                     ? <Field
                                             name="provider"
                                             component={ProviderSearchField}
-                                            label="Поставщик"
+                                            label={t('Поставщик')}
                                             className={classes.inputFieldCustom}
                                             fullWidth={true}/>
                                 : null}
@@ -503,7 +502,7 @@ const TransactionCreateDialog = enhance((props) => {
                                         <Field
                                             name="amount"
                                             component={TextField}
-                                            label="Сумма"
+                                            label={t('Сумма')}
                                             normalize={normalizeNumber}
                                             className={classes.inputFieldCustom}
                                             fullWidth={true}/>
@@ -514,21 +513,21 @@ const TransactionCreateDialog = enhance((props) => {
                                             ? <Field
                                                 name="custom_rate"
                                                 component={TextField}
-                                                label={'Курс ' + primaryCurrency}
+                                                label={t('Курс ') + primaryCurrency}
                                                 className={classes.inputFieldCustom}
                                                 normalize={normalizeNumber}
                                                 fullWidth={true}/> : null}
                                     </div>
                                 </div>
                                 {(convert && rate && primaryCurrency !== currency)
-                                    ? <div className={classes.convert}>После конвертации:
+                                    ? <div className={classes.convert}>{t('После конвертации')}:
                                         <strong> {convert} {primaryCurrency}</strong>
                                     </div> : null}
                                 <Field
                                     name="comment"
                                     style={{top: '-20px', lineHeight: '20px', fontSize: '13px'}}
                                     component={TextField}
-                                    label="Комментарий..."
+                                    label={t('Комментарий') + '...'}
                                     multiLine={true}
                                     rows={1}
                                     rowsMax={3}
@@ -537,14 +536,14 @@ const TransactionCreateDialog = enhance((props) => {
                     </div>
                     {isSalary &&
                     <div className={classes.salaryWrapper}>
-                        <div className={classes.subTitle}>Список сотрудников</div>
+                        <div className={classes.subTitle}>{t('Список сотрудников')}</div>
                         <div className={classes.searchWrapper}>
                             <form onSubmit={onSubmit}>
                                 <div className={classes.search}>
                                     <div className={classes.searchField}>
                                         <input
                                             type="text"
-                                            placeholder="Поиск сотрудников..."
+                                            placeholder={t('Поиск сотрудников...')}
                                             onChange={handleSearch}/>
                                         <div className={classes.searchButton}>
                                             <SearchIcon style={iconStyle}/>
@@ -586,10 +585,10 @@ const TransactionCreateDialog = enhance((props) => {
                 </form>
                 <div className={classes.bottomButton}>
                     {isSalary && <div className={classes.commentField}>
-                        Сумма расхода: <b>{numberFormat(totalStafAmount, _.get(cashbox, ['currency', 'name']))}</b>
+                        {t('Сумма расхода')}: <b>{numberFormat(totalStafAmount, _.get(cashbox, ['currency', 'name']))}</b>
                     </div>}
                     <FlatButton
-                        label="Сохранить"
+                        label={t('Сохранить')}
                         className={classes.actionButton}
                         labelStyle={{fontSize: '13px'}}
                         primary={true}

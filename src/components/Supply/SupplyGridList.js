@@ -26,6 +26,7 @@ import numberFormat from '../../helpers/numberFormat'
 import dateFormat from '../../helpers/dateFormat'
 import {connect} from 'react-redux'
 import AddProductDialog from '../Order/OrderAddProductsDialog'
+import t from '../../helpers/translate'
 
 const listHeader = [
     {
@@ -37,38 +38,38 @@ const listHeader = [
     {
         sorting: false,
         name: 'name',
-        title: 'Поставщик',
+        title: t('Поставщик'),
         xs: 2
     },
     {
         sorting: false,
         name: 'stock',
-        title: 'Склад',
+        title: t('Склад'),
         xs: 2
     },
     {
         sorting: true,
         name: 'dateDelivery',
-        title: 'Дата поставки',
+        title: t('Дата поставки'),
         xs: 1
     },
     {
         sorting: true,
         name: 'paymentType',
-        title: 'Тип оплаты',
+        title: t('Тип оплаты'),
         xs: 1
     },
     {
         sorting: true,
         name: 'contract',
-        title: 'Номер договора',
+        title: t('Номер договора'),
         xs: 1
     },
     {
         sorting: true,
         name: 'totalCost',
         alignRight: true,
-        title: 'Цена заказа',
+        title: t('Цена заказа'),
         xs: 1
     },
     {
@@ -249,10 +250,10 @@ const SupplyGridList = enhance((props) => {
                 <Col xs={1}>{paymentType}</Col>
                 <Col xs={1}>{contract}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>{totalCost}</Col>
-                <Col xs={1}>{status === PENDING ? (<span><i className={classes.waiting}/> ожидает</span>)
-                    : ((status === IN_PROGRESS) ? (<span><i className={classes.begin}/> начался</span>)
-                        : (status === COMPLETED) ? (<span><i className={classes.success}/> принят</span>)
-                            : (<span><i className={classes.error}/> отменен</span>))}</Col>
+                <Col xs={1}>{status === PENDING ? (<span><i className={classes.waiting}/> {t('ожидает')}</span>)
+                    : ((status === IN_PROGRESS) ? (<span><i className={classes.begin}/> {t('начался')}</span>)
+                        : (status === COMPLETED) ? (<span><i className={classes.success}/> {t('принят')}</span>)
+                            : (<span><i className={classes.error}/> {t('отменен')}</span>))}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>{acceptedCost}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>{defectedCost}</Col>
             </Row>
@@ -273,7 +274,7 @@ const SupplyGridList = enhance((props) => {
             <SubMenu url={ROUTES.SUPPLY_LIST_URL}/>
 
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить поставку">
+                <Tooltip position="left" text={t('Добавить поставку')}>
                     <FloatingActionButton
                         mini={true}
                         zDepth={1}
@@ -326,8 +327,7 @@ const SupplyGridList = enhance((props) => {
 
             {(detailData.data && isAdmin && (detailStatus === IN_PROGRESS || detailStatus === COMPLETED)) ? <ConfirmDialog
                 type="cancel"
-                message={'Склад уже принял данную поставку. Отмена приведет к списанию товаров из' +
-                    ' склада. ОТМЕНА НЕ РЕКОМЕНДУЕТСЯ!'}
+                message={t('Склад уже принял данную поставку. Отмена приведет к списанию товаров из склада. ОТМЕНА НЕ РЕКОМЕНДУЕТСЯ!')}
                 warning={true}
                 onClose={confirmDialog.handleCloseConfirmDialog}
                 onSubmit={confirmDialog.handleSendConfirmDialog}
@@ -336,7 +336,7 @@ const SupplyGridList = enhance((props) => {
 
             : (detailData.data && <ConfirmDialog
                 type="cancel"
-                message={'Поставка № ' + _.get(detailData, ['data', 'id'])}
+                message={t('Поставка') + '№ ' + _.get(detailData, ['data', 'id'])}
                 onClose={confirmDialog.handleCloseConfirmDialog}
                 onSubmit={confirmDialog.handleSendConfirmDialog}
                 open={confirmDialog.openConfirmDialog}
@@ -344,7 +344,7 @@ const SupplyGridList = enhance((props) => {
 
             {confirmExpenseDialog.removeId && <ConfirmDialog
                 type="delete"
-                message={'Дополнительный расход: ' + expComment}
+                message={t('Дополнительный расход: ') + expComment}
                 onClose={confirmExpenseDialog.handleCloseConfirmExpenseDialog}
                 onSubmit={confirmExpenseDialog.handleSendConfirmExpenseDialog}
                 open={confirmExpenseDialog.openConfirmExpenseDialog}
@@ -352,7 +352,7 @@ const SupplyGridList = enhance((props) => {
 
             <ConfirmDialog
                 type="submit"
-                message={' Синхронизировать колво. товаров с приёмкой '}
+                message={t('Синхронизировать колво. товаров с приёмкой')}
                 onClose={confirmSyncDialog.handleCloseConfirmDialog}
                 onSubmit={confirmSyncDialog.handleSubmitConfirmDialog}
                 open={confirmSyncDialog.openSyncConfirmDialog}

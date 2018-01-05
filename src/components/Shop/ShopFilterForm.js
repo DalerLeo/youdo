@@ -21,6 +21,7 @@ import {
     CheckBox} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
+import t from '../../helpers/translate'
 
 export const SHOP_FILTER_OPEN = 'openFilterDialog'
 
@@ -140,7 +141,7 @@ const ShopFilterForm = enhance((props) => {
         if (filterCounts) {
             return (
                 <div className={classes.afterFilter}>
-                    <div>Фильтр: {filterCounts} элемента</div>
+                    <div>{t('Фильтр')}: {filterCounts} {t('элемента')}</div>
                     <div>
                         <IconButton onTouchTap={filterDialog.handleOpenFilterDialog}>
                             <BorderColorIcon color="#8f8f8f" />
@@ -158,7 +159,7 @@ const ShopFilterForm = enhance((props) => {
                 <Link
                     className={classes.arrow}
                     onTouchTap={filterDialog.handleOpenFilterDialog}>
-                    <div>Показать фильтр <KeyboardArrowDown color="#12aaeb" /></div>
+                    <div>{t('Показать фильтр')} <KeyboardArrowDown color="#12aaeb" /></div>
                 </Link>
             </div>
         )
@@ -168,7 +169,7 @@ const ShopFilterForm = enhance((props) => {
         <div>
             <Paper className={classes.wrapper} zDepth={2}>
                 <div className={classes.header}>
-                    <span className={classes.title}>Фильтр</span>
+                    <span className={classes.title}>{t('Фильтр')}</span>
                     <IconButton onTouchTap={filterDialog.handleCloseFilterDialog}>
                         <CloseIcon className={classes.icon} />
                     </IconButton>
@@ -178,14 +179,14 @@ const ShopFilterForm = enhance((props) => {
                         className={classes.inputFieldCustom}
                         name="marketTypeParent"
                         component={MarketTypeParentSearchField}
-                        label="Тип магазина"
+                        label={t('Тип магазина')}
                         fullWidth={true}/>
                     {typeParent
                     ? <Field
                         className={classes.inputFieldCustom}
                         name="marketType"
                         component={MarketTypeSearchField}
-                        label="Подкатегория"
+                        label={t('Подкатегория')}
                         parentType={typeParent}
                         fullWidth={true}/>
                     : null}
@@ -193,38 +194,38 @@ const ShopFilterForm = enhance((props) => {
                         className={classes.inputFieldCustom}
                         name="isActive"
                         component={ShopStatusSearchField}
-                        label="Статус"
+                        label={t('Статус')}
                         fullWidth={true}/>
                     <Field
                         className={classes.inputFieldCustom}
                         name="createdBy"
                         component={UsersMultiSearchField}
-                        label="Создал"/>
+                        label={t('Создал')}/>
                     <Field
                         className={classes.inputFieldCustom}
                         name="client"
                         component={ClientMultiSearchField}
-                        label="Клиент"/>
+                        label={t('Клиент')}/>
                     <Field className={classes.inputFieldCustom}
                            name="zone"
                            component={ZoneMultiSearchField}
-                           label="Зона"/>
+                           label={t('Зона')}/>
                     <Field
                         className={classes.inputFieldCustom}
                         name="frequency"
                         component={FrequencySearchField}
-                        label="Частота посещений"/>
+                        label={t('Частота посещений')}/>
                     <Field
                         className={classes.inputFieldCustom}
                         name="nullBorder"
                         component={CheckBox}
-                        label="Зона не определена"/>
+                        label={t('Зона не определена')}/>
 
                     <RaisedButton
                         type="submit"
                         primary={true}
                         buttonStyle={{color: '#fff'}}
-                        label="Применить"
+                        label={t('Применить')}
                         labelStyle={{fontSize: '13px'}}
                         style={{marginTop: '15px'}}>
                     </RaisedButton>

@@ -5,6 +5,7 @@ import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import {reduxForm} from 'redux-form'
+import t from '../../helpers/translate'
 
 export const DELETE_DIALOG_OPEN = 'openDeleteDialog'
 
@@ -64,20 +65,20 @@ const DeleteDialog = enhance((props) => {
             className={classes.dialog}
             bodyClassName={classes.body}>
                     <div>
-                        <h4 className={classes.title}>ПОДТВЕРЖДЕНИЕ УДАЛЕНИЯ</h4>
+                        <h4 className={classes.title}>{t('ПОДТВЕРЖДЕНИЕ УДАЛЕНИЯ')}</h4>
                     </div>
                         IDS: {selects}
                     <div>
                         <div>
                             <FlatButton
-                                label="СВЕРНУТЬ"
+                                label={t('СВЕРНУТЬ')}
                                 primary={true}
                                 labelStyle={{fontSize: '13px'}}
                                 onTouchTap={onClose}
                             />
 
                             <FlatButton
-                                label="УДАЛИТЬ"
+                                label={t('УДАЛИТЬ')}
                                 labelStyle={{fontSize: '13px'}}
                                 primary={true}
                                 type="submit"

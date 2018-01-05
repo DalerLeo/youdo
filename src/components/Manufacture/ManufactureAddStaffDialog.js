@@ -13,6 +13,7 @@ import {
     UsersSearchField
 } from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
+import t from '../../helpers/translate'
 
 export const OPEN_USER_CREATE_DIALOG = 'openCreateDialog'
 

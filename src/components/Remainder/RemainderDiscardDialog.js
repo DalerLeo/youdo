@@ -14,6 +14,7 @@ import TextField from '../ReduxForm/Basic/TextField'
 import RemainderListProductField from '../ReduxForm/Remainder/RemainderDiscardProductListField'
 import {StockSearchField} from '../ReduxForm'
 import Tooltip from '../ToolTip'
+import t from '../../helpers/translate'
 
 export const REMAINDER_DISCARD_DIALOG_OPEN = 'openDiscardDialog'
 
@@ -221,7 +222,7 @@ const RemainderDiscardDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.noPadding}>
             <div className={classes.title}>
-                <span>Списание товара</span>
+                <span>{t('Списание товара')}</span>
                 <IconButton
                     iconStyle={iconStyle.icon}
                     style={iconStyle.button}
@@ -237,13 +238,13 @@ const RemainderDiscardDialog = enhance((props) => {
                             className={classes.inputFieldCustom}
                             name="fromStock"
                             component={StockSearchField}
-                            label="С какого склада"
+                            label={t('С какого склада')}
                         />
                         <Field
                             style={{marginTop: '-20px', lineHeight: '20px', fontSize: '13px'}}
                             name="comment"
                             component={TextField}
-                            label="Оставить комментарий..."
+                            label={t('Оставить комментарий') + '...'}
 
                             multiLine={true}
                             rows={1}
@@ -254,15 +255,15 @@ const RemainderDiscardDialog = enhance((props) => {
                         <div className={classes.addButtons}>
                             <strong>Список товаров</strong>
                             {!fromStock
-                                ? <Tooltip text={'Выберите склад'} position="right">
+                                ? <Tooltip text={t('Выберите склад')} position="right">
                                     <FlatButton
                                         disabled={true}
-                                        label="добавить товары"
+                                        label={t('добавить товары')}
                                         labelStyle={{fontSize: '13px', textTransform: 'unset'}}/>
                                 </Tooltip>
                                 : <div>
                                     <FlatButton
-                                        label="добавить товары"
+                                        label={t('добавить товары')}
                                         style={{color: '#12aaeb'}}
                                         labelStyle={{fontSize: '13px', textTransform: 'unset'}}
                                         className={classes.span}
@@ -278,7 +279,7 @@ const RemainderDiscardDialog = enhance((props) => {
                 </div>
                 <div className={classes.bottomButton}>
                     <FlatButton
-                        label="Списать"
+                        label={t('Списать')}
                         className={classes.actionButton}
                         primary={true}
                         type="submit"

@@ -12,6 +12,7 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import AcceptClientTransactionCashBoxSearchField from '../ReduxForm/Cashbox/AcceptClientTransactionCashBoxSearchField'
 import FlatButton from 'material-ui/FlatButton'
 import numberFormat from '../../helpers/numberFormat'
+import t from '../../helpers/translate'
 
 const ZERO = 0
 
@@ -155,7 +156,7 @@ const AcceptClientTransactionDialog = enhance((props) => {
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>Принять наличные {amount}</span>
+                <span>{t('Принять наличные')} {amount}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -167,7 +168,7 @@ const AcceptClientTransactionDialog = enhance((props) => {
                       </div>
                     : <form onSubmit={onSubmit}>
                         <div className={classes.inContent} style={{minHeight: 'initial'}}>
-                            <div>Агент: <span>{user}</span></div>
+                            <div>{t('Агент')}: <span>{user}</span></div>
                             <div className={classes.list}>
                                 <Field
                                     name="cashBox"
@@ -175,13 +176,13 @@ const AcceptClientTransactionDialog = enhance((props) => {
                                     data-currency={currency}
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}
-                                    label="Кассы"
+                                    label={t('Кассы')}
                                 />
                             </div>
                         </div>
                         <div className={classes.bottomButton}>
                             <FlatButton
-                                label="Сохранить"
+                                label={t('Сохранить')}
                                 labelStyle={{fontSize: '13px'}}
                                 primary={true}
                                 type="submit"

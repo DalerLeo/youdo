@@ -17,6 +17,7 @@ import Tooltip from '../ToolTip'
 import {Link} from 'react-router'
 import ProviderDetail from './ProviderDetails'
 import dateFormat from '../../helpers/dateFormat'
+import t from '../../helpers/translate'
 
 const listHeader = [
     {
@@ -29,13 +30,13 @@ const listHeader = [
         sorting: true,
         name: 'name',
         xs: 7,
-        title: 'Наименование'
+        title: t('Наименование')
     },
     {
         sorting: true,
         xs: 3,
         name: 'created_date',
-        title: 'Дата создания'
+        title: t('Дата создания')
     }
 ]
 
@@ -121,7 +122,7 @@ const ProviderGridList = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.PROVIDER_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить поставщика">
+                <Tooltip position="left" text={t('Добавить поставщика')}>
                     <FloatingActionButton
                         mini={true}
                         zDepth={1}

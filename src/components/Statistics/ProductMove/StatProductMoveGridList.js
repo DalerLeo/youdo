@@ -30,6 +30,7 @@ import ArrowDownIcon from 'material-ui/svg-icons/navigation/arrow-downward'
 import IconButton from 'material-ui/IconButton'
 import FullScreen from 'material-ui/svg-icons/navigation/fullscreen'
 import FullScreenExit from 'material-ui/svg-icons/navigation/fullscreen-exit'
+import t from '../../../helpers/translate'
 
 export const STAT_PRODUCT_MOVE_FILTER_KEY = {
     FROM_DATE: 'fromDate',
@@ -330,47 +331,47 @@ const listHeader = [
     {
         sorting: true,
         name: 'startRemainderAmount',
-        title: 'Кол-во'
+        title: t('Кол-во')
     },
     {
         sorting: true,
         name: 'startRemainderCost',
-        title: 'Стоимость'
+        title: t('Стоимость')
     },
     {
         sorting: true,
         name: 'receivedAmount',
-        title: 'Кол-во'
+        title: t('Кол-во')
     },
     {
         sorting: true,
         name: 'receivedCost',
-        title: 'Стоимость'
+        title: t('Стоимость')
     },
     {
         sorting: true,
         name: 'issuedAmount',
-        title: 'Кол-во'
+        title: t('Кол-во')
     },
     {
         sorting: true,
         name: 'issuedCost',
-        title: 'Стоимость'
+        title: t('Стоимость')
     },
     {
         sorting: true,
         name: 'writeoffAmount',
-        title: 'Кол-во'
+        title: t('Кол-во')
     },
     {
         sorting: true,
         name: 'writeoffCost',
-        title: 'Стоимость'
+        title: t('Стоимость')
     },
     {
         sorting: true,
         name: 'endRemainderAmount',
-        title: 'Кол-во'
+        title: t('Кол-во')
     },
     {
         sorting: true,
@@ -380,12 +381,12 @@ const listHeader = [
     {
         sorting: true,
         name: 'returnAmount',
-        title: 'Кол-во'
+        title: t('Кол-во')
     },
     {
         sorting: true,
         name: 'returnCost',
-        title: 'Стоимость'
+        title: t('Стоимость')
     }
 ]
 
@@ -423,7 +424,7 @@ const StatProductMoveGridList = enhance((props) => {
         setExpandedTable
     } = props
 
-    const summaryMeasurement = 'шт'
+    const summaryMeasurement = t('шт')
     const listLoading = _.get(listData, 'listLoading')
     const sumListLoading = _.get(sumData, 'sumListLoading')
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
@@ -515,19 +516,19 @@ const StatProductMoveGridList = enhance((props) => {
                 className={classes.inputFieldCustom}
                 name="date"
                 component={DateToDateField}
-                label="Диапазон дат"
+                label={t('Диапазон дат')}
                 fullWidth={true}/>
             <Field
                 className={classes.inputFieldCustom}
                 name="stock"
                 component={StockMultiSearchField}
-                label="Склад"
+                label={t('Склад')}
                 fullWidth={true}/>
             <Field
                 name="typeParent"
                 className={classes.inputFieldCustom}
                 component={ProductTypeParentSearchField}
-                label="Тип продукта"
+                label={t('Тип продукта')}
                 fullWidth={true}
             />
             {typeParent ? <Field
@@ -535,7 +536,7 @@ const StatProductMoveGridList = enhance((props) => {
                 className={classes.inputFieldCustom}
                 component={ProductTypeChildSearchField}
                 parentType={typeParent}
-                label="Подкатегория"
+                label={t('Подкатегория')}
                 fullWidth={true}
             /> : null}
         </div>
@@ -564,39 +565,39 @@ const StatProductMoveGridList = enhance((props) => {
                                 </div>
                                 : <div className={classes.summaryWrapper}>
                                     <div>
-                                        <div>Остаток на начало периода</div>
+                                        <div>{t('Остаток на начало периода')}</div>
                                         <div>{beginBalance} <span>({beginAmount} {summaryMeasurement})</span> </div>
-                                        <div>Остаток на конец периода</div>
+                                        <div>{t('Остаток на конец периода')}</div>
                                         <div>{endBalance} <span>({endAmount} {summaryMeasurement})</span></div>
                                     </div>
                                     <div>
-                                        <div>Поступило товара на сумму</div>
+                                        <div>{t('Поступило товара на сумму')}</div>
                                         <div>{inBalance} <span>({inAmount} {summaryMeasurement})</span></div>
-                                        <div>Возврат за период</div>
+                                        <div>{t('Возврат за период')}</div>
                                         <div>{returnBalance} <span>({outAmount} {summaryMeasurement})</span></div>
                                     </div>
                                     <div>
-                                        <div>Выдано по заказу</div>
+                                        <div>{t('Выдано по заказу')}</div>
                                         <div>{outBalance} <span>({returnAmount} {summaryMeasurement})</span></div>
-                                        <div>Cписано за период</div>
+                                        <div>{t('Cписано за период')}</div>
                                         <div>{writeoffBalance} <span>({writeoffAmount} {summaryMeasurement})</span></div>
                                     </div>
                                 </div>}
                         </div>
                         <div className={expandedTable ? classes.expandedTable : ''}>
                             <div className={classes.pagination}>
-                                <div>Движение товаров на складе</div>
+                                <div>{t('Движение товаров на складе')}</div>
                                 <form onSubmit={handleSubmit(handleSubmitFilterDialog)}>
                                     <Field
                                         className={classes.inputFieldCustom}
                                         name="search"
                                         component={TextField}
-                                        hintText="Поиск"/>
+                                        hintText={t('Поиск')}/>
                                 </form>
                                 <div className={classes.flexCenter}>
                                     <Pagination filter={filter}/>
                                     {expandedTable &&
-                                    <ToolTip position="left" text={'Обычный вид'}>
+                                    <ToolTip position="left" text={t('Обычный вид')}>
                                         <IconButton
                                             className={classes.fullScreen}
                                             onTouchTap={() => { setExpandedTable(!expandedTable) }}
@@ -606,7 +607,7 @@ const StatProductMoveGridList = enhance((props) => {
                                         </IconButton>
                                     </ToolTip>}
                                     {!expandedTable &&
-                                    <ToolTip position="left" text={'Расширенный вид'}>
+                                    <ToolTip position="left" text={t('Расширенный вид')}>
                                         <IconButton
                                             className={classes.fullScreen}
                                             onTouchTap={() => { setExpandedTable(!expandedTable) }}
@@ -623,25 +624,24 @@ const StatProductMoveGridList = enhance((props) => {
                                 </div>}
                                 <div className={classes.tableWrapper}>
                                     <div className={classes.leftTable}>
-                                        <div><span>Товар</span></div>
+                                        <div><span>{t('Товар')}</span></div>
                                         {tableLeft}
                                     </div>
                                     {_.isEmpty(tableList) && !listLoading &&
                                     <div className={classes.emptyQuery}>
-                                        <div>По вашему запросу ничего не найдено</div>
+                                        <div>{t('По вашему запросу ничего не найдено')}</div>
                                     </div>}
                                     <div ref="horizontalTable">
                                         <table className={classes.mainTable}>
                                             <tbody className={classes.tableBody}>
                                             <tr className={classes.title}>
-                                                <td rowSpan={2}>Код товара</td>
-
-                                                <td colSpan={2}>Остаток на начало периода</td>
-                                                <td colSpan={2}>Поступивший товара за период</td>
-                                                <td colSpan={2}>Возврат</td>
-                                                <td colSpan={2}>Выдано по заказу</td>
-                                                <td colSpan={2}>Списано за период</td>
-                                                <td colSpan={2}>Остаток на конец</td>
+                                                <td rowSpan={2}>{t('Код товара')}</td>
+                                                <td colSpan={2}>{t('Остаток на начало периода')}</td>
+                                                <td colSpan={2}>{t('Поступивший товара за период')}</td>
+                                                <td colSpan={2}>{t('Возврат')}</td>
+                                                <td colSpan={2}>{t('Выдано по заказу')}</td>
+                                                <td colSpan={2}>{t('Списано за период')}</td>
+                                                <td colSpan={2}>{t('Остаток на конец')}</td>
                                             </tr>
                                             <tr className={classes.subTitle}>
                                                 {_.map(listHeader, (header, index) => {

@@ -25,6 +25,7 @@ import ProductCustomSearchField from '../Supply/ProductCustomSearchField'
 import {TextField} from '../../ReduxForm'
 import SupplyProductTypeSearchField from '../../ReduxForm/Supply/SupplyProductTypeSearchField'
 import Check from 'material-ui/svg-icons/navigation/check'
+import t from '../../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -244,85 +245,86 @@ const iconStyle = {
 const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleEdit, handleRemove, editItem, setEditItem, currency, measurement, handleOpenAddProduct, editOnlyPrice, ...defaultProps}) => {
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
     const error = _.get(defaultProps, ['products', 'meta', 'error'])
-    return (
-        <div className={classes.wrapper}>
-            <div>
-                <div className={classes.headers} style={{marginTop: '-10px'}}>
-                    <div className={classes.title}>Список товаров</div>
-                    <div>
-                        <FlatButton
-                            label="добавить товар"
-                            style={{color: '#12aaeb'}}
-                            labelStyle={{fontSize: '13px'}}
-                            className={classes.span}
-                            onTouchTap={() => dispatch({open: !state.open})}
-                        />
-                        <FlatButton
-                            label="добавить из списка"
-                            style={{color: '#12aaeb'}}
-                            labelStyle={{fontSize: '13px'}}
-                            className={classes.span}
-                            onTouchTap={handleOpenAddProduct}
-                        />
-                    </div>
+}
+return (
+    <div className={classes.wrapper}>
+        <div>
+            <div className={classes.headers} style={{marginTop: '-10px'}}>
+                <div className={classes.title}>{t('Список товаров')}</div>
+                <div>
+                    <FlatButton
+                        label={t('добавить товар')}
+                        style={{color: '#12aaeb'}}
+                        labelStyle={{fontSize: '13px'}}
+                        className={classes.span}
+                        onTouchTap={() => dispatch({open: !state.open})}
+                    />
+                    <FlatButton
+                        label={t('добавить из списка')}
+                        style={{color: '#12aaeb'}}
+                        labelStyle={{fontSize: '13px'}}
+                        className={classes.span}
+                        onTouchTap={handleOpenAddProduct}
+                    />
                 </div>
-                {state.open && <Row className={classes.background}>
-                    <Col xs={3}>
-                        <Field
-                            label="Тип товара"
-                            name="type"
-                            component={SupplyProductTypeSearchField}
-                            className={classes.searchFieldCustom}
-                            fullWidth={true}
-                            {..._.get(defaultProps, 'type')}
-                        />
-                    </Col>
-                    <Col xs={3}>
-                        <ProductCustomSearchField
-                            name="product"
-                            label="Наименование"
-                            className={classes.searchFieldCustom}
-                            fullWidth={true}
-                            {..._.get(defaultProps, 'product')}
-                        />
-                    </Col>
-                    <Col xs={2}>
-                        <Field
-                            component={TextField}
-                            label="Кол-во"
-                            name="amount"
-                            className={classes.inputFieldCustom}
-                            fullWidth={true}
-                            {..._.get(defaultProps, 'amount')}
-                        />
-                    </Col>
-                    <Col xs={1} style={{alignSelf: 'flex-end'}}>
-                        <div style={{paddingBottom: '15px'}}>
-                            {measurement}
-                        </div>
-                    </Col>
-                    <Col xs={2}>
-                        <Field
-                            component={TextField}
-                            label="Сумма за ед"
-                            name="cost"
-                            className={classes.inputFieldCustom}
-                            fullWidth={true}
-                            normalize={normalizeNumber}
-                            {..._.get(defaultProps, 'cost')}
-                        />
-                    </Col>
-                    <Col xs={1}>
-                        <IconButton
-                            label="Применить"
-                            onTouchTap={handleAdd}>
-                            <Check color="#12aaeb"/>
-                        </IconButton>
-                    </Col>
-                </Row>}
             </div>
-            {error && <div className={classes.error}>{error}</div>}
-            {!_.isEmpty(products) ? <div className={classes.table}>
+            {state.open && <Row className={classes.background}>
+                <Col xs={3}>
+                    <Field
+                        label={t('Тип товара')}
+                        name="type"
+                        component={SupplyProductTypeSearchField}
+                        className={classes.searchFieldCustom}
+                        fullWidth={true}
+                        {..._.get(defaultProps, 'type')}
+                    />
+                </Col>
+                <Col xs={3}>
+                    <ProductCustomSearchField
+                        name="product"
+                        label={t('Наименование')}
+                        className={classes.searchFieldCustom}
+                        fullWidth={true}
+                        {..._.get(defaultProps, 'product')}
+                    />
+                </Col>
+                <Col xs={2}>
+                    <Field
+                        component={TextField}
+                        label={t('Кол-во')}
+                        name="amount"
+                        className={classes.inputFieldCustom}
+                        fullWidth={true}
+                        {..._.get(defaultProps, 'amount')}
+                    />
+                </Col>
+                <Col xs={1} style={{alignSelf: 'flex-end'}}>
+                    <div style={{paddingBottom: '15px'}}>
+                        {measurement}
+                    </div>
+                </Col>
+                <Col xs={2}>
+                    <Field
+                        component={TextField}
+                        label={t('Сумма за ед')}
+                        name="cost"
+                        className={classes.inputFieldCustom}
+                        fullWidth={true}
+                        normalize={normalizeNumber}
+                        {..._.get(defaultProps, 'cost')}
+                    />
+                </Col>
+                <Col xs={1}>
+                    <IconButton
+                        label={t('Применить')}
+                        onTouchTap={handleAdd}>
+                        <Check color="#12aaeb"/>
+                    </IconButton>
+                </Col>
+            </Row>}
+        </div>
+        {error && <div className={classes.error}>{error}</div>}
+        {!_.isEmpty(products) ? <div className={classes.table}>
                 <Table
                     fixedHeader={true}
                     fixedFooter={false}
@@ -335,10 +337,10 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleEdit
                         className={classes.title}>
                         <TableRow className={classes.tableRow}>
                             <TableHeaderColumn
-                                className={classes.tableTitle}>Наименование</TableHeaderColumn>
-                            <TableHeaderColumn className={classes.tableTitle}>Кол-во</TableHeaderColumn>
-                            <TableHeaderColumn className={classes.tableTitle}>Сумма (ед.)</TableHeaderColumn>
-                            <TableHeaderColumn className={classes.tableTitle}>Всего</TableHeaderColumn>
+                                className={classes.tableTitle}>{t('Наименование')}</TableHeaderColumn>
+                            <TableHeaderColumn className={classes.tableTitle}>{t('Кол-во')}</TableHeaderColumn>
+                            <TableHeaderColumn className={classes.tableTitle}>{t('Сумма (ед.)')}</TableHeaderColumn>
+                            <TableHeaderColumn className={classes.tableTitle}>{t('Всего')}</TableHeaderColumn>
                             <TableHeaderColumn></TableHeaderColumn>
                         </TableRow>
                     </TableHeader>
@@ -433,16 +435,15 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleEdit
                     </TableBody>
                 </Table>
             </div>
-                : <div className={classes.imagePlaceholder}>
-                    <div style={{textAlign: 'center', color: '#adadad'}}>
-                        <img src={Groceries} alt=""/>
-                        <div>Вы еще не выбрали ни одного товара. <br/> <a onClick={() => dispatch({open: !state.open})}>Добавить</a> товар?
-                        </div>
+            : <div className={classes.imagePlaceholder}>
+                <div style={{textAlign: 'center', color: '#adadad'}}>
+                    <img src={Groceries} alt=""/>
+                    <div>{t('Вы еще не выбрали ни одного товара')}. <br/> <a onClick={() => dispatch({open: !state.open})}>{t('Добавить')}</a> {t('товар')}?
                     </div>
                 </div>
-            }
-        </div>
-    )
-}
+            </div>
+        }
+    </div>
+)
 
 export default enhance(SupplyListProductField)

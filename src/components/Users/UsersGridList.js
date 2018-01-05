@@ -180,10 +180,10 @@ const UsersGridList = enhance((props) => {
                 <Col xs={2}>{position}</Col>
                 <Col xs={2}>{phoneNumber}</Col>
                 <Col xs={1}>{job}</Col>
-                <Col xs={1}>{isActive ? 'Активный' : 'Неактивный'}</Col>
+                <Col xs={1}>{isActive ? t('Активный') : t('Неактивный')}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
                     <div className={classes.iconBtn}>
-                        <Tooltip position="bottom" text="Изменить">
+                        <Tooltip position="bottom" text={t('Изменить')}>
                             <IconButton
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
@@ -193,7 +193,7 @@ const UsersGridList = enhance((props) => {
                                 <Edit />
                             </IconButton>
                         </Tooltip>
-                        <Tooltip position="bottom" text="Удалить">
+                        <Tooltip position="bottom" text={t('Удалить')}>
                             <IconButton
                                 disableTouchRipple={true}
                                 iconStyle={iconStyle.icon}

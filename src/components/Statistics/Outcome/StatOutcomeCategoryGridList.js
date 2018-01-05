@@ -17,6 +17,7 @@ import numberFormat from '../../../helpers/numberFormat.js'
 import getConfig from '../../../helpers/getConfig'
 import NotFound from '../../Images/not-found.png'
 import {StatisticsFilterExcel} from '../../Statistics'
+import t from '../../../helpers/translate'
 
 export const STAT_OUTCOME_CATEGORY_FILTER_KEY = {
     DIVISION: 'division',
@@ -205,7 +206,7 @@ const StatOutcomeCategoryGridList = enhance((props) => {
         <Row style={headerStyle} className="dottedList">
             <Col xs={3}>Категория</Col>
             <Col xs={6}>Процентное соотношение</Col>
-            <Col xs={3} style={{justifyContent: 'flex-end'}}>Сумма ({currentCurrency})</Col>
+            <Col xs={3} style={{justifyContent: 'flex-end'}}>{t('Сумма')} ({currentCurrency})</Col>
         </Row>
     )
     const userName = _.find(_.get(listData, 'data'), {'id': _.toNumber(transactionData.open)})
@@ -237,7 +238,7 @@ const StatOutcomeCategoryGridList = enhance((props) => {
                 className={classes.inputFieldCustom}
                 name="date"
                 component={DateToDateField}
-                label="Диапазон дат"
+                label={t('Диапазон дат')}
                 fullWidth={true}/>
         </div>
     )
@@ -268,7 +269,7 @@ const StatOutcomeCategoryGridList = enhance((props) => {
                             : <div className={classes.tableWrapper}>
                                 {_.isEmpty(list) && !listLoading
                                     ? <div className={classes.emptyQuery}>
-                                        <div>По вашему запросу ничего не найдено</div>
+                                        <div>{t('По вашему запросу ничего не найдено')}</div>
                                     </div>
                                     : <div>
                                         {headers}

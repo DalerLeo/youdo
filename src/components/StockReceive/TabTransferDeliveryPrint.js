@@ -9,6 +9,7 @@ import Loader from '../Loader'
 import numberFormat from '../../helpers/numberFormat'
 import dateFormat from '../../helpers/dateFormat'
 import getConfig from '../../helpers/getConfig'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -112,7 +113,7 @@ const TabTransferDeliveryPrint = enhance((props) => {
     const totalAmount = _.sumBy(_.get(deliveryDetailsData, ['data', 'products']), 'count')
     const deliveryManName = deliveryMan
         ? _.get(deliveryMan, 'firstName') + ' ' + _.get(deliveryMan, 'secondName')
-        : 'Не определен'
+        : t('Не определен')
     if (loading) {
         return (
             <div className={classes.loader}>
@@ -128,16 +129,16 @@ const TabTransferDeliveryPrint = enhance((props) => {
                         <div><strong>Доставщик:</strong> <span>{deliveryManName}</span></div>
                         <div><strong>{startDay} - {endDay}</strong></div>
                     </div>
-                    <div><strong>Склад:</strong> <span>{stock}</span></div>
-                    <div><strong>Показаны товары по следующим заказам ( <strong>{orderNo}</strong> ):</strong> <span>{orders}</span></div>
+                    <div><strong>{t('Склад')}:</strong> <span>{stock}</span></div>
+                    <div><strong>{t('Показаны товары по следующим заказам')} ( <strong>{orderNo}</strong> ):</strong> <span>{orders}</span></div>
                 </header>
                 <div className={classes.products}>
                     <Row>
-                        <Col xs={3}>Наименование</Col>
-                        <Col xs={1}>Код товара</Col>
-                        <Col xs={3}>Тип товара</Col>
-                        <Col xs={2}>Кол-во</Col>
-                        <Col xs={2}>Сумма</Col>
+                        <Col xs={3}>{t('Наименование')}</Col>
+                        <Col xs={1}>{t('Код товара')}</Col>
+                        <Col xs={3}>{t('Тип товара')}</Col>
+                        <Col xs={2}>{t('Кол-во')}</Col>
+                        <Col xs={2}>{t('Сумма')}</Col>
                     </Row>
                     {_.map(_.get(deliveryDetailsData, ['data', 'products']), (item) => {
                         const productId = _.get(item, 'id')
@@ -162,7 +163,7 @@ const TabTransferDeliveryPrint = enhance((props) => {
                         )
                     })}
                     <Row>
-                        <Col xs={3}><span style={{fontWeight: '600'}}>Итого :</span></Col>
+                        <Col xs={3}><span style={{fontWeight: '600'}}>{t('Итого')} :</span></Col>
                         <Col xs={1}></Col>
                         <Col xs={3}></Col>
                         <Col xs={2}>{measurementCheck ? <span style={{fontWeight: '600'}}>{numberFormat(totalAmount, firstMeasure)}</span> : null}</Col>

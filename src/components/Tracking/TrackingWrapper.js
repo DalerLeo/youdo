@@ -27,6 +27,7 @@ import ToolTip from '../ToolTip'
 import NotFound from '../Images/not-found.png'
 import LeftArrow from 'material-ui/svg-icons/navigation/chevron-left'
 import RightArrow from 'material-ui/svg-icons/navigation/chevron-right'
+import t from '../../helpers/translate'
 
 const minutePerHour = 60
 const current = (_.toInteger(moment().format('H')) * minutePerHour) + _.toInteger(moment().format('m'))
@@ -300,30 +301,30 @@ const TrackingWrapper = enhance((props) => {
         {
             group: 'all',
             icon: <GROUP/>,
-            name: 'Все'
+            name: t('Все')
         },
         {
             group: 1,
             icon: <Man/>,
-            name: 'Агенты'
+            name: t('Агенты')
 
         },
         {
             group: 2,
             icon: <Loyalty/>,
-            name: 'Мерчендайзеры'
+            name: t('Мерчендайзеры')
 
         },
         {
             group: 3,
             icon: <Van/>,
-            name: 'Доставщики'
+            name: t('Доставщики')
 
         },
         {
             group: 4,
             icon: <Money/>,
-            name: 'Инкассаторы'
+            name: t('Инкассаторы')
 
         }
     ]
@@ -348,7 +349,7 @@ const TrackingWrapper = enhance((props) => {
 
                 {(today === urlDate) &&
                 <div className={classes.trackingInfoTitle}>
-                    <span>Сотрудников <br/> online</span>
+                    <span>{t('Сотрудников')} <br/> online</span>
                     {listLoading
                         ? <div className={classes.loader} style={{width: '65px'}}>
                             <div>
@@ -443,7 +444,7 @@ const TrackingWrapper = enhance((props) => {
                                 }
                             </div>
                             : <div className={classes.emptyQuery}>
-                                <div>По вашему запросу сотрудников не найдено...</div>
+                                <div>{t('По вашему запросу сотрудников не найдено')}...</div>
                             </div>)}
                 </div>
             </div>

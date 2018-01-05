@@ -13,6 +13,8 @@ import Paper from 'material-ui/Paper'
 import moment from 'moment'
 import MenuItem from 'material-ui/MenuItem'
 import IconMenu from 'material-ui/IconMenu'
+import t from '../../helpers/translate'
+
 const ZERO = 0
 
 const enhance = compose(
@@ -173,7 +175,7 @@ const StatisticsFilterExcel = enhance((props) => {
                     setOpenFilter(false)
                 }}>
                     <div className={classes.filter}>
-                        <h3>Фильтр</h3>
+                        <h3>{t('Фильтр')}</h3>
                         <IconButton
                             className={classes.closeFilter}
                             style={iconStyle.button}
@@ -185,7 +187,7 @@ const StatisticsFilterExcel = enhance((props) => {
                         {fields}
 
                         <FlatButton
-                            label="Применить"
+                            label={t('Применить')}
                             fullWidth={false}
                             labelStyle={{color: '#12aaeb', textTransform: 'none', fontWeight: '600'}}
                             className={classes.searchButton}
@@ -194,7 +196,7 @@ const StatisticsFilterExcel = enhance((props) => {
                 </form>
             </Paper>}
             <a className={classes.filterBtn} onClick={() => { setOpenFilter(true) }}>
-                <Filter color="#fff"/> <span>Фильтр</span>
+                <Filter color="#fff"/> <span>{t('Фильтр')}</span>
                 {filterCount > ZERO && <span className={classes.count}>/ {filterCount}</span>}
                 {!withoutDate && <span className={classes.date}>{filterDate}</span>}
             </a>
@@ -203,21 +205,21 @@ const StatisticsFilterExcel = enhance((props) => {
                 {sales ? <IconMenu
                     menuItemStyle={{fontSize: '13px'}}
                     iconButtonElement={<a className={classes.excel}>
-                                            <Excel color="#fff"/> <span>Скачать</span>
+                                            <Excel color="#fff"/> <span>{t('Скачать')}</span>
                                         </a>
                     }
                     anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
                     targetOrigin={{horizontal: 'right', vertical: 'top'}}>
                     <MenuItem
-                        primaryText="Накладные"
+                        primaryText={t('Накладные')}
                         onTouchTap={() => { handleGetDocument.handleGetDocument() }}
                     />
                     <MenuItem
-                        primaryText="Список заказов"
+                        primaryText={t('Список заказов')}
                         onTouchTap={() => { handleGetDocument.handleGetOrderListDocument() }}
                     />
                     <MenuItem
-                        primaryText="Релиз"
+                        primaryText={t('Релиз')}
                         onTouchTap={() => { handleGetDocument.handleGetReleaseDocument() }}
                     />
                 </IconMenu>

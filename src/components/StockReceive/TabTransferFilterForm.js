@@ -17,6 +17,7 @@ import {
 } from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
+import t from '../../helpers/translate'
 
 export const TAB_TRANSFER_FILTER_KEY = {
     TYPE: 'type',
@@ -124,7 +125,7 @@ const TabTransferFilterForm = enhance((props) => {
         if (filterCounts) {
             return (
                 <div className={classes.afterFilter}>
-                    <div>Фильтр: {filterCounts} элемента</div>
+                    <div>{t('Фильтр')}: {filterCounts} {t('элемента')}</div>
                     <div>
                         <IconButton onTouchTap={filterDialog.handleOpenFilterDialog}>
                             <BorderColorIcon color="#8f8f8f" />
@@ -142,7 +143,7 @@ const TabTransferFilterForm = enhance((props) => {
                 <Link
                     className={classes.arrow}
                     onTouchTap={filterDialog.handleOpenFilterDialog}>
-                    <div>Показать фильтр <KeyboardArrowDown color="#12aaeb" /></div>
+                    <div>{t('Показать фильтр')} <KeyboardArrowDown color="#12aaeb" /></div>
                 </Link>
             </div>
         )
@@ -163,7 +164,7 @@ const TabTransferFilterForm = enhance((props) => {
                             className={classes.inputFieldCustom}
                             name="stock"
                             component={StockMultiSearchField}
-                            label="Склад"
+                            label={t('Склад')}
                             fullWidth={true}/>
                     </div>
                     <div>
@@ -171,7 +172,7 @@ const TabTransferFilterForm = enhance((props) => {
                             className={classes.inputFieldCustom}
                             name="type"
                             component={OrderTransferTypeSearchField}
-                            label="Тип"
+                            label={t('Тип')}
                             fullWidth={true}/>
                     </div>
                     {history && <div>
@@ -179,7 +180,7 @@ const TabTransferFilterForm = enhance((props) => {
                             className={classes.inputFieldCustom}
                             name="acceptedBy"
                             component={UsersMultiSearchField}
-                            label="Передал"
+                            label={t('Передал')}
                             fullWidth={true}/>
                     </div>}
                     <div>
@@ -187,7 +188,7 @@ const TabTransferFilterForm = enhance((props) => {
                             className={classes.inputFieldCustom}
                             name="date"
                             component={DateToDateField}
-                            label="Дата передачи"
+                            label={t('Дата передачи')}
                             fullWidth={true}/>
                     </div>
 
@@ -196,7 +197,7 @@ const TabTransferFilterForm = enhance((props) => {
                         primary={true}
                         buttonStyle={{color: '#fff'}}
                         labelStyle={{fontSize: '13px'}}
-                        label="Применить"
+                        label={t('Применить')}
                         style={{marginTop: '15px'}}>
                     </RaisedButton>
                 </form>

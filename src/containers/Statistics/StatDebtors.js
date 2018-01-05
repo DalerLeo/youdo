@@ -21,6 +21,7 @@ import * as serializers from '../../serializers/Statistics/statDebtorsSerializer
 import * as API from '../../constants/api'
 import {openErrorAction} from '../../actions/error'
 import {openSnackbarAction} from '../../actions/snackbar'
+import t from '../../helpers/translate'
 
 const ZERO = 0
 const enhance = compose(
@@ -164,7 +165,7 @@ const enhance = compose(
             const id = _.toInteger(_.get(query, ['detailId']))
             return dispatch(orderMultiUpdateAction(_.get(multiUpdateForm, 'values'), orders))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Заказы успешно изменены'}))
+                    return dispatch(openSnackbarAction({message: t('Заказы успешно изменены')}))
                 })
                 .then(() => {
                     dispatch(statDebtorsItemFetchAction(id, filterItem))

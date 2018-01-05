@@ -15,6 +15,7 @@ import {TextField, CashboxTypeSearchField, CashboxSearchField} from '../ReduxFor
 import MainStyles from '../Styles/MainStyles'
 import normalizeNumber from '../ReduxForm/normalizers/normalizeNumber'
 import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
+import t from '../../helpers/translate'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -112,7 +113,7 @@ const TransactionSendDialog = enhance((props) => {
             contentStyle={loading ? {width: '250px'} : {width: '350px'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>Перевод</span>
+                <span>{t('Перевод')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -130,11 +131,11 @@ const TransactionSendDialog = enhance((props) => {
                                         name="cashbox"
                                         className={classes.inputFieldCustom}
                                         component={CashboxSearchField}
-                                        label="Текущая касса"
+                                        label={t('Текущая касса')}
                                         fullWidth={true}/>
                                 </div>
                                 : <div className={classes.itemList}>
-                                    <div className={classes.label}>Текущая касса:</div>
+                                    <div className={classes.label}>{t('Текущая касса')}:</div>
                                     <div style={{fontWeight: '600'}}>{_.get(cashbox, 'name')}</div>
                                 </div>}
                             <Field
@@ -143,7 +144,7 @@ const TransactionSendDialog = enhance((props) => {
                                 component={CashboxTypeSearchField}
                                 data-exclude-only={true}
                                 cashbox={cashbox}
-                                label="Касса получатель"
+                                label={t('Касса получатель')}
                                 fullWidth={true}/>
                             {!courseOrPersent &&
                             <div>
@@ -153,7 +154,7 @@ const TransactionSendDialog = enhance((props) => {
                                             name="amountFrom"
                                             className={classes.inputFieldCustom}
                                             component={TextField}
-                                            label="Сумма с кассы"
+                                            label={t('Сумма с кассы')}
                                             normalize={normalizeNumber}
                                             fullWidth={true}/>}
                                         <span style={{marginLeft: '10px'}}>{currentCurrencyName}</span>
@@ -164,7 +165,7 @@ const TransactionSendDialog = enhance((props) => {
                                             name="amountTo"
                                             className={classes.inputFieldCustom}
                                             component={TextField}
-                                            label="Сумма в кассу"
+                                            label={t('Сумма в кассу')}
                                             normalize={normalizeNumber}
                                             fullWidth={true}/>
                                         <span style={{marginLeft: '10px'}}>{chosenCurrencyName}</span>
@@ -184,7 +185,7 @@ const TransactionSendDialog = enhance((props) => {
                                             name="amountFromPersent"
                                             className={classes.inputFieldCustom}
                                             component={TextField}
-                                            label="Сумма с кассы"
+                                            label={t('Сумма с кассы')}
                                             normalize={normalizeNumber}
                                             fullWidth={true}/>}
                                         <span style={{marginLeft: '10px'}}>{currentCurrencyName}</span>
@@ -194,7 +195,7 @@ const TransactionSendDialog = enhance((props) => {
                                             name="amountToPersent"
                                             className={classes.inputFieldCustom}
                                             component={TextField}
-                                            label="Процент"
+                                            label={t('Процент')}
                                             normalize={normalizeNumber}
                                             fullWidth={true}/>
                                         <span style={{marginLeft: '10px'}}>%</span>
@@ -211,14 +212,14 @@ const TransactionSendDialog = enhance((props) => {
                                 className={classes.inputFieldCustom}
                                 style={{lineHeight: '20px', fontSize: '13px'}}
                                 component={TextField}
-                                label="Комментарий..."
+                                label={t('Комментарий') + '...'}
                                 fullWidth={true}/>
 
                         </div>}
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
-                            label="Отправить"
+                            label={t('Отправить')}
                             className={classes.actionButton}
                             labelStyle={{fontSize: '13px'}}
                             primary={true}

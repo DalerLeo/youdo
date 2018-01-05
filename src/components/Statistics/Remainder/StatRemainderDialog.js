@@ -11,6 +11,7 @@ import {Row, Col} from 'react-flexbox-grid'
 import Pagination from '../../GridList/GridListNavPagination/index'
 import dateFormat from '../../../helpers/dateFormat'
 import numberFormat from '../../../helpers/numberFormat'
+import t from '../../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -176,10 +177,10 @@ const StatRemainderDialog = enhance((props) => {
                     <div className={classes.content}>
                         <div className={classes.tableWrapper}>
                             <Row className="dottedList">
-                                <Col xs={3}>Код</Col>
-                                <Col xs={4}>Дата приемки</Col>
-                                <Col xs={3}>Кол-во</Col>
-                                <Col xs={2} style={{textAlign: 'left'}}>Статус</Col>
+                                <Col xs={3}>{t('Код')}</Col>
+                                <Col xs={4}>{t('Дата приемки')}</Col>
+                                <Col xs={3}>{t('Кол-во')}</Col>
+                                <Col xs={2} style={{textAlign: 'left'}}>{t('Статус')}</Col>
                             </Row>
                             {remainderList}
                         </div>

@@ -12,6 +12,7 @@ import {ImageUploadField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
+import t from '../../helpers/translate'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -65,7 +66,7 @@ const AddPhotoDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>Добавить фото</span>
+                <span>{t('Добавить фото')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -80,14 +81,14 @@ const AddPhotoDialog = enhance((props) => {
                             <Field
                                 name="image"
                                 component={ImageUploadField}
-                                label="Изображения"
+                                label={t('Изображения')}
                                 fullWidth={true}
                             />
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
-                            label="Сохранить"
+                            label={t('Сохранить')}
                             className={classes.actionButton}
                             labelStyle={{fontSize: '13px'}}
                             primary={true}

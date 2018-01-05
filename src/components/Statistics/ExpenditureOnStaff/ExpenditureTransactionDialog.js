@@ -16,6 +16,7 @@ import dateFormat from '../../../helpers/dateFormat'
 import numberFormat from '../../../helpers/numberFormat'
 import GridListNavPagination from '../../../components/GridList/GridListNavPagination'
 import {TransactionsFormat} from '../../Transaction'
+import t from '../../../helpers/translate'
 
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
@@ -227,19 +228,19 @@ const ExpenditureTransactionDialog = enhance((props) => {
                     </div>
                     <div className={classes.content}>
                         <div className={classes.titleSummary}>
-                            <div>Период: <strong>{beginDate} - {endDate}</strong></div>
+                            <div>{t('Период')}: <strong>{beginDate} - {endDate}</strong></div>
                         </div>
                         <div className={classes.tableWrapper}>
                             <Row style={headerStyle} className="dottedList">
                                 <Col xs={1}>№</Col>
-                                <Col xs={2}>Касса</Col>
-                                <Col xs={2}>Дата</Col>
-                                <Col xs={4}>Описание</Col>
-                                <Col xs={3}>Сумма</Col>
+                                <Col xs={2}>{t('Касса')}</Col>
+                                <Col xs={2}>{t('Дата')}</Col>
+                                <Col xs={4}>{t('Описание')}</Col>
+                                <Col xs={3}>{t('Сумма')}</Col>
                             </Row>
                             {_.isEmpty(list)
                                 ? <div className={classes.emptyQuery}>
-                                    <div>У данного агента в этом периоде нет заказов</div>
+                                    <div>{t('У данного агента в этом периоде нет заказов')}</div>
                                 </div>
                                 : list}
                         </div>

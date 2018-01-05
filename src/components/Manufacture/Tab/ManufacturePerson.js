@@ -20,6 +20,7 @@ import GridList from '../../GridList'
 import moment from 'moment'
 import Paper from 'material-ui/Paper'
 import Choose from '../../Images/choose-menu.png'
+import t from '../../../helpers/translate'
 
 const listHeader = [
     {

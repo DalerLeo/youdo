@@ -21,6 +21,7 @@ import {StatisticsFilterExcel} from '../../Statistics'
 import IconButton from 'material-ui/IconButton'
 import FullScreen from 'material-ui/svg-icons/navigation/fullscreen'
 import FullScreenExit from 'material-ui/svg-icons/navigation/fullscreen-exit'
+import t from '../../../helpers/translate'
 
 export const STAT_MARKET_FILTER_KEY = {
     SEARCH: 'search',
@@ -382,46 +383,46 @@ const listHeader = [
     // Sales
     {
         sorting: true,
-        title: 'Сумма',
-        tooltip: 'Общая сумма продаж'
+        title: t('Сумма'),
+        tooltip: t('Общая сумма продаж')
     },
     {
         sorting: true,
-        title: 'Фактически',
-        tooltip: 'Сумма продаж с учетом возвратов'
+        title: t('Фактически'),
+        tooltip: t('Сумма продаж с учетом возвратов')
     },
     // Returns
     {
         sorting: true,
-        tooltip: 'Сумма возвратов от продаж',
-        title: 'По заказам'
+        tooltip: t('Сумма возвратов от продаж'),
+        title: t('По заказам')
     },
     {
         sorting: true,
-        tooltip: 'Сумма возвратов за этот период',
-        title: 'Общее'
+        tooltip: t('Сумма возвратов за этот период'),
+        title: t('Общее')
     },
     // Payments
     {
         sorting: true,
-        title: 'По заказам',
-        tooltip: 'Сумма оплат с заказов'
+        title: t('По заказам'),
+        tooltip: t('Сумма оплат с заказов')
     },
     {
         sorting: true,
-        title: 'Общее',
-        tooltip: 'Общая сумма оплат'
+        title: t('Общее'),
+        tooltip: t('Общая сумма оплат')
     },
     // Debt
     {
         sorting: true,
-        title: 'По заказам',
-        tooltip: 'Долг по заказов'
+        title: t('По заказам'),
+        tooltip: t('Долг по заказов')
     },
     {
         sorting: true,
-        title: 'Общее',
-        tooltip: 'Общая сумма долга'
+        title: t('Общее'),
+        tooltip: t('Общая сумма долга')
     }
 ]
 
@@ -522,13 +523,13 @@ const StatMarketGridList = enhance((props) => {
                 className={classes.inputFieldCustom}
                 name="date"
                 component={DateToDateField}
-                label="Диапазон дат"
+                label={t('Диапазон дат')}
                 fullWidth={true}/>
             <Field
                 name="user"
                 component={AgentSearchField}
                 className={classes.inputFieldCustom}
-                label="Агент"
+                label={t('Агент')}
                 fullWidth={true}
             />
         </div>
@@ -556,45 +557,45 @@ const StatMarketGridList = enhance((props) => {
                             </div>
                             : <div className={classes.summary}>
                                 <div className={classes.sumTitle}>
-                                    <span>Сумма от продаж</span>
+                                    <span>{t('Сумма от продаж')}</span>
                                     <div>{numberFormat(salesTotalSum, primaryCurrency)}</div>
-                                    <span>Фактические продажи</span>
+                                    <span>{t('Фактические продажи')}</span>
                                     <div>{numberFormat(salesFactSum, primaryCurrency)}</div>
                                 </div>
 
                                 <div>
-                                    <span>Общий возврат</span>
+                                    <span>{t('Общий возврат')}</span>
                                     <div>{numberFormat(returnTotalSum, primaryCurrency)}</div>
-                                    <span>Возврат по заказам</span>
+                                    <span>{t('Возврат по заказам')}</span>
                                     <div>{numberFormat(returnOrdersSum, primaryCurrency)}</div>
                                 </div>
                                 <div>
-                                    <span>Общие оплачено</span>
+                                    <span>{t('Общие оплачено')}</span>
                                     <div>{numberFormat(paymentTotalSum, primaryCurrency)}</div>
-                                    <span>Оплачено по заказам</span>
+                                    <span>{t('Оплачено по заказам')}</span>
                                     <div>{numberFormat(paymentOrdersSum, primaryCurrency)}</div>
                                 </div>
                                 <div>
-                                    <span>Общий долг</span>
+                                    <span>{t('Общий долг')}</span>
                                     <div>{numberFormat(debtTotalSum, primaryCurrency)}</div>
-                                    <span>Долг по заказам</span>
+                                    <span>{t('Долг по заказам')}</span>
                                     <div>{numberFormat(debtOrdersSum, primaryCurrency)}</div>
                                 </div>
                             </div>}
                         <div className={expandedTable ? classes.expandedTable : ''}>
                             <div className={classes.pagination}>
-                                <div>Продажи по магазинам в зоне</div>
+                                <div>{t('Продажи по магазинам в зоне')}</div>
                                 <form onSubmit={handleSubmit(handleSubmitFilterDialog)}>
                                     <Field
                                         className={classes.inputFieldCustom}
                                         name="search"
                                         component={TextField}
-                                        hintText="Магазин"/>
+                                        hintText={t('Магазин')}/>
                                 </form>
                                 <div className={classes.flexCenter}>
                                     <Pagination filter={filter}/>
                                     {expandedTable &&
-                                    <ToolTip position="left" text={'Обычный вид'}>
+                                    <ToolTip position="left" text={t('Обычный вид')}>
                                         <IconButton
                                             className={classes.fullScreen}
                                             onTouchTap={() => { setExpandedTable(!expandedTable) }}
@@ -604,7 +605,7 @@ const StatMarketGridList = enhance((props) => {
                                         </IconButton>
                                     </ToolTip>}
                                     {!expandedTable &&
-                                    <ToolTip position="left" text={'Расширенный вид'}>
+                                    <ToolTip position="left" text={t('Расширенный вид')}>
                                         <IconButton
                                             className={classes.fullScreen}
                                             onTouchTap={() => { setExpandedTable(!expandedTable) }}
@@ -621,22 +622,22 @@ const StatMarketGridList = enhance((props) => {
                                 </div>}
                                 <div className={classes.tableWrapper}>
                                     <div className={classes.leftTable}>
-                                        <div><span>Магазин</span></div>
+                                        <div><span>{t('Магазин')}</span></div>
                                         {tableLeft}
                                     </div>
                                     {_.isEmpty(tableList) && !listLoading &&
                                     <div className={classes.emptyQuery}>
-                                        <div>По вашему запросу ничего не найдено</div>
+                                        <div>{t('По вашему запросу ничего не найдено')}</div>
                                     </div>}
                                     <div ref="horizontalTable">
                                         <table className={classes.mainTable}>
                                             <tbody className={classes.tableBody}>
                                             <tr className={classes.title}>
-                                                <td rowSpan={2}>Клиент</td>
-                                                <td colSpan={2}>Продажа</td>
-                                                <td colSpan={2}>Возврат</td>
-                                                <td colSpan={2}>Оплачено</td>
-                                                <td colSpan={2}>Долг</td>
+                                                <td rowSpan={2}>{t('Клиент')}</td>
+                                                <td colSpan={2}>{t('Продажа')}</td>
+                                                <td colSpan={2}>{t('Возврат')}</td>
+                                                <td colSpan={2}>{t('Оплачено')}</td>
+                                                <td colSpan={2}>{t('Долг')}</td>
                                             </tr>
                                             <tr className={classes.subTitle}>
                                                 {_.map(listHeader, (header, index) => {

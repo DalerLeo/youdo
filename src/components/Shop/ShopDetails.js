@@ -10,6 +10,8 @@ import Edit from 'material-ui/svg-icons/image/edit'
 import Delete from 'material-ui/svg-icons/action/delete'
 import Add from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
+import t from '../../helpers/translate'
+
 const enhance = compose(
     injectSheet({
         loader: {
@@ -267,24 +269,24 @@ const ShopDetails = enhance((props) => {
     const IN_A_DAY = '4'
     const id = _.get(data, 'id')
     const name = _.get(data, 'name')
-    const okad = _.get(data, 'okad') || 'не указано'
-    const bankAddress = _.get(data, 'bankAddress') || 'не указано'
-    const checkAccount = _.get(data, 'checkingAccount') || 'не указано'
-    const inn = _.get(data, 'inn') || 'не указано'
-    const mfo = _.get(data, 'mfo') || 'не указано'
+    const okad = _.get(data, 'okad') || t('не указано')
+    const bankAddress = _.get(data, 'bankAddress') || t('не указано')
+    const checkAccount = _.get(data, 'checkingAccount') || t('не указано')
+    const inn = _.get(data, 'inn') || t('не указано')
+    const mfo = _.get(data, 'mfo') || t('не указано')
     const client = _.get(data, ['client', 'name'])
     const createdBy = _.get(data, 'createdBy')
         ? _.get(data, ['createdBy', 'firstName']) + ' ' + _.get(data, ['createdBy', 'secondName'])
-        : 'Неизвестно'
-    const createdDate = _.get(data, 'createdDate') ? dateTimeFormat(_.get(data, 'createdDate')) : 'Неизвестно'
-    const changedDate = _.get(data, 'modifiedDate') ? dateTimeFormat(_.get(data, 'modifiedDate')) : 'Неизвестно'
+        : t('Неизвестно')
+    const createdDate = _.get(data, 'createdDate') ? dateTimeFormat(_.get(data, 'createdDate')) : t('Неизвестно')
+    const changedDate = _.get(data, 'modifiedDate') ? dateTimeFormat(_.get(data, 'modifiedDate')) : t('Неизвестно')
     const changedBy = _.get(data, 'changedBy')
         ? _.get(data, ['changedBy', 'firstName']) + ' ' + _.get(data, ['changedBy', 'secondName'])
-        : 'Неизвестно'
+        : t('Неизвестно')
     const shopType = _.get(data, ['marketType', 'name'])
     const address = _.get(data, 'address')
     const guide = _.get(data, 'guide')
-    const zone = _.get(data, ['border', 'title']) || <span className="redFont">Не определена</span>
+    const zone = _.get(data, ['border', 'title']) || <span className="redFont">{t('Не определена')}</span>
     const contactName = _.get(data, 'contactName')
     const phone = _.get(data, 'phone')
     const images = _.get(data, 'images') || []
@@ -338,18 +340,18 @@ const ShopDetails = enhance((props) => {
                 <div className={classes.titleButtons}>
                     <div className={classes.frequency}>
                         <span>Частота посещений:</span>
-                        <b>{ freq === EVERY_DAY ? 'Каждый день' : (
-                            freq === ONCE_IN_A_WEEK ? 'Раз в неделю' : (
-                                freq === TWICE_IN_A_WEEK ? '2 раза в неделю' : (
-                                    freq === IN_A_DAY ? 'Через день' : ''
+                        <b>{ freq === EVERY_DAY ? t('Каждый день') : (
+                            freq === ONCE_IN_A_WEEK ? t('Раз в неделю') : (
+                                freq === TWICE_IN_A_WEEK ? t('2 раза в неделю') : (
+                                    freq === IN_A_DAY ? t('Через день') : ''
                                 )
                             )
                         )}</b>
                     </div>
-                    {isActive ? <div className={classes.status} style={{background: '#81c784'}}>Магазин <br/> активен</div>
-                        : <div className={classes.status} style={{background: '#ff717e'}}>Магазин <br/> неактивен</div>
+                    {isActive ? <div className={classes.status} style={{background: '#81c784'}}>{t('Магазин <br/> активен')}</div>
+                        : <div className={classes.status} style={{background: '#ff717e'}}>{t('Магазин <br/> неактивен')}</div>
                     }
-                    <Tooltip position="bottom" text="Изменить">
+                    <Tooltip position="bottom" text={t('Изменить')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
@@ -358,7 +360,7 @@ const ShopDetails = enhance((props) => {
                             <Edit />
                         </IconButton>
                     </Tooltip>
-                    <Tooltip position="bottom" text="Удалить">
+                    <Tooltip position="bottom" text={t('Удалить')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
@@ -374,8 +376,8 @@ const ShopDetails = enhance((props) => {
                     <div className={classes.image}>
                         {(images.length === ZERO) ? <div className={classes.noImage}>
                                 <div>
-                                    <span>Фото <br/> отсутствует</span>
-                                    <a onClick={addPhotoDialog.handleOpenAddPhotoDialog}>добавить фото</a>
+                                    <span>{t('Фото <br/> отсутствует')}</span>
+                                    <a onClick={addPhotoDialog.handleOpenAddPhotoDialog}>{t('добавить фото')}</a>
                                 </div>
                             </div>
                             : <div className={classes.imageWrapper}>
@@ -389,36 +391,36 @@ const ShopDetails = enhance((props) => {
                             </div>}
                     </div>
                     <div className={classes.infoBlock}>
-                        <div className={classes.infoTitle}>Детали</div>
+                        <div className={classes.infoTitle}>{t('Детали')}</div>
                         <ul className={classes.details}>
-                            <li>Клиент: <span>{client}</span></li>
-                            <li>Создал: <span>{createdBy}</span></li>
-                            <li>Дата создания: <span>{createdDate}</span></li>
-                            <li>Дата изменения: <span>{changedDate}</span></li>
-                            <li>Изменил: <span>{changedBy}</span></li>
-                            <li>Тип заведения: <span>{shopType}</span></li>
-                            <li>Зона: <span>{zone}</span></li>
+                            <li>{t('Клиент')}: <span>{client}</span></li>
+                            <li>{t('Создал')}: <span>{createdBy}</span></li>
+                            <li>{t('Дата создания')}: <span>{createdDate}</span></li>
+                            <li>{t('Дата изменения')}: <span>{changedDate}</span></li>
+                            <li>{t('Изменил')}: <span>{changedBy}</span></li>
+                            <li>{t('Тип заведения')}: <span>{shopType}</span></li>
+                            <li>{t('Зона')}: <span>{zone}</span></li>
                         </ul>
                     </div>
                 </div>
                 <div className={classes.rightSide}>
                     <div className={classes.infoBlock}>
-                        <div className={classes.infoTitle}>Контакты</div>
+                        <div className={classes.infoTitle}>{t('Контакты')}</div>
                         <ul className={classes.details}>
-                            <li>Имя контакта: <span>{contactName}</span></li>
-                            <li>Телефон: <span>{phone}</span></li>
-                            <li>Адрес: <span><a onClick={handleOpenMapDialog}>{address}</a></span></li>
-                            <li>Ориентир: <span>{guide}</span></li>
+                            <li>{t('Имя контакта')}: <span>{contactName}</span></li>
+                            <li>{t('Телефон')}: <span>{phone}</span></li>
+                            <li>{t('Адрес')}: <span><a onClick={handleOpenMapDialog}>{address}</a></span></li>
+                            <li>{t('Ориентир')}: <span>{guide}</span></li>
                         </ul>
                     </div>
                     <div className={classes.infoBlock}>
-                        <div className={classes.infoTitle}>Дополнительно</div>
+                        <div className={classes.infoTitle}>{t('Дополнительно')}</div>
                         <ul className={classes.details}>
-                            <li>Р/с: <span>{checkAccount}</span></li>
-                            <li>Адрес Банка: <span>{bankAddress}</span></li>
-                            <li>ИНН: <span>{inn}</span></li>
-                            <li>ОКЭД: <span>{okad}</span></li>
-                            <li>МФО: <span>{mfo}</span></li>
+                            <li>{t('Р/с')}: <span>{checkAccount}</span></li>
+                            <li>{t('Адрес Банка')}: <span>{bankAddress}</span></li>
+                            <li>{t('ИНН')}: <span>{inn}</span></li>
+                            <li>{t('ОКЭД')}: <span>{okad}</span></li>
+                            <li>{t('МФО')}: <span>{mfo}</span></li>
                         </ul>
                     </div>
                 </div>

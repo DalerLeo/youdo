@@ -17,25 +17,26 @@ import Press from '../Images/press.png'
 import Cut from '../Images/cut.png'
 import Badge from '../Images/badge.png'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
+import t from '../../helpers/translate'
 
 const listHeader = [
     {
         sorting: true,
         name: 'name',
         xs: 8,
-        title: 'Наименование'
+        title: t('Наименование')
     },
     {
         sorting: true,
         name: 'sum',
         xs: 2,
-        title: 'Количество'
+        title: t('Количество')
     },
     {
         sorting: true,
         xs: 2,
         name: 'time',
-        title: 'Эффективность'
+        title: t('Эффективность')
     }
 ]
 const enhance = compose(
@@ -232,7 +233,7 @@ const StatManufactureGridList = enhance((props) => {
 
     const statManufactureList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const name = 'Наименование продукта'
+        const name = t('Наименование продукта')
         const amount = '1000 шт'
         const efficency = '88%'
         return (
@@ -294,11 +295,11 @@ const StatManufactureGridList = enhance((props) => {
 
         series: [{
             data: [{
-                data: 'Эффективность',
+                data: t('Эффективность'),
                 y: 80,
                 color: '#028eff'
             }, {
-                data: 'Отклонение',
+                data: t('Отклонение'),
                 y: 20,
                 color: '#ccc'
             }]
@@ -367,13 +368,13 @@ const StatManufactureGridList = enhance((props) => {
             shadow: false,
             useHTML: true,
             crosshairs: true,
-            pointFormat: '{series.name}: <b>{point.y}</b><br/>в отношении к BoM<br/>'
+            pointFormat: '{series.name}: <b>{point.y}</b><br/>' + t('в отношении к BoM') + '<br/>'
         },
         series: [{
             marker: {
                 symbol: 'circle'
             },
-            name: 'Эффективность',
+            name: t('Эффективность'),
             data: [sempl + sempl + sempl + sempl, sempl + sempl + sempl, sempl + sempl + sempl + sempl],
             color: '#7560a5'
 
@@ -406,14 +407,14 @@ const StatManufactureGridList = enhance((props) => {
                     </Col>
                     <Col xs={3}>
                         <div style={{background: '#f1f5f8', padding: '25px', height: '82%'}}>
-                            <h2>Эффективность</h2>
+                            <h2>{t('Эффективность')}</h2>
                             <div className={classes.divEffectBlock}>
                                 <div><ReactHighcharts config ={configCercle} /></div>
-                                <div>% эффективности<br/>относительно BoM</div>
+                                <div>% {t('эффективности<br/>относительно BoM')}</div>
                             </div>
                             <div className={classes.divEffectBlock}>
                                 <div><h3>1000 <span>кг</span></h3></div>
-                                <div>Произведено<br/>за период</div>
+                                <div>{t('Произведено<br/>за период')}</div>
                             </div>
                         </div>
                     </Col>

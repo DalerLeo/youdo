@@ -25,6 +25,7 @@ import {StatisticsFilterExcel} from '../../Statistics'
 import {connect} from 'react-redux'
 import FullScreen from 'material-ui/svg-icons/navigation/fullscreen'
 import FullScreenExit from 'material-ui/svg-icons/navigation/fullscreen-exit'
+import t from '../../../helpers/translate'
 
 export const STAT_PRODUCT_FILTER_KEY = {
     SEARCH: 'search',
@@ -307,32 +308,32 @@ const listHeader = [
     {
         sorting: true,
         name: 'salesCount',
-        title: 'Кол-во'
+        title: t('Кол-во')
     },
     {
         sorting: true,
         name: 'salesIncome',
-        title: 'Стоимость'
+        title: t('Стоимость')
     },
     {
         sorting: true,
         name: 'orderReturnsCount',
-        title: 'Кол-во'
+        title: t('Кол-во')
     },
     {
         sorting: true,
         name: 'orderReturnsSum',
-        title: 'Стоимость'
+        title: t('Стоимость')
     },
     {
         sorting: true,
         name: 'actualSalesCount',
-        title: 'Кол-во'
+        title: t('Кол-во')
     },
     {
         sorting: true,
         name: 'actualSalesSum',
-        title: 'Стоимость'
+        title: t('Стоимость')
     }
 ]
 const StatProductGridList = enhance((props) => {
@@ -433,20 +434,20 @@ const StatProductGridList = enhance((props) => {
                 className={classes.inputFieldCustom}
                 name="date"
                 component={DateToDateField}
-                label="Диапазон дат"
+                label={t('Диапазон дат')}
                 fullWidth={true}/>
             <Field
                 className={classes.inputFieldCustom}
                 name="productType"
                 component={ProductTypeParentSearchField}
-                label="Тип товара"
+                label={t('Тип товара')}
                 fullWidth={true}/>
             {typeParent ? <Field
                 name="productTypeChild"
                 className={classes.inputFieldCustom}
                 component={ProductTypeChildSearchField}
                 parentType={typeParent}
-                label="Подкатегория"
+                label={t('Подкатегория')}
                 fullWidth={true}
             /> : null}
         </div>
@@ -474,15 +475,15 @@ const StatProductGridList = enhance((props) => {
                             </div>
                             : <div className={classes.summaryWrapper}>
                                 <div>
-                                    <div>Сумма от продаж</div>
+                                    <div>{t('Сумма от продаж')}</div>
                                     <div>{totalCostSale} <span>({totalCountSale} {summaryMeasurement})</span></div>
                                 </div>
                                 <div>
-                                    <div>Фактические продажи</div>
+                                    <div>{t('Фактические продажи')}</div>
                                     <div>{actualSalesSumTotal} <span>({actualSalesCountTotal} {summaryMeasurement})</span></div>
                                 </div>
                                 <div>
-                                    <div>Сумма возвратов</div>
+                                    <div>{t('Сумма возвратов')}</div>
                                     <div>{orderReturnsSumTotal} <span>({orderReturnsCountTotal} {summaryMeasurement})</span></div>
                                 </div>
                             </div>}
@@ -493,7 +494,7 @@ const StatProductGridList = enhance((props) => {
                                         className={classes.inputFieldCustom}
                                         name="search"
                                         component={TextField}
-                                        label="Поиск"
+                                        label={t('Поиск')}
                                         fullWidth={true}/>
                                     <IconButton
                                         className={classes.searchButton}
@@ -506,7 +507,7 @@ const StatProductGridList = enhance((props) => {
                                 <div className={classes.flexCenter}>
                                     <Pagination filter={filter}/>
                                     {expandedTable &&
-                                    <ToolTip position="left" text={'Обычный вид'}>
+                                    <ToolTip position="left" text={t('Обычный вид')}>
                                         <IconButton
                                             className={classes.fullScreen}
                                             onTouchTap={() => { setExpandedTable(!expandedTable) }}
@@ -516,7 +517,7 @@ const StatProductGridList = enhance((props) => {
                                         </IconButton>
                                     </ToolTip>}
                                     {!expandedTable &&
-                                    <ToolTip position="left" text={'Расширенный вид'}>
+                                    <ToolTip position="left" text={t('Расширенный вид')}>
                                         <IconButton
                                             className={classes.fullScreen}
                                             onTouchTap={() => { setExpandedTable(!expandedTable) }}
@@ -533,7 +534,7 @@ const StatProductGridList = enhance((props) => {
                                 </div>}
                                 <div className={classes.tableWrapper}>
                                     <div className={classes.leftTable}>
-                                        <div><span>Товар</span></div>
+                                        <div><span>{t('Товар')}</span></div>
                                         {tableLeft}
                                     </div>
                                     {_.isEmpty(tableList) && !listLoading &&
@@ -544,10 +545,10 @@ const StatProductGridList = enhance((props) => {
                                         <table className={classes.mainTable}>
                                             <tbody className={classes.tableBody}>
                                             <tr className={classes.title}>
-                                                <td rowSpan={2}>Тип</td>
-                                                <td colSpan={2}>Продажа</td>
-                                                <td colSpan={2}>Возврат</td>
-                                                <td colSpan={2}>Фактическая продажа</td>
+                                                <td rowSpan={2}>{t('Тип')}</td>
+                                                <td colSpan={2}>{t('Продажа')}</td>
+                                                <td colSpan={2}>{t('Возврат')}</td>
+                                                <td colSpan={2}>{t('Фактическая продажа')}</td>
                                             </tr>
                                             <tr className={classes.subTitle}>
                                                 {_.map(listHeader, (header, index) => {

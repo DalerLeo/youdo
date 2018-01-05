@@ -34,6 +34,8 @@ import {
 import {openErrorAction} from '../../actions/error'
 import {shopItemFetchAction} from '../../actions/shop'
 import {openSnackbarAction} from '../../actions/snackbar'
+import t from '../../helpers/translate'
+
 const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
@@ -167,10 +169,10 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[CONFIRM_DIALOG]: ZERO})})
                     dispatch(zoneItemFetchAction(detailId))
-                    return dispatch(openSnackbarAction({message: 'Агент откреплен из зоны'}))
+                    return dispatch(openSnackbarAction({message: t('Агент откреплен из зоны')}))
                 })
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Ошибка'}))
+                    return dispatch(openSnackbarAction({message: t('Ошибка')}))
                 })
         },
 
@@ -190,10 +192,10 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[DELETE_ZONE]: ZERO})})
                     dispatch(zoneListFetchAction(filter))
-                    return dispatch(openSnackbarAction({message: 'Зона успешно удалена'}))
+                    return dispatch(openSnackbarAction({message: t('Зона успешно удалена')}))
                 })
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
+                    return dispatch(openSnackbarAction({message: t('Ошибка при удалении')}))
                 })
         },
 
@@ -223,7 +225,7 @@ const enhance = compose(
             const {location: {pathname}, dispatch, createForm, filter} = props
             return dispatch(zoneCustomCreateAction(_.get(createForm, ['zoneName']), points))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Зона успешно добавлена'}))
+                    return dispatch(openSnackbarAction({message: t('Зона успешно добавлена')}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[ADD_ZONE]: false, [TOGGLE_INFO]: true, [ZONE_ID]: null})})
@@ -260,7 +262,7 @@ const enhance = compose(
                     return dispatch(zoneListFetchAction(filter))
                 })
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Зона успешно изменена'}))
+                    return dispatch(openSnackbarAction({message: t('Зона успешно изменена')}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[UPDATE_ZONE]: false, [TOGGLE_INFO]: true, [ZONE_ID]: null})})
@@ -288,7 +290,7 @@ const enhance = compose(
 
             return dispatch(zoneBindAgentAction(zoneId, zoneBindForm))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Агент закреплен'}))
+                    return dispatch(openSnackbarAction({message: t('Агент закреплен')}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[BIND_AGENT]: false})})

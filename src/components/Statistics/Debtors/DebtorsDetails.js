@@ -17,6 +17,7 @@ import numberFormat from '../../../helpers/numberFormat'
 import getConfig from '../../../helpers/getConfig'
 import dateFormat from '../../../helpers/dateFormat'
 import Pagination from '../../GridList/GridListNavPagination'
+import t from '../../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -238,7 +239,7 @@ const DebtorsDetails = enhance((props) => {
                 <a onClick={() => statDebtorsDialog.handleOpenStatDebtorsDialog(detailId)} className={classes.openDetails}/>
                 <div style={{flexBasis: '9%', maxWidth: '9%'}}>{detailId}</div>
                 <div style={{flexBasis: '21%', maxWidth: '21%'}}>{paymentDate}</div>
-                <div style={{flexBasis: '14%', maxWidth: '14%'}}>{(paymentType === 'cash') ? 'Нал.' : 'Переч.'}</div>
+                <div style={{flexBasis: '14%', maxWidth: '14%'}}>{(paymentType === 'cash') ? t('Нал') + '.' : t('Переч') + '.'}</div>
                 <div style={{flexBasis: '19%', maxWidth: '19%', textAlign: 'right'}}>{totalPrice}</div>
                 <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>{totalBalance}</div>
                 <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>{totalExpected}</div>
@@ -275,15 +276,15 @@ const DebtorsDetails = enhance((props) => {
                 </div>
                 <div className={classes.detail}>
                     <Row className="dottedList">
-                        <div style={{flexBasis: '9%', maxWidth: '9%'}}>№ заказа</div>
-                        <div style={{flexBasis: '21%', maxWidth: '21%'}}>Ожидаемая дата оплаты</div>
-                        <div style={{flexBasis: '14%', maxWidth: '14%'}}>Тип оплаты</div>
-                        <div style={{flexBasis: '19%', maxWidth: '19%', textAlign: 'right'}}>Сумма заказа</div>
-                        <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>Оплачено</div>
-                        <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>Долг</div>
+                        <div style={{flexBasis: '9%', maxWidth: '9%'}}>№ {t('заказа')}</div>
+                        <div style={{flexBasis: '21%', maxWidth: '21%'}}>{t('Ожидаемая дата оплаты')}</div>
+                        <div style={{flexBasis: '14%', maxWidth: '14%'}}>{t('Тип оплаты')}</div>
+                        <div style={{flexBasis: '19%', maxWidth: '19%', textAlign: 'right'}}>{t('Сумма заказа')}</div>
+                        <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>{t('Оплачено')}</div>
+                        <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>{t('Долг')}</div>
                         <div style={{flexBasis: '7%', maxWidth: '7%', paddingRight: '0'}}>
                             <div className={classes.editButton}>
-                                <ToolTip position="left" text={'Изменить дату оплаты всех заказов'}>
+                                <ToolTip position="left" text={t('Изменить дату оплаты всех заказов')}>
                                     <IconButton
                                         onTouchTap={() => {
                                             setEditDates(true)
@@ -309,7 +310,7 @@ const DebtorsDetails = enhance((props) => {
             <div className={classes.editDatesDialog}>
                 <Paper zDepth={2} className={classes.dialogWrapper}>
                     <div className={classes.dialogHeader}>
-                        <span>Изменение даты оплаты {editId ? 'заказа: №' + editId : 'всех заказов'}</span>
+                        <span>{t('Изменение даты оплаты')} {editId ? t('заказа') + ': №' + editId : t('всех заказов')}</span>
                         <IconButton
                             onTouchTap={() => { setEditDates(false) }}
                             className={classes.closeButton}>
@@ -319,7 +320,7 @@ const DebtorsDetails = enhance((props) => {
                     <div className={classes.dialogContent}>
                         <Field
                             name={'paymentDate'}
-                            label={'Дата оплаты'}
+                            label={t('Дата оплаты')}
                             className={classes.inputDateCustom}
                             hintStyle={{fontSize: '13px'}}
                             inputStyle={{fontSize: '13px'}}
@@ -329,7 +330,7 @@ const DebtorsDetails = enhance((props) => {
                     </div>
                     <div className={classes.dialogFooter}>
                         <FlatButton
-                            label={'Сохранить'}
+                            label={t('Сохранить')}
                             onTouchTap={() => {
                                 handleSubmitMultiUpdate(ordersArray)
                                 setEditDates(false)

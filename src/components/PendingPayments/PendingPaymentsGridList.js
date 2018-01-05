@@ -82,7 +82,7 @@ const listHeaderHasMarket = [
     {
         sorting: true,
         name: 'created_date',
-        title: t('Дата созд') +'.',
+        title: t('Дата созд') + '.',
         xs: 2
     },
     {

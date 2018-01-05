@@ -14,6 +14,8 @@ import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 export const POSITION_CREATE_DIALOG_OPEN = 'openCreateDialog'
 import userGroupFormat from '../../helpers/userGroupFormat'
+import t from '../../helpers/translate'
+
 const validate = (data) => {
     const errors = toCamelCase(data)
     const nonFieldErrors = _.get(errors, 'nonFieldErrors')

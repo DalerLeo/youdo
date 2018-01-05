@@ -24,6 +24,7 @@ import {PROVIDER_CREATE_DIALOG_OPEN} from '../Provider'
 import {Link} from 'react-router'
 import * as ROUTES from '../../constants/routes'
 import toCamelCase from '../../helpers/toCamelCase'
+import t from '../../helpers/translate'
 
 export const SUPPLY_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const validate = (data) => {
@@ -251,7 +252,7 @@ const SupplyCreateDialog = enhance((props) => {
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>{isUpdate ? 'Изменение поставки' : 'Добавление поставки'}</span>
+                <span>{isUpdate ? t('Изменение поставки') : t('Добавление поставки')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -264,7 +265,7 @@ const SupplyCreateDialog = enhance((props) => {
                     <div className={classes.innerWrap}>
                         <div className={classes.inContent} style={{minHeight: '350px'}}>
                             <div className={classes.leftOrderPart}>
-                                <div className={classes.subTitleOrder}>Выбор поставщика
+                                <div className={classes.subTitleOrder}>{t('Выбор поставщика')}
                                     <Link style={{color: '#12aaeb'}}
                                         target="_blank"
                                         to={{
@@ -278,7 +279,7 @@ const SupplyCreateDialog = enhance((props) => {
                                         name="provider"
                                         component={ProviderSearchField}
                                         className={classes.searchFieldCustom}
-                                        label="Поставщик"
+                                        label={t('Поставщик')}
                                         fullWidth={true}/>
                                     <Field
                                         name="contact"
@@ -291,38 +292,38 @@ const SupplyCreateDialog = enhance((props) => {
                                         name="date_delivery"
                                         component={DateField}
                                         className={classes.inputDateCustom}
-                                        floatingLabelText="Дата поставки"
+                                        floatingLabelText={t('Дата поставки')}
                                         container="inline"
                                         fullWidth={true}/>
                                     <Field
                                         name="division"
                                         component={DivisionSearchField}
                                         className={classes.searchFieldCustom}
-                                        label="Организация"
+                                        label={t('Организация')}
                                         fullWidth={true}/>
                                     <Field
                                         name="stock"
                                         component={StockSearchField}
                                         className={classes.searchFieldCustom}
-                                        label="Склад назначения"
+                                        label={t('Склад назначения')}
                                         fullWidth={true}/>
                                     <Field
                                         name="currency"
                                         component={CurrencySearchField}
                                         className={classes.searchFieldCustom}
-                                        label="Валюта оплаты"
+                                        label={t('Валюта оплаты')}
                                         fullWidth={true}/>
                                     <Field
                                         name="paymentType"
                                         component={PaymentTypeSearchField}
                                         className={classes.searchFieldCustom}
-                                        label="Тип оплаты"
+                                        label={t('Тип оплаты')}
                                         fullWidth={true}/>
                                     <Field
                                         name="contract"
                                         component={TextField}
                                         className={classes.inputFieldCustom}
-                                        label="Номер договора"
+                                        label={t('Номер договора')}
                                         fullWidth={true}/>
                                 </div>
                                 <div className={classes.commentFieldSupply}>
@@ -332,7 +333,7 @@ const SupplyCreateDialog = enhance((props) => {
                                             style={{marginTop: '-20px', lineHeight: '20px', fontSize: '13px'}}
                                             name="comment"
                                             component={TextField}
-                                            label="Оставить комментарий..."
+                                            label={t('Оставить комментарий') + '...'}
 
                                             multiLine={true}
                                             rows={1}

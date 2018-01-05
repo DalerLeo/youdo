@@ -5,6 +5,7 @@ import {compose} from 'recompose'
 import Paper from 'material-ui/Paper'
 import * as ROUTES from '../../constants/routes'
 import {Link} from 'react-router'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet({

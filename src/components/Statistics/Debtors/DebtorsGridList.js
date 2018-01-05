@@ -22,6 +22,7 @@ import StatisticsFilterExcel from '../StatisticsFilterExcel'
 import NotFound from '../../Images/not-found.png'
 import FullScreen from 'material-ui/svg-icons/navigation/fullscreen'
 import FullScreenExit from 'material-ui/svg-icons/navigation/fullscreen-exit'
+import t from '../../../helpers/translate'
 
 export const STAT_DEBTORS_FILTER_KEY = {
     DIVISION: 'division',
@@ -450,21 +451,21 @@ const StatDebtorsGridList = enhance((props) => {
                 name="division"
                 component={DivisionMultiSearchField}
                 className={classes.inputFieldCustom}
-                label="Организация"
+                label={t('Организация')}
                 fullWidth={true}
             />}
             <Field
                 name="paymentType"
                 component={PaymentTypeSearchField}
                 className={classes.inputFieldCustom}
-                label="Тип оплати"
+                label={t('Тип оплати')}
                 fullWidth={true}
             />
             <Field
                 name="currency"
                 component={CurrencyMultiSearchField}
                 className={classes.inputFieldCustom}
-                label="Валюта"
+                label={t('Валюта')}
                 fullWidth={true}
             />
         </div>
@@ -498,17 +499,17 @@ const StatDebtorsGridList = enhance((props) => {
                             </div>
                             : <div className={classes.debtors}>
                                 <div>
-                                    <span>Всего должников</span>
+                                    <span>{t('Всего должников')}</span>
                                     <div>{countDebtors} клиентов</div>
                                 </div>
                                 <div>
-                                    <span>Просроченные платежи</span>
+                                    <span>{t('Просроченные платежи')}</span>
                                     {_.map(sums, (item, index) => {
                                         return <div key={index}>{numberFormat(item.debts, _.get(item, ['currency', 'name']))}</div>
                                     })}
                                 </div>
                                 <div>
-                                    <span>Ожидаемые поступления</span>
+                                    <span>{t('Ожидаемые поступления')}</span>
                                     {_.map(sums, (item, index) => {
                                         return <div key={index}>{numberFormat(item.debts, _.get(item, ['currency', 'name']))}</div>
                                     })}
@@ -516,18 +517,18 @@ const StatDebtorsGridList = enhance((props) => {
                             </div>}
                         <div className={expandedTable ? classes.expandedTable : ''}>
                             <div className={classes.filters}>
-                                <strong>Статистика по должникам</strong>
+                                <strong>{t('Статистика по должникам')}</strong>
                                 <form onSubmit={handleSubmit(handleSubmitFilterDialog)}>
                                     <Field
                                         className={classes.inputFieldCustom}
                                         name="search"
                                         component={TextField}
-                                        hintText="Поиск"/>
+                                        hintText={t('Поиск')}/>
                                 </form>
                                 <div className={classes.flexCenter}>
                                     <Pagination filter={filter}/>
                                     {expandedTable &&
-                                    <ToolTip position="left" text={'Обычный вид'}>
+                                    <ToolTip position="left" text={t('Обычный вид')}>
                                         <IconButton
                                             className={classes.fullScreen}
                                             onTouchTap={() => { setExpandedTable(!expandedTable) }}
@@ -537,7 +538,7 @@ const StatDebtorsGridList = enhance((props) => {
                                         </IconButton>
                                     </ToolTip>}
                                     {!expandedTable &&
-                                    <ToolTip position="left" text={'Расширенный вид'}>
+                                    <ToolTip position="left" text={t('Расширенный вид')}>
                                         <IconButton
                                             className={classes.fullScreen}
                                             onTouchTap={() => { setExpandedTable(!expandedTable) }}
@@ -554,19 +555,19 @@ const StatDebtorsGridList = enhance((props) => {
                                 </div>}
                                 <div className={classes.tableWrapper}>
                                     <div className={classes.leftTable}>
-                                        <div><span>Клиент</span></div>
+                                        <div><span>{t('Клиент')}</span></div>
                                         {tableLeft}
                                     </div>
                                     {_.isEmpty(tableList) && !listLoading &&
                                     <div className={classes.emptyQuery}>
-                                        <div>По вашему запросу ничего не найдено</div>
+                                        <div>{t('По вашему запросу ничего не найдено')}</div>
                                     </div>}
                                     <div ref="horizontalTable">
                                         <table className={classes.mainTable}>
                                             <tbody className={classes.tableBody}>
                                             <tr className={classes.title}>
-                                                <td colSpan={2}>Просроченные</td>
-                                                <td colSpan={2}>Ожидаемые</td>
+                                                <td colSpan={2}>{t('Просроченные')}</td>
+                                                <td colSpan={2}>{t('Ожидаемые')}</td>
                                             </tr>
                                             <tr className={classes.subTitle}>
                                                 {listHeader}

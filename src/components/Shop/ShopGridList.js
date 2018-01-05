@@ -21,36 +21,38 @@ import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
+import t from '../../helpers/translate'
+
 const listHeader = [
     {
         xs: 3,
         sorting: false,
         name: 'name',
-        title: 'Название'
+        title: t('Название')
     },
     {
         xs: 3,
         sorting: false,
         name: 'client',
-        title: 'Клиент'
+        title: t('Клиент')
     },
     {
         xs: 2,
         sorting: false,
         name: 'market_type',
-        title: 'Тип'
+        title: t('Тип')
     },
     {
         xs: 2,
         sorting: false,
         name: 'border',
-        title: 'Зона'
+        title: t('Зона')
     },
     {
         xs: 2,
         sorting: false,
         name: 'is_active',
-        title: 'Статус'
+        title: t('Статус')
     }
 ]
 const enhance = compose(
@@ -131,7 +133,7 @@ const ShopGridList = enhance((props) => {
         const name = _.get(item, 'name')
         const client = _.get(item, ['client', 'name'])
         const marketType = _.get(item, ['marketType', 'name'])
-        const zone = _.get(item, ['border', 'title']) || 'Не определена'
+        const zone = _.get(item, ['border', 'title']) || t('Не определена')
         const isActive = _.get(item, 'isActive')
         return (
             <Row key={id} className={classes.listRow}>
@@ -144,8 +146,8 @@ const ShopGridList = enhance((props) => {
                     <Col xs={2}>{marketType}</Col>
                     <Col xs={2}>{zone}</Col>
                     <Col xs={2}>
-                        {isActive ? <span className="greenFont">Активен</span>
-                            : <span className="redFont">Не активен</span>}
+                        {isActive ? <span className="greenFont">{t('Активен')}</span>
+                            : <span className="redFont">{t('Не активен')}</span>}
                     </Col>
                 </Link>
             </Row>
@@ -160,7 +162,7 @@ const ShopGridList = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.SHOP_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить магазин">
+                <Tooltip position="left" text={t('Добавить магазин')}>
                     <FloatingActionButton
                         mini={true}
                         zDepth={1}

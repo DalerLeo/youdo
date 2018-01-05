@@ -18,6 +18,7 @@ import {
 import {shopItemFetchAction} from '../../actions/shop'
 import {zoneListFetchAction} from '../../actions/zones'
 import getConfig from '../../helpers/getConfig'
+
 const TRACKING_FILTER_KEY = {
     DATE: 'date',
     SHOW_MARKETS: 'showMarkets',

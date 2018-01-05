@@ -13,6 +13,7 @@ import ProviderContactsListField from '../ReduxForm/Provider/ProviderContactsLis
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
+import t from '../../helpers/translate'
 
 export const PROVIDER_CREATE_DIALOG_OPEN = 'openCreateDialog'
 export const PROVIDER_UPDATE_DIALOG_OPEN = 'openUpdateDialog'
@@ -85,7 +86,7 @@ const ProviderCreateDialog = enhance((props) => {
             bodyClassName={classes.popUp}>
 
             <div className={classes.titleContent}>
-                <span>{isUpdate ? 'Изменение поставщика' : 'Добавление поставщика'}</span>
+                <span>{isUpdate ? t('Изменение поставщика') : t('Добавление поставщика')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -101,17 +102,17 @@ const ProviderCreateDialog = enhance((props) => {
                                 name="name"
                                 component={TextField}
                                 className={classes.inputFieldCustom}
-                                label="Организация"
+                                label={t('Организация')}
                                 fullWidth={true}/>
                             <Field
                                 name="address"
                                 component={TextField}
                                 className={classes.inputFieldCustom}
-                                label="Местположение"
+                                label={t('Местположение')}
                                 fullWidth={true}/>
 
                             <div className={classes.contacts}>
-                                Контактные данные
+                                {t('Контактные данные')}
                                 <FieldArray
                                     name="contacts"
                                     component={ProviderContactsListField}
@@ -121,7 +122,7 @@ const ProviderCreateDialog = enhance((props) => {
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
-                            label="Сохранить"
+                            label={t('Сохранить')}
                             className={classes.actionButton}
                             labelStyle={{fontSize: '13px'}}
                             primary={true}

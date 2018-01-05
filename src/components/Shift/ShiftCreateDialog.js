@@ -12,6 +12,7 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import Loader from '../Loader'
 import MainStyles from '../Styles/MainStyles'
+import t from '../../helpers/translate'
 
 export const SHIFT_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -85,7 +86,7 @@ const ShiftCreateDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.body}>
             <div className={classes.titleContent}>
-                <span>{isUpdate ? 'Редактирование смены' : 'Добавить смену'}</span>
+                <span>{isUpdate ? t('Редактирование смены') : t('Добавить смену')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -101,27 +102,27 @@ const ShiftCreateDialog = enhance((props) => {
                                 name="name"
                                 component={TextField}
                                 className={classes.inputFieldShift}
-                                label="Наименование"
+                                label={t('Наименование')}
                                 fullWidth={true}/>
                             <div className={classes.timePick}>
                                 <Field
                                     name="beginTime"
                                     component={TimeField}
                                     className={classes.inputFieldTime}
-                                    label="Начало"
+                                    label={t('Начало')}
                                     fullWidth={true}/>
                                 <Field
                                     name="endTime"
                                     component={TimeField}
                                     className={classes.inputFieldTime}
-                                    label="Конец"
+                                    label={t('Конец')}
                                     fullWidth={true}/>
                             </div>
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
-                            label="Применить"
+                            label={t('Применить')}
                             className={classes.actionButton}
                             labelStyle={{fontSize: '13px'}}
                             type="submit"

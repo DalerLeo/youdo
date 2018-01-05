@@ -29,6 +29,7 @@ import ConfirmDialog from '../ConfirmDialog'
 import ZoneDetails from './ZoneDetails'
 import NotFound from '../Images/not-found.png'
 import ShopDetail from '../Tracking/TrackingShopDetails'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -390,7 +391,7 @@ const ZonesWrapper = enhance((props) => {
                         </div>
                         <div>
                             <big>{boundMarkets}</big>
-                            <span>магазинов <br/> в зонах</span>
+                            <span>{t('магазинов <br/> в зонах')}</span>
                         </div>
                     </div>
 
@@ -402,7 +403,7 @@ const ZonesWrapper = enhance((props) => {
                                     <div className={classes.search}>
                                         <TextFieldSearch
                                             fullWidth={true}
-                                            hintText="Поиск"
+                                            hintText={t('Поиск')}
                                             className={classes.searchField}
                                             value={search}
                                             onChange={(event) => setSearch(event.target.value)}
@@ -419,8 +420,8 @@ const ZonesWrapper = enhance((props) => {
                         </div>
                         <Row className={classes.listHeader}>
                             <Col xs={2}>ID</Col>
-                            <Col xs={6}>Наименование зоны</Col>
-                            <Col xs={2}>Магазины</Col>
+                            <Col xs={6}>{t('Наименование зоны')}</Col>
+                            <Col xs={2}>{t('Магазины')}</Col>
                         </Row>
                         <div className={classes.itemList}>
                             {isLoadingList &&
@@ -448,12 +449,12 @@ const ZonesWrapper = enhance((props) => {
                                                 anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                                                 targetOrigin={{horizontal: 'right', vertical: 'top'}}>
                                                 <MenuItem
-                                                    primaryText="Изменить"
+                                                    primaryText={t('Изменить')}
                                                     onTouchTap={() => { updateZone.handleOpenUpdateZone(id) }}
                                                     leftIcon={<Edit/>}
                                                 />
                                                 <MenuItem
-                                                    primaryText="Удалить"
+                                                    primaryText={t('Удалить')}
                                                     onTouchTap={() => { deleteZone.handleOpenDeleteZone(id) }}
                                                     leftIcon={<DeleteIcon/>}
                                                 />
@@ -463,7 +464,7 @@ const ZonesWrapper = enhance((props) => {
                                 )
                             })
                                 : <div className={classes.emptyQuery}>
-                                    <div>По вашему запросу ничего не найдено</div>
+                                    <div>{t('По вашему запросу ничего не найдено')}</div>
                                 </div>}
                         </div>
                     </div>
@@ -476,12 +477,12 @@ const ZonesWrapper = enhance((props) => {
                         <Link target="_blank" to={{pathname: ROUTES.SHOP_LIST_URL, query: {nullBorder: true}}}>
                             <div>
                                 <big>{passiveMarkets}</big>
-                                <span>магазинов <br/> не распределено</span>
+                                <span>{t('магазинов <br/> не распределено')}</span>
                             </div>
                         </Link>
                         <div>
                             <big>{passiveAgents}</big>
-                            <span>агентов <br/> не распределено</span>
+                            <span>{t('агентов <br/> не распределено')}</span>
                         </div>
                     </div>
                 </div>}
@@ -493,7 +494,7 @@ const ZonesWrapper = enhance((props) => {
             <SubMenu url={ROUTES.ZONES_LIST_URL}/>
 
             {(!isOpenAddZone && !isOpenUpdateZone) && <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить зону">
+                <Tooltip position="left" text={t('Добавить зону')}>
                     <FloatingActionButton
                         mini={true}
                         zDepth={1}
@@ -533,7 +534,7 @@ const ZonesWrapper = enhance((props) => {
                     open={isOpenConfirm}
                     onClose={unbindAgent.handleCloseConfirmDialog}
                     onSubmit={unbindAgent.handleSendConfirmDialog}
-                    message="Открепить данного агента?"
+                    message={t('Открепить данного агента?')}
                     type="submit"
                 />
 

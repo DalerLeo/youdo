@@ -17,6 +17,7 @@ import IconButton from 'material-ui/IconButton'
 import Edit from 'material-ui/svg-icons/image/edit'
 import ImageCheck from 'material-ui/svg-icons/navigation/check'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
+import t from '../../helpers/translate'
 
 export const MANUFACTURE_SHOW_BOM_DIALOG_OPEN = 'showBom'
 

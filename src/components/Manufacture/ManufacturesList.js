@@ -12,7 +12,7 @@ import Glue from '../CustomIcons/Manufacture/Glue.svg'
 import Carving from '../CustomIcons/Manufacture/Carving.svg'
 import Tape from '../CustomIcons/Manufacture/Tape.svg'
 import Manufacture from '../CustomIcons/Manufacture/Manufacture.svg'
-
+import t from '../../helpers/translate'
 const enhance = compose(
     injectSheet({
         loader: {

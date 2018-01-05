@@ -9,6 +9,8 @@ import {TextField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import CopyContent from 'material-ui/svg-icons/content/content-copy'
 import IconButton from 'material-ui/IconButton'
+import t from '../../helpers/translate'
+
 const enhance = compose(
     injectSheet({
         loader: {
@@ -95,7 +97,7 @@ const TelegramCreateDialog = enhance((props) => {
             contentStyle={loading ? {width: '200px'} : {width: '400px'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>{'Получить ключ'}</span>
+                <span>{t('Получить ключ')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>

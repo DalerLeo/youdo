@@ -17,6 +17,7 @@ import Direction from 'material-ui/svg-icons/maps/directions'
 import sprintf from 'sprintf'
 import {Link} from 'react-router'
 import * as ROUTES from '../../constants/routes'
+import t from '../../helpers/translate'
 
 const colorBlue = '#12aaeb !important'
 const enhance = compose(
@@ -192,14 +193,14 @@ const StockTransferDetails = enhance((props) => {
     const deliveryMan = _.get(detailData, 'deliveryMan')
     const deliveryManName = deliveryMan
         ? _.get(detailData, ['deliveryMan', 'firstName']) + ' ' + _.get(detailData, ['deliveryMan', 'secondName'])
-        : 'Доставщик не определен'
+        : t('Доставщик не определен')
     return (
         <div className={classes.wrapper}>
             <div className={classes.header}>
                 <div className={classes.title}>{deliveryManName}</div>
                 <div className={classes.closeDetail} onClick={handleCloseDetail}>{null}</div>
                 <div className={classes.titleButtons}>
-                    <Tooltip position="bottom" text="Скачать релиз">
+                    <Tooltip position="bottom" text={t('Скачать релиз')}>
                         <IconButton
                             disabled={_.isEmpty(products)}
                             iconStyle={iconStyle.icon}
@@ -209,7 +210,7 @@ const StockTransferDetails = enhance((props) => {
                             <Release />
                         </IconButton>
                     </Tooltip>
-                    <Tooltip position="bottom" text="Скачать маршрут">
+                    <Tooltip position="bottom" text={t('Скачать маршрут')}>
                         <IconButton
                             disabled={_.isEmpty(products)}
                             iconStyle={iconStyle.icon}
@@ -219,7 +220,7 @@ const StockTransferDetails = enhance((props) => {
                             <Direction />
                         </IconButton>
                     </Tooltip>
-                    <Tooltip position="bottom" text="Распечатать релиз">
+                    <Tooltip position="bottom" text={t('Распечатать релиз')}>
                         <IconButton
                             disabled={_.isEmpty(products)}
                             iconStyle={iconStyle.icon}
@@ -229,7 +230,7 @@ const StockTransferDetails = enhance((props) => {
                             <PrintIcon />
                         </IconButton>
                     </Tooltip>
-                    <Tooltip position="bottom" text="Распечатать маршрут">
+                    <Tooltip position="bottom" text={t('Распечатать маршрут')}>
                         <IconButton
                             disabled={_.isEmpty(products)}
                             iconStyle={iconStyle.icon}
@@ -239,7 +240,7 @@ const StockTransferDetails = enhance((props) => {
                             <PrintRoute />
                         </IconButton>
                     </Tooltip>
-                    <Tooltip position="bottom" text="Передать доставщику">
+                    <Tooltip position="bottom" text={t('Передать доставщику')}>
                         <IconButton
                             disabled={!deliveryMan}
                             iconStyle={iconStyle.icon}
@@ -253,20 +254,20 @@ const StockTransferDetails = enhance((props) => {
             </div>
             {_.isEmpty(products)
                 ? <div className={classes.emptyQuery}>
-                    <div>Товаров не найдено</div>
+                    <div>{t('Товаров не найдено')}</div>
                 </div>
                 : <div style={{width: '100%'}}>
                     <div className={classes.content}>
                         <div className={classes.ordersData}>
                             <div>Склад: <strong>{currentDeliverer.stock.name}</strong></div>
-                            <div>Показаны товары по следующим заказам ( <span style={{fontWeight: '600'}}>{orderNo}</span> ): {ordersView}</div>
+                            <div>{t('Показаны товары по следующим заказам')} ( <span style={{fontWeight: '600'}}>{orderNo}</span> ): {ordersView}</div>
                         </div>
                         <div className={classes.leftSide}>
                             <Row className='dottedList'>
-                                <Col xs={5}>Товар</Col>
-                                <Col xs={3}>Тип товара</Col>
-                                <Col xs={2}>Кол-во</Col>
-                                <Col xs={2}>Сумма</Col>
+                                <Col xs={5}>{t('Товар')}</Col>
+                                <Col xs={3}>{t('Тип товара')}</Col>
+                                <Col xs={2}>{t('Кол-во')}</Col>
+                                <Col xs={2}>{t('Сумма')}</Col>
                             </Row>
                             {_.map(products, (item) => {
                                 const productId = _.get(item, 'id')
@@ -289,7 +290,7 @@ const StockTransferDetails = enhance((props) => {
                                 )
                             })}
                             <Row className='dottedList'>
-                                <Col xs={8}><span style={{fontWeight: '600'}}>Итого:</span></Col>
+                                <Col xs={8}><span style={{fontWeight: '600'}}>{t('Итого')}:</span></Col>
                                 <Col xs={2}>{measurementCheck
                                     ? <span style={{fontWeight: '600'}}>{numberFormat(totalAmount, firstMeasure)}</span>
                                     : null}

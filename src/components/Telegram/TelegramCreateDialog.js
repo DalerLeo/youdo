@@ -11,6 +11,7 @@ import toCamelCase from '../../helpers/toCamelCase'
 import {MarketSearchField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
+import t from '../../helpers/translate'
 
 export const TELEGRAM_CREATE_DIALOG_OPEN = 'openCreateDialog'
 export const TELEGRAM_UPDATE_DIALOG_OPEN = 'openUpdateDialog'
@@ -132,7 +133,7 @@ const TelegramCreateDialog = enhance((props) => {
             bodyClassName={classes.popUp}>
 
             <div className={classes.titleContent}>
-                <span>{'Получить ключ'}</span>
+                <span>{t('Получить ключ')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -148,7 +149,7 @@ const TelegramCreateDialog = enhance((props) => {
                                 name="market"
                                 component={MarketSearchField}
                                 className={classes.inputFieldCustom}
-                                label="Магазин"
+                                label={t('Магазин')}
                                 fullWidth={true}/>
                         </div>
                     </div>

@@ -12,7 +12,7 @@ import {TextField, ManufactureSearchField, ImageUploadField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
-import  t from '../../helpers/translate'
+import t from '../../helpers/translate'
 
 export const EQUIPMENT_CREATE_DIALOG_OPEN = 'openCreateDialog'
 

@@ -22,6 +22,7 @@ import IconButton from 'material-ui/IconButton'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import Place from '../CustomIcons/AddPlace'
 import Dot from '../Images/dot.png'
+import t from '../../helpers/translate'
 
 export const SHOP_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -253,7 +254,7 @@ const ShopCreateDialog = enhance((props) => {
                         <Loader size={0.75}/>
                     </div>
                     <div className={classes.titleContent}>
-                        <span>{isUpdate ? 'Изменение магазина' : 'Добавление магазина'}</span>
+                        <span>{isUpdate ? t('Изменение магазина') : t('Добавление магазина')}</span>
                         <IconButton onTouchTap={onClose}>
                             <CloseIcon color="#666666"/>
                         </IconButton>
@@ -262,30 +263,30 @@ const ShopCreateDialog = enhance((props) => {
                         <div className={classes.leftSide}>
                             <div className={classes.divider}>
                                 {!isUpdate ? (!openClient ? <Field
-                                    name="client"
-                                    component={ClientSearchField}
-                                    className={classes.inputFieldCustom}
-                                    label="Клиент"
-                                    fullWidth={true}/>
+                                        name="client"
+                                        component={ClientSearchField}
+                                        className={classes.inputFieldCustom}
+                                        label={t('Клиент')}
+                                        fullWidth={true}/>
                                     : <Field
                                         name="newClientName"
                                         component={TextField}
                                         className={classes.inputFieldCustom}
-                                        label="Наименование фирмы"
+                                        label={t('Наименование фирмы')}
                                         fullWidth={true}/>)
                                     : <Field
                                         name="client"
                                         component={TextField}
                                         className={classes.inputFieldCustom}
-                                        label="Имя клиента"
+                                        label={t('Имя клиента')}
                                         fullWidth={true}/>}
                                 <div className={classes.add}>
                                     {!openClient && !isUpdate && <a onClick={() => {
                                         setOpenClient(true)
-                                    }}>+ добавить клиента</a>}
+                                    }}>+ {t('добавить клиента')}</a>}
                                     {openClient && !isUpdate && <a onClick={() => {
                                         setOpenClient(false)
-                                    }}>+ выбрать клиента</a>}
+                                    }}>+ {t('выбрать клиента')}</a>}
                                 </div>
                             </div>
                             <div className={classes.divider}>
@@ -293,13 +294,13 @@ const ShopCreateDialog = enhance((props) => {
                                     name="name"
                                     component={TextField}
                                     className={classes.inputFieldCustom}
-                                    label="Наименование"
+                                    label={t('Наименование')}
                                     fullWidth={true}/>
                                 <Field
                                     name="marketTypeParent"
                                     component={MarketTypeParentSearchField}
                                     className={classes.inputFieldCustom}
-                                    label="Тип заведения"
+                                    label={t('Тип заведения')}
                                     fullWidth={true}/>
                                 {(typeParent || marketType) &&
                                 <Field
@@ -307,7 +308,7 @@ const ShopCreateDialog = enhance((props) => {
                                     component={MarketTypeSearchField}
                                     className={classes.inputFieldCustom}
                                     parentType={typeParent}
-                                    label="Подкатегория"
+                                    label={t('Подкатегория')}
                                     fullWidth={true}/>}
                             </div>
                             <div className={classes.divider}>
@@ -315,32 +316,33 @@ const ShopCreateDialog = enhance((props) => {
                                     name="address"
                                     component={TextField}
                                     className={classes.inputFieldCustom}
-                                    label="Адрес"
+                                    label={t('Адрес')}
                                     fullWidth={true}/>
                                 <Field
                                     name="guide"
                                     component={TextField}
                                     className={classes.inputFieldCustom}
-                                    label="Ориентир"
+                                    label={t('Ориентир')}
                                     fullWidth={true}/>
                                 <div className={classes.addPlace}>
                                     {!(lat && lng)
-                                        ? <a onClick={mapDialog.handleOpenMapDialog}><Place color="#129fdd"/> отметить
-                                            местоположение на карте</a>
+                                        ? <a onClick={mapDialog.handleOpenMapDialog}><Place color="#129fdd"/>
+                                            {t('отметить местоположение на карте')}
+                                        </a>
                                         : <div className={classes.flex}>
                                             <div>
                                                 <Place color="#999"/> <span>{lat}</span> <span>{lng}</span>
                                             </div>
-                                            <a onClick={updateMapDialog.handleOpenMapUpdateDialog}>Изменить</a>
+                                            <a onClick={updateMapDialog.handleOpenMapUpdateDialog}>{t('Изменить')}</a>
                                         </div>}
                                 </div>
                             </div>
                             <div className={classes.flex} style={{alignItems: 'baseline'}}>
-                                <div className={classes.inputHalfWrap}>Частота посещений:</div>
+                                <div className={classes.inputHalfWrap}>{t('Частота посещений')}:</div>
                                 <div className={classes.inputHalfWrap}>
                                     <Field
                                         name="frequency"
-                                        label="Выберите"
+                                        label={t('Выберите')}
                                         component={VisitFrequencySearchField}
                                         className={classes.inputFieldCustom}
                                         hintText="Ежедневно"
@@ -348,11 +350,11 @@ const ShopCreateDialog = enhance((props) => {
                                 </div>
                             </div>
                             <div className={classes.flex} style={{alignItems: 'baseline'}}>
-                                <div className={classes.inputHalfWrap}>Статус объекта:</div>
+                                <div className={classes.inputHalfWrap}>{t('Статус объекта')}:</div>
                                 <div className={classes.inputHalfWrap}>
                                     <Field
                                         name="status"
-                                        label="Выберите"
+                                        label={t('Выберите')}
                                         component={ShopStatusSearchField}
                                         className={classes.inputFieldCustom}
                                         hintText="Активен"
@@ -370,44 +372,44 @@ const ShopCreateDialog = enhance((props) => {
                                     name="contactName"
                                     component={TextField}
                                     className={classes.inputFieldCustom}
-                                    label="Контактное лицо"
+                                    label={t('Контактное лицо')}
                                     fullWidth={true}/>
                                 <Field
                                     name="mfo"
                                     component={TextField}
                                     className={classes.inputFieldCustom}
-                                    label="МФО"
+                                    label={t('МФО')}
                                     fullWidth={true}/>
                                 <Field
                                     name="inn"
                                     component={TextField}
                                     className={classes.inputFieldCustom}
-                                    label="ИНН"
+                                    label={t('ИНН')}
                                     fullWidth={true}/>
                                 <Field
                                     name="okad"
                                     component={TextField}
                                     className={classes.inputFieldCustom}
-                                    label="ОКАД"
+                                    label={t('ОКАД')}
                                     fullWidth={true}/>
                                 <Field
                                     name="bankAddress"
                                     component={TextField}
                                     className={classes.inputFieldCustom}
-                                    label="Адрес банка"
+                                    label={t('Адрес банка')}
                                     fullWidth={true}/>
                                 <Field
                                     name="checkingAccount"
                                     component={TextField}
                                     className={classes.inputFieldCustom}
-                                    label="Р/с"
+                                    label={t('Р/с')}
                                     fullWidth={true}/>
                             </div>
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
-                            label="Сохранить"
+                            label={t('Сохранить')}
                             className={classes.actionButton}
                             primary={true}
                             type="submit"/>

@@ -9,6 +9,7 @@ import {Field, reduxForm} from 'redux-form'
 import {LocationField} from '../ReduxForm'
 import IconButton from 'material-ui/IconButton'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -124,9 +125,9 @@ const ShopMapDialog = enhance((props) => {
                         />
                     </div>
                     {!viewOnly && <div className={classes.bottomButton}>
-                        <span>Кликните по карте, чтобы обозначить локацию</span>
+                        <span>{t('Кликните по карте, чтобы обозначить локацию')}</span>
                         <FlatButton
-                            label="Сохранить"
+                            label={t('Сохранить')}
                             className={classes.actionButton}
                             primary={true}
                             type="submit"/>

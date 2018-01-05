@@ -21,6 +21,7 @@ import NotFound from '../../Images/not-found.png'
 import getConfig from '../../../helpers/getConfig'
 import Tooltip from '../../ToolTip'
 import {StatisticsFilterExcel} from '../../Statistics'
+import t from '../../../helpers/translate'
 
 export const STAT_REMAINDER_FILTER_KEY = {
     STOCK: 'stock',
@@ -316,9 +317,9 @@ const StatRemainderGridList = enhance((props) => {
         <Row style={headerStyle} className="dottedList">
             <Col xs={3}>Товар</Col>
             <Col xs={3}>Тип товара</Col>
-            <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right'}}>Всего товаров</Col>
-            <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right'}}>Доступно</Col>
-            <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right'}}>Цена</Col>
+            <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right'}}>{t('Всего товаров')}</Col>
+            <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right'}}>{t('Доступно')}</Col>
+            <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right'}}>{t('Цена')}</Col>
         </Row>
     )
 
@@ -351,7 +352,7 @@ const StatRemainderGridList = enhance((props) => {
                     </Col>
                     <Col xs={2} className={classes.boldFont}>{available}</Col>
                     <Col xs={2} className={classes.boldFont}>
-                        <Tooltip position="top" text={'Цена доступных товаров<br/> Себестоимость: ' + netCost}>
+                        <Tooltip position="top" text={t('Цена доступных товаров<br/> Себестоимость: ') + netCost}>
                             {price}
                         </Tooltip>
                     </Col>
@@ -366,20 +367,20 @@ const StatRemainderGridList = enhance((props) => {
                 className={classes.inputFieldCustom}
                 name="stock"
                 component={StockMultiSearchField}
-                label="Склад"
+                label={t('Склад')}
                 fullWidth={true}/>
             <Field
                 className={classes.inputFieldCustom}
                 name="typeParent"
                 component={ProductTypeParentSearchField}
-                label="Тип товара"
+                label={t('Тип товара')}
                 fullWidth={true}/>
             {typeParent ? <Field
                 className={classes.inputFieldCustom}
                 name="type"
                 parentType={typeParent}
                 component={ProductTypeChildSearchField}
-                label="Подкатегория"
+                label={t('Подкатегория')}
                 fullWidth={true}/> : null}
         </div>
     )
@@ -406,20 +407,20 @@ const StatRemainderGridList = enhance((props) => {
                                 <Loader size={0.75}/>
                             </div>}
                             <div>
-                                <span>Общая сумма</span>
-                                <div>{numberFormat(sumAll, primaryCurrency)} <span className={classes.block}>({numberFormat(countAll, 'шт')})</span></div>
+                                <span>{t('Общая сумма')}</span>
+                                <div>{numberFormat(sumAll, primaryCurrency)} <span className={classes.block}>({numberFormat(countAll, t('шт'))})</span></div>
                             </div>
                             <div>
-                                <span>Сумма забронированных</span>
-                                <div>{numberFormat(sumReserve, primaryCurrency)} <span className={classes.block}>({numberFormat(countReserve, 'шт')})</span></div>
+                                <span>{t('Сумма забронированных')}</span>
+                                <div>{numberFormat(sumReserve, primaryCurrency)} <span className={classes.block}>({numberFormat(countReserve, t('шт'))})</span></div>
                             </div>
                             <div>
-                                <span>Сумма забракованных</span>
-                                <div>{numberFormat(sumDefect, primaryCurrency)} <span className={classes.block}>({numberFormat(countDefect, 'шт')})</span></div>
+                                <span>{t('Сумма забракованных')}</span>
+                                <div>{numberFormat(sumDefect, primaryCurrency)} <span className={classes.block}>({numberFormat(countDefect, t('шт'))})</span></div>
                             </div>
                             <div>
-                                <span>Сумма доступных</span>
-                                <div>{numberFormat(sumAvailable, primaryCurrency)} <span className={classes.block}>({numberFormat(countAvailable, 'шт')})</span></div>
+                                <span>{t('Сумма доступных')}</span>
+                                <div>{numberFormat(sumAvailable, primaryCurrency)} <span className={classes.block}>({numberFormat(countAvailable, t('шт'))})</span></div>
                             </div>
                         </div>
                         <div style={{display: 'flex', justifyContent: 'space-between'}}>
@@ -428,7 +429,7 @@ const StatRemainderGridList = enhance((props) => {
                                     className={classes.inputFieldCustom}
                                     name="search"
                                     component={TextField}
-                                    hintText="Поиск"
+                                    hintText={t('Поиск')}
                                     fullWidth={true}/>
                                 <IconButton
                                     className={classes.searchButton}
@@ -449,7 +450,7 @@ const StatRemainderGridList = enhance((props) => {
                             : <div className={classes.tableWrapper}>
                                 {_.isEmpty(list) && !listLoading
                                     ? <div className={classes.emptyQuery}>
-                                        <div>По вашему запросу ничего не найдено</div>
+                                        <div>{t('По вашему запросу ничего не найдено')}</div>
                                     </div>
                                     : <div>
                                         {headers}

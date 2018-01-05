@@ -20,6 +20,7 @@ import TransactionUpdatePriceDialog from './TransactionUpdatePriceDialog'
 import Edit from 'material-ui/svg-icons/editor/mode-edit'
 import Delete from 'material-ui/svg-icons/action/delete-forever'
 import dateFormat from '../../helpers/dateTimeFormat'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -272,7 +273,7 @@ const TransactionCashDialog = enhance((props) => {
                         <Col xs={1}>
                             {
                             <div style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-end'}}>
-                                <Tooltip position="bottom" text="Изменить">
+                                <Tooltip position="bottom" text={t('Изменить')}>
                                     <IconButton
                                         iconStyle={iconStyle.icon}
                                         style={iconStyle.button}
@@ -282,7 +283,7 @@ const TransactionCashDialog = enhance((props) => {
                                         <Edit />
                                     </IconButton>
                                 </Tooltip>
-                                <Tooltip position="bottom" text="Удалить">
+                                <Tooltip position="bottom" text={t('Удалить')}>
                                     <IconButton
                                         iconStyle={iconStyle.icon}
                                         style={iconStyle.button}
@@ -325,8 +326,8 @@ const TransactionCashDialog = enhance((props) => {
                 <div className={classes.inContent} style={{minHeight: 'initial'}}>
                     <div className={classes.list}>
                         <Row className="dottedList">
-                            <Col xs={9}>Агент</Col>
-                            <Col xs={2}>Сумма</Col>
+                            <Col xs={9}>{t('Агент')}</Col>
+                            <Col xs={2}>{t('Сумма')}</Col>
                         </Row>
                         {_.map(_.get(acceptCashDialog, ['data']), (item, index) => {
                             const currency = _.get(item, ['currency', 'name'])
@@ -351,7 +352,7 @@ const TransactionCashDialog = enhance((props) => {
                                             <Col xs={5} style={{textAlign: 'right', paddingRight: '0'}}>{amount}</Col>
                                             <Col xs={1}>
                                                 <div style={{paddingLeft: '6px'}}>
-                                                    <Tooltip position="bottom" text="Оплатить">
+                                                    <Tooltip position="bottom" text={t('Оплатить')}>
                                                         <IconButton
                                                             onTouchTap={() => {
                                                                 cashBoxDialog.handleOpenCashBoxDialog(userId, currencyId)
@@ -365,12 +366,12 @@ const TransactionCashDialog = enhance((props) => {
                                         <div>
                                             <Row className={classes.detailsRow}>
                                                 <Col xs={1}>№</Col>
-                                                <Col xs={hasMarket ? TWO : THREE}>Клиент</Col>
+                                                <Col xs={hasMarket ? TWO : THREE}>{t('Клиент')}</Col>
                                                 {hasMarket && <Col xs={2}>Магазин</Col>}
-                                                <Col xs={2}>Организация</Col>
-                                                <Col xs={hasMarket ? ONE : THREE}>Заказ</Col>
+                                                <Col xs={2}>{t('Организация')}</Col>
+                                                <Col xs={hasMarket ? ONE : THREE}>{t('Заказ')}</Col>
                                                 <Col xs={1}>Дата</Col>
-                                                <Col xs={2} style={{textAlign: 'right', paddingRight: '0'}}>Сумма</Col>
+                                                <Col xs={2} style={{textAlign: 'right', paddingRight: '0'}}>{t('Сумма')}</Col>
                                                 <Col xs={1}> </Col>
                                             </Row>
                                             {detailRow}
@@ -392,7 +393,7 @@ const TransactionCashDialog = enhance((props) => {
                                     <Col xs={6}>{user}</Col>
                                     <Col xs={5} style={{textAlign: 'right'}}>{amount}</Col>
                                     <Col xs={1}>
-                                        <Tooltip position="bottom" text="Оплатить">
+                                        <Tooltip position="bottom" text={t('Оплатить')}>
                                             <IconButton
                                                 onTouchTap={() => {
                                                     cashBoxDialog.handleOpenCashBoxDialog(userId, currencyId)
@@ -405,7 +406,7 @@ const TransactionCashDialog = enhance((props) => {
                             )
                         })}
                         {_.isEmpty(_.get(acceptCashDialog, ['data'])) &&
-                        <div className={classes.noData}><h3>Никакой платеж не произведен</h3></div>}
+                        <div className={classes.noData}><h3>{t('Никакой платеж не произведен')}</h3></div>}
                     </div>
                 </div>
             </div>

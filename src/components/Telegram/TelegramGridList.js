@@ -19,31 +19,32 @@ import SubMenu from '../SubMenu'
 import Tooltip from '../ToolTip'
 import dateFormat from '../../helpers/dateFormat'
 import IconButton from 'material-ui/IconButton'
+import t from '../../helpers/translate'
 
 const listHeader = [
     {
         sorting: true,
         name: 'market',
         xs: 3,
-        title: 'Магазин'
+        title: t('Магазин')
     },
     {
         sorting: false,
         name: 'createBy',
         xs: 3,
-        title: 'Создал'
+        title: t('Создал')
     },
     {
         sorting: false,
         name: 'username',
         xs: 3,
-        title: 'Пользователи'
+        title: t('Пользователи')
     },
     {
         sorting: false,
         xs: 2,
         name: 'activated_date',
-        title: 'Дата активации'
+        title: t('Дата активации')
     },
     {
         sorting: false,
@@ -232,7 +233,7 @@ const TelegramGridList = enhance((props) => {
         const createdBy = _.get(item, ['createdBy', 'firstName']) + ' ' + _.get(item, ['createdBy', 'secondName']) || ''
         const createdDate = dateFormat(_.get(item, 'createdDate'), true)
         const activatedDate = dateFormat(_.get(item, 'activatedDate'), true)
-        const market = _.get(item, ['market', 'name']) || 'Неизвестно'
+        const market = _.get(item, ['market', 'name']) || t('Неизвестно')
         return (
             <Row key={id} className={classes.listRow}>
                 <div className={classes.openDetails} onClick={() => logsDialog.handleOpenLogsDialog(id)}> </div>
@@ -244,7 +245,7 @@ const TelegramGridList = enhance((props) => {
                     </div>
                 </Col>
                 <Col xs={2}>{activatedDate ||
-                    <Tooltip position="left" text="Скопировать ссылку">
+                    <Tooltip position="left" text={t('Скопировать ссылку')}>
                         <span
                             style={{color: '#12aaeb', cursor: 'pointer'}}
                             onClick={() => copyToClipBoard.handleCopyLinkInList(token)}>
@@ -253,7 +254,7 @@ const TelegramGridList = enhance((props) => {
                     </Tooltip>}
                 </Col>
                 <Col xs={1}>
-                    <Tooltip position="left" text="Деактивировать">
+                    <Tooltip position="left" text={t('Деактивировать')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
@@ -275,7 +276,7 @@ const TelegramGridList = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.TELEGRAM_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Получить ключ">
+                <Tooltip position="left" text={t('Получить ключ')}>
                     <FloatingActionButton
                         mini={true}
                         zDepth={1}

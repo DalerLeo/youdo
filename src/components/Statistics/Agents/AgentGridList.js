@@ -21,6 +21,7 @@ import {StatisticsFilterExcel} from '../../Statistics'
 import IconButton from 'material-ui/IconButton'
 import FullScreen from 'material-ui/svg-icons/navigation/fullscreen'
 import FullScreenExit from 'material-ui/svg-icons/navigation/fullscreen-exit'
+import t from '../../../helpers/translate'
 
 export const STAT_AGENT_FILTER_KEY = {
     FROM_DATE: 'fromDate',
@@ -397,55 +398,55 @@ const listHeader = [
     // Sales
     {
         sorting: true,
-        title: 'Сумма',
-        tooltip: 'Общая сумма продаж'
+        title: t('Сумма'),
+        tooltip: t('Общая сумма продаж')
     },
     {
         sorting: true,
-        title: 'Фактически',
-        tooltip: 'Сумма продаж с учетом возвратов'
+        title: t('Фактически'),
+        tooltip: t('Сумма продаж с учетом возвратов')
     },
     // Returns
     {
         sorting: true,
-        tooltip: 'Сумма возвратов от продаж',
-        title: 'По заказам'
+        tooltip: t('Сумма возвратов от продаж'),
+        title: t('По заказам')
     },
     {
         sorting: true,
-        tooltip: 'Сумма возвратов за этот период',
-        title: 'Общее'
+        tooltip: t('Сумма возвратов за этот период'),
+        title: t('Общее')
     },
     // Payments
     {
         sorting: true,
-        title: 'По заказам',
-        tooltip: 'Сумма оплат с заказов'
+        title: t('По заказам'),
+        tooltip: t('Сумма оплат с заказов')
     },
     {
         sorting: true,
-        title: 'Общее',
-        tooltip: 'Общая сумма оплат'
+        title: t('Общее'),
+        tooltip: t('Общая сумма оплат')
     },
     // Plan
     {
         sorting: true,
-        title: 'План'
+        title: t('План')
     },
     {
         sorting: true,
-        title: 'Осталось'
+        title: t('Осталось')
     },
     // Debt
     {
         sorting: true,
-        title: 'По заказам',
-        tooltip: 'Долг по заказам'
+        title: t('По заказам'),
+        tooltip: t('Долг по заказам')
     },
     {
         sorting: true,
-        title: 'Общее',
-        tooltip: 'Общая сумма долга'
+        title: t('Общее'),
+        tooltip: t('Общая сумма долга')
     }
 ]
 
@@ -557,19 +558,19 @@ const StatAgentGridList = enhance((props) => {
                 className={classes.inputFieldCustom}
                 name="date"
                 component={DateToDateField}
-                label="Диапазон дат"
+                label={t('Диапазон дат')}
                 fullWidth={true}/>
             <Field
                 className={classes.inputFieldCustom}
                 name="zone"
                 component={ZoneMultiSearchField}
-                label="Зона"
+                label={t('Зона')}
                 fullWidth={true}/>
             {divisionStatus && <Field
                 className={classes.inputFieldCustom}
                 name="division"
                 component={DivisionMultiSearchField}
-                label="Организация"
+                label={t('Организация')}
                 fullWidth={true}/>}
         </div>
 
@@ -599,29 +600,29 @@ const StatAgentGridList = enhance((props) => {
                                 : <div>
                                     <div className={classes.summaryWrapper}>
                                         <div>
-                                            <div>Общая сумма продаж</div>
+                                            <div>{t('Общая сумма продаж')}</div>
                                             <div>{salesTotalSum}</div>
-                                            <div>Фактическая сумма продаж</div>
+                                            <div>{t('Фактическая сумма продаж')}</div>
                                             <div>{salesFactSum}</div>
                                         </div>
                                         <div>
-                                            <div>Сумма возвратов от продаж</div>
+                                            <div>{t('Сумма возвратов от продаж')}</div>
                                             <div>{returnOrdersSum}</div>
-                                            <div>Сумма возвратов за этот период</div>
+                                            <div>{t('Сумма возвратов за этот период')}</div>
                                             <div>{returnTotalSum}</div>
                                         </div>
                                         <div>
-                                            <div>Сумма оплат с заказов</div>
+                                            <div>{t('Сумма оплат с заказов')}</div>
                                             <div>{paymentOrdersSum}</div>
-                                            <div>Общая сумма оплат</div>
+                                            <div>{t('Общая сумма оплат')}</div>
                                             <div>{paymentTotalSum}</div>
                                         </div>
                                     </div>
                                     <div className={classes.summaryPlan}>
-                                        <div><span>План агента</span> <span>{planTotalSum}</span></div>
-                                        <div><span>План остаток</span> <span>{planLeftSum}</span></div>
-                                        <div><span>Долг по заказам</span> <span>{debtFromOrderSum}</span></div>
-                                        <div><span>Общая сумма долга</span> <span>{debtTotalSum}</span></div>
+                                        <div><span>{t('План агента')}</span> <span>{planTotalSum}</span></div>
+                                        <div><span>{t('План остаток')}</span> <span>{planLeftSum}</span></div>
+                                        <div><span>{t('Долг по заказам')}</span> <span>{debtFromOrderSum}</span></div>
+                                        <div><span>{t('Общая сумма долга')}</span> <span>{debtTotalSum}</span></div>
                                     </div>
                                 </div>}
                         </div>
@@ -637,7 +638,7 @@ const StatAgentGridList = enhance((props) => {
                                 <div className={classes.flexCenter}>
                                     <Pagination filter={filter}/>
                                     {expandedTable &&
-                                    <ToolTip position="left" text={'Обычный вид'}>
+                                    <ToolTip position="left" text={t('Обычный вид')}>
                                         <IconButton
                                             className={classes.fullScreen}
                                             onTouchTap={() => { setExpandedTable(!expandedTable) }}
@@ -647,7 +648,7 @@ const StatAgentGridList = enhance((props) => {
                                         </IconButton>
                                     </ToolTip>}
                                     {!expandedTable &&
-                                    <ToolTip position="left" text={'Расширенный вид'}>
+                                    <ToolTip position="left" text={t('Расширенный вид')}>
                                         <IconButton
                                             className={classes.fullScreen}
                                             onTouchTap={() => { setExpandedTable(!expandedTable) }}
@@ -664,22 +665,22 @@ const StatAgentGridList = enhance((props) => {
                                 </div>}
                                 <div className={classes.tableWrapper}>
                                     <div className={classes.leftTable}>
-                                        <div><span>Агент</span></div>
+                                        <div><span>{t('Агент')}</span></div>
                                         {tableLeft}
                                     </div>
                                     {_.isEmpty(tableList) && !listLoading &&
                                     <div className={classes.emptyQuery}>
-                                        <div>По вашему запросу ничего не найдено</div>
+                                        <div>{t('По вашему запросу ничего не найдено')}</div>
                                     </div>}
                                     <div ref="horizontalTable">
                                         <table className={classes.mainTable}>
                                             <tbody className={classes.tableBody}>
                                             <tr className={classes.title}>
-                                                <td colSpan={2}>Продажа</td>
-                                                <td colSpan={2}>Возврат</td>
-                                                <td colSpan={2}>Оплачено</td>
-                                                <td colSpan={2}>План агента</td>
-                                                <td colSpan={2}>Долг</td>
+                                                <td colSpan={2}>{t('Продажа')}</td>
+                                                <td colSpan={2}>{t('Возврат')}</td>
+                                                <td colSpan={2}>{t('Оплачено')}</td>
+                                                <td colSpan={2}>{t('План агента')}</td>
+                                                <td colSpan={2}>{t('Долг')}</td>
                                             </tr>
                                             <tr className={classes.subTitle}>
                                                 {_.map(listHeader, (header, index) => {
