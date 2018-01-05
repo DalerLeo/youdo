@@ -245,122 +245,150 @@ const iconStyle = {
 const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleEdit, handleRemove, editItem, setEditItem, currency, measurement, handleOpenAddProduct, editOnlyPrice, ...defaultProps}) => {
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
     const error = _.get(defaultProps, ['products', 'meta', 'error'])
-}
-return (
-    <div className={classes.wrapper}>
-        <div>
-            <div className={classes.headers} style={{marginTop: '-10px'}}>
-                <div className={classes.title}>{t('Список товаров')}</div>
-                <div>
-                    <FlatButton
-                        label={t('добавить товар')}
-                        style={{color: '#12aaeb'}}
-                        labelStyle={{fontSize: '13px'}}
-                        className={classes.span}
-                        onTouchTap={() => dispatch({open: !state.open})}
-                    />
-                    <FlatButton
-                        label={t('добавить из списка')}
-                        style={{color: '#12aaeb'}}
-                        labelStyle={{fontSize: '13px'}}
-                        className={classes.span}
-                        onTouchTap={handleOpenAddProduct}
-                    />
-                </div>
-            </div>
-            {state.open && <Row className={classes.background}>
-                <Col xs={3}>
-                    <Field
-                        label={t('Тип товара')}
-                        name="type"
-                        component={SupplyProductTypeSearchField}
-                        className={classes.searchFieldCustom}
-                        fullWidth={true}
-                        {..._.get(defaultProps, 'type')}
-                    />
-                </Col>
-                <Col xs={3}>
-                    <ProductCustomSearchField
-                        name="product"
-                        label={t('Наименование')}
-                        className={classes.searchFieldCustom}
-                        fullWidth={true}
-                        {..._.get(defaultProps, 'product')}
-                    />
-                </Col>
-                <Col xs={2}>
-                    <Field
-                        component={TextField}
-                        label={t('Кол-во')}
-                        name="amount"
-                        className={classes.inputFieldCustom}
-                        fullWidth={true}
-                        {..._.get(defaultProps, 'amount')}
-                    />
-                </Col>
-                <Col xs={1} style={{alignSelf: 'flex-end'}}>
-                    <div style={{paddingBottom: '15px'}}>
-                        {measurement}
+    return (
+        <div className={classes.wrapper}>
+            <div>
+                <div className={classes.headers} style={{marginTop: '-10px'}}>
+                    <div className={classes.title}>{t('Список товаров')}</div>
+                    <div>
+                        <FlatButton
+                            label={t('добавить товар')}
+                            style={{color: '#12aaeb'}}
+                            labelStyle={{fontSize: '13px'}}
+                            className={classes.span}
+                            onTouchTap={() => dispatch({open: !state.open})}
+                        />
+                        <FlatButton
+                            label={t('добавить из списка')}
+                            style={{color: '#12aaeb'}}
+                            labelStyle={{fontSize: '13px'}}
+                            className={classes.span}
+                            onTouchTap={handleOpenAddProduct}
+                        />
                     </div>
-                </Col>
-                <Col xs={2}>
-                    <Field
-                        component={TextField}
-                        label={t('Сумма за ед')}
-                        name="cost"
-                        className={classes.inputFieldCustom}
-                        fullWidth={true}
-                        normalize={normalizeNumber}
-                        {..._.get(defaultProps, 'cost')}
-                    />
-                </Col>
-                <Col xs={1}>
-                    <IconButton
-                        label={t('Применить')}
-                        onTouchTap={handleAdd}>
-                        <Check color="#12aaeb"/>
-                    </IconButton>
-                </Col>
-            </Row>}
-        </div>
-        {error && <div className={classes.error}>{error}</div>}
-        {!_.isEmpty(products) ? <div className={classes.table}>
-                <Table
-                    fixedHeader={true}
-                    fixedFooter={false}
-                    selectable={false}
-                    multiSelectable={false}>
-                    <TableHeader
-                        displaySelectAll={false}
-                        adjustForCheckbox={false}
-                        enableSelectAll={false}
-                        className={classes.title}>
-                        <TableRow className={classes.tableRow}>
-                            <TableHeaderColumn
-                                className={classes.tableTitle}>{t('Наименование')}</TableHeaderColumn>
-                            <TableHeaderColumn className={classes.tableTitle}>{t('Кол-во')}</TableHeaderColumn>
-                            <TableHeaderColumn className={classes.tableTitle}>{t('Сумма (ед.)')}</TableHeaderColumn>
-                            <TableHeaderColumn className={classes.tableTitle}>{t('Всего')}</TableHeaderColumn>
-                            <TableHeaderColumn></TableHeaderColumn>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody
-                        displayRowCheckbox={false}
-                        deselectOnClickaway={false}
-                        showRowHover={false}
-                        stripedRows={false}>
-                        {_.map(products, (item, index) => {
-                            const product = _.get(item, ['product', 'value', 'name'])
-                            const itemMeasurement = _.get(item, ['product', 'value', 'measurement', 'name'])
-                            const cost = _.toNumber(_.get(item, 'cost'))
-                            const amount = _.toNumber(_.get(item, 'amount'))
+                </div>
+                {state.open && <Row className={classes.background}>
+                    <Col xs={3}>
+                        <Field
+                            label={t('Тип товара')}
+                            name="type"
+                            component={SupplyProductTypeSearchField}
+                            className={classes.searchFieldCustom}
+                            fullWidth={true}
+                            {..._.get(defaultProps, 'type')}
+                        />
+                    </Col>
+                    <Col xs={3}>
+                        <ProductCustomSearchField
+                            name="product"
+                            label={t('Наименование')}
+                            className={classes.searchFieldCustom}
+                            fullWidth={true}
+                            {..._.get(defaultProps, 'product')}
+                        />
+                    </Col>
+                    <Col xs={2}>
+                        <Field
+                            component={TextField}
+                            label={t('Кол-во')}
+                            name="amount"
+                            className={classes.inputFieldCustom}
+                            fullWidth={true}
+                            {..._.get(defaultProps, 'amount')}
+                        />
+                    </Col>
+                    <Col xs={1} style={{alignSelf: 'flex-end'}}>
+                        <div style={{paddingBottom: '15px'}}>
+                            {measurement}
+                        </div>
+                    </Col>
+                    <Col xs={2}>
+                        <Field
+                            component={TextField}
+                            label={t('Сумма за ед')}
+                            name="cost"
+                            className={classes.inputFieldCustom}
+                            fullWidth={true}
+                            normalize={normalizeNumber}
+                            {..._.get(defaultProps, 'cost')}
+                        />
+                    </Col>
+                    <Col xs={1}>
+                        <IconButton
+                            label={t('Применить')}
+                            onTouchTap={handleAdd}>
+                            <Check color="#12aaeb"/>
+                        </IconButton>
+                    </Col>
+                </Row>}
+            </div>
+            {error && <div className={classes.error}>{error}</div>}
+            {!_.isEmpty(products) ? <div className={classes.table}>
+                    <Table
+                        fixedHeader={true}
+                        fixedFooter={false}
+                        selectable={false}
+                        multiSelectable={false}>
+                        <TableHeader
+                            displaySelectAll={false}
+                            adjustForCheckbox={false}
+                            enableSelectAll={false}
+                            className={classes.title}>
+                            <TableRow className={classes.tableRow}>
+                                <TableHeaderColumn
+                                    className={classes.tableTitle}>{t('Наименование')}</TableHeaderColumn>
+                                <TableHeaderColumn className={classes.tableTitle}>{t('Кол-во')}</TableHeaderColumn>
+                                <TableHeaderColumn className={classes.tableTitle}>{t('Сумма (ед.)')}</TableHeaderColumn>
+                                <TableHeaderColumn className={classes.tableTitle}>{t('Всего')}</TableHeaderColumn>
+                                <TableHeaderColumn></TableHeaderColumn>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody
+                            displayRowCheckbox={false}
+                            deselectOnClickaway={false}
+                            showRowHover={false}
+                            stripedRows={false}>
+                            {_.map(products, (item, index) => {
+                                const product = _.get(item, ['product', 'value', 'name'])
+                                const itemMeasurement = _.get(item, ['product', 'value', 'measurement', 'name'])
+                                const cost = _.toNumber(_.get(item, 'cost'))
+                                const amount = _.toNumber(_.get(item, 'amount'))
 
-                            if (editItem === index) {
-                                if (editOnlyPrice) {
+                                if (editItem === index) {
+                                    if (editOnlyPrice) {
+                                        return (
+                                            <TableRow key={index} className={classes.tableRow}>
+                                                <TableRowColumn>{product}</TableRowColumn>
+                                                <TableRowColumn>{numberFormat(amount, itemMeasurement)}</TableRowColumn>
+                                                <TableRowColumn>
+                                                    <TextField
+                                                        label={cost}
+                                                        className={classes.inputFieldCustom}
+                                                        fullWidth={true}
+                                                        {..._.get(defaultProps, 'editCost')}
+                                                    />
+                                                </TableRowColumn>
+                                                <TableRowColumn>{numberFormat(cost * amount, currency)}</TableRowColumn>
+                                                <TableRowColumn style={{textAlign: 'right'}}>
+                                                    <IconButton
+                                                        onTouchTap={() => { handleEdit(index) }}>
+                                                        <Check color="#12aaeb"/>
+                                                    </IconButton>
+                                                </TableRowColumn>
+                                            </TableRow>
+                                        )
+                                    }
                                     return (
                                         <TableRow key={index} className={classes.tableRow}>
                                             <TableRowColumn>{product}</TableRowColumn>
-                                            <TableRowColumn>{numberFormat(amount, itemMeasurement)}</TableRowColumn>
+                                            <TableRowColumn>
+                                                <TextField
+                                                    hintText={numberFormat(amount, itemMeasurement)}
+                                                    className={classes.inputFieldCustom}
+                                                    fullWidth={true}
+                                                    {..._.get(defaultProps, 'editAmount')}
+                                                />
+                                            </TableRowColumn>
                                             <TableRowColumn>
                                                 <TextField
                                                     label={cost}
@@ -379,71 +407,43 @@ return (
                                         </TableRow>
                                     )
                                 }
+
                                 return (
                                     <TableRow key={index} className={classes.tableRow}>
                                         <TableRowColumn>{product}</TableRowColumn>
-                                        <TableRowColumn>
-                                            <TextField
-                                                hintText={numberFormat(amount, itemMeasurement)}
-                                                className={classes.inputFieldCustom}
-                                                fullWidth={true}
-                                                {..._.get(defaultProps, 'editAmount')}
-                                            />
-                                        </TableRowColumn>
-                                        <TableRowColumn>
-                                            <TextField
-                                                label={cost}
-                                                className={classes.inputFieldCustom}
-                                                fullWidth={true}
-                                                {..._.get(defaultProps, 'editCost')}
-                                            />
-                                        </TableRowColumn>
+                                        <TableRowColumn>{numberFormat(amount, itemMeasurement)}</TableRowColumn>
+                                        <TableRowColumn>{numberFormat(cost, currency)}</TableRowColumn>
                                         <TableRowColumn>{numberFormat(cost * amount, currency)}</TableRowColumn>
                                         <TableRowColumn style={{textAlign: 'right'}}>
                                             <IconButton
-                                                onTouchTap={() => { handleEdit(index) }}>
-                                                <Check color="#12aaeb"/>
+                                                onTouchTap={() => setEditItem(index)}
+                                                style={iconStyle.button}
+                                                iconStyle={iconStyle.icon}>
+                                                <EditIcon color="#666666"/>
+                                            </IconButton>
+                                            <IconButton
+                                                onTouchTap={() => handleRemove(index)}
+                                                style={iconStyle.button}
+                                                iconStyle={iconStyle.icon}>
+                                                <DeleteIcon color="#666666"/>
                                             </IconButton>
                                         </TableRowColumn>
                                     </TableRow>
                                 )
-                            }
-
-                            return (
-                                <TableRow key={index} className={classes.tableRow}>
-                                    <TableRowColumn>{product}</TableRowColumn>
-                                    <TableRowColumn>{numberFormat(amount, itemMeasurement)}</TableRowColumn>
-                                    <TableRowColumn>{numberFormat(cost, currency)}</TableRowColumn>
-                                    <TableRowColumn>{numberFormat(cost * amount, currency)}</TableRowColumn>
-                                    <TableRowColumn style={{textAlign: 'right'}}>
-                                        <IconButton
-                                            onTouchTap={() => setEditItem(index)}
-                                            style={iconStyle.button}
-                                            iconStyle={iconStyle.icon}>
-                                            <EditIcon color="#666666"/>
-                                        </IconButton>
-                                        <IconButton
-                                            onTouchTap={() => handleRemove(index)}
-                                            style={iconStyle.button}
-                                            iconStyle={iconStyle.icon}>
-                                            <DeleteIcon color="#666666"/>
-                                        </IconButton>
-                                    </TableRowColumn>
-                                </TableRow>
-                            )
-                        })}
-                    </TableBody>
-                </Table>
-            </div>
-            : <div className={classes.imagePlaceholder}>
-                <div style={{textAlign: 'center', color: '#adadad'}}>
-                    <img src={Groceries} alt=""/>
-                    <div>{t('Вы еще не выбрали ни одного товара')}. <br/> <a onClick={() => dispatch({open: !state.open})}>{t('Добавить')}</a> {t('товар')}?
+                            })}
+                        </TableBody>
+                    </Table>
+                </div>
+                : <div className={classes.imagePlaceholder}>
+                    <div style={{textAlign: 'center', color: '#adadad'}}>
+                        <img src={Groceries} alt=""/>
+                        <div>{t('Вы еще не выбрали ни одного товара')}. <br/> <a onClick={() => dispatch({open: !state.open})}>{t('Добавить')}</a> {t('товар')}?
+                        </div>
                     </div>
                 </div>
-            </div>
-        }
-    </div>
-)
+            }
+        </div>
+    )
+}
 
 export default enhance(SupplyListProductField)

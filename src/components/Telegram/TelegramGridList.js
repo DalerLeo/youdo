@@ -230,8 +230,7 @@ const TelegramGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const token = _.get(item, 'token')
         const fullName = _.get(item, 'lastName')
-            ?
-            <a onClick={() => logsDialog.handleOpenLogsDialog(id)}>{_.get(item, 'firstName') + ' ' + _.get(item, 'lastName')}</a>
+            ? <a onClick={() => logsDialog.handleOpenLogsDialog(id)}>{_.get(item, 'firstName') + ' ' + _.get(item, 'lastName')}</a>
             : 'Неизвестно'
         const username = _.get(item, 'username') ? '@' + _.get(item, 'username') : ''
         const createdBy = _.get(item, ['createdBy', 'firstName']) + ' ' + _.get(item, ['createdBy', 'secondName']) || ''
