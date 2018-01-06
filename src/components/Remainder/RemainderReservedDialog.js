@@ -14,6 +14,7 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import numberFormat from '../../helpers/numberFormat'
 import * as ROUTES from '../../constants/routes'
 import Pagination from '../ReduxForm/Pagination'
+import t from '../../helpers/translate'
 
 export const REMAINDER_RESERVED_DIALOG_OPEN = 'openReservedDialog'
 const enhance = compose(
@@ -169,7 +170,7 @@ const RemainderReservedDialog = enhance((props) => {
                 <Col xs={4}><Link to={{
                     pathname: sprintf(ROUTES.ORDER_ITEM_PATH, orderId),
                     query: {search: orderId}
-                }} target="_blank">Заказ {orderId}</Link></Col>
+                }} target="_blank">{t('Заказ')} {orderId}</Link></Col>
                 <Col xs={4}>{stock}</Col>
                 <Col xs={4}>{amount}</Col>
             </Row>
@@ -197,7 +198,7 @@ const RemainderReservedDialog = enhance((props) => {
                     </div>
                     {_.isEmpty(data)
                         ? <div className={classes.emptyQuery}>
-                            <div>Забронированных товаров не найдено</div>
+                            <div>{t('Забронированных товаров не найдено')}</div>
                         </div>
                         : <div className={classes.content}>
                             <div className={classes.tableWrapper}>
@@ -205,9 +206,9 @@ const RemainderReservedDialog = enhance((props) => {
                                     <Pagination filter={filterItem}/>
                                 </div>
                                 <Row className="dottedList">
-                                    <Col xs={4}>№ заказа</Col>
-                                    <Col xs={4}>Склад</Col>
-                                    <Col xs={4}>Кол-во</Col>
+                                    <Col xs={4}>{t('№ заказа')}</Col>
+                                    <Col xs={4}>{t('Склад')}</Col>
+                                    <Col xs={4}>{t('Кол-во')}</Col>
                                 </Row>
                                 <div>
                                 {reservedList}

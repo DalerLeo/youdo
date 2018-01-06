@@ -12,40 +12,41 @@ import * as TAB from '../../constants/stockReceiveTab'
 import ConfirmDialog from '../ConfirmDialog'
 import StockReceiveTabList from '../../containers/StockReceive/StockReceiveTabList'
 import dateFormat from '../../helpers/dateFormat'
+import t from '../../helpers/translate'
 
 const listHeader = [
     {
         sorting: true,
         name: 'id',
-        title: '№ запроса',
+        title: '№ ' + t('запроса'),
         xs: 2
     },
     {
         sorting: true,
         name: 'dateRequest',
-        title: 'Дата запроса',
+        title: t('Дата запроса'),
         xs: 2
     },
     {
         sorting: true,
         name: 'stock',
-        title: 'Склад',
+        title: t('Склад'),
         xs: 2
     },
     {
         sorting: true,
         name: 'type',
-        title: 'Тип',
+        title: t('Тип'),
         xs: 1
     },
     {
         name: 'receiver',
-        title: 'Кому',
+        title: t('Кому'),
         xs: 2
     },
     {
         name: 'acceptedBy',
-        title: 'Передал',
+        title: t('Передал'),
         xs: 2
     },
     {

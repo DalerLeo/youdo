@@ -17,6 +17,7 @@ import * as JOIN_TAB from '../../constants/joinTab'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import getConfig from '../../helpers/getConfig'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     connect((state, props) => {
@@ -107,7 +108,7 @@ const enhance = compose(
 
             return dispatch(joinMarketsAction(_.get(createForm, ['values'])))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Данные успешно объединены'}))
+                    return dispatch(openSnackbarAction({message: t('Данные успешно объединены')}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: marketFilter.getParams({[JOIN_MARKET]: false})})
@@ -131,7 +132,7 @@ const enhance = compose(
 
             return dispatch(joinClientsAction(_.get(createForm, ['values'])))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Данные успешно объединены'}))
+                    return dispatch(openSnackbarAction({message: t('Данные успешно объединены')}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: clientFilter.getParams({[JOIN_CLIENT]: false})})

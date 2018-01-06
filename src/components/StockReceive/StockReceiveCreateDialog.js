@@ -14,6 +14,7 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import {TextField, CheckBox} from '../ReduxForm'
 import numberFormat from '../../helpers/numberFormat'
 import Tooltip from '../ToolTip'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -201,7 +202,7 @@ const OrderCreateDialog = enhance((props) => {
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>{isUpdate ? 'ИЗМЕНИТЬ ПРИЕМКУ ТОВАРА' : 'ПРИЕМКА ТОВАРА'} (Заказ №${supplyId})</span>
+                <span>{isUpdate ? t('ИЗМЕНИТЬ ПРИЕМКУ ТОВАРА') : 'ПРИЕМКА ТОВАРА'} (Заказ №${supplyId})</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -219,11 +220,11 @@ const OrderCreateDialog = enhance((props) => {
 
                             <div className={classes.list}>
                                 <Row className="dottedList">
-                                    <Col xs={3}>Товар</Col>
-                                    <Col xs={2}>Тип товара</Col>
-                                    <Col xs={2}>Кол-во</Col>
+                                    <Col xs={3}>{t('Товар')}</Col>
+                                    <Col xs={2}>{t('Тип товара')}</Col>
+                                    <Col xs={2}>{t('Кол-во')}</Col>
                                     <Col xs={1}>
-                                        <Tooltip position="left" text='Отметить все как без браков'>
+                                        <Tooltip position="left" text={t('Отметить все как без браков')}>
                                             <div onClick={() => { handleCheckNoDefect(products) }}>
                                                 <Field name="noDefects" component={CheckBox}/>
                                             </div>
@@ -292,7 +293,7 @@ const OrderCreateDialog = enhance((props) => {
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
-                            label="Принять товар"
+                            label={t('Принять товар')}
                             className={classes.actionButton}
                             labelStyle={{color: '#129fdd'}}
                             primary={true}

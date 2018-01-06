@@ -17,6 +17,7 @@ import moduleFormat from '../../../helpers/moduleFormat.js'
 import getConfig from '../../../helpers/getConfig'
 import NotFound from '../../Images/not-found.png'
 import {StatisticsFilterExcel} from '../../Statistics'
+import t from '../../../helpers/translate'
 
 export const STAT_EXPENDITURE_ON_STAFF_FILTER_KEY = {
     CATEGORY_EXPENSE: 'categoryExpense',
@@ -203,7 +204,7 @@ const StatExpenditureOnStaffGridList = enhance((props) => {
         <Row style={headerStyle} className="dottedList">
             <Col xs={3}>Сотрудник</Col>
             <Col xs={6}>Процентное соотношение</Col>
-            <Col xs={3} style={{justifyContent: 'flex-end'}}>Сумма ({currentCurrency})</Col>
+            <Col xs={3} style={{justifyContent: 'flex-end'}}>{t('Сумма')} ({currentCurrency})</Col>
         </Row>
     )
     const userName = _.find(_.get(listData, 'data'), (item) => {
@@ -211,7 +212,7 @@ const StatExpenditureOnStaffGridList = enhance((props) => {
     })
     const list = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const employee = _.get(item, ['staff', 'firstName']) + ' ' + _.get(item, ['staff', 'secondName']) || 'Не указан'
+        const employee = _.get(item, ['staff', 'firstName']) + ' ' + _.get(item, ['staff', 'secondName']) || t('Не указан')
         const staffId = _.get(item, ['staff', 'id'])
         const percent = _.get(item, 'percentage')
         const amount = moduleFormat(_.get(item, 'total'), getConfig('PRIMARY_CURRENCY'))
@@ -236,13 +237,13 @@ const StatExpenditureOnStaffGridList = enhance((props) => {
                 className={classes.inputFieldCustom}
                 name="date"
                 component={DateToDateField}
-                label="Диапазон дат"
+                label={t('Диапазон дат')}
                 fullWidth={true}/>
             <Field
                 className={classes.inputFieldCustom}
                 name="categoryExpense"
                 component={ExpensiveCategoryMultiSearchField}
-                label="Категории расходов"
+                label={t('Категории расходов')}
                 fullWidth={true}/>
         </div>
     )
@@ -273,7 +274,7 @@ const StatExpenditureOnStaffGridList = enhance((props) => {
                             : <div className={classes.tableWrapper}>
                                 {_.isEmpty(list) && !listLoading
                                     ? <div className={classes.emptyQuery}>
-                                        <div>По вашему запросу ничего не найдено</div>
+                                        <div>{t('По вашему запросу ничего не найдено')}</div>
                                     </div>
                                     : <div>
                                         {headers}

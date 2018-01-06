@@ -18,19 +18,20 @@ import {
     ON_TIME,
     OFF_TIME
 } from '../../constants/permissionTime'
+import t from '../../helpers/translate'
 
 const listHeader = [
     {
         sorting: false,
         name: 'name',
         xs: 5,
-        title: 'Наименование'
+        title: t('Наименование')
     },
     {
         sorting: false,
         name: 'toTime',
         xs: 5,
-        title: 'Время работы'
+        title: t('Время работы')
     },
     {
         sorting: false,
@@ -131,7 +132,7 @@ const PermissionGridList = enhance((props) => {
                 </Col>
                 <Col xs={2} style={{textAlign: 'right'}}>
                     <div className={classes.iconBtn}>
-                        <Tooltip position="bottom" text="Изменить">
+                        <Tooltip position="bottom" text={t('Изменить')}>
                             <IconButton
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}

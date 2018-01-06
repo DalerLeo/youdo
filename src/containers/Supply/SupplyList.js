@@ -44,6 +44,7 @@ import {
 } from '../../actions/supplyPaid'
 import {openErrorAction} from '../../actions/error'
 import {openSnackbarAction} from '../../actions/snackbar'
+import t from '../../helpers/translate'
 
 const MINUS_ONE = -1
 const ZERO = 0
@@ -212,7 +213,7 @@ const enhance = compose(
             dispatch(supplyDeleteAction(detailId))
                 .then(() => {
                     setOpenConfirmDialog(false)
-                    dispatch(openSnackbarAction({message: 'Успешно отменено'}))
+                    dispatch(openSnackbarAction({message: t('Успешно отменено')}))
                     return dispatch(supplyItemFetchAction(detailId))
                 })
                 .then(() => {
@@ -220,7 +221,7 @@ const enhance = compose(
                 })
                 .catch(() => {
                     dispatch(openErrorAction({
-                        message: 'Поставка не может быть отменена из за связки к доп. расходу или к чему-нибудь другому'
+                        message: t('Поставка не может быть отменена из за связки к доп. расходу или к чему-нибудь другому')
                     }))
                 })
         },
@@ -240,14 +241,14 @@ const enhance = compose(
             dispatch(supplyExpenseDeleteAction(expenseRemoveId))
                 .then(() => {
                     setExpenseRemoveId(false)
-                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно удалено')}))
                 })
                 .then(() => {
                     dispatch(supplyItemFetchAction(id))
                     return dispatch(supplyExpenseListFetchAction(id, filterItem))
                 })
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
+                    return dispatch(openSnackbarAction({message: t('Ошибка при удалении')}))
                 })
         },
 
@@ -322,7 +323,7 @@ const enhance = compose(
             const {location: {pathname}, dispatch, createForm, filter} = props
             return dispatch(supplyCreateAction(_.get(createForm, ['values'])))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[SUPPLY_CREATE_DIALOG_OPEN]: false})})
@@ -364,7 +365,7 @@ const enhance = compose(
                     return dispatch(supplyItemFetchAction(supplyId))
                 })
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push(filter.createURL({[SUPPLY_UPDATE_DIALOG_OPEN]: false}))
@@ -406,7 +407,7 @@ const enhance = compose(
 
             return dispatch(supplyExpenseCreateAction(_.get(createSupplyExpenseForm, ['values']), id))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Расход добавлен'}))
+                    return dispatch(openSnackbarAction({message: t('Расход добавлен')}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[SUPPLY_EXPENSE_CREATE_DIALOG_OPEN]: false})})
@@ -525,7 +526,7 @@ const enhance = compose(
             const id = _.toInteger(_.get(params, 'supplyId'))
             return dispatch(supplySyncAction(id))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно синхронизирован'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно синхронизирован')}))
                 })
                 .then(() => {
                     return dispatch(supplyItemFetchAction(id))

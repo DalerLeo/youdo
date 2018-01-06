@@ -21,6 +21,7 @@ import {
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 import getConfig from '../../helpers'
+import t from '../../helpers/translate'
 
 export const TRANSACTION_FILTER_OPEN = 'openFilterDialog'
 
@@ -135,7 +136,7 @@ const TransactionFilterForm = enhance((props) => {
         if (filterCounts) {
             return (
                 <div className={classes.afterFilter}>
-                    <div>Фильтр: {filterCounts} элемента</div>
+                    <div>{t('Фильтр')}: {filterCounts} {t('элемента')}</div>
                     <div>
                         <IconButton onTouchTap={filterDialog.handleOpenFilterDialog}>
                             <BorderColorIcon color="#8f8f8f" />
@@ -153,7 +154,7 @@ const TransactionFilterForm = enhance((props) => {
                 <Link
                     className={classes.arrow}
                     onTouchTap={filterDialog.handleOpenFilterDialog}>
-                    <div>Показать фильтр <KeyboardArrowDown color="#12aaeb" /></div>
+                    <div>{t('Показать фильтр')} <KeyboardArrowDown color="#12aaeb" /></div>
                 </Link>
             </div>
         )
@@ -173,49 +174,49 @@ const TransactionFilterForm = enhance((props) => {
                         className={classes.inputFieldCustom}
                         name="categoryExpense"
                         component={ExpensiveCategoryMultiSearchField}
-                        label="Категории расходов"/>
+                        label={t('Категории расходов')}/>
                     <Field
                         className={classes.inputFieldCustom}
                         name="type"
                         component={TransactionTypeMultiSearchField}
-                        label="Тип"/>
+                        label={t('Тип')}/>
                     <Field
                         className={classes.inputFieldCustom}
                         name="client"
                         component={ClientMultiSearchField}
-                        label="Клиент"
+                        label={t('Клиент')}
                         fullWidth={true}/>
                     <Field
                         className={classes.inputFieldCustom}
                         name="staff"
                         component={UsersMultiSearchField}
-                        label="Сотрудник"
+                        label={t('Сотрудник')}
                         fullWidth={true}/>
                     {getConfig &&
                     <Field
                         className={classes.inputFieldCustom}
                         name="division"
                         component={DivisionMultiSearchField}
-                        label="Организация"
+                        label={t('Организация')}
                         fullWidth={true}/>}
                     <Field
                         className={classes.inputFieldCustom}
                         name="date"
                         component={DateToDateField}
-                        label="Диапазон дат"
+                        label={t('Диапазон дат')}
                         fullWidth={true}/>
                     <Field
                         name="with_deleted"
                         component={CheckBox}
                         defaultChecked={true}
-                        label="Показать удаленные транзакции"/>
+                        label={t('Показать удаленные транзакции')}/>
 
                     <RaisedButton
                         type="submit"
                         primary={true}
                         buttonStyle={{color: '#fff'}}
                         labelStyle={{fontSize: '13px'}}
-                        label="Применить"
+                        label={t('Применить')}
                         style={{marginTop: '15px'}}>
                     </RaisedButton>
                 </form>

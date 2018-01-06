@@ -38,6 +38,7 @@ import {
 } from '../../actions/ingredient'
 import {openSnackbarAction} from '../../actions/snackbar'
 import {openErrorAction} from '../../actions/error'
+import t from '../../helpers/translate'
 
 const MINUS_ONE = -1
 const ZERO = 0
@@ -154,7 +155,7 @@ const enhance = compose(
 
             return dispatch(manufactureProductCreateAction(_.get(productAddForm, ['values']), manufactureId))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push({
@@ -187,7 +188,7 @@ const enhance = compose(
             const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
             dispatch(manufactureProductDeleteAction(productId))
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
+                    return dispatch(openSnackbarAction({message: t('Ошибка при удалении')}))
                 })
                 .then(() => {
                     hashHistory.push({
@@ -215,7 +216,7 @@ const enhance = compose(
             dispatch(productChangeManufacture(productId, _.get(changeForm, ['values'])))
                 .then(() => {
                     hashHistory.push({pathname, query: filterProduct.getParams({[MANUFACTURE_CHANGE]: false})})
-                    dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                     return dispatch(productListFetchAction(filterProduct, manufactureId))
                 })
                 .catch((error) => {
@@ -244,7 +245,7 @@ const enhance = compose(
                         pathname,
                         query: filter.getParams({[MANUFACTURE_CREATE_PRODUCT_DIALOG_OPEN]: false})
                     })
-                    dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                     return dispatch(ingredientListFetchAction(productId))
                 })
                 .catch((error) => {
@@ -286,7 +287,7 @@ const enhance = compose(
                         pathname,
                         query: filter.getParams({[MANUFACTURE_EDIT_PRODUCT_DIALOG_OPEN]: false, 'ingId': MINUS_ONE})
                     })
-                    dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                     return dispatch(ingredientListFetchAction(productId))
                 })
                 .catch((error) => {
@@ -313,14 +314,14 @@ const enhance = compose(
             const productId = _.toNumber(_.get(props, ['location', 'query', 'productId']))
             dispatch(ingredientDeleteAction(_.toNumber(ingId)))
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
+                    return dispatch(openSnackbarAction({message: t('Ошибка при удалении')}))
                 })
                 .then(() => {
                     hashHistory.push({
                         pathname,
                         query: filter.getParams({[OPEN_DELETE_MATERIALS_DIALOG]: false, 'ingId': MINUS_ONE})
                     })
-                    dispatch(openSnackbarAction({message: 'Успешно удалено'}))
+                    dispatch(openSnackbarAction({message: t('Успешно удалено')}))
                     return dispatch(ingredientListFetchAction(productId))
                 })
         },

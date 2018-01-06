@@ -15,6 +15,7 @@ import StockSearchField from '../ReduxForm/Stock/StockSearchField'
 import DateField from '../ReduxForm/Basic/DateField'
 import TextField from '../ReduxForm/Basic/TextField'
 import RemainderListProductField from '../ReduxForm/Remainder/RemainderListProductField'
+import t from '../../helpers/translate'
 
 export const REMAINDER_TRANSFER_DIALOG_OPEN = 'openTransferDialog'
 
@@ -191,7 +192,7 @@ const RemainderTransferDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.noPadding}>
             <div className={classes.title}>
-                <span>передача товаров</span>
+                <span>{t('передача товаров')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -199,30 +200,30 @@ const RemainderTransferDialog = enhance((props) => {
             <form onSubmit={onSubmit} className={classes.form} style={{minHeight: 'auto'}}>
             <div className={classes.dialogBody}>
                 <div className={classes.leftSide}>
-                    <span className={classes.subTitle}>Условия передачи товара</span>
+                    <span className={classes.subTitle}>{t('Условия передачи товара')}</span>
                     <Field
                         className={classes.inputFieldCustom}
                         name="fromStock"
                         component={StockSearchField}
-                        label="С какого склада"
+                        label={t('С какого склада')}
                     />
                     <Field
                         className={classes.inputFieldCustom}
                         name="toStock"
                         component={StockSearchField}
-                        label="На Склад"
+                        label={t('На Склад')}
                     />
                     <Field
                         className={classes.inputDateCustom}
                         name="deliveryDate"
                         component={DateField}
-                        label="Дата доставки"
+                        label={t('Дата доставки')}
                     />
                     <Field
                         style={{marginTop: '-20px', lineHeight: '20px', fontSize: '13px'}}
                         name="comment"
                         component={TextField}
-                        label="Оставить комментарий..."
+                        label={t('Оставить комментарий') + '...'}
 
                         multiLine={true}
                         rows={1}
@@ -233,15 +234,15 @@ const RemainderTransferDialog = enhance((props) => {
                     <div className={classes.addButtons}>
                         <strong>Список товаров</strong>
                         {!fromStock
-                            ? <Tooltip text={'Выберите склад'} position="right">
+                            ? <Tooltip text={t('Выберите склад')} position="right">
                                 <FlatButton
                                     disabled={true}
-                                    label="добавить товары"
+                                    label={t('добавить товары')}
                                     labelStyle={{fontSize: '13px', textTransform: 'unset'}}/>
                               </Tooltip>
                             : <div>
                                 <FlatButton
-                                    label="добавить товары"
+                                    label={t('добавить товары')}
                                     style={{color: '#12aaeb'}}
                                     labelStyle={{fontSize: '13px', textTransform: 'unset'}}
                                     className={classes.span}
@@ -257,7 +258,7 @@ const RemainderTransferDialog = enhance((props) => {
             </div>
             <div className={classes.bottomButton}>
                 <FlatButton
-                    label="Передать"
+                    label={t('Передать')}
                     className={classes.actionButton}
                     primary={true}
                     type="submit"

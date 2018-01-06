@@ -21,6 +21,7 @@ import {
     TextField,
     ProductTypeSearchField
 } from '../ReduxForm'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -298,7 +299,7 @@ const AddProductsDialog = enhance((props) => {
             <Row key={id} className="dottedList">
                 <Col xs={5}>{name}</Col>
                 <Col xs={3}>
-                    <Tooltip text='доступно / брак' position="left">{numberFormat(available)} / {numberFormat(defect, measurement)}</Tooltip>
+                    <Tooltip text={t('доступно / брак')} position="left">{numberFormat(available)} / {numberFormat(defect, measurement)}</Tooltip>
                 </Col>
                 <Col xs={2} className={classes.flex}>
                     <Field
@@ -329,21 +330,21 @@ const AddProductsDialog = enhance((props) => {
             {openAddProductConfirm &&
             <div className={classes.confirm}>
                 <Paper zDepth={2} className={classes.confirmContent}>
-                    <header>Сохранить текущие товары?</header>
+                    <header>{t('Сохранить текущие товары')}?</header>
                     <div>
                         <FlatButton
-                            label="Нет"
+                            label={t('Нет')}
                             labelStyle={flatButtonStyle.label}
                             onClick={handleCloseAddProductConfirm} />
                         <FlatButton
-                            label="Сохранить"
+                            label={t('Сохранить')}
                             labelStyle={flatButtonStyle.label}
                             onClick={handleSubmitAddProductConfirm} />
                     </div>
                 </Paper>
             </div>}
             <div className={classes.titleContent}>
-                <span>Добавление продуктов</span>
+                <span>{t('Добавление продуктов')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -359,14 +360,14 @@ const AddProductsDialog = enhance((props) => {
                                 <Field
                                     name="productType"
                                     component={ProductTypeSearchField}
-                                    label="Фильтр по типу"
+                                    label={t('Фильтр по типу')}
                                     fullWidth={true}
                                 />
                             </div>
                             <form onSubmit={handleSubmit(props.onSubmitSearch)} className={classes.search}>
                                 <TextFieldSearch
                                     fullWidth={true}
-                                    hintText="Поиск товаров..."
+                                    hintText={t('Поиск товаров') + '...'}
                                     className={classes.searchField}
                                     value={pdSearch}
                                     onChange={(event) => setSearch(event.target.value)}
@@ -384,21 +385,21 @@ const AddProductsDialog = enhance((props) => {
                         <form className={classes.productsList}>
                             {!_.isEmpty(products) &&
                             <Row className="dottedList">
-                                <Col xs={5}>Наименование</Col>
-                                <Col xs={3}>В наличии</Col>
+                                <Col xs={5}>{t('Наименование')}</Col>
+                                <Col xs={3}>{t('В наличии')}</Col>
                                 <Col xs={2} className={classes.rightAlign}>ОК</Col>
-                                <Col xs={2} className={classes.rightAlign}>Брак</Col>
+                                <Col xs={2} className={classes.rightAlign}>{t('Брак')}</Col>
                             </Row>}
                             {!_.isEmpty(products)
                                 ? products
                                 : <div className={classes.emptyQuery}>
-                                    <div>По вашему запросу ничего не найдено...</div>
+                                    <div>{t('По вашему запросу ничего не найдено')}...</div>
                                 </div>}
                         </form>
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
-                            label={'Сохранить'}
+                            label={t('Сохранить')}
                             labelStyle={{fontSize: '13px'}}
                             className={classes.actionButton}
                             primary={true}

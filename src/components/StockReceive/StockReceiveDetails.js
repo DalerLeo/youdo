@@ -17,6 +17,7 @@ import toBoolean from '../../helpers/toBoolean'
 import Tooltip from '../ToolTip'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import getConfig from '../../helpers/getConfig'
+import t from '../../helpers/translate'
 
 const RETURN = 3
 const APPROVE = 1
@@ -221,14 +222,14 @@ const TransferDetail = enhance((props) => {
     const date = (_.get(detailData, ['data', 'createdDate']) ? dateFormat(_.get(detailData, ['data', 'createdDate'])) : dateFormat(_.get(detailData, ['currentDetail', 'date'])))
     const stockName = _.get(detailData, ['data', 'toStock', 'name']) || _.get(detailData, ['currentDetail', 'stock', 'name'])
     const id = _.get(detailData, 'id') || _.get(detailData, ['data', 'id'])
-    const tooltipText = 'Подтвердить Запрос №' + id
-    const tooltipCancelText = 'Отменить Запрос №' + id
-    const tooltipUpdateText = 'Изменить Запрос №' + id
+    const tooltipText = t('Подтвердить Запрос') + '№' + id
+    const tooltipCancelText = t('Отменить Запрос') + '№' + id
+    const tooltipUpdateText = t('Изменить Запрос') + '№' + id
     const detailLoading = _.get(detailData, 'detailLoading')
     const products = (type === 'order_return') ? _.get(detailData, ['data', 'returnedProducts']) : _.get(detailData, ['data', 'products'])
     let showCount = true
     const showCountChange = _.get(_.head(products), ['product', 'measurement', 'name'])
-    const comment = _.get(detailData, ['data', 'comment']) || 'Комментарий отсутствует'
+    const comment = _.get(detailData, ['data', 'comment']) || t('Комментарий отсутствует')
 
     if (_.isEmpty(products) && !detailLoading) {
         return (
@@ -238,7 +239,7 @@ const TransferDetail = enhance((props) => {
                      overflowY: 'hidden'
                  }}>
                 <div className={classes.emptyQuery}>
-                    <div>Товаров не найдено</div>
+                    <div>{t('Товаров не найдено')}</div>
                 </div>
             </div>
         )
@@ -374,12 +375,12 @@ const TransferDetail = enhance((props) => {
                     <div className={classes.content}>
                         {history && <div className={classes.leftSide}>
                             <Row className='dottedList'>
-                                <Col xs={4}>Товар</Col>
-                                <Col xs={4}>Тип товара</Col>
-                                <Col xs={1}>Кол-во</Col>
-                                <Col xs={1}>Принято</Col>
-                                <Col xs={1}>Брак</Col>
-                                <Col xs={1}>Недостача</Col>
+                                <Col xs={4}>{t('Товар')}</Col>
+                                <Col xs={4}>{t('Тип товара')}</Col>
+                                <Col xs={1}>{t('Кол-во')}</Col>
+                                <Col xs={1}>{t('Принято')}</Col>
+                                <Col xs={1}>{t('Брак')}</Col>
+                                <Col xs={1}>{t('Недостача')}</Col>
 
                             </Row>
                             {_.map(products, (item) => {
@@ -410,10 +411,10 @@ const TransferDetail = enhance((props) => {
                         </div>}
                         {!history && <div className={classes.leftSide}>
                             <Row className='dottedList'>
-                                <Col xs={4}>Товар</Col>
-                                <Col xs={4}>Тип товара</Col>
-                                <Col xs={2}>Кол-во</Col>
-                                <Col xs={2}>Статус</Col>
+                                <Col xs={4}>{t('Товар')}</Col>
+                                <Col xs={4}>{t('Тип товара')}</Col>
+                                <Col xs={2}>{t('Кол-во')}</Col>
+                                <Col xs={2}>{t('Статус')}</Col>
                             </Row>
                             {_.map(products, (item) => {
                                 const productId = _.get(item, 'id')
@@ -436,24 +437,24 @@ const TransferDetail = enhance((props) => {
                                 )
                             })}
                             {showCount && <Row className='dottedList'>
-                                <b>Общий количество {count} {showCountChange}</b>
+                                <b>{t('Общий количество')} {count} {showCountChange}</b>
                             </Row>}
                         </div>
                         }
                         <div className={classes.rightSide}>
                             {history && useBarcode &&
                             <div>
-                                <div className={classes.details}>Начало приемки: <span>{acceptedTime}</span></div>
-                                <div className={classes.details}>Конец приемки: <span>{finishedTime}</span></div>
-                                <div className={classes.details}>Принял: <span>{acceptedBy}</span></div>
+                                <div className={classes.details}>{t('Начало приемки')}: <span>{acceptedTime}</span></div>
+                                <div className={classes.details}>{t('Конец приемки')}: <span>{finishedTime}</span></div>
+                                <div className={classes.details}>{t('Принял')}: <span>{acceptedBy}</span></div>
                             </div>
                             }
                             {history && !useBarcode &&
                             <div>
-                                <div className={classes.details}>Дата приемки: <span>{acceptedTime}</span></div>
-                                <div className={classes.details}>Принял: <span>{acceptedBy}</span></div>
+                                <div className={classes.details}>{t('Дата приемки')}: <span>{acceptedTime}</span></div>
+                                <div className={classes.details}>{t('Принял')}: <span>{acceptedBy}</span></div>
                             </div>}
-                            <div className={classes.subtitle}>Комментарий:</div>
+                            <div className={classes.subtitle}>{t('Комментарий')}:</div>
                             <div>{comment}</div>
                         </div>
                     </div>

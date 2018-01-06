@@ -17,6 +17,7 @@ import * as ROUTES from '../../constants/routes'
 import {TOGGLE_INFO, BIND_AGENT} from '../Zones'
 import {AGENT_COLORS} from '../Plan'
 import sprintf from 'sprintf'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -455,7 +456,7 @@ const PlanCreateDialog = enhance((props) => {
                 <div className={classes.inContent}>
                     <Paper zDepth={2} className={classes.leftSide}>
                         <div className={classes.titleContent}>
-                            <span>{isUpdate ? 'Изменение плана' : 'Составление плана'}</span>
+                            <span>{isUpdate ? t('Изменение плана') : t('Составление плана')}</span>
                             <IconButton onTouchTap={onClose}>
                                 <CloseIcon color="#666666"/>
                             </IconButton>
@@ -464,8 +465,8 @@ const PlanCreateDialog = enhance((props) => {
                             <PlanAddCalendar calendar={addPlanCalendar}/>
                             <div className={classes.zonesList}>
                                 <div className={classes.zoneTitle}>
-                                    <span>Зоны</span>
-                                    <span>Магазины</span>
+                                    <span>{t('Зоны')}</span>
+                                    <span>{t('Магазины')}</span>
                                 </div>
                                 {zonesLoading
                                     ? <div className={classes.loader}>
@@ -486,22 +487,22 @@ const PlanCreateDialog = enhance((props) => {
                                 : (selectedZone === ZERO)
                                     ? <Paper zDepth={2} className={classes.agentsWrapper}>
                                         <div className={classes.chooseZone}>
-                                            <span>Для составления плана <br/>выберите зону</span>
+                                            <span>{t('Для составления плана <br/>выберите зону')}</span>
                                         </div>
                                     </Paper>
                                     : (!_.isEmpty(agents)) ? <Paper zDepth={2} className={classes.agentsWrapper}>
                                             <div className={classes.chooseAgent}>
-                                                <span>Выберите <br/>агента</span>
+                                                <span>{t('Выберите <br/>агента')}</span>
                                             </div>
                                             {agents}
                                         </Paper>
                                         : <Paper zDepth={2} className={classes.agentsWrapper}>
                                             <div className={classes.chooseZone}>
-                                                <div>В этой зоне не закреплено агентов</div>
+                                                <div>{t('В этой зоне не закреплено агентов')}</div>
                                                 <Link target="_blank" to={{
                                                     pathname: sprintf(ROUTES.ZONES_ITEM_PATH, selectedZone),
                                                     query: {[TOGGLE_INFO]: true, [BIND_AGENT]: true}
-                                                }}>Добавить агентов?</Link>
+                                                }}>{t('Добавить агентов')}?</Link>
                                             </div>
                                         </Paper>}
                         </div>

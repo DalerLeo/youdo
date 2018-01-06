@@ -13,25 +13,26 @@ import {compose} from 'recompose'
 import SettingSideMenu from '../Settings/SettingsSideMenu'
 import BindAgentDialog from '../../components/Zones/ZoneBindAgentDialog'
 import ConfirmDialog from '../ConfirmDialog'
+import t from '../../helpers/translate'
 
 const listHeader = [
     {
         sorting: false,
         name: 'name',
         xs: 3,
-        title: 'Наименование'
+        title: t('Наименование')
     },
     {
         sorting: false,
         name: 'user',
         xs: 8,
-        title: 'Пользователи'
+        title: t('Пользователи')
     },
     {
         sorting: false,
         name: 'edit',
         xs: 1,
-        title: 'Статус',
+        title: t('Статус'),
         alignRight: true
     }
 ]
@@ -203,7 +204,7 @@ const NotificationGridList = enhance((props) => {
                                 style={{height: '28px', lineHeight: '28px', minWidth: '60px'}}
                                 labelStyle={{textTransform: 'none', color: '#fff', verticalAlign: 'baseline'}}
                                 className={classes.addPerson}
-                                label="добавить"
+                                label={t('добавить')}
                                 onTouchTap={() => { notificationUser.handleOpenAddUser(id) }}/>
                     </div>
                 </Col>

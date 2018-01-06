@@ -17,36 +17,37 @@ import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {Link} from 'react-router'
 import Tooltip from '../ToolTip'
+import t from '../../helpers/translate'
 
 const listHeader = [
     {
         sorting: true,
         name: 'name',
-        title: 'Наименование',
+        title: t('Наименование'),
         xs: 3
     },
     {
         sorting: true,
         name: 'type',
-        title: 'Тип товара',
+        title: t('Тип товара'),
         xs: 2
     },
     {
         sorting: true,
         name: 'brand',
-        title: 'Бренд',
+        title: t('Бренд'),
         xs: 2
     },
     {
         sorting: true,
         name: 'measurement',
-        title: 'Мера',
+        title: t('Мера'),
         xs: 2
     },
     {
         sorting: true,
         name: 'price',
-        title: 'Цена',
+        title: t('Цена'),
         xs: 2
     },
     {
@@ -159,7 +160,7 @@ const ProductPriceGridList = enhance((props) => {
                 <Col xs={2}>{measurement}</Col>
                 <Col xs={2}>{price}</Col>
                 <Col xs={1} className={classes.buttons}>
-                    <Tooltip position="bottom" text="Изменить">
+                    <Tooltip position="bottom" text={t('Изменить')}>
                         <IconButton
                             onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}
                             touch={true}

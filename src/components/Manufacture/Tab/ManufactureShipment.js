@@ -24,6 +24,8 @@ import NotFound from '../../Images/not-found.png'
 import dateTimeFormat from '../../../helpers/dateTimeFormat'
 import numberFormat from '../../../helpers/numberFormat'
 import {ShiftMultiSearchField} from '../../ReduxForm'
+import t from '../../../helpers/translate'
+
 const enhance = compose(
     injectSheet({
         shipmentContent: {
@@ -361,9 +363,9 @@ const ManufactureShipment = enhance((props) => {
                 <Col xs={2}>
                     {type === PRODUCT
                         ? (kind === MATERIAL)
-                            ? 'Материал'
-                            : 'Продукт'
-                        : 'Сырье'}
+                            ? t('Материал')
+                            : t('Продукт')
+                        : t('Сырье')}
                 </Col>
                 <Col xs={2}>{numberFormat(amount, measurement)}</Col>
                 <Col xs={2}>{createdDate}</Col>
@@ -373,7 +375,7 @@ const ManufactureShipment = enhance((props) => {
     const shifts = _.map(shipmentList, (item) => {
         const id = _.get(item, 'id')
         const openedTime = dateTimeFormat(_.get(item, 'openedTime'))
-        const closedTime = _.get(item, 'closedTime') ? dateTimeFormat(_.get(item, 'closedTime')) : 'Не закончилась'
+        const closedTime = _.get(item, 'closedTime') ? dateTimeFormat(_.get(item, 'closedTime')) : t('Не закончилась')
         const userName = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'firstName'])
         return (
             <Row key={id} className={classes.shift}>
@@ -389,7 +391,7 @@ const ManufactureShipment = enhance((props) => {
                 className={classes.inputFieldCustom}
                 name="shift"
                 component={ShiftMultiSearchField}
-                label="Смена"
+                label={t('Смена')}
                 fullWidth={true}/>
         </div>
     )
@@ -397,7 +399,7 @@ const ManufactureShipment = enhance((props) => {
     if (manufactureId <= ZERO) {
         return (
             <Paper transitionEnabled={false} zDepth={1} className={classes.choose}>
-                <div>Выберите производство...</div>
+                <div>{t('Выберите производство')}...</div>
             </Paper>
         )
     }
@@ -408,7 +410,7 @@ const ManufactureShipment = enhance((props) => {
                 {tab === TAB.TAB_SHIFT &&
                 <a className={classes.filterBtn} onClick={filterDialog.handleOpenFilterDialog}>
                     <Filter/>
-                    <span>Фильтр</span>
+                    <span>{t('Фильтр')}</span>
                 </a>}
             </header>
             <ManufactureActivityFilterDialog
@@ -423,7 +425,7 @@ const ManufactureShipment = enhance((props) => {
                         inkBarStyle={tabStyles.ink}
                         onChange={(value) => tabData.handleTabChange(value)}>
                         <Tab
-                            label="Обзор"
+                            label={t('Обзор')}
                             className={classes.tab}
                             disableTouchRipple={true}
                             icon={<Sort/>}
@@ -432,26 +434,26 @@ const ManufactureShipment = enhance((props) => {
                                 ? <div className={classes.flexReview}>
                                     <div className={classes.productsBlock}>
                                         <Row className={classes.flexTitle}>
-                                            <Col xs={6}><h4>Произведено</h4></Col>
-                                            <Col xs={2}><h4>Всего</h4></Col>
-                                            <Col xs={2}><h4>Ок</h4></Col>
-                                            <Col xs={2}><h4>Брак</h4></Col>
+                                            <Col xs={6}><h4>{t('Произведено')}</h4></Col>
+                                            <Col xs={2}><h4>{t('Всего')}</h4></Col>
+                                            <Col xs={2}><h4>{t('Ок')}</h4></Col>
+                                            <Col xs={2}><h4>{t('Брак')}</h4></Col>
                                         </Row>
                                         {!_.isEmpty(products)
                                             ? products
                                             : <div className={classes.emptyQuery}>
-                                                <div>Продукции еще не произведены</div>
+                                                <div>{t('Продукции еще не произведены')}</div>
                                             </div>}
                                     </div>
                                     <div className={classes.productsBlock}>
                                         <Row className={classes.flexTitle}>
-                                            <Col xs={6}><h4>Затраченное сырье</h4></Col>
-                                            <Col xs={2}><h4>Кол-во</h4></Col>
+                                            <Col xs={6}><h4>{t('Затраченное сырье')}</h4></Col>
+                                            <Col xs={2}><h4>{t('Кол-во')}</h4></Col>
                                         </Row>
                                         {!_.isEmpty(materials)
                                             ? materials
                                             : <div className={classes.emptyQuery}>
-                                                <div>Не затрачено сырья</div>
+                                                <div>{t('Не затрачено сырья')}</div>
                                             </div>}
                                     </div>
                                 </div>
@@ -460,12 +462,12 @@ const ManufactureShipment = enhance((props) => {
                                         <Loader size={0.75}/>
                                     </div>
                                     : <div className={classes.emptyQuery}>
-                                        <div>В данную смену не произведено ни одной продукции</div>
+                                        <div>{t('В данную смену не произведено ни одной продукции')}</div>
                                     </div>}
                         </Tab>
 
                         <Tab
-                            label="Записи"
+                            label={t('Записи')}
                             className={classes.tab}
                             disableTouchRipple={true}
                             icon={<Log/>}
@@ -476,10 +478,10 @@ const ManufactureShipment = enhance((props) => {
                                         <Pagination filter={filterLogs}/>
                                     </div>
                                     <Row className={classes.flexTitle}>
-                                        <Col xs={6}><h4>Продукт / сырье</h4></Col>
-                                        <Col xs={2}><h4>Тип</h4></Col>
-                                        <Col xs={2}><h4>Кол-во</h4></Col>
-                                        <Col xs={2}><h4>Дата, время</h4></Col>
+                                        <Col xs={6}><h4>{t('Продукт / сырье')}</h4></Col>
+                                        <Col xs={2}><h4>{t('Тип')}</h4></Col>
+                                        <Col xs={2}><h4>{t('Кол-во')}</h4></Col>
+                                        <Col xs={2}><h4>{t('Дата, время')}</h4></Col>
                                     </Row>
                                     {logsLoading
                                         ? <div className={classes.loader}>
@@ -492,12 +494,12 @@ const ManufactureShipment = enhance((props) => {
                                         <Loader size={0.75}/>
                                     </div>
                                     : <div className={classes.emptyQuery}>
-                                    <div>Нет записей в данной смене</div>
+                                    <div>{t('Нет записей в данной смене')}</div>
                                 </div>}
                         </Tab>
 
                         <Tab
-                            label="Смены"
+                            label={t('Смены')}
                             className={classes.tab}
                             disableTouchRipple={true}
                             icon={<Shift/>}
@@ -508,9 +510,9 @@ const ManufactureShipment = enhance((props) => {
                                         <Pagination filter={filter}/>
                                     </div>
                                     <Row className={classes.flexTitleShift}>
-                                        <Col xs={6}><h4>Работник</h4></Col>
-                                        <Col xs={3}><h4>Начало смены</h4></Col>
-                                        <Col xs={3}><h4>Конец смены</h4></Col>
+                                        <Col xs={6}><h4>{t('Работник')}</h4></Col>
+                                        <Col xs={3}><h4>{t('Начало смены')}</h4></Col>
+                                        <Col xs={3}><h4>{t('Конец смены')}</h4></Col>
                                     </Row>
                                     {shiftsLoading
                                         ? <div className={classes.loader}>
@@ -523,7 +525,7 @@ const ManufactureShipment = enhance((props) => {
                                         <Loader size={0.75}/>
                                     </div>
                                     : <div className={classes.emptyQuery}>
-                                        <div>В этом периоде не найдено смен</div>
+                                        <div>{t('В этом периоде не найдено смен')}</div>
                                     </div>}
                         </Tab>
                     </Tabs>

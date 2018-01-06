@@ -13,6 +13,7 @@ import BankPayment from 'material-ui/svg-icons/action/credit-card'
 import Loader from '../Loader'
 import numberFormat from '../../helpers/numberFormat'
 import Tooltip from '../ToolTip'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -197,7 +198,7 @@ const TransactionGridList = enhance((props) => {
             <div className={classes.wrap}>
                 <div className={classes.leftSide}>
                     <div className={classes.outerTitle} style={{paddingLeft: '30px'}}>
-                        <div>Кассы</div>
+                        <div>{t('Кассы')}</div>
                     </div>
                     <Paper zDepth={2} style={{height: '100%'}}>
                         <div className={classes.listWrapper}>
@@ -207,7 +208,7 @@ const TransactionGridList = enhance((props) => {
                                  }}
                                  style={_.get(cashboxData, 'cashboxId') === AllCashboxId ? {backgroundColor: '#f2f5f8'} : {backgroundColor: '#fff'}}>
                                 <div className={classes.title}>
-                                    Общий объем
+                                    {t('Общий объем')}
                                     <span>во всех кассах</span>
                                 </div>
                             </div>

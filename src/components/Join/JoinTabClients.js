@@ -11,6 +11,7 @@ import FloatingActionButton from 'material-ui/FloatingActionButton'
 import Tooltip from '../ToolTip'
 import Join from 'material-ui/svg-icons/content/link'
 import JoinDialog from './JoinDialog'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -87,19 +88,19 @@ const listHeader = [
         sorting: false,
         name: 'name',
         xs: 5,
-        title: 'Наименование'
+        title: t('Наименование')
     },
     {
         sorting: true,
         name: 'repetition',
-        title: 'Похожие',
+        title: t('Похожие'),
         xs: 2
     },
     {
         sorting: true,
         xs: 3,
         name: 'createdDate',
-        title: 'Дата создания'
+        title: t('Дата создания')
     },
     {
         sorting: false,

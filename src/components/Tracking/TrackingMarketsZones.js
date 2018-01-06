@@ -12,6 +12,7 @@ import {hashHistory} from 'react-router'
 import * as ROUTER from '../../constants/routes'
 import toBoolean from '../../helpers/toBoolean'
 import sprintf from 'sprintf'
+import t from '../../helpers/translate'
 
 const wrapperWidth = 150
 const two = 2
@@ -161,7 +162,7 @@ const TrackingMarketsZones = enhance((props) => {
                 <div className={classes.filter}>
                     <form>
                         {hasMarket && <MUICheckbox
-                            label="Магазины"
+                            label={t('Магазины')}
                             className={classes.checkBox}
                             style={checkboxStyle}
                             iconStyle={{width: '20px', height: '20px'}}
@@ -171,7 +172,7 @@ const TrackingMarketsZones = enhance((props) => {
                         />}
 
                         <MUICheckbox
-                            label="Зоны"
+                            label={t('Зоны')}
                             className={classes.checkBox}
                             style={checkboxStyle}
                             iconStyle={{width: '20px', height: '20px'}}

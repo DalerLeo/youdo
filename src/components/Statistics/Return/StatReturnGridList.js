@@ -33,6 +33,8 @@ import {
     DivisionMultiSearchField,
     PaymentTypeSearchField
 } from '../../ReduxForm'
+import t from '../../../helpers/translate'
+
 export const STAT_RETURN_FILTER_KEY = {
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate',
@@ -247,13 +249,13 @@ const StatReturnGridList = enhance((props) => {
     const headers = (
         <Row style={headerStyle} className="dottedList">
             <Col xs={1}>№</Col>
-            <Col xs={2}>От кого</Col>
-            <Col xs={1}>Заказ</Col>
-            <Col xs={2}>Склад</Col>
-            <Col xs={2}>Добавил</Col>
-            <Col xs={1}>Дата</Col>
-            <Col xs={2} style={{justifyContent: 'flex-end'}}>Сумма возврата</Col>
-            <Col xs={1}>Статус</Col>
+            <Col xs={2}>{t('От кого')}</Col>
+            <Col xs={1}>{t('Заказ')}</Col>
+            <Col xs={2}>{t('Склад')}</Col>
+            <Col xs={2}>{t('Добавил')}</Col>
+            <Col xs={1}>{t('Дата')}</Col>
+            <Col xs={2} style={{justifyContent: 'flex-end'}}>{t('Сумма возврата')}</Col>
+            <Col xs={1}>{t('Статус')}</Col>
         </Row>
     )
 
@@ -282,7 +284,7 @@ const StatReturnGridList = enhance((props) => {
                 <Col xs={1}>
                     <div className={classes.buttons}>
                         {(status === PENDING || status === IN_PROGRESS)
-                            ? <Tooltip position="bottom" text="Ожидает">
+                            ? <Tooltip position="bottom" text={t('Ожидает')}>
                                 <IconButton
                                     disableTouchRipple={true}
                                     iconStyle={iconStyle.icon}
@@ -292,7 +294,7 @@ const StatReturnGridList = enhance((props) => {
                                 </IconButton>
                             </Tooltip>
                             : (status === COMPLETED)
-                                ? <Tooltip position="bottom" text="Завершен">
+                                ? <Tooltip position="bottom" text={t('Завершен')}>
                                     <IconButton
                                         disableTouchRipple={true}
                                         iconStyle={iconStyle.icon}
@@ -302,7 +304,7 @@ const StatReturnGridList = enhance((props) => {
                                     </IconButton>
                                 </Tooltip>
                                 : (status === CANCELLED)
-                                    ? <Tooltip position="bottom" text="Отменен">
+                                    ? <Tooltip position="bottom" text={t('Отменен')}>
                                         <IconButton
                                             disableTouchRipple={true}
                                             iconStyle={iconStyle.icon}
@@ -324,70 +326,64 @@ const StatReturnGridList = enhance((props) => {
                 className={classes.inputFieldCustom}
                 name="date"
                 component={DateToDateField}
-                label="Диапазон дат"
+                label={t('Диапазон дат')}
                 fullWidth={true}/>
             <Field
                 className={classes.inputFieldCustom}
                 name="order"
                 component={TextField}
-                label="№ Заказа"/>
+                label={'№ ' + t('Заказа')}/>
             <Field
                 className={classes.inputFieldCustom}
                 name="product"
                 component={ProductMultiSearchField}
-                label="Продукт"/>
+                label={t('Продукт')}/>
             {divisionStatus && <Field
                 className={classes.inputFieldCustom}
                 name="division"
                 component={DivisionMultiSearchField}
-                label="Организация"/>}
+                label={t('Организация')}/>}
             <Field
                 className={classes.inputFieldCustom}
                 name="paymentType"
                 component={PaymentTypeSearchField}
-                label="Тип оплаты"/>
+                label={t('Тип оплаты')}/>
             <Field
                 className={classes.inputFieldCustom}
                 name="status"
                 component={ReturnStatusMultiSearch}
-                label="Статус"/>
+                label={t('Статус')}/>
             <Field
                 className={classes.inputFieldCustom}
                 name="type"
                 component={ReturnTypeSearchField}
-                label="Тип"/>
+                label={t('Тип')}/>
             <Field
                 className={classes.inputFieldCustom}
                 name="client"
                 component={ClientMultiSearchField}
-                label="Клиент"/>
+                label={t('Клиент')}/>
             {hasMarket &&
             <Field
                 className={classes.inputFieldCustom}
                 name="market"
                 component={MarketMultiSearchField}
-                label="Магазин"/>}
+                label={t('Магазин')}/>}
             <Field
                 className={classes.inputFieldCustom}
                 name="initiator"
                 component={UsersMultiSearchField}
-                label="Инициатор "/>
+                label={t('Инициатор')}/>
             <Field
                 className={classes.inputFieldCustom}
                 name="code"
                 component={TextField}
-                label="Код"/>
+                label={t('Код')}/>
             <Field
                 className={classes.inputDateCustom}
                 name="data"
                 component={DateToDateField}
-                label="Период создания"/>
-            {divisionStatus && <Field
-                name="division"
-                component={DivisionMultiSearchField}
-                className={classes.inputFieldCustom}
-                label="Организация"
-                fullWidth={true}/>}
+                label={t('Период создания')}/>
         </div>
     )
 
@@ -413,12 +409,12 @@ const StatReturnGridList = enhance((props) => {
                             </div>
                         : <Row className={classes.diagram}>
                             <Col xs={3} className={classes.salesSummary}>
-                                <div>Общая сумма возврата</div>
+                                <div>{t('Общая сумма возврата')}</div>
                                 <div>{numberFormat(returnSum, getConfig('PRIMARY_CURRENCY'))}</div>
                             </Col>
                             <Col xs={9}>
                                 <StatisticsChart
-                                    primaryText="Возврат"
+                                    primaryText={t('Возврат')}
                                     primaryValues={returnedValue}
                                     tooltipTitle={valueName}
                                     height={180}
@@ -426,7 +422,7 @@ const StatReturnGridList = enhance((props) => {
                             </Col>
                         </Row>}
                         <div className={classes.pagination}>
-                            <div><b>История возврата</b></div>
+                            <div><b>{t('История возврата')}</b></div>
                             <Pagination filter={filter}/>
                         </div>
                         {loading
@@ -438,7 +434,7 @@ const StatReturnGridList = enhance((props) => {
                         : <div className={classes.tableWrapper}>
                             {_.isEmpty(list) && !loading
                                 ? <div className={classes.emptyQuery}>
-                                    <div>По вашему запросу ничего не найдено</div>
+                                    <div>{t('По вашему запросу ничего не найдено')}</div>
                                 </div>
                                 : <div>
                                     {headers}

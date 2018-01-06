@@ -16,6 +16,7 @@ import FlatButton from 'material-ui/FlatButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Edit from 'material-ui/svg-icons/image/edit'
 import Tooltip from '../ToolTip'
+import t from '../../helpers/translate'
 
 const listHeader = [
     {
@@ -28,19 +29,19 @@ const listHeader = [
         sorting: false,
         name: 'name',
         xs: 4,
-        title: 'Наименование'
+        title: t('Наименование')
     },
     {
         sorting: true,
         xs: 3,
         name: 'beginTime',
-        title: 'Время начала'
+        title: t('Время начала')
     },
     {
         sorting: true,
         xs: 3,
         name: 'endTime',
-        title: 'Время окончания'
+        title: t('Время окончания')
     },
     {
         sorting: false,
@@ -154,7 +155,7 @@ const ShiftGridList = enhance((props) => {
                 <Col xs={3}>{endTime}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
                     <div className={classes.iconBtn}>
-                        <Tooltip position="bottom" text="Изменить">
+                        <Tooltip position="bottom" text={t('Изменить')}>
                             <IconButton
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
@@ -165,7 +166,7 @@ const ShiftGridList = enhance((props) => {
                                 <Edit />
                             </IconButton>
                         </Tooltip>
-                        <Tooltip position="bottom" text="Удалить">
+                        <Tooltip position="bottom" text={t('Удалить')}>
                             <IconButton
                                 disableTouchRipple={true}
                                 iconStyle={iconStyle.icon}
@@ -193,7 +194,7 @@ const ShiftGridList = enhance((props) => {
                 backgroundColor="#fff"
                 labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb'}}
                 className={classes.addButton}
-                label="добавить смену"
+                label={t('добавить смену')}
                 onTouchTap={createDialog.handleOpenCreateDialog}
                 icon={<ContentAdd color="#12aaeb"/>}>
             </FlatButton>

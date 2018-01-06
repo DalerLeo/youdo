@@ -13,25 +13,26 @@ import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
 import FlatButton from 'material-ui/FlatButton'
 import ManufactureDetails from '../ManufactureDetails'
 import Choose from '../../Images/choose-menu.png'
-
 import GridList from '../../GridList'
+import t from '../../../helpers/translate'
+
 const listHeader = [
     {
         sorting: false,
         name: 'name',
-        title: 'Наименование',
+        title: t('Наименование'),
         xs: 5
     },
     {
         sorting: false,
         name: 'type',
-        title: 'Тип товара',
+        title: t('Тип товара'),
         xs: 4
     },
     {
         sorting: false,
         name: 'bom',
-        title: 'Оборудование',
+        title: t('Оборудование'),
         xs: 3
     }
 ]
@@ -135,7 +136,7 @@ const ManufactureProduct = enhance((props) => {
     if (manufactureId <= ZERO) {
         return (
             <Paper zDepth={1} className={classes.choose}>
-                <div>Выберите производство...</div>
+                <div>{t('Выберите производство')}...</div>
             </Paper>
         )
     }
@@ -145,7 +146,7 @@ const ManufactureProduct = enhance((props) => {
                 <FlatButton
                     labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb'}}
                     className={classes.addButton}
-                    label="добавить продукцию"
+                    label={t('добавить продукцию')}
                     onClick={createDialog.handleOpenCreateDialog}
                     icon={<ContentAdd color="#12aaeb"/>}>
                 </FlatButton>

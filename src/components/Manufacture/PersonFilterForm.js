@@ -12,6 +12,7 @@ import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import {ShiftMultiSearchField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
+import t from '../../helpers/translate'
 
 export const PERSON_FILTER_OPEN = 'openFilterDialog'
 
@@ -118,7 +119,7 @@ const UsersFilterForm = enhance((props) => {
         if (filterCounts) {
             return (
                 <div className={classes.afterFilter}>
-                    <div>Фильтр: {filterCounts} элемента</div>
+                    <div>{t('Фильтр')}: {filterCounts} {t('элемента')}</div>
                     <div>
                         <IconButton onTouchTap={filterDialog.handleOpenFilterDialog}>
                             <BorderColorIcon color="#8f8f8f" />
@@ -136,7 +137,7 @@ const UsersFilterForm = enhance((props) => {
                 <Link
                     className={classes.arrow}
                     onTouchTap={filterDialog.handleOpenFilterDialog}>
-                    <div>Показать фильтр <KeyboardArrowDown color="#12aaeb" /></div>
+                    <div>{t('Показать фильтр')} <KeyboardArrowDown color="#12aaeb" /></div>
                 </Link>
             </div>
         )
@@ -153,7 +154,7 @@ const UsersFilterForm = enhance((props) => {
                 </div>
                 <form onSubmit={handleSubmit(filterDialog.handleSubmitFilterDialog)}>
                     <div>
-                        <Field className={classes.inputFieldCustom} name="shift" component={ShiftMultiSearchField} label="Смена" fullWidth={true}/>
+                        <Field className={classes.inputFieldCustom} name="shift" component={ShiftMultiSearchField} label={t('Смена')} fullWidth={true}/>
                     </div>
 
                     <RaisedButton
@@ -161,7 +162,7 @@ const UsersFilterForm = enhance((props) => {
                         primary={true}
                         buttonStyle={{color: '#fff'}}
                         labelStyle={{fontSize: '13px'}}
-                        label="Применить"
+                        label={t('Применить')}
                         style={{marginTop: '15px'}}>
                     </RaisedButton>
                 </form>

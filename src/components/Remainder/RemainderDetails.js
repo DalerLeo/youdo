@@ -9,6 +9,7 @@ import numberFormat from '../../helpers/numberFormat'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
 import NotFound from '../Images/not-found.png'
 import LinearProgress from '../LinearProgress'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -138,7 +139,7 @@ const RemainderDetails = enhance((props) => {
         <div className={classes.wrapper}>
             {_.isEmpty(_.get(detailData, ['data', 'results']))
                 ? <div className={classes.emptyQuery}>
-                    <div>Товаров не найдено</div>
+                    <div>{t('Товаров не найдено')}</div>
                 </div>
                 : <div style={{width: '100%'}}>
                     <div className={classes.header}>
@@ -160,14 +161,14 @@ const RemainderDetails = enhance((props) => {
                     </div>
                     <div className={classes.content}>
                         <div className={classes.title}>
-                            <div className={classes.titleLabel}>Парти товаров</div>
+                            <div className={classes.titleLabel}>{t('Парти товаров')}</div>
                             <Pagination filter={filterItem}/>
                         </div>
                         <Row className='dottedList'>
-                            <Col xs={4}>Код</Col>
-                            <Col xs={4}>Дата приемки</Col>
-                            <Col xs={3}>Кол-во</Col>
-                            <Col xs={1}>Статус</Col>
+                            <Col xs={4}>{t('Код')}</Col>
+                            <Col xs={4}>{t('Дата приемки')}</Col>
+                            <Col xs={3}>{t('Кол-во')}</Col>
+                            <Col xs={1}>{t('Статус')}</Col>
                         </Row>
                         {_.map(_.get(detailData, ['data', 'results']), (item) => {
                             const barcode = _.get(item, 'barcode')

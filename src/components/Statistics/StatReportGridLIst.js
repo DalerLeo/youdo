@@ -13,6 +13,7 @@ import * as ROUTES from '../../constants/routes'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
 import {StatisticsFilterExcel} from '../Statistics'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -145,30 +146,30 @@ const StatReportGridList = enhance((props) => {
     const transferData = _.get(listData, ['data', 'transfer'])
     const stock = (
         <div className={classes.block}>
-            <span>Склад</span>
+            <span>{t('Склад')}</span>
             <ul>
                 <li>
-                    <span>Сумма товаров на начало периода</span>
+                    <span>{t('Сумма товаров на начало периода')}</span>
                     <span>{numberFormat(_.get(stockData, 'beginPriceSum'), currency)}</span>
                 </li>
                 <li>
-                    <span>Поступления на склад</span>
+                    <span>{t('Поступления на склад')}</span>
                     <span>{numberFormat(_.get(stockData, 'inPriceSum'), currency)}</span>
                 </li>
                 <li>
-                    <span>Возврат за период</span>
+                    <span>{t('Возврат за период')}</span>
                     <span>{numberFormat(_.get(stockData, 'returnedSum'), currency)}</span>
                 </li>
                 <li>
-                    <span>Выдано по заказам</span>
+                    <span>{t('Выдано по заказам')}</span>
                     <span>{numberFormat(_.get(stockData, 'outPriceSum'), currency)}</span>
                 </li>
                 <li>
-                    <span>Списано со склада</span>
+                    <span>{t('Списано со склада')}</span>
                     <span>{numberFormat(_.get(stockData, 'writeoffSum'), currency)}</span>
                 </li>
                 <li>
-                    <span>Сумма товаров на конец периода</span>
+                    <span>{t('Сумма товаров на конец периода')}</span>
                     <span>{numberFormat(_.get(stockData, 'endPriceSum'), currency)}</span>
                 </li>
             </ul>
@@ -177,22 +178,22 @@ const StatReportGridList = enhance((props) => {
 
     const productRealisation = (
         <div className={classes.block}>
-            <span>Реализация товара</span>
+            <span>{t('Реализация товара')}</span>
             <ul>
                 <li>
-                    <span>Стоимость проданного товара</span>
+                    <span>{t('Стоимость проданного товара')}</span>
                     <span>{numberFormat(_.get(salesData, 'salesSum'), currency)}</span>
                 </li>
                 <li>
-                    <span>Себестоимость товара</span>
+                    <span>{t('Себестоимость товара')}</span>
                     <span>{numberFormat(_.get(salesData, 'netCost'), currency)}</span>
                 </li>
                 <li>
-                    <span>Сумма товаров, проданных<br/> дешевле себестоимости</span>
+                    <span>{t('Сумма товаров, проданных<br/> дешевле себестоимости')}</span>
                     <span>{numberFormat(_.get(salesData, 'lessNetCostSum'), currency)}</span>
                 </li>
                 <li>
-                    <span>Прибыль от продаж</span>
+                    <span>{t('Прибыль от продаж')}</span>
                     <span>{numberFormat(_.get(salesData, 'salesProfit'), currency)}</span>
                 </li>
             </ul>
@@ -201,22 +202,22 @@ const StatReportGridList = enhance((props) => {
 
     const incomeOutcome = (
         <div className={classes.block}>
-            <span>Доходы / Расходы</span>
+            <span>{t('Доходы / Расходы')}</span>
             <ul>
                 <li>
-                    <span>Доход от продаж</span>
+                    <span>{t('Доход от продаж')}</span>
                     <span>{numberFormat(_.get(transferData, 'salesSum'), currency)}</span>
                 </li>
                 <li>
-                    <span>Списанные товары</span>
+                    <span>{t('Списанные товары')}</span>
                     <span>{numberFormat(_.get(transferData, 'writeoff'), currency)}</span>
                 </li>
                 <li>
-                    <span>Прочие расходы фирмы</span>
+                    <span>{t('Прочие расходы фирмы')}</span>
                     <span>{numberFormat(_.get(transferData, 'expanses'), currency)}</span>
                 </li>
                 <li>
-                    <span>Прибыль фирмы</span>
+                    <span>{t('Прибыль фирмы')}</span>
                     <span>{numberFormat(_.get(transferData, 'profit'), currency)}</span>
                 </li>
             </ul>

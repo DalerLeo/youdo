@@ -12,6 +12,7 @@ import paymentTypeFormat from '../../helpers/paymentTypeFormat'
 import dealTypeFormat from '../../helpers/dealTypeFormat'
 import toBoolean from '../../helpers/toBoolean'
 import getConfig from '../../helpers/getConfig'
+import t from '../../helpers/translate'
 
 const ONE = 1
 const enhance = compose(
@@ -173,19 +174,19 @@ const OrderPrint = enhance((props) => {
                 return (
                     <div key={id} className="printItem">
                         <div className={classes.title}>
-                            <span>Заказ № {id}</span>
+                            <span>{t('Заказ')} № {id}</span>
                             {getConfig('COMPANY_NAME') ? <div className={classes.kerasys}>{getConfig('COMPANY_NAME')}</div> : null}
-                            <div>Добавлено: {createdDate}</div>
+                            <div>{t('Добавлено')}: {createdDate}</div>
                         </div>
                         <div className={classes.info}>
                             <div className={classes.block}>
                                 <ul>
-                                    {hasMarket && <li>Название магазина:</li>}
-                                    <li>Адрес:</li>
-                                    <li>Ориентир:</li>
-                                    <li>Телефон:</li>
-                                    <li>Агент:</li>
-                                    <li>Доставщик:</li>
+                                    {hasMarket && <li>{t('Название магазина')}:</li>}
+                                    <li>{t('Адрес')}:</li>
+                                    <li>{t('Ориентир')}:</li>
+                                    <li>{t('Телефон')}:</li>
+                                    <li>{t('Агент')}:</li>
+                                    <li>{t('Доставщик')}:</li>
                                 </ul>
                                 <ul>
                                     {hasMarket && <li>{marketName}</li>}
@@ -198,10 +199,10 @@ const OrderPrint = enhance((props) => {
                             </div>
                             <div className={classes.block}>
                                 <ul>
-                                    <li>Тип сделки:</li>
-                                    <li>Дата ожидаемой оплаты:</li>
-                                    <li>Дата доставки:</li>
-                                    <li>Тип оплаты:</li>
+                                    <li>{t('Тип сделки')}:</li>
+                                    <li>{t('Дата ожидаемой оплаты')}:</li>
+                                    <li>{t('Дата доставки')}:</li>
+                                    <li>{t('Тип оплаты')}:</li>
                                 </ul>
                                 <ul>
                                     <li>{dealType}</li>
@@ -215,11 +216,11 @@ const OrderPrint = enhance((props) => {
                         <div className={classes.products}>
                             <Row>
                                 <Col xs={1}>№</Col>
-                                <Col xs={4}>Наименование</Col>
-                                <Col xs={1}>Код</Col>
-                                <Col xs={2}>Кол-во</Col>
-                                <Col xs={2}>Цена ({currentCurrency})</Col>
-                                <Col xs={2}>Сумма ({currentCurrency})</Col>
+                                <Col xs={4}>{t('Наименование')}</Col>
+                                <Col xs={1}>{t('Код')}</Col>
+                                <Col xs={2}>{t('Кол-во')}</Col>
+                                <Col xs={2}>{t('Цена')} ({currentCurrency})</Col>
+                                <Col xs={2}>{t('Сумма')} ({currentCurrency})</Col>
                             </Row>
                             {_.map(_.get(item, 'products'), (product, index) => {
                                 const totalProductPrice = numberFormat(_.get(product, 'totalPrice'))
@@ -236,7 +237,7 @@ const OrderPrint = enhance((props) => {
                                 return (
                                     <Row key={productId}>
                                         <Col xs={1}>{index + ONE}</Col>
-                                        <Col xs={4}>{!isBonus ? name : <div><span style={{fontWeight: '700'}}>БОНУС</span> {name}</div>}</Col>
+                                        <Col xs={4}>{!isBonus ? name : <div><span style={{fontWeight: '700'}}>{t('БОНУС')}</span> {name}</div>}</Col>
                                         <Col xs={1}>{code}</Col>
                                         <Col xs={2}>{amount}</Col>
                                         <Col xs={2}>{price}</Col>
@@ -248,12 +249,12 @@ const OrderPrint = enhance((props) => {
                                 <Col xs={1}></Col>
                                 <Col xs={1}></Col>
                                 <Col xs={4}></Col>
-                                <Col xs={2}>{formattedAmount && 'Итого: ' + numberFormat(totalAmount, firstMeasure)}</Col>
+                                <Col xs={2}>{formattedAmount && t('Итого') + ': ' + numberFormat(totalAmount, firstMeasure)}</Col>
                                 <Col xs={2}></Col>
-                                <Col xs={2}>Итого: {numberFormat(totalPrice)}</Col>
+                                <Col xs={2}>{t('Итого')}: {numberFormat(totalPrice)}</Col>
                             </Row>
                         </div>
-                        <div className={classes.sign}>Подпись клиента:<span> </span></div>
+                        <div className={classes.sign}>{t('Подпись клиента')}:<span> </span></div>
 
                     </div>
                 )

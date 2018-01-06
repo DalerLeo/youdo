@@ -23,6 +23,7 @@ import {
 } from '../../actions/currency'
 import {reset} from 'redux-form'
 import {openSnackbarAction} from '../../actions/snackbar'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     connect((state, props) => {
@@ -161,7 +162,7 @@ const enhance = compose(
             return rate
                 ? dispatch(courseCreateAction(_.get(currencyForm, ['values']), currency))
                     .then(() => {
-                        return dispatch(openSnackbarAction({message: 'Курс обновлен'}))
+                        return dispatch(openSnackbarAction({message: t('Курс обновлен')}))
                     })
                     .then(() => {
                         dispatch(currencyListFetchAction(filter))

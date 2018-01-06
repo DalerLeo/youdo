@@ -8,6 +8,7 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 import {Row, Col} from 'react-flexbox-grid'
+import t from '../../helpers/translate'
 
 export const STAT_MANUFACTURE_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -66,7 +67,7 @@ const statManufactureCreateDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>Использованные материалы</span>
+                <span>{t('Использованные материалы')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -74,30 +75,30 @@ const statManufactureCreateDialog = enhance((props) => {
             <div className={classes.bodyContent}>
                 <div className={classes.inContent}>
                     <div className={classes.field}>
-                        <div className={classes.innerTitle}>Сырье</div>
+                        <div className={classes.innerTitle}>{t('Сырье')}</div>
                         <div className={classes.transactions}>
                             <Row className="dottedList">
-                                <Col xs={6}>Наименование</Col>
-                                <Col xs={3}>Кол-во</Col>
-                                <Col xs={3}>Норма</Col>
+                                <Col xs={6}>{t('Наименование')}</Col>
+                                <Col xs={3}>{t('Кол-во')}</Col>
+                                <Col xs={3}>{t('Норма')}</Col>
                             </Row>
                             <Row className="dottedList">
-                                <Col xs={6}>Дистилированная вода</Col>
+                                <Col xs={6}>{t('Дистилированная вода')}</Col>
                                 <Col xs={3}>76 л</Col>
                                 <Col xs={3}>70 л</Col>
                             </Row>
                             <Row className="dottedList">
-                                <Col xs={6}>Бура</Col>
+                                <Col xs={6}>{t('Бура')}</Col>
                                 <Col xs={3}>3 кг</Col>
                                 <Col xs={3}>3 кг</Col>
                             </Row>
                             <Row className="dottedList">
-                                <Col xs={6}>Каустик</Col>
+                                <Col xs={6}>{t('Каустик')}</Col>
                                 <Col xs={3}>3 кг</Col>
                                 <Col xs={3}>3 кг</Col>
                             </Row>
                             <Row className="dottedList">
-                                <Col xs={6}>Гранит</Col>
+                                <Col xs={6}>{t('Гранит')}</Col>
                                 <Col xs={3}>3 кг</Col>
                                 <Col xs={3}>3 кг</Col>
                             </Row>

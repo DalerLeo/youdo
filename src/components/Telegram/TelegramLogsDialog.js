@@ -26,6 +26,8 @@ import {
     REJECTED,
     AUTO
 } from '../ClientTransaction'
+import t from '../../helpers/translate'
+
 export const TELEGRAM_LOGS_DIALOG_OPEN = 'openLogsDialog'
 const enhance = compose(
     injectSheet({
@@ -172,16 +174,16 @@ const StatAgentDialog = enhance((props) => {
     } = props
     const statusIcon = (status) => {
         switch (status) {
-            case CONFIRMED: return <ToolTip position={'right'} text={'Подтвержден'}>
+            case CONFIRMED: return <ToolTip position={'right'} text={t('Подтвержден')}>
                 <Accepted color={'#81c784'}/>
             </ToolTip>
-            case REJECTED: return <ToolTip position={'right'} text={'Отменен'}>
+            case REJECTED: return <ToolTip position={'right'} text={t('Отменен')}>
                 <Rejected color={'#e57373'}/>
             </ToolTip>
-            case REQUESTED: return <ToolTip position={'right'} text={'В ожидании'}>
+            case REQUESTED: return <ToolTip position={'right'} text={t('В ожидании')}>
                 <Requested color={'#f0ad4e'}/>
             </ToolTip>
-            case AUTO: return <ToolTip position={'right'} text={'Автоматически подтвержден системой'}>
+            case AUTO: return <ToolTip position={'right'} text={t('Автоматически подтвержден системой')}>
                 <AutoAccepted color={'#12aaeb'}/>
             </ToolTip>
             default: return null
@@ -192,7 +194,7 @@ const StatAgentDialog = enhance((props) => {
     const logsList = _.map(data, (item, index) => {
         const transId = _.get(item, ['clientTransaction', 'id'])
         const status = _.get(item, 'status')
-        const paymentType = _.get(item, ['clientTransaction', 'paymentType']) === 'cash' ? 'Наличные' : 'Перечисление'
+        const paymentType = _.get(item, ['clientTransaction', 'paymentType']) === 'cash' ? t('Наличные') : t('Перечисление')
         const amount = _.get(item, ['clientTransaction', 'amount'])
         const internal = _.get(item, ['clientTransaction', 'internal'])
         const customRate = _.get(item, ['clientTransaction', 'customRate'])
@@ -247,16 +249,16 @@ const StatAgentDialog = enhance((props) => {
                     <div className={classes.content}>
                         <div className={classes.tableWrapper}>
                             <Row className="dottedList">
-                                <Col xs={1}>Статус</Col>
-                                <Col xs={3}>Кто</Col>
-                                <Col xs={2}>№ транзакции</Col>
-                                <Col xs={2}>Дата</Col>
-                                <Col xs={2} style={{textAlign: 'right'}}>Тип оплаты</Col>
-                                <Col xs={2}>Сумма</Col>
+                                <Col xs={1}>{t('Статус')}</Col>
+                                <Col xs={3}>{t('Кто')}</Col>
+                                <Col xs={2}>№ {t('транзакции')}</Col>
+                                <Col xs={2}>{t('Дата')}</Col>
+                                <Col xs={2} style={{textAlign: 'right'}}>{t('Тип оплаты')}</Col>
+                                <Col xs={2}>{t('Сумма')}</Col>
                             </Row>
                             {_.isEmpty(logsList)
                                 ? <div className={classes.emptyQuery}>
-                                    <div>У данного пользователя не найдено записей</div>
+                                    <div>{t('У данного агента в этом периоде нет заказов')}</div>
                                 </div>
                                 : logsList}
                         </div>

@@ -20,6 +20,7 @@ import GridList from '../../GridList'
 import moment from 'moment'
 import Paper from 'material-ui/Paper'
 import Choose from '../../Images/choose-menu.png'
+import t from '../../../helpers/translate'
 
 const listHeader = [
     {
@@ -148,14 +149,14 @@ const ManufacturePerson = enhance((props) => {
                         anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                         targetOrigin={{horizontal: 'right', vertical: 'top'}}>
                         <MenuItem
-                            primaryText="Изменить"
+                            primaryText={t('Изменить')}
                             leftIcon={<Edit/>}
                             onTouchTap={() => {
                                 updateDialog.handleOpenUpdateDialog(id)
                             }}
                         />
                         <MenuItem
-                            primaryText="Удалить "
+                            primaryText={t('Удалить')}
                             leftIcon={<DeleteIcon/>}
                             onTouchTap={() => {
                                 confirmDialog.handleOpenConfirmDialog(id)
@@ -180,7 +181,7 @@ const ManufacturePerson = enhance((props) => {
     if (manufactureId <= ZERO) {
         return (
             <Paper zDepth={1} className={classes.choose}>
-                <div>Выберите производство...</div>
+                <div>{t('Выберите производство')}...</div>
             </Paper>
         )
     }
@@ -191,7 +192,7 @@ const ManufacturePerson = enhance((props) => {
                 <FlatButton
                     labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb'}}
                     className={classes.addButton}
-                    label="добавить сотрудников"
+                    label={t('добавить сотрудников')}
                     onClick={userCreate.handleOpenDialog}
                     icon={<ContentAdd color="#12aaeb"/>}>
                 </FlatButton>

@@ -14,6 +14,7 @@ import {TextField, CurrencySearchField, CheckBox, normalizeNumber, PaymentTypeSe
 import MainStyles from '../Styles/MainStyles'
 import SupplyProductsSearchField from '../ReduxForm/Supply/SupplyProductsSearchField'
 import {connect} from 'react-redux'
+import t from '../../helpers/translate'
 
 export const SUPPLY_EXPENSE_CREATE_DIALOG_OPEN = 'openSupplyExpenseCreateDialog'
 const validate = (data) => {
@@ -81,7 +82,7 @@ const ExpenseCreateDialog = enhance((props) => {
             contentStyle={loading ? {width: '300px'} : {width: '460px'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>Добавление расхода</span>
+                <span>{t('Добавление расхода')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -97,7 +98,7 @@ const ExpenseCreateDialog = enhance((props) => {
                                 name="comment"
                                 component={TextField}
                                 className={classes.inputFieldCustom}
-                                label="Описание раскода"
+                                label={t('Описание раскода')}
                                 fullWidth={true}/>
                             <div className={classes.flex} style={{justifyContent: 'space-between'}}>
                                 <div className={classes.inputHalfWrap}>
@@ -105,7 +106,7 @@ const ExpenseCreateDialog = enhance((props) => {
                                         name="amount"
                                         component={TextField}
                                         className={classes.fieldCustom}
-                                        label="Сумма"
+                                        label={t('Сумма')}
                                         fullWidth={true}
                                         normalize={normalizeNumber}/>
                                 </div>
@@ -114,7 +115,7 @@ const ExpenseCreateDialog = enhance((props) => {
                                         name="currency"
                                         component={CurrencySearchField}
                                         className={classes.inputFieldCustom}
-                                        label="Валюта"
+                                        label={t('Валюта')}
                                         fullWidth={true}/>
                                 </div>
                             </div>
@@ -122,23 +123,23 @@ const ExpenseCreateDialog = enhance((props) => {
                                 name="paymentType"
                                 component={PaymentTypeSearchField}
                                 className={classes.inputFieldCustom}
-                                label="Тип оплаты"
+                                label={t('Тип оплаты')}
                                 fullWidth={true}/>
                             <Field
                                 name="bindToProvider"
                                 style={{margin: '20px 0 10px'}}
                                 component={CheckBox}
-                                label="Привязать к балансу поставщика"
+                                label={t('Привязать к балансу поставщика')}
                             />
                             <Field
                                 name="linkToProduct"
                                 style={{margin: '20px 0 10px'}}
                                 component={CheckBox}
-                                label="Привязать к товару"
+                                label={t('Привязать к товару')}
                             />
                             {isChecked && <Field
                                 name="product"
-                                label="Наименование товара"
+                                label={t('Наименование товара')}
                                 component={SupplyProductsSearchField}
                                 className={classes.inputFieldCustom}
                                 fullWidth={true}

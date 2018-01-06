@@ -19,6 +19,7 @@ import dateFormat from '../../helpers/dateFormat'
 import SupplySetDiscountDialog from './SupplySetDiscountDialog'
 import * as ROUTE from '../../constants/routes'
 import checkPermission from '../../helpers/checkPermission'
+import t from '../../helpers/translate'
 
 const popupWidth = 210
 const enhance = compose(
@@ -248,13 +249,13 @@ const SupplyDetails = enhance((props) => {
     const id = _.get(data, 'id')
     const agent = _.get(data, ['user', 'firstName']) + ' ' + _.get(data, ['user', 'secondName'])
     const provider = _.get(data, ['provider', 'name'])
-    const stockName = _.get(data, ['stock', 'name']) || 'Не указано'
-    const paymentType = _.get(data, 'paymentType') === 'cash' ? 'Наличный' : 'Банковский счет'
-    const phone = _.get(data, ['contact', 'phone']) || 'Не указано'
-    const email = _.get(data, ['contact', 'email']) || 'Не указано'
-    const dateDelivery = dateFormat(_.get(data, 'dateDelivery')) || 'Не указано'
-    const acceptedTime = (_.get(data, 'acceptedTime')) ? dateTimeFormat(_.get(data, 'acceptedTime')) : 'Не началась'
-    const finishedTime = (_.get(data, 'finishedTime')) ? dateTimeFormat(_.get(data, 'finishedTime')) : 'Не закончилась'
+    const stockName = _.get(data, ['stock', 'name']) || t('Не указано')
+    const paymentType = _.get(data, 'paymentType') === 'cash' ? t('Наличный') : t('Банковский счет')
+    const phone = _.get(data, ['contact', 'phone']) || t('Не указано')
+    const email = _.get(data, ['contact', 'email']) || t('Не указано')
+    const dateDelivery = dateFormat(_.get(data, 'dateDelivery')) || t('Не указано')
+    const acceptedTime = (_.get(data, 'acceptedTime')) ? dateTimeFormat(_.get(data, 'acceptedTime')) : t('Не началась')
+    const finishedTime = (_.get(data, 'finishedTime')) ? dateTimeFormat(_.get(data, 'finishedTime')) : t('Не закончилась')
     const contract = _.get(data, 'contract') || 'Не указано'
 
     const PENDING = 0
@@ -264,13 +265,13 @@ const SupplyDetails = enhance((props) => {
     const status = _.toInteger(_.get(data, 'status'))
     let statusOutput = null
     switch (status) {
-        case PENDING: statusOutput = <span className={classes.yellow}>Ожидает</span>
+        case PENDING: statusOutput = <span className={classes.yellow}>{t('Ожидает')}</span>
             break
-        case IN_PROGRESS: statusOutput = <span className={classes.blue}>В процессе</span>
+        case IN_PROGRESS: statusOutput = <span className={classes.blue}>{t('В процессе')}</span>
             break
-        case COMPLETED: statusOutput = <span className={classes.green}>Завершен</span>
+        case COMPLETED: statusOutput = <span className={classes.green}>{t('Завершен')}</span>
             break
-        case CANCELLED: statusOutput = <span className={classes.red}>Отменен</span>
+        case CANCELLED: statusOutput = <span className={classes.red}>{t('Отменен')}</span>
             break
         default: statusOutput = null
 
@@ -312,7 +313,7 @@ const SupplyDetails = enhance((props) => {
     return (
         <div className={classes.wrapper}>
             <div className={classes.title}>
-                <div className={classes.titleLabel}>Поставка №{id}</div>
+                <div className={classes.titleLabel}>{t('Поставка')} №{id}</div>
                 <div className={classes.closeDetail}
                      onClick={handleCloseDetail}>
                 </div>
@@ -328,7 +329,7 @@ const SupplyDetails = enhance((props) => {
                     <div className={classes.arrowShadow}>{null}</div>
                 </div>
                 <div className={classes.titleButtons}>
-                    <Tooltip position="bottom" text="Добавить оплату">
+                    <Tooltip position="bottom" text={t('Добавить оплату')}>
                         <Link target="_blank" to={{pathname: ROUTE.PENDING_EXPENSES_LIST_URL, query: {supply: id}}}>
                             <IconButton
                                 iconStyle={iconStyle.icon}
@@ -339,7 +340,7 @@ const SupplyDetails = enhance((props) => {
                             </IconButton>
                         </Link>
                     </Tooltip>
-                    <Tooltip position="bottom" text="Добавить расход">
+                    <Tooltip position="bottom" text={t('Добавить расход')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
                             disabled={(status === CANCELLED)}
@@ -349,7 +350,7 @@ const SupplyDetails = enhance((props) => {
                             <Expense/>
                         </IconButton>
                     </Tooltip>
-                    <Tooltip position="bottom" text="Синхронизировать кол-во товаров с приёмкой">
+                    <Tooltip position="bottom" text={t('Синхронизировать кол-во товаров с приёмкой')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
                             disabled={status !== COMPLETED}
@@ -359,7 +360,7 @@ const SupplyDetails = enhance((props) => {
                             <Sync/>
                         </IconButton>
                     </Tooltip>
-                    {updateDialog && <Tooltip position="bottom" text="Изменить">
+                    {updateDialog && <Tooltip position="bottom" text={t('Изменить')}>
                         <IconButton
                             disabled={(status === CANCELLED || comlated) && !canUpdatePrice}
                             iconStyle={iconStyle.icon}
@@ -369,7 +370,7 @@ const SupplyDetails = enhance((props) => {
                             <Edit/>
                         </IconButton>
                     </Tooltip>}
-                    {confirmDialog && <Tooltip position="bottom" text="Отменить">
+                    {confirmDialog && <Tooltip position="bottom" text={t('Отменить')}>
                         <IconButton
                             disabled={ (!(PENDING === status || ((status === IN_PROGRESS || status === COMPLETED))) || status === CANCELLED || comlated) && !isAdmin}
                             iconStyle={iconStyle.icon}
@@ -387,36 +388,36 @@ const SupplyDetails = enhance((props) => {
                         <div className={classes.dataBox}>
                             <ul>
                                 <li>
-                                    <span>Договор №:</span>
+                                    <span>{t('Договор')} №:</span>
                                     <span>{contract}</span>
                                 </li>
                                 <li>
-                                    <span>Поставщик:</span>
+                                    <span>{t('Поставщик')}:</span>
                                     <span>{provider}</span>
                                 </li>
                                 <li>
-                                    <span>Телефон:</span>
+                                    <span>{t('Телефон')}:</span>
                                     <span>{phone}</span>
                                 </li>
                                 <li>
-                                    <span>E-mail:</span>
+                                    <span>{t('E-mail')}:</span>
                                     <span>{email}</span>
                                 </li>
                                 <li>
-                                    <span>Инициатор:</span>
+                                    <span>{t('Инициатор')}:</span>
                                     <span>{agent}</span>
                                 </li>
                                 <li>
-                                    <span>Склад:</span>
+                                    <span>{t('Склад')}:</span>
                                     <span>{stockName}</span>
                                 </li>
                                 <li>
-                                    <span>Дата доставки:</span>
+                                    <span>{t('Дата доставки')}:</span>
                                     <span>{dateDelivery}</span>
                                 </li>
 
                                 <li>
-                                    <span>Комментарии:</span>
+                                    <span>{t('Комментарии')}:</span>
                                     <span>{comment}</span>
                                 </li>
                             </ul>
@@ -424,23 +425,23 @@ const SupplyDetails = enhance((props) => {
                     </div>
 
                     <div className={classes.subBlock}>
-                        <div className={classes.subtitle}>Баланс</div>
+                        <div className={classes.subtitle}>{t('Баланс')}</div>
                         <div className={classes.dataBox}>
                             <ul>
                                 <li>
-                                    <span>Стоимость поставки</span>
+                                    <span>{t('Стоимость поставки')}</span>
                                     <span>{numberFormat(totalCost, currency)}</span>
                                 </li>
                                 <li>
-                                    <span>Тип оплаты</span>
+                                    <span>{t('Тип оплаты')}</span>
                                     <span>{paymentType}</span>
                                 </li>
                                 <li>
-                                    <span>Оплачено:</span>
+                                    <span>{t('Оплачено')}:</span>
                                     <span>{numberFormat(totalPaid, currency)}</span>
                                 </li>
                                 <li>
-                                    <span>Остаток:</span>
+                                    <span>{t('Остаток')}:</span>
                                     <span className={totalBalance > zero ? classes.red : classes.green}>{numberFormat(totalBalance)} {currency}</span>
                                 </li>
                             </ul>
@@ -474,14 +475,14 @@ const SupplyDetails = enhance((props) => {
                                                             return (expensePT === 'cash')
                                                                 ? (
                                                                     <div key={expensePT} className={classes.expenseType}>
-                                                                        <div><strong>Наличные:</strong> {numberFormat(totalAmount, expenseCurrency)}</div>
-                                                                        <div>Оплачено: {numberFormat(expTotalPaid)} Остаток: {numberFormat(totalAmount - expTotalPaid)}</div>
+                                                                        <div><strong>{t('Наличные')}:</strong> {numberFormat(totalAmount, expenseCurrency)}</div>
+                                                                        <div>{t('Оплачено')}: {numberFormat(expTotalPaid)} Остаток: {numberFormat(totalAmount - expTotalPaid)}</div>
                                                                     </div>
                                                                 )
                                                                 : (
                                                                     <div key={expensePT} className={classes.expenseType}>
-                                                                        <div><strong>Перечисление:</strong> {numberFormat(totalAmount, expenseCurrency)}</div>
-                                                                        <div>Оплачено: {numberFormat(expTotalPaid)} Остаток: {numberFormat(totalAmount - expTotalPaid)}</div>
+                                                                        <div><strong>{t('Перечисление')}:</strong> {numberFormat(totalAmount, expenseCurrency)}</div>
+                                                                        <div>{t('Оплачено')}: {numberFormat(expTotalPaid)} Остаток: {numberFormat(totalAmount - expTotalPaid)}</div>
                                                                     </div>
                                                                 )
                                                         })}
@@ -494,25 +495,25 @@ const SupplyDetails = enhance((props) => {
                                             </li>
                                         )
                                     })
-                                    : <div>Нет дополнительных расходов</div>}
+                                    : <div>{t('Нет дополнительных расходов')}</div>}
                             </ul>
                         </div>
                     </div>
 
                     <div className={classes.subBlock}>
-                        <div className={classes.subtitle}>Исполнение</div>
+                        <div className={classes.subtitle}>{t('Исполнение')}</div>
                         <div className={classes.dataBox}>
                             <ul>
                                 <li>
-                                    <span>Статус:</span>
+                                    <span>{t('Статус')}:</span>
                                     <span>{statusOutput}</span>
                                 </li>
                                 <li>
-                                    <span>Начало приемки:</span>
+                                    <span>{t('Начало приемки')}:</span>
                                     <span>{acceptedTime}</span>
                                 </li>
                                 <li>
-                                    <span>Конец приемки:</span>
+                                    <span>{t('Конец приемки')}:</span>
                                     <span>{finishedTime}</span>
                                 </li>
                             </ul>

@@ -8,6 +8,7 @@ import {Field, reduxForm} from 'redux-form'
 import {ManufactureSearchField, EquipmentSearchField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -113,17 +114,17 @@ const ManufactureChange = enhance((props) => {
             bodyClassName={classes.popUp}>
             <form onSubmit={onSubmit} className={classes.form}>
                 <div className={classes.titleContent}>
-                    <span>Изменение производства</span>
+                    <span>{t('Изменение производства')}</span>
                     <IconButton onTouchTap={onClose}>
                         <CloseIcon color="#666666"/>
                     </IconButton>
                 </div>
-                {error && <div className={classes.error}>Ошибка: {error}</div>}
+                {error && <div className={classes.error}>{t('Ошибка')}: {error}</div>}
                 <div className={classes.inContent}>
                     <div>
                         <Field
                             name="manufacture"
-                            label="Производство"
+                            label={t('Производство')}
                             className={classes.inputFieldCustom}
                             component={ManufactureSearchField}
                             fullWidth={true}/>
@@ -131,7 +132,7 @@ const ManufactureChange = enhance((props) => {
                     <div>
                         <Field
                             name="equipment"
-                            label="Оборудование"
+                            label={t('Оборудование')}
                             className={classes.inputFieldCustom}
                             component={EquipmentSearchField}
                             fullWidth={true}/>
@@ -139,7 +140,7 @@ const ManufactureChange = enhance((props) => {
                     </div>
                 <div className={classes.bottomButton}>
                     <FlatButton
-                        label="Сохранить"
+                        label={t('Сохранить')}
                         className={classes.actionButton}
                         primary={true}
                         type="submit"

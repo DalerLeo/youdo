@@ -2,6 +2,7 @@ import React from 'react'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import ChoosMenu from '../../components/Images/choose-menu.png'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -62,8 +63,8 @@ const WelcomeERP = enhance((props) => {
                 </div>
 
                 <div className={classes.text}>
-                    <h1>Добро пожаловать!</h1>
-                    <p>Для работы с системой выберите пункт меню</p>
+                    <h1>{t('Добро пожаловать')}!</h1>
+                    <p>{t('Для работы с системой выберите пункт меню')}</p>
                 </div>
             </div>
         </div>

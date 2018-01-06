@@ -12,6 +12,7 @@ import {
     DateField,
     DeliveryManSearchField
 } from '../ReduxForm'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -144,7 +145,7 @@ const OrderMultiUpdateDialog = enhance((props) => {
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>Изменение выбранных заказов</span>
+                <span>{t('Изменение выбранных заказов')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -163,7 +164,7 @@ const OrderMultiUpdateDialog = enhance((props) => {
                                     component={DeliveryManSearchField}
                                     disabled={givenOrDelivery}
                                     className={classes.inputDateCustom}
-                                    label="Доставщик"
+                                    label={t('Доставщик')}
                                     fullWidth={true}/>
                             </div>
                             <div className={classes.field}>
@@ -172,7 +173,7 @@ const OrderMultiUpdateDialog = enhance((props) => {
                                     disabled={givenOrDelivery}
                                     component={DateField}
                                     className={classes.inputDateCustom}
-                                    label="Дата доставки"
+                                    label={t('Дата доставки')}
                                     fullWidth={true}/>
                             </div>
                             <div className={classes.field}>
@@ -180,12 +181,12 @@ const OrderMultiUpdateDialog = enhance((props) => {
                                     name="paymentDate"
                                     component={DateField}
                                     className={classes.inputDateCustom}
-                                    label="Дата оплаты"
+                                    label={t('Дата оплаты')}
                                     fullWidth={true}/>
                             </div>
                             <div className={classes.bottomButton}>
                                 <FlatButton
-                                    label={'Изменить заказы'}
+                                    label={t('Изменить заказы')}
                                     labelStyle={{fontSize: '13px'}}
                                     className={classes.actionButton}
                                     primary={true}

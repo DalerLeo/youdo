@@ -41,6 +41,7 @@ import {
     CheckBox
 } from '../../ReduxForm'
 import dateFormat from '../../../helpers/dateFormat'
+import t from '../../../helpers/translate'
 
 export const STAT_SALES_FILTER_KEY = {
     CLIENT: 'client',
@@ -298,13 +299,13 @@ const StatSalesGridList = enhance((props) => {
 
     const headers = (
         <Row style={headerStyle} className="dottedList">
-            <Col xs={1}>№ Сделки</Col>
-            <Col xs={2}>Дата</Col>
-            {hasMarket && <Col xs={2}>Магазин</Col>}
-            <Col xs={hasMarket ? TWO : THREE}>Агент</Col>
-            <Col xs={hasMarket ? TWO : THREE}>Тип оплаты</Col>
-            <Col xs={2} style={{justifyContent: 'flex-end'}}>Сумма</Col>
-            <Col xs={1} style={{justifyContent: 'flex-end'}}>Cтатус</Col>
+            <Col xs={1}>№ {t('Сделки')}</Col>
+            <Col xs={2}>{t('Дата')}</Col>
+            {hasMarket && <Col xs={2}>{t('Магазин')}</Col>}
+            <Col xs={hasMarket ? TWO : THREE}>{t('Агент')}</Col>
+            <Col xs={hasMarket ? TWO : THREE}>{t('Тип оплаты')}</Col>
+            <Col xs={2} style={{justifyContent: 'flex-end'}}>{t('Сумма')}</Col>
+            <Col xs={1} style={{justifyContent: 'flex-end'}}>{t('Cтатус')}</Col>
         </Row>
     )
 
@@ -315,7 +316,7 @@ const StatSalesGridList = enhance((props) => {
             const marketName = _.get(item, ['market', 'name'])
             const currency = _.get(item, ['currency', 'name'])
             const id = _.get(item, 'id')
-            const createdDate = _.get(item, 'createdDate') ? moment(_.get(item, 'createdDate')).locale('ru').format('DD MMM YYYY HH:MM') : 'Не указана'
+            const createdDate = _.get(item, 'createdDate') ? moment(_.get(item, 'createdDate')).locale('ru').format('DD MMM YYYY HH:MM') : t('Не указана')
             const firstName = _.get(item, ['user', 'firstName'])
             const totalPrice = _.get(item, 'totalPrice')
             const totalBalance = _.get(item, 'totalBalance')
@@ -329,12 +330,12 @@ const StatSalesGridList = enhance((props) => {
             const now = moment().format('YYYY-MM-DD')
             const paymentDate = dateFormat(_.get(item, 'paymentDate'))
             const balanceTooltip = numberFormat(totalBalance, currentCurrency)
-            const paymentType = _.get(item, 'paymentType') === 'cash' ? 'наличный' : 'банковский счет'
+            const paymentType = _.get(item, 'paymentType') === 'cash' ? t('наличный') : t('банковский счет')
             const paymentDifference = moment(_.get(item, 'paymentDate')).diff(now, 'days')
-            const PAY_PENDING = 'Оплата ожидается: ' + paymentDate + '<br/>Ожидаемый платеж: ' + balanceTooltip
+            const PAY_PENDING = t('Оплата ожидается') + ': ' + paymentDate + '<br/>' + t('Ожидаемый платеж') + ': ' + balanceTooltip
             const PAY_DELAY = paymentDifference !== ZERO
-                ? 'Оплата ожидалась: ' + paymentDate + '<br/>Долг: ' + balanceTooltip
-                : 'Оплата ожидается сегодня <br/>Сумма: ' + balanceTooltip
+                ? t('Оплата ожидалась') + ': ' + paymentDate + '<br/>' + t('Долг') + ': ' + balanceTooltip
+                : t('Оплата ожидается сегодня') + '<br/>' + t('Сумма') + ': ' + balanceTooltip
             return (
                 <Row key={id} className="dottedList" style={status === CANCELED ? {color: '#999', cursor: 'pointer'} : {cursor: 'pointer'}} onClick={() => { statSaleDialog.handleOpenStatSaleDialog(id) }}>
                     <Col xs={1}>{id}</Col>
@@ -347,7 +348,7 @@ const StatSalesGridList = enhance((props) => {
                     <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(totalPrice, currency)}</Col>
                     <Col xs={1} style={{justifyContent: 'flex-end'}}>
                         <div className={classes.buttons}>
-                            {(status === REQUESTED) ? <Tooltip position="bottom" text="В процессе">
+                            {(status === REQUESTED) ? <Tooltip position="bottom" text={t('В процессе')}>
                                     <IconButton
                                         disableTouchRipple={true}
                                         iconStyle={iconStyle.icon}
@@ -356,7 +357,7 @@ const StatSalesGridList = enhance((props) => {
                                         <InProcess color="#f0ad4e"/>
                                     </IconButton>
                                 </Tooltip>
-                                : (status === READY) ? <Tooltip position="bottom" text="Есть на складе">
+                                : (status === READY) ? <Tooltip position="bottom" text={t('Есть на складе')}>
                                         <IconButton
                                             disableTouchRipple={true}
                                             iconStyle={iconStyle.icon}
@@ -365,7 +366,7 @@ const StatSalesGridList = enhance((props) => {
                                             <Available color="#f0ad4e"/>
                                         </IconButton>
                                     </Tooltip>
-                                    : (status === DELIVERED) ? <Tooltip position="bottom" text="Доставлен">
+                                    : (status === DELIVERED) ? <Tooltip position="bottom" text={t('Доставлен')}>
                                             <IconButton
                                                 disableTouchRipple={true}
                                                 iconStyle={iconStyle.icon}
@@ -374,7 +375,7 @@ const StatSalesGridList = enhance((props) => {
                                                 <Delivered color="#81c784"/>
                                             </IconButton>
                                         </Tooltip>
-                                        : (status === GIVEN) ? <Tooltip position="bottom" text="Передан доставщику">
+                                        : (status === GIVEN) ? <Tooltip position="bottom" text={t('Передан доставщику')}>
                                                 <IconButton
                                                     disableTouchRipple={true}
                                                     iconStyle={iconStyle.icon}
@@ -383,7 +384,7 @@ const StatSalesGridList = enhance((props) => {
                                                     <Transfered color="#f0ad4e"/>
                                                 </IconButton>
                                             </Tooltip>
-                                            : (status === CANCELED) ? <Tooltip position="bottom" text="Заказ отменен">
+                                            : (status === CANCELED) ? <Tooltip position="bottom" text={t('Заказ отменен')}>
                                                     <IconButton
                                                         disableTouchRipple={true}
                                                         iconStyle={iconStyle.icon}
@@ -392,7 +393,7 @@ const StatSalesGridList = enhance((props) => {
                                                         <Canceled color='#e57373'/>
                                                     </IconButton>
                                                 </Tooltip>
-                                                : (status === NOT_CONFIRMED) ? <Tooltip position="bottom" text="Не подтвержден">
+                                                : (status === NOT_CONFIRMED) ? <Tooltip position="bottom" text={t('Не подтвержден')}>
                                                     <IconButton
                                                         disableTouchRipple={true}
                                                         iconStyle={iconStyle.icon}
@@ -407,7 +408,7 @@ const StatSalesGridList = enhance((props) => {
                                 ? PAY_DELAY
                                 : ((totalBalance > ZERO) && moment(_.get(item, 'paymentDate')).diff(now, 'days') > ZERO)
                                     ? PAY_PENDING
-                                    : totalBalance === ZERO ? 'Оплачено' : ''}>
+                                    : totalBalance === ZERO ? t('Оплачено') : ''}>
                                 <IconButton
                                     disableTouchRipple={true}
                                     iconStyle={iconStyle.icon}
@@ -435,20 +436,20 @@ const StatSalesGridList = enhance((props) => {
 
     const fields = (
         <div>
-            <Field name="client" className={classes.inputFieldCustom} component={ClientMultiSearchField} label="Клиент"/>
-            <Field name="deliveryMan" className={classes.inputFieldCustom} component={DeliveryManMultiSearchField} label="Доставщик"/>
-            <Field name="product" className={classes.inputFieldCustom} component={ProductMultiSearchField} label="Товар"/>
-            <Field name="status" className={classes.inputFieldCustom} component={OrderStatusMultiSearchField} label="Статус"/>
-            {hasMarket && <Field name="shop" className={classes.inputFieldCustom} component={MarketMultiSearchField} label="Магазин"/>}
-            {divisionStatus && <Field name="division" className={classes.inputFieldCustom} component={DivisionMultiSearchField} label="Организация"/>}
-            <Field name="initiator" className={classes.inputFieldCustom} component={UsersMultiSearchField} label="Инициатор"/>
-            <Field name="dept" className={classes.inputFieldCustom} component={DeptSearchField} label="Статус оплаты"/>
-            <Field name="zone" className={classes.inputFieldCustom} component={ZoneMultiSearchField} label="Зона"/>
-            <Field name="createdDate" className={classes.inputDateCustom} component={DateToDateField} label="Период создания"/>
-            <Field name="deliveryDate" className={classes.inputDateCustom} component={DateToDateField} label="Дата доставки"/>
-            <Field name="deadlineDate" className={classes.inputDateCustom} component={DateToDateField} label="Период изготовления"/>
-            <Field name="onlyBonus" component={CheckBox} label="Только бонусные заказы"/>
-            <Field name="exclude" component={CheckBox} label="Исключить отмененные заказы"/>
+            <Field name="client" className={classes.inputFieldCustom} component={ClientMultiSearchField} label={t('Клиент')}/>
+            <Field name="deliveryMan" className={classes.inputFieldCustom} component={DeliveryManMultiSearchField} label={t('Доставщик')}/>
+            <Field name="product" className={classes.inputFieldCustom} component={ProductMultiSearchField} label={t('Товар')}/>
+            <Field name="status" className={classes.inputFieldCustom} component={OrderStatusMultiSearchField} label={t('Статус')}/>
+            {hasMarket && <Field name="shop" className={classes.inputFieldCustom} component={MarketMultiSearchField} label={t('Магазин')}/>}
+            {divisionStatus && <Field name="division" className={classes.inputFieldCustom} component={DivisionMultiSearchField} label={t('Организация')}/>}
+            <Field name="initiator" className={classes.inputFieldCustom} component={UsersMultiSearchField} label={t('Инициатор')}/>
+            <Field name="dept" className={classes.inputFieldCustom} component={DeptSearchField} label={t('Статус оплаты')}/>
+            <Field name="zone" className={classes.inputFieldCustom} component={ZoneMultiSearchField} label={t('Зона')}/>
+            <Field name="createdDate" className={classes.inputDateCustom} component={DateToDateField} label={t('Период создания')}/>
+            <Field name="deliveryDate" className={classes.inputDateCustom} component={DateToDateField} label={t('Дата доставки')}/>
+            <Field name="deadlineDate" className={classes.inputDateCustom} component={DateToDateField} label={t('Период изготовления')}/>
+            <Field name="onlyBonus" component={CheckBox} label={t('Только бонусные заказы')}/>
+            <Field name="exclude" component={CheckBox} label={t('Исключить отмененные заказы')}/>
         </div>
     )
 
@@ -477,7 +478,7 @@ const StatSalesGridList = enhance((props) => {
                                 : <Row className={classes.diagram}>
                                     <Col xs={3} className={classes.salesSummary}>
                                         <div className={classes.mainSummary}>
-                                            <div>Фактические продажи</div>
+                                            <div>{t('Фактические продажи')}</div>
                                             <div>{numberFormat(sum - returnSum, getConfig('PRIMARY_CURRENCY'))}</div>
                                             <IconButton
                                                 className={classes.infoButton}
@@ -490,9 +491,9 @@ const StatSalesGridList = enhance((props) => {
                                             </IconButton>
                                         </div>
                                         <div className={classes.secondarySummary}>
-                                            <div>Сумма продаж за период</div>
+                                            <div>{t('Сумма продаж за период')}</div>
                                             <div>{numberFormat(sum, getConfig('PRIMARY_CURRENCY'))}</div>
-                                            <div>Сумма возврата за период</div>
+                                            <div>{t('Сумма возврата за период')}</div>
                                             <div>{numberFormat(returnSum, getConfig('PRIMARY_CURRENCY'))}</div>
                                         </div>
                                         {salesInfoDialog &&
@@ -505,14 +506,14 @@ const StatSalesGridList = enhance((props) => {
                                             secondaryValues={returnedValue}
                                             mergedGraph={_.get(graphData, 'mergedGraph')}
                                             tooltipTitle={valueName}
-                                            primaryText="Продажа"
-                                            secondaryText="Возврат"
+                                            primaryText={t('Продажа')}
+                                            secondaryText={t('Возврат')}
                                             height={180}
                                         />
                                     </Col>
                                 </Row>}
                                 <div className={classes.pagination}>
-                                    <div><b>История продаж</b></div>
+                                    <div><b>{t('История продаж')}</b></div>
                                     <Pagination filter={filter}/>
                                 </div>
                                 {loading
@@ -524,7 +525,7 @@ const StatSalesGridList = enhance((props) => {
                                     : <div className={classes.tableWrapper}>
                                         {_.isEmpty(list) && !loading
                                             ? <div className={classes.emptyQuery}>
-                                                <div>По вашему запросу ничего не найдено</div>
+                                                <div>{t('По вашему запросу ничего не найдено')}</div>
                                             </div>
                                             : <div>
                                                 {headers}

@@ -12,6 +12,7 @@ import {
     DateField,
     DeliveryManSearchField
 } from '../ReduxForm'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -144,7 +145,7 @@ const OrderReleaseDialog = enhance((props) => {
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>Сформировать релиз</span>
+                <span>{t('Сформировать релиз')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -163,7 +164,7 @@ const OrderReleaseDialog = enhance((props) => {
                                     component={DeliveryManSearchField}
                                     disabled={givenOrDelivery}
                                     className={classes.inputDateCustom}
-                                    label="Доставщик"
+                                    label={t('Доставщик')}
                                     fullWidth={true}/>
                             </div>
                             <div className={classes.field}>
@@ -172,12 +173,12 @@ const OrderReleaseDialog = enhance((props) => {
                                     disabled={givenOrDelivery}
                                     component={DateField}
                                     className={classes.inputDateCustom}
-                                    label="Дата доставки"
+                                    label={t('Дата доставки')}
                                     fullWidth={true}/>
                             </div>
                             <div className={classes.bottomButton}>
                                 <FlatButton
-                                    label={'Сохранить'}
+                                    label={t('Сохранить')}
                                     labelStyle={{fontSize: '13px'}}
                                     className={classes.actionButton}
                                     primary={true}

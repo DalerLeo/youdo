@@ -8,6 +8,7 @@ import SupplyDetails from '../Supply/SupplyDetails'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import Loader from '../Loader'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -150,7 +151,7 @@ const StatSaleDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>Движение товаров. Поставка №{supplyId}</span>
+                <span>{t('Движение товаров. Поставка')} №{supplyId}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>

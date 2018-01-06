@@ -25,6 +25,7 @@ import {
     inventoryProductsFetchAction,
     inventoryCreateFetchAction
 } from '../../actions/inventory'
+import t from '../../helpers/translate'
 
 const ZERO = 0
 const enhance = compose(
@@ -190,7 +191,7 @@ const enhance = compose(
             const {location: {pathname, query}, dispatch, filter} = props
             return dispatch(inventoryCreateFetchAction(items, query))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[INVENTORY_INVENTORY_DIALOG_OPEN]: false, 'pdSearch': null, 'pdStock': null})})

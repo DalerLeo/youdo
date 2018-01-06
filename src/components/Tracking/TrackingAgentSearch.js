@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import SearchIcon from 'material-ui/svg-icons/action/search'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -60,7 +61,7 @@ const TrackingAgentSearch = enhance((props) => {
                     <div className={classes.searchField}>
                         <input
                             type="text"
-                            placeholder="Поиск сотрудников..."
+                            placeholder={t('Поиск сотрудников') + '...'}
                             onChange={handleSearch}/>
                         <div className={classes.searchButton}>
                             <SearchIcon style={iconStyle}/>

@@ -19,6 +19,7 @@ import numberFormat from '../../../helpers/numberFormat'
 import Loader from '../../Loader'
 import {StatisticsFilterExcel, StatisticsChart} from '../../Statistics'
 import TransactionsList from './TransactionsList'
+import t from '../../../helpers/translate'
 
 export const STAT_FINANCE_FILTER_KEY = {
     FROM_DATE: 'fromDate',
@@ -192,10 +193,10 @@ const StatFinanceGridList = enhance((props) => {
 
     const fields = (
         <div>
-            <Field className={classes.inputFieldCustom} name="date" component={DateToDateField} label="Диапазон дат" fullWidth={true}/>
-            <Field className={classes.inputFieldCustom} name="categoryExpense" component={ExpensiveCategoryMultiSearchField} label="Категории расходов" fullWidth={true}/>
-            <Field className={classes.inputFieldCustom} name="type" component={TransactionTypeMultiSearchField} label="Тип" fullWidth={true}/>
-            <Field className={classes.inputFieldCustom} name="client" component={ClientMultiSearchField} label="Клиент" fullWidth={true}/>
+            <Field className={classes.inputFieldCustom} name="date" component={DateToDateField} label={t('Диапазон дат')} fullWidth={true}/>
+            <Field className={classes.inputFieldCustom} name="categoryExpense" component={ExpensiveCategoryMultiSearchField} label={t('Категории расходов')} fullWidth={true}/>
+            <Field className={classes.inputFieldCustom} name="type" component={TransactionTypeMultiSearchField} label={t('Тип')} fullWidth={true}/>
+            <Field className={classes.inputFieldCustom} name="client" component={ClientMultiSearchField} label={t('Клиент')} fullWidth={true}/>
         </div>
     )
 
@@ -222,20 +223,20 @@ const StatFinanceGridList = enhance((props) => {
                             : <Row className={classes.diagram}>
                                 <Col xs={3} className={classes.salesSummary}>
                                     <div className={classes.mainSummary}>
-                                        <span className={classes.summaryTitle}>Разница</span>
+                                        <span className={classes.summaryTitle}>{t('Разница')}</span>
                                         <div className={classes.summaryValue}>{numberFormat(profit)} {primaryCurrency}</div>
                                     </div>
                                     <div className={classes.secondarySummary}>
-                                        <span className={classes.summaryTitle}>Приход за период</span>
+                                        <span className={classes.summaryTitle}>{t('Приход за период')}</span>
                                         <div className={classes.summaryValue}>{numberFormat(sumIn)} {primaryCurrency}</div>
-                                        <span className={classes.summaryTitle}>Расход за период</span>
+                                        <span className={classes.summaryTitle}>{t('Расход за период')}</span>
                                         <div className={classes.summaryValue}>{numberFormat(sumOut)} {primaryCurrency}</div>
                                     </div>
                                 </Col>
                                 <Col xs={9} className={classes.chart}>
                                     <StatisticsChart
-                                        primaryText="Доход"
-                                        secondaryText="Расход"
+                                        primaryText={t('Доход')}
+                                        secondaryText={t('Расход')}
                                         primaryValues={valueIn}
                                         secondaryValues={valueOut}
                                         tooltipTitle={tooltipDate}

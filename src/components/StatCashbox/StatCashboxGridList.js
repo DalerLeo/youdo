@@ -16,6 +16,7 @@ import SubMenu from '../SubMenu'
 import * as ROUTES from '../../constants/routes'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 import FiberManualRecord from 'material-ui/svg-icons/av/fiber-manual-record'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -229,12 +230,12 @@ const StatCashboxGridList = enhance((props) => {
                         <div className={classes.tabTitle}>
                             {cashbox}
                             {type === 'bank'
-                                ? <span>банковский счет</span>
-                                : <span>наличные</span>
+                                ? <span>{t('банковский счет')}</span>
+                                : <span>{t('наличные')}</span>
                             }
                         </div>
                         <div className={classes.tabText}>
-                            <div>БАЛАНС</div>
+                            <div>{t('БАЛАНС')}</div>
                             <span>{balance} {currency}</span>
                         </div>
                     </div>

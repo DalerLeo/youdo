@@ -16,6 +16,7 @@ import ContentAdd from 'material-ui/svg-icons/content/add'
 import SettingSideMenu from '../Settings/SettingsSideMenu'
 import Edit from 'material-ui/svg-icons/image/edit'
 import Tooltip from '../ToolTip'
+import t from '../../helpers/translate'
 
 const listHeader = [
     {
@@ -28,12 +29,12 @@ const listHeader = [
         sorting: true,
         name: 'name',
         xs: 6,
-        title: 'Наименование'
+        title: t('Наименование')
     },
     {
         sorting: true,
         name: 'manufacture',
-        title: 'Производство',
+        title: t('Производство'),
         xs: 3
     },
     {
@@ -147,7 +148,7 @@ const EquipmentGridList = enhance((props) => {
                 <Col xs={3}>{manufacture}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
                     <div className={classes.iconBtn}>
-                        <Tooltip position="bottom" text="Изменить">
+                        <Tooltip position="bottom" text={t('Изменить')}>
                             <IconButton
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
@@ -157,7 +158,7 @@ const EquipmentGridList = enhance((props) => {
                                 <Edit />
                             </IconButton>
                         </Tooltip>
-                        <Tooltip position="bottom" text="Удалить">
+                        <Tooltip position="bottom" text={t('Удалить')}>
                             <IconButton
                                 disableTouchRipple={true}
                                 iconStyle={iconStyle.icon}
@@ -185,7 +186,7 @@ const EquipmentGridList = enhance((props) => {
                 backgroundColor="#fff"
                 labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb', fontSize: '13px'}}
                 className={classes.addButton}
-                label="добавить оборудование"
+                label={t('добавить оборудование')}
                 onTouchTap={createDialog.handleOpenCreateDialog}
                 icon={<ContentAdd color="#12aaeb"/>}>
             </FlatButton>

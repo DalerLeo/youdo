@@ -8,6 +8,7 @@ import injectSheet from 'react-jss'
 import validate from '../../helpers/validate'
 import {CheckBox, TextField} from '../ReduxForm'
 import Dot from '../Images/dot.png'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -87,19 +88,19 @@ const SignInForm = enhance((props) => {
             <form onSubmit={onSubmit}>
                 <div>
                     <div className={classes.title}>
-                        Вход в систему
+                        {t('Вход в систему')}
                     </div>
                 </div>
                 <div>
                     <div className={classes.error}>{error}</div>
 
-                    <Field className={classes.loginForm} name="username" component={TextField} label="Логин" fullWidth={true} />
-                    <Field className={classes.loginForm} name="password" component={TextField} label="Пароль" type="password" fullWidth={true} />
-                    <div style={{margin: '20px 0'}}><Field name="rememberMe" component={CheckBox} label="Запомнить меня" className={classes.rememberMe} /></div>
+                    <Field className={classes.loginForm} name="username" component={TextField} label={t('Логин')} fullWidth={true} />
+                    <Field className={classes.loginForm} name="password" component={TextField} label={t('Пароль')} type="password" fullWidth={true} />
+                    <div style={{margin: '20px 0'}}><Field name="rememberMe" component={CheckBox} label={t('Запомнить меня')} className={classes.rememberMe} /></div>
 
                     <RaisedButton
                         type="submit"
-                        label="Войти"
+                        label={t('Войти')}
                         labelStyle={{fontSize: '13px'}}
                         primary={true}
                         fullWidth={true}

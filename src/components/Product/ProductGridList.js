@@ -23,42 +23,43 @@ import MenuItem from 'material-ui/MenuItem'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import Landscape from 'material-ui/svg-icons/image/landscape'
 import dateFormat from '../../helpers/dateFormat'
+import t from '../../helpers/translate'
 
 const listHeader = [
     {
         sorting: true,
         name: 'name',
-        title: 'Наименование',
+        title: t('Наименование'),
         xs: 3
     },
     {
         sorting: true,
         name: 'code',
-        title: 'Код товара',
+        title: t('Код товара'),
         xs: 2
     },
     {
         sorting: false,
         name: 'type',
-        title: 'Тип товара',
+        title: t('Тип товара'),
         xs: 2
     },
     {
         sorting: false,
         name: 'measurement',
-        title: 'Мера',
+        title: t('Мера'),
         xs: 1
     },
     {
         sorting: false,
         name: 'priority',
-        title: 'Порядок',
+        title: t('Порядок'),
         xs: 2
     },
     {
         sorting: true,
         name: 'created_date',
-        title: 'Дата создания',
+        title: t('Дата создания'),
         xs: 1
     }
 ]
@@ -115,11 +116,11 @@ const ProductGridList = enhance((props) => {
     const productList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const codeProduct = _.get(item, 'code') || 'не установлен'
+        const codeProduct = _.get(item, 'code') || t('не установлен')
         const type = _.get(item, ['type', 'name']) || 'N/A'
         const image = _.get(item, ['image', 'file'])
         const measurement = _.get(item, ['measurement', 'name']) || ''
-        const priority = _.get(item, 'priority') || 'не установлен'
+        const priority = _.get(item, 'priority') || t('не установлен')
         const createdDate = dateFormat(_.get(item, 'createdDate'))
         const iconButton = (
             <IconButton style={{padding: '0 12px'}}>
@@ -147,12 +148,12 @@ const ProductGridList = enhance((props) => {
                         anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                         targetOrigin={{horizontal: 'right', vertical: 'top'}}>
                         <MenuItem
-                            primaryText="Изменить"
+                            primaryText={t('Изменить')}
                             leftIcon={<Edit />}
                             onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}
                         />
                         <MenuItem
-                            primaryText="Удалить "
+                            primaryText={t('Удалить')}
                             leftIcon={<DeleteIcon />}
                             onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
                         />
@@ -173,7 +174,7 @@ const ProductGridList = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.PRODUCT_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Добавить продукт">
+                <Tooltip position="left" text={t('Добавить продукт')}>
                     <FloatingActionButton
                         mini={true}
                         zDepth={1}

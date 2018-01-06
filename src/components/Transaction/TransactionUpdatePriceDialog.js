@@ -15,6 +15,7 @@ import Loader from '../Loader'
 import {DivisionSearchField, PaymentTypeSearchField, UsersSearchField, CurrencySearchField} from '../ReduxForm'
 import getConfig from '../../helpers/getConfig'
 import {connect} from 'react-redux'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
@@ -65,7 +66,7 @@ const TransactionUpdatePriceDialog = enhance((props) => {
             contentStyle={loading ? {width: '400px'} : {width: '400px'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>Изменение транзакции</span>
+                <span>{t('Изменение транзакции')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -75,52 +76,52 @@ const TransactionUpdatePriceDialog = enhance((props) => {
                     <Loader size={0.75}/>
                 </div>
                 : <div className={classes.bodyContent}>
-                    <div style={{padding: '10px 30px'}}>Клиент: <strong>{_.get(client, 'name')}</strong></div>
+                    <div style={{padding: '10px 30px'}}>{t('Клиент')}: <strong>{_.get(client, 'name')}</strong></div>
                     <form onSubmit={onSubmit} className={classes.form}>
                         <div className={classes.inContent} style={{minHeight: '100px'}}>
                             <div style={{width: '100%'}}>
                                 <Field
                                     name="user"
                                     component={UsersSearchField}
-                                    label="Пользователь"
+                                    label={t('Пользователь')}
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
                                 <Field
                                     name="paymentType"
                                     component={PaymentTypeSearchField}
-                                    label="Тип оплаты"
+                                    label={t('Тип оплаты')}
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
                                 <Field
                                     name="amount"
                                     component={TextField}
-                                    label="Сумма"
+                                    label={t('Сумма')}
                                     normalize={normalizeNumber}
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
                                 {divisionStatus && <Field
                                     name="division"
                                     component={DivisionSearchField}
-                                    label="Организация"
+                                    label={t('Организация')}
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>}
                                 <Field
                                     name="currency"
                                     component={CurrencySearchField}
-                                    label="Валюта"
+                                    label={t('Валюта')}
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
                                 {(primaryCurrency !== chosenCurrency && chosenCurrency) && <Field
                                     name="custom_rate"
                                     component={TextField}
                                     className={classes.inputFieldCustom}
-                                    label="Курс"
+                                    label={t('Курс')}
                                     fullWidth={true}/>}
                                 <Field
                                     name="comment"
                                     style={{top: '-20px', lineHeight: '20px', fontSize: '13px'}}
                                     component={TextField}
-                                    label="Комментарий..."
+                                    label={t('Комментарий') + '...'}
                                     multiLine={true}
                                     rows={1}
                                     rowsMax={3}
@@ -129,7 +130,7 @@ const TransactionUpdatePriceDialog = enhance((props) => {
                         </div>
                         <div className={classes.bottomButton}>
                             <FlatButton
-                                label="Сохранить"
+                                label={t('Сохранить')}
                                 labelStyle={{fontSize: '13px'}}
                                 type="submit"
                             />

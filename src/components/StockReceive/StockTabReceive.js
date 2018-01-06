@@ -13,6 +13,7 @@ import CreateDialog from './StockReceiveCreateDialog'
 import TabReceiveFilterForm from './TabReceiveFilterForm'
 import GridList from '../GridList'
 import * as TAB from '../../constants/stockReceiveTab'
+import t from '../../helpers/translate'
 
 const ZERO = 0
 const RETURN = 3
@@ -99,31 +100,31 @@ const listHeader = [
     {
         name: 'id',
         sorting: true,
-        title: '№ заказа',
+        title: '№ ' + t('заказа'),
         xs: 2
     },
     {
         name: 'by',
         sorting: false,
-        title: 'От кого',
+        title: t('От кого'),
         xs: 4
     },
     {
         name: 'type',
         sorting: false,
-        title: 'Тип',
+        title: t('Тип'),
         xs: 2
     },
     {
         sorting: true,
         name: 'date',
-        title: 'Дата приемки',
+        title: t('Дата приемки'),
         xs: 2
     },
     {
         name: 'stock',
         sorting: false,
-        title: 'Склад',
+        title: t('Склад'),
         xs: 2
     }
 ]
@@ -131,37 +132,37 @@ const listHeaderHistory = [
     {
         name: 'id',
         sorting: true,
-        title: '№ заказа',
+        title: '№ ' + t('заказа'),
         xs: 2
     },
     {
         name: 'by',
         sorting: false,
-        title: 'От кого',
+        title: t('От кого'),
         xs: 2
     },
     {
         name: 'type',
         sorting: false,
-        title: 'Тип',
+        title: t('Тип'),
         xs: 2
     },
     {
         sorting: true,
         name: 'date',
-        title: 'Дата приемки',
+        title: t('Дата приемки'),
         xs: 2
     },
     {
         sorting: true,
         name: 'acceptedBy',
-        title: 'Принял',
+        title: t('Принял'),
         xs: 2
     },
     {
         name: 'stock',
         sorting: false,
-        title: 'Склад',
+        title: t('Склад'),
         xs: 1
     }
 ]
@@ -211,8 +212,8 @@ const StockTabReceive = enhance((props) => {
         const formattedType = stockTypeFormat(type)
         const acceptedBy = _.get(item, ['acceptedBy', 'firstName']) && _.get(item, ['acceptedBy', 'secondName'])
             ? _.get(item, ['acceptedBy', 'firstName']) + ' ' + _.get(item, ['acceptedBy', 'secondName'])
-            : 'Не указано'
-        const acceptedTime = _.get(item, 'acceptedTime') ? dateFormat(_.get(item, 'acceptedTime')) : 'Не указана'
+            : t('Не указано')
+        const acceptedTime = _.get(item, 'acceptedTime') ? dateFormat(_.get(item, 'acceptedTime')) : t('Не указана')
         const date = _.get(item, 'date') ? dateFormat(_.get(item, 'date')) : 'Не указана'
         const stockName = _.get(item, ['stock', 'name'])
         const key = (type === 'delivery_return') ? orderId : id

@@ -8,6 +8,7 @@ import Loader from '../../Loader'
 import IconButton from 'material-ui/IconButton'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import OrderDetails from '../../Order/OrderDetails'
+import t from '../../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -163,7 +164,7 @@ const StatSaleDialog = enhance((props) => {
                 : <div>
                     <div className={classes.titleContent}>
                         <div>
-                            <div>Заказ №{id}</div>
+                            <div>{t('Заказ')} №{id}</div>
                         </div>
                         <IconButton onTouchTap={onClose}>
                             <CloseIcon color="#666666"/>

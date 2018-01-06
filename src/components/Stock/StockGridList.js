@@ -18,6 +18,7 @@ import ContentAdd from 'material-ui/svg-icons/content/add'
 import Tooltip from '../ToolTip'
 import Edit from 'material-ui/svg-icons/image/edit'
 import dateFormat from '../../helpers/dateFormat'
+import t from '../../helpers/translate'
 
 const listHeader = [
     {
@@ -30,19 +31,19 @@ const listHeader = [
         sorting: true,
         name: 'name',
         xs: 5,
-        title: 'Наименование'
+        title: t('Наименование')
     },
     {
         sorting: true,
         name: 'stockType',
         xs: 3,
-        title: 'Тип склада'
+        title: t('Тип склада')
     },
     {
         sorting: true,
         xs: 2,
         name: 'createdDate',
-        title: 'Дата создания'
+        title: t('Дата создания')
     },
     {
         sorting: false,
@@ -151,7 +152,7 @@ const StockGridList = enhance((props) => {
     const stockList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const stockType = _.get(item, 'stockType') === BASIC_STOCK ? 'Основной' : 'Производственный'
+        const stockType = _.get(item, 'stockType') === BASIC_STOCK ? t('Основной') : t('Производственный')
         const createdDate = dateFormat(_.get(item, 'createdDate'))
         return (
             <Row key={id} className={classes.listRow}>
@@ -161,7 +162,7 @@ const StockGridList = enhance((props) => {
                 <Col xs={2}>{createdDate}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
                     <div className={classes.iconBtn}>
-                        <Tooltip position="bottom" text="Изменить">
+                        <Tooltip position="bottom" text={t('Изменить')}>
                             <IconButton
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
@@ -171,7 +172,7 @@ const StockGridList = enhance((props) => {
                                 <Edit />
                             </IconButton>
                         </Tooltip>
-                        <Tooltip position="bottom" text="Удалить">
+                        <Tooltip position="bottom" text={t('Удалить')}>
                             <IconButton
                                 disableTouchRipple={true}
                                 iconStyle={iconStyle.icon}
@@ -199,7 +200,7 @@ const StockGridList = enhance((props) => {
                 backgroundColor="#fff"
                 labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb'}}
                 className={classes.addButton}
-                label="добавить склад"
+                label={t('добавить склад')}
                 onTouchTap={createDialog.handleOpenCreateDialog}
                 icon={<ContentAdd color="#12aaeb"/>}>
             </FlatButton>

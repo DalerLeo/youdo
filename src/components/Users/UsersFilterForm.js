@@ -12,6 +12,7 @@ import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import {ManufactureSearchField, UsersGroupSearchField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
+import t from '../../helpers/translate'
 
 export const USERS_FILTER_OPEN = 'openFilterDialog'
 
@@ -120,7 +121,7 @@ const UsersFilterForm = enhance((props) => {
             return (
                 <div className={classes.afterFilter}>
                     {addButton}
-                    <div>Фильтр: {filterCounts} элемента</div>
+                    <div>{t('Фильтр')}: {filterCounts} {t('элемента')}</div>
                     <div>
                         <IconButton onTouchTap={filterDialog.handleOpenFilterDialog}>
                             <BorderColorIcon color="#8f8f8f" />
@@ -139,7 +140,7 @@ const UsersFilterForm = enhance((props) => {
                     className={classes.arrow}
                     onTouchTap={filterDialog.handleOpenFilterDialog}>
                     <div style={{display: 'flex'}}>
-                        <span>Показать фильтр</span>
+                        <span>{t('Показать фильтр')}</span>
                         <KeyboardArrowDown color="#12aaeb" />
                     </div>
                 </Link>
@@ -159,10 +160,10 @@ const UsersFilterForm = enhance((props) => {
                 </div>
                 <form onSubmit={filterDialog.handleSubmitFilterDialog}>
                     <div>
-                        <Field className={classes.inputFieldCustom} name="manufacture" component={ManufactureSearchField} label="Производство" fullWidth={true}/>
+                        <Field className={classes.inputFieldCustom} name="manufacture" component={ManufactureSearchField} label={t('Производство')} fullWidth={true}/>
                     </div>
                     <div>
-                        <Field className={classes.inputFieldCustom} name="group" component={UsersGroupSearchField} label="Принадлежность к группе" fullWidth={true}/>
+                        <Field className={classes.inputFieldCustom} name="group" component={UsersGroupSearchField} label={t('Принадлежность к группе')} fullWidth={true}/>
                     </div>
 
                     <RaisedButton
@@ -170,7 +171,7 @@ const UsersFilterForm = enhance((props) => {
                         primary={true}
                         buttonStyle={{color: '#fff'}}
                         labelStyle={{fontSize: '13px'}}
-                        label="Применить"
+                        label={t('Применить')}
                         style={{marginTop: '15px'}}>
                     </RaisedButton>
                 </form>

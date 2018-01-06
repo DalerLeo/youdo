@@ -15,6 +15,7 @@ import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import dateFormat from '../../helpers/dateFormat'
 import moduleFormat from '../../helpers/moduleFormat'
 import IconButton from 'material-ui/IconButton'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -188,13 +189,13 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                     <div className={classes.tabContent}>
                         <div className={classes.tabWrapper}>
                             <Row className="dottedList">
-                                <Col xs={4}>Товар</Col>
-                                <Col xs={1}>Кол-во</Col>
-                                <Col xs={1}>Принято</Col>
-                                <Col xs={1}>Брак</Col>
-                                <Col xs={1}>Недостача</Col>
-                                <Col xs={2} style={{textAlign: 'right'}}>Стоимость</Col>
-                                <Col xs={2} style={{textAlign: 'right'}}>Итог</Col>
+                                <Col xs={4}>{t('Товар')}</Col>
+                                <Col xs={1}>{t('Кол-во')}</Col>
+                                <Col xs={1}>{t('Принято')}</Col>
+                                <Col xs={1}>{t('Брак')}</Col>
+                                <Col xs={1}>{t('Недостача')}</Col>
+                                <Col xs={2} style={{textAlign: 'right'}}>{t('Стоимость')}</Col>
+                                <Col xs={2} style={{textAlign: 'right'}}>{t('Итог')}</Col>
                             </Row>
 
                             {_.map(products, (item) => {
@@ -234,7 +235,7 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                             })}
                         </div>
                         <Row className={classes.summary}>
-                            <Col xs={4}>Итого:</Col>
+                            <Col xs={4}>{t('Итого')}:</Col>
                             <Col xs={1}>{numberFormat(wholeAmount, wholeMeasurement)}</Col>
                             <Col xs={1}>{numberFormat(wholePostedAmount, wholeMeasurement)}</Col>
                             <Col xs={1}>{numberFormat(wholeDefectAmount, wholeMeasurement)}</Col>
@@ -247,16 +248,16 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                     </div>
                 </Tab>
 
-                <Tab label="Доп. расходы" value={TAB.SUPPLY_TAB_EXPENSES} disableTouchRipple={true}>
+                <Tab label={t('Доп. расходы')} value={TAB.SUPPLY_TAB_EXPENSES} disableTouchRipple={true}>
                     {!_.isEmpty(_.get(expensesListData, 'data'))
                         ? <div className={classes.tabContent}>
                             {!_.get(expensesListData, 'supplyExpenseListLoading') ? <div className={classes.tabWrapper}>
                                     <Row className="dottedList">
                                         <Col xs={2}>Описание</Col>
-                                        <Col xs={3} style={{textAlign: 'left'}}>Продукт</Col>
-                                        <Col xs={2} style={{textAlign: 'left'}}>Тип оплаты</Col>
-                                        <Col xs={2} style={{textAlign: 'right'}}>Сумма</Col>
-                                        <Col xs={2} style={{textAlign: 'right'}}>Оплачено</Col>
+                                        <Col xs={3} style={{textAlign: 'left'}}>{t('Продукт')}</Col>
+                                        <Col xs={2} style={{textAlign: 'left'}}>{t('Тип оплаты')}</Col>
+                                        <Col xs={2} style={{textAlign: 'right'}}>{t('Сумма')}</Col>
+                                        <Col xs={2} style={{textAlign: 'right'}}>{t('Оплачено')}</Col>
                                     </Row>
                                     {
                                         _.map(_.get(expensesListData, 'data'), (item) => {
@@ -299,19 +300,19 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                             }
                         </div>
                         : (!returnDataLoading && <div className={classes.emptyQuery}>
-                            <div>В данной поставке нет дополнительных раходов</div>
+                            <div>{t('В данной поставке нет дополнительных раходов')}</div>
                         </div>)}
                 </Tab>
-                <Tab label="Оплаты" value={TAB.SUPPLY_TAB_PAID} disableTouchRipple={true}>
+                <Tab label={t('Оплаты')} value={TAB.SUPPLY_TAB_PAID} disableTouchRipple={true}>
                     {!_.isEmpty(_.get(paidData, 'data'))
                         ? <div>
                             {!_.get(paidData, 'loading') ? <div>
                                     <div className={classes.listRow}>
                                         <div style={{flexBasis: '10%', maxWidth: '10%'}}>№</div>
-                                        <div style={{flexBasis: '22%', maxWidth: '24%'}}>Касса</div>
-                                        <div style={{flexBasis: '30%', maxWidth: '30%'}}>Описание</div>
-                                        <div style={{flexBasis: '18%', maxWidth: '18%'}}>Дата</div>
-                                        <div style={{flexBasis: '20%', maxWidth: '20%', textAlign: 'right'}}>Сумма</div>
+                                        <div style={{flexBasis: '22%', maxWidth: '24%'}}>{t('Касса')}</div>
+                                        <div style={{flexBasis: '30%', maxWidth: '30%'}}>{t('Описание')}</div>
+                                        <div style={{flexBasis: '18%', maxWidth: '18%'}}>{t('Дата')}</div>
+                                        <div style={{flexBasis: '20%', maxWidth: '20%', textAlign: 'right'}}>{t('Сумма')}</div>
                                     </div>
                                     {_.map(_.get(paidData, 'data'), (item) => {
                                         const idItem = _.get(item, 'id')
@@ -372,7 +373,7 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                             }
                         </div>
                         : (!returnDataLoading && <div className={classes.emptyQuery}>
-                            <div>В данной поставке не произведено оплат</div>
+                            <div>{t('В данной поставке не произведено оплат')}</div>
                         </div>)}
                 </Tab>
             </Tabs>

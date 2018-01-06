@@ -4,6 +4,7 @@ import {compose} from 'recompose'
 import NotFoundBg from '../../components/Images/page-not-found.png'
 import * as ROUTES from '../../constants/routes'
 import {Link} from 'react-router'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -63,10 +64,10 @@ const NotFound = enhance((props) => {
                 </div>
 
                 <div className={classes.text}>
-                    <h1>404 <span>ошибка</span></h1>
-                    <p>Запрашиваемая страница не найдена</p>
-                    <p>Вернуться на <Link to={{
-                        pathname: ROUTES.DASHBOARD_URL}}>главную</Link>
+                    <h1>404 <span>{t('ошибка')}</span></h1>
+                    <p>{t('Запрашиваемая страница не найдена')}</p>
+                    <p>{t('Вернуться на')} <Link to={{
+                        pathname: ROUTES.DASHBOARD_URL}}>{t('главную')}</Link>
                     </p>
                 </div>
             </div>

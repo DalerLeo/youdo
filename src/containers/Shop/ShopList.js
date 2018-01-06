@@ -37,6 +37,7 @@ import {
 } from '../../actions/shop'
 import {openErrorAction} from '../../actions/error'
 import {openSnackbarAction} from '../../actions/snackbar'
+import t from '../../helpers/translate'
 
 const ZERO = 0
 const ONE = 1
@@ -128,10 +129,10 @@ const enhance = compose(
                 .then(() => {
                     setOpenConfirmDialog(false)
                     dispatch(shopListFetchAction(filter))
-                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно удалено')}))
                 })
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
+                    return dispatch(openSnackbarAction({message: t('Ошибка при удалении')}))
                 })
         },
 
@@ -168,10 +169,10 @@ const enhance = compose(
                 .then(() => {
                     setOpenDeleteImage(false)
                     dispatch(shopItemFetchAction(shopId))
-                    return dispatch(openSnackbarAction({message: 'Изображение успешно удалено'}))
+                    return dispatch(openSnackbarAction({message: t('Изображение успешно удалено')}))
                 })
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
+                    return dispatch(openSnackbarAction({message: t('Ошибка при удалении')}))
                 })
         },
 
@@ -228,7 +229,7 @@ const enhance = compose(
             const {location: {pathname}, dispatch, createForm, mapLocation, filter} = props
             return dispatch(shopCreateAction(_.get(createForm, ['values']), mapLocation, newClient))
                 .then(() => {
-                    dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[SHOP_CREATE_DIALOG_OPEN]: false})})
@@ -289,7 +290,7 @@ const enhance = compose(
 
             return dispatch(imageCreateAction(imageId, shopId))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Фотография добавлена'}))
+                    return dispatch(openSnackbarAction({message: t('Фотография добавлена')}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[ADD_PHOTO_DIALOG_OPEN]: false})})
@@ -356,7 +357,7 @@ const enhance = compose(
                         })
                 })
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push(filter.createURL({[SHOP_UPDATE_DIALOG_OPEN]: false}))

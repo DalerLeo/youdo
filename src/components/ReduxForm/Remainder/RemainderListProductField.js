@@ -22,6 +22,7 @@ import {RemainderProductTypeSearchField} from '../index'
 import TextField from '../Basic/TextField'
 import EditIcon from 'material-ui/svg-icons/editor/mode-edit'
 import numberFormat from '../../../helpers/numberFormat'
+import t from '../../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -286,7 +287,7 @@ const RemainderListProductField = ({classes, handleAdd, handleRemove, measuremen
                 <Row className={classes.background}>
                     <Col xs={3}>
                         <Field
-                            label="Тип товара"
+                            label={t('Тип товара')}
                             name="productType"
                             className={classes.searchFieldCustom}
                             fullWidth={true}
@@ -297,7 +298,7 @@ const RemainderListProductField = ({classes, handleAdd, handleRemove, measuremen
 
                     <Col xs={4}>
                         <ProductCustomSearchField
-                            label="Наименование"
+                            label={t('Наименование')}
                             className={classes.searchFieldCustom}
                             fullWidth={true}
                             {..._.get(defaultProps, 'product')}
@@ -305,7 +306,7 @@ const RemainderListProductField = ({classes, handleAdd, handleRemove, measuremen
                     </Col>
                     <Col xs={2}>
                         <TextField
-                            label="Кол-во"
+                            label={t('Кол-во')}
                             fullWidth={true}
                             {..._.get(defaultProps, 'amount')}
                         />
@@ -313,7 +314,7 @@ const RemainderListProductField = ({classes, handleAdd, handleRemove, measuremen
                     </Col>
                     <Col xs={2}>
                         <TextField
-                            label="Брак"
+                            label={t('Брак')}
                             fullWidth={true}
                             {..._.get(defaultProps, 'defect')}
                         />
@@ -321,7 +322,7 @@ const RemainderListProductField = ({classes, handleAdd, handleRemove, measuremen
                     </Col>
                     <Col xs={1}>
                         <IconButton
-                            label="Применить"
+                            label={t('Применить')}
                             onTouchTap={handleAdd}>
                             <Check color="#12aaeb"/>
                         </IconButton>
@@ -342,8 +343,8 @@ const RemainderListProductField = ({classes, handleAdd, handleRemove, measuremen
                         className={classes.title}>
                         <TableRow className={classes.tableRowHead}>
                             <TableHeaderColumn
-                                className={classes.tableTitle}>Наименование</TableHeaderColumn>
-                            <TableHeaderColumn className={classes.tableTitle}>Брак</TableHeaderColumn>
+                                className={classes.tableTitle}>{t('Наименование')}</TableHeaderColumn>
+                            <TableHeaderColumn className={classes.tableTitle}>{t('Брак')}</TableHeaderColumn>
                             <TableHeaderColumn className={classes.tableTitle}>ОК</TableHeaderColumn>
                             <TableHeaderColumn style={{display: 'none'}}>.</TableHeaderColumn>
                         </TableRow>

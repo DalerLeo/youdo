@@ -17,6 +17,7 @@ import getConfig from '../../../helpers/getConfig'
 import numberFormat from '../../../helpers/numberFormat'
 import dateTimeFormat from '../../../helpers/dateTimeFormat'
 import NotFound from '../../Images/not-found.png'
+import t from '../../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -169,7 +170,7 @@ const StatAgentDialog = enhance((props) => {
         const id = _.get(item, 'id')
         const market = _.get(item, ['market', 'name'])
         const totalPrice = _.get(item, 'totalPrice')
-        const paymentType = _.get(item, 'paymentType') === 'cash' ? 'Наличные' : 'Перечисление'
+        const paymentType = _.get(item, 'paymentType') === 'cash' ? t('Наличные') : t('Перечисление')
         const createdDate = dateTimeFormat(_.get(item, 'createdDate'))
 
         return (
@@ -210,20 +211,20 @@ const StatAgentDialog = enhance((props) => {
                     </div>
                     <div className={classes.content}>
                         <div className={classes.titleSummary}>
-                            <div>Период: <strong>{beginDate} - {endDate}</strong></div>
-                            <div>Сумма: <strong>{salesSummary}</strong></div>
+                            <div>{t('Период')}: <strong>{beginDate} - {endDate}</strong></div>
+                            <div>{t('Сумма')}: <strong>{salesSummary}</strong></div>
                         </div>
                         <div className={classes.tableWrapper}>
                             <Row className="dottedList">
-                                <Col xs={2}>№ заказа</Col>
-                                <Col xs={4}>Магазин</Col>
-                                <Col xs={2}>Дата</Col>
-                                <Col xs={2} style={{textAlign: 'right'}}>Тип оплаты</Col>
-                                <Col xs={2}>Сумма</Col>
+                                <Col xs={2}>№ {t('заказа')}</Col>
+                                <Col xs={4}>{t('Магазин')}</Col>
+                                <Col xs={2}>{t('Дата')}</Col>
+                                <Col xs={2} style={{textAlign: 'right'}}>{t('Тип оплаты')}</Col>
+                                <Col xs={2}>{t('Сумма')}</Col>
                             </Row>
                             {_.isEmpty(orderList)
                                 ? <div className={classes.emptyQuery}>
-                                    <div>У данного агента в этом периоде нет заказов</div>
+                                    <div>{t('У данного агента в этом периоде нет заказов')}</div>
                                 </div>
                                 : orderList}
                         </div>

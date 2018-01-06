@@ -21,6 +21,7 @@ import {
 } from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
+import t from '../../helpers/translate'
 
 export const SUPPLY_FILTER_OPEN = 'openFilterDialog'
 
@@ -137,7 +138,7 @@ const SupplyFilterForm = enhance((props) => {
         if (filterCounts) {
             return (
                 <div className={classes.afterFilter}>
-                    <div>Фильтр: {filterCounts} элемента</div>
+                    <div>{t('Фильтр')}: {filterCounts} {t('элемента')}</div>
                     <div>
                         <IconButton onTouchTap={filterDialog.handleOpenFilterDialog}>
                             <BorderColorIcon color="#8f8f8f" />
@@ -155,7 +156,7 @@ const SupplyFilterForm = enhance((props) => {
                 <Link
                     className={classes.arrow}
                     onTouchTap={filterDialog.handleOpenFilterDialog}>
-                    <div>Показать фильтр <KeyboardArrowDown color="#12aaeb" /></div>
+                    <div>{t('Показать фильтр')} <KeyboardArrowDown color="#12aaeb" /></div>
                 </Link>
             </div>
         )
@@ -172,19 +173,19 @@ const SupplyFilterForm = enhance((props) => {
                 </div>
                 <form onSubmit={handleSubmit(filterDialog.handleSubmitFilterDialog)}>
                     <div>
-                        <Field className={classes.inputFieldCustom} name="provider" component={ProviderMultiSearchField} label="Поставщик"/>
-                        <Field className={classes.inputFieldCustom} name="stock" component={StockMultiSearchField} label="Склад"/>
-                        <Field className={classes.inputFieldCustom} name="product" component={ProductMultiSearchField} label="Товар"/>
-                        <Field className={classes.inputFieldCustom} name="division" component={DivisionMultiSearchField} label="Организация"/>
-                        <Field className={classes.inputFieldCustom} name="paymentType" component={PaymentTypeSearchField} label="Тип оплаты"/>
-                        <Field className={classes.inputFieldCustom} name="status" component={SupplyTypeMultiSearchField} label="Тип"/>
-                        <Field className={classes.inputFieldCustom} name="contract" component={TextField} label="Номер договора"/>
+                        <Field className={classes.inputFieldCustom} name="provider" component={ProviderMultiSearchField} label={t('Поставщик')}/>
+                        <Field className={classes.inputFieldCustom} name="stock" component={StockMultiSearchField} label={t('Склад')}/>
+                        <Field className={classes.inputFieldCustom} name="product" component={ProductMultiSearchField} label={t('Товар')}/>
+                        <Field className={classes.inputFieldCustom} name="division" component={DivisionMultiSearchField} label={t('Организация')}/>
+                        <Field className={classes.inputFieldCustom} name="paymentType" component={PaymentTypeSearchField} label={t('Тип оплаты')}/>
+                        <Field className={classes.inputFieldCustom} name="status" component={SupplyTypeMultiSearchField} label={t('Тип')}/>
+                        <Field className={classes.inputFieldCustom} name="contract" component={TextField} label={t('Номер договора')}/>
                     </div>
                     <div>
-                        <Field className={classes.inputFieldCustom} name="dateDelivery" component={DateToDateField} label="Дата поставки" fullWidth={true}/>
+                        <Field className={classes.inputFieldCustom} name="dateDelivery" component={DateToDateField} label={t('Дата поставки')} fullWidth={true}/>
                     </div>
                     <div>
-                        <Field className={classes.inputFieldCustom} name="dateCreated" component={DateToDateField} label="Дата создания" fullWidth={true}/>
+                        <Field className={classes.inputFieldCustom} name="dateCreated" component={DateToDateField} label={t('Дата создания')} fullWidth={true}/>
                     </div>
                     <RaisedButton
                         type="submit"

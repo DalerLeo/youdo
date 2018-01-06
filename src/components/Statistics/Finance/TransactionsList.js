@@ -13,6 +13,7 @@ import dateFormat from '../../../helpers/dateFormat'
 import numberFormat from '../../../helpers/numberFormat'
 import NotFound from '../../Images/not-found.png'
 import {TransactionsFormat} from '../../Transaction'
+import t from '../../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -114,10 +115,10 @@ const TransactionsList = enhance((props) => {
     const headers = (
         <Row style={headerStyle} className="dottedList">
             <Col xs={1}>№</Col>
-            <Col xs={2}>Касса</Col>
-            <Col xs={2}>Дата</Col>
-            <Col xs={4}>Описание</Col>
-            <Col xs={3}>Сумма</Col>
+            <Col xs={2}>{t('Касса')}</Col>
+            <Col xs={2}>{t('Дата')}</Col>
+            <Col xs={4}>{t('Описание')}</Col>
+            <Col xs={3}>{t('Сумма')}</Col>
         </Row>
     )
 
@@ -168,13 +169,13 @@ const TransactionsList = enhance((props) => {
     return (
         <div>
             <div className={classes.pagination}>
-                <div><b>Транзакции</b></div>
+                <div><b>{t('Транзакции')}</b></div>
                 <form onSubmit={handleSubmit(handleSubmitFilterDialog)}>
                     <Field
                         className={classes.inputFieldCustom}
                         name="search"
                         component={TextField}
-                        hintText="Поиск"/>
+                        hintText={t('Поиск')}/>
                 </form>
                 <Pagination filter={filter}/>
             </div>
@@ -187,7 +188,7 @@ const TransactionsList = enhance((props) => {
             : <div className={classes.tableWrapper}>
                 {_.isEmpty(list) && !loading
                     ? <div className={classes.emptyQuery}>
-                        <div>По вашему запросу ничего не найдено</div>
+                        <div>{t('По вашему запросу ничего не найдено')}</div>
                     </div>
                     : <div>
                         {headers}

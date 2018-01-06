@@ -18,6 +18,7 @@ import Tooltip from '../ToolTip'
 import InventoryDialog from './InventoryDialog'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/communication/clear-all'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -72,25 +73,25 @@ const headerItems = [
     {
         name: 'stock',
         sorting: true,
-        title: 'Склад',
+        title: t('Склад'),
         xs: 3
     },
     {
         name: 'createdBy',
         sorting: false,
-        title: 'Создал',
+        title: t('Создал'),
         xs: 3
     },
     {
         sorting: true,
         name: 'createdDate',
-        title: 'Дата создания',
+        title: t('Дата создания'),
         xs: 2
     },
     {
         sorting: true,
         name: 'comment',
-        title: 'Комментарий',
+        title: t('Комментарий'),
         xs: 4
     }
 ]
@@ -126,7 +127,7 @@ const InventoryGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const stock = _.get(item, ['stock', 'name'])
         const createdDate = dateFormat(_.get(item, 'createdDate'))
-        const comment = _.get(item, 'comment') || 'Комментариев нет'
+        const comment = _.get(item, 'comment') || t('Комментариев нет')
         const createdBy = _.get(item, ['createdBy', 'firstName']) + ' ' + _.get(item, ['createdBy', 'secondName'])
         return (
             <Row key={id} className={classes.listRow}>
@@ -153,7 +154,7 @@ const InventoryGridList = enhance((props) => {
             <SubMenu url={ROUTES.INVENTORY_LIST_URL}/>
 
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Инвентаризация">
+                <Tooltip position="left" text={t('Инвентаризация')}>
                     <FloatingActionButton
                         mini={true}
                         zDepth={1}

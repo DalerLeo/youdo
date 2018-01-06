@@ -18,6 +18,8 @@ import ConfirmDialog from '../ConfirmDialog'
 import SettingSideMenu from '../Settings/SettingsSideMenu'
 import Tooltip from '../ToolTip'
 import dateFormat from '../../helpers/dateFormat'
+import t from '../../helpers/translate'
+
 const listHeader = [
     {
         sorting: true,
@@ -29,13 +31,13 @@ const listHeader = [
         sorting: true,
         name: 'name',
         xs: 5,
-        title: 'Наименование'
+        title: t('Наименование')
     },
     {
         sorting: true,
         xs: 4,
         name: 'createdDate',
-        title: 'Дата создания'
+        title: t('Дата создания')
     },
     {
         sorting: true,
@@ -163,7 +165,7 @@ const PriceListSettingGridList = enhance((props) => {
                 <Col xs={4}>{createdDate}</Col>
                 <Col xs={1} className={classes.right}>
                     <div className={classes.iconBtn}>
-                        <Tooltip position="bottom" text="Изменить">
+                        <Tooltip position="bottom" text={t('Изменить')}>
                             <IconButton
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
@@ -173,7 +175,7 @@ const PriceListSettingGridList = enhance((props) => {
                                 <Edit />
                             </IconButton>
                         </Tooltip>
-                        <Tooltip position="bottom" text="Удалить">
+                        <Tooltip position="bottom" text={t('Удалить')}>
                             <IconButton
                                 disableTouchRipple={true}
                                 iconStyle={iconStyle.icon}
@@ -201,7 +203,7 @@ const PriceListSettingGridList = enhance((props) => {
                 backgroundColor="#fff"
                 labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb', fontSize: '13px'}}
                 className={classes.addButton}
-                label="добавить прайс лист"
+                label={t('добавить прайс лист')}
                 onTouchTap={createDialog.handleOpenCreateDialog}
                 icon={<ContentAdd color="#12aaeb"/>}>
             </FlatButton>

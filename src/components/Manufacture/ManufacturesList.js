@@ -12,7 +12,7 @@ import Glue from '../CustomIcons/Manufacture/Glue.svg'
 import Carving from '../CustomIcons/Manufacture/Carving.svg'
 import Tape from '../CustomIcons/Manufacture/Tape.svg'
 import Manufacture from '../CustomIcons/Manufacture/Manufacture.svg'
-
+import t from '../../helpers/translate'
 const enhance = compose(
     injectSheet({
         loader: {
@@ -104,7 +104,7 @@ const ManufacturesList = enhance((props) => {
 
     return (
         <div className={classes.productionLeftSide}>
-            <h2>Этапы производства</h2>
+            <h2>{t('Этапы производства')}</h2>
             <Paper zDepth={1} style={{height: 'calc(100% - 58px)', position: 'relative'}}>
                 {_.get(listData, 'listLoading')
                     ? <div className={classes.loader}>

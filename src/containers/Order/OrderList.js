@@ -18,26 +18,6 @@ import * as ORDER_TAB from '../../constants/orderTab'
 import * as serializers from '../../serializers/orderSerializer'
 import * as API from '../../constants/api'
 import {openErrorAction} from '../../actions/error'
-
-import {
-    ORDER_CREATE_DIALOG_OPEN,
-    ORDER_UPDATE_DIALOG_OPEN,
-    ORDER_FILTER_KEY,
-    ORDER_FILTER_OPEN,
-    ORDER_TRANSACTIONS_DIALOG_OPEN,
-    ORDER_ITEM_RETURN_DIALOG_OPEN,
-    ORDER_RETURN_DIALOG_OPEN,
-    ORDER_SHORTAGE_DIALOG_OPEN,
-    ORDER_MULTI_EDIT_OPEN,
-    ORDER_RELEASE_DIALOG_OPEN,
-    TAB,
-    OrderGridList,
-    OrderPrint,
-    OrderSalesPrint,
-    OrderContractPrint
-} from '../../components/Order'
-const CLIENT_CREATE_DIALOG_OPEN = 'openCreateDialog'
-const CANCEL_ORDER_RETURN_DIALOG_OPEN = 'openCancelConfirmDialog'
 import {
     orderCreateAction,
     orderUpdateAction,
@@ -61,8 +41,28 @@ import {
 } from '../../actions/order'
 import {openSnackbarAction} from '../../actions/snackbar'
 import updateStore from '../../helpers/updateStore'
-
 import {shopItemFetchAction} from '../../actions/shop'
+import {
+    ORDER_CREATE_DIALOG_OPEN,
+    ORDER_UPDATE_DIALOG_OPEN,
+    ORDER_FILTER_KEY,
+    ORDER_FILTER_OPEN,
+    ORDER_TRANSACTIONS_DIALOG_OPEN,
+    ORDER_ITEM_RETURN_DIALOG_OPEN,
+    ORDER_RETURN_DIALOG_OPEN,
+    ORDER_SHORTAGE_DIALOG_OPEN,
+    ORDER_MULTI_EDIT_OPEN,
+    ORDER_RELEASE_DIALOG_OPEN,
+    TAB,
+    OrderGridList,
+    OrderPrint,
+    OrderSalesPrint,
+    OrderContractPrint
+} from '../../components/Order'
+import t from '../../helpers/translate'
+
+const CLIENT_CREATE_DIALOG_OPEN = 'openCreateDialog'
+const CANCEL_ORDER_RETURN_DIALOG_OPEN = 'openCancelConfirmDialog'
 const MINUS_ONE = -1
 const ZERO = 0
 const TWO = 2
@@ -331,7 +331,7 @@ const enhance = compose(
 
     withPropsOnChange((props, nextProps) => {
         return props.openAddProductDialog !== nextProps.openAddProductDialog && nextProps.openAddProductDialog
-    }, ({dispatch, createForm, openAddProductDialog, filterProducts, setOpenAddProductConfirm, editProducts}) => {
+    }, ({dispatch, createForm, openAddProductDialog, filterProducts, setOpenAddProductConfirm}) => {
         const priceList = _.get(createForm, ['values', 'priceList', 'value'])
         const currency = _.get(createForm, ['values', 'currency', 'value'])
         if (openAddProductDialog) {
@@ -416,10 +416,10 @@ const enhance = compose(
                     setOpenConfirmDialog(false)
                     dispatch(orderListFetchAction(filter))
                     dispatch(orderItemFetchAction(detail.id))
-                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно удалено')}))
                 })
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
+                    return dispatch(openSnackbarAction({message: t('Ошибка при удалении')}))
                 })
         },
 
@@ -497,7 +497,7 @@ const enhance = compose(
 
             return dispatch(orderCreateAction(_.get(createForm, ['values'])))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push({pathname,
@@ -548,7 +548,7 @@ const enhance = compose(
             const orderId = _.toInteger(_.get(params, 'orderId'))
             return dispatch(orderReturnAction(_.get(returnForm, ['values']), detail))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[ORDER_RETURN_DIALOG_OPEN]: false})})
@@ -576,7 +576,7 @@ const enhance = compose(
             const orderId = _.toInteger(_.get(params, 'orderId'))
             return dispatch(orderReturnCancelAction(orderReturnId))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно отменена'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно отменена')}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[CANCEL_ORDER_RETURN_DIALOG_OPEN]: false})})
@@ -626,7 +626,7 @@ const enhance = compose(
                     })
                 })
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push({pathname,
@@ -657,7 +657,7 @@ const enhance = compose(
 
             return dispatch(orderMultiUpdateAction(_.get(multiUpdateForm, 'values'), orders))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Выбранные заказы успешно изменены'}))
+                    return dispatch(openSnackbarAction({message: t('Выбранные заказы успешно изменены')}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[ORDER_MULTI_EDIT_OPEN]: false})})
@@ -745,7 +745,7 @@ const enhance = compose(
             const {dispatch, discountCreateForm} = props
             return dispatch(orderSetDiscountAction(id, _.get(discountCreateForm, ['values', 'percent'])))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Скидка добавлена'}))
+                    return dispatch(openSnackbarAction({message: t('Скидка добавлена')}))
                 })
                 .then(() => {
                     return dispatch(orderItemFetchAction(id))
@@ -759,7 +759,7 @@ const enhance = compose(
             const {dispatch} = props
             return dispatch(orderSetDiscountAction(id, ZERO))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Скидка отменена'}))
+                    return dispatch(openSnackbarAction({message: t('Скидка отменена')}))
                 })
                 .then(() => {
                     return dispatch(orderItemFetchAction(id))
@@ -800,7 +800,7 @@ const enhance = compose(
             })
             return dispatch(orderMultiUpdateAction(_.get(releaseForm, 'values'), orders, true))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Выбранные заказы успешно сформированы'}))
+                    return dispatch(openSnackbarAction({message: t('Выбранные заказы успешно сформированы')}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[ORDER_RELEASE_DIALOG_OPEN]: false})})

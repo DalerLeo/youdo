@@ -9,6 +9,7 @@ import {TextField, normalizeDiscount} from '../ReduxForm'
 import Paper from 'material-ui/Paper'
 import toCamelCase from '../../helpers/toCamelCase'
 import numberFormat from '../../helpers/numberFormat'
+import t from '../../helpers/translate'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -91,7 +92,7 @@ const OrderSetDiscountDialog = enhance((props) => {
                     floatingLabelStyle={{right: 0, transformOrigin: 'right top 0'}}
                     hintStyle={{bottom: 10, right: 0}}
                     normalize={normalizeDiscount}
-                    label="Размер скидки"
+                    label={t('Размер скидки')}
                     className={classes.inputFieldCustom}
 
                 /> <span>%</span>

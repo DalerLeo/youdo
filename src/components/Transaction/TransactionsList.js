@@ -26,6 +26,7 @@ import {
     INCOME_TO_CLIENT,
     OUTCOME_FROM_CLIENT
 } from '../../constants/transactionTypes'
+import t from '../../helpers/translate'
 
 const currentDay = new Date()
 const enhance = compose(
@@ -241,26 +242,26 @@ const TransactionsList = enhance((props) => {
         {
             sorting: false,
             name: 'client',
-            title: showCashbox ? 'Касса' : 'Клиент',
+            title: showCashbox ? t('Касса') : t('Клиент'),
             width: '22%'
         },
         {
             sorting: false,
             name: 'comment',
-            title: 'Описание',
+            title: t('Описание'),
             width: '30%'
         },
         {
             sorting: true,
             name: 'date',
-            title: 'Дата',
+            title: t('Дата'),
             width: '18%'
         },
         {
             sorting: true,
             name: 'amount',
             alignRight: true,
-            title: 'Сумма',
+            title: t('Сумма'),
             width: '20%'
         }
     ]

@@ -12,6 +12,7 @@ import {TextField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
+import t from '../../helpers/translate'
 
 export const PRICE_LIST_SETTING_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -62,7 +63,7 @@ const PriceListSettingCreateDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>{isUpdate ? 'Изменить прайс-лист' : 'Добавить прайс-лист'}</span>
+                <span>{isUpdate ? t('Изменить прайс-лист') : t('Добавить прайс-лист')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -78,14 +79,14 @@ const PriceListSettingCreateDialog = enhance((props) => {
                                 name="name"
                                 component={TextField}
                                 className={classes.inputFieldCustom}
-                                label="Наименование"
+                                label={t('Наименование')}
                                 fullWidth={true}
                             />
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
-                            label="Сохранить"
+                            label={t('Сохранить')}
                             className={classes.actionButton}
                             labelStyle={{fontSize: '13px'}}
                             primary={true}

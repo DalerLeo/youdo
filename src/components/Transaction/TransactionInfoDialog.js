@@ -10,6 +10,8 @@ import IconButton from 'material-ui/IconButton'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
+import t from '../../helpers/translate'
+
 const ZERO = 0
 const enhance = compose(
     injectSheet({
@@ -183,7 +185,7 @@ const TransactionInfoDialog = enhance((props) => {
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>Транзакция №{open}</span>
+                <span>{t('Транзакция')} №{open}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -195,10 +197,10 @@ const TransactionInfoDialog = enhance((props) => {
                 <div className={classes.inContent} style={{minHeight: 'initial'}}>
                     <div className={classes.list}>
                         <Row className="dottedList">
-                            <Col xs={5}>Клиент</Col>
-                            {hasMarket && <Col xs={3}>Магазин</Col>}
-                            <Col xs={4}>№ заказа </Col>
-                            <Col xs={3}>Сумма</Col>
+                            <Col xs={5}>{t('Клиент')}</Col>
+                            {hasMarket && <Col xs={3}>{t('Магазин')}</Col>}
+                            <Col xs={4}>№ {t('заказа')} </Col>
+                            <Col xs={3}>{t('Сумма')}</Col>
                         </Row>
                         {_.map(data, (item) => {
                             const clientName = _.get(item, ['client', 'name'])
@@ -217,8 +219,8 @@ const TransactionInfoDialog = enhance((props) => {
                                         <div style={{fontWeight: '600'}}>{numberFormat(amount, currency)}</div>
                                         <div>{currency !== primaryCurrency
                                             ? customRate
-                                                ? '( Курс  ' + numberFormat(customRate) + ')'
-                                                 : '( Курс  ' + numberFormat((amount / internal)) + ')'
+                                                ? '( ' + t('Курс') + '  ' + numberFormat(customRate) + ')'
+                                                 : '( ' + t('Курс') + '  ' + numberFormat((amount / internal)) + ')'
                                             : null }</div>
                                     </Col>
                                 </Row>
@@ -226,7 +228,7 @@ const TransactionInfoDialog = enhance((props) => {
                             )
                         })}
                         {_.isEmpty(data) &&
-                        <div className={classes.noData}><h3>Никакой платеж не произведен</h3></div>}
+                        <div className={classes.noData}><h3>{t('Никакой платеж не произведен')}</h3></div>}
                     </div>
                 </div>
             </div>

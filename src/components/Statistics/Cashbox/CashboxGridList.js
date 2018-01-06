@@ -17,6 +17,7 @@ import getConfig from '../../../helpers/getConfig'
 import {StatisticsFilterExcel} from '../../Statistics'
 import CreditCard from 'material-ui/svg-icons/action/credit-card'
 import Cash from 'material-ui/svg-icons/maps/local-atm'
+import t from '../../../helpers/translate'
 
 const NEGATIVE = -1
 export const STAT_CASHBOX_FILTER_KEY = {
@@ -214,7 +215,7 @@ const StatCashboxGridList = enhance((props) => {
     const cashboxes = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const cashier = !_.isNil(_.get(item, 'cashier')) ? _.get(item, ['cashier', 'firstName']) + ' ' + _.get(item, ['cashier', 'secondName']) : 'Неизвестно'
+        const cashier = !_.isNil(_.get(item, 'cashier')) ? _.get(item, ['cashier', 'firstName']) + ' ' + _.get(item, ['cashier', 'secondName']) : t('Неизвестно')
         const type = _.get(item, 'type')
         const typeIcon = _.get(item, 'type') === 'bank' ? (<CreditCard style={iconStyle}/>) : (<Cash style={iconStyle}/>)
         const currency = _.get(item, ['currency', 'name'])
@@ -238,21 +239,21 @@ const StatCashboxGridList = enhance((props) => {
                 <section>
                     <div>
                         <div className={classes.cashboxBalance}>
-                            <span>Баланс на начало периода</span>
+                            <span>{t('Баланс на начало периода')}</span>
                             <span>{cbStartBalance}</span>
                         </div>
                         <div className={classes.cashboxBalance}>
-                            <span>Баланс на конец периода</span>
+                            <span>{t('Баланс на конец периода')}</span>
                             <span>{cbEndBalance}</span>
                         </div>
                     </div>
                     <div>
                         <div className={classes.cashboxBalance}>
-                            <span>Приход за период</span>
+                            <span>{t('Приход за период')}</span>
                             <span>{cbIncome}</span>
                         </div>
                         <div className={classes.cashboxBalance}>
-                            <span>Расход за период</span>
+                            <span>{t('Расход за период')}</span>
                             <span>{cbExpenses}</span>
                         </div>
                     </div>
@@ -267,7 +268,7 @@ const StatCashboxGridList = enhance((props) => {
                 className={classes.inputFieldCustom}
                 name="date"
                 component={DateToDateField}
-                label="Диапазон дат"
+                label={t('Диапазон дат')}
                 fullWidth={true}/>
         </div>
     )
@@ -294,24 +295,24 @@ const StatCashboxGridList = enhance((props) => {
                             </div>
                             : _.isEmpty(cashboxes)
                                 ? <div className={classes.emptyQuery}>
-                                    <div>По вашему запросу ничего не найдено</div>
+                                    <div>{t('По вашему запросу ничего не найдено')}</div>
                                 </div>
                                 : <div>
                                     <Row className={classes.balances}>
                                         <div className={classes.balanceItem}>
-                                            <span>Баланс на начало периода</span>
+                                            <span>{t('Баланс на начало периода')}</span>
                                             <div>{numberFormat(startBalance, primaryCurrency)}</div>
                                         </div>
                                         <div className={classes.balanceItem}>
-                                            <span>Расход за период</span>
+                                            <span>{t('Расход за период')}</span>
                                             <div>{numberFormat(expense, primaryCurrency)}</div>
                                         </div>
                                         <div className={classes.balanceItem}>
-                                            <span>Приход за период</span>
+                                            <span>{t('Приход за период')}</span>
                                             <div>{numberFormat(income, primaryCurrency)}</div>
                                         </div>
                                         <div className={classes.balanceItem}>
-                                            <span>Баланс на конец периода</span>
+                                            <span>{t('Баланс на конец периода')}</span>
                                             <div>{numberFormat(endBalance, primaryCurrency)}</div>
                                         </div>
                                     </Row>

@@ -27,6 +27,7 @@ import {
 } from '../../actions/currency'
 import {openSnackbarAction} from '../../actions/snackbar'
 import {openErrorAction} from '../../actions/error'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     connect((state, props) => {
@@ -99,10 +100,10 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[CURRENCY_DELETE_DIALOG_OPEN]: false})})
                     dispatch(currencyListFetchAction(filter))
-                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно удалено')}))
                 })
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
+                    return dispatch(openSnackbarAction({message: t('Ошибка при удалении')}))
                 })
         },
 
@@ -134,7 +135,7 @@ const enhance = compose(
             const currency = _.get(params, 'currencyId')
             return dispatch(courseCreateAction(_.get(courseForm, ['values']), currency))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Курс обновлен'}))
+                    return dispatch(openSnackbarAction({message: t('Курс обновлен')}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[ADD_COURSE_DIALOG_OPEN]: false})})
@@ -158,7 +159,7 @@ const enhance = compose(
 
             return dispatch(currencyCreateAction(_.get(createForm, ['values'])))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[CURRENCY_CREATE_DIALOG_OPEN]: false})})
@@ -187,7 +188,7 @@ const enhance = compose(
 
             return dispatch(currencyUpdateAction(detailId, _.get(createForm, ['values'])))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push(filter.createURL({[CURRENCY_UPDATE_DIALOG_OPEN]: false}))

@@ -43,6 +43,7 @@ import {
 } from '../../actions/order'
 import {openSnackbarAction} from '../../actions/snackbar'
 import {openErrorAction} from '../../actions/error'
+import t from '../../helpers/translate'
 
 const ZERO = 0
 const TYPE = 'openType'
@@ -213,7 +214,7 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[STOCK_CONFIRM_DIALOG_OPEN]: false})})
                     dispatch(stockReceiveListFetchAction(filter))
-                    return dispatch(openSnackbarAction({message: 'Успешно принять'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно принять')}))
                 })
                 .catch((error) => {
                     dispatch(openErrorAction({
@@ -229,7 +230,7 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[STOCK_CONFIRM_DIALOG_OPEN]: false})})
                     dispatch(stockTransferListFetchAction(filter))
-                    return dispatch(openSnackbarAction({message: 'Успешно принято'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно принято')}))
                 })
                 .catch((error) => {
                     dispatch(openErrorAction({
@@ -246,7 +247,7 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[STOCK_CONFIRM_DIALOG_OPEN]: false})})
                     dispatch(stockReceiveListFetchAction(filter))
-                    return dispatch(openSnackbarAction({message: 'Запрос отменен'}))
+                    return dispatch(openSnackbarAction({message: t('Запрос отменен')}))
                 })
                 .catch((error) => {
                     dispatch(openErrorAction({
@@ -261,7 +262,7 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[STOCK_CONFIRM_DIALOG_OPEN]: false})})
                     dispatch(stockReceiveListFetchAction(filter))
-                    return dispatch(openSnackbarAction({message: 'Успешно подтверждено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно подтверждено')}))
                 })
                 .catch((error) => {
                     dispatch(openErrorAction({
@@ -316,7 +317,7 @@ const enhance = compose(
             return dispatch(stockReceiveCreateAction(formValues, supplyId, detail))
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[STOCK_RECEIVE_CREATE_DIALOG_OPEN]: false})})
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     dispatch(stockReceiveListFetchAction(filter))
@@ -343,7 +344,7 @@ const enhance = compose(
             return dispatch(stockReceiveUpdateAction(formValues, supplyId, detail))
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[STOCK_RECEIVE_UPDATE_DIALOG_OPEN]: false})})
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     dispatch(stockReceiveListFetchAction(filter, history))

@@ -13,6 +13,7 @@ import Tooltip from '../ToolTip'
 import dateFormat from '../../helpers/dateFormat'
 import numberformat from '../../helpers/numberFormat'
 import stockTypeFormat from '../../helpers/stockTypeFormat'
+import t from '../../helpers/translate'
 
 const colorBlue = '#12aaeb !important'
 const enhance = compose(
@@ -163,7 +164,7 @@ const StockTransferDetails = enhance((props) => {
     const receiver = _.get(detailData, ['currentDetail', 'receiver'])
     const stockName = _.get(detailData, ['currentDetail', 'stock', 'name'])
     const type = stockTypeFormat(_.get(detailData, 'type'))
-    const tooltipCancelText = 'Отменить Запрос №' + id
+    const tooltipCancelText = t('Отменить Запрос') + ' №' + id
 
     if (_.isEmpty(products)) {
         return (
@@ -197,7 +198,7 @@ const StockTransferDetails = enhance((props) => {
                             <Col xs={2}>{receiver}</Col>
                             <Col xs={2} className={classes.flex}><span>{dateDelivery}</span>
                                 <div>
-                                    <Tooltip position="bottom" text="Распечатать накладную">
+                                    <Tooltip position="bottom" text={t('Распечатать накладную')}>
                                         <IconButton
                                             iconStyle={iconStyle.icon}
                                             style={iconStyle.button}
@@ -226,9 +227,9 @@ const StockTransferDetails = enhance((props) => {
                     <div className={classes.content}>
                         <div className={classes.leftSide}>
                             <Row className='dottedList'>
-                                <Col xs={6}>Товар</Col>
-                                <Col xs={4}>Тип товара</Col>
-                                <Col xs={2}>Кол-во</Col>
+                                <Col xs={6}>{t('Товар')}</Col>
+                                <Col xs={4}>{t('Тип товара')}</Col>
+                                <Col xs={2}>{t('Кол-во')}</Col>
                             </Row>
                             {_.map(products, (item) => {
                                 const productId = _.get(item, 'id')
@@ -246,7 +247,7 @@ const StockTransferDetails = enhance((props) => {
                             })}
                         </div>
                         <div className={classes.rightSide}>
-                            <div className={classes.subtitle}>Комментарий:</div>
+                            <div className={classes.subtitle}>{t('Комментарий')}:</div>
                             <div>{comment}</div>
                         </div>
                     </div>

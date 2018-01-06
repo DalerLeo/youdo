@@ -14,50 +14,51 @@ import {compose} from 'recompose'
 import AddPayment from 'material-ui/svg-icons/av/playlist-add-check'
 import numberFormat from '../../helpers/numberFormat'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
+import t from '../../helpers/translate'
 
 const listHeader = [
     {
         sorting: true,
         name: 'id',
-        title: '№ зак.',
+        title: '№ ' + t('зак') + '.',
         xs: 1
     },
     {
         sorting: false,
         name: 'clientName',
-        title: 'Клиент',
+        title: t('Клиент'),
         xs: 2
     },
     {
         sorting: false,
         name: 'marketName',
-        title: 'Магазин',
+        title: t('Магазин'),
         xs: 2
     },
     {
         sorting: true,
         name: 'created_date',
-        title: 'Дата созд.',
+        title: t('Дата созд') + '.',
         xs: 2
     },
     {
         sorting: false,
         name: 'paymentType',
-        title: 'Тип опл.',
+        title: t('Тип опл') + '.',
         xs: 1
     },
     {
         sorting: true,
         name: 'total_price',
         alignRight: true,
-        title: 'Сумма заказа',
+        title: t('Сумма заказа'),
         xs: 2
     },
     {
         sorting: true,
         name: 'totalBalance',
         alignRight: true,
-        title: 'Остаток',
+        title: t('Остаток'),
         xs: 1
     },
     {
@@ -69,39 +70,39 @@ const listHeaderHasMarket = [
     {
         sorting: true,
         name: 'id',
-        title: '№ зак.',
+        title: '№ ' + t('зак') + '.',
         xs: 1
     },
     {
         sorting: false,
         name: 'clientName',
-        title: 'Клиент',
+        title: t('Клиент'),
         xs: 3
     },
     {
         sorting: true,
         name: 'created_date',
-        title: 'Дата созд.',
+        title: t('Дата созд') + '.',
         xs: 2
     },
     {
         sorting: false,
         name: 'paymentType',
-        title: 'Тип опл.',
+        title: t('Тип опл') + '.',
         xs: 2
     },
     {
         sorting: true,
         name: 'total_price',
         alignRight: true,
-        title: 'Сумма заказа',
+        title: t('Сумма заказа'),
         xs: 2
     },
     {
         sorting: true,
         name: 'totalBalance',
         alignRight: true,
-        title: 'Остаток',
+        title: t('Остаток'),
         xs: 1
     },
     {
@@ -166,7 +167,7 @@ const PendingPaymentsGridList = enhance((props) => {
         const client = _.get(item, 'client')
         const market = _.get(item, ['market', 'name'])
         const currency = _.get(item, ['currency', 'name'])
-        const paymentType = _.get(item, 'paymentType') === 'cash' ? 'наличный' : 'банковский счет'
+        const paymentType = _.get(item, 'paymentType') === 'cash' ? t('наличный') : t('банковский счет')
         const clientName = _.get(client, 'name')
         const createdDate = dateTimeFormat(_.get(item, 'createdDate'))
         const totalPrice = numberFormat(_.get(item, 'totalPrice'), currency)

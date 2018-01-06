@@ -14,6 +14,8 @@ import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 export const POSITION_CREATE_DIALOG_OPEN = 'openCreateDialog'
 import userGroupFormat from '../../helpers/userGroupFormat'
+import t from '../../helpers/translate'
+
 const validate = (data) => {
     const errors = toCamelCase(data)
     const nonFieldErrors = _.get(errors, 'nonFieldErrors')
@@ -66,7 +68,7 @@ const PositionCreateDialog = enhance((props) => {
             bodyStyle={{minHeight: '100px !important'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>{isUpdate ? 'Изменить ДОЛЖНОСТЬ' : 'ДОБАВЛЕНИЕ ДОЛЖНОСТИ'}</span>
+                <span>{isUpdate ? t('ИЗМЕНИТЬ ДОЛЖНОСТЬ') : t('ДОБАВЛЕНИЕ ДОЛЖНОСТИ')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -82,7 +84,7 @@ const PositionCreateDialog = enhance((props) => {
                                 name="name"
                                 component={TextField}
                                 className={classes.inputFieldCustom}
-                                label="Наименование"
+                                label={t('Наименование')}
                                 fullWidth={true}
                             />
                             <div className={classes.perms}>
@@ -103,7 +105,7 @@ const PositionCreateDialog = enhance((props) => {
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
-                            label="Сохранить"
+                            label={t('Сохранить')}
                             className={classes.actionButton}
                             labelStyle={{fontSize: '13px'}}
                             primary={true}

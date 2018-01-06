@@ -19,25 +19,26 @@ import ConfirmDialog from '../ConfirmDialog'
 import SettingSideMenu from '../Settings/SettingsSideMenu'
 import Tooltip from '../ToolTip'
 import Dot from '../Images/dot.png'
+import t from '../../helpers/translate'
 
 const listHeader = [
     {
         sorting: true,
         name: 'name',
         xs: 5,
-        title: 'Категории'
+        title: t('Категории')
     },
     {
         sorting: true,
         name: 'division',
         xs: 3,
-        title: 'Организация'
+        title: t('Организация')
     },
     {
         sorting: true,
         xs: 3,
         name: 'created_date',
-        title: 'Дата создания'
+        title: t('Дата создания')
     },
     {
         sorting: true,
@@ -222,7 +223,7 @@ const ProductTypeGridList = enhance((props) => {
                         <Col xs={3}>{createdDate}</Col>
                         <Col xs={1} className={classes.right}>
                             <div className={classes.iconBtn}>
-                                <Tooltip position="bottom" text="Изменить">
+                                <Tooltip position="bottom" text={t('Изменить')}>
                                     <IconButton
                                         iconStyle={iconStyle.icon}
                                         style={iconStyle.button}
@@ -232,7 +233,7 @@ const ProductTypeGridList = enhance((props) => {
                                         <Edit />
                                     </IconButton>
                                 </Tooltip>
-                                <Tooltip position="bottom" text="Удалить">
+                                <Tooltip position="bottom" text={t('Удалить')}>
                                     <IconButton
                                         disableTouchRipple={true}
                                         iconStyle={iconStyle.icon}
@@ -248,7 +249,7 @@ const ProductTypeGridList = enhance((props) => {
                     {_.map(_.get(item, 'children'), (child) => {
                         const childId = _.get(child, 'id')
                         const childName = _.get(child, 'name')
-                        const childDivision = _.get(child, ['division', 'name']) || 'Не указано'
+                        const childDivision = _.get(child, ['division', 'name']) || t('Не указано')
                         const childCreatedDate = dateFormat(_.get(child, 'createdDate'))
                         return (
                             <div key={childId} className={classes.subCategory}>
@@ -257,7 +258,7 @@ const ProductTypeGridList = enhance((props) => {
                                 <Col xs={3}>{childCreatedDate}</Col>
                                 <Col xs={1} className={classes.right}>
                                     <div className={classes.iconBtn}>
-                                        <Tooltip position="bottom" text="Изменить">
+                                        <Tooltip position="bottom" text={t('Изменить')}>
                                             <IconButton
                                                 iconStyle={iconStyle.icon}
                                                 style={iconStyle.button}
@@ -267,7 +268,7 @@ const ProductTypeGridList = enhance((props) => {
                                                 <Edit />
                                             </IconButton>
                                         </Tooltip>
-                                        <Tooltip position="bottom" text="Удалить">
+                                        <Tooltip position="bottom" text={t('Удалить')}>
                                             <IconButton
                                                 disableTouchRipple={true}
                                                 iconStyle={iconStyle.icon}
@@ -292,7 +293,7 @@ const ProductTypeGridList = enhance((props) => {
                 <Col xs={3}>{createdDate}</Col>
                 <Col xs={1} className={classes.right}>
                     <div className={classes.iconBtn}>
-                        <Tooltip position="bottom" text="Изменить">
+                        <Tooltip position="bottom" text={t('Изменить')}>
                             <IconButton
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
@@ -302,7 +303,7 @@ const ProductTypeGridList = enhance((props) => {
                                 <Edit />
                             </IconButton>
                         </Tooltip>
-                        <Tooltip position="bottom" text="Удалить">
+                        <Tooltip position="bottom" text={t('Удалить')}>
                             <IconButton
                                 disableTouchRipple={true}
                                 iconStyle={iconStyle.icon}
@@ -329,7 +330,7 @@ const ProductTypeGridList = enhance((props) => {
                 backgroundColor="#fff"
                 labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb', fontSize: '13px'}}
                 className={classes.addButton}
-                label="добавить тип продукта"
+                label={t('добавить тип продукта')}
                 onTouchTap={createDialog.handleOpenCreateDialog}
                 icon={<ContentAdd color="#12aaeb"/>}>
             </FlatButton>

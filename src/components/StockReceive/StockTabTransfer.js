@@ -18,6 +18,7 @@ import Order from 'material-ui/svg-icons/editor/monetization-on'
 import Delivery from 'material-ui/svg-icons/maps/local-taxi'
 import Tooltip from '../ToolTip'
 import toBoolean from '../../helpers/toBoolean'
+import t from '../../helpers/translate'
 
 const ZERO = 0
 
@@ -25,30 +26,30 @@ const listHeader = [
     {
         sorting: true,
         name: 'id',
-        title: '№ запроса',
+        title: '№ ' + t('запроса'),
         xs: 2
     },
     {
         sorting: true,
         name: 'dateRequest',
-        title: 'Дата запроса',
+        title: t('Дата запроса'),
         xs: 2
     },
     {
         sorting: false,
         name: 'stock',
-        title: 'Склад',
+        title: t('Склад'),
         xs: 2
     },
     {
         name: 'stock',
-        title: 'Кому',
+        title: t('Кому'),
         xs: 3
     },
     {
         sorting: true,
         name: 'dateDelivery',
-        title: 'Дата передачи',
+        title: t('Дата передачи'),
         xs: 2
     }
 ]
@@ -57,13 +58,13 @@ const deliveryHeader = [
     {
         sorting: false,
         name: 'id',
-        title: 'Доставщик',
+        title: t('Доставщик'),
         xs: 6
     },
     {
         sorting: true,
         name: 'stock',
-        title: 'Склад',
+        title: t('Склад'),
         xs: 6
     }
 ]

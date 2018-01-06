@@ -12,6 +12,7 @@ import {TextField, ProductTypeParentSearchField, DivisionSearchField} from '../R
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
+import t from '../../helpers/translate'
 
 export const PRODUCT_TYPE_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -62,7 +63,7 @@ const ProductTypeCreateDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>{isUpdate ? 'Изменить тип продукта' : 'Добавить тип продукта'}</span>
+                <span>{isUpdate ? t('Изменить тип продукта') : t('Добавить тип продукта')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -78,28 +79,28 @@ const ProductTypeCreateDialog = enhance((props) => {
                                 name="parent"
                                 component={ProductTypeParentSearchField}
                                 className={classes.inputFieldCustom}
-                                label="Родительская категория"
+                                label={t('Родительская категория')}
                                 fullWidth={true}
                             />
                             <Field
                                 name="name"
                                 component={TextField}
                                 className={classes.inputFieldCustom}
-                                label="Наименование категории"
+                                label={t('Наименование категории')}
                                 fullWidth={true}
                             />
                             <Field
                                 name="division"
                                 component={DivisionSearchField}
                                 className={classes.inputFieldCustom}
-                                label="Организация"
+                                label={t('Организация')}
                                 fullWidth={true}
                             />
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
-                            label="Сохранить"
+                            label={t('Сохранить')}
                             className={classes.actionButton}
                             labelStyle={{fontSize: '13px'}}
                             primary={true}

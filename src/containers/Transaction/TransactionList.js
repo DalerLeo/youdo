@@ -57,6 +57,7 @@ import {
 import {openSnackbarAction} from '../../actions/snackbar'
 import {openErrorAction} from '../../actions/error'
 import getConfig from '../../helpers/getConfig'
+import t from '../../helpers/translate'
 
 const ZERO = 0
 const DELETE_TRANSACTION = 'deleteTransaction'
@@ -274,13 +275,13 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_DELETE_DIALOG_OPEN]: false})})
                     dispatch(transactionListFetchAction(filter, cashboxId))
-                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно удалено')}))
                 })
                 .then(() => {
                     dispatch(cashboxListFetchAction(filterCashbox))
                 })
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
+                    return dispatch(openSnackbarAction({message: t('Ошибка при удалении')}))
                 })
         },
 
@@ -303,10 +304,10 @@ const enhance = compose(
                     hashHistory.push({pathname, query: filter.getParams({[DELETE_TRANSACTION]: false})})
                     dispatch(pendingTransactionFetchAction(user, currency, filterItem))
                     dispatch(acceptCashListFetchAction())
-                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно удалено')}))
                 })
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
+                    return dispatch(openSnackbarAction({message: t('Ошибка при удалении')}))
                 })
         },
         handleOpenFilterDialog: props => () => {
@@ -364,7 +365,7 @@ const enhance = compose(
             const {dispatch, createForm, filter, location: {pathname}, cashboxId, filterCashbox} = props
             return dispatch(transactionCreateExpenseAction(_.get(createForm, ['values']), cashboxId))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push({
@@ -396,7 +397,7 @@ const enhance = compose(
             const {dispatch, createForm, filter, location: {pathname}, cashboxId, filterCashbox} = props
             return dispatch(transactionCreateIncomeAction(_.get(createForm, ['values']), cashboxId))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push({
@@ -432,7 +433,7 @@ const enhance = compose(
             const withPersent = _.get(cashbox, ['currency', 'name']) === _.get(chosenCashbox, ['currency', 'name']) && _.get(cashbox, 'type') !== _.get(chosenCashbox, 'type')
             return dispatch(transactionCreateSendAction(_.get(createForm, ['values']), cashboxId, withPersent))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push({
@@ -501,7 +502,7 @@ const enhance = compose(
             const cashboxId = _.get(props, ['location', 'query', 'cashboxId'])
             return dispatch(transactionCreateSendAction(_.get(createForm, ['values']), cashboxId))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filterItem.getParams({[TRANSACTION_CASH_DIALOG_OPEN]: false})})
@@ -601,7 +602,7 @@ const enhance = compose(
 
             return dispatch(transactionEditPaymentAction(_.get(updateForm, 'values'), id, transId))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push({
@@ -636,7 +637,7 @@ const enhance = compose(
                     return dispatch(transactionItemFetchAction(transactionId))
                 })
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push(filter.createURL({[UPDATE_TRANSACTION]: false}))
@@ -653,7 +654,7 @@ const enhance = compose(
             const transactionId = _.toInteger(_.get(query, UPDATE_TRANSACTION))
             return dispatch(transactionUpdateIncomeAction(transactionId, _.get(createForm, ['values']), cashboxId))
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[UPDATE_TRANSACTION]: false})})

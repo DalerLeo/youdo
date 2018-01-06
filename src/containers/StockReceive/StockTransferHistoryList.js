@@ -27,6 +27,7 @@ import {
 import {orderListPintFetchAction} from '../../actions/order'
 import {openErrorAction} from '../../actions/error'
 import {openSnackbarAction} from '../../actions/snackbar'
+import t from '../../helpers/translate'
 
 const STOCK_ID = 'stockId'
 const TYPE = 'currentType'
@@ -164,7 +165,7 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname: ROUTER.STOCK_TRANSFER_HISTORY_LIST_URL, query: filter.getParams({[STOCK_REPEAL_DIALOG_OPEN]: false})})
                     dispatch(stockTransferListFetchAction(filter, true))
-                    return dispatch(openSnackbarAction({message: 'Успешно отменено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно отменено')}))
                 })
                 .catch((error) => {
                     dispatch(openErrorAction({

@@ -9,6 +9,7 @@ import * as TAB from '../../constants/joinTab'
 import TabClients from './JoinTabClients'
 import TabMarkets from './JoinTabMarkets'
 import SettingSideMenu from '../Settings/SettingsSideMenu'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -128,8 +129,8 @@ const JoinGridList = enhance((props) => {
                 value={tab}
                 className={classes.tabs}
                 onChange={(value) => tabData.handleTabChange(value)}>
-                {hasMarket && <Tab label="Магазины" value={TAB.JOIN_TAB_MARKETS}/>}
-                <Tab label="Клиенты" value={TAB.JOIN_TAB_CLIENTS}/>
+                {hasMarket && <Tab label={t('Магазины')} value={TAB.JOIN_TAB_MARKETS}/>}
+                <Tab label={t('Клиенты')} value={TAB.JOIN_TAB_CLIENTS}/>
             </Tabs>
             {TAB.JOIN_TAB_MARKETS === tab && hasMarket &&
             <TabMarkets

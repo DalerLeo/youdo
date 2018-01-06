@@ -12,6 +12,7 @@ import {TextField, StockTypeSearchField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
+import t from '../../helpers/translate'
 
 export const STOCK_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -84,7 +85,7 @@ const StockCreateDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>{isUpdate ? 'Изменить склад' : 'Добавить склад'}</span>
+                <span>{isUpdate ? t('Изменить склад') : t('Добавить склад')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -100,21 +101,21 @@ const StockCreateDialog = enhance((props) => {
                                 name="name"
                                 component={TextField}
                                 className={classes.inputFieldCustom}
-                                label="Наименование"
+                                label={t('Наименование')}
                                 fullWidth={true}
                             />
                             <Field
                                 name="stockType"
                                 component={StockTypeSearchField}
                                 className={classes.inputFieldCustom}
-                                label="Тип склада"
+                                label={t('Тип склада')}
                                 fullWidth={true}
                             />
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
-                            label="Сохранить"
+                            label={t('Сохранить')}
                             labelStyle={{fontSize: '13px'}}
                             type="submit"
                         />

@@ -9,6 +9,7 @@ import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import numberFormat from '../../helpers/numberFormat'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -119,7 +120,7 @@ const TransactionCategoryPopop = enhance((props) => {
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>Расходы на сотрудников</span>
+                <span>{t('Расходы на сотрудников')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -131,8 +132,8 @@ const TransactionCategoryPopop = enhance((props) => {
                 <div className={classes.inContent} style={{minHeight: 'initial'}}>
                     <div className={classes.list}>
                         <Row className="dottedList">
-                            <Col xs={7}>Сотрудник</Col>
-                            <Col xs={5}>Сумма</Col>
+                            <Col xs={7}>{t('Сотрудник')}</Col>
+                            <Col xs={5}>{t('Сумма')}</Col>
                         </Row>
                         {_.map(data, (item) => {
                             const clientName = _.get(item, ['staff', 'firstName']) + ' ' + _.get(item, ['staff', 'secondName'])
@@ -145,7 +146,7 @@ const TransactionCategoryPopop = enhance((props) => {
                             )
                         })}
                         {_.isEmpty(data) &&
-                        <div className={classes.noData}><h3>Никакой платеж не произведен</h3></div>}
+                        <div className={classes.noData}><h3>{t('Никакой платеж не произведен')}</h3></div>}
                     </div>
                 </div>
             </div>

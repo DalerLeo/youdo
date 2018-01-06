@@ -36,6 +36,7 @@ import {
 } from '../../actions/order'
 import {openErrorAction} from '../../actions/error'
 import {openSnackbarAction} from '../../actions/snackbar'
+import t from '../../helpers/translate'
 
 const TYPE = 'currentType'
 const enhance = compose(
@@ -160,7 +161,7 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[STOCK_CONFIRM_DIALOG_OPEN]: false})})
                     dispatch(stockReceiveListFetchAction(filter))
-                    return dispatch(openSnackbarAction({message: 'Успешно принять'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно принять')}))
                 })
         },
         handleSubmitTransferAcceptDialog: props => () => {
@@ -171,7 +172,7 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[STOCK_CONFIRM_DIALOG_OPEN]: false})})
                     dispatch(stockTransferListFetchAction(filter))
-                    return dispatch(openSnackbarAction({message: 'Успешно принять'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно принять')}))
                 })
                 .catch((error) => {
                     dispatch(openErrorAction({
@@ -186,7 +187,7 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[STOCK_CONFIRM_DIALOG_OPEN]: false})})
                     dispatch(stockReceiveListFetchAction(filter))
-                    return dispatch(openSnackbarAction({message: 'Успешно принять'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно принять')}))
                 })
         },
 
@@ -224,7 +225,7 @@ const enhance = compose(
                     .then(() => {
                         hashHistory.push({pathname, query: filter.getParams({[STOCK_REPEAL_HISTORY_DIALOG_OPEN]: false})})
                         dispatch(stockReceiveListFetchAction(filter, history))
-                        return dispatch(openSnackbarAction({message: 'Успешно отменено'}))
+                        return dispatch(openSnackbarAction({message: t('Успешно отменено')}))
                     })
                     .catch((error) => {
                         dispatch(openErrorAction({
@@ -236,7 +237,7 @@ const enhance = compose(
                     .then(() => {
                         hashHistory.push({pathname, query: filter.getParams({[STOCK_REPEAL_HISTORY_DIALOG_OPEN]: false})})
                         dispatch(stockReceiveListFetchAction(filter, history))
-                        return dispatch(openSnackbarAction({message: 'Успешно отменено'}))
+                        return dispatch(openSnackbarAction({message: t('Успешно отменено')}))
                     })
                     .catch((error) => {
                         dispatch(openErrorAction({

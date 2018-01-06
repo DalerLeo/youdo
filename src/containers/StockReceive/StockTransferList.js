@@ -40,6 +40,7 @@ import {
 } from '../../actions/order'
 import {openSnackbarAction} from '../../actions/snackbar'
 import {openErrorAction} from '../../actions/error'
+import t from '../../helpers/translate'
 
 const TOGGLE = 'toggle'
 const TYPE = 'openType'
@@ -290,7 +291,7 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[STOCK_CONFIRM_DIALOG_OPEN]: false})})
                     dispatch(stockReceiveListFetchAction(filter))
-                    return dispatch(openSnackbarAction({message: 'Успешно принять'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно принять')}))
                 })
         },
         handleSubmitTransferAcceptDialog: props => () => {
@@ -301,7 +302,7 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[STOCK_CONFIRM_DIALOG_OPEN]: false})})
                     dispatch(stockTransferListFetchAction(filter))
-                    return dispatch(openSnackbarAction({message: 'Успешно принять'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно принять')}))
                 })
                 .catch((error) => {
                     dispatch(openErrorAction({
@@ -318,7 +319,7 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[STOCK_CONFIRM_DIALOG_OPEN]: false})})
                     dispatch(stockReceiveListFetchAction(filter))
-                    return dispatch(openSnackbarAction({message: 'Успешно принять'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно принять')}))
                 })
         },
         handleSubmitReceiveDeliveryConfirmDialog: props => () => {
@@ -328,7 +329,7 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[STOCK_CONFIRM_DIALOG_OPEN]: false})})
                     dispatch(stockReceiveListFetchAction(filter))
-                    return dispatch(openSnackbarAction({message: 'Успешно принять'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно принять')}))
                 })
         },
         handleCloseDetail: props => () => {
@@ -507,7 +508,7 @@ const StockTransferList = enhance((props) => {
     })
     const deliveryManName = _.get(deliveryDetail, 'deliveryMan')
         ? _.get(deliveryDetail, ['deliveryMan', 'firstName']) + ' ' + _.get(deliveryDetail, ['deliveryMan', 'secondName'])
-        : 'Доставщик не определен'
+        : t('Доставщик не определен')
 
     const orders = _.join(_.get(deliveryDetailsData, ['data', 'orders']), ', ')
 

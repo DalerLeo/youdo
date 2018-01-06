@@ -19,6 +19,7 @@ import Paper from 'material-ui/Paper'
 import numberFormat from '../../helpers/numberFormat'
 import StatStockFilterForm from './StatStockFilterForm'
 import getConfig from '../../helpers/getConfig'
+import t from '../../helpers/translate'
 
 const remainderHeader = [
     {
@@ -31,19 +32,19 @@ const remainderHeader = [
         sorting: true,
         name: 'title',
         xs: 5,
-        title: 'Наименование'
+        title: t('Наименование')
     },
     {
         sorting: true,
         xs: 3,
         name: 'balance',
-        title: 'Остаток'
+        title: t('Остаток')
     },
     {
         sorting: true,
         xs: 2,
         name: 'money',
-        title: 'На сумму'
+        title: t('На сумму')
     }
 ]
 const transactionHeader = [
@@ -51,25 +52,25 @@ const transactionHeader = [
         sorting: true,
         name: 'name',
         xs: 2,
-        title: 'Баркод'
+        title: t('Баркод')
     },
     {
         sorting: true,
         name: 'type',
         xs: 5,
-        title: 'Наименование'
+        title: t('Наименование')
     },
     {
         sorting: true,
         xs: 3,
         name: 'balance',
-        title: 'Транзакция'
+        title: t('Транзакция')
     },
     {
         sorting: true,
         xs: 2,
         name: 'money',
-        title: 'Объем'
+        title: t('Объем')
     }
 ]
 
@@ -269,7 +270,7 @@ const StatStockGridList = enhance((props) => {
                             <Link to={{
                                 pathname: sprintf(ROUTES.STATSTOCK_ITEM_PATH, ZERO),
                                 query: filter.getParams()
-                            }}>Все склады</Link>
+                            }}>{t('Все склады')}</Link>
                         </li>
                         {stockList}
                     </div>
@@ -283,11 +284,11 @@ const StatStockGridList = enhance((props) => {
                 <Col xs={3}>
                     <div className={classes.typeListStock} style={tab === balanceTab ? {background: '#eceff5'} : {background: '#fff'}}>
                         <a onClick={() => { handleClickTapChange(balanceTab) }}
-                           className={tab === balanceTab ? 'active' : ''}>Остаток<br/>товара</a>
+                           className={tab === balanceTab ? 'active' : ''}>{t('Остаток<br/>товара')}</a>
                     </div>
                     <div className={classes.typeListStock} style={tab === transactionTab ? {background: '#eceff5'} : {background: '#fff'}}>
                         <a onClick={() => { handleClickTapChange(transactionTab) }}
-                           className={tab === transactionTab ? 'active' : ''}>Движение<br/>товаров</a>
+                           className={tab === transactionTab ? 'active' : ''}>{t('Движение<br/>товаров')}</a>
                     </div>
                 </Col>
                 <Col xs={9} style={{textAlign: 'right'}}>
@@ -297,15 +298,15 @@ const StatStockGridList = enhance((props) => {
                         </div>
                         : <div>
                             <div className={classes.infoBlock}>
-                                Товара на складе<br />
+                                {t('Товара на складе')}<br />
                                 <span>{amountProduct}</span>
                             </div>
                             <div className={classes.infoBlock}>
-                                Видов продукции:<br />
+                                {t('Видов продукции')}:<br />
                                 <span>{amountTypeProduct}</span>
                             </div>
                             <div className={classes.infoBlock}>
-                                Товаров на сумму:<br />
+                                {t('Товаров на сумму')}:<br />
                                 <span>{totalPriceProduct}</span>
                             </div>
                         </div>

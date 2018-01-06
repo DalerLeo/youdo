@@ -20,6 +20,7 @@ import checkPermission from '../../helpers/checkPermission'
 import {convertCurrency} from '../../helpers/convertCurrency'
 import CashboxCurrencyField from '../ReduxForm/CashboxCurrencyField'
 import PendingPaymentRadioButton from '../ReduxForm/PendingPaymentRadioButton'
+import t from '../../helpers/translate'
 
 export const PENDING_PAYMENTS_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const ORDERING_CURRENCY = 1
@@ -117,7 +118,7 @@ const PendingPaymentsCreateDialog = enhance((props) => {
     const client = _.get(detailData, ['data', 'client'])
     const marketName = _.get(detailData, ['data', 'market', 'name'])
     const paymentType = _.get(detailData, ['data', 'paymentType'])
-    const paymentTypeOutput = paymentType === 'bank' ? 'перечислением' : 'наличнымми'
+    const paymentTypeOutput = paymentType === 'bank' ? t('перечислением') : t('наличнымми')
     const totalBalance = numberformat(_.get(detailData, ['data', 'totalBalance']), primaryCurrency)
     const totalPrice = numberformat(_.get(detailData, ['data', 'totalPrice']), primaryCurrency)
     const clientName = _.get(client, 'name')
@@ -135,7 +136,7 @@ const PendingPaymentsCreateDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>Оплата</span>
+                <span>{t('Оплата')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -149,14 +150,14 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                         <div className={classes.field}>
                             <div className={classes.info}>
                                 <div className={classes.infoHeader}>
-                                    <div><span className={classes.infoSummary}>Клиент:</span> {clientName}</div>
-                                    {hasMarket && <div><span className={classes.infoSummary}>Магазин:</span> {marketName}</div>}
-                                    <div><span className={classes.infoSummary}>Заказ №:</span> {id}</div>
+                                    <div><span className={classes.infoSummary}>{t('Клиент')}:</span> {clientName}</div>
+                                    {hasMarket && <div><span className={classes.infoSummary}>{t('Магазин')}:</span> {marketName}</div>}
+                                    <div><span className={classes.infoSummary}>{t('Заказ')} №:</span> {id}</div>
                                 </div>
                                 <div className={classes.infoHeader}>
-                                    <div><span className={classes.infoSummary}>Тип оплаты:</span> {paymentTypeOutput}</div>
-                                    <div><span className={classes.infoSummary}>Сумма заказа:</span> {totalPrice}</div>
-                                    <div><span className={classes.infoSummary}>Остаток: </span> {totalBalance} </div>
+                                    <div><span className={classes.infoSummary}>{t('Тип оплаты')}:</span> {paymentTypeOutput}</div>
+                                    <div><span className={classes.infoSummary}>{t('Сумма заказа')}:</span> {totalPrice}</div>
+                                    <div><span className={classes.infoSummary}>{t('Остаток')}: </span> {totalBalance} </div>
                                 </div>
                             </div>
                             <div className={classes.cashbox}>
@@ -166,7 +167,7 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                                     className={classes.inputFieldCustom}
                                     component={CashboxPaymentTypeSearchField}
                                     data-payment-type={_.get(detailData, ['data', 'paymentType'])}
-                                    label="Касса получатель"
+                                    label={t('Касса получатель')}
                                     fullWidth={true}/>}
                                 <div className={classes.flex} style={{justifyContent: 'space-between'}}>
                                     <div className={classes.half}>
@@ -174,14 +175,14 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                                             name="amount"
                                             className={classes.inputFieldCustom}
                                             component={TextField}
-                                            label="Сумма"
+                                            label={t('Сумма')}
                                             normalize={normalizeNumber}
                                             fullWidth={true}
                                         />
                                         <CashboxCurrencyField/>
                                     </div>
                                     {(currency !== primaryCurrency && _.toNumber(numberWithoutSpaces(amountValue)) > ZERO) && <div className={classes.halfSecond}>
-                                        <div> После конвертации: <span className={classes.bold}>{convertAmount} {primaryCurrency}</span></div>
+                                        <div> {t('После конвертации')}: <span className={classes.bold}>{convertAmount} {primaryCurrency}</span></div>
                                     </div>}
                                 </div>
 
@@ -197,7 +198,7 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                                     ? <div className={classes.customCurrency}>
                                         <Field
                                             component={TextField}
-                                            label="Введите курс"
+                                            label={t('Введите курс')}
                                             normalize={normalizeNumber}
                                             fullWidth={true}
                                             className={classes.inputFieldCustom}
@@ -205,7 +206,7 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                                     </div>
                                     : (currency && currency !== primaryCurrency)
                                         ? <div className={classes.customCurrency}>
-                                            Курс: {numberformat(currentRate, currency)}</div>
+                                            {t('Курс')}: {numberformat(currentRate, currency)}</div>
                                         : null}
 
                             </div>
@@ -213,7 +214,7 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
-                            label="Сохранить"
+                            label={t('Сохранить')}
                             className={classes.actionButton}
                             labelStyle={{fontSize: '13px'}}
                             primary={true}

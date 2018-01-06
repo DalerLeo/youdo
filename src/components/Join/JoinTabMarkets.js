@@ -10,37 +10,38 @@ import FloatingActionButton from 'material-ui/FloatingActionButton'
 import Join from 'material-ui/svg-icons/content/link'
 import Tooltip from '../ToolTip'
 import JoinDialog from './JoinDialog'
+import t from '../../helpers/translate'
 
 const listHeader = [
     {
         width: '20%',
         sorting: false,
         name: 'name',
-        title: 'Название'
+        title: t('Название')
     },
     {
         width: '25%',
         sorting: false,
         name: 'client',
-        title: 'Клиент'
+        title: t('Клиент')
     },
     {
         width: '15%',
         sorting: true,
         name: 'repetition',
-        title: 'Похожие'
+        title: t('Похожие')
     },
     {
         width: '20%',
         sorting: false,
         name: 'address',
-        title: 'Адрес'
+        title: t('Адрес')
     },
     {
         width: '15%',
         sorting: true,
         name: 'phone',
-        title: 'Телефон'
+        title: t('Телефон')
     },
     {
         width: '5%'
@@ -142,7 +143,7 @@ const JoinTabMarkets = enhance((props) => {
                 <div style={{width: '15%'}}>{phone}</div>
                 <div style={{width: '5%'}}>
                     <div className={classes.iconBtn}>
-                        <Tooltip position="bottom" text="Объединить">
+                        <Tooltip position="bottom" text={t('Объединить')}>
                             <IconButton
                                 onTouchTap={() => { joinMarketDialog.handleOpenJoinMarkets(id) }}
                                 iconStyle={iconStyle.icon}
@@ -172,7 +173,7 @@ const JoinTabMarkets = enhance((props) => {
                 detail={shopDetail}
             />
             <div className={classes.mainButton}>
-                <Tooltip position="left" text="Объединить">
+                <Tooltip position="left" text={t('Объединить')}>
                     <FloatingActionButton
                         onTouchTap={() => { joinMarketDialog.handleOpenJoinMarkets(true) }}
                         backgroundColor="#12aaeb"

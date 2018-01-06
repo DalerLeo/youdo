@@ -27,6 +27,7 @@ import Language from 'material-ui/svg-icons/social/public'
 import {setLanguage, getLanguage} from '../../helpers/storage'
 
 import {SHOP_LIST} from '../../constants/actionTypes'
+import t from '../../helpers/translate'
 
 const refreshAction = () => {
     return {
@@ -356,7 +357,7 @@ const Dashboard = enhance((props) => {
         <Container>
             <div className={classes.wrapper}>
                 <div className={classes.languageWrapper}>
-                    <div className={classes.fabTooltip}>Язык системы</div>
+                    <div className={classes.fabTooltip}>{t('язык системы')}</div>
                     <IconMenu
                         anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
                         targetOrigin={{horizontal: 'right', vertical: 'bottom'}}
@@ -397,15 +398,15 @@ const Dashboard = enhance((props) => {
                         {orderChartActive && isAdmin &&
                         <Paper zDepth={1}>
                             <div className={classes.chartHeader}>
-                                <div>Продажи</div>
+                                <div>{t('Продажи')}</div>
                             </div>
                             {emptySales
                                 ? noData
                                 : <div className={classes.chart}>
                                     <div className={classes.chartStats}>
-                                        <div>Нал: {numberFormat(orderChartSalesCashSum, primaryCurrency)}</div>
-                                        <div>Пер: {numberFormat(orderChartSalesBankSum, primaryCurrency)}</div>
-                                        <div>Сумма: {numberFormat(orderChartSalesTotalSum, primaryCurrency)}</div>
+                                        <div>{t('Нал')}: {numberFormat(orderChartSalesCashSum, primaryCurrency)}</div>
+                                        <div>{t('Пер')}: {numberFormat(orderChartSalesBankSum, primaryCurrency)}</div>
+                                        <div>{t('Сумма')}: {numberFormat(orderChartSalesTotalSum, primaryCurrency)}</div>
                                     </div>
                                     {orderChartLoading || loading
                                         ? <div className={classes.chartLoader}>
@@ -413,8 +414,8 @@ const Dashboard = enhance((props) => {
                                         </div>
                                         : <OrderChart
                                             height={250}
-                                            primaryText="Нал"
-                                            secondaryText="Переч"
+                                            primaryText={t('Нал')}
+                                            secondaryText={t('Переч')}
                                             cashValues={orderChartSalesCash}
                                             bankValues={orderChartSalesBank}
                                             tooltipTitle={orderChartDate}
@@ -424,14 +425,14 @@ const Dashboard = enhance((props) => {
                         {orderReturnActive && isAdmin &&
                         <Paper zDepth={1}>
                             <div className={classes.chartHeader}>
-                                <div>Заказы и возвраты</div>
+                                <div>{t('Заказы и возвраты')}</div>
                             </div>
                             {emptyOrders
                                 ? noData
                                 : <div className={classes.chart}>
                                     <div className={classes.chartStats}>
-                                        <div>Продажи: {numberFormat(orderChartSalesTotalSum, primaryCurrency)}</div>
-                                        <div>Возвраты: {numberFormat(orderChartReturnsSum, primaryCurrency)}</div>
+                                        <div>{t('Продажи')}: {numberFormat(orderChartSalesTotalSum, primaryCurrency)}</div>
+                                        <div>{t('Возвраты')}: {numberFormat(orderChartReturnsSum, primaryCurrency)}</div>
                                     </div>
                                     {orderReturnLoading || loading
                                         ? <div className={classes.chartLoader}>
@@ -439,8 +440,8 @@ const Dashboard = enhance((props) => {
                                         </div>
                                         : <SalesReturnsChart
                                             height={250}
-                                            primaryText="Продажа"
-                                            secondaryText="Возврат"
+                                            primaryText={t('Продажа')}
+                                            secondaryText={t('Возврат')}
                                             primaryValues={orderChartSalesBankCash}
                                             secondaryValues={orderChartReturns}
                                             tooltipTitle={orderReturnDate}
@@ -456,7 +457,7 @@ const Dashboard = enhance((props) => {
                         {agentsChartActive && isAdmin &&
                         <Paper zDepth={1}>
                             <div className={classes.chartHeader + ' ' + classes.borderBottom}>
-                                <div>Статистика по агентам</div>
+                                <div>{t('Статистика по агентам')}</div>
                             </div>
                             {emptyAgents
                                 ? noData
@@ -476,14 +477,14 @@ const Dashboard = enhance((props) => {
                         {financeChartActive && isAdmin &&
                         <Paper zDepth={1}>
                             <div className={classes.chartHeader}>
-                                <div>Оборот</div>
+                                <div>{t('Оборот')}</div>
                             </div>
                             {emptyFinance
                                 ? noData
                                 : <div className={classes.chart}>
                                     <div className={classes.chartStats}>
-                                        <div>Приход: {numberFormat(financeIncomeSum, primaryCurrency)}</div>
-                                        <div>Расход: {numberFormat(financeExpenseSum, primaryCurrency)}</div>
+                                        <div>{t('Приход')}: {numberFormat(financeIncomeSum, primaryCurrency)}</div>
+                                        <div>{t('Расход')}: {numberFormat(financeExpenseSum, primaryCurrency)}</div>
                                     </div>
                                     {financeChartLoading || loading
                                         ? <div className={classes.chartLoader}>
@@ -494,8 +495,8 @@ const Dashboard = enhance((props) => {
                                             secondaryValues={financeExpense}
                                             tooltipTitle={financeDate}
                                             height={230}
-                                            primaryText="Приход"
-                                            secondaryText="Расход"
+                                            primaryText={t('Приход')}
+                                            secondaryText={t('Расход')}
                                         />}
                                 </div>}
                         </Paper>}
@@ -504,7 +505,7 @@ const Dashboard = enhance((props) => {
 
                 {noWidgets &&
                 <div className={classes.emptyWidgets}>
-                    <div>Виджеты отключены, <br/> включите, чтобы просмотреть статистику</div>
+                    <div>{t('Виджеты отключены')}, <br/> {t('включите, чтобы просмотреть статистику')}</div>
                 </div>}
             </div>
         </Container>

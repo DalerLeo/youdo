@@ -17,36 +17,37 @@ import InfoDialog from '../Statistics/Sales/SalesDialog'
 import PopoverDialog from './PopoverDialog'
 import StockReceiveTabList from '../../containers/StockReceive/StockReceiveTabList'
 import * as TAB from '../../constants/stockReceiveTab'
+import t from '../../helpers/translate'
 
 const ZERO = 0
 const listHeader = [
     {
         sorting: false,
         name: 'product',
-        title: 'Товар',
+        title: t('Товар'),
         xs: 4
     },
     {
         sorting: true,
         name: 'amount',
-        title: 'Кол-во',
+        title: t('Кол-во'),
         xs: 1
     },
     {
         sorting: true,
         name: 'createdDate',
-        title: 'Дата',
+        title: t('Дата'),
         xs: 3
     },
     {
         name: 'stock',
-        title: 'Склад',
+        title: t('Склад'),
         xs: 2
     },
     {
         sorting: false,
         name: 'type',
-        title: 'Тип',
+        title: t('Тип'),
         xs: 2
     }
 ]

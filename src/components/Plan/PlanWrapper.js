@@ -25,6 +25,8 @@ import Money from 'material-ui/svg-icons/maps/local-atm'
 import NotFound from '../Images/not-found.png'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
+import t from '../../helpers/translate'
+
 const ZERO = 0
 const HUNDRED = 100
 const MERCH = 'посещено'
@@ -279,22 +281,22 @@ const PlanWrapper = enhance((props) => {
     const buttons = [
         {
             group: 'agent',
-            name: 'Агенты',
+            name: t('Агенты'),
             icon: <Man/>
         },
         {
             group: 'merch',
-            name: 'Мерчендайзеры',
+            name: t('Мерчендайзеры'),
             icon: <Loyalty/>
         },
         {
             group: 'delivery',
-            name: 'Доставщики',
+            name: t('Доставщики'),
             icon: <Van/>
         },
         {
             group: 'collector',
-            name: 'Инкассаторы',
+            name: t('Инкассаторы'),
             icon: <Money/>
         }
     ]
@@ -329,7 +331,7 @@ const PlanWrapper = enhance((props) => {
                 </div>
                     : (_.isEmpty(agentsList)
                         ? <div className={classes.emptyQuery}>
-                            <div>По вашему запросу ничего не найдено</div>
+                            <div>{t('По вашему запросу ничего не найдено')}</div>
                         </div>
                         : agentsList)}
             </div>
@@ -340,7 +342,7 @@ const PlanWrapper = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.PLAN_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text="Составить план">
+                <Tooltip position="left" text={t('Составить план')}>
                     <FloatingActionButton
                         mini={true}
                         zDepth={1}

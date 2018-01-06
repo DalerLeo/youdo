@@ -13,6 +13,7 @@ import {DateField} from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
 import {Col} from 'react-flexbox-grid'
 import numberFormat from '../../helpers/numberFormat'
+import t from '../../helpers/translate'
 
 export const ORDER_SHORTAGE_DIALOG_OPEN = 'openShortageDialog'
 const validate = (data) => {
@@ -191,7 +192,7 @@ const OrderShortageDialog = enhance((props) => {
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>Добавление заказа / недостающие товары</span>
+                <span>{t('Добавление заказа / недостающие товары')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -205,10 +206,10 @@ const OrderShortageDialog = enhance((props) => {
                         <ul className={classes.modalListTable}>
                             <li className="dottedList">
                                 <Col xs={7}>
-                                    <strong>Наименование</strong>
+                                    <strong>{t('Наименование')}</strong>
                                 </Col>
                                 <Col xs={5}>
-                                    <strong>Недостача</strong>
+                                    <strong>{t('Недостача')}</strong>
                                 </Col>
                             </li>
                             {productsList}
@@ -220,12 +221,12 @@ const OrderShortageDialog = enhance((props) => {
                             name="requestDeadline"
                             component={DateField}
                             className={classes.inputFieldCustom}
-                            hintText="Срок запроса"
+                            hintText={t('Срок запроса')}
                             container="inline"
                             fullWidth={true}/>
                         <div className={classes.specialModalButton}>
                             <FlatButton
-                                label="Передать запрос на подготовку"
+                                label={t('Передать запрос на подготовку')}
                                 className={classes.actionButton}
                                 primary={true}
                                 type="submit"

@@ -17,6 +17,7 @@ import ContentAdd from 'material-ui/svg-icons/content/add'
 import SettingSideMenu from '../Settings/SettingsSideMenu'
 import Tooltip from '../ToolTip'
 import Edit from 'material-ui/svg-icons/image/edit'
+import t from '../../helpers/translate'
 
 const listHeader = [
     {
@@ -29,7 +30,7 @@ const listHeader = [
         sorting: true,
         name: 'name',
         xs: 9,
-        title: 'Наименование'
+        title: t('Наименование')
     },
     {
         sorting: false,
@@ -143,7 +144,7 @@ const MeasurementGridList = enhance((props) => {
                 <Col xs={9}>{name}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
                     <div className={classes.iconBtn}>
-                        <Tooltip position="bottom" text="Изменить">
+                        <Tooltip position="bottom" text={t('Изменить')}>
                             <IconButton
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
@@ -153,7 +154,7 @@ const MeasurementGridList = enhance((props) => {
                                 <Edit />
                             </IconButton>
                         </Tooltip>
-                        <Tooltip position="bottom" text="Удалить">
+                        <Tooltip position="bottom" text={t('Удалить')}>
                             <IconButton
                                 disableTouchRipple={true}
                                 iconStyle={iconStyle.icon}
@@ -181,7 +182,7 @@ const MeasurementGridList = enhance((props) => {
                 backgroundColor="#fff"
                 labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb', fontSize: '13px'}}
                 className={classes.addButton}
-                label="добавить измерение"
+                label={t('добавить измерение')}
                 onTouchTap={createDialog.handleOpenCreateDialog}
                 icon={<ContentAdd color="#12aaeb"/>}>
             </FlatButton>

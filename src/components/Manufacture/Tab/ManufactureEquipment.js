@@ -9,24 +9,25 @@ import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
 import GridList from '../../GridList'
 import Choose from '../../Images/choose-menu.png'
+import t from '../../../helpers/translate'
 
 const listHeader = [
     {
         sorting: false,
         name: 'name',
-        title: 'Наименование',
+        title: t('Наименование'),
         xs: 4
     },
     {
         sorting: false,
         name: 'type',
-        title: 'Последняя отгрузка №',
+        title: t('Последняя отгрузка') + ' №',
         xs: 4
     },
     {
         sorting: false,
         name: 'brand',
-        title: 'Состояние',
+        title: t('Состояние'),
         xs: 4
     }
 ]
@@ -68,9 +69,9 @@ const ManufactureEquipment = enhance((props) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const lastShipment = _.get(item, 'lastShipment')
-        const status = _.get(item, 'status') === '0' ? 'не работает'
+        const status = _.get(item, 'status') === '0' ? t('не работает')
             : (_.get(item, 'status') === '1' ? 'рабочий'
-            : 'получить продукт')
+            : t('получить продукт'))
         return (
             <Row key={id}>
                 <Col xs={4}>{name}</Col>
@@ -98,7 +99,7 @@ const ManufactureEquipment = enhance((props) => {
     if (manufactureId <= ZERO) {
         return (
             <Paper zDepth={1} className={classes.choose}>
-                <div>Выберите производство...</div>
+                <div>{t('Выберите производство')}...</div>
             </Paper>
         )
     }
