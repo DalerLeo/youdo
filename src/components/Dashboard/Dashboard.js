@@ -324,7 +324,7 @@ const Dashboard = enhance((props) => {
     // CURRENCY DATA //
     const currencyListActive = _.get(currencyData, 'active')
 
-    const noWidgets = !orderChartActive && !orderReturnActive && !agentsChartActive && !financeChartActive && !currencyListActive
+    const noActiveWidgets = !orderChartActive && !orderReturnActive && !agentsChartActive && !financeChartActive && !currencyListActive
     const emptySales = _.isEmpty(orderChartSalesCash) && !orderChartLoading
     const emptyOrders = _.isEmpty(orderChartReturns) && !orderReturnLoading
     const emptyAgents = _.isEmpty(agentsList) && !agentsChartLoading
@@ -503,7 +503,7 @@ const Dashboard = enhance((props) => {
                     </div>
                 </section>
 
-                {noWidgets &&
+                {noActiveWidgets &&
                 <div className={classes.emptyWidgets}>
                     <div>{t('Виджеты отключены')}, <br/> {t('включите, чтобы просмотреть статистику')}</div>
                 </div>}

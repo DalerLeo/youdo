@@ -97,13 +97,13 @@ const enhance = compose(
         return (props.filter.filterRequest() !== nextProps.filter.filterRequest()) ||
             (props.widgetsLoading !== nextProps.widgetsLoading && nextProps.widgetsLoading === false)
     }, ({dispatch, filter, setLoading, widgetsList}) => {
-        const widgetsKeynames = _.map(_.get(widgetsList, 'results'), item => _.get(item, 'keyName'))
+        const widgetsKeynames = _.map(_.filter(_.get(widgetsList, 'results'), 'isActive'), item => _.get(item, 'keyName'))
         setLoading(true)
-        const activeSales = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.SALES)) && _.includes(widgetsKeynames, WIDGETS_FORM_KEY.SALES) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.SALES))
-        const activeOrders = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.ORDERS)) && _.includes(widgetsKeynames, WIDGETS_FORM_KEY.ORDERS) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.ORDERS))
-        const activeAgents = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.AGENTS)) && _.includes(widgetsKeynames, WIDGETS_FORM_KEY.AGENTS) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.AGENTS))
-        const activeFinance = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.FINANCE)) && _.includes(widgetsKeynames, WIDGETS_FORM_KEY.FINANCE) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.FINANCE))
-        const activeCurrency = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.CURRENCY)) && _.includes(widgetsKeynames, WIDGETS_FORM_KEY.CURRENCY) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.CURRENCY))
+        const activeSales = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.SALES)) ? _.includes(widgetsKeynames, WIDGETS_FORM_KEY.SALES) : toBoolean(filter.getParam(WIDGETS_FORM_KEY.SALES))
+        const activeOrders = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.ORDERS)) ? _.includes(widgetsKeynames, WIDGETS_FORM_KEY.ORDERS) : toBoolean(filter.getParam(WIDGETS_FORM_KEY.ORDERS))
+        const activeAgents = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.AGENTS)) ? _.includes(widgetsKeynames, WIDGETS_FORM_KEY.AGENTS) : toBoolean(filter.getParam(WIDGETS_FORM_KEY.AGENTS))
+        const activeFinance = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.FINANCE)) ? _.includes(widgetsKeynames, WIDGETS_FORM_KEY.FINANCE) : toBoolean(filter.getParam(WIDGETS_FORM_KEY.FINANCE))
+        const activeCurrency = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.CURRENCY)) ? _.includes(widgetsKeynames, WIDGETS_FORM_KEY.CURRENCY) : toBoolean(filter.getParam(WIDGETS_FORM_KEY.CURRENCY))
         return (activeCurrency
             ? dispatch(currencyListFetchAction(filter))
             : Promise.resolve())
@@ -210,13 +210,13 @@ const MainList = enhance((props) => {
         handleChangePassword
     } = props
 
-    const widgetsKeynames = _.map(_.get(widgetsList, 'results'), item => _.get(item, 'keyName'))
+    const widgetsKeynames = _.map(_.filter(_.get(widgetsList, 'results'), 'isActive'), item => _.get(item, 'keyName'))
 
-    const sales = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.SALES)) && _.includes(widgetsKeynames, WIDGETS_FORM_KEY.SALES) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.SALES))
-    const orders = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.ORDERS)) && _.includes(widgetsKeynames, WIDGETS_FORM_KEY.ORDERS) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.ORDERS))
-    const agents = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.AGENTS)) && _.includes(widgetsKeynames, WIDGETS_FORM_KEY.AGENTS) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.AGENTS))
-    const finance = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.FINANCE)) && _.includes(widgetsKeynames, WIDGETS_FORM_KEY.FINANCE) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.FINANCE))
-    const currency = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.CURRENCY)) && _.includes(widgetsKeynames, WIDGETS_FORM_KEY.CURRENCY) ? true : toBoolean(filter.getParam(WIDGETS_FORM_KEY.CURRENCY))
+    const sales = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.SALES)) ? _.includes(widgetsKeynames, WIDGETS_FORM_KEY.SALES) : toBoolean(filter.getParam(WIDGETS_FORM_KEY.SALES))
+    const orders = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.ORDERS)) ? _.includes(widgetsKeynames, WIDGETS_FORM_KEY.ORDERS) : toBoolean(filter.getParam(WIDGETS_FORM_KEY.ORDERS))
+    const agents = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.AGENTS)) ? _.includes(widgetsKeynames, WIDGETS_FORM_KEY.AGENTS) : toBoolean(filter.getParam(WIDGETS_FORM_KEY.AGENTS))
+    const finance = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.FINANCE)) ? _.includes(widgetsKeynames, WIDGETS_FORM_KEY.FINANCE) : toBoolean(filter.getParam(WIDGETS_FORM_KEY.FINANCE))
+    const currency = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.CURRENCY)) ? _.includes(widgetsKeynames, WIDGETS_FORM_KEY.CURRENCY) : toBoolean(filter.getParam(WIDGETS_FORM_KEY.CURRENCY))
 
     const mergeFinanceData = (firstData, secondData) => {
         const financeData = {}
