@@ -96,7 +96,7 @@ const Widgets = enhance((props) => {
                             <Loader size={0.75}/>
                         </div>
                         : <div className={classes.switches}>
-                            {_.map(list, (item) => {
+                            {_.map(_.filter(list), (item) => {
                                 const name = _.get(item, 'name')
                                 const keyname = _.get(item, 'keyName')
                                 return (
