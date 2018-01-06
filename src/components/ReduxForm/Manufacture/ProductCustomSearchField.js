@@ -24,9 +24,10 @@ const setExtraData = (data, loading) => {
     }
 }
 
-const getItem = (id, dispatch, market) => {
+const getItem = (obj, dispatch) => {
+    const productID = _.isObject(obj) ? _.get(obj, 'id') : obj
     dispatch(setExtraData(null, true))
-    return axios().get(sprintf(PATH.PRODUCT_ITEM, id))
+    return axios().get(sprintf(PATH.PRODUCT_ITEM, productID))
         .then(({data}) => {
             dispatch(setExtraData(data, false))
             return Promise.resolve(toCamelCase(data))

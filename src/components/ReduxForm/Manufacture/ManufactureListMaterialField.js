@@ -22,6 +22,7 @@ import ProductCustomSearchField from './ProductCustomSearchField'
 import TextField from '../Basic/TextField'
 import {connect} from 'react-redux'
 import numberWithoutSpaces from '../../../helpers/numberWithoutSpaces'
+import numberFormat from '../../../helpers/numberFormat'
 import normalizeNumber from '../normalizers/normalizeNumber'
 import t from '../../../helpers/translate'
 
@@ -289,7 +290,7 @@ const ManufactureListMaterialField = ({classes, measurementName, handleAdd, prod
                                     className={classes.tableTitle}>{t('Наименование')}</TableHeaderColumn>
                                 <TableHeaderColumn className={classes.tableTitle}>{t('Кол-во')}</TableHeaderColumn>
                                 <TableHeaderColumn className={classes.tableTitle}>{t('Ед')}</TableHeaderColumn>
-                                <TableHeaderColumn></TableHeaderColumn>
+                                <TableHeaderColumn/>
                             </TableRow>
                         </TableHeader>
                         <TableBody
@@ -299,7 +300,7 @@ const ManufactureListMaterialField = ({classes, measurementName, handleAdd, prod
                             stripedRows={false}>
                             {_.map(ingredients, (item, index) => {
                                 const ingredient = _.get(item, ['ingredient', 'value', 'name'])
-                                const amount = _.get(item, 'amount')
+                                const amount = numberFormat(_.get(item, 'amount'))
                                 const itemMeasurement = _.get(item, 'measurement')
                                 if (editItem === index) {
                                     return (
@@ -307,6 +308,7 @@ const ManufactureListMaterialField = ({classes, measurementName, handleAdd, prod
                                             <TableRowColumn>{ingredient}</TableRowColumn>
                                             <TableRowColumn>
                                                 <Field
+                                                    name={'editAmount'}
                                                     placeholder={amount}
                                                     component={TextField}
                                                     className={classes.inputFieldEdit}
