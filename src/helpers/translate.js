@@ -3,11 +3,11 @@ import uz from './uz.json'
 import en from './en.json'
 
 const translate = (string) => {
-    if (getLanguage() === 'uz') {
-        return uz ? uz[string] || string : string
-    } else if (getLanguage() === 'en') {
-        return en ? en[string] || string : string
+    const currentLanguage = getLanguage()
+    switch (currentLanguage) {
+        case 'uz': return uz ? uz[string] || string : string
+        case 'en': return en ? en[string] || string : string
+        default: return string
     }
-    return string
 }
 export default translate

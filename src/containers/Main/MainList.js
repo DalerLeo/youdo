@@ -6,7 +6,6 @@ import DashboardWrapper from '../../components/Dashboard'
 import {WIDGETS_FORM_KEY} from '../../components/Dashboard/Widgets'
 import {connect} from 'react-redux'
 import filterHelper from '../../helpers/filter'
-import toBoolean from '../../helpers/toBoolean'
 import moment from 'moment'
 import {
     statSalesDataFetchAction,
@@ -46,7 +45,6 @@ const enhance = compose(
         const userPosition = _.get(state, ['authConfirm', 'data', 'position', 'name'])
         const isAdmin = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
         const filter = filterHelper(orderList, pathname, query)
-        const widgetsForm = _.get(state, ['form', 'DashboardWidgetsForm'])
         const currencyForm = _.get(state, ['form', 'DashboardCurrencyForm'])
         const passwordForm = _.get(state, ['form', 'DashboardPasswordForm'])
         const widgetsList = _.get(state, ['widgets', 'list', 'data'])
@@ -67,7 +65,6 @@ const enhance = compose(
             userPosition,
             isAdmin,
             filter,
-            widgetsForm,
             currencyForm,
             widgetsList,
             widgetsLoading,
@@ -99,11 +96,11 @@ const enhance = compose(
     }, ({dispatch, filter, setLoading, widgetsList}) => {
         const widgetsKeynames = _.map(_.filter(_.get(widgetsList, 'results'), 'isActive'), item => _.get(item, 'keyName'))
         setLoading(true)
-        const activeSales = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.SALES)) ? _.includes(widgetsKeynames, WIDGETS_FORM_KEY.SALES) : toBoolean(filter.getParam(WIDGETS_FORM_KEY.SALES))
-        const activeOrders = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.ORDERS)) ? _.includes(widgetsKeynames, WIDGETS_FORM_KEY.ORDERS) : toBoolean(filter.getParam(WIDGETS_FORM_KEY.ORDERS))
-        const activeAgents = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.AGENTS)) ? _.includes(widgetsKeynames, WIDGETS_FORM_KEY.AGENTS) : toBoolean(filter.getParam(WIDGETS_FORM_KEY.AGENTS))
-        const activeFinance = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.FINANCE)) ? _.includes(widgetsKeynames, WIDGETS_FORM_KEY.FINANCE) : toBoolean(filter.getParam(WIDGETS_FORM_KEY.FINANCE))
-        const activeCurrency = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.CURRENCY)) ? _.includes(widgetsKeynames, WIDGETS_FORM_KEY.CURRENCY) : toBoolean(filter.getParam(WIDGETS_FORM_KEY.CURRENCY))
+        const activeSales = _.includes(widgetsKeynames, WIDGETS_FORM_KEY.SALES)
+        const activeOrders = _.includes(widgetsKeynames, WIDGETS_FORM_KEY.ORDERS)
+        const activeAgents = _.includes(widgetsKeynames, WIDGETS_FORM_KEY.AGENTS)
+        const activeFinance = _.includes(widgetsKeynames, WIDGETS_FORM_KEY.FINANCE)
+        const activeCurrency = _.includes(widgetsKeynames, WIDGETS_FORM_KEY.CURRENCY)
         return (activeCurrency
             ? dispatch(currencyListFetchAction(filter))
             : Promise.resolve())
@@ -139,23 +136,6 @@ const enhance = compose(
     }),
 
     withHandlers({
-        handleSubmitWidgetsForm: props => () => {
-            const {filter, widgetsForm} = props
-            const sales = _.get(widgetsForm, ['values', 'sales']) || null
-            const orders = _.get(widgetsForm, ['values', 'orders']) || null
-            const agents = _.get(widgetsForm, ['values', 'agents']) || null
-            const finance = _.get(widgetsForm, ['values', 'finance']) || null
-            const currency = _.get(widgetsForm, ['values', 'currency']) || null
-
-            filter.filterBy({
-                [WIDGETS_FORM_KEY.SALES]: sales,
-                [WIDGETS_FORM_KEY.ORDERS]: orders,
-                [WIDGETS_FORM_KEY.AGENTS]: agents,
-                [WIDGETS_FORM_KEY.FINANCE]: finance,
-                [WIDGETS_FORM_KEY.CURRENCY]: currency
-            })
-        },
-
         handleUpdateRate: props => (currency) => {
             const {dispatch, currencyForm, filter} = props
             const rate = _.get(currencyForm, ['values', 'rate'])
@@ -206,17 +186,16 @@ const MainList = enhance((props) => {
         widgetsList,
         widgetsLoading,
         openEditPass,
-        setOpenEditPass,
-        handleChangePassword
+        setOpenEditPass
     } = props
 
     const widgetsKeynames = _.map(_.filter(_.get(widgetsList, 'results'), 'isActive'), item => _.get(item, 'keyName'))
 
-    const sales = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.SALES)) ? _.includes(widgetsKeynames, WIDGETS_FORM_KEY.SALES) : toBoolean(filter.getParam(WIDGETS_FORM_KEY.SALES))
-    const orders = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.ORDERS)) ? _.includes(widgetsKeynames, WIDGETS_FORM_KEY.ORDERS) : toBoolean(filter.getParam(WIDGETS_FORM_KEY.ORDERS))
-    const agents = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.AGENTS)) ? _.includes(widgetsKeynames, WIDGETS_FORM_KEY.AGENTS) : toBoolean(filter.getParam(WIDGETS_FORM_KEY.AGENTS))
-    const finance = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.FINANCE)) ? _.includes(widgetsKeynames, WIDGETS_FORM_KEY.FINANCE) : toBoolean(filter.getParam(WIDGETS_FORM_KEY.FINANCE))
-    const currency = _.isUndefined(filter.getParam(WIDGETS_FORM_KEY.CURRENCY)) ? _.includes(widgetsKeynames, WIDGETS_FORM_KEY.CURRENCY) : toBoolean(filter.getParam(WIDGETS_FORM_KEY.CURRENCY))
+    const sales = _.includes(widgetsKeynames, WIDGETS_FORM_KEY.SALES)
+    const orders = _.includes(widgetsKeynames, WIDGETS_FORM_KEY.ORDERS)
+    const agents = _.includes(widgetsKeynames, WIDGETS_FORM_KEY.AGENTS)
+    const finance = _.includes(widgetsKeynames, WIDGETS_FORM_KEY.FINANCE)
+    const currency = _.includes(widgetsKeynames, WIDGETS_FORM_KEY.CURRENCY)
 
     const mergeFinanceData = (firstData, secondData) => {
         const financeData = {}
@@ -320,14 +299,14 @@ const MainList = enhance((props) => {
     const widgetsForm = {
         list: _.get(widgetsList, 'results'),
         loading: widgetsLoading,
-        initialValues: {
-            sales: sales,
-            orders: orders,
-            agents: agents,
-            finance: finance,
-            currency: currency
-        },
-        handleSubmitWidgetsForm: props.handleSubmitWidgetsForm
+        initialValues: (() => {
+            const object = {}
+            _.map(_.get(widgetsList, 'results'), (item) => {
+                const keyName = _.get(item, 'keyName')
+                object[keyName] = _.get(item, 'isActive')
+            })
+            return object
+        })()
     }
 
     return (
@@ -347,7 +326,7 @@ const MainList = enhance((props) => {
                 dispatch={dispatch}
                 openEditPass={openEditPass}
                 setOpenEditPass={setOpenEditPass}
-                handleChangePassword={handleChangePassword}
+                handleChangePassword={props.handleChangePassword}
             />
         </Layout>
     )

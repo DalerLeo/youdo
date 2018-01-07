@@ -138,6 +138,7 @@ const enhance = compose(
         },
         chartHalf: {
             width: 'calc(50% - 10px)',
+            flexWrap: 'wrap',
             '& > div': {
                 marginBottom: '20px',
                 minWidth: 'calc(50% - 10px)',
@@ -231,7 +232,6 @@ const Dashboard = enhance((props) => {
         dateInitialValues,
         widgetsForm,
         loading,
-        setLangAction,
         openEditPass,
         setOpenEditPass,
         handleChangePassword
@@ -362,9 +362,9 @@ const Dashboard = enhance((props) => {
                         anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
                         targetOrigin={{horizontal: 'right', vertical: 'bottom'}}
                         iconButtonElement={FAB}>
-                        <MenuItem style={langIsUZ ? fabMenuStyle.activeMenu : fabMenuStyle.defaultMenu} primaryText="Ўзбекча" onTouchTap={() => setLangAction('uz')}/>
-                        <MenuItem style={langIsRU ? fabMenuStyle.activeMenu : fabMenuStyle.defaultMenu} primaryText="Русский" onTouchTap={() => setLangAction('ru')}/>
-                        <MenuItem style={langIsEN ? fabMenuStyle.activeMenu : fabMenuStyle.defaultMenu} primaryText="English" onTouchTap={() => setLangAction('en')}/>
+                        <MenuItem style={langIsUZ ? fabMenuStyle.activeMenu : fabMenuStyle.defaultMenu} primaryText="Ўзбекча" onTouchTap={() => props.setLangAction('uz')}/>
+                        <MenuItem style={langIsRU ? fabMenuStyle.activeMenu : fabMenuStyle.defaultMenu} primaryText="Русский" onTouchTap={() => props.setLangAction('ru')}/>
+                        <MenuItem style={langIsEN ? fabMenuStyle.activeMenu : fabMenuStyle.defaultMenu} primaryText="English" onTouchTap={() => props.setLangAction('en')}/>
                     </IconMenu>
                 </div>
 
