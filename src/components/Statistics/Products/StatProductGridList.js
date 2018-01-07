@@ -14,7 +14,7 @@ import getConfig from '../../../helpers/getConfig'
 import numberFormat from '../../../helpers/numberFormat.js'
 import horizontalScroll from '../../../helpers/horizontalScroll.js'
 import NotFound from '../../Images/not-found.png'
-import {TextField, ProductTypeChildSearchField, ProductTypeParentSearchField, DateToDateField} from '../../ReduxForm'
+import {TextField, ProductTypeChildSearchField, ProductTypeParentSearchField, DateToDateField, ClientMultiSearchField} from '../../ReduxForm'
 import ordering from '../../../helpers/ordering'
 import {reduxForm, Field} from 'redux-form'
 import IconButton from 'material-ui/IconButton'
@@ -29,6 +29,7 @@ import t from '../../../helpers/translate'
 
 export const STAT_PRODUCT_FILTER_KEY = {
     SEARCH: 'search',
+    CLIENT: 'client',
     PRODUCT_TYPE: 'productType',
     PRODUCT_TYPE_CHILD: 'productTypeChild',
     TO_DATE: 'toDate',
@@ -450,6 +451,12 @@ const StatProductGridList = enhance((props) => {
                 label={t('Подкатегория')}
                 fullWidth={true}
             /> : null}
+            <Field
+                className={classes.inputFieldCustom}
+                name="client"
+                component={ClientMultiSearchField}
+                label={t('Клиент')}
+                fullWidth={true}/>
         </div>
     )
 

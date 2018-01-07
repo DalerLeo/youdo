@@ -548,9 +548,10 @@
   "Частота посещений": "Tashriflar chastotasi",
   "Тип магазина": "Do'kon turi",
   "не указано": "ko'rsatilmagan",
-  "Магазин <br/> активен": "Do'kon <br/> faol",
-  "Магазин <br/> неактивен": "Do'kon <br/> faol emas",
+  "Магазин активен": "Do'kon faol",
+  "Магазин неактивен": "Do'kon faol emas",
   "Дата изменения": "O'zgartirilgan sana",
+  "Фото отсутствует": "Fotosurat mavjud emas",
   "Изменил": "O'zgardi",
   "Тип заведения": "",
   "Контакты": "Kontaktlar",
@@ -808,5 +809,7 @@
   "Заказы": "Buyurtmalar",
   "Продажи": "Sotuvlar",
   "Нет уведомлений": "Bildirishnomalar yo'q",
-  "Магазина": "Do'konlar"
+  "Магазина": "Do'konlar",
+  "добавить фото": "fotosurat qo'shish",
+  "Добавьте фото": "Fotosurat qo'shing"
 }

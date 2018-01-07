@@ -21,6 +21,7 @@ const getOptions = (search) => {
 }
 
 const getItem = (id) => {
+    console.log(id, 'id chiqishi kerak  ')
     return axios().get(sprintf(PATH.PRODUCT_TYPE_ITEM, id))
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data))

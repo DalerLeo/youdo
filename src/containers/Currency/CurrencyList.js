@@ -263,8 +263,10 @@ const CurrencyList = enhance((props) => {
         handleCloseConfirmDialog: props.handleCloseConfirmDialog,
         handleSendConfirmDialog: props.handleSendConfirmDialog
     }
+    console.log(_.find((_.get(list, 'results')), {'id': detailId}))
 
     const updateDialog = {
+
         initialValues: (() => {
             const currencyName = _.get(_.find((_.get(list, 'results')), {'id': detailId}), 'name')
             const currencyRate = _.get(_.find((_.get(list, 'results')), {'id': detailId}), 'rate')

@@ -353,8 +353,8 @@ const ShopDetails = enhance((props) => {
                             )
                         )}</b>
                     </div>
-                    {isActive ? <div className={classes.status} style={{background: '#81c784'}}>{t('Магазин <br/> активен')}</div>
-                        : <div className={classes.status} style={{background: '#ff717e'}}>{t('Магазин <br/> неактивен')}</div>
+                    {isActive ? <div className={classes.status} style={{background: '#81c784'}}>{t('Магазин активен')}</div>
+                        : <div className={classes.status} style={{background: '#ff717e'}}>{t('Магазин неактивен')}</div>
                     }
                     <Tooltip position="bottom" text={t('Изменить')}>
                         <IconButton
@@ -381,7 +381,7 @@ const ShopDetails = enhance((props) => {
                     <div className={classes.image}>
                         {(images.length === ZERO) ? <div className={classes.noImage}>
                                 <div>
-                                    <span>{t('Фото <br/> отсутствует')}</span>
+                                    <span>{t('Фото отсутствует')}</span>
                                     <a onClick={addPhotoDialog.handleOpenAddPhotoDialog}>{t('добавить фото')}</a>
                                 </div>
                             </div>
