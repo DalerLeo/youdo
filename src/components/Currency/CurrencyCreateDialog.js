@@ -79,7 +79,7 @@ const CurrencyCreateDialog = enhance((props) => {
                             />
                             {isUpdate
                                 ? <Field
-                                    name="rate"
+                                    name="currencyRate"
                                     disabled={true}
                                     component={TextField}
                                     className={classes.inputFieldCustom}

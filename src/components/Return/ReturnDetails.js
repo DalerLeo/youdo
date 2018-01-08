@@ -217,8 +217,7 @@ const ReturnDetails = enhance((props) => {
     const IN_PROGRESS = 1
     const COMPLETED = 2
     const CANCELLED = 3
-    const primaryCurrency = _.get(data, ['currency', 'name'])
-    const totalPrice = numberFormat(_.get(data, 'totalPrice'), primaryCurrency)
+    const totalPrice = numberFormat(_.get(data, 'totalPrice'), currency)
     const typeClient = _.toInteger(_.get(data, 'type'))
 
     const products = _.get(data, 'returnedProducts')
@@ -358,8 +357,8 @@ const ReturnDetails = enhance((props) => {
                             <Col xs={4}>{t('Товар')}</Col>
                             <Col xs={2}>{t('Код товара')}</Col>
                             <Col xs={2}>{t('Количество')}</Col>
-                            <Col xs={2}>{t('Цена')} ({primaryCurrency})</Col>
-                            <Col xs={2}>{t('Сумма')} ({primaryCurrency})</Col>
+                            <Col xs={2}>{t('Цена')} ({currency})</Col>
+                            <Col xs={2}>{t('Сумма')} ({currency})</Col>
                         </Row>
                         {_.map(products, (item) => {
                             const product = _.get(item, ['product', 'name'])

@@ -8,6 +8,7 @@ import Dropzone from 'react-dropzone'
 import axios from '../../../helpers/axios'
 import Loader from '../../Loader'
 import ImageImage from 'material-ui/svg-icons/image/image'
+import t from '../../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -93,7 +94,7 @@ const ImageUploadField = ({classes, setFileUploadLoading, fileUploadLoading, set
                         display: 'block',
                         margin: 'auto'
                     }}/>
-                    Добавьте фото
+                    {t('Добавьте фото')}
                 </p>)
         }
         const url = acceptedFiles[zero].preview

@@ -20,6 +20,7 @@ export const listFilterSerializer = (data) => {
     const type = _.get(defaultData, 'productTypeChild') || _.get(defaultData, 'productType')
     return {
         'search': _.get(defaultData, 'search'),
+        'client': _.get(defaultData, 'client') || null,
         'division': _.get(defaultData, 'division') || null,
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),

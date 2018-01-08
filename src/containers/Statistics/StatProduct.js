@@ -59,6 +59,7 @@ const enhance = compose(
             const {filter, filterForm} = props
 
             const search = _.get(filterForm, ['values', 'search']) || null
+            const client = _.get(filterForm, ['values', 'client']) || null
             const productType = _.get(filterForm, ['values', 'productType', 'value']) || null
             const productTypeChild = _.get(filterForm, ['values', 'productTypeChild', 'value']) || null
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
@@ -67,6 +68,7 @@ const enhance = compose(
             filter.filterBy({
                 [STAT_PRODUCT_FILTER_KEY.SEARCH]: search,
                 [STAT_PRODUCT_FILTER_KEY.PRODUCT_TYPE]: (productType),
+                [STAT_PRODUCT_FILTER_KEY.CLIENT]: _.join(client, '-'),
                 [STAT_PRODUCT_FILTER_KEY.PRODUCT_TYPE_CHILD]: productTypeChild,
                 [STAT_PRODUCT_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [STAT_PRODUCT_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
@@ -108,6 +110,7 @@ const StatProductList = enhance((props) => {
     const firstDayOfMonth = _.get(location, ['query', 'fromDate']) || moment().format('YYYY-MM-01')
     const lastDay = moment().daysInMonth()
     const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
+    const client = filter.getParam(STAT_PRODUCT_FILTER_KEY.CLIENT)
     const productType = !_.isNull(location, ['query', 'productType']) && _.toInteger(_.get(location, ['query', 'productType']))
     const productTypeChild = !_.isNull(location, ['query', 'productTypeChild']) && _.toInteger(_.get(location, ['query', 'productTypeChild']))
     const search = !_.isNull(_.get(location, ['query', 'search'])) ? _.get(location, ['query', 'search']) : null
@@ -115,6 +118,9 @@ const StatProductList = enhance((props) => {
     const filterForm = {
         initialValues: {
             search: search,
+            client: client && _.map(_.split(client, '-'), (item) => {
+                return _.toNumber(item)
+            }),
             productType: {value: productType},
             productTypeChild: {
                 value: productTypeChild
