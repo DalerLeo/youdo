@@ -21,6 +21,7 @@ export const CLIENT_TRANSACTION_ITEM = `/${CLIENT_TRANSACTION}/%d/`
 export const CLIENT_TRANSACTION_SEND = '/transfer/'
 export const CLIENT_TRANSACTION_DELETE = `/${CLIENT_TRANSACTION}/%d/cancel/`
 export const CLIENT_TRANSACTION_RESEND = 'telegram/resend_client_transaction/'
+export const CLIENT_TRANSACTION_TOTAL = `/${CLIENT_TRANSACTION}/total/`
 
 export const EQUIPMENT = 'manufacture/equipment'
 export const EQUIPMENT_CREATE = `/${EQUIPMENT}/`
@@ -37,6 +38,7 @@ export const STOCK_DELETE = `/${STOCK}/%d/`
 export const MEASUREMENT = 'main/measurement'
 export const MEASUREMENT_CREATE = `/${MEASUREMENT}/`
 export const MEASUREMENT_LIST = `/${MEASUREMENT}/`
+export const MEASUREMENT_H_LIST = `/${MEASUREMENT}/hierarchy/`
 export const MEASUREMENT_ITEM = `/${MEASUREMENT}/%d/`
 export const MEASUREMENT_DELETE = `/${MEASUREMENT}/%d/`
 

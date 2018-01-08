@@ -25,7 +25,7 @@ const listHeader = [
     {
         sorting: true,
         name: 'name',
-        xs: 5,
+        xs: 6,
         title: t('Наименование')
     },
     {
@@ -66,7 +66,9 @@ const enhance = compose(
             marginLeft: '20px !important'
         },
         right: {
-            textAlign: 'right'
+            textAlign: 'right',
+            justifyContent: 'flex-end',
+            paddingRight: '0'
         },
         rightPanel: {
             background: '#fff',

@@ -54,3 +54,20 @@ export const clientTransactionListFetchAction = (filter, clientId) => {
     }
 }
 
+export const clientTransactionTotalFetchAction = (filter) => {
+    const params = serializers.totalSumFilterSerializer(filter.getParams())
+    const payload = axios()
+        .get(API.CLIENT_TRANSACTION_TOTAL, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.CLIENT_TRANSACTION_TOTAL,
+        payload
+    }
+}
+

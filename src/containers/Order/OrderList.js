@@ -48,7 +48,6 @@ import {
     ORDER_FILTER_KEY,
     ORDER_FILTER_OPEN,
     ORDER_TRANSACTIONS_DIALOG_OPEN,
-    ORDER_ITEM_RETURN_DIALOG_OPEN,
     ORDER_RETURN_DIALOG_OPEN,
     ORDER_SHORTAGE_DIALOG_OPEN,
     ORDER_MULTI_EDIT_OPEN,
@@ -524,16 +523,6 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[ORDER_TRANSACTIONS_DIALOG_OPEN]: false})})
         },
 
-        handleOpenItemReturnDialog: props => (id) => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[ORDER_ITEM_RETURN_DIALOG_OPEN]: id})})
-        },
-
-        handleCloseItemReturnDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[ORDER_ITEM_RETURN_DIALOG_OPEN]: MINUS_ONE})})
-        },
-
         handleOpenReturnDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[ORDER_RETURN_DIALOG_OPEN]: true})})
@@ -913,7 +902,6 @@ const OrderList = enhance((props) => {
         shortageLoading,
         updateLoading,
         returnDataLoading,
-        returnDialogLoading,
         filter,
         layout,
         products,
@@ -941,7 +929,6 @@ const OrderList = enhance((props) => {
     const openFilterDialog = toBoolean(_.get(location, ['query', ORDER_FILTER_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', ORDER_CREATE_DIALOG_OPEN]))
     const openTransactionsDialog = toBoolean(_.get(location, ['query', ORDER_TRANSACTIONS_DIALOG_OPEN]))
-    const openOrderItemReturnDialog = _.toInteger(_.get(location, ['query', 'openOrderItemReturnDialog']) || MINUS_ONE) > MINUS_ONE
     const openReturnDialog = toBoolean(_.get(location, ['query', ORDER_RETURN_DIALOG_OPEN]))
     const openShortageDialog = toBoolean(_.get(location, ['query', ORDER_SHORTAGE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', ORDER_UPDATE_DIALOG_OPEN]))
@@ -991,12 +978,6 @@ const OrderList = enhance((props) => {
         handleOpenCancelOrderReturnDialog: props.handleOpenCancelOrderReturnDialog,
         handleCloseCancelOrderReturnDialog: props.handleCloseCancelOrderReturnDialog,
         handleSubmitCancelOrderReturnDialog: props.handleSubmitCancelOrderReturnDialog
-    }
-    const itemReturnDialog = {
-        returnDialogLoading,
-        openOrderItemReturnDialog,
-        handleOpenItemReturnDialog: props.handleOpenItemReturnDialog,
-        handleCloseItemReturnDialog: props.handleCloseItemReturnDialog
     }
 
     const returnDialog = {
@@ -1329,7 +1310,6 @@ const OrderList = enhance((props) => {
                 getExcelDocument={props.handleGetExcelDocument}
                 createClientDialog={createClientDialog}
                 transactionsDialog={transactionsDialog}
-                itemReturnDialog={itemReturnDialog}
                 returnDialog={returnDialog}
                 shortageDialog={shortageDialog}
                 confirmDialog={confirmDialog}

@@ -16,7 +16,6 @@ import MoneyOffIcon from 'material-ui/svg-icons/editor/money-off'
 import IconButton from 'material-ui/IconButton'
 import OrderTransactionsDialog from './OrderTransactionsDialog'
 import OrderReturnDialog from './OrderReturnDialog'
-import OrderItemReturnDialog from './OrderItemReturnDialog'
 import StatRightSide from './OrderStatDetailsRightSide'
 import OrderSetDiscountDialog from './OrderSetDiscountDialog'
 import RightSide from './OrderDetailsRightSideTabs'
@@ -213,9 +212,7 @@ const OrderDetails = enhance((props) => {
         data,
         transactionsDialog,
         returnDialog,
-        returnListData,
         returnDataLoading,
-        itemReturnDialog,
         cancelOrderReturnDialog,
         confirmDialog,
         updateDialog,
@@ -486,7 +483,6 @@ const OrderDetails = enhance((props) => {
                 <RightSide
                     data={data}
                     tabData={tabData}
-                    itemReturnDialog={itemReturnDialog}
                     returnData={returnData}
                     returnDataLoading={returnDataLoading}
                     cancelOrderReturnOpen={cancelOrderReturnDialog.handleOpenCancelOrderReturnDialog}
@@ -507,12 +503,6 @@ const OrderDetails = enhance((props) => {
                 onClose={returnDialog.handleCloseReturnDialog}
                 onSubmit={returnDialog.handleSubmitReturnDialog}
                 orderData={data}
-            />}
-            {type && <OrderItemReturnDialog
-                returnListData={returnListData}
-                open={itemReturnDialog.openOrderItemReturnDialog}
-                loading={itemReturnDialog.returnDialogLoading}
-                onClose={itemReturnDialog.handleCloseItemReturnDialog}
             />}
             {type && <ConfirmDialog
                 type="cancel"
@@ -541,12 +531,6 @@ OrderDetails.propTypes = {
         openReturnDialog: PropTypes.bool,
         handleOpenReturnDialog: PropTypes.func,
         handleCloseReturnDialog: PropTypes.func
-    }),
-    itemReturnDialog: PropTypes.shape({
-        returnDialogLoading: PropTypes.bool,
-        openOrderItemReturnDialog: PropTypes.bool,
-        handleOpenItemReturnDialog: PropTypes.func,
-        handleCloseItemReturnDialog: PropTypes.func
     }),
     handleOpenUpdateDialog: PropTypes.func,
     orderListData: PropTypes.object,

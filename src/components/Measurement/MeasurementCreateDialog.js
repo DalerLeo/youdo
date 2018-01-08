@@ -9,6 +9,7 @@ import Loader from '../Loader'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import {TextField} from '../ReduxForm'
+import MeasurementParentSearchField from '../ReduxForm/Measurement/MeasurementParentSearchField'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
@@ -75,6 +76,13 @@ const MeasurementCreateDialog = enhance((props) => {
                     </div>
                     <div className={classes.inContent} style={{minHeight: '100px', paddingTop: '15px'}}>
                         <div className={classes.field}>
+                            <Field
+                                name="parent"
+                                component={MeasurementParentSearchField}
+                                className={classes.inputFieldCustom}
+                                label={t('Радительская категория')}
+                                fullWidth={true}
+                            />
                             <Field
                                 name="name"
                                 component={TextField}
