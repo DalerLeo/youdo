@@ -16,6 +16,7 @@ import {
 } from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
+import t from '../../helpers/translate'
 
 export const TELEGRAM_FILTER_OPEN = 'openFilterDialog'
 
@@ -148,7 +149,7 @@ const TelegramFilterForm = enhance((props) => {
         if (filterCounts) {
             return (
                 <div className={classes.afterFilter}>
-                    <div>Фильтр: {filterCounts} элемента</div>
+                    <div>{t('Фильтр')}: {filterCounts} {t('элемента')}</div>
                     <div>
                         <IconButton onTouchTap={filterDialog.handleOpenFilterDialog}>
                             <BorderColorIcon color="#8f8f8f" />
@@ -166,7 +167,7 @@ const TelegramFilterForm = enhance((props) => {
                 <Link
                     className={classes.arrow}
                     onTouchTap={filterDialog.handleOpenFilterDialog}>
-                    <div>Показать фильтр <KeyboardArrowDown color="#12aaeb" /></div>
+                    <div>{t('Показать фильтр')} <KeyboardArrowDown color="#12aaeb" /></div>
                 </Link>
             </div>
         )
@@ -186,28 +187,28 @@ const TelegramFilterForm = enhance((props) => {
                         className={classes.inputFieldCustom}
                         name="market"
                         component={MarketMultiSearchField}
-                        label="Магазина"
+                        label={t('Магазина')}
                         fullWidth={true}/>
                     <Field
                         className={classes.inputFieldCustom}
                         name="createdBy"
                         component={UsersMultiSearchField}
-                        label="Создал"/>
+                        label={t('Создал')}/>
                     <Field
                         className={classes.inputDateCustom}
                         name="createdDate"
                         component={DateToDateField}
-                        label="Дата создания"/>
+                        label={t('Дата создания')}/>
                     <Field
                         className={classes.inputDateCustom}
                         name="activatedDate"
                         component={DateToDateField}
-                        label="Дата активации"/>
+                        label={t('Дата активации')}/>
                     <RaisedButton
                         type="submit"
                         primary={true}
                         buttonStyle={{color: '#fff'}}
-                        label="Применить"
+                        label={t('Применить')}
                         labelStyle={{fontSize: '13px'}}
                         style={{marginTop: '15px'}}>
                     </RaisedButton>

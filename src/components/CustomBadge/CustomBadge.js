@@ -7,6 +7,7 @@ import ToolTip from '../ToolTip'
 import FlatButton from 'material-ui/FlatButton'
 import Notification from 'material-ui/svg-icons/social/notifications'
 import {notificationCountFetchAction} from '../../actions/notifications'
+import t from '../../helpers/translate'
 
 const ZERO = 0
 const TIMER = 60000
@@ -38,7 +39,7 @@ const CustomBadge = enhance((props) => {
     const {classBadge, style, handleOpen, count} = props
     if (count <= ZERO) {
         return (
-            <ToolTip position="right" text="Уведомления">
+            <ToolTip position="right" text={t('Уведомления')}>
                 <FlatButton
                     rippleColor="#fff"
                     style={style}
@@ -55,7 +56,7 @@ const CustomBadge = enhance((props) => {
             className={classBadge}
             badgeContent={count}
             badgeStyle={{top: 8, right: 10}}>
-            <ToolTip position="right" text="Уведомления">
+            <ToolTip position="right" text={t('Уведомления')}>
                 <FlatButton
                     rippleColor="#fff"
                     style={style}

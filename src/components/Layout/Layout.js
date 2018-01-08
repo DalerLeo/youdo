@@ -38,6 +38,7 @@ import Notifications from '../Images/Notification.png'
 import InfiniteScroll from 'react-infinite-scroller'
 import * as ROUTE from '../../constants/routes'
 import {Link} from 'react-router'
+import t from '../../helpers/translate'
 
 const iconStyle = {
     icon: {
@@ -115,10 +116,10 @@ const enhance = compose(
                     updateList(_.differenceBy(list, removedList, 'id'))
                 })
                 .then(() => {
-                    return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
+                    return dispatch(openSnackbarAction({message: t('Успешно удалено')}))
                 })
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
+                    return dispatch(openSnackbarAction({message: t('Ошибка при удалении')}))
                 })
         },
 
@@ -481,7 +482,7 @@ const Layout = enhance((props) => {
                         <Loader size={0.75}/>
                     </div>}
                     <div className={classes.header}>
-                        <div>Уведомления</div>
+                        <div>{t('Уведомления')}</div>
                         <div>
                             <IconButton
                                 iconStyle={iconStyle.icon}
@@ -505,7 +506,7 @@ const Layout = enhance((props) => {
                                 {(notificationListExp.length > ZERO
                                     ? notificationListExp
                                     : <div className={classes.emptyQuery}>
-                                        <div>Нет уведомлений</div>
+                                        <div>{t('Нет уведомлений')}</div>
                                     </div>)}
                             </InfiniteScroll>
                     </div>
