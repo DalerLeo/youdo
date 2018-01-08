@@ -30,11 +30,9 @@ export const CLIENT_BALANCE_FILTER_KEY = {
 const enhance = compose(
     connect((state, props) => {
         const showPaymentType = _.get(state, ['form', 'ClientBalanceFilterForm', 'values', 'balanceType', 'value'])
-        console.log(showPaymentType, 'showPaymentType')
         return {
             showPaymentType
         }
-
     }),
     injectSheet({
         wrapper: {
@@ -139,7 +137,7 @@ const ClientBalanceFilterForm = enhance((props) => {
                     <div>{t('Фильтр')}: {filterCounts} {t('элемента')}</div>
                     <div>
                         <IconButton onTouchTap={filterDialog.handleOpenFilterDialog}>
-                            <BorderColorIcon color="#8f8f8f" />
+                            <BorderColorIcon color="#8f8f8f"/>
                         </IconButton>
                         <IconButton onTouchTap={filterDialog.handleClearFilterDialog}>
                             <CloseIcon className={classes.icon}/>
@@ -154,7 +152,7 @@ const ClientBalanceFilterForm = enhance((props) => {
                 <Link
                     className={classes.arrow}
                     onTouchTap={filterDialog.handleOpenFilterDialog}>
-                    <div>{t('Показать фильтр')} <KeyboardArrowDown color="#12aaeb" /></div>
+                    <div>{t('Показать фильтр')} <KeyboardArrowDown color="#12aaeb"/></div>
                 </Link>
             </div>
         )
@@ -166,7 +164,7 @@ const ClientBalanceFilterForm = enhance((props) => {
                 <div className={classes.header}>
                     <span className={classes.title}>{t('Фильтр')}</span>
                     <IconButton onTouchTap={filterDialog.handleCloseFilterDialog}>
-                        <CloseIcon className={classes.icon} />
+                        <CloseIcon className={classes.icon}/>
                     </IconButton>
                 </div>
                 <form onSubmit={handleSubmit(filterDialog.handleSubmitFilterDialog)}>
