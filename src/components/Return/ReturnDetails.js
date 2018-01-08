@@ -13,7 +13,6 @@ import ConfirmDialog from '../ConfirmDialog'
 import Tooltip from '../ToolTip'
 import numberFormat from '../../helpers/numberFormat'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
-import getConfig from '../../helpers/getConfig'
 import t from '../../helpers/translate'
 const ZERO = 0
 
