@@ -56,7 +56,7 @@ const enhance = compose(
         loader: {
             width: '100%',
             background: '#fff',
-            height: '200px',
+            height: '100px',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center'
@@ -314,9 +314,7 @@ const SupplyDetails = enhance((props) => {
         <div className={classes.wrapper}>
             <div className={classes.title}>
                 <div className={classes.titleLabel}>{t('Поставка')} №{id}</div>
-                <div className={classes.closeDetail}
-                     onClick={handleCloseDetail}>
-                </div>
+                <div className={classes.closeDetail} onClick={handleCloseDetail}/>
                 <div className={classes.discountPop}
                      style={openDiscountDialog ? {transform: 'scale(1)'} : {transform: 'scale(0)'}}>
                     <SupplySetDiscountDialog

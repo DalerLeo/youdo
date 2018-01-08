@@ -4,7 +4,6 @@ import {ORDER_TRANSACTIONS_DIALOG_OPEN} from './OrderTransactionsDialog'
 import {ORDER_RETURN_DIALOG_OPEN} from './OrderReturnDialog'
 import {ORDER_SHORTAGE_DIALOG_OPEN} from './OrderShortage'
 import {ORDER_FILTER_KEY, ORDER_FILTER_OPEN} from './OrderFilterForm'
-import {ORDER_ITEM_RETURN_DIALOG_OPEN} from './OrderItemReturnDialog'
 import OrderPrint from './OrderPrint'
 import OrderSalesPrint from './OrderSalesPrint'
 import OrderContractPrint from './OrderContractPrint'
@@ -21,7 +20,6 @@ export {
     ORDER_FILTER_KEY,
     ORDER_FILTER_OPEN,
     ORDER_TRANSACTIONS_DIALOG_OPEN,
-    ORDER_ITEM_RETURN_DIALOG_OPEN,
     ORDER_RETURN_DIALOG_OPEN,
     ORDER_SHORTAGE_DIALOG_OPEN,
     ORDER_UPDATE_DIALOG_OPEN,
