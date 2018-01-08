@@ -21,7 +21,8 @@ import {
 import {
     clientTransactionListFetchAction,
     clientTransactionDeleteAction,
-    clientTransactionResendAction
+    clientTransactionResendAction,
+    clientTransactionTotalFetchAction
 } from '../../actions/clientTransaction'
 import {openSnackbarAction} from '../../actions/snackbar'
 import t from '../../helpers/translate'
@@ -33,12 +34,16 @@ const enhance = compose(
         const pathname = _.get(props, ['location', 'pathname'])
         const list = _.get(state, ['clientTransaction', 'list', 'data'])
         const listLoading = _.get(state, ['clientTransaction', 'list', 'loading'])
+        const totalSum = _.get(state, ['clientTransaction', 'total', 'data'])
+        const totalSumLoading = _.get(state, ['clientTransaction', 'total', 'loading'])
         const filterForm = _.get(state, ['form', 'ClientTransactionFilterForm'])
         const filter = filterHelper(list, pathname, query)
         const isAdmin = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
         return {
             list,
             listLoading,
+            totalSum,
+            totalSumLoading,
             filter,
             filterForm,
             isAdmin
@@ -52,6 +57,20 @@ const enhance = compose(
     }, ({dispatch, filter, params}) => {
         const clientId = _.toInteger(_.get(params, 'clientTransactionId'))
         dispatch(clientTransactionListFetchAction(filter, clientId === ZERO ? null : clientId))
+    }),
+    withPropsOnChange((props, nextProps) => {
+        const exclude = {
+            page: null,
+            pageSize: null,
+            search: null,
+            status: null,
+            openFilterDialog: null,
+            openDeleteDialog: null
+        }
+        return (props.list && props.filter.filterRequest(exclude) !== nextProps.filter.filterRequest(exclude)) ||
+            (_.get(props, ['params', 'clientTransactionId']) !== _.get(nextProps, ['params', 'clientTransactionId']))
+    }, ({dispatch, filter}) => {
+        dispatch(clientTransactionTotalFetchAction(filter))
     }),
 
     withHandlers({
@@ -157,6 +176,8 @@ const ClientTransactionList = enhance((props) => {
         location,
         list,
         listLoading,
+        totalSum,
+        totalSumLoading,
         filter,
         layout,
         params,
@@ -211,11 +232,17 @@ const ClientTransactionList = enhance((props) => {
         listLoading
     }
 
+    const sumData = {
+        data: totalSum,
+        loading: totalSumLoading
+    }
+
     return (
         <Layout {...layout}>
             <ClientTransactionGridList
                 filter={filter}
                 listData={listData}
+                sumData={sumData}
                 transactionID={transactionID}
                 confirmDialog={confirmDialog}
                 resendDialog={resendDialog}

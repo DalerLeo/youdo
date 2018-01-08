@@ -36,7 +36,8 @@ const rootReducer = combineReducers({
         create: createThunkReducer(actionTypes.CLIENT_TRANSACTION_CREATE),
         item: createThunkReducer(actionTypes.CLIENT_TRANSACTION_ITEM),
         update: createThunkReducer(actionTypes.CLIENT_TRANSACTION_UPDATE),
-        list: createThunkReducer(actionTypes.CLIENT_TRANSACTION_LIST)
+        list: createThunkReducer(actionTypes.CLIENT_TRANSACTION_LIST),
+        total: createThunkReducer(actionTypes.CLIENT_TRANSACTION_TOTAL)
     }),
     notifications: combineReducers({
         list: createThunkReducer(actionTypes.NOTIFICATIONS_LIST),
@@ -151,7 +152,7 @@ const rootReducer = combineReducers({
     }),
     measurement: combineReducers({
         create: createThunkReducer(actionTypes.MEASUREMENT_CREATE),
-        list: createThunkReducer(actionTypes.MEASUREMENT_LIST),
+        list: createThunkReducer(actionTypes.MEASUREMENT_H_LIST),
         update: createThunkReducer(actionTypes.MEASUREMENT_UPDATE),
         item: createThunkReducer(actionTypes.MEASUREMENT_ITEM)
     }),

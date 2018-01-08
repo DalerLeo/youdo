@@ -61,7 +61,7 @@ const Loader = enhance((props) => {
 })
 
 Loader.defaultProps = {
-    size: 1
+    size: 0.75
 }
 
 export default Loader

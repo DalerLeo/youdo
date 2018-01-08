@@ -17,7 +17,8 @@ import {
     TextField,
     SupplyTypeMultiSearchField,
     PaymentTypeSearchField,
-    DivisionMultiSearchField
+    DivisionMultiSearchField,
+    CheckBox
 } from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import DateToDateField from '../ReduxForm/Basic/DateToDateField'
@@ -36,7 +37,8 @@ export const SUPPLY_FILTER_KEY = {
     DELIVERY_FROM_DATE: 'deliveryFromDate',
     DELIVERY_TO_DATE: 'deliveryToDate',
     CREATED_FROM_DATE: 'createdFromDate',
-    CREATED_TO_DATE: 'createdToDate'
+    CREATED_TO_DATE: 'createdToDate',
+    EXCLUDE: 'exclude'
 }
 
 const enhance = compose(
@@ -187,6 +189,7 @@ const SupplyFilterForm = enhance((props) => {
                     <div>
                         <Field className={classes.inputFieldCustom} name="dateCreated" component={DateToDateField} label={t('Дата создания')} fullWidth={true}/>
                     </div>
+                    <Field name="exclude" component={CheckBox} label={t('Исключить отмененные поставки')}/>
                     <RaisedButton
                         type="submit"
                         primary={true}
