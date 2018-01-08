@@ -520,5 +520,7 @@ export const TELEGRAM_NEWS_ITEM = `/${TELEGRAM_NEWS}/%d/`
 
 export const WIDGETS = 'main/widget'
 export const WIDGETS_LIST = `/${WIDGETS}/`
+export const WIDGETS_ACTIVATE = `/${WIDGETS}/%d/activate/`
+export const WIDGETS_DEACTIVATE = `/${WIDGETS}/%d/deactivate/`
 
 export const DASHBOARD_CHANGE_PASSWORD = `${USERS}/update_password/`

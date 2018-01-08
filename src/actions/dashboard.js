@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import axios from '../helpers/axios'
+import sprintf from 'sprintf'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/dashboardSerializer'
@@ -101,6 +102,38 @@ export const widgetsListFetchAction = () => {
 
     return {
         type: actionTypes.WIDGETS_LIST,
+        payload
+    }
+}
+
+export const widgetsActivateAction = (id) => {
+    const payload = axios()
+        .post(sprintf(API.WIDGETS_ACTIVATE, id))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.WIDGETS_ACTIVATE,
+        payload
+    }
+}
+
+export const widgetsDeactivateAction = (id) => {
+    const payload = axios()
+        .post(sprintf(API.WIDGETS_DEACTIVATE, id))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.WIDGETS_DEACTIVATE,
         payload
     }
 }

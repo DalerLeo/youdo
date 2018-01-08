@@ -1,13 +1,18 @@
 import _ from 'lodash'
 import React from 'react'
 import injectSheet from 'react-jss'
-import {compose, withState} from 'recompose'
-import {reduxForm, Field} from 'redux-form'
+import {compose, withState, withHandlers} from 'recompose'
+import {reduxForm} from 'redux-form'
 import WidgetIcon from 'material-ui/svg-icons/image/tune'
 import Drawer from 'material-ui/Drawer'
+import MUICheckbox from 'material-ui/Checkbox'
 import FlatButton from 'material-ui/FlatButton'
-import {CheckBox} from '../ReduxForm'
 import Loader from '../Loader'
+import {
+    widgetsListFetchAction,
+    widgetsActivateAction,
+    widgetsDeactivateAction
+} from '../../actions/dashboard'
 
 export const WIDGETS_FORM_KEY = {
     SALES: 'sales',
@@ -23,7 +28,8 @@ const enhance = compose(
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '100px 0'
+            padding: '100px 0',
+            height: '100%'
         },
         widgetsWrapper: {
             '& header': {
@@ -38,9 +44,6 @@ const enhance = compose(
                 display: 'flex',
                 flexDirection: 'column',
                 height: '100%'
-            },
-            '& footer': {
-                padding: '12px 15px'
             }
         },
         switches: {
@@ -58,6 +61,23 @@ const enhance = compose(
             '& > div': {
                 margin: '0 !important'
             }
+        },
+        checkBox: {
+            textAlign: 'left',
+            marginBottom: '10px !important',
+            marginTop: '10px !important',
+            '& svg:first-child': {
+                fill: '#666666 !important',
+                color: '#666666 !important'
+            },
+            '& svg:last-child': {
+                fill: '#666666 !important',
+                color: '#666666 !important'
+            },
+            '& span': {
+                top: '-10px !important',
+                left: '-10px !important'
+            }
         }
     }),
     reduxForm({
@@ -65,6 +85,17 @@ const enhance = compose(
         enableReinitialize: true
     }),
     withState('openDrawer', 'setOpenDrawer', false),
+    withHandlers({
+        handleChangeCheck: props => (id, value) => {
+            const {dispatch} = props
+            return (value
+                ? dispatch(widgetsActivateAction(id))
+                : dispatch(widgetsDeactivateAction(id)))
+                .then(() => {
+                    dispatch(widgetsListFetchAction())
+                })
+        }
+    })
 )
 
 const Widgets = enhance((props) => {
@@ -72,8 +103,6 @@ const Widgets = enhance((props) => {
         classes,
         openDrawer,
         setOpenDrawer,
-        submitForm,
-        handleSubmit,
         list,
         loading
     } = props
@@ -87,7 +116,7 @@ const Widgets = enhance((props) => {
                 containerClassName={classes.widgetsWrapper}
                 onRequestChange={() => { setOpenDrawer(false) }}
                 open={openDrawer}>
-                <form onSubmit={handleSubmit(submitForm)}>
+                <div>
                     <header>
                         <h4>Настройка виджетов</h4>
                     </header>
@@ -97,30 +126,24 @@ const Widgets = enhance((props) => {
                         </div>
                         : <div className={classes.switches}>
                             {_.map(_.filter(list), (item) => {
+                                const id = _.get(item, 'id')
                                 const name = _.get(item, 'name')
-                                const keyname = _.get(item, 'keyName')
+                                const isActive = _.get(item, 'isActive')
                                 return (
-                                    <div key={keyname} className={classes.switch}>
-                                        <Field
+                                    <div key={id} className={classes.switch}>
+                                        <MUICheckbox
                                             label={name}
-                                            name={keyname}
-                                            component={CheckBox}/>
+                                            className={classes.checkBox}
+                                            iconStyle={{width: '20px', height: '20px'}}
+                                            labelStyle={{lineHeight: '20px', left: '-10px'}}
+                                            onCheck={(event, value) => { props.handleChangeCheck(id, value) }}
+                                            checked={isActive}
+                                        />
                                     </div>
                                 )
                             })}
                         </div>}
-                    <footer>
-                        <FlatButton
-                            label="Применить"
-                            backgroundColor={'#12aaeb'}
-                            hoverColor={'#12aaeb'}
-                            rippleColor={'#fff'}
-                            style={{height: '40px', lineHeight: '40px'}}
-                            labelStyle={{color: '#fff', fontWeight: '600', verticalAlign: 'baseline'}}
-                            fullWidth={true}
-                            type="submit"/>
-                    </footer>
-                </form>
+                </div>
             </Drawer>
             <FlatButton
                 label="Виджеты"
