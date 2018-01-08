@@ -3,6 +3,7 @@ import React from 'react'
 import {compose, withHandlers} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
 import PropTypes from 'prop-types'
+import {connect} from 'react-redux'
 import injectSheet from 'react-jss'
 import {Link} from 'react-router'
 import Paper from 'material-ui/Paper'
@@ -16,6 +17,7 @@ import {
 } from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
+import t from '../../helpers/translate'
 
 export const CLIENT_BALANCE_FILTER_OPEN = 'openFilterDialog'
 
@@ -26,6 +28,14 @@ export const CLIENT_BALANCE_FILTER_KEY = {
 }
 
 const enhance = compose(
+    connect((state, props) => {
+        const showPaymentType = _.get(state, ['form', 'ClientBalanceFilterForm', 'values', 'balanceType', 'value'])
+        console.log(showPaymentType, 'showPaymentType')
+        return {
+            showPaymentType
+        }
+
+    }),
     injectSheet({
         wrapper: {
             position: 'absolute',
@@ -119,14 +129,14 @@ const enhance = compose(
 )
 
 const ClientBalanceFilterForm = enhance((props) => {
-    const {classes, filterDialog, getCount, handleSubmit} = props
+    const {classes, filterDialog, getCount, handleSubmit, showPaymentType} = props
     const filterCounts = getCount()
 
     if (!filterDialog.openFilterDialog) {
         if (filterCounts) {
             return (
                 <div className={classes.afterFilter}>
-                    <div>Фильтр: {filterCounts} элемента</div>
+                    <div>{t('Фильтр')}: {filterCounts} {t('элемента')}</div>
                     <div>
                         <IconButton onTouchTap={filterDialog.handleOpenFilterDialog}>
                             <BorderColorIcon color="#8f8f8f" />
@@ -144,7 +154,7 @@ const ClientBalanceFilterForm = enhance((props) => {
                 <Link
                     className={classes.arrow}
                     onTouchTap={filterDialog.handleOpenFilterDialog}>
-                    <div>Показать фильтр <KeyboardArrowDown color="#12aaeb" /></div>
+                    <div>{t('Показать фильтр')} <KeyboardArrowDown color="#12aaeb" /></div>
                 </Link>
             </div>
         )
@@ -154,7 +164,7 @@ const ClientBalanceFilterForm = enhance((props) => {
         <div style={{width: '260px'}}>
             <Paper className={classes.wrapper} zDepth={2}>
                 <div className={classes.header}>
-                    <span className={classes.title}>Фильтр</span>
+                    <span className={classes.title}>{t('Фильтр')}</span>
                     <IconButton onTouchTap={filterDialog.handleCloseFilterDialog}>
                         <CloseIcon className={classes.icon} />
                     </IconButton>
@@ -165,19 +175,21 @@ const ClientBalanceFilterForm = enhance((props) => {
                             className={classes.inputFieldCustom}
                             name="balanceType"
                             component={ClientBalanceTypeSearchField}
-                            label="Тип баланса"
+                            label={t('Тип баланса')}
                             fullWidth={true}/>
-                        <Field
+                        {showPaymentType && <Field
                             className={classes.inputFieldCustom}
                             name="paymentType"
+                            disable={true}
                             component={PaymentTypeSearchField}
-                            label="Тип оплаты"
+                            label={t('Тип оплаты')}
                             fullWidth={true}/>
+                        }
                         <Field
                             className={classes.inputFieldCustom}
                             name="division"
                             component={DivisionMultiSearchField}
-                            label="Организация"
+                            label={t('Организация')}
                             fullWidth={true}/>
                     </div>
                     <RaisedButton
@@ -185,7 +197,7 @@ const ClientBalanceFilterForm = enhance((props) => {
                         primary={true}
                         labelStyle={{fontSize: '13px'}}
                         buttonStyle={{color: '#fff'}}
-                        label="Применить"
+                        label={t('Применить')}
                         style={{marginTop: '15px'}}>
                     </RaisedButton>
                 </form>
