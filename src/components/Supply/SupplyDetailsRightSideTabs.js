@@ -54,7 +54,7 @@ const enhance = compose(
             }
         },
         tabWrapper: {
-            maxHeight: '400px',
+            maxHeight: '548px',
             overflowY: 'auto',
             overflowX: 'hidden',
             paddingRight: '30px',

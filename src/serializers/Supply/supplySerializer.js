@@ -76,7 +76,14 @@ export const updateSerializer = (data, id) => {
 export const listFilterSerializer = (data) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
+    const exclude = _.get(defaultData, 'exclude')
+    const excludeCanceled = _.isUndefined(exclude)
+        ? 'True'
+        : exclude === 'true'
+            ? 'True'
+            : null
     return {
+        'exclude_cancelled': excludeCanceled,
         'provider': _.get(defaultData, 'provider'),
         'supply': _.get(defaultData, 'supply') || null,
         'payment_type': _.get(defaultData, 'paymentType'),

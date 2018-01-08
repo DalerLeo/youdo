@@ -196,6 +196,7 @@ const MeasurementList = enhance((props) => {
                 return {}
             }
             return {
+                parent: {value: _.get(detail, 'parent')},
                 name: _.get(detail, 'name')
             }
         })(),
@@ -207,7 +208,7 @@ const MeasurementList = enhance((props) => {
     }
 
     const listData = {
-        data: _.get(list, 'results'),
+        data: list,
         listLoading
     }
 

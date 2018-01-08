@@ -5,8 +5,8 @@ import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Loader from '../Loader'
 import {Row, Col} from 'react-flexbox-grid'
-import moment from 'moment'
 import numberFormat from '../../helpers/numberFormat'
+import dateFormat from '../../helpers/dateFormat'
 import {Tabs, Tab} from 'material-ui/Tabs'
 import * as TAB from '../../constants/orderTab'
 import NotFound from '../Images/not-found.png'
@@ -15,8 +15,10 @@ import InProcess from 'material-ui/svg-icons/action/cached'
 import IconButton from 'material-ui/IconButton'
 import DoneIcon from 'material-ui/svg-icons/action/done-all'
 import Canceled from 'material-ui/svg-icons/notification/do-not-disturb-alt'
-
 import Tooltip from '../ToolTip'
+import {Link} from 'react-router'
+import * as ROUTES from '../../constants/routes'
+import sprintf from 'sprintf'
 
 const PENDING = 0
 const IN_PROGRESS = 1
@@ -108,7 +110,6 @@ const OrderDetailsRightSideTabs = enhance((props) => {
     const {
         classes,
         data,
-        itemReturnDialog,
         tabData,
         returnData,
         returnDataLoading,
@@ -133,7 +134,6 @@ const OrderDetailsRightSideTabs = enhance((props) => {
             textTransform: 'none'
         }
     }
-
     const ZERO = 0
     const ONE = 1
     const tab = _.get(tabData, 'tab')
@@ -218,7 +218,7 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                             <Col xs={4}>{commonMeasurement ? <span>Итого:</span> : <span>Общая сумма {primaryCurrency}</span>}</Col>
                             {commonMeasurement
                                 ? <Col xs={2}>{(wholeAmount > ZERO) && <span>{numberFormat(wholeAmount, firstMeasurement)}</span>}</Col>
-                                : <Col xs={2}></Col>}
+                                : <Col xs={2}/>}
                             <Col xs={2}> </Col>
                             <Col xs={2}>{numberFormat(totalProductPrice)}</Col>
                             <Col xs={2}>{numberFormat(discountPrice)}</Col>
@@ -236,26 +236,29 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                             {!returnDataLoading ? <div className={classes.tabWrapper}>
                                 <Row className="dottedList">
                                     <Col xs={1}>Код</Col>
-                                    <Col xs={6} style={{textAlign: 'left'}}>Причина возврата</Col>
+                                    <Col xs={3} style={{textAlign: 'left'}}>Причина возврата</Col>
+                                    <Col xs={3} style={{textAlign: 'left'}}>Склад</Col>
                                     <Col xs={2}>Дата возврата</Col>
-                                    <Col xs={2}>Сумма {primaryCurrency}</Col>
-
+                                    <Col xs={2}>Сумма ({primaryCurrency})</Col>
                                 </Row>
                                 {_.map(returnData, (item, index) => {
                                     const returnId = _.get(item, 'id')
                                     const comment = _.get(item, 'comment')
+                                    const stock = _.get(item, ['stock', 'name'])
                                     const status = _.toNumber(_.get(item, 'status'))
-                                    const dateReturn = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY')
+                                    const dateReturn = dateFormat(_.get(item, 'createdDate'))
                                     const totalSum = numberFormat(_.get(item, 'totalPrice'))
                                     return (
                                         <Row className="dottedList" key={index}>
-                                            <Col xs={1}><a
-                                                onClick={() => { itemReturnDialog.handleOpenItemReturnDialog(returnId) }}
-                                                className={classes.link}>
-                                                {returnId}
-                                            </a>
+                                            <Col xs={1}>
+                                                <Link target={'_blank'}
+                                                    to={{pathname: sprintf(ROUTES.RETURN_ITEM_PATH, returnId), query: {search: returnId}}}
+                                                    className={classes.link}>
+                                                    {returnId}
+                                                </Link>
                                             </Col>
-                                            <Col style={{textAlign: 'left'}} xs={6}>{comment}</Col>
+                                            <Col style={{textAlign: 'left'}} xs={3}>{comment}</Col>
+                                            <Col style={{textAlign: 'left'}} xs={3}>{stock}</Col>
                                             <Col xs={2}>{dateReturn}</Col>
                                             <Col xs={2}>{totalSum}</Col>
                                             <Col xs={1}>
@@ -332,12 +335,6 @@ OrderDetailsRightSideTabs.propTypes = {
     }).isRequired,
     data: PropTypes.object.isRequired,
     returnData: PropTypes.array,
-    itemReturnDialog: PropTypes.shape({
-        returnDialogLoading: PropTypes.bool.isRequired,
-        openOrderItemReturnDialog: PropTypes.bool.isRequired,
-        handleOpenItemReturnDialog: PropTypes.func.isRequired,
-        handleCloseItemReturnDialog: PropTypes.func.isRequired
-    }).isRequired,
     returnDataLoading: PropTypes.bool,
     cancelOrderReturnOpen: PropTypes.func.isRequired
 }

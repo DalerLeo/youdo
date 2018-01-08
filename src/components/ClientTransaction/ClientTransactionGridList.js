@@ -11,6 +11,7 @@ import ClientTransactionFilterForm from './ClientTransactionFilterForm'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import ToolTip from '../ToolTip'
+import Loader from '../Loader'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import numberFormat from '../../helpers/numberFormat'
@@ -88,7 +89,20 @@ const enhance = compose(
             alignItems: 'center',
             justifyContent: 'space-between',
             padding: '10px 30px',
-            marginBottom: '15px'
+            marginBottom: '15px',
+            position: 'relative'
+        },
+        summaryLoader: {
+            background: '#fff',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            position: 'absolute',
+            top: '0',
+            left: '0',
+            right: '0',
+            bottom: '0',
+            zIndex: '2'
         },
         summary: {
             cursor: 'pointer',
@@ -132,6 +146,7 @@ const ClientTransactionGridList = enhance((props) => {
         confirmDialog,
         resendDialog,
         listData,
+        sumData,
         transactionID,
         classes,
         isAdmin
@@ -148,10 +163,18 @@ const ClientTransactionGridList = enhance((props) => {
             filterDialog={filterDialog}
         />
     )
+    const clientTransactionDetail = <span/>
 
-    const clientTransactionDetail = (
-        <span>a</span>
-    )
+    const totalDataLoading = _.get(sumData, 'loading')
+    const totalConfirmedSum = numberFormat(Math.abs(_.get(sumData, ['data', 'confirmed', 'sum'])), primaryCurrency)
+    const totalRejectedSum = numberFormat(Math.abs(_.get(sumData, ['data', 'rejected', 'sum'])), primaryCurrency)
+    const totalRequestedSum = numberFormat(Math.abs(_.get(sumData, ['data', 'requested', 'sum'])), primaryCurrency)
+    const totalAutoSum = numberFormat(Math.abs(_.get(sumData, ['data', 'auto', 'sum'])), primaryCurrency)
+
+    const totalConfirmedCount = numberFormat(_.get(sumData, ['data', 'confirmed', 'count']))
+    const totalRejectedCount = numberFormat(_.get(sumData, ['data', 'rejected', 'count']))
+    const totalRequestedCount = numberFormat(_.get(sumData, ['data', 'requested', 'count']))
+    const totalAutoCount = numberFormat(_.get(sumData, ['data', 'auto', 'count']))
 
     const clientTransactionList = _.map(_.get(listData, 'data'), (item) => {
         const ZERO = 0
@@ -239,21 +262,25 @@ const ClientTransactionGridList = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.CLIENT_TRANSACTION_LIST_URL}/>
             <Paper zDepth={1} className={classes.summaryWrapper}>
+                {totalDataLoading &&
+                <div className={classes.summaryLoader}>
+                    <Loader size={0.75}/>
+                </div>}
                 <div className={classes.summary} onClick={() => { hashHistory.push(filter.createURL({status: CONFIRMED})) }}>
-                    <div>{t('Сумма принятых оплат')}</div>
-                    <div>{numberFormat('145323', primaryCurrency)}</div>
+                    <div>{t('Сумма принятых оплат')} ({totalConfirmedCount})</div>
+                    <div>{totalConfirmedSum}</div>
                 </div>
                 <div className={classes.summary} onClick={() => { hashHistory.push(filter.createURL({status: REJECTED})) }}>
-                    <div>{t('Сумма отклоненных оплат')}</div>
-                    <div>{numberFormat('22451', primaryCurrency)}</div>
+                    <div>{t('Сумма отклоненных оплат')} ({totalRejectedCount})</div>
+                    <div>{totalRejectedSum}</div>
                 </div>
                 <div className={classes.summary} onClick={() => { hashHistory.push(filter.createURL({status: REQUESTED})) }}>
-                    <div>{t('Сумма ожидаемых оплат')}</div>
-                    <div>{numberFormat('86541', primaryCurrency)}</div>
+                    <div>{t('Сумма ожидаемых оплат')} ({totalRequestedCount})</div>
+                    <div>{totalRequestedSum}</div>
                 </div>
                 <div className={classes.summary} onClick={() => { hashHistory.push(filter.createURL({status: AUTO})) }}>
-                    <div>{t('Сумма автоматически принятых оплат')}</div>
-                    <div>{numberFormat('6548', primaryCurrency)}</div>
+                    <div>{t('Сумма автоматически принятых оплат')} ({totalAutoCount})</div>
+                    <div>{totalAutoSum}</div>
                 </div>
             </Paper>
 

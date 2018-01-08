@@ -56,7 +56,7 @@ const enhance = compose(
         loader: {
             width: '100%',
             background: '#fff',
-            height: '200px',
+            height: '100px',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center'
@@ -236,7 +236,6 @@ const SupplyDetails = enhance((props) => {
         handleSubmitSetZeroDiscountDialog,
         confirmExpenseDialog,
         paidData,
-        comlated,
         openExpenseInfo,
         setOpenExpenseInfo,
         isAdmin,
@@ -256,7 +255,7 @@ const SupplyDetails = enhance((props) => {
     const dateDelivery = dateFormat(_.get(data, 'dateDelivery')) || t('Не указано')
     const acceptedTime = (_.get(data, 'acceptedTime')) ? dateTimeFormat(_.get(data, 'acceptedTime')) : t('Не началась')
     const finishedTime = (_.get(data, 'finishedTime')) ? dateTimeFormat(_.get(data, 'finishedTime')) : t('Не закончилась')
-    const contract = _.get(data, 'contract') || 'Не указано'
+    const contract = _.get(data, 'contract') || t('Не указано')
 
     const PENDING = 0
     const IN_PROGRESS = 1
@@ -277,7 +276,7 @@ const SupplyDetails = enhance((props) => {
 
     }
 
-    const comment = _.get(data, 'comment') || 'Не указано'
+    const comment = _.get(data, 'comment') || t('Не указано')
     const totalPaid = _.toNumber(_.get(data, 'totalPaid'))
     const totalCost = _.toNumber(_.get(data, 'totalCost'))
     const totalBalance = totalCost - totalPaid
@@ -310,13 +309,30 @@ const SupplyDetails = enhance((props) => {
             paid: asd
         }
     })
+    const editButtonDisableStatus = () => {
+        switch (status) {
+            case CANCELLED: return true
+            case COMPLETED: return true
+            default: return false
+        }
+    }
+    const cancelButtonDisableStatus = () => {
+        if (status === CANCELLED) {
+            return true
+        } else if (status !== CANCELLED && isAdmin) {
+            return false
+        } else if (status === COMPLETED && isAdmin) {
+            return false
+        } else if (status === COMPLETED && !isAdmin) {
+            return true
+        }
+        return false
+    }
     return (
         <div className={classes.wrapper}>
             <div className={classes.title}>
                 <div className={classes.titleLabel}>{t('Поставка')} №{id}</div>
-                <div className={classes.closeDetail}
-                     onClick={handleCloseDetail}>
-                </div>
+                <div className={classes.closeDetail} onClick={handleCloseDetail}/>
                 <div className={classes.discountPop}
                      style={openDiscountDialog ? {transform: 'scale(1)'} : {transform: 'scale(0)'}}>
                     <SupplySetDiscountDialog
@@ -362,7 +378,7 @@ const SupplyDetails = enhance((props) => {
                     </Tooltip>
                     {updateDialog && <Tooltip position="bottom" text={t('Изменить')}>
                         <IconButton
-                            disabled={(status === CANCELLED || comlated) && !canUpdatePrice}
+                            disabled={editButtonDisableStatus() || !canUpdatePrice}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
@@ -372,7 +388,7 @@ const SupplyDetails = enhance((props) => {
                     </Tooltip>}
                     {confirmDialog && <Tooltip position="bottom" text={t('Отменить')}>
                         <IconButton
-                            disabled={ (!(PENDING === status || ((status === IN_PROGRESS || status === COMPLETED))) || status === CANCELLED || comlated) && !isAdmin}
+                            disabled={cancelButtonDisableStatus()}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}

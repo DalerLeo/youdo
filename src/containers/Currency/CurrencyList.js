@@ -268,7 +268,7 @@ const CurrencyList = enhance((props) => {
 
         initialValues: (() => {
             const currencyName = _.get(_.find((_.get(list, 'results')), {'id': detailId}), 'name')
-            const currencyRate = _.get(_.find((_.get(list, 'results')), {'id': detailId}), 'rate')
+            const currencyRate = _.get(_.find((_.get(list, 'results')), {'id': detailId}), ['rate', 'rate'])
             if (!currencyName || openCreateDialog) {
                 return {}
             }

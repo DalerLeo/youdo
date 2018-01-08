@@ -280,6 +280,7 @@ const enhance = compose(
             const status = _.get(filterForm, ['values', 'status']) || null
             const paymentType = _.get(filterForm, ['values', 'paymentType', 'value']) || null
             const contract = _.get(filterForm, ['values', 'contract']) || null
+            const exclude = _.get(filterForm, ['values', 'exclude']) || false
 
             filter.filterBy({
                 [SUPPLY_FILTER_OPEN]: false,
@@ -293,7 +294,8 @@ const enhance = compose(
                 [SUPPLY_FILTER_KEY.DELIVERY_FROM_DATE]: deliveryFromDate && deliveryFromDate.format('YYYY-MM-DD'),
                 [SUPPLY_FILTER_KEY.DELIVERY_TO_DATE]: deliveryToDate && deliveryToDate.format('YYYY-MM-DD'),
                 [SUPPLY_FILTER_KEY.CREATED_FROM_DATE]: createdFromDate && createdFromDate.format('YYYY-MM-DD'),
-                [SUPPLY_FILTER_KEY.CREATED_TO_DATE]: createdToDate && createdToDate.format('YYYY-MM-DD')
+                [SUPPLY_FILTER_KEY.CREATED_TO_DATE]: createdToDate && createdToDate.format('YYYY-MM-DD'),
+                [SUPPLY_FILTER_KEY.EXCLUDE]: exclude
             })
         },
         handleOpenDeleteDialog: props => () => {
@@ -574,6 +576,7 @@ const SupplyList = enhance((props) => {
     const openDefectDialog = _.toInteger(_.get(location, ['query', 'openDefectDialog']) || MINUS_ONE) > MINUS_ONE
     const openUpdateDialog = toBoolean(_.get(location, ['query', SUPPLY_UPDATE_DIALOG_OPEN]))
     const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
+
     const provider = (filter.getParam(SUPPLY_FILTER_KEY.PROVIDER))
     const division = (filter.getParam(SUPPLY_FILTER_KEY.DIVISION))
     const stock = (filter.getParam(SUPPLY_FILTER_KEY.STOCK))
@@ -585,6 +588,8 @@ const SupplyList = enhance((props) => {
     const deliveryToDate = filter.getParam(SUPPLY_FILTER_KEY.DELIVERY_TO_DATE)
     const createdFromDate = filter.getParam(SUPPLY_FILTER_KEY.CREATED_FROM_DATE)
     const createdToDate = filter.getParam(SUPPLY_FILTER_KEY.CREATED_TO_DATE)
+    const exclude = _.isUndefined(filter.getParam(SUPPLY_FILTER_KEY.EXCLUDE)) ? true : filter.getParam(SUPPLY_FILTER_KEY.EXCLUDE)
+
     const detailId = _.toInteger(_.get(params, 'supplyId'))
     const tab = _.get(location, ['query', TAB]) || SUPPLY_TAB.SUPPLY_DEFAULT_TAB
 
@@ -716,7 +721,8 @@ const SupplyList = enhance((props) => {
                 fromDate: createdFromDate && moment(createdFromDate, 'YYYY-MM-DD'),
                 toDate: createdToDate && moment(createdToDate, 'YYYY-MM-DD')
             },
-            paymentType: {value: paymentType}
+            paymentType: {value: paymentType},
+            exclude
         },
         filterLoading: false,
         openFilterDialog,

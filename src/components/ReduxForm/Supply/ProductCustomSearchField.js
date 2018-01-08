@@ -24,9 +24,10 @@ const setMeasurementAction = (data, loading) => {
     }
 }
 
-const getItem = (id, dispatch) => {
+const getItem = (obj, dispatch) => {
+    const productID = _.isObject(obj) ? _.get(obj, 'id') : obj
     dispatch(setMeasurementAction(null, true))
-    return axios().get(sprintf(PATH.PRODUCT_ITEM, id))
+    return axios().get(sprintf(PATH.PRODUCT_ITEM, productID))
         .then(({data}) => {
             dispatch(setMeasurementAction(data, false))
             return Promise.resolve(toCamelCase(data))
