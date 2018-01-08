@@ -13,7 +13,6 @@ import ConfirmDialog from '../ConfirmDialog'
 import Tooltip from '../ToolTip'
 import numberFormat from '../../helpers/numberFormat'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
-import getConfig from '../../helpers/getConfig'
 import t from '../../helpers/translate'
 const ZERO = 0
 
@@ -218,7 +217,7 @@ const ReturnDetails = enhance((props) => {
     const IN_PROGRESS = 1
     const COMPLETED = 2
     const CANCELLED = 3
-    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
+    const primaryCurrency = _.get(data, ['currency', 'name'])
     const totalPrice = numberFormat(_.get(data, 'totalPrice'), primaryCurrency)
     const typeClient = _.toInteger(_.get(data, 'type'))
 
