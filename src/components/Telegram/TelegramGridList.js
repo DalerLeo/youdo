@@ -231,7 +231,7 @@ const TelegramGridList = enhance((props) => {
         const token = _.get(item, 'token')
         const fullName = _.get(item, 'lastName')
             ? <a onClick={() => logsDialog.handleOpenLogsDialog(id)}>{_.get(item, 'firstName') + ' ' + _.get(item, 'lastName')}</a>
-            : 'Неизвестно'
+            : t('Неизвестно')
         const username = _.get(item, 'username') ? '@' + _.get(item, 'username') : ''
         const createdBy = _.get(item, ['createdBy', 'firstName']) + ' ' + _.get(item, ['createdBy', 'secondName']) || ''
         const createdDate = dateFormat(_.get(item, 'createdDate'), true)
@@ -254,7 +254,7 @@ const TelegramGridList = enhance((props) => {
                         <span
                             style={{color: '#12aaeb', cursor: 'pointer'}}
                             onClick={() => copyToClipBoard.handleCopyLinkInList(token)}>
-                            Не активирован
+                            {t('Не активирован')}
                         </span>
                 </Tooltip>}
                 </Col>

@@ -45,7 +45,7 @@ const enhance = compose(
         },
         blacklistTitle: {
             extend: 'title',
-            background: '#ff4747',
+            background: '#5D6474',
             color: '#fff'
         },
         container: {
