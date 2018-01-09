@@ -3,8 +3,10 @@ import {orderingSnakeCase} from '../helpers/serializer'
 
 export const createSerializer = (data) => {
     const market = _.get(data, ['market', 'value'])
+    const phone = _.get(data, ['phone'])
     return {
-        market
+        market,
+        phone
     }
 }
 

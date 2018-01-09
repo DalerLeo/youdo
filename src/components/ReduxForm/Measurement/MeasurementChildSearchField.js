@@ -1,21 +1,21 @@
-import _ from 'lodash'
 import sprintf from 'sprintf'
 import React from 'react'
-import SearchField from '../Basic/SearchFieldCustom'
+import _ from 'lodash'
+import SearchField from '../Basic/SearchField'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
 import caughtCancel from '../../../helpers/caughtCancel'
 
 const CancelToken = axios().CancelToken
-let cashboxListToken = null
+let measurementListToken = null
 
-const getOptions = (search, type) => {
-    if (cashboxListToken) {
-        cashboxListToken.cancel()
+const getOptions = (search, parent) => {
+    if (measurementListToken) {
+        measurementListToken.cancel()
     }
-    cashboxListToken = CancelToken.source()
-    return axios().get(`${PATH.CASHBOX_LIST}?search=${search || ''}&page_size=100&type=${type}`, {cancelToken: cashboxListToken.token})
+    measurementListToken = CancelToken.source()
+    return axios().get(`${PATH.MEASUREMENT_LIST}?parent=${parent}&search=${search || ''}&page_size=100`, {cancelToken: measurementListToken.token})
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
         })
@@ -24,23 +24,26 @@ const getOptions = (search, type) => {
         })
 }
 
-const getItem = (value) => {
-    const id = _.isObject(value) ? _.get(value, 'id') : value
-    return axios().get(sprintf(PATH.CASHBOX_ITEM, id))
+const custom = (parentType) => {
+    return (search) => {
+        return getOptions(search, parentType)
+    }
+}
+
+const getItem = (id) => {
+    return axios().get(sprintf(PATH.MEASUREMENT_ITEM, id))
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data))
         })
 }
 
-const CashboxSearchField = (props) => {
-    const paymentType = _.get(props, 'data-payment-type')
+const MeasurementChildSearchField = (props) => {
+    const parentType = _.get(props, 'parent')
     return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
             getText={SearchField.defaultGetText('name')}
-            getOptions={(search) => {
-                return getOptions(search, paymentType)
-            }}
+            getOptions={custom(parentType)}
             getItem={getItem}
             getItemText={SearchField.defaultGetText('name')}
             {...props}
@@ -48,4 +51,4 @@ const CashboxSearchField = (props) => {
     )
 }
 
-export default CashboxSearchField
+export default MeasurementChildSearchField

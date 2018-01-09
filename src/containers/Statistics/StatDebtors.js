@@ -207,6 +207,7 @@ const StatDebtorsList = enhance((props) => {
     const currency = _.get(location, ['query', 'currency'])
     const marketType = _.toInteger(filter.getParam(STAT_DEBTORS_FILTER_KEY.MARKET_TYPE))
     const marketTypeChild = _.toInteger(filter.getParam(STAT_DEBTORS_FILTER_KEY.MARKET_TYPE_CHILD))
+    const search = !_.isNull(_.get(location, ['query', 'search'])) ? _.get(location, ['query', 'search']) : null
 
     const statDebtorsDialog = {
         openStatDebtorsDialog,
@@ -226,6 +227,7 @@ const StatDebtorsList = enhance((props) => {
     const initialValues = {
         currency: currency && splitToArray(currency),
         division: division && splitToArray(division),
+        search,
         marketTypeParent: {
             value: marketType
         },

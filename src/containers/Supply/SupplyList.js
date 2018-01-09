@@ -315,6 +315,7 @@ const enhance = compose(
             const {location: {pathname}, filter, dispatch} = props
             hashHistory.push({pathname, query: filter.getParams({[SUPPLY_CREATE_DIALOG_OPEN]: true})})
             dispatch(setItemAction(null, false))
+            dispatch(reset('SupplyCreateForm'))
         },
 
         handleCloseCreateDialog: props => () => {

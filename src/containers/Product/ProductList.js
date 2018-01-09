@@ -270,7 +270,10 @@ const ProductList = enhance((props) => {
             }
             const parentType = _.get(detail, ['type', 'parent']) || _.get(detail, ['type', 'id'])
             const childType = _.get(detail, ['type', 'parent']) && _.get(detail, ['type', 'id'])
-
+            const boxes = {}
+            _.map(_.get(detail, 'boxes'), (item) => {
+                boxes[_.get(item, ['measurement', 'id'])] = {amount: _.toNumber(_.get(item, 'amount'))}
+            })
             return {
                 name: _.get(detail, 'name'),
                 code: _.get(detail, 'code'),
@@ -282,9 +285,15 @@ const ProductList = enhance((props) => {
                     value: childType
                 },
                 measurement: {
-                    text: _.get(detail, ['measurement', 'name']),
-                    value: _.get(detail, ['measurement', 'id'])
+                    value: {
+                        id: _.get(detail, ['measurement', 'id']),
+                        name: _.get(detail, ['measurement', 'name']),
+                        children: _.uniqBy(_.map(_.get(detail, 'boxes'), (item) => {
+                            return _.get(item, 'measurement')
+                        }), 'id')
+                    }
                 },
+                boxes,
                 image: _.get(detail, ['image'])
             }
         })(),

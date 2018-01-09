@@ -35,7 +35,6 @@ const enhance = compose(
         },
         title: {
             display: 'flex',
-            justifyContent: 'space-between',
             alignItems: 'center',
             width: '100%',
             height: '65px',
@@ -45,8 +44,7 @@ const enhance = compose(
         },
         blacklistTitle: {
             extend: 'title',
-            background: '#5D6474',
-            color: '#fff'
+            borderLeft: '3px #ff4747 solid'
         },
         container: {
             display: 'flex',
@@ -92,7 +90,9 @@ const enhance = compose(
         },
         titleButtons: {
             display: 'flex',
-            justifyContent: 'flex-end'
+            justifyContent: 'flex-end',
+            position: 'absolute',
+            right: '30px'
         },
         bodyTitle: {
             fontWeight: '600',
@@ -144,14 +144,22 @@ const ClientDetails = enhance((props) => {
 
     const iconStyle = {
         icon: {
-            color: inBlacklist ? '#fff' : '#666',
+            color: '#666',
             width: 22,
             height: 22
+        },
+        blacklist: {
+            color: '#ff4747',
+            width: 22,
+            height: 22,
+            position: 'relative',
+            top: '2px'
         },
         button: {
             width: 48,
             height: 48,
-            padding: 0
+            padding: 0,
+            zIndex: 2
         }
     }
 
@@ -159,20 +167,20 @@ const ClientDetails = enhance((props) => {
         <div className={classes.wrapper} key={detId}>
             <div className={inBlacklist ? classes.blacklistTitle : classes.title}>
                 <div className={classes.titleLabel}>{providerName}</div>
+                {inBlacklist &&
+                <Tooltip position="right" text={t('Клиент в черном списке')}>
+                    <IconButton
+                        disableTouchRipple={true}
+                        iconStyle={iconStyle.blacklist}
+                        style={iconStyle.button}
+                        touch={true}>
+                        <Blacklist/>
+                    </IconButton>
+                </Tooltip>}
                 <div className={classes.closeDetail}
                      onClick={handleCloseDetail}>
                 </div>
                 <div className={classes.titleButtons}>
-                    {inBlacklist &&
-                    <Tooltip position="bottom" text={t('Клиент в черном списке')}>
-                        <IconButton
-                            disableTouchRipple={true}
-                            iconStyle={iconStyle.icon}
-                            style={iconStyle.button}
-                            touch={true}>
-                            <Blacklist/>
-                        </IconButton>
-                    </Tooltip>}
                     <Tooltip position="bottom" text={t('Изменить')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
