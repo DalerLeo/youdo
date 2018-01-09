@@ -6,26 +6,24 @@ export const createSerializer = (data) => {
     const code = _.get(data, 'code')
     const priority = _.get(data, 'priority')
     const type = _.get(data, ['type', 'value']) || _.get(data, ['productTypeParent', 'value'])
-    const measurement = _.get(data, ['measurement', 'value'])
+    const measurement = _.get(data, ['measurement', 'value', 'id'])
+    const boxes = _.filter(_.map(_.get(data, 'boxes'), (item, index) => {
+        return {
+            measurement: index,
+            amount: _.toNumber(_.get(item, 'amount'))
+        }
+    }), item => _.get(item, 'amount'))
     const image = _.get(data, 'image')
     const imageId = (_.get(image, ['id'])) ? _.get(image, ['id']) : image
-    if (image) {
-        return {
-            name,
-            code,
-            type,
-            priority,
-            measurement,
-            image: imageId
-        }
-    }
-    return {
+    const requset = {
         name,
         code,
         type,
         priority,
-        measurement
+        measurement,
+        boxes
     }
+    return image ? _.merge(requset, {image: imageId}) : requset
 }
 
 export const listFilterSerializer = (data, manufacture) => {

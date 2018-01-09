@@ -13,9 +13,9 @@ import {
     TextField,
     ProductTypeParentSearchField,
     ProductTypeChildSearchField,
-    MeasurementSearchField,
     ImageUploadField
 } from '../ReduxForm'
+import MeasurementAllValuesSearchField from '../ReduxForm/Measurement/MeasurementAllValuesSearchField'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
@@ -47,6 +47,13 @@ const enhance = compose(
             zIndex: '999',
             textAlign: 'center',
             display: ({loading}) => loading ? 'flex' : 'none'
+        },
+        childMeasurement: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            '& > div': {
+                width: 'calc(50% - 10px) !important'
+            }
         }
     })),
     reduxForm({
@@ -55,15 +62,18 @@ const enhance = compose(
     }),
     connect((state) => {
         const typeParent = _.get(state, ['form', 'ProductCreateForm', 'values', 'productTypeParent', 'value'])
+        const measurementParent = _.get(state, ['form', 'ProductCreateForm', 'values', 'measurement', 'value'])
         return {
-            typeParent
+            typeParent,
+            measurementParent
         }
     }),
 )
 
 const ProductCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, isUpdate, typeParent} = props
+    const {open, loading, handleSubmit, onClose, classes, isUpdate, typeParent, measurementParent} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+    const measurementChilds = _.get(measurementParent, 'children')
 
     return (
         <Dialog
@@ -86,7 +96,7 @@ const ProductCreateDialog = enhance((props) => {
                         <div className={classes.loader}>
                             <Loader size={0.75}/>
                         </div>
-                        <div className={classes.field} style={{marginTop: '10px'}}>
+                        <div className={classes.field} style={{margin: '10px 0'}}>
                             <Field
                                 name="name"
                                 className={classes.inputFieldCustom}
@@ -126,10 +136,25 @@ const ProductCreateDialog = enhance((props) => {
                             <Field
                                 name="measurement"
                                 className={classes.inputFieldCustom}
-                                component={MeasurementSearchField}
+                                component={MeasurementAllValuesSearchField}
                                 label={t('Мера')}
                                 fullWidth={true}
                             />
+                            {!_.isEmpty(measurementParent) &&
+                            <div className={classes.childMeasurement}>
+                                {_.map(measurementChilds, (item) => {
+                                    const id = _.get(item, 'id')
+                                    const name = _.get(item, 'name')
+                                    return (
+                                        <Field
+                                        name={'[boxes][' + id + ']amount'}
+                                        className={classes.inputFieldCustom}
+                                        component={TextField}
+                                        label={name}
+                                        fullWidth={true}/>
+                                    )
+                                })}
+                            </div>}
                         </div>
                         <div className={classes.field} style={{maxWidth: '224px'}}>
                             <Field

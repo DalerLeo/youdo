@@ -39,6 +39,7 @@ export const MEASUREMENT = 'main/measurement'
 export const MEASUREMENT_CREATE = `/${MEASUREMENT}/`
 export const MEASUREMENT_LIST = `/${MEASUREMENT}/`
 export const MEASUREMENT_H_LIST = `/${MEASUREMENT}/hierarchy/`
+export const MEASUREMENT_H_ITEM = `/${MEASUREMENT}/hierarchy/%d/`
 export const MEASUREMENT_ITEM = `/${MEASUREMENT}/%d/`
 export const MEASUREMENT_DELETE = `/${MEASUREMENT}/%d/`
 
