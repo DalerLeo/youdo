@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
@@ -8,6 +9,7 @@ import {Field, reduxForm} from 'redux-form'
 import {TextField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import CopyContent from 'material-ui/svg-icons/content/content-copy'
+import OpenLink from 'material-ui/svg-icons/action/open-in-new'
 import IconButton from 'material-ui/IconButton'
 import t from '../../helpers/translate'
 
@@ -87,7 +89,9 @@ const enhance = compose(
 )
 
 const TelegramCreateDialog = enhance((props) => {
-    const {open, loading, onClose, classes, copyToClipBoard} = props
+    const {data, open, loading, onClose, classes, copyToClipBoard} = props
+    const token = _.get(data, 'token')
+    const telegramBotLink = 'https://t.me/markets_bot?start=' + token
     return (
         <Dialog
             modal={true}
@@ -119,6 +123,11 @@ const TelegramCreateDialog = enhance((props) => {
                             <IconButton onClick={() => copyToClipBoard()}>
                                 <CopyContent color="#666666"/>
                             </IconButton>
+                            <a href={telegramBotLink} target={'_blank'}>
+                                <IconButton>
+                                    <OpenLink color="#666666"/>
+                                </IconButton>
+                            </a>
                         </div>
                       </div>}
                 </div>

@@ -8,7 +8,7 @@ import FlatButton from 'material-ui/FlatButton'
 import Loader from '../Loader'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {MarketSearchField} from '../ReduxForm'
+import {TextField, MarketSearchField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import t from '../../helpers/translate'
@@ -150,6 +150,12 @@ const TelegramCreateDialog = enhance((props) => {
                                 component={MarketSearchField}
                                 className={classes.inputFieldCustom}
                                 label={t('Магазин')}
+                                fullWidth={true}/>
+                            <Field
+                                name="phone"
+                                component={TextField}
+                                className={classes.inputFieldCustom}
+                                label={t('Телефон')}
                                 fullWidth={true}/>
                         </div>
                     </div>
