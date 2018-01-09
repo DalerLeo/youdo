@@ -433,9 +433,14 @@ const ClientBalanceGridList = enhance((props) => {
     const loanersCashCount = _.get(sumData, ['sum', 'loanersCountCash'])
     const sumLoading = _.get(sumData, ['sumLoading'])
 
-    const orderNoSorting = _.isNil(filter.getSortingType('order_no'))
+    const orderNoSorting = _.isNil(filter.getSortingType('orders'))
         ? null
-        : filter.getSortingType('order_no')
+        : filter.getSortingType('orders')
+            ? <ArrowUpIcon className={classes.icon}/>
+            : <ArrowDownIcon className={classes.icon}/>
+    const totalSorting = _.isNil(filter.getSortingType('total'))
+        ? null
+        : filter.getSortingType('total')
             ? <ArrowUpIcon className={classes.icon}/>
             : <ArrowDownIcon className={classes.icon}/>
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
@@ -514,7 +519,19 @@ const ClientBalanceGridList = enhance((props) => {
                     }}>
                     {t('Кол-во заказов')} {orderNoSorting}
                 </td>
-                <td>{t('Сумма')}</td>
+                <td
+                    style={{cursor: 'pointer'}}
+                    onClick={() => {
+                        ordering(filter, 'total', props.pathname)
+                        if (_.get(query, 'ordering') === 'total') {
+                            ordering(filter, '-total', props.pathname)
+                        } else if (_.get(query, 'ordering') === '-total') {
+                            ordering(filter, '', props.pathname)
+                        } else {
+                            ordering(filter, 'total', props.pathname)
+                        }
+                    }}>{t('Сумма')} {totalSorting}
+                </td>
                 {_.map(head, (item, index) => {
                     const sortingType = filter.getSortingType(item.type + '_' + item.id)
                     const icon = _.isNil(sortingType)
@@ -522,19 +539,18 @@ const ClientBalanceGridList = enhance((props) => {
                         : sortingType
                             ? <ArrowUpIcon className={classes.icon}/>
                             : <ArrowDownIcon className={classes.icon}/>
+                    const sortingFunc = () => {
+                        switch (_.get(query, 'ordering')) {
+                            case item.type + '_' + item.id: return ordering(filter, '-' + item.type + '_' + item.id, props.pathname)
+                            case '-' + item.type + '_' + item.id: return ordering(filter, '', props.pathname)
+                            default: return ordering(filter, item.type + '_' + item.id, props.pathname)
+                        }
+                    }
                     return (
                         <td
                             key={index}
                             style={{cursor: 'pointer'}}
-                            onClick={() => {
-                                if (_.get(query, 'ordering') === item.type + '_' + item.id) {
-                                    ordering(filter, '-' + item.type + '_' + item.id, props.pathname)
-                                } else if (_.get(query, 'ordering') === '-' + item.type + '_' + item.id) {
-                                    ordering(filter, '', props.pathname)
-                                } else {
-                                    ordering(filter, item.type + '_' + item.id, props.pathname)
-                                }
-                            }}>
+                            onClick={sortingFunc}>
                             {item.name}{icon}
                         </td>
                     )
@@ -549,7 +565,7 @@ const ClientBalanceGridList = enhance((props) => {
                     amountValues.push({amount: _.get(child, 'cash'), type: 'cash', id: _.get(child, 'id')})
                     amountValues.push({amount: _.get(child, 'bank'), type: 'bank', id: _.get(child, 'id')})
                 })
-                const totalSum = _.sumBy(amountValues, obj => _.toNumber(_.get(obj, 'amount')))
+                const totalSum = _.get(item, 'total')
                 return (
                     <tr key={id}
                         style={id === currentRow ? styleOnHover : {}}

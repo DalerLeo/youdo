@@ -310,9 +310,12 @@ const enhance = compose(
             overflowY: 'auto'
         },
         emptyQuery: {
-            background: 'url(' + NotFound + ') no-repeat center center',
+            background: '#fff url(' + NotFound + ') no-repeat center 20px',
             backgroundSize: '200px',
-            padding: '200px 0 0',
+            position: 'absolute',
+            left: '0',
+            right: '0',
+            padding: '160px 0 0',
             textAlign: 'center',
             fontSize: '13px',
             color: '#666',
