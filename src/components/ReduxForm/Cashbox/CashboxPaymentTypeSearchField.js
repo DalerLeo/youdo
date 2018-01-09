@@ -24,7 +24,8 @@ const getOptions = (search, type) => {
         })
 }
 
-const getItem = (id) => {
+const getItem = (value) => {
+    const id = _.isObject(value) ? _.get(value, 'id') : value
     return axios().get(sprintf(PATH.CASHBOX_ITEM, id))
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data))
