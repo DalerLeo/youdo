@@ -14,41 +14,48 @@ import * as serializers from '../../serializers/Statistics/statProductSerializer
 import getDocuments from '../../helpers/getDocument'
 import {
     statMarketListFetchAction,
-    statMarketDataFetchAction,
-    statMarketSumFetchAction
+    statMarketSumFetchAction,
+    statMarketTypeListFetchAction,
+    statMarketTypeSumFetchAction
 } from '../../actions/statMarket'
 
 import {StatMarketGridList, STAT_MARKET_DIALOG_OPEN} from '../../components/Statistics'
-import {STAT_MARKET_FILTER_KEY} from '../../components/Statistics/Markets/StatMarketGridList'
+import {STAT_MARKET_FILTER_KEY, MARKET} from '../../components/Statistics/Markets/StatMarketGridList'
 
-const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
-        const graphList = _.get(state, ['statMarket', 'data', 'data'])
-        const sumData = _.get(state, ['statMarket', 'sum', 'data'])
-        const sumLoading = _.get(state, ['statMarket', 'sum', 'loading'])
-        const graphLoading = _.get(state, ['statMarket', 'data', 'loading'])
-        const list = _.get(state, ['statMarket', 'list', 'data'])
-        const listLoading = _.get(state, ['statMarket', 'list', 'loading'])
+        const sumData = _.get(state, ['statMarket', 'marketSum', 'data'])
+        const sumLoading = _.get(state, ['statMarket', 'marketSum', 'loading'])
+        const marketTypeSumData = _.get(state, ['statMarket', 'marketTypeSum', 'data'])
+        const marketTypeSumLoading = _.get(state, ['statMarket', 'marketTypeSum', 'loading'])
+        const marketList = _.get(state, ['statMarket', 'marketList', 'data'])
+        const marketListLoading = _.get(state, ['statMarket', 'marketList', 'loading'])
+        const marketTypeList = _.get(state, ['statMarket', 'marketTypeList', 'data'])
+        const marketTypeListLoading = _.get(state, ['statMarket', 'marketTypeList', 'loading'])
         const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
-        const filter = filterHelper(list, pathname, query)
+        const filter = filterHelper(marketList, pathname, query)
         return {
-            list,
-            listLoading,
+            marketList,
+            marketListLoading,
+            marketTypeList,
+            marketTypeListLoading,
             filter,
             filterForm,
-            graphList,
-            graphLoading,
             sumLoading,
-            sumData
+            sumData,
+            marketTypeSumData,
+            marketTypeSumLoading
         }
     }),
     withPropsOnChange((props, nextProps) => {
-        return (props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest())
+        return (props.filter.filterRequest() !== nextProps.filter.filterRequest())
     }, ({dispatch, filter}) => {
-        dispatch(statMarketListFetchAction(filter))
+        const toggle = filter.getParam('toggle') || MARKET
+        return toggle === MARKET
+            ? dispatch(statMarketListFetchAction(filter))
+            : dispatch(statMarketTypeListFetchAction(filter))
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -57,20 +64,14 @@ const enhance = compose(
             pageSize: null,
             search: null
         }
-        return (props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except))
+        return (props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except))
     }, ({dispatch, filter}) => {
-        dispatch(statMarketSumFetchAction(filter))
+        const toggle = filter.getParam('toggle') || MARKET
+        return toggle === MARKET
+            ? dispatch(statMarketSumFetchAction(filter))
+            : dispatch(statMarketTypeSumFetchAction(filter))
     }),
 
-    withPropsOnChange((props, nextProps) => {
-        const statMarketId = _.get(nextProps, ['params', 'statMarketId']) || ZERO
-        return statMarketId > ZERO && (_.get(props, ['params', 'statMarketId']) !== statMarketId)
-    }, ({dispatch, params}) => {
-        const statMarketId = _.toInteger(_.get(params, 'statMarketId'))
-        if (statMarketId > ZERO) {
-            dispatch(statMarketDataFetchAction(statMarketId))
-        }
-    }),
     withHandlers({
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
@@ -121,17 +122,19 @@ const enhance = compose(
 const StatMarketList = enhance((props) => {
     const {
         location,
-        list,
-        listLoading,
+        marketList,
+        marketListLoading,
+        marketTypeList,
+        marketTypeListLoading,
         filter,
         filterItem,
         filterForm,
         layout,
         params,
-        graphList,
-        graphLoading,
         sumData,
-        sumLoading
+        sumLoading,
+        marketTypeSumData,
+        marketTypeSumLoading
     } = props
 
     const detailId = _.toInteger(_.get(params, 'statMarketId'))
@@ -141,6 +144,7 @@ const StatMarketList = enhance((props) => {
     const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
     const user = !_.isNull(_.get(location, ['query', 'user'])) && _.get(location, ['query', 'user'])
     const search = !_.isNull(_.get(location, ['query', 'search'])) ? _.get(location, ['query', 'search']) : null
+    const toggle = filter.getParam('toggle') || MARKET
 
     const statMarketDialog = {
         openStatMarketDialog,
@@ -149,14 +153,11 @@ const StatMarketList = enhance((props) => {
     }
 
     const listData = {
-        sumData,
-        sumLoading,
-        data: _.get(list, 'results'),
-        listLoading
+        sumData: toggle === MARKET ? sumData : marketTypeSumData,
+        sumLoading: toggle === MARKET ? sumLoading : marketTypeSumLoading,
+        data: toggle === MARKET ? _.get(marketList, 'results') : _.get(marketTypeList, 'results'),
+        listLoading: toggle === MARKET ? marketListLoading : marketTypeListLoading
     }
-    const marketDetail = _.find(_.get(list, 'results'), (item) => {
-        return _.toInteger(_.get(item, 'id')) === _.toInteger(detailId)
-    })
     const filterDateRange = {
         'fromDate': _.get(filterForm, ['values', 'date', 'fromDate']) || null,
         'toDate': _.get(filterForm, ['values', 'date', 'toDate']) || null
@@ -164,13 +165,9 @@ const StatMarketList = enhance((props) => {
     const detailData = {
         filter: filterItem,
         id: detailId,
-        marketDetail,
-        graphList,
-        graphLoading,
         handleCloseDetail: props.handleCloseDetail,
         handleOpenDetail: props.handleOpenDetail,
         filterDateRange
-
     }
     const getDocument = {
         handleGetDocument: props.handleGetDocument

@@ -22,22 +22,6 @@ export const statMarketListFetchAction = (filter) => {
     }
 }
 
-export const statMarketDataFetchAction = (market) => {
-    const payload = axios()
-        .get(sprintf(API.STAT_MARKET_DATA), {'params': {'market': market}})
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.STAT_MARKET_DATA,
-        payload
-    }
-}
-
 export const statMarketSumFetchAction = (filter) => {
     const params = serializers.sumFilterSerializer(filter.getParams())
     const payload = axios()
@@ -51,6 +35,40 @@ export const statMarketSumFetchAction = (filter) => {
 
     return {
         type: actionTypes.STAT_MARKET_SUM,
+        payload
+    }
+}
+
+export const statMarketTypeListFetchAction = (filter) => {
+    const params = serializers.listFilterSerializer(filter.getParams())
+    const payload = axios()
+        .get(API.STAT_MARKET_TYPE_LIST, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STAT_MARKET_TYPE_LIST,
+        payload
+    }
+}
+
+export const statMarketTypeSumFetchAction = (filter) => {
+    const params = serializers.sumFilterSerializer(filter.getParams())
+    const payload = axios()
+        .get(sprintf(API.STAT_MARKET_TYPE_SUM), {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STAT_MARKET_TYPE_SUM,
         payload
     }
 }

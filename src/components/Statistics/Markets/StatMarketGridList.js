@@ -19,9 +19,13 @@ import getConfig from '../../../helpers/getConfig'
 import NotFound from '../../Images/not-found.png'
 import {StatisticsFilterExcel} from '../../Statistics'
 import IconButton from 'material-ui/IconButton'
+import FlatButton from 'material-ui/FlatButton'
 import FullScreen from 'material-ui/svg-icons/navigation/fullscreen'
 import FullScreenExit from 'material-ui/svg-icons/navigation/fullscreen-exit'
 import t from '../../../helpers/translate'
+import Market from 'material-ui/svg-icons/maps/store-mall-directory'
+import MarketType from 'material-ui/svg-icons/maps/local-mall'
+import {hashHistory} from 'react-router'
 
 export const STAT_MARKET_FILTER_KEY = {
     SEARCH: 'search',
@@ -29,6 +33,9 @@ export const STAT_MARKET_FILTER_KEY = {
     TO_DATE: 'toDate',
     FROM_DATE: 'fromDate'
 }
+export const MARKET = 'market'
+export const MARKET_TYPE = 'marketType'
+
 const enhance = compose(
     injectSheet({
         loader: {
@@ -138,10 +145,6 @@ const enhance = compose(
         tableBody: {
             '& > tr:first-child > td:first-child': {
                 minWidth: '220px'
-            },
-            '& tr:first-child > td:first-child': {
-                verticalAlign: 'bottom',
-                padding: '0 20px 15px'
             }
         },
         mainTable: {
@@ -362,8 +365,35 @@ const enhance = compose(
         },
         fullScreen: {
             marginLeft: '10px !important'
+        },
+        toggleWrapper: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            padding: '10px 0',
+            borderTop: '1px #efefef solid',
+            '& > div': {
+                display: 'flex',
+                background: 'transparent !important'
+            },
+            '& button': {
+                height: '32px !important',
+                lineHeight: '32px !important',
+                minWidth: '66px !important',
+                '& > div': {
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    '& svg': {
+                        width: '20px !important',
+                        height: '20px !important'
+                    }
+                }
+            }
+        },
+        shadowButton: {
+            boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px'
         }
-
     }),
     withState('currentRow', 'updateRow', null),
     withState('expandedTable', 'setExpandedTable', false),
@@ -472,6 +502,13 @@ const StatMarketGridList = enhance((props) => {
         }
     }
 
+    const toggle = filter.getParam('toggle') || MARKET
+    const primaryColor = '#12aaeb'
+    const disabledColor = '#dadada'
+    const whiteColor = '#fff'
+    const isMarket = toggle === MARKET
+    const isMarketType = toggle === MARKET_TYPE
+
     const tableLeft = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name') || 'No'
@@ -503,7 +540,7 @@ const StatMarketGridList = enhance((props) => {
                 style={id === currentRow ? styleOnHover : {}}
                 onMouseEnter={() => { updateRow(id) }}
                 onMouseLeave={() => { updateRow(null) }}>
-                <td>{clientName}</td>
+                {isMarket && <td>{clientName}</td>}
 
                 <td>{numberFormat(salesTotal, primaryCurrency)}</td>
                 <td>{numberFormat(salesFact, primaryCurrency)}</td>
@@ -556,7 +593,7 @@ const StatMarketGridList = enhance((props) => {
                                 <Loader size={0.75}/>
                             </div>
                             : <div className={classes.summary}>
-                                <div className={classes.sumTitle}>
+                                <div>
                                     <span>{t('Сумма от продаж')}</span>
                                     <div>{numberFormat(salesTotalSum, primaryCurrency)}</div>
                                     <span>{t('Фактические продажи')}</span>
@@ -584,13 +621,13 @@ const StatMarketGridList = enhance((props) => {
                             </div>}
                         <div className={expandedTable ? classes.expandedTable : ''}>
                             <div className={classes.pagination}>
-                                <div>{t('Продажи по магазинам в зоне')}</div>
+                                <div>{isMarket ? t('Продажи по магазинам в зоне') : t('Продажи по типам магазинов в зоне')}</div>
                                 <form onSubmit={handleSubmit(handleSubmitFilterDialog)}>
                                     <Field
                                         className={classes.inputFieldCustom}
                                         name="search"
                                         component={TextField}
-                                        hintText={t('Магазин')}/>
+                                        hintText={isMarket ? t('Магазин') : t('Тип магазина')}/>
                                 </form>
                                 <div className={classes.flexCenter}>
                                     <Pagination filter={filter}/>
@@ -616,13 +653,33 @@ const StatMarketGridList = enhance((props) => {
                                     </ToolTip>}
                                 </div>
                             </div>
+                            <div className={classes.toggleWrapper}>
+                                <ToolTip position="left" text="Показать по магазинам">
+                                    <FlatButton
+                                        icon={<Market color={whiteColor}/>}
+                                        className={isMarket ? classes.shadowButton : ''}
+                                        onTouchTap={() => { hashHistory.push(filter.createURL({toggle: MARKET})) }}
+                                        backgroundColor={isMarket ? primaryColor : disabledColor}
+                                        rippleColor={whiteColor}
+                                        hoverColor={isMarket ? primaryColor : disabledColor}/>
+                                </ToolTip>
+                                <ToolTip position="left" text="Показать по типам магазинов">
+                                    <FlatButton
+                                        icon={<MarketType color={whiteColor}/>}
+                                        className={isMarketType ? classes.shadowButton : ''}
+                                        onTouchTap={() => { hashHistory.push(filter.createURL({toggle: MARKET_TYPE})) }}
+                                        backgroundColor={isMarketType ? primaryColor : disabledColor}
+                                        rippleColor={whiteColor}
+                                        hoverColor={isMarketType ? primaryColor : disabledColor}/>
+                                </ToolTip>
+                            </div>
                             <div className={classes.container}>
                                 {listLoading && <div className={classes.loader}>
                                     <Loader size={0.75}/>
                                 </div>}
                                 <div className={classes.tableWrapper}>
                                     <div className={classes.leftTable}>
-                                        <div><span>{t('Магазин')}</span></div>
+                                        <div><span>{isMarket ? t('Магазин') : t('Тип магазина')}</span></div>
                                         {tableLeft}
                                     </div>
                                     {_.isEmpty(tableList) && !listLoading &&
@@ -633,7 +690,7 @@ const StatMarketGridList = enhance((props) => {
                                         <table className={classes.mainTable}>
                                             <tbody className={classes.tableBody}>
                                             <tr className={classes.title}>
-                                                <td rowSpan={2}>{t('Клиент')}</td>
+                                                {isMarket && <td rowSpan={2}>{t('Клиент')}</td>}
                                                 <td colSpan={2}>{t('Продажа')}</td>
                                                 <td colSpan={2}>{t('Возврат')}</td>
                                                 <td colSpan={2}>{t('Оплачено')}</td>
