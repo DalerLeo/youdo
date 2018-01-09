@@ -354,11 +354,15 @@ export const STAT_AGENT_SUM = 'stats/agents/statistics/all/sum/'
 export const STAT_AGENT_ITEM = 'sales/order/'
 export const STAT_AGENT_GET_DOCUMENT = '/stats/agents/export/'
 
-export const STAT_MARKET_LIST = 'stats/markets/'
+export const STAT_MARKET = 'stats/markets'
+export const STAT_MARKET_LIST = `${STAT_MARKET}/`
+export const STAT_MARKET_SUM = `${STAT_MARKET}/sum/`
+export const STAT_MARKET_TYPE = 'stats/market_types'
+export const STAT_MARKET_TYPE_LIST = `${STAT_MARKET_TYPE}/`
+export const STAT_MARKET_TYPE_SUM = `${STAT_MARKET_TYPE}/sum/`
 export const STAT_MARKET_ITEM = 'sales/order/'
 export const STAT_MARKET_GET_DOCUMENT = '/stats/markets/export'
 export const STAT_MARKET_DATA = '/stats/orders/'
-export const STAT_MARKET_SUM = '/stats/markets/sum/'
 
 export const STAT_FINANCE_LIST = 'finance/transaction/'
 export const STAT_FINANCE_DATA = 'stats/transactions/'

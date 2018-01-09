@@ -331,13 +331,12 @@ const rootReducer = combineReducers({
         sumData: createThunkReducer(actionTypes.STAT_PRODUCT_SUM_DATA)
     }),
     statMarket: combineReducers({
-        list: createThunkReducer(actionTypes.STAT_MARKET_LIST),
-        item: createThunkReducer(actionTypes.STAT_MARKET_ITEM),
-        data: createThunkReducer(actionTypes.STAT_MARKET_DATA),
-        sum: createThunkReducer(actionTypes.STAT_MARKET_SUM)
+        marketList: createThunkReducer(actionTypes.STAT_MARKET_LIST),
+        marketSum: createThunkReducer(actionTypes.STAT_MARKET_SUM),
+        marketTypeList: createThunkReducer(actionTypes.STAT_MARKET_TYPE_LIST),
+        marketTypeSum: createThunkReducer(actionTypes.STAT_MARKET_TYPE_SUM)
     }),
     statReport: combineReducers({
-        data: createThunkReducer(actionTypes.STAT_REPORT_DATA),
         list: createThunkReducer(actionTypes.STAT_REPORT_LIST)
     }),
     statOutcomeCategory: combineReducers({
