@@ -2,6 +2,7 @@ import _ from 'lodash'
 import moment from 'moment'
 import {orderingSnakeCase} from '../../helpers/serializer'
 
+const ZERO = 0
 export const listFilterSerializer = (query) => {
     const {...defaultData} = query
     const ordering = _.get(query, 'ordering')
@@ -36,20 +37,20 @@ export const summaryFilterSerializer = (query) => {
     }
 }
 
-export const itemSerializer = (data, filterItem, id) => {
+export const itemFilterSerializer = (data, id, division, type) => {
     const {...defaultData} = data
-    const daysInMonth = moment(_.get(defaultData, 'end_date')).daysInMonth()
-    const begin = _.get(defaultData, 'begin_date') ? moment(_.get(defaultData, 'begin_date')).format('YYYY-MM-01') : moment().format('YYYY-MM-01')
-    const end = _.get(defaultData, 'end_date') ? _.get(defaultData, 'end_date') + '-' + daysInMonth : moment().format('YYYY-MM-' + daysInMonth)
-
-    return {
-        'user': id,
-        'exclude_cancelled': 'True',
-        'page': _.get(filterItem, 'dPage'),
-        'page_size': _.get(filterItem, 'dPageSize'),
-        'division': _.get(filterItem, 'division'),
-        'created_date_0': begin,
-        'created_date_1': end
+    const ordering = _.get(data, 'ordering')
+    const paymentType = type || null
+    const request = {
+        'provider': id,
+        'payment_type': paymentType,
+        'page': _.get(defaultData, 'dPage'),
+        'page_size': _.get(defaultData, 'dPageSize'),
+        'ordering': ordering && orderingSnakeCase(ordering)
     }
+    if (division > ZERO) {
+        return _.merge(request, {division})
+    }
+    return request
 }
 

@@ -8,7 +8,7 @@ import injectSheet from 'react-jss'
 import {compose, withState, lifecycle} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
 import {TextField, ZoneMultiSearchField, DivisionMultiSearchField, DateToDateField} from '../../ReduxForm'
-import StatProviderDialog from './ProviderDialog'
+import ProviderInfoDialog from './ProviderInfoDialog'
 import StatSideMenu from '../StatSideMenu'
 import Loader from '../../Loader'
 import ToolTip from '../../ToolTip'
@@ -22,6 +22,14 @@ import IconButton from 'material-ui/IconButton'
 import FullScreen from 'material-ui/svg-icons/navigation/fullscreen'
 import FullScreenExit from 'material-ui/svg-icons/navigation/fullscreen-exit'
 import t from '../../../helpers/translate'
+import {CLIENT_BALANCE_FILTER_KEY} from '../../ClientBalance'
+import {hashHistory} from 'react-router'
+import ArrowUpIcon from 'material-ui/svg-icons/navigation/arrow-upward'
+import ArrowDownIcon from 'material-ui/svg-icons/navigation/arrow-downward'
+import ordering from '../../../helpers/ordering'
+
+let amountValues = []
+let head = []
 
 export const STAT_PROVIDER_FILTER_KEY = {
     FROM_DATE: 'fromDate',
@@ -29,6 +37,12 @@ export const STAT_PROVIDER_FILTER_KEY = {
     ZONE: 'zone',
     DIVISION: 'division',
     SEARCH: 'search'
+}
+const types = {
+    cash: 'cash',
+    bank: 'bank',
+    debtor: 'debtor',
+    loaner: 'loaner'
 }
 const enhance = compose(
     injectSheet({
@@ -71,6 +85,7 @@ const enhance = compose(
                 width: '350px'
             },
             '& > div:last-child': {
+                alignSelf: 'baseline',
                 width: 'calc(100% - 350px)',
                 overflowX: 'auto',
                 overflowY: 'hidden'
@@ -92,12 +107,12 @@ const enhance = compose(
                 },
                 '&:first-child': {
                     backgroundColor: 'white',
-                    height: '81px',
+                    height: '41px',
                     verticalAlign: 'bottom',
                     '& span': {
                         fontWeight: '600',
-                        verticalAlign: 'bottom',
-                        padding: '15px 30px',
+                        verticalAlign: 'middle',
+                        padding: '0 30px',
                         borderTop: '1px #efefef solid',
                         borderBottom: '1px #efefef solid'
                     }
@@ -111,7 +126,7 @@ const enhance = compose(
         },
         mainTable: {
             width: '100%',
-            minWidth: '1600px',
+            minWidth: '850px',
             color: '#666',
             borderCollapse: 'collapse',
             '& tr, td': {
@@ -139,16 +154,17 @@ const enhance = compose(
             }
         },
         tableRow: {
+            '& td': {
+                borderLeft: '1px #efefef solid'
+            },
             '& td:nth-child(odd)': {
                 textAlign: 'left',
-                borderLeft: '1px #efefef solid',
                 '&:first-child': {
                     borderLeft: 'none'
                 }
             },
             '& td:nth-child(even)': {
                 borderRight: '1px #efefef solid',
-                textAlign: 'right',
                 '&:first-child': {
                     borderRight: 'none'
                 }
@@ -157,9 +173,7 @@ const enhance = compose(
                 backgroundColor: '#f9f9f9'
             },
             '& td:last-child': {
-                textAlign: 'right',
-                borderRight: '1px #efefef solid',
-                borderLeft: 'none'
+                borderRight: '1px #efefef solid'
             }
         },
         balanceInfo: {
@@ -322,47 +336,18 @@ const enhance = compose(
             marginLeft: '10px !important'
         },
         summary: {
-            padding: '30px 0'
+            padding: '20px 0'
         },
         summaryWrapper: {
             width: '100%',
             display: 'flex',
             justifyContent: 'space-between',
             '& > div': {
-                padding: '10px 20px',
-                borderRadius: '2px',
-                border: '1px solid #efefef',
-                width: 'calc((100% / 3) - 10px)',
-                '& > div:nth-child(odd)': {
-                    color: '#666'
-                },
-                '& > div:nth-child(even)': {
-                    fontSize: '16px',
-                    fontWeight: '600',
-                    marginBottom: '10px'
-                },
-                '& > div:last-child': {
-                    marginBottom: '0'
-                },
-                '&:last-child': {
-                    textAlign: 'right'
-                }
-            }
-        },
-        summaryPlan: {
-            display: 'flex',
-            justifyContent: 'space-between',
-            padding: '10px 15px',
-            marginTop: '15px',
-            borderRadius: '2px',
-            border: 'solid 1px #efefef',
-            '& > div': {
-                display: 'grid',
-                '& > span:first-child': {
-                    color: '#666'
-                },
-                '& > span:last-child': {
-                    fontSize: '16px',
+                cursor: 'pointer',
+                fontWeight: '400',
+                '& div': {
+                    fontSize: '17px',
+                    marginTop: '2px',
                     fontWeight: '600'
                 },
                 '&:last-child': {
@@ -378,10 +363,19 @@ const enhance = compose(
             zIndex: '999',
             justifyContent: 'center',
             padding: '0'
+        },
+        red: {
+            color: '#e27676',
+            fontWeight: '600'
+        },
+        green: {
+            fontWeight: '600',
+            color: '#92ce95'
         }
     }),
     withState('currentRow', 'updateRow', null),
     withState('expandedTable', 'setExpandedTable', false),
+    withState('currentItem', 'setItem', null),
     reduxForm({
         form: 'StatisticsFilterForm',
         enableReinitialize: true
@@ -393,62 +387,6 @@ const enhance = compose(
         }
     })
 )
-
-const listHeader = [
-    // Sales
-    {
-        sorting: true,
-        title: t('Сумма'),
-        tooltip: t('Общая сумма продаж')
-    },
-    {
-        sorting: true,
-        title: t('Фактически'),
-        tooltip: t('Сумма продаж с учетом возвратов')
-    },
-    // Returns
-    {
-        sorting: true,
-        tooltip: t('Сумма возвратов от продаж'),
-        title: t('По заказам')
-    },
-    {
-        sorting: true,
-        tooltip: t('Сумма возвратов за этот период'),
-        title: t('Общее')
-    },
-    // Payments
-    {
-        sorting: true,
-        title: t('По заказам'),
-        tooltip: t('Сумма оплат с заказов')
-    },
-    {
-        sorting: true,
-        title: t('Общее'),
-        tooltip: t('Общая сумма оплат')
-    },
-    // Plan
-    {
-        sorting: true,
-        title: t('План')
-    },
-    {
-        sorting: true,
-        title: t('Осталось')
-    },
-    // Debt
-    {
-        sorting: true,
-        title: t('По заказам'),
-        tooltip: t('Долг по заказам')
-    },
-    {
-        sorting: true,
-        title: t('Общее'),
-        tooltip: t('Общая сумма долга')
-    }
-]
 
 const styleOnHover = {
     background: '#efefef',
@@ -470,12 +408,12 @@ const iconStyle = {
 const StatProviderGridList = enhance((props) => {
     const {
         classes,
-        statProviderDialog,
         listData,
         summaryData,
         filter,
         handleSubmitFilterDialog,
         detailData,
+        infoDialog,
         getDocument,
         initialValues,
         handleSubmit,
@@ -483,75 +421,66 @@ const StatProviderGridList = enhance((props) => {
         currentRow,
         updateRow,
         expandedTable,
-        setExpandedTable
+        setExpandedTable,
+        setItem
     } = props
 
+    const ZERO = 0
+    const query = filter.getParams()
     const listLoading = _.get(listData, 'listLoading')
-    const salesSummary = numberFormat(_.get(_.find(_.get(listData, 'data'), {'id': _.get(detailData, 'id')}), 'ordersTotalPrice'))
     const divisionStatus = getConfig('DIVISIONS')
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
 
     // Summary
-    const salesTotalSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'salesTotal'])), primaryCurrency)
-    const salesFactSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'salesFact'])), primaryCurrency)
-    const returnOrdersSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'returnOrders'])), primaryCurrency)
-    const returnTotalSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'returnTotal'])), primaryCurrency)
-    const paymentOrdersSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'paymentOrders'])), primaryCurrency)
-    const paymentTotalSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'paymentTotal'])), primaryCurrency)
-    const planTotalSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'planTotal'])), primaryCurrency)
-    const planLeftSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'planLeft'])), primaryCurrency)
-    const debtFromOrderSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'debtFromOrder'])), primaryCurrency)
-    const debtTotalSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'debtTotal'])), primaryCurrency)
-    const tableLeft = _.map(_.get(listData, 'data'), (item) => {
-        const id = _.get(item, 'id')
-        const name = _.get(item, 'name')
-        return (
-            <div
-                key={id}
-                style={id === currentRow ? styleOnHover : {}}
-                onMouseEnter={() => { updateRow(id) }}
-                onMouseLeave={() => { updateRow(null) }}
-                onClick={ () => { statProviderDialog.handleOpenStatProviderDialog(id) }}>
-                <span>{name}</span>
-            </div>
-        )
+    const borrowersBank = Math.abs(_.get(summaryData, ['data', 'borrowersSumBank']))
+    const borrowersBankCount = _.get(summaryData, ['data', 'borrowersCountBank'])
+    const borrowersCash = Math.abs(_.get(summaryData, ['data', 'borrowersSumCash']))
+    const borrowersCashCount = _.get(summaryData, ['data', 'borrowersCountCash'])
+    const loanersBank = Math.abs(_.get(summaryData, ['data', 'loanersSumBank']))
+    const loanersBankCount = _.get(summaryData, ['data', 'loanersCountBank'])
+    const loanersCash = Math.abs(_.get(summaryData, ['data', 'loanersSumCash']))
+    const loanersCashCount = _.get(summaryData, ['data', 'loanersCountCash'])
+    const sumLoading = _.get(summaryData, ['sumLoading'])
+
+    const orderNoSorting = _.isNil(filter.getSortingType('orders'))
+        ? null
+        : filter.getSortingType('orders')
+            ? <ArrowUpIcon className={classes.icon}/>
+            : <ArrowDownIcon className={classes.icon}/>
+    const totalSorting = _.isNil(filter.getSortingType('total'))
+        ? null
+        : filter.getSortingType('total')
+            ? <ArrowUpIcon className={classes.icon}/>
+            : <ArrowDownIcon className={classes.icon}/>
+    const providers = (
+        <div className={classes.leftTable}>
+            <div><span>Поставщик</span></div>
+            {_.map(_.get(listData, 'data'), (item) => {
+                const id = _.get(item, 'id')
+                const name = _.get(item, 'name') || 'No'
+                return (
+                    <div
+                        key={id}
+                        style={id === currentRow ? styleOnHover : {}}
+                        onMouseEnter={() => updateRow(id)}
+                        onMouseLeave={() => updateRow(null)}><span>{name}</span>
+                    </div>
+                )
+            })}
+        </div>
+    )
+
+    head = []
+    _.map(_.get(listData, ['data', '0', 'divisions']), (item) => {
+        if (item.id) {
+            head.push({name: item.name + t(' нал.'), id: item.id, type: t('cash')})
+            head.push({name: item.name + t(' переч.'), id: item.id, type: t('bank')})
+        } else {
+            head.push({name: t('Наличный'), id: item.id, type: t('cash')})
+            head.push({name: t('Перечисление'), id: item.id, type: t('bank')})
+        }
     })
-    const tableList = _.map(_.get(listData, 'data'), (item) => {
-        const id = _.get(item, 'id')
-        const salesTotal = numberFormat(_.get(item, 'salesTotal'), primaryCurrency)
-        const salesFact = numberFormat(_.get(item, 'salesFact'), primaryCurrency)
-        const returnOrders = numberFormat(_.get(item, 'returnOrders'), primaryCurrency)
-        const returnTotal = numberFormat(_.get(item, 'returnTotal'), primaryCurrency)
-        const paymentOrders = numberFormat(_.get(item, 'paymentOrders'), primaryCurrency)
-        const paymentTotal = numberFormat(_.get(item, 'paymentTotal'), primaryCurrency)
-        const planTotal = numberFormat(_.get(item, 'planTotal'), primaryCurrency)
-        const planLeft = numberFormat(_.get(item, 'planLeft'), primaryCurrency)
-        const planDebt = numberFormat(_.get(item, 'planDebt'), primaryCurrency)
-        const debt = numberFormat(_.get(item, 'planDebt'), primaryCurrency)
 
-        return (
-            <tr
-                key={id}
-                className={classes.tableRow}
-                style={id === currentRow ? styleOnHover : {}}
-                onMouseEnter={() => { updateRow(id) }}
-                onMouseLeave={() => { updateRow(null) }}>
-                <td>{salesTotal}</td>
-                <td>{salesFact}</td>
-
-                <td>{returnOrders}</td>
-                <td>{returnTotal}</td>
-
-                <td>{paymentOrders}</td>
-                <td>{paymentTotal}</td>
-
-                <td>{planTotal}</td>
-                <td>{planLeft}</td>
-                <td>{planDebt}</td>
-                <td>{debt}</td>
-            </tr>
-        )
-    })
     const fields = (
         <div>
             <Field
@@ -573,8 +502,98 @@ const StatProviderGridList = enhance((props) => {
                 label={t('Организация')}
                 fullWidth={true}/>}
         </div>
-
     )
+
+    const tableList = (
+        <table className={classes.mainTable}>
+            <tbody>
+            <tr className={classes.title}>
+                <td
+                    style={{cursor: 'pointer'}}
+                    onClick={() => {
+                        ordering(filter, 'supplies', props.pathname)
+                        if (_.get(query, 'ordering') === 'supplies') {
+                            ordering(filter, '-supplies', props.pathname)
+                        } else if (_.get(query, 'ordering') === '-supplies') {
+                            ordering(filter, '', props.pathname)
+                        } else {
+                            ordering(filter, 'supplies', props.pathname)
+                        }
+                    }}>
+                    {t('Кол-во поставок')} {orderNoSorting}
+                </td>
+                <td
+                    style={{cursor: 'pointer'}}
+                    onClick={() => {
+                        ordering(filter, 'total', props.pathname)
+                        if (_.get(query, 'ordering') === 'total') {
+                            ordering(filter, '-total', props.pathname)
+                        } else if (_.get(query, 'ordering') === '-total') {
+                            ordering(filter, '', props.pathname)
+                        } else {
+                            ordering(filter, 'total', props.pathname)
+                        }
+                    }}>{t('Сумма')} {totalSorting}
+                </td>
+                {_.map(head, (item, index) => {
+                    const sortingType = filter.getSortingType(item.type + '_' + item.id)
+                    const icon = _.isNil(sortingType)
+                        ? null
+                        : sortingType
+                            ? <ArrowUpIcon className={classes.icon}/>
+                            : <ArrowDownIcon className={classes.icon}/>
+                    const sortingFunc = () => {
+                        switch (_.get(query, 'ordering')) {
+                            case item.type + '_' + item.id: return ordering(filter, '-' + item.type + '_' + item.id, props.pathname)
+                            case '-' + item.type + '_' + item.id: return ordering(filter, '', props.pathname)
+                            default: return ordering(filter, item.type + '_' + item.id, props.pathname)
+                        }
+                    }
+                    return (
+                        <td
+                            key={index}
+                            style={{cursor: 'pointer'}}
+                            onClick={sortingFunc}>
+                            {item.name}{icon}
+                        </td>
+                    )
+                })}
+            </tr>
+
+            {_.map(_.get(listData, 'data'), (item) => {
+                const id = _.get(item, 'id')
+                const suppliesCount = numberFormat(_.get(item, 'supplies'))
+                amountValues = []
+                _.map(_.get(item, 'divisions'), (child) => {
+                    amountValues.push({amount: _.get(child, 'cash'), type: 'cash', id: _.get(child, 'id')})
+                    amountValues.push({amount: _.get(child, 'bank'), type: 'bank', id: _.get(child, 'id')})
+                })
+                const totalSum = _.toNumber(_.get(item, 'total'))
+                return (
+                    <tr key={id}
+                        style={id === currentRow ? styleOnHover : {}}
+                        onMouseEnter={() => updateRow(id)}
+                        onMouseLeave={() => updateRow(null)}
+                        className={classes.tableRow}>
+                        <td>{suppliesCount}</td>
+                        <td><span className={totalSum > ZERO ? classes.green : totalSum < ZERO ? classes.red : ''}>{numberFormat(totalSum, primaryCurrency)}</span></td>
+                        {_.map(amountValues, (val, index) => {
+                            const amount = _.toNumber(_.get(val, 'amount'))
+                            return (
+                                <td key={index}
+                                    onClick={() => { infoDialog.handleOpenInfoDialog(id, _.get(val, 'id'), _.get(val, 'type')) }}
+                                    style={id === currentRow ? {background: '#efefef', cursor: 'pointer'} : {cursor: 'pointer'}}>
+                                    <span className={(amount > ZERO) ? classes.green : (amount < ZERO) ? classes.red : ''}>{numberFormat(amount, primaryCurrency)}</span>
+                                </td>
+                            )
+                        })}
+                    </tr>
+                )
+            })}
+            </tbody>
+        </table>
+    )
+
     const page = (
         <div className={classes.mainWrapper}>
             <Row style={{margin: '0', height: '100%'}}>
@@ -593,36 +612,46 @@ const StatProviderGridList = enhance((props) => {
                             handleGetDocument={getDocument.handleGetDocument}
                         />
                         <div className={classes.summary}>
-                            {listLoading
-                                ? <div className={classes.summaryLoader}>
+                            {sumLoading
+                                ? <div className={classes.sumLoader}>
                                     <Loader size={0.75}/>
                                 </div>
-                                : <div>
-                                    <div className={classes.summaryWrapper}>
-                                        <div>
-                                            <div>{t('Общая сумма продаж')}</div>
-                                            <div>{salesTotalSum}</div>
-                                            <div>{t('Фактическая сумма продаж')}</div>
-                                            <div>{salesFactSum}</div>
-                                        </div>
-                                        <div>
-                                            <div>{t('Сумма возвратов от продаж')}</div>
-                                            <div>{returnOrdersSum}</div>
-                                            <div>{t('Сумма возвратов за этот период')}</div>
-                                            <div>{returnTotalSum}</div>
-                                        </div>
-                                        <div>
-                                            <div>{t('Сумма оплат с заказов')}</div>
-                                            <div>{paymentOrdersSum}</div>
-                                            <div>{t('Общая сумма оплат')}</div>
-                                            <div>{paymentTotalSum}</div>
-                                        </div>
+                                : <div className={classes.summaryWrapper}>
+                                    <div
+                                        onClick={() => hashHistory.push(
+                                            filter.createURL({
+                                                [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: types.cash,
+                                                [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: types.debtor
+                                            }))}>
+                                        {t('Задолжники нал')}. - {borrowersCashCount}
+                                        <div>{numberFormat(borrowersCash, primaryCurrency)}</div>
                                     </div>
-                                    <div className={classes.summaryPlan}>
-                                        <div><span>{t('План агента')}</span> <span>{planTotalSum}</span></div>
-                                        <div><span>{t('План остаток')}</span> <span>{planLeftSum}</span></div>
-                                        <div><span>{t('Долг по заказам')}</span> <span>{debtFromOrderSum}</span></div>
-                                        <div><span>{t('Общая сумма долга')}</span> <span>{debtTotalSum}</span></div>
+                                    <div
+                                        onClick={() => hashHistory.push(
+                                            filter.createURL({
+                                                [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: types.bank,
+                                                [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: types.debtor
+                                            }))}>
+                                        {t('Задолжники переч')}. - {borrowersBankCount}
+                                        <div>{numberFormat(borrowersBank, primaryCurrency)}</div>
+                                    </div>
+                                    <div
+                                        onClick={() => hashHistory.push(
+                                            filter.createURL({
+                                                [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: types.cash,
+                                                [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: types.loaner
+                                            }))}>
+                                        {t('Закладчики нал')}. - {loanersCashCount}
+                                        <div>{numberFormat(loanersCash, primaryCurrency)}</div>
+                                    </div>
+                                    <div
+                                        onClick={() => hashHistory.push(
+                                            filter.createURL({
+                                                [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: types.bank,
+                                                [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: types.loaner
+                                            }))}>
+                                        {t('Закладчики переч')}. - {loanersBankCount}
+                                        <div>{numberFormat(loanersBank, primaryCurrency)}</div>
                                     </div>
                                 </div>}
                         </div>
@@ -664,55 +693,13 @@ const StatProviderGridList = enhance((props) => {
                                     <Loader size={0.75}/>
                                 </div>}
                                 <div className={classes.tableWrapper}>
-                                    <div className={classes.leftTable}>
-                                        <div><span>{t('Агент')}</span></div>
-                                        {tableLeft}
-                                    </div>
+                                    {providers}
                                     {_.isEmpty(tableList) && !listLoading &&
                                     <div className={classes.emptyQuery}>
                                         <div>{t('По вашему запросу ничего не найдено')}</div>
                                     </div>}
                                     <div ref="horizontalTable">
-                                        <table className={classes.mainTable}>
-                                            <tbody className={classes.tableBody}>
-                                            <tr className={classes.title}>
-                                                <td colSpan={2}>{t('Продажа')}</td>
-                                                <td colSpan={2}>{t('Возврат')}</td>
-                                                <td colSpan={2}>{t('Оплачено')}</td>
-                                                <td colSpan={2}>{t('План агента')}</td>
-                                                <td colSpan={2}>{t('Долг')}</td>
-                                            </tr>
-                                            <tr className={classes.subTitle}>
-                                                {_.map(listHeader, (header, index) => {
-                                                    const ZERO = 0
-                                                    const ONE = 1
-                                                    const EVEN = 2
-                                                    const isEven = (index + ONE) % EVEN === ZERO
-                                                    const tooltip = _.get(header, 'tooltip')
-                                                    const sorting = _.get(header, 'sorting')
-                                                    const position = 'left'
-                                                    if (tooltip) {
-                                                        return (
-                                                            <td key={index}>
-                                                                <ToolTip text={tooltip} position={position} alignRight={isEven}>{header.title}</ToolTip>
-                                                            </td>
-                                                        )
-                                                    } else if (sorting) {
-                                                        if (tooltip) {
-                                                            return (
-                                                                <td key={index} style={{cursor: 'pointer'}}>
-                                                                    <ToolTip text={tooltip} position={position} alignRight={isEven}>{header.title}</ToolTip>
-                                                                </td>
-                                                            )
-                                                        }
-                                                        return <td key={index} style={{cursor: 'pointer'}}>{header.title}</td>
-                                                    }
-                                                    return <td key={index}>{header.title}</td>
-                                                })}
-                                            </tr>
-                                            {tableList}
-                                            </tbody>
-                                        </table>
+                                        {tableList}
                                     </div>
                                 </div>
                             </div>
@@ -723,16 +710,22 @@ const StatProviderGridList = enhance((props) => {
         </div>
     )
 
+    const provider = _.find(_.get(listData, 'data'), {'id': _.get(detailData, 'id')})
+
     return (
         <Container>
             {page}
-            <StatProviderDialog
-                loading={_.get(detailData.detailLoading)}
+            <ProviderInfoDialog
+                open={infoDialog.openInfoDialog}
                 detailData={detailData}
-                salesSummary={salesSummary}
-                open={statProviderDialog.openStatProviderDialog}
-                onClose={statProviderDialog.handleCloseStatProviderDialog}
-                filter={filter}/>
+                onClose={infoDialog.handleCloseInfoDialog}
+                filterItem={detailData.filter}
+                filter={filter}
+                name={_.get(provider, 'name')}
+                paymentType={_.get(infoDialog, ['division', 'name']) + _.get(infoDialog, 'type')}
+                balance={_.get(infoDialog, 'balance')}
+                setItem={setItem}
+            />
         </Container>
     )
 })

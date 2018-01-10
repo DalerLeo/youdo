@@ -405,7 +405,6 @@ const rootReducer = combineReducers({
         primaryUpdate: createThunkReducer(actionTypes.POSITION_PRIMARY_UPDATE),
         permission: createThunkReducer(actionTypes.POSITION_PERMISSION)
     }),
-
     statSales: combineReducers({
         data: createThunkReducer(actionTypes.STAT_SALES_DATA),
         stats: createThunkReducer(actionTypes.STAT_SALES_STATS),
@@ -433,6 +432,11 @@ const rootReducer = combineReducers({
     statProductMove: combineReducers({
         list: createThunkReducer(actionTypes.STAT_PRODUCT_MOVE_LIST),
         sum: createThunkReducer(actionTypes.STAT_PRODUCT_MOVE_SUM)
+    }),
+    statProvider: combineReducers({
+        list: createThunkReducer(actionTypes.STAT_PROVIDER_LIST),
+        item: createThunkReducer(actionTypes.STAT_PROVIDER_ITEM),
+        sum: createThunkReducer(actionTypes.STAT_PROVIDER_SUM)
     }),
     division: combineReducers({
         create: createThunkReducer(actionTypes.DIVISION_CREATE),
