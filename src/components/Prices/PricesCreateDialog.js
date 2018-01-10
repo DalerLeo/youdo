@@ -322,7 +322,7 @@ const PricesCreateDialog = enhance((props) => {
                                         className={classes.inputFieldCustom}
                                         fullWidth={true}
                                         isUpdate={isUpdate}
-                                        label={t('Выберите тип магазинов')}
+                                        hintText={t('Выберите тип магазинов')}
                                     />
                                 </div>
                             </div>

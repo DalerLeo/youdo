@@ -36,3 +36,36 @@ export const statProductSumDatFetchAction = (filter) => {
         payload
     }
 }
+
+export const statProductTypeListFetchAction = (filter) => {
+    const params = serializers.listFilterSerializer(filter.getParams())
+    const payload = axios()
+        .get((API.STAT_PRODUCT_TYPE_LIST), {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STAT_PRODUCT_TYPE_LIST,
+        payload
+    }
+}
+export const statProductTypeSumFetchAction = (filter) => {
+    const params = serializers.listFilterSerializer(filter.getParams())
+    const payload = axios()
+        .get((API.STAT_PRODUCT_TYPE_SUM), {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STAT_PRODUCT_TYPE_SUM,
+        payload
+    }
+}

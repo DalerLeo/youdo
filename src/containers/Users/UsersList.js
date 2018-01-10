@@ -33,6 +33,7 @@ import {stockListFetchAction} from '../../actions/stock'
 import {openSnackbarAction} from '../../actions/snackbar'
 import {openErrorAction} from '../../actions/error'
 import {currencyListFetchAction} from '../../actions/currency'
+import {divisionListFetchAction} from '../../actions/division'
 import t from '../../helpers/translate'
 
 const enhance = compose(
@@ -52,6 +53,8 @@ const enhance = compose(
         const priceListLoading = _.get(state, ['users', 'priceList', 'loading'])
         const currencyList = _.get(state, ['currency', 'list', 'data'])
         const currencyListLoading = _.get(state, ['currency', 'list', 'loading'])
+        const divisionList = _.get(state, ['division', 'list', 'data'])
+        const divisionListLoading = _.get(state, ['division', 'list', 'loading'])
         const listLoading = _.get(state, ['users', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'UsersFilterForm'])
         const createForm = _.get(state, ['form', 'UsersCreateForm'])
@@ -76,6 +79,8 @@ const enhance = compose(
             priceListLoading,
             currencyList,
             currencyListLoading,
+            divisionList,
+            divisionListLoading,
             filterExp
         }
     }),
@@ -107,6 +112,7 @@ const enhance = compose(
         dispatch(stockListFetchAction(filterExp))
         dispatch(priceListSettingGetAllAction(filterExp))
         dispatch(currencyListFetchAction(filterExp))
+        dispatch(divisionListFetchAction(filterExp))
     }),
 
     withHandlers({
@@ -265,7 +271,9 @@ const UsersList = enhance((props) => {
         priceList,
         priceListLoading,
         currencyList,
-        currencyListLoading
+        currencyListLoading,
+        divisionList,
+        divisionListLoading
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', USERS_FILTER_OPEN]))
@@ -320,13 +328,22 @@ const UsersList = enhance((props) => {
         return {id: obj.id, selected: false}
     })
 
+    const isSelectedDivisions = _.map(_.get(divisionList, 'results'), (obj) => {
+        const userSelectedDivisions = _.find(_.get(detail, 'divisions'), {'id': obj.id})
+        if (!openCreateDialog && _.get(userSelectedDivisions, 'id') === obj.id) {
+            return {id: obj.id, selected: true}
+        }
+        return {id: obj.id, selected: false}
+    })
+
     const createDialog = {
         initialValues: (() => {
             return {
                 groups: isSelectedGroups,
                 stocks: isSelectedStocks,
                 types: isSelectedPriceLists,
-                currencies: isSelectedCurrencies
+                currencies: isSelectedCurrencies,
+                divisions: isSelectedDivisions
             }
         })(),
         createLoading,
@@ -351,6 +368,7 @@ const UsersList = enhance((props) => {
                     stocks: isSelectedStocks,
                     types: isSelectedPriceLists,
                     currencies: isSelectedCurrencies,
+                    divisions: isSelectedDivisions,
                     isActive: true
                 }
             }
@@ -368,6 +386,7 @@ const UsersList = enhance((props) => {
                 stocks: isSelectedStocks,
                 types: isSelectedPriceLists,
                 currencies: isSelectedCurrencies,
+                divisions: isSelectedDivisions,
                 region: _.get(detail, 'region'),
                 typeUser: _.get(detail, 'typeUser'),
                 image: _.get(detail, 'image'),
@@ -427,6 +446,11 @@ const UsersList = enhance((props) => {
         currencyListLoading
     }
 
+    const divisionData = {
+        data: _.get(divisionList, 'results'),
+        divisionListLoading
+    }
+
     return (
         <Layout {...layout}>
             <UsersGridList
@@ -442,6 +466,7 @@ const UsersList = enhance((props) => {
                 stockListData={stockListData}
                 marketTypeData={marketTypeData}
                 currencyData={currencyData}
+                divisionData={divisionData}
             />
         </Layout>
     )

@@ -380,9 +380,10 @@ export const STAT_SALES_STATS = '/stats/orders/statistics'
 export const STAT_SALES_GET_DOCUMENT = '/sales/order/export/'
 
 export const STAT_PRODUCT_LIST = 'stats/products/'
-export const STAT_PRODUCT_GET_DOCUMENT = '/stats/products/export'
-
 export const STAT_PRODUCT_SUM_DATA = 'stats/products/total/'
+export const STAT_PRODUCT_TYPE_LIST = 'stats/product_types/'
+export const STAT_PRODUCT_TYPE_SUM = 'stats/product_types/total/'
+export const STAT_PRODUCT_GET_DOCUMENT = '/stats/products/export'
 
 export const STAT_RETURN_LIST = '/stats/order_returns/'
 export const STAT_RETURN_GET_DOCUMENT = '/sales/order_return/excel/'

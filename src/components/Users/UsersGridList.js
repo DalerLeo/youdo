@@ -102,6 +102,7 @@ const UsersGridList = enhance((props) => {
         listData,
         detailData,
         currencyData,
+        divisionData,
         classes
     } = props
     const listHeader = [
@@ -268,6 +269,7 @@ const UsersGridList = enhance((props) => {
                 stockListData={stockListData}
                 marketTypeData={marketTypeData}
                 currencyData={currencyData}
+                divisionData={divisionData}
             />}
 
             {updateDialog.openUpdateDialog &&
@@ -283,6 +285,7 @@ const UsersGridList = enhance((props) => {
                 stockListData={stockListData}
                 marketTypeData={marketTypeData}
                 currencyData={currencyData}
+                divisionData={divisionData}
                 errorData={updateDialog.errorData}
             />}
 

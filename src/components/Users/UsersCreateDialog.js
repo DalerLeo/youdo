@@ -12,7 +12,6 @@ import {Field, reduxForm, SubmissionError} from 'redux-form'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import toCamelCase from '../../helpers/toCamelCase'
 import {TextField, ImageUploadField, CheckBox, PositionSearchField, UserStockRadioButtonField, PostSearchField} from '../ReduxForm'
-import MainStyles from '../Styles/MainStyles'
 import getConfig from '../../helpers/getConfig'
 import {connect} from 'react-redux'
 
@@ -39,7 +38,58 @@ const validateForm = values => {
 }
 
 const enhance = compose(
-    injectSheet(_.merge(MainStyles, {
+    injectSheet({
+        popUp: {
+            color: '#333 !important',
+            overflowY: 'unset !important',
+            overflowX: 'unset !important',
+            fontSize: '13px !important',
+            position: 'relative',
+            padding: '0 !important',
+            height: '100%',
+            maxHeight: 'none !important',
+            marginBottom: '64px'
+        },
+        titleContent: {
+            background: '#fff',
+            color: '#333',
+            fontWeight: 'bold',
+            textTransform: 'uppercase',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            borderBottom: '1px solid #efefef',
+            padding: '20px 30px',
+            zIndex: '999',
+            '& button': {
+                right: '13px',
+                position: 'absolute !important'
+            }
+        },
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
+        },
+        bodyContent: {
+            width: '100%'
+        },
+        form: {
+            position: 'relative'
+        },
+        field: {
+            width: '100%'
+        },
         loader: {
             position: 'absolute',
             width: '100%',
@@ -49,7 +99,7 @@ const enhance = compose(
             left: '0',
             alignItems: 'center',
             zIndex: '999',
-            textAlign: 'center',
+            justifyContent: 'center',
             display: ({loading}) => loading ? 'flex' : 'none'
         },
         dialogAddUser: {
@@ -73,6 +123,7 @@ const enhance = compose(
             display: 'flex'
         },
         inContent: {
+            padding: '10px 30px 0',
             '& .dottedList': {
                 padding: '5px'
             }
@@ -124,8 +175,16 @@ const enhance = compose(
                     maxWidth: 'calc(100% / 3)'
                 }
             }
+        },
+        actionButton: {
+            fontSize: '13px !important',
+            margin: '0 !important'
+        },
+        subTitle: {
+            fontStyle: 'italic',
+            margin: '15px 0 10px'
         }
-    })),
+    }),
     reduxForm({
         form: 'UsersCreateForm',
         validate: validateForm,
@@ -157,6 +216,7 @@ const UsersCreateDialog = enhance((props) => {
         currencyData,
         positionGroups,
         positionLoading,
+        divisionData,
         isActive
     } = props
     const errorText = _.get(errorData, 'errorText')
@@ -185,9 +245,9 @@ const UsersCreateDialog = enhance((props) => {
                     <div className={classes.loader}>
                         <Loader size={0.75}/>
                     </div>
-                    <div className={classes.inContent} style={{display: 'block', maxHeight: 'none'}}>
+                    <div className={classes.inContent}>
                         <Row className={classes.field}>
-                            <Col xs={7} style={{paddingTop: '15px'}}>
+                            <Col xs={7}>
                                 <Field
                                     name="firstName"
                                     component={TextField}
@@ -225,6 +285,26 @@ const UsersCreateDialog = enhance((props) => {
                                 />
                             </Col>
                         </Row>
+                        <div>
+                            <div className={classes.subTitle}>Организации</div>
+                            {(!loading) && _.get(divisionData, 'divisionListLoading')
+                                ? <div className={classes.groupLoader}>
+                                    <Loader size={0.75}/>
+                                </div>
+                                : <div className={classes.stocksCheckList}>
+                                    {_.map(_.get(divisionData, 'data'), (item, index) => {
+                                        const name = _.get(item, 'name')
+                                        const id = _.get(item, 'id')
+                                        return (
+                                            <Field
+                                                key={id}
+                                                name={'divisions[' + index + '][selected]'}
+                                                component={CheckBox}
+                                                label={name}/>
+                                        )
+                                    })}
+                                </div>}
+                        </div>
                         {isActive &&
                         <div>
                             <Row className={classes.field}>
@@ -262,11 +342,10 @@ const UsersCreateDialog = enhance((props) => {
                             {positionLoading &&
                             <div className={classes.groupLoader}>
                                 <Loader size={0.75}/>
-                            </div>
-                            }
+                            </div>}
                             {(agent || manager || manufacture) && !positionLoading &&
                             <div>
-                                <div className={classes.subTitle} style={{margin: '15px 0 10px'}}>{multiStock ? 'Связанные склады' : 'Связанный склад'}</div>
+                                <div className={classes.subTitle}>{multiStock ? 'Связанные склады' : 'Связанный склад'}</div>
                                 {(!loading) && _.get(stockListData, 'stockListLoading')
                                     ? <div className={classes.groupLoader}>
                                         <Loader size={0.75}/>
@@ -296,7 +375,7 @@ const UsersCreateDialog = enhance((props) => {
                              </div>}
                             {agent && !positionLoading &&
                             <div>
-                                <div className={classes.subTitle} style={{margin: '15px 0 10px'}}>Поддерживаемый  прайс лист</div>
+                                <div className={classes.subTitle}>Поддерживаемый  прайс лист</div>
                                 <Row>
                                     {(!loading) && _.get(marketTypeData, 'marketTypeLoading') &&
                                     <div className={classes.groupLoader}>
@@ -316,7 +395,7 @@ const UsersCreateDialog = enhance((props) => {
                                         )
                                     })}
                                 </Row>
-                                <div className={classes.subTitle} style={{margin: '15px 0 10px'}}>Валюты</div>
+                                <div className={classes.subTitle}>Валюты</div>
                                 <Row>
                                     {(!loading) && _.get(currencyData, 'currencyListLoading') &&
                                     <div className={classes.groupLoader}>
