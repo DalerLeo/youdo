@@ -7,7 +7,7 @@ import * as serializers from '../serializers/Statistics/statProviderSerializer'
 export const statProviderListFetchAction = (filter) => {
     const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()
-        .get((API.STAT_AGENT_LIST), {params})
+        .get((API.STAT_PROVIDER_LIST), {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -16,7 +16,7 @@ export const statProviderListFetchAction = (filter) => {
         })
 
     return {
-        type: actionTypes.STAT_AGENT_LIST,
+        type: actionTypes.STAT_PROVIDER_LIST,
         payload
     }
 }
@@ -24,7 +24,7 @@ export const statProviderListFetchAction = (filter) => {
 export const statProviderSummaryFetchAction = (filter) => {
     const params = serializers.summaryFilterSerializer(filter.getParams())
     const payload = axios()
-        .get((API.STAT_AGENT_SUM), {params})
+        .get((API.STAT_PROVIDER_SUM), {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -33,15 +33,15 @@ export const statProviderSummaryFetchAction = (filter) => {
         })
 
     return {
-        type: actionTypes.STAT_AGENT_SUM,
+        type: actionTypes.STAT_PROVIDER_SUM,
         payload
     }
 }
 
-export const statProviderItemFetchAction = (filter, filterItem, id) => {
-    const params = serializers.itemSerializer(filter.getParams(), filterItem.getParams(), id)
+export const statProviderItemFetchAction = (filter, id, division, type) => {
+    const params = serializers.itemFilterSerializer(filter.getParams(), id, division, type)
     const payload = axios()
-        .get(API.STAT_AGENT_ITEM, {params})
+        .get(API.STAT_PROVIDER_ITEM, {params})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -50,7 +50,7 @@ export const statProviderItemFetchAction = (filter, filterItem, id) => {
         })
 
     return {
-        type: actionTypes.STAT_AGENT_ITEM,
+        type: actionTypes.STAT_PROVIDER_ITEM,
         payload
     }
 }

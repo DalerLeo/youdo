@@ -31,14 +31,20 @@ const listHeader = [
     {
         sorting: false,
         name: 'createBy',
-        xs: 3,
+        xs: 2,
         title: t('Создал')
     },
     {
         sorting: false,
         name: 'username',
-        xs: 3,
+        xs: 2,
         title: t('Пользователи')
+    },
+    {
+        sorting: false,
+        name: 'phone',
+        xs: 2,
+        title: t('Телефон')
     },
     {
         sorting: false,
@@ -229,6 +235,7 @@ const TelegramGridList = enhance((props) => {
     const telegramList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const token = _.get(item, 'token')
+        const phone = _.get(item, 'phone')
         const fullName = _.get(item, 'lastName')
             ? <a onClick={() => logsDialog.handleOpenLogsDialog(id)}>{_.get(item, 'firstName') + ' ' + _.get(item, 'lastName')}</a>
             : t('Неизвестно')
@@ -240,15 +247,16 @@ const TelegramGridList = enhance((props) => {
         return (
             <Row key={id} className={classes.listRow}>
                 <Col xs={3}>{market}</Col>
-                <Col xs={3}>
+                <Col xs={2}>
                     <div style={{fontWeight: '600'}}>{createdBy}</div>
                     <div>{createdDate}</div>
                 </Col>
-                <Col xs={3}>
+                <Col xs={2}>
                     <div className={classes.flex}>
                         <Tooltip position={'right'} text={username}>{fullName}</Tooltip>
                     </div>
                 </Col>
+                <Col xs={2}>{phone}</Col>
                 <Col xs={2}>{activatedDate ||
                 <Tooltip position="left" text={t('Скопировать ссылку')}>
                         <span

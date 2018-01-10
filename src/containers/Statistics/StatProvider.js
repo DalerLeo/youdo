@@ -17,6 +17,7 @@ import moment from 'moment'
 import {
     StatProviderGridList,
     STAT_PROVIDER_DIALOG_OPEN,
+    STAT_PROVIDER_INFO_DIALOG_OPEN,
     BEGIN_DATE,
     END_DATE
 } from '../../components/Statistics'
@@ -28,7 +29,6 @@ import {
 } from '../../actions/statProvider'
 
 const defaultDate = moment().format('YYYY-MM-DD')
-const ZERO = 0
 const ONE = 1
 const enhance = compose(
     connect((state, props) => {
@@ -87,16 +87,14 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const except = {
-            page: null,
-            pageSize: null
-        }
-        return props.list && props.filterItem.filterRequest(except) !== nextProps.filterItem.filterRequest(except)
-    }, ({dispatch, params, filter, filterItem}) => {
-        const statProviderId = _.toInteger(_.get(params, 'statProviderId'))
-        if (statProviderId > ZERO) {
-            dispatch(statProviderItemFetchAction(filter, filterItem, statProviderId))
-        }
+        const providerID = _.get(nextProps, ['params', 'statProviderId'])
+        return providerID && (_.get(props, ['params', 'statProviderId']) !== providerID ||
+            props.filterItem.filterRequest() !== nextProps.filterItem.filterRequest())
+    }, ({dispatch, params, filterItem, location}) => {
+        const providerID = _.toInteger(_.get(params, 'statProviderId'))
+        const division = _.get(location, ['query', 'division'])
+        const type = _.get(location, ['query', 'type'])
+        providerID && dispatch(statProviderItemFetchAction(filterItem, providerID, division, type))
     }),
 
     withHandlers({
@@ -167,12 +165,37 @@ const enhance = compose(
             const nextMonth = moment(endDate).add(ONE, 'month')
             const dateForURL = nextMonth.format('YYYY-MM')
             hashHistory.push({pathname, query: filter.getParams({[END_DATE]: dateForURL})})
+        },
+
+        handleOpenInfoDialog: props => (id, division, type) => {
+            const {filterItem} = props
+            hashHistory.push({
+                pathname: sprintf(ROUTER.STATISTICS_PROVIDERS_ITEM_PATH, id),
+                query: filterItem.getParams({
+                    [STAT_PROVIDER_INFO_DIALOG_OPEN]: true,
+                    'division': division,
+                    'type': type
+                })
+            })
+        },
+
+        handleCloseInfoDialog: props => () => {
+            const {location: {pathname}, filterItem} = props
+            hashHistory.push({
+                pathname,
+                query: filterItem.getParams({
+                    [STAT_PROVIDER_INFO_DIALOG_OPEN]: false,
+                    'dPage': null,
+                    'dPageSize': null
+                })
+            })
         }
     })
 )
 
 const StatProviderList = enhance((props) => {
     const {
+        pathname,
         location,
         list,
         listLoading,
@@ -189,13 +212,39 @@ const StatProviderList = enhance((props) => {
     } = props
 
     const openStatProviderDialog = toBoolean(_.get(location, ['query', STAT_PROVIDER_DIALOG_OPEN]))
+    const openInfoDialog = toBoolean(_.get(location, ['query', STAT_PROVIDER_INFO_DIALOG_OPEN]))
     const detailId = _.toInteger(_.get(params, 'statProviderId'))
     const firstDayOfMonth = _.get(location, ['query', 'fromDate']) || moment().format('YYYY-MM-01')
     const lastDay = moment().daysInMonth()
     const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
     const zone = !_.isNull(_.get(location, ['query', 'zone'])) && _.get(location, ['query', 'zone'])
-    const division = !_.isNull(_.get(location, ['query', 'zone'])) && _.get(location, ['query', 'division'])
+    const division = !_.isNull(_.get(location, ['query', 'division'])) && _.toInteger(_.get(location, ['query', 'division']))
     const search = !_.isNull(_.get(location, ['query', 'search'])) ? _.get(location, ['query', 'search']) : null
+    const type = _.get(location, ['query', 'type'])
+
+    const divisionInfo = _.find(_.get(list, ['results', '0', 'divisions']), (item) => {
+        return _.get(item, 'id') === division
+    })
+
+    const getBalance = (payType) => {
+        const balance = _.find(_.get(list, ['results']), (item) => {
+            return _.get(item, 'id') === detailId
+        })
+        const div = _.find(_.get(balance, 'divisions'), (item) => {
+            return _.get(item, 'id') === division
+        })
+        return _.get(div, payType)
+    }
+
+    const infoDialog = {
+        updateLoading: detailLoading,
+        openInfoDialog,
+        division: divisionInfo,
+        type: type === 'bank' ? ' переч.' : ' нал.',
+        balance: getBalance(type),
+        handleOpenInfoDialog: props.handleOpenInfoDialog,
+        handleCloseInfoDialog: props.handleCloseInfoDialog
+    }
 
     const statProviderDialog = {
         openStatProviderDialog,
@@ -260,6 +309,8 @@ const StatProviderList = enhance((props) => {
                 calendarBegin={calendarBegin}
                 calendarEnd={calendarEnd}
                 initialValues={initialValues}
+                pathname={pathname}
+                infoDialog={infoDialog}
             />
         </Layout>
     )

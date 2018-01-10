@@ -29,6 +29,7 @@ const STAT_INCOME_DIALOG_OPEN = 'openStatIncomeDialog'
 const STAT_DEBTORS_DIALOG_OPEN = 'openStatDebtorsDialog'
 const STAT_OUTCOME_DIALOG_OPEN = 'openStatOutcomeDialog'
 const STAT_PRODUCT_MOVE_DIALOG_OPEN = 'openStatProductMoveDialog'
+const STAT_PROVIDER_INFO_DIALOG_OPEN = 'openInfoDialog'
 const BEGIN_DATE = 'begin_date'
 const END_DATE = 'end_date'
 
@@ -64,5 +65,6 @@ export {
     STAT_REMAINDER_DIALOG_OPEN,
     STAT_PRODUCT_MOVE_DIALOG_OPEN,
     STAT_RETURN_DIALOG_OPEN,
-    STAT_PROVIDER_DIALOG_OPEN
+    STAT_PROVIDER_DIALOG_OPEN,
+    STAT_PROVIDER_INFO_DIALOG_OPEN
 }

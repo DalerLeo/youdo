@@ -24,7 +24,8 @@ const setMeasurementAction = (data, loading) => {
     }
 }
 
-const getItem = (id, dispatch) => {
+const getItem = (value, dispatch) => {
+    const id = _.isObject(value) ? _.get(value, 'id') : value
     dispatch(setMeasurementAction(null, true))
     return axios().get(sprintf(PATH.PRODUCT_ITEM, id))
         .then(({data}) => {

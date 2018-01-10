@@ -565,7 +565,7 @@ const ClientBalanceGridList = enhance((props) => {
                     amountValues.push({amount: _.get(child, 'cash'), type: 'cash', id: _.get(child, 'id')})
                     amountValues.push({amount: _.get(child, 'bank'), type: 'bank', id: _.get(child, 'id')})
                 })
-                const totalSum = _.get(item, 'total')
+                const totalSum = _.toNumber(_.get(item, 'total'))
                 return (
                     <tr key={id}
                         style={id === currentRow ? styleOnHover : {}}
@@ -573,14 +573,14 @@ const ClientBalanceGridList = enhance((props) => {
                         onMouseLeave={() => setCurrentRow(null)}
                         className={classes.tableRow}>
                         <td>{orderNo}</td>
-                        <td>{numberFormat(totalSum, primaryCurrency)}</td>
+                        <td><span className={totalSum > ZERO ? classes.green : totalSum < ZERO ? classes.red : ''}>{numberFormat(totalSum, primaryCurrency)}</span></td>
                         {_.map(amountValues, (val, index) => {
                             const amount = _.toNumber(_.get(val, 'amount'))
                             return (
                                 <td key={index}
                                     style={id === currentRow ? {background: '#efefef', cursor: 'pointer'} : {cursor: 'pointer'}}
                                     onClick={() => { infoDialog.handleOpenInfoDialog(id, _.get(val, 'id'), _.get(val, 'type')) }}>
-                                    <span className={(amount > ZERO) ? classes.green : (amount < ZERO) && classes.red}>{numberFormat(amount, primaryCurrency)}</span>
+                                    <span className={(amount > ZERO) ? classes.green : (amount < ZERO) ? classes.red : ''}>{numberFormat(amount, primaryCurrency)}</span>
                                 </td>
                             )
                         })}

@@ -48,6 +48,14 @@ const enhance = compose(
         chipWrapper: {
             display: 'flex',
             flexWrap: 'wrap'
+        },
+        chip: {
+            background: '#efefef !important',
+            border: '1px #d9d9d9 solid !important',
+            margin: '0 5px 5px 0 !important',
+            '& svg': {
+                width: '20px !important'
+            }
         }
     }),
 
@@ -131,9 +139,8 @@ const ChipSearchField = enhance((props) => {
                     return (
                         <Chip
                             key={item.value}
-                            style={{margin: 4}}
-                            onRequestDelete={() => { handleRequestDelete(item.value) }}
-                        >
+                            className={classes.chip}
+                            onRequestDelete={() => { handleRequestDelete(item.value) }}>
                             {item.text}
                         </Chip>
                     )

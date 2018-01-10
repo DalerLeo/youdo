@@ -18,6 +18,7 @@ import {TextField, ProductTypeChildSearchField, ProductTypeParentSearchField, Da
 import ordering from '../../../helpers/ordering'
 import {reduxForm, Field} from 'redux-form'
 import IconButton from 'material-ui/IconButton'
+import FlatButton from 'material-ui/FlatButton'
 import Search from 'material-ui/svg-icons/action/search'
 import ArrowUpIcon from 'material-ui/svg-icons/navigation/arrow-upward'
 import ArrowDownIcon from 'material-ui/svg-icons/navigation/arrow-downward'
@@ -26,6 +27,9 @@ import {connect} from 'react-redux'
 import FullScreen from 'material-ui/svg-icons/navigation/fullscreen'
 import FullScreenExit from 'material-ui/svg-icons/navigation/fullscreen-exit'
 import t from '../../../helpers/translate'
+import Product from 'material-ui/svg-icons/device/widgets'
+import ProductType from 'material-ui/svg-icons/action/settings-input-component'
+import {hashHistory} from 'react-router'
 
 export const STAT_PRODUCT_FILTER_KEY = {
     SEARCH: 'search',
@@ -35,6 +39,9 @@ export const STAT_PRODUCT_FILTER_KEY = {
     TO_DATE: 'toDate',
     FROM_DATE: 'fromDate'
 }
+
+export const PRODUCT = 'product'
+export const PRODUCT_TYPE = 'productType'
 
 const enhance = compose(
     injectSheet({
@@ -127,6 +134,22 @@ const enhance = compose(
         },
         tableRow: {
             '& td:nth-child(odd)': {
+                borderRight: '1px #efefef solid',
+                textAlign: 'right'
+            },
+            '& td:nth-child(1)': {
+                textAlign: 'left'
+            },
+            '&:nth-child(odd)': {
+                backgroundColor: '#f9f9f9'
+            }
+        },
+        tableRowExt: {
+            '& td:nth-child(even)': {
+                borderRight: '1px #efefef solid',
+                textAlign: 'right'
+            },
+            '& td:last-child': {
                 borderRight: '1px #efefef solid',
                 textAlign: 'right'
             },
@@ -284,6 +307,34 @@ const enhance = compose(
         },
         fullScreen: {
             marginLeft: '10px !important'
+        },
+        toggleWrapper: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            padding: '10px 0',
+            borderTop: '1px #efefef solid',
+            '& > div': {
+                display: 'flex',
+                background: 'transparent !important'
+            },
+            '& button': {
+                height: '32px !important',
+                lineHeight: '32px !important',
+                minWidth: '66px !important',
+                '& > div': {
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    '& svg': {
+                        width: '20px !important',
+                        height: '20px !important'
+                    }
+                }
+            }
+        },
+        shadowButton: {
+            boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px'
         }
     }),
     reduxForm({
@@ -371,19 +422,26 @@ const StatProductGridList = enhance((props) => {
             padding: 9
         }
     }
+
+    const toggle = filter.getParam('toggle') || PRODUCT
+    const primaryColor = '#12aaeb'
+    const disabledColor = '#dadada'
+    const whiteColor = '#fff'
+    const isProduct = toggle === PRODUCT
+    const isProductType = toggle === PRODUCT_TYPE
+
     const styleOnHover = {
         background: '#efefef'
     }
     const listLoading = _.get(listData, 'listLoading')
     const currency = getConfig('PRIMARY_CURRENCY')
-    const tableLeft = _.map(_.get(listData, 'data'), (item) => {
-        const id = _.get(item, 'id')
+    const tableLeft = _.map(_.get(listData, 'data'), (item, index) => {
         const name = _.get(item, 'name') || 'No'
         return (
             <div
-                key={id}
-                style={id === currentRow ? styleOnHover : {}}
-                onMouseEnter={() => { updateRow(id) }}
+                key={index}
+                style={index === currentRow ? styleOnHover : {}}
+                onMouseEnter={() => { updateRow(index) }}
                 onMouseLeave={() => { updateRow(null) }}>
                 <span>{name}</span>
             </div>
@@ -397,8 +455,7 @@ const StatProductGridList = enhance((props) => {
     const actualSalesCountTotal = numberFormat(_.get(sumData, 'actualSalesCountTotal'))
     const orderReturnsSumTotal = numberFormat(_.get(sumData, 'orderReturnsTotal'), currency)
     const orderReturnsCountTotal = numberFormat(_.get(sumData, 'orderReturnsCountTotal'))
-    const tableList = _.map(_.get(listData, 'data'), (item) => {
-        const id = _.get(item, 'id')
+    const tableList = _.map(_.get(listData, 'data'), (item, index) => {
         const type = _.get(item, ['type', 'name'])
         const measurement = _.get(item, ['measurement', 'name'])
         const actualSalesPrice = numberFormat(_.get(item, 'actualSalesSum'), currency)
@@ -410,12 +467,12 @@ const StatProductGridList = enhance((props) => {
 
         return (
             <tr
-                key={id}
-                className={classes.tableRow}
-                style={id === currentRow ? styleOnHover : {}}
-                onMouseEnter={() => { updateRow(id) }}
+                key={index}
+                className={isProduct ? classes.tableRow : classes.tableRowExt}
+                style={index === currentRow ? styleOnHover : {}}
+                onMouseEnter={() => { updateRow(index) }}
                 onMouseLeave={() => { updateRow(null) }}>
-                <td>{type}</td>
+                {isProduct && <td>{type}</td>}
 
                 <td>{salesCount}</td>
                 <td>{salesPrice}</td>
@@ -535,13 +592,33 @@ const StatProductGridList = enhance((props) => {
                                     </ToolTip>}
                                 </div>
                             </div>
+                            <div className={classes.toggleWrapper}>
+                                <ToolTip position="left" text="Показать по товарам">
+                                    <FlatButton
+                                        icon={<Product color={whiteColor}/>}
+                                        className={isProduct ? classes.shadowButton : ''}
+                                        onTouchTap={() => { hashHistory.push(filter.createURL({toggle: PRODUCT})) }}
+                                        backgroundColor={isProduct ? primaryColor : disabledColor}
+                                        rippleColor={whiteColor}
+                                        hoverColor={isProduct ? primaryColor : disabledColor}/>
+                                </ToolTip>
+                                <ToolTip position="left" text="Показать по типам товаров">
+                                    <FlatButton
+                                        icon={<ProductType color={whiteColor}/>}
+                                        className={isProductType ? classes.shadowButton : ''}
+                                        onTouchTap={() => { hashHistory.push(filter.createURL({toggle: PRODUCT_TYPE})) }}
+                                        backgroundColor={isProductType ? primaryColor : disabledColor}
+                                        rippleColor={whiteColor}
+                                        hoverColor={isProductType ? primaryColor : disabledColor}/>
+                                </ToolTip>
+                            </div>
                             <div className={classes.container}>
                                 {listLoading && <div className={classes.loader}>
                                     <Loader size={0.75}/>
                                 </div>}
                                 <div className={classes.tableWrapper}>
                                     <div className={classes.leftTable}>
-                                        <div><span>{t('Товар')}</span></div>
+                                        <div><span>{isProduct ? t('Товар') : t('Тип товара')}</span></div>
                                         {tableLeft}
                                     </div>
                                     {_.isEmpty(tableList) && !listLoading &&
@@ -552,7 +629,7 @@ const StatProductGridList = enhance((props) => {
                                         <table className={classes.mainTable}>
                                             <tbody className={classes.tableBody}>
                                             <tr className={classes.title}>
-                                                <td rowSpan={2}>{t('Тип')}</td>
+                                                {isProduct && <td rowSpan={2}>{t('Тип')}</td>}
                                                 <td colSpan={2}>{t('Продажа')}</td>
                                                 <td colSpan={2}>{t('Возврат')}</td>
                                                 <td colSpan={2}>{t('Фактическая продажа')}</td>

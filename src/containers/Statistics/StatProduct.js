@@ -12,10 +12,12 @@ import * as serializers from '../../serializers/Statistics/statProductSerializer
 import getDocuments from '../../helpers/getDocument'
 
 import {StatProductGridList} from '../../components/Statistics'
-import {STAT_PRODUCT_FILTER_KEY} from '../../components/Statistics/Products/StatProductGridList'
+import {STAT_PRODUCT_FILTER_KEY, PRODUCT} from '../../components/Statistics/Products/StatProductGridList'
 import {
     statProductListFetchAction,
-    statProductSumDatFetchAction
+    statProductSumDatFetchAction,
+    statProductTypeListFetchAction,
+    statProductTypeSumFetchAction
 } from '../../actions/statProduct'
 
 const enhance = compose(
@@ -24,17 +26,27 @@ const enhance = compose(
         const pathname = _.get(props, ['location', 'pathname'])
         const detail = _.get(state, ['statProduct', 'item', 'data'])
         const detailLoading = _.get(state, ['statProduct', 'item', 'loading'])
-        const list = _.get(state, ['statProduct', 'list', 'data'])
-        const listLoading = _.get(state, ['statProduct', 'list', 'loading'])
-        const sumData = _.get(state, ['statProduct', 'sumData', 'data'])
-        const sumDataLoading = _.get(state, ['statProduct', 'sumData', 'loading'])
+        const productList = _.get(state, ['statProduct', 'productList', 'data'])
+        const productListLoading = _.get(state, ['statProduct', 'productList', 'loading'])
+        const productSum = _.get(state, ['statProduct', 'productSum', 'data'])
+        const productSumLoading = _.get(state, ['statProduct', 'productSum', 'loading'])
+        const productTypeList = _.get(state, ['statProduct', 'productTypeList', 'data'])
+        const productTypeListLoading = _.get(state, ['statProduct', 'productTypeList', 'loading'])
+        const productTypeSum = _.get(state, ['statProduct', 'productTypeSum', 'data'])
+        const productTypeSumLoading = _.get(state, ['statProduct', 'productTypeSum', 'loading'])
         const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
         const searchForm = _.get(state, ['form', 'StatProductForm'])
-        const filter = filterHelper(list, pathname, query)
-        const filterItem = filterHelper(list, pathname, query)
+        const filter = filterHelper(productList, pathname, query)
+        const filterItem = filterHelper(productList, pathname, query)
         return {
-            list,
-            listLoading,
+            productList,
+            productListLoading,
+            productSum,
+            productSumLoading,
+            productTypeList,
+            productTypeListLoading,
+            productTypeSum,
+            productTypeSumLoading,
             detail,
             detailLoading,
             filter,
@@ -42,16 +54,30 @@ const enhance = compose(
             filterForm,
             searchForm,
             pathname,
-            sumData,
-            sumDataLoading,
             query
         }
     }),
     withPropsOnChange((props, nextProps) => {
-        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
+        return props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
-        dispatch(statProductListFetchAction(filter))
-        dispatch(statProductSumDatFetchAction(filter))
+        const toggle = filter.getParam('toggle') || PRODUCT
+        return toggle === PRODUCT
+            ? dispatch(statProductListFetchAction(filter))
+            : dispatch(statProductTypeListFetchAction(filter))
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const except = {
+            page: null,
+            pageSize: null,
+            search: null
+        }
+        return props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
+    }, ({dispatch, filter}) => {
+        const toggle = filter.getParam('toggle') || PRODUCT
+        return toggle === PRODUCT
+            ? dispatch(statProductSumDatFetchAction(filter))
+            : dispatch(statProductTypeSumFetchAction(filter))
     }),
 
     withHandlers({
@@ -94,16 +120,20 @@ const enhance = compose(
 
 const StatProductList = enhance((props) => {
     const {
-        list,
-        listLoading,
+        productList,
+        productListLoading,
+        productSum,
+        productSumLoading,
+        productTypeList,
+        productTypeListLoading,
+        productTypeSum,
+        productTypeSumLoading,
         detail,
         detailLoading,
         filter,
         layout,
         location,
         params,
-        sumData,
-        sumDataLoading,
         query
     } = props
     const detailId = _.toInteger(_.get(params, 'statProductId'))
@@ -114,6 +144,7 @@ const StatProductList = enhance((props) => {
     const productType = !_.isNull(location, ['query', 'productType']) && _.toInteger(_.get(location, ['query', 'productType']))
     const productTypeChild = !_.isNull(location, ['query', 'productTypeChild']) && _.toInteger(_.get(location, ['query', 'productTypeChild']))
     const search = !_.isNull(_.get(location, ['query', 'search'])) ? _.get(location, ['query', 'search']) : null
+    const toggle = filter.getParam('toggle') || PRODUCT
 
     const filterForm = {
         initialValues: {
@@ -133,9 +164,12 @@ const StatProductList = enhance((props) => {
     }
 
     const listData = {
-        data: _.get(list, 'results'),
-        listLoading
+        data: toggle === PRODUCT ? _.get(productList, 'results') : _.get(productTypeList, 'results'),
+        listLoading: toggle === PRODUCT ? productListLoading : productTypeListLoading
     }
+
+    const sumData = toggle === PRODUCT ? productSum : productTypeSum
+    const sumDataLoading = toggle === PRODUCT ? productSumLoading : productTypeSumLoading
 
     const detailData = {
         id: detailId,

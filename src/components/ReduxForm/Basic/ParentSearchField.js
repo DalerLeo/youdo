@@ -37,9 +37,12 @@ const enhance = compose(
                 maxHeight: '200px',
                 boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px 3px, rgba(0, 0, 0, 0.12) 0px 1px 4px'
             },
-            '& .Select-input > input': {
-                width: '100% !important',
-                overflow: 'hidden'
+            '& .Select-input': {
+                paddingLeft: '0',
+                '& > input': {
+                    width: '100% !important',
+                    overflow: 'hidden'
+                }
             },
             '& .Select-control': {
                 borderRadius: '0px',
@@ -47,6 +50,13 @@ const enhance = compose(
                 paddingBottom: '1px',
                 borderBottom: '1px solid rgb(224, 224, 224)',
                 backgroundColor: 'unset'
+            },
+            '& .Select-placeholder': {
+                color: 'rgba(0, 0, 0, 0.3)',
+                paddingLeft: '0'
+            },
+            '& .Select-value': {
+                paddingLeft: '0 !important'
             }
         }
     }),

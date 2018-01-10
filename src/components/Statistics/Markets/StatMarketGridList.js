@@ -88,6 +88,22 @@ const enhance = compose(
                 backgroundColor: '#f9f9f9'
             }
         },
+        tableRowExt: {
+            '& td:nth-child(even)': {
+                borderRight: '1px #efefef solid',
+                textAlign: 'right'
+            },
+            '& td:last-child': {
+                borderRight: '1px #efefef solid',
+                textAlign: 'right'
+            },
+            '& td:nth-child(1)': {
+                textAlign: 'left'
+            },
+            '&:nth-child(odd)': {
+                backgroundColor: '#f9f9f9'
+            }
+        },
         leftTable: {
             color: '#666',
             display: 'table',
@@ -536,7 +552,7 @@ const StatMarketGridList = enhance((props) => {
         return (
             <tr
                 key={id}
-                className={classes.tableRow}
+                className={isMarket ? classes.tableRow : classes.tableRowExt}
                 style={id === currentRow ? styleOnHover : {}}
                 onMouseEnter={() => { updateRow(id) }}
                 onMouseLeave={() => { updateRow(null) }}>

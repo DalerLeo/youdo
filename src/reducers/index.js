@@ -327,8 +327,10 @@ const rootReducer = combineReducers({
         item: createThunkReducer(actionTypes.STAT_DEBTORS_ITEM)
     }),
     statProduct: combineReducers({
-        list: createThunkReducer(actionTypes.STAT_PRODUCT_LIST),
-        sumData: createThunkReducer(actionTypes.STAT_PRODUCT_SUM_DATA)
+        productList: createThunkReducer(actionTypes.STAT_PRODUCT_LIST),
+        productSum: createThunkReducer(actionTypes.STAT_PRODUCT_SUM_DATA),
+        productTypeList: createThunkReducer(actionTypes.STAT_PRODUCT_TYPE_LIST),
+        productTypeSum: createThunkReducer(actionTypes.STAT_PRODUCT_TYPE_SUM)
     }),
     statMarket: combineReducers({
         marketList: createThunkReducer(actionTypes.STAT_MARKET_LIST),
@@ -403,7 +405,6 @@ const rootReducer = combineReducers({
         primaryUpdate: createThunkReducer(actionTypes.POSITION_PRIMARY_UPDATE),
         permission: createThunkReducer(actionTypes.POSITION_PERMISSION)
     }),
-
     statSales: combineReducers({
         data: createThunkReducer(actionTypes.STAT_SALES_DATA),
         stats: createThunkReducer(actionTypes.STAT_SALES_STATS),
@@ -431,6 +432,11 @@ const rootReducer = combineReducers({
     statProductMove: combineReducers({
         list: createThunkReducer(actionTypes.STAT_PRODUCT_MOVE_LIST),
         sum: createThunkReducer(actionTypes.STAT_PRODUCT_MOVE_SUM)
+    }),
+    statProvider: combineReducers({
+        list: createThunkReducer(actionTypes.STAT_PROVIDER_LIST),
+        item: createThunkReducer(actionTypes.STAT_PROVIDER_ITEM),
+        sum: createThunkReducer(actionTypes.STAT_PROVIDER_SUM)
     }),
     division: combineReducers({
         create: createThunkReducer(actionTypes.DIVISION_CREATE),

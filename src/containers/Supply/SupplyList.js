@@ -165,8 +165,8 @@ const enhance = compose(
             status: null,
             stock: null
         }
-        const productType = _.get(props, ['addProductsForm', 'values', 'productType', 'value'])
-        const productTypeNext = _.get(nextProps, ['addProductsForm', 'values', 'productType', 'value'])
+        const productType = _.get(props, ['addProductsForm', 'values', 'type', 'value'])
+        const productTypeNext = _.get(nextProps, ['addProductsForm', 'values', 'type', 'value'])
         return ((props.filterProducts.filterRequest(except) !== nextProps.filterProducts.filterRequest(except)) ||
             (productType !== productTypeNext && nextProps.openAddProductDialog)) && !(props.openAddProductDialog !== nextProps.openAddProductDialog && nextProps.openAddProductDialog)
     }, ({setOpenAddProductConfirm, addProductsForm, openAddProductDialog, dispatch, filterProducts}) => {
@@ -175,7 +175,7 @@ const enhance = compose(
             const price = _.toNumber(_.get(item, 'price'))
             return amount > ZERO && price > ZERO
         })
-        const productType = _.get(addProductsForm, ['values', 'productType', 'value'])
+        const productType = _.get(addProductsForm, ['values', 'type', 'value'])
         if (!_.isEmpty(products)) {
             setOpenAddProductConfirm(true)
         } else if (openAddProductDialog && _.isEmpty(products)) {
@@ -187,7 +187,7 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         return props.openAddProductDialog !== nextProps.openAddProductDialog && nextProps.openAddProductDialog
     }, ({dispatch, addProductsForm, openAddProductDialog, filterProducts, setOpenAddProductConfirm}) => {
-        const productType = _.get(addProductsForm, ['values', 'productType', 'value'])
+        const productType = _.get(addProductsForm, ['values', 'type', 'value'])
         if (openAddProductDialog) {
             setOpenAddProductConfirm(false)
             dispatch(addProductsListAction(filterProducts, productType))
@@ -472,14 +472,14 @@ const enhance = compose(
 
         handleCloseAddProductConfirm: props => () => {
             const {dispatch, addProductsForm, filterProducts, setOpenAddProductConfirm} = props
-            const productType = _.get(addProductsForm, ['values', 'productType', 'value'])
+            const productType = _.get(addProductsForm, ['values', 'type', 'value'])
             dispatch(addProductsListAction(filterProducts, productType))
             setOpenAddProductConfirm(false)
         },
 
         handleSubmitAddProductConfirm: props => () => {
             const {addProductsForm, addProducts, dispatch, createForm, filterProducts, setOpenAddProductConfirm} = props
-            const productType = _.get(addProductsForm, ['values', 'productType', 'value'])
+            const productType = _.get(addProductsForm, ['values', 'type', 'value'])
             const existingProducts = _.get(createForm, ['values', 'products']) || []
             const values = _.get(addProductsForm, ['values', 'product'])
             const getProductData = (id) => {
