@@ -134,7 +134,7 @@ const enhance = compose(
             },
             '& td': {
                 padding: '0 20px',
-                minWidth: '140px'
+                minWidth: '200px'
             }
         },
         title: {
@@ -371,6 +371,10 @@ const enhance = compose(
         green: {
             fontWeight: '600',
             color: '#92ce95'
+        },
+        icon: {
+            color: '#666 !important',
+            height: '15px !important'
         }
     }),
     withState('currentRow', 'updateRow', null),
@@ -504,36 +508,31 @@ const StatProviderGridList = enhance((props) => {
         </div>
     )
 
+    const queryOrdering = _.get(query, 'ordering')
+    const orderingFunction = (name) => {
+        ordering(filter, name, props.pathname)
+        if (queryOrdering === name) {
+            ordering(filter, '-' + name, props.pathname)
+        } else if (queryOrdering === '-' + name) {
+            ordering(filter, '', props.pathname)
+        } else {
+            ordering(filter, name, props.pathname)
+        }
+    }
+
     const tableList = (
         <table className={classes.mainTable}>
             <tbody>
             <tr className={classes.title}>
                 <td
                     style={{cursor: 'pointer'}}
-                    onClick={() => {
-                        ordering(filter, 'supplies', props.pathname)
-                        if (_.get(query, 'ordering') === 'supplies') {
-                            ordering(filter, '-supplies', props.pathname)
-                        } else if (_.get(query, 'ordering') === '-supplies') {
-                            ordering(filter, '', props.pathname)
-                        } else {
-                            ordering(filter, 'supplies', props.pathname)
-                        }
-                    }}>
+                    onClick={() => { orderingFunction('supplies') }}>
                     {t('Кол-во поставок')} {orderNoSorting}
                 </td>
                 <td
                     style={{cursor: 'pointer'}}
-                    onClick={() => {
-                        ordering(filter, 'total', props.pathname)
-                        if (_.get(query, 'ordering') === 'total') {
-                            ordering(filter, '-total', props.pathname)
-                        } else if (_.get(query, 'ordering') === '-total') {
-                            ordering(filter, '', props.pathname)
-                        } else {
-                            ordering(filter, 'total', props.pathname)
-                        }
-                    }}>{t('Сумма')} {totalSorting}
+                    onClick={() => { orderingFunction('total') }}>
+                    {t('Сумма')} {totalSorting}
                 </td>
                 {_.map(head, (item, index) => {
                     const sortingType = filter.getSortingType(item.type + '_' + item.id)
@@ -543,7 +542,7 @@ const StatProviderGridList = enhance((props) => {
                             ? <ArrowUpIcon className={classes.icon}/>
                             : <ArrowDownIcon className={classes.icon}/>
                     const sortingFunc = () => {
-                        switch (_.get(query, 'ordering')) {
+                        switch (queryOrdering) {
                             case item.type + '_' + item.id: return ordering(filter, '-' + item.type + '_' + item.id, props.pathname)
                             case '-' + item.type + '_' + item.id: return ordering(filter, '', props.pathname)
                             default: return ordering(filter, item.type + '_' + item.id, props.pathname)
@@ -734,12 +733,7 @@ StatProviderGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
-    getDocument: PropTypes.object.isRequired,
-    statProviderDialog: PropTypes.shape({
-        openStatProviderDialog: PropTypes.bool.isRequired,
-        handleOpenStatProviderDialog: PropTypes.func.isRequired,
-        handleCloseStatProviderDialog: PropTypes.func.isRequired
-    }).isRequired
+    getDocument: PropTypes.object.isRequired
 }
 
 export default StatProviderGridList

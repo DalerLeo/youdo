@@ -7,7 +7,7 @@ const Items = [
     {id: 'cash', name: 'Наличный'}
 ]
 
-const getOptions = (search) => {
+const getOptions = () => {
     return Promise.resolve(Items)
 }
 

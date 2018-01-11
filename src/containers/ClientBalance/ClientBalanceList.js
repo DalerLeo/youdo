@@ -26,7 +26,8 @@ import {
     clientBalanceCreateExpenseAction,
     clientAddAction,
     superUserAction,
-    clientBalanceSumFetchAction
+    clientBalanceSumFetchAction,
+    clientBalanceDetailFetchAction
 } from '../../actions/clientBalance'
 import * as API from '../../constants/api'
 import {openSnackbarAction} from '../../actions/snackbar'
@@ -46,11 +47,14 @@ const enhance = compose(
         const updateTransactionLoading = _.get(state, ['clientBalance', 'updateAdmin', 'loading'])
         const list = _.get(state, ['clientBalance', 'list', 'data'])
         const listLoading = _.get(state, ['clientBalance', 'list', 'loading'])
+        const info = _.get(state, ['clientBalance', 'detail', 'data'])
+        const infoLoading = _.get(state, ['clientBalance', 'detail', 'loading'])
         const filterForm = _.get(state, ['form', 'ClientBalanceFilterForm'])
         const createForm = _.get(state, ['form', 'ClientBalanceCreateForm'])
         const searchForm = _.get(state, ['form', 'ClientBalanceForm'])
         const updateForm = _.get(state, ['form', 'ClientBalanceUpdateForm'])
         const returnForm = _.get(state, ['form', 'ClientBalanceReturnForm'])
+        const infoForm = _.get(state, ['form', 'ClientBalanceInfoForm'])
         const isSuperUser = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
         const sum = _.get(state, ['clientBalance', 'sum', 'data'])
         const sumLoading = _.get(state, ['clientBalance', 'sum', 'loading'])
@@ -72,11 +76,14 @@ const enhance = compose(
             createForm,
             updateForm,
             returnForm,
+            infoForm,
             isSuperUser,
             updateTransactionLoading,
             searchForm,
             sum,
-            sumLoading
+            sumLoading,
+            info,
+            infoLoading
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -94,14 +101,34 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const clientBalanceId = _.get(nextProps, ['params', 'clientBalanceId'])
-        return clientBalanceId && (_.get(props, ['params', 'clientBalanceId']) !== clientBalanceId ||
-            props.filterItem.filterRequest() !== nextProps.filterItem.filterRequest())
-    }, ({dispatch, params, filterItem, location}) => {
+        const ID = _.get(props, ['params', 'clientBalanceId'])
+        const nextID = _.get(nextProps, ['params', 'clientBalanceId'])
+        return ID !== nextID && nextID
+    }, ({dispatch, params}) => {
         const clientBalanceId = _.toInteger(_.get(params, 'clientBalanceId'))
-        const division = _.get(location, ['query', 'division'])
-        const type = _.get(location, ['query', 'type'])
-        clientBalanceId && dispatch(clientBalanceItemFetchAction(filterItem, clientBalanceId, division, type))
+        clientBalanceId && dispatch(clientBalanceDetailFetchAction(clientBalanceId))
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const ID = _.get(props, ['params', 'clientBalanceId'])
+        const nextID = _.get(nextProps, ['params', 'clientBalanceId'])
+        const division = _.get(props, ['infoForm', 'values', 'division', 'value'])
+        const nextDivision = _.get(nextProps, ['infoForm', 'values', 'division', 'value'])
+        const currency = _.get(props, ['infoForm', 'values', 'currency', 'value'])
+        const nextCurrency = _.get(nextProps, ['infoForm', 'values', 'currency', 'value'])
+        const type = _.get(props, ['infoForm', 'values', 'paymentType', 'value'])
+        const nextType = _.get(nextProps, ['infoForm', 'values', 'paymentType', 'value'])
+        return (ID !== nextID && nextID) ||
+            (currency !== nextCurrency && nextCurrency) ||
+            (division !== nextDivision && nextDivision) ||
+            (type !== nextType && nextType) ||
+            (props.filterItem.filterRequest() !== nextProps.filterItem.filterRequest())
+    }, ({dispatch, params, filterItem, infoForm}) => {
+        const clientBalanceId = _.toInteger(_.get(params, 'clientBalanceId'))
+        const division = _.get(infoForm, ['values', 'division', 'value'])
+        const currency = _.get(infoForm, ['values', 'currency', 'value'])
+        const type = _.get(infoForm, ['values', 'paymentType', 'value'])
+        clientBalanceId && dispatch(clientBalanceItemFetchAction(filterItem, clientBalanceId, division, currency, type))
     }),
 
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
@@ -136,14 +163,12 @@ const enhance = compose(
             })
         },
 
-        handleOpenInfoDialog: props => (id, division, type) => {
+        handleOpenInfoDialog: props => (id) => {
             const {filterItem} = props
             hashHistory.push({
                 pathname: sprintf(ROUTER.CLIENT_BALANCE_ITEM_PATH, id),
                 query: filterItem.getParams({
-                    [CLIENT_BALANCE_INFO_DIALOG_OPEN]: true,
-                    'division': division,
-                    'type': type
+                    [CLIENT_BALANCE_INFO_DIALOG_OPEN]: true
                 })
             })
         },
@@ -292,7 +317,9 @@ const ClientBalanceList = enhance((props) => {
         isSuperUser,
         updateTransactionLoading,
         sum,
-        sumLoading
+        sumLoading,
+        info,
+        infoLoading
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', CLIENT_BALANCE_FILTER_OPEN]))
@@ -328,6 +355,8 @@ const ClientBalanceList = enhance((props) => {
         division: divisionInfo,
         type: type === 'bank' ? ' переч.' : ' нал.',
         balance: getBalance(type),
+        info,
+        infoLoading,
         handleOpenInfoDialog: props.handleOpenInfoDialog,
         handleCloseInfoDialog: props.handleCloseInfoDialog
     }

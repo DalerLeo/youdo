@@ -447,6 +447,7 @@ export const CLIENT_BALANCE_UPDATE = `/${CLIENT_BALANCE}/%d/`
 export const CLIENT_BALANCE_SUPER_USER = '/sales/client_transaction/%d/'
 export const CLIENT_BALANCE_GET_DOCUMENT = '/sales/client_balances/export/'
 export const CLIENT_BALANCE_SUM = '/stats/client/balances/'
+export const CLIENT_BALANCE_DETAIL = '/sales/client_balances/%d/detail/'
 
 export const ACTIVITY = 'market/plan_tasks'
 export const ACTIVITY_SUMMARY = `${ACTIVITY}/sum/`

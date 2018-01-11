@@ -38,8 +38,8 @@ export const clientBalanceSumFetchAction = (filter) => {
     }
 }
 
-export const clientBalanceItemFetchAction = (filter, id, division, type) => {
-    const params = serializers.itemFilterSerializer(filter.getParams(), id, division, type)
+export const clientBalanceItemFetchAction = (filter, id, division, currency, type) => {
+    const params = serializers.itemFilterSerializer(filter.getParams(), id, division, currency, type)
     const payload = axios()
         .get(API.CLIENT_BALANCE_ITEM, {params})
         .then((response) => {
@@ -51,6 +51,22 @@ export const clientBalanceItemFetchAction = (filter, id, division, type) => {
 
     return {
         type: actionTypes.CLIENT_BALANCE_ITEM,
+        payload
+    }
+}
+
+export const clientBalanceDetailFetchAction = (id) => {
+    const payload = axios()
+        .get(sprintf(API.CLIENT_BALANCE_DETAIL, id))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.CLIENT_BALANCE_DETAIL,
         payload
     }
 }

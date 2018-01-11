@@ -115,6 +115,7 @@ const enhance = compose(
             }
         },
         tableRow: {
+            cursor: 'pointer',
             '& td': {
                 borderRight: '1px #efefef solid',
                 textAlign: 'left',
@@ -501,36 +502,31 @@ const ClientBalanceGridList = enhance((props) => {
         }
     })
 
+    const queryOrdering = _.get(query, 'ordering')
+    const orderingFunction = (name) => {
+        ordering(filter, name, props.pathname)
+        if (queryOrdering === name) {
+            ordering(filter, '-' + name, props.pathname)
+        } else if (queryOrdering === '-' + name) {
+            ordering(filter, '', props.pathname)
+        } else {
+            ordering(filter, name, props.pathname)
+        }
+    }
+
     const tableList = (
         <table className={classes.mainTable}>
             <tbody>
             <tr className={classes.title}>
                 <td
                     style={{cursor: 'pointer'}}
-                    onClick={() => {
-                        ordering(filter, 'orders', props.pathname)
-                        if (_.get(query, 'ordering') === 'orders') {
-                            ordering(filter, '-orders', props.pathname)
-                        } else if (_.get(query, 'ordering') === '-orders') {
-                            ordering(filter, '', props.pathname)
-                        } else {
-                            ordering(filter, 'orders', props.pathname)
-                        }
-                    }}>
+                    onClick={() => { orderingFunction('orders') }}>
                     {t('Кол-во заказов')} {orderNoSorting}
                 </td>
                 <td
                     style={{cursor: 'pointer'}}
-                    onClick={() => {
-                        ordering(filter, 'total', props.pathname)
-                        if (_.get(query, 'ordering') === 'total') {
-                            ordering(filter, '-total', props.pathname)
-                        } else if (_.get(query, 'ordering') === '-total') {
-                            ordering(filter, '', props.pathname)
-                        } else {
-                            ordering(filter, 'total', props.pathname)
-                        }
-                    }}>{t('Сумма')} {totalSorting}
+                    onClick={() => { orderingFunction('total') }}>
+                    {t('Сумма')} {totalSorting}
                 </td>
                 {_.map(head, (item, index) => {
                     const sortingType = filter.getSortingType(item.type + '_' + item.id)
@@ -540,7 +536,7 @@ const ClientBalanceGridList = enhance((props) => {
                             ? <ArrowUpIcon className={classes.icon}/>
                             : <ArrowDownIcon className={classes.icon}/>
                     const sortingFunc = () => {
-                        switch (_.get(query, 'ordering')) {
+                        switch (queryOrdering) {
                             case item.type + '_' + item.id: return ordering(filter, '-' + item.type + '_' + item.id, props.pathname)
                             case '-' + item.type + '_' + item.id: return ordering(filter, '', props.pathname)
                             default: return ordering(filter, item.type + '_' + item.id, props.pathname)
@@ -571,15 +567,14 @@ const ClientBalanceGridList = enhance((props) => {
                         style={id === currentRow ? styleOnHover : {}}
                         onMouseEnter={() => setCurrentRow(id)}
                         onMouseLeave={() => setCurrentRow(null)}
+                        onClick={() => { infoDialog.handleOpenInfoDialog(id) }}
                         className={classes.tableRow}>
                         <td>{orderNo}</td>
                         <td><span className={totalSum > ZERO ? classes.green : totalSum < ZERO ? classes.red : ''}>{numberFormat(totalSum, primaryCurrency)}</span></td>
                         {_.map(amountValues, (val, index) => {
                             const amount = _.toNumber(_.get(val, 'amount'))
                             return (
-                                <td key={index}
-                                    style={id === currentRow ? {background: '#efefef', cursor: 'pointer'} : {cursor: 'pointer'}}
-                                    onClick={() => { infoDialog.handleOpenInfoDialog(id, _.get(val, 'id'), _.get(val, 'type')) }}>
+                                <td key={index}>
                                     <span className={(amount > ZERO) ? classes.green : (amount < ZERO) ? classes.red : ''}>{numberFormat(amount, primaryCurrency)}</span>
                                 </td>
                             )
@@ -821,6 +816,8 @@ const ClientBalanceGridList = enhance((props) => {
                 balance={_.get(infoDialog, 'balance')}
                 superUser={superUser}
                 setItem={setItem}
+                info={infoDialog.info}
+                infoLoading={infoDialog.infoLoading}
             />
             {!stat && <ClientBalanceCreateDialog
                 open={_.get(createDialog, 'openCreateDialog')}

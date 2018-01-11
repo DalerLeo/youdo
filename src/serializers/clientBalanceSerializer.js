@@ -39,7 +39,7 @@ export const sumFilterSerializer = (data) => {
         'created_date_1': _.get(defaultData, 'toDate')
     }
 }
-export const itemFilterSerializer = (data, id, division, type) => {
+export const itemFilterSerializer = (data, id, division, currency, type) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
     const paymentType = type || null
@@ -47,6 +47,7 @@ export const itemFilterSerializer = (data, id, division, type) => {
         return {
             'client': id,
             'division': division,
+            'currency': currency,
             'payment_type': paymentType,
             'page': _.get(defaultData, 'dPage'),
             'page_size': _.get(defaultData, 'dPageSize'),
@@ -55,6 +56,7 @@ export const itemFilterSerializer = (data, id, division, type) => {
     }
     return {
         'client': id,
+        'currency': currency,
         'payment_type': paymentType,
         'page': _.get(defaultData, 'dPage'),
         'page_size': _.get(defaultData, 'dPageSize'),

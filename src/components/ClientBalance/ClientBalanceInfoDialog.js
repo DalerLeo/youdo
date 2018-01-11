@@ -13,18 +13,25 @@ import Pagination from '../ReduxForm/Pagination'
 import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
-import Tooltip from '../ToolTip'
+import Tooltip from '../Tooltip'
 import NotFound from '../Images/not-found.png'
 import ClientBalanceFormat from '../Statistics/ClientIncome/ClientBalanceFormat'
 import Accepted from 'material-ui/svg-icons/action/done-all'
 import Rejected from 'material-ui/svg-icons/content/block'
 import Requested from 'material-ui/svg-icons/action/schedule'
 import AutoAccepted from 'material-ui/svg-icons/action/spellcheck'
-
+import {Field, reduxForm} from 'redux-form'
+import {CurrencySearchField, DivisionSearchField, PaymentTypeSearchField} from '../ReduxForm'
 import {
     FIRST_BALANCE,
     NONE_TYPE
 } from '../../constants/clientBalanceInfo'
+import {
+    REQUESTED,
+    CONFIRMED,
+    REJECTED,
+    AUTO
+} from '../ClientTransaction'
 import t from '../../helpers/translate'
 const enhance = compose(
     injectSheet({
@@ -36,6 +43,12 @@ const enhance = compose(
             zIndex: '999',
             justifyContent: 'center',
             display: 'flex'
+        },
+        infoLoader: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '50px 0'
         },
         dialog: {
             overflowY: 'auto !important',
@@ -51,14 +64,14 @@ const enhance = compose(
         },
         popUp: {
             color: '#333 !important',
-            overflowY: 'hidden !important',
+            overflowY: 'unset !important',
             fontSize: '13px !important',
             position: 'relative',
             padding: '0 !important',
-            overflowX: 'hidden',
+            overflowX: 'unset',
             height: '100%',
             marginBottom: '64px',
-            maxHeight: '575px !important'
+            maxHeight: 'none !important'
         },
         titleContent: {
             background: '#fff',
@@ -94,11 +107,8 @@ const enhance = compose(
             justifyContent: 'space-between',
             alignItems: 'center',
             position: 'relative',
-            height: '70px',
-            fontWeight: '600',
             borderBottom: '1px #efefef solid',
-            margin: '0',
-            padding: '0 30px'
+            padding: '10px 30px'
         },
         info: {
             display: 'flex',
@@ -118,6 +128,10 @@ const enhance = compose(
                 fontWeight: '600'
             },
             '& > .row': {
+                '& svg': {
+                    width: '20px !important',
+                    height: '20px !important'
+                },
                 '&:hover > div:last-child': {
                     opacity: '1'
                 },
@@ -171,7 +185,41 @@ const enhance = compose(
                 height: '50px !important',
                 color: '#999 !important'
             }
+        },
+        filters: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            padding: '0 30px',
+            '& > div': {
+                width: 'calc((100% / 4) - 15px)'
+            }
+        },
+        paymentsWrapper: {
+            display: 'flex'
+        },
+        payment: {
+
+        },
+        division: {
+            marginRight: '20px',
+            paddingRight: '20px',
+            borderRight: '1px #efefef solid'
+        },
+        divisionTitle: {
+            marginBottom: '5px',
+            fontWeight: '600'
+        },
+        paymentType: {
+            marginBottom: '10px',
+            lineHeight: '1.5',
+            '&:last-child': {
+                marginBottom: '0'
+            }
         }
+    }),
+    reduxForm({
+        form: 'ClientBalanceInfoForm',
+        enableReinitialize: true
     })
 )
 
@@ -188,17 +236,12 @@ const iconStyle = {
         padding: 0
     }
 }
-const iconsArray = [
-    <Accepted color={'#81c784'}/>,
-    <Rejected color={'#e57373'}/>,
-    <Requested color={'#f0ad4e'}/>,
-    <AutoAccepted color={'#12aaeb'}/>
-]
+
 const ClientBalanceInfoDialog = enhance((props) => {
-    const {open, filterItem, onClose, classes, detailData, name, balance, paymentType, superUser, setItem, stat} = props
+    const {open, filterItem, onClose, classes, detailData, name, superUser, setItem, stat, info, infoLoading} = props
+    const totalPayments = _.groupBy(info, (item) => _.get(item, ['division', 'name']))
     const isSuperUser = _.get(superUser, 'isSuperUser')
     const ZERO = 0
-    const RANDOM = 3
     const currentCurrency = getConfig('PRIMARY_CURRENCY')
     const currentCurrencyId = _.toInteger(getConfig('PRIMARY_CURRENCY_ID'))
     const loading = _.get(detailData, 'detailLoading')
@@ -215,7 +258,24 @@ const ClientBalanceInfoDialog = enhance((props) => {
         const type = _.get(item, 'type')
         const order = _.get(item, 'order')
         const orderReturn = _.get(item, 'orderReturn')
-        const icon = _.get(iconsArray, _.random(RANDOM))
+        const confirmation = _.get(item, 'clientConfirmation')
+        const statusIcon = (status) => {
+            switch (status) {
+                case CONFIRMED: return <Tooltip position={'right'} text={t('Подтвержден')}>
+                    <Accepted color={'#81c784'}/>
+                </Tooltip>
+                case REJECTED: return <Tooltip position={'right'} text={t('Отменен')}>
+                    <Rejected color={'#e57373'}/>
+                </Tooltip>
+                case REQUESTED: return <Tooltip position={'right'} text={t('В ожидании')}>
+                    <Requested color={'#f0ad4e'}/>
+                </Tooltip>
+                case AUTO: return <Tooltip position={'right'} text={t('Автоматически подтвержден системой')}>
+                    <AutoAccepted color={'#12aaeb'}/>
+                </Tooltip>
+                default: return null
+            }
+        }
 
         const openEditDialog = (thisItem) => {
             superUser.handleOpenSuperUserDialog(thisItem.id)
@@ -225,7 +285,7 @@ const ClientBalanceInfoDialog = enhance((props) => {
         return (
             <Row key={index} className='dottedList'>
                 <div style={{flexBasis: '4%', maxWidth: '4%'}}>
-                    {icon}
+                    {statusIcon(confirmation)}
                 </div>
                 <div style={{flexBasis: '16%', maxWidth: '16%'}}>{createdDate}</div>
                 <div style={{flexBasis: '20%', maxWidth: '20%'}}>{user}</div>
@@ -270,7 +330,7 @@ const ClientBalanceInfoDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>Информация по балансу клиента</span>
+                <span>Информация по балансу клиента {name}</span>
                 <IconButton
                     iconStyle={iconStyle.icon}
                     style={iconStyle.button}
@@ -283,27 +343,67 @@ const ClientBalanceInfoDialog = enhance((props) => {
                 </div>
                 : <div className={classes.bodyContent}>
                     <div className={classes.infoBlock}>
-                        <div className={classes.info}>
-                            <div>
-                                <span>{t('Клиент')}</span>
-                                <div>{name}</div>
+                        {infoLoading
+                            ? <div className={classes.infoLoader}>
+                                <Loader size={0.75}/>
                             </div>
-                            <div>
-                                <span>{t('Баланс')} {paymentType}</span>
-                                <div className={balance > ZERO
-                                    ? classes.green
-                                    : (balance < ZERO
-                                        ? classes.red
-                                        : classes.black)}>
-                                    {numberFormat(balance, currentCurrency)}
-                                </div>
-                            </div>
-                        </div>
+                            : <div className={classes.paymentsWrapper}>
+                                {_.map(totalPayments, (item, index) => {
+                                    const division = index
+                                    const cashTransactions = _.filter(item, {'paymentType': 'cash'})
+                                    const bankTransactions = _.filter(item, {'paymentType': 'cash'})
+                                    const cash = _.map(cashTransactions, (child, i) => {
+                                        const currency = _.get(child, ['currency', 'name'])
+                                        const totalAmount = _.get(child, ['totalAmount'])
+                                        return (
+                                            <div key={i} className={classes.payment}>
+                                                {numberFormat(totalAmount, currency)}
+                                            </div>
+                                        )
+                                    })
+                                    const bank = _.map(bankTransactions, (child, i) => {
+                                        const currency = _.get(child, ['currency', 'name'])
+                                        const totalAmount = _.get(child, ['totalAmount'])
+                                        return (
+                                            <div key={i} className={classes.payment}>
+                                                {numberFormat(totalAmount, currency)}
+                                            </div>
+                                        )
+                                    })
+                                    return (
+                                        <div key={index} className={classes.division}>
+                                            <div className={classes.divisionTitle}>{division}</div>
+                                            <div className={classes.paymentType}>
+                                                <i>Наличными:</i>
+                                                {cash}
+                                            </div>
+                                            <div className={classes.paymentType}>
+                                                <i>Перечислением:</i>
+                                                {bank}
+                                            </div>
+                                        </div>
+                                    )
+                                })}
+                            </div>}
+                    </div>
+                    <div className={classes.filters}>
+                        <Field
+                            name={'division'}
+                            component={DivisionSearchField}
+                            label={'Организация'}/>
+                        <Field
+                            name={'currency'}
+                            component={CurrencySearchField}
+                            label={'Валюта'}/>
+                        <Field
+                            name={'paymentType'}
+                            component={PaymentTypeSearchField}
+                            label={'Тип оплаты'}/>
                         <Pagination filter={filterItem}/>
                     </div>
                     <div className={classes.content}>
                         <Row>
-                            <div style={{flexBasis: '4%', maxWidth: '4%'}}></div>
+                            <div style={{flexBasis: '4%', maxWidth: '4%'}}/>
                             <div style={{flexBasis: '16%', maxWidth: '16%'}}>{t('Дата')}</div>
                             <div style={{flexBasis: '20%', maxWidth: '20%'}}>{t('Кто')}</div>
                             <div style={{flexBasis: '40%', maxWidth: '40%'}}>{t('Описание')}</div>
