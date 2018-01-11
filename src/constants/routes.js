@@ -93,6 +93,11 @@ export const EXPENSIVE_CATEGORY_LIST_URL = `/${EXPENSIVE_CATEGORY}`
 export const EXPENSIVE_CATEGORY_ITEM_URL = `${EXPENSIVE_CATEGORY_LIST_URL}/:expensiveCategoryId`
 export const EXPENSIVE_CATEGORY_ITEM_PATH = `${EXPENSIVE_CATEGORY}/%d`
 
+export const INCOME_CATEGORY = 'income-category'
+export const INCOME_CATEGORY_LIST_URL = `/${INCOME_CATEGORY}`
+export const INCOME_CATEGORY_ITEM_URL = `${INCOME_CATEGORY_LIST_URL}/:incomeCategoryId`
+export const INCOME_CATEGORY_ITEM_PATH = `${INCOME_CATEGORY}/%d`
+
 export const POST = 'post'
 export const POST_LIST_URL = `/${POST}`
 export const POST_ITEM_URL = `${POST_LIST_URL}/:postId`

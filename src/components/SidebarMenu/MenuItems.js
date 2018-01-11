@@ -182,12 +182,16 @@ export const MenuItems = [
             {section: SETTINGS_STAFF, name: t('Смены'), url: ROUTES.SHIFT_LIST_URL, permission: 'frontend_settings_shift'},
             {section: SETTINGS_STAFF, name: t('Должности'), url: ROUTES.POST_LIST_URL, permission: 'frontend_settings_post'},
             {section: SETTINGS_STAFF, name: t('Права доступа'), url: ROUTES.POSITION_LIST_URL, permission: 'frontend_settings_position'},
+
             {section: SETTINGS_FINANCE, name: t('Валюты'), url: ROUTES.CURRENCY_LIST_URL, permission: 'frontend_settings_currency'},
             {section: SETTINGS_FINANCE, name: t('Кассы'), url: ROUTES.CASHBOX_LIST_URL, permission: 'frontend_settings_cashbox'},
+            {section: SETTINGS_FINANCE, name: t('Категории приходов'), url: ROUTES.INCOME_CATEGORY_LIST_URL, permission: 'frontend_settings_income_category'},
             {section: SETTINGS_FINANCE, name: t('Категории расходов'), url: ROUTES.EXPENSIVE_CATEGORY_LIST_URL, permission: 'frontend_settings_expense_category'},
+
             {section: SETTINGS_PRODUCTS, name: t('Типы продуктов'), url: ROUTES.PRODUCT_TYPE_LIST_URL, permission: 'frontend_settings_product_type'},
             {section: SETTINGS_PRODUCTS, name: t('Измерения'), url: ROUTES.MEASUREMENT_LIST_URL, permission: 'frontend_settings_measurement'},
             {section: SETTINGS_PRODUCTS, name: t('Типы магазинов'), url: ROUTES.MARKET_TYPE_LIST_URL, permission: 'frontend_settings_market_type'},
+
             {section: SETTINGS_MISC, name: t('Прайс-листы'), url: ROUTES.PRICE_LIST_SETTING_LIST_URL, permission: 'frontend_settings_price_list'},
             {section: SETTINGS_MISC, name: t('Склады'), url: ROUTES.STOCK_LIST_URL, permission: 'frontend_settings_stock'},
             {section: SETTINGS_MISC, name: t('Оборудования'), url: ROUTES.EQUIPMENT_LIST_URL, permission: 'frontend_settings_equipment'},

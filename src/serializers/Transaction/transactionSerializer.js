@@ -39,8 +39,19 @@ export const createIncomeSerializer = (data, cashboxId) => {
     const division = _.get(data, ['division', 'value'])
     const cashbox = _.get(data, ['cashbox', 'value'])
     const date = moment(_.get(data, 'date')).format('YYYY-MM-DD HH:00:00')
+    const staffs = _.filter(_.map(_.get(data, 'users'), (item, index) => {
+        return {
+            staff: _.toInteger(index),
+            amount: _.toNumber(numberWithoutSpaces(_.get(item, 'amount')))
+        }
+    }), (item) => {
+        return _.toNumber(_.get(item, 'amount')) > ZERO
+    })
+    const salaryAmount = _.sumBy(staffs, (item) => {
+        return _.get(item, 'amount')
+    })
     return {
-        'amount': numberWithoutSpaces(amount),
+        'amount': _.isEmpty(staffs) ? numberWithoutSpaces(amount) : salaryAmount,
         comment,
         'cashbox': _.toInteger(cashboxId) === ZERO ? cashbox : cashboxId,
         'custom_rate': customRate,

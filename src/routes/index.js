@@ -23,6 +23,7 @@ import {BrandList} from '../containers/Brand'
 import {MeasurementList} from '../containers/Measurement'
 import {ZonesList} from '../containers/Zones'
 import {ExpensiveCategoryList} from '../containers/ExpensiveCategory'
+import {IncomeCategoryList} from '../containers/IncomeCategory'
 import {PostList} from '../containers/Post'
 import {UsersList} from '../containers/Users'
 import {ProviderList} from '../containers/Provider'
@@ -307,7 +308,7 @@ export default {
                 }
             ]
         },
-        // ExpensiveCategory
+        // Expensive Category
         {
             path: ROUTES.EXPENSIVE_CATEGORY_LIST_URL,
             component: userIsAdminChain(ExpensiveCategoryList),
@@ -315,6 +316,17 @@ export default {
                 {
                     path: ROUTES.EXPENSIVE_CATEGORY_ITEM_URL,
                     component: userIsAuth(ExpensiveCategoryList)
+                }
+            ]
+        },
+        // Income Category
+        {
+            path: ROUTES.INCOME_CATEGORY_LIST_URL,
+            component: userIsAdminChain(IncomeCategoryList),
+            childRoutes: [
+                {
+                    path: ROUTES.INCOME_CATEGORY_ITEM_URL,
+                    component: userIsAuth(IncomeCategoryList)
                 }
             ]
         },

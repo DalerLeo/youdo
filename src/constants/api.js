@@ -49,6 +49,12 @@ export const EXPENSIVE_CATEGORY_LIST = `/${EXPENSIVE_CATEGORY}/`
 export const EXPENSIVE_CATEGORY_ITEM = `/${EXPENSIVE_CATEGORY}/%d/`
 export const EXPENSIVE_CATEGORY_DELETE = `/${EXPENSIVE_CATEGORY}/%d/`
 
+export const INCOME_CATEGORY = 'finance/income_category'
+export const INCOME_CATEGORY_CREATE = `/${INCOME_CATEGORY}/`
+export const INCOME_CATEGORY_LIST = `/${INCOME_CATEGORY}/`
+export const INCOME_CATEGORY_ITEM = `/${INCOME_CATEGORY}/%d/`
+export const INCOME_CATEGORY_DELETE = `/${INCOME_CATEGORY}/%d/`
+
 export const OPTIONS_LIST = 'main/options/'
 
 export const POST = 'main/jobs'

@@ -73,7 +73,8 @@ const enhance = compose(
             padding: '20px 17px',
             height: '65px',
             lineHeight: '1',
-            textAlign: 'center'
+            textAlign: 'center',
+            width: '110px'
         },
         content: {
             display: 'flex',
@@ -112,10 +113,19 @@ const enhance = compose(
             marginTop: '10px',
             '& li span': {
                 fontWeight: '600',
-                marginLeft: '5px'
+                marginLeft: '5px',
+                '& a': {
+                    fontWeight: 'inherit'
+                }
             },
             '&:last-child': {
                 marginRight: '0'
+            }
+        },
+        phones: {
+            '& span': {
+                display: 'block',
+                fontWeight: '600'
             }
         },
         image: {
@@ -211,7 +221,7 @@ const enhance = compose(
                 display: 'block',
                 position: 'relative',
                 height: 'auto !important',
-                width: 'auto !important',
+                width: '90px !important',
                 margin: '0 0 20px !important',
                 '&:after': {
                     content: '""',
@@ -235,7 +245,8 @@ const enhance = compose(
             zIndex: '1'
         }
     }),
-    withState('openMapDialog', 'setOpenMapDialog', false)
+    withState('openMapDialog', 'setOpenMapDialog', false),
+    withState('showPhones', 'setShowPhones', false),
 )
 const iconStyle = {
     icon: {
@@ -261,10 +272,13 @@ const ShopDetails = enhance((props) => {
         handleCloseDetail,
         mapDialog,
         openMapDialog,
-        setOpenMapDialog
+        setOpenMapDialog,
+        showPhones,
+        setShowPhones
     } = props
 
     const ZERO = 0
+    const ONE = 1
     const MAX_IMAGE_COUNT = 5
     const FOUR = 4
 
@@ -293,7 +307,9 @@ const ShopDetails = enhance((props) => {
     const guide = _.get(data, 'guide')
     const zone = _.get(data, ['border', 'title']) || <span className="redFont">{t('Не определена')}</span>
     const contactName = _.get(data, 'contactName')
-    const phone = _.get(data, 'phone')
+    const phones = _.get(data, 'phones')
+    const firstPhone = _.get(_.first(phones), 'phone')
+    const otherPhones = _.drop(phones)
     const images = _.get(data, 'images') || []
     const freq = _.get(data, 'visitFrequency')
     const isActive = _.get(data, 'isActive')
@@ -413,9 +429,20 @@ const ShopDetails = enhance((props) => {
                         <div className={classes.infoTitle}>{t('Контакты')}</div>
                         <ul className={classes.details}>
                             <li>{t('Имя контакта')}: <span>{contactName}</span></li>
-                            <li>{t('Телефон')}: <span>{phone}</span></li>
                             <li>{t('Адрес')}: <span><a onClick={() => { setOpenMapDialog(true) }}>{address}</a></span></li>
                             <li>{t('Ориентир')}: <span>{guide}</span></li>
+                            <li>
+                                {t('Телефоны')}: <span>{firstPhone} {_.get(phones, 'length') > ONE && !showPhones &&
+                                <a title={t('Показать все')} onClick={() => { setShowPhones(true) }}> ...</a>}</span>
+                            </li>
+                            {showPhones &&
+                            <div className={classes.phones}>
+                                {_.map(otherPhones, (item) => {
+                                    const phoneID = _.get(item, 'id')
+                                    const ph = _.get(item, 'phone')
+                                    return <span key={phoneID}>{ph}</span>
+                                })}
+                            </div>}
                         </ul>
                     </div>
                     <div className={classes.infoBlock}>

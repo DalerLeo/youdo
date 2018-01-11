@@ -163,6 +163,13 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.EXPENSIVE_CATEGORY_UPDATE),
         item: createThunkReducer(actionTypes.EXPENSIVE_CATEGORY_ITEM)
     }),
+    incomeCategory: combineReducers({
+        create: createThunkReducer(actionTypes.INCOME_CATEGORY_CREATE),
+        options: createThunkReducer(actionTypes.OPTIONS_LIST),
+        list: createThunkReducer(actionTypes.INCOME_CATEGORY_LIST),
+        update: createThunkReducer(actionTypes.INCOME_CATEGORY_UPDATE),
+        item: createThunkReducer(actionTypes.INCOME_CATEGORY_ITEM)
+    }),
     post: combineReducers({
         create: createThunkReducer(actionTypes.POST_CREATE),
         list: createThunkReducer(actionTypes.POST_LIST),

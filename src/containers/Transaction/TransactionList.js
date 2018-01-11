@@ -150,8 +150,11 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         const prevExpenseCat = _.get(props, ['createForm', 'values', 'expanseCategory', 'value', 'id'])
         const nextExpenseCat = _.get(nextProps, ['createForm', 'values', 'expanseCategory', 'value', 'id'])
-        return prevExpenseCat !== nextExpenseCat && nextExpenseCat
+        const prevIncomeCat = _.get(props, ['createForm', 'values', 'incomeCategory', 'value', 'id'])
+        const nextIncomeCat = _.get(nextProps, ['createForm', 'values', 'incomeCategory', 'value', 'id'])
+        return (prevExpenseCat !== nextExpenseCat && nextExpenseCat) || (prevIncomeCat !== nextIncomeCat && nextIncomeCat)
     }, ({dispatch, createForm, optionsList, setOpenStaff, location: {query}}) => {
+        const incomeOptions = _.get(createForm, ['values', 'incomeCategory', 'value', 'options'])
         const expenseOptions = _.get(createForm, ['values', 'expanseCategory', 'value', 'options'])
         const updateTransactionID = _.toInteger(_.get(query, UPDATE_TRANSACTION))
         dispatch(optionsListFetchAction())
@@ -159,10 +162,10 @@ const enhance = compose(
                 const options = _.get(optionsList, 'results')
                 const staffExpenseOptionId = _.get(_.find(options, {'keyName': 'staff_expanse'}), 'id')
                 const clientOptionId = _.get(_.find(options, {'keyName': 'client'}), 'id')
-                if (!_.includes(expenseOptions, clientOptionId)) {
+                if (!_.includes(expenseOptions, clientOptionId) || !_.includes(incomeOptions, clientOptionId)) {
                     dispatch(change('TransactionCreateForm', 'client', null))
                 }
-                if (_.includes(expenseOptions, staffExpenseOptionId)) {
+                if (_.includes(expenseOptions, staffExpenseOptionId) || _.includes(incomeOptions, staffExpenseOptionId)) {
                     setOpenStaff(true)
                     dispatch(usersListFetchAction())
                     if (updateTransactionID > ZERO) {
