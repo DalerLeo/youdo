@@ -63,9 +63,11 @@ const enhance = compose(
     }),
     withPropsOnChange((props, nextProps) => {
         const except = {
-            openStatProviderDialog: null,
+            openInfoDialog: null,
             dPage: null,
-            dPageSize: null
+            dPageSize: null,
+            type: null,
+            division: null
         }
         return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
@@ -74,12 +76,14 @@ const enhance = compose(
 
     withPropsOnChange((props, nextProps) => {
         const except = {
-            openStatProviderDialog: null,
+            openInfoDialog: null,
             dPage: null,
             dPageSize: null,
             search: null,
             page: null,
-            pageSize: null
+            pageSize: null,
+            type: null,
+            division: null
         }
         return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {

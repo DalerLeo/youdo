@@ -39,7 +39,6 @@ const validateForm = values => {
     return errors
 }
 
-const ZERO = 0
 const enhance = compose(
     injectSheet({
         loader: {
@@ -272,15 +271,11 @@ const enhance = compose(
         const date = _.get(state, ['form', 'TransactionCreateForm', 'values', 'date'])
         const incomeCategory = _.get(state, ['form', 'TransactionCreateForm', 'values', 'incomeCategory', 'value'])
         const optionsList = _.get(state, ['expensiveCategory', 'options', 'data', 'results'])
+        const incomeCategoryOptions = _.get(state, ['form', 'TransactionCreateForm', 'values', 'incomeCategory', 'value', 'options'])
         const expenseCategoryOptions = _.get(state, ['form', 'TransactionCreateForm', 'values', 'expanseCategory', 'value', 'options'])
         const users = _.get(state, ['form', 'TransactionCreateForm', 'values', 'users'])
-        let totalStafAmount = ZERO
-        _.map(users, (item) => {
-            if (_.get(item, 'amount')) {
-                totalStafAmount += _.toNumber(numberWithoutSpaces(_.get(item, 'amount')))
-            } else {
-                totalStafAmount += ZERO
-            }
+        const totalStaffAmount = _.sumBy(users, (item) => {
+            return _.toNumber(numberWithoutSpaces(_.get(item, 'amount')))
         })
         return {
             rate,
@@ -288,8 +283,9 @@ const enhance = compose(
             chosenCashbox,
             date,
             optionsList,
+            incomeCategoryOptions,
             expenseCategoryOptions,
-            totalStafAmount,
+            totalStaffAmount,
             incomeCategory
         }
     }),
@@ -330,17 +326,17 @@ const TransactionCreateDialog = enhance((props) => {
         usersData,
         date,
         optionsList,
+        incomeCategoryOptions,
         expenseCategoryOptions,
         searchQuery,
         setSearchQuery,
-        totalStafAmount,
-        canSetCustomRate,
-        incomeCategory
+        totalStaffAmount,
+        canSetCustomRate
     } = props
     const clientOptionId = _.get(_.find(optionsList, {'keyName': 'client'}), 'id')
     const providerOptionId = _.get(_.find(optionsList, {'keyName': 'provider'}), 'id')
-    const showClients = _.includes(expenseCategoryOptions, clientOptionId)
-    const showProviders = _.includes(expenseCategoryOptions, providerOptionId)
+    const showClients = isExpense ? _.includes(expenseCategoryOptions, clientOptionId) : _.includes(incomeCategoryOptions, clientOptionId)
+    const showProviders = isExpense ? _.includes(expenseCategoryOptions, providerOptionId) : _.includes(incomeCategoryOptions, providerOptionId)
     const onSubmit = handleSubmit(() => props.onSubmit().catch(props.validate))
     const cashboxId = noCashbox ? chosenCashbox : _.get(cashboxData, 'cashboxId')
     const cashbox = _.find(_.get(cashboxData, 'data'), {'id': cashboxId})
@@ -430,18 +426,17 @@ const TransactionCreateDialog = enhance((props) => {
                                     fullWidth={true} />
                                 }
                                 <div className={classes.flex} style={{justifyContent: 'space-between'}}>
-                                    {
-                                        !isSalary && <div className={classes.flex} style={{alignItems: 'baseline', width: '48%'}}>
-                                            <Field
-                                                name="amount"
-                                                component={TextField}
-                                                label={t('Сумма')}
-                                                normalize={normalizeNumber}
-                                                className={classes.inputFieldCustom}
-                                                fullWidth={true}/>
-                                            <div>{currency}</div>
-                                        </div>
-                                    }
+                                    {!isSalary &&
+                                    <div className={classes.flex} style={{alignItems: 'baseline', width: '48%'}}>
+                                        <Field
+                                            name="amount"
+                                            component={TextField}
+                                            label={t('Сумма')}
+                                            normalize={normalizeNumber}
+                                            className={classes.inputFieldCustom}
+                                            fullWidth={true}/>
+                                        <div>{currency}</div>
+                                    </div>}
                                     <div className={classes.flex} style={{alignItems: 'baseline', width: '48%'}}>
                                         {(primaryCurrency !== currency && currency && date && canSetCustomRate) &&
                                         <Field
@@ -474,7 +469,7 @@ const TransactionCreateDialog = enhance((props) => {
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
                                 {
-                                incomeCategory === 'client'
+                                showClients
                                 ? <div>
                                     <Field
                                         name="client"
@@ -489,14 +484,15 @@ const TransactionCreateDialog = enhance((props) => {
                                         className={classes.inputFieldCustom}
                                         fullWidth={true}/> : null}
                                 </div>
-                                    : incomeCategory === 'provider'
+                                    : showProviders
                                     ? <Field
-                                            name="provider"
-                                            component={ProviderSearchField}
-                                            label={t('Поставщик')}
-                                            className={classes.inputFieldCustom}
-                                            fullWidth={true}/>
+                                        name="provider"
+                                        component={ProviderSearchField}
+                                        label={t('Поставщик')}
+                                        className={classes.inputFieldCustom}
+                                        fullWidth={true}/>
                                 : null}
+                                {!isSalary &&
                                 <div className={classes.flex} style={{justifyContent: 'space-between'}}>
                                     <div className={classes.flex} style={{alignItems: 'baseline', width: '48%'}}>
                                         <Field
@@ -518,7 +514,7 @@ const TransactionCreateDialog = enhance((props) => {
                                                 normalize={normalizeNumber}
                                                 fullWidth={true}/> : null}
                                     </div>
-                                </div>
+                                </div>}
                                 {(convert && rate && primaryCurrency !== currency)
                                     ? <div className={classes.convert}>{t('После конвертации')}:
                                         <strong> {convert} {primaryCurrency}</strong>
@@ -585,7 +581,7 @@ const TransactionCreateDialog = enhance((props) => {
                 </form>
                 <div className={classes.bottomButton}>
                     {isSalary && <div className={classes.commentField}>
-                        {t('Сумма расхода')}: <b>{numberFormat(totalStafAmount, _.get(cashbox, ['currency', 'name']))}</b>
+                        {isExpense ? t('Сумма расхода') : t('Сумма прихода')}: <b>{numberFormat(totalStaffAmount, _.get(cashbox, ['currency', 'name']))}</b>
                     </div>}
                     <FlatButton
                         label={t('Сохранить')}
