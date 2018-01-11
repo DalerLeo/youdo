@@ -390,6 +390,7 @@ const rootReducer = combineReducers({
         list: createThunkReducer(actionTypes.CLIENT_BALANCE_LIST),
         update: createThunkReducer(actionTypes.CLIENT_BALANCE_UPDATE),
         item: createThunkReducer(actionTypes.CLIENT_BALANCE_ITEM),
+        detail: createThunkReducer(actionTypes.CLIENT_BALANCE_DETAIL),
         updateAdmin: createThunkReducer(actionTypes.CLIENT_BALANCE_SUPER_USER),
         sum: createThunkReducer(actionTypes.CLIENT_BALANCE_SUM)
     }),

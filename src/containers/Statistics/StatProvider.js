@@ -29,7 +29,6 @@ import {
 } from '../../actions/statProvider'
 
 const defaultDate = moment().format('YYYY-MM-DD')
-const ONE = 1
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -47,6 +46,7 @@ const enhance = compose(
         const endDate = _.get(query, END_DATE) || defaultDate
 
         return {
+            pathname,
             list,
             listLoading,
             summary,
@@ -102,26 +102,6 @@ const enhance = compose(
     }),
 
     withHandlers({
-        handleOpenStatProviderDialog: props => (id) => {
-            const {filter} = props
-            hashHistory.push({
-                pathname: sprintf(ROUTER.STATISTICS_PROVIDER_ITEM_PATH, id),
-                query: filter.getParams({[STAT_PROVIDER_DIALOG_OPEN]: true})
-            })
-        },
-
-        handleCloseStatProviderDialog: props => () => {
-            const {filter} = props
-            hashHistory.push({
-                pathname: ROUTER.STATISTICS_PROVIDER_URL,
-                query: filter.getParams({[STAT_PROVIDER_DIALOG_OPEN]: false})
-            })
-        },
-        handleCloseDetail: props => () => {
-            const {filter} = props
-            hashHistory.push({pathname: ROUTER.STATISTICS_LIST_URL, query: filter.getParams()})
-        },
-
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
             const search = _.get(filterForm, ['values', 'search']) || null
@@ -142,33 +122,6 @@ const enhance = compose(
             const {filter} = props
             const params = serializers.listFilterSerializer(filter.getParams())
             getDocuments(API.STAT_PROVIDER_GET_DOCUMENT, params)
-        },
-        handlePrevMonthBegin: props => () => {
-            const {location: {pathname}, filter, beginDate} = props
-            const prevMonth = moment(beginDate).subtract(ONE, 'month')
-            const dateForURL = prevMonth.format('YYYY-MM')
-            hashHistory.push({pathname, query: filter.getParams({[BEGIN_DATE]: dateForURL})})
-        },
-
-        handleNextMonthBegin: props => () => {
-            const {location: {pathname}, filter, beginDate} = props
-            const nextMonth = moment(beginDate).add(ONE, 'month')
-            const dateForURL = nextMonth.format('YYYY-MM')
-            hashHistory.push({pathname, query: filter.getParams({[BEGIN_DATE]: dateForURL})})
-        },
-
-        handlePrevMonthEnd: props => () => {
-            const {location: {pathname}, filter, endDate} = props
-            const prevMonth = moment(endDate).subtract(ONE, 'month')
-            const dateForURL = prevMonth.format('YYYY-MM')
-            hashHistory.push({pathname, query: filter.getParams({[END_DATE]: dateForURL})})
-        },
-
-        handleNextMonthEnd: props => () => {
-            const {location: {pathname}, filter, endDate} = props
-            const nextMonth = moment(endDate).add(ONE, 'month')
-            const dateForURL = nextMonth.format('YYYY-MM')
-            hashHistory.push({pathname, query: filter.getParams({[END_DATE]: dateForURL})})
         },
 
         handleOpenInfoDialog: props => (id, division, type) => {
@@ -289,16 +242,6 @@ const StatProviderList = enhance((props) => {
             toDate: moment(lastDayOfMonth)
         }
     }
-    const calendarBegin = {
-        selectedDate: beginDate,
-        handlePrevMonthBegin: props.handlePrevMonthBegin,
-        handleNextMonthBegin: props.handleNextMonthBegin
-    }
-    const calendarEnd = {
-        selectedDate: endDate,
-        handlePrevMonthEnd: props.handlePrevMonthEnd,
-        handleNextMonthEnd: props.handleNextMonthEnd
-    }
 
     return (
         <Layout {...layout}>
@@ -310,8 +253,6 @@ const StatProviderList = enhance((props) => {
                 detailData={detailData}
                 statProviderDialog={statProviderDialog}
                 getDocument={getDocument}
-                calendarBegin={calendarBegin}
-                calendarEnd={calendarEnd}
                 initialValues={initialValues}
                 pathname={pathname}
                 infoDialog={infoDialog}

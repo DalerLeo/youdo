@@ -16,6 +16,8 @@ import dateTimeFormat from '../../../helpers/dateTimeFormat'
 import Tooltip from '../../ToolTip'
 import NotFound from '../../Images/not-found.png'
 import ProviderTransactionFormat from './ProviderTransactionFormat'
+import {Field, reduxForm} from 'redux-form'
+import {CurrencySearchField, DivisionSearchField, PaymentTypeSearchField} from '../../ReduxForm'
 import {
     FIRST_BALANCE,
     NONE_TYPE
@@ -90,10 +92,11 @@ const enhance = compose(
             justifyContent: 'space-between',
             alignItems: 'center',
             position: 'relative',
-            height: '70px',
+            height: '60px',
             fontWeight: '600',
+            borderTop: '1px #efefef solid',
             borderBottom: '1px #efefef solid',
-            margin: '0',
+            marginTop: '10px',
             padding: '0 30px'
         },
         info: {
@@ -168,8 +171,20 @@ const enhance = compose(
                 height: '50px !important',
                 color: '#999 !important'
             }
+        },
+        filters: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            padding: '0 30px',
+            '& > div': {
+                width: 'calc((100% / 3) - 15px)'
+            }
         }
-    })
+    }),
+    reduxForm({
+        form: 'ProviderBalanceForm',
+        enableReinitialize: true
+    }),
 )
 
 const iconStyle = {
@@ -263,7 +278,22 @@ const ProviderInfoDialog = enhance((props) => {
                     <CloseIcon/>
                 </IconButton>
             </div>
-            {loading ? <div className={classes.loader}>
+            <div className={classes.filters}>
+                <Field
+                    name={'division'}
+                    component={DivisionSearchField}
+                    label={'Организация'}/>
+                <Field
+                    name={'currency'}
+                    component={CurrencySearchField}
+                    label={'Валюта'}/>
+                <Field
+                    name={'paymentType'}
+                    component={PaymentTypeSearchField}
+                    label={'Тип оплаты'}/>
+            </div>
+            {loading
+                ? <div className={classes.loader}>
                     <Loader size={0.75}/>
                 </div>
                 : <div className={classes.bodyContent}>
