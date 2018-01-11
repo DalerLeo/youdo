@@ -16,7 +16,8 @@ const enhance = compose(
     }),
 )
 const PendingPaymentRadioButton = enhance((props) => {
-    const {input, currency, dispatch, createdDate, primaryCurrency, primaryCurrencyId, canSetCustomRate} = props
+    const ONE = 1
+    const {input, currency, dispatch, createdDate, primaryCurrency, primaryCurrencyId, canSetCustomRate, order} = props
     const currencyName = _.get(currency, 'name')
     const currencyId = _.toInteger(_.get(currency, 'id'))
     const configCurrencyId = _.toInteger(getConfig('PRIMARY_CURRENCY_ID'))
@@ -25,11 +26,16 @@ const PendingPaymentRadioButton = enhance((props) => {
         toCurrency: primaryCurrencyId === configCurrencyId ? currencyId : primaryCurrencyId,
         createdDate: createdDate ? moment(createdDate).format('YYYY-MM-DD') : moment().format('YYYY-MM-DD')
     }
+    const withoutDate = true
 
     if (currencyName === primaryCurrency || !currencyName) {
         return false
     } else if (primaryCurrency !== currencyName && currencyName) {
-        dispatch(pendingPaymentsConvertAction(data))
+        if (_.toInteger(input.value) === ONE) {
+            dispatch(pendingPaymentsConvertAction(data, order, withoutDate))
+        } else {
+            dispatch(pendingPaymentsConvertAction(data))
+        }
     }
     return (
         <div style={{width: '205px'}}>

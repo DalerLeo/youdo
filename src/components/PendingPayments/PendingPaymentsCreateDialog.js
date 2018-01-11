@@ -192,6 +192,7 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                                     primaryCurrency={primaryCurrency}
                                     primaryCurrencyId={primaryCurrencyId}
                                     canSetCustomRate={canSetCustomRate}
+                                    order={id}
                                     component={PendingPaymentRadioButton}
                                 />
                                 {(currencyRate === INDIVIDUAL && currency !== primaryCurrency)

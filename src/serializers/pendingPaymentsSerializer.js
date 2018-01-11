@@ -42,20 +42,17 @@ export const listFilterSerializer = (data) => {
     }
 }
 
-export const convertSerializer = (data) => {
+export const convertSerializer = (data, order, withoutDate) => {
     const date = _.get(data, 'createdDate')
-    if (date) {
-        return {
-            'from_currency': _.get(data, 'fromCurrency'),
-            'to_currency': _.get(data, 'toCurrency'),
-            'amount': '1',
-            'date': moment(date).format('YYYY-MM-DD HH:mm:ss')
-        }
-    }
-    return {
+    const request = {
         'from_currency': _.get(data, 'fromCurrency'),
         'to_currency': _.get(data, 'toCurrency'),
-        'amount': '1'
+        'amount': '1',
+        order
     }
+    if (!withoutDate && date) {
+        return _.merge(request, {'date': moment(date).format('YYYY-MM-DD HH:mm:ss')})
+    }
+    return request
 }
 

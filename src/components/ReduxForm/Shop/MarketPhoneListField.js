@@ -98,7 +98,7 @@ const MarketPhoneListField = (props) => {
                         <div>
                             <div className={classes.flex}>
                                 <Field
-                                    label="Телефон номер"
+                                    label="Номер телефона"
                                     name={`${phone}.phone`}
                                     component={TextField}
                                     className={classes.inputFieldCustom}

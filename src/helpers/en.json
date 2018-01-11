@@ -7,6 +7,8 @@
   "Логин": "Login",
   "Права доступа": "Access rights",
   "Телефон": "Phone",
+  "Телефоны": "Phones",
+  "Показать все": "Show all",
   "Должность": "Position",
   "Статус": "Status",
   "Неизвестно": "Unknown",
@@ -21,7 +23,7 @@
   "Контактные данные": "Contact details",
   "Контактное лицо": "The contact person",
   "Email": "Email",
-  "Телефон номер": "Phone number",
+  "Номер телефона": "Phone number",
 
   "Подтверждение удаления": "Confirmation of deletion",
   "Удалить": "Delete",
