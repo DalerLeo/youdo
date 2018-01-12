@@ -37,13 +37,14 @@ export const summaryFilterSerializer = (query) => {
     }
 }
 
-export const itemFilterSerializer = (data, id, division, type) => {
+export const itemFilterSerializer = (data, id, division, currency, type) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
     const paymentType = type || null
     const request = {
         'provider': id,
         'payment_type': paymentType,
+        'currency': currency,
         'page': _.get(defaultData, 'dPage'),
         'page_size': _.get(defaultData, 'dPageSize'),
         'ordering': ordering && orderingSnakeCase(ordering)

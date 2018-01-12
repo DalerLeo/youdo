@@ -25,7 +25,8 @@ import {STAT_PROVIDER_FILTER_KEY} from '../../components/Statistics/Providers/Pr
 import {
     statProviderListFetchAction,
     statProviderSummaryFetchAction,
-    statProviderItemFetchAction
+    statProviderItemFetchAction,
+    statProviderDetailFetchAction
 } from '../../actions/statProvider'
 
 const defaultDate = moment().format('YYYY-MM-DD')
@@ -40,6 +41,9 @@ const enhance = compose(
         const summary = _.get(state, ['statProvider', 'sum', 'data'])
         const summaryLoading = _.get(state, ['statProvider', 'sum', 'loading'])
         const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
+        const infoForm = _.get(state, ['form', 'ProviderBalanceForm'])
+        const info = _.get(state, ['statProvider', 'detail', 'data'])
+        const infoLoading = _.get(state, ['statProvider', 'detail', 'loading'])
         const filter = filterHelper(list, pathname, query)
         const filterItem = filterHelper(detail, pathname, query, {'page': 'dPage', 'pageSize': 'dPageSize'})
         const beginDate = _.get(query, BEGIN_DATE) || defaultDate
@@ -56,6 +60,9 @@ const enhance = compose(
             filter,
             query,
             filterForm,
+            infoForm,
+            info,
+            infoLoading,
             filterItem,
             beginDate,
             endDate
@@ -65,13 +72,20 @@ const enhance = compose(
         const except = {
             openInfoDialog: null,
             dPage: null,
-            dPageSize: null,
-            type: null,
-            division: null
+            dPageSize: null
         }
         return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
         dispatch(statProviderListFetchAction(filter))
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const ID = _.get(props, ['params', 'statProviderId'])
+        const nextID = _.get(nextProps, ['params', 'statProviderId'])
+        return ID !== nextID && nextID
+    }, ({dispatch, params}) => {
+        const providerID = _.toInteger(_.get(params, 'statProviderId'))
+        providerID && dispatch(statProviderDetailFetchAction(providerID))
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -81,9 +95,7 @@ const enhance = compose(
             dPageSize: null,
             search: null,
             page: null,
-            pageSize: null,
-            type: null,
-            division: null
+            pageSize: null
         }
         return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
@@ -91,14 +103,25 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const providerID = _.get(nextProps, ['params', 'statProviderId'])
-        return providerID && (_.get(props, ['params', 'statProviderId']) !== providerID ||
-            props.filterItem.filterRequest() !== nextProps.filterItem.filterRequest())
-    }, ({dispatch, params, filterItem, location}) => {
-        const providerID = _.toInteger(_.get(params, 'statProviderId'))
-        const division = _.get(location, ['query', 'division'])
-        const type = _.get(location, ['query', 'type'])
-        providerID && dispatch(statProviderItemFetchAction(filterItem, providerID, division, type))
+        const ID = _.get(props, ['params', 'statProviderId'])
+        const nextID = _.get(nextProps, ['params', 'statProviderId'])
+        const division = _.get(props, ['infoForm', 'values', 'division', 'value'])
+        const nextDivision = _.get(nextProps, ['infoForm', 'values', 'division', 'value'])
+        const currency = _.get(props, ['infoForm', 'values', 'currency', 'value'])
+        const nextCurrency = _.get(nextProps, ['infoForm', 'values', 'currency', 'value'])
+        const type = _.get(props, ['infoForm', 'values', 'paymentType', 'value'])
+        const nextType = _.get(nextProps, ['infoForm', 'values', 'paymentType', 'value'])
+        return (ID !== nextID && nextID) ||
+            (currency !== nextCurrency && nextCurrency) ||
+            (division !== nextDivision && nextDivision) ||
+            (type !== nextType && nextType) ||
+            (props.filterItem.filterRequest() !== nextProps.filterItem.filterRequest())
+    }, ({dispatch, params, filterItem, infoForm}) => {
+        const clientBalanceId = _.toInteger(_.get(params, 'statProviderId'))
+        const division = _.get(infoForm, ['values', 'division', 'value'])
+        const currency = _.get(infoForm, ['values', 'currency', 'value'])
+        const type = _.get(infoForm, ['values', 'paymentType', 'value'])
+        clientBalanceId && dispatch(statProviderItemFetchAction(filterItem, clientBalanceId, division, currency, type))
     }),
 
     withHandlers({
@@ -124,14 +147,12 @@ const enhance = compose(
             getDocuments(API.STAT_PROVIDER_GET_DOCUMENT, params)
         },
 
-        handleOpenInfoDialog: props => (id, division, type) => {
+        handleOpenInfoDialog: props => (id) => {
             const {filterItem} = props
             hashHistory.push({
                 pathname: sprintf(ROUTER.STATISTICS_PROVIDERS_ITEM_PATH, id),
                 query: filterItem.getParams({
-                    [STAT_PROVIDER_INFO_DIALOG_OPEN]: true,
-                    'division': division,
-                    'type': type
+                    [STAT_PROVIDER_INFO_DIALOG_OPEN]: true
                 })
             })
         },
@@ -158,6 +179,8 @@ const StatProviderList = enhance((props) => {
         listLoading,
         summary,
         summaryLoading,
+        info,
+        infoLoading,
         detail,
         detailLoading,
         filter,
@@ -199,6 +222,8 @@ const StatProviderList = enhance((props) => {
         division: divisionInfo,
         type: type === 'bank' ? ' переч.' : ' нал.',
         balance: getBalance(type),
+        info,
+        infoLoading,
         handleOpenInfoDialog: props.handleOpenInfoDialog,
         handleCloseInfoDialog: props.handleCloseInfoDialog
     }

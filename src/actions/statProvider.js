@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import sprintf from 'sprintf'
 import axios from '../helpers/axios'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
@@ -38,8 +39,8 @@ export const statProviderSummaryFetchAction = (filter) => {
     }
 }
 
-export const statProviderItemFetchAction = (filter, id, division, type) => {
-    const params = serializers.itemFilterSerializer(filter.getParams(), id, division, type)
+export const statProviderItemFetchAction = (filter, id, division, currency, type) => {
+    const params = serializers.itemFilterSerializer(filter.getParams(), id, division, currency, type)
     const payload = axios()
         .get(API.STAT_PROVIDER_ITEM, {params})
         .then((response) => {
@@ -51,6 +52,22 @@ export const statProviderItemFetchAction = (filter, id, division, type) => {
 
     return {
         type: actionTypes.STAT_PROVIDER_ITEM,
+        payload
+    }
+}
+
+export const statProviderDetailFetchAction = (id) => {
+    const payload = axios()
+        .get(sprintf(API.STAT_PROVIDER_DETAIL, id))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.STAT_PROVIDER_DETAIL,
         payload
     }
 }

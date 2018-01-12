@@ -378,7 +378,6 @@ const Dashboard = enhance((props) => {
                             <EditIcon color={'#666'} onClick={() => { setOpenEditPass(true) }}/>
                         </ToolTip>}
                     </div>
-                    {isAdmin &&
                     <div className={classes.buttons}>
                         <Filter
                             filter={filter}
@@ -388,7 +387,7 @@ const Dashboard = enhance((props) => {
                             loading={widgetsForm.loading}
                             submitForm={widgetsForm.handleSubmitWidgetsForm}
                             initialValues={widgetsForm.initialValues}/>
-                    </div>}
+                    </div>
                 </Paper>
 
                 <section className={classes.chartsWrapper} ref="wrapper">

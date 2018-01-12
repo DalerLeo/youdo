@@ -12,17 +12,20 @@ import NotFound from '../Images/not-found.png'
 import getConfig from '../../helpers/getConfig'
 import TransactionsFormat from '../../components/Transaction/TransactionsFormat'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
+import InfoIcon from 'material-ui/svg-icons/action/info-outline'
 import dateFormat from '../../helpers/dateFormat'
 import moduleFormat from '../../helpers/moduleFormat'
 import IconButton from 'material-ui/IconButton'
 import t from '../../helpers/translate'
+import ToolTip from '../ToolTip'
 
 const enhance = compose(
     injectSheet({
         loader: {
             width: '100%',
             background: '#fff',
-            height: '400px',
+            height: '265px',
+            marginTop: '1px',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center'
@@ -125,8 +128,18 @@ const enhance = compose(
             '& a': {
                 color: '#12aaeb !important'
             }
+        },
+        flex: {
+            display: 'flex',
+            alignItems: 'center',
+            '& svg': {
+                marginLeft: '5px'
+            }
+        },
+        right: {
+            textAlign: 'right',
+            justifyContent: 'flex-end'
         }
-
     })
 )
 
@@ -259,40 +272,46 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                                         <Col xs={2} style={{textAlign: 'right'}}>{t('Сумма')}</Col>
                                         <Col xs={2} style={{textAlign: 'right'}}>{t('Оплачено')}</Col>
                                     </Row>
-                                    {
-                                        _.map(_.get(expensesListData, 'data'), (item) => {
-                                            const expId = _.get(item, 'id')
-                                            const expComment = _.get(item, 'comment')
-                                            const paymentType = _.get(item, 'paymentType') === 'cash' ? 'Наличный' : 'Банковский счет'
-                                            const expCurrency = _.get(item, ['currency', 'name'])
-                                            const expAmount = numberFormat(_.get(item, 'amount'), expCurrency)
-                                            const expPaid = _.get(item, 'totalPaid') ? numberFormat(Math.abs(_.toNumber(_.get(item, 'totalPaid'))), expCurrency) : numberFormat(ZERO, expCurrency)
-                                            const expProduct = _.get(_.find(products, {'id': _.get(item, 'supplyProduct')}), ['product', 'name'])
-                                            return (
-                                                <Row key={expId} className="dottedList">
-                                                    <Col xs={2}>{expComment}</Col>
-                                                    <Col xs={3}
-                                                         style={{textAlign: 'left'}}>{expProduct || 'Общий расход'}</Col>
-                                                    <Col xs={2} style={{textAlign: 'left'}}>{paymentType}</Col>
-                                                    <Col xs={2} style={{textAlign: 'right'}}>{expAmount}</Col>
-                                                    <Col xs={2} style={{textAlign: 'right'}}>{expPaid}</Col>
-                                                    <Col xs={1} className={classes.expenseSum}>
-                                                        <IconButton
-                                                            disableTouchRipple={true}
-                                                            style={iconStyle.button}
-                                                            iconStyle={iconStyle.icon}
-                                                            onTouchTap={() => {
-                                                                confirmExpenseDialog.handleOpenConfirmExpenseDialog(expId)
-                                                            }}>
-                                                            <CloseIcon/>
-                                                        </IconButton>
-                                                    </Col>
-                                                </Row>
-                                            )
-                                        })
-                                    }
+                                    {_.map(_.get(expensesListData, 'data'), (item) => {
+                                        const expId = _.get(item, 'id')
+                                        const expComment = _.get(item, 'comment')
+                                        const bindToProvider = _.get(item, 'bindToProvider')
+                                        const paymentType = _.get(item, 'paymentType') === 'cash' ? 'Наличный' : 'Банковский счет'
+                                        const expCurrency = _.get(item, ['currency', 'name'])
+                                        const expAmount = numberFormat(_.get(item, 'amount'), expCurrency)
+                                        const expPaid = _.get(item, 'totalPaid') ? numberFormat(Math.abs(_.toNumber(_.get(item, 'totalPaid'))), expCurrency) : numberFormat(ZERO, expCurrency)
+                                        const expProduct = _.get(_.find(products, {'id': _.get(item, 'supplyProduct')}), ['product', 'name'])
+                                        return (
+                                            <Row key={expId} className="dottedList">
+                                                <Col xs={2}>{expComment}</Col>
+                                                <Col xs={3} className={classes.right}>{expProduct || 'Общий расход'}</Col>
+                                                <Col xs={2} className={classes.right}>{paymentType}</Col>
+                                                <Col xs={2}>
+                                                    <div className={classes.flex + ' ' + classes.right}>
+                                                        {expAmount}
+                                                        {bindToProvider &&
+                                                        <ToolTip position={'left'} text={'Привязан к поставщику'}>
+                                                            <InfoIcon style={iconStyle.icon}/>
+                                                        </ToolTip>}
+                                                    </div>
+                                                </Col>
+                                                <Col xs={2} className={classes.right}>{expPaid}</Col>
+                                                <Col xs={1} className={classes.expenseSum}>
+                                                    <IconButton
+                                                        disableTouchRipple={true}
+                                                        style={iconStyle.button}
+                                                        iconStyle={iconStyle.icon}
+                                                        onTouchTap={() => {
+                                                            confirmExpenseDialog.handleOpenConfirmExpenseDialog(expId)
+                                                        }}>
+                                                        <CloseIcon/>
+                                                    </IconButton>
+                                                </Col>
+                                            </Row>
+                                        )
+                                    })}
                                 </div>
-                                : <div className={classes.loader} style={{height: '265px', marginTop: '1px'}}>
+                                : <div className={classes.loader}>
                                     <div>
                                         <Loader size={0.75}/>
                                     </div>
@@ -365,7 +384,7 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                                     })
                                     }
                                 </div>
-                                : <div className={classes.loader} style={{height: '265px', marginTop: '1px'}}>
+                                : <div className={classes.loader}>
                                     <div>
                                         <Loader size={0.75}/>
                                     </div>

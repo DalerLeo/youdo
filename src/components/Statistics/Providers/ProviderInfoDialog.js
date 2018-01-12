@@ -35,6 +35,12 @@ const enhance = compose(
             justifyContent: 'center',
             display: 'flex'
         },
+        infoLoader: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '50px 0'
+        },
         dialog: {
             overflowY: 'auto !important',
             '& > div:first-child > div:first-child': {
@@ -42,21 +48,23 @@ const enhance = compose(
             }
         },
         red: {
-            color: '#e57373 !important'
+            color: '#e57373 !important',
+            fontWeight: '600'
         },
         green: {
-            color: '#81c784 !important'
+            color: '#81c784 !important',
+            fontWeight: '600'
         },
         popUp: {
             color: '#333 !important',
-            overflowY: 'hidden !important',
+            overflowY: 'unset !important',
             fontSize: '13px !important',
             position: 'relative',
             padding: '0 !important',
-            overflowX: 'hidden',
+            overflowX: 'unset',
             height: '100%',
             marginBottom: '64px',
-            maxHeight: '575px !important'
+            maxHeight: 'none !important'
         },
         titleContent: {
             background: '#fff',
@@ -66,7 +74,6 @@ const enhance = compose(
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            borderBottom: '1px solid #efefef',
             padding: '20px 30px',
             zIndex: '999',
             '& button': {
@@ -92,12 +99,7 @@ const enhance = compose(
             justifyContent: 'space-between',
             alignItems: 'center',
             position: 'relative',
-            height: '60px',
-            fontWeight: '600',
-            borderTop: '1px #efefef solid',
-            borderBottom: '1px #efefef solid',
-            marginTop: '10px',
-            padding: '0 30px'
+            borderBottom: '1px #efefef solid'
         },
         info: {
             display: 'flex',
@@ -117,7 +119,10 @@ const enhance = compose(
                 fontWeight: '600'
             },
             '& > .row': {
-                minHeight: '50px',
+                '& svg': {
+                    width: '20px !important',
+                    height: '20px !important'
+                },
                 '&:hover > div:last-child': {
                     opacity: '1'
                 },
@@ -177,7 +182,32 @@ const enhance = compose(
             justifyContent: 'space-between',
             padding: '0 30px',
             '& > div': {
-                width: 'calc((100% / 3) - 15px)'
+                width: 'calc((100% / 4) - 15px)'
+            }
+        },
+        paymentsWrapper: {
+            borderTop: '1px #efefef solid',
+            padding: '10px 30px',
+            display: 'flex',
+            width: '100%'
+        },
+        payment: {
+
+        },
+        division: {
+            marginRight: '20px',
+            paddingRight: '20px',
+            borderRight: '1px #efefef solid'
+        },
+        divisionTitle: {
+            marginBottom: '5px',
+            fontWeight: '600'
+        },
+        paymentType: {
+            marginBottom: '10px',
+            lineHeight: '1.5',
+            '&:last-child': {
+                marginBottom: '0'
             }
         }
     }),
@@ -201,8 +231,9 @@ const iconStyle = {
     }
 }
 const ProviderInfoDialog = enhance((props) => {
-    const {open, filterItem, onClose, classes, detailData, name, balance, paymentType, superUser, setItem, stat} = props
+    const {open, filterItem, onClose, classes, detailData, name, superUser, setItem, stat, info, infoLoading} = props
     const isSuperUser = _.get(superUser, 'isSuperUser')
+    const totalPayments = _.groupBy(info, (item) => _.get(item, ['division', 'name']))
     const ZERO = 0
     const currentCurrency = getConfig('PRIMARY_CURRENCY')
     const currentCurrencyId = _.toInteger(getConfig('PRIMARY_CURRENCY_ID'))
@@ -270,7 +301,7 @@ const ProviderInfoDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>Информация по балансу поставщика</span>
+                <span>Информация по балансу поставщика {name}</span>
                 <IconButton
                     iconStyle={iconStyle.icon}
                     style={iconStyle.button}
@@ -278,42 +309,75 @@ const ProviderInfoDialog = enhance((props) => {
                     <CloseIcon/>
                 </IconButton>
             </div>
-            <div className={classes.filters}>
-                <Field
-                    name={'division'}
-                    component={DivisionSearchField}
-                    label={'Организация'}/>
-                <Field
-                    name={'currency'}
-                    component={CurrencySearchField}
-                    label={'Валюта'}/>
-                <Field
-                    name={'paymentType'}
-                    component={PaymentTypeSearchField}
-                    label={'Тип оплаты'}/>
-            </div>
             {loading
                 ? <div className={classes.loader}>
                     <Loader size={0.75}/>
                 </div>
                 : <div className={classes.bodyContent}>
                     <div className={classes.infoBlock}>
-                        <div className={classes.info}>
-                            <div>
-                                <span>{t('Поставщик')}</span>
-                                <div>{name}</div>
+                        {infoLoading
+                            ? <div className={classes.infoLoader}>
+                                <Loader size={0.75}/>
                             </div>
-                            <div>
-                                <span>{t('Баланс')} {paymentType}</span>
-                                <div className={balance > ZERO
-                                    ? classes.green
-                                    : (balance < ZERO
-                                        ? classes.red
-                                        : classes.black)}>
-                                    {numberFormat(balance, currentCurrency)}
-                                </div>
-                            </div>
-                        </div>
+                            : !_.isEmpty(totalPayments) &&
+                            <div className={classes.paymentsWrapper}>
+                                {_.map(totalPayments, (item, index) => {
+                                    const division = index
+                                    const cashTransactions = _.filter(item, {'paymentType': 'cash'})
+                                    const bankTransactions = _.filter(item, {'paymentType': 'bank'})
+                                    const cash = _.map(cashTransactions, (child, i) => {
+                                        const currency = _.get(child, ['currency', 'name'])
+                                        const totalAmount = _.toNumber(_.get(child, ['totalAmount']))
+                                        return (
+                                            <div key={i} className={classes.payment}>
+                                                <span className={totalAmount > ZERO ? classes.green : totalAmount < ZERO ? classes.red : ''}>
+                                                    {numberFormat(totalAmount, currency)}
+                                                </span>
+                                            </div>
+                                        )
+                                    })
+                                    const bank = _.map(bankTransactions, (child, i) => {
+                                        const currency = _.get(child, ['currency', 'name'])
+                                        const totalAmount = _.toNumber(_.get(child, ['totalAmount']))
+                                        return (
+                                            <div key={i} className={classes.payment}>
+                                                <span className={totalAmount > ZERO ? classes.green : totalAmount < ZERO ? classes.red : ''}>
+                                                    {numberFormat(totalAmount, currency)}
+                                                </span>
+                                            </div>
+                                        )
+                                    })
+                                    return (
+                                        <div key={index} className={classes.division}>
+                                            <div className={classes.divisionTitle}>{division}</div>
+                                            {!_.isEmpty(cash) &&
+                                            <div className={classes.paymentType}>
+                                                <i>Наличными:</i>
+                                                {cash}
+                                            </div>}
+                                            {!_.isEmpty(bank) &&
+                                            <div className={classes.paymentType}>
+                                                <i>Перечислением:</i>
+                                                {bank}
+                                            </div>}
+                                        </div>
+                                    )
+                                })}
+                            </div>}
+                    </div>
+                    <div className={classes.filters}>
+                        <Field
+                            name={'division'}
+                            component={DivisionSearchField}
+                            label={'Организация'}/>
+                        <Field
+                            name={'currency'}
+                            component={CurrencySearchField}
+                            label={'Валюта'}/>
+                        <Field
+                            name={'paymentType'}
+                            component={PaymentTypeSearchField}
+                            label={'Тип оплаты'}/>
                         <Pagination filter={filterItem}/>
                     </div>
                     <div className={classes.content}>

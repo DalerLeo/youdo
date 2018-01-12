@@ -154,6 +154,7 @@ const enhance = compose(
             }
         },
         tableRow: {
+            cursor: 'pointer',
             '& td': {
                 borderLeft: '1px #efefef solid'
             },
@@ -461,13 +462,14 @@ const StatProviderGridList = enhance((props) => {
             <div><span>Поставщик</span></div>
             {_.map(_.get(listData, 'data'), (item) => {
                 const id = _.get(item, 'id')
-                const name = _.get(item, 'name') || 'No'
+                const name = _.get(item, 'name')
                 return (
                     <div
                         key={id}
                         style={id === currentRow ? styleOnHover : {}}
                         onMouseEnter={() => updateRow(id)}
-                        onMouseLeave={() => updateRow(null)}><span>{name}</span>
+                        onMouseLeave={() => updateRow(null)}>
+                        <span>{name}</span>
                     </div>
                 )
             })}
@@ -573,16 +575,17 @@ const StatProviderGridList = enhance((props) => {
                         style={id === currentRow ? styleOnHover : {}}
                         onMouseEnter={() => updateRow(id)}
                         onMouseLeave={() => updateRow(null)}
+                        onClick={() => { infoDialog.handleOpenInfoDialog(id) }}
                         className={classes.tableRow}>
                         <td>{suppliesCount}</td>
                         <td><span className={totalSum > ZERO ? classes.green : totalSum < ZERO ? classes.red : ''}>{numberFormat(totalSum, primaryCurrency)}</span></td>
                         {_.map(amountValues, (val, index) => {
                             const amount = _.toNumber(_.get(val, 'amount'))
                             return (
-                                <td key={index}
-                                    onClick={() => { infoDialog.handleOpenInfoDialog(id, _.get(val, 'id'), _.get(val, 'type')) }}
-                                    style={id === currentRow ? {background: '#efefef', cursor: 'pointer'} : {cursor: 'pointer'}}>
-                                    <span className={(amount > ZERO) ? classes.green : (amount < ZERO) ? classes.red : ''}>{numberFormat(amount, primaryCurrency)}</span>
+                                <td key={index}>
+                                    <span className={(amount > ZERO) ? classes.green : (amount < ZERO) ? classes.red : ''}>
+                                        {numberFormat(amount, primaryCurrency)}
+                                    </span>
                                 </td>
                             )
                         })}
@@ -724,6 +727,8 @@ const StatProviderGridList = enhance((props) => {
                 paymentType={_.get(infoDialog, ['division', 'name']) + _.get(infoDialog, 'type')}
                 balance={_.get(infoDialog, 'balance')}
                 setItem={setItem}
+                info={infoDialog.info}
+                infoLoading={infoDialog.infoLoading}
             />
         </Container>
     )
