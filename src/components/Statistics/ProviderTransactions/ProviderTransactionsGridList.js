@@ -12,29 +12,29 @@ import Pagination from '../../GridList/GridListNavPagination/index'
 import getConfig from '../../../helpers/getConfig'
 import dateFormat from '../../../helpers/dateFormat'
 import numberFormat from '../../../helpers/numberFormat'
+import TransactionFormat from '../Providers/ProviderTransactionFormat'
 import {
     TextField,
     DateToDateField,
     DivisionMultiSearchField,
-    ClientMultiSearchField,
-    ClientTransactionTypeSearchField
+    ProviderMultiSearchField
 } from '../../ReduxForm'
+import TransactionTypeMultiSearchField from '../../ReduxForm/Provider/TransactionTypeMultiSearchField'
 import Loader from '../../Loader'
 import moment from 'moment'
 import {StatisticsFilterExcel, StatisticsChart} from '../../Statistics'
 import NotFound from '../../Images/not-found.png'
-import ClientBalanceFormat from './ClientBalanceFormat'
 import t from '../../../helpers/translate'
 
 const NEGATIVE = -1
 
-export const CLIENT_INCOME_FILTER_KEY = {
+export const PROVIDER_TRANSACTIONS_FILTER_KEY = {
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate',
     SEARCH: 'search',
     DIVISION: 'division',
     TYPE: 'type',
-    CLIENT: 'client'
+    PROVIDER: 'provider'
 }
 
 const enhance = compose(
@@ -219,7 +219,7 @@ const enhance = compose(
     })
 )
 
-const ClientIncomeGridList = enhance((props) => {
+const ProviderTransactionsGridList = enhance((props) => {
     const {
         graphData,
         classes,
@@ -265,21 +265,19 @@ const ClientIncomeGridList = enhance((props) => {
 
     const headers = (
         <Row style={headerStyle} className="dottedList">
-            <Col xs={1}>№</Col>
-            <Col xs={2}>{t('Дата')}</Col>
-            <Col xs={2}>{t('Клиент')}</Col>
+            <Col xs={3}>{t('Поставщик')}</Col>
             <Col xs={2}>{t('Пользователь')}</Col>
             <Col xs={3}>{t('Описание')}</Col>
+            <Col xs={2}>{t('Дата')}</Col>
             <Col xs={2}>{t('Сумма')}</Col>
         </Row>
     )
 
     const ZERO = 0
     const list = _.map(_.get(listData, 'data'), (item, index) => {
-        const transId = _.get(item, 'id')
         const user = _.get(item, 'user')
         const comment = _.get(item, 'comment')
-        const client = _.get(item, ['client', 'name'])
+        const provider = _.get(item, ['provider', 'name'])
         const currency = _.get(item, ['currency', 'name'])
         const userName = !_.isNull(user) ? user.firstName + ' ' + user.secondName : 'Не известно'
         const date = dateFormat(_.get(item, 'createdDate')) + ' ' + moment(_.get(item, 'createdDate')).format('HH:mm')
@@ -287,20 +285,18 @@ const ClientIncomeGridList = enhance((props) => {
         const internal = _.toNumber(_.get(item, 'internal'))
         const customRate = _.get(item, 'customRate') ? _.toInteger(_.get(item, 'customRate')) : _.toInteger(amount / internal)
         const type = _.get(item, 'type')
-        const orderId = _.get(item, 'order')
-        const orderReturnId = _.get(item, 'orderReturn')
+        const supply = _.get(item, 'supply')
         return (
             <Row key={index} className="dottedList">
-                <Col xs={1}>{transId}</Col>
-                <Col xs={2}>{date}</Col>
-                <Col xs={2}>{client}</Col>
+                <Col xs={3}>{provider}</Col>
                 <Col xs={2}>{userName}</Col>
                 <Col xs={3}>
                     {type && <div>
-                        <ClientBalanceFormat type={type} order={orderId} orderReturn={orderReturnId}/>
+                        <TransactionFormat type={type} supply={supply}/>
                     </div>}
                     {comment && <div><strong>Комментарий:</strong> {comment}</div>}
                 </Col>
+                <Col xs={2}>{date}</Col>
                 <Col xs={2} style={{textAlign: 'right'}}>
                     <div className={amount > ZERO ? 'greenFont' : (amount === ZERO ? '' : 'redFont')}>
                         <span>{numberFormat(amount, currency)}</span>
@@ -322,7 +318,7 @@ const ClientIncomeGridList = enhance((props) => {
                 fullWidth={true}/>
             <Field
                 name="type"
-                component={ClientTransactionTypeSearchField}
+                component={TransactionTypeMultiSearchField}
                 className={classes.inputFieldCustom}
                 label={t('Тип транзакции')}
                 fullWidth={true}/>
@@ -333,10 +329,10 @@ const ClientIncomeGridList = enhance((props) => {
                 label={t('Организация')}
                 fullWidth={true}/>}
             <Field
-                name="client"
-                component={ClientMultiSearchField}
+                name="provider"
+                component={ProviderMultiSearchField}
                 className={classes.inputFieldCustom}
-                label={t('Клиент')}
+                label={t('Поставщик')}
                 fullWidth={true}/>
         </div>
     )
@@ -345,13 +341,13 @@ const ClientIncomeGridList = enhance((props) => {
         <div className={classes.mainWrapper}>
             <Row style={{margin: '0', height: '100%'}}>
                 <div className={classes.leftPanel}>
-                    <StatSideMenu currentUrl={ROUTES.STATISTICS_CLIENT_INCOME_URL} filter={filter}/>
+                    <StatSideMenu currentUrl={ROUTES.STATISTICS_PROVIDER_TRANSACTIONS_URL} filter={filter}/>
                 </div>
                 <div className={classes.rightPanel}>
                     <div className={classes.wrapper}>
                         <StatisticsFilterExcel
                             filter={filter}
-                            filterKeys={CLIENT_INCOME_FILTER_KEY}
+                            filterKeys={PROVIDER_TRANSACTIONS_FILTER_KEY}
                             fields={fields}
                             initialValues={initialValues}
                             handleGetDocument={handleGetDocument}
@@ -367,7 +363,7 @@ const ClientIncomeGridList = enhance((props) => {
                                         <span className={classes.summaryTitle}>{t('Приход за период')}</span>
                                         <div className={classes.summaryValue}
                                              style={{color: '#5ecdea'}}>{numberFormat(sumIn)} {primaryCurrency}</div>
-                                        <span className={classes.summaryTitle}>{t('Продажа за период')}</span>
+                                        <span className={classes.summaryTitle}>{t('Расход за период')}</span>
                                         <div className={classes.summaryValue}
                                              style={{color: '#EB9696'}}>{numberFormat(sumOut)} {primaryCurrency}</div>
                                         <span className={classes.summaryTitle}>{t('Разница')}</span>
@@ -429,10 +425,10 @@ const ClientIncomeGridList = enhance((props) => {
     )
 })
 
-ClientIncomeGridList.propTypes = {
+ProviderTransactionsGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object
 }
 
-export default ClientIncomeGridList
+export default ProviderTransactionsGridList

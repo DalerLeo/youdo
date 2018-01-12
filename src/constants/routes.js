@@ -238,7 +238,8 @@ export const STATISTICS_MARKET_ITEM_URL = `/${STATISTICS_MARKET}/:statMarketId`
 export const STATISTICS_MARKET_ITEM_PATH = `/${STATISTICS_MARKET}/%d`
 
 export const STATISTICS_FINANCE_URL = `/${STATISTICS}/finance`
-export const STATISTICS_CLIENT_INCOME_URL = `/${STATISTICS}/clientIncome`
+export const STATISTICS_CLIENT_INCOME_URL = `/${STATISTICS}/client-transactions`
+export const STATISTICS_PROVIDER_TRANSACTIONS_URL = `/${STATISTICS}/provider-transactions`
 export const STATISTICS_INCOME = 'statistics/income'
 export const STATISTICS_INCOME_URL = `/${STATISTICS_INCOME}`
 export const STATISTICS_OUTCOME = 'statistics/outcome'
@@ -248,8 +249,6 @@ export const STATISTICS_OUTCOME_CATEGORY_URL = `/${STATISTICS_OUTCOME_CATEGORY}`
 
 export const STATISTICS_EXPENDITURE_ON_STAFF = 'statistics/expenditure-on-staff'
 export const STATISTICS_EXPENDITURE_ON_STAFF_URL = `/${STATISTICS_EXPENDITURE_ON_STAFF}`
-
-export const STATISTICS_STOCK_URL = `/${STATISTICS}/stock`
 
 export const STATISTICS_REMAINDER_URL = `${STATISTICS}/remainder`
 export const STATISTICS_REMAINDER_ITEM_URL = `/${STATISTICS_REMAINDER_URL}/:statRemainderId`

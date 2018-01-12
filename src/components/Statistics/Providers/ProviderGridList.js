@@ -305,7 +305,6 @@ const enhance = compose(
         filters: {
             display: 'flex',
             justifyContent: 'space-between',
-            marginTop: '10px',
             borderTop: '1px #efefef solid'
         },
         opacity: {
@@ -625,7 +624,7 @@ const StatProviderGridList = enhance((props) => {
                                                 [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: types.cash,
                                                 [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: types.debtor
                                             }))}>
-                                        {t('Задолжники нал')}. - {borrowersCashCount}
+                                        {t('Задолжники нал')}. ({borrowersCashCount})
                                         <div>{numberFormat(borrowersCash, primaryCurrency)}</div>
                                     </div>
                                     <div
@@ -634,7 +633,7 @@ const StatProviderGridList = enhance((props) => {
                                                 [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: types.bank,
                                                 [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: types.debtor
                                             }))}>
-                                        {t('Задолжники переч')}. - {borrowersBankCount}
+                                        {t('Задолжники переч')}. ({borrowersBankCount})
                                         <div>{numberFormat(borrowersBank, primaryCurrency)}</div>
                                     </div>
                                     <div
@@ -643,7 +642,7 @@ const StatProviderGridList = enhance((props) => {
                                                 [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: types.cash,
                                                 [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: types.loaner
                                             }))}>
-                                        {t('Закладчики нал')}. - {loanersCashCount}
+                                        {t('Закладчики нал')}. ({loanersCashCount})
                                         <div>{numberFormat(loanersCash, primaryCurrency)}</div>
                                     </div>
                                     <div
@@ -652,7 +651,7 @@ const StatProviderGridList = enhance((props) => {
                                                 [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: types.bank,
                                                 [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: types.loaner
                                             }))}>
-                                        {t('Закладчики переч')}. - {loanersBankCount}
+                                        {t('Закладчики переч')}. ({loanersBankCount})
                                         <div>{numberFormat(loanersBank, primaryCurrency)}</div>
                                     </div>
                                 </div>}

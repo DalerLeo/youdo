@@ -13,7 +13,7 @@ import numberFormat from '../../helpers/numberFormat'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
 import noPayment from '../Images/noPayment.png'
 import NotFound from '../Images/not-found.png'
-import ClientBalanceFormat from '../../components/Statistics/ClientIncome/ClientBalanceFormat'
+import ClientBalanceFormat from '../Statistics/ClientTransactions/ClientBalanceFormat'
 import getConfig from '../../helpers/getConfig'
 import t from '../../helpers/translate'
 

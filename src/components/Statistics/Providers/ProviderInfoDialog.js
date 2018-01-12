@@ -8,20 +8,14 @@ import Dialog from 'material-ui/Dialog'
 import Loader from '../../Loader'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
-import Edit from 'material-ui/svg-icons/image/edit'
 import Pagination from '../../ReduxForm/Pagination'
 import getConfig from '../../../helpers/getConfig'
 import numberFormat from '../../../helpers/numberFormat'
 import dateTimeFormat from '../../../helpers/dateTimeFormat'
-import ToolTip from '../../ToolTip'
 import NotFound from '../../Images/not-found.png'
 import ProviderTransactionFormat from './ProviderTransactionFormat'
 import {Field, reduxForm} from 'redux-form'
 import {CurrencySearchField, DivisionSearchField, PaymentTypeSearchField} from '../../ReduxForm'
-import {
-    FIRST_BALANCE,
-    NONE_TYPE
-} from '../../../constants/clientBalanceInfo'
 import t from '../../../helpers/translate'
 
 const enhance = compose(
@@ -231,8 +225,8 @@ const iconStyle = {
     }
 }
 const ProviderInfoDialog = enhance((props) => {
-    const {open, filterItem, onClose, classes, detailData, name, superUser, setItem, stat, info, infoLoading} = props
-    const isSuperUser = _.get(superUser, 'isSuperUser')
+    const {open, filterItem, onClose, classes, detailData, name, info, infoLoading} = props
+    //  ..const isSuperUser = _.get(superUser, 'isSuperUser')
     const totalPayments = _.groupBy(info, (item) => _.get(item, ['division', 'name']))
     const ZERO = 0
     const currentCurrency = getConfig('PRIMARY_CURRENCY')
@@ -251,21 +245,21 @@ const ProviderInfoDialog = enhance((props) => {
         const type = _.get(item, 'type')
         const supply = _.get(item, 'supply')
 
-        const openEditDialog = (thisItem) => {
-            superUser.handleOpenSuperUserDialog(thisItem.id)
-            setItem(thisItem)
-        }
+        // ..const openEditDialog = (thisItem) => {
+        // ..    superUser.handleOpenSuperUserDialog(thisItem.id)
+        // ..    setItem(thisItem)
+        // ..}
 
         return (
             <Row key={index} className='dottedList'>
-                <div style={{flexBasis: '20%', maxWidth: '16%'}}>{createdDate}</div>
-                <div style={{flexBasis: '20%', maxWidth: '20%'}}>{user}</div>
-                <div style={{flexBasis: '40%', maxWidth: '40%'}}>
+                <div style={{width: '20%'}}>{createdDate}</div>
+                <div style={{width: '20%'}}>{user}</div>
+                <div style={{width: '40%'}}>
                     {market && <div>{t('Магазин')}: <span>{market}</span></div>}
                     {comment && <div>{t('Комментарии')}: <span>{comment}</span></div>}
                     <ProviderTransactionFormat type={type} supply={supply}/>
                 </div>
-                <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>
+                <div style={{width: '20%', textAlign: 'right'}}>
                     <div className={amount > ZERO ? classes.green : classes.red}>{numberFormat(amount, currency)}</div>
                     {currencyId !== currentCurrencyId &&
                     <div>
@@ -273,21 +267,6 @@ const ProviderInfoDialog = enhance((props) => {
                             style={{fontSize: 11, color: '#666'}}>({customRate})</span></div>
                     </div>}
                 </div>
-                {(!stat && isSuperUser && (type === FIRST_BALANCE || type === NONE_TYPE)) &&
-                <div className={classes.iconBtn}>
-                    <ToolTip position="bottom" text={t('Изменить')}>
-                        <IconButton
-                            iconStyle={iconStyle.icon}
-                            style={iconStyle.button}
-                            disableTouchRipple={true}
-                            touch={true}
-                            onTouchTap={() => {
-                                openEditDialog(item)
-                            }}>
-                            <Edit/>
-                        </IconButton>
-                    </ToolTip>
-                </div>}
             </Row>)
     })
 
@@ -382,11 +361,10 @@ const ProviderInfoDialog = enhance((props) => {
                     </div>
                     <div className={classes.content}>
                         <Row>
-                            <div style={{flexBasis: '20%', maxWidth: '16%'}}>{t('Дата')}</div>
-                            <div style={{flexBasis: '20%', maxWidth: '20%'}}>{t('Кто')}</div>
-                            <div style={{flexBasis: '40%', maxWidth: '40%'}}>{t('Описание')}</div>
-                            <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>{t('Сумма')}</div>
-                            <div style={{flexBasis: '5%', maxWidth: '5%', textAlign: 'right'}}/>
+                            <div style={{width: '20%'}}>{t('Дата')}</div>
+                            <div style={{width: '20%'}}>{t('Кто')}</div>
+                            <div style={{width: '40%'}}>{t('Описание')}</div>
+                            <div style={{width: '20%', textAlign: 'right'}}>{t('Сумма')}</div>
                         </Row>
 
                         {!_.isEmpty(_.get(detailData, 'data'))

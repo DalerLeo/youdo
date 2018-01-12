@@ -231,7 +231,7 @@ const enhance = compose(
             },
             '& td': {
                 padding: '0 20px',
-                minWidth: '80px'
+                minWidth: '200px'
             },
             '& tr > td:last-child': {
                 borderRight: 'none'
@@ -728,7 +728,7 @@ const ClientBalanceGridList = enhance((props) => {
                         [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: types.cash,
                         [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: types.debtor})
                 })}>
-                {t('Задолжники нал')}. - {borrowersCashCount}
+                {t('Задолжники нал')}. ({borrowersCashCount})
                 <div>{numberFormat(borrowersCash, primaryCurrency)}</div>
             </div>
             <div
@@ -738,7 +738,7 @@ const ClientBalanceGridList = enhance((props) => {
                         [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: types.bank,
                         [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: types.debtor})
                 })}>
-                {t('Задолжники переч')}. - {borrowersBankCount}
+                {t('Задолжники переч')}. ({borrowersBankCount})
                 <div>{numberFormat(borrowersBank, primaryCurrency)}</div>
             </div>
             <div
@@ -748,7 +748,7 @@ const ClientBalanceGridList = enhance((props) => {
                         [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: types.cash,
                         [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: types.loaner})
                 })}>
-                {t('Закладчики нал')}. - {loanersCashCount}
+                {t('Закладчики нал')}. ({loanersCashCount})
                 <div>{numberFormat(loanersCash, primaryCurrency)}</div>
             </div>
             <div
@@ -758,7 +758,7 @@ const ClientBalanceGridList = enhance((props) => {
                         [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: types.bank,
                         [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: types.loaner})
                 })}>
-                {t('Закладчики переч')}. - {loanersBankCount}
+                {t('Закладчики переч')}. ({loanersBankCount})
                 <div>{numberFormat(loanersBank, primaryCurrency)}</div>
             </div>
         </div>

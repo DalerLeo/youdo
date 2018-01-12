@@ -365,6 +365,9 @@ export const STAT_PROVIDER_ITEM = 'finance/provider_transactions/'
 export const STAT_PROVIDER_SUM = 'stats/provider/balances/'
 export const STAT_PROVIDER_DETAIL = 'stock/provider_balances/%d/detail/'
 
+export const STAT_PROVIDER_TRANSACTIONS_LIST = 'finance/provider_transactions/'
+export const STAT_PROVIDER_TRANSACTIONS_SUM = 'stats/provider_transactions/'
+
 export const STAT_MARKET = 'stats/markets'
 export const STAT_MARKET_LIST = `${STAT_MARKET}/`
 export const STAT_MARKET_SUM = `${STAT_MARKET}/sum/`
