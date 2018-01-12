@@ -21,7 +21,7 @@ import getConfig from '../../helpers/getConfig'
 import IconButton from 'material-ui/IconButton'
 import Cancel from 'material-ui/svg-icons/content/remove-circle'
 import Add from 'material-ui/svg-icons/content/add-circle'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import Paper from 'material-ui/Paper'
 import SearchIcon from 'material-ui/svg-icons/action/search'
 import FullScreen from 'material-ui/svg-icons/navigation/fullscreen'
@@ -461,7 +461,7 @@ const ClientBalanceGridList = enhance((props) => {
                         onMouseLeave={() => setCurrentRow(null)}><span>{name}</span>
                         {!stat && isSuperUser &&
                         id === currentRow && <div key={id} className={classes.buttonsWrapper}>
-                            <Tooltip position="bottom" text={t('Списать')}>
+                            <ToolTip position="bottom" text={t('Списать')}>
                                 <IconButton
                                     disableTouchRipple={true}
                                     iconStyle={iconStyle.icon}
@@ -472,8 +472,8 @@ const ClientBalanceGridList = enhance((props) => {
                                     }}>
                                     <Cancel color='#ff584b'/>
                                 </IconButton>
-                            </Tooltip>
-                            <Tooltip position="bottom" text={t('Добавить')}>
+                            </ToolTip>
+                            <ToolTip position="bottom" text={t('Добавить')}>
                                 <IconButton
                                     disableTouchRipple={true}
                                     iconStyle={iconStyle.icon}
@@ -484,7 +484,7 @@ const ClientBalanceGridList = enhance((props) => {
                                     }}>
                                     <Add color='#8dc572'/>
                                 </IconButton>
-                            </Tooltip>
+                            </ToolTip>
                         </div>}
                     </div>
                 )
@@ -693,7 +693,7 @@ const ClientBalanceGridList = enhance((props) => {
             <div className={classes.flexCenter}>
                 <Pagination filter={filter}/>
                 {expandedTable &&
-                <Tooltip position="left" text={t('Обычный вид')}>
+                <ToolTip position="left" text={t('Обычный вид')}>
                     <IconButton
                         className={classes.fullScreen}
                         onTouchTap={() => { setExpandedTable(!expandedTable) }}
@@ -701,9 +701,9 @@ const ClientBalanceGridList = enhance((props) => {
                         style={iconStyle.button}>
                         <FullScreenExit color="#666"/>
                     </IconButton>
-                </Tooltip>}
+                </ToolTip>}
                 {!expandedTable &&
-                <Tooltip position="left" text={t('Расширенный вид')}>
+                <ToolTip position="left" text={t('Расширенный вид')}>
                     <IconButton
                         className={classes.fullScreen}
                         onTouchTap={() => { setExpandedTable(!expandedTable) }}
@@ -711,7 +711,7 @@ const ClientBalanceGridList = enhance((props) => {
                         style={iconStyle.button}>
                         <FullScreen color="#666"/>
                     </IconButton>
-                </Tooltip>}
+                </ToolTip>}
             </div>
         </div>
     )

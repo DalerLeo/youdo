@@ -15,7 +15,7 @@ import InProcess from 'material-ui/svg-icons/action/cached'
 import IconButton from 'material-ui/IconButton'
 import DoneIcon from 'material-ui/svg-icons/action/done-all'
 import Canceled from 'material-ui/svg-icons/notification/do-not-disturb-alt'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import {Link} from 'react-router'
 import * as ROUTES from '../../constants/routes'
 import sprintf from 'sprintf'
@@ -203,8 +203,8 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                             {numberFormat(amount)}&nbsp;
                                             {(returnAmount > ZERO) &&
                                             <span className="redFont">
-                                                    <Tooltip position="bottom"
-                                                             text={tooltipText}>-{returnAmount}</Tooltip>
+                                                    <ToolTip position="bottom"
+                                                             text={tooltipText}>-{returnAmount}</ToolTip>
                                                 </span>} {measurement}
                                         </Col>
                                         <Col xs={2}>{numberFormat(price)}</Col>
@@ -265,7 +265,7 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                                 <div className={classes.buttons}>
                                                     {(status === PENDING || status === IN_PROGRESS)
                                                         ? <div className={classes.buttons}>
-                                                            <Tooltip position="bottom" text="Ожидает">
+                                                            <ToolTip position="bottom" text="Ожидает">
                                                                 <IconButton
                                                                     disableTouchRipple={true}
                                                                     iconStyle={iconStyle.icon}
@@ -273,8 +273,8 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                                                     touch={true}>
                                                                     <InProcess color="#f0ad4e"/>
                                                                 </IconButton>
-                                                            </Tooltip>
-                                                            <Tooltip position="bottom" text="Отменить">
+                                                            </ToolTip>
+                                                            <ToolTip position="bottom" text="Отменить">
                                                                 <IconButton
                                                                     disableTouchRipple={true}
                                                                     iconStyle={iconStyle.icon}
@@ -283,10 +283,10 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                                                     onClick={() => { cancelOrderReturnOpen(returnId) }}>
                                                                     <DeleteIcon/>
                                                                 </IconButton>
-                                                            </Tooltip>
+                                                            </ToolTip>
                                                         </div>
                                                         : (status === COMPLETED)
-                                                            ? <Tooltip position="bottom" text="Завершен">
+                                                            ? <ToolTip position="bottom" text="Завершен">
                                                                 <IconButton
                                                                     disableTouchRipple={true}
                                                                     iconStyle={iconStyle.icon}
@@ -294,9 +294,9 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                                                     touch={true}>
                                                                     <DoneIcon color="#81c784"/>
                                                                 </IconButton>
-                                                            </Tooltip>
+                                                            </ToolTip>
                                                             : (status === CANCELLED)
-                                                                ? <Tooltip position="bottom" text="Отменен">
+                                                                ? <ToolTip position="bottom" text="Отменен">
                                                                     <IconButton
                                                                         disableTouchRipple={true}
                                                                         iconStyle={iconStyle.icon}
@@ -304,7 +304,7 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                                                         touch={true}>
                                                                         <Canceled color='#e57373'/>
                                                                     </IconButton>
-                                                                </Tooltip> : null}
+                                                                </ToolTip> : null}
                                                 </div>
                                             </Col>
                                         </Row>

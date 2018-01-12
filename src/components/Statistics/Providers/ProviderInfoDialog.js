@@ -13,7 +13,7 @@ import Pagination from '../../ReduxForm/Pagination'
 import getConfig from '../../../helpers/getConfig'
 import numberFormat from '../../../helpers/numberFormat'
 import dateTimeFormat from '../../../helpers/dateTimeFormat'
-import Tooltip from '../../ToolTip'
+import ToolTip from '../../ToolTip'
 import NotFound from '../../Images/not-found.png'
 import ProviderTransactionFormat from './ProviderTransactionFormat'
 import {Field, reduxForm} from 'redux-form'
@@ -244,7 +244,7 @@ const ProviderInfoDialog = enhance((props) => {
                 </div>
                 {(!stat && isSuperUser && (type === FIRST_BALANCE || type === NONE_TYPE)) &&
                 <div className={classes.iconBtn}>
-                    <Tooltip position="bottom" text={t('Изменить')}>
+                    <ToolTip position="bottom" text={t('Изменить')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
@@ -255,7 +255,7 @@ const ProviderInfoDialog = enhance((props) => {
                             }}>
                             <Edit/>
                         </IconButton>
-                    </Tooltip>
+                    </ToolTip>
                 </div>}
             </Row>)
     })

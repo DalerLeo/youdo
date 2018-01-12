@@ -8,7 +8,7 @@ import Edit from 'material-ui/svg-icons/image/edit'
 import IconButton from 'material-ui/IconButton'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import {Row, Col} from 'react-flexbox-grid'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import PriceSetForm from './PriceSetForm'
 import getConfig from '../../helpers/getConfig'
 import * as ROUTES from '../../constants/routes'
@@ -260,7 +260,7 @@ const PriceDetails = enhance((props) => {
                      onClick={handleCloseDetail}>
                 </div>
                 <div className={classes.titleButtons}>
-                    {!priceSetForm.openPriceSetForm && <Tooltip position="bottom" text={t('Закрыть')}>
+                    {!priceSetForm.openPriceSetForm && <ToolTip position="bottom" text={t('Закрыть')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
@@ -269,7 +269,7 @@ const PriceDetails = enhance((props) => {
                             onTouchTap={handleCloseDetail}>
                             <CloseIcon />
                         </IconButton>
-                    </Tooltip>}
+                    </ToolTip>}
                 </div>
             </div>
             <div className={classes.content}>
@@ -293,7 +293,7 @@ const PriceDetails = enhance((props) => {
                             <span>{t('Себестоимость по умолчанию')}:</span>
                             <div>{numberFormat(_.get(defaultNetCost, 'cost'), getConfig('PRIMARY_CURRENCY'))}
                                 <div className={classes.titleButtons}>
-                                    <Tooltip position="bottom" text={t('Изменить')}>
+                                    <ToolTip position="bottom" text={t('Изменить')}>
                                         <IconButton
                                             iconStyle={iconStyle2.icon}
                                             style={iconStyle2.button}
@@ -301,7 +301,7 @@ const PriceDetails = enhance((props) => {
                                             onTouchTap={defaultDialog.handleOpen}>
                                             <Edit />
                                         </IconButton>
-                                    </Tooltip>
+                                    </ToolTip>
                                 </div>
                             </div>
                         </div>
@@ -372,7 +372,7 @@ const PriceDetails = enhance((props) => {
                                 <span className={classes.rightSideTitleDate}> ({priceUpdated})</span>
                             </div>
                             <div className={classes.titleButtons}>
-                                <Tooltip position="bottom" text={t('Изменить')}>
+                                <ToolTip position="bottom" text={t('Изменить')}>
                                     <IconButton
                                         iconStyle={iconStyle.icon}
                                         style={iconStyle.button}
@@ -381,7 +381,7 @@ const PriceDetails = enhance((props) => {
                                         onTouchTap={priceSetForm.handleOpenPriceSetForm}>
                                         <Edit />
                                     </IconButton>
-                                </Tooltip>
+                                </ToolTip>
                             </div>
                         </div>
                         {customPrice && <div className={classes.agentCanSet}>{t('Агент может устанавливать цены')}. <br/> {t('Минимальная / максимальная стоимость')}: {minPrice} / {maxPrice} {currencyName}</div>}

@@ -13,7 +13,7 @@ import Pagination from '../ReduxForm/Pagination'
 import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import NotFound from '../Images/not-found.png'
 import ClientBalanceFormat from '../Statistics/ClientIncome/ClientBalanceFormat'
 import Accepted from 'material-ui/svg-icons/action/done-all'
@@ -57,10 +57,12 @@ const enhance = compose(
             }
         },
         red: {
-            color: '#e57373 !important'
+            color: '#e57373 !important',
+            fontWeight: '600'
         },
         green: {
-            color: '#81c784 !important'
+            color: '#81c784 !important',
+            fontWeight: '600'
         },
         popUp: {
             color: '#333 !important',
@@ -81,7 +83,6 @@ const enhance = compose(
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            borderBottom: '1px solid #efefef',
             padding: '20px 30px',
             zIndex: '999',
             '& button': {
@@ -107,8 +108,7 @@ const enhance = compose(
             justifyContent: 'space-between',
             alignItems: 'center',
             position: 'relative',
-            borderBottom: '1px #efefef solid',
-            padding: '10px 30px'
+            borderBottom: '1px #efefef solid'
         },
         info: {
             display: 'flex',
@@ -195,7 +195,10 @@ const enhance = compose(
             }
         },
         paymentsWrapper: {
-            display: 'flex'
+            borderTop: '1px #efefef solid',
+            padding: '10px 30px',
+            display: 'flex',
+            width: '100%'
         },
         payment: {
 
@@ -261,18 +264,18 @@ const ClientBalanceInfoDialog = enhance((props) => {
         const confirmation = _.get(item, 'clientConfirmation')
         const statusIcon = (status) => {
             switch (status) {
-                case CONFIRMED: return <Tooltip position={'right'} text={t('Подтвержден')}>
+                case CONFIRMED: return <ToolTip position={'right'} text={t('Подтвержден')}>
                     <Accepted color={'#81c784'}/>
-                </Tooltip>
-                case REJECTED: return <Tooltip position={'right'} text={t('Отменен')}>
+                </ToolTip>
+                case REJECTED: return <ToolTip position={'right'} text={t('Отменен')}>
                     <Rejected color={'#e57373'}/>
-                </Tooltip>
-                case REQUESTED: return <Tooltip position={'right'} text={t('В ожидании')}>
+                </ToolTip>
+                case REQUESTED: return <ToolTip position={'right'} text={t('В ожидании')}>
                     <Requested color={'#f0ad4e'}/>
-                </Tooltip>
-                case AUTO: return <Tooltip position={'right'} text={t('Автоматически подтвержден системой')}>
+                </ToolTip>
+                case AUTO: return <ToolTip position={'right'} text={t('Автоматически подтвержден системой')}>
                     <AutoAccepted color={'#12aaeb'}/>
-                </Tooltip>
+                </ToolTip>
                 default: return null
             }
         }
@@ -304,7 +307,7 @@ const ClientBalanceInfoDialog = enhance((props) => {
                 </div>
                 {(!stat && isSuperUser && (type === FIRST_BALANCE || type === NONE_TYPE)) &&
                 <div className={classes.iconBtn}>
-                    <Tooltip position="bottom" text={t('Изменить')}>
+                    <ToolTip position="bottom" text={t('Изменить')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
@@ -315,7 +318,7 @@ const ClientBalanceInfoDialog = enhance((props) => {
                             }}>
                             <Edit/>
                         </IconButton>
-                    </Tooltip>
+                    </ToolTip>
                 </div>}
             </Row>)
     })
@@ -347,40 +350,47 @@ const ClientBalanceInfoDialog = enhance((props) => {
                             ? <div className={classes.infoLoader}>
                                 <Loader size={0.75}/>
                             </div>
-                            : <div className={classes.paymentsWrapper}>
+                            : !_.isEmpty(totalPayments) &&
+                            <div className={classes.paymentsWrapper}>
                                 {_.map(totalPayments, (item, index) => {
                                     const division = index
                                     const cashTransactions = _.filter(item, {'paymentType': 'cash'})
-                                    const bankTransactions = _.filter(item, {'paymentType': 'cash'})
+                                    const bankTransactions = _.filter(item, {'paymentType': 'bank'})
                                     const cash = _.map(cashTransactions, (child, i) => {
                                         const currency = _.get(child, ['currency', 'name'])
-                                        const totalAmount = _.get(child, ['totalAmount'])
+                                        const totalAmount = _.toNumber(_.get(child, ['totalAmount']))
                                         return (
                                             <div key={i} className={classes.payment}>
-                                                {numberFormat(totalAmount, currency)}
+                                                <span className={totalAmount > ZERO ? classes.green : totalAmount < ZERO ? classes.red : ''}>
+                                                    {numberFormat(totalAmount, currency)}
+                                                </span>
                                             </div>
                                         )
                                     })
                                     const bank = _.map(bankTransactions, (child, i) => {
                                         const currency = _.get(child, ['currency', 'name'])
-                                        const totalAmount = _.get(child, ['totalAmount'])
+                                        const totalAmount = _.toNumber(_.get(child, ['totalAmount']))
                                         return (
                                             <div key={i} className={classes.payment}>
-                                                {numberFormat(totalAmount, currency)}
+                                                <span className={totalAmount > ZERO ? classes.green : totalAmount < ZERO ? classes.red : ''}>
+                                                    {numberFormat(totalAmount, currency)}
+                                                </span>
                                             </div>
                                         )
                                     })
                                     return (
                                         <div key={index} className={classes.division}>
                                             <div className={classes.divisionTitle}>{division}</div>
+                                            {!_.isEmpty(cash) &&
                                             <div className={classes.paymentType}>
                                                 <i>Наличными:</i>
                                                 {cash}
-                                            </div>
+                                            </div>}
+                                            {!_.isEmpty(bank) &&
                                             <div className={classes.paymentType}>
                                                 <i>Перечислением:</i>
                                                 {bank}
-                                            </div>
+                                            </div>}
                                         </div>
                                     )
                                 })}

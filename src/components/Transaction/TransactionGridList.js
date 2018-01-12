@@ -12,7 +12,7 @@ import CashPayment from 'material-ui/svg-icons/maps/local-atm'
 import BankPayment from 'material-ui/svg-icons/action/credit-card'
 import Loader from '../Loader'
 import numberFormat from '../../helpers/numberFormat'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import t from '../../helpers/translate'
 
 const enhance = compose(
@@ -178,11 +178,11 @@ const TransactionGridList = enhance((props) => {
                 <div>
                     <div className={classes.title}>{name}</div>
                     <div className={classes.icons}>
-                        <Tooltip position="bottom" text={type === 'bank' ? 'банковский счет' : 'наличные'}>
+                        <ToolTip position="bottom" text={type === 'bank' ? 'банковский счет' : 'наличные'}>
                             {type === 'bank'
                                 ? <BankPayment style={{height: '18px', width: '18px', color: '#6261b0'}}/>
                                 : <CashPayment style={{height: '18px', width: '18px', color: '#12aaeb'}}/>}
-                        </Tooltip>
+                        </ToolTip>
                     </div>
                 </div>
                 <div>

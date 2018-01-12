@@ -8,7 +8,7 @@ import Edit from 'material-ui/svg-icons/image/edit'
 import Delete from 'material-ui/svg-icons/action/delete'
 import IconButton from 'material-ui/IconButton'
 import {Row, Col} from 'react-flexbox-grid'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import dateFormat from '../../helpers/dateFormat'
 
 const colorBlue = '#12aaeb !important'
@@ -157,7 +157,7 @@ const TelegramDetails = enhance((props) => {
                      onClick={handleCloseDetail}>
                 </div>
                 <div className={classes.titleButtons}>
-                    <Tooltip position="bottom" text="Изменить">
+                    <ToolTip position="bottom" text="Изменить">
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
@@ -165,8 +165,8 @@ const TelegramDetails = enhance((props) => {
                             onTouchTap={ () => { updateDialog.handleOpenUpdateDialog(detId) }}>
                             <Edit />
                         </IconButton>
-                    </Tooltip>
-                    <Tooltip position="bottom" text="Удалить">
+                    </ToolTip>
+                    <ToolTip position="bottom" text="Удалить">
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
@@ -174,7 +174,7 @@ const TelegramDetails = enhance((props) => {
                             onTouchTap={confirmDialog.handleOpenConfirmDialog}>
                             <Delete />
                         </IconButton>
-                    </Tooltip>
+                    </ToolTip>
                 </div>
             </div>
             <div className={classes.container}>

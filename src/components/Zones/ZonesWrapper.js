@@ -21,7 +21,7 @@ import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import Edit from 'material-ui/svg-icons/image/edit'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import Arrow from 'material-ui/svg-icons/navigation/arrow-drop-down'
 import GoogleCustomMap from './GoogleMapCustom'
 import BindAgentDialog from './ZoneBindAgentDialog'
@@ -494,7 +494,7 @@ const ZonesWrapper = enhance((props) => {
             <SubMenu url={ROUTES.ZONES_LIST_URL}/>
 
             {(!isOpenAddZone && !isOpenUpdateZone) && <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text={t('Добавить зону')}>
+                <ToolTip position="left" text={t('Добавить зону')}>
                     <FloatingActionButton
                         mini={true}
                         zDepth={1}
@@ -503,7 +503,7 @@ const ZonesWrapper = enhance((props) => {
                         onTouchTap={addZone.handleOpenAddZone}>
                         <ContentAdd />
                     </FloatingActionButton>
-                </Tooltip>
+                </ToolTip>
             </div>}
 
             <div className={classes.zonesWrapper}>

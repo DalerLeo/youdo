@@ -2,7 +2,7 @@ import React from 'react'
 import _ from 'lodash'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
-import ReactTooltip from 'react-tooltip'
+import ReactToolTip from 'react-tooltip'
 import {compose, withState} from 'recompose'
 
 const enhance = compose(
@@ -29,14 +29,14 @@ const CustomToolTip = enhance(({classes, text, children, position}) => {
             <div data-tip data-for={uniqId}>
                 {children}
             </div>
-            <ReactTooltip
+            <ReactToolTip
                 place={position}
                 id={uniqId}
                 type="dark"
                 effect="solid"
                 className={classes.tooltip}>
                 {text}
-            </ReactTooltip>
+            </ReactToolTip>
         </div>
     )
 })

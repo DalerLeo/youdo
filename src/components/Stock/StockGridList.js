@@ -15,7 +15,7 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import FlatButton from 'material-ui/FlatButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import Edit from 'material-ui/svg-icons/image/edit'
 import dateFormat from '../../helpers/dateFormat'
 import t from '../../helpers/translate'
@@ -162,7 +162,7 @@ const StockGridList = enhance((props) => {
                 <Col xs={2}>{createdDate}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
                     <div className={classes.iconBtn}>
-                        <Tooltip position="bottom" text={t('Изменить')}>
+                        <ToolTip position="bottom" text={t('Изменить')}>
                             <IconButton
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
@@ -171,8 +171,8 @@ const StockGridList = enhance((props) => {
                                 onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
                                 <Edit />
                             </IconButton>
-                        </Tooltip>
-                        <Tooltip position="bottom" text={t('Удалить')}>
+                        </ToolTip>
+                        <ToolTip position="bottom" text={t('Удалить')}>
                             <IconButton
                                 disableTouchRipple={true}
                                 iconStyle={iconStyle.icon}
@@ -181,7 +181,7 @@ const StockGridList = enhance((props) => {
                                 touch={true}>
                                 <DeleteIcon />
                             </IconButton>
-                        </Tooltip>
+                        </ToolTip>
                     </div>
                 </Col>
             </Row>

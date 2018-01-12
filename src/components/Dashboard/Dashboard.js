@@ -73,7 +73,7 @@ const enhance = compose(
                 }
             }
         },
-        fabTooltip: {
+        fabToolTip: {
             borderRadius: '2px',
             background: '#2d3037',
             color: '#fff',
@@ -357,7 +357,7 @@ const Dashboard = enhance((props) => {
         <Container>
             <div className={classes.wrapper}>
                 <div className={classes.languageWrapper}>
-                    <div className={classes.fabTooltip}>{t('язык системы')}</div>
+                    <div className={classes.fabToolTip}>{t('язык системы')}</div>
                     <IconMenu
                         anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
                         targetOrigin={{horizontal: 'right', vertical: 'bottom'}}

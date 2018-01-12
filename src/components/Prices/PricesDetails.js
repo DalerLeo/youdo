@@ -11,7 +11,7 @@ import {Row, Col} from 'react-flexbox-grid'
 import Dot from '../Images/dot.png'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import dateFormat from '../../helpers/dateFormat'
 import t from '../../helpers/translate'
 
@@ -285,7 +285,7 @@ const PricesDetails = enhance((props) => {
                      onClick={() => { handleCloseDetail() }}>
                 </div>
                 <div className={classes.titleButtons}>
-                    <Tooltip position="bottom" text={t('Изменить')}>
+                    <ToolTip position="bottom" text={t('Изменить')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
@@ -293,8 +293,8 @@ const PricesDetails = enhance((props) => {
                             onTouchTap={() => { updateDialog.handleOpenUpdateDialog() }}>
                             <Edit />
                         </IconButton>
-                    </Tooltip>
-                    <Tooltip position="bottom" text={t('Отменить')}>
+                    </ToolTip>
+                    <ToolTip position="bottom" text={t('Отменить')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
@@ -302,7 +302,7 @@ const PricesDetails = enhance((props) => {
                             onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}>
                             <Delete />
                         </IconButton>
-                    </Tooltip>
+                    </ToolTip>
                 </div>
             </div>
 

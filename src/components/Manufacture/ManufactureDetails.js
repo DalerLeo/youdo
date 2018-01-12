@@ -10,7 +10,7 @@ import IconButton from 'material-ui/IconButton'
 import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
 import ContentAdd from 'material-ui/svg-icons/av/playlist-add'
 import Map from 'material-ui/svg-icons/maps/map'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import NotFound from '../Images/not-found.png'
 import numberFormat from '../../helpers/numberFormat'
 import t from '../../helpers/translate'
@@ -159,7 +159,7 @@ const ManufactureDetails = enhance((props) => {
                 <Col xs={3}>{amount}</Col>
                 <Col xs={2}>
                     <div className={classes.listButtons}>
-                        <Tooltip position="bottom" text={t('Изменить')}>
+                        <ToolTip position="bottom" text={t('Изменить')}>
                             <IconButton
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
@@ -170,8 +170,8 @@ const ManufactureDetails = enhance((props) => {
                                 }}>
                                 <ModEditorIcon />
                             </IconButton>
-                        </Tooltip>
-                        <Tooltip position="bottom" text={t('Удалить')}>
+                        </ToolTip>
+                        <ToolTip position="bottom" text={t('Удалить')}>
                             <IconButton
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
@@ -182,7 +182,7 @@ const ManufactureDetails = enhance((props) => {
                                 }}>
                                 <DeleteIcon />
                             </IconButton>
-                        </Tooltip>
+                        </ToolTip>
                     </div>
                 </Col>
             </li>
@@ -195,29 +195,29 @@ const ManufactureDetails = enhance((props) => {
                 <div className={classes.closeDetail} onClick={handleCloseDetail}> </div>
                 <div className={classes.titleLabel}>{productTitle}</div>
                 <div className={classes.titleButtons}>
-                    <Tooltip position="bottom" text={t('Изменить производство')}>
+                    <ToolTip position="bottom" text={t('Изменить производство')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.addButton}
                             onClick={handleOpenChangeManufacture}>
                             <Map />
                         </IconButton>
-                    </Tooltip>
-                    <Tooltip position="bottom" text={t('Удалить продукт')}>
+                    </ToolTip>
+                    <ToolTip position="bottom" text={t('Удалить продукт')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.addButton}
                             onClick={() => { handleDeleteAllIngredient(id) }}>
                             <DeleteIcon />
                         </IconButton>
-                    </Tooltip>
-                    <Tooltip position="bottom" text={t('Добавить сырье')}>
+                    </ToolTip>
+                    <ToolTip position="bottom" text={t('Добавить сырье')}>
                         <IconButton
                             iconStyle={iconStyle.iconCustom}
                             style={iconStyle.addButton} onClick={ createMaterials.handleOpen }>
                             <ContentAdd />
                         </IconButton>
-                    </Tooltip>
+                    </ToolTip>
                 </div>
             </div>
             <div className={classes.materialsList}>

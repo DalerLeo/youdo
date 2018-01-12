@@ -20,7 +20,7 @@ import ReturnFilterForm from './ReturnFilterForm'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import toBoolean from '../../helpers/toBoolean'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import numberFormat from '../../helpers/numberFormat'
 import dateFormat from '../../helpers/dateTimeFormat'
 import ReturnUpdateDialog from '../Order/OrderReturnDialog'
@@ -205,7 +205,7 @@ const OrderGridList = enhance((props) => {
                 <div style={{width: '5%'}}>
                     <div className={classes.buttons}>
                         {(status === PENDING || status === IN_PROGRESS)
-                            ? <Tooltip position="bottom" text={t('Ожидает')}>
+                            ? <ToolTip position="bottom" text={t('Ожидает')}>
                                 <IconButton
                                     disableTouchRipple={true}
                                     iconStyle={iconStyle.icon}
@@ -213,9 +213,9 @@ const OrderGridList = enhance((props) => {
                                     touch={true}>
                                     <InProcess color="#f0ad4e"/>
                                 </IconButton>
-                            </Tooltip>
+                            </ToolTip>
                             : (status === COMPLETED)
-                                ? <Tooltip position="bottom" text={t('Завершен')}>
+                                ? <ToolTip position="bottom" text={t('Завершен')}>
                                     <IconButton
                                         disableTouchRipple={true}
                                         iconStyle={iconStyle.icon}
@@ -223,9 +223,9 @@ const OrderGridList = enhance((props) => {
                                         touch={true}>
                                         <DoneIcon color="#81c784"/>
                                     </IconButton>
-                                </Tooltip>
+                                </ToolTip>
                                 : (status === CANCELLED)
-                                    ? <Tooltip position="bottom" text={t('Отменен')}>
+                                    ? <ToolTip position="bottom" text={t('Отменен')}>
                                         <IconButton
                                             disableTouchRipple={true}
                                             iconStyle={iconStyle.icon}
@@ -233,7 +233,7 @@ const OrderGridList = enhance((props) => {
                                             touch={true}>
                                             <Canceled color='#e57373'/>
                                         </IconButton>
-                                    </Tooltip> : null
+                                    </ToolTip> : null
                         }
                     </div>
                 </div>
@@ -248,11 +248,11 @@ const OrderGridList = enhance((props) => {
     }
     const checkboxActions = (
         <div className={classes.buttons}>
-            <Tooltip position="left" text={t('Распечатать накладные')}>
+            <ToolTip position="left" text={t('Распечатать накладные')}>
                 <IconButton onTouchTap={printDialog.handleOpenPrintDialog}>
                     <Print color="#666"/>
                 </IconButton>
-            </Tooltip>
+            </ToolTip>
         </div>
     )
 
@@ -261,7 +261,7 @@ const OrderGridList = enhance((props) => {
             <SubMenu url={ROUTES.RETURN_LIST_URL}/>
             {canChangeAnyReturn &&
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text={t('Возврат с клиента')}>
+                <ToolTip position="left" text={t('Возврат с клиента')}>
                     <FloatingActionButton
                         mini={true}
                         zDepth={1}
@@ -269,7 +269,7 @@ const OrderGridList = enhance((props) => {
                         onTouchTap={createDialog.handleOpenCreateDialog}>
                         <ContentAdd />
                     </FloatingActionButton>
-                </Tooltip>
+                </ToolTip>
             </div>}
 
             <GridList

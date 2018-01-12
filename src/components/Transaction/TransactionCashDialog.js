@@ -13,7 +13,7 @@ import LinearProgress from '../LinearProgress'
 import numberFormat from '../../helpers/numberFormat'
 import AcceptClientTransactionDialog from './AcceptClientTransactionDialog'
 import PaymentIcon from 'material-ui/svg-icons/action/payment'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import getConfig from '../../helpers/getConfig'
 import Pagination from '../ReduxForm/Pagination'
 import TransactionUpdatePriceDialog from './TransactionUpdatePriceDialog'
@@ -273,7 +273,7 @@ const TransactionCashDialog = enhance((props) => {
                         <Col xs={1}>
                             {
                             <div style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-end'}}>
-                                <Tooltip position="bottom" text={t('Изменить')}>
+                                <ToolTip position="bottom" text={t('Изменить')}>
                                     <IconButton
                                         iconStyle={iconStyle.icon}
                                         style={iconStyle.button}
@@ -282,8 +282,8 @@ const TransactionCashDialog = enhance((props) => {
                                         onTouchTap={() => { openEditDialog(item) }}>
                                         <Edit />
                                     </IconButton>
-                                </Tooltip>
-                                <Tooltip position="bottom" text={t('Удалить')}>
+                                </ToolTip>
+                                <ToolTip position="bottom" text={t('Удалить')}>
                                     <IconButton
                                         iconStyle={iconStyle.icon}
                                         style={iconStyle.button}
@@ -295,7 +295,7 @@ const TransactionCashDialog = enhance((props) => {
                                         }}>
                                         <Delete />
                                     </IconButton>
-                                </Tooltip>
+                                </ToolTip>
                             </div>}
                         </Col>
                     </Row>
@@ -352,14 +352,14 @@ const TransactionCashDialog = enhance((props) => {
                                             <Col xs={5} style={{textAlign: 'right', paddingRight: '0'}}>{amount}</Col>
                                             <Col xs={1}>
                                                 <div style={{paddingLeft: '6px'}}>
-                                                    <Tooltip position="bottom" text={t('Оплатить')}>
+                                                    <ToolTip position="bottom" text={t('Оплатить')}>
                                                         <IconButton
                                                             onTouchTap={() => {
                                                                 cashBoxDialog.handleOpenCashBoxDialog(userId, currencyId)
                                                             }}>
                                                             <PaymentIcon color="#666666"/>
                                                         </IconButton>
-                                                    </Tooltip>
+                                                    </ToolTip>
                                                 </div>
                                             </Col>
                                         </Row>
@@ -393,14 +393,14 @@ const TransactionCashDialog = enhance((props) => {
                                     <Col xs={6}>{user}</Col>
                                     <Col xs={5} style={{textAlign: 'right'}}>{amount}</Col>
                                     <Col xs={1}>
-                                        <Tooltip position="bottom" text={t('Оплатить')}>
+                                        <ToolTip position="bottom" text={t('Оплатить')}>
                                             <IconButton
                                                 onTouchTap={() => {
                                                     cashBoxDialog.handleOpenCashBoxDialog(userId, currencyId)
                                                 }}>
                                                 <PaymentIcon color="#666666"/>
                                             </IconButton>
-                                        </Tooltip>
+                                        </ToolTip>
                                     </Col>
                                 </Row>
                             )

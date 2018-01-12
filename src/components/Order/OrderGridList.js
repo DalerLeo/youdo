@@ -23,7 +23,7 @@ import moment from 'moment'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import Badge from 'material-ui/Badge'
 import ContentAdd from 'material-ui/svg-icons/content/add'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import numberFormat from '../../helpers/numberFormat'
 import Available from 'material-ui/svg-icons/action/store'
 import Canceled from 'material-ui/svg-icons/notification/do-not-disturb-alt'
@@ -341,16 +341,16 @@ const OrderGridList = enhance((props) => {
         const dateDelivery = dateFormat(_.get(item, 'dateDelivery'), '', 'Самовывоз')
         const createdDate = dateTimeFormat(_.get(item, 'createdDate'), true)
         const totalBalance = _.toNumber(_.get(item, 'totalBalance'))
-        const balanceTooltip = numberFormat(totalBalance, currentCurrency)
+        const balanceToolTip = numberFormat(totalBalance, currentCurrency)
         const totalPrice = numberFormat(_.get(item, 'totalPrice'), currentCurrency)
         const status = _.toInteger(_.get(item, 'status'))
         const isNew = _.get(item, 'isNew')
 
         const paymentDifference = moment(_.get(item, 'paymentDate')).diff(now, 'days')
-        const PAY_PENDING = t('Оплата ожидается') + ': ' + paymentDate + '<br/>' + t('Ожидаемый платеж') + ': ' + balanceTooltip
+        const PAY_PENDING = t('Оплата ожидается') + ': ' + paymentDate + '<br/>' + t('Ожидаемый платеж') + ': ' + balanceToolTip
         const PAY_DELAY = paymentDifference !== ZERO
-            ? t('Оплата ожидалась') + ': ' + paymentDate + '<br/>' + t('Долг') + ': ' + balanceTooltip
-            : t('Оплата ожидается сегодня') + '<br/>' + t('Сумма') + ': ' + balanceTooltip
+            ? t('Оплата ожидалась') + ': ' + paymentDate + '<br/>' + t('Долг') + ': ' + balanceToolTip
+            : t('Оплата ожидается сегодня') + '<br/>' + t('Сумма') + ': ' + balanceToolTip
 
         return (
             <div key={id}
@@ -368,7 +368,7 @@ const OrderGridList = enhance((props) => {
                 <div style={{width: '15%'}}>{dateDelivery}</div>
                 <div style={{width: '15%'}}>{createdDate}</div>
                 <div style={{width: '5%'}} className={classes.buttons}>
-                    {(status === REQUESTED) ? <Tooltip position="bottom" text={t('В процессе')}>
+                    {(status === REQUESTED) ? <ToolTip position="bottom" text={t('В процессе')}>
                             <IconButton
                                 disableTouchRipple={true}
                                 iconStyle={iconStyle.icon}
@@ -376,8 +376,8 @@ const OrderGridList = enhance((props) => {
                                 touch={true}>
                                 <InProcess color="#f0ad4e"/>
                             </IconButton>
-                        </Tooltip>
-                        : (status === READY) ? <Tooltip position="bottom" text={t('Есть на складе')}>
+                        </ToolTip>
+                        : (status === READY) ? <ToolTip position="bottom" text={t('Есть на складе')}>
                                 <IconButton
                                     disableTouchRipple={true}
                                     iconStyle={iconStyle.icon}
@@ -385,8 +385,8 @@ const OrderGridList = enhance((props) => {
                                     touch={true}>
                                     <Available color="#f0ad4e"/>
                                 </IconButton>
-                            </Tooltip>
-                            : (status === DELIVERED) ? <Tooltip position="bottom" text={t('Доставлен')}>
+                            </ToolTip>
+                            : (status === DELIVERED) ? <ToolTip position="bottom" text={t('Доставлен')}>
                                     <IconButton
                                         disableTouchRipple={true}
                                         iconStyle={iconStyle.icon}
@@ -394,8 +394,8 @@ const OrderGridList = enhance((props) => {
                                         touch={true}>
                                         <Delivered color="#81c784"/>
                                     </IconButton>
-                                </Tooltip>
-                                : (status === GIVEN) ? <Tooltip position="bottom" text={t('Передан доставщику')}>
+                                </ToolTip>
+                                : (status === GIVEN) ? <ToolTip position="bottom" text={t('Передан доставщику')}>
                                         <IconButton
                                             disableTouchRipple={true}
                                             iconStyle={iconStyle.icon}
@@ -403,8 +403,8 @@ const OrderGridList = enhance((props) => {
                                             touch={true}>
                                             <Transferred color="#f0ad4e"/>
                                         </IconButton>
-                                    </Tooltip>
-                                    : (status === CANCELED) ? <Tooltip position="bottom" text={t('Заказ отменен')}>
+                                    </ToolTip>
+                                    : (status === CANCELED) ? <ToolTip position="bottom" text={t('Заказ отменен')}>
                                             <IconButton
                                                 disableTouchRipple={true}
                                                 iconStyle={iconStyle.icon}
@@ -412,8 +412,8 @@ const OrderGridList = enhance((props) => {
                                                 touch={true}>
                                                 <Canceled color='#e57373'/>
                                             </IconButton>
-                                        </Tooltip>
-                                        : (status === NOT_CONFIRMED) ? <Tooltip position="bottom" text={t('Не подтвержден')}>
+                                        </ToolTip>
+                                        : (status === NOT_CONFIRMED) ? <ToolTip position="bottom" text={t('Не подтвержден')}>
                                             <IconButton
                                                 disableTouchRipple={true}
                                                 iconStyle={iconStyle.icon}
@@ -421,10 +421,10 @@ const OrderGridList = enhance((props) => {
                                                 touch={true}>
                                                 <NotConfirmed color='#999'/>
                                             </IconButton>
-                                        </Tooltip> : null
+                                        </ToolTip> : null
                     }
                     {!(status === CANCELED) &&
-                    <Tooltip position="bottom" text={(totalBalance > ZERO) && ((moment(_.get(item, 'paymentDate')).diff(now, 'days') <= ZERO))
+                    <ToolTip position="bottom" text={(totalBalance > ZERO) && ((moment(_.get(item, 'paymentDate')).diff(now, 'days') <= ZERO))
                         ? PAY_DELAY
                         : ((totalBalance > ZERO) && moment(_.get(item, 'paymentDate')).diff(now, 'days') > ZERO)
                             ? PAY_PENDING
@@ -444,7 +444,7 @@ const OrderGridList = enhance((props) => {
                                         : (totalBalance === ZERO ? '#81c784' : '#B7BBB7')
                             }/>
                         </IconButton>
-                    </Tooltip>
+                    </ToolTip>
                     }
                 </div>
             </div>
@@ -520,15 +520,15 @@ const OrderGridList = enhance((props) => {
 
     const extraButtons = (
         <div className={classes.buttons}>
-            <Tooltip position="left" text={t('Обновить список')}>
+            <ToolTip position="left" text={t('Обновить список')}>
                 <IconButton
                     disabled={false}
                     onTouchTap={refreshAction}>
                     <RefreshIcon color="#5d6474"/>
                 </IconButton>
-            </Tooltip>
+            </ToolTip>
 
-            {unconfirmedCount > ZERO && <Tooltip position="left" text={t('Отфильтровать неподтвержденным заказам')}>
+            {unconfirmedCount > ZERO && <ToolTip position="left" text={t('Отфильтровать неподтвержденным заказам')}>
                 <Badge
                     primary={true}
                     badgeContent={statusIsUnconfirmed ? <Done style={badgeStyle.iconUnconfirmed}/> : unconfirmedCount}
@@ -540,8 +540,8 @@ const OrderGridList = enhance((props) => {
                         <NotConfirmed/>
                     </IconButton>
                 </Badge>
-            </Tooltip>}
-            {requestedCount > ZERO && <Tooltip position="left" text={t('Отфильтровать по запрошенным заказам')}>
+            </ToolTip>}
+            {requestedCount > ZERO && <ToolTip position="left" text={t('Отфильтровать по запрошенным заказам')}>
                 <Badge
                     primary={true}
                     badgeContent={statusIsRequested ? <Done style={badgeStyle.iconRequested}/> : requestedCount}
@@ -553,8 +553,8 @@ const OrderGridList = enhance((props) => {
                         <InProcess/>
                     </IconButton>
                 </Badge>
-            </Tooltip>}
-            {readyCount > ZERO && <Tooltip position="left" text={t('Отфильтровать по доступным заказам')}>
+            </ToolTip>}
+            {readyCount > ZERO && <ToolTip position="left" text={t('Отфильтровать по доступным заказам')}>
                 <Badge
                     primary={true}
                     badgeContent={statusIsReady ? <Done style={badgeStyle.icon}/> : readyCount}
@@ -566,13 +566,13 @@ const OrderGridList = enhance((props) => {
                         <Available/>
                     </IconButton>
                 </Badge>
-            </Tooltip>}
+            </ToolTip>}
         </div>
     )
 
     const checkboxActions = (
         <div className={classes.buttons}>
-            <Tooltip position="left" text="">
+            <ToolTip position="left" text="">
                 <IconMenu
                     menuItemStyle={{fontSize: '13px'}}
                     iconButtonElement={iconButton}
@@ -587,23 +587,23 @@ const OrderGridList = enhance((props) => {
                         onTouchTap={() => { printSalesDialog.handleOpenSalesPrintDialog() }}
                     />
                 </IconMenu>
-            </Tooltip>
-            <Tooltip position="left" text={t('Скачать накладные')}>
+            </ToolTip>
+            <ToolTip position="left" text={t('Скачать накладные')}>
                 <IconButton onTouchTap={getExcelDocument}>
                     <Excel color="#666"/>
                 </IconButton>
-            </Tooltip>
-            <Tooltip position="left" text={t('Изменить выбранные заказы')}>
+            </ToolTip>
+            <ToolTip position="left" text={t('Изменить выбранные заказы')}>
                 <IconButton onTouchTap={multiUpdateDialog.handleOpenMultiUpdate}
                             disabled={multiUpdateDialog.cancelled}>
                     <Edit color="#666"/>
                 </IconButton>
-            </Tooltip>
-            <Tooltip position="left" text={t('Сформировать Релиз')}>
+            </ToolTip>
+            <ToolTip position="left" text={t('Сформировать Релиз')}>
                 <IconButton onTouchTap={releaseDialog.handleOpenReleaseDialog}>
                     <GetRelease color="#666"/>
                 </IconButton>
-            </Tooltip>
+            </ToolTip>
         </div>
     )
 
@@ -618,7 +618,7 @@ const OrderGridList = enhance((props) => {
             <SubMenu url={ROUTES.ORDER_LIST_URL}/>
 
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text={t('Добавить заказ')}>
+                <ToolTip position="left" text={t('Добавить заказ')}>
                     <FloatingActionButton
                         mini={true}
                         zDepth={1}
@@ -626,7 +626,7 @@ const OrderGridList = enhance((props) => {
                         onTouchTap={createDialog.handleOpenCreateDialog}>
                         <ContentAdd/>
                     </FloatingActionButton>
-                </Tooltip>
+                </ToolTip>
             </div>
 
             <GridList

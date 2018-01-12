@@ -16,7 +16,7 @@ import Container from '../Container'
 import MeasurementCreateDialog from './MeasurementCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SettingSideMenu from '../Settings/SettingsSideMenu'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import dateFormat from '../../helpers/dateFormat'
 import Dot from '../Images/dot.png'
 import t from '../../helpers/translate'
@@ -224,7 +224,7 @@ const MeasurementGridList = enhance((props) => {
                         <Col xs={4}>{createdDate}</Col>
                         <Col xs={2} className={classes.right}>
                             <div className={classes.iconBtn}>
-                                <Tooltip position="bottom" text={t('Изменить')}>
+                                <ToolTip position="bottom" text={t('Изменить')}>
                                     <IconButton
                                         iconStyle={iconStyle.icon}
                                         style={iconStyle.button}
@@ -233,8 +233,8 @@ const MeasurementGridList = enhance((props) => {
                                         onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
                                         <Edit />
                                     </IconButton>
-                                </Tooltip>
-                                <Tooltip position="bottom" text={t('Удалить')}>
+                                </ToolTip>
+                                <ToolTip position="bottom" text={t('Удалить')}>
                                     <IconButton
                                         disableTouchRipple={true}
                                         iconStyle={iconStyle.icon}
@@ -243,7 +243,7 @@ const MeasurementGridList = enhance((props) => {
                                         touch={true}>
                                         <DeleteIcon />
                                     </IconButton>
-                                </Tooltip>
+                                </ToolTip>
                             </div>
                         </Col>
                     </div>
@@ -257,7 +257,7 @@ const MeasurementGridList = enhance((props) => {
                                 <Col xs={4}>{childCreatedDate}</Col>
                                 <Col xs={2} className={classes.right}>
                                     <div className={classes.iconBtn}>
-                                        <Tooltip position="bottom" text={t('Изменить')}>
+                                        <ToolTip position="bottom" text={t('Изменить')}>
                                             <IconButton
                                                 iconStyle={iconStyle.icon}
                                                 style={iconStyle.button}
@@ -266,8 +266,8 @@ const MeasurementGridList = enhance((props) => {
                                                 onTouchTap={() => { updateDialog.handleOpenUpdateDialog(childId) }}>
                                                 <Edit />
                                             </IconButton>
-                                        </Tooltip>
-                                        <Tooltip position="bottom" text={t('Удалить')}>
+                                        </ToolTip>
+                                        <ToolTip position="bottom" text={t('Удалить')}>
                                             <IconButton
                                                 disableTouchRipple={true}
                                                 iconStyle={iconStyle.icon}
@@ -276,7 +276,7 @@ const MeasurementGridList = enhance((props) => {
                                                 touch={true}>
                                                 <DeleteIcon />
                                             </IconButton>
-                                        </Tooltip>
+                                        </ToolTip>
                                     </div>
                                 </Col>
                             </div>
@@ -291,7 +291,7 @@ const MeasurementGridList = enhance((props) => {
                 <Col xs={4}>{createdDate}</Col>
                 <Col xs={2} className={classes.right}>
                     <div className={classes.iconBtn}>
-                        <Tooltip position="bottom" text={t('Изменить')}>
+                        <ToolTip position="bottom" text={t('Изменить')}>
                             <IconButton
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
@@ -300,8 +300,8 @@ const MeasurementGridList = enhance((props) => {
                                 onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
                                 <Edit />
                             </IconButton>
-                        </Tooltip>
-                        <Tooltip position="bottom" text={t('Удалить')}>
+                        </ToolTip>
+                        <ToolTip position="bottom" text={t('Удалить')}>
                             <IconButton
                                 disableTouchRipple={true}
                                 iconStyle={iconStyle.icon}
@@ -310,7 +310,7 @@ const MeasurementGridList = enhance((props) => {
                                 touch={true}>
                                 <DeleteIcon />
                             </IconButton>
-                        </Tooltip>
+                        </ToolTip>
                     </div>
                 </Col>
             </Row>

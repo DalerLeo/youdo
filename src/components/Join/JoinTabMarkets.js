@@ -8,7 +8,7 @@ import {compose} from 'recompose'
 import IconButton from 'material-ui/IconButton'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import Join from 'material-ui/svg-icons/content/link'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import JoinDialog from './JoinDialog'
 import t from '../../helpers/translate'
 
@@ -143,14 +143,14 @@ const JoinTabMarkets = enhance((props) => {
                 <div style={{width: '15%'}}>{phone}</div>
                 <div style={{width: '5%'}}>
                     <div className={classes.iconBtn}>
-                        <Tooltip position="bottom" text={t('Объединить')}>
+                        <ToolTip position="bottom" text={t('Объединить')}>
                             <IconButton
                                 onTouchTap={() => { joinMarketDialog.handleOpenJoinMarkets(id) }}
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}>
                                 <Join/>
                             </IconButton>
-                        </Tooltip>
+                        </ToolTip>
                     </div>
                 </div>
             </Row>
@@ -173,7 +173,7 @@ const JoinTabMarkets = enhance((props) => {
                 detail={shopDetail}
             />
             <div className={classes.mainButton}>
-                <Tooltip position="left" text={t('Объединить')}>
+                <ToolTip position="left" text={t('Объединить')}>
                     <FloatingActionButton
                         onTouchTap={() => { joinMarketDialog.handleOpenJoinMarkets(true) }}
                         backgroundColor="#12aaeb"
@@ -181,7 +181,7 @@ const JoinTabMarkets = enhance((props) => {
                         zDepth={1}>
                         <Join/>
                     </FloatingActionButton>
-                </Tooltip>
+                </ToolTip>
             </div>
             <JoinDialog
                 open={joinMarketDialog.openJoinMarket}
