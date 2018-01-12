@@ -7,7 +7,7 @@ import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import t from '../../helpers/translate'
 
 const enhance = compose(
@@ -122,14 +122,14 @@ const InventoryOverallDialog = enhance((props) => {
                             <Row key={item.id} className="dottedList">
                                 <Col xs={6}>{item.title}</Col>
                                 <Col xs={3}>
-                                    <Tooltip position={'left'} text={t('ОК / Брак')}>
+                                    <ToolTip position={'left'} text={t('ОК / Брак')}>
                                         {item.amount} / {item.defect} {item.measurement}
-                                    </Tooltip>
+                                    </ToolTip>
                                 </Col>
                                 <Col xs={3}>
-                                    <Tooltip position={'left'} text={t('ОК / Брак')}>
+                                    <ToolTip position={'left'} text={t('ОК / Брак')}>
                                         {item.amountDiff} / {item.defectDiff} {item.measurement}
-                                    </Tooltip>
+                                    </ToolTip>
                                 </Col>
                             </Row>
                         )

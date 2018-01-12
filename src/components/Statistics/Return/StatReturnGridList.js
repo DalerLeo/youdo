@@ -21,7 +21,7 @@ import numberFormat from '../../../helpers/numberFormat'
 import dateFormat from '../../../helpers/dateFormat'
 import getConfig from '../../../helpers/getConfig'
 import {StatisticsFilterExcel, StatisticsChart} from '../../Statistics'
-import Tooltip from '../../ToolTip'
+import ToolTip from '../../ToolTip'
 import {
     ClientMultiSearchField,
     MarketMultiSearchField,
@@ -284,7 +284,7 @@ const StatReturnGridList = enhance((props) => {
                 <Col xs={1}>
                     <div className={classes.buttons}>
                         {(status === PENDING || status === IN_PROGRESS)
-                            ? <Tooltip position="bottom" text={t('Ожидает')}>
+                            ? <ToolTip position="bottom" text={t('Ожидает')}>
                                 <IconButton
                                     disableTouchRipple={true}
                                     iconStyle={iconStyle.icon}
@@ -292,9 +292,9 @@ const StatReturnGridList = enhance((props) => {
                                     touch={true}>
                                     <InProcess color="#f0ad4e"/>
                                 </IconButton>
-                            </Tooltip>
+                            </ToolTip>
                             : (status === COMPLETED)
-                                ? <Tooltip position="bottom" text={t('Завершен')}>
+                                ? <ToolTip position="bottom" text={t('Завершен')}>
                                     <IconButton
                                         disableTouchRipple={true}
                                         iconStyle={iconStyle.icon}
@@ -302,9 +302,9 @@ const StatReturnGridList = enhance((props) => {
                                         touch={true}>
                                         <DoneIcon color="#81c784"/>
                                     </IconButton>
-                                </Tooltip>
+                                </ToolTip>
                                 : (status === CANCELLED)
-                                    ? <Tooltip position="bottom" text={t('Отменен')}>
+                                    ? <ToolTip position="bottom" text={t('Отменен')}>
                                         <IconButton
                                             disableTouchRipple={true}
                                             iconStyle={iconStyle.icon}
@@ -312,7 +312,7 @@ const StatReturnGridList = enhance((props) => {
                                             touch={true}>
                                             <Canceled color='#e57373'/>
                                         </IconButton>
-                                    </Tooltip> : null
+                                    </ToolTip> : null
                         }
                     </div>
                 </Col>

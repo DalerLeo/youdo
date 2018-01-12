@@ -17,7 +17,7 @@ import Container from '../Container'
 import ProductTypeCreateDialog from './ProductTypeCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SettingSideMenu from '../Settings/SettingsSideMenu'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import Dot from '../Images/dot.png'
 import t from '../../helpers/translate'
 
@@ -223,7 +223,7 @@ const ProductTypeGridList = enhance((props) => {
                         <Col xs={3}>{createdDate}</Col>
                         <Col xs={1} className={classes.right}>
                             <div className={classes.iconBtn}>
-                                <Tooltip position="bottom" text={t('Изменить')}>
+                                <ToolTip position="bottom" text={t('Изменить')}>
                                     <IconButton
                                         iconStyle={iconStyle.icon}
                                         style={iconStyle.button}
@@ -232,8 +232,8 @@ const ProductTypeGridList = enhance((props) => {
                                         onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
                                         <Edit />
                                     </IconButton>
-                                </Tooltip>
-                                <Tooltip position="bottom" text={t('Удалить')}>
+                                </ToolTip>
+                                <ToolTip position="bottom" text={t('Удалить')}>
                                     <IconButton
                                         disableTouchRipple={true}
                                         iconStyle={iconStyle.icon}
@@ -242,7 +242,7 @@ const ProductTypeGridList = enhance((props) => {
                                         touch={true}>
                                         <DeleteIcon />
                                     </IconButton>
-                                </Tooltip>
+                                </ToolTip>
                             </div>
                         </Col>
                     </div>
@@ -258,7 +258,7 @@ const ProductTypeGridList = enhance((props) => {
                                 <Col xs={3}>{childCreatedDate}</Col>
                                 <Col xs={1} className={classes.right}>
                                     <div className={classes.iconBtn}>
-                                        <Tooltip position="bottom" text={t('Изменить')}>
+                                        <ToolTip position="bottom" text={t('Изменить')}>
                                             <IconButton
                                                 iconStyle={iconStyle.icon}
                                                 style={iconStyle.button}
@@ -267,8 +267,8 @@ const ProductTypeGridList = enhance((props) => {
                                                 onTouchTap={() => { updateDialog.handleOpenUpdateDialog(childId) }}>
                                                 <Edit />
                                             </IconButton>
-                                        </Tooltip>
-                                        <Tooltip position="bottom" text={t('Удалить')}>
+                                        </ToolTip>
+                                        <ToolTip position="bottom" text={t('Удалить')}>
                                             <IconButton
                                                 disableTouchRipple={true}
                                                 iconStyle={iconStyle.icon}
@@ -277,7 +277,7 @@ const ProductTypeGridList = enhance((props) => {
                                                 touch={true}>
                                                 <DeleteIcon />
                                             </IconButton>
-                                        </Tooltip>
+                                        </ToolTip>
                                     </div>
                                 </Col>
                             </div>
@@ -293,7 +293,7 @@ const ProductTypeGridList = enhance((props) => {
                 <Col xs={3}>{createdDate}</Col>
                 <Col xs={1} className={classes.right}>
                     <div className={classes.iconBtn}>
-                        <Tooltip position="bottom" text={t('Изменить')}>
+                        <ToolTip position="bottom" text={t('Изменить')}>
                             <IconButton
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
@@ -302,8 +302,8 @@ const ProductTypeGridList = enhance((props) => {
                                 onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
                                 <Edit />
                             </IconButton>
-                        </Tooltip>
-                        <Tooltip position="bottom" text={t('Удалить')}>
+                        </ToolTip>
+                        <ToolTip position="bottom" text={t('Удалить')}>
                             <IconButton
                                 disableTouchRipple={true}
                                 iconStyle={iconStyle.icon}
@@ -312,7 +312,7 @@ const ProductTypeGridList = enhance((props) => {
                                 touch={true}>
                                 <DeleteIcon />
                             </IconButton>
-                        </Tooltip>
+                        </ToolTip>
                     </div>
                 </Col>
             </Row>

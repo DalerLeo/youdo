@@ -10,7 +10,7 @@ import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import Loader from '../Loader'
 import ContentAdd from 'material-ui/svg-icons/content/add'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import Person from '../Images/person.png'
 import NoShop from '../Images/no-shop.svg'
@@ -336,7 +336,7 @@ const ZoneDetails = enhance((props) => {
                             const position = _.get(item, 'position') || 'Без должности'
 
                             return (
-                                <Tooltip key={agentId} position="top" text={username + '<br>' + position}>
+                                <ToolTip key={agentId} position="top" text={username + '<br>' + position}>
                                     <div className={classes.person}>
                                         <img src={Person} alt=""/>
                                         <div className={classes.deletePers}>
@@ -345,18 +345,18 @@ const ZoneDetails = enhance((props) => {
                                                 color="#fff"/>
                                         </div>
                                     </div>
-                                </Tooltip>
+                                </ToolTip>
                             )
                         })}
                         <div className={classes.person} style={{overflow: 'hidden'}}>
-                            <Tooltip position="bottom" text="Добавить">
+                            <ToolTip position="bottom" text="Добавить">
                                 <FloatingActionButton
                                     mini={true}
                                     className={classes.addPerson}
                                     onTouchTap={bindAgent.handleOpenBindAgent}>
                                     <ContentAdd />
                                 </FloatingActionButton>
-                            </Tooltip>
+                            </ToolTip>
                         </div>
                     </div>
                 </div>

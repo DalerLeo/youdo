@@ -31,7 +31,7 @@ import {
     AUTO
 } from './index'
 import t from '../../helpers/translate'
-import ClientBalanceFormat from '../Statistics/ClientIncome/ClientBalanceFormat'
+import ClientBalanceFormat from '../Statistics/ClientTransactions/ClientBalanceFormat'
 
 const listHeader = [
     {

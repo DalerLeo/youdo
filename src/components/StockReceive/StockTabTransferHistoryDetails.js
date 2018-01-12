@@ -9,7 +9,7 @@ import IconButton from 'material-ui/IconButton'
 import LinearProgress from '../LinearProgress'
 import {Row, Col} from 'react-flexbox-grid'
 import NotFound from '../Images/not-found.png'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import dateFormat from '../../helpers/dateFormat'
 import numberformat from '../../helpers/numberFormat'
 import stockTypeFormat from '../../helpers/stockTypeFormat'
@@ -198,7 +198,7 @@ const StockTransferDetails = enhance((props) => {
                             <Col xs={2}>{receiver}</Col>
                             <Col xs={2} className={classes.flex}><span>{dateDelivery}</span>
                                 <div>
-                                    <Tooltip position="bottom" text={t('Распечатать накладную')}>
+                                    <ToolTip position="bottom" text={t('Распечатать накладную')}>
                                         <IconButton
                                             iconStyle={iconStyle.icon}
                                             style={iconStyle.button}
@@ -208,8 +208,8 @@ const StockTransferDetails = enhance((props) => {
                                             touch={true}>
                                             <PrintIcon/>
                                         </IconButton>
-                                    </Tooltip>
-                                    <Tooltip position="right" text={tooltipCancelText}>
+                                    </ToolTip>
+                                    <ToolTip position="right" text={tooltipCancelText}>
                                         <IconButton
                                             iconStyle={iconStyle.icon}
                                             style={iconStyle.button}
@@ -219,7 +219,7 @@ const StockTransferDetails = enhance((props) => {
                                             touch={true}>
                                             <RemoveCircleIcon/>
                                         </IconButton>
-                                    </Tooltip>
+                                    </ToolTip>
                                 </div>
                             </Col>
                         </Row>

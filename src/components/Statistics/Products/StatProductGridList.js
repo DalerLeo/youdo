@@ -179,7 +179,6 @@ const enhance = compose(
                     height: '81px',
                     verticalAlign: 'bottom',
                     '& span': {
-                        fontWeight: '600',
                         verticalAlign: 'bottom',
                         padding: '15px 30px',
                         borderTop: '1px #efefef solid',
@@ -188,6 +187,7 @@ const enhance = compose(
                 },
                 '& span': {
                     display: 'table-cell',
+                    fontWeight: '600',
                     verticalAlign: 'middle',
                     padding: '0 30px'
                 }

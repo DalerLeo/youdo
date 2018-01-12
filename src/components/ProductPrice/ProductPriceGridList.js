@@ -16,7 +16,7 @@ import ProductPriceDetails from './ProductPriceDetails'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {Link} from 'react-router'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import t from '../../helpers/translate'
 
 const listHeader = [
@@ -160,7 +160,7 @@ const ProductPriceGridList = enhance((props) => {
                 <Col xs={2}>{measurement}</Col>
                 <Col xs={2}>{price}</Col>
                 <Col xs={1} className={classes.buttons}>
-                    <Tooltip position="bottom" text={t('Изменить')}>
+                    <ToolTip position="bottom" text={t('Изменить')}>
                         <IconButton
                             onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}
                             touch={true}
@@ -168,7 +168,7 @@ const ProductPriceGridList = enhance((props) => {
                             style={iconStyle.button}>
                             <Edit />
                         </IconButton>
-                    </Tooltip>
+                    </ToolTip>
                 </Col>
             </Row>
         )

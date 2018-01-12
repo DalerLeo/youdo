@@ -8,7 +8,7 @@ import Edit from 'material-ui/svg-icons/image/edit'
 import Delete from 'material-ui/svg-icons/action/delete'
 import IconButton from 'material-ui/IconButton'
 import {Row, Col} from 'react-flexbox-grid'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import dateFormat from '../../helpers/dateFormat'
 import Blacklist from 'material-ui/svg-icons/alert/warning'
 import t from '../../helpers/translate'
@@ -168,7 +168,7 @@ const ClientDetails = enhance((props) => {
             <div className={inBlacklist ? classes.blacklistTitle : classes.title}>
                 <div className={classes.titleLabel}>{providerName}</div>
                 {inBlacklist &&
-                <Tooltip position="right" text={t('Клиент в черном списке')}>
+                <ToolTip position="right" text={t('Клиент в черном списке')}>
                     <IconButton
                         disableTouchRipple={true}
                         iconStyle={iconStyle.blacklist}
@@ -176,12 +176,12 @@ const ClientDetails = enhance((props) => {
                         touch={true}>
                         <Blacklist/>
                     </IconButton>
-                </Tooltip>}
+                </ToolTip>}
                 <div className={classes.closeDetail}
                      onClick={handleCloseDetail}>
                 </div>
                 <div className={classes.titleButtons}>
-                    <Tooltip position="bottom" text={t('Изменить')}>
+                    <ToolTip position="bottom" text={t('Изменить')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
@@ -189,8 +189,8 @@ const ClientDetails = enhance((props) => {
                             onTouchTap={ () => { updateDialog.handleOpenUpdateDialog(detId) }}>
                             <Edit />
                         </IconButton>
-                    </Tooltip>
-                    <Tooltip position="bottom" text={t('Удалить')}>
+                    </ToolTip>
+                    <ToolTip position="bottom" text={t('Удалить')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
@@ -198,7 +198,7 @@ const ClientDetails = enhance((props) => {
                             onTouchTap={confirmDialog.handleOpenConfirmDialog}>
                             <Delete />
                         </IconButton>
-                    </Tooltip>
+                    </ToolTip>
                 </div>
             </div>
             <div className={classes.container}>

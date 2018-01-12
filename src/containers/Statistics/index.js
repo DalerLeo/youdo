@@ -9,11 +9,12 @@ import StatCashboxList from './StatCashbox'
 import StatProductMoveList from './StatProductMove'
 import StatReportList from './StatReport'
 import StatReturnList from './StatReturn'
-import StatClientIncomeList from './StatClientIncome'
+import StatClientIncomeList from './StatClientTransactions'
 import StatClientBalance from './StatClientBalance'
 import StatDebtorsList from './StatDebtors'
 import StatExpenditureOnStaffList from './StatExpenditureOnStaff'
 import StatProviderList from './StatProvider'
+import StatProviderTransactionsList from './StatProviderTransactions'
 
 export {
     StatReturnList,
@@ -31,5 +32,6 @@ export {
     StatClientBalance,
     StatDebtorsList,
     StatExpenditureOnStaffList,
-    StatProviderList
+    StatProviderList,
+    StatProviderTransactionsList
 }

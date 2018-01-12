@@ -17,7 +17,7 @@ import UsersFilterForm from './UsersFilterForm'
 import UsersCreateDialog from './UsersCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SettingSideMenu from '../Settings/SettingsSideMenu'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import toBoolean from '../../helpers/toBoolean'
 import t from '../../helpers/translate'
 
@@ -184,7 +184,7 @@ const UsersGridList = enhance((props) => {
                 <Col xs={1}>{isActive ? t('Активный') : t('Неактивный')}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
                     <div className={classes.iconBtn}>
-                        <Tooltip position="bottom" text={t('Изменить')}>
+                        <ToolTip position="bottom" text={t('Изменить')}>
                             <IconButton
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
@@ -193,8 +193,8 @@ const UsersGridList = enhance((props) => {
                                 onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
                                 <Edit />
                             </IconButton>
-                        </Tooltip>
-                        <Tooltip position="bottom" text={t('Удалить')}>
+                        </ToolTip>
+                        <ToolTip position="bottom" text={t('Удалить')}>
                             <IconButton
                                 disableTouchRipple={true}
                                 iconStyle={iconStyle.icon}
@@ -203,7 +203,7 @@ const UsersGridList = enhance((props) => {
                                 touch={true}>
                                 <DeleteIcon />
                             </IconButton>
-                        </Tooltip>
+                        </ToolTip>
                     </div>
                 </Col>
             </Row>

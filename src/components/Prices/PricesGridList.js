@@ -14,7 +14,7 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import dateFormat from '../../helpers/dateFormat'
 import t from '../../helpers/translate'
 const listHeader = [
@@ -147,7 +147,7 @@ const PricesGridList = enhance((props) => {
             <SubMenu url={ROUTES.PRICES_LIST_URL}/>
 
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text={t('Добавить акцию')}>
+                <ToolTip position="left" text={t('Добавить акцию')}>
                     <FloatingActionButton
                         mini={true}
                         zDepth={1}
@@ -155,7 +155,7 @@ const PricesGridList = enhance((props) => {
                         onTouchTap={createDialog.handleOpenCreateDialog}>
                         <ContentAdd />
                     </FloatingActionButton>
-                </Tooltip>
+                </ToolTip>
             </div>
 
             <GridList

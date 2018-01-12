@@ -7,7 +7,7 @@ import NotFound from '../Images/not-found.png'
 import LinearProgress from '../LinearProgress'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import IconButton from 'material-ui/IconButton'
 import PrintIcon from 'material-ui/svg-icons/action/print'
 import PrintRoute from 'material-ui/svg-icons/maps/directions-car'
@@ -200,7 +200,7 @@ const StockTransferDetails = enhance((props) => {
                 <div className={classes.title}>{deliveryManName}</div>
                 <div className={classes.closeDetail} onClick={handleCloseDetail}>{null}</div>
                 <div className={classes.titleButtons}>
-                    <Tooltip position="bottom" text={t('Скачать релиз')}>
+                    <ToolTip position="bottom" text={t('Скачать релиз')}>
                         <IconButton
                             disabled={_.isEmpty(products)}
                             iconStyle={iconStyle.icon}
@@ -209,8 +209,8 @@ const StockTransferDetails = enhance((props) => {
                             onTouchTap={getRelease.handleGetRelease}>
                             <Release />
                         </IconButton>
-                    </Tooltip>
-                    <Tooltip position="bottom" text={t('Скачать маршрут')}>
+                    </ToolTip>
+                    <ToolTip position="bottom" text={t('Скачать маршрут')}>
                         <IconButton
                             disabled={_.isEmpty(products)}
                             iconStyle={iconStyle.icon}
@@ -219,8 +219,8 @@ const StockTransferDetails = enhance((props) => {
                             onTouchTap={getRoute.handleGetRoute}>
                             <Direction />
                         </IconButton>
-                    </Tooltip>
-                    <Tooltip position="bottom" text={t('Распечатать релиз')}>
+                    </ToolTip>
+                    <ToolTip position="bottom" text={t('Распечатать релиз')}>
                         <IconButton
                             disabled={_.isEmpty(products)}
                             iconStyle={iconStyle.icon}
@@ -229,8 +229,8 @@ const StockTransferDetails = enhance((props) => {
                             onTouchTap={handleOpenDeliveryPrintDialog}>
                             <PrintIcon />
                         </IconButton>
-                    </Tooltip>
-                    <Tooltip position="bottom" text={t('Распечатать маршрут')}>
+                    </ToolTip>
+                    <ToolTip position="bottom" text={t('Распечатать маршрут')}>
                         <IconButton
                             disabled={_.isEmpty(products)}
                             iconStyle={iconStyle.icon}
@@ -239,8 +239,8 @@ const StockTransferDetails = enhance((props) => {
                             onTouchTap={() => { printRouteDialog.handleOpenPrintRouteDialog(orders) }}>
                             <PrintRoute />
                         </IconButton>
-                    </Tooltip>
-                    <Tooltip position="bottom" text={t('Передать доставщику')}>
+                    </ToolTip>
+                    <ToolTip position="bottom" text={t('Передать доставщику')}>
                         <IconButton
                             disabled={!deliveryMan}
                             iconStyle={iconStyle.icon}
@@ -249,7 +249,7 @@ const StockTransferDetails = enhance((props) => {
                             onTouchTap={confirmTransfer.handleOpenDeliveryConfirmDialog}>
                             <SendDelivery />
                         </IconButton>
-                    </Tooltip>
+                    </ToolTip>
                 </div>
             </div>
             {_.isEmpty(products)

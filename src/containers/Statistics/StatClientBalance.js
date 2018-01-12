@@ -19,7 +19,8 @@ import {
 import {
     clientBalanceListFetchAction,
     clientBalanceItemFetchAction,
-    clientBalanceSumFetchAction
+    clientBalanceSumFetchAction,
+    clientBalanceDetailFetchAction
 } from '../../actions/clientBalance'
 import * as serializers from '../../serializers/clientBalanceSerializer'
 import getDocuments from '../../helpers/getDocument'
@@ -39,6 +40,9 @@ const enhance = compose(
         const isSuperUser = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
         const filter = filterHelper(list, pathname, query)
         const filterItem = filterHelper(detail, pathname, query, {'page': 'dPage', 'pageSize': 'dPageSize'})
+        const info = _.get(state, ['clientBalance', 'detail', 'data'])
+        const infoLoading = _.get(state, ['clientBalance', 'detail', 'loading'])
+        const infoForm = _.get(state, ['form', 'ClientBalanceInfoForm'])
 
         return {
             query,
@@ -52,7 +56,10 @@ const enhance = compose(
             isSuperUser,
             searchForm,
             sum,
-            sumLoading
+            sumLoading,
+            infoForm,
+            info,
+            infoLoading
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -69,14 +76,34 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const clientBalanceId = _.get(nextProps, ['params', 'clientBalanceId'])
-        return clientBalanceId && (_.get(props, ['params', 'clientBalanceId']) !== clientBalanceId ||
-            props.filterItem.filterRequest() !== nextProps.filterItem.filterRequest())
-    }, ({dispatch, params, filterItem, location}) => {
+        const ID = _.get(props, ['params', 'clientBalanceId'])
+        const nextID = _.get(nextProps, ['params', 'clientBalanceId'])
+        return ID !== nextID && nextID
+    }, ({dispatch, params}) => {
         const clientBalanceId = _.toInteger(_.get(params, 'clientBalanceId'))
-        const division = _.get(location, ['query', 'division'])
-        const type = _.get(location, ['query', 'type'])
-        clientBalanceId && dispatch(clientBalanceItemFetchAction(filterItem, clientBalanceId, division, type))
+        clientBalanceId && dispatch(clientBalanceDetailFetchAction(clientBalanceId))
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const ID = _.get(props, ['params', 'clientBalanceId'])
+        const nextID = _.get(nextProps, ['params', 'clientBalanceId'])
+        const division = _.get(props, ['infoForm', 'values', 'division', 'value'])
+        const nextDivision = _.get(nextProps, ['infoForm', 'values', 'division', 'value'])
+        const currency = _.get(props, ['infoForm', 'values', 'currency', 'value'])
+        const nextCurrency = _.get(nextProps, ['infoForm', 'values', 'currency', 'value'])
+        const type = _.get(props, ['infoForm', 'values', 'paymentType', 'value'])
+        const nextType = _.get(nextProps, ['infoForm', 'values', 'paymentType', 'value'])
+        return (ID !== nextID && nextID) ||
+            (currency !== nextCurrency && nextCurrency) ||
+            (division !== nextDivision && nextDivision) ||
+            (type !== nextType && nextType) ||
+            (props.filterItem.filterRequest() !== nextProps.filterItem.filterRequest())
+    }, ({dispatch, params, filterItem, infoForm}) => {
+        const clientBalanceId = _.toInteger(_.get(params, 'clientBalanceId'))
+        const division = _.get(infoForm, ['values', 'division', 'value'])
+        const currency = _.get(infoForm, ['values', 'currency', 'value'])
+        const type = _.get(infoForm, ['values', 'paymentType', 'value'])
+        clientBalanceId && dispatch(clientBalanceItemFetchAction(filterItem, clientBalanceId, division, currency, type))
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -180,6 +207,8 @@ const ClientBalanceList = enhance((props) => {
         params,
         sum,
         sumLoading,
+        info,
+        infoLoading,
         query
     } = props
 
@@ -212,6 +241,8 @@ const ClientBalanceList = enhance((props) => {
         division: divisionInfo,
         type: type === 'bank' ? ' переч.' : ' нал.',
         balance: getBalance(type),
+        info,
+        infoLoading,
         handleOpenInfoDialog: props.handleOpenInfoDialog,
         handleCloseInfoDialog: props.handleCloseInfoDialog
     }

@@ -19,7 +19,7 @@ import Container from '../Container'
 import BrandCreateDialog from './BrandCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import dateFormat from '../../helpers/dateFormat'
 import t from '../../helpers/translate'
 
@@ -146,14 +146,14 @@ const BrandGridList = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.BRAND_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text={t('Добавить бренд')}>
+                <ToolTip position="left" text={t('Добавить бренд')}>
                     <FloatingActionButton
                         mini={true}
                         className={classes.addButton}
                         onTouchTap={createDialog.handleOpenCreateDialog}>
                         <ContentAdd />
                     </FloatingActionButton>
-                </Tooltip>
+                </ToolTip>
             </div>
             <GridList
                 filter={filter}

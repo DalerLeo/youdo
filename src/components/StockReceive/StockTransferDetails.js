@@ -8,7 +8,7 @@ import PrintIcon from 'material-ui/svg-icons/action/print'
 import IconButton from 'material-ui/IconButton'
 import CheckCircleIcon from 'material-ui/svg-icons/action/check-circle'
 import NotFound from '../Images/not-found.png'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import LinearProgress from '../LinearProgress'
 import numberformat from '../../helpers/numberFormat'
 import dateFormat from '../../helpers/dateFormat'
@@ -178,7 +178,7 @@ const StockTransferDetails = enhance((props) => {
                             <Col xs={2}>{dateDelivery}</Col>
                             <Col xs={1} style={{textAlign: 'right', display: 'flex'}}>
                                 <div className={classes.titleButtons}>
-                                    <Tooltip position="right" text="Распечатать накладную">
+                                    <ToolTip position="right" text="Распечатать накладную">
                                         <IconButton
                                             iconStyle={iconStyle.icon}
                                             style={iconStyle.button}
@@ -187,8 +187,8 @@ const StockTransferDetails = enhance((props) => {
                                         >
                                             <PrintIcon />
                                         </IconButton>
-                                    </Tooltip>
-                                    <Tooltip position="right" text={tooltipText}>
+                                    </ToolTip>
+                                    <ToolTip position="right" text={tooltipText}>
                                         <IconButton
                                             iconStyle={iconStyle.icon}
                                             style={iconStyle.button}
@@ -196,7 +196,7 @@ const StockTransferDetails = enhance((props) => {
                                             onTouchTap={confirmDialog.handleOpenConfirmDialog}>
                                             <CheckCircleIcon />
                                         </IconButton>
-                                    </Tooltip>
+                                    </ToolTip>
                                 </div>
                             </Col>
                         </Row>

@@ -13,7 +13,7 @@ import FlatButton from 'material-ui/FlatButton'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import {TextField, CheckBox} from '../ReduxForm'
 import numberFormat from '../../helpers/numberFormat'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import t from '../../helpers/translate'
 
 const enhance = compose(
@@ -224,11 +224,11 @@ const OrderCreateDialog = enhance((props) => {
                                     <Col xs={2}>{t('Тип товара')}</Col>
                                     <Col xs={2}>{t('Кол-во')}</Col>
                                     <Col xs={1}>
-                                        <Tooltip position="left" text={t('Отметить все как без браков')}>
+                                        <ToolTip position="left" text={t('Отметить все как без браков')}>
                                             <div onClick={() => { handleCheckNoDefect(products) }}>
                                                 <Field name="noDefects" component={CheckBox}/>
                                             </div>
-                                        </Tooltip>
+                                        </ToolTip>
                                     </Col>
                                     <Col xs={2}>Принято</Col>
                                     <Col xs={2}>Брак</Col>
@@ -248,22 +248,22 @@ const OrderCreateDialog = enhance((props) => {
                                             <Col xs={2}>{amount} {measurement}</Col>
                                             {isUpdate
                                                 ? <Col xs={1}>
-                                                    <Tooltip position="left" text='Без браков'>
+                                                    <ToolTip position="left" text='Без браков'>
                                                         <Field
                                                             key={id}
                                                             name={'stocks[' + index + '][selected]'}
                                                             component={CheckBox}/>
-                                                    </Tooltip>
+                                                    </ToolTip>
                                                 </Col>
                                                 : <Col xs={1}>
-                                                    <Tooltip position="left" text='Без браков'>
+                                                    <ToolTip position="left" text='Без браков'>
                                                         <div>
                                                             <Field
                                                                 key={id}
                                                                 name={'stocks[' + index + '][selected]'}
                                                                 component={CheckBox}/>
                                                         </div>
-                                                    </Tooltip>
+                                                    </ToolTip>
                                                 </Col>}
                                             <Col xs={2}>
                                                 <Field

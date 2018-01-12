@@ -10,7 +10,7 @@ import GridList from '../GridList'
 import Container from '../Container'
 import CashboxCreateDialog from './CashboxCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import FlatButton from 'material-ui/FlatButton'
@@ -167,7 +167,7 @@ const CashboxGridList = enhance((props) => {
                 <Col xs={2}>{type}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
                     <div className={classes.iconBtn}>
-                        <Tooltip position="bottom" text={t('Изменить')}>
+                        <ToolTip position="bottom" text={t('Изменить')}>
                             <IconButton
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
@@ -176,8 +176,8 @@ const CashboxGridList = enhance((props) => {
                                 onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
                                 <Edit />
                             </IconButton>
-                        </Tooltip>
-                        <Tooltip position="bottom" text={t('Удалить')}>
+                        </ToolTip>
+                        <ToolTip position="bottom" text={t('Удалить')}>
                             <IconButton
                                 disableTouchRipple={true}
                                 iconStyle={iconStyle.icon}
@@ -186,7 +186,7 @@ const CashboxGridList = enhance((props) => {
                                 touch={true}>
                                 <DeleteIcon />
                             </IconButton>
-                        </Tooltip>
+                        </ToolTip>
                     </div>
                 </Col>
             </Row>

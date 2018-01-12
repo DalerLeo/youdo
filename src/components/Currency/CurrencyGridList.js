@@ -18,7 +18,7 @@ import HistoryListDialog from './HistoryListDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import GridList from '../GridList'
 import Container from '../Container'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat'
 import toBoolean from '../../helpers/toBoolean'
@@ -248,7 +248,7 @@ const CurrencyGridList = enhance((props) => {
                     <Col xs={3} onClick={() => { listData.handleCurrencyClick(id) }}>{createdDate}</Col>
                     <Col xs={1} style={{textAlign: 'right'}}>
                         <div className={classes.iconBtn}>
-                            <Tooltip position="bottom" onClick={courseDialog.handleOpenCourseDialog} text={t('Установить курс')}>
+                            <ToolTip position="bottom" onClick={courseDialog.handleOpenCourseDialog} text={t('Установить курс')}>
                                 <IconButton
                                     iconStyle={iconStyle.icon}
                                     style={iconStyle.button}
@@ -257,8 +257,8 @@ const CurrencyGridList = enhance((props) => {
                                     onTouchTap={() => { courseDialog.handleOpenCourseDialog(id) }}>
                                     <Dollar/>
                                 </IconButton>
-                            </Tooltip>
-                            <Tooltip position="bottom" text={t('Изменить')}>
+                            </ToolTip>
+                            <ToolTip position="bottom" text={t('Изменить')}>
                                 <IconButton
                                     iconStyle={iconStyle.icon}
                                     style={iconStyle.button}
@@ -269,8 +269,8 @@ const CurrencyGridList = enhance((props) => {
                                     }}>
                                     <Edit/>
                                 </IconButton>
-                            </Tooltip>
-                            <Tooltip position="bottom" text={t('Удалить')}>
+                            </ToolTip>
+                            <ToolTip position="bottom" text={t('Удалить')}>
                                 <IconButton
                                     disableTouchRipple={true}
                                     iconStyle={iconStyle.icon}
@@ -281,7 +281,7 @@ const CurrencyGridList = enhance((props) => {
                                     touch={true}>
                                     <Delete/>
                                 </IconButton>
-                            </Tooltip>
+                            </ToolTip>
                         </div>
                     </Col>
                 </Row>

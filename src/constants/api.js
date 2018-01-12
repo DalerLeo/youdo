@@ -363,6 +363,10 @@ export const STAT_AGENT_GET_DOCUMENT = '/stats/agents/export/'
 export const STAT_PROVIDER_LIST = 'stock/provider_balances/'
 export const STAT_PROVIDER_ITEM = 'finance/provider_transactions/'
 export const STAT_PROVIDER_SUM = 'stats/provider/balances/'
+export const STAT_PROVIDER_DETAIL = 'stock/provider_balances/%d/detail/'
+
+export const STAT_PROVIDER_TRANSACTIONS_LIST = 'finance/provider_transactions/'
+export const STAT_PROVIDER_TRANSACTIONS_SUM = 'stats/provider_transactions/'
 
 export const STAT_MARKET = 'stats/markets'
 export const STAT_MARKET_LIST = `${STAT_MARKET}/`

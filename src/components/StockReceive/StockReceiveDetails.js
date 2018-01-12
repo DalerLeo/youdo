@@ -14,7 +14,7 @@ import NotFound from '../Images/not-found.png'
 import stockTypeFormat from '../../helpers/stockTypeFormat'
 import dateFormat from '../../helpers/dateFormat'
 import toBoolean from '../../helpers/toBoolean'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import getConfig from '../../helpers/getConfig'
 import t from '../../helpers/translate'
@@ -265,7 +265,7 @@ const TransferDetail = enhance((props) => {
                                 {(history && transferHistory) && currentRequestDate}
                                 <div className={classes.titleButtons}>
                                     {!history && (type === 'transfer')
-                                        ? <Tooltip position="right" text={tooltipText} style={{color: '#e57373'}}>
+                                        ? <ToolTip position="right" text={tooltipText} style={{color: '#e57373'}}>
                                             <IconButton
                                                 iconStyle={iconStyleCheck.icon}
                                                 style={iconStyleCheck.button}
@@ -275,9 +275,9 @@ const TransferDetail = enhance((props) => {
                                                 }}>
                                                 <CheckCircleIcon/>
                                             </IconButton>
-                                        </Tooltip>
+                                        </ToolTip>
                                         : (!history && type === 'delivery_return')
-                                            ? <Tooltip position="right" text={tooltipText}>
+                                            ? <ToolTip position="right" text={tooltipText}>
                                                 <IconButton
                                                     iconStyle={iconStyleCheck.icon}
                                                     style={iconStyleCheck.button}
@@ -287,9 +287,9 @@ const TransferDetail = enhance((props) => {
                                                     }}>
                                                     <CheckCircleIcon/>
                                                 </IconButton>
-                                            </Tooltip>
+                                            </ToolTip>
                                             : (!history && type === 'order_return')
-                                                ? <Tooltip position="right" text={tooltipText}>
+                                                ? <ToolTip position="right" text={tooltipText}>
                                                     <IconButton
                                                         iconStyle={iconStyleCheck.icon}
                                                         style={iconStyleCheck.button}
@@ -299,10 +299,10 @@ const TransferDetail = enhance((props) => {
                                                         }}>
                                                         <CheckCircleIcon/>
                                                     </IconButton>
-                                                </Tooltip>
+                                                </ToolTip>
                                                 : (type === 'supply')
                                                     ? (!history
-                                                        ? <Tooltip position="right" text={tooltipText}>
+                                                        ? <ToolTip position="right" text={tooltipText}>
                                                             <IconButton
                                                                 iconStyle={iconStyleCheck.icon}
                                                                 style={iconStyleCheck.button}
@@ -312,8 +312,8 @@ const TransferDetail = enhance((props) => {
                                                                 }}>
                                                                 <CheckCircleIcon/>
                                                             </IconButton>
-                                                        </Tooltip>
-                                                        : <Tooltip position="right" text={tooltipUpdateText}>
+                                                        </ToolTip>
+                                                        : <ToolTip position="right" text={tooltipUpdateText}>
                                                             <IconButton
                                                                 iconStyle={iconStyle.icon}
                                                                 style={iconStyle.button}
@@ -324,12 +324,12 @@ const TransferDetail = enhance((props) => {
                                                                 }}>
                                                                 <EditIcon/>
                                                             </IconButton>
-                                                        </Tooltip>)
+                                                        </ToolTip>)
                                                     : null
                                     }
 
                                     {!history && type === 'transfer' &&
-                                    <Tooltip position="right" text={tooltipCancelText}>
+                                    <ToolTip position="right" text={tooltipCancelText}>
                                         <IconButton
                                             iconStyle={iconStyleCancell.icon}
                                             style={iconStyleCancell.button}
@@ -339,9 +339,9 @@ const TransferDetail = enhance((props) => {
                                             touch={true}>
                                             <RemoveCircleIcon/>
                                         </IconButton>
-                                    </Tooltip>}
+                                    </ToolTip>}
                                     {!history && type === 'delivery_return' &&
-                                    <Tooltip position="right" text={tooltipCancelText}>
+                                    <ToolTip position="right" text={tooltipCancelText}>
                                         <IconButton
                                             iconStyle={iconStyleCancell.icon}
                                             style={iconStyleCancell.button}
@@ -351,9 +351,9 @@ const TransferDetail = enhance((props) => {
                                             touch={true}>
                                             <RemoveCircleIcon/>
                                         </IconButton>
-                                    </Tooltip>}
+                                    </ToolTip>}
                                     {history && type !== 'transfer' && type !== 'delivery_return' &&
-                                    <Tooltip position="right" text={tooltipCancelText}>
+                                    <ToolTip position="right" text={tooltipCancelText}>
                                         <IconButton
                                             iconStyle={iconStyleCancell.icon}
                                             style={iconStyleCancell.button}
@@ -363,7 +363,7 @@ const TransferDetail = enhance((props) => {
                                             touch={true}>
                                             <RemoveCircleIcon/>
                                         </IconButton>
-                                    </Tooltip>}
+                                    </ToolTip>}
                                     {popover && !history && <IconButton onTouchTap={onClose}>
                                         <CloseIcon color="#666666"/>
                                     </IconButton>}

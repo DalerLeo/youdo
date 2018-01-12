@@ -14,7 +14,16 @@ const ProviderTransactionFormat = enhance((props) => {
         case TRANS_TYPE.PAYMENT: return <span>Оплата</span>
         case TRANS_TYPE.FIRST_BALANCE: return <span>Первоначальный баланс</span>
         case TRANS_TYPE.SUPPLY: return (
-            <Link target={'_blank'} to={{pathname: sprintf(ROUTES.SUPPLY_ITEM_PATH, supply), query: {search: supply, exclude: false}}}>Поставка №{supply}</Link>
+            <Link target={'_blank'}
+                  to={{pathname: sprintf(ROUTES.SUPPLY_ITEM_PATH, supply), query: {search: supply, exclude: false}}}>
+                Поставка №{supply}
+            </Link>
+        )
+        case TRANS_TYPE.SUPPLY_EXPENSE: return (
+            <Link target={'_blank'}
+                  to={{pathname: sprintf(ROUTES.SUPPLY_ITEM_PATH, supply), query: {search: supply, exclude: false, tab: 'expenses'}}}>
+                Расход на поставку №{supply}
+            </Link>
         )
         case TRANS_TYPE.NONE_TYPE: return <span>Без типа</span>
         case TRANS_TYPE.INCOME_FROM_PROVIDER: return <span>Приход от поставщика</span>

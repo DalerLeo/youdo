@@ -10,7 +10,7 @@ import Edit from 'material-ui/svg-icons/editor/mode-edit'
 import IconButton from 'material-ui/IconButton'
 import PrintIcon from 'material-ui/svg-icons/action/print'
 import ConfirmDialog from '../ConfirmDialog'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import numberFormat from '../../helpers/numberFormat'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
 import t from '../../helpers/translate'
@@ -238,7 +238,7 @@ const ReturnDetails = enhance((props) => {
                      onClick={handleCloseDetail}>
                 </div>
                 <div className={classes.titleButtons}>
-                    {getDocument && !stat && <Tooltip position="bottom" text={t('Распечатать накладную')}>
+                    {getDocument && !stat && <ToolTip position="bottom" text={t('Распечатать накладную')}>
                         <IconButton
                             disabled={status === CANCELLED}
                             iconStyle={iconStyle.icon}
@@ -247,8 +247,8 @@ const ReturnDetails = enhance((props) => {
                             onTouchTap={() => { getDocument.handleGetDocument(id) }}>
                             <PrintIcon />
                         </IconButton>
-                    </Tooltip>}
-                    {isAdmin && <Tooltip position="bottom" text={!canChangeAnyReturn && typeClient === TWO ? t('У вас нет доступа') : t('Изменить')}>
+                    </ToolTip>}
+                    {isAdmin && <ToolTip position="bottom" text={!canChangeAnyReturn && typeClient === TWO ? t('У вас нет доступа') : t('Изменить')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
@@ -257,8 +257,8 @@ const ReturnDetails = enhance((props) => {
                             onTouchTap={() => { updateDialog.handleOpenUpdateDialog() }}>
                             <Edit />
                         </IconButton>
-                    </Tooltip>}
-                    {confirmDialog && !stat && <Tooltip position="bottom" text={!canChangeAnyReturn && typeClient === TWO ? t('У вас нет доступа') : t('Отменить')}>
+                    </ToolTip>}
+                    {confirmDialog && !stat && <ToolTip position="bottom" text={!canChangeAnyReturn && typeClient === TWO ? t('У вас нет доступа') : t('Отменить')}>
                         <IconButton
                             disabled={!(status === IN_PROGRESS || status === PENDING) || (!canChangeAnyReturn && typeClient === TWO)}
                             iconStyle={iconStyle.icon}
@@ -267,7 +267,7 @@ const ReturnDetails = enhance((props) => {
                             onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}>
                             <Delete />
                         </IconButton>
-                    </Tooltip>}
+                    </ToolTip>}
                 </div>
             </div>
             <div className={classes.content}>

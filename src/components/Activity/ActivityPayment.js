@@ -8,7 +8,7 @@ import Paper from 'material-ui/Paper'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
 import Info from 'material-ui/svg-icons/action/info-outline'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
 import t from '../../helpers/translate'
 
@@ -180,9 +180,9 @@ const ActivityPayment = enhance((props) => {
         <div className={classes.block}>
             <div className={classes.blockTitle}>
                 <strong>{t('Сбор денег')} ({countSummary})</strong>
-                <Tooltip position="left" text={tooltipText}>
+                <ToolTip position="left" text={tooltipText}>
                     <Info color="#666"/>
-                </Tooltip>
+                </ToolTip>
             </div>
             <div className={classes.blockItems}>
                 {paymentList}

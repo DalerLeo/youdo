@@ -16,7 +16,7 @@ import Container from '../Container'
 import PriceListSettingCreateDialog from './PriceListSettingCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SettingSideMenu from '../Settings/SettingsSideMenu'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import dateFormat from '../../helpers/dateFormat'
 import t from '../../helpers/translate'
 
@@ -165,7 +165,7 @@ const PriceListSettingGridList = enhance((props) => {
                 <Col xs={4}>{createdDate}</Col>
                 <Col xs={1} className={classes.right}>
                     <div className={classes.iconBtn}>
-                        <Tooltip position="bottom" text={t('Изменить')}>
+                        <ToolTip position="bottom" text={t('Изменить')}>
                             <IconButton
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
@@ -174,8 +174,8 @@ const PriceListSettingGridList = enhance((props) => {
                                 onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
                                 <Edit />
                             </IconButton>
-                        </Tooltip>
-                        <Tooltip position="bottom" text={t('Удалить')}>
+                        </ToolTip>
+                        <ToolTip position="bottom" text={t('Удалить')}>
                             <IconButton
                                 disableTouchRipple={true}
                                 iconStyle={iconStyle.icon}
@@ -184,7 +184,7 @@ const PriceListSettingGridList = enhance((props) => {
                                 touch={true}>
                                 <DeleteIcon />
                             </IconButton>
-                        </Tooltip>
+                        </ToolTip>
                     </div>
                 </Col>
             </Row>

@@ -26,7 +26,7 @@ import {StatisticsFilterExcel, StatisticsChart} from '../../Statistics'
 import Loader from '../../Loader'
 import getConfig from '../../../helpers/getConfig'
 import NotFound from '../../Images/not-found.png'
-import Tooltip from '../../ToolTip'
+import ToolTip from '../../ToolTip'
 import {
     DateToDateField,
     MarketMultiSearchField,
@@ -329,13 +329,13 @@ const StatSalesGridList = enhance((props) => {
             const NOT_CONFIRMED = 5
             const now = moment().format('YYYY-MM-DD')
             const paymentDate = dateFormat(_.get(item, 'paymentDate'))
-            const balanceTooltip = numberFormat(totalBalance, currentCurrency)
+            const balanceToolTip = numberFormat(totalBalance, currentCurrency)
             const paymentType = _.get(item, 'paymentType') === 'cash' ? t('наличный') : t('банковский счет')
             const paymentDifference = moment(_.get(item, 'paymentDate')).diff(now, 'days')
-            const PAY_PENDING = t('Оплата ожидается') + ': ' + paymentDate + '<br/>' + t('Ожидаемый платеж') + ': ' + balanceTooltip
+            const PAY_PENDING = t('Оплата ожидается') + ': ' + paymentDate + '<br/>' + t('Ожидаемый платеж') + ': ' + balanceToolTip
             const PAY_DELAY = paymentDifference !== ZERO
-                ? t('Оплата ожидалась') + ': ' + paymentDate + '<br/>' + t('Долг') + ': ' + balanceTooltip
-                : t('Оплата ожидается сегодня') + '<br/>' + t('Сумма') + ': ' + balanceTooltip
+                ? t('Оплата ожидалась') + ': ' + paymentDate + '<br/>' + t('Долг') + ': ' + balanceToolTip
+                : t('Оплата ожидается сегодня') + '<br/>' + t('Сумма') + ': ' + balanceToolTip
             return (
                 <Row key={id} className="dottedList" style={status === CANCELED ? {color: '#999', cursor: 'pointer'} : {cursor: 'pointer'}} onClick={() => { statSaleDialog.handleOpenStatSaleDialog(id) }}>
                     <Col xs={1}>{id}</Col>
@@ -348,7 +348,7 @@ const StatSalesGridList = enhance((props) => {
                     <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(totalPrice, currency)}</Col>
                     <Col xs={1} style={{justifyContent: 'flex-end'}}>
                         <div className={classes.buttons}>
-                            {(status === REQUESTED) ? <Tooltip position="bottom" text={t('В процессе')}>
+                            {(status === REQUESTED) ? <ToolTip position="bottom" text={t('В процессе')}>
                                     <IconButton
                                         disableTouchRipple={true}
                                         iconStyle={iconStyle.icon}
@@ -356,8 +356,8 @@ const StatSalesGridList = enhance((props) => {
                                         touch={true}>
                                         <InProcess color="#f0ad4e"/>
                                     </IconButton>
-                                </Tooltip>
-                                : (status === READY) ? <Tooltip position="bottom" text={t('Есть на складе')}>
+                                </ToolTip>
+                                : (status === READY) ? <ToolTip position="bottom" text={t('Есть на складе')}>
                                         <IconButton
                                             disableTouchRipple={true}
                                             iconStyle={iconStyle.icon}
@@ -365,8 +365,8 @@ const StatSalesGridList = enhance((props) => {
                                             touch={true}>
                                             <Available color="#f0ad4e"/>
                                         </IconButton>
-                                    </Tooltip>
-                                    : (status === DELIVERED) ? <Tooltip position="bottom" text={t('Доставлен')}>
+                                    </ToolTip>
+                                    : (status === DELIVERED) ? <ToolTip position="bottom" text={t('Доставлен')}>
                                             <IconButton
                                                 disableTouchRipple={true}
                                                 iconStyle={iconStyle.icon}
@@ -374,8 +374,8 @@ const StatSalesGridList = enhance((props) => {
                                                 touch={true}>
                                                 <Delivered color="#81c784"/>
                                             </IconButton>
-                                        </Tooltip>
-                                        : (status === GIVEN) ? <Tooltip position="bottom" text={t('Передан доставщику')}>
+                                        </ToolTip>
+                                        : (status === GIVEN) ? <ToolTip position="bottom" text={t('Передан доставщику')}>
                                                 <IconButton
                                                     disableTouchRipple={true}
                                                     iconStyle={iconStyle.icon}
@@ -383,8 +383,8 @@ const StatSalesGridList = enhance((props) => {
                                                     touch={true}>
                                                     <Transfered color="#f0ad4e"/>
                                                 </IconButton>
-                                            </Tooltip>
-                                            : (status === CANCELED) ? <Tooltip position="bottom" text={t('Заказ отменен')}>
+                                            </ToolTip>
+                                            : (status === CANCELED) ? <ToolTip position="bottom" text={t('Заказ отменен')}>
                                                     <IconButton
                                                         disableTouchRipple={true}
                                                         iconStyle={iconStyle.icon}
@@ -392,8 +392,8 @@ const StatSalesGridList = enhance((props) => {
                                                         touch={true}>
                                                         <Canceled color='#e57373'/>
                                                     </IconButton>
-                                                </Tooltip>
-                                                : (status === NOT_CONFIRMED) ? <Tooltip position="bottom" text={t('Не подтвержден')}>
+                                                </ToolTip>
+                                                : (status === NOT_CONFIRMED) ? <ToolTip position="bottom" text={t('Не подтвержден')}>
                                                     <IconButton
                                                         disableTouchRipple={true}
                                                         iconStyle={iconStyle.icon}
@@ -401,10 +401,10 @@ const StatSalesGridList = enhance((props) => {
                                                         touch={true}>
                                                         <NotConfirmed color='#999'/>
                                                     </IconButton>
-                                                </Tooltip> : null
+                                                </ToolTip> : null
                             }
                             {!(status === CANCELED) &&
-                            <Tooltip position="bottom" text={(totalPrice > ZERO) && ((moment(_.get(item, 'paymentDate')).diff(now, 'days') <= ZERO))
+                            <ToolTip position="bottom" text={(totalPrice > ZERO) && ((moment(_.get(item, 'paymentDate')).diff(now, 'days') <= ZERO))
                                 ? PAY_DELAY
                                 : ((totalBalance > ZERO) && moment(_.get(item, 'paymentDate')).diff(now, 'days') > ZERO)
                                     ? PAY_PENDING
@@ -424,7 +424,7 @@ const StatSalesGridList = enhance((props) => {
                                                 : (totalBalance === ZERO ? '#81c784' : '#B7BBB7')
                                     }/>
                                 </IconButton>
-                            </Tooltip>
+                            </ToolTip>
                             }
                         </div>
                     </Col>

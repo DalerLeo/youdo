@@ -7,28 +7,28 @@ import {compose, withHandlers, withPropsOnChange} from 'recompose'
 import filterHelper from '../../helpers/filter'
 import {splitToArray, joinArray} from '../../helpers/joinSplitValues'
 import getDocuments from '../../helpers/getDocument'
-import * as serializers from '../../serializers/Statistics/statClientIncomeSerializer'
+import * as serializers from '../../serializers/Statistics/statProviderTransactionsSerializer'
 import * as API from '../../constants/api'
 
-import {ClientIncomeGridList} from '../../components/Statistics'
-import {CLIENT_INCOME_FILTER_KEY} from '../../components/Statistics/ClientIncome/ClientIncomeGridList'
+import {ProviderTransactionsGridList} from '../../components/Statistics'
+import {PROVIDER_TRANSACTIONS_FILTER_KEY} from '../../components/Statistics/ProviderTransactions/ProviderTransactionsGridList'
 
 import {
-    clientIncomeInDataFetchAction,
-    clientIncomeOutDataFetchAction,
-    clientIncomeListFetchAction
-} from '../../actions/statClientIncome'
+    providerTransactionsInDataFetchAction,
+    providerTransactionsOutDataFetchAction,
+    providerTransactionsListFetchAction
+} from '../../actions/statProviderTransactions'
 
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
-        const graphIn = _.get(state, ['statClientIncome', 'dataIn', 'data'])
-        const graphOut = _.get(state, ['statClientIncome', 'dataOut', 'data'])
-        const graphInLoading = _.get(state, ['statClientIncome', 'dataIn', 'loading'])
-        const graphOutLoading = _.get(state, ['statClientIncome', 'dataOut', 'loading'])
-        const list = _.get(state, ['statClientIncome', 'list', 'data'])
-        const listLoading = _.get(state, ['statClientIncome', 'list', 'loading'])
+        const graphIn = _.get(state, ['statProviderTransactions', 'dataIn', 'data'])
+        const graphOut = _.get(state, ['statProviderTransactions', 'dataOut', 'data'])
+        const graphInLoading = _.get(state, ['statProviderTransactions', 'dataIn', 'loading'])
+        const graphOutLoading = _.get(state, ['statProviderTransactions', 'dataOut', 'loading'])
+        const list = _.get(state, ['statProviderTransactions', 'list', 'data'])
+        const listLoading = _.get(state, ['statProviderTransactions', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
         const filter = filterHelper(list, pathname, query)
         return {
@@ -47,7 +47,7 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
-        dispatch(clientIncomeListFetchAction(filter))
+        dispatch(providerTransactionsListFetchAction(filter))
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -58,8 +58,8 @@ const enhance = compose(
         }
         return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
-        dispatch(clientIncomeInDataFetchAction(filter))
-        dispatch(clientIncomeOutDataFetchAction(filter))
+        dispatch(providerTransactionsInDataFetchAction(filter))
+        dispatch(providerTransactionsOutDataFetchAction(filter))
     }),
 
     withHandlers({
@@ -68,29 +68,29 @@ const enhance = compose(
             const search = _.get(filterForm, ['values', 'search']) || null
             const division = _.get(filterForm, ['values', 'division']) || null
             const type = _.get(filterForm, ['values', 'type']) || null
-            const client = _.get(filterForm, ['values', 'client']) || null
+            const provider = _.get(filterForm, ['values', 'provider']) || null
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
 
             filter.filterBy({
-                [CLIENT_INCOME_FILTER_KEY.SEARCH]: search,
-                [CLIENT_INCOME_FILTER_KEY.TYPE]: joinArray(type),
-                [CLIENT_INCOME_FILTER_KEY.DIVISION]: joinArray(division),
-                [CLIENT_INCOME_FILTER_KEY.CLIENT]: joinArray(client),
-                [CLIENT_INCOME_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
-                [CLIENT_INCOME_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
+                [PROVIDER_TRANSACTIONS_FILTER_KEY.SEARCH]: search,
+                [PROVIDER_TRANSACTIONS_FILTER_KEY.TYPE]: joinArray(type),
+                [PROVIDER_TRANSACTIONS_FILTER_KEY.DIVISION]: joinArray(division),
+                [PROVIDER_TRANSACTIONS_FILTER_KEY.PROVIDER]: joinArray(provider),
+                [PROVIDER_TRANSACTIONS_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
+                [PROVIDER_TRANSACTIONS_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
 
             })
         },
         handleGetDocument: props => () => {
             const {filter} = props
             const params = serializers.listFilterSerializer(filter.getParams())
-            getDocuments(API.STAT_CLIENT_INCOME_GET_DOCUMENT, params)
+            getDocuments(API.STAT_PROVIDER_TRANSACTIONS_GET_DOCUMENT, params)
         }
     })
 )
 
-const ClientIncomeList = enhance((props) => {
+const ProviderTransactionsList = enhance((props) => {
     const {
         list,
         listLoading,
@@ -109,7 +109,7 @@ const ClientIncomeList = enhance((props) => {
     const search = !_.isNull(_.get(location, ['query', 'search'])) ? _.get(location, ['query', 'search']) : null
     const division = !_.isNull(_.get(location, ['query', 'division'])) && _.get(location, ['query', 'division'])
     const type = !_.isNull(_.get(location, ['query', 'type'])) && _.get(location, ['query', 'type'])
-    const client = !_.isNull(_.get(location, ['query', 'client'])) && _.get(location, ['query', 'client'])
+    const provider = !_.isNull(_.get(location, ['query', 'provider'])) && _.get(location, ['query', 'provider'])
 
     let mergedGraph = {}
 
@@ -144,14 +144,14 @@ const ClientIncomeList = enhance((props) => {
             },
             search: search,
             division: division && splitToArray(division),
-            client: client && splitToArray(client),
+            provider: provider && splitToArray(provider),
             type: type && splitToArray(type)
         }
     }
 
     return (
         <Layout {...layout}>
-            <ClientIncomeGridList
+            <ProviderTransactionsGridList
                 filter={filter}
                 listData={listData}
                 graphData={graphData}
@@ -164,4 +164,4 @@ const ClientIncomeList = enhance((props) => {
     )
 })
 
-export default ClientIncomeList
+export default ProviderTransactionsList

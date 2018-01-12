@@ -17,7 +17,7 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
@@ -174,7 +174,7 @@ const ProductGridList = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.PRODUCT_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text={t('Добавить продукт')}>
+                <ToolTip position="left" text={t('Добавить продукт')}>
                     <FloatingActionButton
                         mini={true}
                         zDepth={1}
@@ -182,7 +182,7 @@ const ProductGridList = enhance((props) => {
                         onTouchTap={createDialog.handleOpenCreateDialog}>
                         <ContentAdd />
                     </FloatingActionButton>
-                </Tooltip>
+                </ToolTip>
             </div>
 
             <GridList

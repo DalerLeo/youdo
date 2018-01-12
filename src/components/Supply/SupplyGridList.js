@@ -21,7 +21,7 @@ import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import SupplyExpenseCreateDialog from './SupplyExpenseCreateDialog'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import numberFormat from '../../helpers/numberFormat'
 import dateFormat from '../../helpers/dateFormat'
 import {connect} from 'react-redux'
@@ -272,7 +272,7 @@ const SupplyGridList = enhance((props) => {
             <SubMenu url={ROUTES.SUPPLY_LIST_URL}/>
 
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text={t('Добавить поставку')}>
+                <ToolTip position="left" text={t('Добавить поставку')}>
                     <FloatingActionButton
                         mini={true}
                         zDepth={1}
@@ -280,7 +280,7 @@ const SupplyGridList = enhance((props) => {
                         onTouchTap={createDialog.handleOpenCreateDialog}>
                         <ContentAdd/>
                     </FloatingActionButton>
-                </Tooltip>
+                </ToolTip>
             </div>
 
             <GridList

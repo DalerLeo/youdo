@@ -9,7 +9,7 @@ import IconButton from 'material-ui/IconButton'
 import Check from 'material-ui/svg-icons/av/playlist-add-check'
 import HideCheck from 'material-ui/svg-icons/action/visibility-off'
 import Uncheck from 'material-ui/svg-icons/toggle/indeterminate-check-box'
-import Tooltip from '../../ToolTip'
+import ToolTip from '../../ToolTip'
 import {hashHistory} from 'react-router'
 import toBoolean from '../../../helpers/toBoolean'
 import t from '../../../helpers/translate'
@@ -59,13 +59,13 @@ const GridListNav = ({classes, filter, filterDialog, addButton, withoutSearch, c
                     </Col>
                     <Col xs={6} className={classes.flex}>
                         {!withoutPagination && <GridListNavPagination filter={filter}/>}
-                        {withCheckboxes && <Tooltip position="left" text={showCheckboxes ? t('Спрятать флажки') : t('Выбрать из списка для распечатки накладного')}>
+                        {withCheckboxes && <ToolTip position="left" text={showCheckboxes ? t('Спрятать флажки') : t('Выбрать из списка для распечатки накладного')}>
                             <IconButton onTouchTap={toggleCheckboxes}>
                                 {showCheckboxes
                                     ? <HideCheck color="#5d6474"/>
                                     : <Check color="#5d6474"/>}
                             </IconButton>
-                        </Tooltip>}
+                        </ToolTip>}
                         {extraButtons}
                     </Col>
                 </Row>}
@@ -78,11 +78,11 @@ const GridListNav = ({classes, filter, filterDialog, addButton, withoutSearch, c
                         {!withoutPagination && <GridListNavPagination filter={filter}/>}
                         <div className={classes.buttons}>
                             {checkboxActions}
-                            <Tooltip position="left" text={t('Снять выделение')}>
+                            <ToolTip position="left" text={t('Снять выделение')}>
                                 <IconButton onTouchTap={clearSelects}>
                                     <Uncheck color="#666"/>
                                 </IconButton>
-                            </Tooltip>
+                            </ToolTip>
                         </div>
                     </Col>
                 </Row>}

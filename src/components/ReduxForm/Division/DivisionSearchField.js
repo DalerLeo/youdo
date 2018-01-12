@@ -1,37 +1,21 @@
-import sprintf from 'sprintf'
+import _ from 'lodash'
 import React from 'react'
 import SearchField from '../Basic/SearchField'
-import axios from '../../../helpers/axios'
-import * as PATH from '../../../constants/api'
-import toCamelCase from '../../../helpers/toCamelCase'
-import caughtCancel from '../../../helpers/caughtCancel'
+import * as storageHelper from '../../../helpers/storage'
 
-const CancelToken = axios().CancelToken
-let divisionListToken = null
+const UserCurrenciesSearchField = (props) => {
+    const userData = JSON.parse(storageHelper.getUserData())
+    const divisions = _.get(userData, 'divisions')
 
-const getOptions = (search) => {
-    if (divisionListToken) {
-        divisionListToken.cancel()
+    const getOptions = () => {
+        return Promise.resolve(divisions)
     }
-    divisionListToken = CancelToken.source()
 
-    return axios().get(`${PATH.DIVISION_LIST}?search=${search || ''}&page_size=100`, {cancelToken: divisionListToken.token})
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data.results))
-        })
-        .catch((error) => {
-            caughtCancel(error)
-        })
-}
-
-const getItem = (id) => {
-    return axios().get(sprintf(PATH.DIVISION_ITEM, id))
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data))
-        })
-}
-
-const DivisionSearchField = (props) => {
+    const getItem = (id) => {
+        return Promise.resolve(
+            _.find(divisions, (o) => { return o.id === _.toInteger(id) })
+        )
+    }
     return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
@@ -44,4 +28,4 @@ const DivisionSearchField = (props) => {
     )
 }
 
-export default DivisionSearchField
+export default UserCurrenciesSearchField

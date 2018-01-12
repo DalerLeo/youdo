@@ -444,7 +444,13 @@ const rootReducer = combineReducers({
     statProvider: combineReducers({
         list: createThunkReducer(actionTypes.STAT_PROVIDER_LIST),
         item: createThunkReducer(actionTypes.STAT_PROVIDER_ITEM),
-        sum: createThunkReducer(actionTypes.STAT_PROVIDER_SUM)
+        sum: createThunkReducer(actionTypes.STAT_PROVIDER_SUM),
+        detail: createThunkReducer(actionTypes.STAT_PROVIDER_DETAIL)
+    }),
+    statProviderTransactions: combineReducers({
+        list: createThunkReducer(actionTypes.STAT_PROVIDER_TRANSACTIONS_LIST),
+        dataIn: createThunkReducer(actionTypes.STAT_PROVIDER_TRANSACTIONS_IN),
+        dataOut: createThunkReducer(actionTypes.STAT_PROVIDER_TRANSACTIONS_OUT)
     }),
     division: combineReducers({
         create: createThunkReducer(actionTypes.DIVISION_CREATE),

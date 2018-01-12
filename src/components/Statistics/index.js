@@ -11,7 +11,8 @@ import StatProductMoveGridList from './ProductMove/StatProductMoveGridList'
 import StatReportGridList from './StatReportGridLIst'
 import StatReturnGridList from './Return/StatReturnGridList'
 import StatReturnDialog from './Return/StatReturnDialog'
-import ClientIncomeGridList from './ClientIncome/ClientIncomeGridList'
+import ClientIncomeGridList from './ClientTransactions/ClientIncomeGridList'
+import ProviderTransactionsGridList from './ProviderTransactions/ProviderTransactionsGridList'
 import StatisticsFilterExcel from './StatisticsFilterExcel'
 import StatisticsChart from './StatisticsChart'
 import StatDebtorsGridList from './Debtors/DebtorsGridList'
@@ -48,6 +49,7 @@ export {
     StatProductMoveGridList,
     StatReportGridList,
     ClientIncomeGridList,
+    ProviderTransactionsGridList,
     StatDebtorsGridList,
     StatisticsFilterExcel,
     StatisticsChart,

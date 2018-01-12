@@ -115,7 +115,7 @@ const StatisticsChart = enhance((props) => {
             useHTML: true,
             crosshairs: true,
             pointFormat:
-            '<div class="diagramTooltip">' +
+            '<div class="diagramToolTip">' +
             '{series.name}: {point.y}' +
             '</div>'
         },

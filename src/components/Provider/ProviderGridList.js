@@ -13,7 +13,7 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import {Link} from 'react-router'
 import ProviderDetail from './ProviderDetails'
 import dateFormat from '../../helpers/dateFormat'
@@ -122,7 +122,7 @@ const ProviderGridList = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.PROVIDER_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text={t('Добавить поставщика')}>
+                <ToolTip position="left" text={t('Добавить поставщика')}>
                     <FloatingActionButton
                         mini={true}
                         zDepth={1}
@@ -130,7 +130,7 @@ const ProviderGridList = enhance((props) => {
                         onTouchTap={createDialog.handleOpenCreateDialog}>
                         <ContentAdd />
                     </FloatingActionButton>
-                </Tooltip>
+                </ToolTip>
             </div>
 
             <GridList

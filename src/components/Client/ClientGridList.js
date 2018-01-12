@@ -16,7 +16,7 @@ import ClientFilterDialog from './ClientFilterDialog'
 import Container from '../Container'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import dateFormat from '../../helpers/dateFormat'
 import t from '../../helpers/translate'
 const colorBlue = '#12aaeb !important'
@@ -231,7 +231,7 @@ const ClientGridList = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.CLIENT_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text={t('Добавить клиента')}>
+                <ToolTip position="left" text={t('Добавить клиента')}>
                     <FloatingActionButton
                         mini={true}
                         zDepth={1}
@@ -239,7 +239,7 @@ const ClientGridList = enhance((props) => {
                         onTouchTap={createDialog.handleOpenCreateDialog}>
                         <ContentAdd />
                     </FloatingActionButton>
-                </Tooltip>
+                </ToolTip>
             </div>
 
             <GridList

@@ -8,7 +8,7 @@ import GridList from '../GridList'
 import moment from 'moment'
 import IconButton from 'material-ui/IconButton'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import Join from 'material-ui/svg-icons/content/link'
 import JoinDialog from './JoinDialog'
 import t from '../../helpers/translate'
@@ -146,14 +146,14 @@ const JoinTabClients = enhance((props) => {
                 <Col xs={3}>{createdDate}</Col>
                 <Col xs={1}>
                     <div className={classes.iconBtn}>
-                        <Tooltip position="bottom" text="Объединить">
+                        <ToolTip position="bottom" text="Объединить">
                             <IconButton
                                 onTouchTap={() => { joinClientDialog.handleOpenJoinClients(id) }}
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}>
                                 <Join/>
                             </IconButton>
-                        </Tooltip>
+                        </ToolTip>
                     </div>
                 </Col>
             </Row>
@@ -169,7 +169,7 @@ const JoinTabClients = enhance((props) => {
     return (
         <div className={classes.wrapper}>
             <div className={classes.mainButton}>
-                <Tooltip position="left" text="Объединить">
+                <ToolTip position="left" text="Объединить">
                     <FloatingActionButton
                         onTouchTap={() => { joinClientDialog.handleOpenJoinClients(true) }}
                         backgroundColor="#12aaeb"
@@ -177,7 +177,7 @@ const JoinTabClients = enhance((props) => {
                         zDepth={1}>
                         <Join/>
                     </FloatingActionButton>
-                </Tooltip>
+                </ToolTip>
             </div>
             <GridList
                 filter={filter}
