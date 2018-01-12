@@ -63,18 +63,19 @@ const enhance = compose(
     connect((state) => {
         const typeParent = _.get(state, ['form', 'ProductCreateForm', 'values', 'productTypeParent', 'value'])
         const measurementParent = _.get(state, ['form', 'ProductCreateForm', 'values', 'measurement', 'value'])
+        const boxes = _.get(state, ['form', 'ProductCreateForm', 'values', 'boxes'])
         return {
             typeParent,
-            measurementParent
+            measurementParent,
+            boxes
         }
-    }),
+    })
 )
 
 const ProductCreateDialog = enhance((props) => {
     const {open, loading, handleSubmit, onClose, classes, isUpdate, typeParent, measurementParent} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const measurementChilds = _.get(measurementParent, 'children')
-
     return (
         <Dialog
             modal={true}
@@ -147,11 +148,12 @@ const ProductCreateDialog = enhance((props) => {
                                     const name = _.get(item, 'name')
                                     return (
                                         <Field
-                                        name={'[boxes][' + id + ']amount'}
-                                        className={classes.inputFieldCustom}
-                                        component={TextField}
-                                        label={name}
-                                        fullWidth={true}/>
+                                            name={'[boxes][' + id + ']amount'}
+                                            className={classes.inputFieldCustom}
+                                            component={TextField}
+                                            label={name}
+                                            fullWidth={true}
+                                            key={id}/>
                                     )
                                 })}
                             </div>}

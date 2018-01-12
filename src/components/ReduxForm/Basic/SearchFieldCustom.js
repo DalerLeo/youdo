@@ -2,7 +2,7 @@ import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
-import {compose, withPropsOnChange, withReducer} from 'recompose'
+import {compose, withPropsOnChange, withReducer, withState, lifecycle} from 'recompose'
 import Select from 'react-select'
 import 'react-select/dist/react-select.css'
 
@@ -93,18 +93,31 @@ const enhance = compose(
             }
         }
     }),
-
+    withState('mount', 'setMount', false),
+    lifecycle({
+        componentDidMount () {
+            this.props.setMount(true)
+        },
+        componentWillUnmount () {
+            this.props.setMount(false)
+        }
+    }),
     withReducer('state', 'dispatch', (state, action) => {
         return {...state, ...action}
     }, {dataSource: [], text: '', loading: false, iniValue: '', open: false}),
 
+    withPropsOnChange(() => {
+        return false
+    }, (props) => {
+        props.autoFetch && _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)
+    }),
     withPropsOnChange((props, nextProps) => {
         return (((_.get(props, ['state', 'text']) !== _.get(nextProps, ['state', 'text']) && _.get(nextProps, ['state', 'text']) !== '') ||
             _.get(props, ['state', 'open']) !== _.get(nextProps, ['state', 'open'])) ||
             _.get(props, ['parent']) !== _.get(nextProps, ['parent']) || _.get(props, ['stock']) !== _.get(nextProps, ['stock'])) &&
             _.get(nextProps, ['state', 'open'])
     }, (props) => {
-        props.state.open && _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)
+        (props.state.open || props.autoFetch) && _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)
     }),
     withPropsOnChange((props, nextProps) => {
         return (!_.isEmpty(_.get(nextProps, ['state', 'dataSource'])) && _.get(props, ['input', 'value']) !== _.get(nextProps, ['input', 'value'])) &&
