@@ -7,12 +7,17 @@ export const createSerializer = (data) => {
     const priority = _.get(data, 'priority')
     const type = _.get(data, ['type', 'value']) || _.get(data, ['productTypeParent', 'value'])
     const measurement = _.get(data, ['measurement', 'value', 'id'])
+    const childMeasurement = _.map(_.get(data, ['measurement', 'value', 'children']), (item) => {
+        return {measurement: _.toString(item.id)}
+    })
     const boxes = _.filter(_.map(_.get(data, 'boxes'), (item, index) => {
         return {
             measurement: index,
             amount: _.toNumber(_.get(item, 'amount'))
         }
     }), item => _.get(item, 'amount'))
+
+    const intersection = _.intersectionBy(boxes, childMeasurement, 'measurement')
     const image = _.get(data, 'image')
     const imageId = (_.get(image, ['id'])) ? _.get(image, ['id']) : image
     const requset = {
@@ -21,7 +26,7 @@ export const createSerializer = (data) => {
         type,
         priority,
         measurement,
-        boxes
+        boxes: intersection
     }
     return image ? _.merge(requset, {image: imageId}) : requset
 }

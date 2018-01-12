@@ -55,8 +55,8 @@ export const measurementUpdateAction = (id, formValues) => {
     }
 }
 
-export const measurementListFetchAction = (filter) => {
-    const params = serializers.listFilterSerializer(filter.getParams())
+export const measurementListFetchAction = (filter, id) => {
+    const params = serializers.listFilterSerializer(filter.getParams(), id)
     const payload = axios()
         .get(API.MEASUREMENT_H_LIST, {params})
         .then((response) => {

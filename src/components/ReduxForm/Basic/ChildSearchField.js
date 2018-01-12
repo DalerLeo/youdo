@@ -2,7 +2,7 @@ import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
-import {compose, withPropsOnChange, withReducer, withHandlers} from 'recompose'
+import {compose, withPropsOnChange, withReducer, withHandlers, lifecycle, withState} from 'recompose'
 import Select from 'react-select'
 import 'react-select/dist/react-select.css'
 const DELAY_FOR_TYPE_ATTACK = 300
@@ -72,10 +72,27 @@ const enhance = compose(
             }
         }
     }),
-
+    withState('mount', 'setMount', false),
+    lifecycle({
+        componentDidMount () {
+            this.props.setMount(true)
+        },
+        componentWillUnmount () {
+            this.props.setMount(false)
+        }
+    }),
     withReducer('state', 'dispatch', (state, action) => {
         return {...state, ...action}
     }, {dataSource: [], text: '', loading: false, firstTime: true}),
+
+    withPropsOnChange((props, nextProps) => {
+        return _.get(props, ['parent']) !== _.get(nextProps, ['parent']) && _.get(nextProps, ['parent'])
+    }, (props) => {
+        props.state.mount && _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props, true)
+    }),
+    withPropsOnChange((props, nextProps) => {
+        return _.get(props, ['state', 'text']) !== _.get(nextProps, ['state', 'text'])
+    }, (props) => props.state.mount && _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)),
 
     withHandlers({
         valueRenderer: props => (option) => {
@@ -86,14 +103,7 @@ const enhance = compose(
             return option.text
         }
     }),
-    withPropsOnChange((props, nextProps) => {
-        return _.get(props, ['parent']) !== _.get(nextProps, ['parent']) && _.get(nextProps, ['parent'])
-    }, (props) => {
-        _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props, true)
-    }),
-    withPropsOnChange((props, nextProps) => {
-        return _.get(props, ['state', 'text']) !== _.get(nextProps, ['state', 'text'])
-    }, (props) => _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)),
+
 )
 
 const SearchField = enhance((props) => {
