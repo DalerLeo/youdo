@@ -8,14 +8,14 @@ import caughtCancel from '../../../helpers/caughtCancel'
 import t from '../../../helpers/translate'
 
 const CancelToken = axios().CancelToken
-let supplyListToken = null
+let orderListToken = null
 
 const getOptions = (search) => {
-    if (supplyListToken) {
-        supplyListToken.cancel()
+    if (orderListToken) {
+        orderListToken.cancel()
     }
-    supplyListToken = CancelToken.source()
-    return axios().get(`${PATH.SUPPLY_LIST}?search=${search || ''}&page_size=100`, {cancelToken: supplyListToken.token})
+    orderListToken = CancelToken.source()
+    return axios().get(`${PATH.ORDER_LIST}?search=${search || ''}&page_size=100`, {cancelToken: orderListToken.token})
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
         })
@@ -25,25 +25,25 @@ const getOptions = (search) => {
 }
 
 const getItem = (id) => {
-    return axios().get(PATH.SUPPLY_LIST)
+    return axios().get(PATH.ORDER_LIST)
         .then(({data}) => {
             const detail = _.find(data, {'id': id})
             return Promise.resolve(toCamelCase(detail))
         })
 }
 
-const SupplySearchField = (props) => {
+const OrderSearchField = (props) => {
     return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
             getText={(value) => {
                 const id = _.get(value, 'id')
-                const provider = _.get(value, ['provider', 'name'])
+                const client = _.get(value, ['client', 'name'])
                 const contract = _.get(value, 'contract') || '-'
                 return (
                     <div>
-                        <div>{t('Поставка №')}{id}</div>
-                        <div>{t('Поставщик')}: {provider}</div>
+                        <div>{t('Заказ №')}{id}</div>
+                        <div>{t('Клиент')}: {client}</div>
                         <div>{t('Номер договора')}: {contract}</div>
                     </div>
                 )
@@ -56,4 +56,4 @@ const SupplySearchField = (props) => {
     )
 }
 
-export default SupplySearchField
+export default OrderSearchField

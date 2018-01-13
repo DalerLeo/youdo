@@ -35,6 +35,7 @@ export const createIncomeSerializer = (data, cashboxId) => {
     const comment = _.get(data, 'comment')
     const clientId = _.get(data, ['client', 'value'])
     const provider = _.get(data, ['provider', 'value'])
+    const order = _.get(data, ['order', 'value'])
     const customRate = numberWithoutSpaces(_.get(data, 'custom_rate'))
     const division = _.get(data, ['division', 'value'])
     const cashbox = _.get(data, ['cashbox', 'value'])
@@ -58,7 +59,8 @@ export const createIncomeSerializer = (data, cashboxId) => {
         'client': clientId,
         'division': division,
         'date': date,
-        provider
+        provider,
+        order
     }
 }
 
@@ -82,6 +84,7 @@ export const createExpenseSerializer = (data, cashboxId) => {
     const customRate = numberWithoutSpaces(_.get(data, 'custom_rate'))
     const division = _.get(data, ['division', 'value'])
     const cashbox = _.get(data, ['cashbox', 'value'])
+    const supply = _.get(data, ['supply', 'value'])
     const date = moment(_.get(data, 'date')).format('YYYY-MM-DD HH:00:00')
     return (clientId)
         ? {
@@ -92,7 +95,8 @@ export const createExpenseSerializer = (data, cashboxId) => {
             'client': clientId,
             'custom_rate': customRate,
             'division': division,
-            'date': date
+            'date': date,
+            supply
         }
         : (providerId)
             ? {
@@ -103,7 +107,8 @@ export const createExpenseSerializer = (data, cashboxId) => {
                 'provider': providerId,
                 'custom_rate': customRate,
                 'division': division,
-                'date': date
+                'date': date,
+                supply
             }
             : {
                 amount: _.isEmpty(staffs) ? amount : salaryAmount,
@@ -111,7 +116,8 @@ export const createExpenseSerializer = (data, cashboxId) => {
                 'cashbox': _.toInteger(cashboxId) === ZERO ? cashbox : cashboxId,
                 'expanse_category': expenseId,
                 'custom_rate': customRate,
-                staffs
+                staffs,
+                supply
             }
 }
 const HUNDRED = 100

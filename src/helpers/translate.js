@@ -1,13 +1,22 @@
+import React from 'react'
 import {getLanguage} from '../helpers/storage'
 import uz from './uz.json'
 import en from './en.json'
 
+const htmlMarkup = (output) => {
+    return {__html: output}
+}
+
 const translate = (string) => {
     const currentLanguage = getLanguage()
     switch (currentLanguage) {
-        case 'uz': return uz ? uz[string] || string : string
-        case 'en': return en ? en[string] || string : string
-        default: return string
+        case 'uz': return uz
+            ? <span dangerouslySetInnerHTML={{__html: uz[string]}}/> || <span dangerouslySetInnerHTML={htmlMarkup(string)}/>
+            : <span dangerouslySetInnerHTML={htmlMarkup(string)}/>
+        case 'en': return en
+            ? <span dangerouslySetInnerHTML={htmlMarkup(en[string])}/> || <span dangerouslySetInnerHTML={htmlMarkup(string)}/>
+            : <span dangerouslySetInnerHTML={htmlMarkup(string)}/>
+        default: return <span dangerouslySetInnerHTML={htmlMarkup(string)}/>
     }
 }
 export default translate

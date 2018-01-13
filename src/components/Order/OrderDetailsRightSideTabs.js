@@ -45,7 +45,8 @@ const enhance = compose(
             },
             '& .row': {
                 '& > div': {
-                    textAlign: 'right'
+                    textAlign: 'right',
+                    zIndex: '4'
                 },
                 '& > div:first-child': {
                     textAlign: 'left',
@@ -68,7 +69,15 @@ const enhance = compose(
             paddingRight: '30px',
             '& .row': {
                 height: '50px',
-                padding: '0'
+                margin: '0 -30px',
+                padding: '0 30px',
+                '&:first-child:hover': {
+                    background: 'inherit'
+                },
+                '&:hover': {
+                    cursor: 'pointer',
+                    background: '#f2f5f8'
+                }
             }
         },
         summary: {
@@ -101,7 +110,16 @@ const enhance = compose(
         },
         buttons: {
             display: 'flex',
-            justifyContent: 'space-around'
+            justifyContent: 'space-around',
+            zIndex: '2'
+        },
+        link: {
+            position: 'absolute',
+            left: '0',
+            right: '0',
+            top: '0',
+            bottom: '0',
+            zIndex: '1'
         }
     })
 )
@@ -203,9 +221,8 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                             {numberFormat(amount)}&nbsp;
                                             {(returnAmount > ZERO) &&
                                             <span className="redFont">
-                                                    <ToolTip position="bottom"
-                                                             text={tooltipText}>-{returnAmount}</ToolTip>
-                                                </span>} {measurement}
+                                                <ToolTip position="bottom" text={tooltipText}>-{returnAmount}</ToolTip>
+                                            </span>} {measurement}
                                         </Col>
                                         <Col xs={2}>{numberFormat(price)}</Col>
                                         <Col xs={2}>{numberFormat(productTotal)}</Col>
@@ -235,11 +252,10 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                         ? <div className={classes.tabContent}>
                             {!returnDataLoading ? <div className={classes.tabWrapper}>
                                 <Row className="dottedList">
-                                    <Col xs={1}>Код</Col>
                                     <Col xs={3} style={{textAlign: 'left'}}>Причина возврата</Col>
                                     <Col xs={3} style={{textAlign: 'left'}}>Склад</Col>
                                     <Col xs={2}>Дата возврата</Col>
-                                    <Col xs={2}>Сумма ({primaryCurrency})</Col>
+                                    <Col xs={3}>Сумма ({primaryCurrency})</Col>
                                 </Row>
                                 {_.map(returnData, (item, index) => {
                                     const returnId = _.get(item, 'id')
@@ -250,17 +266,13 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                     const totalSum = numberFormat(_.get(item, 'totalPrice'))
                                     return (
                                         <Row className="dottedList" key={index}>
-                                            <Col xs={1}>
-                                                <Link target={'_blank'}
-                                                    to={{pathname: sprintf(ROUTES.RETURN_ITEM_PATH, returnId), query: {search: returnId}}}
-                                                    className={classes.link}>
-                                                    {returnId}
-                                                </Link>
-                                            </Col>
+                                            <Link target={'_blank'}
+                                                to={{pathname: sprintf(ROUTES.RETURN_ITEM_PATH, returnId), query: {search: returnId, exclude: false}}}
+                                                className={classes.link}/>
                                             <Col style={{textAlign: 'left'}} xs={3}>{comment}</Col>
                                             <Col style={{textAlign: 'left'}} xs={3}>{stock}</Col>
                                             <Col xs={2}>{dateReturn}</Col>
-                                            <Col xs={2}>{totalSum}</Col>
+                                            <Col xs={3}>{totalSum}</Col>
                                             <Col xs={1}>
                                                 <div className={classes.buttons}>
                                                     {(status === PENDING || status === IN_PROGRESS)

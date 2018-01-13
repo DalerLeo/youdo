@@ -162,6 +162,13 @@ const enhance = compose(
             height: '30px',
             width: '3px'
         },
+        progress: {
+            position: 'absolute',
+            left: '0',
+            right: '0',
+            bottom: '0',
+            background: '#12aaeb'
+        },
         addButtonWrapper: {
             position: 'absolute',
             top: '10px',
@@ -238,8 +245,8 @@ const PlanWrapper = enhance((props) => {
     const agentsList = _.map(_.get(usersList, 'data'), (item) => {
         const id = _.get(item, 'id')
         const username = _.get(item, 'firstName') + ' ' + _.get(item, 'secondName')
-        const planFact = _.toNumber(_.get(item, 'doneCount'))
-        const planAmount = _.toNumber(_.get(item, 'todoCount'))
+        const planFact = !_.isNil(_.get(item, 'doneCount')) ? _.toNumber(_.get(item, 'doneCount')) : ZERO
+        const planAmount = !_.isNil(_.get(item, 'todoCount')) ? _.toNumber(_.get(item, 'todoCount')) : ZERO
         const percent = (planFact / planAmount) * HUNDRED
         const tooltipHint = groupId === 'merch' ? MERCH : (groupId === 'delivery') ? DELIVER : (groupId === 'collector') ? primaryCurrency : ''
         const agentToolTip = numberFormat(planFact) + ' / ' + numberFormat(planAmount) + ' ' + tooltipHint
@@ -253,6 +260,7 @@ const PlanWrapper = enhance((props) => {
                     }}>
                     </Link>
                     <div className={classes.line}>
+                        <div className={classes.progress} style={{height: !_.isNaN(percent) ? percent : ZERO}}/>
                     </div>
                     <span>{username}</span>
                 </div>

@@ -14,8 +14,11 @@ import ToolTip from '../ToolTip'
 import numberFormat from '../../helpers/numberFormat'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
 import t from '../../helpers/translate'
-const ZERO = 0
+import {Link} from 'react-router'
+import sprintf from 'sprintf'
+import * as ROUTES from '../../constants/routes'
 
+const ZERO = 0
 const enhance = compose(
     injectSheet({
         dottedList: {
@@ -136,6 +139,11 @@ const enhance = compose(
                 paddingBottom: '20px'
             }
         },
+        subtitle: {
+            fontWeight: '600',
+            textTransform: 'uppercase',
+            marginBottom: '10px'
+        },
         dataBox: {
             '& li': {
                 display: 'flex',
@@ -191,7 +199,6 @@ const ReturnDetails = enhance((props) => {
         getDocument,
         handleCloseDetail,
         stat,
-        isAdmin,
         canChangeAnyReturn,
         hasMarket
     } = props
@@ -248,7 +255,7 @@ const ReturnDetails = enhance((props) => {
                             <PrintIcon />
                         </IconButton>
                     </ToolTip>}
-                    {isAdmin && <ToolTip position="bottom" text={!canChangeAnyReturn && typeClient === TWO ? t('У вас нет доступа') : t('Изменить')}>
+                    <ToolTip position="bottom" text={!canChangeAnyReturn && typeClient === TWO ? t('У вас нет доступа') : t('Изменить')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
@@ -257,7 +264,7 @@ const ReturnDetails = enhance((props) => {
                             onTouchTap={() => { updateDialog.handleOpenUpdateDialog() }}>
                             <Edit />
                         </IconButton>
-                    </ToolTip>}
+                    </ToolTip>
                     {confirmDialog && !stat && <ToolTip position="bottom" text={!canChangeAnyReturn && typeClient === TWO ? t('У вас нет доступа') : t('Отменить')}>
                         <IconButton
                             disabled={!(status === IN_PROGRESS || status === PENDING) || (!canChangeAnyReturn && typeClient === TWO)}
@@ -275,6 +282,12 @@ const ReturnDetails = enhance((props) => {
                     <div className={classes.subBlock}>
                         <div className={classes.dataBox}>
                             <ul>
+                                {order && <li>
+                                    <Link to={{
+                                        pathname: sprintf(ROUTES.ORDER_ITEM_PATH, order),
+                                        query: {search: order, exclude: false}
+                                    }}><strong>{t('Заказ')} №{order}</strong></Link>
+                                </li>}
                                 <li>
                                     <span>{t('Добавил')}:</span>
                                     <span>{user}</span>
@@ -299,24 +312,21 @@ const ReturnDetails = enhance((props) => {
                                     <span>{t('Прайс-лист')}:</span>
                                     <span>{priceList}</span>
                                 </li>
+                                <li>
+                                    <span>{t('Тип оплаты')}</span>
+                                    <span>{paymentType}</span>
+                                </li>
                             </ul>
                         </div>
                     </div>
                     <div className={classes.subBlock}>
+                        <div className={classes.subtitle}>{t('Склад')}</div>
                         <div className={classes.dataBox}>
                             <ul>
                                 <li>
                                     <span>{t('Склад')}:</span>
                                     <span>{stock}</span>
                                 </li>
-                                <li>
-                                    <span>{t('Тип оплаты')}</span>
-                                    <span>{paymentType}</span>
-                                </li>
-                                {order && <li>
-                                    <span>{t('Заказ')} №:</span>
-                                    <span>{order}</span>
-                                </li>}
                                 <li>
                                     <span>{t('Начало приемки')}:</span>
                                     <span>{acceptedDate}</span>
@@ -333,11 +343,11 @@ const ReturnDetails = enhance((props) => {
                                     <span>{t('Статус')}:</span>
                                     <span>
                                         {(status === PENDING || status === IN_PROGRESS)
-                                            ? t('Ожидает')
+                                            ? <span className={classes.yellow}>{t('Ожидает')}</span>
                                             : (status === COMPLETED)
-                                                ? t('Завершен')
+                                                ? <span className={classes.green}>{t('Завершен')}</span>
                                                 : (status === CANCELLED)
-                                                    ? t('Отменен') : null}
+                                                    ? <span className={classes.red}>{t('Отменен')}</span> : null}
                                     </span>
                                 </li>
                             </ul>
