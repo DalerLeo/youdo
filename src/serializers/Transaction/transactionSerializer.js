@@ -35,6 +35,7 @@ export const createIncomeSerializer = (data, cashboxId) => {
     const comment = _.get(data, 'comment')
     const clientId = _.get(data, ['client', 'value'])
     const provider = _.get(data, ['provider', 'value'])
+    const incomeCategory = _.get(data, ['incomeCategory', 'value', 'id'])
     const order = _.get(data, ['order', 'value'])
     const customRate = numberWithoutSpaces(_.get(data, 'custom_rate'))
     const division = _.get(data, ['division', 'value'])
@@ -60,6 +61,7 @@ export const createIncomeSerializer = (data, cashboxId) => {
         'division': division,
         'date': date,
         provider,
+        'income_category': incomeCategory,
         order
     }
 }
