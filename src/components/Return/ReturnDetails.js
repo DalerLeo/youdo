@@ -248,7 +248,7 @@ const ReturnDetails = enhance((props) => {
                             <PrintIcon />
                         </IconButton>
                     </ToolTip>}
-                    {isAdmin && <ToolTip position="bottom" text={!canChangeAnyReturn && typeClient === TWO ? t('У вас нет доступа') : t('Изменить')}>
+                    <ToolTip position="bottom" text={!canChangeAnyReturn && typeClient === TWO ? t('У вас нет доступа') : t('Изменить')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
@@ -257,7 +257,7 @@ const ReturnDetails = enhance((props) => {
                             onTouchTap={() => { updateDialog.handleOpenUpdateDialog() }}>
                             <Edit />
                         </IconButton>
-                    </ToolTip>}
+                    </ToolTip>
                     {confirmDialog && !stat && <ToolTip position="bottom" text={!canChangeAnyReturn && typeClient === TWO ? t('У вас нет доступа') : t('Отменить')}>
                         <IconButton
                             disabled={!(status === IN_PROGRESS || status === PENDING) || (!canChangeAnyReturn && typeClient === TWO)}
