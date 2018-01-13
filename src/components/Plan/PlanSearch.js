@@ -78,6 +78,7 @@ const PlanSearch = enhance((props) => {
             <form onSubmit={onSubmit}>
                 <div className={classes.search}>
                     <TextFieldSearch
+                        name={'search'}
                         fullWidth={true}
                         hintText="Поиск агентов..."
                         className={classes.searchField}
