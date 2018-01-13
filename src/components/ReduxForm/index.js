@@ -26,7 +26,7 @@ import DateField from './Basic/DateField'
 import TimeField from './Basic/TimeField'
 import ProductSearchField from './Product/ProductSearchField'
 import SupplyListProductField from './Supply/SupplyListProductField'
-import SupplySearchField from './Supply/SupplySearchField'
+import SupplyMultiSearchField from './Supply/SupplyMultiSearchField'
 import PricesListProductField from './Promotions/PricesListProductField'
 import PricesBonusProductField from './Promotions/PricesBonusProductField'
 import OrderListReturnField from './Order/OrderListReturnField'
@@ -111,6 +111,8 @@ import ProviderMultiSearchField from './Provider/ProviderMultiSearchField'
 import CashboxPaymentTypeSearchField from './Cashbox/CashboxPaymentTypeSearchField'
 import MarketPhoneListField from './Shop/MarketPhoneListField'
 import TransactionIncomeCategory from './Transaction/TransactionIncomeCategory'
+import OrderSearchField from './Order/OrderSearchField'
+import SupplySearchField from './Supply/SupplySearchField'
 
 export {
     CashboxTypeCurrencyField,
@@ -198,7 +200,7 @@ export {
     AgentSearchField,
     ClientTransactionTypeSearchField,
     ClientBalanceTypeSearchField,
-    SupplySearchField,
+    SupplyMultiSearchField,
     TransitionSendCashboxSearchField,
     TransitionSendCashboxTypeSearchField,
     PriceListSearchField,
@@ -225,5 +227,7 @@ export {
     MarketTypeParentSearchField,
     MarketPhoneListField,
     CurrencyMultiSearchField,
-    TransactionIncomeCategory
+    TransactionIncomeCategory,
+    OrderSearchField,
+    SupplySearchField
 }

@@ -22,7 +22,9 @@ import {
     DivisionSearchField,
     DateField,
     ProviderSearchField,
-    TransactionIncomeCategory
+    TransactionIncomeCategory,
+    OrderSearchField,
+    SupplySearchField
 } from '../ReduxForm'
 import NotFound from '../Images/not-found.png'
 import CashboxSearchField from '../ReduxForm/Cashbox/CashBoxSimpleSearch'
@@ -335,8 +337,13 @@ const TransactionCreateDialog = enhance((props) => {
     } = props
     const clientOptionId = _.get(_.find(optionsList, {'keyName': 'client'}), 'id')
     const providerOptionId = _.get(_.find(optionsList, {'keyName': 'provider'}), 'id')
+    const orderOptionId = _.get(_.find(optionsList, {'keyName': 'order'}), 'id')
+    const supplyOptionId = _.get(_.find(optionsList, {'keyName': 'supply'}), 'id')
     const showClients = isExpense ? _.includes(expenseCategoryOptions, clientOptionId) : _.includes(incomeCategoryOptions, clientOptionId)
     const showProviders = isExpense ? _.includes(expenseCategoryOptions, providerOptionId) : _.includes(incomeCategoryOptions, providerOptionId)
+    const showOrders = _.includes(incomeCategoryOptions, orderOptionId)
+    const showSupplies = _.includes(expenseCategoryOptions, supplyOptionId)
+
     const onSubmit = handleSubmit(() => props.onSubmit().catch(props.validate))
     const cashboxId = noCashbox ? chosenCashbox : _.get(cashboxData, 'cashboxId')
     const cashbox = _.find(_.get(cashboxData, 'data'), {'id': cashboxId})
@@ -404,6 +411,13 @@ const TransactionCreateDialog = enhance((props) => {
                                     label={t('Категория расхода')}
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
+                                {showSupplies
+                                    ? <Field
+                                        name="supply"
+                                        component={SupplySearchField}
+                                        label={t('Поставки')}
+                                        className={classes.inputFieldCustom}
+                                        fullWidth={true}/> : null}
                                 {showClients ? <div>
                                     <Field
                                         name="client"
@@ -468,30 +482,38 @@ const TransactionCreateDialog = enhance((props) => {
                                     label={t('Категория прихода')}
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
-                                {
-                                showClients
-                                ? <div>
-                                    <Field
-                                        name="client"
-                                        component={ClientSearchField}
-                                        label="Клиент"
-                                        className={classes.inputFieldCustom}
-                                        fullWidth={true}/>
-                                    {divisionStatus ? <Field
-                                        name="division"
-                                        component={DivisionSearchField}
-                                        label={t('Организация')}
+                                {showOrders
+                                    ? <Field
+                                        name="order"
+                                        component={OrderSearchField}
+                                        label="Заказ"
                                         className={classes.inputFieldCustom}
                                         fullWidth={true}/> : null}
-                                </div>
+                                {showClients
+                                    ? <div>
+                                        <Field
+                                            name="client"
+                                            component={ClientSearchField}
+                                            label="Клиент"
+                                            className={classes.inputFieldCustom}
+                                            fullWidth={true}/>
+                                        {divisionStatus
+                                            ? <Field
+                                                name="division"
+                                                component={DivisionSearchField}
+                                                label={t('Организация')}
+                                                className={classes.inputFieldCustom}
+                                                fullWidth={true}/>
+                                            : null}
+                                    </div>
                                     : showProviders
-                                    ? <Field
-                                        name="provider"
-                                        component={ProviderSearchField}
-                                        label={t('Поставщик')}
-                                        className={classes.inputFieldCustom}
-                                        fullWidth={true}/>
-                                : null}
+                                        ? <Field
+                                            name="provider"
+                                            component={ProviderSearchField}
+                                            label={t('Поставщик')}
+                                            className={classes.inputFieldCustom}
+                                            fullWidth={true}/>
+                                        : null}
                                 {!isSalary &&
                                 <div className={classes.flex} style={{justifyContent: 'space-between'}}>
                                     <div className={classes.flex} style={{alignItems: 'baseline', width: '48%'}}>

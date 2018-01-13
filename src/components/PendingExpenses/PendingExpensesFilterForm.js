@@ -14,7 +14,7 @@ import {
     ProviderMultiSearchField,
     PendingExpensesTypeSearchField,
     PaymentTypeSearchField,
-    SupplySearchField
+    SupplyMultiSearchField
 } from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
@@ -185,7 +185,7 @@ const PendingExpensesFilterForm = enhance((props) => {
                                fullWidth={true}/>
                         <Field className={classes.inputFieldCustom}
                                name="supply"
-                               component={SupplySearchField}
+                               component={SupplyMultiSearchField}
                                label="Поставка"
                                fullWidth={true}/>
                     </div>

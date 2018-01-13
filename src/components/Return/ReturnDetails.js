@@ -191,7 +191,6 @@ const ReturnDetails = enhance((props) => {
         getDocument,
         handleCloseDetail,
         stat,
-        isAdmin,
         canChangeAnyReturn,
         hasMarket
     } = props
