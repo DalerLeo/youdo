@@ -730,8 +730,8 @@
   "Зона успешно добавлена": "Hudud muvofaqiyatli qo'shildi",
   "Зона успешно изменена": "Hudud muvofaqiyatli o'zgartirildi",
   "Агент закреплен": "Agent biriktirildi",
-  "магазинов <br/> в зонах": "hududdagi <br/> do'konlar",
-  "агентов <br/> не распределено": "agentlar <br> taqsimlanmagan",
+  "магазинов в зонах": "hududdagi do'konlar",
+  "агентов не распределено": "agentlar taqsimlanmagan",
   "Создал": "Yaratgan",
   "Уведомления": "Bildirishnomalar",
   "Ограничение времени": "Vaqt limiti",
@@ -772,5 +772,9 @@
   "Нет уведомлений": "Bildirishnomalar yo'q",
   "Магазина": "Do'konlar",
   "добавить фото": "fotosurat qo'shish",
-  "Добавьте фото": "Fotosurat qo'shing"
+  "Добавьте фото": "Fotosurat qo'shing",
+  "активных зон": "",
+  "активная зона": "",
+  "магазинов не распределено": "do'konlar taqsimlanmagan"
+
 }

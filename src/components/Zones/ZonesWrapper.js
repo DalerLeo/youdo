@@ -387,11 +387,11 @@ const ZonesWrapper = enhance((props) => {
                         </div>}
                         <div>
                             <big>{activeZones}</big>
-                            <span>{(activeZones === ONE) ? 'активная' : 'активных'} <br/> {(activeZones === ONE) ? 'зона' : 'зон'}</span>
+                            <span style={{width: '65px'}}>{(activeZones === ONE) ? t('активная зона') : t('активных зон')}</span>
                         </div>
                         <div>
                             <big>{boundMarkets}</big>
-                            <span>{t('магазинов <br/> в зонах')}</span>
+                            <span style={{width: '65px'}}>{t('магазинов в зонах')}</span>
                         </div>
                     </div>
 
@@ -477,12 +477,12 @@ const ZonesWrapper = enhance((props) => {
                         <Link target="_blank" to={{pathname: ROUTES.SHOP_LIST_URL, query: {nullBorder: true}}}>
                             <div>
                                 <big>{passiveMarkets}</big>
-                                <span>{t('магазинов <br/> не распределено')}</span>
+                                <span style={{width: '80px'}}>{t('магазинов не распределено')}</span>
                             </div>
                         </Link>
                         <div>
                             <big>{passiveAgents}</big>
-                            <span>{t('агентов <br/> не распределено')}</span>
+                            <span style={{width: '80px'}}>{t('агентов не распределено')}</span>
                         </div>
                     </div>
                 </div>}
