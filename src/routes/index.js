@@ -81,6 +81,7 @@ import {PriceListSetting} from '../containers/PriceListSetting'
 import {TelegramList} from '../containers/Telegram'
 import {TelegramNewsList} from '../containers/TelegramNews'
 import {ProviderBalanceList} from '../containers/ProviderBalance'
+import {SystemPagesList} from '../containers/SystemPages'
 
 const userIsAdminChain = compose(userIsAuth, visibleOnlyAdmin)
 
@@ -875,7 +876,7 @@ export default {
                 }
             ]
         },
-        // Telegram Users
+        // Telegram NEWS
         {
             path: ROUTES.TELEGRAM_NEWS_LIST_URL,
             component: userIsAdminChain(TelegramNewsList),
@@ -886,7 +887,7 @@ export default {
                 }
             ]
         },
-        // Telegram Users
+        // PROVIDER BALANCE
         {
             path: ROUTES.PROVIDER_BALANCE_LIST_URL,
             component: userIsAdminChain(ProviderBalanceList),
@@ -894,6 +895,17 @@ export default {
                 {
                     path: ROUTES.PROVIDER_BALANCE_ITEM_URL,
                     component: userIsAuth(ProviderBalanceList)
+                }
+            ]
+        },
+        // PROVIDER BALANCE
+        {
+            path: ROUTES.SYSTEM_PAGES_LIST_URL,
+            component: userIsAdminChain(SystemPagesList),
+            childRoutes: [
+                {
+                    path: ROUTES.SYSTEM_PAGES_ITEM_URL,
+                    component: userIsAuth(SystemPagesList)
                 }
             ]
         },

@@ -170,7 +170,8 @@ export const MenuItems = [
         childs: [
             {name: t('Пользователи'), url: ROUTES.TELEGRAM_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_telegram_users'},
             {name: t('Новости'), url: ROUTES.TELEGRAM_NEWS_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_telegram_news'},
-            {name: t('Оплаты'), url: ROUTES.CLIENT_TRANSACTION_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_client_transaction'}
+            {name: t('Оплаты'), url: ROUTES.CLIENT_TRANSACTION_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_client_transaction'},
+            {name: t('Системные страницы'), url: ROUTES.SYSTEM_PAGES_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_system_pages'}
         ]
     },
     {
