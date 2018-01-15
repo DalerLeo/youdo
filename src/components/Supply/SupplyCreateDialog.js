@@ -240,7 +240,7 @@ const customContentStyle = {
     maxWidth: 'none'
 }
 const SupplyCreateDialog = enhance((props) => {
-    const {open, handleSubmit, onClose, classes, isUpdate, handleOpenAddProduct, editOnlyPrice} = props
+    const {open, handleSubmit, onClose, classes, isUpdate, handleOpenAddProduct, editOnlyPrice, acceptedByStock} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     return (
         <Dialog
@@ -306,6 +306,7 @@ const SupplyCreateDialog = enhance((props) => {
                                         component={StockSearchField}
                                         className={classes.searchFieldCustom}
                                         label={t('Склад назначения')}
+                                        disabled={acceptedByStock}
                                         fullWidth={true}/>
                                     <Field
                                         name="currency"
@@ -335,6 +336,7 @@ const SupplyCreateDialog = enhance((props) => {
                                             name="comment"
                                             component={TextField}
                                             label={t('Оставить комментарий') + '...'}
+                                            inputStyle={{fontSize: '13px'}}
                                             multiLine={true}
                                             rows={1}
                                             rowsMax={6}
@@ -347,6 +349,7 @@ const SupplyCreateDialog = enhance((props) => {
                                     names={['products', 'product', 'amount', 'cost', 'editAmount', 'editCost', 'type']}
                                     handleOpenAddProduct={handleOpenAddProduct}
                                     editOnlyPrice={editOnlyPrice}
+                                    acceptedByStock={acceptedByStock}
                                     component={SupplyListProductField}
                                 />
                             </div>

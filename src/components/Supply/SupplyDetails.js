@@ -312,7 +312,6 @@ const SupplyDetails = enhance((props) => {
     const editButtonDisableStatus = () => {
         switch (status) {
             case CANCELLED: return true
-            case COMPLETED: return true
             default: return false
         }
     }
