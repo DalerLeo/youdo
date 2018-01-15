@@ -6,6 +6,7 @@ import injectSheet from 'react-jss'
 import Loader from '../Loader'
 import {Row, Col} from 'react-flexbox-grid'
 import numberFormat from '../../helpers/numberFormat'
+import moduleFormat from '../../helpers/moduleFormat'
 import {Tabs, Tab} from 'material-ui/Tabs'
 import * as TAB from '../../constants/supplyTab'
 import NotFound from '../Images/not-found.png'
@@ -14,7 +15,6 @@ import TransactionsFormat from '../../components/Transaction/TransactionsFormat'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import InfoIcon from 'material-ui/svg-icons/action/info-outline'
 import dateFormat from '../../helpers/dateFormat'
-import moduleFormat from '../../helpers/moduleFormat'
 import IconButton from 'material-ui/IconButton'
 import t from '../../helpers/translate'
 import ToolTip from '../ToolTip'
@@ -139,6 +139,14 @@ const enhance = compose(
         right: {
             textAlign: 'right',
             justifyContent: 'flex-end'
+        },
+        green: {
+            fontWeight: '600',
+            color: '#81c784'
+        },
+        red: {
+            fontWeight: '600',
+            color: '#e57373'
         }
     })
 )
@@ -189,7 +197,9 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
     const wholeCost = _.sumBy(products, (o) => {
         return _.toNumber(_.get(o, 'cost'))
     })
-    const wholeNotAccepted = status === PENDING ? ZERO : wholeAmount - wholeDefectAmount - wholePostedAmount
+    const wholeNotAccepted = status === PENDING
+        ? ZERO
+        : wholeAmount - wholeDefectAmount - wholePostedAmount
     const wholeMeasurement = _.get(_.first(products), ['product', 'measurement', 'name'])
 
     return (
@@ -221,7 +231,7 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                                 const postedAmount = _.get(item, 'postedAmount')
                                 const measurement = _.get(product, ['measurement', 'name'])
                                 const defectAmount = _.toNumber(_.get(item, 'defectAmount'))
-                                const notAccepted = postedAmount + defectAmount < amount ? numberFormat(amount - defectAmount - postedAmount, measurement) : numberFormat(postedAmount - amount, measurement)
+                                const notAccepted = amount - defectAmount - postedAmount
                                 return (
                                     <Row className="dataInfo dottedList" key={productId}>
                                         <Col xs={4}>{productName}</Col>
@@ -232,10 +242,13 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                                                     className={classes.defect}>{numberFormat(defectAmount, measurement)}</span>
                                                 : <span>{numberFormat(defectAmount, measurement)}</span>}
                                         </Col>
-                                        <Col xs={1}>
+                                        <Col xs={1} className={notAccepted < ZERO ? classes.green : notAccepted > ZERO ? classes.red : ''}>
                                             {status === PENDING
                                                 ? numberFormat(ZERO, measurement)
-                                                : notAccepted}
+                                                : notAccepted < ZERO
+                                                    ? '+' + moduleFormat(notAccepted, measurement)
+                                                    : numberFormat(notAccepted, measurement)
+                                            }
                                         </Col>
                                         <Col xs={2}>
                                             <div style={{textAlign: 'right'}}>{numberFormat(itemPrice, currency)}</div>
@@ -252,7 +265,11 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                             <Col xs={1}>{numberFormat(wholeAmount, wholeMeasurement)}</Col>
                             <Col xs={1}>{numberFormat(wholePostedAmount, wholeMeasurement)}</Col>
                             <Col xs={1}>{numberFormat(wholeDefectAmount, wholeMeasurement)}</Col>
-                            <Col xs={1}>{numberFormat(moduleFormat(wholeNotAccepted), wholeMeasurement)}</Col>
+                            <Col xs={1} className={wholeNotAccepted < ZERO ? classes.green : wholeNotAccepted > ZERO ? classes.red : ''}>
+                                {wholeNotAccepted < ZERO
+                                    ? '+' + moduleFormat(wholeNotAccepted, wholeMeasurement)
+                                    : numberFormat(wholeNotAccepted, wholeMeasurement)}
+                            </Col>
                             <Col xs={2}>{null}</Col>
                             <Col xs={2}>
                                 <div style={{textAlign: 'right'}}>{numberFormat(wholeCost, currency)}</div>
