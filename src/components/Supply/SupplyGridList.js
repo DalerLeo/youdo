@@ -309,6 +309,7 @@ const SupplyGridList = enhance((props) => {
                 isUpdate={true}
                 initialValues={updateDialog.initialValues}
                 editOnlyPrice={detailStatus === COMPLETED}
+                acceptedByStock={detailStatus === COMPLETED || detailStatus === IN_PROGRESS}
                 open={updateDialog.openUpdateDialog}
                 loading={updateDialog.updateLoading}
                 onClose={updateDialog.handleCloseUpdateDialog}
@@ -323,22 +324,21 @@ const SupplyGridList = enhance((props) => {
                 onSubmit={supplyExpenseCreateDialog.handleSupplyExpenseSubmitCreateDialog}
             />
 
-            {(detailData.data && isAdmin && (detailStatus === IN_PROGRESS || detailStatus === COMPLETED)) ? <ConfirmDialog
-                type="cancel"
-                message={t('Склад уже принял данную поставку. Отмена приведет к списанию товаров из склада. ОТМЕНА НЕ РЕКОМЕНДУЕТСЯ!')}
-                warning={true}
-                onClose={confirmDialog.handleCloseConfirmDialog}
-                onSubmit={confirmDialog.handleSendConfirmDialog}
-                open={confirmDialog.openConfirmDialog}
-            />
-
-            : (detailData.data && <ConfirmDialog
-                type="cancel"
-                message={t('Поставка') + '№ ' + _.get(detailData, ['data', 'id'])}
-                onClose={confirmDialog.handleCloseConfirmDialog}
-                onSubmit={confirmDialog.handleSendConfirmDialog}
-                open={confirmDialog.openConfirmDialog}
-            />)}
+            {(detailData.data && isAdmin && (detailStatus === IN_PROGRESS || detailStatus === COMPLETED))
+                ? <ConfirmDialog
+                    type="cancel"
+                    message={t('Склад уже принял данную поставку. Отмена приведет к списанию товаров из склада. ОТМЕНА НЕ РЕКОМЕНДУЕТСЯ!')}
+                    warning={true}
+                    onClose={confirmDialog.handleCloseConfirmDialog}
+                    onSubmit={confirmDialog.handleSendConfirmDialog}
+                    open={confirmDialog.openConfirmDialog}/>
+                : (detailData.data && <ConfirmDialog
+                    type="cancel"
+                    message={t('Поставка') + '№ ' + _.get(detailData, ['data', 'id'])}
+                    onClose={confirmDialog.handleCloseConfirmDialog}
+                    onSubmit={confirmDialog.handleSendConfirmDialog}
+                    open={confirmDialog.openConfirmDialog}/>
+                )}
 
             {confirmExpenseDialog.removeId && <ConfirmDialog
                 type="delete"

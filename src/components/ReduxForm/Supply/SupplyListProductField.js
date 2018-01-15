@@ -242,7 +242,7 @@ const iconStyle = {
     }
 }
 
-const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleEdit, handleRemove, editItem, setEditItem, currency, measurement, handleOpenAddProduct, editOnlyPrice, ...defaultProps}) => {
+const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleEdit, handleRemove, editItem, setEditItem, currency, measurement, handleOpenAddProduct, editOnlyPrice, acceptedByStock, ...defaultProps}) => {
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
     const error = _.get(defaultProps, ['products', 'meta', 'error'])
     return (
@@ -250,6 +250,7 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleEdit
             <div>
                 <div className={classes.headers} style={{marginTop: '-10px'}}>
                     <div className={classes.title}>{t('Список товаров')}</div>
+                    {!acceptedByStock &&
                     <div>
                         <FlatButton
                             label={t('добавить товар')}
@@ -265,7 +266,7 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleEdit
                             className={classes.span}
                             onTouchTap={handleOpenAddProduct}
                         />
-                    </div>
+                    </div>}
                 </div>
                 {state.open && <Row className={classes.background}>
                     <Col xs={3}>
@@ -340,7 +341,7 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleEdit
                                 <TableHeaderColumn className={classes.tableTitle}>{t('Кол-во')}</TableHeaderColumn>
                                 <TableHeaderColumn className={classes.tableTitle}>{t('Сумма (ед.)')}</TableHeaderColumn>
                                 <TableHeaderColumn className={classes.tableTitle}>{t('Всего')}</TableHeaderColumn>
-                                <TableHeaderColumn></TableHeaderColumn>
+                                <TableHeaderColumn/>
                             </TableRow>
                         </TableHeader>
                         <TableBody
@@ -423,6 +424,7 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleEdit
                                             </IconButton>
                                             <IconButton
                                                 onTouchTap={() => handleRemove(index)}
+                                                disabled={acceptedByStock}
                                                 style={iconStyle.button}
                                                 iconStyle={iconStyle.icon}>
                                                 <DeleteIcon color="#666666"/>
