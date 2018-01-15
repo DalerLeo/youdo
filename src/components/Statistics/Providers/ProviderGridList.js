@@ -4,10 +4,11 @@ import React from 'react'
 import {Row} from 'react-flexbox-grid'
 import * as ROUTES from '../../../constants/routes'
 import Container from '../../Container'
+import {connect} from 'react-redux'
 import injectSheet from 'react-jss'
 import {compose, withState, lifecycle} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
-import {TextField, ZoneMultiSearchField, DivisionMultiSearchField, DateToDateField} from '../../ReduxForm'
+import {TextField, ZoneMultiSearchField, DivisionMultiSearchField, DateToDateField, ProviderBalanceTypeSearchField, PaymentTypeSearchField} from '../../ReduxForm'
 import ProviderInfoDialog from './ProviderInfoDialog'
 import StatSideMenu from '../StatSideMenu'
 import Loader from '../../Loader'
@@ -26,7 +27,10 @@ import {CLIENT_BALANCE_FILTER_KEY} from '../../ClientBalance'
 import {hashHistory} from 'react-router'
 import ArrowUpIcon from 'material-ui/svg-icons/navigation/arrow-upward'
 import ArrowDownIcon from 'material-ui/svg-icons/navigation/arrow-downward'
+import Paper from 'material-ui/Paper'
 import ordering from '../../../helpers/ordering'
+import SubMenu from '../../SubMenu/SubMenu'
+import ProviderBalanceFilterForm from './ProviderBalanceFilterForm'
 
 let amountValues = []
 let head = []
@@ -36,7 +40,9 @@ export const STAT_PROVIDER_FILTER_KEY = {
     TO_DATE: 'toDate',
     ZONE: 'zone',
     DIVISION: 'division',
-    SEARCH: 'search'
+    SEARCH: 'search',
+    PAYMENT_TYPE: 'paymentType',
+    BALANCE_TYPE: 'balanceType'
 }
 const types = {
     cash: 'cash',
@@ -74,11 +80,12 @@ const enhance = compose(
         },
         tableWrapper: {
             display: 'flex',
-            margin: '0 -30px',
+            margin: ({stat}) => stat ? '0 -30px' : 'unset',
+            'margin-right': ({stat}) => stat ? '' : '-30px',
             paddingLeft: '30px',
             position: 'relative',
             overflow: 'hidden',
-            minHeight: '200px',
+            'min-height': ({stat}) => stat ? '200px' : 'unset',
             '& > div:first-child': {
                 zIndex: '20',
                 boxShadow: '5px 0 8px -3px #CCC',
@@ -170,7 +177,7 @@ const enhance = compose(
                     borderRight: 'none'
                 }
             },
-            '&:nth-child(odd)': {
+            '&:nth-child(even)': {
                 backgroundColor: '#f9f9f9'
             },
             '& td:last-child': {
@@ -304,8 +311,10 @@ const enhance = compose(
         },
         filters: {
             display: 'flex',
+            position: 'relative',
             justifyContent: 'space-between',
-            borderTop: '1px #efefef solid'
+            borderTop: '1px #efefef solid',
+            padding: ({stat}) => stat ? '' : '0 30px'
         },
         opacity: {
             '& span': {
@@ -336,7 +345,7 @@ const enhance = compose(
             marginLeft: '10px !important'
         },
         summary: {
-            padding: '20px 0'
+            padding: ({stat}) => stat ? '20px 0' : '0'
         },
         summaryWrapper: {
             width: '100%',
@@ -376,6 +385,7 @@ const enhance = compose(
             color: '#666 !important',
             height: '15px !important'
         }
+
     }),
     withState('currentRow', 'updateRow', null),
     withState('expandedTable', 'setExpandedTable', false),
@@ -389,7 +399,13 @@ const enhance = compose(
             const horizontalTable = this.refs.horizontalTable
             horizontalScroll(horizontalTable)
         }
-    })
+    }),
+    connect((state, props) => {
+        const showPaymentType = _.get(state, ['form', 'StatisticsFilterForm', 'values', 'balanceType', 'value'])
+        return {
+            showPaymentType
+        }
+    }),
 )
 
 const styleOnHover = {
@@ -426,7 +442,10 @@ const StatProviderGridList = enhance((props) => {
         updateRow,
         expandedTable,
         setExpandedTable,
-        setItem
+        setItem,
+        filterDialog,
+        stat,
+        showPaymentType
     } = props
 
     const ZERO = 0
@@ -434,6 +453,7 @@ const StatProviderGridList = enhance((props) => {
     const listLoading = _.get(listData, 'listLoading')
     const divisionStatus = getConfig('DIVISIONS')
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
+    const emptyData = _.isEmpty(_.get(listData, 'data'))
 
     // Summary
     const borrowersBank = Math.abs(_.get(summaryData, ['data', 'borrowersSumBank']))
@@ -494,6 +514,20 @@ const StatProviderGridList = enhance((props) => {
                 component={DateToDateField}
                 label={t('Диапазон дат')}
                 fullWidth={true}/>
+            <Field
+                className={classes.inputFieldCustom}
+                name="balanceType"
+                component={ProviderBalanceTypeSearchField}
+                label={t('Тип баланса')}
+                fullWidth={true}/>
+            {showPaymentType && <Field
+                className={classes.inputFieldCustom}
+                name="paymentType"
+                disable={true}
+                component={PaymentTypeSearchField}
+                label={t('Тип оплаты')}
+                fullWidth={true}/>
+            }
             <Field
                 className={classes.inputFieldCustom}
                 name="zone"
@@ -595,7 +629,109 @@ const StatProviderGridList = enhance((props) => {
         </table>
     )
 
-    const page = (
+    const summary = (
+        <div className={classes.summary}>
+            {sumLoading
+                ? <div className={classes.sumLoader}>
+                    <Loader size={0.75}/>
+                </div>
+                : <div className={classes.summaryWrapper}>
+                    <div
+                        onClick={() => hashHistory.push(
+                            filter.createURL({
+                                [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: types.cash,
+                                [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: types.debtor
+                            }))}>
+                        {t('Долг поставшику нал')}. ({borrowersCashCount})
+                        <div>{numberFormat(borrowersCash, primaryCurrency)}</div>
+                    </div>
+                    <div
+                        onClick={() => hashHistory.push(
+                            filter.createURL({
+                                [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: types.bank,
+                                [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: types.debtor
+                            }))}>
+                        {t('Долг поставшику переч')}. ({borrowersBankCount})
+                        <div>{numberFormat(borrowersBank, primaryCurrency)}</div>
+                    </div>
+                    <div
+                        onClick={() => hashHistory.push(
+                            filter.createURL({
+                                [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: types.cash,
+                                [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: types.loaner
+                            }))}>
+                        {t('Долг поставшика нал')}. ({loanersCashCount})
+                        <div>{numberFormat(loanersCash, primaryCurrency)}</div>
+                    </div>
+                    <div
+                        onClick={() => hashHistory.push(
+                            filter.createURL({
+                                [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: types.bank,
+                                [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: types.loaner
+                            }))}>
+                        {t('Долг поставшика переч')}. ({loanersBankCount})
+                        <div>{numberFormat(loanersBank, primaryCurrency)}</div>
+                    </div>
+                </div>}
+        </div>
+    )
+    const navigation = (
+        <div className={classes.filters}>
+            {!stat && <ProviderBalanceFilterForm
+                initialValues={filterDialog.initialValues}
+                filter={filter}
+                filterDialog={filterDialog}/>}
+            <form onSubmit={handleSubmit(handleSubmitFilterDialog)}>
+                <Field
+                    className={classes.inputFieldCustom}
+                    name="search"
+                    component={TextField}
+                    hintText={t('Поиск')}/>
+            </form>
+            <div className={classes.flexCenter}>
+                <Pagination filter={filter}/>
+                {expandedTable &&
+                <ToolTip position="left" text={t('Обычный вид')}>
+                    <IconButton
+                        className={classes.fullScreen}
+                        onTouchTap={() => { setExpandedTable(!expandedTable) }}
+                        iconStyle={iconStyle.icon}
+                        style={iconStyle.button}>
+                        <FullScreenExit color="#666"/>
+                    </IconButton>
+                </ToolTip>}
+                {!expandedTable &&
+                <ToolTip position="left" text={t('Расширенный вид')}>
+                    <IconButton
+                        className={classes.fullScreen}
+                        onTouchTap={() => { setExpandedTable(!expandedTable) }}
+                        iconStyle={iconStyle.icon}
+                        style={iconStyle.button}>
+                        <FullScreen color="#666"/>
+                    </IconButton>
+                </ToolTip>}
+            </div>
+        </div>
+    )
+    const list = (
+        <div className={classes.container}>
+            {listLoading && <div className={classes.loader}>
+                <Loader size={0.75}/>
+            </div>}
+            <div className={classes.tableWrapper}>
+                {providers}
+                {emptyData && !listLoading &&
+                <div className={classes.emptyQuery}>
+                    <div>{t('По вашему запросу ничего не найдено')}</div>
+                </div>}
+                <div ref="horizontalTable">
+                    {tableList}
+                </div>
+            </div>
+        </div>
+    )
+
+    const statPage = (
         <div className={classes.mainWrapper}>
             <Row style={{margin: '0', height: '100%'}}>
                 <div className={classes.leftPanel}>
@@ -612,98 +748,10 @@ const StatProviderGridList = enhance((props) => {
                             handleSubmitFilterDialog={handleSubmitFilterDialog}
                             handleGetDocument={getDocument.handleGetDocument}
                         />
-                        <div className={classes.summary}>
-                            {sumLoading
-                                ? <div className={classes.sumLoader}>
-                                    <Loader size={0.75}/>
-                                </div>
-                                : <div className={classes.summaryWrapper}>
-                                    <div
-                                        onClick={() => hashHistory.push(
-                                            filter.createURL({
-                                                [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: types.cash,
-                                                [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: types.debtor
-                                            }))}>
-                                        {t('Задолжники нал')}. ({borrowersCashCount})
-                                        <div>{numberFormat(borrowersCash, primaryCurrency)}</div>
-                                    </div>
-                                    <div
-                                        onClick={() => hashHistory.push(
-                                            filter.createURL({
-                                                [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: types.bank,
-                                                [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: types.debtor
-                                            }))}>
-                                        {t('Задолжники переч')}. ({borrowersBankCount})
-                                        <div>{numberFormat(borrowersBank, primaryCurrency)}</div>
-                                    </div>
-                                    <div
-                                        onClick={() => hashHistory.push(
-                                            filter.createURL({
-                                                [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: types.cash,
-                                                [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: types.loaner
-                                            }))}>
-                                        {t('Закладчики нал')}. ({loanersCashCount})
-                                        <div>{numberFormat(loanersCash, primaryCurrency)}</div>
-                                    </div>
-                                    <div
-                                        onClick={() => hashHistory.push(
-                                            filter.createURL({
-                                                [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: types.bank,
-                                                [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: types.loaner
-                                            }))}>
-                                        {t('Закладчики переч')}. ({loanersBankCount})
-                                        <div>{numberFormat(loanersBank, primaryCurrency)}</div>
-                                    </div>
-                                </div>}
-                        </div>
+                        {summary}
                         <div className={expandedTable ? classes.expandedTable : ''}>
-                            <div className={classes.filters}>
-                                <form onSubmit={handleSubmit(handleSubmitFilterDialog)}>
-                                    <Field
-                                        className={classes.inputFieldCustom}
-                                        name="search"
-                                        component={TextField}
-                                        hintText={t('Поиск')}/>
-                                </form>
-                                <div className={classes.flexCenter}>
-                                    <Pagination filter={filter}/>
-                                    {expandedTable &&
-                                    <ToolTip position="left" text={t('Обычный вид')}>
-                                        <IconButton
-                                            className={classes.fullScreen}
-                                            onTouchTap={() => { setExpandedTable(!expandedTable) }}
-                                            iconStyle={iconStyle.icon}
-                                            style={iconStyle.button}>
-                                            <FullScreenExit color="#666"/>
-                                        </IconButton>
-                                    </ToolTip>}
-                                    {!expandedTable &&
-                                    <ToolTip position="left" text={t('Расширенный вид')}>
-                                        <IconButton
-                                            className={classes.fullScreen}
-                                            onTouchTap={() => { setExpandedTable(!expandedTable) }}
-                                            iconStyle={iconStyle.icon}
-                                            style={iconStyle.button}>
-                                            <FullScreen color="#666"/>
-                                        </IconButton>
-                                    </ToolTip>}
-                                </div>
-                            </div>
-                            <div className={classes.container}>
-                                {listLoading && <div className={classes.loader}>
-                                    <Loader size={0.75}/>
-                                </div>}
-                                <div className={classes.tableWrapper}>
-                                    {providers}
-                                    {_.isEmpty(tableList) && !listLoading &&
-                                    <div className={classes.emptyQuery}>
-                                        <div>{t('По вашему запросу ничего не найдено')}</div>
-                                    </div>}
-                                    <div ref="horizontalTable">
-                                        {tableList}
-                                    </div>
-                                </div>
-                            </div>
+                            {navigation}
+                            {list}
                         </div>
                     </div>
                 </div>
@@ -711,11 +759,24 @@ const StatProviderGridList = enhance((props) => {
         </div>
     )
 
+    const page = (
+        <div>
+            <SubMenu url={ROUTES.PROVIDER_BALANCE_LIST_URL}/>
+            <Paper style={{marginBottom: '15px', padding: '10px 30px'}}>{summary}</Paper>
+            <Paper className={expandedTable ? classes.expandedTable : ''} style={expandedTable ? {padding: '0'} : {}}>
+                {navigation}
+                {list}
+            </Paper>
+        </div>
+    )
+
     const provider = _.find(_.get(listData, 'data'), {'id': _.get(detailData, 'id')})
 
     return (
         <Container>
-            {page}
+            {stat && statPage}
+            {!stat && page}
+
             <ProviderInfoDialog
                 open={infoDialog.openInfoDialog}
                 detailData={detailData}

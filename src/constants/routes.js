@@ -365,3 +365,8 @@ export const TELEGRAM_NEWS = 'telegram-news'
 export const TELEGRAM_NEWS_LIST_URL = `/${TELEGRAM_NEWS}`
 export const TELEGRAM_NEWS_ITEM_URL = `${TELEGRAM_NEWS_LIST_URL}/:telegramNewsId`
 export const TELEGRAM_NEWS_ITEM_PATH = `${TELEGRAM_NEWS}/%d`
+
+export const PROVIDER_BALANCE = 'provider-balance'
+export const PROVIDER_BALANCE_LIST_URL = `/${PROVIDER_BALANCE}`
+export const PROVIDER_BALANCE_ITEM_URL = `${PROVIDER_BALANCE_LIST_URL}/:providerBalanceId`
+export const PROVIDER_BALANCE_ITEM_PATH = `${PROVIDER_BALANCE}/%d`

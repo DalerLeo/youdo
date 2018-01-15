@@ -113,6 +113,7 @@ import MarketPhoneListField from './Shop/MarketPhoneListField'
 import TransactionIncomeCategory from './Transaction/TransactionIncomeCategory'
 import OrderSearchField from './Order/OrderSearchField'
 import SupplySearchField from './Supply/SupplySearchField'
+import ProviderBalanceTypeSearchField from './Provider/ProviderBalanceTypeSearchField'
 
 export {
     CashboxTypeCurrencyField,
@@ -229,5 +230,6 @@ export {
     CurrencyMultiSearchField,
     TransactionIncomeCategory,
     OrderSearchField,
-    SupplySearchField
+    SupplySearchField,
+    ProviderBalanceTypeSearchField
 }

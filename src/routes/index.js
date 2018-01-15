@@ -80,6 +80,7 @@ import {NotificationTemplateList} from '../containers/NotificationTemplate'
 import {PriceListSetting} from '../containers/PriceListSetting'
 import {TelegramList} from '../containers/Telegram'
 import {TelegramNewsList} from '../containers/TelegramNews'
+import {ProviderBalanceList} from '../containers/ProviderBalance'
 
 const userIsAdminChain = compose(userIsAuth, visibleOnlyAdmin)
 
@@ -882,6 +883,17 @@ export default {
                 {
                     path: ROUTES.TELEGRAM_NEWS_ITEM_URL,
                     component: userIsAuth(TelegramNewsList)
+                }
+            ]
+        },
+        // Telegram Users
+        {
+            path: ROUTES.PROVIDER_BALANCE_LIST_URL,
+            component: userIsAdminChain(ProviderBalanceList),
+            childRoutes: [
+                {
+                    path: ROUTES.PROVIDER_BALANCE_ITEM_URL,
+                    component: userIsAuth(ProviderBalanceList)
                 }
             ]
         },

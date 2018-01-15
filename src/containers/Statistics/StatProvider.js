@@ -7,7 +7,6 @@ import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
-import {splitToArray} from '../../helpers/joinSplitValues'
 import toBoolean from '../../helpers/toBoolean'
 import getDocuments from '../../helpers/getDocument'
 import * as API from '../../constants/api'
@@ -28,7 +27,7 @@ import {
     statProviderItemFetchAction,
     statProviderDetailFetchAction
 } from '../../actions/statProvider'
-
+const STAT = true
 const defaultDate = moment().format('YYYY-MM-DD')
 const enhance = compose(
     connect((state, props) => {
@@ -128,16 +127,12 @@ const enhance = compose(
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
             const search = _.get(filterForm, ['values', 'search']) || null
-            const zone = _.get(filterForm, ['values', 'zone']) || null
-            const division = _.get(filterForm, ['values', 'division']) || null
-            const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
-            const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
+            const paymentType = _.get(filterForm, ['values', 'paymentType', 'value']) || null
+            const balanceType = _.get(filterForm, ['values', 'balanceType', 'value']) || null
             filter.filterBy({
                 [STAT_PROVIDER_FILTER_KEY.SEARCH]: search,
-                [STAT_PROVIDER_FILTER_KEY.ZONE]: _.join(zone, '-'),
-                [STAT_PROVIDER_FILTER_KEY.DIVISION]: _.join(division, '-'),
-                [STAT_PROVIDER_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
-                [STAT_PROVIDER_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
+                [STAT_PROVIDER_FILTER_KEY.PAYMENT_TYPE]: paymentType,
+                [STAT_PROVIDER_FILTER_KEY.BALANCE_TYPE]: balanceType
 
             })
         },
@@ -194,13 +189,11 @@ const StatProviderList = enhance((props) => {
     const openStatProviderDialog = toBoolean(_.get(location, ['query', STAT_PROVIDER_DIALOG_OPEN]))
     const openInfoDialog = toBoolean(_.get(location, ['query', STAT_PROVIDER_INFO_DIALOG_OPEN]))
     const detailId = _.toInteger(_.get(params, 'statProviderId'))
-    const firstDayOfMonth = _.get(location, ['query', 'fromDate']) || moment().format('YYYY-MM-01')
-    const lastDay = moment().daysInMonth()
-    const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
-    const zone = !_.isNull(_.get(location, ['query', 'zone'])) && _.get(location, ['query', 'zone'])
     const division = !_.isNull(_.get(location, ['query', 'division'])) && _.toInteger(_.get(location, ['query', 'division']))
     const search = !_.isNull(_.get(location, ['query', 'search'])) ? _.get(location, ['query', 'search']) : null
     const type = _.get(location, ['query', 'type'])
+    const paymentType = filter.getParam(STAT_PROVIDER_FILTER_KEY.PAYMENT_TYPE)
+    const balanceType = filter.getParam(STAT_PROVIDER_FILTER_KEY.BALANCE_TYPE)
 
     const divisionInfo = _.find(_.get(list, ['results', '0', 'divisions']), (item) => {
         return _.get(item, 'id') === division
@@ -260,11 +253,11 @@ const StatProviderList = enhance((props) => {
     }
     const initialValues = {
         search: search,
-        zone: zone && splitToArray(zone),
-        division: division && splitToArray(division),
-        date: {
-            fromDate: moment(firstDayOfMonth),
-            toDate: moment(lastDayOfMonth)
+        paymentType: {
+            value: paymentType
+        },
+        balanceType: {
+            value: balanceType
         }
     }
 
@@ -281,6 +274,7 @@ const StatProviderList = enhance((props) => {
                 initialValues={initialValues}
                 pathname={pathname}
                 infoDialog={infoDialog}
+                stat={STAT}
             />
         </Layout>
     )

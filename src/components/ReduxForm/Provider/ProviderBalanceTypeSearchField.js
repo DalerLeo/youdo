@@ -15,7 +15,7 @@ const getItem = (id) => {
         _.find(Items, (o) => { return o.value === id }))
 }
 
-const ClientBalanceTypeSearchField = (props) => {
+const ProviderBalanceTypeSearchField = (props) => {
     return (
         <SearchField
             getValue={SearchField.defaultGetValue('value')}
@@ -28,4 +28,4 @@ const ClientBalanceTypeSearchField = (props) => {
     )
 }
 
-export default ClientBalanceTypeSearchField
+export default ProviderBalanceTypeSearchField
