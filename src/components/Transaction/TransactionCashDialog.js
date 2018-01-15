@@ -243,6 +243,26 @@ const TransactionCashDialog = enhance((props) => {
             }
         })()
     }
+
+    const amount1 = _.toNumber(_.get(currentItem, 'amount'))
+    const internal1 = _.toNumber(_.get(currentItem, 'internal'))
+    const ini = {
+        amount: amount1,
+//        comment: _.get(currentItem, 'comment'),
+//        custom_rate: !_.isNull(_.get(currentItem, 'customRate')) ? _.get(currentItem, 'customRate') : _.toInteger(amount1 / internal1),
+/*        division: {
+            value: _.get(currentItem, ['division', 'id'])
+        },
+        paymentType: {
+            value: _.get(currentItem, 'paymentType')
+        },
+        currency: {
+            value: _.get(currentItem, ['currency', 'id'])
+        },
+        user: {
+            value: _.get(currentItem, ['user', 'id'])
+        }*/
+    }
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const isSuperUser = _.get(superUser, 'isSuperUser')
     const detailRow = (
@@ -326,12 +346,14 @@ const TransactionCashDialog = enhance((props) => {
                 <div className={classes.inContent} style={{minHeight: 'initial'}}>
                     <div className={classes.list}>
                         <Row className="dottedList">
-                            <Col xs={9}>{t('Агент')}</Col>
+                            <Col xs={7}>{t('Агент')}</Col>
+                            <Col xs={2} style={{textAlign: 'right'}}>{t('Организация')}</Col>
                             <Col xs={2}>{t('Сумма')}</Col>
                         </Row>
                         {_.map(_.get(acceptCashDialog, ['data']), (item, index) => {
                             const currency = _.get(item, ['currency', 'name'])
                             const user = _.get(item, ['user', 'name'])
+                            const divisionName = _.get(item, ['division', 'name'])
                             const amount = numberFormat(_.get(item, ['sum']), currency)
                             const userId = _.toNumber(_.get(item, ['user', 'id']))
                             const currencyId = _.toNumber(_.get(item, ['currency', 'id']))
@@ -349,7 +371,8 @@ const TransactionCashDialog = enhance((props) => {
                                             <div className={classes.pagination}>
                                                 <Pagination filter={filterItem}/>
                                             </div>
-                                            <Col xs={5} style={{textAlign: 'right', paddingRight: '0'}}>{amount}</Col>
+                                            <Col xs={2} style={{textAlign: 'right', paddingRight: '0'}}>{divisionName}</Col>
+                                            <Col xs={3} style={{textAlign: 'right', paddingRight: '0'}}>{amount}</Col>
                                             <Col xs={1}>
                                                 <div style={{paddingLeft: '6px'}}>
                                                     <ToolTip position="bottom" text={t('Оплатить')}>
@@ -420,7 +443,7 @@ const TransactionCashDialog = enhance((props) => {
             {isSuperUser && <TransactionUpdatePriceDialog
                 open={superUser.open}
                 loading={superUser.loading}
-                initialValues={initialValues.initialValues}
+                initialValues={ini}
                 onClose={superUser.handleCloseSuperUserDialog}
                 onSubmit={superUser.handleSubmitSuperUserDialog}
                 client={_.get(currentItem, ['client'])}
