@@ -56,10 +56,7 @@ let webpackConfig = {
         new HtmlWebpackPlugin({
             title: packageJSON.name,
             template: path.join(__dirname, 'src/index.hbs'),
-            favicon: {
-                source: './src/rhythm-logo.png',
-                outputFilename: 'icon.[hash].png'
-            },
+            favicon: './src/rhythm-logo.png',
         })
     ]
 }

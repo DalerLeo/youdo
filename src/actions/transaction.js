@@ -258,8 +258,8 @@ export const transactionInfoFetchAction = (id) => {
     }
 }
 
-export const transactionConvertAction = (date, currency) => {
-    const params = serializers.convertSerializer(date, currency)
+export const transactionConvertAction = (date, currency, order) => {
+    const params = serializers.convertSerializer(date, currency, order)
     const payload = axios()
         .post(API.PENDING_PAYMENTS_CONVERT, params)
         .then((response) => {
