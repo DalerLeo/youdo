@@ -186,7 +186,14 @@ const enhance = compose(
             width: '100%'
         },
         payment: {
-
+            display: 'inline-block',
+            marginLeft: '5px',
+            '& > span:after': {
+                content: '","'
+            },
+            '&:last-child > span:after': {
+                display: 'none'
+            }
         },
         division: {
             marginRight: '20px',
