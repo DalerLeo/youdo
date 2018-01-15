@@ -219,38 +219,14 @@ const TransactionCashDialog = enhance((props) => {
         superUser.handleOpenSuperUserDialog(thisItem.id)
         setItem(thisItem)
     }
-    const initialValues = {
-        initialValues: (() => {
-            const amount = _.toNumber(_.get(currentItem, 'amount'))
-            const internal = _.toNumber(_.get(currentItem, 'internal'))
-            return {
-                amount: amount,
-                comment: _.get(currentItem, 'comment'),
-                custom_rate: !_.isNull(_.get(currentItem, 'customRate')) ? _.get(currentItem, 'customRate') : _.toInteger(amount / internal),
-                division: {
-                    text: _.get(currentItem, ['division', 'name']),
-                    value: _.get(currentItem, ['division', 'id'])
-                },
-                paymentType: {
-                    value: _.get(currentItem, 'paymentType')
-                },
-                currency: {
-                    value: _.get(currentItem, ['currency', 'id'])
-                },
-                user: {
-                    value: _.get(currentItem, ['user', 'id'])
-                }
-            }
-        })()
-    }
 
     const amount1 = _.toNumber(_.get(currentItem, 'amount'))
     const internal1 = _.toNumber(_.get(currentItem, 'internal'))
-    const ini = {
+    const initialValues = {
         amount: amount1,
-//        comment: _.get(currentItem, 'comment'),
-//        custom_rate: !_.isNull(_.get(currentItem, 'customRate')) ? _.get(currentItem, 'customRate') : _.toInteger(amount1 / internal1),
-/*        division: {
+        comment: _.get(currentItem, 'comment'),
+        custom_rate: !_.isNull(_.get(currentItem, 'customRate')) ? _.get(currentItem, 'customRate') : _.toInteger(amount1 / internal1),
+        division: {
             value: _.get(currentItem, ['division', 'id'])
         },
         paymentType: {
@@ -261,7 +237,7 @@ const TransactionCashDialog = enhance((props) => {
         },
         user: {
             value: _.get(currentItem, ['user', 'id'])
-        }*/
+        }
     }
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const isSuperUser = _.get(superUser, 'isSuperUser')
@@ -354,14 +330,15 @@ const TransactionCashDialog = enhance((props) => {
                             const currency = _.get(item, ['currency', 'name'])
                             const user = _.get(item, ['user', 'name'])
                             const divisionName = _.get(item, ['division', 'name'])
+                            const divisionId = _.get(item, ['division', 'id'])
                             const amount = numberFormat(_.get(item, ['sum']), currency)
                             const userId = _.toNumber(_.get(item, ['user', 'id']))
                             const currencyId = _.toNumber(_.get(item, ['currency', 'id']))
-                            if (acceptCashDialog.openAcceptCashDetail === userId + '_' + currencyId) {
+                            if (acceptCashDialog.openAcceptCashDetail === userId + '_' + currencyId + '_' + divisionId) {
                                 return (
                                     <div key={index} className={classes.details}>
                                         <Row style={{position: 'relative'}}>
-                                            <Col xs={6}>{user}</Col>
+                                            <Col xs={8}>{user}</Col>
                                             <div
                                                 className={classes.closeDetail}
                                                 onClick={() => {
@@ -371,7 +348,6 @@ const TransactionCashDialog = enhance((props) => {
                                             <div className={classes.pagination}>
                                                 <Pagination filter={filterItem}/>
                                             </div>
-                                            <Col xs={2} style={{textAlign: 'right', paddingRight: '0'}}>{divisionName}</Col>
                                             <Col xs={3} style={{textAlign: 'right', paddingRight: '0'}}>{amount}</Col>
                                             <Col xs={1}>
                                                 <div style={{paddingLeft: '6px'}}>
@@ -410,16 +386,17 @@ const TransactionCashDialog = enhance((props) => {
                                     <div
                                         className={classes.closeDetail}
                                         onClick={() => {
-                                            acceptCashDialog.handleOpenAcceptCashDetail(userId, currencyId)
+                                            acceptCashDialog.handleOpenAcceptCashDetail(userId, currencyId, divisionId)
                                         }}>
                                     </div>
-                                    <Col xs={6}>{user}</Col>
-                                    <Col xs={5} style={{textAlign: 'right'}}>{amount}</Col>
+                                    <Col xs={7}>{user}</Col>
+                                    <Col xs={2} style={{textAlign: 'right'}}>{divisionName}</Col>
+                                    <Col xs={2} style={{textAlign: 'right'}}>{amount}</Col>
                                     <Col xs={1}>
                                         <ToolTip position="bottom" text={t('Оплатить')}>
                                             <IconButton
                                                 onTouchTap={() => {
-                                                    cashBoxDialog.handleOpenCashBoxDialog(userId, currencyId)
+                                                    cashBoxDialog.handleOpenCashBoxDialog(userId, currencyId, divisionId)
                                                 }}>
                                                 <PaymentIcon color="#666666"/>
                                             </IconButton>
@@ -443,7 +420,7 @@ const TransactionCashDialog = enhance((props) => {
             {isSuperUser && <TransactionUpdatePriceDialog
                 open={superUser.open}
                 loading={superUser.loading}
-                initialValues={ini}
+                initialValues={initialValues}
                 onClose={superUser.handleCloseSuperUserDialog}
                 onSubmit={superUser.handleSubmitSuperUserDialog}
                 client={_.get(currentItem, ['client'])}

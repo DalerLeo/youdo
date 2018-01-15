@@ -120,11 +120,14 @@ const enhance = compose(
 
         if (_.isEmpty(finder) && input.value.value) {
             getItem(input.value.value).then((data) => {
-                return dispatch({
-                    dataSource: _.union(props.state.dataSource, [{
-                        text: getText(data), value: getValue(data)
-                    }])
-                })
+                if (!_.isEmpty(data)) {
+                    return dispatch({
+                        dataSource: _.union(props.state.dataSource, [{
+                            text: getText(data), value: getValue(data)
+                        }])
+                    })
+                }
+                return null
             })
         }
     }),
