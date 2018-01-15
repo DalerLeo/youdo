@@ -27,7 +27,6 @@ const enhance = compose(
     injectSheet({
         wrapper: {
             width: '100%',
-            height: '45px',
             '& .is-focused:not(.is-open) > .Select-control': {
                 borderBottom: 'solid 2px #5d6474',
                 boxShadow: 'unset'

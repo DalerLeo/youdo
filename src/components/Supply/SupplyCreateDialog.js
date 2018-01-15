@@ -319,22 +319,22 @@ const SupplyCreateDialog = enhance((props) => {
                                         className={classes.searchFieldCustom}
                                         label={t('Тип оплаты')}
                                         fullWidth={true}/>
-                                    <Field
-                                        name="contract"
-                                        component={TextField}
-                                        className={classes.inputFieldCustom}
-                                        label={t('Номер договора')}
-                                        fullWidth={true}/>
+                                    <div style={{marginTop: 15}}>
+                                        <Field
+                                            name="contract"
+                                            component={TextField}
+                                            className={classes.inputFieldCustom}
+                                            label={t('Номер договора')}
+                                            fullWidth={true}/>
+                                    </div>
                                 </div>
                                 <div className={classes.commentFieldSupply}>
                                     <div>
                                         <div className={classes.subTitleOrder} style={{marginTop: '15px'}}>Комментарии по заказу</div>
                                         <Field
-                                            style={{marginTop: '-20px', lineHeight: '20px', fontSize: '13px'}}
                                             name="comment"
                                             component={TextField}
                                             label={t('Оставить комментарий') + '...'}
-
                                             multiLine={true}
                                             rows={1}
                                             rowsMax={6}
