@@ -26,6 +26,7 @@ import {
     OrderSearchField,
     SupplySearchField
 } from '../ReduxForm'
+import RateRadioButton from '../ReduxForm/Transaction/RateRadioButton'
 import NotFound from '../Images/not-found.png'
 import CashboxSearchField from '../ReduxForm/Cashbox/CashBoxSimpleSearch'
 import ExpensiveCategoryCustomSearchField from '../ReduxForm/ExpenseCategory/ExpensiveCategoryCustomSearchField'
@@ -103,7 +104,7 @@ const enhance = compose(
             display: 'flex',
             minHeight: '184px',
             overflow: 'unset',
-            padding: '0 30px',
+            padding: '0 30px 20px',
             color: '#333'
         },
         salaryWrapper: {
@@ -118,7 +119,7 @@ const enhance = compose(
             position: 'relative',
             display: 'flex',
             '& > div': {
-                width: '400px'
+                width: '500px'
             }
         },
         field: {
@@ -271,6 +272,7 @@ const enhance = compose(
         const amount = _.get(state, ['form', 'TransactionCreateForm', 'values', 'amount'])
         const chosenCashbox = _.get(state, ['form', 'TransactionCreateForm', 'values', 'cashbox', 'value'])
         const date = _.get(state, ['form', 'TransactionCreateForm', 'values', 'date'])
+        const order = _.get(state, ['form', 'TransactionCreateForm', 'values', 'order', 'value'])
         const incomeCategory = _.get(state, ['form', 'TransactionCreateForm', 'values', 'incomeCategory', 'value'])
         const optionsList = _.get(state, ['expensiveCategory', 'options', 'data', 'results'])
         const incomeCategoryOptions = _.get(state, ['form', 'TransactionCreateForm', 'values', 'incomeCategory', 'value', 'options'])
@@ -284,6 +286,7 @@ const enhance = compose(
             amount,
             chosenCashbox,
             date,
+            order,
             optionsList,
             incomeCategoryOptions,
             expenseCategoryOptions,
@@ -333,7 +336,8 @@ const TransactionCreateDialog = enhance((props) => {
         searchQuery,
         setSearchQuery,
         totalStaffAmount,
-        canSetCustomRate
+        canSetCustomRate,
+        order
     } = props
     const clientOptionId = _.get(_.find(optionsList, {'keyName': 'client'}), 'id')
     const providerOptionId = _.get(_.find(optionsList, {'keyName': 'provider'}), 'id')
@@ -361,6 +365,17 @@ const TransactionCreateDialog = enhance((props) => {
         const searchValue2 = el.secondName.toLowerCase()
         return searchValue.indexOf(searchQuery) !== NOT_FOUND || searchValue2.indexOf(searchQuery) !== NOT_FOUND
     })
+    const customRateField = (primaryCurrency !== currency && currency && date && canSetCustomRate)
+        ? (
+            <Field
+                name="custom_rate"
+                component={TextField}
+                label={t('Курс ') + primaryCurrency}
+                className={classes.inputFieldCustom}
+                normalize={normalizeNumber}
+                fullWidth={true}/>
+        )
+        : null
     return (
         <Dialog
             modal={true}
@@ -369,7 +384,7 @@ const TransactionCreateDialog = enhance((props) => {
             className={classes.dialog}
             contentStyle={loading
                 ? {minWidth: '300px'}
-                : isSalary ? {width: '800px', maxWidth: 'none'} : {width: '400px'}}
+                : isSalary ? {width: '1000px', maxWidth: 'none'} : {width: '500px'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
                 <span>{isExpense ? t('Расход') : t('Приход')}</span>
@@ -441,7 +456,7 @@ const TransactionCreateDialog = enhance((props) => {
                                 }
                                 <div className={classes.flex} style={{justifyContent: 'space-between'}}>
                                     {!isSalary &&
-                                    <div className={classes.flex} style={{alignItems: 'baseline', width: '48%'}}>
+                                    <div className={classes.flex} style={{alignItems: 'baseline', width: '100%'}}>
                                         <Field
                                             name="amount"
                                             component={TextField}
@@ -449,17 +464,8 @@ const TransactionCreateDialog = enhance((props) => {
                                             normalize={normalizeNumber}
                                             className={classes.inputFieldCustom}
                                             fullWidth={true}/>
-                                        <div>{currency}</div>
+                                        <div style={{marginLeft: '5px'}}>{currency}</div>
                                     </div>}
-                                    <div className={classes.flex} style={{alignItems: 'baseline', width: '48%'}}>
-                                        {(primaryCurrency !== currency && currency && date && canSetCustomRate) &&
-                                        <Field
-                                            name="custom_rate"
-                                            component={TextField}
-                                            label={t('Курс ') + primaryCurrency}
-                                            className={classes.inputFieldCustom}
-                                            fullWidth={true}/>}
-                                    </div>
                                 </div>
                                 {(convert && rate && primaryCurrency !== currency)
                                     ? <div className={classes.convert}>После конвертации:
@@ -516,7 +522,7 @@ const TransactionCreateDialog = enhance((props) => {
                                         : null}
                                 {!isSalary &&
                                 <div className={classes.flex} style={{justifyContent: 'space-between'}}>
-                                    <div className={classes.flex} style={{alignItems: 'baseline', width: '48%'}}>
+                                    <div className={classes.flex} style={{alignItems: 'baseline', width: '100%'}}>
                                         <Field
                                             name="amount"
                                             component={TextField}
@@ -524,17 +530,7 @@ const TransactionCreateDialog = enhance((props) => {
                                             normalize={normalizeNumber}
                                             className={classes.inputFieldCustom}
                                             fullWidth={true}/>
-                                        <div>{_.get(cashbox, ['currency', 'name'])}</div>
-                                    </div>
-                                    <div className={classes.flex} style={{alignItems: 'baseline', width: '48%'}}>
-                                        {(primaryCurrency !== currency && currency && date && canSetCustomRate)
-                                            ? <Field
-                                                name="custom_rate"
-                                                component={TextField}
-                                                label={t('Курс ') + primaryCurrency}
-                                                className={classes.inputFieldCustom}
-                                                normalize={normalizeNumber}
-                                                fullWidth={true}/> : null}
+                                        <div style={{marginLeft: '5px'}}>{currency}</div>
                                     </div>
                                 </div>}
                                 {(convert && rate && primaryCurrency !== currency)
@@ -551,6 +547,14 @@ const TransactionCreateDialog = enhance((props) => {
                                     rowsMax={3}
                                     fullWidth={true}/>
                             </div>}
+                        <Field
+                            name="currencyRate"
+                            currency={currency}
+                            showOrderRate={Boolean(showOrders && order)}
+                            canSetCustomRate={canSetCustomRate}
+                            customRateField={customRateField}
+                            component={RateRadioButton}
+                        />
                     </div>
                     {isSalary &&
                     <div className={classes.salaryWrapper}>
