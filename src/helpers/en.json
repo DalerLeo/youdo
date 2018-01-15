@@ -828,6 +828,10 @@
   "агентов не распределено": "agents not distributed",
   "активных зон": "active zones",
   "активная зона": "active zone",
-  "магазинов не распределено": "markets not distributed"
+  "магазинов не распределено": "markets not distributed",
+  "Баланс поставшиков": "Provider Balance",
+  "Долг поставшику": "",
+  "Долг поставшика": "",
+  "Системные страницы": "System Pages"
 
 }

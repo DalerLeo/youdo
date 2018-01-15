@@ -15,8 +15,8 @@ export const listFilterSerializer = (query) => {
         'begin_date': firstDayOfMonth,
         'end_date': lastDayOfMonth,
         'search': _.get(defaultData, 'search'),
-        'zone': _.get(defaultData, 'zone') || null,
-        'division': _.get(defaultData, 'division') || null,
+        'payment_type': _.get(defaultData, 'paymentType') || null,
+        'balance_type': _.get(defaultData, 'balanceType') || null,
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),
         'ordering': ordering && orderingSnakeCase(ordering)
@@ -32,8 +32,8 @@ export const summaryFilterSerializer = (query) => {
     return {
         'begin_date': firstDayOfMonth,
         'end_date': lastDayOfMonth,
-        'zone': _.get(defaultData, 'zone') || null,
-        'division': _.get(defaultData, 'division') || null
+        'payment_type': _.get(defaultData, 'paymentType') || null,
+        'balance_type': _.get(defaultData, 'balanceType') || null
     }
 }
 

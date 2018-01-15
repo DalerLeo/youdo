@@ -500,6 +500,12 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.TELEGRAM_NEWS_UPDATE),
         item: createThunkReducer(actionTypes.TELEGRAM_NEWS_ITEM)
     }),
+    systemPages: combineReducers({
+        create: createThunkReducer(actionTypes.SYSTEM_PAGES_CREATE),
+        list: createThunkReducer(actionTypes.SYSTEM_PAGES_LIST),
+        update: createThunkReducer(actionTypes.SYSTEM_PAGES_UPDATE),
+        item: createThunkReducer(actionTypes.SYSTEM_PAGES_ITEM)
+    }),
     widgets: combineReducers({
         list: createThunkReducer(actionTypes.WIDGETS_LIST)
     }),

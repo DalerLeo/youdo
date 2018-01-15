@@ -46,7 +46,9 @@ const enhance = compose(
             '& .row': {
                 '& > div': {
                     textAlign: 'right',
-                    zIndex: '4'
+                    '&:last-child': {
+                        zIndex: '4'
+                    }
                 },
                 '& > div:first-child': {
                     textAlign: 'left',
@@ -75,7 +77,6 @@ const enhance = compose(
                     background: 'inherit'
                 },
                 '&:hover': {
-                    cursor: 'pointer',
                     background: '#f2f5f8'
                 }
             }
@@ -115,11 +116,11 @@ const enhance = compose(
         },
         link: {
             position: 'absolute',
-            left: '0',
-            right: '0',
             top: '0',
             bottom: '0',
-            zIndex: '1'
+            right: '0',
+            left: '0',
+            cursor: 'pointer'
         }
     })
 )

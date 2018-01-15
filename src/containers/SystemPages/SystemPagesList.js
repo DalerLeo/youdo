@@ -10,17 +10,17 @@ import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import {
-    TELEGRAM_NEWS_CREATE_DIALOG_OPEN,
-    TELEGRAM_NEWS_UPDATE_DIALOG_OPEN,
-    TelegramNewsGridList
-} from '../../components/TelegramNews'
+    SYSTEM_PAGES_CREATE_DIALOG_OPEN,
+    SYSTEM_PAGES_UPDATE_DIALOG_OPEN,
+    SystemPagesGridList
+} from '../../components/SystemPages'
 import {
-    telegramNewsCreateAction,
-    telegramNewsUpdateAction,
-    telegramNewsListFetchAction,
-    telegramNewsDeleteAction,
-    telegramNewsItemFetchAction
-} from '../../actions/telegramNews'
+    systemPagesCreateAction,
+    systemPagesUpdateAction,
+    systemPagesListFetchAction,
+    systemPagesDeleteAction,
+    systemPagesItemFetchAction
+} from '../../actions/systemPages'
 import {openSnackbarAction} from '../../actions/snackbar'
 import {openErrorAction} from '../../actions/error'
 
@@ -28,13 +28,13 @@ const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
-        const detail = _.get(state, ['telegramNews', 'item', 'data'])
-        const detailLoading = _.get(state, ['telegramNews', 'item', 'loading'])
-        const createLoading = _.get(state, ['telegramNews', 'create', 'loading'])
-        const updateLoading = _.get(state, ['telegramNews', 'update', 'loading'])
-        const list = _.get(state, ['telegramNews', 'list', 'data'])
-        const listLoading = _.get(state, ['telegramNews', 'list', 'loading'])
-        const createForm = _.get(state, ['form', 'TelegramNewsCreateForm'])
+        const detail = _.get(state, ['systemPages', 'item', 'data'])
+        const detailLoading = _.get(state, ['systemPages', 'item', 'loading'])
+        const createLoading = _.get(state, ['systemPages', 'create', 'loading'])
+        const updateLoading = _.get(state, ['systemPages', 'update', 'loading'])
+        const list = _.get(state, ['systemPages', 'list', 'data'])
+        const listLoading = _.get(state, ['systemPages', 'list', 'loading'])
+        const createForm = _.get(state, ['form', 'SystemPagesCreateForm'])
         const filter = filterHelper(list, pathname, query)
 
         return {
@@ -51,15 +51,15 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
-        dispatch(telegramNewsListFetchAction(filter))
+        dispatch(systemPagesListFetchAction(filter))
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const telegramNewsId = _.get(nextProps, ['params', 'telegramNewsId'])
-        return telegramNewsId && _.get(props, ['params', 'telegramNewsId']) !== telegramNewsId
+        const systemPagesId = _.get(nextProps, ['params', 'systemPagesId'])
+        return systemPagesId && _.get(props, ['params', 'systemPagesId']) !== systemPagesId
     }, ({dispatch, params}) => {
-        const telegramNewsId = _.toInteger(_.get(params, 'telegramNewsId'))
-        telegramNewsId && dispatch(telegramNewsItemFetchAction(telegramNewsId))
+        const systemPagesId = _.toInteger(_.get(params, 'systemPagesId'))
+        systemPagesId && dispatch(systemPagesItemFetchAction(systemPagesId))
     }),
 
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
@@ -76,10 +76,10 @@ const enhance = compose(
         },
         handleSendConfirmDialog: props => () => {
             const {dispatch, detail, setOpenConfirmDialog, filter} = props
-            dispatch(telegramNewsDeleteAction(detail.id))
+            dispatch(systemPagesDeleteAction(detail.id))
                 .then(() => {
                     setOpenConfirmDialog(false)
-                    dispatch(telegramNewsListFetchAction(filter))
+                    dispatch(systemPagesListFetchAction(filter))
                     return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
                 })
                 .catch(() => {
@@ -89,25 +89,25 @@ const enhance = compose(
 
         handleOpenCreateDialog: props => () => {
             const {dispatch, location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[TELEGRAM_NEWS_CREATE_DIALOG_OPEN]: true})})
-            dispatch(reset('TelegramNewsCreateForm'))
+            hashHistory.push({pathname, query: filter.getParams({[SYSTEM_PAGES_CREATE_DIALOG_OPEN]: true})})
+            dispatch(reset('SystemPagesCreateForm'))
         },
 
         handleCloseCreateDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[TELEGRAM_NEWS_CREATE_DIALOG_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[SYSTEM_PAGES_CREATE_DIALOG_OPEN]: false})})
         },
 
         handleSubmitCreateDialog: props => () => {
             const {dispatch, createForm, filter, location: {pathname}} = props
 
-            return dispatch(telegramNewsCreateAction(_.get(createForm, ['values'])))
+            return dispatch(systemPagesCreateAction(_.get(createForm, ['values'])))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[TELEGRAM_NEWS_CREATE_DIALOG_OPEN]: false})})
-                    dispatch(telegramNewsListFetchAction(filter))
+                    hashHistory.push({pathname, query: filter.getParams({[SYSTEM_PAGES_CREATE_DIALOG_OPEN]: false})})
+                    dispatch(systemPagesListFetchAction(filter))
                 })
                 .catch((error) => {
                     dispatch(openErrorAction({
@@ -119,30 +119,30 @@ const enhance = compose(
         handleOpenUpdateDialog: props => (id) => {
             const {filter} = props
             hashHistory.push({
-                pathname: sprintf(ROUTER.TELEGRAM_NEWS_ITEM_PATH, id),
-                query: filter.getParams({[TELEGRAM_NEWS_UPDATE_DIALOG_OPEN]: true})
+                pathname: sprintf(ROUTER.SYSTEM_PAGES_ITEM_PATH, id),
+                query: filter.getParams({[SYSTEM_PAGES_UPDATE_DIALOG_OPEN]: true})
             })
         },
 
         handleCloseUpdateDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[TELEGRAM_NEWS_UPDATE_DIALOG_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[SYSTEM_PAGES_UPDATE_DIALOG_OPEN]: false})})
         },
 
         handleSubmitUpdateDialog: props => () => {
             const {dispatch, createForm, filter} = props
-            const telegramNewsId = _.toInteger(_.get(props, ['params', 'telegramNewsId']))
+            const systemPagesId = _.toInteger(_.get(props, ['params', 'systemPagesId']))
 
-            return dispatch(telegramNewsUpdateAction(telegramNewsId, _.get(createForm, ['values'])))
+            return dispatch(systemPagesUpdateAction(systemPagesId, _.get(createForm, ['values'])))
                 .then(() => {
-                    return dispatch(telegramNewsItemFetchAction(telegramNewsId))
+                    return dispatch(systemPagesItemFetchAction(systemPagesId))
                 })
                 .then(() => {
                     return dispatch(openSnackbarAction({message: 'Успешно сохранено'}))
                 })
                 .then(() => {
-                    hashHistory.push(filter.createURL({[TELEGRAM_NEWS_UPDATE_DIALOG_OPEN]: false}))
-                    dispatch(telegramNewsListFetchAction(filter))
+                    hashHistory.push(filter.createURL({[SYSTEM_PAGES_UPDATE_DIALOG_OPEN]: false}))
+                    dispatch(systemPagesListFetchAction(filter))
                 })
                 .catch((error) => {
                     dispatch(openErrorAction({
@@ -153,12 +153,12 @@ const enhance = compose(
 
         handleCloseDetail: props => () => {
             const {filter} = props
-            hashHistory.push({pathname: ROUTER.TELEGRAM_NEWS_LIST_URL, query: filter.getParams()})
+            hashHistory.push({pathname: ROUTER.SYSTEM_PAGES_LIST_URL, query: filter.getParams()})
         }
     })
 )
 
-const TelegramNewsList = enhance((props) => {
+const SystemPagesList = enhance((props) => {
     const {
         location,
         list,
@@ -172,9 +172,9 @@ const TelegramNewsList = enhance((props) => {
         params
     } = props
 
-    const openCreateDialog = toBoolean(_.get(location, ['query', TELEGRAM_NEWS_CREATE_DIALOG_OPEN]))
-    const openUpdateDialog = toBoolean(_.get(location, ['query', TELEGRAM_NEWS_UPDATE_DIALOG_OPEN]))
-    const detailId = _.toInteger(_.get(params, 'telegramNewsId'))
+    const openCreateDialog = toBoolean(_.get(location, ['query', SYSTEM_PAGES_CREATE_DIALOG_OPEN]))
+    const openUpdateDialog = toBoolean(_.get(location, ['query', SYSTEM_PAGES_UPDATE_DIALOG_OPEN]))
+    const detailId = _.toInteger(_.get(params, 'systemPagesId'))
 
     const createDialog = {
         createLoading,
@@ -240,7 +240,7 @@ const TelegramNewsList = enhance((props) => {
 
     return (
         <Layout {...layout}>
-            <TelegramNewsGridList
+            <SystemPagesGridList
                 filter={filter}
                 listData={listData}
                 detailData={detailData}
@@ -252,4 +252,4 @@ const TelegramNewsList = enhance((props) => {
     )
 })
 
-export default TelegramNewsList
+export default SystemPagesList
