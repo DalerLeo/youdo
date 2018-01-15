@@ -27,7 +27,10 @@ import {
     TransactionGridList,
     TRANSACTION_ACCEPT_CASH_DETAIL_OPEN,
     TRANSACTION_INFO_OPEN,
-    TRANSACTION_EDIT_PRICE_OPEN
+    TRANSACTION_EDIT_PRICE_OPEN,
+    OPEN_USER,
+    OPEN_DIVISION,
+    OPEN_CURRENCY
 } from '../../components/Transaction'
 import {
     transactionCreateExpenseAction,
@@ -240,20 +243,20 @@ const enhance = compose(
 
     withPropsOnChange((props, nextProps) => {
         const except = {
-            updateTransaction: null
+            updateTransaction: null,
+            openAcceptTransactionDialog: null
         }
         const prevCashDetails = (_.get(props, ['location', 'query', TRANSACTION_ACCEPT_CASH_DETAIL_OPEN]))
         const nextCashDetails = (_.get(nextProps, ['location', 'query', TRANSACTION_ACCEPT_CASH_DETAIL_OPEN]))
         return (prevCashDetails !== nextCashDetails || ((props.filterItem.filterRequest(except) !== nextProps.filterItem.filterRequest(except)))) && nextCashDetails !== 'false'
     }, ({dispatch, location, filterItem}) => {
         const cashDetails = (_.get(location, ['query', TRANSACTION_ACCEPT_CASH_DETAIL_OPEN]))
-        const user = _.get(location, ['query', 'openUser'])
-        const currency = _.get(location, ['query', 'openCurrency'])
-        cashDetails && dispatch(pendingTransactionFetchAction(user, currency, filterItem))
+        cashDetails && dispatch(pendingTransactionFetchAction(filterItem))
     }),
     withPropsOnChange((props, nextProps) => {
         const except = {
-            updateTransaction: null
+            updateTransaction: null,
+            openDivision: null
         }
         return (props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except) &&
             _.isNil(nextProps.query.dPage || nextProps.query.dPageSize || props.query.dPage || props.query.dPageSize)) ||
@@ -312,12 +315,10 @@ const enhance = compose(
         handleSubmitDeleteTransaction: props => () => {
             const {dispatch, filter, location: {pathname, query}, filterItem} = props
             const transactionId = _.toInteger(_.get(query, DELETE_TRANSACTION))
-            const currency = _.toInteger(_.get(query, 'openCurrency'))
-            const user = _.toInteger(_.get(query, 'openUser'))
             dispatch(deleteTransactionAction(transactionId))
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[DELETE_TRANSACTION]: false})})
-                    dispatch(pendingTransactionFetchAction(user, currency, filterItem))
+                    dispatch(pendingTransactionFetchAction(filterItem))
                     dispatch(acceptCashListFetchAction())
                     return dispatch(openSnackbarAction({message: t('Успешно удалено')}))
                 })
@@ -523,14 +524,15 @@ const enhance = compose(
                     hashHistory.push({pathname, query: filterItem.getParams({[TRANSACTION_CASH_DIALOG_OPEN]: false})})
                 })
         },
-        handleOpenCashBoxDialog: props => (user, currency) => {
+        handleOpenCashBoxDialog: props => (user, currency, division) => {
             const {location: {pathname}, filter} = props
             hashHistory.push({
                 pathname,
                 query: filter.getParams({
                     [TRANSACTION_ACCEPT_DIALOG_OPEN]: true,
-                    'openUser': user,
-                    'openCurrency': currency
+                    [OPEN_USER]: user,
+                    [OPEN_CURRENCY]: currency,
+                    [OPEN_DIVISION]: division
                 })
             })
         },
@@ -541,8 +543,9 @@ const enhance = compose(
                 pathname,
                 query: filter.getParams({
                     [TRANSACTION_ACCEPT_DIALOG_OPEN]: false,
-                    'openUser': ZERO,
-                    'openCurrency': ZERO
+                    [OPEN_USER]: ZERO,
+                    [OPEN_CURRENCY]: ZERO,
+                    [OPEN_DIVISION]: ZERO
                 })
             })
             dispatch(reset('AcceptClientTransactionForm'))
@@ -551,8 +554,9 @@ const enhance = compose(
             const {dispatch, acceptForm, filter, location: {pathname}} = props
             const cashboxId = _.toInteger(filter.getParam('cashboxId'))
             const data = {
-                'currency': _.toInteger(filter.getParam('openCurrency')),
-                'agent': _.toInteger(filter.getParam('openUser')),
+                'currency': _.toInteger(filter.getParam(OPEN_CURRENCY)),
+                'agent': _.toInteger(filter.getParam(OPEN_USER)),
+                'division': _.toInteger(filter.getParam(OPEN_DIVISION)),
                 'amount': _.toNumber(amount),
                 'cashbox': _.get(acceptForm, ['values', 'cashBox', 'value'])
             }
@@ -573,17 +577,18 @@ const enhance = compose(
                     }))
                 })
         },
-        handleOpenAcceptCashDetail: props => (user, currency) => {
-            const {filter, location: {pathname}, dispatch} = props
+        handleOpenAcceptCashDetail: props => (user, currency, division) => {
+            const {filter, location: {pathname}, dispatch, filterItem} = props
             hashHistory.push({
                 pathname,
                 query: filter.getParams({
-                    [TRANSACTION_ACCEPT_CASH_DETAIL_OPEN]: user + '_' + currency,
-                    'openUser': user,
-                    'openCurrency': currency
+                    [TRANSACTION_ACCEPT_CASH_DETAIL_OPEN]: user + '_' + currency + '_' + division,
+                    [OPEN_USER]: user,
+                    [OPEN_CURRENCY]: currency,
+                    [OPEN_DIVISION]: division
                 })
             })
-            dispatch(pendingTransactionFetchAction(user, currency))
+            dispatch(pendingTransactionFetchAction(filterItem))
         },
         handleCloseAcceptCashDetail: props => () => {
             const {filter, location: {pathname}} = props
@@ -611,8 +616,6 @@ const enhance = compose(
         },
         handleSubmitSuperUserDialog: props => (id) => {
             const {dispatch, updateForm, filter, filterItem, location: {pathname, query}} = props
-            const currency = _.toInteger(_.get(query, 'openCurrency'))
-            const user = _.toInteger(_.get(query, 'openUser'))
             const transId = _.toInteger(_.get(query, TRANSACTION_EDIT_PRICE_OPEN))
 
             return dispatch(transactionEditPaymentAction(_.get(updateForm, 'values'), id, transId))
@@ -625,7 +628,7 @@ const enhance = compose(
                     })
                 })
                 .then(() => {
-                    dispatch(pendingTransactionFetchAction(user, currency, filterItem))
+                    dispatch(pendingTransactionFetchAction(filterItem))
                     dispatch(acceptCashListFetchAction())
                 })
                 .catch((error) => {
@@ -751,8 +754,8 @@ const TransactionList = enhance((props) => {
     const fromDate = filter.getParam(TRANSACTION_FILTER_KEY.FROM_DATE)
     const toDate = filter.getParam(TRANSACTION_FILTER_KEY.TO_DATE)
     const detailId = _.toInteger(_.get(params, 'transactionId'))
-    const currencyId = _.toInteger(filter.getParam('openCurrency'))
-    const userId = _.toInteger(filter.getParam('openUser'))
+    const currencyId = _.toInteger(filter.getParam(OPEN_CURRENCY))
+    const userId = _.toInteger(filter.getParam(OPEN_USER))
 
     const createExpenseDialog = {
         loading: createLoading,

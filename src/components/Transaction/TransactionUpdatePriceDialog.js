@@ -63,7 +63,7 @@ const TransactionUpdatePriceDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '400px'} : {width: '400px'}}
+            contentStyle={loading ? {width: '300px'} : {width: '400px'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
                 <span>{t('Изменение транзакции')}</span>

@@ -13,7 +13,9 @@ const TRANSACTION_CATEGORY_POPOP_OPEN = 'openCategoryPopop'
 const TRANSACTION_ACCEPT_CASH_DETAIL_OPEN = 'openAcceptCashDetail'
 const TRANSACTION_INFO_OPEN = 'openTransactionInfo'
 const TRANSACTION_EDIT_PRICE_OPEN = 'openTransactionEditPrice'
-
+const OPEN_USER = 'openUser'
+const OPEN_CURRENCY = 'openCurrency'
+const OPEN_DIVISION = 'openDivision'
 export {
 
     TRANSACTION_CREATE_EXPENSE_DIALOG_OPEN,
@@ -31,5 +33,8 @@ export {
     TRANSACTION_CATEGORY_POPOP_OPEN,
     TRANSACTION_INFO_OPEN,
     TRANSACTION_EDIT_PRICE_OPEN,
-    TransactionsFormat
+    TransactionsFormat,
+    OPEN_CURRENCY,
+    OPEN_USER,
+    OPEN_DIVISION
 }
