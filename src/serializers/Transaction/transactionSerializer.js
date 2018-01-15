@@ -140,11 +140,12 @@ export const createSendSerializer = (data, cashboxId, withPersent) => {
     }
 }
 
-export const convertSerializer = (date, currency) => {
+export const convertSerializer = (date, currency, order) => {
     const fromCurrency = _.toInteger(getConfig('PRIMARY_CURRENCY_ID'))
     return {
         'from_currency': fromCurrency,
         'to_currency': currency,
+        'order': order,
         'amount': '1',
         'date': moment(date).format('YYYY-MM-DD HH:mm:ss')
     }

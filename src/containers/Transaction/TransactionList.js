@@ -93,6 +93,7 @@ const enhance = compose(
         const date = _.get(state, ['form', 'TransactionCreateForm', 'values', 'date'])
         const cashbox = _.get(state, ['form', 'TransactionCreateForm', 'values', 'cashbox', 'value', 'id'])
         const convertAmount = _.get(state, ['pendingPayments', 'convert', 'data', 'amount'])
+        const convertLoading = _.get(state, ['pendingPayments', 'convert', 'loading'])
 
         const filter = filterHelper(list, pathname, query)
         const filterItem = filterHelper(payment, pathname, query, {'page': 'dPage'})
@@ -131,6 +132,7 @@ const enhance = compose(
             date,
             cashbox,
             convertAmount,
+            convertLoading,
             usersList,
             usersListLoading,
             hasMarket,
@@ -178,30 +180,40 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
-        return (props.date !== nextProps.date && nextProps.date) || (props.cashbox !== nextProps.cashbox && nextProps.cashbox)
-    }, ({dispatch, date, cashbox, cashboxList}) => {
-        const currency = _.get(_.find(_.get(cashboxList, 'results'), {'id': cashbox}), ['currency', 'id'])
-        if (date && cashbox) {
-            dispatch(transactionConvertAction(date, currency))
-        }
+        const order = _.get(props, ['createForm', 'values', 'order', 'value'])
+        const nextOrder = _.get(nextProps, ['createForm', 'values', 'order', 'value'])
+        return order !== nextOrder && nextOrder
+    }, ({dispatch}) => {
+        const form = 'TransactionCreateForm'
+        dispatch(change(form, 'currencyRate', 'order'))
     }),
 
     withPropsOnChange((props, nextProps) => {
         const cashbox = _.get(props, ['createForm', 'values', 'cashbox', 'value'])
         const nextCashbox = _.get(nextProps, ['createForm', 'values', 'cashbox', 'value'])
+        const currencyRate = _.get(props, ['createForm', 'values', 'currencyRate'])
+        const nextCurrencyRate = _.get(nextProps, ['createForm', 'values', 'currencyRate'])
         const date = _.get(props, ['createForm', 'values', 'date'])
         const nextDate = _.get(nextProps, ['createForm', 'values', 'date'])
-        return (cashbox !== nextCashbox && nextCashbox) || (date !== nextDate && nextDate)
+        return (cashbox !== nextCashbox && nextCashbox) || (date !== nextDate && nextDate) || (currencyRate !== nextCurrencyRate && nextCurrencyRate)
     }, ({dispatch, date, createForm, cashboxList}) => {
         const cashbox = _.get(createForm, ['values', 'cashbox', 'value'])
+        const currencyRate = _.get(createForm, ['values', 'currencyRate'])
+        const order = _.get(createForm, ['values', 'order', 'value'])
         const currency = _.get(_.find(_.get(cashboxList, 'results'), {'id': cashbox}), ['currency', 'id'])
+        const form = 'TransactionCreateForm'
         if (date && cashbox) {
-            dispatch(transactionConvertAction(date, currency))
+            switch (currencyRate) {
+                case 'order': return dispatch(transactionConvertAction(date, currency, order))
+                case 'custom': return dispatch(change(form, 'custom_rate', ''))
+                default: return dispatch(transactionConvertAction(date, currency))
+            }
         }
+        return null
     }),
 
     withPropsOnChange((props, nextProps) => {
-        return props.convertAmount !== nextProps.convertAmount && nextProps.convertAmount
+        return props.convertLoading !== nextProps.convertLoading && nextProps.convertLoading === false
     }, ({dispatch, convertAmount}) => {
         if (convertAmount) {
             const form = 'TransactionCreateForm'
