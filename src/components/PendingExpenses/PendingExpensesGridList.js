@@ -7,14 +7,16 @@ import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
 import PendingExpensesFilterForm from './PendingExpensesFilterForm'
-import PendingExpensesCreateDialog from './PendingExpensesCreateDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import AddPayment from 'material-ui/svg-icons/av/playlist-add-check'
 import numberFormat from '../../helpers/numberFormat'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
+import moment from 'moment'
 import t from '../../helpers/translate'
+import TransactionCreateDialog from '../Transaction/TransactionCreateDialog'
+
 const listHeader = [
     {
         sorting: true,
@@ -74,16 +76,22 @@ const listHeader = [
 
 const enhance = compose(
     injectSheet({
-        addButton: {
-            '& button': {
-                backgroundColor: '#275482 !important'
+        additionalData: {
+            display: 'flex',
+            borderBottom: '1px #efefef solid',
+            background: '#f2f5f8',
+            '& > div': {
+                lineHeight: '20px',
+                padding: '15px 30px',
+                width: '50%',
+                '&:first-child': {
+                    paddingRight: '10px'
+                },
+                '&:last-child': {
+                    textAlign: 'right',
+                    paddingLeft: '10px'
+                }
             }
-        },
-        addButtonWrapper: {
-            position: 'absolute',
-            top: '10px',
-            right: '0',
-            marginBottom: '0px'
         }
     })
 )
@@ -103,6 +111,7 @@ const iconStyle = {
 
 const PendingExpensesGridList = enhance((props) => {
     const {
+        classes,
         filter,
         updateDialog,
         filterDialog,
@@ -133,7 +142,7 @@ const PendingExpensesGridList = enhance((props) => {
         const createdDate = dateTimeFormat(_.get(item, 'createdDate'), true)
         const currency = _.get(item, ['currency', 'name'])
         const summary = _.get(item, 'totalAmount')
-        const paidAmount = _.get(item, 'paidAmount')
+        const paidAmount = _.get(item, 'totalBalance')
         const balance = summary - paidAmount
         return (
             <Row key={id}>
@@ -163,7 +172,41 @@ const PendingExpensesGridList = enhance((props) => {
         list: pendingExpensesList,
         loading: _.get(listData, 'listLoading')
     }
-    const itemBalance = _.get(selectedDetails, 'totalAmount') - _.get(selectedDetails, 'paidAmount')
+    const detailType = _.get(selectedDetails, 'type')
+    const detailSupply = _.get(selectedDetails, 'supplyId')
+    const detailSupplyExpense = _.get(selectedDetails, 'id')
+    const detailComment = _.get(selectedDetails, 'comment')
+    const detailCurrency = _.get(selectedDetails, ['currency', 'name'])
+    const detailAmount = numberFormat(_.get(selectedDetails, 'totalAmount'), detailCurrency)
+    const detailPaid = numberFormat(_.get(selectedDetails, 'paidAmount'), detailCurrency)
+    const detailProvider = _.get(selectedDetails, ['provider', 'name'])
+    const detailCreatedDate = _.get(selectedDetails, 'createdDate')
+    const initialValues = {
+        date: detailCreatedDate && moment(detailCreatedDate).toDate(),
+        supply: {
+            value: detailType === 'supply' ? detailSupply : null
+        },
+        supplyExpense: {
+            value: detailType === 'supply_expense' ? detailSupplyExpense : null
+        }
+    }
+
+    const additionalData = (
+        <div className={classes.additionalData}>
+            <div>
+                <div>{t('Поставщик')}: <strong>{detailProvider}</strong></div>
+                <div>{t('Поставка')} <strong>№{detailSupply}</strong></div>
+                {detailType === 'supply_expense' && <div>{t('Доп. расход')} <strong>№{detailSupplyExpense}</strong></div>}
+                <div>{t('Тип')}: <strong>{detailType === 'supply' ? t('Поставка') : t('Доп. расход')}</strong></div>
+            </div>
+            <div>
+                <div>{t('Сумма расхода')}: <strong>{detailAmount}</strong></div>
+                <div>{t('Остаток')}: <strong>{detailPaid}</strong></div>
+                {detailComment && <div>{t('Комментарий')}: <strong>{detailComment}</strong></div>}
+            </div>
+        </div>
+    )
+
     return (
         <Container>
             <SubMenu url={ROUTES.PENDING_EXPENSES_LIST_URL}/>
@@ -175,12 +218,18 @@ const PendingExpensesGridList = enhance((props) => {
                 filterDialog={pendingExpensesFilterDialog}
             />
 
-            <PendingExpensesCreateDialog
+            <TransactionCreateDialog
+                isUpdate={true}
+                isExpense={true}
+                noCashbox={true}
+                hideRedundant={true}
+                detailCurrency={detailCurrency}
+                additionalData={additionalData}
                 open={updateDialog.openUpdateDialog}
-                selectedDetails={selectedDetails}
-                itemBalance={itemBalance}
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
+                initialValues={initialValues}
+                expenseCategory={detailType}
             />
         </Container>
     )

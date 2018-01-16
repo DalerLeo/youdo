@@ -3,6 +3,7 @@ import moment from 'moment'
 import _ from 'lodash'
 import sprintf from 'sprintf'
 import {connect} from 'react-redux'
+import {reset, change} from 'redux-form'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
@@ -20,9 +21,9 @@ import {
     pendingExpensesUpdateAction,
     pendingExpensesListFetchAction
 } from '../../actions/pendingExpenses'
+import {transactionConvertAction} from '../../actions/transaction'
 import {openErrorAction} from '../../actions/error'
 import {openSnackbarAction} from '../../actions/snackbar'
-import {reset} from 'redux-form'
 import t from '../../helpers/translate'
 
 const enhance = compose(
@@ -32,14 +33,18 @@ const enhance = compose(
         const createLoading = _.get(state, ['pendingExpenses', 'create', 'loading'])
         const list = _.get(state, ['pendingExpenses', 'list', 'data'])
         const listLoading = _.get(state, ['pendingExpenses', 'list', 'loading'])
+        const convertAmount = _.get(state, ['pendingPayments', 'convert', 'data', 'amount'])
+        const convertLoading = _.get(state, ['pendingPayments', 'convert', 'loading'])
         const filterForm = _.get(state, ['form', 'PendingExpensesFilterForm'])
-        const createForm = _.get(state, ['form', 'PendingExpensesCreateForm'])
+        const createForm = _.get(state, ['form', 'TransactionCreateForm'])
         const filter = filterHelper(list, pathname, query)
 
         return {
             list,
             listLoading,
             createLoading,
+            convertAmount,
+            convertLoading,
             filter,
             filterForm,
             createForm
@@ -50,8 +55,43 @@ const enhance = compose(
     }, ({dispatch, filter}) => {
         dispatch(pendingExpensesListFetchAction(filter))
     }),
-    withState('openConfirmDialog', 'setOpenConfirmDialog', false),
 
+    withPropsOnChange((props, nextProps) => {
+        const cashbox = _.get(props, ['createForm', 'values', 'cashbox', 'value'])
+        const nextCashbox = _.get(nextProps, ['createForm', 'values', 'cashbox', 'value'])
+        const currencyRate = _.get(props, ['createForm', 'values', 'currencyRate'])
+        const nextCurrencyRate = _.get(nextProps, ['createForm', 'values', 'currencyRate'])
+        const date = _.get(props, ['createForm', 'values', 'date'])
+        const nextDate = _.get(nextProps, ['createForm', 'values', 'date'])
+        return (cashbox !== nextCashbox && nextCashbox) || (date !== nextDate && nextDate) || (currencyRate !== nextCurrencyRate && nextCurrencyRate)
+    }, ({dispatch, createForm, list, params}) => {
+        const detailID = _.toInteger(_.get(params, 'pendingExpensesId'))
+        const cashbox = _.get(createForm, ['values', 'cashbox', 'value'])
+        const currencyRate = _.get(createForm, ['values', 'currencyRate'])
+        const order = _.get(createForm, ['values', 'order', 'value'])
+        const date = _.get(createForm, ['values', 'date'])
+        const currency = _.get(_.find(_.get(list, 'results'), {'id': detailID}), ['currency', 'id'])
+        const form = 'TransactionCreateForm'
+        if (cashbox) {
+            switch (currencyRate) {
+                case 'order': return dispatch(transactionConvertAction(date, currency, order))
+                case 'custom': return dispatch(change(form, 'custom_rate', ''))
+                default: return dispatch(transactionConvertAction(date, currency))
+            }
+        }
+        return null
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        return props.convertLoading !== nextProps.convertLoading && nextProps.convertLoading === false
+    }, ({dispatch, convertAmount}) => {
+        if (convertAmount) {
+            const form = 'TransactionCreateForm'
+            dispatch(change(form, 'custom_rate', convertAmount))
+        }
+    }),
+
+    withState('openConfirmDialog', 'setOpenConfirmDialog', false),
     withHandlers({
         handleOpenFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
@@ -102,9 +142,9 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[PENDING_EXPENSES_UPDATE_DIALOG_OPEN]: false})})
         },
 
-        handleSubmitUpdateDialog: props => (detail) => {
+        handleSubmitUpdateDialog: props => () => {
             const {dispatch, createForm, filter} = props
-            return dispatch(pendingExpensesUpdateAction(detail, _.get(createForm, ['values'])))
+            return dispatch(pendingExpensesUpdateAction(_.get(createForm, ['values'])))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
