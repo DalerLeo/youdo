@@ -394,18 +394,18 @@ const enhance = compose(
         form: 'StatisticsFilterForm',
         enableReinitialize: true
     }),
-    lifecycle({
-        componentDidMount () {
-            const horizontalTable = this.refs.horizontalTable
-            horizontalScroll(horizontalTable)
-        }
-    }),
-    connect((state, props) => {
+    connect((state) => {
         const showPaymentType = _.get(state, ['form', 'StatisticsFilterForm', 'values', 'balanceType', 'value'])
         return {
             showPaymentType
         }
     }),
+    lifecycle({
+        componentDidMount () {
+            const horizontalTable = this.refs.horizontalTable
+            horizontalScroll(horizontalTable)
+        }
+    })
 )
 
 const styleOnHover = {
@@ -447,7 +447,6 @@ const StatProviderGridList = enhance((props) => {
         stat,
         showPaymentType
     } = props
-
     const ZERO = 0
     const query = filter.getParams()
     const listLoading = _.get(listData, 'listLoading')
@@ -642,7 +641,7 @@ const StatProviderGridList = enhance((props) => {
                                 [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: types.cash,
                                 [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: types.debtor
                             }))}>
-                        {t('Долг поставшику нал')}. ({borrowersCashCount})
+                        {t('Долг поставщику нал')}. ({borrowersCashCount})
                         <div>{numberFormat(borrowersCash, primaryCurrency)}</div>
                     </div>
                     <div
@@ -651,7 +650,7 @@ const StatProviderGridList = enhance((props) => {
                                 [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: types.bank,
                                 [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: types.debtor
                             }))}>
-                        {t('Долг поставшику переч')}. ({borrowersBankCount})
+                        {t('Долг поставщику переч')}. ({borrowersBankCount})
                         <div>{numberFormat(borrowersBank, primaryCurrency)}</div>
                     </div>
                     <div
@@ -660,7 +659,7 @@ const StatProviderGridList = enhance((props) => {
                                 [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: types.cash,
                                 [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: types.loaner
                             }))}>
-                        {t('Долг поставшика нал')}. ({loanersCashCount})
+                        {t('Долг поставщика нал')}. ({loanersCashCount})
                         <div>{numberFormat(loanersCash, primaryCurrency)}</div>
                     </div>
                     <div
@@ -669,7 +668,7 @@ const StatProviderGridList = enhance((props) => {
                                 [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: types.bank,
                                 [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: types.loaner
                             }))}>
-                        {t('Долг поставшика переч')}. ({loanersBankCount})
+                        {t('Долг поставщика переч')}. ({loanersBankCount})
                         <div>{numberFormat(loanersBank, primaryCurrency)}</div>
                     </div>
                 </div>}

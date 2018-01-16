@@ -110,7 +110,7 @@ const enhance = compose(
             padding: '20px 30px'
         },
         leftSide: {
-            width: '320px',
+            width: '340px',
             borderRight: '1px #efefef solid'
         },
         subBlock: {
@@ -244,9 +244,10 @@ const OrderDetails = enhance((props) => {
     const client = _.get(data, ['client', 'name'])
     const contract = _.get(data, ['contract']) || 'Не указан'
     const deliveryType = _.get(data, 'deliveryType')
-    const dateDelivery = dateFormat(_.get(data, 'dateDelivery'), '', false)
+    const dateDelivery = dateFormat(_.get(data, 'dateDelivery'), false, false)
     const createdDate = dateFormat(_.get(data, 'createdDate'))
     const paymentDate = dateFormat(_.get(data, 'paymentDate'))
+    const nextPaymentDate = dateFormat(_.get(data, 'nextPaymentDate'), false, false)
     const requestDeadline = _.get(data, 'requestDeadline') ? dateFormat(_.get(data, 'requestDeadline')) : 'Не задан'
     const currency = _.get(data, ['currency', 'name'])
     const currencyAccess = _.isEmpty(_.find(userCurrencies, {'id': _.get(data, ['currency', 'id'])}))
@@ -414,8 +415,13 @@ const OrderDetails = enhance((props) => {
                                     <span>{t('Прайс-лист')}:</span>
                                     <span>{priceList}</span>
                                 </li>
+                                {nextPaymentDate &&
                                 <li>
-                                    <span>{t('Дата ожидаемой оплаты')}:</span>
+                                    <span>{t('Дата следующей оплаты')}:</span>
+                                    <span>{nextPaymentDate}</span>
+                                </li>}
+                                <li>
+                                    <span>{t('Дата окончательной оплаты')}:</span>
                                     <span>{paymentDate}</span>
                                 </li>
                                 <li>
@@ -428,9 +434,12 @@ const OrderDetails = enhance((props) => {
                                 </li>
                                 <li>
                                     <span>{t('Оплачено')}:</span>
-                                    {(totalPaid !== zero && type) ? <span>
-                                        <a onClick={transactionsDialog.handleOpenTransactionsDialog} className={classes.link}>{numberFormat(totalPaid)} {currency}</a>
-                                    </span>
+                                    {(totalPaid !== zero && type)
+                                        ? <span>
+                                            <a onClick={transactionsDialog.handleOpenTransactionsDialog} className={classes.link}>
+                                                {numberFormat(totalPaid)} {currency}
+                                            </a>
+                                        </span>
                                         : <span>{numberFormat(totalPaid)} {currency}</span>}
                                 </li>
                                 <li>

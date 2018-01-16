@@ -18,7 +18,7 @@ const enhance = compose(
             alignItems: 'center'
         },
         rightSide: {
-            width: 'calc(100% - 320px)',
+            width: 'calc(100% - 340px)',
             padding: '0 30px 20px'
         },
         tabContent: {
