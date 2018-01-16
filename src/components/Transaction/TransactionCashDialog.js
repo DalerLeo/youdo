@@ -21,6 +21,7 @@ import Edit from 'material-ui/svg-icons/editor/mode-edit'
 import Delete from 'material-ui/svg-icons/action/delete-forever'
 import dateFormat from '../../helpers/dateTimeFormat'
 import t from '../../helpers/translate'
+import * as storageHelper from '../../helpers/storage'
 
 const enhance = compose(
     injectSheet({
@@ -115,6 +116,12 @@ const enhance = compose(
                 },
                 '& > div:last-child': {
                     textAlign: 'right'
+                },
+                '&:first-child:hover': {
+                    backgroundColor: 'unset'
+                },
+                '&:hover': {
+                    backgroundColor: '#f2f5f8'
                 }
             }
         },
@@ -220,6 +227,13 @@ const TransactionCashDialog = enhance((props) => {
         setItem(thisItem)
     }
 
+    const userData = JSON.parse(storageHelper.getUserData())
+    const divisions = _.get(userData, 'divisions')
+    // Check for users division whether it exists
+    const hasNoDivPermission = (id) => {
+        return _.isEmpty(_.find(divisions, {'id': id}))
+    }
+
     const amount1 = _.toNumber(_.get(currentItem, 'amount'))
     const internal1 = _.toNumber(_.get(currentItem, 'internal'))
     const initialValues = {
@@ -249,6 +263,7 @@ const TransactionCashDialog = enhance((props) => {
                 const marketName = _.get(item, ['market', 'name']) || '-'
                 const currency = _.get(item, ['currency', 'name'])
                 const division = _.get(item, ['division', 'name'])
+                const divisionId = _.get(item, ['division', 'id'])
                 const order = _.get(item, ['order']) ? '№' + _.get(item, ['order']) : '-'
                 const createdDate = dateFormat(_.get(item, ['createdDate']), true)
                 const internal = _.toNumber(_.get(item, 'internal'))
@@ -274,6 +289,7 @@ const TransactionCashDialog = enhance((props) => {
                                         iconStyle={iconStyle.icon}
                                         style={iconStyle.button}
                                         disableTouchRipple={true}
+                                        disabled={hasNoDivPermission(divisionId)}
                                         touch={true}
                                         onTouchTap={() => { openEditDialog(item) }}>
                                         <Edit />
@@ -284,6 +300,7 @@ const TransactionCashDialog = enhance((props) => {
                                         iconStyle={iconStyle.icon}
                                         style={iconStyle.button}
                                         disableTouchRipple={true}
+                                        disabled={hasNoDivPermission(divisionId)}
                                         touch={true}
                                         onTouchTap={() => {
                                             superUser.handleOpenDeleteTransaction(id)
@@ -353,8 +370,9 @@ const TransactionCashDialog = enhance((props) => {
                                                 <div style={{paddingLeft: '6px'}}>
                                                     <ToolTip position="bottom" text={t('Оплатить')}>
                                                         <IconButton
+                                                            disabled={hasNoDivPermission(divisionId)}
                                                             onTouchTap={() => {
-                                                                cashBoxDialog.handleOpenCashBoxDialog(userId, currencyId)
+                                                                cashBoxDialog.handleOpenCashBoxDialog(userId, currencyId, divisionId)
                                                             }}>
                                                             <PaymentIcon color="#666666"/>
                                                         </IconButton>
@@ -395,6 +413,7 @@ const TransactionCashDialog = enhance((props) => {
                                     <Col xs={1}>
                                         <ToolTip position="bottom" text={t('Оплатить')}>
                                             <IconButton
+                                                disabled={hasNoDivPermission(divisionId)}
                                                 onTouchTap={() => {
                                                     cashBoxDialog.handleOpenCashBoxDialog(userId, currencyId, divisionId)
                                                 }}>

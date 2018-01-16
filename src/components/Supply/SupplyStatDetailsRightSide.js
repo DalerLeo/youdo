@@ -35,9 +35,6 @@ const enhance = compose(
                 }
             }
         },
-        tabWrapper: {
-
-        },
         summary: {
             fontWeight: '600',
             marginTop: '20px',

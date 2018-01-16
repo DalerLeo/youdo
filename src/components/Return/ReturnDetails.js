@@ -108,7 +108,7 @@ const enhance = compose(
             overflowY: 'auto',
             paddingRight: '20px',
             '& .row': {
-                padding: '15px 0',
+                padding: '15px',
                 margin: '0',
                 '&:first-child': {
                     fontWeight: '600'
@@ -122,6 +122,12 @@ const enhance = compose(
                 },
                 '& > div:nth-child(4)': {
                     textAlign: 'right'
+                },
+                '&:first-child:hover': {
+                    backgroundColor: 'unset'
+                },
+                '&:hover': {
+                    backgroundColor: '#f2f5f8'
                 }
             }
         },

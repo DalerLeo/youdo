@@ -125,7 +125,7 @@ const ExpenseCreateDialog = enhance((props) => {
                                 className={classes.inputFieldCustom}
                                 label={t('Тип оплаты')}
                                 fullWidth={true}/>
-                            <div style={{margin: '15px 0 -15px'}}>
+                            <div style={{margin: '15px 0 0'}}>
                                 <Field
                                     name="bindToProvider"
                                     component={CheckBox}
