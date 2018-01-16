@@ -55,12 +55,12 @@ export const updateSerializer = (data, location, detail) => {
     const lat = _.get(location, 'lat')
     const lon = _.get(location, 'lng')
     const contactName = _.get(data, ['contactName'])
-    const phones = _.map(_.get(data, 'phones'), (phone) => {
+    const phones = _.filter(_.map(_.get(data, 'phones'), (phone) => {
         return {
             phone: phone.phone,
             id: phone.id
         }
-    })
+    }), item => item.id && item.phone)
     const isActive = status === STATUS_ACTIVE
 
     return {

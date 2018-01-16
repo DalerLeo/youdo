@@ -12,11 +12,7 @@ const RateRadioButton = enhance((props) => {
     if (currencyName === configCurrencyName || !currencyName) {
         return null
     }
-    const defaultValue = input.value
-        ? input.value
-        : showOrderRate
-            ? 'order'
-            : 'current'
+    const defaultValue = input.value || 'current'
     return (
         <div style={{display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between'}}>
             <div style={{width: '210px'}}>
@@ -24,10 +20,9 @@ const RateRadioButton = enhance((props) => {
                     name="currencyRate"
                     onChange={input.onChange}
                     valueSelected={defaultValue}
-                    defaultSelected={showOrderRate ? 'order' : 'current'}>
+                    defaultSelected={defaultValue}>
                     <RadioButton
                         value={'current'}
-                        disabled={showOrderRate}
                         style={{margin: '10px 0'}}
                         label="Текущий курс"
                     />
@@ -39,7 +34,7 @@ const RateRadioButton = enhance((props) => {
                     />
                     <RadioButton
                         value={'custom'}
-                        disabled={!canSetCustomRate || showOrderRate}
+                        disabled={!canSetCustomRate}
                         style={{margin: '10px 0 0'}}
                         label="Индивидуальный"
                     />

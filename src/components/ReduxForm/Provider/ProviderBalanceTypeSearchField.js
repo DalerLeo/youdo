@@ -3,8 +3,8 @@ import React from 'react'
 import SearchField from '../Basic/SearchField'
 
 const Items = [
-    {value: 'debtor', name: 'Долг поставшику'},
-    {value: 'loaner', name: 'Долг поставшика'}
+    {value: 'debtor', name: 'Долг поставщику'},
+    {value: 'loaner', name: 'Долг поставщика'}
 ]
 const getOptions = () => {
     return Promise.resolve(Items)

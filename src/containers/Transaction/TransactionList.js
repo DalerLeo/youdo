@@ -183,15 +183,6 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const order = _.get(props, ['createForm', 'values', 'order', 'value'])
-        const nextOrder = _.get(nextProps, ['createForm', 'values', 'order', 'value'])
-        return order !== nextOrder && nextOrder
-    }, ({dispatch}) => {
-        const form = 'TransactionCreateForm'
-        dispatch(change(form, 'currencyRate', 'order'))
-    }),
-
-    withPropsOnChange((props, nextProps) => {
         const cashbox = _.get(props, ['createForm', 'values', 'cashbox', 'value'])
         const nextCashbox = _.get(nextProps, ['createForm', 'values', 'cashbox', 'value'])
         const currencyRate = _.get(props, ['createForm', 'values', 'currencyRate'])
