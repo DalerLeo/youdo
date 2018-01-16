@@ -34,6 +34,35 @@ export const createSerializer = (data, detail) => {
     }
 }
 
+export const createExpenseSerializer = (data) => {
+    const amount = _.toNumber(numberWithoutSpaces(_.get(data, 'amount'))) * MINUS_ONE
+    const comment = _.get(data, 'comment')
+    const cashbox = _.get(data, ['cashbox', 'value'])
+    const division = _.get(data, ['division', 'value'])
+    const supply = _.get(data, ['supply', 'value']) || null
+    const supplyExpense = _.get(data, ['supplyExpense', 'value']) || null
+    const expenseCategory = _.get(data, ['expanseCategory', 'value', 'id'])
+    const currencyRate = _.get(data, 'currencyRate')
+    const getRateType = () => {
+        switch (currencyRate) {
+            case 'current': return '0'
+            case 'order': return '1'
+            case 'custom': return '2'
+            default: return '0'
+        }
+    }
+    return {
+        amount,
+        cashbox,
+        division,
+        comment,
+        supply,
+        supply_expanse: supplyExpense,
+        expanse_category: expenseCategory,
+        rate_type: getRateType()
+    }
+}
+
 export const listFilterSerializer = (data) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')

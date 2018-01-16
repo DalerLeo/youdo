@@ -7,14 +7,15 @@ import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
 import PendingPaymentsFilterForm from './PendingPaymentsFilterForm'
-import PendingPaymentsCreateDialog from './PendingPaymentsCreateDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
+import moment from 'moment'
 import AddPayment from 'material-ui/svg-icons/av/playlist-add-check'
 import numberFormat from '../../helpers/numberFormat'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
 import t from '../../helpers/translate'
+import TransactionCreateDialog from '../Transaction/TransactionCreateDialog'
 
 const listHeader = [
     {
@@ -112,16 +113,22 @@ const listHeaderHasMarket = [
 ]
 const enhance = compose(
     injectSheet({
-        addButton: {
-            '& button': {
-                backgroundColor: '#275482 !important'
+        additionalData: {
+            display: 'flex',
+            borderBottom: '1px #efefef solid',
+            background: '#f2f5f8',
+            '& > div': {
+                lineHeight: '20px',
+                padding: '15px 30px',
+                width: '50%',
+                '&:first-child': {
+                    paddingRight: '10px'
+                },
+                '&:last-child': {
+                    textAlign: 'right',
+                    paddingLeft: '10px'
+                }
             }
-        },
-        addButtonWrapper: {
-            position: 'absolute',
-            top: '10px',
-            right: '0',
-            marginBottom: '0px'
         }
     })
 )
@@ -143,12 +150,12 @@ const TWO = 2
 const THREE = 3
 const PendingPaymentsGridList = enhance((props) => {
     const {
+        classes,
         filter,
         updateDialog,
         filterDialog,
         listData,
         detailData,
-        convert,
         hasMarket
     } = props
     const pendingPaymentsFilterDialog = (
@@ -201,6 +208,36 @@ const PendingPaymentsGridList = enhance((props) => {
         list: pendingPaymentsList,
         loading: _.get(listData, 'listLoading')
     }
+    const detailCreatedDate = _.get(detailData, ['data', 'createdDate'])
+    const detailOrder = _.get(detailData, ['data', 'id'])
+    const detailClient = _.get(detailData, ['data', 'client', 'name'])
+    const detailCurrency = _.get(detailData, ['data', 'currency', 'name'])
+    const detailMarket = _.get(detailData, ['data', 'market', 'name'])
+    const detailPaymentType = _.get(detailData, ['data', 'paymentType'])
+    const detailTotalPrice = numberFormat(_.get(detailData, ['data', 'totalPrice']), detailCurrency)
+    const detailTotalBalance = numberFormat(_.get(detailData, ['data', 'totalBalance']), detailCurrency)
+
+    const additionalData = (
+        <div className={classes.additionalData}>
+            <div>
+                <div>{t('Заказ')} <strong>№{detailOrder}</strong></div>
+                <div>{t('Клиент')}: <strong>{detailClient}</strong></div>
+                <div>{t('Магазин')}: <strong>{detailMarket}</strong></div>
+            </div>
+            <div>
+                <div>{t('Тип оплаты')}: <strong>{detailPaymentType === 'cash' ? t('Наличными') : t('Перечислением')}</strong></div>
+                <div>{t('Сумма заказа')}: <strong>{detailTotalPrice}</strong></div>
+                <div>{t('Остаток')}: <strong>{detailTotalBalance}</strong></div>
+            </div>
+        </div>
+    )
+
+    const initialValues = {
+        date: detailCreatedDate && moment(detailCreatedDate).toDate(),
+        order: {
+            value: detailOrder
+        }
+    }
 
     return (
         <Container>
@@ -213,15 +250,17 @@ const PendingPaymentsGridList = enhance((props) => {
                 filterDialog={pendingPaymentsFilterDialog}
             />
 
-            <PendingPaymentsCreateDialog
-                initialValues={updateDialog.initialValues}
+            <TransactionCreateDialog
+                isUpdate={true}
+                noCashbox={true}
+                hideRedundant={true}
+                detailCurrency={detailCurrency}
+                incomeCategoryKey={'order'}
+                additionalData={additionalData}
                 open={updateDialog.openUpdateDialog}
-                detailData={detailData}
-                loading={updateDialog.updateLoading}
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
-                convert={convert}
-                hasMarket={hasMarket}
+                initialValues={initialValues}
             />
         </Container>
     )

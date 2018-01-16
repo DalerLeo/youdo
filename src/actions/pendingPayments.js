@@ -8,7 +8,7 @@ import * as serializers from '../serializers/pendingPaymentsSerializer'
 export const pendingPaymentsUpdateAction = (formValues, order) => {
     const requestData = serializers.createSerializer(formValues, order)
     const payload = axios()
-        .post(API.PENDING_PAYMENTS_CREATE, requestData)
+        .post(API.TRANSACTION_CREATE, requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -17,7 +17,7 @@ export const pendingPaymentsUpdateAction = (formValues, order) => {
         })
 
     return {
-        type: actionTypes.PENDING_PAYMENTS_CREATE,
+        type: actionTypes.TRANSACTION_INCOME,
         payload
     }
 }

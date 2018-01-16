@@ -200,7 +200,7 @@ const OrderPrint = enhance((props) => {
                             <div className={classes.block}>
                                 <ul>
                                     <li>{t('Тип сделки')}:</li>
-                                    <li>{t('Дата ожидаемой оплаты')}:</li>
+                                    <li>{t('Дата окончательной оплаты')}:</li>
                                     <li>{t('Дата доставки')}:</li>
                                     <li>{t('Тип оплаты')}:</li>
                                 </ul>

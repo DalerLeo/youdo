@@ -166,13 +166,14 @@ const TransactionGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const currency = _.get(item, ['currency', 'name'])
+        const currencyID = _.get(item, ['currency', 'id'])
         const type = _.get(item, 'type')
         const balance = _.toInteger(_.get(item, 'balance'))
         const isActive = item.id === _.get(cashboxData, 'cashboxId')
         const ZERO_NUM = 0
         return (
             <div key={id} className={classes.list} onClick={() => {
-                cashboxData.handleClickCashbox(id)
+                cashboxData.handleClickCashbox(id, currencyID)
             }}
                  style={isActive ? {backgroundColor: '#f2f5f8'} : {backgroundColor: '#fff'}}>
                 <div>
@@ -204,7 +205,7 @@ const TransactionGridList = enhance((props) => {
                         <div className={classes.listWrapper}>
                             <div className={classes.list}
                                  onClick={() => {
-                                     cashboxData.handleClickCashbox(AllCashboxId)
+                                     cashboxData.handleClickCashbox(AllCashboxId, AllCashboxId)
                                  }}
                                  style={_.get(cashboxData, 'cashboxId') === AllCashboxId ? {backgroundColor: '#f2f5f8'} : {backgroundColor: '#fff'}}>
                                 <div className={classes.title}>

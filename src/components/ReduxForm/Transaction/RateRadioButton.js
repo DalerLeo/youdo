@@ -2,21 +2,19 @@ import React from 'react'
 import {compose} from 'recompose'
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton'
 import getConfig from '../../../helpers/getConfig'
+import numberFormat from '../../../helpers/numberFormat'
 
 const enhance = compose()
 const RateRadioButton = enhance((props) => {
-    const {input, currency, canSetCustomRate, showOrderRate, customRateField} = props
+    const {input, currency, canSetCustomRate, showOrderRate, customRateField, rate} = props
+    const ZERO = 0
     const currencyName = currency
     const configCurrencyName = getConfig('PRIMARY_CURRENCY')
 
     if (currencyName === configCurrencyName || !currencyName) {
         return null
     }
-    const defaultValue = input.value
-        ? input.value
-        : showOrderRate
-            ? 'order'
-            : 'current'
+    const defaultValue = input.value || 'current'
     return (
         <div style={{display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between'}}>
             <div style={{width: '210px'}}>
@@ -24,10 +22,9 @@ const RateRadioButton = enhance((props) => {
                     name="currencyRate"
                     onChange={input.onChange}
                     valueSelected={defaultValue}
-                    defaultSelected={showOrderRate ? 'order' : 'current'}>
+                    defaultSelected={defaultValue}>
                     <RadioButton
                         value={'current'}
-                        disabled={showOrderRate}
                         style={{margin: '10px 0'}}
                         label="Текущий курс"
                     />
@@ -39,14 +36,18 @@ const RateRadioButton = enhance((props) => {
                     />
                     <RadioButton
                         value={'custom'}
-                        disabled={!canSetCustomRate || showOrderRate}
+                        disabled={!canSetCustomRate}
                         style={{margin: '10px 0 0'}}
                         label="Индивидуальный"
                     />
                 </RadioButtonGroup>
             </div>
             <div style={{width: '120px'}}>
-                {customRateField}
+                {defaultValue === 'custom'
+                    ? customRateField
+                    : <div style={{textAlign: 'right'}}>
+                        {rate > ZERO && <strong>1 {currencyName} = {numberFormat(rate, configCurrencyName)}</strong>}
+                    </div>}
             </div>
         </div>
     )

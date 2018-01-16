@@ -14,6 +14,7 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import toCamelCase from '../../helpers/toCamelCase'
 import getConfig from '../../helpers/getConfig'
 import t from '../../helpers/translate'
+import checkPermission from '../../helpers/checkPermission'
 import {convertCurrency} from '../../helpers/convertCurrency'
 import {
     TextField,
@@ -24,7 +25,8 @@ import {
     ProviderSearchField,
     TransactionIncomeCategory,
     OrderSearchField,
-    SupplySearchField
+    SupplySearchField,
+    SupplyExpenseSearchField
 } from '../ReduxForm'
 import RateRadioButton from '../ReduxForm/Transaction/RateRadioButton'
 import NotFound from '../Images/not-found.png'
@@ -336,22 +338,31 @@ const TransactionCreateDialog = enhance((props) => {
         searchQuery,
         setSearchQuery,
         totalStaffAmount,
-        canSetCustomRate,
-        order
+        order,
+        expenseCategory,
+        incomeCategoryKey,
+        additionalData,
+        detailCurrency,
+        hideRedundant
     } = props
+
+    const canSetCustomRate = checkPermission('can_set_custom_rate')
+
     const clientOptionId = _.get(_.find(optionsList, {'keyName': 'client'}), 'id')
     const providerOptionId = _.get(_.find(optionsList, {'keyName': 'provider'}), 'id')
     const orderOptionId = _.get(_.find(optionsList, {'keyName': 'order'}), 'id')
     const supplyOptionId = _.get(_.find(optionsList, {'keyName': 'supply'}), 'id')
+    const supplyExpenseOptionId = _.get(_.find(optionsList, {'keyName': 'supply_expanse'}), 'id')
     const showClients = isExpense ? _.includes(expenseCategoryOptions, clientOptionId) : _.includes(incomeCategoryOptions, clientOptionId)
     const showProviders = isExpense ? _.includes(expenseCategoryOptions, providerOptionId) : _.includes(incomeCategoryOptions, providerOptionId)
     const showOrders = _.includes(incomeCategoryOptions, orderOptionId)
     const showSupplies = _.includes(expenseCategoryOptions, supplyOptionId)
+    const showSupplyExpenses = _.includes(expenseCategoryOptions, supplyExpenseOptionId)
 
     const onSubmit = handleSubmit(() => props.onSubmit().catch(props.validate))
     const cashboxId = noCashbox ? chosenCashbox : _.get(cashboxData, 'cashboxId')
     const cashbox = _.find(_.get(cashboxData, 'data'), {'id': cashboxId})
-    const currency = _.get(cashbox, ['currency', 'name'])
+    const currency = _.get(cashbox, ['currency', 'name']) || detailCurrency
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const divisionStatus = getConfig('DIVISIONS')
     const convert = convertCurrency(amount, rate)
@@ -392,6 +403,7 @@ const TransactionCreateDialog = enhance((props) => {
                     <CloseIcon color="#666666"/>
                 </IconButton>
             </div>
+            {additionalData}
             <div className={classes.bodyContent}>
                 <form className={classes.form}>
                     <div className={classes.inContent} style={{minHeight: 'unset', display: 'block'}}>
@@ -399,7 +411,7 @@ const TransactionCreateDialog = enhance((props) => {
                             <Loader size={0.75}/>
                         </div>
                         {noCashbox
-                            ? <div style={{marginTop: '15px'}}>
+                            ? <div style={{marginTop: '10px'}}>
                                 <Field
                                     name="cashbox"
                                     className={classes.inputFieldCustom}
@@ -410,27 +422,42 @@ const TransactionCreateDialog = enhance((props) => {
                                 <div className={classes.label}>Касса:</div>
                                 <div style={{fontWeight: '600', marginBottom: '5px'}}>{_.get(cashbox, 'name')}</div>
                             </div>}
+                        {divisionStatus && <Field
+                            name="division"
+                            component={DivisionSearchField}
+                            label={t('Организация')}
+                            className={classes.inputFieldCustom}
+                            fullWidth={true}/>}
+                        {!hideRedundant &&
                         <Field
                             name="date"
                             className={classes.inputDateCustom}
                             component={DateField}
                             fullWidth={true}
                             container="inline"
-                            label={t('Дата создания')}/>
+                            label={t('Дата создания')}/>}
 
                         {isExpense
                             ? <div className={classes.field}>
                                 <Field
                                     name="expanseCategory"
+                                    data-key-name={expenseCategory}
                                     component={ExpensiveCategoryCustomSearchField}
                                     label={t('Категория расхода')}
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
                                 {showSupplies
-                                    ? <Field
+                                    ? !hideRedundant && <Field
                                         name="supply"
                                         component={SupplySearchField}
                                         label={t('Поставки')}
+                                        className={classes.inputFieldCustom}
+                                        fullWidth={true}/> : null}
+                                {showSupplyExpenses
+                                    ? !hideRedundant && <Field
+                                        name="supplyExpense"
+                                        component={SupplyExpenseSearchField}
+                                        label={t('Доп. расход')}
                                         className={classes.inputFieldCustom}
                                         fullWidth={true}/> : null}
                                 {showClients ? <div>
@@ -440,12 +467,6 @@ const TransactionCreateDialog = enhance((props) => {
                                         label={t('Клиент')}
                                         className={classes.inputFieldCustom}
                                         fullWidth={true}/>
-                                    {divisionStatus && <Field
-                                        name="division"
-                                        component={DivisionSearchField}
-                                        label={t('Организация')}
-                                        className={classes.inputFieldCustom}
-                                        fullWidth={true}/>}
                                 </div> : null}
                                 {showProviders &&
                                 <Field name="provider"
@@ -484,12 +505,13 @@ const TransactionCreateDialog = enhance((props) => {
                             : <div className={classes.field}>
                                 <Field
                                     name="incomeCategory"
+                                    data-key-name={incomeCategoryKey}
                                     component={TransactionIncomeCategory}
                                     label={t('Категория прихода')}
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
                                 {showOrders
-                                    ? <Field
+                                    ? !hideRedundant && <Field
                                         name="order"
                                         component={OrderSearchField}
                                         label="Заказ"
@@ -503,14 +525,6 @@ const TransactionCreateDialog = enhance((props) => {
                                             label="Клиент"
                                             className={classes.inputFieldCustom}
                                             fullWidth={true}/>
-                                        {divisionStatus
-                                            ? <Field
-                                                name="division"
-                                                component={DivisionSearchField}
-                                                label={t('Организация')}
-                                                className={classes.inputFieldCustom}
-                                                fullWidth={true}/>
-                                            : null}
                                     </div>
                                     : showProviders
                                         ? <Field
@@ -550,6 +564,7 @@ const TransactionCreateDialog = enhance((props) => {
                         <Field
                             name="currencyRate"
                             currency={currency}
+                            rate={rate}
                             showOrderRate={Boolean(showOrders && order)}
                             canSetCustomRate={canSetCustomRate}
                             customRateField={customRateField}
@@ -622,16 +637,16 @@ const TransactionCreateDialog = enhance((props) => {
     )
 })
 
-TransactionCreateDialog.propTyeps = {
+TransactionCreateDialog.propTypes = {
     isExpense: PropTypes.bool,
     open: PropTypes.bool.isRequired,
-    cashboxData: PropTypes.object.isRequired,
+    cashboxData: PropTypes.object,
     onClose: PropTypes.func.isRequired,
-    onSubmit: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired
+    onSubmit: PropTypes.func.isRequired
 }
 TransactionCreateDialog.defaultProps = {
-    isExpense: false
+    isExpense: false,
+    additionalData: null
 }
 
 export default TransactionCreateDialog

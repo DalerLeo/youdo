@@ -110,7 +110,7 @@ export const MenuItems = [
             {name: t('Ожидаемые расходы'), url: ROUTES.PENDING_EXPENSES_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_pending_expenses'},
             {name: t('Ожидаeмые оплаты'), url: ROUTES.PENDING_PAYMENTS_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_pending_payments'},
             {name: t('Баланс клиентов'), url: ROUTES.CLIENT_BALANCE_LIST_URL, permission: 'frontend_client_balance', query: {pageSize: 25}},
-            {name: t('Баланс поставшиков'), url: ROUTES.PROVIDER_BALANCE_LIST_URL, permission: 'frontend_provider_balance', query: {pageSize: 25}}
+            {name: t('Баланс поставщиков'), url: ROUTES.PROVIDER_BALANCE_LIST_URL, permission: 'frontend_provider_balance', query: {pageSize: 25}}
         ]
     },
     {
