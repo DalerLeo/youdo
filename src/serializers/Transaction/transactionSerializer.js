@@ -8,6 +8,15 @@ import moment from 'moment'
 const ZERO = 0
 const MINUS_ONE = -1
 
+const getRateType = (rateType) => {
+    switch (rateType) {
+        case 'current': return '0'
+        case 'order': return '1'
+        case 'custom': return '2'
+        default: return '0'
+    }
+}
+
 export const updateTransactionSerializer = (data, client) => {
     const amount = numberWithoutSpaces(_.get(data, 'amount'))
     const newAmount = amount > ZERO ? amount : amount * MINUS_ONE
@@ -41,6 +50,7 @@ export const createIncomeSerializer = (data, cashboxId) => {
     const division = _.get(data, ['division', 'value'])
     const cashbox = _.get(data, ['cashbox', 'value'])
     const date = moment(_.get(data, 'date')).format('YYYY-MM-DD HH:00:00')
+    const currencyRate = _.get(data, 'currencyRate')
     const staffs = _.filter(_.map(_.get(data, 'users'), (item, index) => {
         return {
             staff: _.toInteger(index),
@@ -62,7 +72,8 @@ export const createIncomeSerializer = (data, cashboxId) => {
         'date': date,
         provider,
         'income_category': incomeCategory,
-        order
+        order,
+        'rate_type': getRateType(currencyRate)
     }
 }
 
@@ -88,6 +99,7 @@ export const createExpenseSerializer = (data, cashboxId) => {
     const cashbox = _.get(data, ['cashbox', 'value'])
     const supply = _.get(data, ['supply', 'value'])
     const date = moment(_.get(data, 'date')).format('YYYY-MM-DD HH:00:00')
+    const currencyRate = _.get(data, 'currencyRate')
     return (clientId)
         ? {
             amount: amount,
@@ -98,7 +110,8 @@ export const createExpenseSerializer = (data, cashboxId) => {
             'custom_rate': customRate,
             'division': division,
             'date': date,
-            supply
+            supply,
+            'rate_type': getRateType(currencyRate)
         }
         : (providerId)
             ? {
@@ -110,7 +123,8 @@ export const createExpenseSerializer = (data, cashboxId) => {
                 'custom_rate': customRate,
                 'division': division,
                 'date': date,
-                supply
+                supply,
+                'rate_type': getRateType(currencyRate)
             }
             : {
                 amount: _.isEmpty(staffs) ? amount : salaryAmount,
@@ -119,7 +133,9 @@ export const createExpenseSerializer = (data, cashboxId) => {
                 'expanse_category': expenseId,
                 'custom_rate': customRate,
                 staffs,
-                supply
+                supply,
+                'division': division,
+                'rate_type': getRateType(currencyRate)
             }
 }
 const HUNDRED = 100

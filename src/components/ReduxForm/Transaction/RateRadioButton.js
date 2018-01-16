@@ -2,10 +2,12 @@ import React from 'react'
 import {compose} from 'recompose'
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton'
 import getConfig from '../../../helpers/getConfig'
+import numberFormat from '../../../helpers/numberFormat'
 
 const enhance = compose()
 const RateRadioButton = enhance((props) => {
-    const {input, currency, canSetCustomRate, showOrderRate, customRateField} = props
+    const {input, currency, canSetCustomRate, showOrderRate, customRateField, rate} = props
+    const ZERO = 0
     const currencyName = currency
     const configCurrencyName = getConfig('PRIMARY_CURRENCY')
 
@@ -41,7 +43,11 @@ const RateRadioButton = enhance((props) => {
                 </RadioButtonGroup>
             </div>
             <div style={{width: '120px'}}>
-                {customRateField}
+                {defaultValue === 'custom'
+                    ? customRateField
+                    : <div style={{textAlign: 'right'}}>
+                        {rate > ZERO && <strong>1 {currencyName} = {numberFormat(rate, configCurrencyName)}</strong>}
+                    </div>}
             </div>
         </div>
     )

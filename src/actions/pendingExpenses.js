@@ -4,10 +4,10 @@ import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/pendingExpensesSerializer'
 
-export const pendingExpensesUpdateAction = (detail, formValues) => {
-    const requestData = serializers.createSerializer(formValues, detail)
+export const pendingExpensesUpdateAction = (formValues) => {
+    const requestData = serializers.createExpenseSerializer(formValues)
     const payload = axios()
-        .post(API.PENDING_EXPENSES_UPDATE, requestData)
+        .post(API.TRANSACTION_CREATE, requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -16,7 +16,7 @@ export const pendingExpensesUpdateAction = (detail, formValues) => {
         })
 
     return {
-        type: actionTypes.PENDING_EXPENSES_UPDATE,
+        type: actionTypes.TRANSACTION_EXPENSE,
         payload
     }
 }

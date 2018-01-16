@@ -190,17 +190,25 @@ const enhance = compose(
         const date = _.get(props, ['createForm', 'values', 'date'])
         const nextDate = _.get(nextProps, ['createForm', 'values', 'date'])
         return (cashbox !== nextCashbox && nextCashbox) || (date !== nextDate && nextDate) || (currencyRate !== nextCurrencyRate && nextCurrencyRate)
-    }, ({dispatch, date, createForm, cashboxList}) => {
-        const cashbox = _.get(createForm, ['values', 'cashbox', 'value'])
+    }, ({dispatch, date, createForm, cashboxList, location: {query}, convertAmount}) => {
+        const queryCashbox = _.toInteger(_.get(query, 'cashboxId'))
+        const queryCurrency = _.toInteger(_.get(query, 'currency'))
+        const cashbox = queryCashbox > ZERO ? queryCashbox : _.get(createForm, ['values', 'cashbox', 'value'])
         const currencyRate = _.get(createForm, ['values', 'currencyRate'])
         const order = _.get(createForm, ['values', 'order', 'value'])
-        const currency = _.get(_.find(_.get(cashboxList, 'results'), {'id': cashbox}), ['currency', 'id'])
+        const currency = queryCashbox > ZERO ? queryCurrency : _.get(_.find(_.get(cashboxList, 'results'), {'id': cashbox}), ['currency', 'id'])
         const form = 'TransactionCreateForm'
         if (date && cashbox) {
             switch (currencyRate) {
                 case 'order': return dispatch(transactionConvertAction(date, currency, order))
+                    .then(() => {
+                        dispatch(change(form, 'custom_rate', convertAmount))
+                    })
                 case 'custom': return dispatch(change(form, 'custom_rate', ''))
                 default: return dispatch(transactionConvertAction(date, currency))
+                    .then(() => {
+                        dispatch(change(form, 'custom_rate', convertAmount))
+                    })
             }
         }
         return null
@@ -457,9 +465,9 @@ const enhance = compose(
                 })
         },
 
-        handleClickCashbox: props => (id) => {
+        handleClickCashbox: props => (id, currency) => {
             const {location: {pathname}} = props
-            hashHistory.push({pathname, query: {'cashboxId': id}})
+            hashHistory.push({pathname, query: {'cashboxId': id, 'currency': currency}})
         },
 
         handleOpenUpdateDialog: props => (id, amount) => {

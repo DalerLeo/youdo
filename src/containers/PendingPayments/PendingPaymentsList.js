@@ -7,7 +7,7 @@ import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
-import {reset} from 'redux-form'
+import {reset, change} from 'redux-form'
 import toBoolean from '../../helpers/toBoolean'
 import filterHelper from '../../helpers/filter'
 
@@ -22,8 +22,9 @@ import {
     pendingPaymentsListFetchAction,
     pendingPaymentsItemFetchAction
 } from '../../actions/pendingPayments'
-
+import {optionsListFetchAction} from '../../actions/expensiveCategory'
 import {openErrorAction} from '../../actions/error'
+import {transactionConvertAction} from '../../actions/transaction'
 import {openSnackbarAction} from '../../actions/snackbar'
 import getConfig from '../../helpers/getConfig'
 import t from '../../helpers/translate'
@@ -37,8 +38,10 @@ const enhance = compose(
         const updateLoading = _.get(state, ['pendingPayments', 'update', 'loading'])
         const list = _.get(state, ['pendingPayments', 'list', 'data'])
         const listLoading = _.get(state, ['pendingPayments', 'list', 'loading'])
+        const convertAmount = _.get(state, ['pendingPayments', 'convert', 'data', 'amount'])
+        const convertLoading = _.get(state, ['pendingPayments', 'convert', 'loading'])
         const filterForm = _.get(state, ['form', 'PendingPaymentsFilterForm'])
-        const createForm = _.get(state, ['form', 'PendingPaymentsCreateForm'])
+        const createForm = _.get(state, ['form', 'TransactionCreateForm'])
         const convert = _.get(state, ['pendingPayments', 'convert'])
         const filter = filterHelper(list, pathname, query)
         const hasMarket = toBoolean(getConfig('MARKETS_MODULE'))
@@ -47,6 +50,8 @@ const enhance = compose(
             listLoading,
             detail,
             detailLoading,
+            convertAmount,
+            convertLoading,
             updateLoading,
             filter,
             filterForm,
@@ -70,8 +75,50 @@ const enhance = compose(
         pendingPaymentsId && dispatch(pendingPaymentsItemFetchAction(pendingPaymentsId))
     }),
 
-    withState('openConfirmDialog', 'setOpenConfirmDialog', false),
+    withPropsOnChange((props, nextProps) => {
+        const prevIncomeCat = _.get(props, ['createForm', 'values', 'incomeCategory', 'value', 'id'])
+        const nextIncomeCat = _.get(nextProps, ['createForm', 'values', 'incomeCategory', 'value', 'id'])
+        return prevIncomeCat !== nextIncomeCat && nextIncomeCat
+    }, ({dispatch}) => {
+        dispatch(optionsListFetchAction())
+    }),
 
+    withPropsOnChange((props, nextProps) => {
+        const cashbox = _.get(props, ['createForm', 'values', 'cashbox', 'value'])
+        const nextCashbox = _.get(nextProps, ['createForm', 'values', 'cashbox', 'value'])
+        const currencyRate = _.get(props, ['createForm', 'values', 'currencyRate'])
+        const nextCurrencyRate = _.get(nextProps, ['createForm', 'values', 'currencyRate'])
+        const date = _.get(props, ['createForm', 'values', 'date'])
+        const nextDate = _.get(nextProps, ['createForm', 'values', 'date'])
+        return (cashbox !== nextCashbox && nextCashbox) || (date !== nextDate && nextDate) || (currencyRate !== nextCurrencyRate && nextCurrencyRate)
+    }, ({dispatch, createForm, list, params}) => {
+        const detailID = _.toInteger(_.get(params, 'pendingPaymentsId'))
+        const cashbox = _.get(createForm, ['values', 'cashbox', 'value'])
+        const currencyRate = _.get(createForm, ['values', 'currencyRate'])
+        const order = _.get(createForm, ['values', 'order', 'value'])
+        const date = _.get(createForm, ['values', 'date'])
+        const currency = _.get(_.find(_.get(list, 'results'), {'id': detailID}), ['currency', 'id'])
+        const form = 'TransactionCreateForm'
+        if (cashbox) {
+            switch (currencyRate) {
+                case 'order': return dispatch(transactionConvertAction(date, currency, order))
+                case 'custom': return dispatch(change(form, 'custom_rate', ''))
+                default: return dispatch(transactionConvertAction(date, currency))
+            }
+        }
+        return null
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        return props.convertLoading !== nextProps.convertLoading && nextProps.convertLoading === false
+    }, ({dispatch, convertAmount}) => {
+        if (convertAmount) {
+            const form = 'TransactionCreateForm'
+            dispatch(change(form, 'custom_rate', convertAmount))
+        }
+    }),
+
+    withState('openConfirmDialog', 'setOpenConfirmDialog', false),
     withHandlers({
         handleOpenFilterDialog: props => () => {
             const {location: {pathname}, filter} = props

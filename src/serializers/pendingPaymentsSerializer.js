@@ -4,23 +4,32 @@ import moment from 'moment'
 import numberWithoutSpaces from '../helpers/numberWithoutSpaces'
 
 export const createSerializer = (data, order) => {
-    const amount = _.get(data, 'amount')
-    const cashbox = _.get(data, ['cashbox', 'value', 'id'])
-    const currencyRate = _.get(data, 'currencyRate') || '0'
-    if (currencyRate === '2') {
-        return {
-            order,
-            'amount': numberWithoutSpaces(amount),
-            cashbox,
-            'rate_type': currencyRate,
-            'custom_rate': currencyRate && numberWithoutSpaces(_.get(data, 'customRate'))
+    const amount = numberWithoutSpaces(_.get(data, 'amount'))
+    const comment = _.get(data, 'comment')
+    const customRate = numberWithoutSpaces(_.get(data, 'custom_rate'))
+    const cashbox = _.get(data, ['cashbox', 'value'])
+    const incomeCategory = _.get(data, ['incomeCategory', 'value', 'id'])
+    const currencyRate = _.get(data, 'currencyRate')
+    const division = _.get(data, ['division', 'value'])
+
+    const getRateType = () => {
+        switch (currencyRate) {
+            case 'current': return '0'
+            case 'order': return '1'
+            case 'custom': return '2'
+            default: return '0'
         }
     }
+
     return {
-        order,
-        'amount': numberWithoutSpaces(amount),
+        amount,
         cashbox,
-        'rate_type': currencyRate
+        division,
+        comment,
+        order,
+        custom_rate: customRate,
+        income_category: incomeCategory,
+        rate_type: getRateType()
     }
 }
 

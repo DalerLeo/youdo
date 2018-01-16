@@ -45,7 +45,6 @@ const enhance = compose(
     injectSheet({
         wrapper: {
             width: '100%',
-            height: '45px',
             '& .is-focused:not(.is-open) > .Select-control': {
                 borderBottom: 'solid 2px #5d6474',
                 boxShadow: 'unset'
@@ -54,15 +53,13 @@ const enhance = compose(
         select: {
             '& .Select-menu': {
                 background: '#fff',
-                maxHeight: '200px',
-                boxShadow: 'rgba(0, 0, 0, 0.16) 0px 3px 10px, rgba(0, 0, 0, 0.23) 0px 3px 10px',
-                border: 'none'
+                maxHeight: '200px'
             },
             '& .Select-menu-outer': {
-                overflowY: 'unset',
-                zIndex: '6',
-                border: 'unset',
-                marginTop: '5px',
+                maxHeight: '200px',
+                zIndex: '99',
+                boxShadow: 'rgba(0, 0, 0, 0.16) 0px 3px 10px, rgba(0, 0, 0, 0.23) 0px 3px 10px',
+                border: 'none',
                 '& ::-webkit-scrollbar': {
                     width: '4px'
                 }
@@ -70,18 +67,22 @@ const enhance = compose(
             '& .Select-control': {
                 borderRadius: '0px',
                 border: '0',
-                paddingBottom: '1px',
-                borderBottom: '1px solid rgb(224, 224, 224)',
+                borderBottom: '1px solid #e8e8e8',
                 backgroundColor: 'unset',
+                height: '44px',
+                marginBottom: '8px',
                 '& .Select-value': {
-                    paddingLeft: '0'
+                    paddingLeft: '0',
+                    marginTop: '12px'
                 },
                 '& .Select-placeholder': {
                     color: 'rgba(0,0,0,0.3)',
-                    paddingLeft: '0'
+                    paddingLeft: '0',
+                    top: '12px'
                 },
                 '& .Select-input': {
-                    paddingLeft: '0'
+                    paddingLeft: '0',
+                    paddingTop: '12px'
                 }
             },
             '& .Select-input > input': {
@@ -89,7 +90,13 @@ const enhance = compose(
                 overflow: 'hidden'
             },
             '& .Select-option.is-focused, .Select-option.is-selected': {
-                background: '#f2f5f8'
+                background: 'unset'
+            },
+            '& .Select-arrow-zone': {
+                paddingTop: '12px'
+            },
+            '& .Select-clear-zone': {
+                paddingTop: '12px'
             }
         }
     }),

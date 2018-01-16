@@ -27,6 +27,7 @@ import TimeField from './Basic/TimeField'
 import ProductSearchField from './Product/ProductSearchField'
 import SupplyListProductField from './Supply/SupplyListProductField'
 import SupplyMultiSearchField from './Supply/SupplyMultiSearchField'
+import SupplyExpenseSearchField from './Supply/SupplyExpenseSearchField'
 import PricesListProductField from './Promotions/PricesListProductField'
 import PricesBonusProductField from './Promotions/PricesBonusProductField'
 import OrderListReturnField from './Order/OrderListReturnField'
@@ -231,5 +232,6 @@ export {
     TransactionIncomeCategory,
     OrderSearchField,
     SupplySearchField,
+    SupplyExpenseSearchField,
     ProviderBalanceTypeSearchField
 }
