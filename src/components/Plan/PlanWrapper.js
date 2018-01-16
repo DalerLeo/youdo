@@ -167,7 +167,7 @@ const enhance = compose(
             left: '0',
             right: '0',
             bottom: '0',
-            background: '#12aaeb'
+            background: '#8dc572'
         },
         addButtonWrapper: {
             position: 'absolute',
@@ -259,9 +259,7 @@ const PlanWrapper = enhance((props) => {
                         query: filter.getParams()
                     }}>
                     </Link>
-                    <div className={classes.line}>
-                        <div className={classes.progress} style={{height: !_.isNaN(percent) ? percent : ZERO}}/>
-                    </div>
+                    <div className={classes.line}/>
                     <span>{username}</span>
                 </div>
             )
@@ -276,6 +274,7 @@ const PlanWrapper = enhance((props) => {
                     }}>
                     </Link>
                     <div className={classes.line}>
+                        <div className={classes.progress} style={{height: !_.isNaN(percent) ? percent + '%' : ZERO}}/>
                     </div>
                     <span>{username}</span>
                     <span>{numberFormat(percent)}%</span>
