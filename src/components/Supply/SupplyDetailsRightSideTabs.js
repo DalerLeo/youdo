@@ -81,7 +81,7 @@ const enhance = compose(
             textAlign: 'right',
             whiteSpace: 'nowrap',
             paddingLeft: '5px',
-            '&:hover':{
+            '&:hover': {
                 backgroundColor: 'unset !important'
             }
         },

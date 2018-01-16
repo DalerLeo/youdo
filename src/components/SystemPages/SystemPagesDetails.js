@@ -1,14 +1,14 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {compose} from 'recompose'
+import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import LinearProgress from '../LinearProgress'
 import Edit from 'material-ui/svg-icons/image/edit'
 import IconButton from 'material-ui/IconButton'
-import Delete from 'material-ui/svg-icons/action/delete'
 import ToolTip from '../ToolTip'
 import dateFormat from '../../helpers/dateFormat'
+import {Tabs, Tab} from 'material-ui/Tabs'
 
 const colorBlue = '#12aaeb !important'
 const enhance = compose(
@@ -45,6 +45,9 @@ const enhance = compose(
             display: 'flex',
             width: '100%',
             '& > div': {
+                '&:first-child': {
+                    paddingTop: '0'
+                },
                 width: '50%',
                 padding: '20px 30px'
             }
@@ -84,8 +87,16 @@ const enhance = compose(
             bottom: '0',
             cursor: 'pointer',
             zIndex: '1'
+        },
+        tabsWrapper: {
+            width: '100%'
+        },
+        tabsContainer: {
+            padding: '0',
+            paddingTop: '20px'
         }
-    })
+    }),
+    withState('tab', 'setTab', 'ru')
 )
 
 const iconStyle = {
@@ -105,15 +116,16 @@ const SystemPagesDetails = enhance((props) => {
     const {classes,
         loading,
         data,
-        confirmDialog,
         handleOpenUpdateDialog,
-        handleCloseDetail
+        handleCloseDetail,
+        tab,
+        setTab
     } = props
 
     const detailID = _.get(data, 'id')
-    const title = _.get(data, 'title')
-    const description = _.get(data, 'description')
-    const content = _.get(data, 'content')
+    const title = _.get(data, ['translations', tab, 'title'])
+    const description = _.get(data, ['translations', tab, 'description'])
+    const body = _.get(data, ['translations', tab, 'body'])
     const createdDate = dateFormat(_.get(data, 'createdDate'), true)
     const modifiedDate = dateFormat(_.get(data, 'modifiedDate'), true)
 
@@ -140,26 +152,40 @@ const SystemPagesDetails = enhance((props) => {
                             <Edit />
                         </IconButton>
                     </ToolTip>
-                    <ToolTip position="bottom" text="Удалить">
-                        <IconButton
-                            iconStyle={iconStyle.icon}
-                            style={iconStyle.button}
-                            touch={true}
-                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(detailID) }}>
-                            <Delete />
-                        </IconButton>
-                    </ToolTip>
                 </div>
             </div>
             <div className={classes.container}>
                 <div className={classes.info}>
-                    <ul>
-                        <li>Описание: <span>{description}</span></li>
-                        <li>Дата создания: <span>{createdDate}</span></li>
-                        <li>Дата редактирования: <span>{modifiedDate}</span></li>
-                    </ul>
+                    <Tabs
+                        inkBarStyle={{background: '#12aaeb'}}
+                        className={classes.tabsWrapper}
+                        onChange={(value) => setTab(value)}
+                        contentContainerClassName={classes.tabsContainer}>
+                        <Tab label={'Ру'} disableTouchRipple={true} value="ru">
+                            <ul>
+                                <li>Описание: <span>{description}</span></li>
+                                <li>Дата создания: <span>{createdDate}</span></li>
+                                <li>Дата редактирования: <span>{modifiedDate}</span></li>
+                            </ul>
+                        </Tab>
+                        <Tab label={'Ўз'} disableTouchRipple={true} value="uz">
+                            <ul>
+                                <li>Tavsif: <span>{description}</span></li>
+                                <li>Yaratilgan sana: <span>{createdDate}</span></li>
+                                <li>O'zgartirilgan sana: <span>{modifiedDate}</span></li>
+                            </ul>
+                        </Tab>
+                        <Tab label={'En'} disableTouchRipple={true} value="en">
+                            <ul>
+                                <li>Description: <span>{description}</span></li>
+                                <li>Created date: <span>{createdDate}</span></li>
+                                <li>Modified date: <span>{modifiedDate}</span></li>
+                            </ul>
+                        </Tab>
+                    </Tabs>
+
                 </div>
-                <div className={classes.content}>{content}</div>
+                <div className={classes.content}>{body}</div>
             </div>
         </div>
     )

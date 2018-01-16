@@ -141,7 +141,7 @@ const enhance = compose(
     }, {open: false}),
 )
 
-const   AcceptClientTransactionDialog = enhance((props) => {
+const AcceptClientTransactionDialog = enhance((props) => {
     const {open, onClose, classes, loading, handleSubmit, data, currency} = props
     const onSubmit = handleSubmit(() => props.onSubmit(_.get(data, ['sum'])).catch(validate))
     const user = _.get(data, ['user', 'name'])

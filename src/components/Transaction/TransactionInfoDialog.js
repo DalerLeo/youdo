@@ -174,7 +174,6 @@ const TransactionInfoDialog = enhance((props) => {
     } = props
 
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
-
     return (
         <Dialog
             modal={true}
@@ -197,9 +196,9 @@ const TransactionInfoDialog = enhance((props) => {
                 <div className={classes.inContent} style={{minHeight: 'initial'}}>
                     <div className={classes.list}>
                         <Row className="dottedList">
-                            <Col xs={5}>{t('Клиент')}</Col>
+                            <Col xs={hasMarket ? FOUR : FIVE}>{t('Клиент')}</Col>
                             {hasMarket && <Col xs={3}>{t('Магазин')}</Col>}
-                            <Col xs={4}>№ {t('заказа')} </Col>
+                            <Col xs={hasMarket ? TWO : FOUR}>№ {t('заказа')} </Col>
                             <Col xs={3}>{t('Сумма')}</Col>
                         </Row>
                         {_.map(data, (item) => {

@@ -541,7 +541,7 @@ export const TELEGRAM_NEWS_DELETE = `/${TELEGRAM_NEWS}/%d/`
 export const TELEGRAM_NEWS_LIST = `/${TELEGRAM_NEWS}/`
 export const TELEGRAM_NEWS_ITEM = `/${TELEGRAM_NEWS}/%d/`
 
-export const SYSTEM_PAGES = 'telegram/news'
+export const SYSTEM_PAGES = 'main/system-pages'
 export const SYSTEM_PAGES_CREATE = `/${SYSTEM_PAGES}/`
 export const SYSTEM_PAGES_DELETE = `/${SYSTEM_PAGES}/%d/`
 export const SYSTEM_PAGES_LIST = `/${SYSTEM_PAGES}/`
