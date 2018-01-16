@@ -11,37 +11,35 @@ import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import FloatingActionButton from 'material-ui/FloatingActionButton'
-import ContentAdd from 'material-ui/svg-icons/content/add'
-import ToolTip from '../ToolTip'
 import {Link} from 'react-router'
 import SystemPagesDetail from './SystemPagesDetails'
 import dateFormat from '../../helpers/dateFormat'
+import t from '../../helpers/translate'
 
 const listHeader = [
+    {
+        sorting: false,
+        xs: 3,
+        name: 'key_name',
+        title: t('Ключ')
+    },
     {
         sorting: true,
         name: 'title',
         xs: 3,
-        title: 'Заголовок'
+        title: t('Заголовок')
     },
     {
         sorting: true,
         name: 'description',
         xs: 3,
-        title: 'Описание'
+        title: t('Описание')
     },
     {
         sorting: true,
         xs: 3,
         name: 'created_date',
-        title: 'Дата создания'
-    },
-    {
-        sorting: true,
-        xs: 3,
-        name: 'modified_date',
-        title: 'Дата изменения'
+        title: t('Дата создания')
     }
 ]
 
@@ -102,19 +100,19 @@ const SystemPagesGridList = enhance((props) => {
     const systemPagesList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const title = _.get(item, 'title')
+        const keyName = _.get(item, 'keyName')
         const description = _.get(item, 'description')
         const createdDate = dateFormat(_.get(item, 'createdDate'), true)
-        const modifiedDate = dateFormat(_.get(item, 'modifiedDate'), true)
         return (
             <Row key={id} className={classes.listRow} style={{alignItems: 'center'}}>
                 <Link to={{
                     pathname: sprintf(ROUTES.SYSTEM_PAGES_ITEM_PATH, id),
                     query: filter.getParams()
                 }}>
+                    <Col xs={3}>{keyName}</Col>
                     <Col xs={3}>{title}</Col>
                     <Col xs={3}>{description}</Col>
                     <Col xs={3}>{createdDate}</Col>
-                    <Col xs={3}>{modifiedDate}</Col>
                 </Link>
             </Row>
         )
@@ -129,18 +127,6 @@ const SystemPagesGridList = enhance((props) => {
     return (
         <Container>
             <SubMenu url={ROUTES.SYSTEM_PAGES_LIST_URL}/>
-            <div className={classes.addButtonWrapper}>
-                <ToolTip position="left" text="Добавить новость">
-                    <FloatingActionButton
-                        mini={true}
-                        zDepth={1}
-                        backgroundColor="#12aaeb"
-                        onTouchTap={createDialog.handleOpenCreateDialog}>
-                        <ContentAdd />
-                    </FloatingActionButton>
-                </ToolTip>
-            </div>
-
             <GridList
                 filter={filter}
                 list={list}

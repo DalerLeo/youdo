@@ -53,7 +53,14 @@ const enhance = compose(
                     fontWeight: '600',
                     padding: '0 6px',
                     borderRadius: '2px'
+                },
+                '&:first-child:hover': {
+                    backgroundColor: 'unset'
+                },
+                '&:hover': {
+                    backgroundColor: '#f2f5f8'
                 }
+
             }
         },
         tabWrapper: {
@@ -63,7 +70,8 @@ const enhance = compose(
             paddingRight: '30px',
             '& .row': {
                 height: '50px',
-                padding: '0'
+                padding: '0',
+                paddingLeft: '5px'
             }
         },
         summary: {
@@ -71,7 +79,11 @@ const enhance = compose(
             marginTop: '20px',
             paddingRight: '30px',
             textAlign: 'right',
-            whiteSpace: 'nowrap'
+            whiteSpace: 'nowrap',
+            paddingLeft: '5px',
+            '&:hover': {
+                backgroundColor: 'unset !important'
+            }
         },
         tab: {
             marginBottom: '0',
@@ -283,9 +295,9 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                         ? <div className={classes.tabContent}>
                             {!_.get(expensesListData, 'supplyExpenseListLoading') ? <div className={classes.tabWrapper}>
                                     <Row className="dottedList">
-                                        <Col xs={2}>Описание</Col>
-                                        <Col xs={3} style={{textAlign: 'left'}}>{t('Продукт')}</Col>
-                                        <Col xs={2} style={{textAlign: 'left'}}>{t('Тип оплаты')}</Col>
+                                        <Col xs={3}>Описание</Col>
+                                        <Col xs={2} className={classes.right}>{t('Продукт')}</Col>
+                                        <Col xs={2} className={classes.right}>{t('Тип оплаты')}</Col>
                                         <Col xs={2} style={{textAlign: 'right'}}>{t('Сумма')}</Col>
                                         <Col xs={2} style={{textAlign: 'right'}}>{t('Оплачено')}</Col>
                                     </Row>
@@ -300,8 +312,8 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                                         const expProduct = _.get(_.find(products, {'id': _.get(item, 'supplyProduct')}), ['product', 'name'])
                                         return (
                                             <Row key={expId} className="dottedList">
-                                                <Col xs={2}>{expComment}</Col>
-                                                <Col xs={3} className={classes.right}>{expProduct || 'Общий расход'}</Col>
+                                                <Col xs={3}>{expComment}</Col>
+                                                <Col xs={2} className={classes.right}>{expProduct || 'Общий расход'}</Col>
                                                 <Col xs={2} className={classes.right}>{paymentType}</Col>
                                                 <Col xs={2}>
                                                     <div className={classes.flex + ' ' + classes.right}>

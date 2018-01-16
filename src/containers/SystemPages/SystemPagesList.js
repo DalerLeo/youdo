@@ -200,23 +200,7 @@ const SystemPagesList = enhance((props) => {
                 title: _.get(detail, 'title'),
                 description: _.get(detail, 'description'),
                 content: _.get(detail, 'telegraph_link'),
-                translations: {
-                    ru: {
-                        title: _.get(detail, 'title'),
-                        description: _.get(detail, 'description'),
-                        'telegraph_link': _.get(detail, 'telegraphLink')
-                    },
-                    en: {
-                        title: _.get(detail, 'title'),
-                        description: _.get(detail, 'description'),
-                        'telegraph_link': _.get(detail, 'telegraphLink')
-                    },
-                    uz: {
-                        title: _.get(detail, 'title'),
-                        description: _.get(detail, 'description'),
-                        'telegraph_link': _.get(detail, 'telegraphLink')
-                    }
-                }
+                translations: _.get(detail, 'translations')
             }
         })(),
         updateLoading: detailLoading || updateLoading,

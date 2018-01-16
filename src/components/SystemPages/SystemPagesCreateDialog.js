@@ -1,14 +1,14 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {compose} from 'recompose'
+import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import Loader from '../Loader'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, ImageUploadField} from '../ReduxForm'
+import {TextField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import {Tabs, Tab} from 'material-ui/Tabs'
@@ -128,8 +128,8 @@ const enhance = compose(
         tabsContainer: {
             padding: '10px 30px 20px'
         },
-        imageUpload: {
-            padding: '20px 30px',
+        textArea: {
+            padding: '5px 30px',
             '& .imageDropZone': {
                 margin: '0 auto',
                 width: '100%'
@@ -139,13 +139,13 @@ const enhance = compose(
     reduxForm({
         form: 'SystemPagesCreateForm',
         enableReinitialize: true
-    })
+    }),
+    withState('tab', 'setTab', 'ru')
 )
 
 const SystemPagesCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, isUpdate} = props
+    const {open, loading, handleSubmit, onClose, classes, isUpdate, tab, setTab} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
-
     return (
         <Dialog
             modal={true}
@@ -171,8 +171,9 @@ const SystemPagesCreateDialog = enhance((props) => {
                             <Tabs
                                 inkBarStyle={{background: '#12aaeb'}}
                                 className={classes.tabsWrapper}
+                                onChange={(value) => setTab(value)}
                                 contentContainerClassName={classes.tabsContainer}>
-                                <Tab label={'Ру'} disableTouchRipple={true}>
+                                <Tab label={'Ру'} disableTouchRipple={true} value="ru">
                                     <Field
                                         name="[translations][ru][title]"
                                         component={TextField}
@@ -185,15 +186,8 @@ const SystemPagesCreateDialog = enhance((props) => {
                                         className={classes.inputFieldCustom}
                                         label="Описание"
                                         fullWidth={true}/>
-                                    <Field
-                                        name="[translations][ru][telegraph_link]"
-                                        component={TextField}
-                                        className={classes.inputFieldCustom}
-                                        label="Ссылка на статью"
-                                        hintText="http://telegra.ph/"
-                                        fullWidth={true}/>
                                 </Tab>
-                                <Tab label={'Ўз'} disableTouchRipple={true}>
+                                <Tab label={'Ўз'} disableTouchRipple={true} value="uz">
                                     <Field
                                         name="[translations][uz][title]"
                                         component={TextField}
@@ -206,15 +200,8 @@ const SystemPagesCreateDialog = enhance((props) => {
                                         className={classes.inputFieldCustom}
                                         label="Tavsif"
                                         fullWidth={true}/>
-                                    <Field
-                                        name="[translations][uz][telegraph_link]"
-                                        component={TextField}
-                                        className={classes.inputFieldCustom}
-                                        label="Maqolaga havola"
-                                        hintText="http://telegra.ph/"
-                                        fullWidth={true}/>
                                 </Tab>
-                                <Tab label={'En'} disableTouchRipple={true}>
+                                <Tab label={'En'} disableTouchRipple={true} value="en">
                                     <Field
                                         name="[translations][en][title]"
                                         component={TextField}
@@ -227,19 +214,35 @@ const SystemPagesCreateDialog = enhance((props) => {
                                         className={classes.inputFieldCustom}
                                         label="Description"
                                         fullWidth={true}/>
-                                    <Field
-                                        name="[translations][en][telegraph_link]"
-                                        component={TextField}
-                                        className={classes.inputFieldCustom}
-                                        label="Telegraph link"
-                                        hintText="http://telegra.ph/"
-                                        fullWidth={true}/>
                                 </Tab>
                             </Tabs>
-                            <div className={classes.imageUpload}>
-                                <Field
-                                    name="image"
-                                    component={ImageUploadField}/>
+                            <div className={classes.textArea}>
+                                {tab === 'ru'
+                                    ? <Field
+                                        name="[translations][ru][body]"
+                                        multiLine={true}
+                                        rows={7}
+                                        fullWidth={true}
+                                        rowsMax={7}
+                                        floatingLabelText="Содержание"
+                                        component={TextField}/>
+                                    : tab === 'uz'
+                                        ? <Field
+                                            name="[translations][uz][body]"
+                                            multiLine={true}
+                                            rows={7}
+                                            fullWidth={true}
+                                            rowsMax={7}
+                                            floatingLabelText="Matn"
+                                            component={TextField}/>
+                                        : <Field
+                                            name="[translations][en][body]"
+                                            multiLine={true}
+                                            rows={7}
+                                            fullWidth={true}
+                                            rowsMax={7}
+                                            floatingLabelText="Body"
+                                            component={TextField}/>}
                             </div>
                         </div>
                     </div>
