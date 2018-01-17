@@ -339,6 +339,7 @@ const TransactionsList = enhance((props) => {
         const client = showCashbox ? _.get(_.find(_.get(cashboxData, 'data'), {'id': cashbox}), 'name') : null
         const clientName = _.get(item, ['client', 'name'])
         const expenseCategory = _.get(item, ['expanseCategory'])
+        const incomeCategory = _.get(item, ['incomeCategory'])
         const transType = _.get(item, ['type'])
         const customRate = _.toNumber(_.get(item, 'customRate'))
         const rate = customRate > ZERO ? customRate : _.toInteger(amount / internal)
@@ -353,7 +354,6 @@ const TransactionsList = enhance((props) => {
                     {!showCashbox ? <div>{clientName || 'Не указан'}</div> : null}
                 </div>
                 <div style={{flexBasis: '30%', maxWidth: '30%'}}>
-
                     <TransactionsFormat
                         handleClickAgentIncome={() => {
                             transactionInfoDialog.handleOpenDialog(id)
@@ -365,6 +365,7 @@ const TransactionsList = enhance((props) => {
                         supply={supply}
                         client={_.get(item, 'client')}
                         expenseCategory={expenseCategory}
+                        incomeCategory={incomeCategory}
                         user={user}
                         comment={comment}
                         supplyExpanseId={supplyExpanseId}
