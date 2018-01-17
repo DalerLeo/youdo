@@ -20,7 +20,7 @@ import {
 } from '../../actions/statMarket'
 
 import {StatMarketGridList, STAT_MARKET_DIALOG_OPEN} from '../../components/Statistics'
-import {STAT_MARKET_FILTER_KEY, MARKET} from '../../components/Statistics/Markets/StatMarketGridList'
+import {STAT_MARKET_FILTER_KEY, MARKET, MARKET_TYPE} from '../../components/Statistics/Markets/StatMarketGridList'
 
 const enhance = compose(
     connect((state, props) => {
@@ -112,9 +112,12 @@ const enhance = compose(
             hashHistory.push({pathname: ROUTER.STATISTICS_MARKET_URL, query: filter.getParams()})
         },
         handleGetDocument: props => () => {
-            const {filter} = props
+            const {filter, location: {query}} = props
             const params = serializers.listFilterSerializer(filter.getParams())
-            getDocuments(API.STAT_MARKET_GET_DOCUMENT, params)
+            const toggle = _.get(query, 'toggle') || MARKET
+            return toggle === MARKET_TYPE
+                ? getDocuments(API.STAT_MARKET_TYPE_GET_DOCUMENT, params)
+                : getDocuments(API.STAT_MARKET_GET_DOCUMENT, params)
         }
     })
 )

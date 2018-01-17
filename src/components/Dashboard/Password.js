@@ -20,17 +20,16 @@ const enhance = compose(
         },
         chartHeader: {
             position: 'relative',
-            padding: '15px 30px',
+            padding: '15px 20px 15px 30px',
             fontWeight: '600',
             borderBottom: '1px #efefef solid',
             display: 'flex',
             alignItems: 'center',
+            justifyContent: 'space-between',
             '& svg': {
                 cursor: 'pointer',
-                position: 'absolute',
                 width: '18px !important',
-                height: '18px !important',
-                right: '20px'
+                height: '18px !important'
             }
         },
         chart: {

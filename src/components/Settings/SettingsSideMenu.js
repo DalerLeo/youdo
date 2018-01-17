@@ -14,10 +14,19 @@ const enhance = compose(
             flexBasis: '225px',
             maxWidth: '225px',
             position: 'relative'
-
         },
         wrapper: {
             padding: '30px 30px 20px',
+            height: '100%',
+            overflowY: 'auto',
+            '&::-webkit-scrollbar': {
+                width: '0'
+            },
+            '&:hover': {
+                '&::-webkit-scrollbar': {
+                    width: '4px !important'
+                }
+            },
             '& ul': {
                 fontWeight: 'bold',
                 marginBottom: '20px'

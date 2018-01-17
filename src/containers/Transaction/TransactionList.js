@@ -81,6 +81,7 @@ const enhance = compose(
         const transactionInfoLoading = _.get(state, ['transaction', 'info', 'loading'])
         const filterForm = _.get(state, ['form', 'TransactionFilterForm'])
         const createForm = _.get(state, ['form', 'TransactionCreateForm'])
+        const sendForm = _.get(state, ['form', 'TransactionSendForm'])
         const acceptForm = _.get(state, ['form', 'AcceptClientTransactionForm'])
         const updateForm = _.get(state, ['form', 'ClientBalanceUpdateForm'])
         const payment = _.get(state, ['cashbox', 'pending', 'data'])
@@ -126,6 +127,7 @@ const enhance = compose(
             paymentLoading,
             cashboxId,
             createForm,
+            sendForm,
             payment,
             acceptForm,
             transactionInfo,
@@ -190,7 +192,7 @@ const enhance = compose(
         const date = _.get(props, ['createForm', 'values', 'date'])
         const nextDate = _.get(nextProps, ['createForm', 'values', 'date'])
         return (cashbox !== nextCashbox && nextCashbox) || (date !== nextDate && nextDate) || (currencyRate !== nextCurrencyRate && nextCurrencyRate)
-    }, ({dispatch, date, createForm, cashboxList, location: {query}, convertAmount}) => {
+    }, ({dispatch, date, createForm, cashboxList, location: {query}}) => {
         const queryCashbox = _.toInteger(_.get(query, 'cashboxId'))
         const queryCurrency = _.toInteger(_.get(query, 'currency'))
         const cashbox = queryCashbox > ZERO ? queryCashbox : _.get(createForm, ['values', 'cashbox', 'value'])
@@ -201,13 +203,15 @@ const enhance = compose(
         if (date && cashbox) {
             switch (currencyRate) {
                 case 'order': return dispatch(transactionConvertAction(date, currency, order))
-                    .then(() => {
-                        dispatch(change(form, 'custom_rate', convertAmount))
+                    .then((data) => {
+                        const customRate = _.get(data, ['value', 'amount'])
+                        dispatch(change(form, 'custom_rate', customRate))
                     })
                 case 'custom': return dispatch(change(form, 'custom_rate', ''))
                 default: return dispatch(transactionConvertAction(date, currency))
-                    .then(() => {
-                        dispatch(change(form, 'custom_rate', convertAmount))
+                    .then((data) => {
+                        const customRate = _.get(data, ['value', 'amount'])
+                        dispatch(change(form, 'custom_rate', customRate))
                     })
             }
         }
@@ -365,10 +369,13 @@ const enhance = compose(
         },
 
         handleOpenCreateExpenseDialog: props => () => {
-            const {dispatch, location: {pathname}, filter, setOpenStaff} = props
+            const {dispatch, location: {pathname}, filter, setOpenStaff, convertAmount} = props
             setOpenStaff(false)
             hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_CREATE_EXPENSE_DIALOG_OPEN]: true})})
-            dispatch(reset('TransactionCreateForm'))
+            const form = 'TransactionCreateForm'
+            dispatch(reset(form))
+            dispatch(change(form, 'custom_rate', convertAmount))
+            dispatch(change(form, 'transaction_child', [{}]))
         },
 
         handleCloseCreateExpenseDialog: props => () => {
@@ -398,9 +405,12 @@ const enhance = compose(
         },
 
         handleOpenCreateIncomeDialog: props => () => {
-            const {dispatch, location: {pathname}, filter} = props
+            const {dispatch, location: {pathname}, filter, convertAmount} = props
             hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_CREATE_INCOME_DIALOG_OPEN]: true})})
-            dispatch(reset('TransactionCreateForm'))
+            const form = 'TransactionCreateForm'
+            dispatch(reset(form))
+            dispatch(change(form, 'custom_rate', convertAmount))
+            dispatch(change(form, 'transaction_child', [{}]))
         },
 
         handleCloseCreateIncomeDialog: props => () => {
@@ -432,7 +442,7 @@ const enhance = compose(
         handleOpenCreateSendDialog: props => () => {
             const {dispatch, location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_CREATE_SEND_DIALOG_OPEN]: true})})
-            dispatch(reset('TransactionCreateForm'))
+            dispatch(reset('TransactionSendForm'))
         },
 
         handleCloseCreateSendDialog: props => () => {
@@ -441,12 +451,12 @@ const enhance = compose(
         },
 
         handleSubmitCreateSendDialog: props => () => {
-            const {dispatch, createForm, filter, location: {pathname}, filterCashbox, cashboxList} = props
+            const {dispatch, sendForm, filter, location: {pathname}, filterCashbox, cashboxList} = props
             const cashboxId = _.get(props, ['location', 'query', 'cashboxId'])
             const cashbox = _.find(_.get(cashboxList, 'results'), {'id': _.toInteger(cashboxId)})
-            const chosenCashbox = _.find(_.get(cashboxList, 'results'), {'id': _.toInteger(_.get(createForm, ['values', 'categoryId', 'value']))})
+            const chosenCashbox = _.find(_.get(cashboxList, 'results'), {'id': _.toInteger(_.get(sendForm, ['values', 'categoryId', 'value']))})
             const withPersent = _.get(cashbox, ['currency', 'name']) === _.get(chosenCashbox, ['currency', 'name']) && _.get(cashbox, 'type') !== _.get(chosenCashbox, 'type')
-            return dispatch(transactionCreateSendAction(_.get(createForm, ['values']), cashboxId, withPersent))
+            return dispatch(transactionCreateSendAction(_.get(sendForm, ['values']), cashboxId, withPersent))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
@@ -513,9 +523,9 @@ const enhance = compose(
         },
 
         handleSubmitCashDialog: props => () => {
-            const {dispatch, createForm, filterItem, location: {pathname}} = props
+            const {dispatch, sendForm, filterItem, location: {pathname}} = props
             const cashboxId = _.get(props, ['location', 'query', 'cashboxId'])
-            return dispatch(transactionCreateSendAction(_.get(createForm, ['values']), cashboxId))
+            return dispatch(transactionCreateSendAction(_.get(sendForm, ['values']), cashboxId))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })

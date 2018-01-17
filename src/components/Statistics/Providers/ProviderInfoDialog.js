@@ -267,7 +267,7 @@ const ProviderInfoDialog = enhance((props) => {
                     <ProviderTransactionFormat type={type} supply={supply}/>
                 </div>
                 <div style={{width: '20%', textAlign: 'right'}}>
-                    <div className={amount > ZERO ? classes.green : classes.red}>{numberFormat(amount, currency)}</div>
+                    <div className={amount > ZERO ? classes.green : amount < ZERO ? classes.red : ''}>{numberFormat(amount, currency)}</div>
                     {currencyId !== currentCurrencyId &&
                     <div>
                         <div>{numberFormat(internal, currentCurrency)} <span

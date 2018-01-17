@@ -23,11 +23,6 @@ const getOptions = (search, parentType) => {
             caughtCancel(error)
         })
 }
-const custom = (parentType) => {
-    return (search) => {
-        return getOptions(search, parentType)
-    }
-}
 
 const getItem = (id) => {
     return axios().get(sprintf(PATH.PRODUCT_TYPE_ITEM, id))
@@ -41,7 +36,7 @@ const ProductTypeChildSearchField = (props) => {
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
             getText={SearchField.defaultGetText('name')}
-            getOptions={custom(parentType)}
+            getOptions={(search) => getOptions(search, parentType)}
             getItem={getItem}
             getItemText={SearchField.defaultGetText('name')}
             parent={parentType}

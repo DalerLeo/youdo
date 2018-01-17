@@ -525,21 +525,19 @@ const StatMarketGridList = enhance((props) => {
     const isMarket = toggle === MARKET
     const isMarketType = toggle === MARKET_TYPE
 
-    const tableLeft = _.map(_.get(listData, 'data'), (item) => {
-        const id = _.get(item, 'id')
+    const tableLeft = _.map(_.get(listData, 'data'), (item, index) => {
         const name = _.get(item, 'name') || 'No'
         return (
             <div
-                key={id}
-                style={id === currentRow ? styleOnHover : {}}
-                onMouseEnter={() => { updateRow(id) }}
+                key={index}
+                style={index === currentRow ? styleOnHover : {}}
+                onMouseEnter={() => { updateRow(index) }}
                 onMouseLeave={() => { updateRow(null) }}>
                 <span>{name}</span>
             </div>
         )
     })
-    const tableList = _.map(_.get(listData, 'data'), (item) => {
-        const id = _.get(item, 'id')
+    const tableList = _.map(_.get(listData, 'data'), (item, index) => {
         const salesFact = _.toNumber(_.get(item, 'salesFact'))
         const salesTotal = _.toNumber(_.get(item, 'salesTotal'))
         const returnOrders = _.toNumber(_.get(item, 'returnOrders'))
@@ -551,10 +549,10 @@ const StatMarketGridList = enhance((props) => {
         const clientName = _.get(item, 'clientName')
         return (
             <tr
-                key={id}
+                key={index}
                 className={isMarket ? classes.tableRow : classes.tableRowExt}
-                style={id === currentRow ? styleOnHover : {}}
-                onMouseEnter={() => { updateRow(id) }}
+                style={index === currentRow ? styleOnHover : {}}
+                onMouseEnter={() => { updateRow(index) }}
                 onMouseLeave={() => { updateRow(null) }}>
                 {isMarket && <td>{clientName}</td>}
 

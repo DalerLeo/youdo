@@ -6,7 +6,7 @@ import {compose} from 'recompose'
 import {Link} from 'react-router'
 import sprintf from 'sprintf'
 import * as TRANS_TYPE from '../../constants/transactionTypes'
-import {TRANSACTION_CATEGORY_POPOP_OPEN, TRANSACTION_INFO_OPEN} from './index'
+import {TRANSACTION_INFO_OPEN} from './index'
 import t from '../../helpers/translate'
 
 const enhance = compose()
@@ -19,32 +19,11 @@ const TransactionsFormat = enhance((props) => {
         handleClickAgentIncome,
         supply,
         supplyExpanseId,
-        expenseCategory,
-        handleOpenCategoryPopop,
         id,
         comment
     } = props
     const clientName = _.get(client, 'name')
     const userName = _.get(user, 'firstName') + ' ' + _.get(user, 'secondName')
-    const categoryPopopShow = _.find(_.get(expenseCategory, 'options'), {'keyName': 'staff_expanse'})
-
-    const category = (
-        expenseCategory &&
-             <div>
-                <strong >{t('Категория')}: </strong>
-                 {categoryPopopShow
-                 ? (handleOpenCategoryPopop)
-                         ? <Link onClick={() => handleOpenCategoryPopop(id)}>
-                            {_.get(expenseCategory, 'name')}
-                           </Link>
-                         : <Link
-                             target={'_blank'}
-                             to={{pathname: ROUTES.TRANSACTION_LIST_URL, query: {[TRANSACTION_CATEGORY_POPOP_OPEN]: id}}}>
-                             {_.get(expenseCategory, 'name')}
-                         </Link>
-                 : <span>{_.get(expenseCategory, 'name')}</span>}
-              </div>
-    )
 
     let output = null
     switch (type) {
@@ -82,7 +61,6 @@ const TransactionsFormat = enhance((props) => {
     return (
         <div>
             <div>{type && output}</div>
-            <div>{category}</div>
             {comment && <div><strong>{t('Комментарий')}:</strong> {comment}</div>}
         </div>
     )
