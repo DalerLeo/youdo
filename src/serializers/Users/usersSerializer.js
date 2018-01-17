@@ -14,9 +14,10 @@ export const createSerializer = (data) => {
     const isActive = _.get(data, 'isActive')
     const position = _.get(data, ['position', 'value'])
     const job = _.get(data, ['job', 'value'])
-    const stocks = _.filter(_.get(data, ['stocks']), (o) => {
-        return _.get(o, 'selected')
-    })
+    const stocks = _(data)
+        .get('stocks')
+        .filter((item) => _.get(item, 'selected'))
+        .map((item) => _.get(item, 'id'))
     const currencies = _(data)
         .get('currencies')
         .filter((item) => _.get(item, 'selected'))
@@ -25,10 +26,6 @@ export const createSerializer = (data) => {
         .get('divisions')
         .filter((item) => _.get(item, 'selected'))
         .map((item) => _.get(item, 'id'))
-
-    const newStock = _.filter(_.map(stocks, (val) => {
-        return val.id
-    }), item => !_.isNil(item))
 
     const markets = _.filter(_.get(data, ['types']), (o) => {
         return _.get(o, 'selected')
@@ -48,7 +45,7 @@ export const createSerializer = (data) => {
         password,
         position,
         'is_active': isActive,
-        'stocks': stockSelect ? newStock : singleStock,
+        'stocks': stockSelect ? stocks : singleStock,
         'price_lists': newMarket,
         currencies,
         divisions

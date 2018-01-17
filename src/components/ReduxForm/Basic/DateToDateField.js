@@ -12,7 +12,7 @@ import Check from 'material-ui/svg-icons/navigation/check'
 import dateFormat from '../../../helpers/dateFormat'
 import MUITextField from 'material-ui/TextField'
 import moment from 'moment'
-import Tooltip from '../../ToolTip/ToolTip'
+import ToolTip from '../../ToolTip/ToolTip'
 
 const MINUS_ONE = -1
 const MINUS_SEVEN = -7
@@ -117,20 +117,20 @@ class DateToDateField extends React.Component {
                         anchorEl={anchorEl}
                         onRequestClose={this.handleOnRequestClose}>
                         <div className={classes.clear}>
-                            <Tooltip position="top" text="Очистить">
+                            <ToolTip position="top" text="Очистить">
                                 <FlatButton
                                     disableTouchRipple={true}
                                     onClick={() => { input.onChange({startDate: undefined, endDate: undefined}) }}>
                                     <Close color="#fff"/>
                                 </FlatButton>
-                            </Tooltip>
-                            <Tooltip position="top" text="Применить">
+                            </ToolTip>
+                            <ToolTip position="top" text="Применить">
                                 <FlatButton
                                     disableTouchRipple={true}
                                     onClick={() => { this.handleOnRequestClose() }}>
                                     <Check color="#fff"/>
                                 </FlatButton>
-                            </Tooltip>
+                            </ToolTip>
                         </div>
                         <DateRange
                             startDate={_.get(input, ['value', 'fromDate']) || moment()}

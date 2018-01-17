@@ -8,7 +8,7 @@ import {Field} from 'redux-form'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import Groceries from '../../Images/groceries.svg'
-import Tooltip from '../../ToolTip'
+import ToolTip from '../../ToolTip'
 import {connect} from 'react-redux'
 import numberFormat from '../../../helpers/numberFormat'
 import numberWithoutSpaces from '../../../helpers/numberWithoutSpaces'
@@ -518,14 +518,14 @@ const OrderListProductField = enhance((props) => {
                             onTouchTap={handleOpenAddProduct}
                         />}
                         {!editOnlyCost && !(paymentType && priceList && formCurerncy) &&
-                        <Tooltip position="bottom" text={t('Выберите прайс лист')}>
+                        <ToolTip position="bottom" text={t('Выберите прайс лист')}>
                             <FlatButton
                                 label={'+ ' + t('добавить товар')}
                                 disabled={true}
                                 labelStyle={{fontSize: '13px', color: '#999'}}
                                 className={classes.span}
                             />
-                        </Tooltip>}
+                        </ToolTip>}
                     </div>
                 </div>
                 {state.open && <Row className={classes.background}>

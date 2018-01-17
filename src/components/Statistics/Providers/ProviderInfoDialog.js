@@ -8,20 +8,14 @@ import Dialog from 'material-ui/Dialog'
 import Loader from '../../Loader'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
-import Edit from 'material-ui/svg-icons/image/edit'
 import Pagination from '../../ReduxForm/Pagination'
 import getConfig from '../../../helpers/getConfig'
 import numberFormat from '../../../helpers/numberFormat'
 import dateTimeFormat from '../../../helpers/dateTimeFormat'
-import Tooltip from '../../ToolTip'
 import NotFound from '../../Images/not-found.png'
 import ProviderTransactionFormat from './ProviderTransactionFormat'
 import {Field, reduxForm} from 'redux-form'
 import {CurrencySearchField, DivisionSearchField, PaymentTypeSearchField} from '../../ReduxForm'
-import {
-    FIRST_BALANCE,
-    NONE_TYPE
-} from '../../../constants/clientBalanceInfo'
 import t from '../../../helpers/translate'
 
 const enhance = compose(
@@ -35,6 +29,12 @@ const enhance = compose(
             justifyContent: 'center',
             display: 'flex'
         },
+        infoLoader: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '50px 0'
+        },
         dialog: {
             overflowY: 'auto !important',
             '& > div:first-child > div:first-child': {
@@ -42,21 +42,23 @@ const enhance = compose(
             }
         },
         red: {
-            color: '#e57373 !important'
+            color: '#e57373 !important',
+            fontWeight: '600'
         },
         green: {
-            color: '#81c784 !important'
+            color: '#81c784 !important',
+            fontWeight: '600'
         },
         popUp: {
             color: '#333 !important',
-            overflowY: 'hidden !important',
+            overflowY: 'unset !important',
             fontSize: '13px !important',
             position: 'relative',
             padding: '0 !important',
-            overflowX: 'hidden',
+            overflowX: 'unset',
             height: '100%',
             marginBottom: '64px',
-            maxHeight: '575px !important'
+            maxHeight: 'none !important'
         },
         titleContent: {
             background: '#fff',
@@ -66,7 +68,6 @@ const enhance = compose(
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            borderBottom: '1px solid #efefef',
             padding: '20px 30px',
             zIndex: '999',
             '& button': {
@@ -92,12 +93,7 @@ const enhance = compose(
             justifyContent: 'space-between',
             alignItems: 'center',
             position: 'relative',
-            height: '60px',
-            fontWeight: '600',
-            borderTop: '1px #efefef solid',
-            borderBottom: '1px #efefef solid',
-            marginTop: '10px',
-            padding: '0 30px'
+            borderBottom: '1px #efefef solid'
         },
         info: {
             display: 'flex',
@@ -117,7 +113,10 @@ const enhance = compose(
                 fontWeight: '600'
             },
             '& > .row': {
-                minHeight: '50px',
+                '& svg': {
+                    width: '20px !important',
+                    height: '20px !important'
+                },
                 '&:hover > div:last-child': {
                     opacity: '1'
                 },
@@ -177,7 +176,39 @@ const enhance = compose(
             justifyContent: 'space-between',
             padding: '0 30px',
             '& > div': {
-                width: 'calc((100% / 3) - 15px)'
+                width: 'calc((100% / 4) - 15px)'
+            }
+        },
+        paymentsWrapper: {
+            borderTop: '1px #efefef solid',
+            padding: '10px 30px',
+            display: 'flex',
+            width: '100%'
+        },
+        payment: {
+            display: 'inline-block',
+            marginLeft: '5px',
+            '& > span:after': {
+                content: '","'
+            },
+            '&:last-child > span:after': {
+                display: 'none'
+            }
+        },
+        division: {
+            marginRight: '20px',
+            paddingRight: '20px',
+            borderRight: '1px #efefef solid'
+        },
+        divisionTitle: {
+            marginBottom: '5px',
+            fontWeight: '600'
+        },
+        paymentType: {
+            marginBottom: '10px',
+            lineHeight: '1.5',
+            '&:last-child': {
+                marginBottom: '0'
             }
         }
     }),
@@ -201,8 +232,9 @@ const iconStyle = {
     }
 }
 const ProviderInfoDialog = enhance((props) => {
-    const {open, filterItem, onClose, classes, detailData, name, balance, paymentType, superUser, setItem, stat} = props
-    const isSuperUser = _.get(superUser, 'isSuperUser')
+    const {open, filterItem, onClose, classes, detailData, name, info, infoLoading} = props
+    //  ..const isSuperUser = _.get(superUser, 'isSuperUser')
+    const totalPayments = _.groupBy(info, (item) => _.get(item, ['division', 'name']))
     const ZERO = 0
     const currentCurrency = getConfig('PRIMARY_CURRENCY')
     const currentCurrencyId = _.toInteger(getConfig('PRIMARY_CURRENCY_ID'))
@@ -220,21 +252,21 @@ const ProviderInfoDialog = enhance((props) => {
         const type = _.get(item, 'type')
         const supply = _.get(item, 'supply')
 
-        const openEditDialog = (thisItem) => {
-            superUser.handleOpenSuperUserDialog(thisItem.id)
-            setItem(thisItem)
-        }
+        // ..const openEditDialog = (thisItem) => {
+        // ..    superUser.handleOpenSuperUserDialog(thisItem.id)
+        // ..    setItem(thisItem)
+        // ..}
 
         return (
             <Row key={index} className='dottedList'>
-                <div style={{flexBasis: '20%', maxWidth: '16%'}}>{createdDate}</div>
-                <div style={{flexBasis: '20%', maxWidth: '20%'}}>{user}</div>
-                <div style={{flexBasis: '40%', maxWidth: '40%'}}>
+                <div style={{width: '20%'}}>{createdDate}</div>
+                <div style={{width: '20%'}}>{user}</div>
+                <div style={{width: '40%'}}>
                     {market && <div>{t('Магазин')}: <span>{market}</span></div>}
                     {comment && <div>{t('Комментарии')}: <span>{comment}</span></div>}
                     <ProviderTransactionFormat type={type} supply={supply}/>
                 </div>
-                <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>
+                <div style={{width: '20%', textAlign: 'right'}}>
                     <div className={amount > ZERO ? classes.green : classes.red}>{numberFormat(amount, currency)}</div>
                     {currencyId !== currentCurrencyId &&
                     <div>
@@ -242,21 +274,6 @@ const ProviderInfoDialog = enhance((props) => {
                             style={{fontSize: 11, color: '#666'}}>({customRate})</span></div>
                     </div>}
                 </div>
-                {(!stat && isSuperUser && (type === FIRST_BALANCE || type === NONE_TYPE)) &&
-                <div className={classes.iconBtn}>
-                    <Tooltip position="bottom" text={t('Изменить')}>
-                        <IconButton
-                            iconStyle={iconStyle.icon}
-                            style={iconStyle.button}
-                            disableTouchRipple={true}
-                            touch={true}
-                            onTouchTap={() => {
-                                openEditDialog(item)
-                            }}>
-                            <Edit/>
-                        </IconButton>
-                    </Tooltip>
-                </div>}
             </Row>)
     })
 
@@ -270,7 +287,7 @@ const ProviderInfoDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>Информация по балансу поставщика</span>
+                <span>Информация по балансу поставщика {name}</span>
                 <IconButton
                     iconStyle={iconStyle.icon}
                     style={iconStyle.button}
@@ -278,51 +295,83 @@ const ProviderInfoDialog = enhance((props) => {
                     <CloseIcon/>
                 </IconButton>
             </div>
-            <div className={classes.filters}>
-                <Field
-                    name={'division'}
-                    component={DivisionSearchField}
-                    label={'Организация'}/>
-                <Field
-                    name={'currency'}
-                    component={CurrencySearchField}
-                    label={'Валюта'}/>
-                <Field
-                    name={'paymentType'}
-                    component={PaymentTypeSearchField}
-                    label={'Тип оплаты'}/>
-            </div>
             {loading
                 ? <div className={classes.loader}>
                     <Loader size={0.75}/>
                 </div>
                 : <div className={classes.bodyContent}>
                     <div className={classes.infoBlock}>
-                        <div className={classes.info}>
-                            <div>
-                                <span>{t('Поставщик')}</span>
-                                <div>{name}</div>
+                        {infoLoading
+                            ? <div className={classes.infoLoader}>
+                                <Loader size={0.75}/>
                             </div>
-                            <div>
-                                <span>{t('Баланс')} {paymentType}</span>
-                                <div className={balance > ZERO
-                                    ? classes.green
-                                    : (balance < ZERO
-                                        ? classes.red
-                                        : classes.black)}>
-                                    {numberFormat(balance, currentCurrency)}
-                                </div>
-                            </div>
-                        </div>
+                            : !_.isEmpty(totalPayments) &&
+                            <div className={classes.paymentsWrapper}>
+                                {_.map(totalPayments, (item, index) => {
+                                    const division = index
+                                    const cashTransactions = _.filter(item, {'paymentType': 'cash'})
+                                    const bankTransactions = _.filter(item, {'paymentType': 'bank'})
+                                    const cash = _.map(cashTransactions, (child, i) => {
+                                        const currency = _.get(child, ['currency', 'name'])
+                                        const totalAmount = _.toNumber(_.get(child, ['totalAmount']))
+                                        return (
+                                            <div key={i} className={classes.payment}>
+                                                <span className={totalAmount > ZERO ? classes.green : totalAmount < ZERO ? classes.red : ''}>
+                                                    {numberFormat(totalAmount, currency)}
+                                                </span>
+                                            </div>
+                                        )
+                                    })
+                                    const bank = _.map(bankTransactions, (child, i) => {
+                                        const currency = _.get(child, ['currency', 'name'])
+                                        const totalAmount = _.toNumber(_.get(child, ['totalAmount']))
+                                        return (
+                                            <div key={i} className={classes.payment}>
+                                                <span className={totalAmount > ZERO ? classes.green : totalAmount < ZERO ? classes.red : ''}>
+                                                    {numberFormat(totalAmount, currency)}
+                                                </span>
+                                            </div>
+                                        )
+                                    })
+                                    return (
+                                        <div key={index} className={classes.division}>
+                                            <div className={classes.divisionTitle}>{division}</div>
+                                            {!_.isEmpty(cash) &&
+                                            <div className={classes.paymentType}>
+                                                <i>Наличными:</i>
+                                                {cash}
+                                            </div>}
+                                            {!_.isEmpty(bank) &&
+                                            <div className={classes.paymentType}>
+                                                <i>Перечислением:</i>
+                                                {bank}
+                                            </div>}
+                                        </div>
+                                    )
+                                })}
+                            </div>}
+                    </div>
+                    <div className={classes.filters}>
+                        <Field
+                            name={'division'}
+                            component={DivisionSearchField}
+                            label={'Организация'}/>
+                        <Field
+                            name={'currency'}
+                            component={CurrencySearchField}
+                            label={'Валюта'}/>
+                        <Field
+                            name={'paymentType'}
+                            component={PaymentTypeSearchField}
+                            label={'Тип оплаты'}/>
                         <Pagination filter={filterItem}/>
                     </div>
                     <div className={classes.content}>
                         <Row>
-                            <div style={{flexBasis: '20%', maxWidth: '16%'}}>{t('Дата')}</div>
-                            <div style={{flexBasis: '20%', maxWidth: '20%'}}>{t('Кто')}</div>
-                            <div style={{flexBasis: '40%', maxWidth: '40%'}}>{t('Описание')}</div>
-                            <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>{t('Сумма')}</div>
-                            <div style={{flexBasis: '5%', maxWidth: '5%', textAlign: 'right'}}/>
+                            <div style={{width: '20%'}}>{t('Дата')}</div>
+                            <div style={{width: '20%'}}>{t('Кто')}</div>
+                            <div style={{width: '40%'}}>{t('Описание')}</div>
+                            <div style={{width: '20%', textAlign: 'right'}}>{t('Сумма')}</div>
                         </Row>
 
                         {!_.isEmpty(_.get(detailData, 'data'))

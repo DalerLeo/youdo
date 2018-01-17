@@ -21,7 +21,7 @@ import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import Edit from 'material-ui/svg-icons/image/edit'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import Arrow from 'material-ui/svg-icons/navigation/arrow-drop-down'
 import GoogleCustomMap from './GoogleMapCustom'
 import BindAgentDialog from './ZoneBindAgentDialog'
@@ -387,11 +387,11 @@ const ZonesWrapper = enhance((props) => {
                         </div>}
                         <div>
                             <big>{activeZones}</big>
-                            <span>{(activeZones === ONE) ? 'активная' : 'активных'} <br/> {(activeZones === ONE) ? 'зона' : 'зон'}</span>
+                            <span style={{width: '65px'}}>{(activeZones === ONE) ? t('активная зона') : t('активных зон')}</span>
                         </div>
                         <div>
                             <big>{boundMarkets}</big>
-                            <span>{t('магазинов <br/> в зонах')}</span>
+                            <span style={{width: '65px'}}>{t('магазинов в зонах')}</span>
                         </div>
                     </div>
 
@@ -477,12 +477,12 @@ const ZonesWrapper = enhance((props) => {
                         <Link target="_blank" to={{pathname: ROUTES.SHOP_LIST_URL, query: {nullBorder: true}}}>
                             <div>
                                 <big>{passiveMarkets}</big>
-                                <span>{t('магазинов <br/> не распределено')}</span>
+                                <span style={{width: '80px'}}>{t('магазинов не распределено')}</span>
                             </div>
                         </Link>
                         <div>
                             <big>{passiveAgents}</big>
-                            <span>{t('агентов <br/> не распределено')}</span>
+                            <span style={{width: '80px'}}>{t('агентов не распределено')}</span>
                         </div>
                     </div>
                 </div>}
@@ -494,7 +494,7 @@ const ZonesWrapper = enhance((props) => {
             <SubMenu url={ROUTES.ZONES_LIST_URL}/>
 
             {(!isOpenAddZone && !isOpenUpdateZone) && <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text={t('Добавить зону')}>
+                <ToolTip position="left" text={t('Добавить зону')}>
                     <FloatingActionButton
                         mini={true}
                         zDepth={1}
@@ -503,7 +503,7 @@ const ZonesWrapper = enhance((props) => {
                         onTouchTap={addZone.handleOpenAddZone}>
                         <ContentAdd />
                     </FloatingActionButton>
-                </Tooltip>
+                </ToolTip>
             </div>}
 
             <div className={classes.zonesWrapper}>

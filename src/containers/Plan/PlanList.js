@@ -251,7 +251,7 @@ const enhance = compose(
         const prevSearch = _.get(props, ['query', 'search'])
         const nextSearch = _.get(nextProps, ['query', 'search'])
 
-        return (props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()) ||
+        return (props.usersList && props.filter.filterRequest() !== nextProps.filter.filterRequest()) ||
             (prevTab !== nextTab) ||
             (prevSearch !== nextSearch)
     }, ({dispatch, filter}) => {

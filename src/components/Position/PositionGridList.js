@@ -10,7 +10,7 @@ import FlatButton from 'material-ui/FlatButton'
 import PositionCreateDialog from './PositionCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import Container from '../Container'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import {Pagination} from '../ReduxForm'
 import SettingSideMenu from '../Settings/SettingsSideMenu'
 import EditIcon from 'material-ui/svg-icons/image/edit'
@@ -214,7 +214,7 @@ const PositionGridList = enhance((props) => {
                 </Col>
                 <Col xs={1}>
                     <div className={classes.iconBtn}>
-                        <Tooltip position="bottom" text={t('Изменить')}>
+                        <ToolTip position="bottom" text={t('Изменить')}>
                             <IconButton
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
@@ -225,8 +225,8 @@ const PositionGridList = enhance((props) => {
                                 }}>
                                 <EditIcon/>
                             </IconButton>
-                        </Tooltip>
-                        <Tooltip position="bottom" text={t('Удалить')}>
+                        </ToolTip>
+                        <ToolTip position="bottom" text={t('Удалить')}>
                             <IconButton
                                 disableTouchRipple={true}
                                 iconStyle={iconStyle.icon}
@@ -237,7 +237,7 @@ const PositionGridList = enhance((props) => {
                                 touch={true}>
                                 <DeleteIcon/>
                             </IconButton>
-                        </Tooltip>
+                        </ToolTip>
                     </div>
                 </Col>
             </Row>

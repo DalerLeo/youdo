@@ -16,7 +16,7 @@ import Paper from 'material-ui/Paper'
 import SearchIcon from 'material-ui/svg-icons/action/search'
 import NotFound from '../Images/not-found.png'
 import numberFormat from '../../helpers/numberFormat'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import {
     TextField,
     ProductTypeSearchField,
@@ -324,7 +324,7 @@ const OrderAddProductsDialog = enhance((props) => {
                 <Col xs={2}>{code}</Col>
                 <Col xs={2}>
                     {fromAllBalances
-                        ? <Tooltip position="left" text={t('доступно / брак')}>{available} / {defects} {measurement}</Tooltip>
+                        ? <ToolTip position="left" text={t('доступно / брак')}>{available} / {defects} {measurement}</ToolTip>
                         : numberFormat(balance, measurement)}
                 </Col>
                 <Col xs={2} className={classes.flex}>

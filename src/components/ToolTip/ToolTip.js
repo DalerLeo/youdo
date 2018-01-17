@@ -2,7 +2,7 @@ import React from 'react'
 import _ from 'lodash'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
-import ReactTooltip from 'react-tooltip'
+import ReactToolTip from 'react-tooltip'
 import {compose, withState} from 'recompose'
 
 const enhance = compose(
@@ -41,7 +41,7 @@ const ToolTip = enhance(({classes, text, children, position, type, disabled, ali
             <div data-tip data-for={uniqId} className={alignRight ? classes.alignRightWrapper : classes.wrapper}>
                 {children}
             </div>
-            {text && <ReactTooltip
+            {text && <ReactToolTip
                 place={position}
                 id={uniqId}
                 type={type || 'dark'}
@@ -49,7 +49,7 @@ const ToolTip = enhance(({classes, text, children, position, type, disabled, ali
                 className={classes.tooltip}
                 html={true}>
                 {text}
-            </ReactTooltip>}
+            </ReactToolTip>}
         </div>
     )
 })

@@ -13,7 +13,7 @@ import numberFormat from '../../helpers/numberFormat'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
 import noPayment from '../Images/noPayment.png'
 import NotFound from '../Images/not-found.png'
-import ClientBalanceFormat from '../../components/Statistics/ClientIncome/ClientBalanceFormat'
+import ClientBalanceFormat from '../Statistics/ClientTransactions/ClientBalanceFormat'
 import getConfig from '../../helpers/getConfig'
 import t from '../../helpers/translate'
 
@@ -126,7 +126,6 @@ const enhance = compose(
     }, {open: false}),
 )
 const ZERO = 0
-const TWO = 2
 const OrderTransactionsDialog = enhance((props) => {
     const {open, loading, onClose, classes, paymentData} = props
     const orderId = _.get(paymentData, 'id')
@@ -175,7 +174,6 @@ const OrderTransactionsDialog = enhance((props) => {
                                         const amount = _.toNumber(_.get(item, ['fromTransaction', 'amount']))
                                         const fromAmount = _.toNumber(_.get(item, 'fromAmount'))
                                         const toAmount = _.toNumber(_.get(item, 'toAmount'))
-                                        const toRate = fromAmount / toAmount
                                         const internal = _.toNumber(_.get(item, ['fromTransaction', 'internal']))
                                         const customRate = _.get(item, ['fromTransaction', 'customRate']) ? _.toInteger(_.get(item, ['fromTransaction', 'customRate'])) : _.toInteger(amount / internal)
                                         const type = _.get(item, ['fromTransaction', 'type'])
@@ -212,13 +210,6 @@ const OrderTransactionsDialog = enhance((props) => {
                                                     { fromCurrency !== toCurrency
                                                         ? <div>
                                                             <p>{numberFormat(fromAmount, fromCurrency)}</p>
-                                                            <p>{numberFormat(toAmount, toCurrency)}
-                                                                <span
-                                                                    style={{
-                                                                        fontSize: 11,
-                                                                        color: '#666',
-                                                                        fontWeight: 600
-                                                                    }}> ({_.round(toRate, TWO)})</span></p>
                                                         </div>
                                                         : <div>
                                                             <p>{numberFormat(toAmount, toCurrency)}</p>

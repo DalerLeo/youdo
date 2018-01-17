@@ -2,7 +2,7 @@ import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
-import {compose, withPropsOnChange, withReducer} from 'recompose'
+import {compose, withPropsOnChange, withReducer, withState, lifecycle} from 'recompose'
 import Select from 'react-select'
 import 'react-select/dist/react-select.css'
 
@@ -45,7 +45,6 @@ const enhance = compose(
     injectSheet({
         wrapper: {
             width: '100%',
-            height: '45px',
             '& .is-focused:not(.is-open) > .Select-control': {
                 borderBottom: 'solid 2px #5d6474',
                 boxShadow: 'unset'
@@ -54,15 +53,13 @@ const enhance = compose(
         select: {
             '& .Select-menu': {
                 background: '#fff',
-                maxHeight: '200px',
-                boxShadow: 'rgba(0, 0, 0, 0.16) 0px 3px 10px, rgba(0, 0, 0, 0.23) 0px 3px 10px',
-                border: 'none'
+                maxHeight: '200px'
             },
             '& .Select-menu-outer': {
-                overflowY: 'unset',
-                zIndex: '6',
-                border: 'unset',
-                marginTop: '5px',
+                maxHeight: '200px',
+                zIndex: '99',
+                boxShadow: 'rgba(0, 0, 0, 0.16) 0px 3px 10px, rgba(0, 0, 0, 0.23) 0px 3px 10px',
+                border: 'none',
                 '& ::-webkit-scrollbar': {
                     width: '4px'
                 }
@@ -70,18 +67,22 @@ const enhance = compose(
             '& .Select-control': {
                 borderRadius: '0px',
                 border: '0',
-                paddingBottom: '1px',
-                borderBottom: '1px solid rgb(224, 224, 224)',
+                borderBottom: '1px solid #e8e8e8',
                 backgroundColor: 'unset',
+                height: '44px',
+                marginBottom: '8px',
                 '& .Select-value': {
-                    paddingLeft: '0'
+                    paddingLeft: '0',
+                    marginTop: '12px'
                 },
                 '& .Select-placeholder': {
                     color: 'rgba(0,0,0,0.3)',
-                    paddingLeft: '0'
+                    paddingLeft: '0',
+                    top: '12px'
                 },
                 '& .Select-input': {
-                    paddingLeft: '0'
+                    paddingLeft: '0',
+                    paddingTop: '12px'
                 }
             },
             '& .Select-input > input': {
@@ -89,22 +90,41 @@ const enhance = compose(
                 overflow: 'hidden'
             },
             '& .Select-option.is-focused, .Select-option.is-selected': {
-                background: '#f2f5f8'
+                background: 'unset'
+            },
+            '& .Select-arrow-zone': {
+                paddingTop: '12px'
+            },
+            '& .Select-clear-zone': {
+                paddingTop: '12px'
             }
         }
     }),
-
+    withState('mount', 'setMount', false),
+    lifecycle({
+        componentDidMount () {
+            this.props.setMount(true)
+        },
+        componentWillUnmount () {
+            this.props.setMount(false)
+        }
+    }),
     withReducer('state', 'dispatch', (state, action) => {
         return {...state, ...action}
     }, {dataSource: [], text: '', loading: false, iniValue: '', open: false}),
 
+    withPropsOnChange(() => {
+        return false
+    }, (props) => {
+        props.autoFetch && _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)
+    }),
     withPropsOnChange((props, nextProps) => {
         return (((_.get(props, ['state', 'text']) !== _.get(nextProps, ['state', 'text']) && _.get(nextProps, ['state', 'text']) !== '') ||
             _.get(props, ['state', 'open']) !== _.get(nextProps, ['state', 'open'])) ||
             _.get(props, ['parent']) !== _.get(nextProps, ['parent']) || _.get(props, ['stock']) !== _.get(nextProps, ['stock'])) &&
             _.get(nextProps, ['state', 'open'])
     }, (props) => {
-        props.state.open && _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)
+        (props.state.open || props.autoFetch) && _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)
     }),
     withPropsOnChange((props, nextProps) => {
         return (!_.isEmpty(_.get(nextProps, ['state', 'dataSource'])) && _.get(props, ['input', 'value']) !== _.get(nextProps, ['input', 'value'])) &&

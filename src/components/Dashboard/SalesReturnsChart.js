@@ -100,7 +100,7 @@ const SalesReturnsChart = enhance((props) => {
             crosshairs: true,
             headerFormat: '<b>{point.x}</b><br/>',
             pointFormat:
-            '<div class="diagramTooltip">' +
+            '<div class="diagramToolTip">' +
             '{series.name}: {point.y}' +
             '</div>'
         },

@@ -20,7 +20,7 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import t from '../../helpers/translate'
 
 const listHeader = [
@@ -162,7 +162,7 @@ const ShopGridList = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.SHOP_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text={t('Добавить магазин')}>
+                <ToolTip position="left" text={t('Добавить магазин')}>
                     <FloatingActionButton
                         mini={true}
                         zDepth={1}
@@ -170,7 +170,7 @@ const ShopGridList = enhance((props) => {
                         onTouchTap={createDialog.handleOpenCreateDialog}>
                         <ContentAdd />
                     </FloatingActionButton>
-                </Tooltip>
+                </ToolTip>
             </div>
             <GridList
                 filter={filter}

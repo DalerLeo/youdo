@@ -240,7 +240,7 @@ const customContentStyle = {
     maxWidth: 'none'
 }
 const SupplyCreateDialog = enhance((props) => {
-    const {open, handleSubmit, onClose, classes, isUpdate, handleOpenAddProduct, editOnlyPrice} = props
+    const {open, handleSubmit, onClose, classes, isUpdate, handleOpenAddProduct, editOnlyPrice, acceptedByStock} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     return (
         <Dialog
@@ -306,6 +306,7 @@ const SupplyCreateDialog = enhance((props) => {
                                         component={StockSearchField}
                                         className={classes.searchFieldCustom}
                                         label={t('Склад назначения')}
+                                        disabled={acceptedByStock}
                                         fullWidth={true}/>
                                     <Field
                                         name="currency"
@@ -319,22 +320,23 @@ const SupplyCreateDialog = enhance((props) => {
                                         className={classes.searchFieldCustom}
                                         label={t('Тип оплаты')}
                                         fullWidth={true}/>
-                                    <Field
-                                        name="contract"
-                                        component={TextField}
-                                        className={classes.inputFieldCustom}
-                                        label={t('Номер договора')}
-                                        fullWidth={true}/>
+                                    <div style={{marginTop: 15}}>
+                                        <Field
+                                            name="contract"
+                                            component={TextField}
+                                            className={classes.inputFieldCustom}
+                                            label={t('Номер договора')}
+                                            fullWidth={true}/>
+                                    </div>
                                 </div>
                                 <div className={classes.commentFieldSupply}>
                                     <div>
                                         <div className={classes.subTitleOrder} style={{marginTop: '15px'}}>Комментарии по заказу</div>
                                         <Field
-                                            style={{marginTop: '-20px', lineHeight: '20px', fontSize: '13px'}}
                                             name="comment"
                                             component={TextField}
                                             label={t('Оставить комментарий') + '...'}
-
+                                            inputStyle={{fontSize: '13px'}}
                                             multiLine={true}
                                             rows={1}
                                             rowsMax={6}
@@ -347,6 +349,7 @@ const SupplyCreateDialog = enhance((props) => {
                                     names={['products', 'product', 'amount', 'cost', 'editAmount', 'editCost', 'type']}
                                     handleOpenAddProduct={handleOpenAddProduct}
                                     editOnlyPrice={editOnlyPrice}
+                                    acceptedByStock={acceptedByStock}
                                     component={SupplyListProductField}
                                 />
                             </div>

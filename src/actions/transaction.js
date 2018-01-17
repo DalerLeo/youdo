@@ -55,13 +55,17 @@ export const transactionCreateExpenseAction = (formValues, cashboxId) => {
     }
 }
 
-export const pendingTransactionFetchAction = (user, currency, filter) => {
+export const pendingTransactionFetchAction = (filter) => {
     const page = filter && _.get(filter.getParams(), 'dPage')
+    const currency = filter && _.get(filter.getParams(), 'openCurrency')
+    const division = filter && _.get(filter.getParams(), 'openDivision')
+    const user = filter && _.get(filter.getParams(), 'openUser')
     const params = {
         transaction: 0,
-        user: user,
+        user,
         type: 1,
-        currency: currency,
+        currency,
+        division,
         'page': page
     }
 
@@ -258,8 +262,8 @@ export const transactionInfoFetchAction = (id) => {
     }
 }
 
-export const transactionConvertAction = (date, currency) => {
-    const params = serializers.convertSerializer(date, currency)
+export const transactionConvertAction = (date, currency, order) => {
+    const params = serializers.convertSerializer(date, currency, order)
     const payload = axios()
         .post(API.PENDING_PAYMENTS_CONVERT, params)
         .then((response) => {

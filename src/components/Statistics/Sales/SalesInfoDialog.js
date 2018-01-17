@@ -76,66 +76,74 @@ const SalesInfoDialog = enhance((props) => {
         }
     })
 
+    const noCashData = _.isEmpty(cashSummary)
+    const noBankData = _.isEmpty(bankSummary)
     return (
          <Paper zDepth={2} className={classes.wrapper}>
              <div className={classes.salesType}>
                  <div className={classes.title}>Фактические продажи</div>
+                 {!noCashData &&
                  <div>
-                     <span>Нал:</span>
+                     <i>Нал:</i>
                      {_.map(cashSummary, (obj, i) => {
                          const currency = _.get(obj, 'currency')
                          const amount = _.get(obj, 'fact')
                          return <span className={classes.amount} key={i}>{numberFormat(amount, currency)}</span>
                      })}
-                 </div>
+                 </div>}
+                 {!noBankData &&
                  <div>
-                     <span>Переч:</span>
+                     <i>Переч:</i>
                      {_.map(bankSummary, (obj, i) => {
                          const currency = _.get(obj, 'currency')
                          const amount = _.get(obj, 'fact')
                          return <span className={classes.amount} key={i}>{numberFormat(amount, currency)}</span>
                      })}
-                 </div>
+                 </div>}
              </div>
 
              <div className={classes.salesType}>
                  <div className={classes.title}>Сумма продаж</div>
+                 {!noCashData &&
                  <div>
-                     <span>Нал:</span>
+                     <i>Нал:</i>
                      {_.map(cashSummary, (obj, i) => {
                          const currency = _.get(obj, 'currency')
                          const amount = _.get(obj, 'total')
                          return <span className={classes.amount} key={i}>{numberFormat(amount, currency)}</span>
                      })}
-                 </div>
+                 </div>}
+                 {!noBankData &&
                  <div>
-                     <span>Переч:</span>
+                     <i>Переч:</i>
                      {_.map(bankSummary, (obj, i) => {
                          const currency = _.get(obj, 'currency')
                          const amount = _.get(obj, 'total')
                          return <span className={classes.amount} key={i}>{numberFormat(amount, currency)}</span>
                      })}
-                 </div>
+                 </div>}
              </div>
 
              <div className={classes.salesType}>
                  <div className={classes.title}>Сумма возвратов</div>
+                 {!noCashData &&
                  <div>
-                     <span>Нал:</span>
+                     <i>Нал:</i>
                      {_.map(cashSummary, (obj, i) => {
                          const currency = _.get(obj, 'currency')
                          const amount = _.get(obj, 'returns')
                          return <span className={classes.amount} key={i}>{numberFormat(amount, currency)}</span>
                      })}
-                 </div>
+                 </div>}
+                 {!noBankData &&
                  <div>
-                     <span>Переч:</span>
+                     <i>Переч:</i>
                      {_.map(bankSummary, (obj, i) => {
                          const currency = _.get(obj, 'currency')
                          const amount = _.get(obj, 'returns')
                          return <span className={classes.amount} key={i}>{numberFormat(amount, currency)}</span>
                      })}
-                 </div>
+                 </div>}
              </div>
          </Paper>
     )

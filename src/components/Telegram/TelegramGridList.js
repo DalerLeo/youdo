@@ -16,7 +16,7 @@ import Container from '../Container'
 import ConfirmDialog from '../ConfirmDialog'
 import TelegramLogsDialog from './TelegramLogsDialog'
 import SubMenu from '../SubMenu'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import dateFormat from '../../helpers/dateFormat'
 import IconButton from 'material-ui/IconButton'
 import t from '../../helpers/translate'
@@ -253,23 +253,23 @@ const TelegramGridList = enhance((props) => {
                 </Col>
                 <Col xs={2}>
                     <div className={classes.flex}>
-                        <Tooltip position={'right'} text={username}>{fullName}</Tooltip>
+                        <ToolTip position={'right'} text={username}>{fullName}</ToolTip>
                     </div>
                 </Col>
                 <Col xs={2}>{phone}</Col>
                 <Col xs={2}>{activatedDate ||
-                <Tooltip position="left" text={t('Скопировать ссылку')}>
+                <ToolTip position="left" text={t('Скопировать ссылку')}>
                         <span
                             style={{color: '#12aaeb', cursor: 'pointer'}}
                             onClick={() => copyToClipBoard.handleCopyLinkInList(token)}>
                             {t('Не активирован')}
                         </span>
-                </Tooltip>}
+                </ToolTip>}
                 </Col>
                 <Col xs={1}>
                     {activatedDate &&
                     <div className={classes.flex + ' ' + classes.rightFlex}>
-                        <Tooltip position="left" text={t('Деактивировать')}>
+                        <ToolTip position="left" text={t('Деактивировать')}>
                             <IconButton
                                 onTouchTap={() => {
                                     confirmDialog.handleOpenConfirmDialog(id)
@@ -279,7 +279,7 @@ const TelegramGridList = enhance((props) => {
                                 touch={true}>
                                 <Cancel color='#ff584b'/>
                             </IconButton>
-                        </Tooltip>
+                        </ToolTip>
                     </div>}
                 </Col>
             </Row>
@@ -295,7 +295,7 @@ const TelegramGridList = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.TELEGRAM_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text={t('Получить ключ')}>
+                <ToolTip position="left" text={t('Получить ключ')}>
                     <FloatingActionButton
                         mini={true}
                         zDepth={1}
@@ -303,7 +303,7 @@ const TelegramGridList = enhance((props) => {
                         onTouchTap={createDialog.handleOpenCreateDialog}>
                         <KeyIcon/>
                     </FloatingActionButton>
-                </Tooltip>
+                </ToolTip>
             </div>
 
             <GridList

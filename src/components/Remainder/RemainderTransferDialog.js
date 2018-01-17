@@ -10,7 +10,7 @@ import {Field, Fields, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import StockSearchField from '../ReduxForm/Stock/StockSearchField'
 import DateField from '../ReduxForm/Basic/DateField'
 import TextField from '../ReduxForm/Basic/TextField'
@@ -234,12 +234,12 @@ const RemainderTransferDialog = enhance((props) => {
                     <div className={classes.addButtons}>
                         <strong>Список товаров</strong>
                         {!fromStock
-                            ? <Tooltip text={t('Выберите склад')} position="right">
+                            ? <ToolTip text={t('Выберите склад')} position="right">
                                 <FlatButton
                                     disabled={true}
                                     label={t('добавить товары')}
                                     labelStyle={{fontSize: '13px', textTransform: 'unset'}}/>
-                              </Tooltip>
+                              </ToolTip>
                             : <div>
                                 <FlatButton
                                     label={t('добавить товары')}

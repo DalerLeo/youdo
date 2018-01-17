@@ -15,8 +15,8 @@ export const listFilterSerializer = (query) => {
         'begin_date': firstDayOfMonth,
         'end_date': lastDayOfMonth,
         'search': _.get(defaultData, 'search'),
-        'zone': _.get(defaultData, 'zone') || null,
-        'division': _.get(defaultData, 'division') || null,
+        'payment_type': _.get(defaultData, 'paymentType') || null,
+        'balance_type': _.get(defaultData, 'balanceType') || null,
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),
         'ordering': ordering && orderingSnakeCase(ordering)
@@ -32,18 +32,19 @@ export const summaryFilterSerializer = (query) => {
     return {
         'begin_date': firstDayOfMonth,
         'end_date': lastDayOfMonth,
-        'zone': _.get(defaultData, 'zone') || null,
-        'division': _.get(defaultData, 'division') || null
+        'payment_type': _.get(defaultData, 'paymentType') || null,
+        'balance_type': _.get(defaultData, 'balanceType') || null
     }
 }
 
-export const itemFilterSerializer = (data, id, division, type) => {
+export const itemFilterSerializer = (data, id, division, currency, type) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
     const paymentType = type || null
     const request = {
         'provider': id,
         'payment_type': paymentType,
+        'currency': currency,
         'page': _.get(defaultData, 'dPage'),
         'page_size': _.get(defaultData, 'dPageSize'),
         'ordering': ordering && orderingSnakeCase(ordering)

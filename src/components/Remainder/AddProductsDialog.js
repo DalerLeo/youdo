@@ -15,7 +15,7 @@ import TextFieldSearch from 'material-ui/TextField'
 import Paper from 'material-ui/Paper'
 import SearchIcon from 'material-ui/svg-icons/action/search'
 import NotFound from '../Images/not-found.png'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import numberFormat from '../../helpers/numberFormat'
 import {
     TextField,
@@ -299,7 +299,7 @@ const AddProductsDialog = enhance((props) => {
             <Row key={id} className="dottedList">
                 <Col xs={5}>{name}</Col>
                 <Col xs={3}>
-                    <Tooltip text={t('доступно / брак')} position="left">{numberFormat(available)} / {numberFormat(defect, measurement)}</Tooltip>
+                    <ToolTip text={t('доступно / брак')} position="left">{numberFormat(available)} / {numberFormat(defect, measurement)}</ToolTip>
                 </Col>
                 <Col xs={2} className={classes.flex}>
                     <Field

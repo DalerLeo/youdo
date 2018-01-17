@@ -21,7 +21,7 @@ import t from '../../helpers/translate'
 // Uncomment it when needed ... import CheckOutline from 'material-ui/svg-icons/toggle/check-box-outline-blank'
 import Agent from '../Images/agent.png'
 import NotFound from '../Images/not-found.png'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
 import dateFormat from '../../helpers/dateFormat'
@@ -523,7 +523,7 @@ const PlanDetails = enhance((props) => {
         return _.toNumber(_.get(item, 'amount'))
     })
     const agentHoverText = position + '<br> ' + t('Наименование зоны')
-    const monthlyPlanTooltip = _.join(_.map(_.get(monthlyPlan, 'monthlyPlanItem'), (item) => {
+    const monthlyPlanToolTip = _.join(_.map(_.get(monthlyPlan, 'monthlyPlanItem'), (item) => {
         const division = _.get(item, ['division', 'name'])
         const amount = numberFormat(_.get(item, 'amount'), primaryCurrency)
         return '<div>' + division + ' - ' + amount + '</div>'
@@ -538,12 +538,12 @@ const PlanDetails = enhance((props) => {
                         </div>
                         : <div className={classes.agentInfo}>
                             <div className={classes.header}>
-                                <Tooltip position="bottom" text={agentHoverText}>
+                                <ToolTip position="bottom" text={agentHoverText}>
                                     <div className={classes.agent}>
                                         <img src={Person} alt=""/>
                                         <div>{secondName} <br/> {firstName}</div>
                                     </div>
-                                </Tooltip>
+                                </ToolTip>
                                 <div className={classes.warning}>
                                     <div>
                                         <Money style={achieveIcon.basic}/>
@@ -558,9 +558,9 @@ const PlanDetails = enhance((props) => {
                                     <div>
                                         <span>{t('план продаж')}</span>
                                         {planAmount > ZERO
-                                            ? <Tooltip position="bottom" text={monthlyPlanTooltip}>
+                                            ? <ToolTip position="bottom" text={monthlyPlanToolTip}>
                                                 <a className={classes.link} onClick={planSalesDialog.handleOpenPlanSales}><big>{numberFormat(planAmount)}</big> {primaryCurrency}</a>
-                                            </Tooltip>
+                                            </ToolTip>
                                             : <a className={classes.link} onClick={planSalesDialog.handleOpenPlanSales}>{t('добавить')}</a>
                                         }
                                     </div>
@@ -572,7 +572,7 @@ const PlanDetails = enhance((props) => {
                             </div>
                             <div className={classes.achieves}>
                                 <div className={classes.subAchieves}>
-                                    {statOrders && <Tooltip
+                                    {statOrders && <ToolTip
                                         position="bottom"
                                         text={
                                             t('нал') + ': ' + numberFormat(ordersCash, primaryCurrency) +
@@ -582,8 +582,8 @@ const PlanDetails = enhance((props) => {
                                             <span>{numberFormat(ordersCash + ordersBank)} <small>{primaryCurrency}</small></span>
                                             <span>{t('сделки')}</span>
                                         </div>
-                                    </Tooltip>}
-                                    {statPayments && <Tooltip position="bottom" text={
+                                    </ToolTip>}
+                                    {statPayments && <ToolTip position="bottom" text={
                                         t('нал') + ': ' + numberFormat(paymentsCash, primaryCurrency) +
                                         '<br>' + t('пер') + ': ' + numberFormat(paymentsBank, primaryCurrency)}>
                                         <Payments style={achieveIcon.basic}/>
@@ -591,7 +591,7 @@ const PlanDetails = enhance((props) => {
                                             <span>{numberFormat(paymentsCash + paymentsBank)} <small>{primaryCurrency}</small></span>
                                             <span>{t('оплаты')}</span>
                                         </div>
-                                    </Tooltip>}
+                                    </ToolTip>}
                                 </div>
                                 <div className={classes.subAchieves}>
                                     {statVisits && <div>

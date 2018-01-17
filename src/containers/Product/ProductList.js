@@ -27,6 +27,10 @@ import {
     productItemFetchAction
 } from '../../actions/product'
 
+import {
+    measurementListFetchAction
+} from '../../actions/measurement'
+
 import {openErrorAction} from '../../actions/error'
 import {openSnackbarAction} from '../../actions/snackbar'
 import t from '../../helpers/translate'
@@ -42,6 +46,8 @@ const enhance = compose(
         const updateLoading = _.get(state, ['product', 'update', 'loading'])
         const list = _.get(state, ['product', 'list', 'data'])
         const listLoading = _.get(state, ['product', 'list', 'loading'])
+        const measurementList = _.get(state, ['measurement', 'list', 'data', '0'])
+        const measurementLoading = _.get(state, ['measurement', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'ProductFilterForm'])
         const createForm = _.get(state, ['form', 'ProductCreateForm'])
         const filter = filterHelper(list, pathname, query)
@@ -56,7 +62,9 @@ const enhance = compose(
             updateLoading,
             filter,
             filterForm,
-            createForm
+            createForm,
+            measurementList,
+            measurementLoading
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -69,9 +77,13 @@ const enhance = compose(
         const productId = _.get(nextProps, ['params', 'productId'])
 
         return productId && _.get(props, ['params', 'productId']) !== productId
-    }, ({dispatch, params, nextProps}) => {
+    }, ({dispatch, params, nextProps, filter}) => {
         const productId = _.toInteger(_.get(params, 'productId'))
-        productId && !_.get(nextProps, PRODUCT_DELETE_DIALOG_OPEN) && dispatch(productItemFetchAction(productId))
+        productId && !_.get(nextProps, PRODUCT_DELETE_DIALOG_OPEN) &&
+        dispatch(productItemFetchAction(productId))
+            .then(({value}) => {
+                dispatch(measurementListFetchAction(filter, value.measurement.id))
+            })
     }),
 
     withHandlers({
@@ -224,7 +236,9 @@ const ProductList = enhance((props) => {
         updateLoading,
         filter,
         layout,
-        params
+        params,
+        measurementList,
+        measurementLoading
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', PRODUCT_FILTER_OPEN]))
@@ -270,7 +284,7 @@ const ProductList = enhance((props) => {
 
     const updateDialog = {
         initialValues: (() => {
-            if (!detail || openCreateDialog) {
+            if ((!detail || openCreateDialog) || measurementLoading) {
                 return {}
             }
             const parentType = _.get(detail, ['type', 'parent']) || _.get(detail, ['type', 'id'])
@@ -293,9 +307,7 @@ const ProductList = enhance((props) => {
                     value: {
                         id: _.get(detail, ['measurement', 'id']),
                         name: _.get(detail, ['measurement', 'name']),
-                        children: _.uniqBy(_.map(_.get(detail, 'boxes'), (item) => {
-                            return _.get(item, 'measurement')
-                        }), 'id')
+                        children: _.get(measurementList, 'children')
                     }
                 },
                 boxes,

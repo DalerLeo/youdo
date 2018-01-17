@@ -6,23 +6,26 @@ import injectSheet from 'react-jss'
 import Loader from '../Loader'
 import {Row, Col} from 'react-flexbox-grid'
 import numberFormat from '../../helpers/numberFormat'
+import moduleFormat from '../../helpers/moduleFormat'
 import {Tabs, Tab} from 'material-ui/Tabs'
 import * as TAB from '../../constants/supplyTab'
 import NotFound from '../Images/not-found.png'
 import getConfig from '../../helpers/getConfig'
 import TransactionsFormat from '../../components/Transaction/TransactionsFormat'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
+import InfoIcon from 'material-ui/svg-icons/action/info-outline'
 import dateFormat from '../../helpers/dateFormat'
-import moduleFormat from '../../helpers/moduleFormat'
 import IconButton from 'material-ui/IconButton'
 import t from '../../helpers/translate'
+import ToolTip from '../ToolTip'
 
 const enhance = compose(
     injectSheet({
         loader: {
             width: '100%',
             background: '#fff',
-            height: '400px',
+            height: '265px',
+            marginTop: '1px',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center'
@@ -50,7 +53,14 @@ const enhance = compose(
                     fontWeight: '600',
                     padding: '0 6px',
                     borderRadius: '2px'
+                },
+                '&:first-child:hover': {
+                    backgroundColor: 'unset'
+                },
+                '&:hover': {
+                    backgroundColor: '#f2f5f8'
                 }
+
             }
         },
         tabWrapper: {
@@ -60,7 +70,8 @@ const enhance = compose(
             paddingRight: '30px',
             '& .row': {
                 height: '50px',
-                padding: '0'
+                padding: '0',
+                paddingLeft: '5px'
             }
         },
         summary: {
@@ -68,7 +79,11 @@ const enhance = compose(
             marginTop: '20px',
             paddingRight: '30px',
             textAlign: 'right',
-            whiteSpace: 'nowrap'
+            whiteSpace: 'nowrap',
+            paddingLeft: '5px',
+            '&:hover': {
+                backgroundColor: 'unset !important'
+            }
         },
         tab: {
             marginBottom: '0',
@@ -125,8 +140,26 @@ const enhance = compose(
             '& a': {
                 color: '#12aaeb !important'
             }
+        },
+        flex: {
+            display: 'flex',
+            alignItems: 'center',
+            '& svg': {
+                marginLeft: '5px'
+            }
+        },
+        right: {
+            textAlign: 'right',
+            justifyContent: 'flex-end'
+        },
+        green: {
+            fontWeight: '600',
+            color: '#81c784'
+        },
+        red: {
+            fontWeight: '600',
+            color: '#e57373'
         }
-
     })
 )
 
@@ -176,7 +209,9 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
     const wholeCost = _.sumBy(products, (o) => {
         return _.toNumber(_.get(o, 'cost'))
     })
-    const wholeNotAccepted = status === PENDING ? ZERO : wholeAmount - wholeDefectAmount - wholePostedAmount
+    const wholeNotAccepted = status === PENDING
+        ? ZERO
+        : wholeAmount - wholeDefectAmount - wholePostedAmount
     const wholeMeasurement = _.get(_.first(products), ['product', 'measurement', 'name'])
 
     return (
@@ -208,7 +243,7 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                                 const postedAmount = _.get(item, 'postedAmount')
                                 const measurement = _.get(product, ['measurement', 'name'])
                                 const defectAmount = _.toNumber(_.get(item, 'defectAmount'))
-                                const notAccepted = postedAmount + defectAmount < amount ? numberFormat(amount - defectAmount - postedAmount, measurement) : numberFormat(postedAmount - amount, measurement)
+                                const notAccepted = amount - defectAmount - postedAmount
                                 return (
                                     <Row className="dataInfo dottedList" key={productId}>
                                         <Col xs={4}>{productName}</Col>
@@ -219,10 +254,13 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                                                     className={classes.defect}>{numberFormat(defectAmount, measurement)}</span>
                                                 : <span>{numberFormat(defectAmount, measurement)}</span>}
                                         </Col>
-                                        <Col xs={1}>
+                                        <Col xs={1} className={notAccepted < ZERO ? classes.green : notAccepted > ZERO ? classes.red : ''}>
                                             {status === PENDING
                                                 ? numberFormat(ZERO, measurement)
-                                                : notAccepted}
+                                                : notAccepted < ZERO
+                                                    ? '+' + moduleFormat(notAccepted, measurement)
+                                                    : numberFormat(notAccepted, measurement)
+                                            }
                                         </Col>
                                         <Col xs={2}>
                                             <div style={{textAlign: 'right'}}>{numberFormat(itemPrice, currency)}</div>
@@ -239,7 +277,11 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                             <Col xs={1}>{numberFormat(wholeAmount, wholeMeasurement)}</Col>
                             <Col xs={1}>{numberFormat(wholePostedAmount, wholeMeasurement)}</Col>
                             <Col xs={1}>{numberFormat(wholeDefectAmount, wholeMeasurement)}</Col>
-                            <Col xs={1}>{numberFormat(moduleFormat(wholeNotAccepted), wholeMeasurement)}</Col>
+                            <Col xs={1} className={wholeNotAccepted < ZERO ? classes.green : wholeNotAccepted > ZERO ? classes.red : ''}>
+                                {wholeNotAccepted < ZERO
+                                    ? '+' + moduleFormat(wholeNotAccepted, wholeMeasurement)
+                                    : numberFormat(wholeNotAccepted, wholeMeasurement)}
+                            </Col>
                             <Col xs={2}>{null}</Col>
                             <Col xs={2}>
                                 <div style={{textAlign: 'right'}}>{numberFormat(wholeCost, currency)}</div>
@@ -253,46 +295,52 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                         ? <div className={classes.tabContent}>
                             {!_.get(expensesListData, 'supplyExpenseListLoading') ? <div className={classes.tabWrapper}>
                                     <Row className="dottedList">
-                                        <Col xs={2}>Описание</Col>
-                                        <Col xs={3} style={{textAlign: 'left'}}>{t('Продукт')}</Col>
-                                        <Col xs={2} style={{textAlign: 'left'}}>{t('Тип оплаты')}</Col>
+                                        <Col xs={3}>Описание</Col>
+                                        <Col xs={2} className={classes.right}>{t('Продукт')}</Col>
+                                        <Col xs={2} className={classes.right}>{t('Тип оплаты')}</Col>
                                         <Col xs={2} style={{textAlign: 'right'}}>{t('Сумма')}</Col>
                                         <Col xs={2} style={{textAlign: 'right'}}>{t('Оплачено')}</Col>
                                     </Row>
-                                    {
-                                        _.map(_.get(expensesListData, 'data'), (item) => {
-                                            const expId = _.get(item, 'id')
-                                            const expComment = _.get(item, 'comment')
-                                            const paymentType = _.get(item, 'paymentType') === 'cash' ? 'Наличный' : 'Банковский счет'
-                                            const expCurrency = _.get(item, ['currency', 'name'])
-                                            const expAmount = numberFormat(_.get(item, 'amount'), expCurrency)
-                                            const expPaid = _.get(item, 'totalPaid') ? numberFormat(Math.abs(_.toNumber(_.get(item, 'totalPaid'))), expCurrency) : numberFormat(ZERO, expCurrency)
-                                            const expProduct = _.get(_.find(products, {'id': _.get(item, 'supplyProduct')}), ['product', 'name'])
-                                            return (
-                                                <Row key={expId} className="dottedList">
-                                                    <Col xs={2}>{expComment}</Col>
-                                                    <Col xs={3}
-                                                         style={{textAlign: 'left'}}>{expProduct || 'Общий расход'}</Col>
-                                                    <Col xs={2} style={{textAlign: 'left'}}>{paymentType}</Col>
-                                                    <Col xs={2} style={{textAlign: 'right'}}>{expAmount}</Col>
-                                                    <Col xs={2} style={{textAlign: 'right'}}>{expPaid}</Col>
-                                                    <Col xs={1} className={classes.expenseSum}>
-                                                        <IconButton
-                                                            disableTouchRipple={true}
-                                                            style={iconStyle.button}
-                                                            iconStyle={iconStyle.icon}
-                                                            onTouchTap={() => {
-                                                                confirmExpenseDialog.handleOpenConfirmExpenseDialog(expId)
-                                                            }}>
-                                                            <CloseIcon/>
-                                                        </IconButton>
-                                                    </Col>
-                                                </Row>
-                                            )
-                                        })
-                                    }
+                                    {_.map(_.get(expensesListData, 'data'), (item) => {
+                                        const expId = _.get(item, 'id')
+                                        const expComment = _.get(item, 'comment')
+                                        const bindToProvider = _.get(item, 'bindToProvider')
+                                        const paymentType = _.get(item, 'paymentType') === 'cash' ? 'Наличный' : 'Банковский счет'
+                                        const expCurrency = _.get(item, ['currency', 'name'])
+                                        const expAmount = numberFormat(_.get(item, 'amount'), expCurrency)
+                                        const expPaid = _.get(item, 'totalPaid') ? numberFormat(Math.abs(_.toNumber(_.get(item, 'totalPaid'))), expCurrency) : numberFormat(ZERO, expCurrency)
+                                        const expProduct = _.get(_.find(products, {'id': _.get(item, 'supplyProduct')}), ['product', 'name'])
+                                        return (
+                                            <Row key={expId} className="dottedList">
+                                                <Col xs={3}>{expComment}</Col>
+                                                <Col xs={2} className={classes.right}>{expProduct || 'Общий расход'}</Col>
+                                                <Col xs={2} className={classes.right}>{paymentType}</Col>
+                                                <Col xs={2}>
+                                                    <div className={classes.flex + ' ' + classes.right}>
+                                                        {expAmount}
+                                                        {bindToProvider &&
+                                                        <ToolTip position={'left'} text={'Привязан к поставщику'}>
+                                                            <InfoIcon style={iconStyle.icon}/>
+                                                        </ToolTip>}
+                                                    </div>
+                                                </Col>
+                                                <Col xs={2} className={classes.right}>{expPaid}</Col>
+                                                <Col xs={1} className={classes.expenseSum}>
+                                                    <IconButton
+                                                        disableTouchRipple={true}
+                                                        style={iconStyle.button}
+                                                        iconStyle={iconStyle.icon}
+                                                        onTouchTap={() => {
+                                                            confirmExpenseDialog.handleOpenConfirmExpenseDialog(expId)
+                                                        }}>
+                                                        <CloseIcon/>
+                                                    </IconButton>
+                                                </Col>
+                                            </Row>
+                                        )
+                                    })}
                                 </div>
-                                : <div className={classes.loader} style={{height: '265px', marginTop: '1px'}}>
+                                : <div className={classes.loader}>
                                     <div>
                                         <Loader size={0.75}/>
                                     </div>
@@ -365,7 +413,7 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                                     })
                                     }
                                 </div>
-                                : <div className={classes.loader} style={{height: '265px', marginTop: '1px'}}>
+                                : <div className={classes.loader}>
                                     <div>
                                         <Loader size={0.75}/>
                                     </div>

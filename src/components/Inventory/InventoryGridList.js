@@ -14,7 +14,7 @@ import dateFormat from '../../helpers/dateFormat'
 import FilterForm from './InventoryFilterForm'
 import {reduxForm} from 'redux-form'
 import GridList from '../GridList'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import InventoryDialog from './InventoryDialog'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/communication/clear-all'
@@ -154,7 +154,7 @@ const InventoryGridList = enhance((props) => {
             <SubMenu url={ROUTES.INVENTORY_LIST_URL}/>
 
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text={t('Инвентаризация')}>
+                <ToolTip position="left" text={t('Инвентаризация')}>
                     <FloatingActionButton
                         mini={true}
                         zDepth={1}
@@ -162,7 +162,7 @@ const InventoryGridList = enhance((props) => {
                         onTouchTap={inventoryDialog.handleOpenInventoryDialog}>
                         <ContentAdd/>
                     </FloatingActionButton>
-                </Tooltip>
+                </ToolTip>
             </div>
 
             <GridList

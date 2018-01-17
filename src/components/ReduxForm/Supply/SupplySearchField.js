@@ -1,9 +1,11 @@
+import _ from 'lodash'
 import React from 'react'
-import MultiSelectField from '../Basic/MultiSelectField'
+import SearchField from '../Basic/SearchField'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
 import caughtCancel from '../../../helpers/caughtCancel'
+import t from '../../../helpers/translate'
 
 const CancelToken = axios().CancelToken
 let supplyListToken = null
@@ -22,21 +24,33 @@ const getOptions = (search) => {
         })
 }
 
-const getIdsOption = (ids) => {
-    return axios().get(`${PATH.SUPPLY_LIST}?ids=${ids || ''}`)
+const getItem = (id) => {
+    return axios().get(PATH.SUPPLY_LIST)
         .then(({data}) => {
-            return Promise.resolve(toCamelCase(data.results))
+            const detail = _.find(data, {'id': id})
+            return Promise.resolve(toCamelCase(detail))
         })
 }
 
 const SupplySearchField = (props) => {
     return (
-        <MultiSelectField
-            getValue={MultiSelectField.defaultGetValue('id')}
-            getText={MultiSelectField.defaultGetText('id')}
+        <SearchField
+            getValue={SearchField.defaultGetValue('id')}
+            getText={(value) => {
+                const id = _.get(value, 'id')
+                const provider = _.get(value, ['provider', 'name'])
+                const contract = _.get(value, 'contract') || '-'
+                return (
+                    <div>
+                        <div>{t('Поставка №')}{id}</div>
+                        <div>{t('Поставщик')}: {provider}</div>
+                        <div>{t('Номер договора')}: {contract}</div>
+                    </div>
+                )
+            }}
             getOptions={getOptions}
-            getIdsOption={getIdsOption}
-            getItemText={MultiSelectField.defaultGetText('name')}
+            getItem={getItem}
+            getItemText={SearchField.defaultGetText('name')}
             {...props}
         />
     )

@@ -8,7 +8,7 @@ import SubMenu from '../SubMenu'
 import Loader from '../Loader'
 import {Link} from 'react-router'
 import sprintf from 'sprintf'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import Search from './PlanSearch'
 import PlanDatePicker from './PlanDatePicker'
 import Details from './PlanDetails'
@@ -162,6 +162,13 @@ const enhance = compose(
             height: '30px',
             width: '3px'
         },
+        progress: {
+            position: 'absolute',
+            left: '0',
+            right: '0',
+            bottom: '0',
+            background: '#8dc572'
+        },
         addButtonWrapper: {
             position: 'absolute',
             top: '10px',
@@ -238,11 +245,11 @@ const PlanWrapper = enhance((props) => {
     const agentsList = _.map(_.get(usersList, 'data'), (item) => {
         const id = _.get(item, 'id')
         const username = _.get(item, 'firstName') + ' ' + _.get(item, 'secondName')
-        const planFact = _.toNumber(_.get(item, 'doneCount'))
-        const planAmount = _.toNumber(_.get(item, 'todoCount'))
+        const planFact = !_.isNil(_.get(item, 'doneCount')) ? _.toNumber(_.get(item, 'doneCount')) : ZERO
+        const planAmount = !_.isNil(_.get(item, 'todoCount')) ? _.toNumber(_.get(item, 'todoCount')) : ZERO
         const percent = (planFact / planAmount) * HUNDRED
         const tooltipHint = groupId === 'merch' ? MERCH : (groupId === 'delivery') ? DELIVER : (groupId === 'collector') ? primaryCurrency : ''
-        const agentTooltip = numberFormat(planFact) + ' / ' + numberFormat(planAmount) + ' ' + tooltipHint
+        const agentToolTip = numberFormat(planFact) + ' / ' + numberFormat(planAmount) + ' ' + tooltipHint
 
         if (planAmount <= ZERO) {
             return (
@@ -252,15 +259,14 @@ const PlanWrapper = enhance((props) => {
                         query: filter.getParams()
                     }}>
                     </Link>
-                    <div className={classes.line}>
-                    </div>
+                    <div className={classes.line}/>
                     <span>{username}</span>
                 </div>
             )
         }
 
         return (
-            <Tooltip key={id} position="bottom" text={agentTooltip}>
+            <ToolTip key={id} position="bottom" text={agentToolTip}>
                 <div className={(id === detailId) ? classes.activeAgent : classes.agent}>
                     <Link to={{
                         pathname: sprintf(ROUTES.PLAN_ITEM_PATH, id),
@@ -268,11 +274,12 @@ const PlanWrapper = enhance((props) => {
                     }}>
                     </Link>
                     <div className={classes.line}>
+                        <div className={classes.progress} style={{height: !_.isNaN(percent) ? percent + '%' : ZERO}}/>
                     </div>
                     <span>{username}</span>
                     <span>{numberFormat(percent)}%</span>
                 </div>
-            </Tooltip>
+            </ToolTip>
         )
     })
 
@@ -311,7 +318,7 @@ const PlanWrapper = enhance((props) => {
                     const icon = _.get(item, 'icon')
 
                     return (
-                        <Tooltip key={group} position="bottom" text={name}>
+                        <ToolTip key={group} position="bottom" text={name}>
                             <IconButton
                                 disableTouchRipple={true}
                                 className={(group === groupId) ? classes.activeTab : ''}
@@ -320,7 +327,7 @@ const PlanWrapper = enhance((props) => {
                                 style={iconStyle.button}>
                                 {icon}
                             </IconButton>
-                        </Tooltip>
+                        </ToolTip>
                     )
                 })}
             </div>
@@ -342,7 +349,7 @@ const PlanWrapper = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.PLAN_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text={t('Составить план')}>
+                <ToolTip position="left" text={t('Составить план')}>
                     <FloatingActionButton
                         mini={true}
                         zDepth={1}
@@ -350,7 +357,7 @@ const PlanWrapper = enhance((props) => {
                         onTouchTap={addPlan.handleOpenAddPlan}>
                         <ContentAdd />
                     </FloatingActionButton>
-                </Tooltip>
+                </ToolTip>
             </div>
 
             <div className={classes.wrapper}>

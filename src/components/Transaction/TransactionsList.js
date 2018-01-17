@@ -390,6 +390,7 @@ const TransactionsList = enhance((props) => {
                         }}>
                         <DeleteIcon/>
                     </IconButton>
+                    {false &&
                     <IconButton
                         disabled={(transType !== INCOME) && (transType !== OUTCOME) && (transType !== INCOME_TO_CLIENT) && (transType !== OUTCOME_FROM_CLIENT)}
                         className={classes.deleteBtn}
@@ -400,7 +401,7 @@ const TransactionsList = enhance((props) => {
                             updateTransactionDialog.handleOpenDialog(id)
                         }}>
                         <EditIcon/>
-                    </IconButton>
+                    </IconButton>}
                 </div>}
             </div>
         )

@@ -11,7 +11,7 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import SettingSideMenu from '../Settings/SettingsSideMenu'
 import SetDateDialog from './SetDateDialog'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import toBoolean from '../../helpers/toBoolean'
 import {
     getPermName,
@@ -132,7 +132,7 @@ const PermissionGridList = enhance((props) => {
                 </Col>
                 <Col xs={2} style={{textAlign: 'right'}}>
                     <div className={classes.iconBtn}>
-                        <Tooltip position="bottom" text={t('Изменить')}>
+                        <ToolTip position="bottom" text={t('Изменить')}>
                             <IconButton
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
@@ -141,7 +141,7 @@ const PermissionGridList = enhance((props) => {
                                 onTouchTap={() => { setDateDialog.handleOpenSetDateDialog(id) }}>
                                 <ModEditorIcon color='#5d6474'/>
                             </IconButton>
-                        </Tooltip>
+                        </ToolTip>
                     </div>
                 </Col>
             </Row>

@@ -44,6 +44,7 @@ const enhance = compose(
         wrapper: {
             height: '100%',
             padding: '20px 30px',
+            overflowY: 'auto',
             '& .row': {
                 margin: '0 !important'
             }
@@ -72,7 +73,6 @@ const enhance = compose(
         rightPanel: {
             flexBasis: 'calc(100% - 250px)',
             maxWidth: 'calc(100% - 250px)',
-            overflow: 'hidden',
             position: 'relative'
         },
         searchButton: {

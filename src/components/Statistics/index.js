@@ -11,13 +11,14 @@ import StatProductMoveGridList from './ProductMove/StatProductMoveGridList'
 import StatReportGridList from './StatReportGridLIst'
 import StatReturnGridList from './Return/StatReturnGridList'
 import StatReturnDialog from './Return/StatReturnDialog'
-import ClientIncomeGridList from './ClientIncome/ClientIncomeGridList'
+import ClientIncomeGridList from './ClientTransactions/ClientIncomeGridList'
+import ProviderTransactionsGridList from './ProviderTransactions/ProviderTransactionsGridList'
 import StatisticsFilterExcel from './StatisticsFilterExcel'
 import StatisticsChart from './StatisticsChart'
 import StatDebtorsGridList from './Debtors/DebtorsGridList'
 import StatProviderGridList from './Providers/ProviderGridList'
 import StatExpenditureOnStaffGridList from './ExpenditureOnStaff/StatExpenditureOnStaffGridList'
-
+import {PROVIDER_BALANCE_FILTER_OPEN} from './Providers/ProviderBalanceFilterForm'
 const STAT_AGENT_DIALOG_OPEN = 'openStatAgentDialog'
 const STAT_PROVIDER_DIALOG_OPEN = 'openStatProviderDialog'
 const STAT_RETURN_DIALOG_OPEN = 'openStatReturnDialog'
@@ -48,6 +49,7 @@ export {
     StatProductMoveGridList,
     StatReportGridList,
     ClientIncomeGridList,
+    ProviderTransactionsGridList,
     StatDebtorsGridList,
     StatisticsFilterExcel,
     StatisticsChart,
@@ -66,5 +68,6 @@ export {
     STAT_PRODUCT_MOVE_DIALOG_OPEN,
     STAT_RETURN_DIALOG_OPEN,
     STAT_PROVIDER_DIALOG_OPEN,
-    STAT_PROVIDER_INFO_DIALOG_OPEN
+    STAT_PROVIDER_INFO_DIALOG_OPEN,
+    PROVIDER_BALANCE_FILTER_OPEN
 }

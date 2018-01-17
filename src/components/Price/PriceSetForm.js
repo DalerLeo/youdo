@@ -18,7 +18,7 @@ import {
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import {Row, Col} from 'react-flexbox-grid'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import t from '../../helpers/translate'
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -209,7 +209,7 @@ const PriceSetForm = enhance((props) => {
                             type="submit"
                             onTouchTap={onSubmit}
                         />
-                        <Tooltip position="bottom" text={t('Закрыть')}>
+                        <ToolTip position="bottom" text={t('Закрыть')}>
                             <IconButton
                                 className={classes.closeBtn}
                                 iconStyle={iconStyle.icon}
@@ -219,7 +219,7 @@ const PriceSetForm = enhance((props) => {
                                 onTouchTap={onClose}>
                                 <CloseIcon color="#666666"/>
                             </IconButton>
-                        </Tooltip>
+                        </ToolTip>
                     </div>
                 </div>
                 <div className={classes.agentPrices}>

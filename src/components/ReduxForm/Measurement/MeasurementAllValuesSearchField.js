@@ -39,6 +39,7 @@ const MeasurementAllValuesSearchField = (props) => {
             getOptions={getOptions}
             getItem={(value) => getItem(value)}
             getItemText={(value) => _.get(value, 'name')}
+            autoFetch={true}
             {...props}
         />
     )

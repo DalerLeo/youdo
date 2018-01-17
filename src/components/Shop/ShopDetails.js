@@ -9,7 +9,7 @@ import IconButton from 'material-ui/IconButton'
 import Edit from 'material-ui/svg-icons/image/edit'
 import Delete from 'material-ui/svg-icons/action/delete'
 import Add from 'material-ui/svg-icons/content/add'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import t from '../../helpers/translate'
 import MapDialog from './ShopMapDialog'
 
@@ -372,7 +372,7 @@ const ShopDetails = enhance((props) => {
                     {isActive ? <div className={classes.status} style={{background: '#81c784'}}>{t('Магазин активен')}</div>
                         : <div className={classes.status} style={{background: '#ff717e'}}>{t('Магазин неактивен')}</div>
                     }
-                    <Tooltip position="bottom" text={t('Изменить')}>
+                    <ToolTip position="bottom" text={t('Изменить')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
@@ -380,8 +380,8 @@ const ShopDetails = enhance((props) => {
                             onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
                             <Edit />
                         </IconButton>
-                    </Tooltip>
-                    <Tooltip position="bottom" text={t('Удалить')}>
+                    </ToolTip>
+                    <ToolTip position="bottom" text={t('Удалить')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
@@ -389,7 +389,7 @@ const ShopDetails = enhance((props) => {
                             onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}>
                             <Delete />
                         </IconButton>
-                    </Tooltip>
+                    </ToolTip>
                 </div>
             </div>
             <div className={classes.content}>

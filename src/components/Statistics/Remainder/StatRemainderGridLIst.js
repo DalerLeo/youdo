@@ -19,7 +19,7 @@ import Pagination from '../../GridList/GridListNavPagination/index'
 import numberFormat from '../../../helpers/numberFormat.js'
 import NotFound from '../../Images/not-found.png'
 import getConfig from '../../../helpers/getConfig'
-import Tooltip from '../../ToolTip'
+import ToolTip from '../../ToolTip'
 import {StatisticsFilterExcel} from '../../Statistics'
 import t from '../../../helpers/translate'
 
@@ -345,16 +345,16 @@ const StatRemainderGridList = enhance((props) => {
                     <Col xs={3}>{productType}</Col>
                     <Col xs={2}
                          style={{justifyContent: 'flex-end', textAlign: 'right', fontWeight: '600', whiteSpace: 'nowrap'}}>
-                        <Tooltip position="top" text="Всего / Забронировано / Брак">
+                        <ToolTip position="top" text="Всего / Забронировано / Брак">
                             {balance} / <span style={{color: '#90a4ae', margin: '0 3px'}}> {reserved} </span> / <span
                             style={{color: '#e57373', margin: '0 3px'}}> {defects} </span>
-                        </Tooltip>
+                        </ToolTip>
                     </Col>
                     <Col xs={2} className={classes.boldFont}>{available}</Col>
                     <Col xs={2} className={classes.boldFont}>
-                        <Tooltip position="top" text={t('Цена доступных товаров<br/> Себестоимость: ') + netCost}>
+                        <ToolTip position="top" text={t('Цена доступных товаров<br/> Себестоимость: ') + netCost}>
                             {price}
-                        </Tooltip>
+                        </ToolTip>
                     </Col>
                 </Row>
             </Link>

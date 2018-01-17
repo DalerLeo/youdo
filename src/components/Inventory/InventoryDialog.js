@@ -17,7 +17,7 @@ import SearchIcon from 'material-ui/svg-icons/action/search'
 import NotFound from '../Images/not-found.png'
 import numberFormat from '../../helpers/numberFormat'
 import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import {connect} from 'react-redux'
 import {
     TextField,
@@ -373,7 +373,7 @@ const InventoryDialog = enhance((props) => {
                 <Col xs={4}>{name}</Col>
                 <Col xs={2}>{code}</Col>
                 <Col xs={2}>
-                    <Tooltip position="left" text={t('остаток / брак')}>{balance} / {defects} {measurement}</Tooltip>
+                    <ToolTip position="left" text={t('остаток / брак')}>{balance} / {defects} {measurement}</ToolTip>
                 </Col>
                 <Col xs={2} className={classes.flex} style={{justifyContent: 'flex-start'}}>
                     <Field
@@ -395,7 +395,7 @@ const InventoryDialog = enhance((props) => {
                     <span>{measurement}</span>
                 </Col>
                 <Col xs={2} className={classes.flex}>
-                    <Tooltip position="left" text={t('остаток / брак')}>{amountDiff} / {defectDiff} {measurement}</Tooltip>
+                    <ToolTip position="left" text={t('остаток / брак')}>{amountDiff} / {defectDiff} {measurement}</ToolTip>
                 </Col>
             </Row>
         )

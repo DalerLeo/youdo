@@ -15,7 +15,7 @@ import FlatButton from 'material-ui/FlatButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import SettingSideMenu from '../Settings/SettingsSideMenu'
 import Edit from 'material-ui/svg-icons/image/edit'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import dateFormat from '../../helpers/dateFormat'
 import t from '../../helpers/translate'
 
@@ -158,11 +158,11 @@ const ExpensiveCategoryGridList = enhance((props) => {
             const optionName = _.get(optionItem, 'title')
             const description = _.get(optionItem, 'description')
             return (
-                <Tooltip key={obj} position={'bottom'} text={description}>
+                <ToolTip key={obj} position={'bottom'} text={description}>
                     <div className={classes.option}>
                         <span>{optionName}</span>
                     </div>
-                </Tooltip>
+                </ToolTip>
             )
         })
         const createdDate = dateFormat(_.get(item, 'createdDate'))
@@ -173,7 +173,7 @@ const ExpensiveCategoryGridList = enhance((props) => {
                 <Col xs={3}>{createdDate}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
                     <div className={classes.iconBtn}>
-                        <Tooltip position="bottom" text={t('Изменить')}>
+                        <ToolTip position="bottom" text={t('Изменить')}>
                             <IconButton
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
@@ -182,8 +182,8 @@ const ExpensiveCategoryGridList = enhance((props) => {
                                 onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
                                 <Edit />
                             </IconButton>
-                        </Tooltip>
-                        <Tooltip position="bottom" text={t('Удалить')}>
+                        </ToolTip>
+                        <ToolTip position="bottom" text={t('Удалить')}>
                             <IconButton
                                 disableTouchRipple={true}
                                 iconStyle={iconStyle.icon}
@@ -192,7 +192,7 @@ const ExpensiveCategoryGridList = enhance((props) => {
                                 touch={true}>
                                 <DeleteIcon />
                             </IconButton>
-                        </Tooltip>
+                        </ToolTip>
                     </div>
                 </Col>
             </Row>

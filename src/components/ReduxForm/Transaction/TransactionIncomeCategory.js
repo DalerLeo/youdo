@@ -12,12 +12,14 @@ import caughtCancel from '../../../helpers/caughtCancel'
 const CancelToken = axios().CancelToken
 let categoryExpensiveListToken = null
 
-const getOptions = (search) => {
+const getOptions = (search, keyname) => {
     if (categoryExpensiveListToken) {
         categoryExpensiveListToken.cancel()
     }
     categoryExpensiveListToken = CancelToken.source()
-    return axios().get(`${PATH.INCOME_CATEGORY_LIST}?search=${search || ''}&page_size=100`, {cancelToken: categoryExpensiveListToken.token})
+    return axios().get(PATH.INCOME_CATEGORY_LIST,
+        {params: {search: search, page_size: 100, key_name: keyname}},
+        {cancelToken: categoryExpensiveListToken.token})
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
         })
@@ -46,7 +48,11 @@ const enhance = compose(
 )
 
 const TransactionIncomeCategory = enhance((props) => {
-    const {...defaultProps} = props
+    const {dispatch, ...defaultProps} = props
+    const keyname = _.get(props, 'data-key-name')
+    const test = (id) => {
+        return getItem(id, dispatch)
+    }
     return (
         <SearchFieldCustom
             getValue={(value) => {
@@ -55,8 +61,10 @@ const TransactionIncomeCategory = enhance((props) => {
             getText={(value) => {
                 return _.get(value, 'name')
             }}
-            getOptions={getOptions}
-            getItem={getItem}
+            getOptions={(search) => {
+                return getOptions(search, keyname)
+            }}
+            getItem={test}
             getItemText={(value) => {
                 return _.get(value, ['name'])
             }}

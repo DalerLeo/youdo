@@ -14,6 +14,7 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import toCamelCase from '../../helpers/toCamelCase'
 import getConfig from '../../helpers/getConfig'
 import t from '../../helpers/translate'
+import checkPermission from '../../helpers/checkPermission'
 import {convertCurrency} from '../../helpers/convertCurrency'
 import {
     TextField,
@@ -22,8 +23,12 @@ import {
     DivisionSearchField,
     DateField,
     ProviderSearchField,
-    TransactionIncomeCategory
+    TransactionIncomeCategory,
+    OrderSearchField,
+    SupplySearchField,
+    SupplyExpenseSearchField
 } from '../ReduxForm'
+import RateRadioButton from '../ReduxForm/Transaction/RateRadioButton'
 import NotFound from '../Images/not-found.png'
 import CashboxSearchField from '../ReduxForm/Cashbox/CashBoxSimpleSearch'
 import ExpensiveCategoryCustomSearchField from '../ReduxForm/ExpenseCategory/ExpensiveCategoryCustomSearchField'
@@ -101,7 +106,7 @@ const enhance = compose(
             display: 'flex',
             minHeight: '184px',
             overflow: 'unset',
-            padding: '0 30px',
+            padding: '0 30px 20px',
             color: '#333'
         },
         salaryWrapper: {
@@ -116,7 +121,7 @@ const enhance = compose(
             position: 'relative',
             display: 'flex',
             '& > div': {
-                width: '400px'
+                width: '500px'
             }
         },
         field: {
@@ -269,6 +274,7 @@ const enhance = compose(
         const amount = _.get(state, ['form', 'TransactionCreateForm', 'values', 'amount'])
         const chosenCashbox = _.get(state, ['form', 'TransactionCreateForm', 'values', 'cashbox', 'value'])
         const date = _.get(state, ['form', 'TransactionCreateForm', 'values', 'date'])
+        const order = _.get(state, ['form', 'TransactionCreateForm', 'values', 'order', 'value'])
         const incomeCategory = _.get(state, ['form', 'TransactionCreateForm', 'values', 'incomeCategory', 'value'])
         const optionsList = _.get(state, ['expensiveCategory', 'options', 'data', 'results'])
         const incomeCategoryOptions = _.get(state, ['form', 'TransactionCreateForm', 'values', 'incomeCategory', 'value', 'options'])
@@ -282,6 +288,7 @@ const enhance = compose(
             amount,
             chosenCashbox,
             date,
+            order,
             optionsList,
             incomeCategoryOptions,
             expenseCategoryOptions,
@@ -331,16 +338,31 @@ const TransactionCreateDialog = enhance((props) => {
         searchQuery,
         setSearchQuery,
         totalStaffAmount,
-        canSetCustomRate
+        order,
+        expenseCategory,
+        incomeCategoryKey,
+        additionalData,
+        detailCurrency,
+        hideRedundant
     } = props
+
+    const canSetCustomRate = checkPermission('can_set_custom_rate')
+
     const clientOptionId = _.get(_.find(optionsList, {'keyName': 'client'}), 'id')
     const providerOptionId = _.get(_.find(optionsList, {'keyName': 'provider'}), 'id')
+    const orderOptionId = _.get(_.find(optionsList, {'keyName': 'order'}), 'id')
+    const supplyOptionId = _.get(_.find(optionsList, {'keyName': 'supply'}), 'id')
+    const supplyExpenseOptionId = _.get(_.find(optionsList, {'keyName': 'supply_expanse'}), 'id')
     const showClients = isExpense ? _.includes(expenseCategoryOptions, clientOptionId) : _.includes(incomeCategoryOptions, clientOptionId)
     const showProviders = isExpense ? _.includes(expenseCategoryOptions, providerOptionId) : _.includes(incomeCategoryOptions, providerOptionId)
+    const showOrders = _.includes(incomeCategoryOptions, orderOptionId)
+    const showSupplies = _.includes(expenseCategoryOptions, supplyOptionId)
+    const showSupplyExpenses = _.includes(expenseCategoryOptions, supplyExpenseOptionId)
+
     const onSubmit = handleSubmit(() => props.onSubmit().catch(props.validate))
     const cashboxId = noCashbox ? chosenCashbox : _.get(cashboxData, 'cashboxId')
     const cashbox = _.find(_.get(cashboxData, 'data'), {'id': cashboxId})
-    const currency = _.get(cashbox, ['currency', 'name'])
+    const currency = _.get(cashbox, ['currency', 'name']) || detailCurrency
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const divisionStatus = getConfig('DIVISIONS')
     const convert = convertCurrency(amount, rate)
@@ -354,6 +376,17 @@ const TransactionCreateDialog = enhance((props) => {
         const searchValue2 = el.secondName.toLowerCase()
         return searchValue.indexOf(searchQuery) !== NOT_FOUND || searchValue2.indexOf(searchQuery) !== NOT_FOUND
     })
+    const customRateField = (primaryCurrency !== currency && currency && date && canSetCustomRate)
+        ? (
+            <Field
+                name="custom_rate"
+                component={TextField}
+                label={t('Курс ') + primaryCurrency}
+                className={classes.inputFieldCustom}
+                normalize={normalizeNumber}
+                fullWidth={true}/>
+        )
+        : null
     return (
         <Dialog
             modal={true}
@@ -362,7 +395,7 @@ const TransactionCreateDialog = enhance((props) => {
             className={classes.dialog}
             contentStyle={loading
                 ? {minWidth: '300px'}
-                : isSalary ? {width: '800px', maxWidth: 'none'} : {width: '400px'}}
+                : isSalary ? {width: '1000px', maxWidth: 'none'} : {width: '500px'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
                 <span>{isExpense ? t('Расход') : t('Приход')}</span>
@@ -370,6 +403,7 @@ const TransactionCreateDialog = enhance((props) => {
                     <CloseIcon color="#666666"/>
                 </IconButton>
             </div>
+            {additionalData}
             <div className={classes.bodyContent}>
                 <form className={classes.form}>
                     <div className={classes.inContent} style={{minHeight: 'unset', display: 'block'}}>
@@ -377,7 +411,7 @@ const TransactionCreateDialog = enhance((props) => {
                             <Loader size={0.75}/>
                         </div>
                         {noCashbox
-                            ? <div style={{marginTop: '15px'}}>
+                            ? <div style={{marginTop: '10px'}}>
                                 <Field
                                     name="cashbox"
                                     className={classes.inputFieldCustom}
@@ -388,22 +422,44 @@ const TransactionCreateDialog = enhance((props) => {
                                 <div className={classes.label}>{t('Касса')}:</div>
                                 <div style={{fontWeight: '600', marginBottom: '5px'}}>{_.get(cashbox, 'name')}</div>
                             </div>}
+                        {divisionStatus && <Field
+                            name="division"
+                            component={DivisionSearchField}
+                            label={t('Организация')}
+                            className={classes.inputFieldCustom}
+                            fullWidth={true}/>}
+                        {!hideRedundant &&
                         <Field
                             name="date"
                             className={classes.inputDateCustom}
                             component={DateField}
                             fullWidth={true}
                             container="inline"
-                            label={t('Дата создания')}/>
+                            label={t('Дата создания')}/>}
 
                         {isExpense
                             ? <div className={classes.field}>
                                 <Field
                                     name="expanseCategory"
+                                    data-key-name={expenseCategory}
                                     component={ExpensiveCategoryCustomSearchField}
                                     label={t('Категория расхода')}
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
+                                {showSupplies
+                                    ? !hideRedundant && <Field
+                                        name="supply"
+                                        component={SupplySearchField}
+                                        label={t('Поставки')}
+                                        className={classes.inputFieldCustom}
+                                        fullWidth={true}/> : null}
+                                {showSupplyExpenses
+                                    ? !hideRedundant && <Field
+                                        name="supplyExpense"
+                                        component={SupplyExpenseSearchField}
+                                        label={t('Доп. расход')}
+                                        className={classes.inputFieldCustom}
+                                        fullWidth={true}/> : null}
                                 {showClients ? <div>
                                     <Field
                                         name="client"
@@ -411,12 +467,6 @@ const TransactionCreateDialog = enhance((props) => {
                                         label={t('Клиент')}
                                         className={classes.inputFieldCustom}
                                         fullWidth={true}/>
-                                    {divisionStatus && <Field
-                                        name="division"
-                                        component={DivisionSearchField}
-                                        label={t('Организация')}
-                                        className={classes.inputFieldCustom}
-                                        fullWidth={true}/>}
                                 </div> : null}
                                 {showProviders &&
                                 <Field name="provider"
@@ -427,7 +477,7 @@ const TransactionCreateDialog = enhance((props) => {
                                 }
                                 <div className={classes.flex} style={{justifyContent: 'space-between'}}>
                                     {!isSalary &&
-                                    <div className={classes.flex} style={{alignItems: 'baseline', width: '48%'}}>
+                                    <div className={classes.flex} style={{alignItems: 'baseline', width: '100%'}}>
                                         <Field
                                             name="amount"
                                             component={TextField}
@@ -435,17 +485,8 @@ const TransactionCreateDialog = enhance((props) => {
                                             normalize={normalizeNumber}
                                             className={classes.inputFieldCustom}
                                             fullWidth={true}/>
-                                        <div>{currency}</div>
+                                        <div style={{marginLeft: '5px'}}>{currency}</div>
                                     </div>}
-                                    <div className={classes.flex} style={{alignItems: 'baseline', width: '48%'}}>
-                                        {(primaryCurrency !== currency && currency && date && canSetCustomRate) &&
-                                        <Field
-                                            name="custom_rate"
-                                            component={TextField}
-                                            label={t('Курс ') + primaryCurrency}
-                                            className={classes.inputFieldCustom}
-                                            fullWidth={true}/>}
-                                    </div>
                                 </div>
                                 {(convert && rate && primaryCurrency !== currency)
                                     ? <div className={classes.convert}>После конвертации:
@@ -464,37 +505,38 @@ const TransactionCreateDialog = enhance((props) => {
                             : <div className={classes.field}>
                                 <Field
                                     name="incomeCategory"
+                                    data-key-name={incomeCategoryKey}
                                     component={TransactionIncomeCategory}
                                     label={t('Категория прихода')}
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
-                                {
-                                showClients
-                                ? <div>
-                                    <Field
-                                        name="client"
-                                        component={ClientSearchField}
-                                        label="Клиент"
-                                        className={classes.inputFieldCustom}
-                                        fullWidth={true}/>
-                                    {divisionStatus ? <Field
-                                        name="division"
-                                        component={DivisionSearchField}
-                                        label={t('Организация')}
+                                {showOrders
+                                    ? !hideRedundant && <Field
+                                        name="order"
+                                        component={OrderSearchField}
+                                        label="Заказ"
                                         className={classes.inputFieldCustom}
                                         fullWidth={true}/> : null}
-                                </div>
+                                {showClients
+                                    ? <div>
+                                        <Field
+                                            name="client"
+                                            component={ClientSearchField}
+                                            label="Клиент"
+                                            className={classes.inputFieldCustom}
+                                            fullWidth={true}/>
+                                    </div>
                                     : showProviders
-                                    ? <Field
-                                        name="provider"
-                                        component={ProviderSearchField}
-                                        label={t('Поставщик')}
-                                        className={classes.inputFieldCustom}
-                                        fullWidth={true}/>
-                                : null}
+                                        ? <Field
+                                            name="provider"
+                                            component={ProviderSearchField}
+                                            label={t('Поставщик')}
+                                            className={classes.inputFieldCustom}
+                                            fullWidth={true}/>
+                                        : null}
                                 {!isSalary &&
                                 <div className={classes.flex} style={{justifyContent: 'space-between'}}>
-                                    <div className={classes.flex} style={{alignItems: 'baseline', width: '48%'}}>
+                                    <div className={classes.flex} style={{alignItems: 'baseline', width: '100%'}}>
                                         <Field
                                             name="amount"
                                             component={TextField}
@@ -502,17 +544,7 @@ const TransactionCreateDialog = enhance((props) => {
                                             normalize={normalizeNumber}
                                             className={classes.inputFieldCustom}
                                             fullWidth={true}/>
-                                        <div>{_.get(cashbox, ['currency', 'name'])}</div>
-                                    </div>
-                                    <div className={classes.flex} style={{alignItems: 'baseline', width: '48%'}}>
-                                        {(primaryCurrency !== currency && currency && date && canSetCustomRate)
-                                            ? <Field
-                                                name="custom_rate"
-                                                component={TextField}
-                                                label={t('Курс ') + primaryCurrency}
-                                                className={classes.inputFieldCustom}
-                                                normalize={normalizeNumber}
-                                                fullWidth={true}/> : null}
+                                        <div style={{marginLeft: '5px'}}>{currency}</div>
                                     </div>
                                 </div>}
                                 {(convert && rate && primaryCurrency !== currency)
@@ -529,6 +561,15 @@ const TransactionCreateDialog = enhance((props) => {
                                     rowsMax={3}
                                     fullWidth={true}/>
                             </div>}
+                        <Field
+                            name="currencyRate"
+                            currency={currency}
+                            rate={rate}
+                            showOrderRate={Boolean(showOrders && order)}
+                            canSetCustomRate={canSetCustomRate}
+                            customRateField={customRateField}
+                            component={RateRadioButton}
+                        />
                     </div>
                     {isSalary &&
                     <div className={classes.salaryWrapper}>
@@ -596,16 +637,16 @@ const TransactionCreateDialog = enhance((props) => {
     )
 })
 
-TransactionCreateDialog.propTyeps = {
+TransactionCreateDialog.propTypes = {
     isExpense: PropTypes.bool,
     open: PropTypes.bool.isRequired,
-    cashboxData: PropTypes.object.isRequired,
+    cashboxData: PropTypes.object,
     onClose: PropTypes.func.isRequired,
-    onSubmit: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired
+    onSubmit: PropTypes.func.isRequired
 }
 TransactionCreateDialog.defaultProps = {
-    isExpense: false
+    isExpense: false,
+    additionalData: null
 }
 
 export default TransactionCreateDialog

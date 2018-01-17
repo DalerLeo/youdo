@@ -363,6 +363,10 @@ export const STAT_AGENT_GET_DOCUMENT = '/stats/agents/export/'
 export const STAT_PROVIDER_LIST = 'stock/provider_balances/'
 export const STAT_PROVIDER_ITEM = 'finance/provider_transactions/'
 export const STAT_PROVIDER_SUM = 'stats/provider/balances/'
+export const STAT_PROVIDER_DETAIL = 'stock/provider_balances/%d/detail/'
+
+export const STAT_PROVIDER_TRANSACTIONS_LIST = 'finance/provider_transactions/'
+export const STAT_PROVIDER_TRANSACTIONS_SUM = 'stats/provider_transactions/'
 
 export const STAT_MARKET = 'stats/markets'
 export const STAT_MARKET_LIST = `${STAT_MARKET}/`
@@ -536,6 +540,12 @@ export const TELEGRAM_NEWS_CREATE = `/${TELEGRAM_NEWS}/`
 export const TELEGRAM_NEWS_DELETE = `/${TELEGRAM_NEWS}/%d/`
 export const TELEGRAM_NEWS_LIST = `/${TELEGRAM_NEWS}/`
 export const TELEGRAM_NEWS_ITEM = `/${TELEGRAM_NEWS}/%d/`
+
+export const SYSTEM_PAGES = 'main/system-pages'
+export const SYSTEM_PAGES_CREATE = `/${SYSTEM_PAGES}/`
+export const SYSTEM_PAGES_DELETE = `/${SYSTEM_PAGES}/%d/`
+export const SYSTEM_PAGES_LIST = `/${SYSTEM_PAGES}/`
+export const SYSTEM_PAGES_ITEM = `/${SYSTEM_PAGES}/%d/`
 
 export const WIDGETS = 'main/widget'
 export const WIDGETS_LIST = `/${WIDGETS}/`

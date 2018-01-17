@@ -1,35 +1,19 @@
 import React from 'react'
+import _ from 'lodash'
 import MultiSelectField from '../Basic/MultiSelectField'
-import axios from '../../../helpers/axios'
-import * as PATH from '../../../constants/api'
-import toCamelCase from '../../../helpers/toCamelCase'
-import caughtCancel from '../../../helpers/caughtCancel'
-
-const CancelToken = axios().CancelToken
-let divisionMultiListToken = null
-
-const getOptions = (search) => {
-    if (divisionMultiListToken) {
-        divisionMultiListToken.cancel()
-    }
-    divisionMultiListToken = CancelToken.source()
-    return axios().get(`${PATH.DIVISION_LIST}?search=${search || ''}&page_size=100`, {cancelToken: divisionMultiListToken.token})
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data.results))
-        })
-        .catch((error) => {
-            caughtCancel(error)
-        })
-}
-
-const getIdsOption = (ids) => {
-    return axios().get(`${PATH.DIVISION_LIST}?ids=${ids || ''}`)
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data.results))
-        })
-}
+import * as storageHelper from '../../../helpers/storage'
 
 const DivisionMultiSearchField = (props) => {
+    const userData = JSON.parse(storageHelper.getUserData())
+    const divisions = _.get(userData, 'divisions')
+    const getOptions = () => {
+        return Promise.resolve(divisions)
+    }
+
+    const getIdsOption = () => {
+        return Promise.resolve(divisions)
+    }
+
     return (
         <MultiSelectField
             getValue={MultiSelectField.defaultGetValue('id')}

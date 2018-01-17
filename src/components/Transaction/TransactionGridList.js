@@ -12,7 +12,7 @@ import CashPayment from 'material-ui/svg-icons/maps/local-atm'
 import BankPayment from 'material-ui/svg-icons/action/credit-card'
 import Loader from '../Loader'
 import numberFormat from '../../helpers/numberFormat'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import t from '../../helpers/translate'
 
 const enhance = compose(
@@ -166,23 +166,24 @@ const TransactionGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const currency = _.get(item, ['currency', 'name'])
+        const currencyID = _.get(item, ['currency', 'id'])
         const type = _.get(item, 'type')
         const balance = _.toInteger(_.get(item, 'balance'))
         const isActive = item.id === _.get(cashboxData, 'cashboxId')
         const ZERO_NUM = 0
         return (
             <div key={id} className={classes.list} onClick={() => {
-                cashboxData.handleClickCashbox(id)
+                cashboxData.handleClickCashbox(id, currencyID)
             }}
                  style={isActive ? {backgroundColor: '#f2f5f8'} : {backgroundColor: '#fff'}}>
                 <div>
                     <div className={classes.title}>{name}</div>
                     <div className={classes.icons}>
-                        <Tooltip position="bottom" text={type === 'bank' ? 'банковский счет' : 'наличные'}>
+                        <ToolTip position="bottom" text={type === 'bank' ? 'банковский счет' : 'наличные'}>
                             {type === 'bank'
                                 ? <BankPayment style={{height: '18px', width: '18px', color: '#6261b0'}}/>
                                 : <CashPayment style={{height: '18px', width: '18px', color: '#12aaeb'}}/>}
-                        </Tooltip>
+                        </ToolTip>
                     </div>
                 </div>
                 <div>
@@ -204,7 +205,7 @@ const TransactionGridList = enhance((props) => {
                         <div className={classes.listWrapper}>
                             <div className={classes.list}
                                  onClick={() => {
-                                     cashboxData.handleClickCashbox(AllCashboxId)
+                                     cashboxData.handleClickCashbox(AllCashboxId, AllCashboxId)
                                  }}
                                  style={_.get(cashboxData, 'cashboxId') === AllCashboxId ? {backgroundColor: '#f2f5f8'} : {backgroundColor: '#fff'}}>
                                 <div className={classes.title}>

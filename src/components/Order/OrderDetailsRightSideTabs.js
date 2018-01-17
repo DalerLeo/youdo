@@ -15,7 +15,7 @@ import InProcess from 'material-ui/svg-icons/action/cached'
 import IconButton from 'material-ui/IconButton'
 import DoneIcon from 'material-ui/svg-icons/action/done-all'
 import Canceled from 'material-ui/svg-icons/notification/do-not-disturb-alt'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import {Link} from 'react-router'
 import * as ROUTES from '../../constants/routes'
 import sprintf from 'sprintf'
@@ -36,7 +36,7 @@ const enhance = compose(
             alignItems: 'center'
         },
         rightSide: {
-            width: 'calc(100% - 320px)',
+            width: 'calc(100% - 340px)',
             padding: '0 30px 20px'
         },
         tabContent: {
@@ -45,7 +45,10 @@ const enhance = compose(
             },
             '& .row': {
                 '& > div': {
-                    textAlign: 'right'
+                    textAlign: 'right',
+                    '&:last-child': {
+                        zIndex: '4'
+                    }
                 },
                 '& > div:first-child': {
                     textAlign: 'left',
@@ -68,7 +71,14 @@ const enhance = compose(
             paddingRight: '30px',
             '& .row': {
                 height: '50px',
-                padding: '0'
+                margin: '0 -30px',
+                padding: '0 30px',
+                '&:first-child:hover': {
+                    background: 'inherit'
+                },
+                '&:hover': {
+                    background: '#f2f5f8'
+                }
             }
         },
         summary: {
@@ -101,7 +111,16 @@ const enhance = compose(
         },
         buttons: {
             display: 'flex',
-            justifyContent: 'space-around'
+            justifyContent: 'space-around',
+            zIndex: '2'
+        },
+        link: {
+            position: 'absolute',
+            top: '0',
+            bottom: '0',
+            right: '0',
+            left: '0',
+            cursor: 'pointer'
         }
     })
 )
@@ -203,9 +222,8 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                             {numberFormat(amount)}&nbsp;
                                             {(returnAmount > ZERO) &&
                                             <span className="redFont">
-                                                    <Tooltip position="bottom"
-                                                             text={tooltipText}>-{returnAmount}</Tooltip>
-                                                </span>} {measurement}
+                                                <ToolTip position="bottom" text={tooltipText}>-{returnAmount}</ToolTip>
+                                            </span>} {measurement}
                                         </Col>
                                         <Col xs={2}>{numberFormat(price)}</Col>
                                         <Col xs={2}>{numberFormat(productTotal)}</Col>
@@ -235,11 +253,10 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                         ? <div className={classes.tabContent}>
                             {!returnDataLoading ? <div className={classes.tabWrapper}>
                                 <Row className="dottedList">
-                                    <Col xs={1}>Код</Col>
                                     <Col xs={3} style={{textAlign: 'left'}}>Причина возврата</Col>
                                     <Col xs={3} style={{textAlign: 'left'}}>Склад</Col>
                                     <Col xs={2}>Дата возврата</Col>
-                                    <Col xs={2}>Сумма ({primaryCurrency})</Col>
+                                    <Col xs={3}>Сумма ({primaryCurrency})</Col>
                                 </Row>
                                 {_.map(returnData, (item, index) => {
                                     const returnId = _.get(item, 'id')
@@ -250,22 +267,18 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                     const totalSum = numberFormat(_.get(item, 'totalPrice'))
                                     return (
                                         <Row className="dottedList" key={index}>
-                                            <Col xs={1}>
-                                                <Link target={'_blank'}
-                                                    to={{pathname: sprintf(ROUTES.RETURN_ITEM_PATH, returnId), query: {search: returnId}}}
-                                                    className={classes.link}>
-                                                    {returnId}
-                                                </Link>
-                                            </Col>
+                                            <Link target={'_blank'}
+                                                to={{pathname: sprintf(ROUTES.RETURN_ITEM_PATH, returnId), query: {search: returnId, exclude: false}}}
+                                                className={classes.link}/>
                                             <Col style={{textAlign: 'left'}} xs={3}>{comment}</Col>
                                             <Col style={{textAlign: 'left'}} xs={3}>{stock}</Col>
                                             <Col xs={2}>{dateReturn}</Col>
-                                            <Col xs={2}>{totalSum}</Col>
+                                            <Col xs={3}>{totalSum}</Col>
                                             <Col xs={1}>
                                                 <div className={classes.buttons}>
                                                     {(status === PENDING || status === IN_PROGRESS)
                                                         ? <div className={classes.buttons}>
-                                                            <Tooltip position="bottom" text="Ожидает">
+                                                            <ToolTip position="bottom" text="Ожидает">
                                                                 <IconButton
                                                                     disableTouchRipple={true}
                                                                     iconStyle={iconStyle.icon}
@@ -273,8 +286,8 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                                                     touch={true}>
                                                                     <InProcess color="#f0ad4e"/>
                                                                 </IconButton>
-                                                            </Tooltip>
-                                                            <Tooltip position="bottom" text="Отменить">
+                                                            </ToolTip>
+                                                            <ToolTip position="bottom" text="Отменить">
                                                                 <IconButton
                                                                     disableTouchRipple={true}
                                                                     iconStyle={iconStyle.icon}
@@ -283,10 +296,10 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                                                     onClick={() => { cancelOrderReturnOpen(returnId) }}>
                                                                     <DeleteIcon/>
                                                                 </IconButton>
-                                                            </Tooltip>
+                                                            </ToolTip>
                                                         </div>
                                                         : (status === COMPLETED)
-                                                            ? <Tooltip position="bottom" text="Завершен">
+                                                            ? <ToolTip position="bottom" text="Завершен">
                                                                 <IconButton
                                                                     disableTouchRipple={true}
                                                                     iconStyle={iconStyle.icon}
@@ -294,9 +307,9 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                                                     touch={true}>
                                                                     <DoneIcon color="#81c784"/>
                                                                 </IconButton>
-                                                            </Tooltip>
+                                                            </ToolTip>
                                                             : (status === CANCELLED)
-                                                                ? <Tooltip position="bottom" text="Отменен">
+                                                                ? <ToolTip position="bottom" text="Отменен">
                                                                     <IconButton
                                                                         disableTouchRipple={true}
                                                                         iconStyle={iconStyle.icon}
@@ -304,7 +317,7 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                                                         touch={true}>
                                                                         <Canceled color='#e57373'/>
                                                                     </IconButton>
-                                                                </Tooltip> : null}
+                                                                </ToolTip> : null}
                                                 </div>
                                             </Col>
                                         </Row>

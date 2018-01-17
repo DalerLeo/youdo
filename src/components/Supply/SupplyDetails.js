@@ -13,7 +13,7 @@ import IconButton from 'material-ui/IconButton'
 import RightSide from './SupplyDetailsRightSideTabs'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
 import LinearProgress from '../LinearProgress'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import numberFormat from '../../helpers/numberFormat'
 import dateFormat from '../../helpers/dateFormat'
 import SupplySetDiscountDialog from './SupplySetDiscountDialog'
@@ -312,7 +312,6 @@ const SupplyDetails = enhance((props) => {
     const editButtonDisableStatus = () => {
         switch (status) {
             case CANCELLED: return true
-            case COMPLETED: return true
             default: return false
         }
     }
@@ -345,7 +344,7 @@ const SupplyDetails = enhance((props) => {
                     <div className={classes.arrowShadow}>{null}</div>
                 </div>
                 <div className={classes.titleButtons}>
-                    <Tooltip position="bottom" text={t('Добавить оплату')}>
+                    <ToolTip position="bottom" text={t('Добавить оплату')}>
                         <Link target="_blank" to={{pathname: ROUTE.PENDING_EXPENSES_LIST_URL, query: {supply: id}}}>
                             <IconButton
                                 iconStyle={iconStyle.icon}
@@ -355,8 +354,8 @@ const SupplyDetails = enhance((props) => {
                                 <AddPayment/>
                             </IconButton>
                         </Link>
-                    </Tooltip>
-                    <Tooltip position="bottom" text={t('Добавить расход')}>
+                    </ToolTip>
+                    <ToolTip position="bottom" text={t('Добавить расход')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
                             disabled={(status === CANCELLED)}
@@ -365,8 +364,8 @@ const SupplyDetails = enhance((props) => {
                             onTouchTap={() => { handleSupplyExpenseOpenCreateDialog(id) }}>
                             <Expense/>
                         </IconButton>
-                    </Tooltip>
-                    <Tooltip position="bottom" text={t('Синхронизировать кол-во товаров с приёмкой')}>
+                    </ToolTip>
+                    <ToolTip position="bottom" text={t('Синхронизировать кол-во товаров с приёмкой')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
                             disabled={status !== COMPLETED}
@@ -375,8 +374,8 @@ const SupplyDetails = enhance((props) => {
                             onTouchTap={() => { confirmSyncDialog.handleOpenConfirmDialog() }}>
                             <Sync/>
                         </IconButton>
-                    </Tooltip>
-                    {updateDialog && <Tooltip position="bottom" text={t('Изменить')}>
+                    </ToolTip>
+                    {updateDialog && <ToolTip position="bottom" text={t('Изменить')}>
                         <IconButton
                             disabled={editButtonDisableStatus() || !canUpdatePrice}
                             iconStyle={iconStyle.icon}
@@ -385,8 +384,8 @@ const SupplyDetails = enhance((props) => {
                             onTouchTap={updateDialog.handleOpenUpdateDialog}>
                             <Edit/>
                         </IconButton>
-                    </Tooltip>}
-                    {confirmDialog && <Tooltip position="bottom" text={t('Отменить')}>
+                    </ToolTip>}
+                    {confirmDialog && <ToolTip position="bottom" text={t('Отменить')}>
                         <IconButton
                             disabled={cancelButtonDisableStatus()}
                             iconStyle={iconStyle.icon}
@@ -395,7 +394,7 @@ const SupplyDetails = enhance((props) => {
                             onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}>
                             <Delete/>
                         </IconButton>
-                    </Tooltip>}
+                    </ToolTip>}
                 </div>
             </div>
             <div className={classes.content}>

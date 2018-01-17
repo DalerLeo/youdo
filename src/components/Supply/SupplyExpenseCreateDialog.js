@@ -100,12 +100,12 @@ const ExpenseCreateDialog = enhance((props) => {
                                 className={classes.inputFieldCustom}
                                 label={t('Описание раскода')}
                                 fullWidth={true}/>
-                            <div className={classes.flex} style={{justifyContent: 'space-between'}}>
+                            <div className={classes.flex} style={{justifyContent: 'space-between', alignItems: 'flex-start'}}>
                                 <div className={classes.inputHalfWrap}>
                                     <Field
                                         name="amount"
                                         component={TextField}
-                                        className={classes.fieldCustom}
+                                        className={classes.inputFieldCustom}
                                         label={t('Сумма')}
                                         fullWidth={true}
                                         normalize={normalizeNumber}/>
@@ -125,18 +125,16 @@ const ExpenseCreateDialog = enhance((props) => {
                                 className={classes.inputFieldCustom}
                                 label={t('Тип оплаты')}
                                 fullWidth={true}/>
-                            <Field
-                                name="bindToProvider"
-                                style={{margin: '20px 0 10px'}}
-                                component={CheckBox}
-                                label={t('Привязать к балансу поставщика')}
-                            />
-                            <Field
-                                name="linkToProduct"
-                                style={{margin: '20px 0 10px'}}
-                                component={CheckBox}
-                                label={t('Привязать к товару')}
-                            />
+                            <div style={{margin: '15px 0 0'}}>
+                                <Field
+                                    name="bindToProvider"
+                                    component={CheckBox}
+                                    label={t('Привязать к балансу поставщика')}/>
+                                <Field
+                                    name="linkToProduct"
+                                    component={CheckBox}
+                                    label={t('Привязать к товару')}/>
+                            </div>
                             {isChecked && <Field
                                 name="product"
                                 label={t('Наименование товара')}

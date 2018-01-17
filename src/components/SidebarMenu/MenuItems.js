@@ -109,7 +109,8 @@ export const MenuItems = [
             {name: t('Транзакции'), url: ROUTES.TRANSACTION_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_transactions'},
             {name: t('Ожидаемые расходы'), url: ROUTES.PENDING_EXPENSES_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_pending_expenses'},
             {name: t('Ожидаeмые оплаты'), url: ROUTES.PENDING_PAYMENTS_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_pending_payments'},
-            {name: t('Баланс клиентов'), url: ROUTES.CLIENT_BALANCE_LIST_URL, permission: 'frontend_client_balance', query: {pageSize: 25}}
+            {name: t('Баланс клиентов'), url: ROUTES.CLIENT_BALANCE_LIST_URL, permission: 'frontend_client_balance', query: {pageSize: 25}},
+            {name: t('Баланс поставщиков'), url: ROUTES.PROVIDER_BALANCE_LIST_URL, permission: 'frontend_provider_balance', query: {pageSize: 25}}
         ]
     },
     {
@@ -153,6 +154,7 @@ export const MenuItems = [
             {section: STATS_CLIENTS, name: t('Баланс клиентов'), url: ROUTES.STATISTICS_CLIENT_BALANCE_URL, permission: 'frontend_stat_client_balance', query: {pageSize: 25}},
             {section: STATS_CLIENTS, name: t('Должники'), url: ROUTES.STATISTICS_DEBTORS_URL, permission: 'frontend_stat_debtors'},
             // -------------------------------------------------------------------------------------------------- //
+            {section: STATS_PROVIDERS, name: t('Оборот поставщиков'), url: ROUTES.STATISTICS_PROVIDER_TRANSACTIONS_URL, permission: 'frontend_stat_providers_transactions'},
             {section: STATS_PROVIDERS, name: t('Баланс поставщиков'), url: ROUTES.STATISTICS_PROVIDERS_URL, permission: 'frontend_stat_providers', query: {pageSize: 25}},
             // -------------------------------------------------------------------------------------------------- //
             {section: STATS_STOCK, name: t('Остаток'), url: ROUTES.STATISTICS_REMAINDER_URL, permission: 'frontend_stat_remainder', query: {pageSize: 25}},
@@ -168,7 +170,8 @@ export const MenuItems = [
         childs: [
             {name: t('Пользователи'), url: ROUTES.TELEGRAM_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_telegram_users'},
             {name: t('Новости'), url: ROUTES.TELEGRAM_NEWS_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_telegram_news'},
-            {name: t('Оплаты'), url: ROUTES.CLIENT_TRANSACTION_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_client_transaction'}
+            {name: t('Оплаты'), url: ROUTES.CLIENT_TRANSACTION_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_client_transaction'},
+            {name: t('Системные страницы'), url: ROUTES.SYSTEM_PAGES_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_system_pages'}
         ]
     },
     {

@@ -13,7 +13,7 @@ import PriceDetails from './PriceDetails'
 import PriceSupplyDialog from './PriceSupplyDialog'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import Container from '../Container'
 import SubMenu from '../SubMenu'
 import getConfig from '../../helpers/getConfig'
@@ -223,12 +223,12 @@ const PriceGridList = enhance((props) => {
                 <Col xs={2}>{priceUpdate}</Col>
                 <Col xs={1} className={classes.icon}>
                     {customPrice
-                        ? <Tooltip position="bottom" text={tooltipText}>
+                        ? <ToolTip position="bottom" text={tooltipText}>
                             <Person style={{width: 22, color: '#81c784'}}/>
-                        </Tooltip>
-                        : <Tooltip position="bottom" text={tooltipText2}>
+                        </ToolTip>
+                        : <ToolTip position="bottom" text={tooltipText2}>
                             <Person style={{width: 22, color: '#999'}}/>
-                        </Tooltip>}
+                        </ToolTip>}
                 </Col>
             </Row>
         )

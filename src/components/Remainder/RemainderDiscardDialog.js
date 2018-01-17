@@ -13,7 +13,7 @@ import IconButton from 'material-ui/IconButton'
 import TextField from '../ReduxForm/Basic/TextField'
 import RemainderListProductField from '../ReduxForm/Remainder/RemainderDiscardProductListField'
 import {StockSearchField} from '../ReduxForm'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import t from '../../helpers/translate'
 
 export const REMAINDER_DISCARD_DIALOG_OPEN = 'openDiscardDialog'
@@ -255,12 +255,12 @@ const RemainderDiscardDialog = enhance((props) => {
                         <div className={classes.addButtons}>
                             <strong>Список товаров</strong>
                             {!fromStock
-                                ? <Tooltip text={t('Выберите склад')} position="right">
+                                ? <ToolTip text={t('Выберите склад')} position="right">
                                     <FlatButton
                                         disabled={true}
                                         label={t('добавить товары')}
                                         labelStyle={{fontSize: '13px', textTransform: 'unset'}}/>
-                                </Tooltip>
+                                </ToolTip>
                                 : <div>
                                     <FlatButton
                                         label={t('добавить товары')}

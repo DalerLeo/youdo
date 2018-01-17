@@ -66,7 +66,8 @@ import {
     StatClientIncomeList,
     StatClientBalance,
     StatDebtorsList,
-    StatProviderList
+    StatProviderList,
+    StatProviderTransactionsList
 } from '../containers/Statistics'
 import {ClientBalanceList} from '../containers/ClientBalance'
 import {StockReceiveHistoryList, StockReceiveList, StockTransferList, StockTransferHistoryList, StockOutHistoryList} from '../containers/StockReceive'
@@ -79,6 +80,8 @@ import {NotificationTemplateList} from '../containers/NotificationTemplate'
 import {PriceListSetting} from '../containers/PriceListSetting'
 import {TelegramList} from '../containers/Telegram'
 import {TelegramNewsList} from '../containers/TelegramNews'
+import {ProviderBalanceList} from '../containers/ProviderBalance'
+import {SystemPagesList} from '../containers/SystemPages'
 
 const userIsAdminChain = compose(userIsAuth, visibleOnlyAdmin)
 
@@ -187,7 +190,7 @@ export default {
                 }
             ]
         },
-        // Client Transactoin
+        // Client Transaction
         {
             path: ROUTES.CLIENT_TRANSACTION_LIST_URL,
             component: userIsAdminChain(ClientTransactionList),
@@ -644,13 +647,13 @@ export default {
             component: userIsAdminChain(StatExpenditureOnStaffList),
             childRoutes: []
         },
-        // Statistics/ client income
+        // Statistics/ client transactions
         {
             path: ROUTES.STATISTICS_CLIENT_INCOME_URL,
             component: userIsAdminChain(StatClientIncomeList),
             childRoutes: []
         },
-        // Statistics/debtors
+        // Statistics / debtors
         {
             path: ROUTES.STATISTICS_DEBTORS_URL,
             component: userIsAdminChain(StatDebtorsList),
@@ -661,7 +664,7 @@ export default {
                 }
             ]
         },
-        // Statistics/debtors
+        // Statistics / Providers
         {
             path: ROUTES.STATISTICS_PROVIDERS_URL,
             component: userIsAdminChain(StatProviderList),
@@ -671,6 +674,12 @@ export default {
                     component: userIsAuth(StatProviderList)
                 }
             ]
+        },
+        // Statistics / Providers Transactions
+        {
+            path: ROUTES.STATISTICS_PROVIDER_TRANSACTIONS_URL,
+            component: userIsAdminChain(StatProviderTransactionsList),
+            childRoutes: []
         },
         // Stock Receive
         {
@@ -867,7 +876,7 @@ export default {
                 }
             ]
         },
-        // Telegram Users
+        // Telegram NEWS
         {
             path: ROUTES.TELEGRAM_NEWS_LIST_URL,
             component: userIsAdminChain(TelegramNewsList),
@@ -875,6 +884,28 @@ export default {
                 {
                     path: ROUTES.TELEGRAM_NEWS_ITEM_URL,
                     component: userIsAuth(TelegramNewsList)
+                }
+            ]
+        },
+        // PROVIDER BALANCE
+        {
+            path: ROUTES.PROVIDER_BALANCE_LIST_URL,
+            component: userIsAdminChain(ProviderBalanceList),
+            childRoutes: [
+                {
+                    path: ROUTES.PROVIDER_BALANCE_ITEM_URL,
+                    component: userIsAuth(ProviderBalanceList)
+                }
+            ]
+        },
+        // PROVIDER BALANCE
+        {
+            path: ROUTES.SYSTEM_PAGES_LIST_URL,
+            component: userIsAdminChain(SystemPagesList),
+            childRoutes: [
+                {
+                    path: ROUTES.SYSTEM_PAGES_ITEM_URL,
+                    component: userIsAuth(SystemPagesList)
                 }
             ]
         },

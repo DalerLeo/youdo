@@ -7,7 +7,7 @@ import ContentRemove from 'material-ui/svg-icons/content/remove-circle-outline'
 import {Field} from 'redux-form'
 import TextField from '../Basic/TextField'
 import IconButton from 'material-ui/IconButton'
-import Tooltip from '../../ToolTip'
+import ToolTip from '../../ToolTip'
 
 /**
  * {['contacts', 'contactName', 'email', 'phoneNumber']}
@@ -105,14 +105,14 @@ const MarketPhoneListField = (props) => {
                                 />
                             </div>
                         </div>
-                        <Tooltip position="bottom" text={fields.length !== index + ONE ? 'Убрать' : 'Добавить еще'}>
+                        <ToolTip position="bottom" text={fields.length !== index + ONE ? 'Убрать' : 'Добавить еще'}>
                             <IconButton
                                 onTouchTap={() => handleTouchTap(index)}
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}>
                                 {fields.length !== index + ONE ? <ContentRemove/> : <ContentAdd />}
                             </IconButton>
-                        </Tooltip>
+                        </ToolTip>
                     </div>
                 )
             })}

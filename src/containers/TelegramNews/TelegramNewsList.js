@@ -8,6 +8,7 @@ import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
+import {} from '../../helpers/toCamelCase'
 import toBoolean from '../../helpers/toBoolean'
 import {
     TELEGRAM_NEWS_CREATE_DIALOG_OPEN,
@@ -190,7 +191,6 @@ const TelegramNewsList = enhance((props) => {
         handleCloseConfirmDialog: props.handleCloseConfirmDialog,
         handleSendConfirmDialog: props.handleSendConfirmDialog
     }
-
     const updateDialog = {
         initialValues: (() => {
             if (!detail || openCreateDialog) {
@@ -199,7 +199,24 @@ const TelegramNewsList = enhance((props) => {
             return {
                 title: _.get(detail, 'title'),
                 description: _.get(detail, 'description'),
-                content: _.get(detail, 'content')
+                content: _.get(detail, 'telegraph_link'),
+                translations: {
+                    ru: {
+                        title: _.get(detail, 'title'),
+                        description: _.get(detail, 'description'),
+                        'telegraph_link': _.get(detail, 'telegraphLink')
+                    },
+                    en: {
+                        title: _.get(detail, 'title'),
+                        description: _.get(detail, 'description'),
+                        'telegraph_link': _.get(detail, 'telegraphLink')
+                    },
+                    uz: {
+                        title: _.get(detail, 'title'),
+                        description: _.get(detail, 'description'),
+                        'telegraph_link': _.get(detail, 'telegraphLink')
+                    }
+                }
             }
         })(),
         updateLoading: detailLoading || updateLoading,

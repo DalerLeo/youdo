@@ -16,7 +16,7 @@ import dateFormat from '../../helpers/dateFormat'
 import FlatButton from 'material-ui/FlatButton'
 import Order from 'material-ui/svg-icons/editor/monetization-on'
 import Delivery from 'material-ui/svg-icons/maps/local-taxi'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import toBoolean from '../../helpers/toBoolean'
 import t from '../../helpers/translate'
 
@@ -258,11 +258,11 @@ const StockTabTransfer = enhance((props) => {
             <StockReceiveTabList currentTab={TAB.STOCK_RECEIVE_TAB_TRANSFER}/>
             <div className={toggle === 'delivery' ? classes.filters : classes.filtersReverse}>
                 {toggle === 'delivery' &&
-                <Tooltip position="bottom" text="Период доставки">
+                <ToolTip position="bottom" text="Период доставки">
                     <StockTabTransferDateRange filter={filterDelivery} initialValues={filterDialog.initialValues}/>
-                </Tooltip>}
+                </ToolTip>}
                 <div className={classes.toggleWrapper}>
-                    <Tooltip position="left" text="Показать по заказам">
+                    <ToolTip position="left" text="Показать по заказам">
                         <FlatButton
                             icon={<Order color={whiteColor}/>}
                             className={isOrder ? classes.shadowButton : ''}
@@ -270,8 +270,8 @@ const StockTabTransfer = enhance((props) => {
                             backgroundColor={isOrder ? primaryColor : disabledColor}
                             rippleColor={whiteColor}
                             hoverColor={isOrder ? primaryColor : disabledColor}/>
-                    </Tooltip>
-                    <Tooltip position="left" text="Показать по доставщикам">
+                    </ToolTip>
+                    <ToolTip position="left" text="Показать по доставщикам">
                         <FlatButton
                             icon={<Delivery color={whiteColor}/>}
                             className={isDelivery ? classes.shadowButton : ''}
@@ -279,7 +279,7 @@ const StockTabTransfer = enhance((props) => {
                             backgroundColor={isDelivery ? primaryColor : disabledColor}
                             rippleColor={whiteColor}
                             hoverColor={isDelivery ? primaryColor : disabledColor}/>
-                    </Tooltip>
+                    </ToolTip>
                 </div>
             </div>
             {toggle === 'order'

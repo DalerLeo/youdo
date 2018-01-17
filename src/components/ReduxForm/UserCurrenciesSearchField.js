@@ -1,20 +1,11 @@
 import _ from 'lodash'
 import React from 'react'
 import SearchField from './Basic/SearchField'
-import {compose} from 'recompose'
-import {connect} from 'react-redux'
+import * as storageHelper from '../../helpers/storage'
 
-const enhance = compose(
-    connect((state) => {
-        const currencies = _.get(state, ['authConfirm', 'data', 'currencies'])
-        return {
-            currencies
-        }
-    })
-)
-
-const UserCurrenciesSearchField = enhance((props) => {
-    const {currencies} = props
+const UserCurrenciesSearchField = (props) => {
+    const userData = JSON.parse(storageHelper.getUserData())
+    const currencies = _.get(userData, 'currencies')
 
     const getOptions = () => {
         return Promise.resolve(currencies)
@@ -35,6 +26,6 @@ const UserCurrenciesSearchField = enhance((props) => {
             {...props}
         />
     )
-})
+}
 
 export default UserCurrenciesSearchField

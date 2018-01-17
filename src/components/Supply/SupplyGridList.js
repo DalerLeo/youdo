@@ -21,7 +21,7 @@ import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import SupplyExpenseCreateDialog from './SupplyExpenseCreateDialog'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import numberFormat from '../../helpers/numberFormat'
 import dateFormat from '../../helpers/dateFormat'
 import {connect} from 'react-redux'
@@ -272,7 +272,7 @@ const SupplyGridList = enhance((props) => {
             <SubMenu url={ROUTES.SUPPLY_LIST_URL}/>
 
             <div className={classes.addButtonWrapper}>
-                <Tooltip position="left" text={t('Добавить поставку')}>
+                <ToolTip position="left" text={t('Добавить поставку')}>
                     <FloatingActionButton
                         mini={true}
                         zDepth={1}
@@ -280,7 +280,7 @@ const SupplyGridList = enhance((props) => {
                         onTouchTap={createDialog.handleOpenCreateDialog}>
                         <ContentAdd/>
                     </FloatingActionButton>
-                </Tooltip>
+                </ToolTip>
             </div>
 
             <GridList
@@ -309,6 +309,7 @@ const SupplyGridList = enhance((props) => {
                 isUpdate={true}
                 initialValues={updateDialog.initialValues}
                 editOnlyPrice={detailStatus === COMPLETED}
+                acceptedByStock={detailStatus === COMPLETED || detailStatus === IN_PROGRESS}
                 open={updateDialog.openUpdateDialog}
                 loading={updateDialog.updateLoading}
                 onClose={updateDialog.handleCloseUpdateDialog}
@@ -323,22 +324,21 @@ const SupplyGridList = enhance((props) => {
                 onSubmit={supplyExpenseCreateDialog.handleSupplyExpenseSubmitCreateDialog}
             />
 
-            {(detailData.data && isAdmin && (detailStatus === IN_PROGRESS || detailStatus === COMPLETED)) ? <ConfirmDialog
-                type="cancel"
-                message={t('Склад уже принял данную поставку. Отмена приведет к списанию товаров из склада. ОТМЕНА НЕ РЕКОМЕНДУЕТСЯ!')}
-                warning={true}
-                onClose={confirmDialog.handleCloseConfirmDialog}
-                onSubmit={confirmDialog.handleSendConfirmDialog}
-                open={confirmDialog.openConfirmDialog}
-            />
-
-            : (detailData.data && <ConfirmDialog
-                type="cancel"
-                message={t('Поставка') + '№ ' + _.get(detailData, ['data', 'id'])}
-                onClose={confirmDialog.handleCloseConfirmDialog}
-                onSubmit={confirmDialog.handleSendConfirmDialog}
-                open={confirmDialog.openConfirmDialog}
-            />)}
+            {(detailData.data && isAdmin && (detailStatus === IN_PROGRESS || detailStatus === COMPLETED))
+                ? <ConfirmDialog
+                    type="cancel"
+                    message={t('Склад уже принял данную поставку. Отмена приведет к списанию товаров из склада. ОТМЕНА НЕ РЕКОМЕНДУЕТСЯ!')}
+                    warning={true}
+                    onClose={confirmDialog.handleCloseConfirmDialog}
+                    onSubmit={confirmDialog.handleSendConfirmDialog}
+                    open={confirmDialog.openConfirmDialog}/>
+                : (detailData.data && <ConfirmDialog
+                    type="cancel"
+                    message={t('Поставка') + '№ ' + _.get(detailData, ['data', 'id'])}
+                    onClose={confirmDialog.handleCloseConfirmDialog}
+                    onSubmit={confirmDialog.handleSendConfirmDialog}
+                    open={confirmDialog.openConfirmDialog}/>
+                )}
 
             {confirmExpenseDialog.removeId && <ConfirmDialog
                 type="delete"

@@ -94,14 +94,6 @@ const enhance = compose(
                 width: '18px !important'
             }
         },
-        filterBtn: {
-            extend: 'excel',
-            background: '#12aaeb',
-            position: 'relative'
-        },
-        count: {
-            marginLeft: '5px'
-        },
         date: {
             extend: 'excel',
             background: 'transparent',
@@ -124,6 +116,30 @@ const enhance = compose(
     }),
     withState('openFilter', 'setOpenFilter', false),
 )
+
+const flatButtonStyle = {
+    backgroundColorFilter: '#12aaeb',
+    backgroundColorExcel: '#71ce87',
+    style: {
+        height: '34px',
+        lineHeight: '34px',
+        overflow: 'unset'
+    },
+    iconStyle: {
+        color: '#fff',
+        fill: '#fff',
+        width: '18px',
+        height: '18px',
+        marginBottom: '4px'
+    },
+    labelStyle: {
+        color: '#fff',
+        fontWeight: '600',
+        verticalAlign: 'baseline',
+        textTransform: 'none'
+    },
+    rippleColor: '#fff'
+}
 
 const StatisticsFilterExcel = enhance((props) => {
     const {
@@ -195,38 +211,58 @@ const StatisticsFilterExcel = enhance((props) => {
                     </div>
                 </form>
             </Paper>}
-            <a className={classes.filterBtn} onClick={() => { setOpenFilter(true) }}>
-                <Filter color="#fff"/> <span>{t('Фильтр')}</span>
-                {filterCount > ZERO && <span className={classes.count}>/ {filterCount}</span>}
-                {!withoutDate && <span className={classes.date}>{filterDate}</span>}
-            </a>
+            <FlatButton
+                label={t('Фильтр') + (filterCount > ZERO ? ' / ' + filterCount : '')}
+                onClick={() => { setOpenFilter(true) }}
+                style={flatButtonStyle.style}
+                backgroundColor={flatButtonStyle.backgroundColorFilter}
+                hoverColor={flatButtonStyle.backgroundColorFilter}
+                rippleColor={flatButtonStyle.rippleColor}
+                labelStyle={flatButtonStyle.labelStyle}
+                children={!withoutDate && <span className={classes.date}>{filterDate}</span>}
+                icon={<Filter style={flatButtonStyle.iconStyle}/>}/>
             <div className={classes.buttons}>
                 {extraButton || null}
-                {sales ? <IconMenu
-                    menuItemStyle={{fontSize: '13px'}}
-                    iconButtonElement={<a className={classes.excel}>
-                                            <Excel color="#fff"/> <span>{t('Скачать')}</span>
-                                        </a>
-                    }
-                    anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
-                    targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                    <MenuItem
-                        primaryText={t('Накладные')}
-                        onTouchTap={() => { handleGetDocument.handleGetDocument() }}
-                    />
-                    <MenuItem
-                        primaryText={t('Список заказов')}
-                        onTouchTap={() => { handleGetDocument.handleGetOrderListDocument() }}
-                    />
-                    <MenuItem
-                        primaryText={t('Релиз')}
-                        onTouchTap={() => { handleGetDocument.handleGetReleaseDocument() }}
-                    />
-                </IconMenu>
-                    : <a className={classes.excel} onClick={handleGetDocument}>
-                        <Excel color="#fff"/> <span>Excel</span>
-                      </a>}
-
+                {sales
+                    ? <IconMenu
+                        menuItemStyle={{fontSize: '13px'}}
+                        iconButtonElement={(
+                            <FlatButton
+                                label={t('Скачать')}
+                                style={flatButtonStyle.style}
+                                backgroundColor={flatButtonStyle.backgroundColorExcel}
+                                hoverColor={flatButtonStyle.backgroundColorExcel}
+                                rippleColor={flatButtonStyle.rippleColor}
+                                labelStyle={flatButtonStyle.labelStyle}
+                                icon={<Excel style={flatButtonStyle.iconStyle}/>}/>
+                        )}
+                        anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
+                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+                        <MenuItem
+                            primaryText={t('Накладные')}
+                            onTouchTap={() => {
+                                handleGetDocument.handleGetDocument()
+                            }}/>
+                        <MenuItem
+                            primaryText={t('Список заказов')}
+                            onTouchTap={() => {
+                                handleGetDocument.handleGetOrderListDocument()
+                            }}/>
+                        <MenuItem
+                            primaryText={t('Релиз')}
+                            onTouchTap={() => {
+                                handleGetDocument.handleGetReleaseDocument()
+                            }}/>
+                    </IconMenu>
+                    : <FlatButton
+                        label={'Excel'}
+                        style={flatButtonStyle.style}
+                        onClick={handleGetDocument}
+                        backgroundColor={flatButtonStyle.backgroundColorExcel}
+                        hoverColor={flatButtonStyle.backgroundColorExcel}
+                        rippleColor={flatButtonStyle.rippleColor}
+                        labelStyle={flatButtonStyle.labelStyle}
+                        icon={<Excel style={flatButtonStyle.iconStyle}/>}/>}
             </div>
         </div>
     )
@@ -238,7 +274,10 @@ StatisticsFilterExcel.propTypes = {
     initialValues: PropTypes.object.isRequired,
     fields: PropTypes.node.isRequired,
     handleSubmitFilterDialog: PropTypes.func.isRequired,
-    handleGetDocument: PropTypes.func.isRequired
+    handleGetDocument: PropTypes.oneOfType([
+        PropTypes.object,
+        PropTypes.func
+    ])
 }
 
 export default StatisticsFilterExcel

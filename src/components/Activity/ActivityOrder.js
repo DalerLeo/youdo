@@ -9,7 +9,7 @@ import paymentTypeFormat from '../../helpers/paymentTypeFormat'
 import LinearProgress from '../LinearProgress'
 import Paper from 'material-ui/Paper'
 import Info from 'material-ui/svg-icons/action/info-outline'
-import Tooltip from '../ToolTip'
+import ToolTip from '../ToolTip'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
 import t from '../../helpers/translate'
 
@@ -190,9 +190,9 @@ const ActivityOrder = enhance((props) => {
         <div className={classes.block}>
             <div className={classes.blockTitle}>
                 <strong>{t('Cделки')} ({countSummary})</strong>
-                <Tooltip position="left" text={tooltipText}>
+                <ToolTip position="left" text={tooltipText}>
                     <Info color="#666"/>
-                </Tooltip>
+                </ToolTip>
             </div>
             <div className={classes.blockItems}>
                 {orderList}
