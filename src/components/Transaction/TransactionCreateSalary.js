@@ -4,21 +4,12 @@ import {compose, withHandlers, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import SearchIcon from 'material-ui/svg-icons/action/search'
 import Loader from '../Loader'
-import {Field, reduxForm, SubmissionError} from 'redux-form'
+import {Field, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import t from '../../helpers/translate'
 import {TextField, normalizeNumber} from '../ReduxForm'
 import NotFound from '../Images/not-found.png'
 import {openErrorAction} from '../../actions/error'
-
-const validateForm = values => {
-    const errors = {}
-    if (values.showClients && values.amount && !values.client) {
-        errors.client = 'Клиент не выбран'
-    }
-
-    return errors
-}
 
 const enhance = compose(
     injectSheet({
@@ -101,11 +92,6 @@ const enhance = compose(
             color: '#999'
         }
     }),
-    reduxForm({
-        form: 'TransactionCreateForm',
-        validate: validateForm,
-        enableReinitialize: true
-    }),
     withState('searchQuery', 'setSearchQuery', ''),
     withHandlers({
         validate: props => (data) => {
@@ -147,19 +133,17 @@ const TransactionCreateSalary = enhance((props) => {
         <div className={classes.salaryWrapper}>
             <div className={classes.subTitle}>{t('Список сотрудников')}</div>
             <div className={classes.searchWrapper}>
-                <form>
-                    <div className={classes.search}>
-                        <div className={classes.searchField}>
-                            <input
-                                type="text"
-                                placeholder={t('Поиск сотрудников...')}
-                                onChange={handleSearch}/>
-                            <div className={classes.searchButton}>
-                                <SearchIcon style={iconStyle}/>
-                            </div>
+                <div className={classes.search}>
+                    <div className={classes.searchField}>
+                        <input
+                            type="text"
+                            placeholder={t('Поиск сотрудников...')}
+                            onChange={handleSearch}/>
+                        <div className={classes.searchButton}>
+                            <SearchIcon style={iconStyle}/>
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
             {_.get(usersData, 'loading')
                 ? <div className={classes.usersLoader}>

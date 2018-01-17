@@ -375,6 +375,7 @@ const enhance = compose(
             const form = 'TransactionCreateForm'
             dispatch(reset(form))
             dispatch(change(form, 'custom_rate', convertAmount))
+            dispatch(change(form, 'transaction_child', [{}]))
         },
 
         handleCloseCreateExpenseDialog: props => () => {
@@ -409,6 +410,7 @@ const enhance = compose(
             const form = 'TransactionCreateForm'
             dispatch(reset(form))
             dispatch(change(form, 'custom_rate', convertAmount))
+            dispatch(change(form, 'transaction_child', [{}]))
         },
 
         handleCloseCreateIncomeDialog: props => () => {

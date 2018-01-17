@@ -225,11 +225,7 @@ const enhance = compose(
         const incomeCategoryOptions = _.get(state, ['form', 'TransactionCreateForm', 'values', 'incomeCategory', 'value', 'options'])
         const expenseCategoryOptions = _.get(state, ['form', 'TransactionCreateForm', 'values', 'expanseCategory', 'value', 'options'])
         const users = _.get(state, ['form', 'TransactionCreateForm', 'values', 'users'])
-        const transactionChild = _.get(state, ['form', 'TransactionCreateForm', 'values', 'transaction_child'])
-        const totalAmount = _.sumBy(users, (item) => {
-            return _.toNumber(numberWithoutSpaces(_.get(item, 'amount')))
-        })
-        const totalDetalizationAmount = _.sumBy(transactionChild, (item) => {
+        const totalStaffAmount = _.sumBy(users, (item) => {
             return _.toNumber(numberWithoutSpaces(_.get(item, 'amount')))
         })
         return {
@@ -241,8 +237,7 @@ const enhance = compose(
             optionsList,
             incomeCategoryOptions,
             expenseCategoryOptions,
-            totalAmount,
-            totalDetalizationAmount,
+            totalStaffAmount,
             incomeCategory
         }
     }),
@@ -278,8 +273,7 @@ const TransactionCreateDialog = enhance((props) => {
         optionsList,
         incomeCategoryOptions,
         expenseCategoryOptions,
-        totalAmount,
-        totalDetalizationAmount,
+        totalStaffAmount,
         order,
         expenseCategory,
         incomeCategoryKey,
@@ -418,7 +412,7 @@ const TransactionCreateDialog = enhance((props) => {
                                     </div>
                                 }
                                 <div className={classes.flex} style={{justifyContent: 'space-between'}}>
-                                    {!(isSalary || showDetalization) &&
+                                    {!(isSalary) &&
                                     <div className={classes.flex} style={{alignItems: 'baseline', width: '100%'}}>
                                         <Field
                                             name="amount"
@@ -480,7 +474,7 @@ const TransactionCreateDialog = enhance((props) => {
                                             <Link target={'_blank'} to={{pathname: ROUTE.PROVIDER_LIST_URL, query: {openCreateDialog: true}}}>{t('добавить')}</Link>
                                         </div>
                                         : null}
-                                {!(isSalary || showDetalization) &&
+                                {!(isSalary) &&
                                 <div className={classes.flex} style={{justifyContent: 'space-between'}}>
                                     <div className={classes.flex} style={{alignItems: 'baseline', width: '100%'}}>
                                         <Field
@@ -521,10 +515,8 @@ const TransactionCreateDialog = enhance((props) => {
                     {showDetalization && <FieldArray name={'transaction_child'} component={TransactionCreateDetalization}/>}
                 </form>
                 <div className={classes.bottomButton}>
-                    {(isSalary || showDetalization) && <div className={classes.commentField}>
-                        {isExpense
-                            ? t('Сумма расхода')
-                            : t('Сумма прихода')}: <b>{isSalary ? numberFormat(totalAmount, currency) : numberFormat(totalDetalizationAmount, currency)}</b>
+                    {isSalary && <div className={classes.commentField}>
+                        {isExpense ? t('Сумма расхода') : t('Сумма прихода')}: <b>{numberFormat(totalStaffAmount, currency)}</b>
                     </div>}
                     <FlatButton
                         label={t('Сохранить')}

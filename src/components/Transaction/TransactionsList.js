@@ -27,6 +27,9 @@ import {
     OUTCOME_FROM_CLIENT
 } from '../../constants/transactionTypes'
 import t from '../../helpers/translate'
+import * as ROUTES from '../../constants/routes'
+import {Link} from 'react-router'
+import {TRANSACTION_CATEGORY_POPOP_OPEN} from './index'
 
 const currentDay = new Date()
 const enhance = compose(
@@ -241,9 +244,15 @@ const TransactionsList = enhance((props) => {
         },
         {
             sorting: false,
+            name: 'category',
+            title: t('Категория'),
+            width: '26%'
+        },
+        {
+            sorting: false,
             name: 'comment',
             title: t('Описание'),
-            width: '52%'
+            width: '26%'
         },
         {
             sorting: true,
@@ -341,10 +350,34 @@ const TransactionsList = enhance((props) => {
         const isDeleted = _.get(item, 'isDelete')
         const supply = _.get(item, 'supply')
         const supplyExpanseId = _.get(item, 'supplyExpanseId')
+        const categoryPopopShow = _.find(_.get(expenseCategory, 'options'), {'keyName': 'staff_expanse'})
+        const handleOpenCategoryPopop = categryPopop.handleOpenCategoryPopop
+        const category = (
+            expenseCategory
+                ? <div>
+                    {categoryPopopShow
+                        ? (handleOpenCategoryPopop)
+                            ? <Link onClick={() => handleOpenCategoryPopop(id)}>
+                                {_.get(expenseCategory, 'name')}
+                            </Link>
+                            : <Link
+                                target={'_blank'}
+                                to={{pathname: ROUTES.TRANSACTION_LIST_URL, query: {[TRANSACTION_CATEGORY_POPOP_OPEN]: id}}}>
+                                {_.get(expenseCategory, 'name')}
+                            </Link>
+                        : <span>{_.get(expenseCategory, 'name')}</span>}
+                </div>
+                : incomeCategory
+                ? <div>
+                    <span>{_.get(incomeCategory, 'name')}</span>
+                </div>
+                : null
+        )
         return (
             <div key={id} className={isDeleted ? classes.deletedRow : classes.listRow}>
                 <div style={{flexBasis: '10%', maxWidth: '10%'}}>{id}</div>
-                <div style={{flexBasis: '52%', maxWidth: '52%'}}>
+                <div style={{flexBasis: '26%', maxWidth: '26%'}}>{category}</div>
+                <div style={{flexBasis: '26%', maxWidth: '26%'}}>
                     <TransactionsFormat
                         handleClickAgentIncome={() => {
                             transactionInfoDialog.handleOpenDialog(id)
@@ -355,8 +388,6 @@ const TransactionsList = enhance((props) => {
                         order={order}
                         supply={supply}
                         client={_.get(item, 'client')}
-                        expenseCategory={expenseCategory}
-                        incomeCategory={incomeCategory}
                         user={user}
                         comment={comment}
                         supplyExpanseId={supplyExpanseId}

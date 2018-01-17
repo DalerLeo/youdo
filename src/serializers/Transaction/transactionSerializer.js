@@ -64,13 +64,10 @@ export const createIncomeSerializer = (data, cashboxId) => {
         }
     }), (item) => _.toNumber(_.get(item, 'amount')) > ZERO && _.get(item, 'name'))
     const salaryAmount = _.sumBy(staffs, (item) => _.get(item, 'amount'))
-    const detalizationAmount = _.sumBy(detalization, (item) => _.get(item, 'amount'))
     return {
-        'amount': (_.isEmpty(staffs) && _.isEmpty(detalization))
+        'amount': _.isEmpty(staffs)
             ? numberWithoutSpaces(amount)
-            : salaryAmount > ZERO
-                ? salaryAmount
-                : detalizationAmount,
+            : salaryAmount,
         comment,
         'cashbox': _.toInteger(cashboxId) === ZERO ? cashbox : cashboxId,
         'custom_rate': customRate,
@@ -102,7 +99,6 @@ export const createExpenseSerializer = (data, cashboxId) => {
     }), (item) => _.toNumber(_.get(item, 'amount')) > ZERO && _.get(item, 'name'))
     const amount = Math.abs(numberWithoutSpaces(_.get(data, 'amount'))) * MINUS_ONE
     const salaryAmount = _.sumBy(staffs, item => _.get(item, 'amount') * MINUS_ONE)
-    const detalizationAmount = _.sumBy(detalization, item => _.get(item, 'amount') * MINUS_ONE)
     const comment = _.get(data, 'comment')
     const expenseId = _.get(data, ['expanseCategory', 'value', 'id'])
     const clientId = _.get(data, ['client', 'value'])
@@ -116,11 +112,9 @@ export const createExpenseSerializer = (data, cashboxId) => {
     const currencyRate = _.get(data, 'currencyRate')
 
     const request = {
-        'amount': (_.isEmpty(staffs) && _.isEmpty(detalization))
+        'amount': _.isEmpty(staffs)
             ? numberWithoutSpaces(amount)
-            : salaryAmount < ZERO
-                ? salaryAmount
-                : detalizationAmount,
+            : salaryAmount,
         comment,
         'cashbox': _.toInteger(cashboxId) === ZERO ? cashbox : cashboxId,
         'expanse_category': expenseId,
