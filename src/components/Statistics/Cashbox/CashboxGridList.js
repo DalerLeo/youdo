@@ -174,6 +174,10 @@ const enhance = compose(
         },
         cashboxBalance: {
             '& span': {
+                fontWeight: '500',
+                fontSize: '13px'
+            },
+            '& div': {
                 display: 'block',
                 '&:last-child': {
                     fontSize: '14px',
@@ -220,10 +224,15 @@ const StatCashboxGridList = enhance((props) => {
         const typeIcon = _.get(item, 'type') === 'bank' ? (<CreditCard style={iconStyle}/>) : (<Cash style={iconStyle}/>)
         const currency = _.get(item, ['currency', 'name'])
 
-        const cbStartBalance = numberFormat(_.get(item, 'startBalance'), primaryCurrency)
-        const cbEndBalance = numberFormat(_.get(item, 'endBalance'), primaryCurrency)
-        const cbIncome = numberFormat(_.get(item, 'income'), primaryCurrency)
-        const cbExpenses = numberFormat(_.get(item, 'expenses'), primaryCurrency)
+        const cbStartBalance = numberFormat(_.get(item, 'startBalance'), currency)
+        const cbEndBalance = numberFormat(_.get(item, 'endBalance'), currency)
+        const cbIncome = numberFormat(_.get(item, 'income'), currency)
+        const cbExpenses = numberFormat(_.get(item, 'expenses'), currency)
+
+        const internalcbStartBalance = '(' + numberFormat(_.get(item, 'internalStartBalance'), primaryCurrency) + ')'
+        const internalcbEndBalance = '(' + numberFormat(_.get(item, 'internalEndBalance'), primaryCurrency) + ')'
+        const internalcbIncome = '(' + numberFormat(_.get(item, 'internalIncome'), primaryCurrency) + ')'
+        const internalcbExpenses = '(' + numberFormat(_.get(item, 'internalExpenses'), primaryCurrency) + ')'
 
         return (
             <div key={id} className={classes.cashbox} onClick={() => listData.handleOpenDetail(id)}>
@@ -239,22 +248,22 @@ const StatCashboxGridList = enhance((props) => {
                 <section>
                     <div>
                         <div className={classes.cashboxBalance}>
-                            <span>{t('Баланс на начало периода')}</span>
-                            <span>{cbStartBalance}</span>
+                            <div>{t('Баланс на начало периода')}</div>
+                            <div>{cbStartBalance} <span>{currency !== primaryCurrency && internalcbStartBalance}</span></div>
                         </div>
                         <div className={classes.cashboxBalance}>
-                            <span>{t('Баланс на конец периода')}</span>
-                            <span>{cbEndBalance}</span>
+                            <div>{t('Баланс на конец периода')}</div>
+                            <div>{cbEndBalance} <span>{currency !== primaryCurrency && internalcbEndBalance}</span> </div>
                         </div>
                     </div>
                     <div>
                         <div className={classes.cashboxBalance}>
-                            <span>{t('Приход за период')}</span>
-                            <span>{cbIncome}</span>
+                            <div>{t('Приход за период')}</div>
+                            <div>{cbIncome} <span>{currency !== primaryCurrency && internalcbIncome}</span></div>
                         </div>
                         <div className={classes.cashboxBalance}>
-                            <span>{t('Расход за период')}</span>
-                            <span>{cbExpenses}</span>
+                            <div>{t('Расход за период')}</div>
+                            <div>{cbExpenses} <span>{currency !== primaryCurrency && internalcbExpenses}</span></div>
                         </div>
                     </div>
                 </section>
