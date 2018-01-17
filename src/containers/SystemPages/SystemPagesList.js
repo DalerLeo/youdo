@@ -130,10 +130,10 @@ const enhance = compose(
         },
 
         handleSubmitUpdateDialog: props => () => {
-            const {dispatch, createForm, filter} = props
+            const {dispatch, createForm, filter, detail} = props
             const systemPagesId = _.toInteger(_.get(props, ['params', 'systemPagesId']))
 
-            return dispatch(systemPagesUpdateAction(systemPagesId, _.get(createForm, ['values'])))
+            return dispatch(systemPagesUpdateAction(systemPagesId, _.get(createForm, ['values']), _.get(detail, 'keyName')))
                 .then(() => {
                     return dispatch(systemPagesItemFetchAction(systemPagesId))
                 })
@@ -197,9 +197,6 @@ const SystemPagesList = enhance((props) => {
                 return {}
             }
             return {
-                title: _.get(detail, 'title'),
-                description: _.get(detail, 'description'),
-                content: _.get(detail, 'telegraph_link'),
                 translations: _.get(detail, 'translations')
             }
         })(),

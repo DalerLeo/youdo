@@ -171,7 +171,7 @@ const StatRemainderList = enhance((props) => {
         initialValues: {
             search: search,
             type: {
-                value: type
+                value: typeParent && type
             },
             typeParent: {value: typeParent},
             stock: stock && _.map(_.split(stock, '-'), (item) => {

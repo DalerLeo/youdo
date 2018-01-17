@@ -38,8 +38,8 @@ export const systemPagesDeleteAction = (id) => {
     }
 }
 
-export const systemPagesUpdateAction = (id, formValues) => {
-    const requestData = serializers.createSerializer(formValues)
+export const systemPagesUpdateAction = (id, formValues, keyName) => {
+    const requestData = serializers.createSerializer(formValues, keyName)
     const payload = axios()
         .put(sprintf(API.SYSTEM_PAGES_ITEM, id), requestData)
         .then((response) => {

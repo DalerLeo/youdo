@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {compose, withState} from 'recompose'
+import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
@@ -139,12 +139,11 @@ const enhance = compose(
     reduxForm({
         form: 'SystemPagesCreateForm',
         enableReinitialize: true
-    }),
-    withState('tab', 'setTab', 'ru')
+    })
 )
 
 const SystemPagesCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, isUpdate, tab, setTab} = props
+    const {open, loading, handleSubmit, onClose, classes, isUpdate, dialogTab, setDialogTab} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     return (
         <Dialog
@@ -171,7 +170,7 @@ const SystemPagesCreateDialog = enhance((props) => {
                             <Tabs
                                 inkBarStyle={{background: '#12aaeb'}}
                                 className={classes.tabsWrapper}
-                                onChange={(value) => setTab(value)}
+                                onChange={(value) => setDialogTab(value)}
                                 contentContainerClassName={classes.tabsContainer}>
                                 <Tab label={'Ру'} disableTouchRipple={true} value="ru">
                                     <Field
@@ -217,7 +216,7 @@ const SystemPagesCreateDialog = enhance((props) => {
                                 </Tab>
                             </Tabs>
                             <div className={classes.textArea}>
-                                {tab === 'ru'
+                                {dialogTab === 'ru'
                                     ? <Field
                                         name="[translations][ru][body]"
                                         multiLine={true}
@@ -226,7 +225,7 @@ const SystemPagesCreateDialog = enhance((props) => {
                                         rowsMax={7}
                                         floatingLabelText="Содержание"
                                         component={TextField}/>
-                                    : tab === 'uz'
+                                    : dialogTab === 'uz'
                                         ? <Field
                                             name="[translations][uz][body]"
                                             multiLine={true}
@@ -241,7 +240,7 @@ const SystemPagesCreateDialog = enhance((props) => {
                                             rows={7}
                                             fullWidth={true}
                                             rowsMax={7}
-                                            floatingLabelText="Body"
+                                            floatingLabelText="Content"
                                             component={TextField}/>}
                             </div>
                         </div>
