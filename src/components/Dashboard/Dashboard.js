@@ -90,11 +90,11 @@ const enhance = compose(
             whiteSpace: 'nowrap'
         },
         header: {
-            padding: '20px 30px',
+            padding: '0 30px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            maxHeight: '70px'
+            height: '70px'
         },
         user: {
             display: 'flex',

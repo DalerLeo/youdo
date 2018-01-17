@@ -35,6 +35,9 @@ import ExpensiveCategoryCustomSearchField from '../ReduxForm/ExpenseCategory/Exp
 import {openErrorAction} from '../../actions/error'
 import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
 import numberFormat from '../../helpers/numberFormat'
+import * as ROUTE from '../../constants/routes'
+import {Link} from 'react-router'
+
 const validateForm = values => {
     const errors = {}
     if (values.showClients && values.amount && !values.client) {
@@ -460,20 +463,26 @@ const TransactionCreateDialog = enhance((props) => {
                                         label={t('Доп. расход')}
                                         className={classes.inputFieldCustom}
                                         fullWidth={true}/> : null}
-                                {showClients ? <div>
-                                    <Field
-                                        name="client"
-                                        component={ClientSearchField}
-                                        label={t('Клиент')}
-                                        className={classes.inputFieldCustom}
-                                        fullWidth={true}/>
-                                </div> : null}
+                                {showClients
+                                    ? <div className={classes.flex}>
+                                        <Field
+                                            name="client"
+                                            component={ClientSearchField}
+                                            label={t('Клиент')}
+                                            className={classes.inputFieldCustom}
+                                            fullWidth={true}/>
+                                        <Link target={'_blank'} to={{pathname: ROUTE.CLIENT_LIST_URL, query: {openCreateDialog: true}}}>{t('добавить')}</Link>
+                                    </div> : null}
                                 {showProviders &&
-                                <Field name="provider"
-                                    component={ProviderSearchField}
-                                    label={t('Поставщик')}
-                                    className={classes.inputFieldCustom}
-                                    fullWidth={true} />
+                                    <div className={classes.flex}>
+                                        <Field
+                                            name="provider"
+                                            component={ProviderSearchField}
+                                            label={t('Поставщик')}
+                                            className={classes.inputFieldCustom}
+                                            fullWidth={true}/>
+                                        <Link target={'_blank'} to={{pathname: ROUTE.PROVIDER_LIST_URL, query: {openCreateDialog: true}}}>{t('добавить')}</Link>
+                                    </div>
                                 }
                                 <div className={classes.flex} style={{justifyContent: 'space-between'}}>
                                     {!isSalary &&
@@ -518,21 +527,25 @@ const TransactionCreateDialog = enhance((props) => {
                                         className={classes.inputFieldCustom}
                                         fullWidth={true}/> : null}
                                 {showClients
-                                    ? <div>
+                                    ? <div className={classes.flex}>
                                         <Field
                                             name="client"
                                             component={ClientSearchField}
                                             label="Клиент"
                                             className={classes.inputFieldCustom}
                                             fullWidth={true}/>
+                                        <Link target={'_blank'} to={{pathname: ROUTE.CLIENT_LIST_URL, query: {openCreateDialog: true}}}>{t('добавить')}</Link>
                                     </div>
                                     : showProviders
-                                        ? <Field
-                                            name="provider"
-                                            component={ProviderSearchField}
-                                            label={t('Поставщик')}
-                                            className={classes.inputFieldCustom}
-                                            fullWidth={true}/>
+                                        ? <div className={classes.flex}>
+                                            <Field
+                                                name="provider"
+                                                component={ProviderSearchField}
+                                                label={t('Поставщик')}
+                                                className={classes.inputFieldCustom}
+                                                fullWidth={true}/>
+                                            <Link target={'_blank'} to={{pathname: ROUTE.PROVIDER_LIST_URL, query: {openCreateDialog: true}}}>{t('добавить')}</Link>
+                                        </div>
                                         : null}
                                 {!isSalary &&
                                 <div className={classes.flex} style={{justifyContent: 'space-between'}}>

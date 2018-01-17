@@ -146,7 +146,7 @@ export const createSendSerializer = (data, cashboxId, withPersent) => {
     const amountToPersent = _.toNumber(numberWithoutSpaces(_.get(data, 'amountToPersent')))
     const toCashbox = _.get(data, ['categoryId', 'value'])
     const comment = _.get(data, 'comment')
-    const cashbox = _.get(data, ['cashbox', 'value'])
+    const cashbox = _.get(data, ['cashbox', 'value', 'id'])
     return {
         amount_from: withPersent ? amountFromPersent : amountFrom,
         amount_to: withPersent ? amountFromPersent * amountToPersent / HUNDRED : amountTo,

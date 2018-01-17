@@ -201,7 +201,14 @@ const enhance = compose(
             width: '100%'
         },
         payment: {
-
+            display: 'inline-block',
+            marginLeft: '5px',
+            '& > span:after': {
+                content: '","'
+            },
+            '&:last-child > span:after': {
+                display: 'none'
+            }
         },
         division: {
             marginRight: '20px',
@@ -254,6 +261,7 @@ const ClientBalanceInfoDialog = enhance((props) => {
         const currency = _.get(item, ['currency', 'name'])
         const currencyId = _.get(item, ['currency', 'id'])
         const market = _.get(item, ['market', 'name'])
+        const division = _.get(item, ['division', 'name'])
         const amount = _.toNumber(_.get(item, 'amount'))
         const internal = _.toNumber(_.get(item, 'internal'))
         const customRate = _.get(item, 'customRate') ? _.toNumber(_.get(item, 'customRate')) : _.toInteger(amount / internal)
@@ -294,11 +302,12 @@ const ClientBalanceInfoDialog = enhance((props) => {
                 <div style={{flexBasis: '20%', maxWidth: '20%'}}>{user}</div>
                 <div style={{flexBasis: '40%', maxWidth: '40%'}}>
                     {market && <div>{t('Магазин')}: <span>{market}</span></div>}
+                    {division && <div>{t('Организация')}: <span>{division}</span></div>}
                     {comment && <div>{t('Комментарии')}: <span>{comment}</span></div>}
                     <ClientBalanceFormat type={type} order={order} orderReturn={orderReturn}/>
                 </div>
                 <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>
-                    <div className={amount > ZERO ? classes.green : classes.red}>{numberFormat(amount, currency)}</div>
+                    <div className={amount > ZERO ? classes.green : amount < ZERO ? classes.red : ''}>{numberFormat(amount, currency)}</div>
                     {currencyId !== currentCurrencyId &&
                     <div>
                         <div>{numberFormat(internal, currentCurrency)} <span

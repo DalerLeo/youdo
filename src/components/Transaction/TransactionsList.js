@@ -241,15 +241,9 @@ const TransactionsList = enhance((props) => {
         },
         {
             sorting: false,
-            name: 'client',
-            title: showCashbox ? t('Касса') : t('Клиент'),
-            width: '22%'
-        },
-        {
-            sorting: false,
             name: 'comment',
             title: t('Описание'),
-            width: '30%'
+            width: '52%'
         },
         {
             sorting: true,
@@ -325,22 +319,21 @@ const TransactionsList = enhance((props) => {
         : null
 
     const transactionList = _.map(_.get(listData, 'data'), (item) => {
-        const zero = 0
         const id = _.get(item, 'id')
         const comment = _.get(item, 'comment')
-        const type = _.get(item, 'amount') || 'N/A'
-        const cashbox = _.get(item, ['cashbox', 'id']) || 'N/A'
+        const cashboxID = _.get(item, ['cashbox', 'id'])
         const user = _.get(item, 'user')
         const order = _.get(item, 'order')
         const amount = _.toNumber(_.get(item, 'amount'))
         const internal = _.toNumber(_.get(item, 'internalAmount'))
         const date = dateFormat(_.get(item, 'date'), true)
-        const currentCurrency = _.get(_.find(_.get(cashboxData, 'data'), {'id': cashbox}), ['currency', 'name'])
-        const client = showCashbox ? _.get(_.find(_.get(cashboxData, 'data'), {'id': cashbox}), 'name') : null
+        const currentCurrency = _.get(_.find(_.get(cashboxData, 'data'), {'id': cashboxID}), ['currency', 'name'])
+        const cashbox = showCashbox ? _.get(_.find(_.get(cashboxData, 'data'), {'id': cashboxID}), 'name') : null
         const clientName = _.get(item, ['client', 'name'])
+        const providerName = _.get(item, ['provider', 'name'])
         const expenseCategory = _.get(item, ['expanseCategory'])
         const incomeCategory = _.get(item, ['incomeCategory'])
-        const transType = _.get(item, ['type'])
+        const transType = _.get(item, 'type')
         const customRate = _.toNumber(_.get(item, 'customRate'))
         const rate = customRate > ZERO ? customRate : _.toInteger(amount / internal)
         const isDeleted = _.get(item, 'isDelete')
@@ -349,11 +342,7 @@ const TransactionsList = enhance((props) => {
         return (
             <div key={id} className={isDeleted ? classes.deletedRow : classes.listRow}>
                 <div style={{flexBasis: '10%', maxWidth: '10%'}}>{id}</div>
-                <div style={{flexBasis: '22%', maxWidth: '24%'}}>
-                    {client}
-                    {!showCashbox ? <div>{clientName || 'Не указан'}</div> : null}
-                </div>
-                <div style={{flexBasis: '30%', maxWidth: '30%'}}>
+                <div style={{flexBasis: '52%', maxWidth: '52%'}}>
                     <TransactionsFormat
                         handleClickAgentIncome={() => {
                             transactionInfoDialog.handleOpenDialog(id)
@@ -370,10 +359,13 @@ const TransactionsList = enhance((props) => {
                         comment={comment}
                         supplyExpanseId={supplyExpanseId}
                     />
+                    {showCashbox && <div><strong>{t('Касса')}:</strong> {cashbox}</div>}
+                    {!showCashbox ? clientName && <div><strong>{t('Клиент')}:</strong> {clientName}</div> : null}
+                    {!showCashbox ? providerName && <div><strong>{t('Поставщик')}:</strong> {providerName}</div> : null}
                 </div>
                 <div style={{flexBasis: '18%', maxWidth: '18%'}}>{date}</div>
                 <div style={{flexBasis: '20%', maxWidth: '20%', textAlign: 'right'}}
-                     className={type >= zero ? classes.green : classes.red}>
+                     className={amount >= ZERO ? classes.green : classes.red}>
                     {numberFormat(amount, currentCurrency)}
                     {(currentCurrency !== primaryCurrency) && <div>{numberFormat(internal, primaryCurrency)}
                         {internal !== ZERO &&

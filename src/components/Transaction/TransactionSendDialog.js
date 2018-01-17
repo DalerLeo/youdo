@@ -68,16 +68,16 @@ const enhance = compose(
         }
     })),
     reduxForm({
-        form: 'TransactionCreateForm',
+        form: 'TransactionSendForm',
         enableReinitialize: true
     }),
     connect((state) => {
-        const chosenCashboxId = _.get(state, ['form', 'TransactionCreateForm', 'values', 'categoryId', 'value'])
-        const amountFrom = _.get(state, ['form', 'TransactionCreateForm', 'values', 'amountFrom'])
-        const amountTo = _.get(state, ['form', 'TransactionCreateForm', 'values', 'amountTo'])
-        const amountFromPersent = _.get(state, ['form', 'TransactionCreateForm', 'values', 'amountFromPersent'])
-        const amountToPersent = _.get(state, ['form', 'TransactionCreateForm', 'values', 'amountToPersent'])
-        const currentCashbox = _.get(state, ['form', 'TransactionCreateForm', 'values', 'cashbox', 'value'])
+        const chosenCashboxId = _.get(state, ['form', 'TransactionSendForm', 'values', 'categoryId', 'value'])
+        const amountFrom = _.get(state, ['form', 'TransactionSendForm', 'values', 'amountFrom'])
+        const amountTo = _.get(state, ['form', 'TransactionSendForm', 'values', 'amountTo'])
+        const amountFromPersent = _.get(state, ['form', 'TransactionSendForm', 'values', 'amountFromPersent'])
+        const amountToPersent = _.get(state, ['form', 'TransactionSendForm', 'values', 'amountToPersent'])
+        const currentCashbox = _.get(state, ['form', 'TransactionSendForm', 'values', 'cashbox', 'value'])
         return {
             chosenCashboxId,
             amountFrom,

@@ -51,7 +51,6 @@ const enhance = compose(
         },
         wrapper: {
             padding: '20px 30px',
-            height: 'calc(100% - 40px)',
             '& .row': {
                 margin: '0'
             }
@@ -72,7 +71,6 @@ const enhance = compose(
             }
         },
         tableWrapper: {
-            height: 'calc(100% - 118px)',
             '& .row': {
                 '&:after': {
                     bottom: '-1px'

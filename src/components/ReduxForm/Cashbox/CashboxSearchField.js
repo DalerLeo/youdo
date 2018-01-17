@@ -1,4 +1,5 @@
 import sprintf from 'sprintf'
+import _ from 'lodash'
 import React from 'react'
 import SearchField from '../Basic/SearchFieldCustom'
 import axios from '../../../helpers/axios'
@@ -23,7 +24,8 @@ const getOptions = (search) => {
         })
 }
 
-const getItem = (id) => {
+const getItem = (value) => {
+    const id = _.isObject(value) ? _.get(value, 'id') : value
     return axios().get(sprintf(PATH.CASHBOX_ITEM, id))
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data))

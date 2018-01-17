@@ -115,7 +115,7 @@ const ClientBalanceCreateDialog = enhance((props) => {
                 </div>
                 : <div className={classes.bodyContent}>
                     <div style={{padding: '10px 30px'}}>{t('Клиент')}: <strong>{name}</strong></div>
-                    {!superUser && <div style={{display: 'flex', flexWrap: 'wrap'}}>
+                    {!superUser && <div style={{display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap'}}>
                         {balanceInfo}
                     </div>}
                     <form onSubmit={onSubmit} className={classes.form}>
