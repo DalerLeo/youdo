@@ -1,14 +1,13 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {compose, withHandlers, withState} from 'recompose'
+import {compose, withHandlers} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import IconButton from 'material-ui/IconButton'
-import SearchIcon from 'material-ui/svg-icons/action/search'
 import Loader from '../Loader'
-import {Field, reduxForm, SubmissionError} from 'redux-form'
+import {Field, reduxForm, SubmissionError, FieldArray} from 'redux-form'
 import {connect} from 'react-redux'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import toCamelCase from '../../helpers/toCamelCase'
@@ -29,7 +28,6 @@ import {
     SupplyExpenseSearchField
 } from '../ReduxForm'
 import RateRadioButton from '../ReduxForm/Transaction/RateRadioButton'
-import NotFound from '../Images/not-found.png'
 import CashboxSearchField from '../ReduxForm/Cashbox/CashBoxSimpleSearch'
 import ExpensiveCategoryCustomSearchField from '../ReduxForm/ExpenseCategory/ExpensiveCategoryCustomSearchField'
 import {openErrorAction} from '../../actions/error'
@@ -37,6 +35,8 @@ import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
 import numberFormat from '../../helpers/numberFormat'
 import * as ROUTE from '../../constants/routes'
 import {Link} from 'react-router'
+import TransactionCreateSalary from './TransactionCreateSalary'
+import TransactionCreateDetalization from './TransactionCreateDetalization'
 
 const validateForm = values => {
     const errors = {}
@@ -60,12 +60,6 @@ const enhance = compose(
             zIndex: '999',
             textAlign: 'center',
             display: ({loading}) => loading ? 'flex' : 'none'
-        },
-        usersLoader: {
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '100%'
         },
         dialog: {
             overflowY: 'auto'
@@ -213,58 +207,6 @@ const enhance = compose(
             textAlign: 'left',
             width: '50%',
             float: 'left'
-        },
-        subTitle: {
-            margin: '10px 30px',
-            fontWeight: '600'
-        },
-        user: {
-            padding: '10px 30px',
-            maxHeight: '45px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            '&:hover': {
-                background: '#f2f5f8'
-            }
-        },
-        searchWrapper: {
-            padding: '0 30px',
-            marginBottom: '10px'
-        },
-        search: {
-            borderBottom: '2px #efefef solid',
-            position: 'relative',
-            display: 'flex',
-            alignItems: 'center',
-            width: '100%'
-        },
-        searchField: {
-            display: 'flex',
-            color: '#333',
-            fontSize: '13px !important',
-            width: '100%',
-            '& > input': {
-                border: 'none',
-                outline: 'none',
-                height: '35px !important'
-            }
-        },
-        searchButton: {
-            width: '35px',
-            height: '35px',
-            display: 'flex',
-            position: 'absolute !important',
-            alignItems: 'center',
-            justifyContent: 'center',
-            right: '0'
-        },
-        emptyQuery: {
-            background: 'url(' + NotFound + ') no-repeat center 20px',
-            backgroundSize: '165px',
-            padding: '135px 0 20px',
-            textAlign: 'center',
-            color: '#999'
         }
     }),
     reduxForm({
@@ -283,7 +225,11 @@ const enhance = compose(
         const incomeCategoryOptions = _.get(state, ['form', 'TransactionCreateForm', 'values', 'incomeCategory', 'value', 'options'])
         const expenseCategoryOptions = _.get(state, ['form', 'TransactionCreateForm', 'values', 'expanseCategory', 'value', 'options'])
         const users = _.get(state, ['form', 'TransactionCreateForm', 'values', 'users'])
-        const totalStaffAmount = _.sumBy(users, (item) => {
+        const transactionChild = _.get(state, ['form', 'TransactionCreateForm', 'values', 'transaction_child'])
+        const totalAmount = _.sumBy(users, (item) => {
+            return _.toNumber(numberWithoutSpaces(_.get(item, 'amount')))
+        })
+        const totalDetalizationAmount = _.sumBy(transactionChild, (item) => {
             return _.toNumber(numberWithoutSpaces(_.get(item, 'amount')))
         })
         return {
@@ -295,11 +241,11 @@ const enhance = compose(
             optionsList,
             incomeCategoryOptions,
             expenseCategoryOptions,
-            totalStaffAmount,
+            totalAmount,
+            totalDetalizationAmount,
             incomeCategory
         }
     }),
-    withState('searchQuery', 'setSearchQuery', ''),
     withHandlers({
         validate: props => (data) => {
             const errors = toCamelCase(data)
@@ -314,12 +260,6 @@ const enhance = compose(
         }
     })
 )
-const iconStyle = {
-    color: '#5d6474',
-    width: 22,
-    height: 22
-}
-const NOT_FOUND = -1
 const TransactionCreateDialog = enhance((props) => {
     const {
         open,
@@ -338,9 +278,8 @@ const TransactionCreateDialog = enhance((props) => {
         optionsList,
         incomeCategoryOptions,
         expenseCategoryOptions,
-        searchQuery,
-        setSearchQuery,
-        totalStaffAmount,
+        totalAmount,
+        totalDetalizationAmount,
         order,
         expenseCategory,
         incomeCategoryKey,
@@ -356,8 +295,11 @@ const TransactionCreateDialog = enhance((props) => {
     const orderOptionId = _.get(_.find(optionsList, {'keyName': 'order'}), 'id')
     const supplyOptionId = _.get(_.find(optionsList, {'keyName': 'supply'}), 'id')
     const supplyExpenseOptionId = _.get(_.find(optionsList, {'keyName': 'supply_expanse'}), 'id')
+    const detailizationOptionId = _.get(_.find(optionsList, {'keyName': 'transaction_child'}), 'id')
+
     const showClients = isExpense ? _.includes(expenseCategoryOptions, clientOptionId) : _.includes(incomeCategoryOptions, clientOptionId)
     const showProviders = isExpense ? _.includes(expenseCategoryOptions, providerOptionId) : _.includes(incomeCategoryOptions, providerOptionId)
+    const showDetalization = isExpense ? _.includes(expenseCategoryOptions, detailizationOptionId) : _.includes(incomeCategoryOptions, detailizationOptionId)
     const showOrders = _.includes(incomeCategoryOptions, orderOptionId)
     const showSupplies = _.includes(expenseCategoryOptions, supplyOptionId)
     const showSupplyExpenses = _.includes(expenseCategoryOptions, supplyExpenseOptionId)
@@ -370,15 +312,6 @@ const TransactionCreateDialog = enhance((props) => {
     const divisionStatus = getConfig('DIVISIONS')
     const convert = convertCurrency(amount, rate)
     const isSalary = _.get(usersData, 'open')
-    const handleSearch = (event) => {
-        setSearchQuery(event.target.value.toLowerCase())
-    }
-    const filterData = _.orderBy(_.get(usersData, 'data'), ['firstName', 'secondName'], ['asc', 'asc'])
-    const filteredList = filterData.filter((el) => {
-        const searchValue = el.firstName.toLowerCase()
-        const searchValue2 = el.secondName.toLowerCase()
-        return searchValue.indexOf(searchQuery) !== NOT_FOUND || searchValue2.indexOf(searchQuery) !== NOT_FOUND
-    })
     const customRateField = (primaryCurrency !== currency && currency && date && canSetCustomRate)
         ? (
             <Field
@@ -398,7 +331,7 @@ const TransactionCreateDialog = enhance((props) => {
             className={classes.dialog}
             contentStyle={loading
                 ? {minWidth: '300px'}
-                : isSalary ? {width: '1000px', maxWidth: 'none'} : {width: '500px'}}
+                : (isSalary || showDetalization) ? {width: '1000px', maxWidth: 'none'} : {width: '500px'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
                 <span>{isExpense ? t('Расход') : t('Приход')}</span>
@@ -485,7 +418,7 @@ const TransactionCreateDialog = enhance((props) => {
                                     </div>
                                 }
                                 <div className={classes.flex} style={{justifyContent: 'space-between'}}>
-                                    {!isSalary &&
+                                    {!(isSalary || showDetalization) &&
                                     <div className={classes.flex} style={{alignItems: 'baseline', width: '100%'}}>
                                         <Field
                                             name="amount"
@@ -547,7 +480,7 @@ const TransactionCreateDialog = enhance((props) => {
                                             <Link target={'_blank'} to={{pathname: ROUTE.PROVIDER_LIST_URL, query: {openCreateDialog: true}}}>{t('добавить')}</Link>
                                         </div>
                                         : null}
-                                {!isSalary &&
+                                {!(isSalary || showDetalization) &&
                                 <div className={classes.flex} style={{justifyContent: 'space-between'}}>
                                     <div className={classes.flex} style={{alignItems: 'baseline', width: '100%'}}>
                                         <Field
@@ -584,58 +517,14 @@ const TransactionCreateDialog = enhance((props) => {
                             component={RateRadioButton}
                         />
                     </div>
-                    {isSalary &&
-                    <div className={classes.salaryWrapper}>
-                        <div className={classes.subTitle}>{t('Список сотрудников')}</div>
-                        <div className={classes.searchWrapper}>
-                            <form onSubmit={onSubmit}>
-                                <div className={classes.search}>
-                                    <div className={classes.searchField}>
-                                        <input
-                                            type="text"
-                                            placeholder={t('Поиск сотрудников...')}
-                                            onChange={handleSearch}/>
-                                        <div className={classes.searchButton}>
-                                            <SearchIcon style={iconStyle}/>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        {_.get(usersData, 'loading')
-                            ? <div className={classes.usersLoader}>
-                                <Loader size={0.75}/>
-                            </div>
-                            : _.isEmpty(filteredList)
-                                ? <div className={classes.emptyQuery}>
-                                    <div>Сотрудников не найдено...</div>
-                                </div>
-                                : _.map(filteredList, (item) => {
-                                    const id = _.get(item, 'id')
-                                    const userName = _.get(item, 'firstName') + ' ' + _.get(item, 'secondName')
-                                    return (
-                                        <div key={id} className={classes.user}>
-                                            {userName}
-                                            <Field
-                                                hintText={'Сумма'}
-                                                name={'users[' + id + '][amount]'}
-                                                component={TextField}
-                                                normalize={normalizeNumber}
-                                                hintStyle={{left: 'auto', right: '0'}}
-                                                inputStyle={{textAlign: 'right'}}
-                                                className={classes.inputFieldCustom}
-                                                style={{width: '150px'}}
-                                            />
-                                        </div>
-                                    )
-                                })
-                        }
-
-                    </div>}
+                    {isSalary && <TransactionCreateSalary usersData={usersData}/>}
+                    {showDetalization && <FieldArray name={'transaction_child'} component={TransactionCreateDetalization}/>}
                 </form>
                 <div className={classes.bottomButton}>
-                    {isSalary && <div className={classes.commentField}>
-                        {isExpense ? t('Сумма расхода') : t('Сумма прихода')}: <b>{numberFormat(totalStaffAmount, _.get(cashbox, ['currency', 'name']))}</b>
+                    {(isSalary || showDetalization) && <div className={classes.commentField}>
+                        {isExpense
+                            ? t('Сумма расхода')
+                            : t('Сумма прихода')}: <b>{isSalary ? numberFormat(totalAmount, currency) : numberFormat(totalDetalizationAmount, currency)}</b>
                     </div>}
                     <FlatButton
                         label={t('Сохранить')}
