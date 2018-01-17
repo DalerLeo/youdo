@@ -449,10 +449,10 @@ const ClientBalanceGridList = enhance((props) => {
     const isSuperUser = _.get(superUser, 'isSuperUser')
     const clients = (
         <div className={classes.leftTable}>
-            <div><span>Клиент</span></div>
+            <div><span>{t('Клиент')}</span></div>
             {_.map(_.get(listData, 'data'), (item) => {
                 const id = _.get(item, 'id')
-                const name = _.get(item, 'name') || 'No'
+                const name = _.get(item, 'name') || t('No')
                 return (
                     <div
                         key={id}

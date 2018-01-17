@@ -46,10 +46,7 @@ const enhance = compose(
 )
 
 const TransactionIncomeCategory = enhance((props) => {
-    const {dispatch, ...defaultProps} = props
-    const test = (id) => {
-        return getItem(id, dispatch)
-    }
+    const {...defaultProps} = props
     return (
         <SearchFieldCustom
             getValue={(value) => {
@@ -59,7 +56,7 @@ const TransactionIncomeCategory = enhance((props) => {
                 return _.get(value, 'name')
             }}
             getOptions={getOptions}
-            getItem={test}
+            getItem={getItem}
             getItemText={(value) => {
                 return _.get(value, ['name'])
             }}

@@ -203,6 +203,11 @@ const enhance = compose(
                     hashHistory.push(filter.createURL({[PRODUCT_UPDATE_DIALOG_OPEN]: false}))
                     dispatch(productListFetchAction(filter))
                 })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
+                })
         }
     })
 )
