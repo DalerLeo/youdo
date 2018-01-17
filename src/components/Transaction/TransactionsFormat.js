@@ -20,6 +20,7 @@ const TransactionsFormat = enhance((props) => {
         supply,
         supplyExpanseId,
         expenseCategory,
+        incomeCategory,
         handleOpenCategoryPopop,
         id,
         comment
@@ -29,21 +30,27 @@ const TransactionsFormat = enhance((props) => {
     const categoryPopopShow = _.find(_.get(expenseCategory, 'options'), {'keyName': 'staff_expanse'})
 
     const category = (
-        expenseCategory &&
-             <div>
-                <strong >{t('Категория')}: </strong>
-                 {categoryPopopShow
-                 ? (handleOpenCategoryPopop)
-                         ? <Link onClick={() => handleOpenCategoryPopop(id)}>
+        expenseCategory
+            ? <div>
+                <strong>{t('Категория')}: </strong>
+                {categoryPopopShow
+                    ? (handleOpenCategoryPopop)
+                        ? <Link onClick={() => handleOpenCategoryPopop(id)}>
                             {_.get(expenseCategory, 'name')}
-                           </Link>
-                         : <Link
-                             target={'_blank'}
-                             to={{pathname: ROUTES.TRANSACTION_LIST_URL, query: {[TRANSACTION_CATEGORY_POPOP_OPEN]: id}}}>
-                             {_.get(expenseCategory, 'name')}
-                         </Link>
-                 : <span>{_.get(expenseCategory, 'name')}</span>}
-              </div>
+                        </Link>
+                        : <Link
+                            target={'_blank'}
+                            to={{pathname: ROUTES.TRANSACTION_LIST_URL, query: {[TRANSACTION_CATEGORY_POPOP_OPEN]: id}}}>
+                            {_.get(expenseCategory, 'name')}
+                        </Link>
+                    : <span>{_.get(expenseCategory, 'name')}</span>}
+            </div>
+            : incomeCategory
+                ? <div>
+                    <strong>{t('Категория')}: </strong>
+                    <span>{_.get(incomeCategory, 'name')}</span>
+                </div>
+                : null
     )
 
     let output = null
