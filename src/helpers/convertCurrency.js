@@ -10,6 +10,6 @@ export const convertCurrency = (amount, rate, primaryIsUSD) => {
     if (isUSD) {
         return (numberFormat(_.toNumber(numberWithoutSpaces(amount)) / _.toNumber(numberWithoutSpaces(rate))))
     }
-    return (numberFormat(_.toNumber(numberWithoutSpaces(amount)) * _.toNumber(numberWithoutSpaces(rate))))
+    return (numberFormat(_.toNumber(numberWithoutSpaces(amount)) / _.toNumber(numberWithoutSpaces(rate))))
 }
 

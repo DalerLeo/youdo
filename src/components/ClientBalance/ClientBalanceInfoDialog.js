@@ -420,7 +420,6 @@ const ClientBalanceInfoDialog = enhance((props) => {
                             <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>{t('Сумма')}</div>
                             <div style={{flexBasis: '5%', maxWidth: '5%', textAlign: 'right'}}/>
                         </Row>
-
                         {!_.isEmpty(_.get(detailData, 'data'))
                             ? detailList
                             : <div className={classes.emptyQuery}>{t('Пока транзакции нет')}</div>}

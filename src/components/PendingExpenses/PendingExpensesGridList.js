@@ -142,8 +142,7 @@ const PendingExpensesGridList = enhance((props) => {
         const createdDate = dateTimeFormat(_.get(item, 'createdDate'), true)
         const currency = _.get(item, ['currency', 'name'])
         const summary = _.get(item, 'totalAmount')
-        const paidAmount = _.get(item, 'totalBalance')
-        const balance = summary - paidAmount
+        const balance = _.get(item, 'remains')
         return (
             <Row key={id}>
                 <Col xs={1}>{supplyNo}</Col>

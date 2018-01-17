@@ -419,7 +419,7 @@ const TransactionCreateDialog = enhance((props) => {
                                     label={t('Касса')}/>
                             </div>
                             : <div className={classes.itemList}>
-                                <div className={classes.label}>Касса:</div>
+                                <div className={classes.label}>{t('Касса')}:</div>
                                 <div style={{fontWeight: '600', marginBottom: '5px'}}>{_.get(cashbox, 'name')}</div>
                             </div>}
                         {divisionStatus && <Field
