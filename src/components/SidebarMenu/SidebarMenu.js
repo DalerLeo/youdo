@@ -25,7 +25,7 @@ const style = {
 }
 
 const enhance = compose(
-    connect((state) => {
+    connect((state, props) => {
         const permissions = _.map(_.get(state, ['authConfirm', 'data', 'permissions']), (item) => {
             return _.get(item, 'codename')
         })

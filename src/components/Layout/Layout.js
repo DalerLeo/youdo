@@ -513,8 +513,9 @@ const Layout = enhance((props) => {
                 </Paper>
             </div>
             <div className={classes.sidenav}>
-                <SideBarMenu handleSignOut={handleSignOut}
-                             handleOpenNotificationBar={notificationData.handleOpenNotificationBar}/>
+                <SideBarMenu
+                    handleSignOut={handleSignOut}
+                    handleOpenNotificationBar={notificationData.handleOpenNotificationBar}/>
             </div>
             <div className={classes.content} ref="content">
                 {children}

@@ -337,7 +337,7 @@ const ShopCreateDialog = enhance((props) => {
                                         </div>}
                                 </div>
                             </div>
-                            <div className={classes.flex} style={{alignItems: 'baseline'}}>
+                            <div className={classes.flex}>
                                 <div className={classes.inputHalfWrap}>{t('Частота посещений')}:</div>
                                 <div className={classes.inputHalfWrap}>
                                     <Field
@@ -349,7 +349,7 @@ const ShopCreateDialog = enhance((props) => {
                                         fullWidth={true}/>
                                 </div>
                             </div>
-                            <div className={classes.flex} style={{alignItems: 'baseline'}}>
+                            <div className={classes.flex}>
                                 <div className={classes.inputHalfWrap}>{t('Статус объекта')}:</div>
                                 <div className={classes.inputHalfWrap}>
                                     <Field

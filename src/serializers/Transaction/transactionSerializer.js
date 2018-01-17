@@ -56,14 +56,21 @@ export const createIncomeSerializer = (data, cashboxId) => {
             staff: _.toInteger(index),
             amount: _.toNumber(numberWithoutSpaces(_.get(item, 'amount')))
         }
-    }), (item) => {
-        return _.toNumber(_.get(item, 'amount')) > ZERO
-    })
-    const salaryAmount = _.sumBy(staffs, (item) => {
-        return _.get(item, 'amount')
-    })
+    }), (item) => _.toNumber(_.get(item, 'amount')) > ZERO)
+    const detalization = _.filter(_.map(_.get(data, 'transaction_child'), (item) => {
+        return {
+            name: _.get(item, 'name'),
+            amount: _.toNumber(numberWithoutSpaces(_.get(item, 'amount')))
+        }
+    }), (item) => _.toNumber(_.get(item, 'amount')) > ZERO && _.get(item, 'name'))
+    const salaryAmount = _.sumBy(staffs, (item) => _.get(item, 'amount'))
+    const detalizationAmount = _.sumBy(detalization, (item) => _.get(item, 'amount'))
     return {
-        'amount': _.isEmpty(staffs) ? numberWithoutSpaces(amount) : salaryAmount,
+        'amount': (_.isEmpty(staffs) && _.isEmpty(detalization))
+            ? numberWithoutSpaces(amount)
+            : salaryAmount > ZERO
+                ? salaryAmount
+                : detalizationAmount,
         comment,
         'cashbox': _.toInteger(cashboxId) === ZERO ? cashbox : cashboxId,
         'custom_rate': customRate,
@@ -73,7 +80,8 @@ export const createIncomeSerializer = (data, cashboxId) => {
         provider,
         'income_category': incomeCategory,
         order,
-        'rate_type': getRateType(currencyRate)
+        'rate_type': getRateType(currencyRate),
+        'transaction_child': detalization
     }
 }
 
@@ -86,57 +94,49 @@ export const createExpenseSerializer = (data, cashboxId) => {
     }), (item) => {
         return _.toNumber(_.get(item, 'amount')) > ZERO
     })
+    const detalization = _.filter(_.map(_.get(data, 'transaction_child'), (item) => {
+        return {
+            name: _.get(item, 'name'),
+            amount: _.toNumber(numberWithoutSpaces(_.get(item, 'amount')))
+        }
+    }), (item) => _.toNumber(_.get(item, 'amount')) > ZERO && _.get(item, 'name'))
     const amount = Math.abs(numberWithoutSpaces(_.get(data, 'amount'))) * MINUS_ONE
-    const salaryAmount = _.sumBy(staffs, (item) => {
-        return _.get(item, 'amount') * MINUS_ONE
-    })
+    const salaryAmount = _.sumBy(staffs, item => _.get(item, 'amount') * MINUS_ONE)
+    const detalizationAmount = _.sumBy(detalization, item => _.get(item, 'amount') * MINUS_ONE)
     const comment = _.get(data, 'comment')
     const expenseId = _.get(data, ['expanseCategory', 'value', 'id'])
     const clientId = _.get(data, ['client', 'value'])
     const providerId = _.get(data, ['provider', 'value'])
+    const supplyExpense = _.get(data, ['supplyExpense', 'value'])
     const customRate = numberWithoutSpaces(_.get(data, 'custom_rate'))
     const division = _.get(data, ['division', 'value'])
     const cashbox = _.get(data, ['cashbox', 'value'])
     const supply = _.get(data, ['supply', 'value'])
     const date = moment(_.get(data, 'date')).format('YYYY-MM-DD HH:00:00')
     const currencyRate = _.get(data, 'currencyRate')
+
+    const request = {
+        'amount': (_.isEmpty(staffs) && _.isEmpty(detalization))
+            ? numberWithoutSpaces(amount)
+            : salaryAmount < ZERO
+                ? salaryAmount
+                : detalizationAmount,
+        comment,
+        'cashbox': _.toInteger(cashboxId) === ZERO ? cashbox : cashboxId,
+        'expanse_category': expenseId,
+        'supply_expanse': supplyExpense,
+        'custom_rate': customRate,
+        staffs,
+        supply,
+        'division': division,
+        'rate_type': getRateType(currencyRate),
+        'transaction_child': detalization
+    }
     return (clientId)
-        ? {
-            amount: amount,
-            comment,
-            'cashbox': _.toInteger(cashboxId) === ZERO ? cashbox : cashboxId,
-            'expanse_category': expenseId,
-            'client': clientId,
-            'custom_rate': customRate,
-            'division': division,
-            'date': date,
-            supply,
-            'rate_type': getRateType(currencyRate)
-        }
+        ? _.merge(request, {'client': clientId, 'date': date})
         : (providerId)
-            ? {
-                amount: amount,
-                comment,
-                'cashbox': _.toInteger(cashboxId) === ZERO ? cashbox : cashboxId,
-                'expanse_category': expenseId,
-                'provider': providerId,
-                'custom_rate': customRate,
-                'division': division,
-                'date': date,
-                supply,
-                'rate_type': getRateType(currencyRate)
-            }
-            : {
-                amount: _.isEmpty(staffs) ? amount : salaryAmount,
-                comment,
-                'cashbox': _.toInteger(cashboxId) === ZERO ? cashbox : cashboxId,
-                'expanse_category': expenseId,
-                'custom_rate': customRate,
-                staffs,
-                supply,
-                'division': division,
-                'rate_type': getRateType(currencyRate)
-            }
+            ? _.merge(request, {'provider': providerId, 'date': date})
+            : request
 }
 const HUNDRED = 100
 export const createSendSerializer = (data, cashboxId, withPersent) => {
@@ -146,7 +146,7 @@ export const createSendSerializer = (data, cashboxId, withPersent) => {
     const amountToPersent = _.toNumber(numberWithoutSpaces(_.get(data, 'amountToPersent')))
     const toCashbox = _.get(data, ['categoryId', 'value'])
     const comment = _.get(data, 'comment')
-    const cashbox = _.get(data, ['cashbox', 'value'])
+    const cashbox = _.get(data, ['cashbox', 'value', 'id'])
     return {
         amount_from: withPersent ? amountFromPersent : amountFrom,
         amount_to: withPersent ? amountFromPersent * amountToPersent / HUNDRED : amountTo,

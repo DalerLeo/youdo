@@ -72,7 +72,7 @@ const ClientCreateDialog = enhance((props) => {
 
             <div className={classes.titleContent}>
                 <span>{isUpdate ? t('Изменение клиента') : t('Добавление клиента')}</span>
-                <IconButton onTouchTap={onClose} style={{padding: 'auto'}}>
+                <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
             </div>
