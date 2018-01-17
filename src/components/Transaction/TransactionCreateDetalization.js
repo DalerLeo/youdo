@@ -2,7 +2,7 @@ import _ from 'lodash'
 import React from 'react'
 import {compose, withHandlers, withState} from 'recompose'
 import injectSheet from 'react-jss'
-import {Field, reduxForm, SubmissionError} from 'redux-form'
+import {Field, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import t from '../../helpers/translate'
 import {TextField, normalizeNumber} from '../ReduxForm'
@@ -10,15 +10,6 @@ import {openErrorAction} from '../../actions/error'
 import ContentAdd from 'material-ui/svg-icons/content/add-circle-outline'
 import ContentRemove from 'material-ui/svg-icons/content/remove-circle-outline'
 import IconButton from 'material-ui/IconButton'
-
-const validateForm = values => {
-    const errors = {}
-    if (values.showClients && values.amount && !values.client) {
-        errors.client = 'Клиент не выбран'
-    }
-
-    return errors
-}
 
 const enhance = compose(
     injectSheet({
@@ -67,11 +58,6 @@ const enhance = compose(
             paddingRight: '10px'
         }
 
-    }),
-    reduxForm({
-        form: 'TransactionCreateForm',
-        validate: validateForm,
-        enableReinitialize: true
     }),
     withState('searchQuery', 'setSearchQuery', ''),
     withHandlers({
