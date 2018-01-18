@@ -554,3 +554,16 @@ export const WIDGETS_ACTIVATE = `/${WIDGETS}/%d/activate/`
 export const WIDGETS_DEACTIVATE = `/${WIDGETS}/%d/deactivate/`
 
 export const DASHBOARD_CHANGE_PASSWORD = `${USERS}/update_password/`
+
+export const CELL_TYPE = 'stock/cell_type'
+export const CELL_TYPE_CREATE = `/${CELL_TYPE}/`
+export const CELL_TYPE_LIST = `/${CELL_TYPE}/`
+export const CELL_TYPE_H_LIST = `/${CELL_TYPE}/hierarchy/`
+export const CELL_TYPE_ITEM = `/${CELL_TYPE}/%d/`
+export const CELL_TYPE_DELETE = `/${CELL_TYPE}/%d/`
+
+export const CELL = 'stock/cell'
+export const CELL_CREATE = `/${CELL}/`
+export const CELL_LIST = `/${CELL}/`
+export const CELL_ITEM = `/${CELL}/%d/`
+export const CELL_DELETE = `/${CELL}/%d/`

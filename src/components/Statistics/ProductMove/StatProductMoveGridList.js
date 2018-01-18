@@ -31,6 +31,7 @@ import IconButton from 'material-ui/IconButton'
 import FullScreen from 'material-ui/svg-icons/navigation/fullscreen'
 import FullScreenExit from 'material-ui/svg-icons/navigation/fullscreen-exit'
 import t from '../../../helpers/translate'
+import moduleFormat from '../../../helpers/moduleFormat'
 
 export const STAT_PRODUCT_MOVE_FILTER_KEY = {
     FROM_DATE: 'fromDate',
@@ -457,29 +458,28 @@ const StatProductMoveGridList = enhance((props) => {
             </div>
         )
     })
-
     const tableList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const measurement = _.get(item, ['measurement', 'name'])
         const code = _.get(item, 'code') || 'неизвестно'
 
-        const beginBalancePr = numberFormat(_.get(item, 'beginBalance'), measurement)
-        const beginPricePr = numberFormat(_.get(item, 'beginPrice'), primaryCurrency)
+        const beginBalancePr = moduleFormat(_.get(item, 'beginBalance'), measurement)
+        const beginPricePr = moduleFormat(_.get(item, 'beginPrice'), primaryCurrency)
 
-        const inBalancePr = numberFormat(_.get(item, 'inBalance'), measurement)
-        const inPricePr = numberFormat(_.get(item, 'inPrice'), primaryCurrency)
+        const inBalancePr = moduleFormat(_.get(item, 'inBalance'), measurement)
+        const inPricePr = moduleFormat(_.get(item, 'inPrice'), primaryCurrency)
 
-        const outBalancePr = numberFormat(_.get(item, 'outBalance'), measurement)
-        const outPricePr = numberFormat(_.get(item, 'outPrice'), primaryCurrency)
+        const outBalancePr = moduleFormat(_.get(item, 'outBalance'), measurement)
+        const outPricePr = moduleFormat(_.get(item, 'outPrice'), primaryCurrency)
 
-        const endBalancePr = numberFormat(_.get(item, 'endBalance'), measurement)
-        const endPricePr = numberFormat(_.get(item, 'endPrice'), primaryCurrency)
+        const endBalancePr = moduleFormat(_.get(item, 'endBalance'), measurement)
+        const endPricePr = moduleFormat(_.get(item, 'endPrice'), primaryCurrency)
 
-        const returnBalancePr = numberFormat(_.get(item, 'returnBalance'), measurement)
-        const returnPricePr = numberFormat(_.get(item, 'returnPrice'), primaryCurrency)
+        const returnBalancePr = moduleFormat(_.get(item, 'returnBalance'), measurement)
+        const returnPricePr = moduleFormat(_.get(item, 'returnPrice'), primaryCurrency)
 
-        const writeoffBalancePr = numberFormat(_.get(item, 'writeoffBalance'), measurement)
-        const writeoffPricePr = numberFormat(_.get(item, 'writeoffPrice'), primaryCurrency)
+        const writeoffBalancePr = moduleFormat(_.get(item, 'writeoffBalance'), measurement)
+        const writeoffPricePr = moduleFormat(_.get(item, 'writeoffPrice'), primaryCurrency)
         return (
             <tr
                 key={id}

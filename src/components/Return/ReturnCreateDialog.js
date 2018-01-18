@@ -302,6 +302,7 @@ const ReturnCreateDialog = enhance((props) => {
                                         component={StockSearchField}
                                         className={classes.searchFieldCustom}
                                         label={t('Склад')}
+                                        disabled={editOnlyCost}
                                         fullWidth={true}/>
                                 </div>
                                 <div className={classes.condition}>
