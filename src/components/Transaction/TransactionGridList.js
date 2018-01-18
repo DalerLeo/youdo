@@ -158,6 +158,7 @@ const TransactionGridList = enhance((props) => {
         hasMarket,
         canSetCustomRate,
         categryPopop,
+        detalizationDialog,
         optionsList
     } = props
 
@@ -247,6 +248,7 @@ const TransactionGridList = enhance((props) => {
                     canSetCustomRate={canSetCustomRate}
                     categryPopop={categryPopop}
                     optionsList={_.get(optionsList, 'results')}
+                    detalizationDialog={detalizationDialog}
                 />
             </div>
         </Container>

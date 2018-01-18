@@ -310,3 +310,19 @@ export const transactionCategoryPopopDataAction = (id) => {
         payload
     }
 }
+
+export const transactionDetalizationAction = (id) => {
+    const payload = axios()
+        .get(sprintf(API.TRANSACTION_DETALIZATION_LIST, id))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.TRANSACTION_DETALIZATION_LIST,
+        payload
+    }
+}
