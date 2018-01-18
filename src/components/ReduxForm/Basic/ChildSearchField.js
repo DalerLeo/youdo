@@ -72,27 +72,19 @@ const enhance = compose(
             }
         }
     }),
-    withState('mount', 'setMount', false),
-    lifecycle({
-        componentDidMount () {
-            this.props.setMount(true)
-        },
-        componentWillUnmount () {
-            this.props.setMount(false)
-        }
-    }),
     withReducer('state', 'dispatch', (state, action) => {
         return {...state, ...action}
     }, {dataSource: [], text: '', loading: false, firstTime: true}),
-
+    withState('mount', 'setMount', false),
     withPropsOnChange((props, nextProps) => {
-        return _.get(props, ['parent']) !== _.get(nextProps, ['parent']) && _.get(nextProps, ['parent'])
+        return (_.get(props, ['parent']) !== _.get(nextProps, ['parent']) && _.get(nextProps, ['parent'])) ||
+            (_.get(props, ['mount']) !== _.get(nextProps, ['mount']) && _.get(nextProps, ['mount']))
     }, (props) => {
-        props.state.mount && _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props, true)
+        props.mount && _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props, true)
     }),
     withPropsOnChange((props, nextProps) => {
         return _.get(props, ['state', 'text']) !== _.get(nextProps, ['state', 'text'])
-    }, (props) => props.state.mount && _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)),
+    }, (props) => props.mount && _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)),
 
     withHandlers({
         valueRenderer: props => (option) => {
@@ -101,6 +93,14 @@ const enhance = compose(
                 return <span style={{color: 'red'}}>{option.text}</span>
             }
             return option.text
+        }
+    }),
+    lifecycle({
+        componentDidMount () {
+            this.props.setMount(true)
+        },
+        componentWillUnmount () {
+            this.props.setMount(false)
         }
     }),
 

@@ -89,14 +89,31 @@ const enhance = compose(
             zIndex: '1'
         },
         tabsWrapper: {
-            width: '100%'
+            width: '100%',
+            '& button': {
+                width: '120px !important'
+            },
+            '& div:nth-child(2)': {
+                '& > div': {
+                    width: '120px !important'
+                },
+                width: '360px !important'
+            }
         },
         tabsContainer: {
             padding: '0',
             paddingTop: '20px'
+        },
+        content: {
+            '& div': {
+                fontWeight: '600',
+                fontSize: '14px',
+                margin: '-5px 0 10px -10px'
+            }
         }
     }),
     withState('tab', 'setTab', 'ru')
+
 )
 
 const iconStyle = {
@@ -119,7 +136,8 @@ const SystemPagesDetails = enhance((props) => {
         handleOpenUpdateDialog,
         handleCloseDetail,
         tab,
-        setTab
+        setTab,
+        setDialogTab
     } = props
 
     const detailID = _.get(data, 'id')
@@ -128,6 +146,7 @@ const SystemPagesDetails = enhance((props) => {
     const body = _.get(data, ['translations', tab, 'body'])
     const createdDate = dateFormat(_.get(data, 'createdDate'), true)
     const modifiedDate = dateFormat(_.get(data, 'modifiedDate'), true)
+    const content = tab === 'ru' ? 'Содержания' : tab === 'uz' ? 'Matn' : 'Content'
 
     if (loading) {
         return (
@@ -148,7 +167,10 @@ const SystemPagesDetails = enhance((props) => {
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
-                            onTouchTap={() => { handleOpenUpdateDialog(detailID) }}>
+                            onTouchTap={() => {
+                                handleOpenUpdateDialog(detailID)
+                                setDialogTab('ru')
+                            }}>
                             <Edit />
                         </IconButton>
                     </ToolTip>
@@ -185,7 +207,7 @@ const SystemPagesDetails = enhance((props) => {
                     </Tabs>
 
                 </div>
-                <div className={classes.content}>{body}</div>
+                <div className={classes.content}><div>{content}:</div>{body}</div>
             </div>
         </div>
     )

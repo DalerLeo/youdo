@@ -10,7 +10,7 @@ import SystemPagesCreateDialog from './SystemPagesCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
-import {compose} from 'recompose'
+import {compose, withState} from 'recompose'
 import {Link} from 'react-router'
 import SystemPagesDetail from './SystemPagesDetails'
 import dateFormat from '../../helpers/dateFormat'
@@ -73,7 +73,8 @@ const enhance = compose(
                 }
             }
         }
-    })
+    }),
+    withState('dialogTab', 'setDialogTab', 'ru')
 )
 
 const SystemPagesGridList = enhance((props) => {
@@ -84,7 +85,9 @@ const SystemPagesGridList = enhance((props) => {
         confirmDialog,
         listData,
         detailData,
-        classes
+        classes,
+        dialogTab,
+        setDialogTab
     } = props
 
     const systemPagesDetail = (
@@ -93,6 +96,7 @@ const SystemPagesGridList = enhance((props) => {
             data={_.get(detailData, 'data') || {}}
             loading={_.get(detailData, 'detailLoading')}
             handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}
+            setDialogTab={setDialogTab}
             confirmDialog={confirmDialog}
             handleCloseDetail={_.get(detailData, 'handleCloseDetail')}/>
     )
@@ -136,12 +140,16 @@ const SystemPagesGridList = enhance((props) => {
             <SystemPagesCreateDialog
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
+                dialogTab={dialogTab}
+                setDialogTab={setDialogTab}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
             />
 
             <SystemPagesCreateDialog
                 isUpdate={true}
+                dialogTab={dialogTab}
+                setDialogTab={setDialogTab}
                 initialValues={updateDialog.initialValues}
                 open={updateDialog.openUpdateDialog}
                 loading={updateDialog.updateLoading}
