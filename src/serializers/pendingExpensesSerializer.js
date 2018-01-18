@@ -74,6 +74,7 @@ export const listFilterSerializer = (data) => {
         'paymentType': _.get(defaultData, 'paymentType') || null,
         'provider': _.get(defaultData, 'provider') || null,
         'supply': _.get(defaultData, 'supply') || null,
+        'division': _.get(defaultData, 'division') || null,
         'search': _.get(defaultData, 'search'),
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),

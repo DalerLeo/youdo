@@ -16,6 +16,9 @@ import dateTimeFormat from '../../helpers/dateTimeFormat'
 import moment from 'moment'
 import t from '../../helpers/translate'
 import TransactionCreateDialog from '../Transaction/TransactionCreateDialog'
+import ToolTip from '../ToolTip'
+import CashPayment from 'material-ui/svg-icons/maps/local-atm'
+import BankPayment from 'material-ui/svg-icons/action/credit-card'
 
 const listHeader = [
     {
@@ -44,8 +47,8 @@ const listHeader = [
     },
     {
         sorting: false,
-        name: 'type',
-        title: t('Тип оплаты'),
+        name: 'division',
+        title: t('Организация'),
         xs: 1
     },
     {
@@ -109,6 +112,12 @@ const iconStyle = {
     }
 }
 
+const paymentIconStyle = {
+    width: 18,
+    height: 18,
+    marginLeft: 5
+}
+
 const PendingExpensesGridList = enhance((props) => {
     const {
         classes,
@@ -136,7 +145,14 @@ const PendingExpensesGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const supplyNo = _.get(item, 'supplyId')
         const provider = _.get(item, ['provider', 'name'])
-        const paymentType = _.get(item, 'paymentType') === 'cash' ? t('Наличный') : t('Банковский счет')
+        const division = _.get(item, ['division', 'name'])
+        const paymentTypeIcon = _.get(item, 'paymentType') === 'cash'
+            ? <ToolTip position={'left'} text={t('наличный')}>
+                <CashPayment style={paymentIconStyle} color={'#12aaeb'}/>
+            </ToolTip>
+            : <ToolTip position={'left'} text={t('банковский счет')}>
+                <BankPayment style={paymentIconStyle} color={'#6261b0'}/>
+            </ToolTip>
         const type = _.get(item, 'type') === 'supply' ? t('Поставка') : t('Доп. расход')
         const comment = _.get(item, 'comment')
         const createdDate = dateTimeFormat(_.get(item, 'createdDate'), true)
@@ -149,9 +165,11 @@ const PendingExpensesGridList = enhance((props) => {
                 <Col xs={2}>{provider}</Col>
                 <Col xs={2}>{comment}</Col>
                 <Col xs={1}>{type}</Col>
-                <Col xs={1}>{paymentType}</Col>
+                <Col xs={1}>{division}</Col>
                 <Col xs={2} style={{textAlign: 'right'}}>{createdDate}</Col>
-                <Col xs={1} style={{textAlign: 'right'}}>{numberFormat(summary)} {currency}</Col>
+                <Col xs={1} style={{textAlign: 'right', display: 'flex', alignItems: 'center', justifyContent: 'flex-end'}}>
+                    {numberFormat(summary, currency)} {paymentTypeIcon}
+                </Col>
                 <Col xs={1} style={{textAlign: 'right'}}>{numberFormat(balance)} {currency}</Col>
                 <Col xs={1} style={{textAlign: 'right', padding: '0'}}>
                     <IconButton

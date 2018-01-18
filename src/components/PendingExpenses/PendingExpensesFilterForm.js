@@ -14,7 +14,8 @@ import {
     ProviderMultiSearchField,
     PendingExpensesTypeSearchField,
     PaymentTypeSearchField,
-    SupplyMultiSearchField
+    SupplyMultiSearchField,
+    DivisionMultiSearchField
 } from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
@@ -26,6 +27,7 @@ export const PENDING_EXPENSES_FILTER_KEY = {
     PROVIDER: 'provider',
     SUPPLY: 'supply',
     PAYMENT_TYPE: 'paymentType',
+    DIVISION: 'division',
     TYPE: 'type'
 }
 
@@ -121,7 +123,7 @@ const enhance = compose(
 )
 
 const PendingExpensesFilterForm = enhance((props) => {
-    const {classes, filterDialog, getCount} = props
+    const {classes, filterDialog, getCount, handleSubmit} = props
     const filterCounts = getCount()
 
     if (!filterDialog.openFilterDialog) {
@@ -161,7 +163,7 @@ const PendingExpensesFilterForm = enhance((props) => {
                         <CloseIcon className={classes.icon} />
                     </IconButton>
                 </div>
-                <form onSubmit={filterDialog.handleSubmitFilterDialog}>
+                <form onSubmit={handleSubmit(filterDialog.handleSubmitFilterDialog)}>
                     <div>
                         <Field className={classes.inputFieldCustom}
                                name="date"
@@ -187,6 +189,11 @@ const PendingExpensesFilterForm = enhance((props) => {
                                name="supply"
                                component={SupplyMultiSearchField}
                                label="Поставка"
+                               fullWidth={true}/>
+                        <Field className={classes.inputFieldCustom}
+                               name="division"
+                               component={DivisionMultiSearchField}
+                               label="Организация"
                                fullWidth={true}/>
                     </div>
                     <RaisedButton
