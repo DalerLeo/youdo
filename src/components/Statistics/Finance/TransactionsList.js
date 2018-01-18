@@ -12,10 +12,8 @@ import getConfig from '../../../helpers/getConfig'
 import dateFormat from '../../../helpers/dateFormat'
 import numberFormat from '../../../helpers/numberFormat'
 import NotFound from '../../Images/not-found.png'
-import {TransactionsFormat, TRANSACTION_CATEGORY_POPOP_OPEN} from '../../Transaction'
-import * as ROUTES from '../../../constants/routes'
+import {TransactionsFormat} from '../../Transaction'
 import t from '../../../helpers/translate'
-import {Link} from 'react-router'
 
 const enhance = compose(
     injectSheet({
@@ -96,6 +94,9 @@ const enhance = compose(
 )
 
 const ZERO = 0
+const TWO = 2
+const THREE = 3
+const FOUR = 4
 const TransactionsList = enhance((props) => {
     const {
         classes,
@@ -118,16 +119,16 @@ const TransactionsList = enhance((props) => {
     const headers = (
         <Row style={headerStyle} className="dottedList">
             <Col xs={1}>№</Col>
-            <Col xs={2}>{t('Касса')}</Col>
-            <Col xs={2}>{t('Дата')}</Col>
+            <Col xs={isCashbox ? ZERO : TWO}>{isCashbox ? '' : t('Касса')}</Col>
+            <Col xs={isCashbox ? THREE : TWO}>{t('Дата')}</Col>
             <Col xs={4}>{t('Описание')}</Col>
-            <Col xs={3}>{t('Сумма')}</Col>
+            <Col xs={isCashbox ? FOUR : THREE}>{t('Сумма')}</Col>
         </Row>
     )
 
     const list = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const date = dateFormat(_.get(item, 'createdDate'))
+        const date = dateFormat(_.get(item, 'createdDate'), true)
         const amount = _.get(item, 'amount')
         const currency = _.get(item, ['currency', 'name'])
         const internal = _.toNumber(_.get(item, 'internal'))
@@ -139,49 +140,36 @@ const TransactionsList = enhance((props) => {
         const transType = _.toInteger(_.get(item, 'type'))
         const user = _.get(item, 'user')
         const client = _.get(item, ['client'])
+        const provider = _.get(item, ['provider'])
         const clientName = _.get(client, 'name')
-        const providerName = _.get(item, ['provider', 'name'])
+        const providerName = _.get(provider, 'name')
         const supply = _.get(item, ['supply'])
         const incomeCategory = _.get(item, ['incomeCategory'])
-        const categoryPopopShow = _.find(_.get(expenseCategory, 'options'), {'keyName': 'staff_expanse'})
         const supplyExpanseId = _.get(item, 'supplyExpanseId')
 
-        const category = (
-            expenseCategory
-                ? <div> {categoryPopopShow
-                    ? <Link
-                        target={'_blank'}
-                        to={{pathname: ROUTES.TRANSACTION_LIST_URL, query: {[TRANSACTION_CATEGORY_POPOP_OPEN]: id}}}>
-                        {_.get(expenseCategory, 'name')}
-                      </Link>
-                    : <span>{_.get(expenseCategory, 'name')}</span>}
-                  </div>
-                : incomeCategory
-                    ? <div>
-                        <span>{_.get(incomeCategory, 'name')}</span>
-                    </div>
-                    : null
-        )
         return (
             <Row key={id} className="dottedList">
                 <Col xs={1}>{id}</Col>
-                <Col xs={2}>{isCashbox ? category : cashbox}</Col>
-                <Col xs={2}>{date}</Col>
+                <Col xs={isCashbox ? ZERO : TWO}>{isCashbox ? null : cashbox}</Col>
+                <Col xs={isCashbox ? THREE : TWO}>{date}</Col>
                 <Col xs={4}>
                     <TransactionsFormat
                         type={transType}
                         order={order}
                         id={id}
                         client={client}
+                        provider={provider}
                         user={user}
                         comment={comment}
                         supply={supply}
                         supplyExpanseId={supplyExpanseId}
+                        expenseCategory={expenseCategory}
+                        incomeCategory={incomeCategory}
                     />
                     {clientName && <div><strong>{t('Клиент')}:</strong> {clientName}</div>}
                     {providerName && <div><strong>{t('Поставщик')}:</strong> {providerName}</div>}
                 </Col>
-                <Col xs={3} style={{textAlign: 'right'}}>
+                <Col xs={isCashbox ? FOUR : THREE} style={{textAlign: 'right'}}>
                     <div className={amount > ZERO ? 'greenFont' : (amount === ZERO ? '' : 'redFont')}>
                         <span>{numberFormat(amount, currency)}</span>
                         {primaryCurrency !== currency && <div>{numberFormat(internal, primaryCurrency)} <span
