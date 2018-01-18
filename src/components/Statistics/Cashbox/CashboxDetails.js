@@ -338,6 +338,7 @@ const StatCashboxDetails = enhance((props) => {
                     </div>}
                     <div className={classes.listWrapper}>
                         <TransactionsList
+                            isCashbox={true}
                             handleSubmitFilterDialog={handleSubmitFilterDialog}
                             listData={listData}
                             filter={filter}/>

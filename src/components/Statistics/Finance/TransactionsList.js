@@ -12,8 +12,10 @@ import getConfig from '../../../helpers/getConfig'
 import dateFormat from '../../../helpers/dateFormat'
 import numberFormat from '../../../helpers/numberFormat'
 import NotFound from '../../Images/not-found.png'
-import {TransactionsFormat} from '../../Transaction'
+import {TransactionsFormat, TRANSACTION_CATEGORY_POPOP_OPEN} from '../../Transaction'
+import * as ROUTES from '../../../constants/routes'
 import t from '../../../helpers/translate'
+import {Link} from 'react-router'
 
 const enhance = compose(
     injectSheet({
@@ -100,7 +102,8 @@ const TransactionsList = enhance((props) => {
         filter,
         handleSubmit,
         handleSubmitFilterDialog,
-        listData
+        listData,
+        isCashbox
     } = props
 
     const loading = _.get(listData, 'listLoading')
@@ -136,24 +139,47 @@ const TransactionsList = enhance((props) => {
         const transType = _.toInteger(_.get(item, 'type'))
         const user = _.get(item, 'user')
         const client = _.get(item, ['client'])
+        const clientName = _.get(client, 'name')
+        const providerName = _.get(item, ['provider', 'name'])
         const supply = _.get(item, ['supply'])
+        const incomeCategory = _.get(item, ['incomeCategory'])
+        const categoryPopopShow = _.find(_.get(expenseCategory, 'options'), {'keyName': 'staff_expanse'})
+        const supplyExpanseId = _.get(item, 'supplyExpanseId')
+
+        const category = (
+            expenseCategory
+                ? <div> {categoryPopopShow
+                    ? <Link
+                        target={'_blank'}
+                        to={{pathname: ROUTES.TRANSACTION_LIST_URL, query: {[TRANSACTION_CATEGORY_POPOP_OPEN]: id}}}>
+                        {_.get(expenseCategory, 'name')}
+                      </Link>
+                    : <span>{_.get(expenseCategory, 'name')}</span>}
+                  </div>
+                : incomeCategory
+                    ? <div>
+                        <span>{_.get(incomeCategory, 'name')}</span>
+                    </div>
+                    : null
+        )
         return (
             <Row key={id} className="dottedList">
                 <Col xs={1}>{id}</Col>
-                <Col xs={2}>{cashbox}</Col>
+                <Col xs={2}>{isCashbox ? category : cashbox}</Col>
                 <Col xs={2}>{date}</Col>
                 <Col xs={4}>
                     <TransactionsFormat
                         type={transType}
                         order={order}
                         id={id}
-                        expenseCategory={expenseCategory}
                         client={client}
                         user={user}
                         comment={comment}
                         supply={supply}
+                        supplyExpanseId={supplyExpanseId}
                     />
-
+                    {clientName && <div><strong>{t('Клиент')}:</strong> {clientName}</div>}
+                    {providerName && <div><strong>{t('Поставщик')}:</strong> {providerName}</div>}
                 </Col>
                 <Col xs={3} style={{textAlign: 'right'}}>
                     <div className={amount > ZERO ? 'greenFont' : (amount === ZERO ? '' : 'redFont')}>
