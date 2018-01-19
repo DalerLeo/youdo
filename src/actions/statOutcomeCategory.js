@@ -21,8 +21,8 @@ export const statOutcomeCategoryListFetchAction = (filter) => {
     }
 }
 
-export const getTransactionData = (filter, filterTransaction, staff) => {
-    const params = serializers.transactionSerializer(filter.getParams(), filterTransaction.getParams(), staff)
+export const getTransactionData = (filter, filterTransaction, id) => {
+    const params = serializers.transactionSerializer(filter.getParams(), filterTransaction.getParams(), id)
     const payload = axios()
         .get(API.STAT_FINANCE_LIST, {params})
         .then((response) => {

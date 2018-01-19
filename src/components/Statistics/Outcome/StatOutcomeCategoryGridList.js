@@ -68,7 +68,8 @@ const enhance = compose(
             '& .dottedList': {
                 padding: '0 30px',
                 '&:hover': {
-                    background: '#f2f5f8'
+                    background: '#f2f5f8',
+                    cursor: 'pointer'
                 },
                 '&:last-child:after': {
                     content: '""',
@@ -181,6 +182,12 @@ const enhance = compose(
     })
 )
 
+const headerStyle = {
+    backgroundColor: '#fff',
+    fontWeight: '600',
+    color: '#666',
+    cursor: 'unset'
+}
 const StatOutcomeCategoryGridList = enhance((props) => {
     const {
         classes,
@@ -195,12 +202,6 @@ const StatOutcomeCategoryGridList = enhance((props) => {
 
     const currentCurrency = getConfig('PRIMARY_CURRENCY')
     const listLoading = _.get(listData, 'listLoading')
-
-    const headerStyle = {
-        backgroundColor: '#fff',
-        fontWeight: '600',
-        color: '#666'
-    }
 
     const headers = (
         <Row style={headerStyle} className="dottedList">

@@ -71,6 +71,9 @@ const enhance = compose(
                 '&:last-child:after': {
                     content: '""',
                     backgroundImage: 'none'
+                },
+                '&:hover': {
+                    background: '#f2f5f8'
                 }
             },
             '& .personImage': {
@@ -179,6 +182,13 @@ const enhance = compose(
     })
 )
 
+const headerStyle = {
+    backgroundColor: '#fff',
+    fontWeight: '600',
+    color: '#666',
+    cursor: 'unset'
+}
+
 const StatExpenditureOnStaffGridList = enhance((props) => {
     const {
         classes,
@@ -193,12 +203,6 @@ const StatExpenditureOnStaffGridList = enhance((props) => {
 
     const currentCurrency = getConfig('PRIMARY_CURRENCY')
     const listLoading = _.get(listData, 'listLoading')
-
-    const headerStyle = {
-        backgroundColor: '#fff',
-        fontWeight: '600',
-        color: '#666'
-    }
 
     const headers = (
         <Row style={headerStyle} className="dottedList">
@@ -216,6 +220,7 @@ const StatExpenditureOnStaffGridList = enhance((props) => {
         const staffId = _.get(item, ['staff', 'id'])
         const percent = _.get(item, 'percentage')
         const amount = moduleFormat(_.get(item, 'total'), getConfig('PRIMARY_CURRENCY'))
+
         return (
             <Row key={id} className="dottedList" onClick={() => { transactionData.handleOpenTransactionDialog(staffId) }}>
                 <Col xs={3}>{employee}</Col>

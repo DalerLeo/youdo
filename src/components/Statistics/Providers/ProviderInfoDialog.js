@@ -17,6 +17,9 @@ import ProviderTransactionFormat from './ProviderTransactionFormat'
 import {Field, reduxForm} from 'redux-form'
 import {CurrencySearchField, DivisionSearchField, PaymentTypeSearchField} from '../../ReduxForm'
 import t from '../../../helpers/translate'
+import CashPayment from 'material-ui/svg-icons/maps/local-atm'
+import BankPayment from 'material-ui/svg-icons/action/credit-card'
+import ToolTip from '../../ToolTip'
 
 const enhance = compose(
     injectSheet({
@@ -244,6 +247,7 @@ const ProviderInfoDialog = enhance((props) => {
         const comment = _.get(item, 'comment')
         const currency = _.get(item, ['currency', 'name'])
         const currencyId = _.get(item, ['currency', 'id'])
+        const paymentType = _.get(item, ['paymentType'])
         const market = _.get(item, ['market', 'name'])
         const amount = _.toNumber(_.get(item, 'amount'))
         const internal = _.toNumber(_.get(item, 'internal'))
@@ -267,7 +271,16 @@ const ProviderInfoDialog = enhance((props) => {
                     <ProviderTransactionFormat type={type} supply={supply}/>
                 </div>
                 <div style={{width: '20%', textAlign: 'right'}}>
-                    <div className={amount > ZERO ? classes.green : amount < ZERO ? classes.red : ''}>{numberFormat(amount, currency)}</div>
+                    <div className={amount > ZERO ? classes.green : amount < ZERO ? classes.red : ''} style={{display: 'flex', justifyContent: 'flex-end'}}>
+                        {numberFormat(amount, currency)}
+                        <div style={{marginLeft: '10px'}}>
+                            <ToolTip position="bottom" text={paymentType === 'bank' ? 'банковский счет' : 'наличные'}>
+                                {paymentType === 'bank'
+                                    ? <BankPayment style={{height: '18px', width: '18px', color: '#6261b0'}}/>
+                                    : <CashPayment style={{height: '18px', width: '18px', color: '#12aaeb'}}/>}
+                            </ToolTip>
+                        </div>
+                    </div>
                     {currencyId !== currentCurrencyId &&
                     <div>
                         <div>{numberFormat(internal, currentCurrency)} <span
@@ -283,7 +296,7 @@ const ProviderInfoDialog = enhance((props) => {
             open={open}
             className={classes.dialog}
             onRequestClose={onClose}
-            contentStyle={loading ? {width: '500px'} : {width: '1000px', maxWidth: 'unset'}}
+            contentStyle={infoLoading ? {width: '500px'} : {width: '1000px', maxWidth: 'unset'}}
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
@@ -295,7 +308,7 @@ const ProviderInfoDialog = enhance((props) => {
                     <CloseIcon/>
                 </IconButton>
             </div>
-            {loading
+            {infoLoading
                 ? <div className={classes.loader}>
                     <Loader size={0.75}/>
                 </div>
@@ -374,7 +387,11 @@ const ProviderInfoDialog = enhance((props) => {
                             <div style={{width: '20%', textAlign: 'right'}}>{t('Сумма')}</div>
                         </Row>
 
-                        {!_.isEmpty(_.get(detailData, 'data'))
+                        {loading
+                        ? <div className={classes.loader}>
+                                <Loader size={0.75}/>
+                          </div>
+                        : !_.isEmpty(_.get(detailData, ['data', 'results']))
                             ? detailList
                             : <div className={classes.emptyQuery}>{t('Пока транзакции нет')}</div>}
                     </div>
