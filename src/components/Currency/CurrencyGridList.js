@@ -330,7 +330,7 @@ const CurrencyGridList = enhance((props) => {
                         <div className={classes.editContent}>
                             <div className={classes.semibold}>{t('Основная валюта')}: <b>&nbsp;{currentCurrency}</b><i
                                 style={{fontWeight: '400', color: '#999'}}>
-                                &nbsp;({t('используется при формировании стоимости продукта / заказа')}</i>
+                                &nbsp;({t('используется при формировании стоимости продукта / заказа')})</i>
                             </div>
                         </div>
                     </div>

@@ -88,6 +88,7 @@ const enhance = compose(
             const division = _.get(filterForm, ['values', 'division']) || null
             const paymentType = _.get(filterForm, ['values', 'paymentType', 'value']) || null
             const code = _.get(filterForm, ['values', 'code']) || null
+            const exclude = _.get(filterForm, ['values', 'exclude']) || null
 
             filter.filterBy({
                 [STAT_RETURN_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
@@ -102,7 +103,8 @@ const enhance = compose(
                 [STAT_RETURN_FILTER_KEY.PRODUCT]: _.join(product, '-'),
                 [STAT_RETURN_FILTER_KEY.DIVISION]: _.join(division, '-'),
                 [STAT_RETURN_FILTER_KEY.PAYMENT_TYPE]: paymentType,
-                [STAT_RETURN_FILTER_KEY.CODE]: code
+                [STAT_RETURN_FILTER_KEY.CODE]: code,
+                [STAT_RETURN_FILTER_KEY.EXCLUDE]: exclude
             })
         },
         handleGetDocument: props => () => {
@@ -143,6 +145,7 @@ const StatReturnList = enhance((props) => {
     const paymentType = _.toInteger(filter.getParam(STAT_RETURN_FILTER_KEY.PAYMENT_TYPE))
     const deliveryFromDate = filter.getParam(STAT_RETURN_FILTER_KEY.DELIVERY_FROM_DATE)
     const deliveryToDate = filter.getParam(STAT_RETURN_FILTER_KEY.DELIVERY_TO_DATE)
+    const exclude = filter.getParam(STAT_RETURN_FILTER_KEY.EXCLUDE)
 
     const listData = {
         data: _.get(list, 'results') || {},
@@ -176,6 +179,7 @@ const StatReturnList = enhance((props) => {
                 deliveryToDate: deliveryToDate && moment(deliveryToDate, 'YYYY-MM-DD')
             },
             division: division && splitToArray(division),
+            exclude: exclude,
             date: {
                 fromDate: moment(firstDayOfMonth),
                 toDate: moment(lastDayOfMonth)

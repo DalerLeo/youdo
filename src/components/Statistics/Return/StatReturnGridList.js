@@ -31,7 +31,8 @@ import {
     ReturnStatusMultiSearch,
     ReturnTypeSearchField,
     DivisionMultiSearchField,
-    PaymentTypeSearchField
+    PaymentTypeSearchField,
+    CheckBox
 } from '../../ReduxForm'
 import t from '../../../helpers/translate'
 
@@ -47,7 +48,8 @@ export const STAT_RETURN_FILTER_KEY = {
     MARKET: 'market',
     CODE: 'code',
     PRODUCT: 'product',
-    PAYMENT_TYPE: 'paymentType'
+    PAYMENT_TYPE: 'paymentType',
+    EXCLUDE: 'exclude'
 }
 
 const enhance = compose(
@@ -384,6 +386,11 @@ const StatReturnGridList = enhance((props) => {
                 name="data"
                 component={DateToDateField}
                 label={t('Период создания')}/>
+            <Field
+                name="exclude"
+                component={CheckBox}
+                label={t('Исключить отмененные заказы')}/>
+
         </div>
     )
 

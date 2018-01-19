@@ -7,7 +7,7 @@ import injectSheet from 'react-jss'
 import {reduxForm, Field} from 'redux-form'
 import * as ROUTES from '../../../constants/routes'
 import Container from '../../Container/index'
-import {TextField, AgentSearchField} from '../../ReduxForm'
+import {TextField, AgentSearchField, MarketTypeMultiSearchField} from '../../ReduxForm'
 import DateToDateField from '../../ReduxForm/Basic/DateToDateField'
 import StatSideMenu from '../StatSideMenu'
 import Loader from '../../Loader'
@@ -31,7 +31,8 @@ export const STAT_MARKET_FILTER_KEY = {
     SEARCH: 'search',
     USER: 'user',
     TO_DATE: 'toDate',
-    FROM_DATE: 'fromDate'
+    FROM_DATE: 'fromDate',
+    MARKET_TYPE: 'marketType'
 }
 export const MARKET = 'market'
 export const MARKET_TYPE = 'marketType'
@@ -576,6 +577,13 @@ const StatMarketGridList = enhance((props) => {
                 component={DateToDateField}
                 label={t('Диапазон дат')}
                 fullWidth={true}/>
+            <Field
+                name="marketType"
+                component={MarketTypeMultiSearchField}
+                className={classes.inputFieldCustom}
+                label={t('Тип магазина')}
+                fullWidth={true}
+            />
             <Field
                 name="user"
                 component={AgentSearchField}

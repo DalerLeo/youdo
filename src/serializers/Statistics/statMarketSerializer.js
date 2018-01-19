@@ -20,7 +20,8 @@ export const listFilterSerializer = (data) => {
 
     return {
         'search': _.get(defaultData, 'search'),
-        'user': _.get(defaultData, 'user'),
+        'user': _.get(defaultData, 'user') || null,
+        'market_type': _.get(defaultData, 'marketType') || null,
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),
         'ordering': ordering && orderingSnakeCase(ordering),
@@ -31,9 +32,11 @@ export const listFilterSerializer = (data) => {
 
 export const sumFilterSerializer = (data) => {
     const {...defaultData} = data
+    const toggle = _.get(data, 'toggle')
 
     return {
-        'user': _.get(defaultData, 'user'),
+        'user': _.get(defaultData, 'user') || null,
+        'market_type': _.get(defaultData, 'marketType') || null,
         'begin_date': _.get(defaultData, 'fromDate') || firstDayOfMonth,
         'end_date': _.get(defaultData, 'toDate') || lastDayOfMonth
     }
