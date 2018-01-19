@@ -32,7 +32,6 @@ export const listFilterSerializer = (data) => {
 
 export const sumFilterSerializer = (data) => {
     const {...defaultData} = data
-    const toggle = _.get(data, 'toggle')
 
     return {
         'user': _.get(defaultData, 'user') || null,
