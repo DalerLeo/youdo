@@ -240,6 +240,7 @@ const PendingExpensesGridList = enhance((props) => {
                 isExpense={true}
                 noCashbox={true}
                 hideRedundant={true}
+                expenseCategoryKey={'supply-supply_expanse'}
                 detailCurrency={detailCurrency}
                 additionalData={additionalData}
                 open={updateDialog.openUpdateDialog}
