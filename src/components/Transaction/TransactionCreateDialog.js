@@ -220,6 +220,9 @@ const enhance = compose(
         const chosenCashbox = _.get(state, ['form', 'TransactionCreateForm', 'values', 'cashbox', 'value'])
         const date = _.get(state, ['form', 'TransactionCreateForm', 'values', 'date'])
         const order = _.get(state, ['form', 'TransactionCreateForm', 'values', 'order', 'value'])
+        const division = _.get(state, ['form', 'TransactionCreateForm', 'values', 'division', 'value'])
+        const supply = _.get(state, ['form', 'TransactionCreateForm', 'values', 'supply', 'value'])
+        const supplyExpense = _.get(state, ['form', 'TransactionCreateForm', 'values', 'supplyExpense', 'value'])
         const incomeCategory = _.get(state, ['form', 'TransactionCreateForm', 'values', 'incomeCategory', 'value'])
         const optionsList = _.get(state, ['expensiveCategory', 'options', 'data', 'results'])
         const incomeCategoryOptions = _.get(state, ['form', 'TransactionCreateForm', 'values', 'incomeCategory', 'value', 'options'])
@@ -234,6 +237,9 @@ const enhance = compose(
             chosenCashbox,
             date,
             order,
+            supply,
+            supplyExpense,
+            division,
             optionsList,
             incomeCategoryOptions,
             expenseCategoryOptions,
@@ -275,6 +281,10 @@ const TransactionCreateDialog = enhance((props) => {
         expenseCategoryOptions,
         totalStaffAmount,
         order,
+        supply,
+        supplyExpense,
+        division,
+        expenseCategory,
         incomeCategoryKey,
         additionalData,
         detailCurrency,
@@ -316,6 +326,8 @@ const TransactionCreateDialog = enhance((props) => {
                 fullWidth={true}/>
         )
         : null
+    const pendingsDisableDivision = Boolean(additionalData) && Boolean((order || supply || supplyExpense) && division)
+
     return (
         <Dialog
             modal={true}
@@ -355,6 +367,7 @@ const TransactionCreateDialog = enhance((props) => {
                             name="division"
                             component={DivisionSearchField}
                             label={t('Организация')}
+                            disabled={pendingsDisableDivision}
                             className={classes.inputFieldCustom}
                             fullWidth={true}/>}
                         {!hideRedundant &&
@@ -370,6 +383,7 @@ const TransactionCreateDialog = enhance((props) => {
                             ? <div className={classes.field}>
                                 <Field
                                     name="expanseCategory"
+                                    data-key-name={expenseCategory}
                                     component={ExpensiveCategoryCustomSearchField}
                                     label={t('Категория расхода')}
                                     className={classes.inputFieldCustom}
