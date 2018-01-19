@@ -42,13 +42,13 @@ const listHeader = [
     {
         sorting: true,
         name: 'created_date',
-        title: t('Дата созд') + '.',
+        title: t('Дата'),
         xs: 1
     },
     {
         sorting: false,
         name: 'division',
-        title: t('Подразделение'),
+        title: t('Организация'),
         xs: 2
     },
     {
@@ -82,13 +82,13 @@ const listHeaderHasMarket = [
     {
         sorting: true,
         name: 'created_date',
-        title: t('Дата созд') + '.',
+        title: t('Дата'),
         xs: 2
     },
     {
         sorting: false,
         name: 'division',
-        title: t('Подразделение'),
+        title: t('Организация'),
         xs: 2
     },
     {
