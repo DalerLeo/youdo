@@ -12,14 +12,13 @@ import caughtCancel from '../../../helpers/caughtCancel'
 const CancelToken = axios().CancelToken
 let categoryExpensiveListToken = null
 
-const getOptions = (search, keyname) => {
-    const keyName = keyname === 'supply_expense' ? 'supply_expanse' : keyname
+const getOptions = (search) => {
     if (categoryExpensiveListToken) {
         categoryExpensiveListToken.cancel()
     }
     categoryExpensiveListToken = CancelToken.source()
     return axios().get(PATH.EXPENSIVE_CATEGORY_LIST,
-        {params: {search: search, page_size: 100, key_name: keyName}},
+        {params: {search: search, page_size: 100, key_name: 'supply_expense-supply'}},
         {cancelToken: categoryExpensiveListToken.token})
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
@@ -50,7 +49,6 @@ const enhance = compose(
 
 const ProductCustomSearchField = enhance((props) => {
     const {dispatch, ...defaultProps} = props
-    const keyname = _.get(props, 'data-key-name')
     const test = (id) => {
         return getItem(id, dispatch)
     }
@@ -63,7 +61,7 @@ const ProductCustomSearchField = enhance((props) => {
                 return _.get(value, 'name')
             }}
             getOptions={(search) => {
-                return getOptions(search, keyname)
+                return getOptions(search)
             }}
             getItem={test}
             getItemText={(value) => {

@@ -510,6 +510,19 @@ const rootReducer = combineReducers({
     widgets: combineReducers({
         list: createThunkReducer(actionTypes.WIDGETS_LIST)
     }),
+    cellType: combineReducers({
+        create: createThunkReducer(actionTypes.CELL_TYPE_CREATE),
+        list: createThunkReducer(actionTypes.CELL_TYPE_H_LIST),
+        update: createThunkReducer(actionTypes.CELL_TYPE_UPDATE),
+        item: createThunkReducer(actionTypes.CELL_TYPE_ITEM)
+    }),
+    cell: combineReducers({
+        create: createThunkReducer(actionTypes.CELL_CREATE),
+        list: createThunkReducer(actionTypes.CELL_LIST),
+        update: createThunkReducer(actionTypes.CELL_UPDATE),
+        item: createThunkReducer(actionTypes.CELL_ITEM)
+    }),
+
     snackbar: snackbarReducer(),
     error: errorReducer(),
     form: formReducer,

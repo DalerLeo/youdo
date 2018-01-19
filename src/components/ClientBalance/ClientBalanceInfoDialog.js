@@ -22,9 +22,12 @@ import Requested from 'material-ui/svg-icons/action/schedule'
 import AutoAccepted from 'material-ui/svg-icons/action/spellcheck'
 import {Field, reduxForm} from 'redux-form'
 import {CurrencySearchField, DivisionSearchField, PaymentTypeSearchField} from '../ReduxForm'
+import CashPayment from 'material-ui/svg-icons/maps/local-atm'
+import BankPayment from 'material-ui/svg-icons/action/credit-card'
 import {
     FIRST_BALANCE,
-    NONE_TYPE
+    NONE_TYPE,
+    PAYMENT
 } from '../../constants/clientBalanceInfo'
 import {
     REQUESTED,
@@ -267,6 +270,7 @@ const ClientBalanceInfoDialog = enhance((props) => {
         const customRate = _.get(item, 'customRate') ? _.toNumber(_.get(item, 'customRate')) : _.toInteger(amount / internal)
         const user = _.get(item, 'user') ? (_.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName'])) : 'Система'
         const type = _.get(item, 'type')
+        const paymentType = _.get(item, 'paymentType')
         const order = _.get(item, 'order')
         const orderReturn = _.get(item, 'orderReturn')
         const confirmation = _.get(item, 'clientConfirmation')
@@ -296,7 +300,7 @@ const ClientBalanceInfoDialog = enhance((props) => {
         return (
             <Row key={index} className='dottedList'>
                 <div style={{flexBasis: '4%', maxWidth: '4%'}}>
-                    {statusIcon(confirmation)}
+                    {type === PAYMENT && statusIcon(confirmation)}
                 </div>
                 <div style={{flexBasis: '16%', maxWidth: '16%'}}>{createdDate}</div>
                 <div style={{flexBasis: '20%', maxWidth: '20%'}}>{user}</div>
@@ -306,13 +310,24 @@ const ClientBalanceInfoDialog = enhance((props) => {
                     {comment && <div>{t('Комментарии')}: <span>{comment}</span></div>}
                     <ClientBalanceFormat type={type} order={order} orderReturn={orderReturn}/>
                 </div>
-                <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>
-                    <div className={amount > ZERO ? classes.green : amount < ZERO ? classes.red : ''}>{numberFormat(amount, currency)}</div>
-                    {currencyId !== currentCurrencyId &&
-                    <div>
-                        <div>{numberFormat(internal, currentCurrency)} <span
-                            style={{fontSize: 11, color: '#666'}}>({customRate})</span></div>
-                    </div>}
+                <div style={{flexBasis: '15%', maxWidth: '15%'}}>
+                    <div style={{textAlign: 'right'}}>
+                        <div className={amount > ZERO ? classes.green : amount < ZERO ? classes.red : ''} style={{display: 'flex', justifyContent: 'flex-end'}}>
+                            {numberFormat(amount, currency)}
+                            <div style={{marginLeft: '10px'}}>
+                                <ToolTip position="bottom" text={paymentType === 'bank' ? 'банковский счет' : 'наличные'}>
+                                    {paymentType === 'bank'
+                                        ? <BankPayment style={{height: '18px', width: '18px', color: '#6261b0'}}/>
+                                        : <CashPayment style={{height: '18px', width: '18px', color: '#12aaeb'}}/>}
+                                </ToolTip>
+                            </div>
+                        </div>
+                        {currencyId !== currentCurrencyId &&
+                        <div>
+                            <div>{numberFormat(internal, currentCurrency)} <span
+                                style={{fontSize: 11, color: '#666'}}>({customRate})</span></div>
+                        </div>}
+                    </div>
                 </div>
                 {(!stat && isSuperUser && (type === FIRST_BALANCE || type === NONE_TYPE)) &&
                 <div className={classes.iconBtn}>

@@ -10,7 +10,6 @@ import IconButton from 'material-ui/IconButton'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import Loader from '../../Loader'
 import NotFound from '../../Images/not-found.png'
-import MainStyles from '../../Styles/MainStyles'
 import getConfig from '../../../helpers/getConfig'
 import dateFormat from '../../../helpers/dateFormat'
 import numberFormat from '../../../helpers/numberFormat'
@@ -19,7 +18,7 @@ import {TransactionsFormat} from '../../Transaction'
 import t from '../../../helpers/translate'
 
 const enhance = compose(
-    injectSheet(_.merge(MainStyles, {
+    injectSheet({
         loader: {
             width: '100%',
             height: '400px',
@@ -142,7 +141,7 @@ const enhance = compose(
                 color: '#999 !important'
             }
         }
-    })),
+    }),
     reduxForm({
         form: 'BrandCreateForm',
         enableReinitialize: true
@@ -212,9 +211,10 @@ const ExpenditureTransactionDialog = enhance((props) => {
             contentStyle={loading ? {width: '600px'} : {width: '900px', maxWidth: 'unset'}}
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
-            {loading ? <div className={classes.loader}>
+            {loading
+                ? <div className={classes.loader}>
                     <Loader size={0.75}/>
-                </div>
+                  </div>
                 : <div>
                     <div className={classes.titleContent}>
                         <div>
