@@ -284,7 +284,7 @@ const TransactionCreateDialog = enhance((props) => {
         supply,
         supplyExpense,
         division,
-        expenseCategory,
+        expenseCategoryKey,
         incomeCategoryKey,
         additionalData,
         detailCurrency,
@@ -383,7 +383,7 @@ const TransactionCreateDialog = enhance((props) => {
                             ? <div className={classes.field}>
                                 <Field
                                     name="expanseCategory"
-                                    data-key-name={expenseCategory}
+                                    data-key-name={expenseCategoryKey}
                                     component={ExpensiveCategoryCustomSearchField}
                                     label={t('Категория расхода')}
                                     className={classes.inputFieldCustom}
