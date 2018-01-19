@@ -2,7 +2,6 @@ import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
-import IconButton from 'material-ui/IconButton'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
@@ -10,7 +9,6 @@ import PendingExpensesFilterForm from './PendingExpensesFilterForm'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import AddPayment from 'material-ui/svg-icons/av/playlist-add-check'
 import numberFormat from '../../helpers/numberFormat'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
 import moment from 'moment'
@@ -49,21 +47,20 @@ const listHeader = [
         sorting: false,
         name: 'division',
         title: t('Организация'),
-        xs: 1
+        xs: 2
     },
     {
         sorting: false,
         name: 'createdDate',
-        alignRight: true,
         title: t('Дата'),
-        xs: 2
+        xs: 1
     },
     {
         sorting: true,
         name: 'amount',
         alignRight: true,
         title: t('Сумма'),
-        xs: 1
+        xs: 2
     },
     {
         sorting: true,
@@ -71,14 +68,17 @@ const listHeader = [
         alignRight: true,
         title: t('Остаток'),
         xs: 1
-    },
-    {
-        name: 'buttons'
     }
 ]
 
 const enhance = compose(
     injectSheet({
+        listRow: {
+            cursor: 'pointer',
+            margin: '0 -30px !important',
+            padding: '0 30px',
+            width: 'auto !important'
+        },
         additionalData: {
             display: 'flex',
             borderBottom: '1px #efefef solid',
@@ -98,19 +98,6 @@ const enhance = compose(
         }
     })
 )
-
-const iconStyle = {
-    icon: {
-        color: '#12aaeb',
-        width: 24,
-        height: 24
-    },
-    button: {
-        width: 48,
-        height: 48,
-        padding: 0
-    }
-}
 
 const paymentIconStyle = {
     width: 18,
@@ -160,26 +147,17 @@ const PendingExpensesGridList = enhance((props) => {
         const summary = _.get(item, 'totalAmount')
         const balance = _.get(item, 'remains')
         return (
-            <Row key={id}>
+            <Row className={classes.listRow} key={id} onClick={() => { updateDialog.handleOpenUpdateDialog(id) }}>
                 <Col xs={1}>{supplyNo}</Col>
                 <Col xs={2}>{provider}</Col>
                 <Col xs={2}>{comment}</Col>
                 <Col xs={1}>{type}</Col>
-                <Col xs={1}>{division}</Col>
-                <Col xs={2} style={{textAlign: 'right'}}>{createdDate}</Col>
-                <Col xs={1} style={{textAlign: 'right', display: 'flex', alignItems: 'center', justifyContent: 'flex-end'}}>
+                <Col xs={2}>{division}</Col>
+                <Col xs={1}>{createdDate}</Col>
+                <Col xs={2} style={{textAlign: 'right', display: 'flex', alignItems: 'center', justifyContent: 'flex-end'}}>
                     {numberFormat(summary, currency)} {paymentTypeIcon}
                 </Col>
                 <Col xs={1} style={{textAlign: 'right'}}>{numberFormat(balance)} {currency}</Col>
-                <Col xs={1} style={{textAlign: 'right', padding: '0'}}>
-                    <IconButton
-                        iconStyle={iconStyle.icon}
-                        style={iconStyle.button}
-                        touch={true}
-                        onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
-                        <AddPayment />
-                    </IconButton>
-                </Col>
             </Row>
         )
     })
