@@ -13,6 +13,7 @@ import {
     PaymentTypeSearchField,
     MarketMultiSearchField,
     ClientMultiSearchField,
+    DivisionMultiSearchField,
     DateToDateField
 } from '../ReduxForm'
 
@@ -26,7 +27,8 @@ export const PENDING_PAYMENTS_FILTER_KEY = {
     TO_DATE: 'toDate',
     CLIENT: 'client',
     MARKET: 'market',
-    PAYMENT_TYPE: 'paymentType'
+    PAYMENT_TYPE: 'paymentType',
+    DIVISION: 'division'
 }
 
 const enhance = compose(
@@ -185,6 +187,14 @@ const PendingPaymentsFilterForm = enhance((props) => {
                             name="paymentType"
                             component={PaymentTypeSearchField}
                             label="Тип оплаты"
+                            fullWidth={true}/>
+                    </div>
+                    <div>
+                        <Field
+                            className={classes.inputFieldCustom}
+                            name="division"
+                            component={DivisionMultiSearchField}
+                            label="Организация"
                             fullWidth={true}/>
                     </div>
                     <div>

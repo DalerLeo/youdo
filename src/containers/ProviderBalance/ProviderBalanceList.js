@@ -112,9 +112,9 @@ const enhance = compose(
         const type = _.get(props, ['infoForm', 'values', 'paymentType', 'value'])
         const nextType = _.get(nextProps, ['infoForm', 'values', 'paymentType', 'value'])
         return (ID !== nextID && nextID) ||
-            (currency !== nextCurrency && nextCurrency) ||
-            (division !== nextDivision && nextDivision) ||
-            (type !== nextType && nextType) ||
+            (currency !== nextCurrency) ||
+            (division !== nextDivision) ||
+            (type !== nextType) ||
             (props.filterItem.filterRequest() !== nextProps.filterItem.filterRequest())
     }, ({dispatch, params, filterItem, infoForm}) => {
         const clientBalanceId = _.toInteger(_.get(params, 'providerBalanceId'))

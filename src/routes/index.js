@@ -82,6 +82,8 @@ import {TelegramList} from '../containers/Telegram'
 import {TelegramNewsList} from '../containers/TelegramNews'
 import {ProviderBalanceList} from '../containers/ProviderBalance'
 import {SystemPagesList} from '../containers/SystemPages'
+import {CellTypeList} from '../containers/CellType'
+import {CellList} from '../containers/Cell'
 
 const userIsAdminChain = compose(userIsAuth, visibleOnlyAdmin)
 
@@ -906,6 +908,29 @@ export default {
                 {
                     path: ROUTES.SYSTEM_PAGES_ITEM_URL,
                     component: userIsAuth(SystemPagesList)
+                }
+            ]
+        },
+
+        // Cell Type
+        {
+            path: ROUTES.CELL_TYPE_LIST_URL,
+            component: userIsAdminChain(CellTypeList),
+            childRoutes: [
+                {
+                    path: ROUTES.CELL_TYPE_ITEM_URL,
+                    component: userIsAuth(CellTypeList)
+                }
+            ]
+        },
+        // Cell
+        {
+            path: ROUTES.CELL_LIST_URL,
+            component: userIsAdminChain(CellList),
+            childRoutes: [
+                {
+                    path: ROUTES.CELL_ITEM_URL,
+                    component: userIsAuth(CellList)
                 }
             ]
         },

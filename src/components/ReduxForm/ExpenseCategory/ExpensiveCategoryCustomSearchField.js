@@ -13,13 +13,12 @@ const CancelToken = axios().CancelToken
 let categoryExpensiveListToken = null
 
 const getOptions = (search, keyname) => {
-    const keyName = keyname === 'supply_expense' ? 'supply_expanse' : keyname
     if (categoryExpensiveListToken) {
         categoryExpensiveListToken.cancel()
     }
     categoryExpensiveListToken = CancelToken.source()
     return axios().get(PATH.EXPENSIVE_CATEGORY_LIST,
-        {params: {search: search, page_size: 100, key_name: keyName}},
+        {params: {search: search, page_size: 100, key_name: keyname}},
         {cancelToken: categoryExpensiveListToken.token})
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))

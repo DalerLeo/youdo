@@ -2,20 +2,23 @@ import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
-import IconButton from 'material-ui/IconButton'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
 import PendingPaymentsFilterForm from './PendingPaymentsFilterForm'
 import SubMenu from '../SubMenu'
+import ToolTip from '../ToolTip'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import moment from 'moment'
-import AddPayment from 'material-ui/svg-icons/av/playlist-add-check'
 import numberFormat from '../../helpers/numberFormat'
+import toBoolean from '../../helpers/toBoolean'
+import getConfig from '../../helpers/getConfig'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
 import t from '../../helpers/translate'
 import TransactionCreateDialog from '../Transaction/TransactionCreateDialog'
+import CashPayment from 'material-ui/svg-icons/maps/local-atm'
+import BankPayment from 'material-ui/svg-icons/action/credit-card'
 
 const listHeader = [
     {
@@ -39,14 +42,14 @@ const listHeader = [
     {
         sorting: true,
         name: 'created_date',
-        title: t('Дата созд') + '.',
-        xs: 2
+        title: t('Дата'),
+        xs: 1
     },
     {
         sorting: false,
-        name: 'paymentType',
-        title: t('Тип опл') + '.',
-        xs: 1
+        name: 'division',
+        title: t('Организация'),
+        xs: 2
     },
     {
         sorting: true,
@@ -60,11 +63,7 @@ const listHeader = [
         name: 'totalBalance',
         alignRight: true,
         title: t('Остаток'),
-        xs: 1
-    },
-    {
-        sorting: false,
-        xs: 1
+        xs: 2
     }
 ]
 const listHeaderHasMarket = [
@@ -83,13 +82,13 @@ const listHeaderHasMarket = [
     {
         sorting: true,
         name: 'created_date',
-        title: t('Дата созд') + '.',
+        title: t('Дата'),
         xs: 2
     },
     {
         sorting: false,
-        name: 'paymentType',
-        title: t('Тип опл') + '.',
+        name: 'division',
+        title: t('Организация'),
         xs: 2
     },
     {
@@ -104,15 +103,17 @@ const listHeaderHasMarket = [
         name: 'totalBalance',
         alignRight: true,
         title: t('Остаток'),
-        xs: 1
-    },
-    {
-        sorting: false,
-        xs: 1
+        xs: 2
     }
 ]
 const enhance = compose(
     injectSheet({
+        listRow: {
+            cursor: 'pointer',
+            margin: '0 -30px !important',
+            padding: '0 30px',
+            width: 'auto !important'
+        },
         additionalData: {
             display: 'flex',
             borderBottom: '1px #efefef solid',
@@ -133,21 +134,12 @@ const enhance = compose(
     })
 )
 
-const iconStyle = {
-    icon: {
-        color: '#12aaeb',
-        width: 24,
-        height: 24
-    },
-    button: {
-        width: 48,
-        height: 48,
-        padding: 0
-    }
+const paymentIconStyle = {
+    width: 18,
+    height: 18,
+    marginLeft: 5
 }
-const ONE = 1
-const TWO = 2
-const THREE = 3
+
 const PendingPaymentsGridList = enhance((props) => {
     const {
         classes,
@@ -155,9 +147,9 @@ const PendingPaymentsGridList = enhance((props) => {
         updateDialog,
         filterDialog,
         listData,
-        detailData,
-        hasMarket
+        detailData
     } = props
+    const hasMarket = toBoolean(getConfig('MARKETS_MODULE'))
     const pendingPaymentsFilterDialog = (
         <PendingPaymentsFilterForm
             initialValues={filterDialog.initialValues}
@@ -173,32 +165,28 @@ const PendingPaymentsGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const client = _.get(item, 'client')
         const market = _.get(item, ['market', 'name'])
+        const division = _.get(item, ['division', 'name'])
         const currency = _.get(item, ['currency', 'name'])
-        const paymentType = _.get(item, 'paymentType') === 'cash' ? t('наличный') : t('банковский счет')
+        const paymentTypeIcon = _.get(item, 'paymentType') === 'cash'
+            ? <ToolTip position={'left'} text={t('наличный')}>
+                <CashPayment style={paymentIconStyle} color={'#12aaeb'}/>
+            </ToolTip>
+            : <ToolTip position={'left'} text={t('банковский счет')}>
+                <BankPayment style={paymentIconStyle} color={'#6261b0'}/>
+            </ToolTip>
         const clientName = _.get(client, 'name')
         const createdDate = dateTimeFormat(_.get(item, 'createdDate'))
         const totalPrice = numberFormat(_.get(item, 'totalPrice'), currency)
         const totalBalance = numberFormat(_.get(item, 'totalBalance'), currency)
         return (
-            <Row key={id}>
+            <Row className={classes.listRow} key={id} onClick={() => { updateDialog.handleOpenUpdateDialog(id) }}>
                 <Col xs={1}>{id}</Col>
-                <Col xs={hasMarket ? TWO : THREE}>{clientName}</Col>
+                <Col xs={2}>{clientName}</Col>
                 {hasMarket && <Col xs={2}>{market}</Col>}
-                <Col xs={2}>{createdDate}</Col>
-                <Col xs={hasMarket ? ONE : TWO}>{paymentType}</Col>
-                <Col xs={2} style={{textAlign: 'right'}}>{totalPrice}</Col>
-                <Col xs={1} style={{textAlign: 'right'}}>{totalBalance}</Col>
-                <Col xs={1} style={{textAlign: 'right', padding: '0'}}>
-                    <IconButton
-                        iconStyle={iconStyle.icon}
-                        style={iconStyle.button}
-                        touch={true}
-                        onTouchTap={() => {
-                            updateDialog.handleOpenUpdateDialog(id)
-                        }}>
-                        <AddPayment/>
-                    </IconButton>
-                </Col>
+                <Col xs={1}>{createdDate}</Col>
+                <Col xs={2}>{division}</Col>
+                <Col xs={2} style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-end'}}>{totalPrice} {paymentTypeIcon}</Col>
+                <Col xs={2} style={{textAlign: 'right'}}>{totalBalance}</Col>
             </Row>
         )
     })

@@ -2,7 +2,6 @@ import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
-import IconButton from 'material-ui/IconButton'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
@@ -10,12 +9,14 @@ import PendingExpensesFilterForm from './PendingExpensesFilterForm'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import AddPayment from 'material-ui/svg-icons/av/playlist-add-check'
 import numberFormat from '../../helpers/numberFormat'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
 import moment from 'moment'
 import t from '../../helpers/translate'
 import TransactionCreateDialog from '../Transaction/TransactionCreateDialog'
+import ToolTip from '../ToolTip'
+import CashPayment from 'material-ui/svg-icons/maps/local-atm'
+import BankPayment from 'material-ui/svg-icons/action/credit-card'
 
 const listHeader = [
     {
@@ -44,23 +45,22 @@ const listHeader = [
     },
     {
         sorting: false,
-        name: 'type',
-        title: t('Тип оплаты'),
-        xs: 1
+        name: 'division',
+        title: t('Организация'),
+        xs: 2
     },
     {
         sorting: false,
         name: 'createdDate',
-        alignRight: true,
         title: t('Дата'),
-        xs: 2
+        xs: 1
     },
     {
         sorting: true,
         name: 'amount',
         alignRight: true,
         title: t('Сумма'),
-        xs: 1
+        xs: 2
     },
     {
         sorting: true,
@@ -68,14 +68,17 @@ const listHeader = [
         alignRight: true,
         title: t('Остаток'),
         xs: 1
-    },
-    {
-        name: 'buttons'
     }
 ]
 
 const enhance = compose(
     injectSheet({
+        listRow: {
+            cursor: 'pointer',
+            margin: '0 -30px !important',
+            padding: '0 30px',
+            width: 'auto !important'
+        },
         additionalData: {
             display: 'flex',
             borderBottom: '1px #efefef solid',
@@ -96,17 +99,10 @@ const enhance = compose(
     })
 )
 
-const iconStyle = {
-    icon: {
-        color: '#12aaeb',
-        width: 24,
-        height: 24
-    },
-    button: {
-        width: 48,
-        height: 48,
-        padding: 0
-    }
+const paymentIconStyle = {
+    width: 18,
+    height: 18,
+    marginLeft: 5
 }
 
 const PendingExpensesGridList = enhance((props) => {
@@ -136,7 +132,14 @@ const PendingExpensesGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const supplyNo = _.get(item, 'supplyId')
         const provider = _.get(item, ['provider', 'name'])
-        const paymentType = _.get(item, 'paymentType') === 'cash' ? t('Наличный') : t('Банковский счет')
+        const division = _.get(item, ['division', 'name'])
+        const paymentTypeIcon = _.get(item, 'paymentType') === 'cash'
+            ? <ToolTip position={'left'} text={t('наличный')}>
+                <CashPayment style={paymentIconStyle} color={'#12aaeb'}/>
+            </ToolTip>
+            : <ToolTip position={'left'} text={t('банковский счет')}>
+                <BankPayment style={paymentIconStyle} color={'#6261b0'}/>
+            </ToolTip>
         const type = _.get(item, 'type') === 'supply' ? t('Поставка') : t('Доп. расход')
         const comment = _.get(item, 'comment')
         const createdDate = dateTimeFormat(_.get(item, 'createdDate'), true)
@@ -144,24 +147,17 @@ const PendingExpensesGridList = enhance((props) => {
         const summary = _.get(item, 'totalAmount')
         const balance = _.get(item, 'remains')
         return (
-            <Row key={id}>
+            <Row className={classes.listRow} key={id} onClick={() => { updateDialog.handleOpenUpdateDialog(id) }}>
                 <Col xs={1}>{supplyNo}</Col>
                 <Col xs={2}>{provider}</Col>
                 <Col xs={2}>{comment}</Col>
                 <Col xs={1}>{type}</Col>
-                <Col xs={1}>{paymentType}</Col>
-                <Col xs={2} style={{textAlign: 'right'}}>{createdDate}</Col>
-                <Col xs={1} style={{textAlign: 'right'}}>{numberFormat(summary)} {currency}</Col>
-                <Col xs={1} style={{textAlign: 'right'}}>{numberFormat(balance)} {currency}</Col>
-                <Col xs={1} style={{textAlign: 'right', padding: '0'}}>
-                    <IconButton
-                        iconStyle={iconStyle.icon}
-                        style={iconStyle.button}
-                        touch={true}
-                        onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
-                        <AddPayment />
-                    </IconButton>
+                <Col xs={2}>{division}</Col>
+                <Col xs={1}>{createdDate}</Col>
+                <Col xs={2} style={{textAlign: 'right', display: 'flex', alignItems: 'center', justifyContent: 'flex-end'}}>
+                    {numberFormat(summary, currency)} {paymentTypeIcon}
                 </Col>
+                <Col xs={1} style={{textAlign: 'right'}}>{numberFormat(balance)} {currency}</Col>
             </Row>
         )
     })
@@ -177,7 +173,7 @@ const PendingExpensesGridList = enhance((props) => {
     const detailComment = _.get(selectedDetails, 'comment')
     const detailCurrency = _.get(selectedDetails, ['currency', 'name'])
     const detailAmount = numberFormat(_.get(selectedDetails, 'totalAmount'), detailCurrency)
-    const detailPaid = numberFormat(_.get(selectedDetails, 'paidAmount'), detailCurrency)
+    const detailRemains = numberFormat(_.get(selectedDetails, 'remains'), detailCurrency)
     const detailProvider = _.get(selectedDetails, ['provider', 'name'])
     const detailCreatedDate = _.get(selectedDetails, 'createdDate')
     const initialValues = {
@@ -200,7 +196,7 @@ const PendingExpensesGridList = enhance((props) => {
             </div>
             <div>
                 <div>{t('Сумма расхода')}: <strong>{detailAmount}</strong></div>
-                <div>{t('Остаток')}: <strong>{detailPaid}</strong></div>
+                <div>{t('Остаток')}: <strong>{detailRemains}</strong></div>
                 {detailComment && <div>{t('Комментарий')}: <strong>{detailComment}</strong></div>}
             </div>
         </div>
@@ -222,13 +218,13 @@ const PendingExpensesGridList = enhance((props) => {
                 isExpense={true}
                 noCashbox={true}
                 hideRedundant={true}
+                expenseCategoryKey={'supply-supply_expanse'}
                 detailCurrency={detailCurrency}
                 additionalData={additionalData}
                 open={updateDialog.openUpdateDialog}
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
                 initialValues={initialValues}
-                expenseCategory={detailType}
             />
         </Container>
     )

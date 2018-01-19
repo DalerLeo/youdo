@@ -375,3 +375,14 @@ export const PROVIDER_BALANCE = 'provider-balance'
 export const PROVIDER_BALANCE_LIST_URL = `/${PROVIDER_BALANCE}`
 export const PROVIDER_BALANCE_ITEM_URL = `${PROVIDER_BALANCE_LIST_URL}/:providerBalanceId`
 export const PROVIDER_BALANCE_ITEM_PATH = `${PROVIDER_BALANCE}/%d`
+
+export const CELL_TYPE = 'cell-type'
+export const CELL_TYPE_LIST_URL = `/${CELL_TYPE}`
+export const CELL_TYPE_ITEM_URL = `${CELL_TYPE_LIST_URL}/:cellTypeId`
+export const CELL_TYPE_ITEM_PATH = `/${CELL_TYPE}/%d`
+
+export const CELL = 'cell'
+export const CELL_LIST_URL = `/${CELL}`
+export const CELL_ITEM_URL = `${CELL_LIST_URL}/:cellId`
+export const CELL_ITEM_PATH = `${CELL}/%d`
+

@@ -26,7 +26,6 @@ import {optionsListFetchAction} from '../../actions/expensiveCategory'
 import {openErrorAction} from '../../actions/error'
 import {transactionConvertAction} from '../../actions/transaction'
 import {openSnackbarAction} from '../../actions/snackbar'
-import getConfig from '../../helpers/getConfig'
 import t from '../../helpers/translate'
 
 const enhance = compose(
@@ -44,7 +43,6 @@ const enhance = compose(
         const createForm = _.get(state, ['form', 'TransactionCreateForm'])
         const convert = _.get(state, ['pendingPayments', 'convert'])
         const filter = filterHelper(list, pathname, query)
-        const hasMarket = toBoolean(getConfig('MARKETS_MODULE'))
         return {
             list,
             listLoading,
@@ -56,8 +54,7 @@ const enhance = compose(
             filter,
             filterForm,
             createForm,
-            convert,
-            hasMarket
+            convert
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -142,12 +139,14 @@ const enhance = compose(
             const client = _.get(filterForm, ['values', 'client']) || null
             const market = _.get(filterForm, ['values', 'market']) || null
             const paymentType = _.get(filterForm, ['values', 'paymentType', 'value']) || null
+            const division = _.get(filterForm, ['values', 'division']) || null
 
             filter.filterBy({
                 [PENDING_PAYMENTS_FILTER_OPEN]: false,
                 [PENDING_PAYMENTS_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [PENDING_PAYMENTS_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD'),
                 [PENDING_PAYMENTS_FILTER_KEY.MARKET]: _.join(market, '-'),
+                [PENDING_PAYMENTS_FILTER_KEY.DIVISION]: _.join(division, '-'),
                 [PENDING_PAYMENTS_FILTER_KEY.CLIENT]: _.join(client, '-'),
                 [PENDING_PAYMENTS_FILTER_KEY.PAYMENT_TYPE]: paymentType
             })
@@ -202,8 +201,7 @@ const PendingPaymentsList = enhance((props) => {
         filter,
         layout,
         convert,
-        params,
-        hasMarket
+        params
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', PENDING_PAYMENTS_FILTER_OPEN]))
@@ -212,6 +210,7 @@ const PendingPaymentsList = enhance((props) => {
     const paymentType = filter.getParam(PENDING_PAYMENTS_FILTER_KEY.PAYMENT_TYPE)
     const client = filter.getParam(PENDING_PAYMENTS_FILTER_KEY.CLIENT)
     const market = filter.getParam(PENDING_PAYMENTS_FILTER_KEY.MARKET)
+    const division = filter.getParam(PENDING_PAYMENTS_FILTER_KEY.DIVISION)
     const toDate = filter.getParam(PENDING_PAYMENTS_FILTER_KEY.TO_DATE)
     const detailId = _.toInteger(_.get(params, 'pendingPaymentsId'))
 
@@ -245,6 +244,9 @@ const PendingPaymentsList = enhance((props) => {
             }),
             market: market && _.map(_.split(market, '-'), (item) => {
                 return _.toNumber(item)
+            }),
+            division: division && _.map(_.split(division, '-'), (item) => {
+                return _.toNumber(item)
             })
         },
         filterLoading: false,
@@ -276,7 +278,6 @@ const PendingPaymentsList = enhance((props) => {
                 updateDialog={updateDialog}
                 filterDialog={filterDialog}
                 convert={convert}
-                hasMarket={hasMarket}
             />
         </Layout>
     )

@@ -189,7 +189,7 @@ const StatReportGridList = enhance((props) => {
                     <span>{numberFormat(_.get(salesData, 'netCost'), currency)}</span>
                 </li>
                 <li>
-                    <span>{t('Сумма товаров, проданных<br/> дешевле себестоимости')}</span>
+                    <span dangerouslySetInnerHTML={{__html: t('Сумма товаров, проданных<br/> дешевле себестоимости')}}></span>
                     <span>{numberFormat(_.get(salesData, 'lessNetCostSum'), currency)}</span>
                 </li>
                 <li>

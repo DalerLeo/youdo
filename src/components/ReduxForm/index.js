@@ -116,6 +116,8 @@ import OrderSearchField from './Order/OrderSearchField'
 import SupplySearchField from './Supply/SupplySearchField'
 import ProviderBalanceTypeSearchField from './Provider/ProviderBalanceTypeSearchField'
 import TransactionIncomeCategoryMultiSearch from './Transaction/TransactionIncomeCategoryMultiSearch'
+import CellTypeParentSearchField from './CellTypeParentSearchField'
+import CellTypeChildrenSearchField from './CellTypeChildrenSearchField'
 
 export {
     CashboxTypeCurrencyField,
@@ -235,5 +237,7 @@ export {
     SupplySearchField,
     SupplyExpenseSearchField,
     ProviderBalanceTypeSearchField,
-    TransactionIncomeCategoryMultiSearch
+    TransactionIncomeCategoryMultiSearch,
+    CellTypeParentSearchField,
+    CellTypeChildrenSearchField
 }

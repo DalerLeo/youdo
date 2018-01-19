@@ -168,9 +168,12 @@ const enhance = compose(
                     marginBottom: '5px'
                 },
                 '& div': {
-                    fontSize: '18px',
+                    fontSize: '15px',
                     fontWeight: '600'
                 }
+            },
+            '& p': {
+                fontSize: '13px'
             }
         },
         searchButton: {
@@ -201,8 +204,9 @@ const enhance = compose(
             }
         },
         salesSummary: {
-            width: '440px',
-            display: 'flex'
+            width: '335px',
+            display: 'flex',
+            justifyContent: 'space-between'
         }
     })
 )
@@ -297,17 +301,17 @@ const StatCashboxDetails = enhance((props) => {
                     : <div className={classes.balances}>
                         <Row className={classes.diagram}>
                             <div className={classes.salesSummary}>
-                                <div style={{marginRight: '40px'}} className={classes.sumItem}>
+                                <div className={classes.sumItem}>
                                     <div className={classes.balanceItem}>
                                         <span>Баланс на начало периода</span>
                                         <div className={(startBalance > ZERO) ? classes.green : (startBalance < ZERO) ? classes.red : ''}>
-                                            {numberFormat(startBalance, currency)} <span>{primaryCurrency !== currency && intStartBalance}</span>
+                                            {numberFormat(startBalance, currency)} <p>{primaryCurrency !== currency && intStartBalance}</p>
                                         </div>
                                     </div>
                                     <div className={classes.balanceItem}>
                                         <span>Баланс на конец периода</span>
                                         <div className={(endBalance > ZERO) ? classes.green : (endBalance < ZERO) ? classes.red : ''}>
-                                            {numberFormat(endBalance, currency)} <span>{primaryCurrency !== currency && intEndBalance}</span>
+                                            {numberFormat(endBalance, currency)} <p>{primaryCurrency !== currency && intEndBalance}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -315,18 +319,18 @@ const StatCashboxDetails = enhance((props) => {
                                     <div className={classes.balanceItem}>
                                         <span>Приход за период</span>
                                         <div className={(income > ZERO) ? classes.green : (income < ZERO) ? classes.red : ''}>
-                                            {numberFormat(income, currency)} <span>{primaryCurrency !== currency && intIncome}</span>
+                                            {numberFormat(income, currency)} <p>{primaryCurrency !== currency && intIncome}</p>
                                         </div>
                                     </div>
                                     <div className={classes.balanceItem}>
                                         <span>Расход за период</span>
                                         <div className={(expenses > ZERO) ? classes.red : ''}>
-                                            {numberFormat(expenses, currency)} <span>{primaryCurrency !== currency && intExpenses}</span>
+                                            {numberFormat(expenses, currency)} <p>{primaryCurrency !== currency && intExpenses}</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div style={{width: 'calc(100% - 440px)'}}>
+                            <div style={{width: 'calc(100% - 335px)'}}>
                                 <StatisticsChart
                                     primaryText="Баланс"
                                     primaryValues={graphAmount}

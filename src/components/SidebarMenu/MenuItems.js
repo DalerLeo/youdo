@@ -21,6 +21,7 @@ const SETTINGS_STAFF = t('Персонал')
 const SETTINGS_FINANCE = t('Финансы')
 const SETTINGS_PRODUCTS = t('Продукты')
 const SETTINGS_MISC = t('Разное')
+const SETTINGS_STOCK = t('Склад')
 
 const STATS_SALES = t('Продажи')
 const STATS_FINANCE = t('Финансы')
@@ -195,8 +196,11 @@ export const MenuItems = [
             {section: SETTINGS_PRODUCTS, name: t('Измерения'), url: ROUTES.MEASUREMENT_LIST_URL, permission: 'frontend_settings_measurement'},
             {section: SETTINGS_PRODUCTS, name: t('Типы магазинов'), url: ROUTES.MARKET_TYPE_LIST_URL, permission: 'frontend_settings_market_type'},
 
+            {section: SETTINGS_STOCK, name: t('Склады'), url: ROUTES.STOCK_LIST_URL, permission: 'frontend_settings_stock'},
+            {section: SETTINGS_STOCK, name: t('Тип ячейки'), url: ROUTES.CELL_TYPE_LIST_URL, permission: 'frontend_settings_cell_type_list'},
+            {section: SETTINGS_STOCK, name: t('Ячейки'), url: ROUTES.CELL_LIST_URL, permission: 'frontend_cell_list'},
+
             {section: SETTINGS_MISC, name: t('Прайс-листы'), url: ROUTES.PRICE_LIST_SETTING_LIST_URL, permission: 'frontend_settings_price_list'},
-            {section: SETTINGS_MISC, name: t('Склады'), url: ROUTES.STOCK_LIST_URL, permission: 'frontend_settings_stock'},
             {section: SETTINGS_MISC, name: t('Оборудования'), url: ROUTES.EQUIPMENT_LIST_URL, permission: 'frontend_settings_equipment'},
             {section: SETTINGS_MISC, name: t('Организация'), url: ROUTES.DIVISION_LIST_URL, permission: 'frontend_settings_division'},
             {section: SETTINGS_MISC, name: t('Объединение'), url: ROUTES.JOIN_LIST_URL, permission: 'frontend_settings_join'},

@@ -116,6 +116,7 @@ const enhance = compose(
             const paymentType = _.get(filterForm, ['values', 'paymentType', 'value']) || null
             const provider = _.get(filterForm, ['values', 'provider']) || null
             const supply = _.get(filterForm, ['values', 'supply']) || null
+            const division = _.get(filterForm, ['values', 'division']) || null
 
             filter.filterBy({
                 [PENDING_EXPENSES_FILTER_OPEN]: false,
@@ -124,7 +125,8 @@ const enhance = compose(
                 [PENDING_EXPENSES_FILTER_KEY.TYPE]: type,
                 [PENDING_EXPENSES_FILTER_KEY.PAYMENT_TYPE]: paymentType,
                 [PENDING_EXPENSES_FILTER_KEY.PROVIDER]: joinArray(provider),
-                [PENDING_EXPENSES_FILTER_KEY.SUPPLY]: joinArray(supply)
+                [PENDING_EXPENSES_FILTER_KEY.SUPPLY]: joinArray(supply),
+                [PENDING_EXPENSES_FILTER_KEY.DIVISION]: joinArray(division)
             })
         },
 
@@ -179,6 +181,7 @@ const PendingExpensesList = enhance((props) => {
     const paymentType = filter.getParam(PENDING_EXPENSES_FILTER_KEY.PAYMENT_TYPE)
     const provider = filter.getParam(PENDING_EXPENSES_FILTER_KEY.PROVIDER)
     const supply = filter.getParam(PENDING_EXPENSES_FILTER_KEY.SUPPLY)
+    const division = filter.getParam(PENDING_EXPENSES_FILTER_KEY.DIVISION)
     const detailId = _.toInteger(_.get(params, 'pendingExpensesId'))
 
     const confirmDialog = {
@@ -208,7 +211,8 @@ const PendingExpensesList = enhance((props) => {
                 value: paymentType
             },
             provider: provider && splitToArray(provider),
-            supply: supply && splitToArray(supply)
+            supply: supply && splitToArray(supply),
+            division: supply && splitToArray(division)
         },
         filterLoading: false,
         openFilterDialog,
