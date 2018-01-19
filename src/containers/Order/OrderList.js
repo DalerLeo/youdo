@@ -1087,13 +1087,14 @@ const OrderList = enhance((props) => {
                     text: deliveryTypeText
                 },
                 isConfirmed: _.toNumber(_.get(detail, 'status')) !== FIVE,
-                dealType: dealType,
-                paymentType: paymentType,
+                dealType: dealType || '',
+                paymentType: paymentType || '',
                 deliveryDate: _.get(detail, ['dateDelivery']) ? moment(_.get(detail, ['dateDelivery'])).toDate() : '',
                 requestDeadline: _.get(detail, ['requestDeadline']) && moment(_.get(detail, ['requestDeadline'])).toDate(),
                 deliveryPrice: numberFormat(_.get(detail, 'deliveryPrice')),
                 discountPrice: discount,
                 paymentDate: moment(_.get(detail, ['paymentDate'])).toDate(),
+                nextPaymentDate: moment(_.get(detail, ['nextPaymentDate'])).toDate(),
                 products: groupedProducts,
                 priceList: {
                     value: _.get(detail, ['priceList', 'id']),

@@ -8,6 +8,7 @@ import Layout from '../../components/Layout'
 import {compose, withHandlers, withPropsOnChange} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
+import {splitToArray, joinArray} from '../../helpers/joinSplitValues'
 import toBoolean from '../../helpers/toBoolean'
 import * as API from '../../constants/api'
 import * as serializers from '../../serializers/Statistics/statProductSerializer'
@@ -77,11 +78,13 @@ const enhance = compose(
             const {filter, filterForm} = props
             const search = _.get(filterForm, ['values', 'search']) || null
             const user = _.get(filterForm, ['values', 'user']) || null
+            const marketType = _.get(filterForm, ['values', 'marketType']) || null
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
             filter.filterBy({
                 [STAT_MARKET_FILTER_KEY.SEARCH]: search,
-                [STAT_MARKET_FILTER_KEY.USER]: _.join(user, '-'),
+                [STAT_MARKET_FILTER_KEY.USER]: joinArray(user),
+                [STAT_MARKET_FILTER_KEY.MARKET_TYPE]: joinArray(marketType),
                 [STAT_MARKET_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [STAT_MARKET_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
 
@@ -142,6 +145,7 @@ const StatMarketList = enhance((props) => {
 
     const detailId = _.toInteger(_.get(params, 'statMarketId'))
     const openStatMarketDialog = toBoolean(_.get(location, ['query', STAT_MARKET_DIALOG_OPEN]))
+    const marketType = _.get(location, ['query', STAT_MARKET_FILTER_KEY.MARKET_TYPE])
     const firstDayOfMonth = _.get(location, ['query', 'fromDate']) || moment().format('YYYY-MM-01')
     const lastDay = moment().daysInMonth()
     const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
@@ -177,9 +181,8 @@ const StatMarketList = enhance((props) => {
     }
     const initialValues = {
         search: search,
-        user: user && _.map(_.split(user, '-'), (item) => {
-            return _.toNumber(item)
-        }),
+        marketType: marketType && splitToArray(marketType),
+        user: user && splitToArray(user),
         date: {
             fromDate: moment(firstDayOfMonth),
             toDate: moment(lastDayOfMonth)

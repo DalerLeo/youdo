@@ -41,7 +41,7 @@ const enhance = compose(
             display: 'flex',
             flexWrap: 'wrap',
             transition: 'all 250ms ease-out',
-            maxHeight: '660px',
+            maxHeight: '695px',
             overflow: 'hidden'
         },
         link: {

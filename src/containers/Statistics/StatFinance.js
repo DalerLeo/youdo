@@ -67,6 +67,7 @@ const enhance = compose(
             const type = _.get(filterForm, ['values', 'type']) || null
             const client = _.get(filterForm, ['values', 'client']) || null
             const categoryExpense = _.get(filterForm, ['values', 'categoryExpense']) || null
+            const categoryIncome = _.get(filterForm, ['values', 'categoryIncome']) || null
 
             filter.filterBy({
                 [STAT_FINANCE_FILTER_KEY.SEARCH]: search,
@@ -74,7 +75,8 @@ const enhance = compose(
                 [STAT_FINANCE_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD'),
                 [STAT_FINANCE_FILTER_KEY.TYPE]: joinArray(type),
                 [STAT_FINANCE_FILTER_KEY.CLIENT]: joinArray(client),
-                [STAT_FINANCE_FILTER_KEY.CATEGORY_EXPENSE]: joinArray(categoryExpense)
+                [STAT_FINANCE_FILTER_KEY.CATEGORY_EXPENSE]: joinArray(categoryExpense),
+                [STAT_FINANCE_FILTER_KEY.CATEGORY_INCOME]: joinArray(categoryIncome)
             })
         },
         handleGetDocument: props => () => {
@@ -103,6 +105,7 @@ const StatFinanceList = enhance((props) => {
     const type = !_.isNull(_.get(location, ['query', 'type'])) && _.get(location, ['query', 'type'])
     const client = !_.isNull(_.get(location, ['query', 'client'])) && _.get(location, ['query', 'client'])
     const categoryExpense = !_.isNull(_.get(location, ['query', 'categoryExpense'])) && _.get(location, ['query', 'categoryExpense'])
+    const categoryIncome = !_.isNull(_.get(location, ['query', 'categoryIncome'])) && _.get(location, ['query', 'categoryIncome'])
     const search = !_.isNull(_.get(location, ['query', 'search'])) ? _.get(location, ['query', 'search']) : null
 
     const graphData = {
@@ -121,6 +124,7 @@ const StatFinanceList = enhance((props) => {
             type: type && splitToArray(type),
             client: client && splitToArray(client),
             categoryExpense: categoryExpense && splitToArray(categoryExpense),
+            categoryIncome: categoryIncome && splitToArray(categoryIncome),
             date: {
                 fromDate: moment(firstDayOfMonth),
                 toDate: moment(lastDayOfMonth)

@@ -15,7 +15,9 @@ export const expense = (data) => {
         'end_date': _.get(defaultData, 'toDate') || lastDayOfMonth,
         'type': type,
         'client': _.get(defaultData, 'client'),
-        'expanse_category': _.get(data, 'categoryExpense')
+        'expanse_category': _.get(data, 'categoryExpense'),
+        'income_category': _.get(data, 'categoryIncome') || null
+
     }
 }
 
@@ -29,7 +31,9 @@ export const income = (data) => {
         'end_date': _.get(defaultData, 'toDate') || lastDayOfMonth,
         'type': type,
         'client': _.get(defaultData, 'client'),
-        'expanse_category': _.get(data, 'categoryExpense')
+        'expanse_category': _.get(data, 'categoryExpense'),
+        'income_category': _.get(data, 'categoryIncome') || null
+
     }
 }
 
@@ -44,6 +48,7 @@ export const listFilterSerializer = (data) => {
         'page': _.get(defaultData, 'page'),
         'client': _.get(defaultData, 'client'),
         'page_size': _.get(defaultData, 'pageSize'),
-        'expanse_category': _.get(data, 'categoryExpense')
+        'expanse_category': _.get(data, 'categoryExpense') || null,
+        'income_category': _.get(data, 'categoryIncome') || null
     }
 }

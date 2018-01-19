@@ -7,7 +7,7 @@ import Select from 'react-select'
 import 'react-select/dist/react-select.css'
 const DELAY_FOR_TYPE_ATTACK = 300
 
-const fetchList = ({state, dispatch, getOptions, getText, getValue}) => {
+const fetchList = ({state, dispatch, getOptions, getText, getValue, input}) => {
     dispatch({loading: true})
     getOptions(state.text)
         .then((data) => {

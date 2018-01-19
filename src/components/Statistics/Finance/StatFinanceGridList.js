@@ -11,6 +11,7 @@ import {
     DateToDateField,
     TransactionTypeMultiSearchField,
     ExpensiveCategoryMultiSearchField,
+    TransactionIncomeCategoryMultiSearch,
     ClientMultiSearchField
 } from '../../ReduxForm'
 import StatSideMenu from '../StatSideMenu'
@@ -27,6 +28,7 @@ export const STAT_FINANCE_FILTER_KEY = {
     SEARCH: 'search',
     TYPE: 'type',
     CATEGORY_EXPENSE: 'categoryExpense',
+    CATEGORY_INCOME: 'categoryIncome',
     CLIENT: 'client',
     DIVISION: 'division'
 }
@@ -195,6 +197,7 @@ const StatFinanceGridList = enhance((props) => {
         <div>
             <Field className={classes.inputFieldCustom} name="date" component={DateToDateField} label={t('Диапазон дат')} fullWidth={true}/>
             <Field className={classes.inputFieldCustom} name="categoryExpense" component={ExpensiveCategoryMultiSearchField} label={t('Категории расходов')} fullWidth={true}/>
+            <Field className={classes.inputFieldCustom} name="categoryIncome" component={TransactionIncomeCategoryMultiSearch} label={t('Категории доходов')} fullWidth={true}/>
             <Field className={classes.inputFieldCustom} name="type" component={TransactionTypeMultiSearchField} label={t('Тип')} fullWidth={true}/>
             <Field className={classes.inputFieldCustom} name="client" component={ClientMultiSearchField} label={t('Клиент')} fullWidth={true}/>
         </div>

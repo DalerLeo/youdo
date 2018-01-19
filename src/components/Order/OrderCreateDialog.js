@@ -2,7 +2,7 @@ import _ from 'lodash'
 import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {compose} from 'recompose'
+import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import {Field, Fields, reduxForm, SubmissionError} from 'redux-form'
 import Dialog from 'material-ui/Dialog'
@@ -50,13 +50,11 @@ const enhance = compose(
         loader: {
             position: 'absolute',
             width: '100%',
-            height: '300px',
+            height: '100%',
             background: '#fff',
-            alignItems: 'center',
             zIndex: '999',
-            textAlign: 'center',
-            justifyContent: 'center',
-            display: 'flex'
+            display: 'flex',
+            justifyContent: 'center'
         },
         popUp: {
             overflow: 'unset !important',
@@ -240,12 +238,9 @@ const enhance = compose(
             paymentDate
         }
     }),
+    withState('closed', 'setClosed', false)
 )
 
-const customContentStyle = {
-    width: '1000px',
-    maxWidth: 'none'
-}
 const OrderCreateDialog = enhance((props) => {
     const {
         open,
@@ -269,8 +264,16 @@ const OrderCreateDialog = enhance((props) => {
         hasMarket,
         isConfirmed,
         dealType,
-        paymentDate
+        paymentDate,
+        closed,
+        setClosed
     } = props
+
+    const customContentStyle = {
+        width: loading ? '800px' : '1000px',
+        maxWidth: 'none',
+        height: '100%'
+    }
     const canSetDeliveryMan = checkPermission('can_set_delivery_man')
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const totalCost = _.sumBy(orderProducts, (item) => {
@@ -311,10 +314,10 @@ const OrderCreateDialog = enhance((props) => {
             </div>
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit} className={classes.form}>
-                    {loading ? <div className={classes.loader}>
+                    {loading && <div className={classes.loader}>
                         <Loader size={0.75}/>
-                    </div>
-                        : <div className={classes.innerWrap}>
+                    </div>}
+                        <div className={classes.innerWrap}>
                             <div style={{minHeight: '470px'}} className={classes.inContent}>
                                 <div className={classes.leftOrderPart}>
                                     <div className={classes.subTitleOrder}>
@@ -343,6 +346,7 @@ const OrderCreateDialog = enhance((props) => {
                                             component={ClientSearchField}
                                             className={classes.inputFieldCustom}
                                             label={t('Клиент')}
+                                            closed={closed}
                                             fullWidth={true}/>
                                         {hasMarket && <Field
                                             name="market"
@@ -359,6 +363,7 @@ const OrderCreateDialog = enhance((props) => {
                                         <Field
                                             name="paymentType"
                                             component={OrderPaymentTypeRadio}
+                                            isUpdate={isUpdate}
                                         />
                                         <Field
                                             name="currency"
@@ -376,6 +381,7 @@ const OrderCreateDialog = enhance((props) => {
                                             name="user"
                                             component={UsersSearchField}
                                             className={classes.inputFieldCustom}
+                                            closed={closed}
                                             label={t('Агент')}
                                             selectFieldScroll={selectFieldScroll}
                                             fullWidth={true}/>}
@@ -391,6 +397,7 @@ const OrderCreateDialog = enhance((props) => {
                                         <div className={classes.subTitleOrderNoPad}>Условия договора</div>
                                         <Field
                                             name="dealType"
+                                            isUpdate={isUpdate}
                                             component={OrderDealTypeRadio}/>
                                         {dealType === 'consignment' &&
                                         <Field
@@ -450,7 +457,7 @@ const OrderCreateDialog = enhance((props) => {
                                     />
                                 </div>
                             </div>
-                        </div>}
+                        </div>
                     <div className={classes.bottomButton}>
                         <div className={classes.commentField}>
                             {t('Общая сумма заказа')}: <b>{numberFormat(totalCost, currencyItem)}</b>
@@ -467,6 +474,7 @@ const OrderCreateDialog = enhance((props) => {
                                 label={isUpdate ? t('Изменить заказ') : t('Оформить заказ')}
                                 labelStyle={{fontSize: '13px'}}
                                 className={classes.actionButton}
+                                onClick={() => setClosed(true)}
                                 primary={true}
                                 type="submit"/>
                         }
