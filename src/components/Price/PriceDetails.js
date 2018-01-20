@@ -18,7 +18,7 @@ import PriceSetDefaultDialog from './PriceSetDefaultDialog'
 import numberFormat from '../../helpers/numberFormat'
 import NotFound from '../Images/not-found.png'
 import {Link} from 'react-router'
-import dataFomat from '../../helpers/dateFormat'
+import dateFomat from '../../helpers/dateFormat'
 import t from '../../helpers/translate'
 
 const enhance = compose(
@@ -325,7 +325,7 @@ const PriceDetails = enhance((props) => {
                                 const amount = _.get(item, 'amount')
                                 const balance = _.get(item, 'balance')
                                 const netCost = _.get(item, 'netCost')
-                                const date = dataFomat(_.get(item, 'date'))
+                                const date = dateFomat(_.get(item, 'createdDate'))
                                 const id = _.get(item, 'id')
                                 const supplyId = _.get(item, 'supplyId')
                                 return (
