@@ -7,7 +7,7 @@ import Container from '../../Container/index'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import {Field} from 'redux-form'
-import {DateToDateField, ExpensiveCategoryMultiSearchField} from '../../ReduxForm'
+import {DateToDateField} from '../../ReduxForm'
 import StatSideMenu from '../StatSideMenu'
 import ExpenditureTransactionDialog from '../ExpenditureOnStaff/ExpenditureTransactionDialog'
 import Loader from '../../Loader'
@@ -20,7 +20,6 @@ import {StatisticsFilterExcel} from '../../Statistics'
 import t from '../../../helpers/translate'
 
 export const STAT_EXPENDITURE_ON_STAFF_FILTER_KEY = {
-    CATEGORY_EXPENSE: 'categoryExpense',
     FROM_DATE: 'fromDate',
     TO_DATE: 'toDate'
 }
@@ -214,15 +213,13 @@ const StatExpenditureOnStaffGridList = enhance((props) => {
     const userName = _.find(_.get(listData, 'data'), (item) => {
         return _.toNumber(_.get(item, ['staff', 'id'])) === _.toNumber(transactionData.open)
     })
-    const list = _.map(_.get(listData, 'data'), (item) => {
-        const id = _.get(item, 'id')
+    const list = _.map(_.get(listData, 'data'), (item, index) => {
         const employee = _.get(item, ['staff', 'firstName']) + ' ' + _.get(item, ['staff', 'secondName']) || t('Не указан')
         const staffId = _.get(item, ['staff', 'id'])
         const percent = _.get(item, 'percentage')
         const amount = moduleFormat(_.get(item, 'total'), getConfig('PRIMARY_CURRENCY'))
-
         return (
-            <Row key={id} className="dottedList" onClick={() => { transactionData.handleOpenTransactionDialog(staffId) }}>
+            <Row key={index} className="dottedList" onClick={() => { transactionData.handleOpenTransactionDialog(staffId) }}>
                 <Col xs={3}>{employee}</Col>
                 <Col xs={6}>
                     <LinearProgress
@@ -243,12 +240,6 @@ const StatExpenditureOnStaffGridList = enhance((props) => {
                 name="date"
                 component={DateToDateField}
                 label={t('Диапазон дат')}
-                fullWidth={true}/>
-            <Field
-                className={classes.inputFieldCustom}
-                name="categoryExpense"
-                component={ExpensiveCategoryMultiSearchField}
-                label={t('Категории расходов')}
                 fullWidth={true}/>
         </div>
     )

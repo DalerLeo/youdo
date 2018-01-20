@@ -77,7 +77,7 @@ const enhance = compose(
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
 
-            const stock = _.get(filterForm, ['values', 'stock', 'value']) || null
+            const stock = _.get(filterForm, ['values', 'stock']) || null
             const type = _.get(filterForm, ['values', 'type', 'value']) || null
             const typeParent = _.get(filterForm, ['values', 'typeParent', 'value']) || null
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null

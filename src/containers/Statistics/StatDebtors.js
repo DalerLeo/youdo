@@ -126,17 +126,9 @@ const enhance = compose(
             const {filter, filterForm} = props
             const search = _.get(filterForm, ['values', 'search']) || null
             const division = _.get(filterForm, ['values', 'division']) || null
-            const paymentType = _.get(filterForm, ['values', 'paymentType', 'value']) || null
-            const currency = _.get(filterForm, ['values', 'currency']) || null
-            const marketType = _.get(filterForm, ['values', 'marketTypeParent', 'value']) || null
-            const marketTypeChild = _.get(filterForm, ['values', 'marketTypeChild', 'value']) || null
             filter.filterBy({
                 [STAT_DEBTORS_FILTER_KEY.SEARCH]: search,
-                [STAT_DEBTORS_FILTER_KEY.DIVISION]: joinArray(division),
-                [STAT_DEBTORS_FILTER_KEY.PAYMENT_TYPE]: paymentType,
-                [STAT_DEBTORS_FILTER_KEY.MARKET_TYPE]: marketType,
-                [STAT_DEBTORS_FILTER_KEY.MARKET_TYPE_CHILD]: marketTypeChild,
-                [STAT_DEBTORS_FILTER_KEY.CURRENCY]: joinArray(currency)
+                [STAT_DEBTORS_FILTER_KEY.DIVISION]: joinArray(division)
 
             })
         },
@@ -203,10 +195,6 @@ const StatDebtorsList = enhance((props) => {
     const openDetailId = _.toInteger(_.get(location, ['query', 'detailId']))
     const openStatDebtorsDialog = _.toInteger(_.get(location, ['query', 'orderId']))
     const division = _.get(location, ['query', 'division'])
-    const paymentType = _.get(location, ['query', 'paymentType'])
-    const currency = _.get(location, ['query', 'currency'])
-    const marketType = _.toInteger(filter.getParam(STAT_DEBTORS_FILTER_KEY.MARKET_TYPE))
-    const marketTypeChild = _.toInteger(filter.getParam(STAT_DEBTORS_FILTER_KEY.MARKET_TYPE_CHILD))
     const search = !_.isNull(_.get(location, ['query', 'search'])) ? _.get(location, ['query', 'search']) : null
 
     const statDebtorsDialog = {
@@ -225,18 +213,8 @@ const StatDebtorsList = enhance((props) => {
     }
 
     const initialValues = {
-        currency: currency && splitToArray(currency),
         division: division && splitToArray(division),
-        search,
-        marketTypeParent: {
-            value: marketType
-        },
-        marketTypeChild: {
-            value: marketTypeChild
-        },
-        paymentType: {
-            value: paymentType
-        }
+        search
     }
     const detailData = {
         openDetailId: openDetailId,

@@ -126,7 +126,7 @@ export const TRANSACTION_ITEM = `/${TRANSACTION}/%d/`
 export const TRANSACTION_SEND = 'finance/transfer/'
 export const TRANSACTION_DELETE = `/${TRANSACTION}/%d/`
 export const TRANSACTION_PAYMENT_DELETE = 'sales/client_transaction/%d/cancel/'
-export const TRANSACTION_CATEGORY_DATA_LIST = 'sales/staff_expanse'
+export const TRANSACTION_CATEGORY_DATA_LIST = 'sales/staff_expanse/'
 export const TRANSACTION_DETALIZATION_LIST = `/${TRANSACTION}/%d/children/`
 
 export const SUPPLY = 'stock/supply'

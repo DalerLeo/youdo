@@ -15,7 +15,7 @@ const getOptions = (search, parentType) => {
         productyTypeChildListToken.cancel()
     }
     productyTypeChildListToken = CancelToken.source()
-    return axios().get(`${PATH.PRODUCT_TYPE_LIST}?search=${search || ''}&page_size=100`, {'params': {'parent': parentType, cancelToken: productyTypeChildListToken.token}})
+    return axios().get(`${PATH.PRODUCT_TYPE_LIST}?search=${search || ''}&page_size=100&parent=${parentType}`, {cancelToken: productyTypeChildListToken.token})
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
         })

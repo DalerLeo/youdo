@@ -10,11 +10,7 @@ import {reduxForm, Field} from 'redux-form'
 import {connect} from 'react-redux'
 import {
     TextField,
-    DivisionMultiSearchField,
-    CurrencyMultiSearchField,
-    PaymentTypeSearchField,
-    MarketTypeParentSearchField,
-    MarketTypeSearchField
+    DivisionMultiSearchField
 } from '../../ReduxForm'
 import StatSideMenu from '../StatSideMenu'
 import Loader from '../../Loader'
@@ -33,12 +29,7 @@ import FullScreenExit from 'material-ui/svg-icons/navigation/fullscreen-exit'
 import t from '../../../helpers/translate'
 
 export const STAT_DEBTORS_FILTER_KEY = {
-    DIVISION: 'division',
-    PAYMENT_TYPE: 'paymentType',
-    CURRENCY: 'currency',
-    SEARCH: 'search',
-    MARKET_TYPE: 'marketType',
-    MARKET_TYPE_CHILD: 'marketTypeChild'
+    DIVISION: 'division'
 }
 
 const ZERO = 0
@@ -474,36 +465,6 @@ const StatDebtorsGridList = enhance((props) => {
                 label={t('Организация')}
                 fullWidth={true}
             />}
-            <Field
-                name="paymentType"
-                component={PaymentTypeSearchField}
-                className={classes.inputFieldCustom}
-                label={t('Тип оплати')}
-                fullWidth={true}
-            />
-            <Field
-                name="marketTypeParent"
-                component={MarketTypeParentSearchField}
-                className={classes.inputFieldCustom}
-                label="Тип заведения"
-                fullWidth={true}
-            />
-            {typeParent &&
-            <Field
-                name="marketTypeChild"
-                component={MarketTypeSearchField}
-                parentType={typeParent}
-                className={classes.inputFieldCustom}
-                label="Тип заведения"
-                fullWidth={true}
-            />}
-            <Field
-                name="currency"
-                component={CurrencyMultiSearchField}
-                className={classes.inputFieldCustom}
-                label={t('Валюта')}
-                fullWidth={true}
-            />
         </div>
     )
 

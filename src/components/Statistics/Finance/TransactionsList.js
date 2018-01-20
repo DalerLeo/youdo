@@ -131,7 +131,7 @@ const TransactionsList = enhance((props) => {
         const date = dateFormat(_.get(item, 'createdDate'), true)
         const amount = _.get(item, 'amount')
         const currency = _.get(item, ['currency', 'name'])
-        const internal = _.toNumber(_.get(item, 'internal'))
+        const internal = _.toNumber(_.get(item, 'internalAmount'))
         const customRate = _.get(item, 'customRate') ? _.toInteger(_.get(item, 'customRate')) : _.toInteger(amount / internal)
         const comment = _.get(item, 'comment')
         const cashbox = _.get(item, ['cashbox', 'name'])
@@ -172,8 +172,8 @@ const TransactionsList = enhance((props) => {
                 <Col xs={isCashbox ? FOUR : THREE} style={{textAlign: 'right'}}>
                     <div className={amount > ZERO ? 'greenFont' : (amount === ZERO ? '' : 'redFont')}>
                         <span>{numberFormat(amount, currency)}</span>
-                        {primaryCurrency !== currency && <div>{numberFormat(internal, primaryCurrency)} <span
-                            style={{fontSize: 11, color: '#666', fontWeight: 600}}>({customRate})</span></div>}
+                        {primaryCurrency !== currency && <div>{numberFormat(internal, primaryCurrency)}
+                        <span style={{fontSize: 11, color: '#666', fontWeight: 600}}>({customRate})</span></div>}
                     </div>
                 </Col>
             </Row>

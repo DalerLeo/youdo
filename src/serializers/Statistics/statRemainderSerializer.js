@@ -12,7 +12,7 @@ export const listFilterSerializer = (data) => {
         'division': _.get(defaultData, 'division'),
         'page_size': _.get(defaultData, 'pageSize'),
         'ordering': ordering && orderingSnakeCase(ordering),
-        'type': _.get(defaultData, 'type') || _.get(defaultData, 'typeParent'),
+        'type': _.get(defaultData, 'typeParent') && (_.get(defaultData, 'type') || _.get(defaultData, 'typeParent')),
         'product': _.get(defaultData, 'product'),
         'stock': _.get(defaultData, 'stock'),
         'with_price': ONE
@@ -24,7 +24,7 @@ export const graphSerializer = (data) => {
 
     return {
         'division': _.get(defaultData, 'division'),
-        'type': _.get(defaultData, 'type') || _.get(defaultData, 'typeParent'),
+        'type': _.get(defaultData, 'typeParent') && (_.get(defaultData, 'type') || _.get(defaultData, 'typeParent')),
         'product': _.get(defaultData, 'product'),
         'stock': _.get(defaultData, 'stock'),
         'with_price': ONE
