@@ -302,13 +302,13 @@ const StatCashboxDetails = enhance((props) => {
                         <Row className={classes.diagram}>
                             <div className={classes.salesSummary}>
                                 <div className={classes.sumItem}>
-                                    <div className={classes.balanceItem}>
+                                    <div>
                                         <span>Баланс на начало периода</span>
                                         <div className={(startBalance > ZERO) ? classes.green : (startBalance < ZERO) ? classes.red : ''}>
                                             {numberFormat(startBalance, currency)} <p>{primaryCurrency !== currency && intStartBalance}</p>
                                         </div>
                                     </div>
-                                    <div className={classes.balanceItem}>
+                                    <div>
                                         <span>Баланс на конец периода</span>
                                         <div className={(endBalance > ZERO) ? classes.green : (endBalance < ZERO) ? classes.red : ''}>
                                             {numberFormat(endBalance, currency)} <p>{primaryCurrency !== currency && intEndBalance}</p>
@@ -316,13 +316,13 @@ const StatCashboxDetails = enhance((props) => {
                                     </div>
                                 </div>
                                 <div className={classes.sumItem}>
-                                    <div className={classes.balanceItem}>
+                                    <div>
                                         <span>Приход за период</span>
                                         <div className={(income > ZERO) ? classes.green : (income < ZERO) ? classes.red : ''}>
                                             {numberFormat(income, currency)} <p>{primaryCurrency !== currency && intIncome}</p>
                                         </div>
                                     </div>
-                                    <div className={classes.balanceItem}>
+                                    <div>
                                         <span>Расход за период</span>
                                         <div className={(expenses > ZERO) ? classes.red : ''}>
                                             {numberFormat(expenses, currency)} <p>{primaryCurrency !== currency && intExpenses}</p>

@@ -394,8 +394,11 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_CREATE_EXPENSE_DIALOG_OPEN]: true})})
             const form = 'TransactionCreateForm'
             dispatch(reset(form))
-            dispatch(change(form, 'custom_rate', convertAmount))
-            dispatch(change(form, 'transaction_child', [{}]))
+            Promise.resolve()
+                .then(() => {
+                    dispatch(change(form, 'custom_rate', convertAmount))
+                    dispatch(change(form, 'transaction_child', [{}]))
+                })
         },
 
         handleCloseCreateExpenseDialog: props => () => {
@@ -429,8 +432,11 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_CREATE_INCOME_DIALOG_OPEN]: true})})
             const form = 'TransactionCreateForm'
             dispatch(reset(form))
-            dispatch(change(form, 'custom_rate', convertAmount))
-            dispatch(change(form, 'transaction_child', [{}]))
+            Promise.resolve()
+                .then(() => {
+                    dispatch(change(form, 'custom_rate', convertAmount))
+                    dispatch(change(form, 'transaction_child', [{}]))
+                })
         },
 
         handleCloseCreateIncomeDialog: props => () => {
@@ -847,7 +853,9 @@ const TransactionList = enhance((props) => {
                 amount *= MINUS_ONE
             }
             if (!detailId || openCreateExpenseDialog) {
-                return {}
+                return {
+                    date: moment().toDate()
+                }
             }
             return {
                 comment: _.get(detail, 'comment'),
@@ -880,7 +888,7 @@ const TransactionList = enhance((props) => {
             const showIncomeClients = _.toInteger(clientIncome || ZERO) > ZERO
             if (!detailId || openCreateIncomeDialog) {
                 return {
-                    date: moment()
+                    date: moment().toDate()
                 }
             }
 

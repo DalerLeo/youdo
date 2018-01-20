@@ -25,6 +25,9 @@ import {StatisticsFilterExcel, StatisticsChart} from '../../Statistics'
 import NotFound from '../../Images/not-found.png'
 import ClientBalanceFormat from './ClientBalanceFormat'
 import t from '../../../helpers/translate'
+import ToolTip from '../../ToolTip'
+import CashPayment from 'material-ui/svg-icons/maps/local-atm'
+import BankPayment from 'material-ui/svg-icons/action/credit-card'
 
 const NEGATIVE = -1
 
@@ -40,10 +43,12 @@ export const CLIENT_INCOME_FILTER_KEY = {
 const enhance = compose(
     injectSheet({
         green: {
-            color: '#81c784'
+            color: '#81c784',
+            fontWeight: '600'
         },
         red: {
-            color: '#e57373'
+            color: '#e57373',
+            fontWeight: '600'
         },
         mainWrapper: {
             background: '#fff',
@@ -211,6 +216,15 @@ const enhance = compose(
             textAlign: 'center',
             fontSize: '13px',
             color: '#666'
+        },
+        payment: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            textAlign: 'right',
+            '& > div:last-child': {
+                marginLeft: '5px'
+            }
         }
     }),
     reduxForm({
@@ -289,6 +303,7 @@ const ClientIncomeGridList = enhance((props) => {
         const type = _.get(item, 'type')
         const orderId = _.get(item, 'order')
         const orderReturnId = _.get(item, 'orderReturn')
+        const paymentType = _.get(item, 'paymentType')
         return (
             <Row key={index} className="dottedList">
                 <Col xs={1}>{transId}</Col>
@@ -302,8 +317,15 @@ const ClientIncomeGridList = enhance((props) => {
                     {comment && <div><strong>Комментарий:</strong> {comment}</div>}
                 </Col>
                 <Col xs={2} style={{textAlign: 'right'}}>
-                    <div className={amount > ZERO ? 'greenFont' : (amount === ZERO ? '' : 'redFont')}>
-                        <span>{numberFormat(amount, currency)}</span>
+                    <div className={amount > ZERO ? classes.green : (amount === ZERO ? '' : classes.red)}>
+                        <div className={classes.payment}>
+                            {numberFormat(amount, currency)}
+                            <ToolTip position="bottom" text={paymentType === 'bank' ? 'банковский счет' : 'наличные'}>
+                                {paymentType === 'bank'
+                                    ? <BankPayment style={{height: '18px', width: '18px', color: '#6261b0'}}/>
+                                    : <CashPayment style={{height: '18px', width: '18px', color: '#12aaeb'}}/>}
+                            </ToolTip>
+                        </div>
                         {primaryCurrency !== currency && <div>{numberFormat(internal, primaryCurrency)} <span
                             style={{fontSize: 11, color: '#666', fontWeight: 600}}>({customRate})</span></div>}
                     </div>

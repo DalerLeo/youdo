@@ -320,7 +320,8 @@ const TransactionsList = enhance((props) => {
             users: staffExpense
         }
         : {
-            transaction_child: [{}]
+            transaction_child: [{}],
+            date: currentDay
         }
 
     const transactionList = _.map(_.get(listData, 'data'), (item) => {
@@ -454,7 +455,7 @@ const TransactionsList = enhance((props) => {
             {!showOnlyList && <section>
                 <TransactionCreateDialog
                     isExpense={true}
-                    initialValues={createExpenseDialog.initialValues}
+                    initialValues={TransactionInitialValues}
                     noCashbox={_.get(cashboxData, 'cashboxId') === ZERO}
                     cashboxData={cashboxData}
                     open={createExpenseDialog.open}
@@ -465,7 +466,7 @@ const TransactionsList = enhance((props) => {
                     canSetCustomRate={canSetCustomRate}
                 />
                 <TransactionCreateDialog
-                    initialValues={{date: currentDay, transaction_child: [{}]}}
+                    initialValues={TransactionInitialValues}
                     noCashbox={_.get(cashboxData, 'cashboxId') === ZERO}
                     cashboxData={cashboxData}
                     open={createIncomeDialog.open}

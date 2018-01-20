@@ -9,10 +9,12 @@ import Loader from '../Loader'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import {TextField, CheckBox} from '../ReduxForm'
+import CategoryOptionsRadioButton from '../ReduxForm/CategoryOptionsRadioButton'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 import t from '../../helpers/translate'
+import {connect} from 'react-redux'
 
 export const INCOME_CATEGORY_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -47,18 +49,26 @@ const enhance = compose(
             display: 'flex',
             flexWrap: 'wrap',
             '& > div': {
-                whiteSpace: 'nowrap'
+                whiteSpace: 'nowrap',
+                display: 'flex',
+                flexWrap: 'wrap'
             }
         }
     })),
     reduxForm({
         form: 'IncomeCategoryCreateForm',
         enableReinitialize: true
+    }),
+    connect((state) => {
+        const showOptions = _.get(state, ['form', 'IncomeCategoryCreateForm', 'values', 'showOptions'])
+        return {
+            showOptions
+        }
     })
 )
 
 const IncomeCategoryCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, isUpdate, data, dataLoading} = props
+    const {open, loading, handleSubmit, onClose, classes, isUpdate, data, dataLoading, showOptions} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
     return (
@@ -90,23 +100,23 @@ const IncomeCategoryCreateDialog = enhance((props) => {
                                 label={t('Наименование')}
                                 fullWidth={true}
                             />
+                            <Field
+                                name={'showOptions'}
+                                label={t('Дополнительные параметры')}
+                                component={CheckBox}/>
                         </div>
                     </div>
-                    <div style={{margin: '10px 30px -10px', fontWeight: '600'}}>{t('Дополнительные параметры')}</div>
-                    <div className={classes.expenseCategoryOptions}>
-                        {_.map(data, (item) => {
-                            const name = _.get(item, 'title')
-                            const id = _.get(item, 'id')
-                            return (
-                                <div key={id}>
-                                    <Field
-                                        name={'options[' + id + ']'}
-                                        label={name}
-                                        component={CheckBox}/>
-                                </div>
-                            )
-                        })}
-                    </div>
+                    {showOptions &&
+                    <div>
+                        <div style={{margin: '10px 30px -10px', fontWeight: '600'}}>{t('Дополнительные параметры')}</div>
+                        <div className={classes.expenseCategoryOptions}>
+                            <Field
+                                name={'options'}
+                                optionsList={data}
+                                loading={dataLoading}
+                                component={CategoryOptionsRadioButton}/>
+                        </div>
+                    </div>}
                     <div className={classes.bottomButton}>
                         <FlatButton
                             label={t('Сохранить')}
