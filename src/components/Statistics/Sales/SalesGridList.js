@@ -4,13 +4,6 @@ import React from 'react'
 import _ from 'lodash'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
-import Available from 'material-ui/svg-icons/action/store'
-import Canceled from 'material-ui/svg-icons/notification/do-not-disturb-alt'
-import Delivered from 'material-ui/svg-icons/action/assignment-turned-in'
-import Payment from 'material-ui/svg-icons/action/credit-card'
-import InProcess from 'material-ui/svg-icons/device/access-time'
-import Transfered from 'material-ui/svg-icons/maps/local-shipping'
-import NotConfirmed from 'material-ui/svg-icons/alert/warning'
 import InfoIcon from 'material-ui/svg-icons/action/info-outline'
 import * as ROUTES from '../../../constants/routes'
 import Container from '../../Container/index'
@@ -19,6 +12,7 @@ import {compose} from 'recompose'
 import {Field} from 'redux-form'
 import StatSideMenu from '../StatSideMenu'
 import Pagination from '../../GridList/GridListNavPagination'
+import OrderStatusIcons from '../../Order/OrderStatusIcons'
 import numberFormat from '../../../helpers/numberFormat'
 import StatSaleDialog from './SalesDialog'
 import SalesInfoDialog from './SalesInfoDialog'
@@ -26,7 +20,6 @@ import {StatisticsFilterExcel, StatisticsChart} from '../../Statistics'
 import Loader from '../../Loader'
 import getConfig from '../../../helpers/getConfig'
 import NotFound from '../../Images/not-found.png'
-import ToolTip from '../../ToolTip'
 import {
     DateToDateField,
     MarketMultiSearchField,
@@ -40,7 +33,6 @@ import {
     OrderStatusMultiSearchField,
     CheckBox
 } from '../../ReduxForm'
-import dateFormat from '../../../helpers/dateFormat'
 import t from '../../../helpers/translate'
 
 export const STAT_SALES_FILTER_KEY = {
@@ -251,7 +243,6 @@ const iconStyle = {
     }
 }
 
-const ZERO = 0
 const TWO = 2
 const THREE = 3
 const StatSalesGridList = enhance((props) => {
@@ -321,21 +312,10 @@ const StatSalesGridList = enhance((props) => {
             const totalPrice = _.get(item, 'totalPrice')
             const totalBalance = _.get(item, 'totalBalance')
             const secondName = _.get(item, ['user', 'secondName '])
-            const REQUESTED = 0
-            const READY = 1
-            const GIVEN = 2
-            const DELIVERED = 3
             const CANCELED = 4
-            const NOT_CONFIRMED = 5
-            const now = moment().format('YYYY-MM-DD')
-            const paymentDate = dateFormat(_.get(item, 'paymentDate'))
             const balanceToolTip = numberFormat(totalBalance, currentCurrency)
             const paymentType = _.get(item, 'paymentType') === 'cash' ? t('наличный') : t('банковский счет')
-            const paymentDifference = moment(_.get(item, 'paymentDate')).diff(now, 'days')
-            const PAY_PENDING = t('Оплата ожидается') + ': ' + paymentDate + '<br/>' + t('Ожидаемый платеж') + ': ' + balanceToolTip
-            const PAY_DELAY = paymentDifference !== ZERO
-                ? t('Оплата ожидалась') + ': ' + paymentDate + '<br/>' + t('Долг') + ': ' + balanceToolTip
-                : t('Оплата ожидается сегодня') + '<br/>' + t('Сумма') + ': ' + balanceToolTip
+
             return (
                 <Row key={id} className="dottedList" style={status === CANCELED ? {color: '#999', cursor: 'pointer'} : {cursor: 'pointer'}} onClick={() => { statSaleDialog.handleOpenStatSaleDialog(id) }}>
                     <Col xs={1}>{id}</Col>
@@ -347,86 +327,12 @@ const StatSalesGridList = enhance((props) => {
                     <Col xs={hasMarket ? TWO : THREE}>{paymentType}</Col>
                     <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(totalPrice, currency)}</Col>
                     <Col xs={1} style={{justifyContent: 'flex-end'}}>
-                        <div className={classes.buttons}>
-                            {(status === REQUESTED) ? <ToolTip position="bottom" text={t('В процессе')}>
-                                    <IconButton
-                                        disableTouchRipple={true}
-                                        iconStyle={iconStyle.icon}
-                                        style={iconStyle.button}
-                                        touch={true}>
-                                        <InProcess color="#f0ad4e"/>
-                                    </IconButton>
-                                </ToolTip>
-                                : (status === READY) ? <ToolTip position="bottom" text={t('Есть на складе')}>
-                                        <IconButton
-                                            disableTouchRipple={true}
-                                            iconStyle={iconStyle.icon}
-                                            style={iconStyle.button}
-                                            touch={true}>
-                                            <Available color="#f0ad4e"/>
-                                        </IconButton>
-                                    </ToolTip>
-                                    : (status === DELIVERED) ? <ToolTip position="bottom" text={t('Доставлен')}>
-                                            <IconButton
-                                                disableTouchRipple={true}
-                                                iconStyle={iconStyle.icon}
-                                                style={iconStyle.button}
-                                                touch={true}>
-                                                <Delivered color="#81c784"/>
-                                            </IconButton>
-                                        </ToolTip>
-                                        : (status === GIVEN) ? <ToolTip position="bottom" text={t('Передан доставщику')}>
-                                                <IconButton
-                                                    disableTouchRipple={true}
-                                                    iconStyle={iconStyle.icon}
-                                                    style={iconStyle.button}
-                                                    touch={true}>
-                                                    <Transfered color="#f0ad4e"/>
-                                                </IconButton>
-                                            </ToolTip>
-                                            : (status === CANCELED) ? <ToolTip position="bottom" text={t('Заказ отменен')}>
-                                                    <IconButton
-                                                        disableTouchRipple={true}
-                                                        iconStyle={iconStyle.icon}
-                                                        style={iconStyle.button}
-                                                        touch={true}>
-                                                        <Canceled color='#e57373'/>
-                                                    </IconButton>
-                                                </ToolTip>
-                                                : (status === NOT_CONFIRMED) ? <ToolTip position="bottom" text={t('Не подтвержден')}>
-                                                    <IconButton
-                                                        disableTouchRipple={true}
-                                                        iconStyle={iconStyle.icon}
-                                                        style={iconStyle.button}
-                                                        touch={true}>
-                                                        <NotConfirmed color='#999'/>
-                                                    </IconButton>
-                                                </ToolTip> : null
-                            }
-                            {!(status === CANCELED) &&
-                            <ToolTip position="bottom" text={(totalPrice > ZERO) && ((moment(_.get(item, 'paymentDate')).diff(now, 'days') <= ZERO))
-                                ? PAY_DELAY
-                                : ((totalBalance > ZERO) && moment(_.get(item, 'paymentDate')).diff(now, 'days') > ZERO)
-                                    ? PAY_PENDING
-                                    : totalBalance === ZERO ? t('Оплачено') : ''}>
-                                <IconButton
-                                    disableTouchRipple={true}
-                                    iconStyle={iconStyle.icon}
-                                    style={iconStyle.button}
-                                    touch={true}>
-                                    <Payment color={(totalBalance > ZERO) && (paymentDifference < ZERO)
-                                        ? '#e57373'
-                                        : paymentDifference === ZERO
-                                            ? '#f0ad4e'
-                                            : (totalBalance > ZERO) &&
-                                            (paymentDifference > ZERO)
-                                                ? '#B7BBB7'
-                                                : (totalBalance === ZERO ? '#81c784' : '#B7BBB7')
-                                    }/>
-                                </IconButton>
-                            </ToolTip>
-                            }
-                        </div>
+                        <OrderStatusIcons
+                            totalBalance={totalBalance}
+                            balanceToolTip={balanceToolTip}
+                            paymentDate={_.get(item, 'paymentDate')}
+                            status={status}
+                        />
                     </Col>
                 </Row>
             )

@@ -8,15 +8,13 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
-import InProcess from 'material-ui/svg-icons/action/cached'
-import DoneIcon from 'material-ui/svg-icons/action/done-all'
-import Canceled from 'material-ui/svg-icons/notification/do-not-disturb-alt'
 import ReturnDetails from './ReturnDetails'
 import * as ROUTES from '../../constants/routes'
 import ReturnCreateDialog from './ReturnCreateDialog'
 import GridList from '../GridList'
 import Container from '../Container'
 import ReturnFilterForm from './ReturnFilterForm'
+import OrderReturnStatusIcons from './OrderReturnStatusIcons'
 import ConfirmDialog from '../ConfirmDialog'
 import SubMenu from '../SubMenu'
 import toBoolean from '../../helpers/toBoolean'
@@ -26,6 +24,7 @@ import dateFormat from '../../helpers/dateTimeFormat'
 import ReturnUpdateDialog from '../Order/OrderReturnDialog'
 import Print from 'material-ui/svg-icons/action/print'
 import t from '../../helpers/translate'
+
 const listHeader = [
     {
         sorting: true,
@@ -141,19 +140,6 @@ const OrderGridList = enhance((props) => {
             filterDialog={filterDialog}
             hasMarket={hasMarket}/>
     )
-    const iconStyle = {
-        icon: {
-            color: '#666',
-            width: 20,
-            height: 20
-        },
-        button: {
-            width: 30,
-            height: 30,
-            padding: 0,
-            zIndex: 0
-        }
-    }
     const orderDetail = (
         <ReturnDetails
             key={_.get(detailData, 'id')}
@@ -173,10 +159,7 @@ const OrderGridList = enhance((props) => {
     const returnType = _.toInteger(_.get(detailData, ['data', 'type']))
     const detStatus = _.toInteger(_.get(detailData, ['data', 'status']))
 
-    const PENDING = 0
-    const IN_PROGRESS = 1
     const COMPLETED = 2
-    const CANCELLED = 3
     const orderList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const client = _.get(item, ['client', 'name']) || '-'
@@ -204,37 +187,7 @@ const OrderGridList = enhance((props) => {
                 <div style={{width: '15%', textAlign: 'right'}}>{totalPrice}</div>
                 <div style={{width: '5%'}}>
                     <div className={classes.buttons}>
-                        {(status === PENDING || status === IN_PROGRESS)
-                            ? <ToolTip position="bottom" text={t('Ожидает')}>
-                                <IconButton
-                                    disableTouchRipple={true}
-                                    iconStyle={iconStyle.icon}
-                                    style={iconStyle.button}
-                                    touch={true}>
-                                    <InProcess color="#f0ad4e"/>
-                                </IconButton>
-                            </ToolTip>
-                            : (status === COMPLETED)
-                                ? <ToolTip position="bottom" text={t('Завершен')}>
-                                    <IconButton
-                                        disableTouchRipple={true}
-                                        iconStyle={iconStyle.icon}
-                                        style={iconStyle.button}
-                                        touch={true}>
-                                        <DoneIcon color="#81c784"/>
-                                    </IconButton>
-                                </ToolTip>
-                                : (status === CANCELLED)
-                                    ? <ToolTip position="bottom" text={t('Отменен')}>
-                                        <IconButton
-                                            disableTouchRipple={true}
-                                            iconStyle={iconStyle.icon}
-                                            style={iconStyle.button}
-                                            touch={true}>
-                                            <Canceled color='#e57373'/>
-                                        </IconButton>
-                                    </ToolTip> : null
-                        }
+                        <OrderReturnStatusIcons status={status}/>
                     </div>
                 </div>
             </div>
