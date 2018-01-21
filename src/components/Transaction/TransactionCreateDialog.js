@@ -363,7 +363,7 @@ const TransactionCreateDialog = enhance((props) => {
                                 <div className={classes.label}>{t('Касса')}:</div>
                                 <div style={{fontWeight: '600', marginBottom: '5px'}}>{_.get(cashbox, 'name')}</div>
                             </div>}
-                        {divisionStatus && <Field
+                        {divisionStatus && !hideRedundant && <Field
                             name="division"
                             component={DivisionSearchField}
                             label={t('Организация')}

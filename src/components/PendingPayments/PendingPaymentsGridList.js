@@ -200,6 +200,8 @@ const PendingPaymentsGridList = enhance((props) => {
     const detailOrder = _.get(detailData, ['data', 'id'])
     const detailClient = _.get(detailData, ['data', 'client', 'name'])
     const detailCurrency = _.get(detailData, ['data', 'currency', 'name'])
+    const detailDivision = _.get(detailData, ['data', 'division', 'name'])
+    const detailDivisionID = _.get(detailData, ['data', 'division', 'id'])
     const detailMarket = _.get(detailData, ['data', 'market', 'name'])
     const detailPaymentType = _.get(detailData, ['data', 'paymentType'])
     const detailTotalPrice = numberFormat(_.get(detailData, ['data', 'totalPrice']), detailCurrency)
@@ -211,6 +213,7 @@ const PendingPaymentsGridList = enhance((props) => {
                 <div>{t('Заказ')} <strong>№{detailOrder}</strong></div>
                 <div>{t('Клиент')}: <strong>{detailClient}</strong></div>
                 <div>{t('Магазин')}: <strong>{detailMarket}</strong></div>
+                <div>{t('Организация')}: <strong>{detailDivision}</strong></div>
             </div>
             <div>
                 <div>{t('Тип оплаты')}: <strong>{detailPaymentType === 'cash' ? t('Наличными') : t('Перечислением')}</strong></div>
@@ -224,6 +227,9 @@ const PendingPaymentsGridList = enhance((props) => {
         date: detailCreatedDate && moment(detailCreatedDate).toDate(),
         order: {
             value: detailOrder
+        },
+        division: {
+            value: detailDivisionID
         }
     }
 

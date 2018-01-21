@@ -11,6 +11,7 @@ import OrderCreateDialog from './OrderCreateDialog'
 import OrderMultiUpdateDialog from './OrderMultiUpdateDialog'
 import OrderReleaseDialog from './OrderReleaseDialog'
 import OrderAddProductsDialog from './OrderAddProductsDialog'
+import OrderStatusIcons from './OrderStatusIcons'
 import OrderFilterForm from './OrderFilterForm'
 import OrderDetails from './OrderDetails'
 import OrderShortageDialog from './OrderShortage'
@@ -19,17 +20,12 @@ import {connect} from 'react-redux'
 import SubMenu from '../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import moment from 'moment'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import Badge from 'material-ui/Badge'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import ToolTip from '../ToolTip'
 import numberFormat from '../../helpers/numberFormat'
 import Available from 'material-ui/svg-icons/action/store'
-import Canceled from 'material-ui/svg-icons/notification/do-not-disturb-alt'
-import Transferred from 'material-ui/svg-icons/maps/local-shipping'
-import Delivered from 'material-ui/svg-icons/action/assignment-turned-in'
-import Payment from 'material-ui/svg-icons/action/credit-card'
 import InProcess from 'material-ui/svg-icons/device/access-time'
 import NotConfirmed from 'material-ui/svg-icons/alert/warning'
 import Print from 'material-ui/svg-icons/action/print'
@@ -49,9 +45,6 @@ import t from '../../helpers/translate'
 const ZERO = 0
 const REQUESTED = 0
 const READY = 1
-const GIVEN = 2
-const DELIVERED = 3
-const CANCELED = 4
 const NOT_CONFIRMED = 5
 
 const listHeader = [
@@ -226,20 +219,6 @@ const enhance = compose(
     }),
 )
 
-const iconStyle = {
-    icon: {
-        color: '#666',
-        width: 20,
-        height: 20
-    },
-    button: {
-        width: 30,
-        height: 30,
-        padding: 0,
-        zIndex: 0
-    }
-}
-
 const OrderGridList = enhance((props) => {
     const {
         filter,
@@ -334,8 +313,6 @@ const OrderGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const client = _.get(item, ['client', 'name'])
         const market = _.get(item, ['market', 'name'])
-        const paymentDate = dateFormat(_.get(item, 'paymentDate'))
-        const now = moment().format('YYYY-MM-DD')
         const currentCurrency = _.get(item, ['currency', 'name'])
         const user = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName']) || 'N/A'
         const dateDelivery = dateFormat(_.get(item, 'dateDelivery'), '', 'Самовывоз')
@@ -345,12 +322,6 @@ const OrderGridList = enhance((props) => {
         const totalPrice = numberFormat(_.get(item, 'totalPrice'), currentCurrency)
         const status = _.toInteger(_.get(item, 'status'))
         const isNew = _.get(item, 'isNew')
-
-        const paymentDifference = moment(_.get(item, 'paymentDate')).diff(now, 'days')
-        const PAY_PENDING = t('Оплата ожидается') + ': ' + paymentDate + '<br/>' + t('Ожидаемый платеж') + ': ' + balanceToolTip
-        const PAY_DELAY = paymentDifference !== ZERO
-            ? t('Оплата ожидалась') + ': ' + paymentDate + '<br/>' + t('Долг') + ': ' + balanceToolTip
-            : t('Оплата ожидается сегодня') + '<br/>' + t('Сумма') + ': ' + balanceToolTip
 
         return (
             <div key={id}
@@ -368,84 +339,11 @@ const OrderGridList = enhance((props) => {
                 <div style={{width: '15%'}}>{dateDelivery}</div>
                 <div style={{width: '15%'}}>{createdDate}</div>
                 <div style={{width: '5%'}} className={classes.buttons}>
-                    {(status === REQUESTED) ? <ToolTip position="bottom" text={t('В процессе')}>
-                            <IconButton
-                                disableTouchRipple={true}
-                                iconStyle={iconStyle.icon}
-                                style={iconStyle.button}
-                                touch={true}>
-                                <InProcess color="#f0ad4e"/>
-                            </IconButton>
-                        </ToolTip>
-                        : (status === READY) ? <ToolTip position="bottom" text={t('Есть на складе')}>
-                                <IconButton
-                                    disableTouchRipple={true}
-                                    iconStyle={iconStyle.icon}
-                                    style={iconStyle.button}
-                                    touch={true}>
-                                    <Available color="#f0ad4e"/>
-                                </IconButton>
-                            </ToolTip>
-                            : (status === DELIVERED) ? <ToolTip position="bottom" text={t('Доставлен')}>
-                                    <IconButton
-                                        disableTouchRipple={true}
-                                        iconStyle={iconStyle.icon}
-                                        style={iconStyle.button}
-                                        touch={true}>
-                                        <Delivered color="#81c784"/>
-                                    </IconButton>
-                                </ToolTip>
-                                : (status === GIVEN) ? <ToolTip position="bottom" text={t('Передан доставщику')}>
-                                        <IconButton
-                                            disableTouchRipple={true}
-                                            iconStyle={iconStyle.icon}
-                                            style={iconStyle.button}
-                                            touch={true}>
-                                            <Transferred color="#f0ad4e"/>
-                                        </IconButton>
-                                    </ToolTip>
-                                    : (status === CANCELED) ? <ToolTip position="bottom" text={t('Заказ отменен')}>
-                                            <IconButton
-                                                disableTouchRipple={true}
-                                                iconStyle={iconStyle.icon}
-                                                style={iconStyle.button}
-                                                touch={true}>
-                                                <Canceled color='#e57373'/>
-                                            </IconButton>
-                                        </ToolTip>
-                                        : (status === NOT_CONFIRMED) ? <ToolTip position="bottom" text={t('Не подтвержден')}>
-                                            <IconButton
-                                                disableTouchRipple={true}
-                                                iconStyle={iconStyle.icon}
-                                                style={iconStyle.button}
-                                                touch={true}>
-                                                <NotConfirmed color='#999'/>
-                                            </IconButton>
-                                        </ToolTip> : null
-                    }
-                    {!(status === CANCELED) &&
-                    <ToolTip position="bottom" text={(totalBalance > ZERO) && ((moment(_.get(item, 'paymentDate')).diff(now, 'days') <= ZERO))
-                        ? PAY_DELAY
-                        : ((totalBalance > ZERO) && moment(_.get(item, 'paymentDate')).diff(now, 'days') > ZERO)
-                            ? PAY_PENDING
-                            : totalBalance === ZERO ? t('Оплачено') : ''}>
-                        <IconButton
-                            disableTouchRipple={true}
-                            iconStyle={iconStyle.icon}
-                            style={iconStyle.button}
-                            touch={true}>
-                            <Payment color={(totalBalance > ZERO) && (paymentDifference < ZERO)
-                                ? '#e57373'
-                                : paymentDifference === ZERO
-                                    ? '#f0ad4e'
-                                    : (totalBalance > ZERO) &&
-                                    (paymentDifference > ZERO)
-                                        ? '#B7BBB7'
-                                        : (totalBalance === ZERO ? '#81c784' : '#B7BBB7')
-                            }/>
-                        </IconButton>
-                    </ToolTip>
-                    }
+                    <OrderStatusIcons
+                        status={status}
+                        balanceToolTip={balanceToolTip}
+                        paymentDate={_.get(item, 'paymentDate')}
+                        totalBalance={totalBalance}/>
                 </div>
             </div>
         )

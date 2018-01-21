@@ -14,9 +14,20 @@ import numberFormat from '../../../helpers/numberFormat'
 import NotFound from '../../Images/not-found.png'
 import {TransactionsFormat} from '../../Transaction'
 import t from '../../../helpers/translate'
+import ToolTip from '../../ToolTip'
+import CashPayment from 'material-ui/svg-icons/maps/local-atm'
+import BankPayment from 'material-ui/svg-icons/action/credit-card'
 
 const enhance = compose(
     injectSheet({
+        green: {
+            color: '#81c784',
+            fontWeight: '600'
+        },
+        red: {
+            color: '#e57373',
+            fontWeight: '600'
+        },
         loader: {
             width: '100%',
             padding: '100px 0',
@@ -85,6 +96,15 @@ const enhance = compose(
             textAlign: 'center',
             fontSize: '13px',
             color: '#666'
+        },
+        payment: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            textAlign: 'right',
+            '& > div:last-child': {
+                marginLeft: '5px'
+            }
         }
     }),
     reduxForm({
@@ -108,6 +128,7 @@ const TransactionsList = enhance((props) => {
     } = props
 
     const loading = _.get(listData, 'listLoading')
+    const cashboxName = _.get(_.first(_.get(listData, 'data')), ['cashbox', 'name'])
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
 
     const headerStyle = {
@@ -146,6 +167,7 @@ const TransactionsList = enhance((props) => {
         const supply = _.get(item, ['supply'])
         const incomeCategory = _.get(item, ['incomeCategory'])
         const supplyExpanseId = _.get(item, 'supplyExpanseId')
+        const paymentType = _.get(item, 'paymentType')
 
         return (
             <Row key={id} className="dottedList">
@@ -170,10 +192,17 @@ const TransactionsList = enhance((props) => {
                     {providerName && <div><strong>{t('Поставщик')}:</strong> {providerName}</div>}
                 </Col>
                 <Col xs={isCashbox ? FOUR : THREE} style={{textAlign: 'right'}}>
-                    <div className={amount > ZERO ? 'greenFont' : (amount === ZERO ? '' : 'redFont')}>
-                        <span>{numberFormat(amount, currency)}</span>
-                        {primaryCurrency !== currency && <div>{numberFormat(internal, primaryCurrency)}
-                        <span style={{fontSize: 11, color: '#666', fontWeight: 600}}>({customRate})</span></div>}
+                    <div className={amount > ZERO ? classes.green : (amount < ZERO ? classes.red : '')}>
+                        <div className={classes.payment}>
+                            {numberFormat(amount, currency)}
+                            <ToolTip position="bottom" text={paymentType === 'bank' ? 'банковский счет' : 'наличные'}>
+                                {paymentType === 'bank'
+                                    ? <BankPayment style={{height: '18px', width: '18px', color: '#6261b0'}}/>
+                                    : <CashPayment style={{height: '18px', width: '18px', color: '#12aaeb'}}/>}
+                            </ToolTip>
+                        </div>
+                        {primaryCurrency !== currency && <div>{numberFormat(internal, primaryCurrency)} <span
+                            style={{fontSize: 11, color: '#666', fontWeight: 600}}>({customRate})</span></div>}
                     </div>
                 </Col>
             </Row>
@@ -183,7 +212,7 @@ const TransactionsList = enhance((props) => {
     return (
         <div>
             <div className={classes.pagination}>
-                <div><b>{t('Транзакции')}</b></div>
+                <div><b>{t('Транзакции')} {!loading && isCashbox && <span>({cashboxName})</span>}</b></div>
                 <form onSubmit={handleSubmit(handleSubmitFilterDialog)}>
                     <Field
                         className={classes.inputFieldCustom}

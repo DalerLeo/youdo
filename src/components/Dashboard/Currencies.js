@@ -8,6 +8,7 @@ import dateTimeFormat from '../../helpers/dateTimeFormat'
 import Loader from '../Loader'
 import Paper from 'material-ui/Paper'
 import toBoolean from '../../helpers/toBoolean'
+import t from '../../helpers/translate'
 import {reduxForm, Field} from 'redux-form'
 import {TextField} from '../ReduxForm'
 import EditIcon from 'material-ui/svg-icons/editor/mode-edit'
@@ -99,17 +100,17 @@ const Currencies = enhance((props) => {
     return (
         <Paper zDepth={1}>
             <div className={classes.chartHeader}>
-                <div>Валюты</div>
+                <div>{t('Валюты')}</div>
             </div>
             <div className={classes.chart}>
                 <div className={classes.chartStats}>
-                    <div>Основная валюта: <strong>{primaryCurrency}</strong></div>
+                    <div>{t('Основная валюта')}: <strong>{primaryCurrency}</strong></div>
                 </div>
                 <div className={classes.list}>
                     <Row>
-                        <Col xs={3}>Наименование</Col>
-                        <Col xs={4}>Курс</Col>
-                        <Col xs={4}>Дата обновления</Col>
+                        <Col xs={3}>{t('Наименование')}</Col>
+                        <Col xs={4}>{t('Курс')}</Col>
+                        <Col xs={4}>{t('Дата обновления')}</Col>
                         <Col xs={1}>{null}</Col>
                     </Row>
                     {currencyListLoading || loading

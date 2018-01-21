@@ -10,20 +10,11 @@ import dateFormat from '../../helpers/dateFormat'
 import {Tabs, Tab} from 'material-ui/Tabs'
 import * as TAB from '../../constants/orderTab'
 import NotFound from '../Images/not-found.png'
-import DeleteIcon from 'material-ui/svg-icons/action/delete'
-import InProcess from 'material-ui/svg-icons/action/cached'
-import IconButton from 'material-ui/IconButton'
-import DoneIcon from 'material-ui/svg-icons/action/done-all'
-import Canceled from 'material-ui/svg-icons/notification/do-not-disturb-alt'
 import ToolTip from '../ToolTip'
 import {Link} from 'react-router'
 import * as ROUTES from '../../constants/routes'
 import sprintf from 'sprintf'
-
-const PENDING = 0
-const IN_PROGRESS = 1
-const COMPLETED = 2
-const CANCELLED = 3
+import OrderReturnStatusIcons from '../Return/OrderReturnStatusIcons'
 
 const enhance = compose(
     injectSheet({
@@ -72,7 +63,7 @@ const enhance = compose(
             '& .row': {
                 height: '50px',
                 margin: '0 -30px',
-                padding: '0 30px',
+                padding: '0 0 0 30px',
                 '&:first-child:hover': {
                     background: 'inherit'
                 },
@@ -111,7 +102,7 @@ const enhance = compose(
         },
         buttons: {
             display: 'flex',
-            justifyContent: 'space-around',
+            justifyContent: 'flex-end',
             zIndex: '2'
         },
         link: {
@@ -131,23 +122,9 @@ const OrderDetailsRightSideTabs = enhance((props) => {
         data,
         tabData,
         returnData,
-        returnDataLoading,
-        cancelOrderReturnOpen
+        returnDataLoading
     } = props
 
-    const iconStyle = {
-        icon: {
-            color: '#666',
-            width: 20,
-            height: 20
-        },
-        button: {
-            width: 30,
-            height: 30,
-            padding: 0,
-            zIndex: 0
-        }
-    }
     const tabStyle = {
         button: {
             textTransform: 'none'
@@ -276,48 +253,7 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                             <Col xs={3}>{totalSum}</Col>
                                             <Col xs={1}>
                                                 <div className={classes.buttons}>
-                                                    {(status === PENDING || status === IN_PROGRESS)
-                                                        ? <div className={classes.buttons}>
-                                                            <ToolTip position="bottom" text="Ожидает">
-                                                                <IconButton
-                                                                    disableTouchRipple={true}
-                                                                    iconStyle={iconStyle.icon}
-                                                                    style={iconStyle.button}
-                                                                    touch={true}>
-                                                                    <InProcess color="#f0ad4e"/>
-                                                                </IconButton>
-                                                            </ToolTip>
-                                                            <ToolTip position="bottom" text="Отменить">
-                                                                <IconButton
-                                                                    disableTouchRipple={true}
-                                                                    iconStyle={iconStyle.icon}
-                                                                    style={iconStyle.button}
-                                                                    touch={true}
-                                                                    onClick={() => { cancelOrderReturnOpen(returnId) }}>
-                                                                    <DeleteIcon/>
-                                                                </IconButton>
-                                                            </ToolTip>
-                                                        </div>
-                                                        : (status === COMPLETED)
-                                                            ? <ToolTip position="bottom" text="Завершен">
-                                                                <IconButton
-                                                                    disableTouchRipple={true}
-                                                                    iconStyle={iconStyle.icon}
-                                                                    style={iconStyle.button}
-                                                                    touch={true}>
-                                                                    <DoneIcon color="#81c784"/>
-                                                                </IconButton>
-                                                            </ToolTip>
-                                                            : (status === CANCELLED)
-                                                                ? <ToolTip position="bottom" text="Отменен">
-                                                                    <IconButton
-                                                                        disableTouchRipple={true}
-                                                                        iconStyle={iconStyle.icon}
-                                                                        style={iconStyle.button}
-                                                                        touch={true}>
-                                                                        <Canceled color='#e57373'/>
-                                                                    </IconButton>
-                                                                </ToolTip> : null}
+                                                    <OrderReturnStatusIcons status={status}/>
                                                 </div>
                                             </Col>
                                         </Row>

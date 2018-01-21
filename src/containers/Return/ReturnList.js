@@ -15,7 +15,6 @@ import * as actionTypes from '../../constants/actionTypes'
 import checkPermission from '../../helpers/checkPermission'
 import getConfig from '../../helpers/getConfig'
 import t from '../../helpers/translate'
-
 import {
     RETURN_FILTER_KEY,
     RETURN_FILTER_OPEN,
@@ -34,6 +33,7 @@ import {
     clientReturnUpdateAction,
     clientReturnAction
 } from '../../actions/return'
+import {orderItemFetchAction} from '../../actions/order'
 import {openSnackbarAction} from '../../actions/snackbar'
 
 const TWO = 2
@@ -86,15 +86,22 @@ const enhance = compose(
 
     withPropsOnChange((props, nextProps) => {
         const returnId = _.get(nextProps, ['params', 'returnId'])
-
         return returnId && _.get(props, ['params', 'returnId']) !== returnId
     }, ({dispatch, params}) => {
         const returnId = _.toInteger(_.get(params, 'returnId'))
         returnId && dispatch(returnItemFetchAction(returnId))
     }),
+    withPropsOnChange((props, nextProps) => {
+        const loading = _.get(props, 'detailLoading')
+        const nextLoading = _.get(nextProps, 'detailLoading')
+        return loading !== nextLoading && nextLoading === false
+    }, ({dispatch, detail}) => {
+        const orderID = _.toInteger(_.get(detail, 'order'))
+        orderID && dispatch(orderItemFetchAction(orderID))
+    }),
+
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
     withState('openPrint', 'setOpenPrint', false),
-
     withHandlers({
         handleOpenPrintDialog: props => () => {
             const {dispatch, setOpenPrint, filter} = props

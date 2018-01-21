@@ -176,6 +176,8 @@ const PendingExpensesGridList = enhance((props) => {
     const detailRemains = numberFormat(_.get(selectedDetails, 'remains'), detailCurrency)
     const detailProvider = _.get(selectedDetails, ['provider', 'name'])
     const detailCreatedDate = _.get(selectedDetails, 'createdDate')
+    const detailDivision = _.get(selectedDetails, ['division', 'name'])
+    const detailDivisionID = _.get(selectedDetails, ['division', 'id'])
     const initialValues = {
         date: detailCreatedDate && moment(detailCreatedDate).toDate(),
         supply: {
@@ -183,6 +185,9 @@ const PendingExpensesGridList = enhance((props) => {
         },
         supplyExpense: {
             value: detailType === 'supply_expense' ? detailSupplyExpense : null
+        },
+        division: {
+            value: detailDivisionID
         }
     }
 
@@ -193,6 +198,7 @@ const PendingExpensesGridList = enhance((props) => {
                 <div>{t('Поставка')} <strong>№{detailSupply}</strong></div>
                 {detailType === 'supply_expense' && <div>{t('Доп. расход')} <strong>№{detailSupplyExpense}</strong></div>}
                 <div>{t('Тип')}: <strong>{detailType === 'supply' ? t('Поставка') : t('Доп. расход')}</strong></div>
+                <div>{t('Организация')}: <strong>{detailDivision}</strong></div>
             </div>
             <div>
                 <div>{t('Сумма расхода')}: <strong>{detailAmount}</strong></div>

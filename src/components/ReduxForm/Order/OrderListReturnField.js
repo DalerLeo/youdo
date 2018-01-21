@@ -234,13 +234,13 @@ const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove
             <div>
                 <div className={classes.headers}>
                     <div className={classes.title}>{t('Список товаров')}</div>
-                    {!isUpdate && <FlatButton
+                    <FlatButton
                         label={t('+ добавить товар')}
                         style={{color: '#12aaeb'}}
                         labelStyle={{fontSize: '13px'}}
                         className={classes.span}
                         onTouchTap={() => dispatch({open: !state.open})}
-                    />}
+                    />
                 </div>
                 {state.open && <div className={classes.background}>
                     <div style={{width: '35%', paddingRight: '20px'}}>
@@ -260,17 +260,17 @@ const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove
                             normalize={normalizeReturn}
                             component={TextField}
                             className={classes.inputFieldCustom}
-                            style={{width: '100%'}}
+                            fullWidth={true}
                             name="amount"
                         />
                     </div>
                     <div style={{paddingBottom: '8px'}}>
                         <OrderReturnMeasurementField/>
                     </div>
-                    <div className="summa" style={{width: '25%', textAlign: 'right', paddingRight: '20px', paddingBottom: '8px'}}>
+                    <div style={{width: '25%', textAlign: 'right', paddingRight: '20px', alignSelf: 'flex-start'}}>
                         <ProductReturnCostField />
                     </div>
-                    <div style={{width: '20%', textAlign: 'right', paddingTop: '9px'}}>
+                    <div style={{width: '20%', textAlign: 'right', alignSelf: 'center'}}>
                         <FlatButton label={t('Применить')} onTouchTap={handleAdd} labelStyle={{fontSize: '13px'}} style={{color: '#12aaeb'}}/>
                     </div>
                 </div>}
@@ -292,7 +292,7 @@ const OrderListReturnField = ({classes, state, dispatch, handleAdd, handleRemove
                                     className={classes.tableTitle}>{t('Наименование')}</TableHeaderColumn>
                                 <TableHeaderColumn className={classes.tableTitle}>{t('Кол-во')}</TableHeaderColumn>
                                 <TableHeaderColumn className={classes.tableTitle}>{t('Сумма')}</TableHeaderColumn>
-                                <TableHeaderColumn></TableHeaderColumn>
+                                <TableHeaderColumn/>
                             </TableRow>
                         </TableHeader>
                     <TableBody
