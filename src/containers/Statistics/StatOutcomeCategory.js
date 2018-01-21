@@ -90,7 +90,7 @@ const enhance = compose(
         },
         handleCloseTransactionDialog: props => () => {
             const {filter, location: {pathname}} = props
-            hashHistory.push({pathname, query: filter.getParams({[OPEN_TRANSACTION_DIALOG]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[OPEN_TRANSACTION_DIALOG]: false, dPage: null})})
         }
     })
 )

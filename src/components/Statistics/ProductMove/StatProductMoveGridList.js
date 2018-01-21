@@ -306,6 +306,12 @@ const enhance = compose(
         },
         fullScreen: {
             marginLeft: '10px !important'
+        },
+        wrapperEmpty: {
+            background: '#fff',
+            position: 'absolute',
+            zIndex: '21',
+            width: '100%'
         }
 
     }),
@@ -535,7 +541,7 @@ const StatProductMoveGridList = enhance((props) => {
                 name="type"
                 className={classes.inputFieldCustom}
                 component={ProductTypeChildSearchField}
-                parentType={typeParent}
+                parentType={typeParent.value}
                 label={t('Подкатегория')}
                 fullWidth={true}
             /> : null}
@@ -628,8 +634,10 @@ const StatProductMoveGridList = enhance((props) => {
                                         {tableLeft}
                                     </div>
                                     {_.isEmpty(tableList) && !listLoading &&
-                                    <div className={classes.emptyQuery}>
-                                        <div>{t('По вашему запросу ничего не найдено')}</div>
+                                    <div className={classes.wrapperEmpty}>
+                                        <div className={classes.emptyQuery}>
+                                            <div>{t('По вашему запросу ничего не найдено')}</div>
+                                        </div>
                                     </div>}
                                     <div ref="horizontalTable">
                                         <table className={classes.mainTable}>

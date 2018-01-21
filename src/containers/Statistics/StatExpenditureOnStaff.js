@@ -4,7 +4,6 @@ import moment from 'moment'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
-import {joinArray} from '../../helpers/joinSplitValues'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import filterHelper from '../../helpers/filter'
 import {StatExpenditureOnStaffGridList} from '../../components/Statistics'
@@ -73,12 +72,10 @@ const enhance = compose(
 
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
-            const categoryExpense = _.get(filterForm, ['values', 'categoryExpense']) || null
 
             filter.filterBy({
                 [STAT_EXPENDITURE_ON_STAFF_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
-                [STAT_EXPENDITURE_ON_STAFF_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD'),
-                [STAT_EXPENDITURE_ON_STAFF_FILTER_KEY.CATEGORY_EXPENSE]: joinArray(categoryExpense)
+                [STAT_EXPENDITURE_ON_STAFF_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
             })
         },
         handleGetDocument: props => () => {
