@@ -276,11 +276,8 @@ const Dashboard = enhance((props) => {
     const orderReturnDate = _.map(_.get(ordersReturnsChart, 'data'), (item, index) => {
         return index
     })
-    let orderChartReturnsSum = 0
-    _.map(_.get(ordersReturnsChart, 'data'), (item) => {
-        if (_.get(item, 'returns')) {
-            orderChartReturnsSum += _.toNumber(_.get(item, 'returns'))
-        }
+    const orderChartReturnsSum = _.sumBy(_.get(ordersReturnsChart, 'data'), (item) => {
+        return _.toNumber(_.get(item, 'returns'))
     })
 
     // AGENTS //
@@ -385,16 +382,15 @@ const Dashboard = enhance((props) => {
                         <Widgets
                             list={widgetsForm.list}
                             loading={widgetsForm.loading}
-                            submitForm={widgetsForm.handleSubmitWidgetsForm}
                             initialValues={widgetsForm.initialValues}/>
                     </div>
                 </Paper>
 
                 <section className={classes.chartsWrapper} ref="wrapper">
                     <div className={classes.chartHalf}>
-                        {currencyListActive && isAdmin && <Currencies currencyData={currencyData}/>}
+                        {currencyListActive && <Currencies currencyData={currencyData}/>}
 
-                        {orderChartActive && isAdmin &&
+                        {orderChartActive &&
                         <Paper zDepth={1}>
                             <div className={classes.chartHeader}>
                                 <div>{t('Продажи')}</div>
@@ -421,7 +417,7 @@ const Dashboard = enhance((props) => {
                                         />}
                                 </div>}
                         </Paper>}
-                        {orderReturnActive && isAdmin &&
+                        {orderReturnActive &&
                         <Paper zDepth={1}>
                             <div className={classes.chartHeader}>
                                 <div>{t('Заказы и возвраты')}</div>
@@ -473,7 +469,7 @@ const Dashboard = enhance((props) => {
                                         />}
                                 </div>}
                         </Paper>}
-                        {financeChartActive && isAdmin &&
+                        {financeChartActive &&
                         <Paper zDepth={1}>
                             <div className={classes.chartHeader}>
                                 <div>{t('Оборот')}</div>
