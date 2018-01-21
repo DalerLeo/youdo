@@ -399,8 +399,7 @@ const StatDebtorsGridList = enhance((props) => {
         updateRow,
         expandedTable,
         setExpandedTable,
-        filterItem,
-        typeParent
+        filterItem
     } = props
 
     const currencyList = _.get(listData, 'currencyList')
