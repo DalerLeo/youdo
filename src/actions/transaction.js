@@ -179,6 +179,7 @@ export const transactionEditPaymentAction = (formValues, clientId, transId) => {
         payload
     }
 }
+
 export const transactionDetelePaymentAction = (id, formValues, cashboxId) => {
     const requestData = serializers.createExpenseSerializer(formValues, cashboxId)
     const payload = axios()

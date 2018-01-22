@@ -1,6 +1,12 @@
 import _ from 'lodash'
 import React from 'react'
-import {compose, withPropsOnChange, withHandlers, withState} from 'recompose'
+import {
+    compose,
+    withPropsOnChange,
+    withHandlers,
+    withState,
+    lifecycle
+} from 'recompose'
 import Layout from '../../components/Layout'
 import DashboardWrapper from '../../components/Dashboard'
 import {WIDGETS_FORM_KEY} from '../../components/Dashboard/Widgets'
@@ -95,7 +101,6 @@ const enhance = compose(
             (props.widgetsLoading !== nextProps.widgetsLoading && nextProps.widgetsLoading === false)
     }, ({dispatch, filter, setLoading, widgetsList}) => {
         const widgetsKeynames = _.map(_.filter(_.get(widgetsList, 'results'), 'isActive'), item => _.get(item, 'keyName'))
-        setLoading(true)
         const activeSales = _.includes(widgetsKeynames, WIDGETS_FORM_KEY.SALES)
         const activeOrders = _.includes(widgetsKeynames, WIDGETS_FORM_KEY.ORDERS)
         const activeAgents = _.includes(widgetsKeynames, WIDGETS_FORM_KEY.AGENTS)
@@ -158,6 +163,20 @@ const enhance = compose(
                     setOpenEditPass(false)
                     return dispatch(openSnackbarAction({message: 'Пароль успешно изменен'}))
                 })
+        }
+    }),
+
+    lifecycle({
+        componentWillMount () {
+            const setLoading = _.get(this, ['props', 'setLoading'])
+            setLoading(true)
+        },
+        componentWillReceiveProps (props) {
+            const setLoading = _.get(props, 'setLoading')
+            if ((this.props.filter.filterRequest() !== props.filter.filterRequest()) ||
+                (this.props.widgetsLoading !== props.widgetsLoading && props.widgetsLoading === false)) {
+                setLoading(true)
+            }
         }
     })
 )

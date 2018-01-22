@@ -370,7 +370,8 @@ const Layout = enhance((props) => {
         updateDefaultPage,
         loading,
         notificationsLoading,
-        list
+        list,
+        pathname
     } = props
 
     const notificationData = {
@@ -392,19 +393,15 @@ const Layout = enhance((props) => {
         const viewed = _.get(item, 'viewed')
         const objectId = _.toInteger(_.get(item, 'objectId'))
         const template = _.get(item, ['template', 'name'])
-        let icon = null
-        switch (template) {
-            case 'supply_accepted': icon = <div className={classes.notifIcon + ' ' + classes.supply}><SupplyAccept/></div>
-                break
-            case 'order_ready': icon = <div className={classes.notifIcon + ' ' + classes.order}><OrderReady/></div>
-                break
-            case 'order_delivered': icon = <div className={classes.notifIcon + ' ' + classes.order}><OrderDelivered/></div>
-                break
-            case 'order_request': icon = <div className={classes.notifIcon + ' ' + classes.order}><OrderRequest/></div>
-                break
-            case 'goods_on_demand': icon = <div className={classes.notifIcon + ' ' + classes.stock}><GoodsDemand/></div>
-                break
-            default: icon = <div className={classes.notifIcon}><DefaultNotificationIcon/></div>
+        const getIcon = () => {
+            switch (template) {
+                case 'supply_accepted': return <div className={classes.notifIcon + ' ' + classes.supply}><SupplyAccept/></div>
+                case 'order_ready': return <div className={classes.notifIcon + ' ' + classes.order}><OrderReady/></div>
+                case 'order_delivered': return <div className={classes.notifIcon + ' ' + classes.order}><OrderDelivered/></div>
+                case 'order_request': return <div className={classes.notifIcon + ' ' + classes.order}><OrderRequest/></div>
+                case 'goods_on_demand': return <div className={classes.notifIcon + ' ' + classes.stock}><GoodsDemand/></div>
+                default: return <div className={classes.notifIcon}><DefaultNotificationIcon/></div>
+            }
         }
         const isOrder = _.includes(template, 'order')
         const isSupply = _.includes(template, 'supply')
@@ -419,7 +416,7 @@ const Layout = enhance((props) => {
                  onMouseEnter={() => { setClickNotifications(id) }}
                  onMouseLeave={() => { setClickNotifications(null) }}
                  style={viewed ? {opacity: '0.5'} : {opacity: '1'}}>
-                {icon}
+                {getIcon()}
                 <Link
                     target={'_blank'}
                     to={{
@@ -514,6 +511,7 @@ const Layout = enhance((props) => {
             </div>
             <div className={classes.sidenav}>
                 <SideBarMenu
+                    pathname={pathname}
                     handleSignOut={handleSignOut}
                     handleOpenNotificationBar={notificationData.handleOpenNotificationBar}/>
             </div>
@@ -521,9 +519,10 @@ const Layout = enhance((props) => {
                 {children}
             </div>
 
-            <SnakeBar />
-            <ErrorDialog />
-            {notificationsList && <ConfirmDialog
+            <SnakeBar/>
+            <ErrorDialog/>
+            {notificationsList &&
+            <ConfirmDialog
                 type="delete"
                 message={_.get(_.find(list, {'id': notificationId}), 'text') || ''}
                 onClose={notificationData.handleCloseConfirmDialog}

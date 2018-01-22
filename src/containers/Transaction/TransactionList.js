@@ -225,6 +225,30 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
+        const currencyRate = _.get(props, ['updateForm', 'values', 'currencyRate'])
+        const nextCurrencyRate = _.get(nextProps, ['updateForm', 'values', 'currencyRate'])
+        return currencyRate !== nextCurrencyRate && nextCurrencyRate
+    }, ({dispatch, date, updateForm}) => {
+        const currencyRate = _.get(updateForm, ['values', 'currencyRate'])
+        const order = _.get(updateForm, ['values', 'order', 'value'])
+        const currency = _.get(updateForm, ['values', 'currency', 'value'])
+        const form = 'ClientBalanceUpdateForm'
+        switch (currencyRate) {
+            case 'order': return dispatch(transactionConvertAction(date, currency, order))
+                .then((data) => {
+                    const customRate = _.get(data, ['value', 'amount'])
+                    dispatch(change(form, 'custom_rate', customRate))
+                })
+            case 'custom': return dispatch(change(form, 'custom_rate', ''))
+            default: return dispatch(transactionConvertAction(date, currency))
+                .then((data) => {
+                    const customRate = _.get(data, ['value', 'amount'])
+                    dispatch(change(form, 'custom_rate', customRate))
+                })
+        }
+    }),
+
+    withPropsOnChange((props, nextProps) => {
         return props.convertLoading !== nextProps.convertLoading && nextProps.convertLoading === false
     }, ({dispatch, convertAmount}) => {
         if (convertAmount) {
@@ -241,6 +265,7 @@ const enhance = compose(
         const nextCashList = toBoolean(_.get(location, ['query', TRANSACTION_CASH_DIALOG_OPEN]))
         nextCashList && dispatch(acceptCashListFetchAction())
     }),
+
     withPropsOnChange((props, nextProps) => {
         const prevInfoList = _.toInteger(_.get(props, ['location', 'query', TRANSACTION_INFO_OPEN]))
         const nextInfoList = _.toInteger(_.get(nextProps, ['location', 'query', TRANSACTION_INFO_OPEN]))

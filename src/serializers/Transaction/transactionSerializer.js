@@ -26,6 +26,7 @@ export const updateTransactionSerializer = (data, client) => {
     const division = _.get(data, ['division', 'value'])
     const user = _.get(data, ['user', 'value'])
     const paymentType = _.get(data, ['paymentType', 'value'])
+    const currencyRate = _.get(data, ['currencyRate'])
     return {
         'amount': newAmount,
         'comment': comment,
@@ -35,7 +36,8 @@ export const updateTransactionSerializer = (data, client) => {
         division,
         user,
         type: 1,
-        payment_type: paymentType
+        payment_type: paymentType,
+        rate_type: getRateType(currencyRate)
     }
 }
 
