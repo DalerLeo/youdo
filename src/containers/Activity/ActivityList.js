@@ -1,6 +1,12 @@
 import React from 'react'
 import _ from 'lodash'
-import {compose, withPropsOnChange, withHandlers, withState} from 'recompose'
+import {
+    compose,
+    withPropsOnChange,
+    withHandlers,
+    withState,
+    lifecycle
+} from 'recompose'
 import moment from 'moment'
 import {connect} from 'react-redux'
 import Layout from '../../components/Layout'
@@ -93,14 +99,7 @@ const enhance = compose(
         const prevDay = _.get(props, ['location', 'query', DAY])
         const nextDay = _.get(nextProps, ['location', 'query', DAY])
         return (props.curDate !== nextProps.curDate) || (prevDay !== nextDay)
-    }, ({dispatch, filter, updateOrderData, updateVisitData, updateReportData, updateReturnData, updatePaymentData, updateDeliveryData, setLoading}) => {
-        setLoading(true)
-        updateOrderData([])
-        updateVisitData([])
-        updateReportData([])
-        updateReturnData([])
-        updatePaymentData([])
-        updateDeliveryData([])
+    }, ({dispatch, filter, setLoading}) => {
         dispatch(activitySummaryListFetchAction(filter))
             .then(() => {
                 dispatch(activityOrderListFetchAction(filter))
@@ -123,55 +122,6 @@ const enhance = compose(
                             })
                     })
             })
-    }),
-
-    // ORDER LIST
-    withPropsOnChange((props, nextProps) => {
-        const prevLoading = _.get(props, 'orderListLoading')
-        const nextLoading = _.get(nextProps, 'orderListLoading')
-        return prevLoading !== nextLoading && nextLoading === false
-    }, ({orderData, orderList, updateOrderData}) => {
-        updateOrderData(_.union(orderData, orderList))
-    }),
-    // VISIT LIST
-    withPropsOnChange((props, nextProps) => {
-        const prevLoading = _.get(props, 'visitListLoading')
-        const nextLoading = _.get(nextProps, 'visitListLoading')
-        return prevLoading !== nextLoading && nextLoading === false
-    }, ({visitData, visitList, updateVisitData}) => {
-        updateVisitData(_.union(visitData, visitList))
-    }),
-    // REPORT LIST
-    withPropsOnChange((props, nextProps) => {
-        const prevLoading = _.get(props, 'reportListLoading')
-        const nextLoading = _.get(nextProps, 'reportListLoading')
-        return prevLoading !== nextLoading && nextLoading === false
-    }, ({reportData, reportList, updateReportData}) => {
-        updateReportData(_.union(reportData, reportList))
-    }),
-    // RETURN LIST
-    withPropsOnChange((props, nextProps) => {
-        const prevLoading = _.get(props, 'returnListLoading')
-        const nextLoading = _.get(nextProps, 'returnListLoading')
-        return prevLoading !== nextLoading && nextLoading === false
-    }, ({returnData, returnList, updateReturnData}) => {
-        updateReturnData(_.union(returnData, returnList))
-    }),
-    // PAYMENT LIST
-    withPropsOnChange((props, nextProps) => {
-        const prevLoading = _.get(props, 'paymentListLoading')
-        const nextLoading = _.get(nextProps, 'paymentListLoading')
-        return prevLoading !== nextLoading && nextLoading === false
-    }, ({paymentData, paymentList, updatePaymentData}) => {
-        updatePaymentData(_.union(paymentData, paymentList))
-    }),
-    // DELIVERY LIST
-    withPropsOnChange((props, nextProps) => {
-        const prevLoading = _.get(props, 'deliveryListLoading')
-        const nextLoading = _.get(nextProps, 'deliveryListLoading')
-        return prevLoading !== nextLoading && nextLoading === false
-    }, ({deliveryData, deliveryList, updateDeliveryData}) => {
-        updateDeliveryData(_.union(deliveryData, deliveryList))
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -253,6 +203,95 @@ const enhance = compose(
                 case DELIVERY: dispatch(activityDeliveryListFetchAction(filter, page))
                     break
                 default: dispatch(null)
+            }
+        }
+    }),
+    lifecycle({
+        componentWillMount () {
+            const setLoading = _.get(this, ['props', 'setLoading'])
+            const updateOrderData = _.get(this, ['props', 'updateOrderData'])
+            const updateVisitData = _.get(this, ['props', 'updateVisitData'])
+            const updateReportData = _.get(this, ['props', 'updateReportData'])
+            const updateReturnData = _.get(this, ['props', 'updateReturnData'])
+            const updatePaymentData = _.get(this, ['props', 'updatePaymentData'])
+            const updateDeliveryData = _.get(this, ['props', 'updateDeliveryData'])
+            setLoading(true)
+            updateOrderData([])
+            updateVisitData([])
+            updateReportData([])
+            updateReturnData([])
+            updatePaymentData([])
+            updateDeliveryData([])
+        },
+        componentWillReceiveProps (props) {
+            const {
+                // ORDER
+                updateOrderData,
+                orderData,
+                orderList,
+                orderListLoading,
+                // VISIT
+                updateVisitData,
+                visitData,
+                visitList,
+                visitListLoading,
+                // REPORT
+                updateReportData,
+                reportData,
+                reportList,
+                reportListLoading,
+                // RETURN
+                updateReturnData,
+                returnData,
+                returnList,
+                returnListLoading,
+                // PAYMENT
+                updatePaymentData,
+                paymentData,
+                paymentList,
+                paymentListLoading,
+                // DELIVERY
+                updateDeliveryData,
+                deliveryData,
+                deliveryList,
+                deliveryListLoading,
+                // CHANGE DATE
+                setLoading
+            } = props
+            const orderLoading = _.get(this, ['props', 'orderListLoading'])
+            const visitLoading = _.get(this, ['props', 'visitListLoading'])
+            const reportLoading = _.get(this, ['props', 'reportListLoading'])
+            const returnLoading = _.get(this, ['props', 'returnListLoading'])
+            const paymentLoading = _.get(this, ['props', 'paymentListLoading'])
+            const deliveryLoading = _.get(this, ['props', 'deliveryListLoading'])
+            if (orderLoading !== orderListLoading && orderListLoading === false) {
+                updateOrderData(_.union(orderData, orderList))
+            }
+            if (visitLoading !== visitListLoading && visitListLoading === false) {
+                updateVisitData(_.union(visitData, visitList))
+            }
+            if (reportLoading !== reportListLoading && reportListLoading === false) {
+                updateReportData(_.union(reportData, reportList))
+            }
+            if (returnLoading !== returnListLoading && returnListLoading === false) {
+                updateReturnData(_.union(returnData, returnList))
+            }
+            if (paymentLoading !== paymentListLoading && paymentListLoading === false) {
+                updatePaymentData(_.union(paymentData, paymentList))
+            }
+            if (deliveryLoading !== deliveryListLoading && deliveryListLoading === false) {
+                updateDeliveryData(_.union(deliveryData, deliveryList))
+            }
+            const prevDay = _.get(this, ['props', 'location', 'query', DAY])
+            const nextDay = _.get(props, ['location', 'query', DAY])
+            if ((this.props.curDate !== props.curDate) || (prevDay !== nextDay)) {
+                setLoading(true)
+                updateOrderData([])
+                updateVisitData([])
+                updateReportData([])
+                updateReturnData([])
+                updatePaymentData([])
+                updateDeliveryData([])
             }
         }
     })

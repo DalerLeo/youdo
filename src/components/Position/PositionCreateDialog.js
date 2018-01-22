@@ -28,6 +28,9 @@ const validate = (data) => {
 }
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
+        dialog: {
+            overflowY: 'auto'
+        },
         load: {
             position: 'absolute',
             width: '100%',
