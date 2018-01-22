@@ -13,8 +13,11 @@ import {
     getTransactionData
 } from '../../actions/statExpenditureOnStaff'
 
+const lastDay = moment().daysInMonth()
+const firstDayOfMonth = moment().format('YYYY-MM-01')
+const lastDayOfMonth = moment().format('YYYY-MM-' + lastDay)
+
 const OPEN_TRANSACTION_DIALOG = 'openTransactionDialog'
-const defaultDate = moment().format('YYYY-MM-DD')
 const BEGIN_DATE = 'fromDate'
 const END_DATE = 'toDate'
 const ZERO = 0
@@ -29,8 +32,8 @@ const enhance = compose(
         const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
         const filter = filterHelper(list, pathname, query)
         const filterTransaction = filterHelper(transactionData, pathname, query, {'page': 'dPage', 'pageSize': 'dPageSize'})
-        const beginDate = _.get(query, BEGIN_DATE) || defaultDate
-        const endDate = _.get(query, END_DATE) || defaultDate
+        const beginDate = _.get(query, BEGIN_DATE) || firstDayOfMonth
+        const endDate = _.get(query, END_DATE) || lastDayOfMonth
 
         return {
             list,
@@ -110,9 +113,6 @@ const StatExpenditureOnStaffList = enhance((props) => {
     } = props
 
     const openTransactionDialog = _.toNumber(_.get(location, ['query', [OPEN_TRANSACTION_DIALOG]]))
-    const firstDayOfMonth = _.get(location, ['query', 'fromDate']) || moment().format('YYYY-MM-01')
-    const lastDay = moment().daysInMonth()
-    const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
 
     const listData = {
         data: _.get(list, 'results'),

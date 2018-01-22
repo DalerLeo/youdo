@@ -31,15 +31,3 @@ export const diagramFilterSerializer = (data) => {
         'end_date': _.get(defaultData, 'toDate') || lastDayOfMonth
     }
 }
-
-export const itemSerializer = (data, filterItem, id) => {
-    const {...defaultData} = data
-
-    return {
-        'user': id,
-        'page': _.get(filterItem, 'page'),
-        'page_size': _.get(filterItem, 'pageSize'),
-        'created_date_0': _.get(defaultData, 'fromDate'),
-        'created_date_1': _.get(defaultData, 'toDate')
-    }
-}

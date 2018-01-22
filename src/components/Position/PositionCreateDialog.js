@@ -28,6 +28,9 @@ const validate = (data) => {
 }
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
+        dialog: {
+            overflowY: 'auto'
+        },
         load: {
             position: 'absolute',
             width: '100%',
@@ -64,7 +67,7 @@ const PositionCreateDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '300px'} : {width: '500px'}}
+            contentStyle={loading ? {width: '500px'} : {width: '500px'}}
             bodyStyle={{minHeight: '100px !important'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
@@ -75,7 +78,7 @@ const PositionCreateDialog = enhance((props) => {
             </div>
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit} className={classes.form} style={{minHeight: 'auto', position: 'relative'}}>
-                    {dataLoading && <div className={classes.load}>
+                    {(loading || dataLoading) && <div className={classes.load}>
                         <Loader size={0.75}/>
                     </div>}
                     <div className={classes.inContent} style={{minHeight: '120px', paddingTop: '15px'}}>
