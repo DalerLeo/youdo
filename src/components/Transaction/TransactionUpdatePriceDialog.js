@@ -12,8 +12,15 @@ import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 import normalizeNumber from '../ReduxForm/normalizers/normalizeNumber'
 import Loader from '../Loader'
-import {DivisionSearchField, PaymentTypeSearchField, UsersSearchField, CurrencySearchField} from '../ReduxForm'
+import {
+    DivisionSearchField,
+    PaymentTypeSearchField,
+    UsersSearchField,
+    CurrencySearchField
+} from '../ReduxForm'
+import RateRadioButton from '../ReduxForm/Transaction/RateRadioButton'
 import getConfig from '../../helpers/getConfig'
+import checkPermission from '../../helpers/checkPermission'
 import {connect} from 'react-redux'
 import t from '../../helpers/translate'
 
@@ -48,15 +55,31 @@ const enhance = compose(
     }),
     connect((state) => {
         const chosenCurrency = _.get(state, ['form', 'ClientBalanceUpdateForm', 'values', 'currency', 'value'])
-        return {chosenCurrency}
+        const chosenCurrencyName = _.get(state, ['form', 'ClientBalanceUpdateForm', 'values', 'currency', 'text'])
+        const rate = _.toNumber(_.get(state, ['form', 'ClientBalanceUpdateForm', 'values', 'custom_rate']))
+        return {
+            chosenCurrency,
+            chosenCurrencyName,
+            rate
+        }
     })
 )
 
 const TransactionUpdatePriceDialog = enhance((props) => {
-    const {classes, open, onClose, handleSubmit, loading, client, chosenCurrency} = props
+    const {classes, open, onClose, handleSubmit, loading, client, chosenCurrency, chosenCurrencyName, rate} = props
     const onSubmit = handleSubmit(() => props.onSubmit(_.get(client, 'id')))
     const primaryCurrency = _.toInteger(getConfig('PRIMARY_CURRENCY_ID'))
     const divisionStatus = getConfig('DIVISIONS')
+    const canSetCustomRate = checkPermission('can_set_custom_rate')
+    const customRateField = (primaryCurrency !== chosenCurrency && chosenCurrency) &&
+        (
+            <Field
+                name="custom_rate"
+                component={TextField}
+                className={classes.inputFieldCustom}
+                label={t('Курс')}
+                fullWidth={true}/>
+        )
     return (
         <Dialog
             modal={true}
@@ -111,12 +134,16 @@ const TransactionUpdatePriceDialog = enhance((props) => {
                                     label={t('Валюта')}
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
-                                {(primaryCurrency !== chosenCurrency && chosenCurrency) && <Field
-                                    name="custom_rate"
-                                    component={TextField}
-                                    className={classes.inputFieldCustom}
-                                    label={t('Курс')}
-                                    fullWidth={true}/>}
+                                <div style={{marginBottom: 15}}>
+                                    <Field
+                                        name="currencyRate"
+                                        currency={chosenCurrencyName}
+                                        rate={rate}
+                                        canSetCustomRate={canSetCustomRate}
+                                        customRateField={customRateField}
+                                        component={RateRadioButton}
+                                    />
+                                </div>
                                 <Field
                                     name="comment"
                                     style={{top: '-20px', lineHeight: '20px', fontSize: '13px'}}

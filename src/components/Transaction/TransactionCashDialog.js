@@ -247,7 +247,8 @@ const TransactionCashDialog = enhance((props) => {
             value: _.get(currentItem, 'paymentType')
         },
         currency: {
-            value: _.get(currentItem, ['currency', 'id'])
+            value: _.get(currentItem, ['currency', 'id']),
+            text: _.get(currentItem, ['currency', 'name'])
         },
         user: {
             value: _.get(currentItem, ['user', 'id'])

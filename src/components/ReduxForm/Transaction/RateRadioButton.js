@@ -46,7 +46,7 @@ const RateRadioButton = enhance((props) => {
                 {defaultValue === 'custom'
                     ? customRateField
                     : <div style={{textAlign: 'right'}}>
-                        {rate > ZERO && <strong>1 {currencyName} = {numberFormat(rate, configCurrencyName)}</strong>}
+                        {rate > ZERO && <strong>1 {configCurrencyName} = {numberFormat(rate, currencyName)}</strong>}
                     </div>}
             </div>
         </div>

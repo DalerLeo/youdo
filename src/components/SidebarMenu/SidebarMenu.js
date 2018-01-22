@@ -143,7 +143,7 @@ const SideBarMenu = enhance((props) => {
             <Link to={{pathname: url, query: query}}>
                 <ToolTip position="right" text={name}>
                     <FlatButton
-                        rippleColor={rippleColor}
+                        rippleColor={url === currentMenuURL ? 'transparent' : rippleColor}
                         className={url === currentMenuURL ? classes.activeMenu : ''}
                         style={style.style}>
                         {icon}
