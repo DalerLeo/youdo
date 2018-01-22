@@ -437,7 +437,7 @@ const TransactionCreateDialog = enhance((props) => {
                                     </div>}
                                 </div>
                                 {(convert && rate && primaryCurrency !== currency)
-                                    ? <div className={classes.convert}>После конвертации:
+                                    ? <div className={classes.convert}>{t('После конвертации')}:
                                         <strong>{convert} {primaryCurrency}</strong>
                                     </div> : null}
                                 <Field
