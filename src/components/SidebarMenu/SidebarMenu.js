@@ -25,7 +25,7 @@ const style = {
 }
 
 const enhance = compose(
-    connect((state, props) => {
+    connect((state) => {
         const permissions = _.map(_.get(state, ['authConfirm', 'data', 'permissions']), (item) => {
             return _.get(item, 'codename')
         })
@@ -114,11 +114,48 @@ const enhance = compose(
     })
 )
 
+const NOT_FOUND = -1
 const SideBarMenu = enhance((props) => {
-    const {classes, handleSignOut, handleOpenNotificationBar, permissions, isAdmin, loading, dispatch} = props
+    const {
+        classes,
+        handleSignOut,
+        handleOpenNotificationBar,
+        permissions,
+        isAdmin,
+        loading,
+        dispatch,
+        pathname
+    } = props
+
     const menu = getMenus(permissions, isAdmin)
+    const parent = _
+        .chain(menu)
+        .find((item) => {
+            return (_.findIndex(item.childs, (ch) => {
+                return ch.url === pathname
+            }) > NOT_FOUND)
+        })
+        .value()
+    const currentMenuURL = _.get(parent, 'url')
+    const rippleColor = 'rgba(255, 255, 255, 0.2)'
+    const getMenuIcon = (url, query, name, icon) => {
+        return (
+            <Link to={{pathname: url, query: query}}>
+                <ToolTip position="right" text={name}>
+                    <FlatButton
+                        rippleColor={rippleColor}
+                        className={url === currentMenuURL ? classes.activeMenu : ''}
+                        style={style.style}>
+                        {icon}
+                    </FlatButton>
+                </ToolTip>
+            </Link>
+        )
+    }
     const items = _.map(menu, (item, index) => {
         const atBottom = _.get(item, 'bottom')
+        const url = _.get(item, 'url')
+        const query = _.get(item, 'query')
         const dynamic = _.get(item, 'dynamic') && !isAdmin
         const icon = dynamic
             ? _.get(_.first(_.get(item, 'childs')), 'icon')
@@ -131,15 +168,7 @@ const SideBarMenu = enhance((props) => {
         }
         return (
             <div key={index}>
-                <Link to={{pathname: _.get(item, 'url'), query: _.get(item, 'query')}}>
-                    <ToolTip position="right" text={tooltip}>
-                        <FlatButton
-                            rippleColor="#fff"
-                            style={style.style}>
-                            {icon}
-                        </FlatButton>
-                    </ToolTip>
-                </Link>
+                {getMenuIcon(url, query, tooltip, icon)}
             </div>
         )
     })
@@ -147,17 +176,11 @@ const SideBarMenu = enhance((props) => {
         return o.bottom
     })
     const afterLine = _.map(bottomItems, (item, index) => {
+        const url = _.get(item, 'url')
+        const query = _.get(item, 'query')
         return (
             <div key={index}>
-                <Link to={{pathname: _.get(item, 'url'), query: _.get(item, 'query')}}>
-                    <ToolTip position="right" text={item.name}>
-                        <FlatButton
-                            rippleColor="#fff"
-                            style={style.style}>
-                            {item.icon}
-                        </FlatButton>
-                    </ToolTip>
-                </Link>
+                {getMenuIcon(url, query, item.name, item.icon)}
             </div>
         )
     })
@@ -188,10 +211,11 @@ const SideBarMenu = enhance((props) => {
                     {afterLine}
                 </div>}
             </div>}
-            {!loading && <div ref="logoutBtn">
+            {!loading &&
+            <div ref="logoutBtn">
                 <ToolTip position="right" text="Выйти">
                     <FlatButton
-                        rippleColor="#fff"
+                        rippleColor={rippleColor}
                         style={style.style}
                         onClick={handleSignOut}>
                         <SettingsPower/>
@@ -313,6 +337,11 @@ export default injectSheet({
         height: '100%',
         display: 'flex',
         flexDirection: 'column'
+    },
+
+    activeMenu: {
+        background: 'rgba(255, 255, 255, 0.2) !important',
+        opacity: '1 !important'
     },
 
     bottom: {

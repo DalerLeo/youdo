@@ -70,7 +70,13 @@ import {
     StatProviderTransactionsList
 } from '../containers/Statistics'
 import {ClientBalanceList} from '../containers/ClientBalance'
-import {StockReceiveHistoryList, StockReceiveList, StockTransferList, StockTransferHistoryList, StockOutHistoryList} from '../containers/StockReceive'
+import {
+    StockReceiveHistoryList,
+    StockReceiveList,
+    StockTransferList,
+    StockTransferHistoryList,
+    StockOutHistoryList
+} from '../containers/StockReceive'
 import {PlanList} from '../containers/Plan'
 import {ActivityList} from '../containers/Activity'
 import {DivisionList} from '../containers/Division'

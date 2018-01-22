@@ -48,8 +48,8 @@ class App extends React.Component {
     }
 
     render () {
-        const {handleSignOut, scrollValue, updateScrollValue} = this.props
-        const layout = {handleSignOut, scrollValue, updateScrollValue}
+        const {handleSignOut, scrollValue, updateScrollValue, location: {pathname}} = this.props
+        const layout = {handleSignOut, scrollValue, updateScrollValue, pathname}
         const title = 'Rhythm ERP'
 
         return (
