@@ -638,7 +638,7 @@ const enhance = compose(
                 })
         },
         handleOpenAcceptCashDetail: props => (user, currency, division) => {
-            const {filter, location: {pathname}, dispatch, filterItem} = props
+            const {filter, location: {pathname}} = props
             hashHistory.push({
                 pathname,
                 query: filter.getParams({
@@ -648,7 +648,7 @@ const enhance = compose(
                     [OPEN_DIVISION]: division
                 })
             })
-            dispatch(pendingTransactionFetchAction(filterItem))
+            // Dispatch for this action is in WithPropsOnChange -->> dispatch(pendingTransactionFetchAction(filterItem))
         },
         handleCloseAcceptCashDetail: props => () => {
             const {filter, location: {pathname}} = props
