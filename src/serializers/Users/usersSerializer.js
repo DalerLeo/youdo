@@ -1,10 +1,9 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../../helpers/serializer'
-import getConfig from '../../helpers/getConfig'
 
-const stockSelect = getConfig('MULTI_SELECT_STOCK')
 export const createSerializer = (data) => {
     const singleStock = [_.get(data, 'radioStock')]
+    const singleStockCheck = _.get(data, 'radioStock')
     const username = _.get(data, 'username')
     const firstName = _.get(data, 'firstName')
     const secondName = _.get(data, 'secondName')
@@ -45,7 +44,7 @@ export const createSerializer = (data) => {
         password,
         position,
         'is_active': isActive,
-        'stocks': stockSelect ? stocks : singleStock,
+        'stocks': singleStockCheck ? singleStock : stocks,
         'price_lists': newMarket,
         currencies,
         divisions
