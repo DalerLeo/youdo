@@ -159,17 +159,17 @@ const ExpenditureTransactionDialog = enhance((props) => {
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const list = _.map(data, (item) => {
         const id = _.get(item, 'id')
-        const date = dateFormat(_.get(item, 'createdDate'))
-        const amount = _.get(item, 'amount')
+        const date = dateFormat(_.get(item, ['transaction', 'createdDate']))
+        const amount = _.toNumber(_.get(item, 'amount'))
         const currency = _.get(item, ['currency', 'name'])
-        const internal = _.toNumber(_.get(item, 'internalAmount'))
-        const customRate = _.get(item, 'customRate') ? _.toInteger(_.get(item, 'customRate')) : _.toInteger(amount / internal)
+        const internal = _.toNumber(_.get(item, ['transaction', 'internalAmount']))
+        const customRate = _.get(item, ['transaction', 'customRate']) ? _.toInteger(_.get(item, ['transaction', 'customRate'])) : _.toInteger(amount / internal)
         const comment = _.get(item, 'comment')
-        const cashbox = _.get(item, ['cashbox', 'name'])
+        const cashbox = _.get(item, ['transaction', 'cashbox', 'name'])
         const order = _.get(item, 'order')
         const supply = _.get(item, 'supply')
         const supplyExpanseId = _.get(item, 'supplyExpanseId')
-        const transType = _.toInteger(_.get(item, 'type'))
+        const transType = _.toInteger(_.get(item, ['transaction', 'type']))
         const user = _.get(item, 'user')
         const client = _.get(item, ['client'])
         const expenseCategory = _.get(item, ['expanseCategory'])
@@ -226,7 +226,7 @@ const ExpenditureTransactionDialog = enhance((props) => {
             </div>
             <div className={classes.content}>
                 <div className={classes.titleSummary}>
-                    <div>{t('Период')}: <strong>{beginDate} - {endDate}</strong></div>
+                    <div>{t('Период')}: <strong>{dateFormat(beginDate)} - {dateFormat(endDate)}</strong></div>
                 </div>
                 <div className={classes.tableWrapper}>
                     <Row style={headerStyle} className="dottedList">

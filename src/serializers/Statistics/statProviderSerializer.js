@@ -3,17 +3,17 @@ import moment from 'moment'
 import {orderingSnakeCase} from '../../helpers/serializer'
 
 const ZERO = 0
+const firstDayOfMonth = moment().format('YYYY-MM-01')
+const lastDay = moment().daysInMonth()
+const lastDayOfMonth = moment().format('YYYY-MM-' + lastDay)
+
 export const listFilterSerializer = (query) => {
     const {...defaultData} = query
     const ordering = _.get(query, 'ordering')
 
-    const firstDayOfMonth = moment().format('YYYY-MM-01')
-    const lastDay = moment().daysInMonth()
-    const lastDayOfMonth = moment().format('YYYY-MM-' + lastDay)
-
     return {
-        'begin_date': firstDayOfMonth,
-        'end_date': lastDayOfMonth,
+        'begin_date': _.get(defaultData, 'fromDate') || firstDayOfMonth,
+        'end_date': _.get(defaultData, 'toDate') || lastDayOfMonth,
         'search': _.get(defaultData, 'search'),
         'payment_type': _.get(defaultData, 'paymentType') || null,
         'balance_type': _.get(defaultData, 'balanceType') || null,
@@ -25,13 +25,10 @@ export const listFilterSerializer = (query) => {
 
 export const summaryFilterSerializer = (query) => {
     const {...defaultData} = query
-    const firstDayOfMonth = moment().format('YYYY-MM-01')
-    const lastDay = moment().daysInMonth()
-    const lastDayOfMonth = moment().format('YYYY-MM-' + lastDay)
 
     return {
-        'begin_date': firstDayOfMonth,
-        'end_date': lastDayOfMonth,
+        'begin_date': _.get(defaultData, 'fromDate') || firstDayOfMonth,
+        'end_date': _.get(defaultData, 'toDate') || lastDayOfMonth,
         'payment_type': _.get(defaultData, 'paymentType') || null,
         'balance_type': _.get(defaultData, 'balanceType') || null
     }
