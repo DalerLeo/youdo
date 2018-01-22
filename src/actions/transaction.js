@@ -60,7 +60,6 @@ export const pendingTransactionFetchAction = (filter) => {
     const currency = filter && _.get(filter.getParams(), 'openCurrency')
     const division = filter && _.get(filter.getParams(), 'openDivision')
     const user = filter && _.get(filter.getParams(), 'openUser')
-    console.warn('PENDING:', filter.getParams())
     const params = {
         transaction: 0,
         user,
