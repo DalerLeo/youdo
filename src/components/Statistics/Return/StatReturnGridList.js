@@ -5,23 +5,19 @@ import {Row, Col} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import {Field} from 'redux-form'
-import IconButton from 'material-ui/IconButton'
 import Loader from '../../Loader'
-import InProcess from 'material-ui/svg-icons/action/cached'
-import DoneIcon from 'material-ui/svg-icons/action/done-all'
-import Canceled from 'material-ui/svg-icons/notification/do-not-disturb-alt'
 import StatReturnDialog from './StatReturnDialog'
 import StatSideMenu from '../StatSideMenu'
 import DateToDateField from '../../ReduxForm/Basic/DateToDateField'
 import Container from '../../Container/index'
 import Pagination from '../../GridList/GridListNavPagination/index'
+import OrderReturnStatusIcons from '../../Return/OrderReturnStatusIcons'
 import NotFound from '../../Images/not-found.png'
 import * as ROUTES from '../../../constants/routes'
 import numberFormat from '../../../helpers/numberFormat'
 import dateFormat from '../../../helpers/dateFormat'
 import getConfig from '../../../helpers/getConfig'
 import {StatisticsFilterExcel, StatisticsChart} from '../../Statistics'
-import ToolTip from '../../ToolTip'
 import {
     ClientMultiSearchField,
     MarketMultiSearchField,
@@ -195,24 +191,7 @@ const enhance = compose(
         }
     })
 )
-const iconStyle = {
-    icon: {
-        color: '#666',
-        width: 20,
-        height: 20
-    },
-    button: {
-        width: 30,
-        height: 30,
-        padding: 0,
-        zIndex: 0
-    }
-}
 
-const PENDING = 0
-const IN_PROGRESS = 1
-const COMPLETED = 2
-const CANCELLED = 3
 const StatReturnGridList = enhance((props) => {
     const {
         classes,
@@ -285,37 +264,7 @@ const StatReturnGridList = enhance((props) => {
                 <Col xs={2} style={{justifyContent: 'flex-end'}}>{totalPrice}</Col>
                 <Col xs={1}>
                     <div className={classes.buttons}>
-                        {(status === PENDING || status === IN_PROGRESS)
-                            ? <ToolTip position="bottom" text={t('Ожидает')}>
-                                <IconButton
-                                    disableTouchRipple={true}
-                                    iconStyle={iconStyle.icon}
-                                    style={iconStyle.button}
-                                    touch={true}>
-                                    <InProcess color="#f0ad4e"/>
-                                </IconButton>
-                            </ToolTip>
-                            : (status === COMPLETED)
-                                ? <ToolTip position="bottom" text={t('Завершен')}>
-                                    <IconButton
-                                        disableTouchRipple={true}
-                                        iconStyle={iconStyle.icon}
-                                        style={iconStyle.button}
-                                        touch={true}>
-                                        <DoneIcon color="#81c784"/>
-                                    </IconButton>
-                                </ToolTip>
-                                : (status === CANCELLED)
-                                    ? <ToolTip position="bottom" text={t('Отменен')}>
-                                        <IconButton
-                                            disableTouchRipple={true}
-                                            iconStyle={iconStyle.icon}
-                                            style={iconStyle.button}
-                                            touch={true}>
-                                            <Canceled color='#e57373'/>
-                                        </IconButton>
-                                    </ToolTip> : null
-                        }
+                        <OrderReturnStatusIcons status={status}/>
                     </div>
                 </Col>
             </Row>

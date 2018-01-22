@@ -38,10 +38,12 @@ const NEGATIVE = -1
 const enhance = compose(
     injectSheet({
         green: {
-            color: '#81c784'
+            color: '#81c784',
+            fontWeight: '600'
         },
         red: {
-            color: '#e57373'
+            color: '#e57373',
+            fontWeight: '600'
         },
         mainWrapper: {
             background: '#fff',

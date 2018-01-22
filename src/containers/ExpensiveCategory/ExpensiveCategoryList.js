@@ -210,16 +210,13 @@ const ExpensiveCategoryList = enhance((props) => {
 
     const updateDialog = {
         initialValues: (() => {
-            const options = []
-            _.each(_.get(detail, 'options'), (item) => {
-                options[item] = true
-            })
             if (!detail || openCreateDialog) {
                 return {}
             }
             return {
                 name: _.get(detail, 'name'),
-                options: options
+                showOptions: !_.isEmpty(_.get(detail, 'options')),
+                options: _.first(_.get(detail, 'options'))
 
             }
         })(),
