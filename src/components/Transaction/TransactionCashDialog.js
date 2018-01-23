@@ -223,7 +223,7 @@ const TransactionCashDialog = enhance((props) => {
         hasMarket
 } = props
     const openEditDialog = (thisItem) => {
-        superUser.handleOpenSuperUserDialog(thisItem.id)
+        superUser.handleOpenSuperUserDialog(thisItem.id, thisItem.order)
         setItem(thisItem)
     }
 
@@ -234,6 +234,7 @@ const TransactionCashDialog = enhance((props) => {
         return _.isEmpty(_.find(divisions, {'id': id}))
     }
 
+    const orderId = _.get(currentItem, 'order')
     const amount1 = _.toNumber(_.get(currentItem, 'amount'))
     const internal1 = _.toNumber(_.get(currentItem, 'internal'))
     const initialValues = {
@@ -440,6 +441,7 @@ const TransactionCashDialog = enhance((props) => {
             {isSuperUser && <TransactionUpdatePriceDialog
                 open={superUser.open}
                 loading={superUser.loading}
+                showOrderRate={orderId}
                 initialValues={initialValues}
                 onClose={superUser.handleCloseSuperUserDialog}
                 onSubmit={superUser.handleSubmitSuperUserDialog}

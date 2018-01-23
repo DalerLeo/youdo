@@ -79,7 +79,8 @@ const TransactionUpdatePriceDialog = enhance((props) => {
         chosenCurrency,
         chosenCurrencyName,
         rate,
-        amount
+        amount,
+        showOrderRate
     } = props
 
     const onSubmit = handleSubmit(() => props.onSubmit(_.get(client, 'id')))
@@ -159,6 +160,7 @@ const TransactionUpdatePriceDialog = enhance((props) => {
                                         name="currencyRate"
                                         currency={chosenCurrencyName}
                                         rate={rate}
+                                        showOrderRate={showOrderRate}
                                         canSetCustomRate={canSetCustomRate}
                                         customRateField={customRateField}
                                         component={RateRadioButton}
