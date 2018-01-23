@@ -374,7 +374,6 @@ export const STAT_MARKET_LIST = `${STAT_MARKET}/`
 export const STAT_MARKET_SUM = `${STAT_MARKET}/sum/`
 export const STAT_MARKET_TYPE = 'stats/market_types'
 export const STAT_MARKET_TYPE_LIST = `${STAT_MARKET_TYPE}/`
-export const STAT_MARKET_TYPE_SUM = `${STAT_MARKET_TYPE}/sum/`
 export const STAT_MARKET_TYPE_GET_DOCUMENT = '/stats/market_types/export'
 export const STAT_MARKET_ITEM = 'sales/order/'
 export const STAT_MARKET_GET_DOCUMENT = '/stats/markets/export'
@@ -398,7 +397,6 @@ export const STAT_SALES_GET_DOCUMENT = '/sales/order/export/'
 export const STAT_PRODUCT_LIST = 'stats/products/'
 export const STAT_PRODUCT_SUM_DATA = 'stats/products/total/'
 export const STAT_PRODUCT_TYPE_LIST = 'stats/product_types/'
-export const STAT_PRODUCT_TYPE_SUM = 'stats/product_types/total/'
 export const STAT_PRODUCT_GET_DOCUMENT = '/stats/products/export'
 
 export const STAT_RETURN_LIST = '/stats/order_returns/'

@@ -16,8 +16,7 @@ import {STAT_PRODUCT_FILTER_KEY, PRODUCT} from '../../components/Statistics/Prod
 import {
     statProductListFetchAction,
     statProductSumDatFetchAction,
-    statProductTypeListFetchAction,
-    statProductTypeSumFetchAction
+    statProductTypeListFetchAction
 } from '../../actions/statProduct'
 
 const enhance = compose(
@@ -32,8 +31,6 @@ const enhance = compose(
         const productSumLoading = _.get(state, ['statProduct', 'productSum', 'loading'])
         const productTypeList = _.get(state, ['statProduct', 'productTypeList', 'data'])
         const productTypeListLoading = _.get(state, ['statProduct', 'productTypeList', 'loading'])
-        const productTypeSum = _.get(state, ['statProduct', 'productTypeSum', 'data'])
-        const productTypeSumLoading = _.get(state, ['statProduct', 'productTypeSum', 'loading'])
         const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
         const searchForm = _.get(state, ['form', 'StatProductForm'])
         const filter = filterHelper(productList, pathname, query)
@@ -45,8 +42,6 @@ const enhance = compose(
             productSumLoading,
             productTypeList,
             productTypeListLoading,
-            productTypeSum,
-            productTypeSumLoading,
             detail,
             detailLoading,
             filter,
@@ -74,10 +69,7 @@ const enhance = compose(
         }
         return props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
-        const toggle = filter.getParam('toggle') || PRODUCT
-        return toggle === PRODUCT
-            ? dispatch(statProductSumDatFetchAction(filter))
-            : dispatch(statProductTypeSumFetchAction(filter))
+        dispatch(statProductSumDatFetchAction(filter))
     }),
 
     withHandlers({
@@ -126,8 +118,6 @@ const StatProductList = enhance((props) => {
         productSumLoading,
         productTypeList,
         productTypeListLoading,
-        productTypeSum,
-        productTypeSumLoading,
         detail,
         detailLoading,
         filter,
@@ -168,8 +158,8 @@ const StatProductList = enhance((props) => {
         listLoading: toggle === PRODUCT ? productListLoading : productTypeListLoading
     }
 
-    const sumData = toggle === PRODUCT ? productSum : productTypeSum
-    const sumDataLoading = toggle === PRODUCT ? productSumLoading : productTypeSumLoading
+    const sumData = productSum
+    const sumDataLoading = productSumLoading
 
     const detailData = {
         id: detailId,

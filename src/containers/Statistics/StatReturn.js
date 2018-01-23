@@ -179,7 +179,7 @@ const StatReturnList = enhance((props) => {
                 deliveryToDate: deliveryToDate && moment(deliveryToDate, 'YYYY-MM-DD')
             },
             division: division && splitToArray(division),
-            exclude: exclude,
+            exclude: exclude || true,
             date: {
                 fromDate: moment(firstDayOfMonth),
                 toDate: moment(lastDayOfMonth)

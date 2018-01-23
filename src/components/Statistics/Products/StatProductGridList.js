@@ -265,6 +265,10 @@ const enhance = compose(
             marginTop: '15px',
             justifyContent: 'space-between',
             '& > div': {
+                border: '1px solid #efefef',
+                borderRadius: '2px',
+                padding: '5px 15px',
+                width: 'calc((100% / 3) - 10px)',
                 '& > div:nth-child(odd)': {
                     color: '#666'
                 },
