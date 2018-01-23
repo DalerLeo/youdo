@@ -83,7 +83,7 @@ const enhance = compose(
                     return dispatch(openSnackbarAction({message: 'Успешно удалено'}))
                 })
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: 'Ошибка при удалении'}))
+                    return dispatch(openSnackbarAction({message: 'Удаление невозможно из-за связи с другими данными'}))
                 })
         },
 

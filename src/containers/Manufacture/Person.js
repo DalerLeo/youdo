@@ -158,7 +158,7 @@ const enhance = compose(
             const manufactureId = _.toNumber(_.get(params, 'manufactureId'))
             dispatch(userShiftDeleteAction(_.toInteger(personId)))
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: t('Ошибка при удалении')}))
+                    return dispatch(openSnackbarAction({message: t('Удаление невозможно из-за связи с другими данными')}))
                 })
                 .then(() => {
                     hashHistory.push({
