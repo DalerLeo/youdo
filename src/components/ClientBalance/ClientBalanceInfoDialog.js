@@ -442,8 +442,9 @@ const ClientBalanceInfoDialog = enhance((props) => {
                     </div>
                     <div className={classes.content}>
                         <Row>
-                            <div style={{flexBasis: '4%', maxWidth: '4%'}}/>
-                            <div style={{flexBasis: '16%', maxWidth: '16%'}}>{t('Дата')}</div>
+                            {_.includes(hasIcon, true) &&
+                            <div style={{flexBasis: '4%', maxWidth: '4%'}}/>}
+                            <div style={_.includes(hasIcon, true) ? {flexBasis: '16%', maxWidth: '16%'} : {flexBasis: '20%', maxWidth: '20%'}}>{t('Дата')}</div>
                             <div style={{flexBasis: '20%', maxWidth: '20%'}}>{t('Кто')}</div>
                             <div style={{flexBasis: '40%', maxWidth: '40%'}}>{t('Описание')}</div>
                             <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>{t('Сумма')}</div>
