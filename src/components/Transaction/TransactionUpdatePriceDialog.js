@@ -79,11 +79,13 @@ const TransactionUpdatePriceDialog = enhance((props) => {
         chosenCurrency,
         chosenCurrencyName,
         rate,
-        amount
+        amount,
+        showOrderRate
     } = props
 
     const onSubmit = handleSubmit(() => props.onSubmit(_.get(client, 'id')))
     const primaryCurrency = _.toInteger(getConfig('PRIMARY_CURRENCY_ID'))
+    const primaryCurrencyName = getConfig('PRIMARY_CURRENCY')
     const convert = convertCurrency(amount, rate)
     const divisionStatus = getConfig('DIVISIONS')
     const canSetCustomRate = checkPermission('can_set_custom_rate')
@@ -152,13 +154,14 @@ const TransactionUpdatePriceDialog = enhance((props) => {
                                     fullWidth={true}/>
                                 {(convert && rate && primaryCurrency !== chosenCurrency)
                                     ? <div className={classes.convert}>{t('После конвертации')}:
-                                        <strong> {convert} {primaryCurrency}</strong>
+                                        <strong> {convert} {primaryCurrencyName}</strong>
                                     </div> : null}
                                 <div style={{marginBottom: 15}}>
                                     <Field
                                         name="currencyRate"
                                         currency={chosenCurrencyName}
                                         rate={rate}
+                                        showOrderRate={showOrderRate}
                                         canSetCustomRate={canSetCustomRate}
                                         customRateField={customRateField}
                                         component={RateRadioButton}

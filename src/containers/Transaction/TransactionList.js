@@ -31,7 +31,8 @@ import {
     TRANSACTION_EDIT_PRICE_OPEN,
     OPEN_USER,
     OPEN_DIVISION,
-    OPEN_CURRENCY
+    OPEN_CURRENCY,
+    OPEN_ORDER
 } from '../../components/Transaction'
 import {
     transactionCreateExpenseAction,
@@ -228,9 +229,11 @@ const enhance = compose(
         const currencyRate = _.get(props, ['updateForm', 'values', 'currencyRate'])
         const nextCurrencyRate = _.get(nextProps, ['updateForm', 'values', 'currencyRate'])
         return currencyRate !== nextCurrencyRate && nextCurrencyRate
-    }, ({dispatch, date, updateForm}) => {
+    }, ({dispatch, date, updateForm, location}) => {
         const currencyRate = _.get(updateForm, ['values', 'currencyRate'])
-        const order = _.get(updateForm, ['values', 'order', 'value'])
+        // OR CONDITION is for SuperUser -> handleOpenSuperUserDialog to get SPECIFIC ORDER CURRENCY RATE
+        const order = _.get(updateForm, ['values', 'order', 'value']) || _.toInteger(_.get(location, ['query', OPEN_ORDER]))
+
         const currency = _.get(updateForm, ['values', 'currency', 'value'])
         const form = 'ClientBalanceUpdateForm'
         switch (currencyRate) {
@@ -278,7 +281,8 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         const except = {
             updateTransaction: null,
-            openAcceptTransactionDialog: null
+            openAcceptTransactionDialog: null,
+            openOrder: null
         }
         const prevCashDetails = (_.get(props, ['location', 'query', TRANSACTION_ACCEPT_CASH_DETAIL_OPEN]))
         const nextCashDetails = (_.get(nextProps, ['location', 'query', TRANSACTION_ACCEPT_CASH_DETAIL_OPEN]))
@@ -293,7 +297,8 @@ const enhance = compose(
             openStaffExpenseDialog: null,
             openDetalizationDialog: null,
             updateTransaction: null,
-            openDivision: null
+            openDivision: null,
+            openOrder: null
         }
         return (props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except) &&
             _.isNil(nextProps.query.dPage || nextProps.query.dPageSize || props.query.dPage || props.query.dPageSize)) ||
@@ -662,16 +667,16 @@ const enhance = compose(
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_INFO_OPEN]: id})})
         },
-        handleOpenSuperUserDialog: props => (id) => {
+        handleOpenSuperUserDialog: props => (id, orderId) => {
             const {filter, location: {pathname}} = props
             hashHistory.push({
                 pathname,
-                query: filter.getParams({[TRANSACTION_EDIT_PRICE_OPEN]: id})
+                query: filter.getParams({[TRANSACTION_EDIT_PRICE_OPEN]: id, [OPEN_ORDER]: orderId})
             })
         },
         handleCloseSuperUserDialog: props => () => {
             const {dispatch, location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_EDIT_PRICE_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_EDIT_PRICE_OPEN]: false, [OPEN_ORDER]: null})})
             dispatch(reset('ClientBalanceCreateForm'))
         },
         handleSubmitSuperUserDialog: props => (id) => {
@@ -684,7 +689,7 @@ const enhance = compose(
                 })
                 .then(() => {
                     hashHistory.push({
-                        pathname, query: filter.getParams({[TRANSACTION_EDIT_PRICE_OPEN]: false})
+                        pathname, query: filter.getParams({[TRANSACTION_EDIT_PRICE_OPEN]: false, [OPEN_ORDER]: null})
                     })
                 })
                 .then(() => {

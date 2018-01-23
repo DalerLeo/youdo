@@ -17,6 +17,7 @@ const TRANSACTION_EDIT_PRICE_OPEN = 'openTransactionEditPrice'
 const OPEN_USER = 'openUser'
 const OPEN_CURRENCY = 'openCurrency'
 const OPEN_DIVISION = 'openDivision'
+const OPEN_ORDER = 'openOrder'
 export {
 
     TRANSACTION_CREATE_EXPENSE_DIALOG_OPEN,
@@ -38,5 +39,6 @@ export {
     TransactionsFormat,
     OPEN_CURRENCY,
     OPEN_USER,
-    OPEN_DIVISION
+    OPEN_DIVISION,
+    OPEN_ORDER
 }
