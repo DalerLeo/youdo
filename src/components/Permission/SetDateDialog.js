@@ -91,7 +91,7 @@ const SetDateDialog = enhance((props) => {
             className={classes.dialog}
             contentStyle={loading ? {width: '300px'} : {width: '500px'}}
             bodyStyle={{minHeight: 'auto'}}
-            bodyClassName={classes.body}>
+            bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
                 <span>{t('Время работы')}</span>
                 <IconButton onTouchTap={onClose}>

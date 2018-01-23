@@ -163,7 +163,6 @@ const PermissionGridList = enhance((props) => {
                         filter={filter}
                         list={list}
                         detail={permissionDetail}
-                        transparentLoading={true}
                         listShadow={false}
                     />
                 </div>

@@ -221,10 +221,6 @@ const enhance = compose(
         tableBody: {
             '& > tr:first-child > td:first-child': {
                 minWidth: '220px'
-            },
-            '& tr:first-child > td:first-child': {
-                verticalAlign: 'bottom',
-                padding: '0 30px 15px'
             }
         },
         mainTable: {
