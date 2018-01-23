@@ -161,7 +161,8 @@ const ActivityOrder = enhance((props) => {
         const id = _.get(item, ['order', 'id'])
         const name = _.get(item, ['order', 'user', 'firstName']) + ' ' + _.get(item, ['order', 'user', 'secondName'])
         const createdDate = dateTimeFormat(_.get(item, ['order', 'createdDate']), true)
-        const orderPrice = numberFormat(_.get(item, ['order', 'totalPrice']), currentCurrency)
+        const currency = _.get(item, ['currency', 'name'])
+        const orderPrice = numberFormat(_.get(item, ['order', 'totalPrice']), currency)
         const marketName = _.get(item, ['order', 'market', 'name'])
         const paymentType = paymentTypeFormat(_.get(item, ['order', 'paymentType']))
 
