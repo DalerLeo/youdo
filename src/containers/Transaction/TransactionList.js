@@ -54,12 +54,8 @@ import {
     transactionCategoryPopopDataAction,
     transactionDetalizationAction
 } from '../../actions/transaction'
-import {
-    cashboxListFetchAction
-} from '../../actions/cashbox'
-import {
-    optionsListFetchAction
-} from '../../actions/expensiveCategory'
+import {cashboxListFetchAction} from '../../actions/cashbox'
+import {optionsListFetchAction} from '../../actions/expensiveCategory'
 import {openSnackbarAction} from '../../actions/snackbar'
 import {openErrorAction} from '../../actions/error'
 import getConfig from '../../helpers/getConfig'
@@ -981,7 +977,6 @@ const TransactionList = enhance((props) => {
         handleClickCashbox: props.handleClickCashbox,
         cashboxId: _.toInteger(cashboxId),
         listLoading
-
     }
 
     const detailData = {

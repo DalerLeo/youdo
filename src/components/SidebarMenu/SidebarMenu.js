@@ -137,12 +137,13 @@ const SideBarMenu = enhance((props) => {
         })
         .value()
     const currentMenuURL = _.get(parent, 'url')
-    const rippleColor = 'rgba(255, 255, 255, 0.2)'
+    const rippleColor = 'rgba(255, 255, 255, 0.05)'
     const getMenuIcon = (url, query, name, icon) => {
         return (
             <Link to={{pathname: url, query: query}}>
                 <ToolTip position="right" text={name}>
                     <FlatButton
+                        hoverColor={url === currentMenuURL ? 'transparent' : rippleColor}
                         rippleColor={url === currentMenuURL ? 'transparent' : rippleColor}
                         className={url === currentMenuURL ? classes.activeMenu : ''}
                         style={style.style}>
@@ -340,7 +341,9 @@ export default injectSheet({
     },
 
     activeMenu: {
-        background: 'rgba(255, 255, 255, 0.2) !important',
+        boxShadow: 'inset 0 0 10px rgba(0, 0, 0, 0.35)',
+        background: '#24262b !important',
+        borderRadius: '0 !important',
         opacity: '1 !important'
     },
 
