@@ -127,25 +127,27 @@ const SideBarMenu = enhance((props) => {
         pathname
     } = props
 
+    const trimmedPathname = _.trimStart(pathname, '/')
     const menu = getMenus(permissions, isAdmin)
     const parent = _
         .chain(menu)
         .find((item) => {
             return (_.findIndex(item.childs, (ch) => {
-                return ch.url === pathname
+                const trimmedURL = _.trimStart(_.get(ch, 'url'), '/')
+                return _.includes(trimmedPathname, trimmedURL)
             }) > NOT_FOUND)
         })
         .value()
-    const currentMenuURL = _.get(parent, 'url')
+    const currentMenuURL = _.trimStart(_.get(parent, 'url'), '/')
     const rippleColor = 'rgba(255, 255, 255, 0.05)'
     const getMenuIcon = (url, query, name, icon) => {
         return (
             <Link to={{pathname: url, query: query}}>
                 <ToolTip position="right" text={name}>
                     <FlatButton
-                        hoverColor={url === currentMenuURL ? 'transparent' : rippleColor}
-                        rippleColor={url === currentMenuURL ? 'transparent' : rippleColor}
-                        className={url === currentMenuURL ? classes.activeMenu : ''}
+                        hoverColor={_.trimStart(url, '/') === currentMenuURL ? 'transparent' : rippleColor}
+                        rippleColor={_.trimStart(url, '/') === currentMenuURL ? 'transparent' : rippleColor}
+                        className={_.trimStart(url, '/') === currentMenuURL ? classes.activeMenu : ''}
                         style={style.style}>
                         {icon}
                     </FlatButton>
