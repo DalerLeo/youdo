@@ -88,7 +88,11 @@ export const MenuItems = [
                     5: ROUTES.STOCK_OUT_HISTORY_LIST_URL
                 },
                 permission: 'frontend_in_out'
-            }
+            },
+            {url: ROUTES.STOCK_RECEIVE_HISTORY_LIST_URL, permission: 'frontend_in_out'},
+            {url: ROUTES.STOCK_TRANSFER_LIST_URL, permission: 'frontend_in_out'},
+            {url: ROUTES.STOCK_TRANSFER_HISTORY_LIST_URL, permission: 'frontend_in_out'},
+            {url: ROUTES.STOCK_OUT_HISTORY_LIST_URL, permission: 'frontend_in_out'}
         ]
     },
     {
@@ -130,15 +134,19 @@ export const MenuItems = [
                     3: ROUTES.MANUFACTURE_EQUIPMENT_LIST_URL,
                     4: ROUTES.MANUFACTURE_SHIPMENT_LIST_URL
                 }
-
-            }
+            },
+            {url: ROUTES.MANUFACTURE_PERSON_LIST_URL, permission: 'frontend_manufacture'},
+            {url: ROUTES.MANUFACTURE_EQUIPMENT_LIST_URL, permission: 'frontend_manufacture'},
+            {url: ROUTES.MANUFACTURE_SHIPMENT_LIST_URL, permission: 'frontend_manufacture'}
         ]
     },
     {
         name: t('Статистика'),
         icon: (<Statistics/>),
         section: 'Statistics',
-        url: ROUTES.STATISTICS_LIST_URL,
+        url: ROUTES.STATISTICS_SALES_URL,
+        dynamic: true,
+        dynamicOnlyURL: true,
         childs: [
             {section: STATS_SALES, name: t('Оборот'), url: ROUTES.STATISTICS_SALES_URL, permission: 'frontend_stat_sales'},
             {section: STATS_SALES, name: t('Агенты'), url: ROUTES.STATISTICS_AGENT_URL, permission: 'frontend_stat_agents', query: {pageSize: 25}},
@@ -242,6 +250,7 @@ export const getNeedMenu = (userPermissions) => {
                 icon: _.get(parent, 'icon'),
                 section: _.get(parent, 'section') || '',
                 dynamic: _.get(parent, 'dynamic'),
+                dynamicOnlyURL: _.get(parent, 'dynamicOnlyURL'),
                 bottom: _.get(parent, 'name') === 'Настройки',
                 childs: _.filter(_.get(parent, 'childs'), (ch) => {
                     return _.includes(userPermissions, ch.permission)
