@@ -36,12 +36,13 @@ const enhance = compose(
 )
 
 const CustomBadge = enhance((props) => {
-    const {classBadge, style, handleOpen, count} = props
+    const {classBadge, style, handleOpen, count, rippleColor} = props
     if (count <= ZERO) {
         return (
             <ToolTip position="right" text={t('Уведомления')}>
                 <FlatButton
-                    rippleColor="#fff"
+                    rippleColor={rippleColor}
+                    hoverColor={rippleColor}
                     style={style}
                     onTouchTap={() => {
                         handleOpen(true)

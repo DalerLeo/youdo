@@ -16,6 +16,7 @@ import {
     ON_TIME,
     OFF_TIME
 } from '../../constants/permissionTime'
+import t from '../../helpers/translate'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
