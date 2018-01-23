@@ -199,8 +199,8 @@ const enhance = compose(
         },
 
         handleCloseUpdateDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[PRODUCT_UPDATE_DIALOG_OPEN]: false})})
+            const {filter} = props
+            hashHistory.push({pathname: ROUTER.PRODUCT_LIST_URL, query: filter.getParams({[PRODUCT_UPDATE_DIALOG_OPEN]: false})})
         },
 
         handleSubmitUpdateDialog: props => () => {
@@ -212,7 +212,7 @@ const enhance = compose(
                     return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
-                    hashHistory.push(filter.createURL({[PRODUCT_UPDATE_DIALOG_OPEN]: false}))
+                    hashHistory.push({pathname: ROUTER.PRODUCT_LIST_URL, query: filter.getParams({[PRODUCT_UPDATE_DIALOG_OPEN]: false})})
                     dispatch(productListFetchAction(filter))
                 })
                 .catch((error) => {
