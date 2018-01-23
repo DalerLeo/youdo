@@ -188,8 +188,8 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const cashbox = _.get(props, ['createForm', 'values', 'cashbox', 'value'])
-        const nextCashbox = _.get(nextProps, ['createForm', 'values', 'cashbox', 'value'])
+        const cashbox = _.get(props, ['createForm', 'values', 'cashbox', 'value']) || _.get(props, ['location', 'query', 'cashboxId'])
+        const nextCashbox = _.get(nextProps, ['createForm', 'values', 'cashbox', 'value']) || _.get(nextProps, ['location', 'query', 'cashboxId'])
         const currencyRate = _.get(props, ['createForm', 'values', 'currencyRate'])
         const nextCurrencyRate = _.get(nextProps, ['createForm', 'values', 'currencyRate'])
         const date = _.get(props, ['createForm', 'values', 'date'])
@@ -225,26 +225,30 @@ const enhance = compose(
         const currencyRate = _.get(props, ['updateForm', 'values', 'currencyRate'])
         const nextCurrencyRate = _.get(nextProps, ['updateForm', 'values', 'currencyRate'])
         return currencyRate !== nextCurrencyRate && nextCurrencyRate
-    }, ({dispatch, date, updateForm, location}) => {
+    }, ({dispatch, date, updateForm, location: {query}}) => {
         const currencyRate = _.get(updateForm, ['values', 'currencyRate'])
         // OR CONDITION is for SuperUser -> handleOpenSuperUserDialog to get SPECIFIC ORDER CURRENCY RATE
-        const order = _.get(updateForm, ['values', 'order', 'value']) || _.toInteger(_.get(location, ['query', OPEN_ORDER]))
+        const order = _.get(updateForm, ['values', 'order', 'value']) || _.toInteger(_.get(query, OPEN_ORDER))
 
         const currency = _.get(updateForm, ['values', 'currency', 'value'])
         const form = 'ClientBalanceUpdateForm'
-        switch (currencyRate) {
-            case 'order': return dispatch(transactionConvertAction(date, currency, order))
-                .then((data) => {
-                    const customRate = _.get(data, ['value', 'amount'])
-                    dispatch(change(form, 'custom_rate', customRate))
-                })
-            case 'custom': return dispatch(change(form, 'custom_rate', ''))
-            default: return dispatch(transactionConvertAction(date, currency))
-                .then((data) => {
-                    const customRate = _.get(data, ['value', 'amount'])
-                    dispatch(change(form, 'custom_rate', customRate))
-                })
+        const openDialog = _.toInteger(_.get(query, TRANSACTION_EDIT_PRICE_OPEN)) > ZERO
+        if (openDialog) {
+            switch (currencyRate) {
+                case 'order': return dispatch(transactionConvertAction(date, currency, order))
+                    .then((data) => {
+                        const customRate = _.get(data, ['value', 'amount'])
+                        dispatch(change(form, 'custom_rate', customRate))
+                    })
+                case 'custom': return dispatch(change(form, 'custom_rate', ''))
+                default: return dispatch(transactionConvertAction(date, currency))
+                    .then((data) => {
+                        const customRate = _.get(data, ['value', 'amount'])
+                        dispatch(change(form, 'custom_rate', customRate))
+                    })
+            }
         }
+        return null
     }),
 
     withPropsOnChange((props, nextProps) => {
