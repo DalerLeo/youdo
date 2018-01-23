@@ -140,6 +140,9 @@ const paymentIconStyle = {
     marginLeft: 5
 }
 
+const ONE = 1
+const TWO = 2
+const THREE = 3
 const PendingPaymentsGridList = enhance((props) => {
     const {
         classes,
@@ -182,9 +185,9 @@ const PendingPaymentsGridList = enhance((props) => {
         return (
             <Row className={classes.listRow} key={id} onClick={() => { updateDialog.handleOpenUpdateDialog(id) }}>
                 <Col xs={1}>{id}</Col>
-                <Col xs={2}>{clientName}</Col>
+                <Col xs={hasMarket ? TWO : THREE}>{clientName}</Col>
                 {hasMarket && <Col xs={2}>{market}</Col>}
-                <Col xs={1}>{createdDate}</Col>
+                <Col xs={hasMarket ? ONE : TWO}>{createdDate}</Col>
                 <Col xs={2}>{division}</Col>
                 <Col xs={2} style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-end'}}>{totalPrice} {paymentTypeIcon}</Col>
                 <Col xs={2} style={{textAlign: 'right'}}>{totalBalance}</Col>
