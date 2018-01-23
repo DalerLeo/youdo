@@ -60,7 +60,8 @@ export const updateSerializer = (data, location, detail) => {
             phone: phone.phone,
             id: phone.id
         }
-    }), item => item.id && item.phone)
+    }), item => item.phone)
+
     const isActive = status === STATUS_ACTIVE
 
     return {
