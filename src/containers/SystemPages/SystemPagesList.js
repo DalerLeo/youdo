@@ -197,7 +197,26 @@ const SystemPagesList = enhance((props) => {
                 return {}
             }
             return {
-                translations: _.get(detail, 'translations')
+                translations: {
+                    ru: {
+                        title: _.get(detail, 'title'),
+                        description: _.get(detail, 'description'),
+                        body: _.get(detail, 'body'),
+                        'telegraph_link': _.get(detail, 'telegraphLink')
+                    },
+                    en: {
+                        title: _.get(detail, 'title'),
+                        description: _.get(detail, 'description'),
+                        body: _.get(detail, 'body'),
+                        'telegraph_link': _.get(detail, 'telegraphLink')
+                    },
+                    uz: {
+                        title: _.get(detail, 'title'),
+                        description: _.get(detail, 'description'),
+                        body: _.get(detail, 'body'),
+                        'telegraph_link': _.get(detail, 'telegraphLink')
+                    }
+                }
             }
         })(),
         updateLoading: detailLoading || updateLoading,

@@ -134,6 +134,15 @@ const enhance = compose(
                 margin: '0 auto',
                 width: '100%'
             }
+        },
+        link: {
+            display: 'flex',
+            alignItems: 'center',
+            '& > a': {
+                width: '100px',
+                textAlign: 'right',
+                marginLeft: '20px'
+            }
         }
     }),
     reduxForm({
@@ -185,6 +194,16 @@ const SystemPagesCreateDialog = enhance((props) => {
                                         className={classes.inputFieldCustom}
                                         label="Описание"
                                         fullWidth={true}/>
+                                    <div className={classes.link}>
+                                        <Field
+                                            name="[translations][ru][telegraph_link]"
+                                            component={TextField}
+                                            className={classes.inputFieldCustom}
+                                            label="Ссылка на статью"
+                                            hintText="http://telegra.ph/"
+                                            fullWidth={true}/>
+                                        <a target="_blank" href={'http://telegra.ph'} >+ добавить</a>
+                                    </div>
                                 </Tab>
                                 <Tab label={'Ўз'} disableTouchRipple={true} value="uz">
                                     <Field
@@ -199,6 +218,16 @@ const SystemPagesCreateDialog = enhance((props) => {
                                         className={classes.inputFieldCustom}
                                         label="Tavsif"
                                         fullWidth={true}/>
+                                    <div className={classes.link}>
+                                        <Field
+                                            name="[translations][uz][telegraph_link]"
+                                            component={TextField}
+                                            className={classes.inputFieldCustom}
+                                            label="Maqolaga havola"
+                                            hintText="http://telegra.ph/"
+                                            fullWidth={true}/>
+                                        <a target="_blank" href={'http://telegra.ph'} >+ qo'shish</a>
+                                    </div>
                                 </Tab>
                                 <Tab label={'En'} disableTouchRipple={true} value="en">
                                     <Field
@@ -213,6 +242,16 @@ const SystemPagesCreateDialog = enhance((props) => {
                                         className={classes.inputFieldCustom}
                                         label="Description"
                                         fullWidth={true}/>
+                                    <div className={classes.link}>
+                                        <Field
+                                            name="[translations][en][telegraph_link]"
+                                            component={TextField}
+                                            className={classes.inputFieldCustom}
+                                            label="Telegraph link"
+                                            hintText="http://telegra.ph/"
+                                            fullWidth={true}/>
+                                        <a target="_blank" href={'http://telegra.ph'} >+ add</a>
+                                    </div>
                                 </Tab>
                             </Tabs>
                             <div className={classes.textArea}>
