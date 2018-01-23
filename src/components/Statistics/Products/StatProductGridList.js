@@ -20,6 +20,7 @@ import {reduxForm, Field} from 'redux-form'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import Search from 'material-ui/svg-icons/action/search'
+import ExpandList from 'material-ui/svg-icons/action/list'
 import ArrowUpIcon from 'material-ui/svg-icons/navigation/arrow-upward'
 import ArrowDownIcon from 'material-ui/svg-icons/navigation/arrow-downward'
 import {StatisticsFilterExcel} from '../../Statistics'
@@ -192,6 +193,14 @@ const enhance = compose(
                     verticalAlign: 'middle',
                     padding: '0 30px'
                 }
+            }
+        },
+        leftTableList: {
+            '& > span': {
+                display: 'flex !important',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                height: '100%'
             }
         },
         filters: {
@@ -458,6 +467,7 @@ const StatProductGridList = enhance((props) => {
         return (
             <div
                 key={index}
+                className={classes.leftTableList}
                 onClick={isProductType && !currentParent
                     ? () => {
                         updateCurrentParent(name)
@@ -467,7 +477,7 @@ const StatProductGridList = enhance((props) => {
                 style={index === currentRow ? styleOnHover : {}}
                 onMouseEnter={() => { updateRow(index) }}
                 onMouseLeave={() => { updateRow(null) }}>
-                <span>{name}</span>
+                <span>{name} {isProductType && !currentParent && <ExpandList color={'#12aaeb'}/>}</span>
             </div>
         )
     })
