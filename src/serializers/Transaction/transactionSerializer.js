@@ -158,7 +158,7 @@ export const convertSerializer = (date, currency, order) => {
         'from_currency': fromCurrency,
         'to_currency': currency,
         'order': order,
-        'amount': '1',
+        'amount': '1'
 //        'date': moment(date).format('YYYY-MM-DD HH:mm:ss')
     }
 }
