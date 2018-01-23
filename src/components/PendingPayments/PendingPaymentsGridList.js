@@ -147,7 +147,8 @@ const PendingPaymentsGridList = enhance((props) => {
         updateDialog,
         filterDialog,
         listData,
-        detailData
+        detailData,
+        cashboxData
     } = props
     const hasMarket = toBoolean(getConfig('MARKETS_MODULE'))
     const pendingPaymentsFilterDialog = (
@@ -248,12 +249,13 @@ const PendingPaymentsGridList = enhance((props) => {
                 isUpdate={true}
                 noCashbox={true}
                 hideRedundant={true}
-                detailCurrency={detailCurrency}
+                cashboxData={cashboxData}
                 incomeCategoryKey={'order'}
                 additionalData={additionalData}
                 open={updateDialog.openUpdateDialog}
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
+                loading={updateDialog.loading}
                 initialValues={initialValues}
             />
         </Container>
