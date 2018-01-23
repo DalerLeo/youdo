@@ -255,7 +255,7 @@ const StatisticsFilterExcel = enhance((props) => {
                             }}/>
                     </IconMenu>
                     : <FlatButton
-                        label={'Excel'}
+                        label={t('Скачать')}
                         style={flatButtonStyle.style}
                         onClick={handleGetDocument}
                         backgroundColor={flatButtonStyle.backgroundColorExcel}

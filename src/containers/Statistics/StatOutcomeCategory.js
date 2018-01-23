@@ -6,12 +6,14 @@ import {connect} from 'react-redux'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import filterHelper from '../../helpers/filter'
+import getDocuments from '../../helpers/getDocument'
+import * as serializers from '../../serializers/Statistics/statOutcomeCategorySerializer'
+import * as API from '../../constants/api'
 import {StatOutcomeCategoryGridList} from '../../components/Statistics'
 import {STAT_OUTCOME_CATEGORY_FILTER_KEY} from '../../components/Statistics/Outcome/StatOutcomeCategoryGridList'
 import {
     statOutcomeCategoryListFetchAction,
-    getTransactionData,
-    getDocumentAction
+    getTransactionData
 } from '../../actions/statOutcomeCategory'
 
 const OPEN_TRANSACTION_DIALOG = 'openTransactionDialog'
@@ -81,8 +83,9 @@ const enhance = compose(
             })
         },
         handleGetDocument: props => () => {
-            const {dispatch, filter} = props
-            return dispatch(getDocumentAction(filter))
+            const {filter} = props
+            const params = serializers.listFilterSerializer(filter.getParams())
+            getDocuments(API.STAT_OUTCOME_GET_DOCUMENT, params)
         },
         handleOpenTransactionDialog: props => (id) => {
             const {filter, location: {pathname}} = props

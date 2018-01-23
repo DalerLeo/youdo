@@ -388,7 +388,7 @@ export const STAT_INCOME_LIST = 'finance/transaction/'
 
 export const STAT_OUTCOME_DATA = 'stats/transactions/'
 export const STAT_OUTCOME_LIST = 'finance/transaction/'
-export const STAT_OUTCOME_GET_DOCUMENT = 'stats/transactions/export'
+export const STAT_OUTCOME_GET_DOCUMENT = '/stats/transactions/export'
 
 export const STAT_SALES_DATA = '/stats/orders/'
 export const STAT_SALES_STATS = '/stats/orders/statistics'
@@ -414,7 +414,7 @@ export const STATISTICS_CASHBOX_ITEM = `/${CASHBOX}/%d/`
 
 export const STAT_EXPENDITURE_ON_STAFF_LIST = '/stats/staff_expenses/'
 export const STAT_EXPENDITURE_ON_STAFF_ITEM = '/sales/order/'
-export const STAT_EXPENDITURE_ON_STAFFGET_DOCUMENT = 'stats/agents/export/'
+export const STAT_EXPENDITURE_ON_STAFFGET_DOCUMENT = '/stats/agents/export/'
 
 export const CONTENT_TYPE_SEARCH = 'stock/barcode_history/types/'
 export const STOCK_RECEIVE = 'stock/supply'
@@ -497,7 +497,7 @@ export const STAT_PRODUCT_MOVE_GET_DOCUMENT = '/stats/stock/products/export/'
 export const STAT_DEBTORS_DATA = 'stats/debtors_stats/'
 export const STAT_DEBTORS_LIST = 'stats/debtors/'
 export const STAT_DEBTORS_ITEM = 'sales/order/'
-export const STAT_DEBTORS_GET_DOCUMENT = 'stats/debtors/export'
+export const STAT_DEBTORS_GET_DOCUMENT = '/stats/debtors/export'
 
 export const STAT_REPORT_LIST = 'stats/general/'
 export const STAT_REPORT_ITEM = 'sales/order/'
