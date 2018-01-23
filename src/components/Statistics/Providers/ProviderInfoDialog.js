@@ -107,7 +107,7 @@ const enhance = compose(
             }
         },
         content: {
-            maxHeight: '445px',
+            transition: 'all 1s cubic-bezier(0.4, 0, 1, 1)',
             overflowY: 'auto',
             overflowX: 'hidden',
             width: '100%',
@@ -296,7 +296,7 @@ const ProviderInfoDialog = enhance((props) => {
             open={open}
             className={classes.dialog}
             onRequestClose={onClose}
-            contentStyle={infoLoading ? {width: '500px'} : {width: '1000px', maxWidth: 'unset'}}
+            contentStyle={infoLoading || loading ? {width: '700px'} : {width: '1000px', maxWidth: 'unset'}}
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
@@ -379,7 +379,7 @@ const ProviderInfoDialog = enhance((props) => {
                             label={'Тип оплаты'}/>
                         <Pagination filter={filterItem}/>
                     </div>
-                    <div className={classes.content}>
+                    <div className={classes.content} style={{maxHeight: loading ? '100px' : '445px', minHeight: loading ? '300px' : '100px'}} >
                         <Row>
                             <div style={{width: '20%'}}>{t('Дата')}</div>
                             <div style={{width: '20%'}}>{t('Кто')}</div>
