@@ -234,11 +234,12 @@ const ShopCreateDialog = enhance((props) => {
         updateMapDialog,
         mapLocation,
         typeParent,
-        marketType
+        marketType,
+        initialValues
     } = props
     const onSubmit = handleSubmit(() => props.onSubmit(openClient).catch(validate))
-    const lat = _.get(mapLocation, 'lat')
-    const lng = _.get(mapLocation, 'lng')
+    const lat = _.get(mapLocation, 'lat') || _.get(initialValues, ['latLng', 'lat'])
+    const lng = _.get(mapLocation, 'lng') || _.get(initialValues, ['latLng', 'lng'])
 
     return (
         <Dialog
