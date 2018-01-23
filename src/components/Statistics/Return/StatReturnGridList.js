@@ -252,7 +252,7 @@ const StatReturnGridList = enhance((props) => {
         const status = _.toInteger(_.get(item, 'status'))
 
         return (
-            <Row className={classes.listWrapper} style={{cursor: 'pointer'}} key={id} onTouchTap={() => {
+            <Row className={classes.listWrapper + ' dottedList'} style={{cursor: 'pointer'}} key={id} onTouchTap={() => {
                 statReturnDialog.handleOpenStatReturnDialog(id)
             }}>
                 <Col xs={1}>{id}</Col>

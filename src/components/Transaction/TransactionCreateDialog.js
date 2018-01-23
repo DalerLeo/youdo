@@ -58,7 +58,7 @@ const enhance = compose(
             left: '0',
             alignItems: 'center',
             zIndex: '999',
-            textAlign: 'center',
+            justifyContent: 'center',
             display: ({loading}) => loading ? 'flex' : 'none'
         },
         dialog: {
@@ -287,7 +287,6 @@ const TransactionCreateDialog = enhance((props) => {
         expenseCategoryKey,
         incomeCategoryKey,
         additionalData,
-        detailCurrency,
         hideRedundant
     } = props
 
@@ -310,7 +309,7 @@ const TransactionCreateDialog = enhance((props) => {
     const onSubmit = handleSubmit(() => props.onSubmit().catch(props.validate))
     const cashboxId = noCashbox ? chosenCashbox : _.get(cashboxData, 'cashboxId')
     const cashbox = _.find(_.get(cashboxData, 'data'), {'id': cashboxId})
-    const currency = _.get(cashbox, ['currency', 'name']) || detailCurrency
+    const currency = _.get(cashbox, ['currency', 'name'])
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const divisionStatus = getConfig('DIVISIONS')
     const convert = convertCurrency(amount, rate)
@@ -335,9 +334,12 @@ const TransactionCreateDialog = enhance((props) => {
             onRequestClose={onClose}
             className={classes.dialog}
             contentStyle={loading
-                ? {minWidth: '300px'}
+                ? {width: '500px'}
                 : (isSalary || showDetalization) ? {width: '1000px', maxWidth: 'none'} : {width: '500px'}}
             bodyClassName={classes.popUp}>
+            <div className={classes.loader}>
+                <Loader size={0.75}/>
+            </div>
             <div className={classes.titleContent}>
                 <span>{isExpense ? t('Расход') : t('Приход')}</span>
                 <IconButton onTouchTap={onClose}>
@@ -348,9 +350,6 @@ const TransactionCreateDialog = enhance((props) => {
             <div className={classes.bodyContent}>
                 <form className={classes.form}>
                     <div className={classes.inContent} style={{minHeight: 'unset', display: 'block'}}>
-                        <div className={classes.loader}>
-                            <Loader size={0.75}/>
-                        </div>
                         {noCashbox
                             ? <div style={{marginTop: '10px'}}>
                                 <Field
@@ -370,14 +369,13 @@ const TransactionCreateDialog = enhance((props) => {
                             disabled={pendingsDisableDivision}
                             className={classes.inputFieldCustom}
                             fullWidth={true}/>}
-                        {!hideRedundant &&
                         <Field
                             name="date"
                             className={classes.inputDateCustom}
                             component={DateField}
                             fullWidth={true}
                             container="inline"
-                            label={t('Дата создания')}/>}
+                            label={t('Дата создания')}/>
 
                         {isExpense
                             ? <div className={classes.field}>

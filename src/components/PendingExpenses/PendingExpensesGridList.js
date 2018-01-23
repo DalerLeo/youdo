@@ -112,7 +112,8 @@ const PendingExpensesGridList = enhance((props) => {
         updateDialog,
         filterDialog,
         listData,
-        detailId
+        detailId,
+        cashboxData
     } = props
 
     const selectedDetails = _.find(_.get(listData, 'data'), {'id': detailId})
@@ -224,8 +225,8 @@ const PendingExpensesGridList = enhance((props) => {
                 isExpense={true}
                 noCashbox={true}
                 hideRedundant={true}
+                cashboxData={cashboxData}
                 expenseCategoryKey={'supply-supply_expanse'}
-                detailCurrency={detailCurrency}
                 additionalData={additionalData}
                 open={updateDialog.openUpdateDialog}
                 onClose={updateDialog.handleCloseUpdateDialog}
