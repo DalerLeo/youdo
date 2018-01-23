@@ -118,7 +118,14 @@ const enhance = compose(
             alignItems: 'center',
             borderRadius: '2px',
             backgroundColor: '#e9ecef',
-            position: 'relative'
+            position: 'relative',
+            '& > div:last-child': {
+                transition: 'opacity 300ms ease',
+                opacity: '0'
+            },
+            '&:hover > div:last-child': {
+                opacity: '1'
+            }
         },
         deletePers: {
             position: 'absolute',

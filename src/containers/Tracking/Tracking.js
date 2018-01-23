@@ -1,6 +1,6 @@
 import React from 'react'
 import _ from 'lodash'
-import {compose, withPropsOnChange, withHandlers} from 'recompose'
+import {compose, withPropsOnChange, withHandlers, withState} from 'recompose'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
@@ -84,6 +84,7 @@ const enhance = compose(
         dispatch(trackingListFetchAction(filter))
     }),
 
+    withState('openAgentsInfo', 'toggleAgentsInfo', true),
     withPropsOnChange((props, nextProps) => {
         const prevAgent = _.toInteger(_.get(props, ['params', 'agentId']))
         const nextAgent = _.toInteger(_.get(nextProps, ['params', 'agentId']))
@@ -157,7 +158,8 @@ const enhance = compose(
         },
 
         handleOpenShopDetails: props => (id) => {
-            const {filter, location: {pathname}} = props
+            const {filter, location: {pathname}, toggleAgentsInfo} = props
+            toggleAgentsInfo(true)
             hashHistory.push({pathname, query: filter.getParams({[OPEN_SHOP_DETAILS]: id})})
         },
 
@@ -216,7 +218,9 @@ const Tracking = enhance((props) => {
         marketDataLoading,
         selectedDate,
         layout,
-        hasMarket
+        hasMarket,
+        openAgentsInfo,
+        toggleAgentsInfo
     } = props
 
     const openDetail = !_.isEmpty(_.get(params, 'agentId'))
@@ -293,6 +297,8 @@ const Tracking = enhance((props) => {
                 isOpenTrack={isOpenTrack}
                 isOpenMarkets={isOpenMarkets}
                 hasMarket={hasMarket}
+                openAgentsInfo={openAgentsInfo}
+                toggleAgentsInfo={toggleAgentsInfo}
             />
         </Layout>
     )

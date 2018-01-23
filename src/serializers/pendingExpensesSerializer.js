@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import moment from 'moment'
 import {orderingSnakeCase} from '../helpers/serializer'
 import numberWithoutSpaces from '../helpers/numberWithoutSpaces'
 
@@ -35,6 +36,7 @@ export const createSerializer = (data, detail) => {
 }
 
 export const createExpenseSerializer = (data) => {
+    const date = moment(_.get(data, 'date')).format('YYYY-MM-DD HH:mm:00')
     const amount = _.toNumber(numberWithoutSpaces(_.get(data, 'amount'))) * MINUS_ONE
     const comment = _.get(data, 'comment')
     const cashbox = _.get(data, ['cashbox', 'value'])
@@ -52,6 +54,7 @@ export const createExpenseSerializer = (data) => {
         }
     }
     return {
+        date,
         amount,
         cashbox,
         division,

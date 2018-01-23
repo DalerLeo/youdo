@@ -31,7 +31,8 @@ import {
     TRANSACTION_EDIT_PRICE_OPEN,
     OPEN_USER,
     OPEN_DIVISION,
-    OPEN_CURRENCY
+    OPEN_CURRENCY,
+    OPEN_ORDER
 } from '../../components/Transaction'
 import {
     transactionCreateExpenseAction,
@@ -53,12 +54,8 @@ import {
     transactionCategoryPopopDataAction,
     transactionDetalizationAction
 } from '../../actions/transaction'
-import {
-    cashboxListFetchAction
-} from '../../actions/cashbox'
-import {
-    optionsListFetchAction
-} from '../../actions/expensiveCategory'
+import {cashboxListFetchAction} from '../../actions/cashbox'
+import {optionsListFetchAction} from '../../actions/expensiveCategory'
 import {openSnackbarAction} from '../../actions/snackbar'
 import {openErrorAction} from '../../actions/error'
 import getConfig from '../../helpers/getConfig'
@@ -191,8 +188,8 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const cashbox = _.get(props, ['createForm', 'values', 'cashbox', 'value'])
-        const nextCashbox = _.get(nextProps, ['createForm', 'values', 'cashbox', 'value'])
+        const cashbox = _.get(props, ['createForm', 'values', 'cashbox', 'value']) || _.get(props, ['location', 'query', 'cashboxId'])
+        const nextCashbox = _.get(nextProps, ['createForm', 'values', 'cashbox', 'value']) || _.get(nextProps, ['location', 'query', 'cashboxId'])
         const currencyRate = _.get(props, ['createForm', 'values', 'currencyRate'])
         const nextCurrencyRate = _.get(nextProps, ['createForm', 'values', 'currencyRate'])
         const date = _.get(props, ['createForm', 'values', 'date'])
@@ -228,24 +225,30 @@ const enhance = compose(
         const currencyRate = _.get(props, ['updateForm', 'values', 'currencyRate'])
         const nextCurrencyRate = _.get(nextProps, ['updateForm', 'values', 'currencyRate'])
         return currencyRate !== nextCurrencyRate && nextCurrencyRate
-    }, ({dispatch, date, updateForm}) => {
+    }, ({dispatch, date, updateForm, location: {query}}) => {
         const currencyRate = _.get(updateForm, ['values', 'currencyRate'])
-        const order = _.get(updateForm, ['values', 'order', 'value'])
+        // OR CONDITION is for SuperUser -> handleOpenSuperUserDialog to get SPECIFIC ORDER CURRENCY RATE
+        const order = _.get(updateForm, ['values', 'order', 'value']) || _.toInteger(_.get(query, OPEN_ORDER))
+
         const currency = _.get(updateForm, ['values', 'currency', 'value'])
         const form = 'ClientBalanceUpdateForm'
-        switch (currencyRate) {
-            case 'order': return dispatch(transactionConvertAction(date, currency, order))
-                .then((data) => {
-                    const customRate = _.get(data, ['value', 'amount'])
-                    dispatch(change(form, 'custom_rate', customRate))
-                })
-            case 'custom': return dispatch(change(form, 'custom_rate', ''))
-            default: return dispatch(transactionConvertAction(date, currency))
-                .then((data) => {
-                    const customRate = _.get(data, ['value', 'amount'])
-                    dispatch(change(form, 'custom_rate', customRate))
-                })
+        const openDialog = _.toInteger(_.get(query, TRANSACTION_EDIT_PRICE_OPEN)) > ZERO
+        if (openDialog) {
+            switch (currencyRate) {
+                case 'order': return dispatch(transactionConvertAction(date, currency, order))
+                    .then((data) => {
+                        const customRate = _.get(data, ['value', 'amount'])
+                        dispatch(change(form, 'custom_rate', customRate))
+                    })
+                case 'custom': return dispatch(change(form, 'custom_rate', ''))
+                default: return dispatch(transactionConvertAction(date, currency))
+                    .then((data) => {
+                        const customRate = _.get(data, ['value', 'amount'])
+                        dispatch(change(form, 'custom_rate', customRate))
+                    })
+            }
         }
+        return null
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -278,7 +281,8 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         const except = {
             updateTransaction: null,
-            openAcceptTransactionDialog: null
+            openAcceptTransactionDialog: null,
+            openOrder: null
         }
         const prevCashDetails = (_.get(props, ['location', 'query', TRANSACTION_ACCEPT_CASH_DETAIL_OPEN]))
         const nextCashDetails = (_.get(nextProps, ['location', 'query', TRANSACTION_ACCEPT_CASH_DETAIL_OPEN]))
@@ -293,7 +297,8 @@ const enhance = compose(
             openStaffExpenseDialog: null,
             openDetalizationDialog: null,
             updateTransaction: null,
-            openDivision: null
+            openDivision: null,
+            openOrder: null
         }
         return (props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except) &&
             _.isNil(nextProps.query.dPage || nextProps.query.dPageSize || props.query.dPage || props.query.dPageSize)) ||
@@ -638,7 +643,7 @@ const enhance = compose(
                 })
         },
         handleOpenAcceptCashDetail: props => (user, currency, division) => {
-            const {filter, location: {pathname}, dispatch, filterItem} = props
+            const {filter, location: {pathname}} = props
             hashHistory.push({
                 pathname,
                 query: filter.getParams({
@@ -648,7 +653,7 @@ const enhance = compose(
                     [OPEN_DIVISION]: division
                 })
             })
-            dispatch(pendingTransactionFetchAction(filterItem))
+            // Dispatch for this action is in WithPropsOnChange -->> dispatch(pendingTransactionFetchAction(filterItem))
         },
         handleCloseAcceptCashDetail: props => () => {
             const {filter, location: {pathname}} = props
@@ -662,16 +667,16 @@ const enhance = compose(
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_INFO_OPEN]: id})})
         },
-        handleOpenSuperUserDialog: props => (id) => {
+        handleOpenSuperUserDialog: props => (id, orderId) => {
             const {filter, location: {pathname}} = props
             hashHistory.push({
                 pathname,
-                query: filter.getParams({[TRANSACTION_EDIT_PRICE_OPEN]: id})
+                query: filter.getParams({[TRANSACTION_EDIT_PRICE_OPEN]: id, [OPEN_ORDER]: orderId})
             })
         },
         handleCloseSuperUserDialog: props => () => {
             const {dispatch, location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_EDIT_PRICE_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_EDIT_PRICE_OPEN]: false, [OPEN_ORDER]: null})})
             dispatch(reset('ClientBalanceCreateForm'))
         },
         handleSubmitSuperUserDialog: props => (id) => {
@@ -684,7 +689,7 @@ const enhance = compose(
                 })
                 .then(() => {
                     hashHistory.push({
-                        pathname, query: filter.getParams({[TRANSACTION_EDIT_PRICE_OPEN]: false})
+                        pathname, query: filter.getParams({[TRANSACTION_EDIT_PRICE_OPEN]: false, [OPEN_ORDER]: null})
                     })
                 })
                 .then(() => {
@@ -976,7 +981,6 @@ const TransactionList = enhance((props) => {
         handleClickCashbox: props.handleClickCashbox,
         cashboxId: _.toInteger(cashboxId),
         listLoading
-
     }
 
     const detailData = {

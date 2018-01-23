@@ -188,7 +188,7 @@ const PriceGridList = enhance((props) => {
     const excelButton = (
         <div className={classes.excelButton}>
             <a className={classes.excel} onClick={getDocument}>
-                <Excel color="#fff"/> <span>Excel</span>
+                <Excel color="#fff"/> <span>{t('Скачать')}</span>
             </a>
         </div>
     )

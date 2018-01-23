@@ -37,8 +37,8 @@ export const statProductSumDatFetchAction = (filter) => {
     }
 }
 
-export const statProductTypeListFetchAction = (filter) => {
-    const params = serializers.listFilterSerializer(filter.getParams())
+export const statProductTypeListFetchAction = (filter, parent) => {
+    const params = serializers.listFilterSerializer(filter.getParams(), parent)
     const payload = axios()
         .get((API.STAT_PRODUCT_TYPE_LIST), {params})
         .then((response) => {
@@ -50,22 +50,6 @@ export const statProductTypeListFetchAction = (filter) => {
 
     return {
         type: actionTypes.STAT_PRODUCT_TYPE_LIST,
-        payload
-    }
-}
-export const statProductTypeSumFetchAction = (filter) => {
-    const params = serializers.listFilterSerializer(filter.getParams())
-    const payload = axios()
-        .get((API.STAT_PRODUCT_TYPE_SUM), {params})
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.STAT_PRODUCT_TYPE_SUM,
         payload
     }
 }

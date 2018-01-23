@@ -11,6 +11,7 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 import normalizeNumber from '../ReduxForm/normalizers/normalizeNumber'
+import {convertCurrency} from '../../helpers/convertCurrency'
 import Loader from '../Loader'
 import {
     DivisionSearchField,
@@ -56,23 +57,40 @@ const enhance = compose(
     connect((state) => {
         const chosenCurrency = _.get(state, ['form', 'ClientBalanceUpdateForm', 'values', 'currency', 'value'])
         const chosenCurrencyName = _.get(state, ['form', 'ClientBalanceUpdateForm', 'values', 'currency', 'text'])
+        const amount = _.get(state, ['form', 'ClientBalanceUpdateForm', 'values', 'amount'])
         const rate = _.toNumber(_.get(state, ['form', 'ClientBalanceUpdateForm', 'values', 'custom_rate']))
         return {
             chosenCurrency,
             chosenCurrencyName,
-            rate
+            rate,
+            amount
         }
     })
 )
 
 const TransactionUpdatePriceDialog = enhance((props) => {
-    const {classes, open, onClose, handleSubmit, loading, client, chosenCurrency, chosenCurrencyName, rate} = props
+    const {
+        classes,
+        open,
+        onClose,
+        handleSubmit,
+        loading,
+        client,
+        chosenCurrency,
+        chosenCurrencyName,
+        rate,
+        amount,
+        showOrderRate
+    } = props
+
     const onSubmit = handleSubmit(() => props.onSubmit(_.get(client, 'id')))
     const primaryCurrency = _.toInteger(getConfig('PRIMARY_CURRENCY_ID'))
+    const primaryCurrencyName = getConfig('PRIMARY_CURRENCY')
+    const convert = convertCurrency(amount, rate)
     const divisionStatus = getConfig('DIVISIONS')
     const canSetCustomRate = checkPermission('can_set_custom_rate')
     const customRateField = (primaryCurrency !== chosenCurrency && chosenCurrency) &&
-        (
+    (
             <Field
                 name="custom_rate"
                 component={TextField}
@@ -134,11 +152,16 @@ const TransactionUpdatePriceDialog = enhance((props) => {
                                     label={t('Валюта')}
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
+                                {(convert && rate && primaryCurrency !== chosenCurrency)
+                                    ? <div className={classes.convert}>{t('После конвертации')}:
+                                        <strong> {convert} {primaryCurrencyName}</strong>
+                                    </div> : null}
                                 <div style={{marginBottom: 15}}>
                                     <Field
                                         name="currencyRate"
                                         currency={chosenCurrencyName}
                                         rate={rate}
+                                        showOrderRate={showOrderRate}
                                         canSetCustomRate={canSetCustomRate}
                                         customRateField={customRateField}
                                         component={RateRadioButton}

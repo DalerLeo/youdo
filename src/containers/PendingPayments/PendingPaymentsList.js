@@ -22,6 +22,7 @@ import {
     pendingPaymentsListFetchAction,
     pendingPaymentsItemFetchAction
 } from '../../actions/pendingPayments'
+import {cashboxListFetchAction} from '../../actions/cashbox'
 import {optionsListFetchAction} from '../../actions/expensiveCategory'
 import {openErrorAction} from '../../actions/error'
 import {transactionConvertAction} from '../../actions/transaction'
@@ -42,7 +43,10 @@ const enhance = compose(
         const filterForm = _.get(state, ['form', 'PendingPaymentsFilterForm'])
         const createForm = _.get(state, ['form', 'TransactionCreateForm'])
         const convert = _.get(state, ['pendingPayments', 'convert'])
+        const cashboxList = _.get(state, ['cashbox', 'list', 'data'])
+        const cashboxListLoading = _.get(state, ['cashbox', 'list', 'loading'])
         const filter = filterHelper(list, pathname, query)
+        const filterCashbox = filterHelper(cashboxList, pathname, query)
         return {
             list,
             listLoading,
@@ -54,9 +58,18 @@ const enhance = compose(
             filter,
             filterForm,
             createForm,
-            convert
+            convert,
+            cashboxList,
+            cashboxListLoading,
+            filterCashbox
         }
     }),
+    withPropsOnChange((props, nextProps) => {
+        return !nextProps.cashboxListLoading && _.isNil(nextProps.cashboxList)
+    }, ({dispatch, filterCashbox}) => {
+        dispatch(cashboxListFetchAction(filterCashbox))
+    }),
+
     withPropsOnChange((props, nextProps) => {
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
@@ -65,7 +78,6 @@ const enhance = compose(
 
     withPropsOnChange((props, nextProps) => {
         const pendingPaymentsId = _.get(nextProps, ['params', 'pendingPaymentsId'])
-
         return pendingPaymentsId && _.get(props, ['params', 'pendingPaymentsId']) !== pendingPaymentsId
     }, ({dispatch, params}) => {
         const pendingPaymentsId = _.toInteger(_.get(params, 'pendingPaymentsId'))
@@ -88,13 +100,12 @@ const enhance = compose(
         const date = _.get(props, ['createForm', 'values', 'date'])
         const nextDate = _.get(nextProps, ['createForm', 'values', 'date'])
         return (cashbox !== nextCashbox && nextCashbox) || (date !== nextDate && nextDate) || (currencyRate !== nextCurrencyRate && nextCurrencyRate)
-    }, ({dispatch, createForm, list, params}) => {
-        const detailID = _.toInteger(_.get(params, 'pendingPaymentsId'))
+    }, ({dispatch, createForm, cashboxList}) => {
         const cashbox = _.get(createForm, ['values', 'cashbox', 'value'])
         const currencyRate = _.get(createForm, ['values', 'currencyRate'])
         const order = _.get(createForm, ['values', 'order', 'value'])
         const date = _.get(createForm, ['values', 'date'])
-        const currency = _.get(_.find(_.get(list, 'results'), {'id': detailID}), ['currency', 'id'])
+        const currency = _.get(_.find(_.get(cashboxList, 'results'), {'id': cashbox}), ['currency', 'id'])
         const form = 'TransactionCreateForm'
         if (cashbox) {
             switch (currencyRate) {
@@ -198,6 +209,8 @@ const PendingPaymentsList = enhance((props) => {
         detail,
         detailLoading,
         updateLoading,
+        cashboxList,
+        cashboxListLoading,
         filter,
         layout,
         convert,
@@ -214,6 +227,11 @@ const PendingPaymentsList = enhance((props) => {
     const toDate = filter.getParam(PENDING_PAYMENTS_FILTER_KEY.TO_DATE)
     const detailId = _.toInteger(_.get(params, 'pendingPaymentsId'))
 
+    const cashboxData = {
+        data: _.get(cashboxList, 'results'),
+        listLoading: cashboxListLoading
+    }
+
     const confirmDialog = {
         openConfirmDialog: props.openConfirmDialog,
         handleOpenConfirmDialog: props.handleOpenConfirmDialog,
@@ -223,7 +241,7 @@ const PendingPaymentsList = enhance((props) => {
 
     const updateDialog = {
         initialValues: {},
-        updateLoading: detailLoading || updateLoading,
+        loading: detailLoading || updateLoading,
         openUpdateDialog,
         handleOpenUpdateDialog: props.handleOpenUpdateDialog,
         handleCloseUpdateDialog: props.handleCloseUpdateDialog,
@@ -278,6 +296,7 @@ const PendingPaymentsList = enhance((props) => {
                 updateDialog={updateDialog}
                 filterDialog={filterDialog}
                 convert={convert}
+                cashboxData={cashboxData}
             />
         </Layout>
     )

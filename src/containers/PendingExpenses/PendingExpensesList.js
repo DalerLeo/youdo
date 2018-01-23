@@ -21,6 +21,7 @@ import {
     pendingExpensesUpdateAction,
     pendingExpensesListFetchAction
 } from '../../actions/pendingExpenses'
+import {cashboxListFetchAction} from '../../actions/cashbox'
 import {transactionConvertAction} from '../../actions/transaction'
 import {openErrorAction} from '../../actions/error'
 import {openSnackbarAction} from '../../actions/snackbar'
@@ -37,6 +38,9 @@ const enhance = compose(
         const convertLoading = _.get(state, ['pendingPayments', 'convert', 'loading'])
         const filterForm = _.get(state, ['form', 'PendingExpensesFilterForm'])
         const createForm = _.get(state, ['form', 'TransactionCreateForm'])
+        const cashboxList = _.get(state, ['cashbox', 'list', 'data'])
+        const cashboxListLoading = _.get(state, ['cashbox', 'list', 'loading'])
+        const filterCashbox = filterHelper(cashboxList, pathname, query)
         const filter = filterHelper(list, pathname, query)
 
         return {
@@ -47,9 +51,18 @@ const enhance = compose(
             convertLoading,
             filter,
             filterForm,
-            createForm
+            createForm,
+            cashboxList,
+            cashboxListLoading,
+            filterCashbox
         }
     }),
+    withPropsOnChange((props, nextProps) => {
+        return !nextProps.cashboxListLoading && _.isNil(nextProps.cashboxList)
+    }, ({dispatch, filterCashbox}) => {
+        dispatch(cashboxListFetchAction(filterCashbox))
+    }),
+
     withPropsOnChange((props, nextProps) => {
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
@@ -64,13 +77,12 @@ const enhance = compose(
         const date = _.get(props, ['createForm', 'values', 'date'])
         const nextDate = _.get(nextProps, ['createForm', 'values', 'date'])
         return (cashbox !== nextCashbox && nextCashbox) || (date !== nextDate && nextDate) || (currencyRate !== nextCurrencyRate && nextCurrencyRate)
-    }, ({dispatch, createForm, list, params}) => {
-        const detailID = _.toInteger(_.get(params, 'pendingExpensesId'))
+    }, ({dispatch, createForm, cashboxList}) => {
         const cashbox = _.get(createForm, ['values', 'cashbox', 'value'])
         const currencyRate = _.get(createForm, ['values', 'currencyRate'])
         const order = _.get(createForm, ['values', 'order', 'value'])
         const date = _.get(createForm, ['values', 'date'])
-        const currency = _.get(_.find(_.get(list, 'results'), {'id': detailID}), ['currency', 'id'])
+        const currency = _.get(_.find(_.get(cashboxList, 'results'), {'id': cashbox}), ['currency', 'id'])
         const form = 'TransactionCreateForm'
         if (cashbox) {
             switch (currencyRate) {
@@ -168,6 +180,8 @@ const PendingExpensesList = enhance((props) => {
         location,
         list,
         listLoading,
+        cashboxList,
+        cashboxListLoading,
         filter,
         layout,
         params
@@ -183,6 +197,11 @@ const PendingExpensesList = enhance((props) => {
     const supply = filter.getParam(PENDING_EXPENSES_FILTER_KEY.SUPPLY)
     const division = filter.getParam(PENDING_EXPENSES_FILTER_KEY.DIVISION)
     const detailId = _.toInteger(_.get(params, 'pendingExpensesId'))
+
+    const cashboxData = {
+        data: _.get(cashboxList, 'results'),
+        listLoading: cashboxListLoading
+    }
 
     const confirmDialog = {
         openConfirmDialog: props.openConfirmDialog,
@@ -245,6 +264,7 @@ const PendingExpensesList = enhance((props) => {
                 filterDialog={filterDialog}
                 csvDialog={csvDialog}
                 detailId={detailId}
+                cashboxData={cashboxData}
             />
         </Layout>
     )
