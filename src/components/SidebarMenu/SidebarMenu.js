@@ -127,14 +127,16 @@ const SideBarMenu = enhance((props) => {
         pathname
     } = props
 
-    const trimmedPathname = _.trimStart(pathname, '/')
+    const noNumbersString = (text) => {
+        return _.trimEnd(_.trimStart(text.replace(/[0-9]/g, ''), '/'), '/')
+    }
     const menu = getMenus(permissions, isAdmin)
     const parent = _
         .chain(menu)
         .find((item) => {
             return (_.findIndex(item.childs, (ch) => {
-                const trimmedURL = _.trimStart(_.get(ch, 'url'), '/')
-                return _.includes(trimmedPathname, trimmedURL)
+                const trimmedURL = noNumbersString(_.get(ch, 'url'))
+                return trimmedURL === noNumbersString(pathname)
             }) > NOT_FOUND)
         })
         .value()
@@ -145,9 +147,9 @@ const SideBarMenu = enhance((props) => {
             <Link to={{pathname: url, query: query}}>
                 <ToolTip position="right" text={name}>
                     <FlatButton
-                        hoverColor={_.trimStart(url, '/') === currentMenuURL ? 'transparent' : rippleColor}
-                        rippleColor={_.trimStart(url, '/') === currentMenuURL ? 'transparent' : rippleColor}
-                        className={_.trimStart(url, '/') === currentMenuURL ? classes.activeMenu : ''}
+                        hoverColor={noNumbersString(url) === currentMenuURL ? 'transparent' : rippleColor}
+                        rippleColor={noNumbersString(url) === currentMenuURL ? 'transparent' : rippleColor}
+                        className={noNumbersString(url) === currentMenuURL ? classes.activeMenu : ''}
                         style={style.style}>
                         {icon}
                     </FlatButton>
@@ -160,10 +162,11 @@ const SideBarMenu = enhance((props) => {
         const url = _.get(item, 'url')
         const query = _.get(item, 'query')
         const dynamic = _.get(item, 'dynamic') && !isAdmin
-        const icon = dynamic
+        const dynamicOnlyURL = _.get(item, 'dynamicOnlyURL') && !isAdmin
+        const icon = dynamic && !dynamicOnlyURL
             ? _.get(_.first(_.get(item, 'childs')), 'icon')
             : _.get(item, 'icon')
-        const tooltip = dynamic
+        const tooltip = dynamic && !dynamicOnlyURL
             ? _.get(_.first(_.get(item, 'childs')), 'name')
             : _.get(item, 'name')
         if (atBottom) {
