@@ -363,7 +363,7 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleEdit
                                                 <TableRowColumn>{numberFormat(amount, itemMeasurement)}</TableRowColumn>
                                                 <TableRowColumn>
                                                     <TextField
-                                                        label={cost}
+                                                        label={_.toString(cost)}
                                                         className={classes.inputFieldCustom}
                                                         fullWidth={true}
                                                         {..._.get(defaultProps, 'editCost')}
@@ -392,7 +392,7 @@ const SupplyListProductField = ({classes, state, dispatch, handleAdd, handleEdit
                                             </TableRowColumn>
                                             <TableRowColumn>
                                                 <TextField
-                                                    label={cost}
+                                                    label={_.toString(cost)}
                                                     className={classes.inputFieldCustom}
                                                     fullWidth={true}
                                                     {..._.get(defaultProps, 'editCost')}
