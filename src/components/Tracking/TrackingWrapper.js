@@ -228,8 +228,7 @@ const enhance = compose(
         }
     }),
     withState('sliderValue', 'setSliderValue', current),
-    withState('searchQuery', 'setSearchQuery', ''),
-    withState('openAgentsInfo', 'toggleAgentsInfo', true)
+    withState('searchQuery', 'setSearchQuery', '')
 )
 
 const TrackingWrapper = enhance((props) => {
@@ -414,7 +413,8 @@ const TrackingWrapper = enhance((props) => {
                                 <Loader size={0.6}/>
                             </div>
                         </div>
-                        : (!_.isEmpty(filteredList) ? <div className={classes.activeAgents}>
+                        : (!_.isEmpty(filteredList)
+                            ? <div className={classes.activeAgents}>
                                 {_.map(filteredList, (item) => {
                                     const id = _.get(item, 'id')
                                     const agent = _.get(item, 'agent')

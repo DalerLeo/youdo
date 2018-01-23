@@ -73,9 +73,9 @@ const enhance = compose(
             }
         },
         summary: {
+            margin: '20px -30px 0',
+            padding: '0 30px',
             fontWeight: '600',
-            marginTop: '20px',
-            paddingRight: '30px',
             textAlign: 'right'
         },
         tab: {

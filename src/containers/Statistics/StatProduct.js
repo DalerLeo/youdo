@@ -34,6 +34,7 @@ const enhance = compose(
         const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
         const searchForm = _.get(state, ['form', 'StatProductForm'])
         const filter = filterHelper(productList, pathname, query)
+        const filterProductType = filterHelper(productTypeList, pathname, query)
         const filterItem = filterHelper(productList, pathname, query)
         return {
             productList,
@@ -45,6 +46,7 @@ const enhance = compose(
             detail,
             detailLoading,
             filter,
+            filterProductType,
             filterItem,
             filterForm,
             searchForm,
@@ -106,6 +108,14 @@ const enhance = compose(
             const {filter} = props
             const params = serializers.listFilterSerializer(filter.getParams())
             getDocuments(API.STAT_PRODUCT_GET_DOCUMENT, params)
+        },
+        handleGetChilds: props => (id) => {
+            const {dispatch, filterProductType} = props
+            return dispatch(statProductTypeListFetchAction(filterProductType, id))
+        },
+        handleResetChilds: props => () => {
+            const {dispatch, filterProductType} = props
+            return dispatch(statProductTypeListFetchAction(filterProductType))
         }
     })
 )
@@ -121,6 +131,7 @@ const StatProductList = enhance((props) => {
         detail,
         detailLoading,
         filter,
+        filterProductType,
         layout,
         location,
         params,
@@ -173,7 +184,7 @@ const StatProductList = enhance((props) => {
     return (
         <Layout {...layout}>
             <StatProductGridList
-                filter={filter}
+                filter={toggle === PRODUCT ? filter : filterProductType}
                 listData={listData}
                 detailData={detailData}
                 handleSubmitFilterDialog={props.handleSubmitFilterDialog}
@@ -185,6 +196,8 @@ const StatProductList = enhance((props) => {
                 query={query}
                 sumData={sumData}
                 sumDataLoading={sumDataLoading}
+                handleGetChilds={props.handleGetChilds}
+                handleResetChilds={props.handleResetChilds}
             />
         </Layout>
     )

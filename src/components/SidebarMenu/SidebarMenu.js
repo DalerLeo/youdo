@@ -208,6 +208,7 @@ const SideBarMenu = enhance((props) => {
                         dispatch={dispatch}
                         classBadge={classes.badge}
                         handleOpen={handleOpenNotificationBar}
+                        rippleColor={rippleColor}
                         style={style.style}/>
 
                 </div>
@@ -222,6 +223,7 @@ const SideBarMenu = enhance((props) => {
                 <ToolTip position="right" text="Выйти">
                     <FlatButton
                         rippleColor={rippleColor}
+                        hoverColor={rippleColor}
                         style={style.style}
                         onClick={handleSignOut}>
                         <SettingsPower/>

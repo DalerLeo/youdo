@@ -16,6 +16,7 @@ import {
     ON_TIME,
     OFF_TIME
 } from '../../constants/permissionTime'
+import t from '../../helpers/translate'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -92,7 +93,7 @@ const SetDateDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.body}>
             <div className={classes.titleContent}>
-                <span>Время работы</span>
+                <span>{t('Время работы')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>

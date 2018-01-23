@@ -37,8 +37,8 @@ export const statProductSumDatFetchAction = (filter) => {
     }
 }
 
-export const statProductTypeListFetchAction = (filter) => {
-    const params = serializers.listFilterSerializer(filter.getParams())
+export const statProductTypeListFetchAction = (filter, parent) => {
+    const params = serializers.listFilterSerializer(filter.getParams(), parent)
     const payload = axios()
         .get((API.STAT_PRODUCT_TYPE_LIST), {params})
         .then((response) => {
