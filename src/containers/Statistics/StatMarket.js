@@ -16,8 +16,7 @@ import getDocuments from '../../helpers/getDocument'
 import {
     statMarketListFetchAction,
     statMarketSumFetchAction,
-    statMarketTypeListFetchAction,
-    statMarketTypeSumFetchAction
+    statMarketTypeListFetchAction
 } from '../../actions/statMarket'
 
 import {StatMarketGridList, STAT_MARKET_DIALOG_OPEN} from '../../components/Statistics'
@@ -29,8 +28,6 @@ const enhance = compose(
         const pathname = _.get(props, ['location', 'pathname'])
         const sumData = _.get(state, ['statMarket', 'marketSum', 'data'])
         const sumLoading = _.get(state, ['statMarket', 'marketSum', 'loading'])
-        const marketTypeSumData = _.get(state, ['statMarket', 'marketTypeSum', 'data'])
-        const marketTypeSumLoading = _.get(state, ['statMarket', 'marketTypeSum', 'loading'])
         const marketList = _.get(state, ['statMarket', 'marketList', 'data'])
         const marketListLoading = _.get(state, ['statMarket', 'marketList', 'loading'])
         const marketTypeList = _.get(state, ['statMarket', 'marketTypeList', 'data'])
@@ -45,9 +42,7 @@ const enhance = compose(
             filter,
             filterForm,
             sumLoading,
-            sumData,
-            marketTypeSumData,
-            marketTypeSumLoading
+            sumData
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -67,10 +62,7 @@ const enhance = compose(
         }
         return (props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except))
     }, ({dispatch, filter}) => {
-        const toggle = filter.getParam('toggle') || MARKET
-        return toggle === MARKET
-            ? dispatch(statMarketSumFetchAction(filter))
-            : dispatch(statMarketTypeSumFetchAction(filter))
+        dispatch(statMarketSumFetchAction(filter))
     }),
 
     withHandlers({
@@ -138,9 +130,7 @@ const StatMarketList = enhance((props) => {
         layout,
         params,
         sumData,
-        sumLoading,
-        marketTypeSumData,
-        marketTypeSumLoading
+        sumLoading
     } = props
 
     const detailId = _.toInteger(_.get(params, 'statMarketId'))
@@ -160,8 +150,8 @@ const StatMarketList = enhance((props) => {
     }
 
     const listData = {
-        sumData: toggle === MARKET ? sumData : marketTypeSumData,
-        sumLoading: toggle === MARKET ? sumLoading : marketTypeSumLoading,
+        sumData: sumData,
+        sumLoading: sumLoading,
         data: toggle === MARKET ? _.get(marketList, 'results') : _.get(marketTypeList, 'results'),
         listLoading: toggle === MARKET ? marketListLoading : marketTypeListLoading
     }

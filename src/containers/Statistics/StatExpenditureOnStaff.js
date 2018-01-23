@@ -6,6 +6,9 @@ import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import filterHelper from '../../helpers/filter'
+import getDocuments from '../../helpers/getDocument'
+import * as serializers from '../../serializers/Statistics/statExpenditureOnStaffSerializer'
+import * as API from '../../constants/api'
 import {StatExpenditureOnStaffGridList} from '../../components/Statistics'
 import {STAT_EXPENDITURE_ON_STAFF_FILTER_KEY} from '../../components/Statistics/ExpenditureOnStaff/StatExpenditureOnStaffGridList'
 import {
@@ -82,9 +85,9 @@ const enhance = compose(
             })
         },
         handleGetDocument: props => () => {
-            const {dispatch, filter} = props
-            // You must change action function
-            return dispatch(getTransactionData(filter))
+            const {filter} = props
+            const params = serializers.listFilterSerializer(filter.getParams())
+            getDocuments(API.STAT_EXPENDITURE_ON_STAFFGET_DOCUMENT, params)
         },
         handleOpenTransactionDialog: props => (id) => {
             const {filter, location: {pathname}} = props
