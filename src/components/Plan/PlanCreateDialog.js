@@ -487,7 +487,7 @@ const PlanCreateDialog = enhance((props) => {
                                 : (selectedZone === ZERO)
                                     ? <Paper zDepth={2} className={classes.agentsWrapper}>
                                         <div className={classes.chooseZone}>
-                                            <span>{t('Для составления плана <br/>выберите зону')}</span>
+                                            <span dangerouslySetInnerHTML={{__html: t('Для составления плана <br/>выберите зону')}}></span>
                                         </div>
                                     </Paper>
                                     : (!_.isEmpty(agents)) ? <Paper zDepth={2} className={classes.agentsWrapper}>
