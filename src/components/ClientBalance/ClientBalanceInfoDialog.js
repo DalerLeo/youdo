@@ -258,6 +258,10 @@ const ClientBalanceInfoDialog = enhance((props) => {
     const currentCurrency = getConfig('PRIMARY_CURRENCY')
     const currentCurrencyId = _.toInteger(getConfig('PRIMARY_CURRENCY_ID'))
     const loading = _.get(detailData, 'detailLoading')
+
+    const hasIcon = _.map(_.get(detailData, 'data'), (item, index) => {
+        return _.get(item, 'type') === PAYMENT
+    })
     const detailList = _.map(_.get(detailData, 'data'), (item, index) => {
         const createdDate = dateTimeFormat(_.get(item, 'createdDate'), true)
         const comment = _.get(item, 'comment')
@@ -299,10 +303,11 @@ const ClientBalanceInfoDialog = enhance((props) => {
 
         return (
             <Row key={index} className='dottedList'>
+                {_.includes(hasIcon, true) &&
                 <div style={{flexBasis: '4%', maxWidth: '4%'}}>
                     {type === PAYMENT && statusIcon(confirmation)}
-                </div>
-                <div style={{flexBasis: '16%', maxWidth: '16%'}}>{createdDate}</div>
+                </div>}
+                <div style={_.includes(hasIcon, true) ? {flexBasis: '16%', maxWidth: '16%'} : {flexBasis: '20%', maxWidth: '20%'}}>{createdDate}</div>
                 <div style={{flexBasis: '20%', maxWidth: '20%'}}>{user}</div>
                 <div style={{flexBasis: '40%', maxWidth: '40%'}}>
                     {market && <div>{t('Магазин')}: <span>{market}</span></div>}
@@ -310,7 +315,7 @@ const ClientBalanceInfoDialog = enhance((props) => {
                     {comment && <div>{t('Комментарии')}: <span>{comment}</span></div>}
                     <ClientBalanceFormat type={type} order={order} orderReturn={orderReturn}/>
                 </div>
-                <div style={{flexBasis: '15%', maxWidth: '15%'}}>
+                <div style={(!stat && isSuperUser && (type === FIRST_BALANCE || type === NONE_TYPE)) ? {flexBasis: '15%', maxWidth: '15%'} : {flexBasis: '20%', maxWidth: '20%'}}>
                     <div style={{textAlign: 'right'}}>
                         <div className={amount > ZERO ? classes.green : amount < ZERO ? classes.red : ''} style={{display: 'flex', justifyContent: 'flex-end'}}>
                             {numberFormat(amount, currency)}
@@ -437,8 +442,9 @@ const ClientBalanceInfoDialog = enhance((props) => {
                     </div>
                     <div className={classes.content}>
                         <Row>
-                            <div style={{flexBasis: '4%', maxWidth: '4%'}}/>
-                            <div style={{flexBasis: '16%', maxWidth: '16%'}}>{t('Дата')}</div>
+                            {_.includes(hasIcon, true) &&
+                            <div style={{flexBasis: '4%', maxWidth: '4%'}}/>}
+                            <div style={_.includes(hasIcon, true) ? {flexBasis: '16%', maxWidth: '16%'} : {flexBasis: '20%', maxWidth: '20%'}}>{t('Дата')}</div>
                             <div style={{flexBasis: '20%', maxWidth: '20%'}}>{t('Кто')}</div>
                             <div style={{flexBasis: '40%', maxWidth: '40%'}}>{t('Описание')}</div>
                             <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>{t('Сумма')}</div>
