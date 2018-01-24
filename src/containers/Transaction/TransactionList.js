@@ -205,7 +205,7 @@ const enhance = compose(
                         }
                         default: {
                             setOpenStaff(false)
-                            return expenseOptions !== clientOptionId
+                            return expenseOptions !== clientOptionId && !_.isNil(expenseOptions)
                                 ? dispatch(change(form, 'client', null))
                                 : null
                         }
@@ -260,7 +260,7 @@ const enhance = compose(
                         }
                         default: {
                             setOpenStaff(false)
-                            return incomeOptions !== clientOptionId
+                            return incomeOptions !== clientOptionId && !_.isNil(incomeOptions)
                                 ? dispatch(change(form, 'client', null))
                                 : null
                         }
@@ -280,6 +280,7 @@ const enhance = compose(
     }, ({dispatch, date, createForm, cashboxList, location: {query}}) => {
         const queryCashbox = _.toInteger(_.get(query, 'cashboxId'))
         const queryCurrency = _.toInteger(_.get(query, 'currency'))
+        const updateTransaction = _.toInteger(_.get(query, UPDATE_TRANSACTION)) > ZERO
         const cashbox = queryCashbox > ZERO ? queryCashbox : _.get(createForm, ['values', 'cashbox', 'value'])
         const currencyRate = _.get(createForm, ['values', 'currencyRate'])
         const order = _.get(createForm, ['values', 'order', 'value'])
@@ -292,7 +293,7 @@ const enhance = compose(
                         const customRate = _.get(data, ['value', 'amount'])
                         dispatch(change(form, 'custom_rate', customRate))
                     })
-                case 'custom': return dispatch(change(form, 'custom_rate', ''))
+                case 'custom': return updateTransaction ? null : dispatch(change(form, 'custom_rate', ''))
                 default: return dispatch(transactionConvertAction(date, currency))
                     .then((data) => {
                         const customRate = _.get(data, ['value', 'amount'])

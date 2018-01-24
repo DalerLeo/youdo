@@ -22,12 +22,6 @@ import dateFormat from '../../helpers/dateFormat'
 import toBoolean from '../../helpers/toBoolean'
 import getConfig from '../../helpers/getConfig'
 import moment from 'moment'
-import {
-    INCOME,
-    OUTCOME,
-    INCOME_TO_CLIENT,
-    OUTCOME_FROM_CLIENT
-} from '../../constants/transactionTypes'
 import t from '../../helpers/translate'
 import {TRANSACTION_DETALIZATION_DIALOG} from './index'
 
@@ -304,7 +298,16 @@ const TransactionsList = enhance((props) => {
             client: {
                 value: _.get(currentItem, ['client', 'id'])
             },
-            custom_rate: _.get(currentItem, 'customRate'),
+            provider: {
+                value: _.get(currentItem, ['provider', 'id'])
+            },
+            order: {
+                value: _.get(currentItem, ['order'])
+            },
+            supply: {
+                value: _.get(currentItem, ['supply'])
+            },
+            custom_rate: numberFormat(_.get(currentItem, 'customRate')),
             comment: _.get(currentItem, 'comment'),
             expanseCategory: {
                 value: currentItemAmount < ZERO && _.get(currentItem, 'expanseCategory')
@@ -321,7 +324,8 @@ const TransactionsList = enhance((props) => {
                         name: _.get(currentItem, ['incomeCategory', 'name']),
                         options: incomeOptions
                     } : {}
-            }
+            },
+            currencyRate: 'custom'
         }
         : {
             transaction_child: [{}],
@@ -396,7 +400,6 @@ const TransactionsList = enhance((props) => {
                         <DeleteIcon/>
                     </IconButton>
                     <IconButton
-                        disabled={(transType !== INCOME) && (transType !== OUTCOME) && (transType !== INCOME_TO_CLIENT) && (transType !== OUTCOME_FROM_CLIENT)}
                         className={classes.deleteBtn}
                         style={iconStyle.button}
                         iconStyle={iconStyle.icon}
