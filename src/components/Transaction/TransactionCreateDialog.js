@@ -327,7 +327,6 @@ const TransactionCreateDialog = enhance((props) => {
         )
         : null
     const pendingsDisableDivision = Boolean(additionalData) && Boolean((order || supply || supplyExpense) && division)
-
     return (
         <Dialog
             modal={true}

@@ -17,6 +17,7 @@ import ConfirmDialog from '../ConfirmDialog'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import numberFormat from '../../helpers/numberFormat'
+import moduleFormat from '../../helpers/moduleFormat'
 import dateFormat from '../../helpers/dateFormat'
 import toBoolean from '../../helpers/toBoolean'
 import getConfig from '../../helpers/getConfig'
@@ -281,7 +282,10 @@ const TransactionsList = enhance((props) => {
     const currentTransaction = _.get(updateTransactionDialog, 'open')
     const currentItem = _.find(_.get(listData, 'data'), {'id': currentTransaction})
 
-    const options = _.map(_.get(currentItem, ['expanseCategory', 'options']), (item) => {
+    const expenseOptions = _.map(_.get(currentItem, ['expanseCategory', 'options']), (item) => {
+        return _.get(_.find(optionsList, {'keyName': _.get(item, 'keyName')}), 'id')
+    })
+    const incomeOptions = _.map(_.get(currentItem, ['incomeCategory', 'options']), (item) => {
         return _.get(_.find(optionsList, {'keyName': _.get(item, 'keyName')}), 'id')
     })
     const staffExpense = {}
@@ -292,12 +296,13 @@ const TransactionsList = enhance((props) => {
     })
 
     /* Forming initial value in order to Update Transaction */
+    const currentItemAmount = _.toNumber(_.get(currentItem, 'amount'))
     const TransactionInitialValues = currentTransaction
         ? {
             cashbox: {
                 value: _.get(currentItem, ['cashbox', 'id'])
             },
-            amount: _.get(currentItem, 'amount'),
+            amount: moduleFormat(currentItemAmount),
             division: {
                 value: _.get(currentItem, ['division', 'id'])
             },
@@ -305,19 +310,23 @@ const TransactionsList = enhance((props) => {
             client: {
                 value: _.get(currentItem, ['client', 'id'])
             },
-            incomeCategory: {
-                value: (_.get(currentItem, ['client', 'id']) && 'client') || (_.get(currentItem, ['provider', 'id']) && 'provider')
-            },
-            showClients: _.get(currentItem, ['client', 'id']) && true,
-            incomeFromClient: _.get(currentItem, ['client', 'id']) && true,
             custom_rate: _.get(currentItem, 'customRate'),
             comment: _.get(currentItem, 'comment'),
             expanseCategory: {
-                value: {
-                    id: _.get(currentItem, ['expanseCategory', 'id']),
-                    name: _.get(currentItem, ['expanseCategory', 'name']),
-                    options
-                }
+                value: currentItemAmount < ZERO
+                    ? {
+                        id: _.get(currentItem, ['expanseCategory', 'id']),
+                        name: _.get(currentItem, ['expanseCategory', 'name']),
+                        options: expenseOptions
+                    } : {}
+            },
+            incomeCategory: {
+                value: currentItemAmount > ZERO
+                    ? {
+                        id: _.get(currentItem, ['incomeCategory', 'id']),
+                        name: _.get(currentItem, ['incomeCategory', 'name']),
+                        options: incomeOptions
+                    } : {}
             },
             users: staffExpense
         }
@@ -416,6 +425,7 @@ const TransactionsList = enhance((props) => {
         loading: _.get(listData, 'listLoading')
     }
     const detailCurrency = _.get(_.find(_.get(listData, 'data'), {'id': _.toInteger(filter.getParam(TRANSACTION_DETALIZATION_DIALOG))}), ['currency', 'name'])
+    const isExpense = _.toNumber(_.get(currentItem, 'amount')) < ZERO
     return (
         <div className={showOnlyList ? '' : classes.rightSide}>
             {!showOnlyList && <div className={classes.rightTitle}>
@@ -455,6 +465,7 @@ const TransactionsList = enhance((props) => {
             }
 
             {!showOnlyList && <section>
+                {createExpenseDialog.open &&
                 <TransactionCreateDialog
                     isExpense={true}
                     initialValues={TransactionInitialValues}
@@ -466,7 +477,8 @@ const TransactionsList = enhance((props) => {
                     onSubmit={createExpenseDialog.handleSubmitDialog}
                     usersData={usersData}
                     canSetCustomRate={canSetCustomRate}
-                />
+                />}
+                {createIncomeDialog.open &&
                 <TransactionCreateDialog
                     initialValues={TransactionInitialValues}
                     noCashbox={_.get(cashboxData, 'cashboxId') === ZERO}
@@ -477,23 +489,32 @@ const TransactionsList = enhance((props) => {
                     onSubmit={createIncomeDialog.handleSubmitDialog}
                     usersData={usersData}
                     canSetCustomRate={canSetCustomRate}
-                />
+                />}
+                {updateTransactionDialog.open > ZERO && isExpense &&
                 <TransactionCreateDialog
                     isUpdate={true}
                     initialValues={TransactionInitialValues}
-                    isExpense={Number(_.get(currentItem, 'amount')) < ZERO}
+                    isExpense={true}
                     noCashbox={_.get(cashboxData, 'cashboxId') === ZERO}
                     cashboxData={cashboxData}
                     open={updateTransactionDialog.open > ZERO}
                     onClose={updateTransactionDialog.handleCloseDialog}
-                    onSubmit={
-                        Number(_.get(currentItem, 'amount')) < ZERO
-                            ? updateTransactionDialog.handleExpenseSumbit
-                            : updateTransactionDialog.handleIncomeSubmit
-                    }
+                    onSubmit={updateTransactionDialog.handleExpenseSumbit}
                     usersData={usersData}
-                    canSetCustomRate={canSetCustomRate}
-                />
+                    canSetCustomRate={canSetCustomRate}/>}
+
+                {updateTransactionDialog.open > ZERO && !isExpense &&
+                <TransactionCreateDialog
+                    isUpdate={true}
+                    initialValues={TransactionInitialValues}
+                    isExpense={false}
+                    noCashbox={_.get(cashboxData, 'cashboxId') === ZERO}
+                    cashboxData={cashboxData}
+                    open={updateTransactionDialog.open > ZERO}
+                    onClose={updateTransactionDialog.handleCloseDialog}
+                    onSubmit={updateTransactionDialog.handleIncomeSubmit}
+                    usersData={usersData}
+                    canSetCustomRate={canSetCustomRate}/>}
 
                 <TransactionSendDialog
                     noCashbox={_.get(cashboxData, 'cashboxId') === ZERO}
