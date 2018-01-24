@@ -39,8 +39,8 @@ export const statMarketSumFetchAction = (filter) => {
     }
 }
 
-export const statMarketTypeListFetchAction = (filter) => {
-    const params = serializers.listFilterSerializer(filter.getParams())
+export const statMarketTypeListFetchAction = (filter, parent) => {
+    const params = serializers.listFilterSerializer(filter.getParams(), parent)
     const payload = axios()
         .get(API.STAT_MARKET_TYPE_LIST, {params})
         .then((response) => {

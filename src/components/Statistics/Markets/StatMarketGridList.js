@@ -26,6 +26,7 @@ import t from '../../../helpers/translate'
 import Market from 'material-ui/svg-icons/maps/store-mall-directory'
 import MarketType from 'material-ui/svg-icons/maps/local-mall'
 import {hashHistory} from 'react-router'
+import ExpandList from 'material-ui/svg-icons/action/list'
 
 export const STAT_MARKET_FILTER_KEY = {
     SEARCH: 'search',
@@ -380,6 +381,9 @@ const enhance = compose(
             display: 'flex',
             alignItems: 'center'
         },
+        flexSpaceBetween: {
+            justifyContent: 'space-between'
+        },
         fullScreen: {
             marginLeft: '10px !important'
         },
@@ -410,10 +414,26 @@ const enhance = compose(
         },
         shadowButton: {
             boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px'
+        },
+        leftTableList: {
+            '& > span': {
+                display: 'flex !important',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                height: '100%'
+            }
+        },
+        filtered: {
+            whiteSpace: 'nowrap',
+            '& > a': {
+                display: 'block',
+                fontWeight: '600'
+            }
         }
     }),
     withState('currentRow', 'updateRow', null),
     withState('expandedTable', 'setExpandedTable', false),
+    withState('currentParent', 'updateCurrentParent', null),
     reduxForm({
         form: 'StatisticsFilterForm',
         enableReinitialize: true
@@ -485,7 +505,11 @@ const StatMarketGridList = enhance((props) => {
         currentRow,
         updateRow,
         expandedTable,
-        setExpandedTable
+        currentParent,
+        updateCurrentParent,
+        setExpandedTable,
+        handleGetChilds,
+        handleResetChilds
     } = props
 
     const sumData = _.get(listData, 'sumData')
@@ -528,13 +552,23 @@ const StatMarketGridList = enhance((props) => {
 
     const tableLeft = _.map(_.get(listData, 'data'), (item, index) => {
         const name = _.get(item, 'name') || 'No'
+        const id = _.get(item, 'id')
         return (
             <div
                 key={index}
+                onClick={isMarketType && !currentParent
+                    ? () => {
+                        updateCurrentParent(name)
+                        handleGetChilds(id)
+                    }
+                    : null }
+                className={classes.leftTableList}
                 style={index === currentRow ? styleOnHover : {}}
                 onMouseEnter={() => { updateRow(index) }}
                 onMouseLeave={() => { updateRow(null) }}>
-                <span>{name}</span>
+                <span style={isMarketType && !currentParent ? {cursor: 'pointer'} : {}}>
+                    {name} {isMarketType && !currentParent && <ExpandList color={'#12aaeb'}/>}
+                </span>
             </div>
         )
     })
@@ -675,25 +709,43 @@ const StatMarketGridList = enhance((props) => {
                                     </ToolTip>}
                                 </div>
                             </div>
-                            <div className={classes.toggleWrapper}>
-                                <ToolTip position="left" text="Показать по магазинам">
-                                    <FlatButton
-                                        icon={<Market color={whiteColor}/>}
-                                        className={isMarket ? classes.shadowButton : ''}
-                                        onTouchTap={() => { hashHistory.push(filter.createURL({toggle: MARKET})) }}
-                                        backgroundColor={isMarket ? primaryColor : disabledColor}
-                                        rippleColor={whiteColor}
-                                        hoverColor={isMarket ? primaryColor : disabledColor}/>
-                                </ToolTip>
-                                <ToolTip position="left" text="Показать по типам магазинов">
-                                    <FlatButton
-                                        icon={<MarketType color={whiteColor}/>}
-                                        className={isMarketType ? classes.shadowButton : ''}
-                                        onTouchTap={() => { hashHistory.push(filter.createURL({toggle: MARKET_TYPE})) }}
-                                        backgroundColor={isMarketType ? primaryColor : disabledColor}
-                                        rippleColor={whiteColor}
-                                        hoverColor={isMarketType ? primaryColor : disabledColor}/>
-                                </ToolTip>
+                            <div>
+                                <div className={classes.flexCenter + ' ' + classes.flexSpaceBetween}>
+                                    {isMarketType && currentParent &&
+                                    <div className={classes.filtered}>
+                                        Отфильтровано по: <strong>{currentParent}</strong>
+                                        <a onClick={() => {
+                                            updateCurrentParent(null)
+                                            handleResetChilds()
+                                        }}>Сбросить фильтр</a>
+                                    </div>}
+                                    <div className={classes.toggleWrapper} style={currentParent ? {width: 'auto'} : {width: '100%'}}>
+                                    <ToolTip position="left" text="Показать по магазинам">
+                                            <FlatButton
+                                                icon={<Market color={whiteColor}/>}
+                                                className={isMarket ? classes.shadowButton : ''}
+                                                onTouchTap={() => {
+                                                    updateCurrentParent(null)
+                                                    hashHistory.push(filter.createURL({toggle: MARKET}))
+                                                }}
+                                                backgroundColor={isMarket ? primaryColor : disabledColor}
+                                                rippleColor={whiteColor}
+                                                hoverColor={isMarket ? primaryColor : disabledColor}/>
+                                        </ToolTip>
+                                        <ToolTip position="left" text="Показать по типам магазинов">
+                                            <FlatButton
+                                                icon={<MarketType color={whiteColor}/>}
+                                                className={isMarketType ? classes.shadowButton : ''}
+                                                onTouchTap={() => {
+                                                    updateCurrentParent(null)
+                                                    hashHistory.push(filter.createURL({toggle: MARKET_TYPE}))
+                                                }}
+                                                backgroundColor={isMarketType ? primaryColor : disabledColor}
+                                                rippleColor={whiteColor}
+                                                hoverColor={isMarketType ? primaryColor : disabledColor}/>
+                                        </ToolTip>
+                                    </div>
+                                </div>
                             </div>
                             <div className={classes.container}>
                                 {listLoading && <div className={classes.loader}>
