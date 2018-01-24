@@ -130,17 +130,20 @@ const enhance = compose(
         return (!_.isEmpty(_.get(nextProps, ['state', 'dataSource'])) && _.get(props, ['input', 'value']) !== _.get(nextProps, ['input', 'value'])) &&
             _.get(nextProps, ['input', 'value'])
     }, (props) => {
-        const {state, input, getItem, dispatch, getText, getValue} = props
+        const {state, input, getItem, dispatch, getText, getValue, addProduct} = props
         const finder = _.find(state.dataSource, {'value': input.value.value})
-
-        if (_.isEmpty(finder) && input.value.value) {
+        // Add product flag is for SearchFields of CREATE_DIALOGS whic does not have initial Values
+        if (_.isEmpty(finder) && input.value.value && !addProduct) {
             getItem(input.value.value).then((data) => {
-                const dataSource = _.unionBy(props.state.dataSource, [{
-                    text: getText(data), value: getValue(data)
-                }], 'value')
-                return dispatch({
-                    dataSource: dataSource
-                })
+                if (!_.isEmpty(data)) {
+                    const dataSource = _.unionBy(props.state.dataSource, [{
+                        text: getText(data), value: getValue(data)
+                    }], 'value')
+                    return dispatch({
+                        dataSource: dataSource
+                    })
+                }
+                return null
             })
         }
     }),

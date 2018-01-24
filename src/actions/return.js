@@ -137,3 +137,26 @@ export const clientReturnAction = (formValues, id) => {
     }
 }
 
+export const addProductsListAction = (filter, type, market, currency) => {
+    const params = {
+        page_size: _.get(filter.getParams(), 'pdPageSize'),
+        page: _.get(filter.getParams(), 'pdPage'),
+        search: _.get(filter.getParams(), 'pdSearch'),
+        type,
+        market
+    }
+    const payload = axios()
+        .get(API.RETURN_CREATE_PRODUCTS_LIST, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.RETURN_PRODUCT_ADD,
+        payload
+    }
+}
+

@@ -2,7 +2,7 @@ import React from 'react'
 import _ from 'lodash'
 import moment from 'moment'
 import {connect} from 'react-redux'
-import {reset} from 'redux-form'
+import {reset, change} from 'redux-form'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
@@ -11,6 +11,7 @@ import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import {openErrorAction} from '../../actions/error'
 import updateStore from '../../helpers/updateStore'
+import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
 import * as actionTypes from '../../constants/actionTypes'
 import checkPermission from '../../helpers/checkPermission'
 import getConfig from '../../helpers/getConfig'
@@ -31,12 +32,14 @@ import {
     returnCancelAction,
     returnUpdateAction,
     clientReturnUpdateAction,
-    clientReturnAction
+    clientReturnAction,
+    addProductsListAction
 } from '../../actions/return'
 import {orderItemFetchAction} from '../../actions/order'
 import {openSnackbarAction} from '../../actions/snackbar'
 
 const TWO = 2
+const ZERO = 0
 
 const enhance = compose(
     connect((state, props) => {
@@ -57,6 +60,10 @@ const enhance = compose(
         const updateClientForm = _.get(state, ['form', 'ReturnCreateForm'])
         const isAdmin = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
         const hasMarket = toBoolean(getConfig('MARKETS_MODULE'))
+        const addProductsForm = _.get(state, ['form', 'OrderAddProductsForm'])
+        const addProducts = _.get(state, ['return', 'addProducts', 'data'])
+        const addProductsLoading = _.get(state, ['return', 'addProducts', 'loading'])
+        const filterProducts = filterHelper(addProducts, pathname, query, {'page': 'pdPage', 'pageSize': 'pdPageSize'})
         return {
             list,
             listLoading,
@@ -72,7 +79,11 @@ const enhance = compose(
             isAdmin,
             createForm,
             listInfo,
-            hasMarket
+            hasMarket,
+            addProductsForm,
+            addProducts,
+            addProductsLoading,
+            filterProducts
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -98,6 +109,57 @@ const enhance = compose(
     }, ({dispatch, detail}) => {
         const orderID = _.toInteger(_.get(detail, 'order'))
         orderID && dispatch(orderItemFetchAction(orderID))
+    }),
+    withState('openAddProductDialog', 'setOpenAddProductDialog', false),
+    withState('openAddProductConfirm', 'setOpenAddProductConfirm', false),
+    withPropsOnChange((props, nextProps) => {
+        const except = {
+            page: null,
+            pageSize: null,
+            contract: null,
+            createdFromDate: null,
+            createdToDate: null,
+            deliveryFromDate: null,
+            deliveryToDate: null,
+            paymentType: null,
+            openCreateDialog: null,
+            openFilterDialog: null,
+            product: null,
+            provider: null,
+            status: null,
+            stock: null
+        }
+        const productType = _.get(props, ['addProductsForm', 'values', 'type', 'value'])
+        const productTypeNext = _.get(nextProps, ['addProductsForm', 'values', 'type', 'value'])
+        return ((props.filterProducts.filterRequest(except) !== nextProps.filterProducts.filterRequest(except)) ||
+            (productType !== productTypeNext && nextProps.openAddProductDialog)) && !(props.openAddProductDialog !== nextProps.openAddProductDialog && nextProps.openAddProductDialog)
+    }, ({setOpenAddProductConfirm, addProductsForm, openAddProductDialog, dispatch, filterProducts, createForm}) => {
+        const currency = _.get(createForm, ['values', 'currency', 'value'])
+        const market = _.get(createForm, ['values', 'market', 'value'])
+        const products = _.filter(_.get(addProductsForm, ['values', 'product']), (item) => {
+            const amount = _.toNumber(_.get(item, 'amount'))
+            const price = _.toNumber(_.get(item, 'price'))
+            return amount > ZERO && price > ZERO
+        })
+        const productType = _.get(addProductsForm, ['values', 'type', 'value'])
+        if (!_.isEmpty(products)) {
+            setOpenAddProductConfirm(true)
+        } else if (openAddProductDialog && _.isEmpty(products)) {
+            setOpenAddProductConfirm(false)
+            dispatch(addProductsListAction(filterProducts, productType, market, currency))
+        }
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        return props.openAddProductDialog !== nextProps.openAddProductDialog && nextProps.openAddProductDialog
+    }, ({dispatch, addProductsForm, openAddProductDialog, filterProducts, setOpenAddProductConfirm, createForm, ...data}) => {
+        const productType = _.get(addProductsForm, ['values', 'type', 'value'])
+        const currency = _.get(createForm, ['values', 'currency', 'value'])
+        const market = _.get(createForm, ['values', 'market', 'value'])
+        if (openAddProductDialog) {
+            setOpenAddProductConfirm(false)
+            dispatch(addProductsListAction(filterProducts, productType, market, currency))
+        }
     }),
 
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
@@ -319,6 +381,105 @@ const enhance = compose(
         handleCloseDetail: props => () => {
             const {filter} = props
             hashHistory.push({pathname: ROUTER.RETURN_LIST_URL, query: filter.getParams()})
+        },
+        handleOpenAddProduct: props => () => {
+            const {setOpenAddProductDialog, filter, location: {pathname}} = props
+            hashHistory.push({pathname, query: filter.getParams({'pdPageSize': 25})})
+            setOpenAddProductDialog(true)
+        },
+
+        handleCloseAddProduct: props => () => {
+            const {setOpenAddProductDialog, filter, location: {pathname}} = props
+            hashHistory.push({pathname, query: filter.getParams({'pdPage': null, 'pdPageSize': null, 'pdSearch': null})})
+            setOpenAddProductDialog(false)
+        },
+
+        handleSubmitAddProduct: props => () => {
+            const {setOpenAddProductDialog, addProductsForm, addProducts, dispatch, createForm, filter, location: {pathname}} = props
+            const existingProducts = _.get(createForm, ['values', 'products']) || []
+            const values = _.get(addProductsForm, ['values', 'product'])
+            const getProductData = (id) => {
+                return _.find(_.get(addProducts, 'results'), {'id': id})
+            }
+            const newProductsArray = []
+            _.map(values, (item, index) => {
+                const id = _.toInteger(index)
+                const product = getProductData(id)
+                const amount = _.get(item, 'amount')
+                const price = _.get(item, 'price')
+                if (amount && price) {
+                    newProductsArray.push({
+                        amount: numberWithoutSpaces(_.get(item, 'amount')),
+                        cost: numberWithoutSpaces(_.get(item, 'price')),
+                        product: {
+                            id: id,
+                            value: {
+                                id: _.get(product, 'id'),
+                                name: _.get(product, 'name'),
+                                measurement: {
+                                    id: _.get(product, ['measurement', 'id']),
+                                    name: _.get(product, ['measurement', 'name'])
+                                }
+                            }
+                        }
+                    })
+                }
+            })
+            const checkDifference = _.differenceBy(existingProducts, newProductsArray, (o) => {
+                return o.product.id
+            })
+            dispatch(change('ReturnCreateForm', 'products', _.concat(_.filter(newProductsArray, (item) => item.product.value.id), checkDifference)))
+            hashHistory.push({pathname, query: filter.getParams({'pdPage': null, 'pdPageSize': null, 'pdSearch': null})})
+            setOpenAddProductDialog(false)
+        },
+
+        handleCloseAddProductConfirm: props => () => {
+            const {dispatch, addProductsForm, filterProducts, setOpenAddProductConfirm} = props
+            const productType = _.get(addProductsForm, ['values', 'type', 'value'])
+            dispatch(addProductsListAction(filterProducts, productType))
+            setOpenAddProductConfirm(false)
+        },
+
+        handleSubmitAddProductConfirm: props => () => {
+            const {addProductsForm, addProducts, dispatch, createForm, filterProducts, setOpenAddProductConfirm} = props
+            const productType = _.get(addProductsForm, ['values', 'type', 'value'])
+            const currency = _.get(createForm, ['values', 'currency', 'value'])
+            const market = _.get(createForm, ['values', 'market', 'value'])
+            const existingProducts = _.get(createForm, ['values', 'products']) || []
+            const values = _.get(addProductsForm, ['values', 'product'])
+            const getProductData = (id) => {
+                return _.find(_.get(addProducts, 'results'), {'id': id})
+            }
+            const newProductsArray = []
+            _.map(values, (item, index) => {
+                const id = _.toInteger(index)
+                const product = getProductData(id)
+                const amount = _.get(item, 'amount')
+                const price = _.get(item, 'price')
+                if (amount && price) {
+                    newProductsArray.push({
+                        amount: numberWithoutSpaces(_.get(item, 'amount')),
+                        cost: numberWithoutSpaces(_.get(item, 'price')),
+                        product: {
+                            id: id,
+                            value: {
+                                id: _.get(product, 'id'),
+                                name: _.get(product, 'name'),
+                                measurement: {
+                                    id: _.get(product, ['measurement', 'id']),
+                                    name: _.get(product, ['measurement', 'name'])
+                                }
+                            }
+                        }
+                    })
+                }
+            })
+            const checkDifference = _.differenceBy(existingProducts, newProductsArray, (o) => {
+                return o.product.value.id
+            })
+            dispatch(change('ReturnCreateForm', 'products', _.concat(newProductsArray, checkDifference)))
+            dispatch(addProductsListAction(filterProducts, productType, market, currency))
+            setOpenAddProductConfirm(false)
         }
     }),
 )
@@ -342,7 +503,12 @@ const ReturnList = enhance((props) => {
         listPrint,
         listPrintLoading,
         isAdmin,
-        hasMarket
+        hasMarket,
+        addProducts,
+        addProductsLoading,
+        filterProducts,
+        openAddProductDialog,
+        openAddProductConfirm
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', RETURN_FILTER_OPEN]))
@@ -541,8 +707,20 @@ const ReturnList = enhance((props) => {
             printDialog={printDialog}
             listPrintData={listPrintData}/>
     }
-
     document.getElementById('wrapper').style.height = '100%'
+
+    const addProductDialog = {
+        openAddProductDialog,
+        filter: filterProducts,
+        data: _.get(addProducts, 'results'),
+        loading: addProductsLoading,
+        handleOpenAddProduct: props.handleOpenAddProduct,
+        handleCloseAddProduct: props.handleCloseAddProduct,
+        handleSubmitAddProduct: props.handleSubmitAddProduct,
+        openAddProductConfirm,
+        handleCloseAddProductConfirm: props.handleCloseAddProductConfirm,
+        handleSubmitAddProductConfirm: props.handleSubmitAddProductConfirm
+    }
     return (
         <Layout {...layout}>
             <ReturnGridList
@@ -562,6 +740,7 @@ const ReturnList = enhance((props) => {
                 isAdmin={isAdmin}
                 createDialog={createDialog}
                 hasMarket={hasMarket}
+                addProductDialog={addProductDialog}
             />
         </Layout>
     )

@@ -248,7 +248,8 @@ const enhance = compose(
     }),
     connect((state) => {
         const currency = _.get(state, ['form', 'SupplyCreateForm', 'values', 'currency', 'text']) ||
-            _.get(state, ['form', 'OrderCreateForm', 'values', 'currency', 'text'])
+            _.get(state, ['form', 'OrderCreateForm', 'values', 'currency', 'text']) ||
+            _.get(state, ['form', 'ReturnCreateForm', 'values', 'currency', 'text'])
         return {
             currency
         }
@@ -302,7 +303,8 @@ const OrderAddProductsDialog = enhance((props) => {
         fromAllBalances,
         currency,
         canChangeAnyPrice,
-        canChangePrice
+        canChangePrice,
+        isReturn
     } = props
     const onSubmit = handleSubmit(props.onSubmit)
     const primaryCurrency = currency
@@ -310,7 +312,7 @@ const OrderAddProductsDialog = enhance((props) => {
         const id = _.get(item, 'id')
         const name = fromAllBalances ? _.get(item, 'title') : _.get(item, 'name')
         const code = _.get(item, 'code') || '-'
-        const balance = _.get(item, 'balance')
+        const balance = isReturn ? _.get(item, 'sales') : _.get(item, 'balance')
         const customPrice = _.get(item, 'customPrice')
         const available = numberFormat(_.get(item, 'available'))
         const defects = numberFormat(_.get(item, 'defects'))
@@ -417,7 +419,7 @@ const OrderAddProductsDialog = enhance((props) => {
                             <Row className="dottedList">
                                 <Col xs={4}>{t('Наименование')}</Col>
                                 <Col xs={2}>{t('Код')}</Col>
-                                <Col xs={2}>{t('В наличии')}</Col>
+                                <Col xs={2}>{t(isReturn ? 'Продано' : 'В наличии')}</Col>
                                 <Col xs={2} className={classes.rightAlign}>{t('Цена')}</Col>
                                 <Col xs={2} className={classes.rightAlign}>{t('Кол-во')}</Col>
                             </Row>}
