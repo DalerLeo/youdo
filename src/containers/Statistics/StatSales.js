@@ -18,7 +18,6 @@ import {orderItemFetchAction} from '../../actions/order'
 import * as API from '../../constants/api'
 import {
     statSalesDataFetchAction,
-    statSalesReturnDataFetchAction,
     orderListFetchAction,
     orderStatsFetchAction
 } from '../../actions/statSales'
@@ -32,8 +31,6 @@ const enhance = compose(
         const detail = _.get(state, ['order', 'item', 'data'])
         const graphList = _.get(state, ['statSales', 'data', 'data'])
         const graphLoading = _.get(state, ['statSales', 'data', 'loading'])
-        const graphReturnList = _.get(state, ['statSales', 'returnList', 'data'])
-        const graphReturnLoading = _.get(state, ['statSales', 'returnList', 'loading'])
         const detailLoading = _.get(state, ['order', 'item', 'loading'])
         const list = _.get(state, ['order', 'list', 'data'])
         const listLoading = _.get(state, ['order', 'list', 'loading'])
@@ -48,8 +45,6 @@ const enhance = compose(
             listLoading,
             detail,
             detailLoading,
-            graphReturnList,
-            graphReturnLoading,
             filter,
             filterForm,
             graphList,
@@ -74,7 +69,6 @@ const enhance = compose(
         return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
         dispatch(statSalesDataFetchAction(filter, ONE))
-        dispatch(statSalesReturnDataFetchAction(filter))
     }),
     withPropsOnChange((props, nextProps) => {
         const saleId = _.get(nextProps, ['params', 'statSaleId'])
@@ -167,8 +161,6 @@ const StatSalesList = enhance((props) => {
         listLoading,
         detail,
         detailLoading,
-        graphReturnList,
-        graphReturnLoading,
         filter,
         layout,
         returnData,
@@ -262,29 +254,10 @@ const StatSalesList = enhance((props) => {
         }
 
     }
-    const mergedGraph = {}
-    if (!graphReturnLoading) {
-        _.map(graphList, (item) => {
-            mergedGraph[item.date] = {
-                in: _.toNumber(_.get(item, 'amountCash')) + _.toNumber(_.get(item, 'amountBank')),
-                date: item.date
-            }
-        })
-
-        _.map(graphReturnList, (item) => {
-            if (mergedGraph[item.date]) {
-                mergedGraph[item.date] = {'in': mergedGraph[item.date].in, 'out': item.totalAmount, date: item.date}
-            } else {
-                mergedGraph[item.date] = {'in': 0, 'out': item.totalAmount, date: item.date}
-            }
-        })
-    }
 
     const graphData = {
-        mergedGraph: _.sortBy(mergedGraph, ['date']),
         data: graphList || {},
-        graphLoading: graphLoading || graphReturnLoading,
-        graphReturnList
+        graphLoading: graphLoading
     }
 
     const downloadDocuments = {

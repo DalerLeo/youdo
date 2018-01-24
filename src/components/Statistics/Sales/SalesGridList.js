@@ -272,11 +272,11 @@ const StatSalesGridList = enhance((props) => {
     const sum = _.sumBy(_.get(graphData, 'data'), (item) => {
         return _.toNumber(_.get(item, 'amountCash')) + _.toNumber(_.get(item, 'amountBank'))
     })
-    const returnedValue = _.map(_.get(graphData, 'graphReturnList'), (item) => {
-        return _.toNumber(_.get(item, 'totalAmount'))
+    const returnedValue = _.map(_.get(graphData, 'data'), (item) => {
+        return _.toNumber(_.get(item, 'returnAmount'))
     })
-    const returnSum = _.sumBy(_.get(graphData, 'graphReturnList'), (item) => {
-        return _.toNumber(_.get(item, 'totalAmount'))
+    const returnSum = _.sumBy(_.get(graphData, 'data'), (item) => {
+        return _.toNumber(_.get(item, 'returnAmount'))
     })
     const valueName = _.map(_.get(graphData, 'data'), (item) => {
         return _.get(item, 'date')
@@ -407,10 +407,8 @@ const StatSalesGridList = enhance((props) => {
                                     </Col>
                                     <Col xs={9}>
                                         <StatisticsChart
-                                            merged={true}
                                             primaryValues={value}
                                             secondaryValues={returnedValue}
-                                            mergedGraph={_.get(graphData, 'mergedGraph')}
                                             tooltipTitle={valueName}
                                             primaryText={t('Продажа')}
                                             secondaryText={t('Возврат')}

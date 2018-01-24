@@ -88,15 +88,3 @@ export const orderListFilterSerializer = (data, withOrderReturn) => {
         'ordering': ordering && orderingSnakeCase(ordering)
     }
 }
-
-export const returnGraphSerializer = (data) => {
-    const {...defaultData} = data
-    const urlFromDate = _.get(defaultData, 'fromDate')
-    const urlToDate = _.get(defaultData, 'toDate')
-
-    return {
-        'created_date_0': urlFromDate || firstDayOfMonth,
-        'created_date_1': urlToDate || lastDayOfMonth,
-        'division': _.get(defaultData, 'division')
-    }
-}

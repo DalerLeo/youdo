@@ -16,7 +16,6 @@ import {
     TextField,
     PaymentTypeSearchField,
     ClientSearchField,
-    PriceListSearchField,
     CurrencySearchField
 } from '../ReduxForm'
 import MarketSearchField from '../ReduxForm/ClientBalance/MarketSearchField'
