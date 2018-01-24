@@ -288,12 +288,6 @@ const TransactionsList = enhance((props) => {
     const incomeOptions = _.map(_.get(currentItem, ['incomeCategory', 'options']), (item) => {
         return _.get(_.find(optionsList, {'keyName': _.get(item, 'keyName')}), 'id')
     })
-    const staffExpense = {}
-    _.map(_.get(categryPopop, 'data'), (item) => {
-        staffExpense[_.get(item, 'id')] = {
-            amount: numberFormat(_.get(item, 'amount'))
-        }
-    })
 
     /* Forming initial value in order to Update Transaction */
     const currentItemAmount = _.toNumber(_.get(currentItem, 'amount'))
@@ -313,7 +307,7 @@ const TransactionsList = enhance((props) => {
             custom_rate: _.get(currentItem, 'customRate'),
             comment: _.get(currentItem, 'comment'),
             expanseCategory: {
-                value: currentItemAmount < ZERO
+                value: currentItemAmount < ZERO && _.get(currentItem, 'expanseCategory')
                     ? {
                         id: _.get(currentItem, ['expanseCategory', 'id']),
                         name: _.get(currentItem, ['expanseCategory', 'name']),
@@ -321,14 +315,13 @@ const TransactionsList = enhance((props) => {
                     } : {}
             },
             incomeCategory: {
-                value: currentItemAmount > ZERO
+                value: currentItemAmount > ZERO && _.get(currentItem, 'incomeCategory')
                     ? {
                         id: _.get(currentItem, ['incomeCategory', 'id']),
                         name: _.get(currentItem, ['incomeCategory', 'name']),
                         options: incomeOptions
                     } : {}
-            },
-            users: staffExpense
+            }
         }
         : {
             transaction_child: [{}],
@@ -402,7 +395,6 @@ const TransactionsList = enhance((props) => {
                         }}>
                         <DeleteIcon/>
                     </IconButton>
-                    {false &&
                     <IconButton
                         disabled={(transType !== INCOME) && (transType !== OUTCOME) && (transType !== INCOME_TO_CLIENT) && (transType !== OUTCOME_FROM_CLIENT)}
                         className={classes.deleteBtn}
@@ -413,7 +405,7 @@ const TransactionsList = enhance((props) => {
                             updateTransactionDialog.handleOpenDialog(id)
                         }}>
                         <EditIcon/>
-                    </IconButton>}
+                    </IconButton>
                 </div>}
             </div>
         )
