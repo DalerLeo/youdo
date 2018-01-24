@@ -267,7 +267,7 @@ const StatSalesGridList = enhance((props) => {
 
     const loading = _.get(listData, 'listLoading')
     const value = _.map(_.get(graphData, 'data'), (item) => {
-        return _.toNumber(_.get(item, 'amountCash')) + _.toNumber(_.get(item, 'amountBank'))
+        return _.round(_.toNumber(_.get(item, 'amountCash')) + _.toNumber(_.get(item, 'amountBank')), THREE)
     })
     const sum = _.sumBy(_.get(graphData, 'data'), (item) => {
         return _.toNumber(_.get(item, 'amountCash')) + _.toNumber(_.get(item, 'amountBank'))
@@ -281,7 +281,6 @@ const StatSalesGridList = enhance((props) => {
     const valueName = _.map(_.get(graphData, 'data'), (item) => {
         return _.get(item, 'date')
     })
-
     const headerStyle = {
         backgroundColor: '#fff',
         fontWeight: '600',
@@ -315,7 +314,6 @@ const StatSalesGridList = enhance((props) => {
             const CANCELED = 4
             const balanceToolTip = numberFormat(totalBalance, currentCurrency)
             const paymentType = _.get(item, 'paymentType') === 'cash' ? t('наличный') : t('банковский счет')
-
             return (
                 <Row key={id} className="dottedList" style={status === CANCELED ? {color: '#999', cursor: 'pointer'} : {cursor: 'pointer'}} onClick={() => { statSaleDialog.handleOpenStatSaleDialog(id) }}>
                     <Col xs={1}>{id}</Col>
@@ -328,7 +326,7 @@ const StatSalesGridList = enhance((props) => {
                     <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(totalPrice, currency)}</Col>
                     <Col xs={1} style={{justifyContent: 'flex-end'}}>
                         <OrderStatusIcons
-                            totalBalance={totalBalance}
+                            totalBalance={_.toNumber(totalBalance)}
                             balanceToolTip={balanceToolTip}
                             paymentDate={_.get(item, 'paymentDate')}
                             status={status}
