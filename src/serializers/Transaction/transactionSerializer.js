@@ -126,12 +126,13 @@ export const createExpenseSerializer = (data, cashboxId) => {
         supply,
         'division': division,
         'rate_type': getRateType(currencyRate),
-        'transaction_child': detalization
+        'transaction_child': detalization,
+        date
     }
     return (clientId)
-        ? _.merge(request, {'client': clientId, 'date': date})
+        ? _.merge(request, {'client': clientId})
         : (providerId)
-            ? _.merge(request, {'provider': providerId, 'date': date})
+            ? _.merge(request, {'provider': providerId})
             : request
 }
 const HUNDRED = 100

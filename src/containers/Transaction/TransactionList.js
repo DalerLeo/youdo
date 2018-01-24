@@ -12,6 +12,7 @@ import filterHelper from '../../helpers/filter'
 import checkPermission from '../../helpers/checkPermission'
 import {splitToArray, joinArray} from '../../helpers/joinSplitValues'
 import toBoolean from '../../helpers/toBoolean'
+import numberFormat from '../../helpers/numberFormat'
 import {
     TRANSACTION_CREATE_EXPENSE_DIALOG_OPEN,
     TRANSACTION_CREATE_INCOME_DIALOG_OPEN,
@@ -164,27 +165,45 @@ const enhance = compose(
         const nextIncomeCat = _.get(nextProps, ['createForm', 'values', 'incomeCategory', 'value', 'id'])
         return (prevExpenseCat !== nextExpenseCat && nextExpenseCat) || (prevIncomeCat !== nextIncomeCat && nextIncomeCat)
     }, ({dispatch, createForm, optionsList, setOpenStaff, location: {query}}) => {
+        const category = _.get(createForm, ['values', 'incomeCategory', 'value', 'id']) || _.get(createForm, ['values', 'expanseCategory', 'value', 'id'])
         const incomeOptions = _.get(createForm, ['values', 'incomeCategory', 'value', 'options'])
         const expenseOptions = _.get(createForm, ['values', 'expanseCategory', 'value', 'options'])
         const updateTransactionID = _.toInteger(_.get(query, UPDATE_TRANSACTION))
-        dispatch(optionsListFetchAction())
-            .then(() => {
-                const options = _.get(optionsList, 'results')
-                const staffExpenseOptionId = _.get(_.find(options, {'keyName': 'staff_expanse'}), 'id')
-                const clientOptionId = _.get(_.find(options, {'keyName': 'client'}), 'id')
-                if (!_.includes(expenseOptions, clientOptionId) || !_.includes(incomeOptions, clientOptionId)) {
-                    dispatch(change('TransactionCreateForm', 'client', null))
-                }
-                if (_.includes(expenseOptions, staffExpenseOptionId) || _.includes(incomeOptions, staffExpenseOptionId)) {
-                    setOpenStaff(true)
-                    dispatch(usersListFetchAction())
-                    if (updateTransactionID > ZERO) {
-                        dispatch(transactionCategoryPopopDataAction(updateTransactionID))
+        const form = 'TransactionCreateForm'
+        if (category) {
+            dispatch(optionsListFetchAction())
+                .then(() => {
+                    const options = _.get(optionsList, 'results')
+                    const staffExpenseOptionId = _.get(_.find(options, {'keyName': 'staff_expanse'}), 'id')
+                    const detalizationOptionId = _.get(_.find(options, {'keyName': 'transaction_child'}), 'id')
+                    const clientOptionId = _.get(_.find(options, {'keyName': 'client'}), 'id')
+                    if (!_.includes(expenseOptions, clientOptionId) && !_.includes(incomeOptions, clientOptionId)) {
+                        return dispatch(change(form, 'client', null))
                     }
-                } else {
-                    setOpenStaff(false)
-                }
-            })
+                    if (_.includes(expenseOptions, staffExpenseOptionId) || _.includes(incomeOptions, staffExpenseOptionId)) {
+                        setOpenStaff(true)
+                        dispatch(usersListFetchAction())
+                        if (updateTransactionID > ZERO) {
+                            return dispatch(transactionCategoryPopopDataAction(updateTransactionID))
+                        }
+                    }
+                    if (_.includes(expenseOptions, detalizationOptionId) || _.includes(incomeOptions, detalizationOptionId)) {
+                        if (updateTransactionID > ZERO) {
+                            return dispatch(transactionDetalizationAction(updateTransactionID))
+                                .then((data) => {
+                                    const values = _.get(data, 'value')
+                                    dispatch(change(form, 'transaction_child', _.map(values, (item) => {
+                                        return {
+                                            name: _.get(item, 'name'),
+                                            amount: numberFormat(_.get(item, 'amount'))
+                                        }
+                                    })))
+                                })
+                        }
+                    }
+                    return setOpenStaff(false)
+                })
+        }
     }),
 
     withPropsOnChange((props, nextProps) => {
