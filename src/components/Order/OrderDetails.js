@@ -231,6 +231,7 @@ const OrderDetails = enhance((props) => {
         isSuperUser,
         userCurrencies
     } = props
+    const discounted = _.toNumber(_.get(data, 'discountPrice')) > ZERO
     const id = _.get(data, 'id')
     const market = _.get(data, ['market', 'name'])
     const marketId = _.get(data, ['market', 'id']) || ZERO
@@ -332,9 +333,9 @@ const OrderDetails = enhance((props) => {
                             />
                         </IconMenu>
                     </ToolTip>
-                    <ToolTip position="bottom" text={t('Изменить')}>
+                    <ToolTip position="bottom" text={t(discounted ? 'Сперва отмените скидку' : 'Изменить')}>
                         <IconButton
-                            disabled={(status === CANCELED ? true : status === GIVEN ? !editableWhenGiven : currencyAccess)}
+                            disabled={(status === CANCELED ? true : status === GIVEN ? !editableWhenGiven : currencyAccess) || discounted}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}

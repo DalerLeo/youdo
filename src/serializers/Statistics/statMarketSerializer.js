@@ -14,12 +14,13 @@ const firstDayOfMonth = moment().format('YYYY-MM-01')
 const lastDay = moment().daysInMonth()
 const lastDayOfMonth = moment().format('YYYY-MM-' + lastDay)
 
-export const listFilterSerializer = (data) => {
+export const listFilterSerializer = (data, parent) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
 
     return {
         'search': _.get(defaultData, 'search'),
+        parent,
         'user': _.get(defaultData, 'user') || null,
         'market_type': _.get(defaultData, 'marketType') || null,
         'page': _.get(defaultData, 'page'),

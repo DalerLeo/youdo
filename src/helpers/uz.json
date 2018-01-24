@@ -786,5 +786,6 @@
   "Категории доходов": "",
   "Барсод": "Barkod",
   "Тип ячейки": "",
-  "Удаление невозможно из-за связи с другими данными": "Tegishli ma'lumotlar tufayli o'chirishni iloji yo'q"
+  "Удаление невозможно из-за связи с другими данными": "Tegishli ma'lumotlar tufayli o'chirishni iloji yo'q",
+  "Сперва отмените скидку": "Oldin skidkani bekor qiling"
 }

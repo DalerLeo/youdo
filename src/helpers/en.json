@@ -777,6 +777,7 @@
   "Категории доходов": "Income category",
   "Барсод": "Barcode",
   "Тип ячейки": "Cell type",
-  "Удаление невозможно из-за связи с другими данными": "Unable to delete due to dependency"
+  "Удаление невозможно из-за связи с другими данными": "Unable to delete due to dependency",
+  "Сперва отмените скидку": "First, cancel the discount"
 
 }

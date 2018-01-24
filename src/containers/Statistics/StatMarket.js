@@ -34,6 +34,7 @@ const enhance = compose(
         const marketTypeListLoading = _.get(state, ['statMarket', 'marketTypeList', 'loading'])
         const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
         const filter = filterHelper(marketList, pathname, query)
+        const filterMarketType = filterHelper(marketTypeList, pathname, query)
         return {
             marketList,
             marketListLoading,
@@ -42,7 +43,8 @@ const enhance = compose(
             filter,
             filterForm,
             sumLoading,
-            sumData
+            sumData,
+            filterMarketType
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -113,6 +115,14 @@ const enhance = compose(
             return toggle === MARKET_TYPE
                 ? getDocuments(API.STAT_MARKET_TYPE_GET_DOCUMENT, params)
                 : getDocuments(API.STAT_MARKET_GET_DOCUMENT, params)
+        },
+        handleGetChilds: props => (id) => {
+            const {dispatch, filterMarketType} = props
+            return dispatch(statMarketTypeListFetchAction(filterMarketType, id))
+        },
+        handleResetChilds: props => () => {
+            const {dispatch, filterMarketType} = props
+            return dispatch(statMarketTypeListFetchAction(filterMarketType))
         }
     })
 )
@@ -130,7 +140,8 @@ const StatMarketList = enhance((props) => {
         layout,
         params,
         sumData,
-        sumLoading
+        sumLoading,
+        filterMarketType
     } = props
 
     const detailId = _.toInteger(_.get(params, 'statMarketId'))
@@ -181,7 +192,7 @@ const StatMarketList = enhance((props) => {
     return (
         <Layout {...layout}>
             <StatMarketGridList
-                filter={filter}
+                filter={toggle === MARKET ? filter : filterMarketType}
                 listData={listData}
                 detailData={detailData}
                 statMarketDialog={statMarketDialog}
@@ -190,6 +201,8 @@ const StatMarketList = enhance((props) => {
                 filterItem={filterItem}
                 initialValues={initialValues}
                 filterForm={filterForm}
+                handleGetChilds={props.handleGetChilds}
+                handleResetChilds={props.handleResetChilds}
             />
         </Layout>
     )
