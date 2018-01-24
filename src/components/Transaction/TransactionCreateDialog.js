@@ -312,8 +312,9 @@ const TransactionCreateDialog = enhance((props) => {
     const currency = _.get(cashbox, ['currency', 'name'])
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const divisionStatus = getConfig('DIVISIONS')
-    const convert = convertCurrency(amount, rate)
     const isSalary = _.get(usersData, 'open')
+    const amountToConvert = isSalary ? totalStaffAmount : amount
+    const convert = convertCurrency(amountToConvert, rate)
     const customRateField = (primaryCurrency !== currency && currency && date && canSetCustomRate)
         ? (
             <Field
@@ -434,19 +435,6 @@ const TransactionCreateDialog = enhance((props) => {
                                         <div style={{marginLeft: '5px'}}>{currency}</div>
                                     </div>}
                                 </div>
-                                {(convert && rate && primaryCurrency !== currency)
-                                    ? <div className={classes.convert}>{t('После конвертации')}:
-                                        <strong>{convert} {primaryCurrency}</strong>
-                                    </div> : null}
-                                <Field
-                                    name="comment"
-                                    style={{top: '-20px', lineHeight: '20px', fontSize: '13px'}}
-                                    component={TextField}
-                                    label={t('Комментарий') + '...'}
-                                    multiLine={true}
-                                    rows={1}
-                                    rowsMax={2}
-                                    fullWidth={true}/>
                             </div>
                             : <div className={classes.field}>
                                 <Field
@@ -497,20 +485,20 @@ const TransactionCreateDialog = enhance((props) => {
                                         <div style={{marginLeft: '5px'}}>{currency}</div>
                                     </div>
                                 </div>}
-                                {(convert && rate && primaryCurrency !== currency)
-                                    ? <div className={classes.convert}>{t('После конвертации')}:
-                                        <strong> {convert} {primaryCurrency}</strong>
-                                    </div> : null}
-                                <Field
-                                    name="comment"
-                                    style={{top: '-20px', lineHeight: '20px', fontSize: '13px'}}
-                                    component={TextField}
-                                    label={t('Комментарий') + '...'}
-                                    multiLine={true}
-                                    rows={1}
-                                    rowsMax={3}
-                                    fullWidth={true}/>
                             </div>}
+                        {(convert && rate && primaryCurrency !== currency)
+                            ? <div className={classes.convert}>{t('После конвертации')}:
+                                <strong> {convert} {primaryCurrency}</strong>
+                            </div> : null}
+                        <Field
+                            name="comment"
+                            style={{top: '-20px', lineHeight: '20px', fontSize: '13px'}}
+                            component={TextField}
+                            label={t('Комментарий') + '...'}
+                            multiLine={true}
+                            rows={1}
+                            rowsMax={3}
+                            fullWidth={true}/>
                         <Field
                             name="currencyRate"
                             currency={currency}

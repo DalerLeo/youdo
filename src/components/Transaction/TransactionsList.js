@@ -111,9 +111,11 @@ const enhance = compose(
             justifyContent: 'space-between'
         },
         green: {
+            fontWeight: '600',
             color: '#92ce95 !important'
         },
         red: {
+            fontWeight: '600',
             color: '#e57373 !important'
         },
         label: {
