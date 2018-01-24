@@ -158,40 +158,43 @@ const enhance = compose(
     }),
 
     withState('openStaff', 'setOpenStaff', false),
+    // EXPENSE
     withPropsOnChange((props, nextProps) => {
-        const prevExpenseCat = _.get(props, ['createForm', 'values', 'expanseCategory', 'value', 'id'])
-        const nextExpenseCat = _.get(nextProps, ['createForm', 'values', 'expanseCategory', 'value', 'id'])
-        const prevIncomeCat = _.get(props, ['createForm', 'values', 'incomeCategory', 'value', 'id'])
-        const nextIncomeCat = _.get(nextProps, ['createForm', 'values', 'incomeCategory', 'value', 'id'])
-        return (prevExpenseCat !== nextExpenseCat && nextExpenseCat) || (prevIncomeCat !== nextIncomeCat && nextIncomeCat)
-    }, ({dispatch, createForm, optionsList, setOpenStaff, location: {query}}) => {
-        const category = _.get(createForm, ['values', 'incomeCategory', 'value', 'id']) || _.get(createForm, ['values', 'expanseCategory', 'value', 'id'])
-        const incomeOptions = _.get(createForm, ['values', 'incomeCategory', 'value', 'options'])
-        const expenseOptions = _.get(createForm, ['values', 'expanseCategory', 'value', 'options'])
-        const updateTransactionID = _.toInteger(_.get(query, UPDATE_TRANSACTION))
+        const prevExpenseCat = _.get(props, ['createForm', 'values', 'expanseCategory', 'value', 'options'])
+        const nextExpenseCat = _.get(nextProps, ['createForm', 'values', 'expanseCategory', 'value', 'options'])
+        return !_.isEqual(prevExpenseCat, nextExpenseCat) && !_.isEmpty(nextExpenseCat)
+    }, ({dispatch, createForm, setOpenStaff, location: {query}}) => {
+        const category = _.get(createForm, ['values', 'expanseCategory', 'value', 'id'])
         const form = 'TransactionCreateForm'
-        if (category) {
+        if (_.isInteger(category)) {
+            const expenseOptions = _.first(_.get(createForm, ['values', 'expanseCategory', 'value', 'options']))
+            const updateTransactionID = _.toInteger(_.get(query, UPDATE_TRANSACTION))
             dispatch(optionsListFetchAction())
-                .then(() => {
-                    const options = _.get(optionsList, 'results')
-                    const staffExpenseOptionId = _.get(_.find(options, {'keyName': 'staff_expanse'}), 'id')
-                    const detalizationOptionId = _.get(_.find(options, {'keyName': 'transaction_child'}), 'id')
-                    const clientOptionId = _.get(_.find(options, {'keyName': 'client'}), 'id')
-                    if (!_.includes(expenseOptions, clientOptionId) && !_.includes(incomeOptions, clientOptionId)) {
-                        return dispatch(change(form, 'client', null))
-                    }
-                    if (_.includes(expenseOptions, staffExpenseOptionId) || _.includes(incomeOptions, staffExpenseOptionId)) {
-                        setOpenStaff(true)
-                        dispatch(usersListFetchAction())
-                        if (updateTransactionID > ZERO) {
+                .then((data) => {
+                    const options = _.get(data, ['value', 'results'])
+                    const staffExpenseOptionId = _.get(_.find(options, {'key_name': 'staff_expanse'}), 'id')
+                    const detalizationOptionId = _.get(_.find(options, {'key_name': 'transaction_child'}), 'id')
+                    const clientOptionId = _.get(_.find(options, {'key_name': 'client'}), 'id')
+                    switch (expenseOptions) {
+                        case staffExpenseOptionId: {
+                            setOpenStaff(true)
+                            dispatch(usersListFetchAction())
                             return dispatch(transactionCategoryPopopDataAction(updateTransactionID))
+                                .then((value) => {
+                                    const values = _.get(value, 'value')
+                                    const staffExpense = {}
+                                    _.map(_.get(values, 'results'), (item) => {
+                                        staffExpense[_.get(item, ['staff', 'id'])] = {
+                                            amount: numberFormat(_.get(item, 'amount'))
+                                        }
+                                    })
+                                    dispatch(change(form, 'users', staffExpense))
+                                })
                         }
-                    }
-                    if (_.includes(expenseOptions, detalizationOptionId) || _.includes(incomeOptions, detalizationOptionId)) {
-                        if (updateTransactionID > ZERO) {
+                        case detalizationOptionId: {
                             return dispatch(transactionDetalizationAction(updateTransactionID))
-                                .then((data) => {
-                                    const values = _.get(data, 'value')
+                                .then((value) => {
+                                    const values = _.get(value, 'value')
                                     dispatch(change(form, 'transaction_child', _.map(values, (item) => {
                                         return {
                                             name: _.get(item, 'name'),
@@ -200,8 +203,68 @@ const enhance = compose(
                                     })))
                                 })
                         }
+                        default: {
+                            setOpenStaff(false)
+                            return expenseOptions !== clientOptionId && !_.isNil(expenseOptions)
+                                ? dispatch(change(form, 'client', null))
+                                : null
+                        }
                     }
-                    return setOpenStaff(false)
+                })
+        }
+    }),
+    // INCOME
+    withPropsOnChange((props, nextProps) => {
+        const prevIncomeCat = _.get(props, ['createForm', 'values', 'incomeCategory', 'value', 'options'])
+        const nextIncomeCat = _.get(nextProps, ['createForm', 'values', 'incomeCategory', 'value', 'options'])
+        return !_.isEqual(prevIncomeCat, nextIncomeCat) && !_.isEmpty(nextIncomeCat)
+    }, ({dispatch, createForm, setOpenStaff, location: {query}}) => {
+        const category = _.get(createForm, ['values', 'incomeCategory', 'value', 'id'])
+        const form = 'TransactionCreateForm'
+        if (_.isInteger(category)) {
+            const incomeOptions = _.first(_.get(createForm, ['values', 'incomeCategory', 'value', 'options']))
+            const updateTransactionID = _.toInteger(_.get(query, UPDATE_TRANSACTION))
+            dispatch(optionsListFetchAction())
+                .then((data) => {
+                    const options = _.get(data, ['value', 'results'])
+                    const staffExpenseOptionId = _.get(_.find(options, {'key_name': 'staff_expanse'}), 'id')
+                    const detalizationOptionId = _.get(_.find(options, {'key_name': 'transaction_child'}), 'id')
+                    const clientOptionId = _.get(_.find(options, {'key_name': 'client'}), 'id')
+                    switch (incomeOptions) {
+                        case staffExpenseOptionId: {
+                            setOpenStaff(true)
+                            dispatch(usersListFetchAction())
+                            return dispatch(transactionCategoryPopopDataAction(updateTransactionID))
+                                .then((value) => {
+                                    const values = _.get(value, 'value')
+                                    const staffExpense = {}
+                                    _.map(_.get(values, 'results'), (item) => {
+                                        staffExpense[_.get(item, ['staff', 'id'])] = {
+                                            amount: numberFormat(_.get(item, 'amount'))
+                                        }
+                                    })
+                                    dispatch(change(form, 'users', staffExpense))
+                                })
+                        }
+                        case detalizationOptionId: {
+                            return dispatch(transactionDetalizationAction(updateTransactionID))
+                                .then((value) => {
+                                    const values = _.get(value, 'value')
+                                    dispatch(change(form, 'transaction_child', _.map(values, (item) => {
+                                        return {
+                                            name: _.get(item, 'name'),
+                                            amount: numberFormat(_.get(item, 'amount'))
+                                        }
+                                    })))
+                                })
+                        }
+                        default: {
+                            setOpenStaff(false)
+                            return incomeOptions !== clientOptionId && !_.isNil(incomeOptions)
+                                ? dispatch(change(form, 'client', null))
+                                : null
+                        }
+                    }
                 })
         }
     }),
@@ -217,6 +280,7 @@ const enhance = compose(
     }, ({dispatch, date, createForm, cashboxList, location: {query}}) => {
         const queryCashbox = _.toInteger(_.get(query, 'cashboxId'))
         const queryCurrency = _.toInteger(_.get(query, 'currency'))
+        const updateTransaction = _.toInteger(_.get(query, UPDATE_TRANSACTION)) > ZERO
         const cashbox = queryCashbox > ZERO ? queryCashbox : _.get(createForm, ['values', 'cashbox', 'value'])
         const currencyRate = _.get(createForm, ['values', 'currencyRate'])
         const order = _.get(createForm, ['values', 'order', 'value'])
@@ -229,7 +293,7 @@ const enhance = compose(
                         const customRate = _.get(data, ['value', 'amount'])
                         dispatch(change(form, 'custom_rate', customRate))
                     })
-                case 'custom': return dispatch(change(form, 'custom_rate', ''))
+                case 'custom': return updateTransaction ? null : dispatch(change(form, 'custom_rate', ''))
                 default: return dispatch(transactionConvertAction(date, currency))
                     .then((data) => {
                         const customRate = _.get(data, ['value', 'amount'])

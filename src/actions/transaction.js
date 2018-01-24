@@ -298,7 +298,7 @@ export const usersListFetchAction = () => {
 
 export const transactionCategoryPopopDataAction = (id) => {
     const payload = axios()
-        .get(API.TRANSACTION_CATEGORY_DATA_LIST, {params: {transaction: id}})
+        .get(API.TRANSACTION_CATEGORY_DATA_LIST, {params: {transaction: id, page_size: 100}})
         .then((response) => {
             return _.get(response, 'data')
         })
