@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import {compose, withState} from 'recompose'
 import numberFormat from '../../helpers/numberFormat'
-import getConfig from '../../helpers/getConfig'
 import paymentTypeFormat from '../../helpers/paymentTypeFormat'
 import LinearProgress from '../LinearProgress'
 import Paper from 'material-ui/Paper'
@@ -136,7 +135,6 @@ const enhance = compose(
 )
 
 const ActivityOrder = enhance((props) => {
-    const currentCurrency = getConfig('PRIMARY_CURRENCY')
     const {
         orderlistData,
         classes,

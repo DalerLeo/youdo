@@ -6,7 +6,6 @@ import {compose, withState} from 'recompose'
 import LinearProgress from '../LinearProgress'
 import Paper from 'material-ui/Paper'
 import numberFormat from '../../helpers/numberFormat'
-import getConfig from '../../helpers/getConfig'
 import Info from 'material-ui/svg-icons/action/info-outline'
 import ToolTip from '../ToolTip'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
@@ -134,7 +133,6 @@ const enhance = compose(
 )
 
 const ActivityPayment = enhance((props) => {
-    const currentCurrency = getConfig('PRIMARY_CURRENCY')
     const {
         paymentlistData,
         classes,
