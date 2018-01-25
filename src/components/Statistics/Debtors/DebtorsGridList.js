@@ -26,6 +26,8 @@ import StatisticsFilterExcel from '../StatisticsFilterExcel'
 import NotFound from '../../Images/not-found.png'
 import FullScreen from 'material-ui/svg-icons/navigation/fullscreen'
 import FullScreenExit from 'material-ui/svg-icons/navigation/fullscreen-exit'
+import Expired from 'material-ui/svg-icons/action/update'
+import Pending from 'material-ui/svg-icons/device/access-time'
 import t from '../../../helpers/translate'
 
 export const STAT_DEBTORS_FILTER_KEY = {
@@ -160,7 +162,17 @@ const enhance = compose(
         title: {
             fontWeight: '600',
             '& tr, td': {
-                border: '1px #efefef solid'
+                border: '1px #efefef solid',
+                '& > div': {
+                    width: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    '& > svg': {
+                        marginLeft: '5px',
+                        width: '21px !important',
+                        height: '21px !important'
+                    }
+                }
             }
         },
         subTitle: {
@@ -178,6 +190,7 @@ const enhance = compose(
             '& td:nth-child(odd)': {
                 textAlign: 'left',
                 borderLeft: '1px #efefef solid',
+                borderRight: '1px #efefef solid',
                 '&:first-child': {
                     borderLeft: 'none'
                 }
@@ -562,8 +575,12 @@ const StatDebtorsGridList = enhance((props) => {
                                         <table className={classes.mainTable}>
                                             <tbody className={classes.tableBody}>
                                             <tr className={classes.title}>
-                                                <td colSpan={2}>{t('Просроченные')}</td>
-                                                <td colSpan={2}>{t('Ожидаемые')}</td>
+                                                <td colSpan={2}>
+                                                    <div>{t('Просроченные')} <Expired color={'#e57373'}/></div>
+                                                </td>
+                                                <td colSpan={2}>
+                                                    <div>{t('Ожидаемые')} <Pending color={'#f0ad4e'}/></div>
+                                                </td>
                                             </tr>
                                             <tr className={classes.subTitle}>
                                                 {listHeader}
