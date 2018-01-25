@@ -146,12 +146,10 @@ const enhance = compose(
         const currency = _.get(state, ['form', 'ReturnCreateForm', 'values', 'currency', 'text'])
         const measurement = _.get(state, ['form', 'ReturnCreateForm', 'values', 'product', 'value', 'measurement', 'name'])
         const market = _.get(state, ['form', 'ReturnCreateForm', 'values', 'market', 'value']) || _.get(state, ['form', 'ReturnCreateForm', 'values', 'client', 'value'])
-        const priceList = _.get(state, ['form', 'ReturnCreateForm', 'values', 'priceList', 'value'])
         return {
             currency,
             measurement,
-            market,
-            priceList
+            market
         }
     }),
     withReducer('state', 'dispatch', (state, action) => {
@@ -239,7 +237,7 @@ const iconStyle = {
     }
 }
 
-const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, handleEdit, handleRemove, editItem, setEditItem, measurement, isUpdate, editOnlyCost, market, priceList, currency, ...defaultProps}) => {
+const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, handleEdit, handleRemove, editItem, setEditItem, measurement, isUpdate, editOnlyCost, market, currency, handleOpenAddProduct, ...defaultProps}) => {
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
     const error = _.get(defaultProps, ['products', 'meta', 'error'])
     const configMarkets = toBoolean(getConfig('MARKETS_MODULE'))
@@ -249,13 +247,23 @@ const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, h
             <div>
                 <div className={classes.headers} style={{marginTop: '-10px'}}>
                     <div className={classes.title}>{t('Список товаров')}</div>
-                    {!isUpdate && (withMarket && priceList) && <FlatButton
-                        label={'+ ' + t('добавить товар')}
-                        style={{color: '#12aaeb'}}
-                        labelStyle={{fontSize: '13px'}}
-                        className={classes.span}
-                        onTouchTap={() => dispatch({open: !state.open})}
-                    />}
+                    {!isUpdate && (withMarket && currency) &&
+                    <div>
+                        <FlatButton
+                            label={'+ ' + t('добавить товар')}
+                            style={{color: '#12aaeb'}}
+                            labelStyle={{fontSize: '13px'}}
+                            className={classes.span}
+                            onTouchTap={() => dispatch({open: !state.open})}
+                        />
+                        <FlatButton
+                            label={'+ ' + t('добавить из списка')}
+                            style={{color: '#12aaeb'}}
+                            labelStyle={{fontSize: '13px'}}
+                            className={classes.span}
+                            onTouchTap={handleOpenAddProduct}
+                        />
+                    </div>}
                 </div>
                 {state.open && <Row className={classes.background}>
                     <Col xs={3}>
@@ -273,6 +281,7 @@ const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, h
                             name="product"
                             label={t('Наименование')}
                             className={classes.searchFieldCustom}
+                            addProduct={true}
                             fullWidth={true}
                             {..._.get(defaultProps, 'product')}
                         />
@@ -434,7 +443,7 @@ const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, h
                         <img src={Groceries} alt=""/>
                         {isUpdate
                             ? <div>{t('Список возвращаемого товара пуст')}.</div>
-                            : (market && priceList)
+                            : (market && currency)
                                 ? <div>{t('Вы еще не выбрали ни одного товара')}. <br/> <a onClick={() => dispatch({open: !state.open})}>{t('Добавить')}</a> {t('товар')}?</div>
                                 : <div>{t('Для добавления товаров')} <br/>{t('выберите магазин и прайс-лист')}.</div>}
                     </div>

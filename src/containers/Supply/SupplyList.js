@@ -248,7 +248,7 @@ const enhance = compose(
                     return dispatch(supplyExpenseListFetchAction(id, filterItem))
                 })
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: t('Ошибка при удалении')}))
+                    return dispatch(openSnackbarAction({message: t('Удаление невозможно из-за связи с другими данными')}))
                 })
         },
 
@@ -465,7 +465,7 @@ const enhance = compose(
             const checkDifference = _.differenceBy(existingProducts, newProductsArray, (o) => {
                 return o.product.value.id
             })
-            dispatch(change('SupplyCreateForm', 'products', _.concat(newProductsArray, checkDifference)))
+            dispatch(change('SupplyCreateForm', 'products', _.concat(_.filter(newProductsArray, (item) => item.product.value.id), checkDifference)))
             hashHistory.push({pathname, query: filter.getParams({'pdPage': null, 'pdPageSize': null, 'pdSearch': null})})
             setOpenAddProductDialog(false)
         },

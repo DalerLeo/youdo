@@ -16,7 +16,6 @@ import {
     TextField,
     PaymentTypeSearchField,
     ClientSearchField,
-    PriceListSearchField,
     CurrencySearchField
 } from '../ReduxForm'
 import MarketSearchField from '../ReduxForm/ClientBalance/MarketSearchField'
@@ -250,7 +249,21 @@ const customContentStyle = {
     maxWidth: 'none'
 }
 const ReturnCreateDialog = enhance((props) => {
-    const {open, handleSubmit, onClose, classes, clientId, isUpdate, name, editOnlyCost, totalCost, initialValues, currency, hasMarket} = props
+    const {
+        open,
+        handleSubmit,
+        onClose,
+        classes,
+        clientId,
+        isUpdate,
+        name,
+        editOnlyCost,
+        totalCost,
+        initialValues,
+        currency,
+        hasMarket,
+        handleOpenAddProduct
+    } = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     return (
         <Dialog
@@ -322,15 +335,6 @@ const ReturnCreateDialog = enhance((props) => {
                                         label={t('Тип оплаты')}
                                         fullWidth={true}/>
                                 </div>
-                                <div className={classes.condition}>
-                                    <Field
-                                        name="priceList"
-                                        style={{lineHeight: '20px', fontSize: '13px'}}
-                                        component={PriceListSearchField}
-                                        className={classes.searchFieldCustom}
-                                        label={t('Прайс лист')}
-                                        fullWidth={true}/>
-                                </div>
                                 <div>
                                     <Field
                                         style={{lineHeight: '20px', fontSize: '13px'}}
@@ -348,6 +352,7 @@ const ReturnCreateDialog = enhance((props) => {
                                 <Fields
                                     isUpdate={isUpdate}
                                     editOnlyCost={editOnlyCost}
+                                    handleOpenAddProduct={handleOpenAddProduct}
                                     names={['products', 'product', 'amount', 'cost', 'editAmount', 'editCost']}
                                     component={ClientBalanceReturnProductList}
                                 />

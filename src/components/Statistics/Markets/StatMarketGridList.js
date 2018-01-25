@@ -26,6 +26,7 @@ import t from '../../../helpers/translate'
 import Market from 'material-ui/svg-icons/maps/store-mall-directory'
 import MarketType from 'material-ui/svg-icons/maps/local-mall'
 import {hashHistory} from 'react-router'
+import ExpandList from 'material-ui/svg-icons/action/list'
 
 export const STAT_MARKET_FILTER_KEY = {
     SEARCH: 'search',
@@ -300,7 +301,7 @@ const enhance = compose(
                 borderRadius: '2px',
                 padding: '0 15px',
                 paddingBottom: '10px',
-                width: 'calc((100% / 4) - 10px)',
+                width: 'calc((100% / 3) - 10px)',
                 '& div': {
                     fontSize: '17px',
                     color: '#333',
@@ -380,6 +381,9 @@ const enhance = compose(
             display: 'flex',
             alignItems: 'center'
         },
+        flexSpaceBetween: {
+            justifyContent: 'space-between'
+        },
         fullScreen: {
             marginLeft: '10px !important'
         },
@@ -410,10 +414,26 @@ const enhance = compose(
         },
         shadowButton: {
             boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px'
+        },
+        leftTableList: {
+            '& > span': {
+                display: 'flex !important',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                height: '100%'
+            }
+        },
+        filtered: {
+            whiteSpace: 'nowrap',
+            '& > a': {
+                display: 'block',
+                fontWeight: '600'
+            }
         }
     }),
     withState('currentRow', 'updateRow', null),
     withState('expandedTable', 'setExpandedTable', false),
+    withState('currentParent', 'updateCurrentParent', null),
     reduxForm({
         form: 'StatisticsFilterForm',
         enableReinitialize: true
@@ -455,21 +475,11 @@ const listHeader = [
         title: t('По заказам'),
         tooltip: t('Сумма оплат с заказов')
     },
-    {
-        sorting: true,
-        title: t('Общее'),
-        tooltip: t('Общая сумма оплат')
-    },
     // Debt
     {
         sorting: true,
         title: t('По заказам'),
         tooltip: t('Долг по заказов')
-    },
-    {
-        sorting: true,
-        title: t('Общее'),
-        tooltip: t('Общая сумма долга')
     }
 ]
 
@@ -485,7 +495,11 @@ const StatMarketGridList = enhance((props) => {
         currentRow,
         updateRow,
         expandedTable,
-        setExpandedTable
+        currentParent,
+        updateCurrentParent,
+        setExpandedTable,
+        handleGetChilds,
+        handleResetChilds
     } = props
 
     const sumData = _.get(listData, 'sumData')
@@ -498,8 +512,6 @@ const StatMarketGridList = enhance((props) => {
     const returnOrdersSum = _.toNumber(_.get(sumData, 'returnOrdersSum'))
     const returnTotalSum = _.toNumber(_.get(sumData, 'returnTotalSum'))
     const paymentOrdersSum = _.toNumber(_.get(sumData, 'paymentOrdersSum'))
-    const paymentTotalSum = _.toNumber(_.get(sumData, 'paymentTotalSum'))
-    const debtTotalSum = _.toNumber(_.get(sumData, 'debtTotalSum'))
     const debtOrdersSum = _.toNumber(_.get(sumData, 'deptOrdersSum'))
 
     const styleOnHover = {
@@ -528,24 +540,33 @@ const StatMarketGridList = enhance((props) => {
 
     const tableLeft = _.map(_.get(listData, 'data'), (item, index) => {
         const name = _.get(item, 'name') || 'No'
+        const id = _.get(item, 'id')
         return (
             <div
                 key={index}
+                onClick={isMarketType && !currentParent
+                    ? () => {
+                        updateCurrentParent(name)
+                        handleGetChilds(id)
+                    }
+                    : null }
+                className={classes.leftTableList}
                 style={index === currentRow ? styleOnHover : {}}
                 onMouseEnter={() => { updateRow(index) }}
                 onMouseLeave={() => { updateRow(null) }}>
-                <span>{name}</span>
+                <span style={isMarketType && !currentParent ? {cursor: 'pointer'} : {}}>
+                    {name} {isMarketType && !currentParent && <ExpandList color={'#12aaeb'}/>}
+                </span>
             </div>
         )
     })
+
     const tableList = _.map(_.get(listData, 'data'), (item, index) => {
         const salesFact = _.toNumber(_.get(item, 'salesFact'))
         const salesTotal = _.toNumber(_.get(item, 'salesTotal'))
         const returnOrders = _.toNumber(_.get(item, 'returnOrders'))
         const returnTotal = _.toNumber(_.get(item, 'returnTotal'))
         const paymentOrders = _.toNumber(_.get(item, 'paymentOrders'))
-        const paymentTotal = _.toNumber(_.get(item, 'paymentTotal'))
-        const deptTotal = _.toNumber(_.get(item, 'debtTotal'))
         const deptOrders = _.toNumber(_.get(item, 'deptOrders'))
         const clientName = _.get(item, 'clientName')
         return (
@@ -562,8 +583,6 @@ const StatMarketGridList = enhance((props) => {
                 <td>{numberFormat(returnOrders, primaryCurrency)}</td>
                 <td>{numberFormat(returnTotal, primaryCurrency)}</td>
                 <td>{numberFormat(paymentOrders, primaryCurrency)}</td>
-                <td>{numberFormat(paymentTotal, primaryCurrency)}</td>
-                <td>{numberFormat(deptTotal, primaryCurrency)}</td>
                 <td>{numberFormat(deptOrders, primaryCurrency)}</td>
             </tr>
         )
@@ -629,16 +648,10 @@ const StatMarketGridList = enhance((props) => {
                                     <div>{numberFormat(returnOrdersSum, primaryCurrency)}</div>
                                 </div>
                                 <div>
-                                    <span>{t('Общие оплачено')}</span>
-                                    <div>{numberFormat(paymentTotalSum, primaryCurrency)}</div>
-                                    <span>{t('Оплачено по заказам')}</span>
-                                    <div>{numberFormat(paymentOrdersSum, primaryCurrency)}</div>
-                                </div>
-                                <div>
-                                    <span>{t('Общий долг')}</span>
-                                    <div>{numberFormat(debtTotalSum, primaryCurrency)}</div>
                                     <span>{t('Долг по заказам')}</span>
                                     <div>{numberFormat(debtOrdersSum, primaryCurrency)}</div>
+                                    <span>{t('Оплачено по заказам')}</span>
+                                    <div>{numberFormat(paymentOrdersSum, primaryCurrency)}</div>
                                 </div>
                             </div>}
                         <div className={expandedTable ? classes.expandedTable : ''}>
@@ -675,25 +688,43 @@ const StatMarketGridList = enhance((props) => {
                                     </ToolTip>}
                                 </div>
                             </div>
-                            <div className={classes.toggleWrapper}>
-                                <ToolTip position="left" text="Показать по магазинам">
-                                    <FlatButton
-                                        icon={<Market color={whiteColor}/>}
-                                        className={isMarket ? classes.shadowButton : ''}
-                                        onTouchTap={() => { hashHistory.push(filter.createURL({toggle: MARKET})) }}
-                                        backgroundColor={isMarket ? primaryColor : disabledColor}
-                                        rippleColor={whiteColor}
-                                        hoverColor={isMarket ? primaryColor : disabledColor}/>
-                                </ToolTip>
-                                <ToolTip position="left" text="Показать по типам магазинов">
-                                    <FlatButton
-                                        icon={<MarketType color={whiteColor}/>}
-                                        className={isMarketType ? classes.shadowButton : ''}
-                                        onTouchTap={() => { hashHistory.push(filter.createURL({toggle: MARKET_TYPE})) }}
-                                        backgroundColor={isMarketType ? primaryColor : disabledColor}
-                                        rippleColor={whiteColor}
-                                        hoverColor={isMarketType ? primaryColor : disabledColor}/>
-                                </ToolTip>
+                            <div>
+                                <div className={classes.flexCenter + ' ' + classes.flexSpaceBetween}>
+                                    {isMarketType && currentParent &&
+                                    <div className={classes.filtered}>
+                                        Отфильтровано по: <strong>{currentParent}</strong>
+                                        <a onClick={() => {
+                                            updateCurrentParent(null)
+                                            handleResetChilds()
+                                        }}>Сбросить фильтр</a>
+                                    </div>}
+                                    <div className={classes.toggleWrapper} style={currentParent ? {width: 'auto'} : {width: '100%'}}>
+                                    <ToolTip position="left" text="Показать по магазинам">
+                                            <FlatButton
+                                                icon={<Market color={whiteColor}/>}
+                                                className={isMarket ? classes.shadowButton : ''}
+                                                onTouchTap={() => {
+                                                    updateCurrentParent(null)
+                                                    hashHistory.push(filter.createURL({toggle: MARKET}))
+                                                }}
+                                                backgroundColor={isMarket ? primaryColor : disabledColor}
+                                                rippleColor={whiteColor}
+                                                hoverColor={isMarket ? primaryColor : disabledColor}/>
+                                        </ToolTip>
+                                        <ToolTip position="left" text="Показать по типам магазинов">
+                                            <FlatButton
+                                                icon={<MarketType color={whiteColor}/>}
+                                                className={isMarketType ? classes.shadowButton : ''}
+                                                onTouchTap={() => {
+                                                    updateCurrentParent(null)
+                                                    hashHistory.push(filter.createURL({toggle: MARKET_TYPE}))
+                                                }}
+                                                backgroundColor={isMarketType ? primaryColor : disabledColor}
+                                                rippleColor={whiteColor}
+                                                hoverColor={isMarketType ? primaryColor : disabledColor}/>
+                                        </ToolTip>
+                                    </div>
+                                </div>
                             </div>
                             <div className={classes.container}>
                                 {listLoading && <div className={classes.loader}>
@@ -715,8 +746,8 @@ const StatMarketGridList = enhance((props) => {
                                                 {isMarket && <td rowSpan={2}>{t('Клиент')}</td>}
                                                 <td colSpan={2}>{t('Продажа')}</td>
                                                 <td colSpan={2}>{t('Возврат')}</td>
-                                                <td colSpan={2}>{t('Оплачено')}</td>
-                                                <td colSpan={2}>{t('Долг')}</td>
+                                                <td>{t('Оплачено')}</td>
+                                                <td>{t('Долг')}</td>
                                             </tr>
                                             <tr className={classes.subTitle}>
                                                 {_.map(listHeader, (header, index) => {

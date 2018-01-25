@@ -22,8 +22,12 @@ import ToolTip from '../ToolTip'
 import numberFormat from '../../helpers/numberFormat'
 import dateFormat from '../../helpers/dateTimeFormat'
 import ReturnUpdateDialog from '../Order/OrderReturnDialog'
+import AddProductsDialog from '../Order/OrderAddProductsDialog'
 import Print from 'material-ui/svg-icons/action/print'
 import t from '../../helpers/translate'
+import {
+    COMPLETED
+} from '../../constants/backendConstants'
 
 const listHeader = [
     {
@@ -129,7 +133,8 @@ const OrderGridList = enhance((props) => {
         createDialog,
         isAdmin,
         canChangeAnyReturn,
-        hasMarket
+        hasMarket,
+        addProductDialog
     } = props
 
     const showCheckboxes = toBoolean(_.get(filter.getParams(), 'showCheckboxes'))
@@ -159,7 +164,6 @@ const OrderGridList = enhance((props) => {
     const returnType = _.toInteger(_.get(detailData, ['data', 'type']))
     const detStatus = _.toInteger(_.get(detailData, ['data', 'status']))
 
-    const COMPLETED = 2
     const orderList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const client = _.get(item, ['client', 'name']) || '-'
@@ -251,6 +255,7 @@ const OrderGridList = enhance((props) => {
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
                 hasMarket={hasMarket}
+                handleOpenAddProduct={addProductDialog.handleOpenAddProduct}
             />
             {(returnType === CLIENT_RETURN)
                 ? (isAdmin && <ReturnCreateDialog
@@ -263,6 +268,7 @@ const OrderGridList = enhance((props) => {
                     onClose={updateDialog.handleCloseUpdateDialog}
                     onSubmit={updateDialog.handleSubmitUpdateDialog}
                     hasMarket={hasMarket}
+                    handleOpenAddProduct={addProductDialog.handleOpenAddProduct}
                 />)
                 : (isAdmin && <ReturnUpdateDialog
                     isUpdate={true}
@@ -273,6 +279,21 @@ const OrderGridList = enhance((props) => {
                     onClose={updateDialog.handleCloseUpdateDialog}
                     onSubmit={updateDialog.handleSubmitUpdateDialog}
                 />)}
+            {addProductDialog.openAddProductDialog &&
+            <AddProductsDialog
+                open={addProductDialog.openAddProductDialog}
+                loading={addProductDialog.loading}
+                filter={addProductDialog.filter}
+                data={addProductDialog.data}
+                onClose={addProductDialog.handleCloseAddProduct}
+                onSubmit={addProductDialog.handleSubmitAddProduct}
+                initialValues={addProductDialog.initialValues}
+                openAddProductConfirm={addProductDialog.openAddProductConfirm}
+                handleCloseAddProductConfirm={addProductDialog.handleCloseAddProductConfirm}
+                handleSubmitAddProductConfirm={addProductDialog.handleSubmitAddProductConfirm}
+                withoutCustomPrice={true}
+                isReturn={true}
+            />}
         </Container>
     )
 })

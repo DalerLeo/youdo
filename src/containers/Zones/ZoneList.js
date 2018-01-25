@@ -195,7 +195,7 @@ const enhance = compose(
                     return dispatch(openSnackbarAction({message: t('Зона успешно удалена')}))
                 })
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: t('Ошибка при удалении')}))
+                    return dispatch(openSnackbarAction({message: t('Удаление невозможно из-за связи с другими данными')}))
                 })
         },
 

@@ -7,7 +7,6 @@ import toCamelCase from '../../helpers/toCamelCase'
 import t from '../../helpers/translate'
 import {TextField, normalizeNumber} from '../ReduxForm'
 import {openErrorAction} from '../../actions/error'
-import ContentAdd from 'material-ui/svg-icons/content/add-circle-outline'
 import ContentRemove from 'material-ui/svg-icons/content/remove-circle-outline'
 import IconButton from 'material-ui/IconButton'
 
@@ -53,11 +52,19 @@ const enhance = compose(
         detail: {
             display: 'flex',
             alignItems: 'flex-end',
+            flexWrap: 'wrap',
             justifyContent: 'space-between',
             paddingLeft: '30px',
             paddingRight: '10px'
+        },
+        addAnother: {
+            width: '100%',
+            margin: '10px 0',
+            padding: '0 30px',
+            '& a': {
+                fontWeight: '600'
+            }
         }
-
     }),
     withState('searchQuery', 'setSearchQuery', ''),
     withHandlers({
@@ -90,20 +97,16 @@ const iconStyle = {
     }
 }
 
-const ONE = 1
 const TransactionCreateDetalization = enhance((props) => {
     const {
         fields,
         classes
     } = props
 
-    const handleTouchTap = (index) => {
-        const LAST_INDEX = index + ONE
-
-        if (fields.length === LAST_INDEX) {
+    const handleTouchTap = (index, addAnother) => {
+        if (addAnother) {
             return fields.push({})
         }
-
         return fields.remove(index)
     }
 
@@ -126,10 +129,10 @@ const TransactionCreateDetalization = enhance((props) => {
                     </div>
                 </div>
                 <IconButton
-                    onTouchTap={() => handleTouchTap(index)}
+                    onTouchTap={() => handleTouchTap(index, false)}
                     iconStyle={iconStyle.icon}
                     style={iconStyle.button}>
-                    {fields.length !== index + ONE ? <ContentRemove/> : <ContentAdd />}
+                    <ContentRemove/>
                 </IconButton>
             </div>
         )
@@ -138,7 +141,10 @@ const TransactionCreateDetalization = enhance((props) => {
     return (
         <div className={classes.salaryWrapper}>
             <div className={classes.subTitle}>{t('Детализация')}</div>
-            {_.reverse(details)}
+            {details}
+            <div className={classes.addAnother}>
+                <a onClick={() => handleTouchTap(null, true)}>{t('Добавить')}</a>
+            </div>
         </div>
     )
 })

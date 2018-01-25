@@ -12,8 +12,6 @@ const dateFormat = (date, time, defaultText) => {
     return (date && time) ? dateTime : (date) ? moment(date).locale('ru').format('D MMM') : defaultText
 }
 
-const MINUS_ONE = -1
-const ZERO = 0
 const enhance = compose(
     injectSheet({
 
@@ -27,22 +25,8 @@ const StatisticsChart = enhance((props) => {
         secondaryValues,
         primaryText,
         secondaryText,
-        height,
-        mergedGraph,
-        merged
+        height
     } = props
-
-    const clientIn = []
-    const clientOut = []
-    const clientDate = []
-    _.map(mergedGraph, (item) => {
-        const dataIn = _.toNumber(_.get(item, 'in'))
-        const dataOut = _.toNumber(_.get(item, 'out')) < ZERO ? _.toNumber(_.get(item, 'out')) * MINUS_ONE : _.toNumber(_.get(item, 'out'))
-        const date = dateFormat(_.get(item, 'date'))
-        clientIn.push(dataIn)
-        clientOut.push(dataOut)
-        clientDate.push(date)
-    })
 
     const tooltipDate = _.map(tooltipTitle, (item) => {
         return dateFormat(item)
@@ -67,7 +51,7 @@ const StatisticsChart = enhance((props) => {
             enabled: false
         },
         xAxis: {
-            categories: merged ? clientDate : tooltipDate,
+            categories: tooltipDate,
             tickmarkPlacement: 'on',
             title: {
                 text: '',
@@ -125,7 +109,7 @@ const StatisticsChart = enhance((props) => {
                 symbol: 'circle'
             },
             name: primaryText,
-            data: merged ? clientIn : primaryValues,
+            data: primaryValues,
             color: '#58bed9'
 
         },
@@ -135,7 +119,7 @@ const StatisticsChart = enhance((props) => {
                 symbol: 'circle'
             },
             name: secondaryText,
-            data: merged ? clientOut : secondaryValues,
+            data: secondaryValues,
             color: '#ff4a4a'
 
         }]

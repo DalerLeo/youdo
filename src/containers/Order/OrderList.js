@@ -418,7 +418,7 @@ const enhance = compose(
                     return dispatch(openSnackbarAction({message: t('Успешно удалено')}))
                 })
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: t('Ошибка при удалении')}))
+                    return dispatch(openSnackbarAction({message: t('Удаление невозможно из-за связи с другими данными')}))
                 })
         },
 
@@ -659,7 +659,7 @@ const enhance = compose(
         handleCloseAddProductConfirm: props => () => {
             const {dispatch, createForm, addProductsForm, filterProducts, setOpenAddProductConfirm} = props
             const priceList = _.get(createForm, ['values', 'priceList', 'value'])
-            const productType = _.get(addProductsForm, ['values', 'productType', 'value'])
+            const productType = _.get(addProductsForm, ['values', 'type', 'value'])
             dispatch(orderAddProductsListAction(priceList, filterProducts, productType))
             setOpenAddProductConfirm(false)
         },
@@ -667,7 +667,7 @@ const enhance = compose(
         handleSubmitAddProductConfirm: props => () => {
             const {addProductsForm, editProducts, dispatch, createForm, filterProducts, setOpenAddProductConfirm} = props
             const priceList = _.get(createForm, ['values', 'priceList', 'value'])
-            const productType = _.get(addProductsForm, ['values', 'productType', 'value'])
+            const productType = _.get(addProductsForm, ['values', 'type', 'value'])
             const existingProducts = _.get(createForm, ['values', 'products']) || []
             const values = _.get(addProductsForm, ['values', 'product'])
             const getProductData = (id) => {
@@ -858,7 +858,7 @@ const enhance = compose(
             const checkDifference = _.differenceBy(existingProducts, newProductsArray, (o) => {
                 return o.product.value.id
             })
-            dispatch(change('OrderCreateForm', 'products', _.concat(newProductsArray, checkDifference)))
+            dispatch(change('OrderCreateForm', 'products', _.concat(_.filter(newProductsArray, (item) => item.product.value.id), checkDifference)))
             hashHistory.push({pathname, query: filter.getParams({'pdPage': null, 'pdPageSize': null, 'pdSearch': null})})
             setOpenAddProductDialog(false)
         },

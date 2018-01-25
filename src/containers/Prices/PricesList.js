@@ -92,7 +92,7 @@ const enhance = compose(
                     dispatch(pricesListFetchAction(filter))
                 })
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: t('Ошибка при удалении')}))
+                    return dispatch(openSnackbarAction({message: t('Удаление невозможно из-за связи с другими данными')}))
                 })
         },
 

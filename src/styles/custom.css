@@ -125,6 +125,8 @@ hr.lineDote {
 .greenFont svg {color:#81c784 !important;}
 .redFont {color:#e57373 !important;}
 .redFont svg {color:#e57373 !important;}
+.yellowFont {color:#f0ad4e !important;}
+.yellowFont svg {color:#f0ad4e !important;}
 
 /*Linear progress*/
 .progress {

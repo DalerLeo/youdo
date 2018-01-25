@@ -12,14 +12,15 @@ import IconButton from 'material-ui/IconButton'
 import ToolTip from '../ToolTip'
 import t from '../../helpers/translate'
 import dateFormat from '../../helpers/dateFormat'
-
-const ZERO = 0
-const REQUESTED = 0
-const READY = 1
-const GIVEN = 2
-const DELIVERED = 3
-const CANCELED = 4
-const NOT_CONFIRMED = 5
+import {
+    REQUESTED,
+    NOT_CONFIRMED,
+    READY,
+    ZERO,
+    CANCELLED,
+    GIVEN,
+    DELIVERED
+} from '../../constants/backendConstants'
 
 const OrderStatusIcons = (props) => {
     const {
@@ -63,7 +64,7 @@ const OrderStatusIcons = (props) => {
         }
         return '#b7bbb7'
     }
-    const paymentIcon = status !== CANCELED
+    const paymentIcon = status !== CANCELLED
     ? (
         <ToolTip position="bottom" text={(totalBalance > ZERO) && (paymentDifference <= ZERO)
             ? PAY_DELAY
@@ -99,7 +100,7 @@ const OrderStatusIcons = (props) => {
             case READY: return getTooltip(t('Есть на складе'), <Available color="#f0ad4e"/>)
             case DELIVERED: return getTooltip(t('Доставлен'), <Delivered color="#81c784"/>)
             case GIVEN: return getTooltip(t('Передан доставщику'), <Transferred color="#f0ad4e"/>)
-            case CANCELED: return getTooltip(t('Заказ отменен'), <Canceled color='#e57373'/>)
+            case CANCELLED: return getTooltip(t('Заказ отменен'), <Canceled color='#e57373'/>)
             case NOT_CONFIRMED: return getTooltip(t('Не подтвержден'), <NotConfirmed color='#999'/>)
             default: return null
         }

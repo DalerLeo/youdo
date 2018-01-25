@@ -1,7 +1,8 @@
 
-const ONE = 1
+import t from './translate'
+const BANK = 'bank'
 const paymentTypeFormat = (type) => {
-    return (Number(type) === ONE) ? 'Банковский счет' : 'Наличными'
+    return (type === BANK) ? t('Перечислением') : t('Наличными')
 }
 
 export default paymentTypeFormat

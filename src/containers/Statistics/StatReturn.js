@@ -16,7 +16,7 @@ import getConfig from '../../helpers/getConfig'
 import {StatReturnGridList, STAT_RETURN_DIALOG_OPEN} from '../../components/Statistics'
 import {STAT_RETURN_FILTER_KEY} from '../../components/Statistics/Return/StatReturnGridList'
 import * as API from '../../constants/api'
-import {returnDataSumFetchAction} from '../../actions/statReturn'
+import {returnDataSumFetchAction, returnDataSumDetailsFetchAction} from '../../actions/statReturn'
 import {returnListFetchAction, returnItemFetchAction} from '../../actions/return'
 const enhance = compose(
     connect((state, props) => {
@@ -25,6 +25,8 @@ const enhance = compose(
         const detail = _.get(state, ['return', 'item', 'data'])
         const graphList = _.get(state, ['statReturn', 'list', 'data'])
         const graphLoading = _.get(state, ['statReturn', 'list', 'loading'])
+        const sumDetails = _.get(state, ['statReturn', 'sumDetails', 'data'])
+        const sumDetailsLoading = _.get(state, ['statReturn', 'sumDetails', 'loading'])
         const detailLoading = _.get(state, ['return', 'item', 'loading'])
         const list = _.get(state, ['return', 'list', 'data'])
         const listLoading = _.get(state, ['return', 'list', 'loading'])
@@ -41,13 +43,16 @@ const enhance = compose(
             filterForm,
             graphList,
             graphLoading,
-            hasMarket
+            hasMarket,
+            sumDetails,
+            sumDetailsLoading
         }
     }),
     withPropsOnChange((props, nextProps) => {
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
         dispatch(returnListFetchAction(filter))
+        dispatch(returnDataSumDetailsFetchAction(filter))
     }),
     withPropsOnChange((props, nextProps) => {
         return (props.query.fromDate !== nextProps.query.fromDate) ||
@@ -128,7 +133,9 @@ const StatReturnList = enhance((props) => {
         params,
         graphList,
         graphLoading,
-        hasMarket
+        hasMarket,
+        sumDetails,
+        sumDetailsLoading
     } = props
 
     const detailId = _.toInteger(_.get(params, 'statReturnId'))
@@ -187,6 +194,10 @@ const StatReturnList = enhance((props) => {
         }
     }
 
+    const sumDetailsData = {
+        data: sumDetails,
+        sumDetailsLoading
+    }
     const graphData = {
         data: graphList || {},
         graphLoading
@@ -207,6 +218,7 @@ const StatReturnList = enhance((props) => {
                 graphData={graphData}
                 handleGetDocument={props.handleGetDocument}
                 hasMarket={hasMarket}
+                sumDetailsData={sumDetailsData}
             />
         </Layout>
     )

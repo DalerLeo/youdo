@@ -27,6 +27,11 @@ import dateFormat from '../../helpers/dateFormat'
 import {connect} from 'react-redux'
 import AddProductDialog from '../Order/OrderAddProductsDialog'
 import t from '../../helpers/translate'
+import {
+    PENDING,
+    IN_PROGRESS,
+    COMPLETED
+} from '../../constants/backendConstants'
 
 const listHeader = [
     {
@@ -219,9 +224,6 @@ const SupplyGridList = enhance((props) => {
         />
     )
 
-    const PENDING = 0
-    const IN_PROGRESS = 1
-    const COMPLETED = 2
     const supplyList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(_.get(item, 'provider'), 'name')

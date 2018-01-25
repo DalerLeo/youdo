@@ -34,6 +34,9 @@ import {
     CheckBox
 } from '../../ReduxForm'
 import t from '../../../helpers/translate'
+import {
+    CANCELLED
+} from '../../../constants/backendConstants'
 
 export const STAT_SALES_FILTER_KEY = {
     CLIENT: 'client',
@@ -267,21 +270,20 @@ const StatSalesGridList = enhance((props) => {
 
     const loading = _.get(listData, 'listLoading')
     const value = _.map(_.get(graphData, 'data'), (item) => {
-        return _.toNumber(_.get(item, 'amountCash')) + _.toNumber(_.get(item, 'amountBank'))
+        return _.round(_.toNumber(_.get(item, 'amountCash')) + _.toNumber(_.get(item, 'amountBank')), THREE)
     })
     const sum = _.sumBy(_.get(graphData, 'data'), (item) => {
         return _.toNumber(_.get(item, 'amountCash')) + _.toNumber(_.get(item, 'amountBank'))
     })
-    const returnedValue = _.map(_.get(graphData, 'graphReturnList'), (item) => {
-        return _.toNumber(_.get(item, 'totalAmount'))
+    const returnedValue = _.map(_.get(graphData, 'data'), (item) => {
+        return _.toNumber(_.get(item, 'returnAmount'))
     })
-    const returnSum = _.sumBy(_.get(graphData, 'graphReturnList'), (item) => {
-        return _.toNumber(_.get(item, 'totalAmount'))
+    const returnSum = _.sumBy(_.get(graphData, 'data'), (item) => {
+        return _.toNumber(_.get(item, 'returnAmount'))
     })
     const valueName = _.map(_.get(graphData, 'data'), (item) => {
         return _.get(item, 'date')
     })
-
     const headerStyle = {
         backgroundColor: '#fff',
         fontWeight: '600',
@@ -312,12 +314,10 @@ const StatSalesGridList = enhance((props) => {
             const totalPrice = _.get(item, 'totalPrice')
             const totalBalance = _.get(item, 'totalBalance')
             const secondName = _.get(item, ['user', 'secondName '])
-            const CANCELED = 4
             const balanceToolTip = numberFormat(totalBalance, currentCurrency)
             const paymentType = _.get(item, 'paymentType') === 'cash' ? t('наличный') : t('банковский счет')
-
             return (
-                <Row key={id} className="dottedList" style={status === CANCELED ? {color: '#999', cursor: 'pointer'} : {cursor: 'pointer'}} onClick={() => { statSaleDialog.handleOpenStatSaleDialog(id) }}>
+                <Row key={id} className="dottedList" style={status === CANCELLED ? {color: '#999', cursor: 'pointer'} : {cursor: 'pointer'}} onClick={() => { statSaleDialog.handleOpenStatSaleDialog(id) }}>
                     <Col xs={1}>{id}</Col>
                     <Col xs={2}>{createdDate}</Col>
                     {hasMarket && <Col xs={2}>{marketName}</Col>}
@@ -328,7 +328,7 @@ const StatSalesGridList = enhance((props) => {
                     <Col xs={2} style={{justifyContent: 'flex-end'}}>{numberFormat(totalPrice, currency)}</Col>
                     <Col xs={1} style={{justifyContent: 'flex-end'}}>
                         <OrderStatusIcons
-                            totalBalance={totalBalance}
+                            totalBalance={_.toNumber(totalBalance)}
                             balanceToolTip={balanceToolTip}
                             paymentDate={_.get(item, 'paymentDate')}
                             status={status}
@@ -407,10 +407,8 @@ const StatSalesGridList = enhance((props) => {
                                     </Col>
                                     <Col xs={9}>
                                         <StatisticsChart
-                                            merged={true}
                                             primaryValues={value}
                                             secondaryValues={returnedValue}
-                                            mergedGraph={_.get(graphData, 'mergedGraph')}
                                             tooltipTitle={valueName}
                                             primaryText={t('Продажа')}
                                             secondaryText={t('Возврат')}

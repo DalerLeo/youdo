@@ -37,23 +37,6 @@ export const returnListFetchAction = (filter) => {
         payload
     }
 }
-export const returnListUpdateStoreAction = (id, list, obj) => {
-    const newList = _.map(_.get(list, 'results'), (item) => {
-        if (item.id === id) {
-            _.merge(item, obj)
-        }
-        return item
-    })
-    const newData = {...list, results: newList}
-    const getNewData = () => {
-        return Promise.resolve(newData)
-    }
-
-    return {
-        type: actionTypes.RETURN_LIST,
-        payload: getNewData()
-    }
-}
 
 export const returnListPrintFetchAction = (id, filter) => {
     const orderReturns = id || _.get(filter.getParams(), 'select')
@@ -133,6 +116,29 @@ export const clientReturnAction = (formValues, id) => {
 
     return {
         type: actionTypes.CLIENT_TRANSACTION_RETURN,
+        payload
+    }
+}
+
+export const addProductsListAction = (filter, type, market, currency) => {
+    const params = {
+        page_size: _.get(filter.getParams(), 'pdPageSize'),
+        page: _.get(filter.getParams(), 'pdPage'),
+        search: _.get(filter.getParams(), 'pdSearch'),
+        type,
+        market
+    }
+    const payload = axios()
+        .get(API.RETURN_CREATE_PRODUCTS_LIST, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.RETURN_PRODUCT_ADD,
         payload
     }
 }

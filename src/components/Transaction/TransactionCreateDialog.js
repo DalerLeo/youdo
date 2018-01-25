@@ -180,7 +180,7 @@ const enhance = compose(
             margin: '15px 0'
         },
         convert: {
-            margin: '10px 0',
+            margin: '20px 0 10px',
             '& strong': {
                 marginLeft: '5px'
             }
@@ -228,9 +228,6 @@ const enhance = compose(
         const incomeCategoryOptions = _.get(state, ['form', 'TransactionCreateForm', 'values', 'incomeCategory', 'value', 'options'])
         const expenseCategoryOptions = _.get(state, ['form', 'TransactionCreateForm', 'values', 'expanseCategory', 'value', 'options'])
         const users = _.get(state, ['form', 'TransactionCreateForm', 'values', 'users'])
-        const totalStaffAmount = _.sumBy(users, (item) => {
-            return _.toNumber(numberWithoutSpaces(_.get(item, 'amount')))
-        })
         return {
             rate,
             amount,
@@ -243,7 +240,7 @@ const enhance = compose(
             optionsList,
             incomeCategoryOptions,
             expenseCategoryOptions,
-            totalStaffAmount,
+            users,
             incomeCategory
         }
     }),
@@ -279,7 +276,7 @@ const TransactionCreateDialog = enhance((props) => {
         optionsList,
         incomeCategoryOptions,
         expenseCategoryOptions,
-        totalStaffAmount,
+        users,
         order,
         supply,
         supplyExpense,
@@ -289,6 +286,10 @@ const TransactionCreateDialog = enhance((props) => {
         additionalData,
         hideRedundant
     } = props
+
+    const totalStaffAmount = _.sumBy(_.toArray(users), (item) => {
+        return _.toNumber(numberWithoutSpaces(_.get(item, 'amount')))
+    })
 
     const canSetCustomRate = checkPermission('can_set_custom_rate')
 
@@ -312,8 +313,9 @@ const TransactionCreateDialog = enhance((props) => {
     const currency = _.get(cashbox, ['currency', 'name'])
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const divisionStatus = getConfig('DIVISIONS')
-    const convert = convertCurrency(amount, rate)
     const isSalary = _.get(usersData, 'open')
+    const amountToConvert = isSalary ? totalStaffAmount : amount
+    const convert = convertCurrency(amountToConvert, rate)
     const customRateField = (primaryCurrency !== currency && currency && date && canSetCustomRate)
         ? (
             <Field
@@ -326,7 +328,6 @@ const TransactionCreateDialog = enhance((props) => {
         )
         : null
     const pendingsDisableDivision = Boolean(additionalData) && Boolean((order || supply || supplyExpense) && division)
-
     return (
         <Dialog
             modal={true}
@@ -434,19 +435,6 @@ const TransactionCreateDialog = enhance((props) => {
                                         <div style={{marginLeft: '5px'}}>{currency}</div>
                                     </div>}
                                 </div>
-                                {(convert && rate && primaryCurrency !== currency)
-                                    ? <div className={classes.convert}>{t('После конвертации')}:
-                                        <strong>{convert} {primaryCurrency}</strong>
-                                    </div> : null}
-                                <Field
-                                    name="comment"
-                                    style={{top: '-20px', lineHeight: '20px', fontSize: '13px'}}
-                                    component={TextField}
-                                    label={t('Комментарий') + '...'}
-                                    multiLine={true}
-                                    rows={1}
-                                    rowsMax={2}
-                                    fullWidth={true}/>
                             </div>
                             : <div className={classes.field}>
                                 <Field
@@ -497,20 +485,16 @@ const TransactionCreateDialog = enhance((props) => {
                                         <div style={{marginLeft: '5px'}}>{currency}</div>
                                     </div>
                                 </div>}
-                                {(convert && rate && primaryCurrency !== currency)
-                                    ? <div className={classes.convert}>{t('После конвертации')}:
-                                        <strong> {convert} {primaryCurrency}</strong>
-                                    </div> : null}
-                                <Field
-                                    name="comment"
-                                    style={{top: '-20px', lineHeight: '20px', fontSize: '13px'}}
-                                    component={TextField}
-                                    label={t('Комментарий') + '...'}
-                                    multiLine={true}
-                                    rows={1}
-                                    rowsMax={3}
-                                    fullWidth={true}/>
                             </div>}
+                        <Field
+                            name="comment"
+                            style={{top: '-20px', lineHeight: '20px', fontSize: '13px'}}
+                            component={TextField}
+                            label={t('Комментарий') + '...'}
+                            multiLine={true}
+                            rows={1}
+                            rowsMax={3}
+                            fullWidth={true}/>
                         <Field
                             name="currencyRate"
                             currency={currency}
@@ -520,6 +504,10 @@ const TransactionCreateDialog = enhance((props) => {
                             customRateField={customRateField}
                             component={RateRadioButton}
                         />
+                        {(convert && rate && primaryCurrency !== currency)
+                            ? <div className={classes.convert}>{t('После конвертации')}:
+                                <strong> {convert} {primaryCurrency}</strong>
+                            </div> : null}
                     </div>
                     {isSalary && <TransactionCreateSalary usersData={usersData}/>}
                     {showDetalization && <FieldArray name={'transaction_child'} component={TransactionCreateDetalization}/>}

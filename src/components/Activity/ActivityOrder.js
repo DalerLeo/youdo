@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import {compose, withState} from 'recompose'
 import numberFormat from '../../helpers/numberFormat'
-import getConfig from '../../helpers/getConfig'
 import paymentTypeFormat from '../../helpers/paymentTypeFormat'
 import LinearProgress from '../LinearProgress'
 import Paper from 'material-ui/Paper'
@@ -136,7 +135,6 @@ const enhance = compose(
 )
 
 const ActivityOrder = enhance((props) => {
-    const currentCurrency = getConfig('PRIMARY_CURRENCY')
     const {
         orderlistData,
         classes,
@@ -152,10 +150,17 @@ const ActivityOrder = enhance((props) => {
         return _.get(o, 'type')
     })
     const orderlistLoading = _.get(orderlistData, 'orderListLoading')
+    const groupByType = _.groupBy(summary, 'paymentType')
     const isEmpty = _.isEmpty(_.get(orderlistData, 'data')) && !orderlistLoading
-    const countSummary = _.get(summary, 'count')
-    const cashSummary = numberFormat(_.get(summary, 'cash'), currentCurrency)
-    const bankSummary = numberFormat(_.get(summary, 'bank'), currentCurrency)
+    const countSummary = _.sumBy(summary, (item) => _.get(item, 'count'))
+    const cashData = _.first(_.filter(groupByType, (item, index) => index === 'cash'))
+    const bankData = _.first(_.filter(groupByType, (item, index) => index === 'bank'))
+    const cashSummary = _.join(_.map(cashData, (item) => {
+        return numberFormat(_.get(item, 'totalAmount'), _.get(item, 'currencyName'))
+    }), ', ')
+    const bankSummary = _.join(_.map(bankData, (item) => {
+        return numberFormat(_.get(item, 'totalAmount'), _.get(item, 'currencyName'))
+    }), ', ')
     const tooltipText = '<div>' + t('Сумма (нал)') + ': ' + cashSummary + '</div> <div>' + t('Сумма (пер)') + ': ' + bankSummary + '</div>'
     const orderList = _.map(_.get(orderlistData, 'data'), (item) => {
         const id = _.get(item, ['order', 'id'])

@@ -12,6 +12,7 @@ import filterHelper from '../../helpers/filter'
 import checkPermission from '../../helpers/checkPermission'
 import {splitToArray, joinArray} from '../../helpers/joinSplitValues'
 import toBoolean from '../../helpers/toBoolean'
+import numberFormat from '../../helpers/numberFormat'
 import {
     TRANSACTION_CREATE_EXPENSE_DIALOG_OPEN,
     TRANSACTION_CREATE_INCOME_DIALOG_OPEN,
@@ -157,34 +158,115 @@ const enhance = compose(
     }),
 
     withState('openStaff', 'setOpenStaff', false),
+    // EXPENSE
     withPropsOnChange((props, nextProps) => {
-        const prevExpenseCat = _.get(props, ['createForm', 'values', 'expanseCategory', 'value', 'id'])
-        const nextExpenseCat = _.get(nextProps, ['createForm', 'values', 'expanseCategory', 'value', 'id'])
-        const prevIncomeCat = _.get(props, ['createForm', 'values', 'incomeCategory', 'value', 'id'])
-        const nextIncomeCat = _.get(nextProps, ['createForm', 'values', 'incomeCategory', 'value', 'id'])
-        return (prevExpenseCat !== nextExpenseCat && nextExpenseCat) || (prevIncomeCat !== nextIncomeCat && nextIncomeCat)
-    }, ({dispatch, createForm, optionsList, setOpenStaff, location: {query}}) => {
-        const incomeOptions = _.get(createForm, ['values', 'incomeCategory', 'value', 'options'])
-        const expenseOptions = _.get(createForm, ['values', 'expanseCategory', 'value', 'options'])
-        const updateTransactionID = _.toInteger(_.get(query, UPDATE_TRANSACTION))
-        dispatch(optionsListFetchAction())
-            .then(() => {
-                const options = _.get(optionsList, 'results')
-                const staffExpenseOptionId = _.get(_.find(options, {'keyName': 'staff_expanse'}), 'id')
-                const clientOptionId = _.get(_.find(options, {'keyName': 'client'}), 'id')
-                if (!_.includes(expenseOptions, clientOptionId) || !_.includes(incomeOptions, clientOptionId)) {
-                    dispatch(change('TransactionCreateForm', 'client', null))
-                }
-                if (_.includes(expenseOptions, staffExpenseOptionId) || _.includes(incomeOptions, staffExpenseOptionId)) {
-                    setOpenStaff(true)
-                    dispatch(usersListFetchAction())
-                    if (updateTransactionID > ZERO) {
-                        dispatch(transactionCategoryPopopDataAction(updateTransactionID))
+        const prevExpenseCat = _.get(props, ['createForm', 'values', 'expanseCategory', 'value', 'options'])
+        const nextExpenseCat = _.get(nextProps, ['createForm', 'values', 'expanseCategory', 'value', 'options'])
+        return !_.isEqual(prevExpenseCat, nextExpenseCat) && !_.isEmpty(nextExpenseCat)
+    }, ({dispatch, createForm, setOpenStaff, location: {query}}) => {
+        const category = _.get(createForm, ['values', 'expanseCategory', 'value', 'id'])
+        const form = 'TransactionCreateForm'
+        if (_.isInteger(category)) {
+            const expenseOptions = _.first(_.get(createForm, ['values', 'expanseCategory', 'value', 'options']))
+            const updateTransactionID = _.toInteger(_.get(query, UPDATE_TRANSACTION))
+            dispatch(optionsListFetchAction())
+                .then((data) => {
+                    const options = _.get(data, ['value', 'results'])
+                    const staffExpenseOptionId = _.get(_.find(options, {'key_name': 'staff_expanse'}), 'id')
+                    const detalizationOptionId = _.get(_.find(options, {'key_name': 'transaction_child'}), 'id')
+                    const clientOptionId = _.get(_.find(options, {'key_name': 'client'}), 'id')
+                    switch (expenseOptions) {
+                        case staffExpenseOptionId: {
+                            setOpenStaff(true)
+                            dispatch(usersListFetchAction())
+                            return dispatch(transactionCategoryPopopDataAction(updateTransactionID))
+                                .then((value) => {
+                                    const values = _.get(value, 'value')
+                                    const staffExpense = {}
+                                    _.map(_.get(values, 'results'), (item) => {
+                                        staffExpense[_.get(item, ['staff', 'id'])] = {
+                                            amount: numberFormat(_.get(item, 'amount'))
+                                        }
+                                    })
+                                    dispatch(change(form, 'users', staffExpense))
+                                })
+                        }
+                        case detalizationOptionId: {
+                            return dispatch(transactionDetalizationAction(updateTransactionID))
+                                .then((value) => {
+                                    const values = _.get(value, 'value')
+                                    dispatch(change(form, 'transaction_child', _.map(values, (item) => {
+                                        return {
+                                            name: _.get(item, 'name'),
+                                            amount: numberFormat(_.get(item, 'amount'))
+                                        }
+                                    })))
+                                })
+                        }
+                        default: {
+                            setOpenStaff(false)
+                            return expenseOptions !== clientOptionId && !_.isNil(expenseOptions)
+                                ? dispatch(change(form, 'client', null))
+                                : null
+                        }
                     }
-                } else {
-                    setOpenStaff(false)
-                }
-            })
+                })
+        }
+    }),
+    // INCOME
+    withPropsOnChange((props, nextProps) => {
+        const prevIncomeCat = _.get(props, ['createForm', 'values', 'incomeCategory', 'value', 'options'])
+        const nextIncomeCat = _.get(nextProps, ['createForm', 'values', 'incomeCategory', 'value', 'options'])
+        return !_.isEqual(prevIncomeCat, nextIncomeCat) && !_.isEmpty(nextIncomeCat)
+    }, ({dispatch, createForm, setOpenStaff, location: {query}}) => {
+        const category = _.get(createForm, ['values', 'incomeCategory', 'value', 'id'])
+        const form = 'TransactionCreateForm'
+        if (_.isInteger(category)) {
+            const incomeOptions = _.first(_.get(createForm, ['values', 'incomeCategory', 'value', 'options']))
+            const updateTransactionID = _.toInteger(_.get(query, UPDATE_TRANSACTION))
+            dispatch(optionsListFetchAction())
+                .then((data) => {
+                    const options = _.get(data, ['value', 'results'])
+                    const staffExpenseOptionId = _.get(_.find(options, {'key_name': 'staff_expanse'}), 'id')
+                    const detalizationOptionId = _.get(_.find(options, {'key_name': 'transaction_child'}), 'id')
+                    const clientOptionId = _.get(_.find(options, {'key_name': 'client'}), 'id')
+                    switch (incomeOptions) {
+                        case staffExpenseOptionId: {
+                            setOpenStaff(true)
+                            dispatch(usersListFetchAction())
+                            return dispatch(transactionCategoryPopopDataAction(updateTransactionID))
+                                .then((value) => {
+                                    const values = _.get(value, 'value')
+                                    const staffExpense = {}
+                                    _.map(_.get(values, 'results'), (item) => {
+                                        staffExpense[_.get(item, ['staff', 'id'])] = {
+                                            amount: numberFormat(_.get(item, 'amount'))
+                                        }
+                                    })
+                                    dispatch(change(form, 'users', staffExpense))
+                                })
+                        }
+                        case detalizationOptionId: {
+                            return dispatch(transactionDetalizationAction(updateTransactionID))
+                                .then((value) => {
+                                    const values = _.get(value, 'value')
+                                    dispatch(change(form, 'transaction_child', _.map(values, (item) => {
+                                        return {
+                                            name: _.get(item, 'name'),
+                                            amount: numberFormat(_.get(item, 'amount'))
+                                        }
+                                    })))
+                                })
+                        }
+                        default: {
+                            setOpenStaff(false)
+                            return incomeOptions !== clientOptionId && !_.isNil(incomeOptions)
+                                ? dispatch(change(form, 'client', null))
+                                : null
+                        }
+                    }
+                })
+        }
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -198,6 +280,7 @@ const enhance = compose(
     }, ({dispatch, date, createForm, cashboxList, location: {query}}) => {
         const queryCashbox = _.toInteger(_.get(query, 'cashboxId'))
         const queryCurrency = _.toInteger(_.get(query, 'currency'))
+        const updateTransaction = _.toInteger(_.get(query, UPDATE_TRANSACTION)) > ZERO
         const cashbox = queryCashbox > ZERO ? queryCashbox : _.get(createForm, ['values', 'cashbox', 'value'])
         const currencyRate = _.get(createForm, ['values', 'currencyRate'])
         const order = _.get(createForm, ['values', 'order', 'value'])
@@ -210,7 +293,7 @@ const enhance = compose(
                         const customRate = _.get(data, ['value', 'amount'])
                         dispatch(change(form, 'custom_rate', customRate))
                     })
-                case 'custom': return dispatch(change(form, 'custom_rate', ''))
+                case 'custom': return updateTransaction ? null : dispatch(change(form, 'custom_rate', ''))
                 default: return dispatch(transactionConvertAction(date, currency))
                     .then((data) => {
                         const customRate = _.get(data, ['value', 'amount'])
@@ -282,7 +365,10 @@ const enhance = compose(
         const except = {
             updateTransaction: null,
             openAcceptTransactionDialog: null,
-            openOrder: null
+            openOrder: null,
+            openUser: null,
+            openCurrency: null,
+            openDivision: null
         }
         const prevCashDetails = (_.get(props, ['location', 'query', TRANSACTION_ACCEPT_CASH_DETAIL_OPEN]))
         const nextCashDetails = (_.get(nextProps, ['location', 'query', TRANSACTION_ACCEPT_CASH_DETAIL_OPEN]))
@@ -352,7 +438,7 @@ const enhance = compose(
                     dispatch(cashboxListFetchAction(filterCashbox))
                 })
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: t('Ошибка при удалении')}))
+                    return dispatch(openSnackbarAction({message: t('Удаление невозможно из-за связи с другими данными')}))
                 })
         },
 
@@ -376,7 +462,7 @@ const enhance = compose(
                     return dispatch(openSnackbarAction({message: t('Успешно удалено')}))
                 })
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: t('Ошибка при удалении')}))
+                    return dispatch(openSnackbarAction({message: t('Удаление невозможно из-за связи с другими данными')}))
                 })
         },
         handleOpenFilterDialog: props => () => {
@@ -506,13 +592,10 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_CREATE_SEND_DIALOG_OPEN]: false})})
         },
 
-        handleSubmitCreateSendDialog: props => () => {
-            const {dispatch, sendForm, filter, location: {pathname}, filterCashbox, cashboxList} = props
+        handleSubmitCreateSendDialog: props => (percent) => {
+            const {dispatch, sendForm, filter, location: {pathname}, filterCashbox} = props
             const cashboxId = _.get(props, ['location', 'query', 'cashboxId'])
-            const cashbox = _.find(_.get(cashboxList, 'results'), {'id': _.toInteger(cashboxId)})
-            const chosenCashbox = _.find(_.get(cashboxList, 'results'), {'id': _.toInteger(_.get(sendForm, ['values', 'categoryId', 'value']))})
-            const withPersent = _.get(cashbox, ['currency', 'name']) === _.get(chosenCashbox, ['currency', 'name']) && _.get(cashbox, 'type') !== _.get(chosenCashbox, 'type')
-            return dispatch(transactionCreateSendAction(_.get(sendForm, ['values']), cashboxId, withPersent))
+            return dispatch(transactionCreateSendAction(_.get(sendForm, ['values']), cashboxId, percent))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
