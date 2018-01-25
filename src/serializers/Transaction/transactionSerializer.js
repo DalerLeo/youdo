@@ -153,7 +153,7 @@ export const createSendSerializer = (data, cashboxId, withPersent) => {
         to_cashbox: _.toInteger(toCashbox),
         percentage: withPersent,
         comment,
-        rate: withPersent ? null : rate
+        rate: withPersent ? _.get(cashboxFromName, 'he') : rate
     }
 }
 
