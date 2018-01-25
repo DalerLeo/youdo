@@ -418,7 +418,8 @@ const rootReducer = combineReducers({
         returnList: createThunkReducer(actionTypes.STAT_RETURN_LIST)
     }),
     statReturn: combineReducers({
-        list: createThunkReducer(actionTypes.STAT_RETURN_LIST)
+        list: createThunkReducer(actionTypes.STAT_RETURN_LIST),
+        sumDetails: createThunkReducer(actionTypes.STAT_RETURN_SUM_DETAILS)
     }),
     statFinance: combineReducers({
         dataIn: createThunkReducer(actionTypes.STAT_FINANCE_DATA_IN),

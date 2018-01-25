@@ -401,6 +401,7 @@ export const STAT_PRODUCT_GET_DOCUMENT = '/stats/products/export'
 
 export const STAT_RETURN_LIST = '/stats/order_returns/'
 export const STAT_RETURN_GET_DOCUMENT = '/sales/order_return/excel/'
+export const STAT_RETURN_SUM_DETAILS = `${STAT_RETURN_LIST}statistics`
 
 export const STAT_OUTCOME_CATEGORY_LIST = 'stats/expenses/'
 export const STAT_OUTCOME_CATEGORY_ITEM = 'sales/order/'

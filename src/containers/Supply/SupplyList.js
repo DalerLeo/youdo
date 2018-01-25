@@ -248,7 +248,7 @@ const enhance = compose(
                     return dispatch(supplyExpenseListFetchAction(id, filterItem))
                 })
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: t('Ошибка при удалении')}))
+                    return dispatch(openSnackbarAction({message: t('Удаление невозможно из-за связи с другими данными')}))
                 })
         },
 

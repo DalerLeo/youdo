@@ -25,6 +25,9 @@ import ReturnUpdateDialog from '../Order/OrderReturnDialog'
 import AddProductsDialog from '../Order/OrderAddProductsDialog'
 import Print from 'material-ui/svg-icons/action/print'
 import t from '../../helpers/translate'
+import {
+    COMPLETED
+} from '../../constants/backendConstants'
 
 const listHeader = [
     {
@@ -161,7 +164,6 @@ const OrderGridList = enhance((props) => {
     const returnType = _.toInteger(_.get(detailData, ['data', 'type']))
     const detStatus = _.toInteger(_.get(detailData, ['data', 'status']))
 
-    const COMPLETED = 2
     const orderList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const client = _.get(item, ['client', 'name']) || '-'

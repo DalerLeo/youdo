@@ -25,9 +25,17 @@ import * as ROUTES from '../../constants/routes'
 import LinearProgress from '../LinearProgress'
 import numberFormat from '../../helpers/numberFormat'
 import dateFormat from '../../helpers/dateFormat'
+import {
+    DELIVERED,
+    GIVEN,
+    CANCELED,
+    REQUESTED,
+    NOT_CONFIRMED,
+    READY,
+    ZERO
+} from '../../constants/backendConstants'
 import getConfig from '../../helpers/getConfig'
 import t from '../../helpers/translate'
-const ZERO = 0
 
 const popupWidth = 210
 const enhance = compose(
@@ -252,15 +260,8 @@ const OrderDetails = enhance((props) => {
     const requestDeadline = _.get(data, 'requestDeadline') ? dateFormat(_.get(data, 'requestDeadline')) : 'Не задан'
     const currency = _.get(data, ['currency', 'name'])
     const currencyAccess = _.isEmpty(_.find(userCurrencies, {'id': _.get(data, ['currency', 'id'])}))
-    const REQUESTED = 0
-    const READY = 1
-    const GIVEN = 2
-    const DELIVERED = 3
-    const CANCELED = 4
-    const NOT_CONFIRMED = 5
     const status = _.toInteger(_.get(data, 'status'))
     const editableWhenGiven = status === GIVEN && isSuperUser
-    const zero = 0
     const totalPaid = _.toNumber(_.get(data, 'totalPaid'))
     const priceList = _.get(data, ['priceList', 'name'])
     const paymentType = _.get(data, 'paymentType')
@@ -345,7 +346,7 @@ const OrderDetails = enhance((props) => {
                     </ToolTip>
                     <ToolTip position="bottom" text={t('Скидка')}>
                         <IconButton
-                            disabled={(status === CANCELED) || (totalReturned > zero)}
+                            disabled={(status === CANCELED) || (totalReturned > ZERO)}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
@@ -435,7 +436,7 @@ const OrderDetails = enhance((props) => {
                                 </li>
                                 <li>
                                     <span>{t('Оплачено')}:</span>
-                                    {(totalPaid !== zero && type)
+                                    {(totalPaid !== ZERO && type)
                                         ? <span>
                                             <a onClick={transactionsDialog.handleOpenTransactionsDialog} className={classes.link}>
                                                 {numberFormat(totalPaid)} {currency}
@@ -445,7 +446,7 @@ const OrderDetails = enhance((props) => {
                                 </li>
                                 <li>
                                     <span>{t('Остаток')}:</span>
-                                    <span className={totalBalance > zero ? classes.red : classes.green}>{numberFormat(totalBalance)} {currency}</span>
+                                    <span className={totalBalance > ZERO ? classes.red : classes.green}>{numberFormat(totalBalance)} {currency}</span>
                                 </li>
                             </ul>
                         </div>

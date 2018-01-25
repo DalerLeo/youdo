@@ -438,7 +438,7 @@ const enhance = compose(
                     dispatch(cashboxListFetchAction(filterCashbox))
                 })
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: t('Ошибка при удалении')}))
+                    return dispatch(openSnackbarAction({message: t('Удаление невозможно из-за связи с другими данными')}))
                 })
         },
 
@@ -462,7 +462,7 @@ const enhance = compose(
                     return dispatch(openSnackbarAction({message: t('Успешно удалено')}))
                 })
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: t('Ошибка при удалении')}))
+                    return dispatch(openSnackbarAction({message: t('Удаление невозможно из-за связи с другими данными')}))
                 })
         },
         handleOpenFilterDialog: props => () => {
@@ -592,12 +592,10 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_CREATE_SEND_DIALOG_OPEN]: false})})
         },
 
-        handleSubmitCreateSendDialog: props => (persent) => {
-            const {dispatch, sendForm, filter, location: {pathname}, filterCashbox, cashboxList} = props
+        handleSubmitCreateSendDialog: props => (percent) => {
+            const {dispatch, sendForm, filter, location: {pathname}, filterCashbox} = props
             const cashboxId = _.get(props, ['location', 'query', 'cashboxId'])
-            const cashbox = _.find(_.get(cashboxList, 'results'), {'id': _.toInteger(cashboxId)})
-            const chosenCashbox = _.find(_.get(cashboxList, 'results'), {'id': _.toInteger(_.get(sendForm, ['values', 'categoryId', 'value']))})
-            return dispatch(transactionCreateSendAction(_.get(sendForm, ['values']), cashboxId, persent))
+            return dispatch(transactionCreateSendAction(_.get(sendForm, ['values']), cashboxId, percent))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })

@@ -17,6 +17,10 @@ import t from '../../helpers/translate'
 import {Link} from 'react-router'
 import sprintf from 'sprintf'
 import * as ROUTES from '../../constants/routes'
+import {
+    COMPLETED
+
+} from '../../constants/backendConstants'
 
 const ZERO = 0
 const enhance = compose(
@@ -228,7 +232,6 @@ const ReturnDetails = enhance((props) => {
     const paymentType = _.get(data, 'paymentType') === 'cash' ? t('Наличными') : t('Перечислением')
     const PENDING = 0
     const IN_PROGRESS = 1
-    const COMPLETED = 2
     const CANCELLED = 3
     const totalPrice = numberFormat(_.get(data, 'totalPrice'), currency)
     const typeClient = _.toInteger(_.get(data, 'type'))
