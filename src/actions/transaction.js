@@ -56,7 +56,6 @@ export const transactionCreateExpenseAction = (formValues, cashboxId) => {
 }
 
 export const pendingTransactionFetchAction = (filter) => {
-    console.warn('PENDING')
     const page = filter && _.get(filter.getParams(), 'dPage')
     const currency = filter && _.get(filter.getParams(), 'openCurrency')
     const division = filter && _.get(filter.getParams(), 'openDivision')

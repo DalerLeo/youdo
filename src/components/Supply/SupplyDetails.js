@@ -20,6 +20,12 @@ import SupplySetDiscountDialog from './SupplySetDiscountDialog'
 import * as ROUTE from '../../constants/routes'
 import checkPermission from '../../helpers/checkPermission'
 import t from '../../helpers/translate'
+import {
+    PENDING,
+    IN_PROGRESS,
+    COMPLETED,
+    CANCELLED
+} from '../../constants/backendConstants'
 
 const popupWidth = 210
 const enhance = compose(
@@ -257,10 +263,6 @@ const SupplyDetails = enhance((props) => {
     const finishedTime = (_.get(data, 'finishedTime')) ? dateTimeFormat(_.get(data, 'finishedTime')) : t('Не закончилась')
     const contract = _.get(data, 'contract') || t('Не указано')
 
-    const PENDING = 0
-    const IN_PROGRESS = 1
-    const COMPLETED = 2
-    const CANCELLED = 4
     const status = _.toInteger(_.get(data, 'status'))
     let statusOutput = null
     switch (status) {

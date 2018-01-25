@@ -28,7 +28,7 @@ import dateFormat from '../../helpers/dateFormat'
 import {
     DELIVERED,
     GIVEN,
-    CANCELED,
+    CANCELLED,
     REQUESTED,
     NOT_CONFIRMED,
     READY,
@@ -315,7 +315,7 @@ const OrderDetails = enhance((props) => {
                         <IconMenu
                             menuItemStyle={{fontSize: '13px'}}
                             iconButtonElement={<IconButton
-                                disabled={(status === CANCELED)}
+                                disabled={(status === CANCELLED)}
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
                                 touch={true}>
@@ -336,7 +336,7 @@ const OrderDetails = enhance((props) => {
                     </ToolTip>
                     <ToolTip position="bottom" text={t(discounted ? 'Сперва отмените скидку' : 'Изменить')}>
                         <IconButton
-                            disabled={(status === CANCELED ? true : status === GIVEN ? !editableWhenGiven : currencyAccess) || discounted}
+                            disabled={(status === CANCELLED ? true : status === GIVEN ? !editableWhenGiven : currencyAccess) || discounted}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
@@ -346,7 +346,7 @@ const OrderDetails = enhance((props) => {
                     </ToolTip>
                     <ToolTip position="bottom" text={t('Скидка')}>
                         <IconButton
-                            disabled={(status === CANCELED) || (totalReturned > ZERO)}
+                            disabled={(status === CANCELLED) || (totalReturned > ZERO)}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
@@ -356,7 +356,7 @@ const OrderDetails = enhance((props) => {
                     </ToolTip>
                     <ToolTip position="bottom" text={t('Отменить')}>
                         <IconButton
-                            disabled={(status === CANCELED || status === GIVEN || status === DELIVERED)}
+                            disabled={(status === CANCELLED || status === GIVEN || status === DELIVERED)}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
@@ -468,7 +468,7 @@ const OrderDetails = enhance((props) => {
                                                 ? <span className={classes.yellow}>{t('Передан доставщику')}</span>
                                                 : (status === DELIVERED)
                                                     ? <span className={classes.green}>{t('Доставлен')}</span>
-                                                    : (status === CANCELED)
+                                                    : (status === CANCELLED)
                                                         ? <span className={classes.red}>{t('Отменен')}</span>
                                                         : (status === NOT_CONFIRMED)
                                                             ? <span className={classes.grey}>{t('Не подтвержден')}</span> : null

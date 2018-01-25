@@ -294,6 +294,7 @@ const StatOutcomeCategoryGridList = enhance((props) => {
                 beginDate={transactionData.beginDate}
                 endDate={transactionData.endDate}
                 userName={_.get(userName, 'name')}
+                isOutcome={true}
             />
         </Container>
     )
