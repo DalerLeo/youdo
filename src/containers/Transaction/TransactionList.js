@@ -365,7 +365,10 @@ const enhance = compose(
         const except = {
             updateTransaction: null,
             openAcceptTransactionDialog: null,
-            openOrder: null
+            openOrder: null,
+            openUser: null,
+            openCurrency: null,
+            openDivision: null
         }
         const prevCashDetails = (_.get(props, ['location', 'query', TRANSACTION_ACCEPT_CASH_DETAIL_OPEN]))
         const nextCashDetails = (_.get(nextProps, ['location', 'query', TRANSACTION_ACCEPT_CASH_DETAIL_OPEN]))
@@ -589,13 +592,12 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_CREATE_SEND_DIALOG_OPEN]: false})})
         },
 
-        handleSubmitCreateSendDialog: props => () => {
+        handleSubmitCreateSendDialog: props => (persent) => {
             const {dispatch, sendForm, filter, location: {pathname}, filterCashbox, cashboxList} = props
             const cashboxId = _.get(props, ['location', 'query', 'cashboxId'])
             const cashbox = _.find(_.get(cashboxList, 'results'), {'id': _.toInteger(cashboxId)})
             const chosenCashbox = _.find(_.get(cashboxList, 'results'), {'id': _.toInteger(_.get(sendForm, ['values', 'categoryId', 'value']))})
-            const withPersent = _.get(cashbox, ['currency', 'name']) === _.get(chosenCashbox, ['currency', 'name']) && _.get(cashbox, 'type') !== _.get(chosenCashbox, 'type')
-            return dispatch(transactionCreateSendAction(_.get(sendForm, ['values']), cashboxId, withPersent))
+            return dispatch(transactionCreateSendAction(_.get(sendForm, ['values']), cashboxId, persent))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
