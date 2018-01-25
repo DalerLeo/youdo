@@ -154,9 +154,7 @@ const enhance = compose(
                 [STAT_PROVIDER_FILTER_KEY.PAYMENT_TYPE]: paymentType,
                 [STAT_PROVIDER_FILTER_KEY.BALANCE_TYPE]: balanceType,
                 [STAT_PROVIDER_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
-                [STAT_PROVIDER_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD'),
-
-
+                [STAT_PROVIDER_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
             })
         },
         handleGetDocument: props => () => {

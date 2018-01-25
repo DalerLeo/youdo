@@ -355,7 +355,6 @@ const ReturnList = enhance((props) => {
     const returnStatus = filter.getParam(RETURN_FILTER_KEY.STATUS)
     const initiator = filter.getParam(RETURN_FILTER_KEY.INITIATOR)
     const market = filter.getParam(RETURN_FILTER_KEY.MARKET)
-    const code = filter.getParam(RETURN_FILTER_KEY.CODE)
     const product = filter.getParam(RETURN_FILTER_KEY.PRODUCT)
     const paymentType = _.toInteger(filter.getParam(RETURN_FILTER_KEY.PAYMENT_TYPE))
     const fromDate = filter.getParam(RETURN_FILTER_KEY.FROM_DATE)
