@@ -34,6 +34,9 @@ import {
     CheckBox
 } from '../../ReduxForm'
 import t from '../../../helpers/translate'
+import {
+    CANCELLED
+} from '../../../constants/backendConstants'
 
 export const STAT_SALES_FILTER_KEY = {
     CLIENT: 'client',
@@ -311,11 +314,10 @@ const StatSalesGridList = enhance((props) => {
             const totalPrice = _.get(item, 'totalPrice')
             const totalBalance = _.get(item, 'totalBalance')
             const secondName = _.get(item, ['user', 'secondName '])
-            const CANCELED = 4
             const balanceToolTip = numberFormat(totalBalance, currentCurrency)
             const paymentType = _.get(item, 'paymentType') === 'cash' ? t('наличный') : t('банковский счет')
             return (
-                <Row key={id} className="dottedList" style={status === CANCELED ? {color: '#999', cursor: 'pointer'} : {cursor: 'pointer'}} onClick={() => { statSaleDialog.handleOpenStatSaleDialog(id) }}>
+                <Row key={id} className="dottedList" style={status === CANCELLED ? {color: '#999', cursor: 'pointer'} : {cursor: 'pointer'}} onClick={() => { statSaleDialog.handleOpenStatSaleDialog(id) }}>
                     <Col xs={1}>{id}</Col>
                     <Col xs={2}>{createdDate}</Col>
                     {hasMarket && <Col xs={2}>{marketName}</Col>}

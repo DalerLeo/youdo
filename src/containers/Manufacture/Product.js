@@ -188,7 +188,7 @@ const enhance = compose(
             const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
             dispatch(manufactureProductDeleteAction(productId))
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: t('Ошибка при удалении')}))
+                    return dispatch(openSnackbarAction({message: t('Удаление невозможно из-за связи с другими данными')}))
                 })
                 .then(() => {
                     hashHistory.push({
@@ -314,7 +314,7 @@ const enhance = compose(
             const productId = _.toNumber(_.get(props, ['location', 'query', 'productId']))
             dispatch(ingredientDeleteAction(_.toNumber(ingId)))
                 .catch(() => {
-                    return dispatch(openSnackbarAction({message: t('Ошибка при удалении')}))
+                    return dispatch(openSnackbarAction({message: t('Удаление невозможно из-за связи с другими данными')}))
                 })
                 .then(() => {
                     hashHistory.push({

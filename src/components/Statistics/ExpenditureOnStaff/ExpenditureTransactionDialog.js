@@ -156,19 +156,18 @@ const headerStyle = {
 const ZERO = 0
 const ONE = 0.01
 const ExpenditureTransactionDialog = enhance((props) => {
-    const {open, loading, onClose, classes, data, filterTransaction, beginDate, endDate, userName} = props
-
+    const {open, loading, onClose, classes, data, filterTransaction, beginDate, endDate, userName, isOutcome} = props
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const list = _.map(data, (item) => {
         const id = _.get(item, 'id')
-        const date = dateFormat(_.get(item, ['transaction', 'createdDate']))
+        const date = dateFormat(isOutcome ? _.get(item, ['createdDate']) : _.get(item, ['transaction', 'createdDate']))
         const amount = _.toNumber(_.get(item, 'amount'))
         const currency = _.get(item, ['currency', 'name'])
-        const internalAmount = _.toNumber(_.get(item, ['transaction', 'internalAmount']))
-        const internal = (_.get(item, ['internal']))
+        const internalAmount = _.toNumber(isOutcome ? _.get(item, ['internalAmount']) : _.get(item, ['transaction', 'internalAmount']))
+        const internal = isOutcome ? _.get(item, ['internalAmount']) : (_.get(item, ['internal']))
         const customRate = _.get(item, ['transaction', 'customRate']) ? _.toInteger(_.get(item, ['transaction', 'customRate'])) : _.toNumber(amount / internalAmount)
         const comment = _.get(item, 'comment')
-        const cashbox = _.get(item, ['transaction', 'cashbox', 'name'])
+        const cashbox = isOutcome ? _.get(item, ['cashbox', 'name']) : _.get(item, ['transaction', 'cashbox', 'name'])
         const order = _.get(item, 'order')
         const supply = _.get(item, 'supply')
         const supplyExpanseId = _.get(item, 'supplyExpanseId')
@@ -198,7 +197,7 @@ const ExpenditureTransactionDialog = enhance((props) => {
               <div className={amount > ZERO ? 'greenFont' : (amount === ZERO ? '' : 'redFont')}>
                   <span>{numberFormat(amount, currency)}</span>
                 {primaryCurrency !== currency && <div>{internal < ONE ? _.replace(internal, '.', ',') + ' ' + primaryCurrency : numberFormat(internal, primaryCurrency)} <span
-                  style={{fontSize: 11, color: '#666', fontWeight: 600}}>({customRate})</span></div>}
+                  style={{fontSize: 11, color: '#666', fontWeight: 600}}>({numberFormat(customRate)})</span></div>}
               </div>
           </Col>
       </Row>

@@ -41,11 +41,12 @@ import MenuItem from 'material-ui/MenuItem'
 import IconMenu from 'material-ui/IconMenu'
 import getConfig from '../../helpers/getConfig'
 import t from '../../helpers/translate'
-
-const ZERO = 0
-const REQUESTED = 0
-const READY = 1
-const NOT_CONFIRMED = 5
+import {
+    REQUESTED,
+    NOT_CONFIRMED,
+    READY,
+    ZERO
+} from '../../constants/backendConstants'
 
 const listHeader = [
     {

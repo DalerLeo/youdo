@@ -137,19 +137,23 @@ export const createExpenseSerializer = (data, cashboxId) => {
 }
 const HUNDRED = 100
 export const createSendSerializer = (data, cashboxId, withPersent) => {
+    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
+    const cashboxFromName = _.get(data, ['cashbox', 'value', 'currency', 'name'])
     const amountFrom = _.toNumber(numberWithoutSpaces(_.get(data, 'amountFrom')))
-    const amountTo = _.toNumber(numberWithoutSpaces(_.get(data, 'amountTo')))
+    const rate = _.toNumber(numberWithoutSpaces(_.get(data, 'rate')))
+    const amountTo = primaryCurrency === cashboxFromName ? amountFrom * rate : amountFrom / rate
     const amountFromPersent = _.toNumber(numberWithoutSpaces(_.get(data, 'amountFromPersent')))
-    const amountToPersent = _.toNumber(numberWithoutSpaces(_.get(data, 'amountToPersent')))
     const toCashbox = _.get(data, ['categoryId', 'value'])
     const comment = _.get(data, 'comment')
     const cashbox = _.get(data, ['cashbox', 'value', 'id'])
     return {
         amount_from: withPersent ? amountFromPersent : amountFrom,
-        amount_to: withPersent ? amountFromPersent * amountToPersent / HUNDRED : amountTo,
+        amount_to: withPersent ? amountFromPersent * withPersent / HUNDRED : amountTo,
         from_cashbox: _.toInteger(cashboxId) === ZERO ? cashbox : cashboxId,
         to_cashbox: _.toInteger(toCashbox),
-        comment
+        percentage: withPersent,
+        comment,
+        rate: withPersent ? _.get(cashboxFromName, 'he') : rate
     }
 }
 

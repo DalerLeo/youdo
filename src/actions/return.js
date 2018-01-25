@@ -37,23 +37,6 @@ export const returnListFetchAction = (filter) => {
         payload
     }
 }
-export const returnListUpdateStoreAction = (id, list, obj) => {
-    const newList = _.map(_.get(list, 'results'), (item) => {
-        if (item.id === id) {
-            _.merge(item, obj)
-        }
-        return item
-    })
-    const newData = {...list, results: newList}
-    const getNewData = () => {
-        return Promise.resolve(newData)
-    }
-
-    return {
-        type: actionTypes.RETURN_LIST,
-        payload: getNewData()
-    }
-}
 
 export const returnListPrintFetchAction = (id, filter) => {
     const orderReturns = id || _.get(filter.getParams(), 'select')

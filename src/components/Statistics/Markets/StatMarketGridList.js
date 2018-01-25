@@ -301,7 +301,7 @@ const enhance = compose(
                 borderRadius: '2px',
                 padding: '0 15px',
                 paddingBottom: '10px',
-                width: 'calc((100% / 4) - 10px)',
+                width: 'calc((100% / 3) - 10px)',
                 '& div': {
                     fontSize: '17px',
                     color: '#333',
@@ -475,21 +475,11 @@ const listHeader = [
         title: t('По заказам'),
         tooltip: t('Сумма оплат с заказов')
     },
-    {
-        sorting: true,
-        title: t('Общее'),
-        tooltip: t('Общая сумма оплат')
-    },
     // Debt
     {
         sorting: true,
         title: t('По заказам'),
         tooltip: t('Долг по заказов')
-    },
-    {
-        sorting: true,
-        title: t('Общее'),
-        tooltip: t('Общая сумма долга')
     }
 ]
 
@@ -522,8 +512,6 @@ const StatMarketGridList = enhance((props) => {
     const returnOrdersSum = _.toNumber(_.get(sumData, 'returnOrdersSum'))
     const returnTotalSum = _.toNumber(_.get(sumData, 'returnTotalSum'))
     const paymentOrdersSum = _.toNumber(_.get(sumData, 'paymentOrdersSum'))
-    const paymentTotalSum = _.toNumber(_.get(sumData, 'paymentTotalSum'))
-    const debtTotalSum = _.toNumber(_.get(sumData, 'debtTotalSum'))
     const debtOrdersSum = _.toNumber(_.get(sumData, 'deptOrdersSum'))
 
     const styleOnHover = {
@@ -572,14 +560,13 @@ const StatMarketGridList = enhance((props) => {
             </div>
         )
     })
+
     const tableList = _.map(_.get(listData, 'data'), (item, index) => {
         const salesFact = _.toNumber(_.get(item, 'salesFact'))
         const salesTotal = _.toNumber(_.get(item, 'salesTotal'))
         const returnOrders = _.toNumber(_.get(item, 'returnOrders'))
         const returnTotal = _.toNumber(_.get(item, 'returnTotal'))
         const paymentOrders = _.toNumber(_.get(item, 'paymentOrders'))
-        const paymentTotal = _.toNumber(_.get(item, 'paymentTotal'))
-        const deptTotal = _.toNumber(_.get(item, 'debtTotal'))
         const deptOrders = _.toNumber(_.get(item, 'deptOrders'))
         const clientName = _.get(item, 'clientName')
         return (
@@ -596,8 +583,6 @@ const StatMarketGridList = enhance((props) => {
                 <td>{numberFormat(returnOrders, primaryCurrency)}</td>
                 <td>{numberFormat(returnTotal, primaryCurrency)}</td>
                 <td>{numberFormat(paymentOrders, primaryCurrency)}</td>
-                <td>{numberFormat(paymentTotal, primaryCurrency)}</td>
-                <td>{numberFormat(deptTotal, primaryCurrency)}</td>
                 <td>{numberFormat(deptOrders, primaryCurrency)}</td>
             </tr>
         )
@@ -663,16 +648,10 @@ const StatMarketGridList = enhance((props) => {
                                     <div>{numberFormat(returnOrdersSum, primaryCurrency)}</div>
                                 </div>
                                 <div>
-                                    <span>{t('Общие оплачено')}</span>
-                                    <div>{numberFormat(paymentTotalSum, primaryCurrency)}</div>
-                                    <span>{t('Оплачено по заказам')}</span>
-                                    <div>{numberFormat(paymentOrdersSum, primaryCurrency)}</div>
-                                </div>
-                                <div>
-                                    <span>{t('Общий долг')}</span>
-                                    <div>{numberFormat(debtTotalSum, primaryCurrency)}</div>
                                     <span>{t('Долг по заказам')}</span>
                                     <div>{numberFormat(debtOrdersSum, primaryCurrency)}</div>
+                                    <span>{t('Оплачено по заказам')}</span>
+                                    <div>{numberFormat(paymentOrdersSum, primaryCurrency)}</div>
                                 </div>
                             </div>}
                         <div className={expandedTable ? classes.expandedTable : ''}>
@@ -767,8 +746,8 @@ const StatMarketGridList = enhance((props) => {
                                                 {isMarket && <td rowSpan={2}>{t('Клиент')}</td>}
                                                 <td colSpan={2}>{t('Продажа')}</td>
                                                 <td colSpan={2}>{t('Возврат')}</td>
-                                                <td colSpan={2}>{t('Оплачено')}</td>
-                                                <td colSpan={2}>{t('Долг')}</td>
+                                                <td>{t('Оплачено')}</td>
+                                                <td>{t('Долг')}</td>
                                             </tr>
                                             <tr className={classes.subTitle}>
                                                 {_.map(listHeader, (header, index) => {
