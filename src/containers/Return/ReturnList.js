@@ -178,7 +178,7 @@ const enhance = compose(
             filter.filterBy({
                 [RETURN_FILTER_OPEN]: false,
                 [RETURN_FILTER_KEY.TYPE]: type,
-                [RETURN_FILTER_KEY.ORDER]: _.join(order, '-'),
+                [RETURN_FILTER_KEY.ORDER]: order,
                 [RETURN_FILTER_KEY.CLIENT]: _.join(client, '-'),
                 [RETURN_FILTER_KEY.STATUS]: _.join(status, '-'),
                 [RETURN_FILTER_KEY.INITIATOR]: _.join(initiator, '-'),
@@ -355,6 +355,7 @@ const ReturnList = enhance((props) => {
     const returnStatus = filter.getParam(RETURN_FILTER_KEY.STATUS)
     const initiator = filter.getParam(RETURN_FILTER_KEY.INITIATOR)
     const market = filter.getParam(RETURN_FILTER_KEY.MARKET)
+    const code = filter.getParam(RETURN_FILTER_KEY.CODE)
     const product = filter.getParam(RETURN_FILTER_KEY.PRODUCT)
     const paymentType = _.toInteger(filter.getParam(RETURN_FILTER_KEY.PAYMENT_TYPE))
     const fromDate = filter.getParam(RETURN_FILTER_KEY.FROM_DATE)
@@ -402,7 +403,7 @@ const ReturnList = enhance((props) => {
             product: product && _.map(_.split(product, '-'), (item) => {
                 return _.toNumber(item)
             }),
-            market: product && _.map(_.split(market, '-'), (item) => {
+            market: market && _.map(_.split(market, '-'), (item) => {
                 return _.toNumber(item)
             }),
             initiator: initiator && _.map(_.split(initiator, '-'), (item) => {

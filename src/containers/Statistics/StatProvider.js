@@ -129,9 +129,13 @@ const enhance = compose(
             const search = _.get(filterForm, ['values', 'search']) || null
             const paymentType = _.get(filterForm, ['values', 'paymentType', 'value']) || null
             const balanceType = _.get(filterForm, ['values', 'balanceType', 'value']) || null
+            const zone = _.get(filterForm, ['values', 'zone', 'value']) || null
+            const division = _.get(filterForm, ['values', 'division', 'value']) || null
             filter.filterBy({
                 [STAT_PROVIDER_FILTER_KEY.SEARCH]: search,
                 [STAT_PROVIDER_FILTER_KEY.PAYMENT_TYPE]: paymentType,
+                [STAT_PROVIDER_FILTER_KEY.ZONE]: _.join(zone, '-'),
+                [STAT_PROVIDER_FILTER_KEY.DIVISION]: _.join(division, '-'),
                 [STAT_PROVIDER_FILTER_KEY.BALANCE_TYPE]: balanceType
 
             })
@@ -194,6 +198,8 @@ const StatProviderList = enhance((props) => {
     const type = _.get(location, ['query', 'type'])
     const paymentType = filter.getParam(STAT_PROVIDER_FILTER_KEY.PAYMENT_TYPE)
     const balanceType = filter.getParam(STAT_PROVIDER_FILTER_KEY.BALANCE_TYPE)
+    const zone = filter.getParam(STAT_PROVIDER_FILTER_KEY.ZONE)
+    const divisionFilter = filter.getParam(STAT_PROVIDER_FILTER_KEY.DIVISION)
 
     const divisionInfo = _.find(_.get(list, ['results', '0', 'divisions']), (item) => {
         return _.get(item, 'id') === division
@@ -258,7 +264,13 @@ const StatProviderList = enhance((props) => {
         },
         balanceType: {
             value: balanceType
-        }
+        },
+        zone: zone && _.map(_.split(zone, '-'), (item) => {
+            return _.toNumber(item)
+        }),
+        division: divisionFilter && _.map(_.split(divisionFilter, '-'), (item) => {
+            return _.toNumber(item)
+        })
     }
 
     return (
