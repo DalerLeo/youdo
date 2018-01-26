@@ -182,6 +182,7 @@ const enhance = compose(
 
 const ZERO = 0
 const TWO = 2
+const ONE = 1
 const TransactionsList = enhance((props) => {
     const {
         filter,
@@ -391,7 +392,7 @@ const TransactionsList = enhance((props) => {
                     <IconButton
                         className={classes.deleteBtn}
                         style={iconStyle.button}
-                        disabled={transType === TWO}
+                        disabled={transType === TWO || transType === ONE}
                         iconStyle={iconStyle.icon}
                         disableTouchRipple={true}
                         onTouchTap={() => {
@@ -402,6 +403,7 @@ const TransactionsList = enhance((props) => {
                     <IconButton
                         className={classes.deleteBtn}
                         style={iconStyle.button}
+                        disabled={transType === TWO || transType === ONE}
                         iconStyle={iconStyle.icon}
                         disableTouchRipple={true}
                         onTouchTap={() => {

@@ -342,6 +342,7 @@ const StatSalesGridList = enhance((props) => {
 
     const fields = (
         <div>
+            <Field name="createdDate" className={classes.inputDateCustom} component={DateToDateField} label={t('Период создания')}/>
             <Field name="client" className={classes.inputFieldCustom} component={ClientMultiSearchField} label={t('Клиент')}/>
             <Field name="deliveryMan" className={classes.inputFieldCustom} component={DeliveryManMultiSearchField} label={t('Доставщик')}/>
             <Field name="product" className={classes.inputFieldCustom} component={ProductMultiSearchField} label={t('Товар')}/>
@@ -351,7 +352,6 @@ const StatSalesGridList = enhance((props) => {
             <Field name="initiator" className={classes.inputFieldCustom} component={UsersMultiSearchField} label={t('Инициатор')}/>
             <Field name="dept" className={classes.inputFieldCustom} component={DeptSearchField} label={t('Статус оплаты')}/>
             <Field name="zone" className={classes.inputFieldCustom} component={ZoneMultiSearchField} label={t('Зона')}/>
-            <Field name="createdDate" className={classes.inputDateCustom} component={DateToDateField} label={t('Период создания')}/>
             <Field name="deliveryDate" className={classes.inputDateCustom} component={DateToDateField} label={t('Дата доставки')}/>
             <Field name="deadlineDate" className={classes.inputDateCustom} component={DateToDateField} label={t('Период изготовления')}/>
             <Field name="onlyBonus" component={CheckBox} label={t('Только бонусные заказы')}/>

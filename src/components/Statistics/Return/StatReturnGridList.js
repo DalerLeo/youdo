@@ -3,7 +3,7 @@ import React from 'react'
 import _ from 'lodash'
 import {Row, Col} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
-import {compose, withState} from 'recompose'
+import {compose} from 'recompose'
 import {Field} from 'redux-form'
 import Loader from '../../Loader'
 import StatReturnDialog from './StatReturnDialog'
@@ -18,8 +18,6 @@ import * as ROUTES from '../../../constants/routes'
 import numberFormat from '../../../helpers/numberFormat'
 import dateFormat from '../../../helpers/dateFormat'
 import getConfig from '../../../helpers/getConfig'
-import IconButton from 'material-ui/IconButton'
-import InfoIcon from 'material-ui/svg-icons/action/info-outline'
 import {StatisticsFilterExcel, StatisticsChart} from '../../Statistics'
 import {
     ClientMultiSearchField,
@@ -177,7 +175,7 @@ const enhance = compose(
             '& > div:nth-child(even)': {
                 fontSize: '20px',
                 fontWeight: '600',
-                marginBottom: '15px'
+                marginBottom: '7px'
             }
         },
         emptyQuery: {
@@ -194,23 +192,8 @@ const enhance = compose(
             }
         }
     }),
-    withState('returnSumInfo', 'setReturnSumInfo', false),
-
 )
 
-const iconStyle = {
-    icon: {
-        color: '#666',
-        width: 20,
-        height: 20
-    },
-    button: {
-        width: 30,
-        height: 30,
-        padding: 5,
-        zIndex: 0
-    }
-}
 const StatReturnGridList = enhance((props) => {
     const {
         classes,
@@ -224,8 +207,6 @@ const StatReturnGridList = enhance((props) => {
         graphData,
         initialValues,
         hasMarket,
-        returnSumInfo,
-        setReturnSumInfo,
         sumDetailsData
     } = props
 
@@ -360,7 +341,7 @@ const StatReturnGridList = enhance((props) => {
             <Field
                 name="exclude"
                 component={CheckBox}
-                label={t('Исключить отмененные заказы')}/>
+                label={t('Показать отмененные заказы')}/>
 
         </div>
     )
@@ -388,19 +369,8 @@ const StatReturnGridList = enhance((props) => {
                         : <Row className={classes.diagram}>
                             <Col xs={3} className={classes.salesSummary}>
                                 <div>{t('Общая сумма возврата')}</div>
-                                <div>{numberFormat(returnSum, getConfig('PRIMARY_CURRENCY'))}
-                                    <IconButton
-                                        className={classes.infoButton}
-                                        disableTouchRipple={true}
-                                        iconStyle={iconStyle.icon}
-                                        style={iconStyle.button}
-                                        onMouseEnter={() => { setReturnSumInfo(true) }}
-                                        onMouseLeave={() => { setReturnSumInfo(false) }}>
-                                        <InfoIcon color="#666"/>
-                                    </IconButton>
-                                </div>
-                                {returnSumInfo &&
-                                <ReturnSumInfoDialog statsData={sumDetailsData}/>}
+                                <div>{numberFormat(returnSum, getConfig('PRIMARY_CURRENCY'))}</div>
+                                <ReturnSumInfoDialog statsData={sumDetailsData}/>
                             </Col>
                             <Col xs={9}>
                                 <StatisticsChart
