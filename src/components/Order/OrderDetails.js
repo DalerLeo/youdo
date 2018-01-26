@@ -26,12 +26,12 @@ import LinearProgress from '../LinearProgress'
 import numberFormat from '../../helpers/numberFormat'
 import dateFormat from '../../helpers/dateFormat'
 import {
-    DELIVERED,
-    GIVEN,
-    CANCELLED,
-    REQUESTED,
-    NOT_CONFIRMED,
-    READY,
+    ORDER_DELIVERED,
+    ORDER_GIVEN,
+    ORDER_CANCELED,
+    ORDER_REQUESTED,
+    ORDER_NOT_CONFIRMED,
+    ORDER_READY,
     ZERO
 } from '../../constants/backendConstants'
 import getConfig from '../../helpers/getConfig'
@@ -261,7 +261,7 @@ const OrderDetails = enhance((props) => {
     const currency = _.get(data, ['currency', 'name'])
     const currencyAccess = _.isEmpty(_.find(userCurrencies, {'id': _.get(data, ['currency', 'id'])}))
     const status = _.toInteger(_.get(data, 'status'))
-    const editableWhenGiven = status === GIVEN && isSuperUser
+    const editableWhenGiven = status === ORDER_GIVEN && isSuperUser
     const totalPaid = _.toNumber(_.get(data, 'totalPaid'))
     const priceList = _.get(data, ['priceList', 'name'])
     const paymentType = _.get(data, 'paymentType')
@@ -303,7 +303,7 @@ const OrderDetails = enhance((props) => {
                 <div className={classes.titleButtons}>
                     <ToolTip position="bottom" text={t('Добавить возврат')}>
                         <IconButton
-                            disabled={!(status === DELIVERED || status === GIVEN)}
+                            disabled={!(status === ORDER_DELIVERED || status === ORDER_GIVEN)}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
@@ -315,7 +315,7 @@ const OrderDetails = enhance((props) => {
                         <IconMenu
                             menuItemStyle={{fontSize: '13px'}}
                             iconButtonElement={<IconButton
-                                disabled={(status === CANCELLED)}
+                                disabled={(status === ORDER_CANCELED)}
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
                                 touch={true}>
@@ -336,7 +336,7 @@ const OrderDetails = enhance((props) => {
                     </ToolTip>
                     <ToolTip position="bottom" text={t(discounted ? 'Сперва отмените скидку' : 'Изменить')}>
                         <IconButton
-                            disabled={(status === CANCELLED ? true : status === GIVEN ? !editableWhenGiven : currencyAccess) || discounted}
+                            disabled={(status === ORDER_CANCELED ? true : status === ORDER_GIVEN ? !editableWhenGiven : currencyAccess) || discounted}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
@@ -346,7 +346,7 @@ const OrderDetails = enhance((props) => {
                     </ToolTip>
                     <ToolTip position="bottom" text={t('Скидка')}>
                         <IconButton
-                            disabled={(status === CANCELLED) || (totalReturned > ZERO)}
+                            disabled={(status === ORDER_CANCELED) || (totalReturned > ZERO)}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
@@ -356,7 +356,7 @@ const OrderDetails = enhance((props) => {
                     </ToolTip>
                     <ToolTip position="bottom" text={t('Отменить')}>
                         <IconButton
-                            disabled={(status === CANCELLED || status === GIVEN || status === DELIVERED)}
+                            disabled={(status === ORDER_CANCELED || status === ORDER_GIVEN || status === ORDER_DELIVERED)}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
@@ -462,15 +462,15 @@ const OrderDetails = enhance((props) => {
                                 </li>
                                 <li>
                                     <span>{t('Текущий статус')}:</span>
-                                    {(status === REQUESTED) ? <span className={classes.yellow}>{t('Запрос отправлен')}</span>
-                                        : (status === READY) ? <span className={classes.green}>{t('Есть на складе')}</span>
-                                            : (status === GIVEN)
+                                    {(status === ORDER_REQUESTED) ? <span className={classes.yellow}>{t('Запрос отправлен')}</span>
+                                        : (status === ORDER_READY) ? <span className={classes.green}>{t('Есть на складе')}</span>
+                                            : (status === ORDER_GIVEN)
                                                 ? <span className={classes.yellow}>{t('Передан доставщику')}</span>
-                                                : (status === DELIVERED)
+                                                : (status === ORDER_DELIVERED)
                                                     ? <span className={classes.green}>{t('Доставлен')}</span>
-                                                    : (status === CANCELLED)
+                                                    : (status === ORDER_CANCELED)
                                                         ? <span className={classes.red}>{t('Отменен')}</span>
-                                                        : (status === NOT_CONFIRMED)
+                                                        : (status === ORDER_NOT_CONFIRMED)
                                                             ? <span className={classes.grey}>{t('Не подтвержден')}</span> : null
                                     }
                                 </li>

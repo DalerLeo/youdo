@@ -6,11 +6,12 @@ import DoneIcon from 'material-ui/svg-icons/action/done-all'
 import Canceled from 'material-ui/svg-icons/notification/do-not-disturb-alt'
 import ToolTip from '../ToolTip'
 import t from '../../helpers/translate'
-
-const PENDING = 0
-const IN_PROGRESS = 1
-const COMPLETED = 2
-const CANCELED = 3
+import {
+    ORDER_RETURN_PENDING,
+    ORDER_RETURN_IN_PROGRESS,
+    ORDER_RETURN_COMPLETED,
+    ORDER_RETURN_CANCELED
+} from '../../constants/backendConstants'
 
 const OrderReturnStatusIcons = (props) => {
     const {status} = props
@@ -42,10 +43,10 @@ const OrderReturnStatusIcons = (props) => {
         )
     }
     switch (status) {
-        case PENDING: return getTooltip(t('Ожидает'), <InProcess color="#f0ad4e"/>)
-        case IN_PROGRESS: return getTooltip(t('Ожидает'), <InProcess color="#f0ad4e"/>)
-        case COMPLETED: return getTooltip(t('Завершен'), <DoneIcon color="#81c784"/>)
-        case CANCELED: return getTooltip(t('Отменен'), <Canceled color='#e57373'/>)
+        case ORDER_RETURN_PENDING: return getTooltip(t('Ожидает'), <InProcess color="#f0ad4e"/>)
+        case ORDER_RETURN_IN_PROGRESS: return getTooltip(t('Ожидает'), <InProcess color="#f0ad4e"/>)
+        case ORDER_RETURN_COMPLETED: return getTooltip(t('Завершен'), <DoneIcon color="#81c784"/>)
+        case ORDER_RETURN_CANCELED: return getTooltip(t('Отменен'), <Canceled color='#e57373'/>)
         default: return null
     }
 }

@@ -158,7 +158,9 @@ const ActivityPayment = enhance((props) => {
     const bankSummary = _.join(_.map(bankData, (item) => {
         return numberFormat(_.get(item, 'totalAmount'), _.get(item, 'currencyName'))
     }), ', ')
-    const tooltipText = '<div>' + t('Сумма (нал)') + ': ' + cashSummary + '</div> <div>' + t('Сумма (пер)') + ': ' + bankSummary + '</div>'
+    const cashTooltip = cashSummary ? '<div>' + t('Сумма (нал)') + ': ' + cashSummary + '</div>' : ''
+    const bankTooltip = bankSummary ? '<div>' + t('Сумма (нал)') + ': ' + bankSummary + '</div>' : ''
+    const tooltipText = cashTooltip + bankTooltip
     const paymentList = _.map(_.get(paymentlistData, 'data'), (item) => {
         const id = _.get(item, ['clientTransaction', 'id'])
         const currency = _.get(item, ['clientTransaction', 'currency', 'name'])

@@ -13,13 +13,13 @@ import ToolTip from '../ToolTip'
 import t from '../../helpers/translate'
 import dateFormat from '../../helpers/dateFormat'
 import {
-    REQUESTED,
-    NOT_CONFIRMED,
-    READY,
     ZERO,
-    CANCELLED,
-    GIVEN,
-    DELIVERED
+    ORDER_REQUESTED,
+    ORDER_READY,
+    ORDER_GIVEN,
+    ORDER_DELIVERED,
+    ORDER_CANCELED,
+    ORDER_NOT_CONFIRMED
 } from '../../constants/backendConstants'
 
 const OrderStatusIcons = (props) => {
@@ -64,7 +64,7 @@ const OrderStatusIcons = (props) => {
         }
         return '#b7bbb7'
     }
-    const paymentIcon = status !== CANCELLED
+    const paymentIcon = status !== ORDER_CANCELED
     ? (
         <ToolTip position="bottom" text={(totalBalance > ZERO) && (paymentDifference <= ZERO)
             ? PAY_DELAY
@@ -96,12 +96,12 @@ const OrderStatusIcons = (props) => {
     }
     const statusIcon = () => {
         switch (status) {
-            case REQUESTED: return getTooltip(t('В процессе'), <InProcess color="#f0ad4e"/>)
-            case READY: return getTooltip(t('Есть на складе'), <Available color="#f0ad4e"/>)
-            case DELIVERED: return getTooltip(t('Доставлен'), <Delivered color="#81c784"/>)
-            case GIVEN: return getTooltip(t('Передан доставщику'), <Transferred color="#f0ad4e"/>)
-            case CANCELLED: return getTooltip(t('Заказ отменен'), <Canceled color='#e57373'/>)
-            case NOT_CONFIRMED: return getTooltip(t('Не подтвержден'), <NotConfirmed color='#999'/>)
+            case ORDER_REQUESTED: return getTooltip(t('В процессе'), <InProcess color="#f0ad4e"/>)
+            case ORDER_READY: return getTooltip(t('Есть на складе'), <Available color="#f0ad4e"/>)
+            case ORDER_GIVEN: return getTooltip(t('Передан доставщику'), <Transferred color="#f0ad4e"/>)
+            case ORDER_DELIVERED: return getTooltip(t('Доставлен'), <Delivered color="#81c784"/>)
+            case ORDER_CANCELED: return getTooltip(t('Заказ отменен'), <Canceled color='#e57373'/>)
+            case ORDER_NOT_CONFIRMED: return getTooltip(t('Не подтвержден'), <NotConfirmed color='#999'/>)
             default: return null
         }
     }

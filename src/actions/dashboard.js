@@ -22,10 +22,10 @@ export const statSalesDataFetchAction = (filter) => {
     }
 }
 
-export const statSalesReturnDataFetchAction = (filter) => {
-    const params = serializers.returnChart(filter.getParams())
+export const statSalesReturnDataFetchAction = (filter, withOrderReturn) => {
+    const params = serializers.returnChart(filter.getParams(), withOrderReturn)
     const payload = axios()
-        .get(API.STAT_RETURN_LIST, {params})
+        .get(API.STAT_SALES_DATA, {params})
         .then((response) => {
             return _.get(response, 'data')
         })

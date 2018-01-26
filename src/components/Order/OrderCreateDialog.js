@@ -32,6 +32,11 @@ import OrderPaymentTypeRadio from '../ReduxForm/Order/OrderPaymentTypeRadio'
 import MarketSearchField from '../ReduxForm/ClientBalance/MarketSearchField'
 import CheckBox from '../ReduxForm/Basic/CheckBox'
 import t from '../../helpers/translate'
+import {
+    ORDER_GIVEN,
+    ORDER_DELIVERED,
+    ORDER_CANCELED
+} from '../../constants/backendConstants'
 
 export const ORDER_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const SHOP_CREATE_DIALOG_OPEN = 'openCreateDialog'
@@ -287,10 +292,6 @@ const OrderCreateDialog = enhance((props) => {
         return (!editProductsLoading && amount > balance)
     }), true)
 
-    const GIVEN = 2
-    const DELIVERED = 3
-    const CANCELLED = 4
-
     const selectFieldScroll = {
         scrollable: true,
         maxHeight: '150px'
@@ -447,7 +448,7 @@ const OrderCreateDialog = enhance((props) => {
                                 <div className={classes.rightOrderPart}>
                                     <Fields
                                         names={['products', 'product', 'amount', 'cost', 'type', 'editAmount', 'editCost']}
-                                        editOnlyCost={status === DELIVERED || status === GIVEN}
+                                        editOnlyCost={status === ORDER_DELIVERED || status === ORDER_GIVEN}
                                         canChangeAnyPrice={canChangeAnyPrice}
                                         canChangePrice={canChangePrice}
                                         component={OrderListProductField}
@@ -462,7 +463,7 @@ const OrderCreateDialog = enhance((props) => {
                         <div className={classes.commentField}>
                             {t('Общая сумма заказа')}: <b>{numberFormat(totalCost, currencyItem)}</b>
                         </div>
-                        {(notEnough && isConfirmed && (status !== GIVEN && status !== DELIVERED && status !== CANCELLED))
+                        {(notEnough && isConfirmed && (status !== ORDER_GIVEN && status !== ORDER_DELIVERED && status !== ORDER_CANCELED))
                             ? <FlatButton
                                 label={t('Далее')}
                                 labelStyle={{fontSize: '13px'}}

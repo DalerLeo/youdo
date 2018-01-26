@@ -21,10 +21,10 @@ import * as ROUTE from '../../constants/routes'
 import checkPermission from '../../helpers/checkPermission'
 import t from '../../helpers/translate'
 import {
-    PENDING,
-    IN_PROGRESS,
-    COMPLETED,
-    CANCELLED
+    SUPPLY_PENDING,
+    SUPPLY_IN_PROGRESS,
+    SUPPLY_COMPLETED,
+    SUPPLY_CANCELED
 } from '../../constants/backendConstants'
 
 const popupWidth = 210
@@ -264,18 +264,14 @@ const SupplyDetails = enhance((props) => {
     const contract = _.get(data, 'contract') || t('Не указано')
 
     const status = _.toInteger(_.get(data, 'status'))
-    let statusOutput = null
-    switch (status) {
-        case PENDING: statusOutput = <span className={classes.yellow}>{t('Ожидает')}</span>
-            break
-        case IN_PROGRESS: statusOutput = <span className={classes.blue}>{t('В процессе')}</span>
-            break
-        case COMPLETED: statusOutput = <span className={classes.green}>{t('Завершен')}</span>
-            break
-        case CANCELLED: statusOutput = <span className={classes.red}>{t('Отменен')}</span>
-            break
-        default: statusOutput = null
-
+    const statusOutput = () => {
+        switch (status) {
+            case SUPPLY_PENDING: return <span className={classes.yellow}>{t('Ожидает')}</span>
+            case SUPPLY_IN_PROGRESS: return <span className={classes.blue}>{t('В процессе')}</span>
+            case SUPPLY_COMPLETED: return <span className={classes.green}>{t('Завершен')}</span>
+            case SUPPLY_CANCELED: return <span className={classes.red}>{t('Отменен')}</span>
+            default: return null
+        }
     }
 
     const comment = _.get(data, 'comment') || t('Не указано')
@@ -313,18 +309,18 @@ const SupplyDetails = enhance((props) => {
     })
     const editButtonDisableStatus = () => {
         switch (status) {
-            case CANCELLED: return true
+            case SUPPLY_CANCELED: return true
             default: return false
         }
     }
     const cancelButtonDisableStatus = () => {
-        if (status === CANCELLED) {
+        if (status === SUPPLY_CANCELED) {
             return true
-        } else if (status !== CANCELLED && isAdmin) {
+        } else if (status !== SUPPLY_CANCELED && isAdmin) {
             return false
-        } else if (status === COMPLETED && isAdmin) {
+        } else if (status === SUPPLY_COMPLETED && isAdmin) {
             return false
-        } else if (status === COMPLETED && !isAdmin) {
+        } else if (status === SUPPLY_COMPLETED && !isAdmin) {
             return true
         }
         return false
@@ -350,7 +346,7 @@ const SupplyDetails = enhance((props) => {
                         <Link target="_blank" to={{pathname: ROUTE.PENDING_EXPENSES_LIST_URL, query: {supply: id}}}>
                             <IconButton
                                 iconStyle={iconStyle.icon}
-                                disabled={status === CANCELLED}
+                                disabled={status === SUPPLY_CANCELED}
                                 style={iconStyle.button}
                                 touch={true}>
                                 <AddPayment/>
@@ -360,7 +356,7 @@ const SupplyDetails = enhance((props) => {
                     <ToolTip position="bottom" text={t('Добавить расход')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
-                            disabled={(status === CANCELLED)}
+                            disabled={(status === SUPPLY_CANCELED)}
                             style={iconStyle.button}
                             touch={true}
                             onTouchTap={() => { handleSupplyExpenseOpenCreateDialog(id) }}>
@@ -370,7 +366,7 @@ const SupplyDetails = enhance((props) => {
                     <ToolTip position="bottom" text={t('Синхронизировать кол-во товаров с приёмкой')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
-                            disabled={status !== COMPLETED}
+                            disabled={status !== SUPPLY_COMPLETED}
                             style={iconStyle.button}
                             touch={true}
                             onTouchTap={() => { confirmSyncDialog.handleOpenConfirmDialog() }}>
@@ -523,7 +519,7 @@ const SupplyDetails = enhance((props) => {
                             <ul>
                                 <li>
                                     <span>{t('Статус')}:</span>
-                                    <span>{statusOutput}</span>
+                                    <span>{statusOutput()}</span>
                                 </li>
                                 <li>
                                     <span>{t('Начало приемки')}:</span>

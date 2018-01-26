@@ -231,7 +231,7 @@ const PendingExpensesList = enhance((props) => {
             },
             provider: provider && splitToArray(provider),
             supply: supply && splitToArray(supply),
-            division: supply && splitToArray(division)
+            division: division && splitToArray(division)
         },
         filterLoading: false,
         openFilterDialog,

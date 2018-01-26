@@ -28,6 +28,7 @@ import {
     statProviderItemFetchAction,
     statProviderDetailFetchAction
 } from '../../actions/statProvider'
+
 const STAT = false
 const defaultDate = moment().format('YYYY-MM-DD')
 const enhance = compose(
@@ -144,11 +145,16 @@ const enhance = compose(
             const search = _.get(filterForm, ['values', 'search']) || null
             const paymentType = _.get(filterForm, ['values', 'paymentType', 'value']) || null
             const balanceType = _.get(filterForm, ['values', 'balanceType', 'value']) || null
+            const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
+            const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
+
             filter.filterBy({
+                [PROVIDER_BALANCE_FILTER_OPEN]: false,
                 [STAT_PROVIDER_FILTER_KEY.SEARCH]: search,
                 [STAT_PROVIDER_FILTER_KEY.PAYMENT_TYPE]: paymentType,
-                [STAT_PROVIDER_FILTER_KEY.BALANCE_TYPE]: balanceType
-
+                [STAT_PROVIDER_FILTER_KEY.BALANCE_TYPE]: balanceType,
+                [STAT_PROVIDER_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
+                [STAT_PROVIDER_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
             })
         },
         handleGetDocument: props => () => {

@@ -14,12 +14,14 @@ import {hashHistory} from 'react-router'
 import filterHelper from '../../helpers/filter'
 import {ORDER_DETAILS, ActivityWrapper, DAY, DATE, IMAGE} from '../../components/Activity'
 import {
-    VISIT,
-    ORDER,
-    REPORT,
-    ORDER_RETURN,
-    PAYMENT,
-    DELIVERY,
+    ACTIVITY_VISIT,
+    ACTIVITY_ORDER,
+    ACTIVITY_REPORT,
+    ACTIVITY_ORDER_RETURN,
+    ACTIVITY_PAYMENT,
+    ACTIVITY_DELIVERY
+} from '../../constants/backendConstants'
+import {
     activityOrderListFetchAction,
     activityOrderItemFetchAction,
     activityVisitListFetchAction,
@@ -190,19 +192,13 @@ const enhance = compose(
         handleLoadMoreItems: props => (type, page) => {
             const {dispatch, filter} = props
             switch (type) {
-                case VISIT: dispatch(activityVisitListFetchAction(filter, page))
-                    break
-                case ORDER: dispatch(activityOrderListFetchAction(filter, page))
-                    break
-                case REPORT: dispatch(activityReportListFetchAction(filter, page))
-                    break
-                case ORDER_RETURN: dispatch(activityReturnListFetchAction(filter, page))
-                    break
-                case PAYMENT: dispatch(activityPaymentListFetchAction(filter, page))
-                    break
-                case DELIVERY: dispatch(activityDeliveryListFetchAction(filter, page))
-                    break
-                default: dispatch(null)
+                case ACTIVITY_VISIT: return dispatch(activityVisitListFetchAction(filter, page))
+                case ACTIVITY_ORDER: return dispatch(activityOrderListFetchAction(filter, page))
+                case ACTIVITY_REPORT: return dispatch(activityReportListFetchAction(filter, page))
+                case ACTIVITY_ORDER_RETURN: return dispatch(activityReturnListFetchAction(filter, page))
+                case ACTIVITY_PAYMENT: return dispatch(activityPaymentListFetchAction(filter, page))
+                case ACTIVITY_DELIVERY: return dispatch(activityDeliveryListFetchAction(filter, page))
+                default: return null
             }
         }
     }),

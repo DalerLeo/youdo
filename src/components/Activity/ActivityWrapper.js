@@ -19,6 +19,14 @@ import ActivityReturn from './ActivityReturn'
 import ActivityPayment from './ActivityPayment'
 import ActivityDelivery from './ActivityDelivery'
 import t from '../../helpers/translate'
+import {
+    ACTIVITY_VISIT,
+    ACTIVITY_ORDER,
+    ACTIVITY_REPORT,
+    ACTIVITY_ORDER_RETURN,
+    ACTIVITY_PAYMENT,
+    ACTIVITY_DELIVERY
+} from '../../constants/backendConstants'
 
 const enhance = compose(
     injectSheet({
@@ -128,13 +136,6 @@ const enhance = compose(
     })
 )
 
-const VISIT = 1
-const ORDER = 2
-const REPORT = 3
-const ORDER_RETURN = 4
-const PAYMENT = 5
-const DELIVERY = 6
-
 const ActivityWrapper = enhance((props) => {
     const {
         summaryData,
@@ -177,7 +178,7 @@ const ActivityWrapper = enhance((props) => {
                     ? tubeLoader
                     : <ActivityOrder
                         handleLoadMoreItems={_.get(orderlistData, 'handleLoadMoreItems')}
-                        summary={_.get(summaryData, ['data', ORDER])}
+                        summary={_.get(summaryData, ['data', ACTIVITY_ORDER])}
                         summaryLoading={_.get(summaryData, 'summaryListLoading')}
                         orderlistData={orderlistData}
                         orderDetails={orderDetails}/>}
@@ -185,14 +186,14 @@ const ActivityWrapper = enhance((props) => {
                     ? tubeLoader
                     : <ActivityVisit
                         handleLoadMoreItems={_.get(visitlistData, 'handleLoadMoreItems')}
-                        summary={_.get(summaryData, ['data', VISIT])}
+                        summary={_.get(summaryData, ['data', ACTIVITY_VISIT])}
                         summaryLoading={_.get(summaryData, 'summaryListLoading')}
                         visitlistData={visitlistData}/>}
                 {reportlistLoading && loading
                     ? tubeLoader
                     : <ActivityReport
                         handleLoadMoreItems={_.get(reportlistData, 'handleLoadMoreItems')}
-                        summary={_.get(summaryData, ['data', REPORT])}
+                        summary={_.get(summaryData, ['data', ACTIVITY_REPORT])}
                         summaryLoading={_.get(summaryData, 'summaryListLoading')}
                         reportImageData={reportImageData}
                         reportlistData={reportlistData}/>}
@@ -200,21 +201,21 @@ const ActivityWrapper = enhance((props) => {
                     ? tubeLoader
                     : <ActivityReturn
                         handleLoadMoreItems={_.get(returnlistData, 'handleLoadMoreItems')}
-                        summary={_.get(summaryData, ['data', ORDER_RETURN])}
+                        summary={_.get(summaryData, ['data', ACTIVITY_ORDER_RETURN])}
                         summaryLoading={_.get(summaryData, 'summaryListLoading')}
                         returnListData={returnlistData}/>}
                 {paymentlistLoading && loading
                     ? tubeLoader
                     : <ActivityPayment
                         handleLoadMoreItems={_.get(paymentlistData, 'handleLoadMoreItems')}
-                        summary={_.get(summaryData, ['data', PAYMENT])}
+                        summary={_.get(summaryData, ['data', ACTIVITY_PAYMENT])}
                         summaryLoading={_.get(summaryData, 'summaryListLoading')}
                         paymentlistData={paymentlistData}/>}
                 {deliverylistLoading && loading
                     ? tubeLoader
                     : <ActivityDelivery
                         handleLoadMoreItems={_.get(deliverylistData, 'handleLoadMoreItems')}
-                        summary={_.get(summaryData, ['data', DELIVERY])}
+                        summary={_.get(summaryData, ['data', ACTIVITY_DELIVERY])}
                         summaryLoading={_.get(summaryData, 'summaryListLoading')}
                         deliverylistData={deliverylistData}/>}
             </div>
