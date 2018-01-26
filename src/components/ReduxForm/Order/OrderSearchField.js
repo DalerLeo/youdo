@@ -5,6 +5,7 @@ import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
 import caughtCancel from '../../../helpers/caughtCancel'
+import sprintf from 'sprintf'
 import t from '../../../helpers/translate'
 
 const CancelToken = axios().CancelToken
@@ -25,10 +26,9 @@ const getOptions = (search) => {
 }
 
 const getItem = (id) => {
-    return axios().get(PATH.ORDER_LIST)
+    return axios().get(sprintf(PATH.ORDER_ITEM, id))
         .then(({data}) => {
-            const detail = _.find(data, {'id': id})
-            return Promise.resolve(toCamelCase(detail))
+            return Promise.resolve(toCamelCase(data))
         })
 }
 

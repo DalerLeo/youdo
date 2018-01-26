@@ -4,23 +4,26 @@ import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import numberFormat from '../../../helpers/numberFormat'
-import Paper from 'material-ui/Paper'
+import Loader from '../../Loader'
 
 const enhance = compose(
     injectSheet({
         wrapper: {
-            position: 'absolute',
-            top: '0',
-            left: '100%',
-            whiteSpace: 'nowrap',
-            zIndex: '999'
+            borderTop: '1px solid #efefef',
+            paddingTop: '7px'
         },
-        salesType: {
-            padding: '10px 20px'
-        },
-        title: {
+        innerWrap: {
             marginBottom: '5px',
-            fontWeight: '600'
+            '& > div:first-child': {
+                fontSize: '13px',
+                fontWeight: '500',
+                color: '#666'
+            },
+            '& > div': {
+                fontSize: '15px',
+                fontWeight: '600',
+                color: '#333'
+            }
         }
     })
 )
@@ -31,6 +34,7 @@ const SalesInfoDialog = enhance((props) => {
         statsData
     } = props
 
+    const loading = _.get(statsData, 'loading')
     const data = _.get(statsData, 'data')
     const cashList = _.filter(data, {'paymentType': 'cash'})
     const bankList = _.filter(data, {'paymentType': 'bank'})
@@ -65,29 +69,33 @@ const SalesInfoDialog = enhance((props) => {
     const noCashData = _.isEmpty(cashSummary)
     const noBankData = _.isEmpty(bankSummary)
     return (
-         <Paper zDepth={2} className={classes.wrapper}>
-             <div className={classes.salesType}>
-                 <div className={classes.title}>Наличние</div>
-                 {!noCashData &&
-                 <div>
-                     {_.map(cashSummary, (obj, i) => {
-                         const currency = _.get(obj, 'currency')
-                         const amount = _.get(obj, 'total')
-                         return <div className={classes.amount} key={i}>{numberFormat(amount, currency)}</div>
-                     })}
-                 </div>}
-                 <hr/>
-                 <div className={classes.title}>Переч</div>
-                 {!noBankData &&
-                 <div>
-                     {_.map(bankSummary, (obj, i) => {
-                         const currency = _.get(obj, 'currency')
-                         const amount = _.get(obj, 'total')
-                         return <div className={classes.amount} key={i}>{numberFormat(amount, currency)}</div>
-                     })}
-                 </div>}
-             </div>
-         </Paper>
+        <div className={classes.wrapper}>
+            {loading
+            ? <div>
+                    <Loader size={0.75}/>
+                </div>
+            : <div>
+                    {!noCashData &&
+                    <div className={classes.innerWrap}>
+                    <div >Наличными:</div>
+                    {_.map(cashSummary, (obj, i) => {
+                        const currency = _.get(obj, 'currency')
+                        const amount = _.get(obj, 'total')
+                        return <div className={classes.amount} key={i}>{numberFormat(amount, currency)}</div>
+                    })}
+                    </div>}
+                {!noBankData &&
+                    <div className={classes.innerWrap}>
+                    <div>Перечислением:</div>
+                    {_.map(bankSummary, (obj, i) => {
+                        const currency = _.get(obj, 'currency')
+                        const amount = _.get(obj, 'total')
+                        return <div className={classes.amount} key={i}>{numberFormat(amount, currency)}</div>
+                    })}
+                    </div>}
+                </div>
+            }
+        </div>
     )
 })
 

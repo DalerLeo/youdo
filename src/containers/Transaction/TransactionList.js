@@ -76,6 +76,7 @@ const enhance = compose(
         const list = _.get(state, ['transaction', 'list', 'data'])
         const cashboxList = _.get(state, ['cashbox', 'list', 'data'])
         const cashboxListLoading = _.get(state, ['cashbox', 'list', 'loading'])
+        const cashboxListFailed = _.get(state, ['cashbox', 'list', 'failed'])
         const listLoading = _.get(state, ['transaction', 'list', 'loading'])
         const transactionInfo = _.get(state, ['transaction', 'info', 'data'])
         const transactionInfoLoading = _.get(state, ['transaction', 'info', 'loading'])
@@ -115,6 +116,7 @@ const enhance = compose(
             query,
             cashboxList,
             cashboxListLoading,
+            cashboxListFailed,
             listLoading,
             acceptCashData,
             acceptCashLoading,
@@ -152,7 +154,7 @@ const enhance = compose(
         }
     }),
     withPropsOnChange((props, nextProps) => {
-        return !nextProps.cashboxListLoading && _.isNil(nextProps.cashboxList)
+        return !nextProps.cashboxListLoading && _.isNil(nextProps.cashboxList) && !nextProps.cashboxListFailed
     }, ({dispatch, filterCashbox}) => {
         dispatch(cashboxListFetchAction(filterCashbox))
     }),
@@ -558,9 +560,10 @@ const enhance = compose(
         },
 
         handleSubmitCreateSendDialog: props => (percent) => {
-            const {dispatch, sendForm, filter, location: {pathname}, filterCashbox} = props
+            const {dispatch, sendForm, filter, location: {pathname}, filterCashbox, cashboxList} = props
             const cashboxId = _.get(props, ['location', 'query', 'cashboxId'])
-            return dispatch(transactionCreateSendAction(_.get(sendForm, ['values']), cashboxId, percent))
+            const cashbox = _.find(_.get(cashboxList, 'results'), {'id': _.toNumber(cashboxId)})
+            return dispatch(transactionCreateSendAction(_.get(sendForm, ['values']), cashboxId, percent, _.get(cashbox, ['currency', 'name'])))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
@@ -764,7 +767,7 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[UPDATE_TRANSACTION]: false})})
         },
         handleSubmitUpdateExpenseDialog: props => () => {
-            const {dispatch, createForm, filter, cashboxId, location: {query}} = props
+            const {dispatch, createForm, filterCashbox, filter, cashboxId, location: {query}} = props
             const transactionId = _.toInteger(_.get(query, UPDATE_TRANSACTION))
             return dispatch(transactionUpdateExpenseAction(transactionId, _.get(createForm, ['values']), cashboxId))
                 .then(() => {
@@ -776,6 +779,7 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push(filter.createURL({[UPDATE_TRANSACTION]: false}))
                     dispatch(transactionListFetchAction(filter, cashboxId))
+                    dispatch(cashboxListFetchAction(filterCashbox))
                 })
                 .catch((error) => {
                     dispatch(openErrorAction({

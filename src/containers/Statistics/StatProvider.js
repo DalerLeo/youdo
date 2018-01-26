@@ -118,6 +118,7 @@ const enhance = compose(
     }, ({dispatch, params, filterItem, infoForm}) => {
         const clientBalanceId = _.toInteger(_.get(params, 'statProviderId'))
         const division = _.get(infoForm, ['values', 'division', 'value'])
+
         const currency = _.get(infoForm, ['values', 'currency', 'value'])
         const type = _.get(infoForm, ['values', 'paymentType', 'value'])
         clientBalanceId && dispatch(statProviderItemFetchAction(filterItem, clientBalanceId, division, currency, type))
@@ -129,13 +130,13 @@ const enhance = compose(
             const search = _.get(filterForm, ['values', 'search']) || null
             const paymentType = _.get(filterForm, ['values', 'paymentType', 'value']) || null
             const balanceType = _.get(filterForm, ['values', 'balanceType', 'value']) || null
-            const zone = _.get(filterForm, ['values', 'zone', 'value']) || null
-            const division = _.get(filterForm, ['values', 'division', 'value']) || null
+            const toDate = _.get(filterForm, ['values', 'createdDate', 'toDate']) || null
+            const fromDate = _.get(filterForm, ['values', 'createdDate', 'fromDate']) || null
             filter.filterBy({
                 [STAT_PROVIDER_FILTER_KEY.SEARCH]: search,
                 [STAT_PROVIDER_FILTER_KEY.PAYMENT_TYPE]: paymentType,
-                [STAT_PROVIDER_FILTER_KEY.ZONE]: _.join(zone, '-'),
-                [STAT_PROVIDER_FILTER_KEY.DIVISION]: _.join(division, '-'),
+                [STAT_PROVIDER_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
+                [STAT_PROVIDER_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD'),
                 [STAT_PROVIDER_FILTER_KEY.BALANCE_TYPE]: balanceType
 
             })
@@ -198,8 +199,9 @@ const StatProviderList = enhance((props) => {
     const type = _.get(location, ['query', 'type'])
     const paymentType = filter.getParam(STAT_PROVIDER_FILTER_KEY.PAYMENT_TYPE)
     const balanceType = filter.getParam(STAT_PROVIDER_FILTER_KEY.BALANCE_TYPE)
-    const zone = filter.getParam(STAT_PROVIDER_FILTER_KEY.ZONE)
-    const divisionFilter = filter.getParam(STAT_PROVIDER_FILTER_KEY.DIVISION)
+    const firstDayOfMonth = _.get(location, ['query', 'fromDate']) || moment().format('YYYY-MM-01')
+    const lastDay = moment().daysInMonth()
+    const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
 
     const divisionInfo = _.find(_.get(list, ['results', '0', 'divisions']), (item) => {
         return _.get(item, 'id') === division
@@ -265,12 +267,10 @@ const StatProviderList = enhance((props) => {
         balanceType: {
             value: balanceType
         },
-        zone: zone && _.map(_.split(zone, '-'), (item) => {
-            return _.toNumber(item)
-        }),
-        division: divisionFilter && _.map(_.split(divisionFilter, '-'), (item) => {
-            return _.toNumber(item)
-        })
+        createdDate: {
+            fromDate: moment(firstDayOfMonth),
+            toDate: moment(lastDayOfMonth)
+        }
     }
 
     return (

@@ -509,7 +509,7 @@ const StatProviderGridList = enhance((props) => {
         <div>
             <Field
                 className={classes.inputFieldCustom}
-                name="date"
+                name="createdDate"
                 component={DateToDateField}
                 label={t('Диапазон дат')}
                 fullWidth={true}/>
@@ -744,6 +744,7 @@ const StatProviderGridList = enhance((props) => {
                             fields={fields}
                             filterKeys={STAT_PROVIDER_FILTER_KEY}
                             initialValues={initialValues}
+                            withoutDate={true}
                             handleSubmitFilterDialog={handleSubmitFilterDialog}
                             handleGetDocument={getDocument.handleGetDocument}
                         />
