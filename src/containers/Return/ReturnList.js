@@ -240,7 +240,7 @@ const enhance = compose(
             filter.filterBy({
                 [RETURN_FILTER_OPEN]: false,
                 [RETURN_FILTER_KEY.TYPE]: type,
-                [RETURN_FILTER_KEY.ORDER]: _.join(order, '-'),
+                [RETURN_FILTER_KEY.ORDER]: order,
                 [RETURN_FILTER_KEY.CLIENT]: _.join(client, '-'),
                 [RETURN_FILTER_KEY.STATUS]: _.join(status, '-'),
                 [RETURN_FILTER_KEY.INITIATOR]: _.join(initiator, '-'),
@@ -568,7 +568,7 @@ const ReturnList = enhance((props) => {
             product: product && _.map(_.split(product, '-'), (item) => {
                 return _.toNumber(item)
             }),
-            market: product && _.map(_.split(market, '-'), (item) => {
+            market: market && _.map(_.split(market, '-'), (item) => {
                 return _.toNumber(item)
             }),
             initiator: initiator && _.map(_.split(initiator, '-'), (item) => {
