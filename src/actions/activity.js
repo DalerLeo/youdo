@@ -4,15 +4,16 @@ import sprintf from 'sprintf'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/activitySerializer'
+import {
+    ACTIVITY_VISIT,
+    ACTIVITY_ORDER,
+    ACTIVITY_REPORT,
+    ACTIVITY_ORDER_RETURN,
+    ACTIVITY_PAYMENT,
+    ACTIVITY_DELIVERY
+} from '../constants/backendConstants'
 
 const CancelToken = axios().CancelToken
-
-export const VISIT = 1
-export const ORDER = 2
-export const REPORT = 3
-export const ORDER_RETURN = 4
-export const PAYMENT = 5
-export const DELIVERY = 6
 
 const thumbnailType = 'medium'
 
@@ -23,7 +24,7 @@ export const activityOrderListFetchAction = (filter, page) => {
         activityOrderListFetchToken.cancel()
     }
     activityOrderListFetchToken = CancelToken.source()
-    const params = serializers.listFilterSerializer(filter.getParams(), ORDER, page)
+    const params = serializers.listFilterSerializer(filter.getParams(), ACTIVITY_ORDER, page)
     const payload = axios()
         .get(API.ACTIVITY_ORDER_LIST, {params, cancelToken: activityOrderListFetchToken.token})
         .then((response) => {
@@ -61,7 +62,7 @@ export const activityVisitListFetchAction = (filter, page) => {
         activityVisitListFetchToken.cancel()
     }
     activityVisitListFetchToken = CancelToken.source()
-    const params = serializers.listFilterSerializer(filter.getParams(), VISIT, page)
+    const params = serializers.listFilterSerializer(filter.getParams(), ACTIVITY_VISIT, page)
     const payload = axios()
         .get(API.ACTIVITY_VISIT_LIST, {params, cancelToken: activityVisitListFetchToken.token})
         .then((response) => {
@@ -83,7 +84,7 @@ export const activityReportListFetchAction = (filter, page) => {
         activityReportListFetchToken.cancel()
     }
     activityReportListFetchToken = CancelToken.source()
-    const params = serializers.listFilterSerializer(filter.getParams(), REPORT, page, thumbnailType)
+    const params = serializers.listFilterSerializer(filter.getParams(), ACTIVITY_REPORT, page, thumbnailType)
     const payload = axios()
         .get(API.ACTIVITY_REPORT_LIST, {params, cancelToken: activityReportListFetchToken.token})
         .then((response) => {
@@ -121,7 +122,7 @@ export const activityReturnListFetchAction = (filter, page) => {
         activityReturnListFetchToken.cancel()
     }
     activityReturnListFetchToken = CancelToken.source()
-    const params = serializers.listFilterSerializer(filter.getParams(), ORDER_RETURN, page)
+    const params = serializers.listFilterSerializer(filter.getParams(), ACTIVITY_ORDER_RETURN, page)
     const payload = axios()
         .get(API.ACTIVITY_ORDER_RETURN_LIST, {params, cancelToken: activityReturnListFetchToken.token})
         .then((response) => {
@@ -143,7 +144,7 @@ export const activityPaymentListFetchAction = (filter, page) => {
         activityPaymentListFetchToken.cancel()
     }
     activityPaymentListFetchToken = CancelToken.source()
-    const params = serializers.listFilterSerializer(filter.getParams(), PAYMENT, page)
+    const params = serializers.listFilterSerializer(filter.getParams(), ACTIVITY_PAYMENT, page)
     const payload = axios()
         .get(API.ACTIVITY_REPORT_LIST, {params, cancelToken: activityPaymentListFetchToken.token})
         .then((response) => {
@@ -165,7 +166,7 @@ export const activityDeliveryListFetchAction = (filter, page) => {
         activityDeliveryListFetchToken.cancel()
     }
     activityDeliveryListFetchToken = CancelToken.source()
-    const params = serializers.listFilterSerializer(filter.getParams(), DELIVERY, page)
+    const params = serializers.listFilterSerializer(filter.getParams(), ACTIVITY_DELIVERY, page)
     const payload = axios()
         .get(API.ACTIVITY_REPORT_LIST, {params, cancelToken: activityDeliveryListFetchToken.token})
         .then((response) => {

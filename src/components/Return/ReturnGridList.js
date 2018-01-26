@@ -258,27 +258,29 @@ const OrderGridList = enhance((props) => {
                 handleOpenAddProduct={addProductDialog.handleOpenAddProduct}
             />
             {(returnType === CLIENT_RETURN)
-                ? (isAdmin && <ReturnCreateDialog
-                    isUpdate={true}
-                    editOnlyCost={detStatus === COMPLETED}
-                    name={_.get(detailData, ['data', 'client', 'name'])}
-                    initialValues={updateDialog.initialValues}
-                    loading={updateDialog.updateLoading}
-                    open={updateDialog.openUpdateDialog}
-                    onClose={updateDialog.handleCloseUpdateDialog}
-                    onSubmit={updateDialog.handleSubmitUpdateDialog}
-                    hasMarket={hasMarket}
-                    handleOpenAddProduct={addProductDialog.handleOpenAddProduct}
-                />)
-                : (isAdmin && <ReturnUpdateDialog
-                    isUpdate={true}
-                    orderData={_.get(detailData, 'data')}
-                    initialValues={updateDialog.initialValues}
-                    loading={updateDialog.updateLoading}
-                    open={updateDialog.openUpdateDialog}
-                    onClose={updateDialog.handleCloseUpdateDialog}
-                    onSubmit={updateDialog.handleSubmitUpdateDialog}
-                />)}
+                ? (isAdmin &&
+                    <ReturnCreateDialog
+                        isUpdate={true}
+                        editOnlyCost={detStatus === COMPLETED}
+                        name={_.get(detailData, ['data', 'client', 'name'])}
+                        initialValues={updateDialog.initialValues}
+                        loading={updateDialog.updateLoading}
+                        open={updateDialog.openUpdateDialog}
+                        onClose={updateDialog.handleCloseUpdateDialog}
+                        onSubmit={updateDialog.handleSubmitUpdateDialog}
+                        hasMarket={hasMarket}
+                        handleOpenAddProduct={addProductDialog.handleOpenAddProduct}
+                    />)
+                : (isAdmin &&
+                    <ReturnUpdateDialog
+                        isUpdate={true}
+                        orderData={_.get(detailData, 'data')}
+                        initialValues={updateDialog.initialValues}
+                        loading={updateDialog.updateLoading}
+                        open={updateDialog.openUpdateDialog}
+                        onClose={updateDialog.handleCloseUpdateDialog}
+                        onSubmit={updateDialog.handleSubmitUpdateDialog}
+                    />)}
             {addProductDialog.openAddProductDialog &&
             <AddProductsDialog
                 open={addProductDialog.openAddProductDialog}

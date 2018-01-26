@@ -28,9 +28,9 @@ import {connect} from 'react-redux'
 import AddProductDialog from '../Order/OrderAddProductsDialog'
 import t from '../../helpers/translate'
 import {
-    PENDING,
-    IN_PROGRESS,
-    COMPLETED
+    SUPPLY_PENDING,
+    SUPPLY_IN_PROGRESS,
+    SUPPLY_COMPLETED
 } from '../../constants/backendConstants'
 
 const listHeader = [
@@ -250,9 +250,9 @@ const SupplyGridList = enhance((props) => {
                 <Col xs={1}>{paymentType}</Col>
                 <Col xs={1}>{contract}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>{totalCost}</Col>
-                <Col xs={1}>{status === PENDING ? (<span><i className={classes.waiting}/> {t('ожидает')}</span>)
-                    : ((status === IN_PROGRESS) ? (<span><i className={classes.begin}/> {t('начался')}</span>)
-                        : (status === COMPLETED) ? (<span><i className={classes.success}/> {t('принят')}</span>)
+                <Col xs={1}>{status === SUPPLY_PENDING ? (<span><i className={classes.waiting}/> {t('ожидает')}</span>)
+                    : ((status === SUPPLY_IN_PROGRESS) ? (<span><i className={classes.begin}/> {t('начался')}</span>)
+                        : (status === SUPPLY_COMPLETED) ? (<span><i className={classes.success}/> {t('принят')}</span>)
                             : (<span><i className={classes.error}/> {t('отменен')}</span>))}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>{acceptedCost}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>{defectedCost}</Col>
@@ -310,8 +310,8 @@ const SupplyGridList = enhance((props) => {
             <SupplyCreateDialog
                 isUpdate={true}
                 initialValues={updateDialog.initialValues}
-                editOnlyPrice={detailStatus === COMPLETED}
-                acceptedByStock={detailStatus === COMPLETED || detailStatus === IN_PROGRESS}
+                editOnlyPrice={detailStatus === SUPPLY_COMPLETED}
+                acceptedByStock={detailStatus === SUPPLY_COMPLETED || detailStatus === SUPPLY_IN_PROGRESS}
                 open={updateDialog.openUpdateDialog}
                 loading={updateDialog.updateLoading}
                 onClose={updateDialog.handleCloseUpdateDialog}
@@ -326,7 +326,7 @@ const SupplyGridList = enhance((props) => {
                 onSubmit={supplyExpenseCreateDialog.handleSupplyExpenseSubmitCreateDialog}
             />
 
-            {(detailData.data && isAdmin && (detailStatus === IN_PROGRESS || detailStatus === COMPLETED))
+            {(detailData.data && isAdmin && (detailStatus === SUPPLY_IN_PROGRESS || detailStatus === SUPPLY_COMPLETED))
                 ? <ConfirmDialog
                     type="cancel"
                     message={t('Склад уже принял данную поставку. Отмена приведет к списанию товаров из склада. ОТМЕНА НЕ РЕКОМЕНДУЕТСЯ!')}
