@@ -18,8 +18,7 @@ import {orderItemFetchAction} from '../../actions/order'
 import * as API from '../../constants/api'
 import {
     statSalesDataFetchAction,
-    orderListFetchAction,
-    orderStatsFetchAction
+    orderListFetchAction
 } from '../../actions/statSales'
 import getConfig from '../../helpers/getConfig'
 
@@ -34,8 +33,6 @@ const enhance = compose(
         const detailLoading = _.get(state, ['order', 'item', 'loading'])
         const list = _.get(state, ['order', 'list', 'data'])
         const listLoading = _.get(state, ['order', 'list', 'loading'])
-        const stats = _.get(state, ['statSales', 'stats', 'data'])
-        const statsLoading = _.get(state, ['statSales', 'stats', 'loading'])
         const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
         const filter = filterHelper(list, pathname, query)
         const hasMarket = toBoolean(getConfig('MARKETS_MODULE'))
@@ -49,8 +46,6 @@ const enhance = compose(
             filterForm,
             graphList,
             graphLoading,
-            stats,
-            statsLoading,
             hasMarket
         }
     }),
@@ -58,7 +53,6 @@ const enhance = compose(
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
         dispatch(orderListFetchAction(filter, ONE))
-        dispatch(orderStatsFetchAction(filter))
     }),
     withPropsOnChange((props, nextProps) => {
         const except = {
@@ -169,8 +163,6 @@ const StatSalesList = enhance((props) => {
         graphLoading,
         salesInfoDialog,
         setSalesInfoDialog,
-        stats,
-        statsLoading,
         hasMarket
     } = props
 
@@ -213,11 +205,6 @@ const StatSalesList = enhance((props) => {
         return: returnData || {},
         detailLoading,
         handleCloseDetail: props.handleCloseDetail
-    }
-
-    const statsData = {
-        data: stats,
-        loading: statsLoading
     }
 
     const filterForm = {
@@ -283,7 +270,6 @@ const StatSalesList = enhance((props) => {
                 setSalesInfoDialog={setSalesInfoDialog}
                 hasMarket={hasMarket}
                 downloadDocuments={downloadDocuments}
-                statsData={statsData}
             />
         </Layout>
     )

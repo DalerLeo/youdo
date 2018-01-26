@@ -158,71 +158,21 @@ const enhance = compose(
     }),
 
     withState('openStaff', 'setOpenStaff', false),
-    // EXPENSE
+    // EXPENSE && INCOME CATEGORIES
     withPropsOnChange((props, nextProps) => {
         const prevExpenseCat = _.get(props, ['createForm', 'values', 'expanseCategory', 'value', 'options'])
         const nextExpenseCat = _.get(nextProps, ['createForm', 'values', 'expanseCategory', 'value', 'options'])
-        return !_.isEqual(prevExpenseCat, nextExpenseCat) && !_.isEmpty(nextExpenseCat)
-    }, ({dispatch, createForm, setOpenStaff, location: {query}}) => {
-        const category = _.get(createForm, ['values', 'expanseCategory', 'value', 'id'])
-        const form = 'TransactionCreateForm'
-        if (_.isInteger(category)) {
-            const expenseOptions = _.first(_.get(createForm, ['values', 'expanseCategory', 'value', 'options']))
-            const updateTransactionID = _.toInteger(_.get(query, UPDATE_TRANSACTION))
-            dispatch(optionsListFetchAction())
-                .then((data) => {
-                    const options = _.get(data, ['value', 'results'])
-                    const staffExpenseOptionId = _.get(_.find(options, {'key_name': 'staff_expanse'}), 'id')
-                    const detalizationOptionId = _.get(_.find(options, {'key_name': 'transaction_child'}), 'id')
-                    const clientOptionId = _.get(_.find(options, {'key_name': 'client'}), 'id')
-                    switch (expenseOptions) {
-                        case staffExpenseOptionId: {
-                            setOpenStaff(true)
-                            dispatch(usersListFetchAction())
-                            return dispatch(transactionCategoryPopopDataAction(updateTransactionID))
-                                .then((value) => {
-                                    const values = _.get(value, 'value')
-                                    const staffExpense = {}
-                                    _.map(_.get(values, 'results'), (item) => {
-                                        staffExpense[_.get(item, ['staff', 'id'])] = {
-                                            amount: numberFormat(_.get(item, 'amount'))
-                                        }
-                                    })
-                                    dispatch(change(form, 'users', staffExpense))
-                                })
-                        }
-                        case detalizationOptionId: {
-                            return dispatch(transactionDetalizationAction(updateTransactionID))
-                                .then((value) => {
-                                    const values = _.get(value, 'value')
-                                    dispatch(change(form, 'transaction_child', _.map(values, (item) => {
-                                        return {
-                                            name: _.get(item, 'name'),
-                                            amount: numberFormat(_.get(item, 'amount'))
-                                        }
-                                    })))
-                                })
-                        }
-                        default: {
-                            setOpenStaff(false)
-                            return expenseOptions !== clientOptionId && !_.isNil(expenseOptions)
-                                ? dispatch(change(form, 'client', null))
-                                : null
-                        }
-                    }
-                })
-        }
-    }),
-    // INCOME
-    withPropsOnChange((props, nextProps) => {
         const prevIncomeCat = _.get(props, ['createForm', 'values', 'incomeCategory', 'value', 'options'])
         const nextIncomeCat = _.get(nextProps, ['createForm', 'values', 'incomeCategory', 'value', 'options'])
-        return !_.isEqual(prevIncomeCat, nextIncomeCat) && !_.isEmpty(nextIncomeCat)
+        return (!_.isEqual(prevExpenseCat, nextExpenseCat) && !_.isEmpty(nextExpenseCat)) ||
+            (!_.isEqual(prevIncomeCat, nextIncomeCat) && !_.isEmpty(nextIncomeCat))
     }, ({dispatch, createForm, setOpenStaff, location: {query}}) => {
-        const category = _.get(createForm, ['values', 'incomeCategory', 'value', 'id'])
+        const category = _.get(createForm, ['values', 'expanseCategory', 'value', 'id']) ||
+            _.get(createForm, ['values', 'incomeCategory', 'value', 'id'])
         const form = 'TransactionCreateForm'
         if (_.isInteger(category)) {
-            const incomeOptions = _.first(_.get(createForm, ['values', 'incomeCategory', 'value', 'options']))
+            const categoryOptions = _.first(_.get(createForm, ['values', 'expanseCategory', 'value', 'options'])) ||
+                _.first(_.get(createForm, ['values', 'incomeCategory', 'value', 'options']))
             const updateTransactionID = _.toInteger(_.get(query, UPDATE_TRANSACTION))
             dispatch(optionsListFetchAction())
                 .then((data) => {
@@ -230,11 +180,12 @@ const enhance = compose(
                     const staffExpenseOptionId = _.get(_.find(options, {'key_name': 'staff_expanse'}), 'id')
                     const detalizationOptionId = _.get(_.find(options, {'key_name': 'transaction_child'}), 'id')
                     const clientOptionId = _.get(_.find(options, {'key_name': 'client'}), 'id')
-                    switch (incomeOptions) {
+                    switch (categoryOptions) {
                         case staffExpenseOptionId: {
                             setOpenStaff(true)
                             dispatch(usersListFetchAction())
-                            return dispatch(transactionCategoryPopopDataAction(updateTransactionID))
+                            return updateTransactionID > ZERO
+                            ? dispatch(transactionCategoryPopopDataAction(updateTransactionID))
                                 .then((value) => {
                                     const values = _.get(value, 'value')
                                     const staffExpense = {}
@@ -245,24 +196,36 @@ const enhance = compose(
                                     })
                                     dispatch(change(form, 'users', staffExpense))
                                 })
+                            : null
                         }
                         case detalizationOptionId: {
-                            return dispatch(transactionDetalizationAction(updateTransactionID))
+                            return updateTransactionID > ZERO
+                            ? dispatch(transactionDetalizationAction(updateTransactionID))
                                 .then((value) => {
                                     const values = _.get(value, 'value')
-                                    dispatch(change(form, 'transaction_child', _.map(values, (item) => {
-                                        return {
-                                            name: _.get(item, 'name'),
-                                            amount: numberFormat(_.get(item, 'amount'))
-                                        }
-                                    })))
+                                    if (!_.isEmpty(values)) {
+                                        dispatch(change(form, 'transaction_child', _.map(values, (item) => {
+                                            return {
+                                                name: _.get(item, 'name'),
+                                                amount: numberFormat(_.get(item, 'amount'))
+                                            }
+                                        })))
+                                    }
                                 })
+                            : null
                         }
                         default: {
                             setOpenStaff(false)
-                            return incomeOptions !== clientOptionId && !_.isNil(incomeOptions)
-                                ? dispatch(change(form, 'client', null))
-                                : null
+                            if (categoryOptions !== clientOptionId && !_.isNil(categoryOptions)) {
+                                dispatch(change(form, 'client', null))
+                            }
+                            if (categoryOptions !== staffExpenseOptionId && !_.isNil(categoryOptions)) {
+                                dispatch(change(form, 'users', null))
+                            }
+                            if (categoryOptions !== detalizationOptionId && !_.isNil(categoryOptions)) {
+                                dispatch(change(form, 'transaction_child', null))
+                            }
+                            return null
                         }
                     }
                 })
@@ -518,7 +481,8 @@ const enhance = compose(
         },
 
         handleCloseCreateExpenseDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {location: {pathname}, filter, setOpenStaff} = props
+            setOpenStaff(false)
             hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_CREATE_EXPENSE_DIALOG_OPEN]: false})})
         },
 
@@ -556,7 +520,8 @@ const enhance = compose(
         },
 
         handleCloseCreateIncomeDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {location: {pathname}, filter, setOpenStaff} = props
+            setOpenStaff(false)
             hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_CREATE_INCOME_DIALOG_OPEN]: false})})
         },
 
@@ -637,11 +602,13 @@ const enhance = compose(
         },
 
         handleCloseUpdateExpenseDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {location: {pathname}, filter, setOpenStaff} = props
+            setOpenStaff(false)
             hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_UPDATE_EXPENSE_DIALOG_OPEN]: false})})
         },
         handleCloseUpdateIncomeDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {location: {pathname}, filter, setOpenStaff} = props
+            setOpenStaff(false)
             hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_UPDATE_INCOME_DIALOG_OPEN]: false})})
         },
         handleOpenCashDialog: props => () => {
@@ -706,7 +673,8 @@ const enhance = compose(
                 'agent': _.toInteger(filter.getParam(OPEN_USER)),
                 'division': _.toInteger(filter.getParam(OPEN_DIVISION)),
                 'amount': _.toNumber(amount),
-                'cashbox': _.get(acceptForm, ['values', 'cashBox', 'value'])
+                'cashbox': _.get(acceptForm, ['values', 'cashBox', 'value']),
+                'date': moment(_.get(acceptForm, ['values', 'date'])).format('YYYY-MM-DD HH:mm')
             }
             return dispatch(acceptClientTransactionAction(data))
                 .then(() => {
@@ -910,6 +878,7 @@ const TransactionList = enhance((props) => {
     const toDate = filter.getParam(TRANSACTION_FILTER_KEY.TO_DATE)
     const detailId = _.toInteger(_.get(params, 'transactionId'))
     const currencyId = _.toInteger(filter.getParam(OPEN_CURRENCY))
+    const divisionId = _.toInteger(filter.getParam(OPEN_DIVISION))
     const userId = _.toInteger(filter.getParam(OPEN_USER))
 
     const createExpenseDialog = {
@@ -1073,7 +1042,10 @@ const TransactionList = enhance((props) => {
     }
 
     const currentCashBoxDetails = _.find(_.get(acceptCashData, ['results']), (obj) => {
-        return _.toNumber(_.get(obj, ['currency', 'id'])) === currencyId && _.toNumber(_.get(obj, ['user', 'id'])) === userId
+        const objCurrency = _.toInteger(_.get(obj, ['currency', 'id']))
+        const objUser = _.toInteger(_.get(obj, ['user', 'id']))
+        const objDivision = _.toInteger(_.get(obj, ['division', 'id']))
+        return objCurrency === currencyId && objUser === userId && objDivision === divisionId
     })
 
     const cashBoxDialog = {

@@ -499,7 +499,7 @@ const StatAgentGridList = enhance((props) => {
     const paymentOrdersSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'paymentOrders'])), primaryCurrency)
     const paymentTotalSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'paymentTotal'])), primaryCurrency)
     const planTotalSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'planTotal'])), primaryCurrency)
-    const planLeftSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'planLeft'])), primaryCurrency)
+    const planLeftSum = numberFormat(_.get(summaryData, ['data', 'planLeft']), primaryCurrency)
     const debtFromOrderSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'debtFromOrder'])), primaryCurrency)
     const debtTotalSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'debtTotal'])), primaryCurrency)
     const tableLeft = _.map(_.get(listData, 'data'), (item) => {
