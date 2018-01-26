@@ -23,8 +23,8 @@ const OrderChart = enhance((props) => {
         tooltipTitle,
         cashValues,
         bankValues,
-        primaryText,
-        secondaryText,
+        cashText,
+        bankText,
         height
     } = props
 
@@ -83,6 +83,7 @@ const OrderChart = enhance((props) => {
             }
         },
         tooltip: {
+            shared: true,
             valueSuffix: ' ' + primaryCurrency,
             backgroundColor: '#fff',
             style: {
@@ -92,20 +93,19 @@ const OrderChart = enhance((props) => {
             },
             borderRadius: 0,
             borderWidth: 0,
-            headerFormat: '<b>{point.x}</b><br/>',
-            pointFormat: '{series.name}: {point.y}<br/>Сумма: {point.stackTotal}'
+            headerFormat: '<b>{point.x}</b><br/>'
         },
-        series: [{
-            name: primaryText,
-            data: cashValues,
-            color: '#12aaeb'
-
-        },
-        {
-            name: secondaryText,
-            data: bankValues,
-            color: '#5d6474'
-        }]
+        series: [
+            {
+                name: cashText,
+                data: cashValues,
+                color: '#12aaeb'
+            },
+            {
+                name: bankText,
+                data: bankValues,
+                color: '#5d6474'
+            }]
     }
 
     return (
@@ -117,7 +117,8 @@ OrderChart.propTypes = {
     tooltipTitle: PropTypes.any.isRequired,
     cashValues: PropTypes.array.isRequired,
     bankValues: PropTypes.array.isRequired,
-    primaryText: PropTypes.string.isRequired,
+    cashText: PropTypes.string.isRequired,
+    bankText: PropTypes.string.isRequired,
     height: PropTypes.number.isRequired
 }
 

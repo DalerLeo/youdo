@@ -241,31 +241,6 @@ const MainList = enhance((props) => {
         return financeData
     }
 
-    const mergeOrdersReturns = (firstData, secondData) => {
-        const ordersData = {}
-        if (!orderLoading && !returnLoading) {
-            _.map(firstData, (item) => {
-                ordersData[_.get(item, 'date')] = {
-                    orders: _.toNumber(_.get(item, 'amount'))
-                }
-            })
-            _.map(secondData, (item) => {
-                if (ordersData[_.get(item, 'date')]) {
-                    ordersData[_.get(item, 'date')] = {
-                        orders: _.toNumber(ordersData[_.get(item, 'date')].orders),
-                        returns: _.toNumber(_.get(item, 'totalAmount'))
-                    }
-                } else {
-                    ordersData[_.get(item, 'date')] = {
-                        orders: null,
-                        returns: _.toNumber(_.get(item, 'totalAmount'))
-                    }
-                }
-            })
-        }
-        return ordersData
-    }
-
     const lastDayOfMonth = _.get(location, ['query', 'endDate'])
         ? moment(_.get(location, ['query', 'endDate'])).daysInMonth()
         : moment().daysInMonth()
@@ -285,8 +260,8 @@ const MainList = enhance((props) => {
 
     const ordersReturnsChart = {
         active: orders,
-        data: mergeOrdersReturns(orderList, returnList),
-        loading: orderLoading || returnLoading
+        data: returnList,
+        loading: returnLoading
     }
 
     const agentsChart = {
