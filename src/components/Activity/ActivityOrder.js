@@ -181,7 +181,7 @@ const ActivityOrder = enhance((props) => {
                 onClick={() => { orderDetails.handleOpenOrderDetails(id) }}>
                 <div className={classes.tubeTitle}>
                     <span>{name}</span>
-                    <div className={classes.statusGreen}> </div>
+                    <div className={classes.statusGreen}/>
                 </div>
                 <div className={classes.tubeTime}>{createdDate}</div>
                 <div className={classes.tubeInfo}>Сделка №{id} с магазина "{marketName}" на сумму {orderPrice} ({paymentType})
