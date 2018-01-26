@@ -18,6 +18,10 @@ import dateFormat from '../../helpers/dateFormat'
 import IconButton from 'material-ui/IconButton'
 import t from '../../helpers/translate'
 import ToolTip from '../ToolTip'
+import {
+    ZERO,
+    SUPPLY_PENDING
+} from '../../constants/backendConstants'
 
 const enhance = compose(
     injectSheet({
@@ -187,8 +191,6 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
         confirmExpenseDialog
     } = props
 
-    const ZERO = 0
-    const PENDING = 0
     const MINUS_ONE = -1
     const tab = _.get(tabData, 'tab')
     const id = _.get(data, 'id')
@@ -209,7 +211,7 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
     const wholeCost = _.sumBy(products, (o) => {
         return _.toNumber(_.get(o, 'cost'))
     })
-    const wholeNotAccepted = status === PENDING
+    const wholeNotAccepted = status === SUPPLY_PENDING
         ? ZERO
         : wholeAmount - wholeDefectAmount - wholePostedAmount
     const wholeMeasurement = _.get(_.first(products), ['product', 'measurement', 'name'])
@@ -255,7 +257,7 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                                                 : <span>{numberFormat(defectAmount, measurement)}</span>}
                                         </Col>
                                         <Col xs={1} className={notAccepted < ZERO ? classes.green : notAccepted > ZERO ? classes.red : ''}>
-                                            {status === PENDING
+                                            {status === SUPPLY_PENDING
                                                 ? numberFormat(ZERO, measurement)
                                                 : notAccepted < ZERO
                                                     ? '+' + moduleFormat(notAccepted, measurement)

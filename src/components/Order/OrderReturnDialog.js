@@ -11,9 +11,12 @@ import FlatButton from 'material-ui/FlatButton'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import {TextField, OrderListReturnField, StockSearchField} from '../ReduxForm'
 import toCamelCase from '../../helpers/toCamelCase'
-import OrderReturnTotalSum from '../ReduxForm/Order/OrderReturnTotalSum'
+import numberFormat from '../../helpers/numberFormat'
 import t from '../../helpers/translate'
+import {connect} from 'react-redux'
+
 export const ORDER_RETURN_DIALOG_OPEN = 'openReturnDialog'
+
 const validate = (data) => {
     const errors = toCamelCase(data)
     const nonFieldErrors = _.get(errors, 'nonFieldErrors')
@@ -183,13 +186,24 @@ const enhance = compose(
         form: 'OrderReturnForm',
         enableReinitialize: true
     }),
+    connect((state) => {
+        const products = _.get(state, ['form', 'OrderReturnForm', 'values', 'products'])
+        const totalCost = _.sumBy(products, (item) => {
+            const itemCost = _.toNumber(_.get(item, ['product', 'value', 'price']))
+            const itemAmount = _.toNumber(_.get(item, 'amount'))
+            return itemAmount * itemCost
+        })
+        return {
+            totalCost
+        }
+    }),
     withReducer('state', 'dispatch', (state, action) => {
         return {...state, ...action}
     }, {open: false})
 )
 
 const OrderReturnDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, orderData, isUpdate} = props
+    const {open, loading, handleSubmit, onClose, classes, orderData, isUpdate, totalCost} = props
     const returnId = _.get(orderData, 'id')
     const currency = _.get(orderData, ['currency', 'name'])
 
@@ -244,7 +258,7 @@ const OrderReturnDialog = enhance((props) => {
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
-                        <div className={classes.summary}>Общая сумма возврата: <OrderReturnTotalSum currency={currency}/></div>
+                        <div className={classes.summary}>Общая сумма возврата: <strong>{numberFormat(totalCost, currency)}</strong></div>
                         <FlatButton
                             label={isUpdate ? t('Изменить') : t('Возврат')}
                             className={classes.actionButton}

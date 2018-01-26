@@ -18,11 +18,13 @@ import {Link} from 'react-router'
 import sprintf from 'sprintf'
 import * as ROUTES from '../../constants/routes'
 import {
-    COMPLETED
-
+    ZERO,
+    ORDER_RETURN_PENDING,
+    ORDER_RETURN_IN_PROGRESS,
+    ORDER_RETURN_COMPLETED,
+    ORDER_RETURN_CANCELED
 } from '../../constants/backendConstants'
 
-const ZERO = 0
 const enhance = compose(
     injectSheet({
         dottedList: {
@@ -230,9 +232,6 @@ const ReturnDetails = enhance((props) => {
     const market = _.get(data, 'market')
     const status = _.toInteger(_.get(data, 'status'))
     const paymentType = _.get(data, 'paymentType') === 'cash' ? t('Наличными') : t('Перечислением')
-    const PENDING = 0
-    const IN_PROGRESS = 1
-    const CANCELLED = 3
     const totalPrice = numberFormat(_.get(data, 'totalPrice'), currency)
     const typeClient = _.toInteger(_.get(data, 'type'))
 
@@ -256,7 +255,7 @@ const ReturnDetails = enhance((props) => {
                 <div className={classes.titleButtons}>
                     {getDocument && !stat && <ToolTip position="bottom" text={t('Распечатать накладную')}>
                         <IconButton
-                            disabled={status === CANCELLED}
+                            disabled={status === ORDER_RETURN_CANCELED}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
@@ -268,7 +267,7 @@ const ReturnDetails = enhance((props) => {
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
-                            disabled={status === CANCELLED || (order && status === COMPLETED) || (!canChangeAnyReturn && typeClient === TWO)}
+                            disabled={status === ORDER_RETURN_CANCELED || (order && status === ORDER_RETURN_COMPLETED) || (!canChangeAnyReturn && typeClient === TWO)}
                             touch={true}
                             onTouchTap={() => { updateDialog.handleOpenUpdateDialog() }}>
                             <Edit />
@@ -276,7 +275,7 @@ const ReturnDetails = enhance((props) => {
                     </ToolTip>
                     {confirmDialog && !stat && <ToolTip position="bottom" text={!canChangeAnyReturn && typeClient === TWO ? t('У вас нет доступа') : t('Отменить')}>
                         <IconButton
-                            disabled={!(status === IN_PROGRESS || status === PENDING) || (!canChangeAnyReturn && typeClient === TWO)}
+                            disabled={!(status === ORDER_RETURN_IN_PROGRESS || status === ORDER_RETURN_PENDING) || (!canChangeAnyReturn && typeClient === TWO)}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
@@ -351,11 +350,11 @@ const ReturnDetails = enhance((props) => {
                                 <li>
                                     <span>{t('Статус')}:</span>
                                     <span>
-                                        {(status === PENDING || status === IN_PROGRESS)
+                                        {(status === ORDER_RETURN_PENDING || status === ORDER_RETURN_IN_PROGRESS)
                                             ? <span className={classes.yellow}>{t('Ожидает')}</span>
-                                            : (status === COMPLETED)
+                                            : (status === ORDER_RETURN_COMPLETED)
                                                 ? <span className={classes.green}>{t('Завершен')}</span>
-                                                : (status === CANCELLED)
+                                                : (status === ORDER_RETURN_CANCELED)
                                                     ? <span className={classes.red}>{t('Отменен')}</span> : null}
                                     </span>
                                 </li>

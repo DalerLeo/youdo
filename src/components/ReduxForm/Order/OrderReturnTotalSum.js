@@ -15,7 +15,7 @@ const enhance = compose(
 const OrderReturnTotalSum = enhance((props) => {
     const {products, currency} = props
     const totalCost = _.sumBy(products, (item) => {
-        const itemCost = _.toNumber(_.get(item, ['product', 'value', 'price']))
+        const itemCost = _.toNumber(_.get(item, 'cost'))
         const itemAmount = _.toNumber(_.get(item, 'amount'))
         return itemAmount * itemCost
     })
