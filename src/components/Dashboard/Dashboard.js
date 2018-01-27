@@ -159,6 +159,7 @@ const enhance = compose(
         },
         chartStats: {
             display: 'flex',
+            flexWrap: 'wrap',
             padding: '15px 30px',
             background: '#f2f5f8',
             '& > div': {
@@ -250,18 +251,10 @@ const Dashboard = enhance((props) => {
     const orderChartDate = _.map(_.get(orderChart, 'data'), (item) => {
         return _.get(item, 'date')
     })
-    const orderChartSalesCash = _.map(_.get(orderChart, 'data'), (item) => {
-        return _.toNumber(_.get(item, 'amountCash'))
-    })
-    const orderChartSalesBank = _.map(_.get(orderChart, 'data'), (item) => {
-        return _.toNumber(_.get(item, 'amountBank'))
-    })
-    const orderChartSalesBankSum = _.sumBy(_.get(orderChart, 'data'), (item) => {
-        return _.toNumber(_.get(item, 'amountBank'))
-    })
-    const orderChartSalesCashSum = _.sumBy(_.get(orderChart, 'data'), (item) => {
-        return _.toNumber(_.get(item, 'amountCash'))
-    })
+    const orderChartSalesCash = _.map(_.get(orderChart, 'data'), (item) => _.toNumber(_.get(item, 'amountCash')))
+    const orderChartSalesBank = _.map(_.get(orderChart, 'data'), (item) => _.toNumber(_.get(item, 'amountBank')))
+    const orderChartSalesBankSum = _.sumBy(_.get(orderChart, 'data'), (item) => _.toNumber(_.get(item, 'amountBank')))
+    const orderChartSalesCashSum = _.sumBy(_.get(orderChart, 'data'), (item) => _.toNumber(_.get(item, 'amountCash')))
     const orderChartSalesTotalSum = orderChartSalesCashSum + orderChartSalesBankSum
 
     // ORDERS & RETURNS //
@@ -271,6 +264,7 @@ const Dashboard = enhance((props) => {
     const orderChartSales = _.map(_.get(ordersReturnsChart, 'data'), (item) => _.toNumber(_.get(item, 'amountCash')) + _.toNumber(_.get(item, 'amountBank')))
     const orderReturnDate = _.map(_.get(ordersReturnsChart, 'data'), (item) => _.get(item, 'date'))
     const orderChartReturnsSum = _.sumBy(_.get(ordersReturnsChart, 'data'), (item) => _.toNumber(_.get(item, 'returnAmount')))
+    const orderChartFactSum = orderChartSalesTotalSum - orderChartReturnsSum
 
     // AGENTS //
     const agentsChartActive = _.get(agentsChart, 'active')
@@ -420,6 +414,7 @@ const Dashboard = enhance((props) => {
                                     <div className={classes.chartStats}>
                                         <div>{t('Продажи')}: {numberFormat(orderChartSalesTotalSum, primaryCurrency)}</div>
                                         <div>{t('Возвраты')}: {numberFormat(orderChartReturnsSum, primaryCurrency)}</div>
+                                        <div>{t('Фактически')}: {numberFormat(orderChartFactSum, primaryCurrency)}</div>
                                     </div>
                                     {orderReturnLoading || loading
                                         ? <div className={classes.chartLoader}>
