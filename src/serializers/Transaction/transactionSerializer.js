@@ -177,8 +177,8 @@ export const listFilterSerializer = (data, cashbox) => {
     const withDeleted = toBoolean(_.get(defaultData, 'with_deleted'))
     return {
         'division': _.get(defaultData, 'division'),
-        'created_date_0': _.get(defaultData, 'fromDate'),
-        'created_date_1': _.get(defaultData, 'toDate'),
+        'begin_date': _.get(defaultData, 'fromDate'),
+        'end_date': _.get(defaultData, 'toDate'),
         'type': type,
         'cashbox': newCashbox,
         'client': _.get(data, 'client'),

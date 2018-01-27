@@ -137,7 +137,8 @@ const enhance = compose(
             })
         },
         handleCloseDetail: props => () => {
-            hashHistory.push({pathname: ROUTER.STATISTICS_CASHBOX_URL, query: ''})
+            const {filter} = props
+            hashHistory.push({pathname: ROUTER.STATISTICS_CASHBOX_URL, query: filter.getParams()})
         },
         handleOpenDetail: props => (id) => {
             const {filter} = props
