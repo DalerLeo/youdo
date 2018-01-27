@@ -374,73 +374,7 @@ const SetPrice = enhance((props) => {
                 <Col xs={2}>{code}</Col>
                 {_.map(_.get(priceList, 'results'), (item) => {
                     return (
-                        <Col xs={3} key={item.id}>
-                            <Row>
-                                <Col xs={6} className={classes.flex} style={{justifyContent: 'flex-start'}}>
-                                    <Field
-                                        name={'product[' + id + '][cashPrice]'}
-                                        component={TextField}
-                                        className={classes.inputFieldCustom}
-                                        underlineStyle={{borderColor: '#5d6474'}}
-                                        normalize={normalizeNumber}
-                                        fullWidth={true}/>
-                                    <span>{cashCurrencyName}</span>
-                                </Col>
-                                <Col xs={6} className={classes.flex} style={{justifyContent: 'flex-start'}}>
-                                    <Field
-                                        name={'product[' + id + '][bankPrice]'}
-                                        component={TextField}
-                                        className={classes.inputFieldCustom}
-                                        inputStyle={{color: '#ff526d'}}
-                                        underlineStyle={{borderColor: '#5d6474'}}
-                                        underlineFocusStyle={{borderColor: '#ff526d'}}
-                                        normalize={normalizeNumber}
-                                        fullWidth={true}/>
-                                    <span>{bankCurrencyName}</span>
-                                </Col>
-                            </Row>
-                        </Col>
-                    )
-                })}
-            </Row>
-        )
-    })
-
-    let head = []
-    head = []
-    _.map(_.get(priceList, ['data', '0', 'divisions']), (item) => {
-        head.push({name: t('Наличный'), id: item.id, type: 'cash'}),
-        head.push({name: t('Перечисление'), id: item.id, type: 'bank'})
-    })
-    const tableList = (
-        <table className={classes.mainTable}>
-            <tbody>
-            <tr className={classes.title}>
-                <td
-                    style={{cursor: 'pointer'}}>
-                    {t('Cash')}
-                </td>
-                <td
-                    style={{cursor: 'pointer'}}>
-                    {t('Bank')}
-                </td>
-            </tr>
-
-            {_.map(_.get(priceList, 'results'), (item) => {
-                const id = _.get(item, 'id')
-                const orderNo = numberFormat(_.get(item, 'orders'))
-                amountValues = []
-                _.map(_.get(item, 'divisions'), (child) => {
-                    amountValues.push({amount: _.get(child, 'cash'), type: 'cash', id: _.get(child, 'id')})
-                    amountValues.push({amount: _.get(child, 'bank'), type: 'bank', id: _.get(child, 'id')})
-                })
-                const totalSum = _.toNumber(_.get(item, 'total'))
-                return (
-                    <tr key={id}
-                        style={id === currentRow ? styleOnHover : {}}
-                        className={classes.tableRow}>
-                        <td>{orderNo}</td>
-                        <td>
+                        <Col xs={2} className={classes.flex} style={{justifyContent: 'flex-start'}}>
                             <Field
                                 name={'product[' + id + '][cashPrice]'}
                                 component={TextField}
@@ -449,85 +383,23 @@ const SetPrice = enhance((props) => {
                                 normalize={normalizeNumber}
                                 fullWidth={true}/>
                             <span>{cashCurrencyName}</span>
-                        </td>
-                        {_.map(amountValues, (val, index) => {
-                            const amount = _.toNumber(_.get(val, 'amount'))
-                            return (
-                                <td key={index}>
-                                    <span>
-                                        </span>
-                                </td>
-                            )
-                        })}
-                    </tr>
-                )
-            })}
-            </tbody>
-        </table>
-    )
-    const clients = (
-        <div className={classes.leftTable}>
-            <div><span>{t('Клиент')}</span></div>
-            {_.map(_.get(listData, 'data'), (item) => {
-                const id = _.get(item, 'id')
-                const name = _.get(item, 'name') || t('No')
-                return (
-                    <div
-                        key={id}
-                        style={id === currentRow ? styleOnHover : {}}
-                        onMouseEnter={() => setCurrentRow(id)}
-                        onMouseLeave={() => setCurrentRow(null)}><span>{name}</span>
-                        {!stat && isSuperUser &&
-                        id === currentRow && <div key={id} className={classes.buttonsWrapper}>
-                            <ToolTip position="bottom" text={t('Списать')}>
-                                <IconButton
-                                    disableTouchRipple={true}
-                                    iconStyle={iconStyle.icon}
-                                    style={iconStyle.button}
-                                    touch={true}
-                                    onTouchTap={() => {
-                                        createDialog.handleOpenCreateDialog(id)
-                                    }}>
-                                    <Cancel color='#ff584b'/>
-                                </IconButton>
-                            </ToolTip>
-                            <ToolTip position="bottom" text={t('Добавить')}>
-                                <IconButton
-                                    disableTouchRipple={true}
-                                    iconStyle={iconStyle.icon}
-                                    style={iconStyle.button}
-                                    touch={true}
-                                    onTouchTap={() => {
-                                        addDialog.handleOpenAddDialog(id)
-                                    }}>
-                                    <Add color='#8dc572'/>
-                                </IconButton>
-                            </ToolTip>
-                        </div>}
-                    </div>
-                )
-            })}
-        </div>
-    )
-    const lists = (
-        <div className={(listLoading || emptyData)
-            ? classes.tableWrapperLoading
-            : classes.tableWrapper}
-             style={!stat ? {marginBottom: 30} : {}}>
-            {loading &&
-            <div className={classes.loader}>
-                <Loader size={0.75}/>
-            </div>}
-            {!loading &&
-            <div className={classes.emptyQuery}>
-                <div>{t('По вашему запросу ничего не найдено')}</div>
-            </div>}
-            {!loading && clients}
-            <div ref="mainTable" className={classes.mainTableWrapper} style={{width: 'calc(100% - 350px)'}}>
-                {!loading && tableList}
-            </div>
-        </div>
-    )
+                            <Field
+                                name={'product[' + id + '][bankPrice]'}
+                                component={TextField}
+                                className={classes.inputFieldCustom}
+                                inputStyle={{color: '#ff526d'}}
+                                underlineStyle={{borderColor: '#5d6474'}}
+                                underlineFocusStyle={{borderColor: '#ff526d'}}
+                                normalize={normalizeNumber}
+                                fullWidth={true}/>
+                            <span>{bankCurrencyName}</span>
+                        </Col>
+                    )
+                })}
+            </Row>
+        )
+    })
+
     if (!open) {
         return null
     }
@@ -608,8 +480,15 @@ const SetPrice = enhance((props) => {
                             <Row className="dottedList">
                                 <Col xs={4}>{t('Наименование')}</Col>
                                 <Col xs={2}>{t('Код')}</Col>
-                                <Col xs={3}>{t('Cash')}</Col>
-                                <Col xs={3}>{t('Bank')}</Col>
+                                {_.map(_.get(priceList, 'results'), () => {
+
+                                    return (
+                                        <Row>
+                                            <Col xs={2}>{t('Cash')}</Col>
+                                            <Col xs={2}>{t('Bank')}</Col>
+                                        </Row>
+                                    )
+                                })}
                             </Row>}
                             {!_.isEmpty(products)
                                 ? products
