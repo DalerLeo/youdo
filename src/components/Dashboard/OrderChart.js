@@ -28,14 +28,11 @@ const OrderChart = enhance((props) => {
         height
     } = props
 
-    const tooltipDate = _.map(tooltipTitle, (item) => {
-        return dateFormat(item)
-    })
-
+    const tooltipDate = _.map(tooltipTitle, (item) => dateFormat(item))
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const config = {
         chart: {
-            type: 'column',
+            type: 'area',
             height: height
         },
         title: {
@@ -45,7 +42,14 @@ const OrderChart = enhance((props) => {
             }
         },
         legend: {
-            enabled: false
+            enabled: true,
+            itemStyle: {
+                fontWeight: 600,
+                fontFamily: 'Open Sans',
+                fontSize: 11
+            },
+            symbolHeight: 9,
+            symbolWidth: 9
         },
         credits: {
             enabled: false
@@ -75,10 +79,10 @@ const OrderChart = enhance((props) => {
         },
         plotOptions: {
             series: {
-                lineWidth: 0
+                lineWidth: 0,
+                pointPlacement: 'on'
             },
-            column: {
-                borderRadius: 2,
+            area: {
                 stacking: 'normal'
             }
         },
@@ -97,11 +101,17 @@ const OrderChart = enhance((props) => {
         },
         series: [
             {
+                marker: {
+                    enabled: false
+                },
                 name: cashText,
                 data: cashValues,
                 color: '#12aaeb'
             },
             {
+                marker: {
+                    enabled: false
+                },
                 name: bankText,
                 data: bankValues,
                 color: '#5d6474'
