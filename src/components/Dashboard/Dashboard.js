@@ -248,11 +248,9 @@ const Dashboard = enhance((props) => {
     // SALES //
     const orderChartActive = _.get(orderChart, 'active')
     const orderChartLoading = _.get(orderChart, 'loading')
-    const orderChartDate = _.map(_.get(orderChart, 'data'), (item) => {
-        return _.get(item, 'date')
-    })
-    const orderChartSalesCash = _.map(_.get(orderChart, 'data'), (item) => _.toNumber(_.get(item, 'amountCash')))
-    const orderChartSalesBank = _.map(_.get(orderChart, 'data'), (item) => _.toNumber(_.get(item, 'amountBank')))
+    const orderChartDate = _.map(_.get(orderChart, 'data'), (item) => _.get(item, 'date'))
+    const orderChartSalesCash = _.map(_.get(orderChart, 'data'), (item) => _.toNumber(_.get(item, 'amountCash'))) || null
+    const orderChartSalesBank = _.map(_.get(orderChart, 'data'), (item) => _.toNumber(_.get(item, 'amountBank'))) || null
     const orderChartSalesBankSum = _.sumBy(_.get(orderChart, 'data'), (item) => _.toNumber(_.get(item, 'amountBank')))
     const orderChartSalesCashSum = _.sumBy(_.get(orderChart, 'data'), (item) => _.toNumber(_.get(item, 'amountCash')))
     const orderChartSalesTotalSum = orderChartSalesCashSum + orderChartSalesBankSum
@@ -394,7 +392,7 @@ const Dashboard = enhance((props) => {
                                             <Loader size={0.75}/>
                                         </div>
                                         : <OrderChart
-                                            height={250}
+                                            height={280}
                                             cashText={t('Нал')}
                                             bankText={t('Переч')}
                                             cashValues={orderChartSalesCash}
@@ -421,7 +419,7 @@ const Dashboard = enhance((props) => {
                                             <Loader size={0.75}/>
                                         </div>
                                         : <SalesReturnsChart
-                                            height={250}
+                                            height={280}
                                             primaryText={t('Продажа')}
                                             secondaryText={t('Возврат')}
                                             primaryValues={orderChartSales}
@@ -476,7 +474,7 @@ const Dashboard = enhance((props) => {
                                             primaryValues={financeIncome}
                                             secondaryValues={financeExpense}
                                             tooltipTitle={financeDate}
-                                            height={230}
+                                            height={260}
                                             primaryText={t('Приход')}
                                             secondaryText={t('Расход')}
                                         />}

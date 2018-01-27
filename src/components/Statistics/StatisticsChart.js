@@ -28,11 +28,9 @@ const StatisticsChart = enhance((props) => {
         height
     } = props
 
-    const tooltipDate = _.map(tooltipTitle, (item) => {
-        return dateFormat(item)
-    })
-
+    const tooltipDate = _.map(tooltipTitle, (item) => dateFormat(item))
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
+
     const config = {
         chart: {
             type: 'areaspline',
@@ -45,7 +43,14 @@ const StatisticsChart = enhance((props) => {
             }
         },
         legend: {
-            enabled: false
+            enabled: !_.isEmpty(secondaryValues),
+            itemStyle: {
+                fontWeight: 600,
+                fontFamily: 'Open Sans',
+                fontSize: 11
+            },
+            symbolHeight: 9,
+            symbolWidth: 9
         },
         credits: {
             enabled: false
@@ -107,7 +112,7 @@ const StatisticsChart = enhance((props) => {
             },
             name: primaryText,
             data: primaryValues,
-            color: '#58bed9'
+            color: '#12aaeb'
 
         },
         {
@@ -117,7 +122,7 @@ const StatisticsChart = enhance((props) => {
             },
             name: secondaryText,
             data: secondaryValues,
-            color: '#ff4a4a'
+            color: '#ff526d'
 
         }]
     }

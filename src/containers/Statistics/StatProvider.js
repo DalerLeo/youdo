@@ -12,7 +12,7 @@ import getDocuments from '../../helpers/getDocument'
 import * as API from '../../constants/api'
 import * as serializers from '../../serializers/Statistics/statProviderSerializer'
 import moment from 'moment'
-
+import {change} from 'redux-form'
 import {
     StatProviderGridList,
     STAT_PROVIDER_DIALOG_OPEN,
@@ -87,6 +87,18 @@ const enhance = compose(
         providerID && dispatch(statProviderDetailFetchAction(providerID))
     }),
 
+    // CLEAR CHILD VALUE WHEN PARENT VALUE IS NULL
+    withPropsOnChange((props, nextProps) => {
+        const type = _.get(props, ['filterForm', 'values', 'balanceType', 'value'])
+        const nextType = _.get(nextProps, ['filterForm', 'values', 'balanceType', 'value'])
+        return type !== nextType && !nextType
+    }, ({dispatch, filterForm}) => {
+        const type = _.get(filterForm, ['values', 'balanceType', 'value'])
+        if (!type) {
+            dispatch(change('StatisticsFilterForm', 'paymentType', null))
+        }
+    }),
+
     withPropsOnChange((props, nextProps) => {
         const except = {
             openInfoDialog: null,
@@ -118,7 +130,6 @@ const enhance = compose(
     }, ({dispatch, params, filterItem, infoForm}) => {
         const clientBalanceId = _.toInteger(_.get(params, 'statProviderId'))
         const division = _.get(infoForm, ['values', 'division', 'value'])
-
         const currency = _.get(infoForm, ['values', 'currency', 'value'])
         const type = _.get(infoForm, ['values', 'paymentType', 'value'])
         clientBalanceId && dispatch(statProviderItemFetchAction(filterItem, clientBalanceId, division, currency, type))

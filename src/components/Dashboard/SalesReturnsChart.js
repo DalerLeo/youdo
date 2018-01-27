@@ -45,7 +45,14 @@ const SalesReturnsChart = enhance((props) => {
             }
         },
         legend: {
-            enabled: false
+            enabled: true,
+            itemStyle: {
+                fontWeight: 600,
+                fontFamily: 'Open Sans',
+                fontSize: 11
+            },
+            symbolHeight: 9,
+            symbolWidth: 9
         },
         credits: {
             enabled: false
@@ -102,8 +109,7 @@ const SalesReturnsChart = enhance((props) => {
         },
         series: [{
             marker: {
-                enabled: false,
-                symbol: 'circle'
+                enabled: false
             },
             name: primaryText,
             data: primaryValues,
@@ -112,8 +118,7 @@ const SalesReturnsChart = enhance((props) => {
         },
         {
             marker: {
-                enabled: false,
-                symbol: 'circle'
+                enabled: false
             },
             name: secondaryText,
             data: secondaryValues,
