@@ -15,9 +15,7 @@ import TextFieldSearch from 'material-ui/TextField'
 import Paper from 'material-ui/Paper'
 import SearchIcon from 'material-ui/svg-icons/action/search'
 import NotFound from '../Images/not-found.png'
-import numberFormat from '../../helpers/numberFormat'
 import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
-import ToolTip from '../ToolTip'
 import {connect} from 'react-redux'
 import {
     TextField,
@@ -29,9 +27,7 @@ import SetPriceOverallDialog from './SetPriceOverallDialog'
 import t from '../../helpers/translate'
 
 const ZERO = 0
-const ONE = 1
 const TWO = 2
-const ITEMS_PER_LIST = 50
 const enhance = compose(
     injectSheet({
         loader: {
@@ -232,6 +228,7 @@ const enhance = compose(
             fontSize: '13px !important',
             height: '45px !important',
             marginTop: '7px',
+            marginLeft: '5px',
             width: '50px !important',
             '& div': {
                 fontSize: '13px !important'
@@ -271,6 +268,9 @@ const enhance = compose(
             textAlign: 'center',
             fontSize: '13px',
             color: '#666'
+        },
+        marginRightField: {
+            marginRight: '10px'
         }
     }),
     reduxForm({
@@ -334,7 +334,6 @@ const SetPrice = enhance((props) => {
         onSubmit,
         classes,
         loading,
-        moreLoading,
         pdSearch,
         setSearch,
         onSubmitSearch,
@@ -343,10 +342,6 @@ const SetPrice = enhance((props) => {
         formProducts,
         cashCurrency,
         bankCurrency,
-        itemsCount,
-        loadMore,
-        defaultPage,
-        updateDefaultPage,
         openOverallDialog,
         setOpenOverallDialog,
         priceList
@@ -370,9 +365,9 @@ const SetPrice = enhance((props) => {
 
         return (
             <Row key={id} className="dottedList">
-                <Col xs={4}>{name}</Col>
+                <Col xs={2}>{name}</Col>
                 <Col xs={2}>{code}</Col>
-                {_.map(_.get(priceList, 'results'), (item) => {
+                {_.map(_.get(priceList, 'results'), () => {
                     return (
                         <Col xs={2} className={classes.flex} style={{justifyContent: 'flex-start'}}>
                             <Field
@@ -382,17 +377,15 @@ const SetPrice = enhance((props) => {
                                 underlineStyle={{borderColor: '#5d6474'}}
                                 normalize={normalizeNumber}
                                 fullWidth={true}/>
-                            <span>{cashCurrencyName}</span>
+                            <span className={classes.marginRightField}>{cashCurrencyName}</span>
                             <Field
                                 name={'product[' + id + '][bankPrice]'}
                                 component={TextField}
                                 className={classes.inputFieldCustom}
-                                inputStyle={{color: '#ff526d'}}
                                 underlineStyle={{borderColor: '#5d6474'}}
-                                underlineFocusStyle={{borderColor: '#ff526d'}}
                                 normalize={normalizeNumber}
                                 fullWidth={true}/>
-                            <span>{bankCurrencyName}</span>
+                            <span className={classes.marginRightField}>{bankCurrencyName}</span>
                         </Col>
                     )
                 })}
@@ -408,18 +401,18 @@ const SetPrice = enhance((props) => {
             {currencyChooseDialog && !cashCurrencyShow && !bankCurrencyShow &&
             <div className={classes.confirm}>
                 <Paper zDepth={2} className={classes.confirmContent}>
-                    <header>Выберите валюту за наличные деньги и перечисления</header>
+                    <header><b>{t('Выберите валюту')}</b></header>
                     <div className={classes.fields}>
                         <Field
                             name={'cashCurrency'}
-                            label={t('Выберите валюта cash')}
+                            label={t('Выберите валюту для наличных')}
                             component={CurrencySearchField}
                             fullWidth={true}/>
                     </div>
                     <div className={classes.fields}>
                         <Field
                             name={'bankCurrency'}
-                            label={t('Выберите валюта bank')}
+                            label={t('Выберите валюту для перевода')}
                             component={CurrencySearchField}
                             fullWidth={true}/>
                     </div>
@@ -437,7 +430,7 @@ const SetPrice = enhance((props) => {
                 </Paper>
             </div>}
             <div className={classes.titleContent}>
-                <span>{t('Инвентаризация')}</span>
+                <span>{t('Установить цену в прайс-лист')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -473,37 +466,35 @@ const SetPrice = enhance((props) => {
                                     <SearchIcon/>
                                 </IconButton>
                             </form>
-                            <div>{t('Склад')}: <strong>{cashCurrencyName}</strong></div>
                         </header>
                         <form className={classes.productsList}>
                             {!_.isEmpty(products) &&
                             <Row className="dottedList">
-                                <Col xs={4}>{t('Наименование')}</Col>
+                                <Col xs={2}>{t('Наименование')}</Col>
                                 <Col xs={2}>{t('Код')}</Col>
-                                {_.map(_.get(priceList, 'results'), () => {
-
+                                {_.map(_.get(priceList, 'results'), (item) => {
                                     return (
-                                        <Row>
-                                            <Col xs={2}>{t('Cash')}</Col>
-                                            <Col xs={2}>{t('Bank')}</Col>
-                                        </Row>
+                                        <Col xs={2}>
+                                            <div style={{textAlign: 'center'}}>
+                                                <p style={{padding: '5px 0'}}>{item.name}</p>
+                                            </div>
+                                            <div style={{display: 'flex'}}>
+                                                <Col xs={6}>{t('Нал.')}</Col>
+                                                <Col xs={6}>{t('Пер.')}</Col>
+                                            </div>
+                                        </Col>
                                     )
                                 })}
                             </Row>}
+                            {loading && <div className={classes.linearProgress}>
+                                <LinearProgress/>
+                            </div>}
                             {!_.isEmpty(products)
                                 ? products
                                 : <div className={classes.emptyQuery}>
                                     <div>{t('По вашему запросу ничего не найдено')}...</div>
                                 </div>}
-                            {moreLoading
-                                ? <div className={classes.linearProgress}>
-                                    <LinearProgress/>
-                                </div>
-                                : (itemsCount > ITEMS_PER_LIST) && (data.length < itemsCount) &&
-                                <a className={classes.loadMore} onClick={() => {
-                                    loadMore(defaultPage)
-                                    updateDefaultPage(defaultPage + ONE)
-                                }}>{t('Загрузить еще')}...</a>}
+
                         </form>
                     </div>
                     <div className={classes.bottomButton}>

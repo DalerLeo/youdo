@@ -6,6 +6,7 @@ import React from 'react'
 import {Row, Col} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
+import Price from 'material-ui/svg-icons/editor/attach-money'
 import Excel from 'material-ui/svg-icons/av/equalizer'
 import Person from 'material-ui/svg-icons/social/person'
 import PriceFilterForm from './PriceFilterForm'
@@ -191,7 +192,7 @@ const PriceGridList = enhance((props) => {
         <div className={classes.excelButton}>
             <div>
                 <a className={classes.excel} onClick={setPriceDialog.handleOpenSetPriceDialog}>
-                    <span>{t('Добавить цену')}</span>
+                    <Price color="#fff"/><span>{t('Добавить цену')}</span>
                 </a>
             </div>
             <div>

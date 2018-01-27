@@ -64,7 +64,9 @@ const enhance = compose(
         const priceItemExpenseLoading = _.get(state, ['price', 'expense', 'loading'])
         const setCurrenyForm = _.get(state, ['form', 'SetCurrenyForm'])
         const productsData = _.get(state, ['price', 'product', 'data'])
-        const priceList = _.get(state, ['price', 'priceList', 'data'])
+        const productsDataLoading = _.get(state, ['price', 'product', 'loading'])
+        const pricePriceList = _.get(state, ['price', 'priceList', 'data'])
+        const pricePriceLoading = _.get(state, ['price', 'priceList', 'loading'])
 
         return {
             list,
@@ -86,7 +88,9 @@ const enhance = compose(
             setDefaultForm,
             setCurrenyForm,
             productsData,
-            priceList
+            pricePriceList,
+            productsDataLoading,
+            pricePriceLoading
         }
     }),
     withState('currencyChooseDialog', 'setCurrencyChooseDialog', true),
@@ -215,7 +219,7 @@ const enhance = compose(
             const params = serializers.listFilterSerializer(filter.getParams())
             getDocuments(API.PRICE_GET_DOCUMENT, params)
         },
-        
+
         handleOpenSetPriceDialog: props => () => {
             const {location: {pathname}, filter, dispatch, setCurrencyChooseDialog} = props
             dispatch(reset('SetPriceSetPriceForm'))
@@ -245,9 +249,10 @@ const enhance = compose(
         },
         handleFilterSetPriceCurrency: props => () => {
             const {filter, setCurrenyForm, setCurrencyChooseDialog, dispatch} = props
-            const currency = _.get(setCurrenyForm, ['values', 'currency', 'value']) || null
-            console.log(currency, 'cuurency')
-            filter.filterBy({'pdCurrency': currency})
+            const cashCurrency = _.get(setCurrenyForm, ['values', 'cashCurrency', 'value']) || null
+            const bankCurrency = _.get(setCurrenyForm, ['values', 'bankCurrency', 'value']) || null
+            filter.filterBy({'cashCurrency': cashCurrency})
+            filter.filterBy({'bankCurrency': bankCurrency})
             setCurrencyChooseDialog(false)
             dispatch(setPriceProductListFetchAction(filter))
             dispatch(setPricePriceListFetchAction(filter))
@@ -275,7 +280,8 @@ const PriceList = enhance((props) => {
         filter,
         layout,
         params,
-        priceList
+        pricePriceList,
+        productsDataLoading
     } = props
     const openFilterDialog = toBoolean(_.get(location, ['query', PRICE_FILTER_OPEN]))
     const openPriceSupplyDialog = _.toInteger(_.get(location, ['query', PRICE_SUPPLY_DIALOG_OPEN]))
@@ -408,10 +414,9 @@ const PriceList = enhance((props) => {
     }
     const setPriceDialog = {
         data: productsData,
-        priceList: priceList,
-        loading: props.loading,
+        priceList: pricePriceList,
+        loading: productsDataLoading,
         loadMore: props.handleLoadMoreItems,
-        // moreLoading: setPriceListLoading,
         openSetPriceDialog,
         currencyChooseDialog,
         filterCurrency: props.handleFilterSetPriceCurrency,
