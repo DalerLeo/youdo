@@ -206,10 +206,10 @@ const StatCashboxGridList = enhance((props) => {
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const listLoading = _.get(listData, 'listLoading')
     const openDetails = _.get(listData, 'openDetails')
-    const startBalance = _.get(listData, ['sumData', 'startBalance'])
-    const endBalance = _.get(listData, ['sumData', 'endBalance'])
-    const income = _.get(listData, ['sumData', 'income'])
-    const expense = _.toNumber(_.get(listData, ['sumData', 'expenses'])) * NEGATIVE
+    const startBalance = _.get(listData, ['sumData', 'internalStartBalance'])
+    const endBalance = _.get(listData, ['sumData', 'internalEndBalance'])
+    const income = _.get(listData, ['sumData', 'internalIncome'])
+    const expense = _.toNumber(_.get(listData, ['sumData', 'internalExpenses'])) * NEGATIVE
 
     const iconStyle = {
         width: 20,
@@ -221,7 +221,8 @@ const StatCashboxGridList = enhance((props) => {
         const name = _.get(item, 'name')
         const cashier = !_.isNil(_.get(item, 'cashier')) ? _.get(item, ['cashier', 'firstName']) + ' ' + _.get(item, ['cashier', 'secondName']) : t('Неизвестно')
         const type = _.get(item, 'type')
-        const typeIcon = _.get(item, 'type') === 'bank' ? (<CreditCard style={iconStyle}/>) : (<Cash style={iconStyle}/>)
+        const typeIcon = _.get(item, 'type') === 'bank' ? (<CreditCard style={iconStyle}/>) : (
+            <Cash style={iconStyle}/>)
         const currency = _.get(item, ['currency', 'name'])
 
         const cbStartBalance = numberFormat(_.get(item, 'startBalance'), currency)
@@ -242,18 +243,21 @@ const StatCashboxGridList = enhance((props) => {
                         <div>{cashier}</div>
                     </div>
                     <div className={classes.info}>
-                        <div style={type === 'bank' ? {color: '#6261b0'} : {color: '#12aaeb'}}>{typeIcon} <span>{currency}</span></div>
+                        <div style={type === 'bank' ? {color: '#6261b0'} : {color: '#12aaeb'}}>{typeIcon}
+                            <span>{currency}</span></div>
                     </div>
                 </header>
                 <section>
                     <div>
                         <div className={classes.cashboxBalance}>
                             <div>{t('Баланс на начало периода')}</div>
-                            <div>{cbStartBalance} <span>{currency !== primaryCurrency && internalcbStartBalance}</span></div>
+                            <div>{cbStartBalance} <span>{currency !== primaryCurrency && internalcbStartBalance}</span>
+                            </div>
                         </div>
                         <div className={classes.cashboxBalance}>
                             <div>{t('Баланс на конец периода')}</div>
-                            <div>{cbEndBalance} <span>{currency !== primaryCurrency && internalcbEndBalance}</span> </div>
+                            <div>{cbEndBalance} <span>{currency !== primaryCurrency && internalcbEndBalance}</span>
+                            </div>
                         </div>
                     </div>
                     <div>
