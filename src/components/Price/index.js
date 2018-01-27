@@ -5,9 +5,11 @@ const PRICE_DELETE_DIALOG_OPEN = 'openDeleteDialog'
 const PRICE_SUPPLY_DIALOG_OPEN = 'openPriceSupplyDialog'
 const PRICE_SET_FORM_OPEN = 'openPriceSetFrom'
 const PRICE_SET_DEFAULT_OPEN = 'openPriceSetDefault'
+const SET_PRICE_DIALOG_OPEN = 'openSetPrice'
 export {
     PRICE_UPDATE_DIALOG_OPEN,
     PRICE_DELETE_DIALOG_OPEN,
+    SET_PRICE_DIALOG_OPEN,
     PRICE_FILTER_KEY,
     PRICE_FILTER_OPEN,
     PRICE_SUPPLY_DIALOG_OPEN,

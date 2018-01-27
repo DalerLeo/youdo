@@ -109,3 +109,50 @@ export const priceItemExpensesFetchAction = (id) => {
         payload
     }
 }
+export const setPriceCreateFetchAction = (id) => {
+    const payload = axios()
+        .get(sprintf(API.PRICE_LIST_ITEM_EXPENSES, id))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+    return {
+        type: actionTypes.PRICE_LIST_ITEM_EXPENSES,
+        payload
+    }
+}
+
+export const setPriceProductListFetchAction = (filter) => {
+    const params = serializers.listFilterSerializer(filter.getParams())
+    const payload = axios()
+        .get((API.PRODUCT_LIST), {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.PRICE_PRODUCT_LIST,
+        payload
+    }
+}
+export const setPricePriceListFetchAction = (filter) => {
+    const params = serializers.listFilterSerializer(filter.getParams())
+    const payload = axios()
+        .get((API.PRICE_LIST_SETTING_LIST), {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.PRICE_PRICE_LIST,
+        payload
+    }
+}

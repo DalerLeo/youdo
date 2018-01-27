@@ -16,6 +16,7 @@ import GridList from '../GridList'
 import ToolTip from '../ToolTip'
 import Container from '../Container'
 import SubMenu from '../SubMenu'
+import SetPrice from './SetPrice'
 import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat'
 import dataFormat from '../../helpers/dateFormat'
@@ -91,7 +92,7 @@ const enhance = compose(
         excelButton: {
             position: 'absolute',
             top: '0',
-            right: 0,
+            right: '50px',
             display: 'flex',
             alignItems: 'center',
             height: '60px',
@@ -157,6 +158,7 @@ const PriceGridList = enhance((props) => {
         listData,
         detailData,
         getDocument,
+        setPriceDialog,
         defaultDialog
     } = props
     const expenseList = _.get(detailData, 'priceItemExpenseList')
@@ -187,9 +189,16 @@ const PriceGridList = enhance((props) => {
 
     const excelButton = (
         <div className={classes.excelButton}>
-            <a className={classes.excel} onClick={getDocument}>
-                <Excel color="#fff"/> <span>{t('Скачать')}</span>
-            </a>
+            <div>
+                <a className={classes.excel} onClick={setPriceDialog.handleOpenSetPriceDialog}>
+                    <span>{t('Добавить цену')}</span>
+                </a>
+            </div>
+            <div>
+                <a className={classes.excel} onClick={getDocument}>
+                    <Excel color="#fff"/> <span>{t('Скачать')}</span>
+                </a>
+            </div>
         </div>
     )
     const priceList = _.map(_.get(listData, 'data'), (item) => {
@@ -254,6 +263,19 @@ const PriceGridList = enhance((props) => {
                 onClose={priceSupplyDialog.handleCloseSupplyDialog}
                 list={expenseList}
                 loading={expenseLoading}
+            />
+            <SetPrice
+                data={setPriceDialog.data}
+                priceList={setPriceDialog.priceList}
+                loading={setPriceDialog.loading}
+                moreLoading={setPriceDialog.moreLoading}
+                loadMore={setPriceDialog.loadMore}
+                open={setPriceDialog.openSetPriceDialog}
+                onClose={setPriceDialog.handleCloseSetPriceDialog}
+                onSubmit={setPriceDialog.handleSubmitSetPriceDialog}
+                currencyChooseDialog={setPriceDialog.currencyChooseDialog}
+                filterCurrency={setPriceDialog.filterCurrency}
+                filter={filter}
             />
         </Container>
     )
