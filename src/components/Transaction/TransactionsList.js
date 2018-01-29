@@ -310,22 +310,24 @@ const TransactionsList = enhance((props) => {
             },
             custom_rate: numberFormat(_.get(currentItem, 'customRate')),
             comment: _.get(currentItem, 'comment'),
-            expanseCategory: {
-                value: currentItemAmount < ZERO && _.get(currentItem, 'expanseCategory')
-                    ? {
-                        id: _.get(currentItem, ['expanseCategory', 'id']),
-                        name: _.get(currentItem, ['expanseCategory', 'name']),
-                        options: expenseOptions
-                    } : {}
-            },
-            incomeCategory: {
-                value: currentItemAmount > ZERO && _.get(currentItem, 'incomeCategory')
-                    ? {
-                        id: _.get(currentItem, ['incomeCategory', 'id']),
-                        name: _.get(currentItem, ['incomeCategory', 'name']),
-                        options: incomeOptions
-                    } : {}
-            },
+            expanseCategory: !_.isNil(_.get(currentItem, 'expanseCategory'))
+                ? {
+                    value: currentItemAmount < ZERO
+                        ? {
+                            id: _.get(currentItem, ['expanseCategory', 'id']),
+                            name: _.get(currentItem, ['expanseCategory', 'name']),
+                            options: expenseOptions
+                        } : {}
+                } : null,
+            incomeCategory: !_.isNil(_.get(currentItem, 'incomeCategory'))
+                ? {
+                    value: currentItemAmount > ZERO
+                        ? {
+                            id: _.get(currentItem, ['incomeCategory', 'id']),
+                            name: _.get(currentItem, ['incomeCategory', 'name']),
+                            options: incomeOptions
+                        } : {}
+                } : null,
             currencyRate: 'custom'
         }
         : {

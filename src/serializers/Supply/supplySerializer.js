@@ -38,22 +38,23 @@ export const createSerializer = (data) => {
     }
 }
 
-export const updateSerializer = (data, id) => {
+export const updateSerializer = (data) => {
     const provider = _.get(data, ['provider', 'value'])
     const stock = _.get(data, ['stock', 'value'])
     const currency = _.get(data, ['currency', 'value'])
-    const comment = _.get(data, ['comment'])
+    const comment = _.get(data, 'comment') || ''
     const division = _.get(data, ['division', 'value'])
     const contact = _.get(data, ['contact'])
     const paymentType = _.get(data, ['paymentType', 'value'])
+    const deliveryDate = moment(_.get(data, ['date_delivery'])).format('YYYY-MM-DD')
     const products = _.map(_.get(data, ['products']), (item) => {
-        const spId = _.get(item, 'id')
+        const id = _.get(item, 'id')
         const amount = numberWithoutSpaces(_.get(item, 'amount'))
         const itemCost = numberWithoutSpaces(_.get(item, 'cost'))
         const summary = numberWithoutSpaces(_.toNumber(amount) * _.toNumber(itemCost))
         const product = _.get(item, ['product', 'value', 'id'])
         return {
-            id: spId,
+            id: id,
             amount: amount,
             cost: summary,
             product: product
@@ -66,7 +67,7 @@ export const updateSerializer = (data, id) => {
         contact,
         comment,
         division,
-        'date_delivery': moment(_.get(data, ['date_delivery'])).format('YYYY-MM-DD'),
+        'date_delivery': deliveryDate,
         currency,
         products,
         'payment_type': paymentType
