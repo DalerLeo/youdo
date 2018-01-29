@@ -105,9 +105,12 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({search: term})})
         },
         handleGetDocument: props => () => {
-            const {filter} = props
+            const {filter, location: {query}} = props
+            const toggle = _.get(query, 'toggle') || PRODUCT
             const params = serializers.listFilterSerializer(filter.getParams())
-            getDocuments(API.STAT_PRODUCT_GET_DOCUMENT, params)
+            return toggle === PRODUCT
+                ? getDocuments(API.STAT_PRODUCT_GET_DOCUMENT, params)
+                : getDocuments(API.STAT_PRODUCT_TYPE_GET_DOCUMENT, params)
         },
         handleGetChilds: props => (id) => {
             const {dispatch, filterProductType} = props

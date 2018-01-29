@@ -156,6 +156,7 @@ const enhance = compose(
             },
             '& > div:last-child': {
                 width: 'calc(100% - 350px)',
+                alignSelf: 'baseline',
                 overflowX: 'auto',
                 overflowY: 'hidden'
             }
