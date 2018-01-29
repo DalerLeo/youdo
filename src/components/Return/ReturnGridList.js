@@ -25,10 +25,12 @@ import ReturnUpdateDialog from '../Order/OrderReturnDialog'
 import AddProductsDialog from '../Order/OrderAddProductsDialog'
 import Print from 'material-ui/svg-icons/action/print'
 import t from '../../helpers/translate'
+import getConfig from '../../helpers/getConfig'
 import {
-    COMPLETED
+    ORDER_RETURN_COMPLETED
 } from '../../constants/backendConstants'
 
+const canReturnFromCLient = toBoolean(getConfig('CAN_RETURN_FROM_CLIENT'))
 const listHeader = [
     {
         sorting: true,
@@ -216,7 +218,7 @@ const OrderGridList = enhance((props) => {
     return (
         <Container>
             <SubMenu url={ROUTES.RETURN_LIST_URL}/>
-            {canChangeAnyReturn &&
+            {canChangeAnyReturn && canReturnFromCLient &&
             <div className={classes.addButtonWrapper}>
                 <ToolTip position="left" text={t('Возврат с клиента')}>
                     <FloatingActionButton
@@ -243,7 +245,8 @@ const OrderGridList = enhance((props) => {
 
             />
 
-            {detailData.data && <ConfirmDialog
+            {detailData.data &&
+            <ConfirmDialog
                 type="cancel"
                 message={t('Заказ') + ' № ' + _.get(detailData, ['data', 'id'])}
                 onClose={confirmDialog.handleCloseConfirmDialog}
@@ -261,7 +264,7 @@ const OrderGridList = enhance((props) => {
                 ? (isAdmin &&
                     <ReturnCreateDialog
                         isUpdate={true}
-                        editOnlyCost={detStatus === COMPLETED}
+                        editOnlyCost={detStatus === ORDER_RETURN_COMPLETED}
                         name={_.get(detailData, ['data', 'client', 'name'])}
                         initialValues={updateDialog.initialValues}
                         loading={updateDialog.updateLoading}

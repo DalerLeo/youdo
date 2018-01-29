@@ -36,7 +36,8 @@ const enhance = compose(
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '50px 0'
+            padding: '50px 0',
+            width: '100%'
         },
         dialog: {
             overflowY: 'auto !important',
@@ -107,7 +108,6 @@ const enhance = compose(
             }
         },
         content: {
-            transition: 'all 1s cubic-bezier(0.4, 0, 1, 1)',
             overflowY: 'auto',
             overflowX: 'hidden',
             width: '100%',
@@ -208,11 +208,7 @@ const enhance = compose(
             fontWeight: '600'
         },
         paymentType: {
-            marginBottom: '10px',
-            lineHeight: '1.5',
-            '&:last-child': {
-                marginBottom: '0'
-            }
+            lineHeight: '1.5'
         }
     }),
     reduxForm({
@@ -236,7 +232,6 @@ const iconStyle = {
 }
 const ProviderInfoDialog = enhance((props) => {
     const {open, filterItem, onClose, classes, detailData, name, info, infoLoading} = props
-    //  ..const isSuperUser = _.get(superUser, 'isSuperUser')
     const totalPayments = _.groupBy(info, (item) => _.get(item, ['division', 'name']))
     const ZERO = 0
     const currentCurrency = getConfig('PRIMARY_CURRENCY')
@@ -249,6 +244,7 @@ const ProviderInfoDialog = enhance((props) => {
         const currencyId = _.get(item, ['currency', 'id'])
         const paymentType = _.get(item, ['paymentType'])
         const market = _.get(item, ['market', 'name'])
+        const division = _.get(item, ['division', 'name'])
         const amount = _.toNumber(_.get(item, 'amount'))
         const internal = _.toNumber(_.get(item, 'internal'))
         const customRate = _.get(item, 'customRate') ? _.toNumber(_.get(item, 'customRate')) : _.toInteger(amount / internal)
@@ -256,16 +252,12 @@ const ProviderInfoDialog = enhance((props) => {
         const type = _.get(item, 'type')
         const supply = _.get(item, 'supply')
 
-        // ..const openEditDialog = (thisItem) => {
-        // ..    superUser.handleOpenSuperUserDialog(thisItem.id)
-        // ..    setItem(thisItem)
-        // ..}
-
         return (
             <Row key={index} className='dottedList'>
-                <div style={{width: '20%'}}>{createdDate}</div>
-                <div style={{width: '20%'}}>{user}</div>
-                <div style={{width: '40%'}}>
+                <div style={{width: '15%'}}>{createdDate}</div>
+                <div style={{width: '15%'}}>{user}</div>
+                <div style={{width: '20%'}}>{division}</div>
+                <div style={{width: '30%'}}>
                     {market && <div>{t('Магазин')}: <span>{market}</span></div>}
                     {comment && <div>{t('Комментарии')}: <span>{comment}</span></div>}
                     <ProviderTransactionFormat type={type} supply={supply}/>
@@ -308,95 +300,91 @@ const ProviderInfoDialog = enhance((props) => {
                     <CloseIcon/>
                 </IconButton>
             </div>
-            {infoLoading
-                ? <div className={classes.loader}>
-                    <Loader size={0.75}/>
-                </div>
-                : <div className={classes.bodyContent}>
-                    <div className={classes.infoBlock}>
-                        {infoLoading
-                            ? <div className={classes.infoLoader}>
-                                <Loader size={0.75}/>
-                            </div>
-                            : !_.isEmpty(totalPayments) &&
-                            <div className={classes.paymentsWrapper}>
-                                {_.map(totalPayments, (item, index) => {
-                                    const division = index
-                                    const cashTransactions = _.filter(item, {'paymentType': 'cash'})
-                                    const bankTransactions = _.filter(item, {'paymentType': 'bank'})
-                                    const cash = _.map(cashTransactions, (child, i) => {
-                                        const currency = _.get(child, ['currency', 'name'])
-                                        const totalAmount = _.toNumber(_.get(child, ['totalAmount']))
-                                        return (
-                                            <div key={i} className={classes.payment}>
-                                                <span className={totalAmount > ZERO ? classes.green : totalAmount < ZERO ? classes.red : ''}>
-                                                    {numberFormat(totalAmount, currency)}
-                                                </span>
-                                            </div>
-                                        )
-                                    })
-                                    const bank = _.map(bankTransactions, (child, i) => {
-                                        const currency = _.get(child, ['currency', 'name'])
-                                        const totalAmount = _.toNumber(_.get(child, ['totalAmount']))
-                                        return (
-                                            <div key={i} className={classes.payment}>
-                                                <span className={totalAmount > ZERO ? classes.green : totalAmount < ZERO ? classes.red : ''}>
-                                                    {numberFormat(totalAmount, currency)}
-                                                </span>
-                                            </div>
-                                        )
-                                    })
+            <div className={classes.bodyContent}>
+                <div className={classes.infoBlock}>
+                    {infoLoading
+                        ? <div className={classes.infoLoader}>
+                            <Loader size={0.75}/>
+                        </div>
+                        : !_.isEmpty(totalPayments) &&
+                        <div className={classes.paymentsWrapper}>
+                            {_.map(totalPayments, (item, index) => {
+                                const division = index
+                                const cashTransactions = _.filter(item, {'paymentType': 'cash'})
+                                const bankTransactions = _.filter(item, {'paymentType': 'bank'})
+                                const cash = _.map(cashTransactions, (child, i) => {
+                                    const currency = _.get(child, ['currency', 'name'])
+                                    const totalAmount = _.toNumber(_.get(child, ['totalAmount']))
                                     return (
-                                        <div key={index} className={classes.division}>
-                                            <div className={classes.divisionTitle}>{division}</div>
-                                            {!_.isEmpty(cash) &&
-                                            <div className={classes.paymentType}>
-                                                <i>Наличными:</i>
-                                                {cash}
-                                            </div>}
-                                            {!_.isEmpty(bank) &&
-                                            <div className={classes.paymentType}>
-                                                <i>Перечислением:</i>
-                                                {bank}
-                                            </div>}
+                                        <div key={i} className={classes.payment}>
+                                                <span className={totalAmount > ZERO ? classes.green : totalAmount < ZERO ? classes.red : ''}>
+                                                    {numberFormat(totalAmount, currency)}
+                                                </span>
                                         </div>
                                     )
-                                })}
-                            </div>}
-                    </div>
-                    <div className={classes.filters}>
-                        <Field
-                            name={'division'}
-                            component={DivisionSearchField}
-                            label={'Организация'}/>
-                        <Field
-                            name={'currency'}
-                            component={CurrencySearchField}
-                            label={'Валюта'}/>
-                        <Field
-                            name={'paymentType'}
-                            component={PaymentTypeSearchField}
-                            label={'Тип оплаты'}/>
-                        <Pagination filter={filterItem}/>
-                    </div>
-                    <div className={classes.content} style={{maxHeight: loading ? '100px' : '445px', minHeight: loading ? '300px' : '100px'}} >
-                        <Row>
-                            <div style={{width: '20%'}}>{t('Дата')}</div>
-                            <div style={{width: '20%'}}>{t('Кто')}</div>
-                            <div style={{width: '40%'}}>{t('Описание')}</div>
-                            <div style={{width: '20%', textAlign: 'right'}}>{t('Сумма')}</div>
-                        </Row>
+                                })
+                                const bank = _.map(bankTransactions, (child, i) => {
+                                    const currency = _.get(child, ['currency', 'name'])
+                                    const totalAmount = _.toNumber(_.get(child, ['totalAmount']))
+                                    return (
+                                        <div key={i} className={classes.payment}>
+                                                <span className={totalAmount > ZERO ? classes.green : totalAmount < ZERO ? classes.red : ''}>
+                                                    {numberFormat(totalAmount, currency)}
+                                                </span>
+                                        </div>
+                                    )
+                                })
+                                return (
+                                    <div key={index} className={classes.division}>
+                                        <div className={classes.divisionTitle}>{division}</div>
+                                        {!_.isEmpty(cash) &&
+                                        <div className={classes.paymentType}>
+                                            <i>Наличными:</i>
+                                            {cash}
+                                        </div>}
+                                        {!_.isEmpty(bank) &&
+                                        <div className={classes.paymentType}>
+                                            <i>Перечислением:</i>
+                                            {bank}
+                                        </div>}
+                                    </div>
+                                )
+                            })}
+                        </div>}
+                </div>
+                <div className={classes.filters}>
+                    <Field
+                        name={'division'}
+                        component={DivisionSearchField}
+                        label={'Организация'}/>
+                    <Field
+                        name={'currency'}
+                        component={CurrencySearchField}
+                        label={'Валюта'}/>
+                    <Field
+                        name={'paymentType'}
+                        component={PaymentTypeSearchField}
+                        label={'Тип оплаты'}/>
+                    <Pagination filter={filterItem}/>
+                </div>
+                <div className={classes.content}>
+                    <Row>
+                        <div style={{width: '15%'}}>{t('Дата')}</div>
+                        <div style={{width: '15%'}}>{t('Кто')}</div>
+                        <div style={{width: '20%'}}>{t('Организация')}</div>
+                        <div style={{width: '30%'}}>{t('Описание')}</div>
+                        <div style={{width: '20%', textAlign: 'right'}}>{t('Сумма')}</div>
+                    </Row>
 
-                        {loading
+                    {loading
                         ? <div className={classes.loader}>
-                                <Loader size={0.75}/>
-                          </div>
+                            <Loader size={0.75}/>
+                        </div>
                         : !_.isEmpty(_.get(detailData, ['data', 'results']))
                             ? detailList
                             : <div className={classes.emptyQuery}>{t('Пока транзакции нет')}</div>}
-                    </div>
                 </div>
-            }
+            </div>
         </Dialog>
     )
 })

@@ -44,15 +44,18 @@ const enhance = compose(
                 '& > div:first-child': {
                     textAlign: 'left',
                     display: 'flex'
-                },
-                '& .redFont > div': {
-                    display: 'inline-block',
-                    background: '#ff9393',
-                    color: '#fff',
-                    fontWeight: '600',
-                    padding: '0 6px',
-                    borderRadius: '2px'
                 }
+            }
+        },
+        returnAmount: {
+            '& > div': {
+                display: 'inline-block',
+                background: '#ff9393',
+                color: '#fff',
+                fontWeight: '600',
+                padding: '0 6px',
+                margin: '0 3px',
+                borderRadius: '2px'
             }
         },
         tabWrapper: {
@@ -137,14 +140,14 @@ const OrderDetailsRightSideTabs = enhance((props) => {
     const products = _.get(data, 'products')
     const discountPrice = _.get(data, 'discountPrice')
     const primaryCurrency = _.get(data, ['currency', 'name'])
-    const firstType = _.get(products, ['0', 'product', 'productType', 'id'])
-    const firstMeasurement = _.get(products, ['0', 'product', 'measurement', 'name'])
-    const totalProductPrice = _.sumBy(products, (item) => {
-        return _.toNumber(_.get(item, 'totalPrice'))
-    })
-    const wholeAmount = _.sumBy(products, (o) => {
-        return _.toNumber(_.get(o, 'amount'))
-    })
+
+    const firstType = _.get(_.first(products), ['product', 'productType', 'id'])
+    const firstMeasurement = _.get(_.first(products), ['product', 'measurement', 'name'])
+
+    const totalProductPrice = _.sumBy(products, (item) => _.toNumber(_.get(item, 'totalPrice')))
+    const wholeAmount = _.sumBy(products, (item) => _.toNumber(_.get(item, 'amount')))
+    const wholeReturnAmount = _.sumBy(products, (item) => _.toNumber(_.get(item, 'returnAmount')))
+
     let commonMeasurement = false
     return (
         <div className={classes.rightSide}>
@@ -196,11 +199,12 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                             {isBonus && <strong className="greenFont"> (бонус)</strong>}</span>
                                         </Col>
                                         <Col xs={2}>
-                                            {numberFormat(amount)}&nbsp;
+                                            {numberFormat(amount)}
                                             {(returnAmount > ZERO) &&
-                                            <span className="redFont">
+                                            <span className={classes.returnAmount}>
                                                 <ToolTip position="bottom" text={tooltipText}>-{returnAmount}</ToolTip>
-                                            </span>} {measurement}
+                                            </span>}
+                                            {measurement}
                                         </Col>
                                         <Col xs={2}>{numberFormat(price)}</Col>
                                         <Col xs={2}>{numberFormat(productTotal)}</Col>
@@ -210,9 +214,16 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                             })}
                         </div>
                         <Row className={classes.summary}>
-                            <Col xs={4}>{commonMeasurement ? <span>Итого:</span> : <span>Общая сумма {primaryCurrency}</span>}</Col>
+                            <Col xs={4}>{commonMeasurement
+                                ? <span>Итого:</span>
+                                : <span>Общая сумма {primaryCurrency}</span>}
+                            </Col>
                             {commonMeasurement
-                                ? <Col xs={2}>{(wholeAmount > ZERO) && <span>{numberFormat(wholeAmount, firstMeasurement)}</span>}</Col>
+                                ? <Col xs={2}>
+                                    {wholeAmount > ZERO && <span>{numberFormat(wholeAmount)}</span>}
+                                    {wholeReturnAmount > ZERO && <span className={classes.returnAmount}><div>-{wholeReturnAmount}</div></span>}
+                                    {firstMeasurement}
+                                </Col>
                                 : <Col xs={2}/>}
                             <Col xs={2}> </Col>
                             <Col xs={2}>{numberFormat(totalProductPrice)}</Col>
