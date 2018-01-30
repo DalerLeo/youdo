@@ -527,7 +527,7 @@ const ReturnList = enhance((props) => {
     const deliveryFromDate = filter.getParam(RETURN_FILTER_KEY.DELIVERY_FROM_DATE)
     const toDate = filter.getParam(RETURN_FILTER_KEY.TO_DATE)
     const deliveryToDate = filter.getParam(RETURN_FILTER_KEY.DELIVERY_TO_DATE)
-    const exclude = _.isUndefined(filter.getParam(RETURN_FILTER_KEY.EXCLUDE)) ? true : filter.getParam(RETURN_FILTER_KEY.EXCLUDE)
+    const exclude = filter.getParam(RETURN_FILTER_KEY.EXCLUDE)
 
     const detailId = _.toInteger(_.get(params, 'returnId'))
 

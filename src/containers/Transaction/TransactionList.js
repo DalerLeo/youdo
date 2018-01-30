@@ -559,11 +559,11 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_CREATE_SEND_DIALOG_OPEN]: false})})
         },
 
-        handleSubmitCreateSendDialog: props => (percent) => {
+        handleSubmitCreateSendDialog: props => (percent, sameCurType) => {
             const {dispatch, sendForm, filter, location: {pathname}, filterCashbox, cashboxList} = props
             const cashboxId = _.get(props, ['location', 'query', 'cashboxId'])
             const cashbox = _.find(_.get(cashboxList, 'results'), {'id': _.toNumber(cashboxId)})
-            return dispatch(transactionCreateSendAction(_.get(sendForm, ['values']), cashboxId, percent, _.get(cashbox, ['currency', 'name'])))
+            return dispatch(transactionCreateSendAction(_.get(sendForm, ['values']), cashboxId, percent, _.get(cashbox, ['currency', 'name']), sameCurType))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
