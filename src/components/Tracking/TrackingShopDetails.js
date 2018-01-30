@@ -102,7 +102,7 @@ const TrackingShopDetails = enhance((props) => {
     const isActive = _.get(data, 'isActive')
     const client = _.get(data, ['client', 'name'])
     const contactName = _.get(data, 'contactName')
-    const phone = _.get(data, 'phone')
+    const phone = _.get(data, 'phone') || 'Не указан'
     const address = _.get(data, 'address')
     const guide = _.get(data, 'guide')
     const border = _.get(data, ['border', 'title'])
@@ -188,7 +188,11 @@ const TrackingShopDetails = enhance((props) => {
                 <div className={classes.block}>
                     <div className={classes.subtitle}>Контакты</div>
                     <div>
+                        <span>Имя:</span>
                         <span>{contactName}</span>
+                    </div>
+                    <div>
+                        <span>Телефон:</span>
                         <span>{phone}</span>
                     </div>
                     <div>

@@ -155,6 +155,7 @@ const enhance = compose(
                 width: '350px'
             },
             '& > div:last-child': {
+                alignSelf: 'baseline',
                 width: 'calc(100% - 350px)',
                 overflowX: 'auto',
                 overflowY: 'hidden'
@@ -419,6 +420,7 @@ const enhance = compose(
             '& > span': {
                 display: 'flex !important',
                 alignItems: 'center',
+                minHeight: '39px',
                 justifyContent: 'space-between',
                 height: '100%'
             }

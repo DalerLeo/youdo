@@ -67,7 +67,7 @@ const PositionCreateDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '500px'} : {width: '500px'}}
+            contentStyle={loading ? {width: '500px'} : {width: '700px'}}
             bodyStyle={{minHeight: '100px !important'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>

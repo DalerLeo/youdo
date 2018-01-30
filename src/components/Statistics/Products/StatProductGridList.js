@@ -199,6 +199,7 @@ const enhance = compose(
             '& > span': {
                 display: 'flex !important',
                 alignItems: 'center',
+                minHeight: '39px',
                 justifyContent: 'space-between',
                 height: '100%'
             }
