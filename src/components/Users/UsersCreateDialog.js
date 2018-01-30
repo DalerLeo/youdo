@@ -11,6 +11,7 @@ import Loader from '../Loader'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import toCamelCase from '../../helpers/toCamelCase'
+import toBoolean from '../../helpers/toBoolean'
 import {TextField, ImageUploadField, CheckBox, PositionSearchField, UserStockRadioButtonField, PostSearchField} from '../ReduxForm'
 import getConfig from '../../helpers/getConfig'
 import {connect} from 'react-redux'
@@ -221,7 +222,7 @@ const UsersCreateDialog = enhance((props) => {
     } = props
     const errorText = _.get(errorData, 'errorText')
     const show = _.get(errorData, 'show')
-    const multiStock = getConfig('MULTI_SELECT_STOCK')
+    const multiStock = toBoolean(getConfig('MULTI_SELECT_STOCK'))
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const agent = _.some(positionGroups, {'name': 'agent'})
     const manufacture = _.some(positionGroups, {'name': 'manufacture'})

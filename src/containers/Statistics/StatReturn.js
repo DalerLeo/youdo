@@ -53,12 +53,6 @@ const enhance = compose(
     }, ({dispatch, filter}) => {
         dispatch(returnListFetchAction(filter))
         dispatch(returnDataSumDetailsFetchAction(filter))
-    }),
-    withPropsOnChange((props, nextProps) => {
-        return (props.query.fromDate !== nextProps.query.fromDate) ||
-            (props.query.toDate !== nextProps.query.toDate) ||
-            (props.query.division !== nextProps.query.division)
-    }, ({dispatch, filter}) => {
         dispatch(returnDataSumFetchAction(filter))
     }),
     withPropsOnChange((props, nextProps) => {
@@ -81,8 +75,8 @@ const enhance = compose(
         },
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
-            const fromDate = _.get(filterForm, ['values', 'data', 'fromDate']) || null
-            const toDate = _.get(filterForm, ['values', 'data', 'toDate']) || null
+            const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
+            const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
             const type = _.get(filterForm, ['values', 'type', 'value']) || null
             const order = _.get(filterForm, ['values', 'order']) || null
             const client = _.get(filterForm, ['values', 'client']) || null
@@ -153,7 +147,6 @@ const StatReturnList = enhance((props) => {
     const deliveryFromDate = filter.getParam(STAT_RETURN_FILTER_KEY.DELIVERY_FROM_DATE)
     const deliveryToDate = filter.getParam(STAT_RETURN_FILTER_KEY.DELIVERY_TO_DATE)
     const exclude = filter.getParam(STAT_RETURN_FILTER_KEY.EXCLUDE)
-
     const listData = {
         data: _.get(list, 'results') || {},
         listLoading
@@ -186,7 +179,7 @@ const StatReturnList = enhance((props) => {
                 deliveryToDate: deliveryToDate && moment(deliveryToDate, 'YYYY-MM-DD')
             },
             division: division && splitToArray(division),
-            exclude: exclude || true,
+            exclude: exclude,
             date: {
                 fromDate: moment(firstDayOfMonth),
                 toDate: moment(lastDayOfMonth)
@@ -196,7 +189,7 @@ const StatReturnList = enhance((props) => {
 
     const sumDetailsData = {
         data: sumDetails,
-        sumDetailsLoading
+        loading: sumDetailsLoading
     }
     const graphData = {
         data: graphList || {},

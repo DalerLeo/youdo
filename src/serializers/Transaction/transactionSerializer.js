@@ -6,6 +6,7 @@ import toBoolean from '../../helpers/toBoolean'
 import moment from 'moment'
 
 const ZERO = 0
+const FOUR = 4
 const MINUS_ONE = -1
 
 const getRateType = (rateType) => {
@@ -136,19 +137,19 @@ export const createExpenseSerializer = (data, cashboxId) => {
             : request
 }
 const HUNDRED = 100
-export const createSendSerializer = (data, cashboxId, withPersent) => {
+export const createSendSerializer = (data, cashboxId, withPersent, defaultCurrency, sameCurType) => {
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
-    const cashboxFromName = _.get(data, ['cashbox', 'value', 'currency', 'name'])
+    const cashboxFromName = _.get(data, ['cashbox', 'value', 'currency', 'name']) || defaultCurrency
     const amountFrom = _.toNumber(numberWithoutSpaces(_.get(data, 'amountFrom')))
     const rate = _.toNumber(numberWithoutSpaces(_.get(data, 'rate')))
-    const amountTo = primaryCurrency === cashboxFromName ? amountFrom * rate : amountFrom / rate
+    const amountTo = primaryCurrency === cashboxFromName ? amountFrom * rate : _.round(amountFrom / rate, FOUR)
     const amountFromPersent = _.toNumber(numberWithoutSpaces(_.get(data, 'amountFromPersent')))
     const toCashbox = _.get(data, ['categoryId', 'value'])
     const comment = _.get(data, 'comment')
     const cashbox = _.get(data, ['cashbox', 'value', 'id'])
     return {
         amount_from: withPersent ? amountFromPersent : amountFrom,
-        amount_to: withPersent ? amountFromPersent * withPersent / HUNDRED : amountTo,
+        amount_to: (withPersent ? amountFromPersent * withPersent / HUNDRED : amountTo) || (sameCurType && amountFrom),
         from_cashbox: _.toInteger(cashboxId) === ZERO ? cashbox : cashboxId,
         to_cashbox: _.toInteger(toCashbox),
         percentage: withPersent,
@@ -176,8 +177,8 @@ export const listFilterSerializer = (data, cashbox) => {
     const withDeleted = toBoolean(_.get(defaultData, 'with_deleted'))
     return {
         'division': _.get(defaultData, 'division'),
-        'created_date_0': _.get(defaultData, 'fromDate'),
-        'created_date_1': _.get(defaultData, 'toDate'),
+        'begin_date': _.get(defaultData, 'fromDate'),
+        'end_date': _.get(defaultData, 'toDate'),
         'type': type,
         'cashbox': newCashbox,
         'client': _.get(data, 'client'),

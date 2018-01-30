@@ -51,9 +51,10 @@ const enhance = compose(
     }),
     withPropsOnChange((props, nextProps) => {
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
-    }, ({dispatch, filter}) => {
-        dispatch(statCashboxListFetchAction(filter))
-        dispatch(orderListFetchAction(filter))
+    }, ({dispatch, filter, params}) => {
+        const statCashboxId = _.toInteger(_.get(params, 'statCashboxId'))
+        !statCashboxId && dispatch(statCashboxListFetchAction(filter))
+        !statCashboxId && dispatch(orderListFetchAction(filter))
     }),
 
     withPropsOnChange((props, nextProps) => {

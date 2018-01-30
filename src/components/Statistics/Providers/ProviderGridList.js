@@ -53,12 +53,15 @@ const types = {
 const enhance = compose(
     injectSheet({
         loader: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
             position: 'absolute',
             top: '0',
-            left: '-30px',
-            right: '-30px',
+            left: ({stat}) => stat ? '-30px' : '0',
+            right: ({stat}) => stat ? '-30px' : '0',
             bottom: '0',
-            padding: '100px 0',
+            padding: ({stat}) => stat ? '100px 0' : '0',
             background: '#fff',
             zIndex: '30'
         },
@@ -509,7 +512,7 @@ const StatProviderGridList = enhance((props) => {
         <div>
             <Field
                 className={classes.inputFieldCustom}
-                name="date"
+                name="createdDate"
                 component={DateToDateField}
                 label={t('Диапазон дат')}
                 fullWidth={true}/>
@@ -744,6 +747,7 @@ const StatProviderGridList = enhance((props) => {
                             fields={fields}
                             filterKeys={STAT_PROVIDER_FILTER_KEY}
                             initialValues={initialValues}
+                            withoutDate={true}
                             handleSubmitFilterDialog={handleSubmitFilterDialog}
                             handleGetDocument={getDocument.handleGetDocument}
                         />
