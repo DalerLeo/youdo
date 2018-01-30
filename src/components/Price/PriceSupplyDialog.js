@@ -9,6 +9,7 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import {Row} from 'react-flexbox-grid'
 import getConfig from '../../helpers/getConfig'
+import t from '../../helpers/translate'
 import numberFormat from '../../helpers/numberFormat'
 import Loader from '../Loader'
 
@@ -120,7 +121,7 @@ const PriceSupplyDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <div>Поставка № {supplyId}</div>
+                <div>{t('Поставка')} № {supplyId}</div>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -133,20 +134,20 @@ const PriceSupplyDialog = enhance((props) => {
                 : <div className={classes.content}>
                     <div className={classes.topBlock}>
                         <Row>
-                            <div>Товар</div>
+                            <div>{t('Товар')}</div>
                             <div>{product}</div>
                         </Row>
                         <Row>
-                            <div>Поставщик:</div>
+                            <div>{t('Поставщик')}:</div>
                             <div>{provider}</div>
                         </Row>
                         <Row className="dottedList" style={{paddingBottom: '10px'}}>
-                            <div>Дата поставки:</div>
+                            <div>{t('Дата поставки')}:</div>
                             <div>{dateDelivery}</div>
                         </Row>
                     </div>
                     <div className={classes.downBlock}>
-                        <div className={classes.subTitle}>Расчет себестоимости за еденицу товара:</div>
+                        <div className={classes.subTitle}>{t('Расчет себестоимости за еденицу товара')}:</div>
                         {_.map(_.get(list, 'expenses'), (item, index) => {
                             const interalCost = _.get(item, 'internalCost')
                             price = Number(price) + Number(interalCost)
@@ -159,7 +160,7 @@ const PriceSupplyDialog = enhance((props) => {
                             )
                         })}
                         <Row>
-                            <div>Себестоимость</div>
+                            <div>{t('Себестоимость')}</div>
                             <div>{numberFormat(price, getConfig('PRIMARY_CURRENCY'))}</div>
                         </Row>
                     </div>
