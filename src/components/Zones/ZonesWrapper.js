@@ -387,17 +387,17 @@ const ZonesWrapper = enhance((props) => {
                         </div>}
                         <div>
                             <big>{activeZones}</big>
-                            <span style={{width: '65px'}}>{(activeZones === ONE) ? t('активная зона') : t('активных зон')}</span>
+                            <span dangerouslySetInnerHTML={{__html: (activeZones === ONE) ? t('активная <br/> зона') : t('активных <br/> зон')}}></span>
                         </div>
                         <div>
                             <big>{boundMarkets}</big>
-                            <span style={{width: '65px'}}>{t('магазинов в зонах')}</span>
+                            <span dangerouslySetInnerHTML={{__html: t('магазинов <br/> в зонах')}}></span>
                         </div>
                     </div>
 
                     <div className={classes.list}>
                         <div className={classes.listTitle}>
-                            <span>Зоны</span>
+                            <span>{t('Зоны')}</span>
                             <div className={classes.searchField}>
                                 <form onSubmit={onSubmit}>
                                     <div className={classes.search}>
@@ -477,12 +477,12 @@ const ZonesWrapper = enhance((props) => {
                         <Link target="_blank" to={{pathname: ROUTES.SHOP_LIST_URL, query: {nullBorder: true}}}>
                             <div>
                                 <big>{passiveMarkets}</big>
-                                <span style={{width: '80px'}}>{t('магазинов не распределено')}</span>
+                                <span dangerouslySetInnerHTML={{__html: t('магазинов не <br/> распределено')}}></span>
                             </div>
                         </Link>
                         <div>
                             <big>{passiveAgents}</big>
-                            <span style={{width: '80px'}}>{t('агентов не распределено')}</span>
+                            <span dangerouslySetInnerHTML={{__html: t('агентов не <br/> распределено')}}></span>
                         </div>
                     </div>
                 </div>}

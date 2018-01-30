@@ -10,6 +10,7 @@ import {Row, Col} from 'react-flexbox-grid'
 import Delete from 'material-ui/svg-icons/action/delete'
 import ToolTip from '../ToolTip'
 import dateFormat from '../../helpers/dateFormat'
+import t from '../../helpers/translate'
 
 const colorBlue = '#12aaeb !important'
 const enhance = compose(
@@ -152,7 +153,7 @@ const ProviderDetails = enhance((props) => {
                      onClick={handleCloseDetail}>
                 </div>
                 <div className={classes.titleButtons}>
-                    <ToolTip position="bottom" text="Изменить">
+                    <ToolTip position="bottom" text={t('Изменить')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
@@ -161,7 +162,7 @@ const ProviderDetails = enhance((props) => {
                             <Edit />
                         </IconButton>
                     </ToolTip>
-                    <ToolTip position="bottom" text="Удалить">
+                    <ToolTip position="bottom" text={t('Удалить')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
@@ -174,11 +175,11 @@ const ProviderDetails = enhance((props) => {
             </div>
             <div className={classes.container}>
                 <div className={classes.leftSide}>
-                    <div className={classes.bodyTitle}>Адрес</div>
+                    <div className={classes.bodyTitle}>{t('Адрес')}</div>
                     <div>{address}</div>
                 </div>
                 <div className={classes.body}>
-                    <div className={classes.bodyTitle}>Контакты</div>
+                    <div className={classes.bodyTitle}>{t('Контакты')}</div>
                     <div>
                         {_.map(contacts, (item) => {
                             const name = _.get(item, 'name')
@@ -195,7 +196,7 @@ const ProviderDetails = enhance((props) => {
                     </div>
                 </div>
                 <div className={classes.rightSide}>
-                    <div className={classes.bodyTitle}>Дата добавления</div>
+                    <div className={classes.bodyTitle}>{t('Дата добавления')}</div>
                     <div>{date}</div>
                 </div>
             </div>

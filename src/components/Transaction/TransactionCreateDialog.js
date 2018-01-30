@@ -41,7 +41,7 @@ import TransactionCreateDetalization from './TransactionCreateDetalization'
 const validateForm = values => {
     const errors = {}
     if (values.showClients && values.amount && !values.client) {
-        errors.client = 'Клиент не выбран'
+        errors.client = t('Клиент не выбран')
     }
 
     return errors

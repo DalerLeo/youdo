@@ -126,7 +126,7 @@ const TabTransferDeliveryPrint = enhance((props) => {
             <div className="printItem">
                 <header>
                     <div className={classes.title}>
-                        <div><strong>Доставщик:</strong> <span>{deliveryManName}</span></div>
+                        <div><strong>{t('Доставщик')}:</strong> <span>{deliveryManName}</span></div>
                         <div><strong>{startDay} - {endDay}</strong></div>
                     </div>
                     <div><strong>{t('Склад')}:</strong> <span>{stock}</span></div>

@@ -259,7 +259,7 @@ const StockTransferDetails = enhance((props) => {
                 : <div style={{width: '100%'}}>
                     <div className={classes.content}>
                         <div className={classes.ordersData}>
-                            <div>Склад: <strong>{currentDeliverer.stock.name}</strong></div>
+                            <div>{t('Склад')}: <strong>{currentDeliverer.stock.name}</strong></div>
                             <div>{t('Показаны товары по следующим заказам')} ( <span style={{fontWeight: '600'}}>{orderNo}</span> ): {ordersView}</div>
                         </div>
                         <div className={classes.leftSide}>

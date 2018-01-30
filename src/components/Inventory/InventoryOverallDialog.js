@@ -105,7 +105,7 @@ const InventoryOverallDialog = enhance((props) => {
         <div className={classes.dialog}>
             <div className={classes.content}>
                 <header>
-                    <span>Инвентаризация товаров</span>
+                    <span>{t('Инвентаризация товаров')}</span>
                     <IconButton
                         onTouchTap={() => { closeDialog(false) }}>
                         <CloseIcon color={'#666'}/>

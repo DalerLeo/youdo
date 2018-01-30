@@ -297,7 +297,7 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                         ? <div className={classes.tabContent}>
                             {!_.get(expensesListData, 'supplyExpenseListLoading') ? <div className={classes.tabWrapper}>
                                     <Row className="dottedList">
-                                        <Col xs={3}>Описание</Col>
+                                        <Col xs={3}>{t('Описание')}</Col>
                                         <Col xs={2} className={classes.right}>{t('Продукт')}</Col>
                                         <Col xs={2} className={classes.right}>{t('Тип оплаты')}</Col>
                                         <Col xs={2} style={{textAlign: 'right'}}>{t('Сумма')}</Col>

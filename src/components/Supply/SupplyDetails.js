@@ -322,7 +322,7 @@ const SupplyDetails = enhance((props) => {
     return (
         <div className={classes.wrapper}>
             <div className={classes.title}>
-                <div className={classes.titleLabel}>{t('Поставка')} №{id}</div>
+                <div className={classes.titleLabel}>{t('Поставка')} № {id}</div>
                 <div className={classes.closeDetail} onClick={handleCloseDetail}/>
                 <div className={classes.discountPop}
                      style={openDiscountDialog ? {transform: 'scale(1)'} : {transform: 'scale(0)'}}>
@@ -456,7 +456,7 @@ const SupplyDetails = enhance((props) => {
                     </div>
 
                     <div className={classes.subBlock}>
-                        <div className={classes.subtitle}>Доп. расходы</div>
+                        <div className={classes.subtitle}>{t('Доп. расходы')}</div>
                         <div className={classes.dataBox}>
                             <ul>
                                 {!_.isEmpty(groupedByCurrency)
@@ -497,7 +497,7 @@ const SupplyDetails = enhance((props) => {
                                                     : null}
                                                 <span
                                                     style={{fontWeight: 'normal'}}>
-                                                    Сумма: {numberFormat(itemAmount, index)} (Оплачено: {numberFormat(paidAmount)})
+                                                    {t('Сумма')}: {numberFormat(itemAmount, index)} ({t('Оплачено')}: {numberFormat(paidAmount)})
                                                 </span>
                                             </li>
                                         )

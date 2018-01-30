@@ -421,7 +421,7 @@ const TransferDetail = enhance((props) => {
                                 const name = _.get(item, ['product', 'name'])
                                 const measurement = _.get(item, ['product', 'measurement', 'name'])
                                 const productType = _.get(item, ['product', 'type', 'name'])
-                                const isDefect = toBoolean(_.get(item, 'isDefect')) ? 'Брак' : 'ОК'
+                                const isDefect = toBoolean(_.get(item, 'isDefect')) ? t('Брак') : 'ОК'
                                 const amount = numberFormat(_.get(item, 'amount'), measurement)
                                 count += _.toNumber(_.get(item, 'amount'))
                                 if (measurement !== showCountChange) {

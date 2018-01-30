@@ -15,6 +15,7 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import Person from '../Images/person.png'
 import NoShop from '../Images/no-shop.svg'
 import Pagination from '../ReduxForm/Pagination'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -320,15 +321,15 @@ const ZoneDetails = enhance((props) => {
                 <div className={classes.zoneInfoTitle}>
                     <div>
                         <big>{marketsCount}</big>
-                        <span>всего магазинов <br/> в зоне</span>
+                        <span dangerouslySetInnerHTML={{__html: t('всего магазинов <br/> в зоне')}}></span>
                     </div>
                     <div>
                         <big>{!_.isEmpty(agentsCount) ? agentsCount.length : '0'}</big>
-                        <span>закреплено <br/> персонал</span>
+                        <span dangerouslySetInnerHTML={{__html: t('закреплено <br/> персонал')}}></span>
                     </div>
                 </div>
                 <div className={classes.personal}>
-                    <span>Ответственный персонал:</span>
+                    <span>{t('Ответственный персонал')}:</span>
                     <div className={classes.personalWrap}>
                         {_.map(_.get(detailData, ['data', 'properties', 'agents']), (item) => {
                             const agentId = _.get(item, 'id')
@@ -349,7 +350,7 @@ const ZoneDetails = enhance((props) => {
                             )
                         })}
                         <div className={classes.person} style={{overflow: 'hidden'}}>
-                            <ToolTip position="bottom" text="Добавить">
+                            <ToolTip position="bottom" text={t('Добавить')}>
                                 <FloatingActionButton
                                     mini={true}
                                     className={classes.addPerson}
@@ -362,7 +363,7 @@ const ZoneDetails = enhance((props) => {
                 </div>
                 <div className={classes.stores}>
                     <div>
-                        <span>Магазины в зоне</span>
+                        <span>{t('Магазины в зоне')}</span>
                         <Pagination filter={shopFilter}/>
                     </div>
 
@@ -384,7 +385,7 @@ const ZoneDetails = enhance((props) => {
                     })}
                     {marketsCount === ZERO &&
                     <div className={classes.noShop}>
-                        <div>В данной зоне нет магазинов</div>
+                        <div>{t('В данной зоне нет магазинов')}</div>
                     </div>}
                 </div>
             </div>
