@@ -376,7 +376,7 @@ const ZoneDetails = enhance((props) => {
                                 key={shopId}
                                 className={classes.marketItem}
                                 onClick={() => { handleOpenShopDetails(shopId) }}>
-                                <div className={isActive ? classes.activeDot : classes.inactiveDot}></div>
+                                <div className={isActive ? classes.activeDot : classes.inactiveDot}/>
                                 <div>{shopName}</div>
                                 <div>{shopAddr}</div>
                             </div>

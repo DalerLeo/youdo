@@ -353,6 +353,7 @@ const PlanCreateDialog = enhance((props) => {
         comboPlan,
         selectedWeekDay
     } = props
+    const ZERO = 0
     const zoneLoading = _.get(zoneDetails, 'loading')
     const zoneCoordinates = _.map(_.get(zoneDetails, ['data', 'geometry', 'coordinates', '0']), (point) => {
         return {
@@ -375,7 +376,6 @@ const PlanCreateDialog = enhance((props) => {
     const submitDelete = updatePlan.handleDeleteAgentPlan
     const openUpdatePlan = _.get(updatePlan, 'openUpdatePlan')
     const openComboPlan = _.get(comboPlan, 'openComboPlan')
-    const ZERO = 0
     const isAgentChosen = selectedAgent > ZERO
     const zones = _.map(zonesList, (item) => {
         const id = _.get(item, 'id')
@@ -487,12 +487,12 @@ const PlanCreateDialog = enhance((props) => {
                                 : (selectedZone === ZERO)
                                     ? <Paper zDepth={2} className={classes.agentsWrapper}>
                                         <div className={classes.chooseZone}>
-                                            <span dangerouslySetInnerHTML={{__html: t('Для составления плана <br/>выберите зону')}}></span>
+                                            <span dangerouslySetInnerHTML={{__html: t('Для составления плана <br/>выберите зону')}}/>
                                         </div>
                                     </Paper>
                                     : (!_.isEmpty(agents)) ? <Paper zDepth={2} className={classes.agentsWrapper}>
                                             <div className={classes.chooseAgent}>
-                                                <span>{t('Выберите <br/>агента')}</span>
+                                                <span dangerouslySetInnerHTML={{__html: t('Выберите <br/>агента')}}/>
                                             </div>
                                             {agents}
                                         </Paper>
@@ -541,7 +541,7 @@ const PlanCreateDialog = enhance((props) => {
                         </div>
                         <div className={isAgentChosen ? classes.map : classes.mapBlurred}>
                             {zoneLoading
-                                ? <div>{null}</div>
+                                ? <div/>
                                 : selectedZone > ZERO
                                     ? <PlanMap
                                         plans={plans}
@@ -555,7 +555,7 @@ const PlanCreateDialog = enhance((props) => {
                                         handleChooseMarket={handleChooseMarket}
                                         handleUpdateAgentPlan={updatePlan.handleUpdateAgentPlan}
                                     />
-                                    : <div></div>}
+                                    : <div/>}
                         </div>
                     </div>
                 </div>

@@ -139,24 +139,29 @@ const PlanAddCalendar = enhance((props) => {
     const lastDayWeek = moment(moment(selectedMonth).format('YYYY-MM-' + daysInMonth)).isoWeekday()
     const selectedWeek = moment(moment(selectedMonth).format('YYYY-MM-' + selectedDay)).isoWeekday()
 
-    let calendarDays = []
-    if (firstDayWeek !== ONE) {
-        for (let i = 1; i < firstDayWeek; i++) {
-            calendarDays.push({isEmpty: true})
+    const getCalendar = () => {
+        const calendarDays = []
+        if (firstDayWeek !== ONE) {
+            for (let i = 1; i < firstDayWeek; i++) {
+                calendarDays.push({isEmpty: true})
+            }
+        } else if (firstDayWeek === ONE) {
+            // DO NOTHING
+        } else {
+            for (let i = 1; i < DAYS_PER_WEEK; i++) {
+                calendarDays.push({isEmpty: true})
+            }
         }
-    } else {
-        for (let i = 1; i < DAYS_PER_WEEK; i++) {
-            calendarDays.push({isEmpty: true})
+        for (let i = 1; i <= daysInMonth; i++) {
+            const dayItem = i < TEN ? '0' + i : i
+            calendarDays.push({day: dayItem})
         }
-    }
-    for (let i = 1; i <= daysInMonth; i++) {
-        const dayItem = i < TEN ? '0' + i : i
-        calendarDays.push({day: dayItem})
-    }
-    if (lastDayWeek !== DAYS_PER_WEEK) {
-        for (let i = lastDayWeek; i < DAYS_PER_WEEK; i++) {
-            calendarDays.push({isEmpty: true})
+        if (lastDayWeek !== DAYS_PER_WEEK) {
+            for (let i = lastDayWeek; i < DAYS_PER_WEEK; i++) {
+                calendarDays.push({isEmpty: true})
+            }
         }
+        return calendarDays
     }
 
     const weekNames = [
@@ -202,13 +207,13 @@ const PlanAddCalendar = enhance((props) => {
                 })}
             </div>
             <div className={classes.days}>
-                {_.map(calendarDays, (d, i) => {
+                {_.map(getCalendar(), (d, i) => {
                     const day = _.get(d, 'day')
                     const parsedDay = _.parseInt(day)
                     const parsedSelectedDay = _.parseInt(selectedDay)
                     const isEmpty = _.get(d, 'isEmpty')
                     if (isEmpty) {
-                        return (<div key={i} className={classes.weekDayEmty}> </div>)
+                        return (<div key={i} className={classes.weekDayEmty}/>)
                     } else if (parsedDay === parsedSelectedDay) {
                         return (
                             <div key={i} className={classes.weekDayActive}>{parsedDay}</div>
