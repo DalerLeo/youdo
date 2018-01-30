@@ -787,5 +787,9 @@
   "Барсод": "Barkod",
   "Тип ячейки": "",
   "Удаление невозможно из-за связи с другими данными": "Tegishli ma'lumotlar tufayli o'chirishni iloji yo'q",
-  "Сперва отмените скидку": "Oldin skidkani bekor qiling"
+  "Сперва отмените скидку": "Oldin skidkani bekor qiling",
+  "Условия договора": "Kelishuv sharti",
+  "Условия доставки": "Yetkazish sharti",
+  "бонус": "bonus",
+  "ОБЩАЯ СУММА": "UMUMIY NARX"
 }

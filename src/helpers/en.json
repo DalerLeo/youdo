@@ -778,6 +778,10 @@
   "Барсод": "Barcode",
   "Тип ячейки": "Cell type",
   "Удаление невозможно из-за связи с другими данными": "Unable to delete due to dependency",
-  "Сперва отмените скидку": "First, cancel the discount"
+  "Сперва отмените скидку": "First, cancel the discount",
+  "Условия договора": "Deal type",
+  "Условия доставки": "Delivery Type",
+  "бонус": "bonus",
+  "ОБЩАЯ СУММА": "TOTAL COST"
 
 }
