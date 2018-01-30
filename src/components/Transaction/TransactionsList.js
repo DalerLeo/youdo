@@ -229,7 +229,7 @@ const TransactionsList = enhance((props) => {
         return _.toInteger(o.id) === _.toInteger(_.get(cashboxData, 'cashboxId'))
     })
 
-    const cashboxName = _.get(cashboxData, 'cashboxId') === AllCashboxId ? 'Общий объем' : _.get(selectedCashbox, 'name')
+    const cashboxName = _.get(cashboxData, 'cashboxId') === AllCashboxId ? t('Общий объем') : _.get(selectedCashbox, 'name')
     const currentCashbox = _.get(cashboxData, 'cashboxId')
     const showCashbox = !toBoolean(currentCashbox && currentCashbox !== ZERO)
 
@@ -432,13 +432,12 @@ const TransactionsList = enhance((props) => {
                 <div className={classes.outerTitle}>
                     <div className={classes.buttons}>
                         {hasRightCashbox &&
-                        <a onClick={acceptCashDialog.handleOpenCashDialog} className={classes.btnSend}>Принять
-                            наличные</a>}
+                        <a onClick={acceptCashDialog.handleOpenCashDialog} className={classes.btnSend}>{t('Принять наличные')}</a>}
                         <div>
                             <a onClick={createSendDialog.handleOpenDialog}
-                               className={classes.btnSend}>Перевод</a>
-                            <a onClick={createIncomeDialog.handleOpenDialog} className={classes.btnAdd}>Приход</a>
-                            <a onClick={createExpenseDialog.handleOpenDialog} className={classes.btnRemove}>Расход</a>
+                               className={classes.btnSend}>{t('Перевод')}</a>
+                            <a onClick={createIncomeDialog.handleOpenDialog} className={classes.btnAdd}>{t('Приход')}</a>
+                            <a onClick={createExpenseDialog.handleOpenDialog} className={classes.btnRemove}>{t('Расход')}</a>
                         </div>
                     </div>
                 </div>

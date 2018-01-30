@@ -8,6 +8,7 @@ import {Link} from 'react-router'
 import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
+import t from '../../helpers/translate'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import {
     DateToDateField,
@@ -146,7 +147,7 @@ const ClientFilterForm = enhance((props) => {
         if (filterCounts) {
             return (
                 <div className={classes.afterFilter}>
-                    <div>Фильтр: {filterCounts} элемента</div>
+                    <div>{t('Фильтр')}: {filterCounts} {t('элемента')}</div>
                     <div>
                         <IconButton onTouchTap={filterDialog.handleOpenFilterDialog}>
                             <BorderColorIcon color="#8f8f8f" />
@@ -164,7 +165,7 @@ const ClientFilterForm = enhance((props) => {
                 <Link
                     className={classes.arrow}
                     onTouchTap={filterDialog.handleOpenFilterDialog}>
-                    <div>Показать фильтр <KeyboardArrowDown color="#12aaeb" /></div>
+                    <div>{t('Показать фильтр')} <KeyboardArrowDown color="#12aaeb" /></div>
                 </Link>
             </div>
         )
@@ -174,7 +175,7 @@ const ClientFilterForm = enhance((props) => {
         <div>
             <Paper className={classes.wrapper} zDepth={2}>
                 <div className={classes.header}>
-                    <span className={classes.title}>Фильтр</span>
+                    <span className={classes.title}>{t('Фильтр')}</span>
                     <IconButton onTouchTap={filterDialog.handleCloseFilterDialog}>
                         <CloseIcon className={classes.icon} />
                     </IconButton>
@@ -184,22 +185,22 @@ const ClientFilterForm = enhance((props) => {
                         className={classes.inputFieldCustom}
                         name="fromWho"
                         component={UsersMultiSearchField}
-                        label="По рекомендации"/>
+                        label={t('По рекомендации')}/>
                     <Field
                         className={classes.inputDateCustom}
                         name="createdDate"
                         component={DateToDateField}
-                        label="Дата создания"/>
+                        label={t('Дата создания')}/>
                     <Field
                         className={classes.inputDateCustom}
                         name="inBlacklist"
                         component={CheckBox}
-                        label="В черном списке"/>
+                        label={t('В черном списке')}/>
                     <RaisedButton
                         type="submit"
                         primary={true}
                         buttonStyle={{color: '#fff'}}
-                        label="Применить"
+                        label={t('Применить')}
                         labelStyle={{fontSize: '13px'}}
                         style={{marginTop: '15px'}}>
                     </RaisedButton>

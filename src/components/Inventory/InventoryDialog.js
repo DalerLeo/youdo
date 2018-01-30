@@ -408,7 +408,7 @@ const InventoryDialog = enhance((props) => {
             {stockChooseDialog && !stock &&
             <div className={classes.confirm}>
                 <Paper zDepth={2} className={classes.confirmContent}>
-                    <header>Выберите склад</header>
+                    <header>{t('Выберите склад')}</header>
                     <div className={classes.fields}>
                         <Field
                             name={'stock'}

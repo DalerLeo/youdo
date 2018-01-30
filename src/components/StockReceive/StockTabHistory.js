@@ -126,7 +126,7 @@ const StockTabHistory = enhance((props) => {
             <Row key={id} style={isDefect ? {color: '#e57373'} : {}}>
                 <Col xs={4}>
                     {(type === 'Out') ? <ArrowUp color="#e57373"/> : <ArrowDown color="#81c784"/>}
-                    {product} {isDefect && <strong>(брак)</strong>}
+                    {product} {isDefect && <strong>{t('брак')}</strong>}
                 </Col>
                 <Col xs={1}>{amount} {measurement}</Col>
                 <Col xs={3}>{date}</Col>

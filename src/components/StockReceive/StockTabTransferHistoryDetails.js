@@ -175,7 +175,7 @@ const StockTransferDetails = enhance((props) => {
             }}>
                 {loading ? <LinearProgress/>
                     : <div className={classes.emptyQuery}>
-                        <div>Товаров не найдено</div>
+                        <div>{t('Товаров не найдено')}</div>
                     </div>}
             </div>
         )

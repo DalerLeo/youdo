@@ -151,7 +151,7 @@ const TransactionCreateSalary = enhance((props) => {
                 </div>
                 : _.isEmpty(filteredList)
                     ? <div className={classes.emptyQuery}>
-                        <div>Сотрудников не найдено...</div>
+                        <div>{t('Сотрудников не найдено')} ...</div>
                     </div>
                     : _.map(filteredList, (item) => {
                         const id = _.get(item, 'id')

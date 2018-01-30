@@ -360,7 +360,7 @@ const ShopDetails = enhance((props) => {
                 </div>
                 <div className={classes.titleButtons}>
                     <div className={classes.frequency}>
-                        <span>Частота посещений:</span>
+                        <span>{t('Частота посещений')}:</span>
                         <b>{ freq === EVERY_DAY ? t('Каждый день') : (
                             freq === ONCE_IN_A_WEEK ? t('Раз в неделю') : (
                                 freq === TWICE_IN_A_WEEK ? t('2 раза в неделю') : (

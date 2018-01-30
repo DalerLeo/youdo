@@ -7,6 +7,7 @@ import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import IconButton from 'material-ui/IconButton'
 import Loader from '../Loader'
+import t from '../../helpers/translate'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 const ZERO = 0
 const enhance = compose(
@@ -119,13 +120,13 @@ const ConfirmDialog = enhance((props) => {
     const {open, onClose, classes, type, message, onSubmit, loading} = props
     const typesList = {
         delete: {
-            name: 'Подтверждение удаления', submitName: 'Удалить', text: 'Вы уверены что хотите удалить эти данные?'
+            name: t('Подтверждение удаления'), submitName: t('Удалить'), text: t('Вы уверены что хотите удалить эти данные?')
         },
         cancel: {
-            name: 'Подтверждение отмены', submitName: 'Отменить', text: 'Вы уверены что хотите отменить эти данные?'
+            name: t('Подтверждение отмены'), submitName: t('Отменить'), text: t('Вы уверены что хотите отменить эти данные?')
         },
         submit: {
-            name: 'Выполнить', submitName: 'Да', text: 'Вы уверены что хотите подтвердить?'
+            name: t('Выполнить'), submitName: t('Да'), text: t('Вы уверены что хотите подтвердить?')
         }
     }
     const title = _.get(typesList, [type, 'name'])

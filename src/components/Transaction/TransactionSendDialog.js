@@ -181,7 +181,7 @@ const TransactionSendDialog = enhance((props) => {
                                 </div>
                                 {(amountFrom && (rate || !diffCurrency)) &&
                                 <div style={{padding: '10px 0'}}>
-                                    Сумма перевода: <strong>{numberFormat(_.round(convertedAmount, ROUND_VAL), chosenCurrencyName)}</strong>
+                                    {t('Сумма перевода')}: <strong>{numberFormat(_.round(convertedAmount, ROUND_VAL), chosenCurrencyName)}</strong>
                                 </div>}
                             </div>
                             }
@@ -211,7 +211,7 @@ const TransactionSendDialog = enhance((props) => {
                                 </div>
                                 {(amountFromPersent && amountToPersent) &&
                                 <div style={{padding: '10px 0'}}>
-                                    Касса <i>{_.get(chosenCashbox, 'name')}</i> получает: <strong>{numberFormat(_.round(customRatePersent, ROUND_VAL), chosenCurrencyName)} </strong>
+                                    {t('Касса')} <i>{_.get(chosenCashbox, 'name')}</i> {t('получает')}: <strong>{numberFormat(_.round(customRatePersent, ROUND_VAL), chosenCurrencyName)} </strong>
                                 </div>}
                             </div>
                             }

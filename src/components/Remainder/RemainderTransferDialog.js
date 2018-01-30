@@ -232,7 +232,7 @@ const RemainderTransferDialog = enhance((props) => {
                 </div>
                 <div className={classes.rightSide}>
                     <div className={classes.addButtons}>
-                        <strong>Список товаров</strong>
+                        <strong>{t('Список товаров')}</strong>
                         {!fromStock
                             ? <ToolTip text={t('Выберите склад')} position="right">
                                 <FlatButton
