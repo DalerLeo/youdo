@@ -355,7 +355,7 @@ const StatSalesGridList = enhance((props) => {
             <Field name="deliveryDate" className={classes.inputDateCustom} component={DateToDateField} label={t('Дата доставки')}/>
             <Field name="deadlineDate" className={classes.inputDateCustom} component={DateToDateField} label={t('Период изготовления')}/>
             <Field name="onlyBonus" component={CheckBox} label={t('Только бонусные заказы')}/>
-            <Field name="exclude" component={CheckBox} label={t('Исключить отмененные заказы')}/>
+            <Field name="exclude" component={CheckBox} label={t('Показать отмененные заказы')}/>
         </div>
     )
 

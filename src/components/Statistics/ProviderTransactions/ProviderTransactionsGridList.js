@@ -12,6 +12,7 @@ import Pagination from '../../GridList/GridListNavPagination/index'
 import getConfig from '../../../helpers/getConfig'
 import dateFormat from '../../../helpers/dateFormat'
 import numberFormat from '../../../helpers/numberFormat'
+import moduleFormat from '../../../helpers/moduleFormat'
 import TransactionFormat from '../Providers/ProviderTransactionFormat'
 import {
     TextField,
@@ -365,7 +366,7 @@ const ProviderTransactionsGridList = enhance((props) => {
                                              style={{color: '#5ecdea'}}>{numberFormat(sumIn)} {primaryCurrency}</div>
                                         <span className={classes.summaryTitle}>{t('Расход за период')}</span>
                                         <div className={classes.summaryValue}
-                                             style={{color: '#EB9696'}}>{numberFormat(sumOut)} {primaryCurrency}</div>
+                                             style={{color: '#EB9696'}}>{moduleFormat(sumOut, primaryCurrency)}</div>
                                         <span className={classes.summaryTitle}>{t('Разница')}</span>
                                         <div className={classes.summaryValue}
                                              style={diff >= ZERO ? {color: '#71ce87'} : {color: '#EB9696'}}>{numberFormat(diff)} {primaryCurrency}</div>

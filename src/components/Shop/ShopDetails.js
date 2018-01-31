@@ -194,6 +194,7 @@ const enhance = compose(
             order: '1 !important'
         },
         addImg: {
+            marginRight: '0 !important',
             background: '#999',
             cursor: 'pointer',
             display: 'flex',
