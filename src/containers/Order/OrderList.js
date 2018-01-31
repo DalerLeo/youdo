@@ -456,7 +456,7 @@ const enhance = compose(
             const initiator = _.get(filterForm, ['values', 'initiator']) || null
             const deliveryMan = _.get(filterForm, ['values', 'deliveryMan']) || null
             const onlyBonus = _.get(filterForm, ['values', 'onlyBonus']) || null
-            const exclude = _.get(filterForm, ['values', 'exclude']) || false
+            const exclude = _.get(filterForm, ['values', 'exclude']) || null
 
             filter.filterBy({
                 [ORDER_FILTER_OPEN]: false,
@@ -953,7 +953,7 @@ const OrderList = enhance((props) => {
     const deadlineFromDate = filter.getParam(ORDER_FILTER_KEY.DEADLINE_FROM_DATE)
     const deadlineToDate = filter.getParam(ORDER_FILTER_KEY.DEADLINE_TO_DATE)
     const onlyBonus = filter.getParam(ORDER_FILTER_KEY.ONLY_BONUS)
-    const exclude = _.isUndefined(filter.getParam(ORDER_FILTER_KEY.EXCLUDE)) ? true : filter.getParam(ORDER_FILTER_KEY.EXCLUDE)
+    const exclude = filter.getParam(ORDER_FILTER_KEY.EXCLUDE)
 
     const detailId = _.toInteger(_.get(params, 'orderId'))
     const tab = _.get(location, ['query', TAB]) || ORDER_TAB.ORDER_DEFAULT_TAB

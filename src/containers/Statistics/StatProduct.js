@@ -67,7 +67,8 @@ const enhance = compose(
         const except = {
             page: null,
             pageSize: null,
-            search: null
+            search: null,
+            ordering: null
         }
         return props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {

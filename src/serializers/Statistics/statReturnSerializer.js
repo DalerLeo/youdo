@@ -34,7 +34,7 @@ export const listFilterSerializer = (data) => {
 export const orderListFilterSerializer = (data, withOrderReturn) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
-    const excludeCanceled = !_.isUndefined(_.get(defaultData, 'exclude')) ? toBoolean(_.get(defaultData, 'exclude')) : true
+    const excludeCanceled = toBoolean(_.get(defaultData, 'exclude')) ? null : 'True'
     return {
         'client': _.get(defaultData, 'client'),
         'division': _.get(defaultData, 'division'),

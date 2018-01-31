@@ -2,6 +2,7 @@ import _ from 'lodash'
 import moment from 'moment'
 import {orderingSnakeCase} from '../helpers/serializer'
 import numberWithoutSpaces from '../helpers/numberWithoutSpaces'
+import toBoolean from '../helpers/toBoolean'
 
 const STANDART = 0
 const CONSIGNMENT = 1
@@ -101,12 +102,7 @@ export const listFilterSerializer = (data, id, withOrderReturn, print) => {
     const ordering = _.get(data, 'ordering')
     const dept = _.toInteger(_.get(defaultData, 'dept'))
     const status = _.get(defaultData, 'status')
-    const exclude = _.get(defaultData, 'exclude')
-    const excludeCanceled = _.isUndefined(exclude)
-        ? 'True'
-        : exclude === 'true'
-            ? 'True'
-            : null
+    const excludeCanceled = toBoolean(_.get(defaultData, 'exclude')) ? null : 'True'
 
     if (id && print) {
         return {
