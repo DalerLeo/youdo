@@ -8,7 +8,8 @@ export const listFilterSerializer = (data) => {
     const lastDayOfMonth = moment().format('YYYY-MM-' + lastDay)
     return {
         'begin_date': _.get(defaultData, 'fromDate') || firstDayOfMonth,
-        'end_date': _.get(defaultData, 'toDate') || lastDayOfMonth
+        'end_date': _.get(defaultData, 'toDate') || lastDayOfMonth,
+        'division': _.get(defaultData, 'division')
     }
 }
 

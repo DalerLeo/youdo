@@ -11,6 +11,7 @@ import getDocuments from '../../helpers/getDocument'
 import {statReportListFetchAction} from '../../actions/statReport'
 import * as API from '../../constants/api'
 import filterHelper from '../../helpers/filter'
+import {joinArray, splitToArray} from '../../helpers/joinSplitValues'
 
 const enhance = compose(
     connect((state, props) => {
@@ -37,12 +38,12 @@ const enhance = compose(
     withHandlers({
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
-            const division = _.get(filterForm, ['values', 'division', 'value']) || null
+            const division = _.get(filterForm, ['values', 'division']) || null
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
 
             filter.filterBy({
-                [STAT_REPORT_FILTER_KEY.DIVISION]: division,
+                [STAT_REPORT_FILTER_KEY.DIVISION]: joinArray(division),
                 [STAT_REPORT_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [STAT_REPORT_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
             })
@@ -68,6 +69,7 @@ const StatReportList = enhance((props) => {
     const firstDayOfMonth = _.get(location, ['query', 'fromDate']) || moment().format('YYYY-MM-01')
     const lastDay = moment().daysInMonth()
     const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
+    const division = !_.isNull(_.get(location, ['query', 'zone'])) && _.get(location, ['query', 'division'])
 
     const listData = {
         data: list || {},
@@ -78,6 +80,7 @@ const StatReportList = enhance((props) => {
         handleGetDocument: props.handleGetDocument
     }
     const initialValues = {
+        division: division && splitToArray(division),
         date: {
             fromDate: moment(firstDayOfMonth),
             toDate: moment(lastDayOfMonth)
