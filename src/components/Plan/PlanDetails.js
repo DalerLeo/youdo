@@ -395,7 +395,7 @@ const enhance = compose(
                 fontWeight: '600',
                 justifyContent: 'flex-end',
                 '& span': {
-                    marginLeft: '5px'
+                    // .. marginLeft: '5px'
                 },
                 '& a': {
                     fontWeight: 'inherit'
@@ -645,18 +645,52 @@ const PlanDetails = enhance((props) => {
                                             const tasks = _.map(planTasks, (task, index) => {
                                                 const type = _.get(task, 'type')
                                                 const orderInfo = _.get(task, 'order')
+                                                const orderReturnInfo = _.get(task, 'orderReturn')
+                                                const transactionInfo = _.get(task, 'clientTransaction')
                                                 const orderID = _.get(orderInfo, 'id')
+                                                const returnID = _.get(orderReturnInfo, 'id')
                                                 const orderCurrency = _.get(orderInfo, ['currency', 'name'])
+                                                const returnCurrency = _.get(orderReturnInfo, ['currency', 'name'])
                                                 const orderTotalPrice = _.get(orderInfo, 'totalPrice')
-                                                const info = type === ACTIVITY_ORDER
-                                                    ? <span>(<Link target="_blank" to={{
-                                                        pathname: sprintf(ROUTE.ORDER_ITEM_PATH, orderID),
-                                                        query: {search: orderID, exclude: false}
-                                                    }}>№{orderID}</Link> - {numberFormat(orderTotalPrice, orderCurrency)})</span>
-                                                    : <span/>
+                                                const returnTotalPrice = _.get(orderReturnInfo, 'totalPrice')
+                                                const transactionAmount = _.get(transactionInfo, 'amount')
+                                                const transactionOrder = _.get(transactionInfo, 'order')
+                                                const transactionCurrency = _.get(transactionInfo, ['currency', 'name'])
+                                                const getInfo = () => {
+                                                    switch (type) {
+                                                        case ACTIVITY_ORDER: return (
+                                                            <span>(<Link target="_blank" to={{
+                                                                pathname: sprintf(ROUTE.ORDER_ITEM_PATH, orderID),
+                                                                query: {search: orderID, exclude: false}
+                                                            }}>№{orderID}</Link> - {numberFormat(orderTotalPrice, orderCurrency)})
+                                                            </span>)
+                                                        case ACTIVITY_ORDER_RETURN: return (
+                                                            <span>(<Link target="_blank" to={{
+                                                                pathname: sprintf(ROUTE.RETURN_ITEM_PATH, returnID),
+                                                                query: {search: returnID, exclude: false}
+                                                            }}>№{returnID}</Link> - {numberFormat(returnTotalPrice, returnCurrency)})
+                                                            </span>)
+                                                        case ACTIVITY_DELIVERY: return (
+                                                            <span>({t('Заказ')}<Link target="_blank" to={{
+                                                                pathname: sprintf(ROUTE.RETURN_ITEM_PATH, orderID),
+                                                                query: {search: orderID, exclude: false}
+                                                            }}> №{orderID}</Link>)
+                                                            </span>
+                                                        )
+                                                        case ACTIVITY_PAYMENT: return (
+                                                            <span>({t('Заказ')}<Link target="_blank" to={{
+                                                                pathname: sprintf(ROUTE.ORDER_ITEM_PATH, transactionOrder),
+                                                                query: {search: transactionOrder, exclude: false}
+                                                            }}> №{transactionOrder}</Link>) - {numberFormat(transactionAmount, transactionCurrency)}
+                                                            </span>
+                                                        )
+                                                        default: return null
+                                                    }
+                                                }
                                                 return (
-                                                    <li key={index}>{formattedType[type]} {info} <Checked
-                                                        color="#92ce95"/>
+                                                    <li key={index}>
+                                                        <div>{formattedType[type]} {getInfo()}</div>
+                                                        <Checked color="#92ce95"/>
                                                     </li>
                                                 )
                                             })

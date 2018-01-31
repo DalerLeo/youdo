@@ -14,7 +14,6 @@ import Paper from 'material-ui/Paper'
 import EditButton from 'material-ui/svg-icons/editor/mode-edit'
 import CloseButton from 'material-ui/svg-icons/navigation/close'
 import numberFormat from '../../../helpers/numberFormat'
-import getConfig from '../../../helpers/getConfig'
 import dateFormat from '../../../helpers/dateFormat'
 import Pagination from '../../GridList/GridListNavPagination'
 import t from '../../../helpers/translate'
@@ -221,7 +220,6 @@ const DebtorsDetails = enhance((props) => {
     const resetDateField = () => {
         return props.dispatch(reset('StatDebtorsForm'))
     }
-    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const detail = _.find(_.get(listData, 'data'), (item) => {
         return _.get(item, ['client', 'id']) === id
     })
@@ -229,11 +227,12 @@ const DebtorsDetails = enhance((props) => {
 
     const detailList = _.map(_.get(detailData, 'data'), (item) => {
         const detailId = _.get(item, 'id')
+        const currency = _.get(item, ['currency', 'name'])
         const paymentDate = dateFormat(_.get(item, 'paymentDate'))
-        const totalPrice = numberFormat(_.get(item, 'totalPrice'), primaryCurrency)
-        const totalBalance = numberFormat(_.get(item, 'totalBalance'), primaryCurrency)
+        const totalPrice = numberFormat(_.get(item, 'totalPrice'), currency)
+        const totalBalance = numberFormat(_.get(item, 'totalBalance'), currency)
         const paymentType = _.get(item, 'paymentType')
-        const totalExpected = numberFormat(_.toInteger(_.get(item, 'totalPrice')) - _.toInteger(_.get(item, 'totalBalance')), primaryCurrency)
+        const totalExpected = numberFormat(_.toInteger(_.get(item, 'totalPrice')) - _.toInteger(_.get(item, 'totalBalance')), currency)
         return (
             <Row key={detailId} className="dottedList">
                 <a onClick={() => statDebtorsDialog.handleOpenStatDebtorsDialog(detailId)} className={classes.openDetails}/>
