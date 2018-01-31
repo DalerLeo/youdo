@@ -44,7 +44,6 @@ const enhance = compose(
                 width: 'auto',
                 border: 'none',
                 padding: '0',
-                maxHeight: '573px',
                 '& > div > div:last-child > div > div:first-child': {
                     maxHeight: '465px',
                     overflowY: 'auto',

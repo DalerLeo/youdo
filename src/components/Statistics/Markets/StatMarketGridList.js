@@ -155,7 +155,6 @@ const enhance = compose(
                 width: '350px'
             },
             '& > div:last-child': {
-                alignSelf: 'baseline',
                 width: 'calc(100% - 350px)',
                 alignSelf: 'baseline',
                 overflowX: 'auto',

@@ -125,7 +125,7 @@ const PlanWeekDayForm = enhance((props) => {
             </div>
             <form onSubmit={handleSubmit(onSubmit)}>
                 {combo && comboLoading
-                    ? <div></div>
+                    ? <div/>
                     : combo && !comboLoading &&
                     <div>
                         <div className={classes.title}>{t('Закрепленные агенты')}</div>
