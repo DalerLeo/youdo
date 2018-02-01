@@ -137,6 +137,7 @@ export const SUPPLY_ITEM = `/${SUPPLY}/%d/`
 export const SUPPLY_DEFECT = `/${SUPPLY}/%d/product_detail/%d/`
 export const SUPPLY_CANCEL = `/${SUPPLY}/cancel`
 export const SUPPLY_SYNC = `/${SUPPLY}/%d/update_amount/`
+export const SUPPLY_TRANSACTIONS = 'finance/provider_debt_separations/'
 
 export const PRICES = 'market/promotion'
 export const PRICES_CREATE = `/${PRICES}/`

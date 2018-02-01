@@ -10,11 +10,8 @@ import moduleFormat from '../../helpers/moduleFormat'
 import {Tabs, Tab} from 'material-ui/Tabs'
 import * as TAB from '../../constants/supplyTab'
 import NotFound from '../Images/not-found.png'
-import getConfig from '../../helpers/getConfig'
-import TransactionsFormat from '../../components/Transaction/TransactionsFormat'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import InfoIcon from 'material-ui/svg-icons/action/info-outline'
-import dateFormat from '../../helpers/dateFormat'
 import IconButton from 'material-ui/IconButton'
 import t from '../../helpers/translate'
 import ToolTip from '../ToolTip'
@@ -187,15 +184,12 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
         tabData,
         returnDataLoading,
         expensesListData,
-        paidData,
         confirmExpenseDialog
     } = props
 
-    const MINUS_ONE = -1
     const tab = _.get(tabData, 'tab')
     const id = _.get(data, 'id')
     const products = _.get(data, 'products')
-    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const currency = _.get(data, ['currency', 'name']) || 'N/A'
     const status = _.toInteger(_.get(data, 'status'))
 
@@ -351,79 +345,6 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                         </div>
                         : (!returnDataLoading && <div className={classes.emptyQuery}>
                             <div>{t('В данной поставке нет дополнительных раходов')}</div>
-                        </div>)}
-                </Tab>
-                <Tab label={t('Оплаты')} value={TAB.SUPPLY_TAB_PAID} disableTouchRipple={true}>
-                    {!_.isEmpty(_.get(paidData, 'data'))
-                        ? <div>
-                            {!_.get(paidData, 'loading') ? <div>
-                                    <div className={classes.listRow}>
-                                        <div style={{flexBasis: '10%', maxWidth: '10%'}}>№</div>
-                                        <div style={{flexBasis: '22%', maxWidth: '24%'}}>{t('Касса')}</div>
-                                        <div style={{flexBasis: '30%', maxWidth: '30%'}}>{t('Описание')}</div>
-                                        <div style={{flexBasis: '18%', maxWidth: '18%'}}>{t('Дата')}</div>
-                                        <div style={{flexBasis: '20%', maxWidth: '20%', textAlign: 'right'}}>{t('Сумма')}</div>
-                                    </div>
-                                    {_.map(_.get(paidData, 'data'), (item) => {
-                                        const idItem = _.get(item, 'id')
-                                        const comment = _.get(item, 'comment')
-                                        const cashbox = _.get(item, ['cashbox', 'name']) || 'N/A'
-                                        const user = _.get(item, 'user')
-                                        const order = _.get(item, 'order')
-                                        const amount = _.toNumber(_.get(item, 'amount')) < ZERO ? _.toNumber(_.get(item, 'amount')) * MINUS_ONE : _.toNumber(_.get(item, 'amount'))
-                                        const internal = _.toNumber(_.get(item, 'internalAmount')) < ZERO ? _.toNumber(_.get(item, 'internalAmount')) * MINUS_ONE : _.toNumber(_.get(item, 'internalAmount'))
-                                        const date = dateFormat(_.get(item, 'date'), true)
-                                        const currentCurrency = _.get(item, ['currency', 'name'])
-                                        const expanseCategory = _.get(item, ['expanseCategory'])
-                                        const transType = _.get(item, ['type'])
-                                        const customRate = _.toNumber(_.get(item, 'customRate'))
-                                        const rate = customRate > ZERO ? customRate : _.toInteger(amount / internal)
-                                        const supply = _.get(item, 'supply')
-                                        const supplyExpanse = _.get(item, 'supplyExpanse')
-                                        return (
-                                            <div key={idItem} className={classes.listRow}>
-                                                <div style={{flexBasis: '10%', maxWidth: '10%'}}>{idItem}</div>
-                                                <div style={{flexBasis: '22%', maxWidth: '24%'}}>{cashbox}</div>
-                                                <div style={{flexBasis: '30%', maxWidth: '30%'}}>
-                                                    <TransactionsFormat
-                                                        type={transType}
-                                                        order={order}
-                                                        supply={supply}
-                                                        supplyExpanseId={supplyExpanse}
-                                                        client={_.get(item, 'client')}
-                                                        id={id}
-                                                        expenseCategory={expanseCategory}
-                                                        user={user}
-                                                        comment={comment}
-
-                                                    />
-                                                </div>
-                                                <div style={{flexBasis: '18%', maxWidth: '18%'}}>{date}</div>
-                                                <div style={{flexBasis: '20%', maxWidth: '20%', textAlign: 'right'}}>
-                                                    {numberFormat(amount, currentCurrency)}
-                                                    {(currentCurrency !== primaryCurrency) &&
-                                                    <div>{numberFormat(internal, primaryCurrency)}
-                                                        {internal !== ZERO &&
-                                                        <span style={{
-                                                            fontSize: 11,
-                                                            color: '#333',
-                                                            fontWeight: 600
-                                                        }}> ({rate})</span>}</div>}
-                                                </div>
-                                            </div>
-                                        )
-                                    })
-                                    }
-                                </div>
-                                : <div className={classes.loader}>
-                                    <div>
-                                        <Loader size={0.75}/>
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                        : (!returnDataLoading && <div className={classes.emptyQuery}>
-                            <div>{t('В данной поставке не произведено оплат')}</div>
                         </div>)}
                 </Tab>
             </Tabs>

@@ -246,11 +246,11 @@ const OrderPrint = enhance((props) => {
                                 )
                             })}
                             <Row className={classes.summary}>
-                                <Col xs={1}></Col>
-                                <Col xs={1}></Col>
-                                <Col xs={4}></Col>
+                                <Col xs={1}/>
+                                <Col xs={1}/>
+                                <Col xs={4}/>
                                 <Col xs={2}>{formattedAmount && t('Итого') + ': ' + numberFormat(totalAmount, firstMeasure)}</Col>
-                                <Col xs={2}></Col>
+                                <Col xs={2}/>
                                 <Col xs={2}>{t('Итого')}: {numberFormat(totalPrice)}</Col>
                             </Row>
                         </div>

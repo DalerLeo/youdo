@@ -621,7 +621,6 @@
   "Прибыль фирмы": "Firma foydasi",
   "Прочие расходы фирмы": "Kompaniyaning boshqa xarajatlari",
   "Списанные товары": "Mahsulotlar yozilgan",
-  "Доход от продаж": "Sotuvdan kirim",
   "Доходы / Расходы": "Kirim / Chiqim",
   "Общая сумма возврата": "Qaytarmalrning umumiy miqdori",
   "История возврата": "Qaytarmalar tarixi",
@@ -821,5 +820,8 @@
   "Ответственный агент": "Mas'ul agent",
   "Изменение выбранных магазинов": "Tanlangan do'konlarni o'zgartirish",
   "Выбранные магазины успешно изменены": "",
-  "Изменить магазины": "O'zgartirish"
+  "Изменить магазины": "O'zgartirish",
+  "Список оплат по поставке": "",
+  "На поставку": "",
+  "По данной поставке еще не произведено оплат": ""
 }

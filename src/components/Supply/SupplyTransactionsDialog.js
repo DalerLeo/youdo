@@ -17,7 +17,6 @@ import ClientBalanceFormat from '../Statistics/ClientTransactions/ClientBalanceF
 import getConfig from '../../helpers/getConfig'
 import t from '../../helpers/translate'
 
-export const ORDER_TRANSACTIONS_DIALOG_OPEN = 'openTransactionsDialog'
 const enhance = compose(
     injectSheet({
         loader: {
@@ -127,11 +126,8 @@ const enhance = compose(
 )
 const ZERO = 0
 const OrderTransactionsDialog = enhance((props) => {
-    const {open, loading, onClose, classes, paymentData} = props
-    const orderId = _.get(paymentData, 'id')
-    const data = _.get(paymentData, ['data', 'results'])
+    const {open, loading, onClose, classes, data, supplyID} = props
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
-
     return (
         <Dialog
             modal={true}
@@ -141,7 +137,7 @@ const OrderTransactionsDialog = enhance((props) => {
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>{t('Список оплат по заказу')} № {orderId}</span>
+                <span>{t('Список оплат по поставке')} №{supplyID}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -153,23 +149,23 @@ const OrderTransactionsDialog = enhance((props) => {
                     </div>
                     : <div className={classes.inContent}>
                         <div className={classes.field}>
-                            {!_.isEmpty(data) ? <div className={classes.transactions}>
+                            {!_.isEmpty(_.get(data, 'list')) ? <div className={classes.transactions}>
                                     <Row className="dottedList">
                                         <Col xs={2}>{t('Дата')}</Col>
                                         <Col xs={2}>{t('Клиент')}</Col>
                                         <Col xs={2}>{t('Пользователь')}</Col>
                                         <Col xs={2}>{t('Описание')}</Col>
                                         <Col xs={2} className={classes.rightAlign}>{t('Сумма')}</Col>
-                                        <Col xs={2} className={classes.rightAlign}>{t('На заказ')}</Col>
+                                        <Col xs={2} className={classes.rightAlign}>{t('На поставку')}</Col>
                                     </Row>
-                                    {_.map(data, (item, index) => {
+                                    {_.map(_.get(data, 'list'), (item, index) => {
                                         const user = _.get(item, ['fromTransaction', 'user'])
                                         const comment = _.get(item, ['fromTransaction', 'comment'])
                                         const client = _.get(item, ['fromTransaction', 'client', 'name'])
                                         const currency = _.get(item, ['fromTransaction', 'currency', 'name'])
                                         const fromCurrency = _.get(item, ['fromTransaction', 'currency', 'name'])
                                         const toCurrency = _.get(item, ['toTransaction', 'currency', 'name'])
-                                        const userName = !_.isNull(user) ? user.firstName + ' ' + user.secondName : t('Не известно')
+                                        const userName = !_.isNull(user) ? _.get(user, 'firstName') + ' ' + _.get(user, 'secondName') : t('Не известно')
                                         const date = dateTimeFormat(_.get(item, ['fromTransaction', 'createdDate']))
                                         const amount = _.toNumber(_.get(item, ['fromTransaction', 'amount']))
                                         const fromAmount = _.toNumber(_.get(item, 'fromAmount'))
@@ -221,7 +217,7 @@ const OrderTransactionsDialog = enhance((props) => {
                                     })}
                                 </div>
                                 : <div className={classes.noPayment}>
-                                    <div>{t('По данному заказу еще не произведено оплат')}</div>
+                                    <div>{t('По данной поставке еще не произведено оплат')}</div>
                                 </div>}
                         </div>
                     </div>

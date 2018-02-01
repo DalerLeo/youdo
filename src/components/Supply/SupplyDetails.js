@@ -241,7 +241,7 @@ const SupplyDetails = enhance((props) => {
         handleSubmitDiscountDialog,
         handleSubmitSetZeroDiscountDialog,
         confirmExpenseDialog,
-        paidData,
+        transactionsDialog,
         openExpenseInfo,
         setOpenExpenseInfo,
         isAdmin,
@@ -445,7 +445,11 @@ const SupplyDetails = enhance((props) => {
                                 </li>
                                 <li>
                                     <span>{t('Оплачено')}:</span>
-                                    <span>{numberFormat(totalPaid, currency)}</span>
+                                    <span>{totalPaid > zero
+                                        ? <a onClick={() => { transactionsDialog.handleOpenTransactionsDialog(id) }}>
+                                            <strong>{numberFormat(totalPaid, currency)}</strong>
+                                        </a>
+                                        : numberFormat(totalPaid, currency)}</span>
                                 </li>
                                 <li>
                                     <span>{t('Остаток')}:</span>
@@ -534,8 +538,7 @@ const SupplyDetails = enhance((props) => {
                     returnData={returnData}
                     returnDataLoading={returnDataLoading}
                     expensesListData={supplyListData}
-                    confirmExpenseDialog={confirmExpenseDialog}
-                    paidData={paidData}/>
+                    confirmExpenseDialog={confirmExpenseDialog}/>
             </div>
         </div>
     )
