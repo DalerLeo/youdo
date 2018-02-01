@@ -7,6 +7,7 @@ const SHOP_UPDATE_MAP_DIALOG_OPEN = 'openUpdateMapDialog'
 const ADD_PHOTO_DIALOG_OPEN = 'openAddPhoto'
 const SHOP_SLIDESHOW_DIALOG_OPEN = 'openImagesDialog'
 const DELETE_IMAGE_OPEN = 'openDeleteImageDialog'
+const SHOP_MULTI_EDIT_OPEN = 'openMultiUpdateDialog'
 
 export {
     SHOP_CREATE_DIALOG_OPEN,
@@ -18,5 +19,6 @@ export {
     ADD_PHOTO_DIALOG_OPEN,
     SHOP_SLIDESHOW_DIALOG_OPEN,
     DELETE_IMAGE_OPEN,
+    SHOP_MULTI_EDIT_OPEN,
     ShopGridList
 }

@@ -172,3 +172,20 @@ export const slideShowFetchAction = (id) => {
         payload
     }
 }
+
+export const shopMultiUpdateAction = (data, markets) => {
+    const requestData = serializers.multiUpdateSerializer(data, markets)
+    const payload = axios()
+        .post(API.SHOP_MULTI_UPDATE, requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.SHOP_MULTI_UPDATE,
+        payload
+    }
+}

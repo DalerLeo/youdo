@@ -157,9 +157,11 @@ const OrderPrint = enhance((props) => {
                 const marketName = _.get(item, ['market', 'name'])
                 const marketAddress = _.get(item, ['market', 'address'])
                 const marketGuide = _.get(item, ['market', 'guide'])
-                const marketPhone = _.get(item, ['market', 'phone'])
+                const marketPhone = _.get(item, ['market', 'phone']) || t('Не указан')
                 const agent = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName'])
-                const deliveryMan = _.get(item, ['deliveryMan', 'firstName']) + ' ' + _.get(item, ['deliveryMan', 'secondName'])
+                const deliveryMan = _.get(item, ['deliveryMan', 'firstName'])
+                    ? _.get(item, ['deliveryMan', 'firstName']) + ' ' + _.get(item, ['deliveryMan', 'secondName'])
+                    : t('Не указан')
                 const totalPrice = _.get(item, ['totalPrice'])
                 const paymentDate = dateFormat(_.get(item, 'paymentDate'))
                 const createdDate = dateFormat(_.get(item, 'createdDate'))
@@ -168,9 +170,7 @@ const OrderPrint = enhance((props) => {
                 const dealType = dealTypeFormat(_.get(item, 'dealType'))
                 const currentCurrency = _.get(item, ['currency', 'name'])
                 const firstMeasure = _.get(item, ['products', '0', 'product', 'measurement', 'name'])
-                const totalAmount = _.sumBy(_.get(item, 'products'), (o) => {
-                    return _.toNumber(_.get(o, 'amount'))
-                })
+                const totalAmount = _.sumBy(_.get(item, 'products'), (o) => _.toNumber(_.get(o, 'amount')))
                 return (
                     <div key={id} className="printItem">
                         <div className={classes.title}>

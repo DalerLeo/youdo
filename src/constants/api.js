@@ -97,6 +97,7 @@ export const SHOP_SET_PRIMARY_IMAGE = `/${SHOP}/%d/set_primary_image/`
 export const SHOP_ITEM_SHOW_IMAGE = 'main/file/%d/'
 export const SHOP_ITEM_DELETE_IMAGE = `/${SHOP}/%d/images/%d/`
 export const SHOP_DELETE = `/${SHOP}/%d/`
+export const SHOP_MULTI_UPDATE = `/${SHOP}/bulk_update/`
 
 export const USERS = 'main/crud'
 export const USERS_CREATE = `/${USERS}/`

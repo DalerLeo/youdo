@@ -63,6 +63,7 @@
   "Продажа товаров": "Sale of goods",
   "Скачать накладные": "Download invoices",
   "Изменить выбранные заказы": "Edit selected orders",
+  "Изменить выбранные магазины": "Edit selected markets",
   "Сформировать Релиз": "Generate Release",
   "Добавить заказ": "Add an order",
   "Изменение заказа": "Changing an order",
@@ -105,7 +106,7 @@
   "Для добавления товаров": "To add products",
   "выберите тип оплаты, валюту и прайс лист": "Choose payment type, currency and price list",
   "Спрятать флажки": "Hide the checkboxes",
-  "Выбрать из списка для распечатки накладного": "Select from the list to print the invoice",
+  "Выбрать из списка": "Select from list",
   "Снять выделение": "Remove selection",
   "Отменить скидку": "Cancel the discount",
   "Добавить возврат": "Add a refund",
@@ -809,5 +810,9 @@
   "Сумма перевода": "conversion amount",
   "получает": "is receiving",
   "Касса": "Cashbox",
-  "Принять наличные": ""
+  "Принять наличные": "",
+  "Ответственный агент": "Responsible agent",
+  "Изменение выбранных магазинов": "Edit chosen markets",
+  "Выбранные магазины успешно изменены": "Markets successfully updated",
+  "Изменить магазины": "Update markets"
 }

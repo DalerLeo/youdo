@@ -60,6 +60,7 @@
   "Продажа товаров": "Tovarlarni sotish",
   "Скачать накладные": "Xarajatlarni yuklab olish",
   "Изменить выбранные заказы": "Tanlangan buyurtmalarni tahrirlash",
+  "Изменить выбранные магазины": "Tanlangan do'konlarni tahrirlash",
   "Сформировать Релиз": "Reliz yaratish",
   "Добавить заказ": "Buyurtma qo'shish",
   "Изменение заказа": "Buyurtmani o'zgartirish",
@@ -101,7 +102,7 @@
   "Для добавления товаров": "Mahsulot qo'shish uchun",
   "выберите тип оплаты, валюту и прайс лист": "To'lov turi, valyutasi, narxlar ro'yxatini tanlang",
   "Спрятать флажки": "Belgilanganlarni bekor qilish",
-  "Выбрать из списка для распечатки накладного": "Billingni chop etish uchun ro'yxatdan tanlang",
+  "Выбрать из списка": "Ro'yxatdan tanlash",
   "Снять выделение": "Tanlovni olib tashlash",
   "Размер скидки": "Chegirmaning miqdori",
   "Отменить скидку": "Chegirmani bekor qilish",
@@ -816,5 +817,9 @@
   "Сумма перевода": "O'tkazilinayotgan summa",
   "получает": "qabul qilyapti",
   "Касса": "Kassa",
-  "Принять наличные": "Naqt qa'bul qilish"
+  "Принять наличные": "Naqt qa'bul qilish",
+  "Ответственный агент": "Mas'ul agent",
+  "Изменение выбранных магазинов": "Tanlangan do'konlarni o'zgartirish",
+  "Выбранные магазины успешно изменены": "",
+  "Изменить магазины": "O'zgartirish"
 }

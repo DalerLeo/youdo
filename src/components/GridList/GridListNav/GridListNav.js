@@ -59,7 +59,7 @@ const GridListNav = ({classes, filter, filterDialog, addButton, withoutSearch, c
                     </Col>
                     <Col xs={6} className={classes.flex}>
                         {!withoutPagination && <GridListNavPagination filter={filter}/>}
-                        {withCheckboxes && <ToolTip position="left" text={showCheckboxes ? t('Спрятать флажки') : t('Выбрать из списка для распечатки накладного')}>
+                        {withCheckboxes && <ToolTip position="left" text={showCheckboxes ? t('Спрятать флажки') : t('Выбрать из списка')}>
                             <IconButton onTouchTap={toggleCheckboxes}>
                                 {showCheckboxes
                                     ? <HideCheck color="#5d6474"/>
