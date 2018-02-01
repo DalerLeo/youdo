@@ -67,7 +67,8 @@ const rootReducer = combineReducers({
         list: createThunkReducer(actionTypes.SUPPLY_LIST),
         item: createThunkReducer(actionTypes.SUPPLY_ITEM),
         update: createThunkReducer(actionTypes.SUPPLY_UPDATE),
-        defect: createThunkReducer(actionTypes.SUPPLY_DEFECT)
+        defect: createThunkReducer(actionTypes.SUPPLY_DEFECT),
+        transactions: createThunkReducer(actionTypes.SUPPLY_TRANSACTIONS)
     }),
     prices: combineReducers({
         create: createThunkReducer(actionTypes.PRICES_CREATE),

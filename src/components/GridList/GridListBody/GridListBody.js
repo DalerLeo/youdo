@@ -8,6 +8,7 @@ import Dot from '../../Images/dot.png'
 import NotFound from '../../Images/not-found.png'
 import Paper from 'material-ui/Paper'
 import Loader from '../../Loader'
+import t from '../../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -31,6 +32,7 @@ const enhance = compose(
             height: '50px',
             padding: '0 30px',
             position: 'relative',
+            transitionProperty: 'background !important',
             'padding-left': ({withCheckboxes}) => withCheckboxes ? '50px' : '30px',
             '& .row': {
                 width: '100%',
@@ -186,27 +188,23 @@ const GridListBody = enhance((props) => {
             </Paper>
         )
     })
-    return (
-        <div>
-            {!_.isEmpty(items)
-                ? <div className={classes.itemsWrapper}>{items}</div>
-                : (listLoading
-                    ? <Paper
-                        zDepth={1}
-                        className={transparentLoading ? classes.transparentLoading : classes.loader}
-                        style={!listShadow ? {boxShadow: 'none'} : {}}
-                        transitionEnabled={false}>
-                        <Loader/>
-                    </Paper>
-                    : <Paper
-                        zDepth={1}
-                        className={classes.emptyQuery}
-                        style={!listShadow ? {boxShadow: 'none'} : {}}
-                        transitionEnabled={false}>
-                        <div>По вашему запросу ничего не найдено</div>
-                    </Paper>)}
-        </div>
-    )
+    return !_.isEmpty(items)
+        ? <div className={classes.itemsWrapper}>{items}</div>
+        : (listLoading
+            ? <Paper
+                zDepth={1}
+                className={transparentLoading ? classes.transparentLoading : classes.loader}
+                style={!listShadow ? {boxShadow: 'none'} : {}}
+                transitionEnabled={false}>
+                <Loader/>
+            </Paper>
+            : <Paper
+                zDepth={1}
+                className={classes.emptyQuery}
+                style={!listShadow ? {boxShadow: 'none'} : {}}
+                transitionEnabled={false}>
+                <div>{t('По вашему запросу ничего не найдено')}</div>
+            </Paper>)
 })
 
 export default GridListBody

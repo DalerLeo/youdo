@@ -115,3 +115,16 @@ export const listFilterSerializer = (data) => {
     }
 }
 
+export const multiUpdateSerializer = (data, markets) => {
+    const marketType = _.get(data, ['marketType', 'value']) || _.get(data, ['marketTypeParent', 'value'])
+    const responsibleAgent = _.get(data, ['responsibleAgent', 'value'])
+    const status = _.get(data, ['status', 'value'])
+    const isActive = status ? status === STATUS_ACTIVE : status
+    return {
+        markets: _.split(markets, '-'),
+        responsible_agent: responsibleAgent,
+        market_type: marketType,
+        is_active: isActive
+    }
+}
+

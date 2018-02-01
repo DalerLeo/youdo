@@ -230,8 +230,8 @@ const StatReportGridList = enhance((props) => {
             <span>{t('Доходы / Расходы')}</span>
             <ul>
                 <li>
-                    <span>{t('Доход от продаж')}</span>
-                    <span>{numberFormat(_.get(transferData, 'salesSum'), currency)}</span>
+                    <span>{t('Прибыль от продаж')}</span>
+                    <span>{numberFormat(_.get(transferData, 'salesProfit'), currency)}</span>
                 </li>
                 <li>
                     <span>{t('Списанные товары')}</span>

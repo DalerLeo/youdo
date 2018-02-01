@@ -97,6 +97,7 @@ export const SHOP_SET_PRIMARY_IMAGE = `/${SHOP}/%d/set_primary_image/`
 export const SHOP_ITEM_SHOW_IMAGE = 'main/file/%d/'
 export const SHOP_ITEM_DELETE_IMAGE = `/${SHOP}/%d/images/%d/`
 export const SHOP_DELETE = `/${SHOP}/%d/`
+export const SHOP_MULTI_UPDATE = `/${SHOP}/bulk_update/`
 
 export const USERS = 'main/crud'
 export const USERS_CREATE = `/${USERS}/`
@@ -136,6 +137,7 @@ export const SUPPLY_ITEM = `/${SUPPLY}/%d/`
 export const SUPPLY_DEFECT = `/${SUPPLY}/%d/product_detail/%d/`
 export const SUPPLY_CANCEL = `/${SUPPLY}/cancel`
 export const SUPPLY_SYNC = `/${SUPPLY}/%d/update_amount/`
+export const SUPPLY_TRANSACTIONS = 'finance/provider_debt_separations/'
 
 export const PRICES = 'market/promotion'
 export const PRICES_CREATE = `/${PRICES}/`

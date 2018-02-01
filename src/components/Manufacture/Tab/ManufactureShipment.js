@@ -7,15 +7,17 @@ import Filter from 'material-ui/svg-icons/content/filter-list'
 import * as TAB from '../../../constants/manufactureShipmentTab'
 import ManufactureActivityDateRange from '../ManufactureActivityDateRange'
 import ManufactureActivityFilterDialog from '../ManufactureActivityFilterDialog'
+import ManufactureAddProductMaterial from '../ManufactureAddProductMaterial'
 import Paper from 'material-ui/Paper'
 import Loader from '../../Loader'
 import {Tabs, Tab} from 'material-ui/Tabs'
+import FlatButton from 'material-ui/FlatButton'
 import Sort from 'material-ui/svg-icons/content/sort'
 import Log from 'material-ui/svg-icons/content/content-paste'
 import Shift from 'material-ui/svg-icons/av/loop'
-import Product from 'material-ui/svg-icons/device/widgets'
 import {Field} from 'redux-form'
 import Raw from 'material-ui/svg-icons/action/exit-to-app'
+import Product from '../../CustomIcons/Product'
 import Material from 'material-ui/svg-icons/maps/layers'
 import Defected from 'material-ui/svg-icons/image/broken-image'
 import Pagination from '../../GridList/GridListNavPagination'
@@ -25,12 +27,25 @@ import dateTimeFormat from '../../../helpers/dateTimeFormat'
 import numberFormat from '../../../helpers/numberFormat'
 import {ShiftMultiSearchField} from '../../ReduxForm'
 import t from '../../../helpers/translate'
+import {TYPE_PRODUCT, TYPE_RAW} from '../index'
 
 const enhance = compose(
     injectSheet({
+        buttons: {
+            display: 'flex',
+            margin: '10px 0',
+            justifyContent: 'flex-end',
+            '& > button': {
+                marginLeft: '10px !important',
+                '& svg': {
+                    verticalAlign: 'text-top !important',
+                    width: '20px !important',
+                    height: '20px !important'
+                }
+            }
+        },
         shipmentContent: {
             position: 'relative',
-            marginTop: '56px',
             overflow: 'hidden',
             '& header': {
                 display: 'flex',
@@ -275,7 +290,7 @@ const tabStyles = {
 }
 
 const ManufactureShipment = enhance((props) => {
-    const {filterLogs, filterDialog, tabData, shipmentData, classes, manufactureId} = props
+    const {filterLogs, filterDialog, tabData, shipmentData, classes, manufactureId, productMaterialDialog} = props
     const ZERO = 0
     const filter = _.get(shipmentData, 'filter')
     const PRODUCT = 'return'
@@ -289,21 +304,14 @@ const ManufactureShipment = enhance((props) => {
     const materialsLoading = _.get(detailData, 'materialsLoading')
     const reviewLoading = productsLoading || materialsLoading
 
-    const groupedProducts = _.groupBy(_.get(detailData, 'products'), (item) => {
-        return item.product.id
-    })
+    const groupedProducts = _.groupBy(_.get(detailData, 'products'), (item) => item.product.id)
     const products = _.map(groupedProducts, (item, index) => {
         const productName = _.get(_.find(_.get(detailData, 'products'), (obj) => {
             return _.toInteger(obj.product.id) === _.toInteger(index)
         }), ['product', 'name'])
-        const totalAmount = _.sumBy(item, (o) => {
-            return _.toNumber(_.get(o, 'totalAmount'))
-        })
+        const totalAmount = _.sumBy(item, (o) => _.toNumber(_.get(o, 'totalAmount')))
         const totalMeasurement = _.get(_.first(item), ['measurement', 'name'])
-
-        const defected = _.filter(item, (o) => {
-            return _.get(o, 'isDefect')
-        })
+        const defected = _.filter(item, (o) => _.get(o, 'isDefect'))
         const defectedAmount = _.get(_.first(defected), 'totalAmount')
 
         return (
@@ -403,135 +411,172 @@ const ManufactureShipment = enhance((props) => {
             </Paper>
         )
     }
+    const flatButtonStyle = {
+        productColor: '#4db6ac',
+        rawColor: '#12aaeb',
+        labelStyle: {
+            color: '#fff',
+            fontWeight: '600',
+            verticalAlign: 'baseline',
+            textTransform: 'none'
+        }
+    }
     return (
-        <Paper transitionEnabled={false} zDepth={1} className={classes.shipmentContent}>
-            <header>
-                <ManufactureActivityDateRange filter={filter} initialValues={filterDialog.initialValues}/>
-                {tab === TAB.TAB_SHIFT &&
-                <a className={classes.filterBtn} onClick={filterDialog.handleOpenFilterDialog}>
-                    <Filter/>
-                    <span>{t('Фильтр')}</span>
-                </a>}
-            </header>
-            <ManufactureActivityFilterDialog
-                filterDialog={filterDialog}
-                fields={fields}
-                initialValues={filterDialog.initialValues}/>
-            <div className={classes.details}>
-                <div className={classes.rightSide}>
-                    <Tabs
-                        value={tab}
-                        contentContainerClassName={classes.tabWrapper}
-                        inkBarStyle={tabStyles.ink}
-                        onChange={(value) => tabData.handleTabChange(value)}>
-                        <Tab
-                            label={t('Обзор')}
-                            className={classes.tab}
-                            disableTouchRipple={true}
-                            icon={<Sort/>}
-                            value={TAB.TAB_SORTED}>
-                            {!wholeEmpty
-                                ? <div className={classes.flexReview}>
-                                    <div className={classes.productsBlock}>
-                                        <Row className={classes.flexTitle}>
-                                            <Col xs={6}><h4>{t('Произведено')}</h4></Col>
-                                            <Col xs={2}><h4>{t('Всего')}</h4></Col>
-                                            <Col xs={2}><h4>{t('Ок')}</h4></Col>
-                                            <Col xs={2}><h4>{t('Брак')}</h4></Col>
-                                        </Row>
-                                        {!_.isEmpty(products)
-                                            ? products
-                                            : <div className={classes.emptyQuery}>
-                                                <div>{t('Продукции еще не произведены')}</div>
-                                            </div>}
-                                    </div>
-                                    <div className={classes.productsBlock}>
-                                        <Row className={classes.flexTitle}>
-                                            <Col xs={6}><h4>{t('Затраченное сырье')}</h4></Col>
-                                            <Col xs={2}><h4>{t('Кол-во')}</h4></Col>
-                                        </Row>
-                                        {!_.isEmpty(materials)
-                                            ? materials
-                                            : <div className={classes.emptyQuery}>
-                                                <div>{t('Не затрачено сырья')}</div>
-                                            </div>}
-                                    </div>
-                                </div>
-                                : reviewLoading
-                                    ? <div className={classes.loader}>
-                                        <Loader size={0.75}/>
-                                    </div>
-                                    : <div className={classes.emptyQuery}>
-                                        <div>{t('В данную смену не произведено ни одной продукции')}</div>
-                                    </div>}
-                        </Tab>
-
-                        <Tab
-                            label={t('Записи')}
-                            className={classes.tab}
-                            disableTouchRipple={true}
-                            icon={<Log/>}
-                            value={TAB.TAB_LOGS}>
-                            {!_.isEmpty(logs)
-                                ? <div className={classes.productsBlock}>
-                                    <div className={classes.pagination}>
-                                        <Pagination filter={filterLogs}/>
-                                    </div>
-                                    <Row className={classes.flexTitle}>
-                                        <Col xs={6}><h4>{t('Продукт / сырье')}</h4></Col>
-                                        <Col xs={2}><h4>{t('Тип')}</h4></Col>
-                                        <Col xs={2}><h4>{t('Кол-во')}</h4></Col>
-                                        <Col xs={2}><h4>{t('Дата, время')}</h4></Col>
-                                    </Row>
-                                    {logsLoading
-                                        ? <div className={classes.loader}>
-                                            <Loader size={0.75}/>
-                                        </div>
-                                        : logs}
-                                </div>
-                                : logsLoading
-                                    ? <div className={classes.loader}>
-                                        <Loader size={0.75}/>
-                                    </div>
-                                    : <div className={classes.emptyQuery}>
-                                    <div>{t('Нет записей в данной смене')}</div>
-                                </div>}
-                        </Tab>
-
-                        <Tab
-                            label={t('Смены')}
-                            className={classes.tab}
-                            disableTouchRipple={true}
-                            icon={<Shift/>}
-                            value={TAB.TAB_SHIFT}>
-                            {!_.isEmpty(shifts)
-                                ? <div className={classes.productsBlock}>
-                                    <div className={classes.pagination}>
-                                        <Pagination filter={filter}/>
-                                    </div>
-                                    <Row className={classes.flexTitleShift}>
-                                        <Col xs={6}><h4>{t('Работник')}</h4></Col>
-                                        <Col xs={3}><h4>{t('Начало смены')}</h4></Col>
-                                        <Col xs={3}><h4>{t('Конец смены')}</h4></Col>
-                                    </Row>
-                                    {shiftsLoading
-                                        ? <div className={classes.loader}>
-                                            <Loader size={0.75}/>
-                                        </div>
-                                        : shifts}
-                                </div>
-                                : shiftsLoading
-                                    ? <div className={classes.loader}>
-                                        <Loader size={0.75}/>
-                                    </div>
-                                    : <div className={classes.emptyQuery}>
-                                        <div>{t('В этом периоде не найдено смен')}</div>
-                                    </div>}
-                        </Tab>
-                    </Tabs>
-                </div>
+        <div>
+            <div className={classes.buttons}>
+                <FlatButton
+                    label={t('Добавить продукт')}
+                    labelStyle={flatButtonStyle.labelStyle}
+                    backgroundColor={flatButtonStyle.productColor}
+                    hoverColor={flatButtonStyle.productColor}
+                    rippleColor={'#fff'}
+                    onTouchTap={() => { productMaterialDialog.handleOpen(TYPE_PRODUCT) }}
+                    icon={<Product color={'#fff'}/>}
+                />
+                <FlatButton
+                    label={t('Добавить сырье')}
+                    labelStyle={flatButtonStyle.labelStyle}
+                    backgroundColor={flatButtonStyle.rawColor}
+                    hoverColor={flatButtonStyle.rawColor}
+                    rippleColor={'#fff'}
+                    onTouchTap={() => { productMaterialDialog.handleOpen(TYPE_RAW) }}
+                    icon={<Raw color={'#fff'}/>}
+                />
             </div>
-        </Paper>
+            <Paper transitionEnabled={false} zDepth={1} className={classes.shipmentContent}>
+                <header>
+                    <ManufactureActivityDateRange filter={filter} initialValues={filterDialog.initialValues}/>
+                    {tab === TAB.TAB_SHIFT &&
+                    <a className={classes.filterBtn} onClick={filterDialog.handleOpenFilterDialog}>
+                        <Filter/>
+                        <span>{t('Фильтр')}</span>
+                    </a>}
+                </header>
+                <ManufactureActivityFilterDialog
+                    filterDialog={filterDialog}
+                    fields={fields}
+                    initialValues={filterDialog.initialValues}/>
+                <div className={classes.details}>
+                    <div className={classes.rightSide}>
+                        <Tabs
+                            value={tab}
+                            contentContainerClassName={classes.tabWrapper}
+                            inkBarStyle={tabStyles.ink}
+                            onChange={(value) => tabData.handleTabChange(value)}>
+                            <Tab
+                                label={t('Обзор')}
+                                className={classes.tab}
+                                disableTouchRipple={true}
+                                icon={<Sort/>}
+                                value={TAB.TAB_SORTED}>
+                                {!wholeEmpty
+                                    ? <div className={classes.flexReview}>
+                                        <div className={classes.productsBlock}>
+                                            <Row className={classes.flexTitle}>
+                                                <Col xs={6}><h4>{t('Произведено')}</h4></Col>
+                                                <Col xs={2}><h4>{t('Всего')}</h4></Col>
+                                                <Col xs={2}><h4>{t('Ок')}</h4></Col>
+                                                <Col xs={2}><h4>{t('Брак')}</h4></Col>
+                                            </Row>
+                                            {!_.isEmpty(products)
+                                                ? products
+                                                : <div className={classes.emptyQuery}>
+                                                    <div>{t('Продукции еще не произведены')}</div>
+                                                </div>}
+                                        </div>
+                                        <div className={classes.productsBlock}>
+                                            <Row className={classes.flexTitle}>
+                                                <Col xs={6}><h4>{t('Затраченное сырье')}</h4></Col>
+                                                <Col xs={2}><h4>{t('Кол-во')}</h4></Col>
+                                            </Row>
+                                            {!_.isEmpty(materials)
+                                                ? materials
+                                                : <div className={classes.emptyQuery}>
+                                                    <div>{t('Не затрачено сырья')}</div>
+                                                </div>}
+                                        </div>
+                                    </div>
+                                    : reviewLoading
+                                        ? <div className={classes.loader}>
+                                            <Loader size={0.75}/>
+                                        </div>
+                                        : <div className={classes.emptyQuery}>
+                                            <div>{t('В данную смену не произведено ни одной продукции')}</div>
+                                        </div>}
+                            </Tab>
+
+                            <Tab
+                                label={t('Записи')}
+                                className={classes.tab}
+                                disableTouchRipple={true}
+                                icon={<Log/>}
+                                value={TAB.TAB_LOGS}>
+                                {!_.isEmpty(logs)
+                                    ? <div className={classes.productsBlock}>
+                                        <div className={classes.pagination}>
+                                            <Pagination filter={filterLogs}/>
+                                        </div>
+                                        <Row className={classes.flexTitle}>
+                                            <Col xs={6}><h4>{t('Продукт / сырье')}</h4></Col>
+                                            <Col xs={2}><h4>{t('Тип')}</h4></Col>
+                                            <Col xs={2}><h4>{t('Кол-во')}</h4></Col>
+                                            <Col xs={2}><h4>{t('Дата, время')}</h4></Col>
+                                        </Row>
+                                        {logsLoading
+                                            ? <div className={classes.loader}>
+                                                <Loader size={0.75}/>
+                                            </div>
+                                            : logs}
+                                    </div>
+                                    : logsLoading
+                                        ? <div className={classes.loader}>
+                                            <Loader size={0.75}/>
+                                        </div>
+                                        : <div className={classes.emptyQuery}>
+                                            <div>{t('Нет записей в данной смене')}</div>
+                                        </div>}
+                            </Tab>
+
+                            <Tab
+                                label={t('Смены')}
+                                className={classes.tab}
+                                disableTouchRipple={true}
+                                icon={<Shift/>}
+                                value={TAB.TAB_SHIFT}>
+                                {!_.isEmpty(shifts)
+                                    ? <div className={classes.productsBlock}>
+                                        <div className={classes.pagination}>
+                                            <Pagination filter={filter}/>
+                                        </div>
+                                        <Row className={classes.flexTitleShift}>
+                                            <Col xs={6}><h4>{t('Работник')}</h4></Col>
+                                            <Col xs={3}><h4>{t('Начало смены')}</h4></Col>
+                                            <Col xs={3}><h4>{t('Конец смены')}</h4></Col>
+                                        </Row>
+                                        {shiftsLoading
+                                            ? <div className={classes.loader}>
+                                                <Loader size={0.75}/>
+                                            </div>
+                                            : shifts}
+                                    </div>
+                                    : shiftsLoading
+                                        ? <div className={classes.loader}>
+                                            <Loader size={0.75}/>
+                                        </div>
+                                        : <div className={classes.emptyQuery}>
+                                            <div>{t('В этом периоде не найдено смен')}</div>
+                                        </div>}
+                            </Tab>
+                        </Tabs>
+                    </div>
+                </div>
+            </Paper>
+
+            <ManufactureAddProductMaterial
+                open={productMaterialDialog.open}
+                onClose={productMaterialDialog.handleClose}
+            />
+        </div>
     )
 })
 

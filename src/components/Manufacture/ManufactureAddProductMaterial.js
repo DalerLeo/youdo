@@ -2,21 +2,15 @@ import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
-import {connect} from 'react-redux'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
-import {Field, Fields, reduxForm, SubmissionError} from 'redux-form'
+import {Fields, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
-import TextField from '../ReduxForm/Basic/TextField'
 import RemainderListProductField from '../ReduxForm/Remainder/RemainderDiscardProductListField'
-import {StockSearchField} from '../ReduxForm'
-import ToolTip from '../ToolTip'
 import t from '../../helpers/translate'
-
-export const REMAINDER_DISCARD_DIALOG_OPEN = 'openDiscardDialog'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -183,18 +177,12 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'RemainderDiscardForm',
+        form: 'ManufactureProductMaterialForm',
         enableReinitialize: true
-    }),
-    connect((state) => {
-        const fromStock = _.get(state, ['form', 'RemainderDiscardForm', 'values', 'fromStock'])
-        return {
-            fromStock
-        }
-    }),
+    })
 )
 
-const RemainderDiscardDialog = enhance((props) => {
+const ManufactureAddProductMaterial = enhance((props) => {
     const {open, handleSubmit, onClose, classes, handleOpenAddProduct, fromStock} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
@@ -221,7 +209,7 @@ const RemainderDiscardDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.noPadding}>
             <div className={classes.title}>
-                <span>{t('Списание товара')}</span>
+                <span>{t('Добавиление сырья')}</span>
                 <IconButton
                     iconStyle={iconStyle.icon}
                     style={iconStyle.button}
@@ -233,41 +221,17 @@ const RemainderDiscardDialog = enhance((props) => {
             <form onSubmit={onSubmit} className={classes.form} style={{minHeight: 'auto'}}>
                 <div className={classes.dialogBody}>
                     <div className={classes.leftSide}>
-                        <Field
-                            className={classes.inputFieldCustom}
-                            name="fromStock"
-                            component={StockSearchField}
-                            label={t('С какого склада')}
-                        />
-                        <Field
-                            style={{marginTop: '-20px', lineHeight: '20px', fontSize: '13px'}}
-                            name="comment"
-                            component={TextField}
-                            label={t('Оставить комментарий') + '...'}
 
-                            multiLine={true}
-                            rows={1}
-                            rowsMax={6}
-                            fullWidth={true}/>
                     </div>
                     <div className={classes.rightSide}>
                         <div className={classes.addButtons}>
                             <strong>{t('Список товаров')}</strong>
-                            {!fromStock
-                                ? <ToolTip text={t('Выберите склад')} position="right">
-                                    <FlatButton
-                                        disabled={true}
-                                        label={t('добавить товары')}
-                                        labelStyle={{fontSize: '13px', textTransform: 'unset'}}/>
-                                </ToolTip>
-                                : <div>
-                                    <FlatButton
-                                        label={t('добавить товары')}
-                                        style={{color: '#12aaeb'}}
-                                        labelStyle={{fontSize: '13px', textTransform: 'unset'}}
-                                        className={classes.span}
-                                        onTouchTap={() => { handleOpenAddProduct('discard') }}/>
-                                </div> }
+                            <FlatButton
+                                label={t('добавить товары')}
+                                style={{color: '#12aaeb'}}
+                                labelStyle={{fontSize: '13px', textTransform: 'unset'}}
+                                className={classes.span}
+                                onTouchTap={() => { handleOpenAddProduct('discard') }}/>
                         </div>
                         {fromStock &&
                         <Fields
@@ -278,7 +242,7 @@ const RemainderDiscardDialog = enhance((props) => {
                 </div>
                 <div className={classes.bottomButton}>
                     <FlatButton
-                        label={t('Списать')}
+                        label={t('Сохранить')}
                         className={classes.actionButton}
                         primary={true}
                         type="submit"
@@ -289,14 +253,10 @@ const RemainderDiscardDialog = enhance((props) => {
     )
 })
 
-RemainderDiscardDialog.propTypes = {
+ManufactureAddProductMaterial.propTypes = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired
 }
 
-RemainderDiscardDialog.defaultProps = {
-    isUpdate: false
-}
-
-export default RemainderDiscardDialog
+export default ManufactureAddProductMaterial

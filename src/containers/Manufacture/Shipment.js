@@ -10,7 +10,13 @@ import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import {splitToArray, joinArray} from '../../helpers/joinSplitValues'
 import toBoolean from '../../helpers/toBoolean'
-import {ManufactureShipmentWrapper, OPEN_FILTER} from '../../components/Manufacture'
+import {
+    ManufactureShipmentWrapper,
+    OPEN_FILTER,
+    OPEN_ADD_PRODUCT_MATERIAL_DIALOG,
+    TYPE_PRODUCT,
+    TYPE_RAW
+} from '../../components/Manufacture'
 import * as SHIPMENT_TAB from '../../constants/manufactureShipmentTab'
 import {MANUF_ACTIVITY_FILTER_KEY} from '../../components/Manufacture/ManufactureActivityFilterDialog'
 import {
@@ -97,7 +103,8 @@ const enhance = compose(
         const except = {
             page: null,
             pageSize: null,
-            openFilter: null
+            openFilter: null,
+            openProductMaterialDialog: null
         }
         const manufacture = _.toInteger(_.get(props, ['params', 'manufactureId']))
         const nextManufacture = _.toInteger(_.get(nextProps, ['params', 'manufactureId']))
@@ -117,7 +124,8 @@ const enhance = compose(
         const except = {
             openFilter: null,
             logsPage: null,
-            logsPageSize: null
+            logsPageSize: null,
+            openProductMaterialDialog: null
         }
         const manufactureId = _.get(props, ['params', 'manufactureId'])
         const nextManufactureId = _.get(nextProps, ['params', 'manufactureId'])
@@ -179,6 +187,16 @@ const enhance = compose(
             const page = _.get(query, 'page')
             const pageSize = _.get(query, 'pageSize')
             hashHistory.push({pathname: pathname, query: {page: page, pageSize: pageSize}})
+        },
+
+        handleOpenAddProductMaterial: props => (type) => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[OPEN_ADD_PRODUCT_MATERIAL_DIALOG]: type})})
+        },
+
+        handleCloseAddProductMaterial: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[OPEN_ADD_PRODUCT_MATERIAL_DIALOG]: false})})
         }
     })
 )
@@ -211,6 +229,7 @@ const ManufactureShipmentList = enhance((props) => {
     const shipmentId = _.toNumber(_.get(props, ['location', 'query', 'shipmentId']) || MINUS_ONE)
     const tab = _.get(location, ['query', TAB]) || SHIPMENT_TAB.DEFAULT_TAB
     const openFilterDialog = toBoolean(_.get(location, ['query', OPEN_FILTER]))
+    const openProductMaterialDialog = _.get(location, ['query', OPEN_ADD_PRODUCT_MATERIAL_DIALOG])
     const shift = _.get(location, ['query', MANUF_ACTIVITY_FILTER_KEY.SHIFT])
 
     const tabData = {
@@ -263,6 +282,13 @@ const ManufactureShipmentList = enhance((props) => {
         handleSubmitFilterDialog: props.handleSubmitFilterDialog
     }
 
+    const productMaterialDialog = {
+        open: openProductMaterialDialog === TYPE_PRODUCT || openProductMaterialDialog === TYPE_RAW,
+        type: openProductMaterialDialog,
+        handleOpen: props.handleOpenAddProductMaterial,
+        handleClose: props.handleCloseAddProductMaterial
+    }
+
     return (
         <Layout {...layout}>
             <ManufactureWrapper detailId={detailId} clickDetail={props.handleClickItem}>
@@ -274,6 +300,7 @@ const ManufactureShipmentList = enhance((props) => {
                     shipmentData={shipmentData}
                     listData={listData}
                     detailData={detailData}
+                    productMaterialDialog={productMaterialDialog}
                 />
             </ManufactureWrapper>
         </Layout>
