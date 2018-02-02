@@ -292,7 +292,7 @@ const ProviderInfoDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>Информация по балансу поставщика {name}</span>
+                <span>{t('Информация по балансу поставщика')} {name}</span>
                 <IconButton
                     iconStyle={iconStyle.icon}
                     style={iconStyle.button}
@@ -339,12 +339,12 @@ const ProviderInfoDialog = enhance((props) => {
                                         <div className={classes.divisionTitle}>{division}</div>
                                         {!_.isEmpty(cash) &&
                                         <div className={classes.paymentType}>
-                                            <i>Наличными:</i>
+                                            <i>{t('Наличными')}:</i>
                                             {cash}
                                         </div>}
                                         {!_.isEmpty(bank) &&
                                         <div className={classes.paymentType}>
-                                            <i>Перечислением:</i>
+                                            <i>{t('Перечислением')}:</i>
                                             {bank}
                                         </div>}
                                     </div>

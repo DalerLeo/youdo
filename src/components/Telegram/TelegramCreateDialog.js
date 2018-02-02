@@ -129,7 +129,7 @@ const TelegramCreateDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '400px'} : {width: '400px'}}
+            contentStyle={loading ? {width: '380px'} : {width: '400px'}}
             bodyClassName={classes.popUp}>
 
             <div className={classes.titleContent}>

@@ -179,7 +179,7 @@ const StatAgentDialog = enhance((props) => {
                     <Link to={{
                         pathname: sprintf(ROUTES.ORDER_ITEM_PATH, id),
                         query: {search: id}
-                    }} target="_blank">Заказ {id}</Link></Col>
+                    }} target="_blank">{t('Заказ')} {id}</Link></Col>
                 <Col xs={4}>{market}</Col>
                 <Col xs={2}>{createdDate}</Col>
                 <Col xs={2} style={{textAlign: 'right'}}>{paymentType}</Col>

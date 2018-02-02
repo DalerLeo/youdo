@@ -480,7 +480,7 @@ const StatProviderGridList = enhance((props) => {
             : <ArrowDownIcon className={classes.icon}/>
     const providers = (
         <div className={classes.leftTable}>
-            <div><span>Поставщик</span></div>
+            <div><span>{t('Поставщик')}</span></div>
             {_.map(_.get(listData, 'data'), (item) => {
                 const id = _.get(item, 'id')
                 const name = _.get(item, 'name')

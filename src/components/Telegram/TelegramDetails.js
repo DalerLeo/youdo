@@ -10,6 +10,7 @@ import IconButton from 'material-ui/IconButton'
 import {Row, Col} from 'react-flexbox-grid'
 import ToolTip from '../ToolTip'
 import dateFormat from '../../helpers/dateFormat'
+import t from '../../helpers/translate'
 
 const colorBlue = '#12aaeb !important'
 const enhance = compose(
@@ -133,11 +134,11 @@ const TelegramDetails = enhance((props) => {
     const detId = _.get(data, 'id')
     const contacts = _.get(data, 'contacts')
     const date = dateFormat(_.get(data, 'createdDate'))
-    const address = _.get(data, 'address') || 'Не указан'
+    const address = _.get(data, 'address') || t('Не указан')
     const providerName = _.get(data, 'name')
     const fromWhom = _.get(data, 'fromWhom')
         ? _.get(data, ['fromWhom', 'firstName']) + ' ' + _.get(data, ['fromWhom', 'secondName'])
-        : 'Неизвестно'
+        : t('Неизвестно')
 
     if (loading) {
         return (
@@ -179,13 +180,13 @@ const TelegramDetails = enhance((props) => {
             </div>
             <div className={classes.container}>
                 <div className={classes.leftSide}>
-                    <div className={classes.bodyTitle}>По рекомендации:</div>
+                    <div className={classes.bodyTitle}>{t('По рекомендации')}:</div>
                     <div>{fromWhom}</div>
-                    <div className={classes.bodyTitle}>Адрес:</div>
+                    <div className={classes.bodyTitle}>{t('Адрес')}:</div>
                     <div>{address}</div>
                 </div>
                 <div className={classes.body}>
-                    <div className={classes.bodyTitle}>Контакты</div>
+                    <div className={classes.bodyTitle}>{t('Контакты')}</div>
                     <div>
                         {_.map(contacts, (item) => {
                             const name = _.get(item, 'name')
@@ -193,16 +194,16 @@ const TelegramDetails = enhance((props) => {
                             const email = _.get(item, 'email') || 'Не указан'
                             return (
                                 <Row key={item.id} className="dottedList">
-                                    <Col xs={4}><span>Имя:</span> <br/>{name}</Col>
-                                    <Col xs={4}><span>Email:</span> <br/>{email}</Col>
-                                    <Col xs={4}><span>Телефон:</span> <br/>{phone}</Col>
+                                    <Col xs={4}><span>{t('Имя')}:</span> <br/>{name}</Col>
+                                    <Col xs={4}><span>{t('Email')}:</span> <br/>{email}</Col>
+                                    <Col xs={4}><span>{t('Телефон')}:</span> <br/>{phone}</Col>
                                 </Row>
                             )
                         })}
                     </div>
                 </div>
                 <div className={classes.rightSide}>
-                    <div className={classes.bodyTitle}>Дата добавления</div>
+                    <div className={classes.bodyTitle}>{t('Дата добавления')}</div>
                     <div>{date}</div>
                 </div>
             </div>

@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import numberFormat from '../../../helpers/numberFormat'
+import t from '../../../helpers/translate'
 import Loader from '../../Loader'
 
 const enhance = compose(
@@ -77,7 +78,7 @@ const SalesInfoDialog = enhance((props) => {
             : <div>
                     {!noCashData &&
                     <div className={classes.innerWrap}>
-                    <div >Наличными:</div>
+                    <div >{t('Наличными')}:</div>
                     {_.map(cashSummary, (obj, i) => {
                         const currency = _.get(obj, 'currency')
                         const amount = _.get(obj, 'total')
@@ -86,7 +87,7 @@ const SalesInfoDialog = enhance((props) => {
                     </div>}
                 {!noBankData &&
                     <div className={classes.innerWrap}>
-                    <div>Перечислением:</div>
+                    <div>{t('Перечислением')}:</div>
                     {_.map(bankSummary, (obj, i) => {
                         const currency = _.get(obj, 'currency')
                         const amount = _.get(obj, 'total')

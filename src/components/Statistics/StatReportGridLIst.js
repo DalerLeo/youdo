@@ -251,31 +251,31 @@ const StatReportGridList = enhance((props) => {
 
     const cashboxReports = (
         <div className={classes.block}>
-            <span>Отчет по кассам</span>
+            <span>{t('Отчет по кассам')}</span>
             <ul>
                 <li>
-                    <span>Баланс <br/> на начало периода</span>
+                    <span dangerouslySetInnerHTML={{__html: t('Баланс <br/> на начало периода')}}></span>
                     <div>
                         <span>{numberFormat(_.get(cashBoxesData, ['startBalance', 'cash']), currency)}</span>
                         <span>{numberFormat(_.get(cashBoxesData, ['startBalance', 'bank']), currency)}</span>
                     </div>
                 </li>
                 <li>
-                    <span>Поступления</span>
+                    <span>{t('Поступления')}</span>
                     <div>
                         <span>{numberFormat(_.get(cashBoxesData, ['income', 'cash']), currency)}</span>
                         <span>{numberFormat(_.get(cashBoxesData, ['income', 'bank']), currency)}</span>
                     </div>
                 </li>
                 <li>
-                    <span>Списания</span>
+                    <span>{t('Списания')}</span>
                     <div>
                         <span>{numberFormat(_.get(cashBoxesData, ['expenses', 'cash']), currency)}</span>
                         <span>{numberFormat(_.get(cashBoxesData, ['expenses', 'bank']), currency)}</span>
                     </div>
                 </li>
                 <li>
-                    <span>Баланс <br/> на конец периода</span>
+                    <span dangerouslySetInnerHTML={{__html: t('Баланс <br/> на конец периода')}}></span>
                     <div>
                         <span>{numberFormat(_.get(cashBoxesData, ['endBalance', 'cash']), currency)}</span>
                         <span>{numberFormat(_.get(cashBoxesData, ['endBalance', 'bank']), currency)}</span>
@@ -287,22 +287,22 @@ const StatReportGridList = enhance((props) => {
 
     const clientDebtors = (
         <div className={classes.block}>
-            <span>Задолжности (клиенты)</span>
+            <span>{t('Задолжности')} ({t('клиенты')})</span>
             <ul>
                 <li>
-                    <span>Задолжники нал. ({_.get(clientsDebtData, 'borrowersCountCash')})</span>
+                    <span>{t('Закладчики нал.')}  ({_.get(clientsDebtData, 'borrowersCountCash')})</span>
                     <span>{moduleFormat(_.get(clientsDebtData, 'borrowersSumCash'), currency)}</span>
                 </li>
                 <li>
-                    <span>Задолжники переч. ({_.get(clientsDebtData, 'borrowersCountBank')})</span>
+                    <span>{t('Задолжники переч.')} ({_.get(clientsDebtData, 'borrowersCountBank')})</span>
                     <span>{moduleFormat(_.get(clientsDebtData, 'borrowersSumBank'), currency)}</span>
                 </li>
                 <li>
-                    <span>Закладчики нал. ({_.get(clientsDebtData, 'loanersCountCash')})</span>
+                    <span>{t('Закладчики нал.')}  ({_.get(clientsDebtData, 'loanersCountCash')})</span>
                     <span>{moduleFormat(_.get(clientsDebtData, 'loanersSumCash'), currency)}</span>
                 </li>
                 <li>
-                    <span>Закладчики переч. ({_.get(clientsDebtData, 'loanersCountBank')})</span>
+                    <span>{t('Закладчики переч.')} ({_.get(clientsDebtData, 'loanersCountBank')})</span>
                     <span>{moduleFormat(_.get(clientsDebtData, 'loanersSumBank'), currency)}</span>
                 </li>
             </ul>
@@ -311,22 +311,22 @@ const StatReportGridList = enhance((props) => {
 
     const providerDebtors = (
         <div className={classes.block}>
-            <span>Задолжности (поставщики)</span>
+            <span>{t('Задолжности')} ({t('поставщики')})</span>
             <ul>
                 <li>
-                    <span>Задолжники нал. ({_.get(providersDebtData, 'borrowersCountCash')})</span>
+                    <span>{t('Закладчики нал.')} ({_.get(providersDebtData, 'borrowersCountCash')})</span>
                     <span>{moduleFormat(_.get(providersDebtData, 'borrowersSumCash'), currency)}</span>
                 </li>
                 <li>
-                    <span>Задолжники переч. ({_.get(providersDebtData, 'borrowersCountBank')})</span>
+                    <span>{t('Закладчики переч.')} ({_.get(providersDebtData, 'borrowersCountBank')})</span>
                     <span>{moduleFormat(_.get(providersDebtData, 'borrowersSumBank'), currency)}</span>
                 </li>
                 <li>
-                    <span>Закладчики нал. ({_.get(providersDebtData, 'loanersCountCash')})</span>
+                    <span>{t('Закладчики нал.')} ({_.get(providersDebtData, 'loanersCountCash')})</span>
                     <span>{moduleFormat(_.get(providersDebtData, 'loanersSumCash'), currency)}</span>
                 </li>
                 <li>
-                    <span>Закладчики переч. ({_.get(providersDebtData, 'loanersCountBank')})</span>
+                    <span>{t('Закладчики переч.')} ({_.get(providersDebtData, 'loanersCountBank')})</span>
                     <span>{moduleFormat(_.get(providersDebtData, 'loanersSumBank'), currency)}</span>
                 </li>
             </ul>

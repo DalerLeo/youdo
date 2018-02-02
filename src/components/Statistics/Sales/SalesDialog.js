@@ -163,7 +163,7 @@ const StatSaleDialog = enhance((props) => {
                 : <div>
                     <div className={classes.titleContent}>
                         <div>
-                            <div>{t('Заказ')} №{id}</div>
+                            <div>{t('Заказ')} № {id}</div>
                         </div>
                         <IconButton onTouchTap={onClose}>
                             <CloseIcon color="#666666"/>

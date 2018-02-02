@@ -6,6 +6,7 @@ import Dialog from 'material-ui/Dialog'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import {Row, Col} from 'react-flexbox-grid'
+import t from '../../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -90,7 +91,7 @@ const StatFinanceDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>Заказ №221</span>
+                <span>{t('Заказ')} № 221</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -98,9 +99,9 @@ const StatFinanceDialog = enhance((props) => {
             <div className={classes.content}>
                 <div className={classes.tableWrapper}>
                     <Row className="dottedList">
-                        <Col xs={8}>Товар</Col>
-                        <Col xs={2}>Кол-во</Col>
-                        <Col xs={2}>Сумма</Col>
+                        <Col xs={8}>{t('Товар')}</Col>
+                        <Col xs={2}>{t('Кол-во')}</Col>
+                        <Col xs={2}>{t('Сумма')}</Col>
                     </Row>
                     <Row className="dottedList">
                         <Col xs={8}>Миф морозная свежесть</Col>

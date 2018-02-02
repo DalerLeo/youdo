@@ -70,7 +70,7 @@ const ManufactureEquipment = enhance((props) => {
         const name = _.get(item, 'name')
         const lastShipment = _.get(item, 'lastShipment')
         const status = _.get(item, 'status') === '0' ? t('не работает')
-            : (_.get(item, 'status') === '1' ? 'рабочий'
+            : (_.get(item, 'status') === '1' ? t('рабочий')
             : t('получить продукт'))
         return (
             <Row key={id}>
