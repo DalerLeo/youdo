@@ -630,11 +630,11 @@ const StatProductGridList = enhance((props) => {
                             <div className={classes.flexCenter + ' ' + classes.flexSpaceBetween}>
                                 {isProductType && currentParent &&
                                 <div className={classes.filtered}>
-                                    Отфильтровано по: <strong>{currentParent}</strong>
+                                    {t('Отфильтровано по')}: <strong>{currentParent}</strong>
                                     <a onClick={() => {
                                         updateCurrentParent(null)
                                         handleResetChilds()
-                                    }}>Сбросить фильтр</a>
+                                    }}>{t('Сбросить фильтр')}</a>
                                 </div>}
                                 <div className={classes.toggleWrapper} style={currentParent ? {width: 'auto'} : {width: '100%'}}>
                                     <ToolTip position="left" text="Показать по товарам">
@@ -674,7 +674,7 @@ const StatProductGridList = enhance((props) => {
                                     </div>
                                     {_.isEmpty(tableList) && !listLoading &&
                                     <div className={classes.emptyQuery}>
-                                        <div>По вашему запросу ничего не найдено</div>
+                                        <div>{t('По вашему запросу ничего не найдено')}</div>
                                     </div>}
                                     <div ref="horizontalTable">
                                         <table className={classes.mainTable}>

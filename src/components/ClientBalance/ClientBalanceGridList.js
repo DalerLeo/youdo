@@ -648,7 +648,7 @@ const ClientBalanceGridList = enhance((props) => {
 
     const groupBy = (
         <div className={classes.groupBy}>
-            <div>Сгруппировать по:</div>
+            <div>{t('Сгруппировать по')}:</div>
             <div className={classes.checkboxes}>
                 <Field
                     name="[groupBy][division][active]"

@@ -386,7 +386,7 @@ const ProviderTransactionsGridList = enhance((props) => {
                                 </Col>
                             </Row>}
                         <div className={classes.pagination}>
-                            <div><b>История транзакции</b></div>
+                            <div><b>{t('История транзакции')}</b></div>
                             <form onSubmit={handleSubmit(handleSubmitFilterDialog)}>
                                 <Field
                                     className={classes.inputFieldCustom}

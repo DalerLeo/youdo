@@ -510,7 +510,7 @@ const StatDebtorsGridList = enhance((props) => {
                             : <div className={classes.debtors}>
                                 <div>
                                     <span>{t('Всего должников')}</span>
-                                    <div>{countDebtors} клиентов</div>
+                                    <div>{countDebtors} {t('клиентов')}</div>
                                 </div>
                                 <div>
                                     <span>{t('Просроченные платежи')}</span>
