@@ -90,3 +90,83 @@ export const shipmentMaterialsListFetchAction = (dateRange, manufactureId) => {
         payload
     }
 }
+
+export const addProductsListAction = (filter, productType, manufacture) => {
+    const params = {
+        page_size: _.get(filter.getParams(), 'pdPageSize'),
+        page: _.get(filter.getParams(), 'pdPage'),
+        search: _.get(filter.getParams(), 'pdSearch'),
+        type: productType,
+        manufacture
+    }
+    const payload = axios()
+        .get(API.SHIPMENT_ADD_PRODUCTS_LIST, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.SHIPMENT_ADD_PRODUCTS_LIST,
+        payload
+    }
+}
+
+export const addRawsListAction = (filter, productType, stock) => {
+    const params = {
+        page_size: _.get(filter.getParams(), 'pdPageSize'),
+        page: _.get(filter.getParams(), 'pdPage'),
+        search: _.get(filter.getParams(), 'pdSearch'),
+        type: productType,
+        stock
+    }
+    const payload = axios()
+        .get(API.SHIPMENT_ADD_RAW_LIST, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.SHIPMENT_ADD_RAW_LIST,
+        payload
+    }
+}
+
+export const addProductsSubmitAction = (data) => {
+    const requestData = serializers.productsMaterialsCreate(data)
+    const payload = axios()
+        .post(API.SHIPMENT_ADD_PRODUCTS_CREATE, requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.SHIPMENT_ADD_PRODUCTS_CREATE,
+        payload
+    }
+}
+
+export const addRawsSubmitAction = (data) => {
+    const requestData = serializers.productsMaterialsCreate(data)
+    const payload = axios()
+        .post(API.SHIPMENT_ADD_RAW_CREATE, requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.SHIPMENT_ADD_PRODUCTS_CREATE,
+        payload
+    }
+}

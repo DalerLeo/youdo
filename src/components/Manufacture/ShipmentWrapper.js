@@ -59,7 +59,8 @@ const ManufactureShipmentWrapper = enhance((props) => {
         tabData,
         detailData,
         shipmentData,
-        productMaterialDialog
+        productMaterialDialog,
+        addProductDialog
     } = props
     return (
         <div>
@@ -73,7 +74,8 @@ const ManufactureShipmentWrapper = enhance((props) => {
                 filterDialog={filterDialog}
                 handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
                 productMaterialDialog={productMaterialDialog}
-                filterLogs={filterLogs}/>
+                filterLogs={filterLogs}
+                addProductDialog={addProductDialog}/>
         </div>
     )
 })

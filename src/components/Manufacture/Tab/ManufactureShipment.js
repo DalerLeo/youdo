@@ -8,6 +8,7 @@ import * as TAB from '../../../constants/manufactureShipmentTab'
 import ManufactureActivityDateRange from '../ManufactureActivityDateRange'
 import ManufactureActivityFilterDialog from '../ManufactureActivityFilterDialog'
 import ManufactureAddProductMaterial from '../ManufactureAddProductMaterial'
+import ShipmentAddProductsDialog from '../ShipmentAddProductsDialog'
 import Paper from 'material-ui/Paper'
 import Loader from '../../Loader'
 import {Tabs, Tab} from 'material-ui/Tabs'
@@ -290,7 +291,16 @@ const tabStyles = {
 }
 
 const ManufactureShipment = enhance((props) => {
-    const {filterLogs, filterDialog, tabData, shipmentData, classes, manufactureId, productMaterialDialog} = props
+    const {
+        filterLogs,
+        filterDialog,
+        tabData,
+        shipmentData,
+        classes,
+        manufactureId,
+        productMaterialDialog,
+        addProductDialog
+    } = props
     const ZERO = 0
     const filter = _.get(shipmentData, 'filter')
     const PRODUCT = 'return'
@@ -573,8 +583,25 @@ const ManufactureShipment = enhance((props) => {
             </Paper>
 
             <ManufactureAddProductMaterial
+                type={productMaterialDialog.type}
                 open={productMaterialDialog.open}
                 onClose={productMaterialDialog.handleClose}
+                onSubmit={productMaterialDialog.handleSubmit}
+                handleOpenAddProduct={addProductDialog.handleOpenAddProduct}
+                manufacture={manufactureId}
+            />
+
+            <ShipmentAddProductsDialog
+                type={productMaterialDialog.type}
+                filter={addProductDialog.filter}
+                data={addProductDialog.data}
+                open={addProductDialog.openAddProductDialog}
+                onClose={addProductDialog.handleCloseAddProduct}
+                onSubmit={addProductDialog.handleSubmitAddProduct}
+                loading={addProductDialog.loading}
+                openAddProductConfirm={addProductDialog.openAddProductConfirm}
+                handleCloseAddProductConfirm={addProductDialog.handleCloseAddProductConfirm}
+                handleSubmitAddProductConfirm={addProductDialog.handleSubmitAddProductConfirm}
             />
         </div>
     )
