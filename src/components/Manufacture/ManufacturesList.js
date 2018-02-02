@@ -73,30 +73,23 @@ const ManufacturesList = enhance((props) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const keyName = _.get(item, 'keyName')
-        let icon = ''
-        switch (keyName) {
-            case 'alyukobond': icon = Alukobond
-                break
-            case 'metall': icon = Metall
-                break
-            case 'tape': icon = Tape
-                break
-            case 'glue': icon = Glue
-                break
-            case 'crusher': icon = Crusher
-                break
-            case 'carving': icon = Carving
-                break
-            default: icon = Manufacture
+        const getIcon = () => {
+            switch (keyName) {
+                case 'alyukobond': return Alukobond
+                case 'metall': return Metall
+                case 'tape': return Tape
+                case 'glue': return Glue
+                case 'crusher': return Crusher
+                case 'carving': return Carving
+                default: return Manufacture
+            }
         }
         return (
             <li key={id}
                 className={classes.productionType}
-                onClick={() => {
-                    handleClick(id)
-                }}
+                onClick={() => { handleClick(id) }}
                 style={detailId === id ? {backgroundColor: 'white'} : {}}>
-                <img src={icon}/>
+                <img src={getIcon()}/>
                 {name}
             </li>
         )

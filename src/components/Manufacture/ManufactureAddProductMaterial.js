@@ -5,24 +5,16 @@ import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
-import {Fields, reduxForm, SubmissionError} from 'redux-form'
-import toCamelCase from '../../helpers/toCamelCase'
+import {Field, reduxForm} from 'redux-form'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
-import RemainderListProductField from '../ReduxForm/Remainder/RemainderDiscardProductListField'
 import t from '../../helpers/translate'
-
-const validate = (data) => {
-    const errors = toCamelCase(data)
-    const nonFieldErrors = _.get(errors, 'nonFieldErrors')
-    const latLng = (_.get(errors, 'lat') || _.get(errors, 'lon')) && 'Location is required.'
-
-    throw new SubmissionError({
-        ...errors,
-        latLng,
-        _error: nonFieldErrors
-    })
-}
+import numberFormat from '../../helpers/numberFormat'
+import {TYPE_RAW} from '../Manufacture'
+import {connect} from 'react-redux'
+import {Row, Col} from 'react-flexbox-grid'
+import Groceries from '../Images/groceries.svg'
+import {EquipmentSearchField, ShiftSearchField, DateField} from '../ReduxForm'
 
 const enhance = compose(
     injectSheet({
@@ -174,6 +166,45 @@ const enhance = compose(
             justifyContent: 'space-between',
             alignItems: 'center',
             padding: '10px 30px'
+        },
+        productsList: {
+            padding: '0 30px',
+            '& .row': {
+                margin: '0',
+                padding: '15px 0',
+                '&:first-child': {fontWeight: '600'},
+                '&:last-child:after': {display: 'none'},
+                '& > div': {
+                    '&:first-child': {paddingLeft: '0'},
+                    '&:last-child': {paddingRight: '0'}
+                }
+            }
+        },
+        alignRight: {
+            textAlign: 'right'
+        },
+        imagePlaceholder: {
+            padding: '50px 0',
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            '& > div': {
+                textAlign: 'center',
+                color: '#adadad'
+            },
+            '& img': {
+                width: '70px',
+                marginBottom: '20px',
+                marginTop: '25px'
+            }
+        }
+    }),
+    connect((state) => {
+        const products = _.get(state, ['form', 'ManufactureProductMaterialForm', 'values', 'products'])
+        return {
+            products
         }
     }),
     reduxForm({
@@ -183,8 +214,8 @@ const enhance = compose(
 )
 
 const ManufactureAddProductMaterial = enhance((props) => {
-    const {open, handleSubmit, onClose, classes, handleOpenAddProduct, fromStock} = props
-    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+    const {type, open, handleSubmit, onClose, classes, handleOpenAddProduct, products, manufacture} = props
+    const onSubmit = handleSubmit(() => props.onSubmit())
 
     const iconStyle = {
         icon: {
@@ -209,7 +240,7 @@ const ManufactureAddProductMaterial = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.noPadding}>
             <div className={classes.title}>
-                <span>{t('Добавиление сырья')}</span>
+                <span>{type === TYPE_RAW ? t('Добавление сырья') : t('Добавление продукта')}</span>
                 <IconButton
                     iconStyle={iconStyle.icon}
                     style={iconStyle.button}
@@ -221,7 +252,22 @@ const ManufactureAddProductMaterial = enhance((props) => {
             <form onSubmit={onSubmit} className={classes.form} style={{minHeight: 'auto'}}>
                 <div className={classes.dialogBody}>
                     <div className={classes.leftSide}>
-
+                        <Field
+                            name={'date'}
+                            label={t('Дата изготовления')}
+                            component={DateField}
+                            className={classes.inputDateCustom}/>
+                        <Field
+                            name={'shift'}
+                            label={t('Смена')}
+                            component={ShiftSearchField}
+                            className={classes.inputFieldCustom}/>
+                        <Field
+                            name={'equipment'}
+                            label={t('Оборудование')}
+                            component={EquipmentSearchField}
+                            data-manufacture={manufacture}
+                            className={classes.inputFieldCustom}/>
                     </div>
                     <div className={classes.rightSide}>
                         <div className={classes.addButtons}>
@@ -231,13 +277,43 @@ const ManufactureAddProductMaterial = enhance((props) => {
                                 style={{color: '#12aaeb'}}
                                 labelStyle={{fontSize: '13px', textTransform: 'unset'}}
                                 className={classes.span}
-                                onTouchTap={() => { handleOpenAddProduct('discard') }}/>
+                                onTouchTap={() => { handleOpenAddProduct() }}/>
                         </div>
-                        {fromStock &&
-                        <Fields
-                            names={['products', 'productType', 'product', 'defect', 'amount', 'editDefect', 'editAmount']}
-                            component={RemainderListProductField}
-                        />}
+
+                        <div className={classes.productsList}>
+                            {products &&
+                            <Row className="dottedList">
+                                <Col xs={4}>{t('Наименование')}</Col>
+                                <Col xs={4}>{t('Тип')}</Col>
+                                <Col xs={2} className={classes.alignRight}>ОК</Col>
+                                <Col xs={2} className={classes.alignRight}>{t('Брак')}</Col>
+                            </Row>}
+                            {_.map(products, (item) => {
+                                const id = _.get(item, ['product', 'value', 'id'])
+                                const name = _.get(item, ['product', 'value', 'name'])
+                                const productType = _.get(item, ['product', 'value', 'type'])
+                                const measurement = _.get(item, ['product', 'value', 'measurement', 'name'])
+                                const amount = numberFormat(_.get(item, 'amount'), measurement)
+                                const defect = numberFormat(_.get(item, 'defect'), measurement)
+                                return (
+                                    <Row key={id} className="dottedList">
+                                        <Col xs={4}>{name}</Col>
+                                        <Col xs={4}>{productType}</Col>
+                                        <Col xs={2} className={classes.alignRight}>{amount}</Col>
+                                        <Col xs={2} className={classes.alignRight}>{defect}</Col>
+                                    </Row>
+                                )
+                            })}
+                            {(_.isEmpty(products) || !products) &&
+                            <div className={classes.imagePlaceholder}>
+                                <div>
+                                    <img src={Groceries} alt=""/>
+                                    <div>{t('Вы еще не выбрали ни одного товара')}...<br/>
+                                        <a onClick={() => { handleOpenAddProduct() }}>{t('добавить товары')}?</a>
+                                    </div>
+                                </div>
+                            </div>}
+                        </div>
                     </div>
                 </div>
                 <div className={classes.bottomButton}>
