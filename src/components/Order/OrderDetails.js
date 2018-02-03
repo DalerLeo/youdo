@@ -251,13 +251,13 @@ const OrderDetails = enhance((props) => {
         ? _.get(data, ['deliveryMan', 'firstName']) + ' ' + _.get(data, ['deliveryMan', 'secondName'])
         : null
     const client = _.get(data, ['client', 'name'])
-    const contract = _.get(data, ['contract']) || 'Не указан'
+    const contract = _.get(data, ['contract']) || t('Не указан')
     const deliveryType = _.get(data, 'deliveryType')
     const dateDelivery = dateFormat(_.get(data, 'dateDelivery'), false, false)
     const createdDate = dateFormat(_.get(data, 'createdDate'))
     const paymentDate = dateFormat(_.get(data, 'paymentDate'))
     const nextPaymentDate = dateFormat(_.get(data, 'nextPaymentDate'), false, false)
-    const requestDeadline = _.get(data, 'requestDeadline') ? dateFormat(_.get(data, 'requestDeadline')) : 'Не задан'
+    const requestDeadline = _.get(data, 'requestDeadline') ? dateFormat(_.get(data, 'requestDeadline')) : t('Не задан')
     const currency = _.get(data, ['currency', 'name'])
     const currencyAccess = _.isEmpty(_.find(userCurrencies, {'id': _.get(data, ['currency', 'id'])}))
     const status = _.toInteger(_.get(data, 'status'))

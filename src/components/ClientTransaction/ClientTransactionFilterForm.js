@@ -172,7 +172,7 @@ const ClientTransactionFilterForm = enhance((props) => {
                         primary={true}
                         labelStyle={{fontSize: '13px'}}
                         buttonStyle={{color: '#fff'}}
-                        label="Применить"
+                        label={t('Применить')}
                         style={{marginTop: '15px'}}>
                     </RaisedButton>
                 </form>

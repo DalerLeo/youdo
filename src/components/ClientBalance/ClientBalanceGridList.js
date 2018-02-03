@@ -494,11 +494,11 @@ const ClientBalanceGridList = enhance((props) => {
     head = []
     _.map(_.get(listData, ['data', '0', 'divisions']), (item) => {
         if (item.id) {
-            head.push({name: item.name + t(' нал.'), id: item.id, type: t('cash')})
-            head.push({name: item.name + t(' переч.'), id: item.id, type: t('bank')})
+            head.push({name: item.name + t(' нал.'), id: item.id, type: 'cash'})
+            head.push({name: item.name + t(' переч.'), id: item.id, type: 'bank'})
         } else {
-            head.push({name: t('Наличный'), id: item.id, type: t('cash')})
-            head.push({name: t('Перечисление'), id: item.id, type: t('bank')})
+            head.push({name: t('Наличный'), id: item.id, type: 'cash'})
+            head.push({name: t('Перечисление'), id: item.id, type: 'bank'})
         }
     })
 

@@ -216,7 +216,7 @@ const SupplyDetailsRightSideTabs = enhance((props) => {
                 value={tab}
                 className={classes.tab}
                 onChange={(value) => tabData.handleTabChange(value, id)}>
-                <Tab label="Список товаров" value={TAB.SUPPLY_TAB_PRODUCT_LIST} disableTouchRipple={true}>
+                <Tab label={t('Список товаров')} value={TAB.SUPPLY_TAB_PRODUCT_LIST} disableTouchRipple={true}>
                     <div className={classes.tabContent}>
                         <div className={classes.tabWrapper}>
                             <Row className="dottedList">

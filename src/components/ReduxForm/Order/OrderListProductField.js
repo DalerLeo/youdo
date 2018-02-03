@@ -502,7 +502,7 @@ const OrderListProductField = enhance((props) => {
             </div>
             <div>
                 <div className={classes.headers} style={{marginTop: '-10px'}}>
-                    <div className={classes.title}>Список товаров</div>
+                    <div className={classes.title}>{t('Список товаров')}</div>
                     <div>
                         {!editOnlyCost && (paymentType && priceList && formCurerncy) && <FlatButton
                             label={t('добавить товар')}

@@ -18,7 +18,7 @@ const listHeader = [
     {
         sorting: true,
         name: 'id',
-        title: '№ ' + t('запроса'),
+        title: t('№ запроса'),
         xs: 2
     },
     {
@@ -52,7 +52,7 @@ const listHeader = [
     {
         sorting: true,
         name: 'dateDelivery',
-        title: 'Дата передачи',
+        title: t('Дата передачи'),
         xs: 1
     }
 ]
@@ -131,14 +131,14 @@ const StockTabTransferHistory = enhance((props) => {
     const historyList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const dateRequest = dateFormat(_.get(item, 'dateRequest'))
-        const dateDelivery = _.get(item, 'acceptedTime') ? dateFormat(_.get(item, 'acceptedTime')) : 'Не указана'
+        const dateDelivery = _.get(item, 'acceptedTime') ? dateFormat(_.get(item, 'acceptedTime')) : t('Не указана')
         const receiver = _.get(item, ['receiver'])
         const stockId = _.get(item, ['stock', 'id'])
         const typeOrg = _.get(item, 'type')
         const acceptedBy = _.get(item, ['acceptedBy', 'firstName']) && _.get(item, ['acceptedBy', 'secondName'])
             ? _.get(item, ['acceptedBy', 'firstName']) + ' ' + _.get(item, ['acceptedBy', 'secondName'])
-            : 'Не указана'
-        const type = typeOrg === 'order' ? 'Заказ' : (typeOrg === 'transfer' ? 'Передача' : null)
+            : t('Не указана')
+        const type = typeOrg === 'order' ? t('Заказ') : (typeOrg === 'transfer' ? t('Передача') : null)
         const stockName = _.get(item, ['stock', 'name'])
         return (
             <Row
@@ -172,7 +172,7 @@ const StockTabTransferHistory = enhance((props) => {
             />
             <ConfirmDialog
                 type={'submit' }
-                message={'Запрос № ' + _.get(detailData, 'id')}
+                message={t('Запрос') + ' № ' + _.get(detailData, 'id')}
                 onClose={repealDialog.handleCloseRepealDialog}
                 onSubmit={repealDialog.handleSubmitRepealDialog}
                 open={repealDialog.openRepealDialog > ZERO}

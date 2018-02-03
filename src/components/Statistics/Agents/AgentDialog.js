@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
@@ -16,6 +15,7 @@ import * as ROUTES from '../../../constants/routes'
 import getConfig from '../../../helpers/getConfig'
 import numberFormat from '../../../helpers/numberFormat'
 import dateTimeFormat from '../../../helpers/dateTimeFormat'
+import dateFormat from '../../../helpers/dateFormat'
 import NotFound from '../../Images/not-found.png'
 import t from '../../../helpers/translate'
 
@@ -160,8 +160,8 @@ const StatAgentDialog = enhance((props) => {
     const loading = _.get(detailData, 'detailLoading')
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const agentName = _.get(detailData, ['agentDetail', '0', 'name'])
-    const beginDate = moment(_.get(detailData, 'beginDate')).locale('ru').format('MMMM YYYY')
-    const endDate = moment(_.get(detailData, 'endDate')).locale('ru').format('MMMM YYYY')
+    const beginDate = dateFormat(_.get(detailData, 'beginDate'))
+    const endDate = dateFormat(_.get(detailData, 'endDate'))
     const filteredData = _.filter(_.get(detailData, ['data', 'results']), (item) => {
         const status = _.toInteger(_.get(item, 'status'))
         return status !== CANCELED

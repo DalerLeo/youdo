@@ -180,7 +180,7 @@ const TransactionGridList = enhance((props) => {
                 <div>
                     <div className={classes.title}>{name}</div>
                     <div className={classes.icons}>
-                        <ToolTip position="bottom" text={type === 'bank' ? 'банковский счет' : 'наличные'}>
+                        <ToolTip position="bottom" text={type === 'bank' ? t('банковский счет') : t('наличные')}>
                             {type === 'bank'
                                 ? <BankPayment style={{height: '18px', width: '18px', color: '#6261b0'}}/>
                                 : <CashPayment style={{height: '18px', width: '18px', color: '#12aaeb'}}/>}

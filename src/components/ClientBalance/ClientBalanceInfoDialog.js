@@ -429,15 +429,15 @@ const ClientBalanceInfoDialog = enhance((props) => {
                         <Field
                             name={'division'}
                             component={DivisionSearchField}
-                            label={'Организация'}/>
+                            label={t('Организация')}/>
                         <Field
                             name={'currency'}
                             component={CurrencySearchField}
-                            label={'Валюта'}/>
+                            label={t('Валюта')}/>
                         <Field
-                            name={'paymentType'}
+                            name={t('paymentType')}
                             component={PaymentTypeSearchField}
-                            label={'Тип оплаты'}/>
+                            label={t('Тип оплаты')}/>
                         <Pagination filter={filterItem}/>
                     </div>
                     <div className={classes.content}>

@@ -1,4 +1,3 @@
-import moment from 'moment'
 import PropTypes from 'prop-types'
 import React from 'react'
 import _ from 'lodash'
@@ -14,6 +13,7 @@ import StatSideMenu from '../StatSideMenu'
 import Pagination from '../../GridList/GridListNavPagination'
 import OrderStatusIcons from '../../Order/OrderStatusIcons'
 import numberFormat from '../../../helpers/numberFormat'
+import dateTimeFormat from '../../../helpers/dateTimeFormat'
 import StatSaleDialog from './SalesDialog'
 import SalesInfoDialog from './SalesInfoDialog'
 import {StatisticsFilterExcel, StatisticsChart} from '../../Statistics'
@@ -309,7 +309,7 @@ const StatSalesGridList = enhance((props) => {
             const marketName = _.get(item, ['market', 'name'])
             const currency = _.get(item, ['currency', 'name'])
             const id = _.get(item, 'id')
-            const createdDate = _.get(item, 'createdDate') ? moment(_.get(item, 'createdDate')).locale('ru').format('DD MMM YYYY HH:MM') : t('Не указана')
+            const createdDate = _.get(item, 'createdDate') ? dateTimeFormat(_.get(item, 'createdDate')) : t('Не указана')
             const firstName = _.get(item, ['user', 'firstName'])
             const totalPrice = _.get(item, 'totalPrice')
             const totalBalance = _.get(item, 'totalBalance')

@@ -637,7 +637,7 @@ const StatProductGridList = enhance((props) => {
                                     }}>{t('Сбросить фильтр')}</a>
                                 </div>}
                                 <div className={classes.toggleWrapper} style={currentParent ? {width: 'auto'} : {width: '100%'}}>
-                                    <ToolTip position="left" text="Показать по товарам">
+                                    <ToolTip position="left" text={t('Показать по товарам')}>
                                         <FlatButton
                                             icon={<Product color={whiteColor}/>}
                                             className={isProduct ? classes.shadowButton : ''}
@@ -649,7 +649,7 @@ const StatProductGridList = enhance((props) => {
                                             rippleColor={whiteColor}
                                             hoverColor={isProduct ? primaryColor : disabledColor}/>
                                     </ToolTip>
-                                    <ToolTip position="left" text="Показать по типам товаров">
+                                    <ToolTip position="left" text={t('Показать по типам товаров')}>
                                         <FlatButton
                                             icon={<ProductType color={whiteColor}/>}
                                             className={isProductType ? classes.shadowButton : ''}

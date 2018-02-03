@@ -657,7 +657,7 @@ const StatMarketGridList = enhance((props) => {
                             </div>}
                         <div className={expandedTable ? classes.expandedTable : ''}>
                             <div className={classes.pagination}>
-                                <div>{isMarket ? t('Продажи по магазинам в зоне') : t('Продажи по типам магазинов в зоне')}</div>
+                                <div>{isMarket ? t('Продажи по магазинам') : t('Продажи по типам магазинов')}</div>
                                 <form onSubmit={handleSubmit(handleSubmitFilterDialog)}>
                                     <Field
                                         className={classes.inputFieldCustom}

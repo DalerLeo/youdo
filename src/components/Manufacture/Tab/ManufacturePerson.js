@@ -26,25 +26,25 @@ const listHeader = [
     {
         sorting: false,
         name: 'name',
-        title: 'Сотрудник',
+        title: t('Сотрудник'),
         xs: 4
     },
     {
         sorting: false,
         name: 'position',
-        title: 'Должность',
+        title: t('Должность'),
         xs: 3
     },
     {
         sorting: false,
         name: 'shift',
-        title: 'Смена',
+        title: t('Смена'),
         xs: 2
     },
     {
         sorting: false,
         name: 'time',
-        title: 'Время',
+        title: t('Время'),
         xs: 2
     },
     {

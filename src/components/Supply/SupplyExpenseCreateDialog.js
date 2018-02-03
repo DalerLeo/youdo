@@ -98,7 +98,7 @@ const ExpenseCreateDialog = enhance((props) => {
                                 name="comment"
                                 component={TextField}
                                 className={classes.inputFieldCustom}
-                                label={t('Описание раскода')}
+                                label={t('Описание расхода')}
                                 fullWidth={true}/>
                             <div className={classes.flex} style={{justifyContent: 'space-between', alignItems: 'flex-start'}}>
                                 <div className={classes.inputHalfWrap}>
@@ -146,7 +146,7 @@ const ExpenseCreateDialog = enhance((props) => {
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
-                            label="Применить"
+                            label={t('Применить')}
                             className={classes.actionButton}
                             labelStyle={{fontSize: '13px'}}
                             primary={true}
