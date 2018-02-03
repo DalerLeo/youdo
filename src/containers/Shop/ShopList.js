@@ -203,6 +203,7 @@ const enhance = compose(
             const {filter, filterForm} = props
             const client = _.get(filterForm, ['values', 'client']) || null
             const createdBy = _.get(filterForm, ['values', 'createdBy']) || null
+            const responsibleAgent = _.get(filterForm, ['values', 'responsibleAgent']) || null
             const marketType = _.get(filterForm, ['values', 'marketType', 'value']) || null
             const marketTypeParent = _.get(filterForm, ['values', 'marketTypeParent', 'value']) || null
             const zone = _.get(filterForm, ['values', 'zone']) || null
@@ -214,6 +215,7 @@ const enhance = compose(
                 [SHOP_FILTER_OPEN]: false,
                 [SHOP_FILTER_KEY.CLIENT]: joinArray(client),
                 [SHOP_FILTER_KEY.CREATED_BY]: joinArray(createdBy),
+                [SHOP_FILTER_KEY.RESPONSIBLE_AGENT]: joinArray(responsibleAgent),
                 [SHOP_FILTER_KEY.MARKET_TYPE]: marketType,
                 [SHOP_FILTER_KEY.MARKET_TYPE_PARENT]: marketTypeParent,
                 [SHOP_FILTER_KEY.STATUS]: isActive,
@@ -441,6 +443,7 @@ const ShopList = enhance((props) => {
     const marketType = _.toInteger(filter.getParam(SHOP_FILTER_KEY.MARKET_TYPE))
     const marketTypeParent = _.toInteger(filter.getParam(SHOP_FILTER_KEY.MARKET_TYPE_PARENT))
     const createdBy = filter.getParam(SHOP_FILTER_KEY.CREATED_BY)
+    const responsibleAgent = filter.getParam(SHOP_FILTER_KEY.RESPONSIBLE_AGENT)
     const zone = filter.getParam(SHOP_FILTER_KEY.ZONE)
     const frequency = filter.getParam(SHOP_FILTER_KEY.FREQUENCY)
     const filterIsActive = _.toInteger(filter.getParam(SHOP_FILTER_KEY.STATUS))
@@ -590,6 +593,7 @@ const ShopList = enhance((props) => {
     const filterDialog = {
         initialValues: {
             createdBy: createdBy && splitToArray(createdBy),
+            responsibleAgent: responsibleAgent && splitToArray(responsibleAgent),
             zone: zone && splitToArray(zone),
             client: client && splitToArray(client),
             marketType: {value: marketType},

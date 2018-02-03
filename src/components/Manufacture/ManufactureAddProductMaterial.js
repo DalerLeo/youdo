@@ -1,20 +1,16 @@
-import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
-import {Field, reduxForm} from 'redux-form'
+import {Field, Fields, reduxForm} from 'redux-form'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import t from '../../helpers/translate'
-import numberFormat from '../../helpers/numberFormat'
 import {TYPE_RAW} from '../Manufacture'
-import {connect} from 'react-redux'
-import {Row, Col} from 'react-flexbox-grid'
-import Groceries from '../Images/groceries.svg'
 import {EquipmentSearchField, ShiftSearchField, DateField} from '../ReduxForm'
+import ShipmentProductsMaterialsList from '../ReduxForm/Manufacture/ShipmentProductsMaterialsList'
 
 const enhance = compose(
     injectSheet({
@@ -201,12 +197,6 @@ const enhance = compose(
             }
         }
     }),
-    connect((state) => {
-        const products = _.get(state, ['form', 'ManufactureProductMaterialForm', 'values', 'products'])
-        return {
-            products
-        }
-    }),
     reduxForm({
         form: 'ManufactureProductMaterialForm',
         enableReinitialize: true
@@ -214,7 +204,7 @@ const enhance = compose(
 )
 
 const ManufactureAddProductMaterial = enhance((props) => {
-    const {type, open, handleSubmit, onClose, classes, handleOpenAddProduct, products, manufacture} = props
+    const {type, open, handleSubmit, onClose, classes, handleOpenAddProduct, manufacture} = props
     const onSubmit = handleSubmit(() => props.onSubmit())
 
     const iconStyle = {
@@ -277,43 +267,14 @@ const ManufactureAddProductMaterial = enhance((props) => {
                                 style={{color: '#12aaeb'}}
                                 labelStyle={{fontSize: '13px', textTransform: 'unset'}}
                                 className={classes.span}
-                                onTouchTap={() => { handleOpenAddProduct() }}/>
+                                onTouchTap={handleOpenAddProduct}/>
                         </div>
 
-                        <div className={classes.productsList}>
-                            {products &&
-                            <Row className="dottedList">
-                                <Col xs={4}>{t('Наименование')}</Col>
-                                <Col xs={4}>{t('Тип')}</Col>
-                                <Col xs={2} className={classes.alignRight}>ОК</Col>
-                                <Col xs={2} className={classes.alignRight}>{t('Брак')}</Col>
-                            </Row>}
-                            {_.map(products, (item) => {
-                                const id = _.get(item, ['product', 'value', 'id'])
-                                const name = _.get(item, ['product', 'value', 'name'])
-                                const productType = _.get(item, ['product', 'value', 'type'])
-                                const measurement = _.get(item, ['product', 'value', 'measurement', 'name'])
-                                const amount = numberFormat(_.get(item, 'amount'), measurement)
-                                const defect = numberFormat(_.get(item, 'defect'), measurement)
-                                return (
-                                    <Row key={id} className="dottedList">
-                                        <Col xs={4}>{name}</Col>
-                                        <Col xs={4}>{productType}</Col>
-                                        <Col xs={2} className={classes.alignRight}>{amount}</Col>
-                                        <Col xs={2} className={classes.alignRight}>{defect}</Col>
-                                    </Row>
-                                )
-                            })}
-                            {(_.isEmpty(products) || !products) &&
-                            <div className={classes.imagePlaceholder}>
-                                <div>
-                                    <img src={Groceries} alt=""/>
-                                    <div>{t('Вы еще не выбрали ни одного товара')}...<br/>
-                                        <a onClick={() => { handleOpenAddProduct() }}>{t('добавить товары')}?</a>
-                                    </div>
-                                </div>
-                            </div>}
-                        </div>
+                        <Fields
+                            names={['products', 'product', 'defect', 'amount', 'editDefect', 'editAmount']}
+                            handleOpenAddProduct={handleOpenAddProduct}
+                            component={ShipmentProductsMaterialsList}
+                        />
                     </div>
                 </div>
                 <div className={classes.bottomButton}>

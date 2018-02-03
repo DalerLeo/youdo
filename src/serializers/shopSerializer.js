@@ -101,6 +101,7 @@ export const listFilterSerializer = (data) => {
     return {
         'client': _.get(defaultData, 'client') || null,
         'created_by': _.get(defaultData, 'createdBy') || null,
+        'responsible_agent': _.get(defaultData, 'responsibleAgent') || null,
         'is_active': _.toNumber(_.get(defaultData, 'isActive')) === TWO ? false : _.get(defaultData, 'isActive'),
         'frequency': _.get(defaultData, 'frequency'),
         'border': _.get(defaultData, 'zone') || null,

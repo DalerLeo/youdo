@@ -4,7 +4,7 @@ import sprintf from 'sprintf'
 import moment from 'moment'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
-import {change} from 'redux-form'
+import {change, reset} from 'redux-form'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers, withState} from 'recompose'
 import * as ROUTER from '../../constants/routes'
@@ -213,7 +213,7 @@ const enhance = compose(
             setOpenAddProductConfirm(false)
             return type === TYPE_PRODUCT
                 ? dispatch(addProductsListAction(filterProducts, productType, manufactureId))
-                : dispatch(addRawsListAction(filterProducts, productType, stock))
+                : dispatch(addRawsListAction(filterProducts, productType, stock, manufactureId))
         }
         return null
     }),
@@ -231,7 +231,7 @@ const enhance = compose(
             setOpenAddProductConfirm(false)
             return type === TYPE_PRODUCT
                 ? dispatch(addProductsListAction(filterProducts, productType, manufactureId))
-                : dispatch(addRawsListAction(filterProducts, productType, stock))
+                : dispatch(addRawsListAction(filterProducts, productType, stock, manufactureId))
         }
         return null
     }),
@@ -285,7 +285,8 @@ const enhance = compose(
 
         // ADD PRODUCT & RAW
         handleOpenAddProductMaterial: props => (type) => {
-            const {location: {pathname}, filter} = props
+            const {dispatch, location: {pathname}, filter} = props
+            dispatch(reset('ManufactureProductMaterialForm'))
             hashHistory.push({pathname, query: filter.getParams({[OPEN_ADD_PRODUCT_MATERIAL_DIALOG]: type})})
         },
 
@@ -324,7 +325,8 @@ const enhance = compose(
 
         // ADD PRODUCTS BIG DIALOG
         handleOpenAddProduct: props => () => {
-            const {setOpenAddProductDialog, filter, location: {pathname}} = props
+            const {dispatch, setOpenAddProductDialog, filter, location: {pathname}} = props
+            dispatch(reset('ShipmentAddProductsForm'))
             hashHistory.push({pathname, query: filter.getParams({'pdPageSize': 25})})
             setOpenAddProductDialog(true)
         },
@@ -383,7 +385,7 @@ const enhance = compose(
             setOpenAddProductConfirm(false)
             return dialogType === TYPE_PRODUCT
                 ? dispatch(addProductsListAction(filterProducts, productType, manufacture))
-                : dispatch(addRawsListAction(filterProducts, productType, stock))
+                : dispatch(addRawsListAction(filterProducts, productType, stock, manufacture))
         },
 
         handleSubmitAddProductConfirm: props => () => {
@@ -426,7 +428,7 @@ const enhance = compose(
             setOpenAddProductConfirm(false)
             return dialogType === TYPE_PRODUCT
                 ? dispatch(addProductsListAction(filterProducts, productType, manufacture))
-                : dispatch(addRawsListAction(filterProducts, productType, stock))
+                : dispatch(addRawsListAction(filterProducts, productType, stock, manufacture))
         }
     })
 )
