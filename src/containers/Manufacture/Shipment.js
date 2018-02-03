@@ -4,13 +4,21 @@ import sprintf from 'sprintf'
 import moment from 'moment'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
+import {change} from 'redux-form'
 import Layout from '../../components/Layout'
-import {compose, withPropsOnChange, withHandlers} from 'recompose'
+import {compose, withPropsOnChange, withHandlers, withState} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import {splitToArray, joinArray} from '../../helpers/joinSplitValues'
 import toBoolean from '../../helpers/toBoolean'
-import {ManufactureShipmentWrapper, OPEN_FILTER} from '../../components/Manufacture'
+import t from '../../helpers/translate'
+import {
+    ManufactureShipmentWrapper,
+    OPEN_FILTER,
+    OPEN_ADD_PRODUCT_MATERIAL_DIALOG,
+    TYPE_PRODUCT,
+    TYPE_RAW
+} from '../../components/Manufacture'
 import * as SHIPMENT_TAB from '../../constants/manufactureShipmentTab'
 import {MANUF_ACTIVITY_FILTER_KEY} from '../../components/Manufacture/ManufactureActivityFilterDialog'
 import {
@@ -18,8 +26,14 @@ import {
     shipmentItemFetchAction,
     shipmentLogsListFetchAction,
     shipmentProductsListFetchAction,
-    shipmentMaterialsListFetchAction
+    shipmentMaterialsListFetchAction,
+    addProductsListAction,
+    addRawsListAction,
+    addProductsSubmitAction,
+    addRawsSubmitAction
 } from '../../actions/manufactureShipment'
+import {openSnackbarAction} from '../../actions/snackbar'
+import {openErrorAction} from '../../actions/error'
 import ManufactureWrapper from './Wrapper'
 
 const TAB = 'tab'
@@ -43,11 +57,20 @@ const enhance = compose(
         const shipmentProductsLoading = _.get(state, ['shipment', 'products', 'loading'])
         const shipmentMaterials = _.get(state, ['shipment', 'materials', 'data'])
         const shipmentMaterialsLoading = _.get(state, ['shipment', 'materials', 'loading'])
+        const addProductsMaterialsList = _.get(query, OPEN_ADD_PRODUCT_MATERIAL_DIALOG) === TYPE_PRODUCT
+            ? _.get(state, ['shipment', 'addProducts', 'data'])
+            : _.get(state, ['shipment', 'addRaws', 'data'])
+        const addProductsMaterialsLoading = _.get(query, OPEN_ADD_PRODUCT_MATERIAL_DIALOG) === TYPE_PRODUCT
+            ? _.get(state, ['shipment', 'addProducts', 'loading'])
+            : _.get(state, ['shipment', 'addRaws', 'loading'])
         const filterShipment = filterHelper(shipmentList, pathname, query)
-        const filterLogs = filterHelper(shipmentLogs, pathname, query, {'page': 'logsPage', 'pageSize': 'logsPageSize'})
+        const filterProducts = filterHelper(addProductsMaterialsList, pathname, query, {page: 'pdPage', pageSize: 'pdPageSize'})
+        const filterLogs = filterHelper(shipmentLogs, pathname, query, {page: 'logsPage', pageSize: 'logsPageSize'})
         const beginDate = _.get(query, 'beginDate') || defaultDate
         const endDate = _.get(query, 'endDate') || defaultDate
         const filterForm = _.get(state, ['form', 'ManufactureActivityFilterForm'])
+        const productMaterialForm = _.get(state, ['form', 'ManufactureProductMaterialForm'])
+        const addProductsForm = _.get(state, ['form', 'ShipmentAddProductsForm'])
 
         return {
             query,
@@ -69,7 +92,12 @@ const enhance = compose(
             filterShipment,
             beginDate,
             endDate,
-            filterForm
+            filterForm,
+            productMaterialForm,
+            addProductsMaterialsList,
+            addProductsMaterialsLoading,
+            filterProducts,
+            addProductsForm
         }
     }),
 
@@ -97,7 +125,11 @@ const enhance = compose(
         const except = {
             page: null,
             pageSize: null,
-            openFilter: null
+            openFilter: null,
+            openProductMaterialDialog: null,
+            pdPage: null,
+            pdPageSize: null,
+            pdSearch: null
         }
         const manufacture = _.toInteger(_.get(props, ['params', 'manufactureId']))
         const nextManufacture = _.toInteger(_.get(nextProps, ['params', 'manufactureId']))
@@ -117,7 +149,11 @@ const enhance = compose(
         const except = {
             openFilter: null,
             logsPage: null,
-            logsPageSize: null
+            logsPageSize: null,
+            openProductMaterialDialog: null,
+            pdPage: null,
+            pdPageSize: null,
+            pdSearch: null
         }
         const manufactureId = _.get(props, ['params', 'manufactureId'])
         const nextManufactureId = _.get(nextProps, ['params', 'manufactureId'])
@@ -132,6 +168,72 @@ const enhance = compose(
         if (manufactureId > ZERO) {
             dispatch(shipmentListFetchAction(filterShipment, manufactureId, dateRange))
         }
+    }),
+
+    // ADD PRODUCTS BIG DIALOG
+    withState('openAddProductDialog', 'setOpenAddProductDialog', false),
+    withState('openAddProductConfirm', 'setOpenAddProductConfirm', false),
+    withPropsOnChange((props, nextProps) => {
+        const except = {
+            page: null,
+            pageSize: null,
+            contract: null,
+            createdFromDate: null,
+            createdToDate: null,
+            deliveryFromDate: null,
+            deliveryToDate: null,
+            paymentType: null,
+            openCreateDialog: null,
+            openFilterDialog: null,
+            product: null,
+            provider: null,
+            status: null,
+            stock: null
+        }
+        const productType = _.get(props, ['addProductsForm', 'values', 'productType', 'value'])
+        const productTypeNext = _.get(nextProps, ['addProductsForm', 'values', 'productType', 'value'])
+        const listLoading = _.get(props, ['listLoading'])
+        const listLoadingNext = _.get(nextProps, ['listLoading'])
+        return (listLoading !== listLoadingNext && listLoadingNext === false) ||
+            (productType !== productTypeNext && nextProps.openAddProductDialog) ||
+            (props.filterProducts.filterRequest(except) !== nextProps.filterProducts.filterRequest(except))
+    }, ({setOpenAddProductConfirm, addProductsForm, openAddProductDialog, dispatch, filterProducts, location: {query}, params, list}) => {
+        const type = _.get(query, OPEN_ADD_PRODUCT_MATERIAL_DIALOG)
+        const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
+        const stock = _.get(_.find(_.get(list, 'results'), {id: manufactureId}), ['warehouse', 'id'])
+        const products = _.filter(_.get(addProductsForm, ['values', 'product']), (item) => {
+            const amount = _.toNumber(_.get(item, 'amount'))
+            const defect = _.toNumber(_.get(item, 'defect'))
+            return amount > ZERO || defect > ZERO
+        })
+        const productType = _.get(addProductsForm, ['values', 'productType', 'value'])
+        if (!_.isEmpty(products)) {
+            return setOpenAddProductConfirm(true)
+        } else if (openAddProductDialog && _.isEmpty(products)) {
+            setOpenAddProductConfirm(false)
+            return type === TYPE_PRODUCT
+                ? dispatch(addProductsListAction(filterProducts, productType, manufactureId))
+                : dispatch(addRawsListAction(filterProducts, productType, stock))
+        }
+        return null
+    }),
+    withPropsOnChange((props, nextProps) => {
+        const listLoading = _.get(props, ['listLoading'])
+        const listLoadingNext = _.get(nextProps, ['listLoading'])
+        return (listLoading !== listLoadingNext && listLoadingNext === false) ||
+            (props.openAddProductDialog !== nextProps.openAddProductDialog && nextProps.openAddProductDialog)
+    }, ({dispatch, addProductsForm, openAddProductDialog, filterProducts, setOpenAddProductConfirm, location: {query}, params, list}) => {
+        const type = _.get(query, OPEN_ADD_PRODUCT_MATERIAL_DIALOG)
+        const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
+        const stock = _.get(_.find(_.get(list, 'results'), {id: manufactureId}), ['warehouse', 'id'])
+        const productType = _.get(addProductsForm, ['values', 'productType', 'value'])
+        if (openAddProductDialog) {
+            setOpenAddProductConfirm(false)
+            return type === TYPE_PRODUCT
+                ? dispatch(addProductsListAction(filterProducts, productType, manufactureId))
+                : dispatch(addRawsListAction(filterProducts, productType, stock))
+        }
+        return null
     }),
 
     withHandlers({
@@ -179,6 +281,152 @@ const enhance = compose(
             const page = _.get(query, 'page')
             const pageSize = _.get(query, 'pageSize')
             hashHistory.push({pathname: pathname, query: {page: page, pageSize: pageSize}})
+        },
+
+        // ADD PRODUCT & RAW
+        handleOpenAddProductMaterial: props => (type) => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[OPEN_ADD_PRODUCT_MATERIAL_DIALOG]: type})})
+        },
+
+        handleCloseAddProductMaterial: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[OPEN_ADD_PRODUCT_MATERIAL_DIALOG]: false})})
+        },
+
+        handleSubmitAddProductMaterial: props => () => {
+            const {dispatch, location: {pathname, query}, params, filter, productMaterialForm, filterShipment, filterLogs, beginDate, endDate} = props
+            const dialogType = _.get(query, OPEN_ADD_PRODUCT_MATERIAL_DIALOG)
+            const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
+            const dateRange = {
+                beginDate,
+                endDate
+            }
+            return (dialogType === TYPE_PRODUCT
+                ? dispatch(addProductsSubmitAction(_.get(productMaterialForm, 'values')))
+                : dispatch(addRawsSubmitAction(_.get(productMaterialForm, 'values'))))
+                .then(() => {
+                    hashHistory.push({pathname, query: filter.getParams({[OPEN_ADD_PRODUCT_MATERIAL_DIALOG]: false})})
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
+                })
+                .then(() => {
+                    dispatch(shipmentListFetchAction(filterShipment, manufactureId, dateRange))
+                    dispatch(shipmentLogsListFetchAction(filterLogs, manufactureId, dateRange))
+                    dispatch(shipmentProductsListFetchAction(dateRange, manufactureId))
+                    dispatch(shipmentMaterialsListFetchAction(dateRange, manufactureId))
+                })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
+                })
+        },
+
+        // ADD PRODUCTS BIG DIALOG
+        handleOpenAddProduct: props => () => {
+            const {setOpenAddProductDialog, filter, location: {pathname}} = props
+            hashHistory.push({pathname, query: filter.getParams({'pdPageSize': 25})})
+            setOpenAddProductDialog(true)
+        },
+
+        handleCloseAddProduct: props => () => {
+            const {setOpenAddProductDialog, filter, location: {pathname}} = props
+            hashHistory.push({pathname, query: filter.getParams({'pdPage': null, 'pdPageSize': null, 'pdSearch': null})})
+            setOpenAddProductDialog(false)
+        },
+
+        handleSubmitAddProduct: props => () => {
+            const {setOpenAddProductDialog, addProductsForm, addProductsMaterialsList, dispatch, productMaterialForm, filter, location: {pathname, query}} = props
+            const existingProducts = _.get(productMaterialForm, ['values', 'products'])
+            const values = _.get(addProductsForm, ['values', 'product'])
+            const dialogType = _.get(query, OPEN_ADD_PRODUCT_MATERIAL_DIALOG)
+            const getProductData = (id) => {
+                return _.find(_.get(addProductsMaterialsList, 'results'), {'id': id})
+            }
+            const newProductsArray = []
+            _.map(values, (item, index) => {
+                const id = _.toInteger(index)
+                const product = getProductData(id)
+                const amount = _.get(item, 'amount')
+                const defect = _.get(item, 'defect')
+                if (amount || defect) {
+                    newProductsArray.push({
+                        amount: _.get(item, 'amount'),
+                        defect: _.get(item, 'defect'),
+                        product: {
+                            value: {
+                                id: _.get(product, 'id'),
+                                name: dialogType === TYPE_RAW ? _.get(product, 'title') : _.get(product, 'name'),
+                                type: _.get(product, ['type', 'name']),
+                                balance: _.get(product, 'balance'),
+                                measurement: _.get(product, 'measurement')
+                            }
+                        }
+                    })
+                }
+            })
+            const checkDifference = _.differenceBy(existingProducts, newProductsArray, (o) => {
+                return o.product.value.id
+            })
+            dispatch(change('ManufactureProductMaterialForm', 'products', _.concat(_.filter(newProductsArray, (item) => item.product.value.id), checkDifference)))
+
+            hashHistory.push({pathname, query: filter.getParams({'pdPage': null, 'pdPageSize': null, 'pdSearch': null})})
+            setOpenAddProductDialog(false)
+        },
+
+        handleCloseAddProductConfirm: props => () => {
+            const {dispatch, addProductsForm, filterProducts, setOpenAddProductConfirm, location: {query}, params, list} = props
+            const manufacture = _.toInteger(_.get(params, 'manufactureId'))
+            const stock = _.get(_.find(_.get(list, 'results'), {id: manufacture}), ['warehouse', 'id'])
+            const dialogType = _.get(query, OPEN_ADD_PRODUCT_MATERIAL_DIALOG)
+            const productType = _.get(addProductsForm, ['values', 'productType', 'value'])
+            setOpenAddProductConfirm(false)
+            return dialogType === TYPE_PRODUCT
+                ? dispatch(addProductsListAction(filterProducts, productType, manufacture))
+                : dispatch(addRawsListAction(filterProducts, productType, stock))
+        },
+
+        handleSubmitAddProductConfirm: props => () => {
+            const {addProductsForm, addProductsMaterialsList, dispatch, productMaterialForm, filterProducts, setOpenAddProductConfirm, location: {query}, params, list} = props
+            const productType = _.get(addProductsForm, ['values', 'productType', 'value'])
+            const manufacture = _.toInteger(_.get(params, 'manufactureId'))
+            const stock = _.get(_.find(_.get(list, 'results'), {id: manufacture}), ['warehouse', 'id'])
+            const existingProducts = _.get(productMaterialForm, ['values', 'products'])
+            const values = _.get(addProductsForm, ['values', 'product'])
+            const dialogType = _.get(query, OPEN_ADD_PRODUCT_MATERIAL_DIALOG)
+            const getProductData = (id) => {
+                return _.find(_.get(addProductsMaterialsList, 'results'), {'id': id})
+            }
+            const newProductsArray = []
+            _.map(values, (item, index) => {
+                const id = _.toInteger(index)
+                const product = getProductData(id)
+                const amount = _.get(item, 'amount')
+                const defect = _.get(item, 'defect')
+                if (amount || defect) {
+                    newProductsArray.push({
+                        amount: _.get(item, 'amount'),
+                        defect: _.get(item, 'defect'),
+                        product: {
+                            value: {
+                                id: _.get(product, 'id'),
+                                name: dialogType === TYPE_RAW ? _.get(product, 'title') : _.get(product, 'name'),
+                                type: _.get(product, ['type', 'name']),
+                                balance: _.get(product, 'balance'),
+                                measurement: _.get(product, 'measurement')
+                            }
+                        }
+                    })
+                }
+            })
+            const checkDifference = _.differenceBy(existingProducts, newProductsArray, (o) => {
+                return o.product.value.id
+            })
+            dispatch(change('ManufactureProductMaterialForm', 'products', _.concat(_.filter(newProductsArray, (item) => item.product.value.id), checkDifference)))
+            setOpenAddProductConfirm(false)
+            return dialogType === TYPE_PRODUCT
+                ? dispatch(addProductsListAction(filterProducts, productType, manufacture))
+                : dispatch(addRawsListAction(filterProducts, productType, stock))
         }
     })
 )
@@ -204,13 +452,19 @@ const ManufactureShipmentList = enhance((props) => {
         params,
         layout,
         beginDate,
-        endDate
+        endDate,
+        openAddProductDialog,
+        openAddProductConfirm,
+        addProductsMaterialsList,
+        addProductsMaterialsLoading,
+        filterProducts
     } = props
 
     const detailId = _.toInteger(_.get(params, 'manufactureId'))
     const shipmentId = _.toNumber(_.get(props, ['location', 'query', 'shipmentId']) || MINUS_ONE)
     const tab = _.get(location, ['query', TAB]) || SHIPMENT_TAB.DEFAULT_TAB
     const openFilterDialog = toBoolean(_.get(location, ['query', OPEN_FILTER]))
+    const openProductMaterialDialog = _.get(location, ['query', OPEN_ADD_PRODUCT_MATERIAL_DIALOG])
     const shift = _.get(location, ['query', MANUF_ACTIVITY_FILTER_KEY.SHIFT])
 
     const tabData = {
@@ -263,6 +517,27 @@ const ManufactureShipmentList = enhance((props) => {
         handleSubmitFilterDialog: props.handleSubmitFilterDialog
     }
 
+    const productMaterialDialog = {
+        open: openProductMaterialDialog === TYPE_PRODUCT || openProductMaterialDialog === TYPE_RAW,
+        type: openProductMaterialDialog,
+        handleOpen: props.handleOpenAddProductMaterial,
+        handleClose: props.handleCloseAddProductMaterial,
+        handleSubmit: props.handleSubmitAddProductMaterial
+    }
+
+    const addProductDialog = {
+        openAddProductDialog,
+        filter: filterProducts,
+        data: _.get(addProductsMaterialsList, 'results'),
+        loading: addProductsMaterialsLoading,
+        handleOpenAddProduct: props.handleOpenAddProduct,
+        handleCloseAddProduct: props.handleCloseAddProduct,
+        handleSubmitAddProduct: props.handleSubmitAddProduct,
+        openAddProductConfirm,
+        handleCloseAddProductConfirm: props.handleCloseAddProductConfirm,
+        handleSubmitAddProductConfirm: props.handleSubmitAddProductConfirm
+    }
+
     return (
         <Layout {...layout}>
             <ManufactureWrapper detailId={detailId} clickDetail={props.handleClickItem}>
@@ -274,6 +549,8 @@ const ManufactureShipmentList = enhance((props) => {
                     shipmentData={shipmentData}
                     listData={listData}
                     detailData={detailData}
+                    productMaterialDialog={productMaterialDialog}
+                    addProductDialog={addProductDialog}
                 />
             </ManufactureWrapper>
         </Layout>

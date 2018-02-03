@@ -212,6 +212,11 @@ const enhance = compose(
                     hashHistory.push(filter.createURL({[POSITION_UPDATE_DIALOG_OPEN]: false}))
                     dispatch(positionListFetchAction(filter))
                 })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
+                })
         },
 
         handlePositionClick: props => (id) => {

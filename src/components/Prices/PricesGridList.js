@@ -130,7 +130,7 @@ const PricesGridList = enhance((props) => {
                 <Col xs={2}>{beginDate}</Col>
                 <Col xs={2}>{tillDate}</Col>
                 <Col xs={2}>
-                    {(type === 'bonus') ? <span>Бонус</span> : <span>Скидка - {discount}%</span>}
+                    {(type === 'bonus') ? <span>{t('Бонус')}</span> : <span>{t('Скидка')} - {discount}%</span>}
                 </Col>
             </Row>
         )

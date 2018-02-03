@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
 import numberWithoutSpaces from '../helpers/numberWithoutSpaces'
+import toBoolean from '../helpers/toBoolean'
 
 export const updateSerializer = (data, detail, CLIENT_RETURN) => {
     const type = _.toInteger(_.get(detail, 'type'))
@@ -59,9 +60,7 @@ export const updateSerializer = (data, detail, CLIENT_RETURN) => {
 export const listFilterSerializer = (data, id) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
-    const excludeCanceled = !_.get(defaultData, 'exclude')
-        ? 'True'
-        : null
+    const excludeCanceled = toBoolean(_.get(defaultData, 'exclude')) ? null : 'True'
 
     if (id) {
         return {

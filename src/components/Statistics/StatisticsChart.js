@@ -50,7 +50,8 @@ const StatisticsChart = enhance((props) => {
                 fontSize: 11
             },
             symbolHeight: 9,
-            symbolWidth: 9
+            symbolWidth: 9,
+            margin: 5
         },
         credits: {
             enabled: false

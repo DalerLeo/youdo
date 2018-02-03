@@ -20,7 +20,7 @@ export const listFilterSerializer = (data, withOrderReturn) => {
     const toDay = moment(urlToDate)
     const debt = _.toInteger(_.get(defaultData, 'dept'))
     const type = _.toInteger(toDay.diff(fromDay, 'days')) >= maxDay ? 'month' : 'day'
-    const excludeCanceled = !_.isUndefined(_.get(defaultData, 'exclude')) ? toBoolean(_.get(defaultData, 'exclude')) : true
+    const excludeCanceled = toBoolean(_.get(defaultData, 'exclude')) ? null : 'True'
 
     return {
         'search': _.get(defaultData, 'search'),
@@ -37,7 +37,7 @@ export const listFilterSerializer = (data, withOrderReturn) => {
         'market': _.get(defaultData, 'shop') || null,
         'status': _.get(defaultData, 'status') || null,
         'only_bonus': _.get(defaultData, 'onlyBonus') ? 'True' : null,
-        'exclude_cancelled': excludeCanceled ? 'True' : null,
+        'exclude_cancelled': excludeCanceled,
         'with_order_return': withOrderReturn,
         'product': _.get(defaultData, 'product') || null,
         'delivery_man': _.get(defaultData, 'deliveryMan') || null,
@@ -58,7 +58,7 @@ export const orderListFilterSerializer = (data, withOrderReturn) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
     const debt = _.toInteger(_.get(defaultData, 'dept'))
-    const excludeCanceled = _.isUndefined(_.get(defaultData, 'exclude')) ? 'True' : _.get(defaultData, 'exclude')
+    const excludeCanceled = toBoolean(_.get(defaultData, 'exclude')) ? null : 'True'
     return {
         'client': _.get(defaultData, 'client') || null,
         'division': _.get(defaultData, 'division') || null,
@@ -69,7 +69,7 @@ export const orderListFilterSerializer = (data, withOrderReturn) => {
         'status': _.get(defaultData, 'status') || null,
         'only_bonus': _.get(defaultData, 'onlyBonus') ? 'True' : null,
         'product': _.get(defaultData, 'product') || null,
-        'exclude_cancelled': excludeCanceled ? 'True' : null,
+        'exclude_cancelled': excludeCanceled,
         'delivery_man': _.get(defaultData, 'deliveryMan') || null,
         'delivery_date_0': _.get(defaultData, 'deliveryFromDate'),
         'delivery_date_1': _.get(defaultData, 'deliveryToDate') || _.get(defaultData, 'deliveryFromDate'),

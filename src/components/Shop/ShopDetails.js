@@ -6,6 +6,7 @@ import injectSheet from 'react-jss'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
 import LinearProgress from '../LinearProgress'
 import IconButton from 'material-ui/IconButton'
+import Paper from 'material-ui/Paper'
 import Edit from 'material-ui/svg-icons/image/edit'
 import Delete from 'material-ui/svg-icons/action/delete'
 import Add from 'material-ui/svg-icons/content/add'
@@ -122,10 +123,24 @@ const enhance = compose(
                 marginRight: '0'
             }
         },
+        phonesWrapper: {
+            position: 'relative'
+        },
         phones: {
+            position: 'absolute',
+            top: '-5px',
+            right: '-12px',
+            textAlign: 'right',
+            padding: '5px 12px 5px 8px',
+            lineHeight: 'normal',
             '& span': {
                 display: 'block',
-                fontWeight: '600'
+                fontWeight: '600',
+                marginLeft: '0 !important',
+                marginBottom: '5px',
+                '&:last-child': {
+                    marginBottom: '0'
+                }
             }
         },
         image: {
@@ -194,6 +209,7 @@ const enhance = compose(
             order: '1 !important'
         },
         addImg: {
+            marginRight: '0 !important',
             background: '#999',
             cursor: 'pointer',
             display: 'flex',
@@ -246,7 +262,7 @@ const enhance = compose(
         }
     }),
     withState('openMapDialog', 'setOpenMapDialog', false),
-    withState('showPhones', 'setShowPhones', false),
+    withState('showPhones', 'setShowPhones', true),
 )
 const iconStyle = {
     icon: {
@@ -297,6 +313,9 @@ const ShopDetails = enhance((props) => {
     const createdBy = _.get(data, 'createdBy')
         ? _.get(data, ['createdBy', 'firstName']) + ' ' + _.get(data, ['createdBy', 'secondName'])
         : t('Неизвестно')
+    const responsibleAgent = _.get(data, 'responsibleAgent')
+        ? _.get(data, ['responsibleAgent', 'firstName']) + ' ' + _.get(data, ['responsibleAgent', 'secondName'])
+        : t('Неизвестно')
     const createdDate = _.get(data, 'createdDate') ? dateTimeFormat(_.get(data, 'createdDate')) : t('Неизвестно')
     const changedDate = _.get(data, 'modifiedDate') ? dateTimeFormat(_.get(data, 'modifiedDate')) : t('Неизвестно')
     const changedBy = _.get(data, 'changedBy')
@@ -309,7 +328,6 @@ const ShopDetails = enhance((props) => {
     const contactName = _.get(data, 'contactName')
     const phones = _.get(data, 'phones')
     const firstPhone = _.get(_.first(phones), 'phone')
-    const otherPhones = _.drop(phones)
     const images = _.get(data, 'images') || []
     const freq = _.get(data, 'visitFrequency')
     const isActive = _.get(data, 'isActive')
@@ -360,7 +378,7 @@ const ShopDetails = enhance((props) => {
                 </div>
                 <div className={classes.titleButtons}>
                     <div className={classes.frequency}>
-                        <span>Частота посещений:</span>
+                        <span>{t('Частота посещений')}:</span>
                         <b>{ freq === EVERY_DAY ? t('Каждый день') : (
                             freq === ONCE_IN_A_WEEK ? t('Раз в неделю') : (
                                 freq === TWICE_IN_A_WEEK ? t('2 раза в неделю') : (
@@ -416,6 +434,7 @@ const ShopDetails = enhance((props) => {
                         <ul className={classes.details}>
                             <li>{t('Клиент')}: <span>{client}</span></li>
                             <li>{t('Создал')}: <span>{createdBy}</span></li>
+                            <li>{t('Ответственный агент')}: <span>{responsibleAgent}</span></li>
                             <li>{t('Дата создания')}: <span>{createdDate}</span></li>
                             <li>{t('Дата изменения')}: <span>{changedDate}</span></li>
                             <li>{t('Изменил')}: <span>{changedBy}</span></li>
@@ -431,18 +450,21 @@ const ShopDetails = enhance((props) => {
                             <li>{t('Имя контакта')}: <span>{contactName}</span></li>
                             <li>{t('Адрес')}: <span><a onClick={() => { setOpenMapDialog(true) }}>{address}</a></span></li>
                             <li>{t('Ориентир')}: <span>{guide}</span></li>
-                            <li>
-                                {t('Телефоны')}: <span>{firstPhone} {_.get(phones, 'length') > ONE && !showPhones &&
-                                <a title={t('Показать все')} onClick={() => { setShowPhones(true) }}> ...</a>}</span>
+                            <li onMouseEnter={() => { setShowPhones(true) }}>
+                                {t('Телефоны')}: <span className={classes.phonesWrapper}>
+                                {firstPhone}
+                                {showPhones && _.get(phones, 'length') > ONE &&
+                                <Paper zDepth={1}
+                                       onMouseLeave={() => { setShowPhones(false) }}
+                                       className={classes.phones}>
+                                    {_.map(phones, (item) => {
+                                        const phoneID = _.get(item, 'id')
+                                        const ph = _.get(item, 'phone')
+                                        return <span key={phoneID}>{ph}</span>
+                                    })}
+                                </Paper>}
+                                </span>
                             </li>
-                            {showPhones &&
-                            <div className={classes.phones}>
-                                {_.map(otherPhones, (item) => {
-                                    const phoneID = _.get(item, 'id')
-                                    const ph = _.get(item, 'phone')
-                                    return <span key={phoneID}>{ph}</span>
-                                })}
-                            </div>}
                         </ul>
                     </div>
                     <div className={classes.infoBlock}>

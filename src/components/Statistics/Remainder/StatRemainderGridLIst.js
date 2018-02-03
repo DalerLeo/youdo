@@ -313,8 +313,8 @@ const StatRemainderGridList = enhance((props) => {
     }
     const headers = (
         <Row style={headerStyle} className="dottedList">
-            <Col xs={3}>Товар</Col>
-            <Col xs={3}>Тип товара</Col>
+            <Col xs={3}>{t('Товар')}</Col>
+            <Col xs={3}>{t('Тип товара')}</Col>
             <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right'}}>{t('Всего товаров')}</Col>
             <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right'}}>{t('Доступно')}</Col>
             <Col xs={2} style={{justifyContent: 'flex-end', textAlign: 'right'}}>{t('Цена')}</Col>

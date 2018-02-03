@@ -277,7 +277,7 @@ const PriceSetForm = enhance((props) => {
                     </div>
                     <div className={classes.tableContent}>
                         <Row className={classes.priceRow}>
-                            <Col xs={3}>Тип обьекта</Col>
+                            <Col xs={3}>{t('Тип обьекта')}</Col>
                             <Col style={{textAlign: 'left'}} xs={2}>{t('Нал')}</Col>
                             <Col style={{textAlign: 'left'}} xs={2}>{t('Валюта')}</Col>
                             <Col style={{textAlign: 'left'}} xs={2}>{t('Безнал')}</Col>

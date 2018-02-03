@@ -44,7 +44,6 @@ const enhance = compose(
                 width: 'auto',
                 border: 'none',
                 padding: '0',
-                maxHeight: '573px',
                 '& > div > div:last-child > div > div:first-child': {
                     maxHeight: '465px',
                     overflowY: 'auto',
@@ -164,7 +163,7 @@ const StatSaleDialog = enhance((props) => {
                 : <div>
                     <div className={classes.titleContent}>
                         <div>
-                            <div>{t('Заказ')} №{id}</div>
+                            <div>{t('Заказ')} № {id}</div>
                         </div>
                         <IconButton onTouchTap={onClose}>
                             <CloseIcon color="#666666"/>

@@ -35,7 +35,7 @@ import {
 } from '../../ReduxForm'
 import t from '../../../helpers/translate'
 import {
-    CANCELLED
+    ORDER_CANCELED
 } from '../../../constants/backendConstants'
 
 export const STAT_SALES_FILTER_KEY = {
@@ -317,7 +317,7 @@ const StatSalesGridList = enhance((props) => {
             const balanceToolTip = numberFormat(totalBalance, currentCurrency)
             const paymentType = _.get(item, 'paymentType') === 'cash' ? t('наличный') : t('банковский счет')
             return (
-                <Row key={id} className="dottedList" style={status === CANCELLED ? {color: '#999', cursor: 'pointer'} : {cursor: 'pointer'}} onClick={() => { statSaleDialog.handleOpenStatSaleDialog(id) }}>
+                <Row key={id} className="dottedList" style={status === ORDER_CANCELED ? {color: '#999', cursor: 'pointer'} : {cursor: 'pointer'}} onClick={() => { statSaleDialog.handleOpenStatSaleDialog(id) }}>
                     <Col xs={1}>{id}</Col>
                     <Col xs={2}>{createdDate}</Col>
                     {hasMarket && <Col xs={2}>{marketName}</Col>}
@@ -355,7 +355,7 @@ const StatSalesGridList = enhance((props) => {
             <Field name="deliveryDate" className={classes.inputDateCustom} component={DateToDateField} label={t('Дата доставки')}/>
             <Field name="deadlineDate" className={classes.inputDateCustom} component={DateToDateField} label={t('Период изготовления')}/>
             <Field name="onlyBonus" component={CheckBox} label={t('Только бонусные заказы')}/>
-            <Field name="exclude" component={CheckBox} label={t('Исключить отмененные заказы')}/>
+            <Field name="exclude" component={CheckBox} label={t('Показать отмененные заказы')}/>
         </div>
     )
 

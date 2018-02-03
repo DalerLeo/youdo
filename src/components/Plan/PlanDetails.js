@@ -29,13 +29,13 @@ import {Link} from 'react-router'
 import * as ROUTE from '../../constants/routes'
 import sprintf from 'sprintf'
 import {
-    VISIT,
-    ORDER,
-    REPORT,
-    ORDER_RETURN,
-    PAYMENT,
-    DELIVERY
-} from '../../actions/activity'
+    ACTIVITY_VISIT,
+    ACTIVITY_ORDER,
+    ACTIVITY_REPORT,
+    ACTIVITY_ORDER_RETURN,
+    ACTIVITY_PAYMENT,
+    ACTIVITY_DELIVERY
+} from '../../constants/backendConstants'
 
 const formattedType = {
     1: 'Посещение магазина',
@@ -395,7 +395,7 @@ const enhance = compose(
                 fontWeight: '600',
                 justifyContent: 'flex-end',
                 '& span': {
-                    marginLeft: '5px'
+                    // .. marginLeft: '5px'
                 },
                 '& a': {
                     fontWeight: 'inherit'
@@ -476,12 +476,12 @@ const PlanDetails = enhance((props) => {
     const position = _.get(detailData, ['data', 'position', 'name'])
     const stats = _.get(agentPlans, 'stats')
     const statsLoading = _.get(agentPlans, 'statsLoading')
-    const statOrders = _.get(stats, ORDER)
-    const statPayments = _.get(stats, PAYMENT)
-    const statVisits = _.get(stats, VISIT)
-    const statReports = _.get(stats, REPORT)
-    const statDeliveries = _.get(stats, DELIVERY)
-    const statReturns = _.get(stats, ORDER_RETURN)
+    const statOrders = _.get(stats, ACTIVITY_ORDER)
+    const statPayments = _.get(stats, ACTIVITY_PAYMENT)
+    const statVisits = _.get(stats, ACTIVITY_VISIT)
+    const statReports = _.get(stats, ACTIVITY_REPORT)
+    const statDeliveries = _.get(stats, ACTIVITY_DELIVERY)
+    const statReturns = _.get(stats, ACTIVITY_ORDER_RETURN)
 
     const ordersCash = _.get(statOrders, 'cash')
     const ordersBank = _.get(statOrders, 'bank')
@@ -645,24 +645,59 @@ const PlanDetails = enhance((props) => {
                                             const tasks = _.map(planTasks, (task, index) => {
                                                 const type = _.get(task, 'type')
                                                 const orderInfo = _.get(task, 'order')
-                                                const info = type === ORDER
-                                                    ? <span>(<Link target="_blank" to={{
-                                                        pathname: sprintf(ROUTE.ORDER_ITEM_PATH, orderInfo.id),
-                                                        query: {search: orderInfo.id}
-                                                    }}>№{orderInfo.id}</Link> - {numberFormat(orderInfo.totalPrice, primaryCurrency)})</span>
-                                                    : <span></span>
+                                                const orderReturnInfo = _.get(task, 'orderReturn')
+                                                const transactionInfo = _.get(task, 'clientTransaction')
+                                                const orderID = _.get(orderInfo, 'id')
+                                                const returnID = _.get(orderReturnInfo, 'id')
+                                                const orderCurrency = _.get(orderInfo, ['currency', 'name'])
+                                                const returnCurrency = _.get(orderReturnInfo, ['currency', 'name'])
+                                                const orderTotalPrice = _.get(orderInfo, 'totalPrice')
+                                                const returnTotalPrice = _.get(orderReturnInfo, 'totalPrice')
+                                                const transactionAmount = _.get(transactionInfo, 'amount')
+                                                const transactionOrder = _.get(transactionInfo, 'order')
+                                                const transactionCurrency = _.get(transactionInfo, ['currency', 'name'])
+                                                const getInfo = () => {
+                                                    switch (type) {
+                                                        case ACTIVITY_ORDER: return (
+                                                            <span>(<Link target="_blank" to={{
+                                                                pathname: sprintf(ROUTE.ORDER_ITEM_PATH, orderID),
+                                                                query: {search: orderID, exclude: false}
+                                                            }}>№{orderID}</Link> - {numberFormat(orderTotalPrice, orderCurrency)})
+                                                            </span>)
+                                                        case ACTIVITY_ORDER_RETURN: return (
+                                                            <span>(<Link target="_blank" to={{
+                                                                pathname: sprintf(ROUTE.RETURN_ITEM_PATH, returnID),
+                                                                query: {search: returnID, exclude: false}
+                                                            }}>№{returnID}</Link> - {numberFormat(returnTotalPrice, returnCurrency)})
+                                                            </span>)
+                                                        case ACTIVITY_DELIVERY: return (
+                                                            <span>({t('Заказ')}<Link target="_blank" to={{
+                                                                pathname: sprintf(ROUTE.RETURN_ITEM_PATH, orderID),
+                                                                query: {search: orderID, exclude: false}
+                                                            }}> №{orderID}</Link>)
+                                                            </span>
+                                                        )
+                                                        case ACTIVITY_PAYMENT: return (
+                                                            <span>({t('Заказ')}<Link target="_blank" to={{
+                                                                pathname: sprintf(ROUTE.ORDER_ITEM_PATH, transactionOrder),
+                                                                query: {search: transactionOrder, exclude: false}
+                                                            }}> №{transactionOrder}</Link>) - {numberFormat(transactionAmount, transactionCurrency)}
+                                                            </span>
+                                                        )
+                                                        default: return null
+                                                    }
+                                                }
                                                 return (
-                                                    <li key={index}>{formattedType[type]} {info} <Checked
-                                                        color="#92ce95"/>
+                                                    <li key={index}>
+                                                        <div>{formattedType[type]} {getInfo()}</div>
+                                                        <Checked color="#92ce95"/>
                                                     </li>
                                                 )
                                             })
 
                                             return (
                                                 <div key={id} className={classes.timelineBlock}>
-                                                    <div className={classes.timelineDot}>
-                                                    </div>
-
+                                                    <div className={classes.timelineDot}/>
                                                     <Paper className={classes.timelineContent}>
                                                         <h2><Link target="_blank" to={{
                                                             pathname: sprintf(ROUTE.SHOP_ITEM_PATH, marketId),

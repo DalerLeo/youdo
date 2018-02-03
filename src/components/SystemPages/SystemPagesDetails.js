@@ -9,6 +9,7 @@ import IconButton from 'material-ui/IconButton'
 import ToolTip from '../ToolTip'
 import dateFormat from '../../helpers/dateFormat'
 import {Tabs, Tab} from 'material-ui/Tabs'
+import t from '../../helpers/translate'
 
 const colorBlue = '#12aaeb !important'
 const enhance = compose(
@@ -162,7 +163,7 @@ const SystemPagesDetails = enhance((props) => {
                 <div className={classes.titleLabel}>{title}</div>
                 <div className={classes.closeDetail} onClick={handleCloseDetail}/>
                 <div className={classes.titleButtons}>
-                    <ToolTip position="bottom" text="Изменить">
+                    <ToolTip position="bottom" text={t('Изменить')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}

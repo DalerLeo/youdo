@@ -8,6 +8,7 @@ import FlatButton from 'material-ui/FlatButton'
 import Loader from '../Loader'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
+import t from '../../helpers/translate'
 import {TextField, ImageUploadField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
@@ -165,7 +166,7 @@ const TelegramNewsCreateDialog = enhance((props) => {
             bodyClassName={classes.popUp}>
 
             <div className={classes.titleContent}>
-                <span>{isUpdate ? 'Редактирование новости' : 'Добавление новости'}</span>
+                <span>{isUpdate ? t('Редактирование новости') : t('Добавление новости')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -263,7 +264,7 @@ const TelegramNewsCreateDialog = enhance((props) => {
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
-                            label="Сохранить"
+                            label={t('Сохранить')}
                             className={classes.actionButton}
                             labelStyle={{fontSize: '13px'}}
                             primary={true}

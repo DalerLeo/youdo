@@ -21,7 +21,6 @@ import StatSideMenu from '../StatSideMenu'
 import Loader from '../../Loader'
 import ToolTip from '../../ToolTip'
 import Pagination from '../../GridList/GridListNavPagination'
-import numberFormat from '../../../helpers/numberFormat'
 import getConfig from '../../../helpers/getConfig'
 import NotFound from '../../Images/not-found.png'
 import {StatisticsFilterExcel} from '../../Statistics'
@@ -436,20 +435,20 @@ const StatProductMoveGridList = enhance((props) => {
     const sumListLoading = _.get(sumData, 'sumListLoading')
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
 
-    const beginBalance = numberFormat(Math.abs(_.get(sumData, ['data', 'beginPriceSum'])), primaryCurrency)
-    const endBalance = numberFormat(Math.abs(_.get(sumData, ['data', 'endPriceSum'])), primaryCurrency)
-    const inBalance = numberFormat(Math.abs(_.get(sumData, ['data', 'inPriceSum'])), primaryCurrency)
-    const outBalance = numberFormat(Math.abs(_.get(sumData, ['data', 'outPriceSum'])), primaryCurrency)
-    const returnBalance = numberFormat(Math.abs(_.get(sumData, ['data', 'returnPriceSum'])), primaryCurrency)
-    const writeoffBalance = numberFormat(Math.abs(_.get(sumData, ['data', 'writeoffPriceSum'])), primaryCurrency)
+    const beginBalance = moduleFormat(_.get(sumData, ['data', 'beginPriceSum']), primaryCurrency)
+    const endBalance = moduleFormat(_.get(sumData, ['data', 'endPriceSum']), primaryCurrency)
+    const inBalance = moduleFormat(_.get(sumData, ['data', 'inPriceSum']), primaryCurrency)
+    const outBalance = moduleFormat(_.get(sumData, ['data', 'outPriceSum']), primaryCurrency)
+    const returnBalance = moduleFormat(_.get(sumData, ['data', 'returnPriceSum']), primaryCurrency)
+    const writeoffBalance = moduleFormat(_.get(sumData, ['data', 'writeoffPriceSum']), primaryCurrency)
 
     // Amounts
-    const beginAmount = numberFormat(Math.abs(_.get(sumData, ['data', 'beginBalanceSum'])))
-    const endAmount = numberFormat(Math.abs(_.get(sumData, ['data', 'endBalanceSum'])))
-    const inAmount = numberFormat(Math.abs(_.get(sumData, ['data', 'inBalanceSum'])))
-    const outAmount = numberFormat(Math.abs(_.get(sumData, ['data', 'outBalanceSum'])))
-    const returnAmount = numberFormat(Math.abs(_.get(sumData, ['data', 'returnBalanceSum'])))
-    const writeoffAmount = numberFormat(Math.abs(_.get(sumData, ['data', 'writeoffBalanceSum'])))
+    const beginAmount = moduleFormat(_.get(sumData, ['data', 'beginBalanceSum']), summaryMeasurement)
+    const endAmount = moduleFormat(_.get(sumData, ['data', 'endBalanceSum']), summaryMeasurement)
+    const inAmount = moduleFormat(_.get(sumData, ['data', 'inBalanceSum']), summaryMeasurement)
+    const outAmount = moduleFormat(_.get(sumData, ['data', 'outBalanceSum']), summaryMeasurement)
+    const returnAmount = moduleFormat(_.get(sumData, ['data', 'returnBalanceSum']), summaryMeasurement)
+    const writeoffAmount = moduleFormat(_.get(sumData, ['data', 'writeoffBalanceSum']), summaryMeasurement)
 
     const tableLeft = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
@@ -572,21 +571,21 @@ const StatProductMoveGridList = enhance((props) => {
                                 : <div className={classes.summaryWrapper}>
                                     <div>
                                         <div>{t('Остаток на начало периода')}</div>
-                                        <div>{beginBalance} <span>({beginAmount} {summaryMeasurement})</span> </div>
+                                        <div>{beginBalance} <span>({beginAmount})</span> </div>
                                         <div>{t('Остаток на конец периода')}</div>
-                                        <div>{endBalance} <span>({endAmount} {summaryMeasurement})</span></div>
+                                        <div>{endBalance} <span>({endAmount})</span></div>
                                     </div>
                                     <div>
                                         <div>{t('Поступило товара на сумму')}</div>
-                                        <div>{inBalance} <span>({inAmount} {summaryMeasurement})</span></div>
+                                        <div>{inBalance} <span>({inAmount})</span></div>
                                         <div>{t('Возврат за период')}</div>
-                                        <div>{returnBalance} <span>({outAmount} {summaryMeasurement})</span></div>
+                                        <div>{returnBalance} <span>({returnAmount})</span></div>
                                     </div>
                                     <div>
                                         <div>{t('Выдано по заказу')}</div>
-                                        <div>{outBalance} <span>({returnAmount} {summaryMeasurement})</span></div>
+                                        <div>{outBalance} <span>({outAmount})</span></div>
                                         <div>{t('Cписано за период')}</div>
-                                        <div>{writeoffBalance} <span>({writeoffAmount} {summaryMeasurement})</span></div>
+                                        <div>{writeoffBalance} <span>({writeoffAmount})</span></div>
                                     </div>
                                 </div>}
                         </div>

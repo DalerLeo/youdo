@@ -144,7 +144,7 @@ const enhance = compose(
             filter.filterBy({
                 [PRICE_FILTER_OPEN]: false,
                 [PRICE_FILTER_KEY.TYPE_PARENT]: typeParent,
-                [PRICE_FILTER_KEY.TYPE_CHILD]: typeChild,
+                [PRICE_FILTER_KEY.TYPE_CHILD]: typeParent && typeChild,
                 [PRICE_FILTER_KEY.MEASUREMENT]: _.join(measurement, '-'),
                 [PRICE_FILTER_KEY.WITHOUT_NET_COST]: withoutNetCost
             })

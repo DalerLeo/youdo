@@ -110,7 +110,7 @@ const TransactionsFormat = enhance((props) => {
             case TRANS_TYPE.OUTCOME_FOR_SUPPLY_EXPANSE: return <span>{t('Расход на поставку')}{redirect(sprintf(ROUTES.SUPPLY_ITEM_PATH, supply), {search: supply}, '№' + supply)}</span>
 
             case TRANS_TYPE.SUPPLY_EXPENCE: return <span>{t('Доп. расход')} {supplyExpanseId ? '№' + supplyExpanseId : ''} {t('на поставку')}
-                {redirect(sprintf(ROUTES.SUPPLY_ITEM_PATH, supply), {search: supply}, '№' + supply)}</span>
+                {redirect(sprintf(ROUTES.SUPPLY_ITEM_PATH, supply), {search: supply}, ' №' + supply)}</span>
 
             default: return null
         }

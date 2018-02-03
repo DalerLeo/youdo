@@ -193,7 +193,7 @@ const StatSalesList = enhance((props) => {
     const deadlineFromDate = filter.getParam(STAT_SALES_FILTER_KEY.DEADLINE_FROM_DATE)
     const deadlineToDate = filter.getParam(STAT_SALES_FILTER_KEY.DEADLINE_TO_DATE)
     const onlyBonus = filter.getParam(STAT_SALES_FILTER_KEY.ONLY_BONUS)
-    const exclude = _.isUndefined(filter.getParam(STAT_SALES_FILTER_KEY.EXCLUDE)) ? true : filter.getParam(STAT_SALES_FILTER_KEY.EXCLUDE)
+    const exclude = filter.getParam(STAT_SALES_FILTER_KEY.EXCLUDE)
     const firstDayOfMonth = _.get(location, ['query', 'fromDate']) || moment().format('YYYY-MM-01')
     const lastDay = moment().daysInMonth()
     const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)

@@ -10,6 +10,7 @@ import Back from 'material-ui/svg-icons/content/reply'
 import NotFound from '../../Images/not-found.png'
 import numberFormat from '../../../helpers/numberFormat'
 import getConfig from '../../../helpers/getConfig'
+import t from '../../../helpers/translate'
 import TransactionsList from '../Finance/TransactionsList'
 import {StatisticsFilterExcel, StatisticsChart} from '../../Statistics'
 import {
@@ -252,25 +253,25 @@ const StatCashboxDetails = enhance((props) => {
                 className={classes.inputFieldCustom}
                 name="date"
                 component={DateToDateField}
-                label="Диапазон дат"
+                label={t('Диапазон дат')}
                 fullWidth={true}/>
             <Field
                 className={classes.inputFieldCustom}
                 name="categoryExpense"
                 component={ExpensiveCategorySearchField}
-                label="Категории расходов"
+                label={t('Категории расходов')}
                 fullWidth={true}/>
             <Field
                 className={classes.inputFieldCustom}
                 name="type"
                 component={TransactionTypeSearchField}
-                label="Тип"
+                label={t('Тип')}
                 fullWidth={true}/>
             <Field
                 className={classes.inputFieldCustom}
                 name="client"
                 component={ClientSearchField}
-                label="Клиент"
+                label={t('Клиент')}
                 fullWidth={true}/>
         </div>
     )
@@ -278,7 +279,7 @@ const StatCashboxDetails = enhance((props) => {
     const extraButton = (
         <a className={classes.closeDetail}
            onClick={handleCloseDetail}>
-            <Back color="#fff"/> <span>Вернуться</span>
+            <Back color="#fff"/> <span>{t('Вернуться')}</span>
         </a>
     )
 
@@ -303,13 +304,13 @@ const StatCashboxDetails = enhance((props) => {
                             <div className={classes.salesSummary}>
                                 <div className={classes.sumItem}>
                                     <div>
-                                        <span>Баланс на начало периода</span>
+                                        <span>{t('Баланс на начало периода')}</span>
                                         <div className={(startBalance > ZERO) ? classes.green : (startBalance < ZERO) ? classes.red : ''}>
                                             {numberFormat(startBalance, currency)} <p>{primaryCurrency !== currency && intStartBalance}</p>
                                         </div>
                                     </div>
                                     <div>
-                                        <span>Баланс на конец периода</span>
+                                        <span>{t('Баланс на конец периода')}</span>
                                         <div className={(endBalance > ZERO) ? classes.green : (endBalance < ZERO) ? classes.red : ''}>
                                             {numberFormat(endBalance, currency)} <p>{primaryCurrency !== currency && intEndBalance}</p>
                                         </div>
@@ -317,13 +318,13 @@ const StatCashboxDetails = enhance((props) => {
                                 </div>
                                 <div className={classes.sumItem}>
                                     <div>
-                                        <span>Приход за период</span>
+                                        <span>{t('Приход за период')}</span>
                                         <div className={(income > ZERO) ? classes.green : (income < ZERO) ? classes.red : ''}>
                                             {numberFormat(income, currency)} <p>{primaryCurrency !== currency && intIncome}</p>
                                         </div>
                                     </div>
                                     <div>
-                                        <span>Расход за период</span>
+                                        <span>{t('Расход за период')}</span>
                                         <div className={(expenses > ZERO) ? classes.red : ''}>
                                             {numberFormat(expenses, currency)} <p>{primaryCurrency !== currency && intExpenses}</p>
                                         </div>
@@ -332,7 +333,7 @@ const StatCashboxDetails = enhance((props) => {
                             </div>
                             <div style={{width: 'calc(100% - 335px)'}}>
                                 <StatisticsChart
-                                    primaryText="Баланс"
+                                    primaryText={t('Баланс')}
                                     primaryValues={graphAmount}
                                     tooltipTitle={date}
                                     height={120}

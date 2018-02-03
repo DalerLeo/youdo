@@ -272,7 +272,7 @@ const SupplyCreateDialog = enhance((props) => {
                                             pathname: [ROUTES.PROVIDER_LIST_URL],
                                             query: {[PROVIDER_CREATE_DIALOG_OPEN]: true}
                                         }}>
-                                    + добавить
+                                    + {t('добавить')}
                                 </Link></div>
                                 <div className={classes.selectContent}>
                                     <Field
@@ -287,7 +287,7 @@ const SupplyCreateDialog = enhance((props) => {
                                     />
                                 </div>
                                 <div className={classes.condition}>
-                                    <div className={classes.subTitleOrder}>Условия доставки</div>
+                                    <div className={classes.subTitleOrder}>{t('Условия доставки')}</div>
                                     <Field
                                         name="date_delivery"
                                         component={DateField}
@@ -331,7 +331,7 @@ const SupplyCreateDialog = enhance((props) => {
                                 </div>
                                 <div className={classes.commentFieldSupply}>
                                     <div>
-                                        <div className={classes.subTitleOrder} style={{marginTop: '15px'}}>Комментарии по заказу</div>
+                                        <div className={classes.subTitleOrder} style={{marginTop: '15px'}}>{t('Комментарии по заказу')}</div>
                                         <Field
                                             name="comment"
                                             component={TextField}

@@ -156,7 +156,6 @@ const enhance = compose(
             },
             '& > div:last-child': {
                 width: 'calc(100% - 350px)',
-                alignSelf: 'baseline',
                 overflowX: 'auto',
                 overflowY: 'hidden'
             }
@@ -420,6 +419,7 @@ const enhance = compose(
             '& > span': {
                 display: 'flex !important',
                 alignItems: 'center',
+                minHeight: '39px',
                 justifyContent: 'space-between',
                 height: '100%'
             }
@@ -693,11 +693,11 @@ const StatMarketGridList = enhance((props) => {
                                 <div className={classes.flexCenter + ' ' + classes.flexSpaceBetween}>
                                     {isMarketType && currentParent &&
                                     <div className={classes.filtered}>
-                                        Отфильтровано по: <strong>{currentParent}</strong>
+                                        {t('Отфильтровано по')}: <strong>{currentParent}</strong>
                                         <a onClick={() => {
                                             updateCurrentParent(null)
                                             handleResetChilds()
-                                        }}>Сбросить фильтр</a>
+                                        }}>{t('Сбросить фильтр')}</a>
                                     </div>}
                                     <div className={classes.toggleWrapper} style={currentParent ? {width: 'auto'} : {width: '100%'}}>
                                     <ToolTip position="left" text="Показать по магазинам">

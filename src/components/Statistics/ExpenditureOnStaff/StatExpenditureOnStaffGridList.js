@@ -205,8 +205,8 @@ const StatExpenditureOnStaffGridList = enhance((props) => {
 
     const headers = (
         <Row style={headerStyle} className="dottedList">
-            <Col xs={3}>Сотрудник</Col>
-            <Col xs={6}>Процентное соотношение</Col>
+            <Col xs={3}>{t('Сотрудник')}</Col>
+            <Col xs={6}>{t('Процентное соотношение')}</Col>
             <Col xs={3} style={{justifyContent: 'flex-end'}}>{t('Сумма')} ({currentCurrency})</Col>
         </Row>
     )

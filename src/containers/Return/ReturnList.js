@@ -235,7 +235,7 @@ const enhance = compose(
             const division = _.get(filterForm, ['values', 'division']) || null
             const paymentType = _.get(filterForm, ['values', 'paymentType', 'value']) || null
             const code = _.get(filterForm, ['values', 'code']) || null
-            const exclude = _.get(filterForm, ['values', 'exclude']) || false
+            const exclude = _.get(filterForm, ['values', 'exclude']) || null
 
             filter.filterBy({
                 [RETURN_FILTER_OPEN]: false,

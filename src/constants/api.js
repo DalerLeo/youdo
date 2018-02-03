@@ -97,6 +97,7 @@ export const SHOP_SET_PRIMARY_IMAGE = `/${SHOP}/%d/set_primary_image/`
 export const SHOP_ITEM_SHOW_IMAGE = 'main/file/%d/'
 export const SHOP_ITEM_DELETE_IMAGE = `/${SHOP}/%d/images/%d/`
 export const SHOP_DELETE = `/${SHOP}/%d/`
+export const SHOP_MULTI_UPDATE = `/${SHOP}/bulk_update/`
 
 export const USERS = 'main/crud'
 export const USERS_CREATE = `/${USERS}/`
@@ -136,6 +137,7 @@ export const SUPPLY_ITEM = `/${SUPPLY}/%d/`
 export const SUPPLY_DEFECT = `/${SUPPLY}/%d/product_detail/%d/`
 export const SUPPLY_CANCEL = `/${SUPPLY}/cancel`
 export const SUPPLY_SYNC = `/${SUPPLY}/%d/update_amount/`
+export const SUPPLY_TRANSACTIONS = 'finance/provider_debt_separations/'
 
 export const PRICES = 'market/promotion'
 export const PRICES_CREATE = `/${PRICES}/`
@@ -293,18 +295,31 @@ export const STAT_CLIENT_INCOME = 'stats/client_transactions'
 export const STAT_CLIENT_INCOME_LIST = `/${STAT_CLIENT_INCOME}/`
 export const STAT_CLIENT_INCOME_GET_DOCUMENT = '/sales/client_transaction/export/'
 
+export const REMAINDER = 'stock'
+export const REMAINDER_LIST = `/${REMAINDER}/all_balances/`
+export const REMAINDER_ITEM = 'stock/stock/balances_by_product/%d/'
+export const REMAINDER_TRANSFER = '/stock/stock_transfer/wb_create/'
+export const REMAINDER_DISCARD = '/stock/writeoff/'
+export const REMAINDER_RESERVED = '/stock/reserved_product/'
+
 export const MANUFACTURE_PRODUCT = 'manufacture/create_ingredient'
 export const MANUFACTURE_PRODUCT_CREATE = `/${MANUFACTURE_PRODUCT}/`
 export const MANUFACTURE_PRODUCT_LIST = `/${MANUFACTURE_PRODUCT}/`
 export const MANUFACTURE_PRODUCT_DELETE = 'manufacture/delete_ingredient/%d/'
 export const MANUFACTURE_PRODUCT_CHANGE = '/main/product/%d/change_manufacture/'
 
+export const SHIPMENT_PRODUCTS = 'manufacture/manufacture_return'
+export const SHIPMENT_MATERIALS = 'manufacture/manufacture_writeoff'
 export const SHIPMENT = 'staff/personal_rotation'
 export const SHIPMENT_LIST = `/${SHIPMENT}/`
 export const SHIPMENT_ITEM = `/${SHIPMENT}/%d/`
 export const SHIPMENT_LOGS = '/manufacture/logs/'
-export const SHIPMENT_PRODUCTS_LIST = '/manufacture/manufacture_return/review/'
-export const SHIPMENT_MATERIALS_LIST = '/manufacture/manufacture_writeoff/review/'
+export const SHIPMENT_PRODUCTS_LIST = `/${SHIPMENT_PRODUCTS}/review/`
+export const SHIPMENT_MATERIALS_LIST = `/${SHIPMENT_MATERIALS}/review/`
+export const SHIPMENT_ADD_PRODUCTS_LIST = `/${PRODUCT}/`
+export const SHIPMENT_ADD_RAW_LIST = `${REMAINDER_LIST}`
+export const SHIPMENT_ADD_PRODUCTS_CREATE = `/${SHIPMENT_PRODUCTS}/wb_create/`
+export const SHIPMENT_ADD_RAW_CREATE = `/${SHIPMENT_MATERIALS}/wb_create/`
 
 export const MARKET_TYPE = 'market/market_type'
 export const MARKET_TYPE_CREATE = `/${MARKET_TYPE}/`
@@ -348,13 +363,6 @@ export const TRACKING_LIST = `${TRACKING}`
 export const TRACKING_ITEM = `${TRACKING}/%d/`
 export const MARKETS_LOCATION = `${SHOP}/locations/`
 export const LOCATION_LIST = 'market/location/'
-
-export const REMAINDER = 'stock'
-export const REMAINDER_LIST = `/${REMAINDER}/all_balances/`
-export const REMAINDER_ITEM = 'stock/stock/balances_by_product/%d/'
-export const REMAINDER_TRANSFER = '/stock/stock_transfer/wb_create/'
-export const REMAINDER_DISCARD = '/stock/writeoff/'
-export const REMAINDER_RESERVED = '/stock/reserved_product/'
 
 export const STAT_AGENT_LIST = 'stats/agents/statistics/all/'
 export const STAT_AGENT_SUM = 'stats/agents/statistics/all/sum/'

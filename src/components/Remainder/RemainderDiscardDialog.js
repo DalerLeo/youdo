@@ -164,7 +164,6 @@ const enhance = compose(
         leftSide: {
             flexBasis: '25%',
             maxWidth: '25%',
-            height: '280px',
             borderRight: '1px #efefef solid',
             padding: '20px 30px',
             '&  > div > div:first-child': {
@@ -253,7 +252,7 @@ const RemainderDiscardDialog = enhance((props) => {
                     </div>
                     <div className={classes.rightSide}>
                         <div className={classes.addButtons}>
-                            <strong>Список товаров</strong>
+                            <strong>{t('Список товаров')}</strong>
                             {!fromStock
                                 ? <ToolTip text={t('Выберите склад')} position="right">
                                     <FlatButton

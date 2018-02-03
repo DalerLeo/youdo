@@ -12,6 +12,7 @@ import {Row, Col} from 'react-flexbox-grid'
 import Pagination from '../../ReduxForm/Pagination'
 import getConfig from '../../../helpers/getConfig'
 import numberFormat from '../../../helpers/numberFormat'
+import t from '../../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -169,15 +170,15 @@ const StatMarketDialog = enhance((props) => {
                     </div>
                     <div className={classes.content}>
                         <div className={classes.titleSummary}>
-                            <div>Период: <strong>{dateRange}</strong></div>
-                            <div>Сумма: <strong>{income}</strong></div>
+                            <div>{t('Период')}: <strong>{dateRange}</strong></div>
+                            <div>{t('Сумма')}: <strong>{income}</strong></div>
                         </div>
                         <div className={classes.tableWrapper}>
                             <Row className="dottedList">
-                                <Col xs={2}>№ заказа</Col>
-                                <Col xs={4}>Агент</Col>
-                                <Col xs={3}>Дата</Col>
-                                <Col xs={3}>Сумма</Col>
+                                <Col xs={2}>{t('№ заказа')}</Col>
+                                <Col xs={4}>{t('Агент')}</Col>
+                                <Col xs={3}>{t('Дата')}</Col>
+                                <Col xs={3}>{t('Сумма')}</Col>
                             </Row>
                             {orderList}
                         </div>

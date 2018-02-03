@@ -39,16 +39,17 @@ const enhance = compose(
         const returnList = _.get(state, ['statSales', 'returnList', 'data'])
         const returnLoading = !_.isArray(returnList) ? true : _.get(state, ['statSales', 'returnList', 'loading'])
         const agentsData = _.get(state, ['statAgent', 'list', 'data'])
-        const agentsDataLoading = !_.isArray(agentsData.results) ? true : _.get(state, ['statAgent', 'list', 'loading'])
+        const agentsDataLoading = !_.isArray(_.get(agentsData, 'results')) ? true : _.get(state, ['statAgent', 'list', 'loading'])
         const financeIncome = _.get(state, ['statFinance', 'dataIn', 'data'])
         const financeExpense = _.get(state, ['statFinance', 'dataOut', 'data'])
         const financeDataLoading = !_.isArray(financeIncome) || !_.isArray(financeExpense)
             ? true
             : _.get(state, ['statFinance', 'dataIn', 'loading']) || _.get(state, ['statFinance', 'dataOut', 'loading'])
         const currencyList = _.get(state, ['currency', 'list', 'data'])
-        const currencyListLoading = !_.isArray(currencyList.results) ? true : _.get(state, ['currency', 'list', 'loading'])
+        const currencyListLoading = !_.isArray(_.get(currencyList, 'results')) ? true : _.get(state, ['currency', 'list', 'loading'])
         const userName = _.get(state, ['authConfirm', 'data', 'firstName']) + ' ' + _.get(state, ['authConfirm', 'data', 'secondName'])
         const userPosition = _.get(state, ['authConfirm', 'data', 'position', 'name'])
+        const userPhoto = _.get(state, ['authConfirm', 'data', 'photo', 'file'])
         const isAdmin = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
         const filter = filterHelper(orderList, pathname, query)
         const currencyForm = _.get(state, ['form', 'DashboardCurrencyForm'])
@@ -69,6 +70,7 @@ const enhance = compose(
             currencyListLoading,
             userName,
             userPosition,
+            userPhoto,
             isAdmin,
             filter,
             currencyForm,
@@ -198,6 +200,7 @@ const MainList = enhance((props) => {
         currencyListLoading,
         userName,
         userPosition,
+        userPhoto,
         isAdmin,
         filter,
         loading,
@@ -249,7 +252,8 @@ const MainList = enhance((props) => {
 
     const userData = {
         username: userName,
-        position: userPosition
+        position: userPosition,
+        photo: userPhoto
     }
 
     const orderChart = {

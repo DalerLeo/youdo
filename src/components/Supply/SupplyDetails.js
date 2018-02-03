@@ -241,7 +241,7 @@ const SupplyDetails = enhance((props) => {
         handleSubmitDiscountDialog,
         handleSubmitSetZeroDiscountDialog,
         confirmExpenseDialog,
-        paidData,
+        transactionsDialog,
         openExpenseInfo,
         setOpenExpenseInfo,
         isAdmin,
@@ -322,7 +322,7 @@ const SupplyDetails = enhance((props) => {
     return (
         <div className={classes.wrapper}>
             <div className={classes.title}>
-                <div className={classes.titleLabel}>{t('Поставка')} №{id}</div>
+                <div className={classes.titleLabel}>{t('Поставка')} № {id}</div>
                 <div className={classes.closeDetail} onClick={handleCloseDetail}/>
                 <div className={classes.discountPop}
                      style={openDiscountDialog ? {transform: 'scale(1)'} : {transform: 'scale(0)'}}>
@@ -445,7 +445,11 @@ const SupplyDetails = enhance((props) => {
                                 </li>
                                 <li>
                                     <span>{t('Оплачено')}:</span>
-                                    <span>{numberFormat(totalPaid, currency)}</span>
+                                    <span>{totalPaid > zero
+                                        ? <a onClick={() => { transactionsDialog.handleOpenTransactionsDialog(id) }}>
+                                            <strong>{numberFormat(totalPaid, currency)}</strong>
+                                        </a>
+                                        : numberFormat(totalPaid, currency)}</span>
                                 </li>
                                 <li>
                                     <span>{t('Остаток')}:</span>
@@ -456,7 +460,7 @@ const SupplyDetails = enhance((props) => {
                     </div>
 
                     <div className={classes.subBlock}>
-                        <div className={classes.subtitle}>Доп. расходы</div>
+                        <div className={classes.subtitle}>{t('Доп. расходы')}</div>
                         <div className={classes.dataBox}>
                             <ul>
                                 {!_.isEmpty(groupedByCurrency)
@@ -497,7 +501,7 @@ const SupplyDetails = enhance((props) => {
                                                     : null}
                                                 <span
                                                     style={{fontWeight: 'normal'}}>
-                                                    Сумма: {numberFormat(itemAmount, index)} (Оплачено: {numberFormat(paidAmount)})
+                                                    {t('Сумма')}: {numberFormat(itemAmount, index)} ({t('Оплачено')}: {numberFormat(paidAmount)})
                                                 </span>
                                             </li>
                                         )
@@ -534,8 +538,7 @@ const SupplyDetails = enhance((props) => {
                     returnData={returnData}
                     returnDataLoading={returnDataLoading}
                     expensesListData={supplyListData}
-                    confirmExpenseDialog={confirmExpenseDialog}
-                    paidData={paidData}/>
+                    confirmExpenseDialog={confirmExpenseDialog}/>
             </div>
         </div>
     )

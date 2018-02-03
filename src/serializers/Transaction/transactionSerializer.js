@@ -149,12 +149,12 @@ export const createSendSerializer = (data, cashboxId, withPersent, defaultCurren
     const cashbox = _.get(data, ['cashbox', 'value', 'id'])
     return {
         amount_from: withPersent ? amountFromPersent : amountFrom,
-        amount_to: (withPersent ? amountFromPersent * withPersent / HUNDRED : amountTo) || (sameCurType && amountFrom),
+        amount_to: (sameCurType && amountFrom) || (withPersent ? amountFromPersent * withPersent / HUNDRED : amountTo),
         from_cashbox: _.toInteger(cashboxId) === ZERO ? cashbox : cashboxId,
         to_cashbox: _.toInteger(toCashbox),
-        percentage: withPersent,
+        percentage: withPersent || _.get(cashboxFromName, 'undefined'),
         comment,
-        rate: withPersent ? _.get(cashboxFromName, 'he') : rate
+        rate: withPersent || sameCurType ? _.get(cashboxFromName, 'undefined') : rate
     }
 }
 
@@ -165,7 +165,7 @@ export const convertSerializer = (date, currency, order) => {
         'to_currency': currency,
         'order': order,
         'amount': '1',
-        'date': moment(date).format('YYYY-MM-DD HH:mm:ss')
+        'date': moment(date).format('YYYY-MM-DD 23:59:59')
     }
 }
 

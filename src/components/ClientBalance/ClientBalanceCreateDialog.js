@@ -101,7 +101,7 @@ const ClientBalanceCreateDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '500px'} : {width: '500px'}}
+            contentStyle={loading ? {width: '450px'} : {width: '500px'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
                 <span>{addDialog ? t('Добавить приход клиенту') : t('Добавить расход клиенту')}</span>

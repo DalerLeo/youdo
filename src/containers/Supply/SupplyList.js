@@ -21,6 +21,7 @@ import {
     SUPPLY_FILTER_OPEN,
     SUPPLY_EXPENSE_CREATE_DIALOG_OPEN,
     SUPPLY_DEFECT_DIALOG_OPEN,
+    SUPPLY_TRANSACTIONS_OPEN,
     SupplyGridList,
     TAB
 } from '../../components/Supply'
@@ -32,16 +33,14 @@ import {
     supplyItemFetchAction,
     supplyDefectAction,
     addProductsListAction,
-    supplySyncAction
+    supplySyncAction,
+    supplyTransactionsAction
 } from '../../actions/supply'
 import {
     supplyExpenseCreateAction,
     supplyExpenseDeleteAction,
     supplyExpenseListFetchAction
 } from '../../actions/supplyExpense'
-import {
-    supplyPaidListFetchAction
-} from '../../actions/supplyPaid'
 import {openErrorAction} from '../../actions/error'
 import {openSnackbarAction} from '../../actions/snackbar'
 import t from '../../helpers/translate'
@@ -59,8 +58,8 @@ const enhance = compose(
         const list = _.get(state, ['supply', 'list', 'data'])
         const defectData = _.get(state, ['supply', 'defect', 'data'])
         const listLoading = _.get(state, ['supply', 'list', 'loading'])
-        const paidList = _.get(state, ['supplyPaid', 'list', 'data'])
-        const paidListLoading = _.get(state, ['supplyPaid', 'list', 'loading'])
+        const paidList = _.get(state, ['supply', 'transactions', 'data'])
+        const paidListLoading = _.get(state, ['supply', 'transactions', 'loading'])
         const filterForm = _.get(state, ['form', 'SupplyFilterForm'])
         const createForm = _.get(state, ['form', 'SupplyCreateForm'])
         const filter = filterHelper(list, pathname, query)
@@ -124,6 +123,7 @@ const enhance = compose(
         const supplyId = _.toInteger(_.get(params, 'supplyId'))
         supplyId && dispatch(supplyItemFetchAction(supplyId))
     }),
+
     withPropsOnChange((props, nextProps) => {
         const prevSupplyId = _.get(props, ['params', 'supplyId'])
         const nextSupplyId = _.get(nextProps, ['params', 'supplyId'])
@@ -135,8 +135,17 @@ const enhance = compose(
         const supplyId = _.toInteger(_.get(params, 'supplyId'))
         if (supplyId > ZERO && currentTab === SUPPLY_TAB.SUPPLY_TAB_EXPENSES) {
             supplyId && dispatch(supplyExpenseListFetchAction(supplyId, filterItem))
-        } else if (supplyId > ZERO && currentTab === SUPPLY_TAB.SUPPLY_TAB_PAID) {
-            supplyId && dispatch(supplyPaidListFetchAction(supplyId, filterItem))
+        }
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const prevTransaction = _.toInteger(_.get(props, ['location', 'query', SUPPLY_TRANSACTIONS_OPEN]))
+        const nextTransaction = _.toInteger(_.get(nextProps, ['location', 'query', SUPPLY_TRANSACTIONS_OPEN]))
+        return prevTransaction !== nextTransaction && nextTransaction > ZERO
+    }, ({dispatch, location}) => {
+        const openTransaction = _.toInteger(_.get(location, ['query', SUPPLY_TRANSACTIONS_OPEN]))
+        if (openTransaction > ZERO) {
+            dispatch(supplyTransactionsAction(openTransaction))
         }
     }),
 
@@ -540,6 +549,16 @@ const enhance = compose(
                 .catch(() => {
                     return dispatch(openSnackbarAction({message: 'Ошибка'}))
                 })
+        },
+
+        handleOpenTransactionsDialog: props => (id) => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[SUPPLY_TRANSACTIONS_OPEN]: id})})
+        },
+
+        handleCloseTransactionsDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[SUPPLY_TRANSACTIONS_OPEN]: false})})
         }
     })
 )
@@ -575,6 +594,7 @@ const SupplyList = enhance((props) => {
     const openFilterDialog = toBoolean(_.get(location, ['query', SUPPLY_FILTER_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', SUPPLY_CREATE_DIALOG_OPEN]))
     const openDefectDialog = _.toInteger(_.get(location, ['query', 'openDefectDialog']) || MINUS_ONE) > MINUS_ONE
+    const openTransactionsDialog = _.toInteger(_.get(location, ['query', SUPPLY_TRANSACTIONS_OPEN]) || ZERO) > ZERO
     const openUpdateDialog = toBoolean(_.get(location, ['query', SUPPLY_UPDATE_DIALOG_OPEN]))
     const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
 
@@ -746,10 +766,6 @@ const SupplyList = enhance((props) => {
         detailLoading,
         handleCloseDetail: props.handleCloseDetail
     }
-    const paidData = {
-        data: _.get(paidList, 'results'),
-        loading: paidListLoading
-    }
 
     // Supply Expense
 
@@ -773,6 +789,16 @@ const SupplyList = enhance((props) => {
         tab,
         handleTabChange: props.handleTabChange
     }
+
+    const transactionsDialog = {
+        open: openTransactionsDialog,
+        data: {
+            list: _.get(paidList, 'results'),
+            loading: paidListLoading
+        },
+        handleOpenTransactionsDialog: props.handleOpenTransactionsDialog,
+        handleCloseTransactionsDialog: props.handleCloseTransactionsDialog
+    }
     return (
         <Layout {...layout}>
             <SupplyGridList
@@ -789,12 +815,12 @@ const SupplyList = enhance((props) => {
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}
                 filterDialog={filterDialog}
-                paidData={paidData}
                 supplyListData={supplyListData}
                 detailId={detailId}
                 supplyExpenseCreateDialog={supplyExpenseCreateDialog}
                 addProductDialog={addProductDialog}
                 confirmSyncDialog={confirmSyncDialog}
+                transactionsDialog={transactionsDialog}
             />
         </Layout>
     )
