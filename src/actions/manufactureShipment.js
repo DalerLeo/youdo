@@ -114,12 +114,13 @@ export const addProductsListAction = (filter, productType, manufacture) => {
     }
 }
 
-export const addRawsListAction = (filter, productType, stock) => {
+export const addRawsListAction = (filter, productType, stock, manufacture) => {
     const params = {
         page_size: _.get(filter.getParams(), 'pdPageSize'),
         page: _.get(filter.getParams(), 'pdPage'),
         search: _.get(filter.getParams(), 'pdSearch'),
         type: productType,
+        manufacture_ingredient: manufacture,
         stock
     }
     const payload = axios()

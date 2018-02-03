@@ -135,8 +135,10 @@ const enhance = compose(
         tabWrapper: {
             borderTop: '1px #efefef solid',
             marginTop: '-1px',
-            maxHeight: 'calc(100vh - 262px)',
-            overflowY: 'auto'
+            '& > div > div': {
+                maxHeight: 'calc(100vh - 262px)',
+                overflowY: 'auto'
+            }
         },
         tab: {
             textTransform: 'none !important',
@@ -384,7 +386,9 @@ const ManufactureShipment = enhance((props) => {
                         {product}
                         </span>
                     </Col>
-                    : <Col xs={6}><span><Raw style={iconStyles.material}/>{product}</span></Col>}
+                    : <Col xs={6}>
+                        <span><Raw style={isDefect ? iconStyles.defected : iconStyles.material}/>{product}</span>
+                    </Col>}
                 <Col xs={2}>
                     {type === PRODUCT
                         ? (kind === MATERIAL)

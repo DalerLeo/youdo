@@ -213,7 +213,7 @@ const enhance = compose(
             setOpenAddProductConfirm(false)
             return type === TYPE_PRODUCT
                 ? dispatch(addProductsListAction(filterProducts, productType, manufactureId))
-                : dispatch(addRawsListAction(filterProducts, productType, stock))
+                : dispatch(addRawsListAction(filterProducts, productType, stock, manufactureId))
         }
         return null
     }),
@@ -231,7 +231,7 @@ const enhance = compose(
             setOpenAddProductConfirm(false)
             return type === TYPE_PRODUCT
                 ? dispatch(addProductsListAction(filterProducts, productType, manufactureId))
-                : dispatch(addRawsListAction(filterProducts, productType, stock))
+                : dispatch(addRawsListAction(filterProducts, productType, stock, manufactureId))
         }
         return null
     }),
@@ -385,7 +385,7 @@ const enhance = compose(
             setOpenAddProductConfirm(false)
             return dialogType === TYPE_PRODUCT
                 ? dispatch(addProductsListAction(filterProducts, productType, manufacture))
-                : dispatch(addRawsListAction(filterProducts, productType, stock))
+                : dispatch(addRawsListAction(filterProducts, productType, stock, manufacture))
         },
 
         handleSubmitAddProductConfirm: props => () => {
@@ -428,7 +428,7 @@ const enhance = compose(
             setOpenAddProductConfirm(false)
             return dialogType === TYPE_PRODUCT
                 ? dispatch(addProductsListAction(filterProducts, productType, manufacture))
-                : dispatch(addRawsListAction(filterProducts, productType, stock))
+                : dispatch(addRawsListAction(filterProducts, productType, stock, manufacture))
         }
     })
 )
