@@ -157,6 +157,11 @@ const enhance = compose(
                     dispatch(positionListFetchAction(filter))
                     dispatch(reset('AddCourseForm'))
                 })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
+                })
         },
 
         handleOpenCreateDialog: props => () => {

@@ -8,7 +8,6 @@ import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import PropTypes from 'prop-types'
 import {
-    StockMultiSearchField,
     UsersMultiSearchField,
     DateToDateField
 } from '../ReduxForm'
@@ -16,6 +15,7 @@ import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import {Link} from 'react-router'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
+import OwnStocksSearchField from '../ReduxForm/Remainder/OwnStocksSearchField'
 import t from '../../helpers/translate'
 export const INVENTORY_FILTER_OPEN = 'openFilterDialog'
 
@@ -162,7 +162,7 @@ const InventoryFilterForm = enhance((props) => {
                         <Field
                             className={classes.inputFieldCustom}
                             name="stock"
-                            component={StockMultiSearchField}
+                            component={OwnStocksSearchField}
                             label={t('Склад')}
                             fullWidth={true}/>
                         <Field

@@ -11,6 +11,7 @@ import toCamelCase from '../../helpers/toCamelCase'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import ToolTip from '../ToolTip'
+import OwnStocksSearchField from '../ReduxForm/Remainder/OwnStocksSearchField'
 import StockSearchField from '../ReduxForm/Stock/StockSearchField'
 import DateField from '../ReduxForm/Basic/DateField'
 import TextField from '../ReduxForm/Basic/TextField'
@@ -204,7 +205,7 @@ const RemainderTransferDialog = enhance((props) => {
                     <Field
                         className={classes.inputFieldCustom}
                         name="fromStock"
-                        component={StockSearchField}
+                        component={OwnStocksSearchField}
                         label={t('С какого склада')}
                     />
                     <Field
