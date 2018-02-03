@@ -8,7 +8,7 @@ export const createSerializer = (data) => {
     const type = _.get(data, ['type', 'value']) || _.get(data, ['productTypeParent', 'value'])
     const measurement = _.get(data, ['measurement', 'value', 'id'])
     const childMeasurement = _.map(_.get(data, ['measurement', 'value', 'children']), (item) => {
-        return {measurement: _.toString(item.id)}
+        return {measurement: String(item.id)}
     })
     const boxes = _.filter(_.map(_.get(data, 'boxes'), (item, index) => {
         return {

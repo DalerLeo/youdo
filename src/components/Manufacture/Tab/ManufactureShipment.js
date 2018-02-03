@@ -68,6 +68,12 @@ const enhance = compose(
             marginTop: '56px',
             padding: '100px 0'
         },
+        miniLoader: {
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: '25px 0'
+        },
         choose: {
             background: 'url(' + Choose + ') no-repeat center 50px',
             backgroundSize: '200px',
@@ -128,7 +134,9 @@ const enhance = compose(
         },
         tabWrapper: {
             borderTop: '1px #efefef solid',
-            marginTop: '-1px'
+            marginTop: '-1px',
+            maxHeight: 'calc(100vh - 262px)',
+            overflowY: 'auto'
         },
         tab: {
             textTransform: 'none !important',
@@ -312,7 +320,6 @@ const ManufactureShipment = enhance((props) => {
     const logsLoading = _.get(detailData, 'logsLoading')
     const productsLoading = _.get(detailData, 'productsLoading')
     const materialsLoading = _.get(detailData, 'materialsLoading')
-    const reviewLoading = productsLoading || materialsLoading
 
     const groupedProducts = _.groupBy(_.get(detailData, 'products'), (item) => item.product.id)
     const products = _.map(groupedProducts, (item, index) => {
@@ -413,7 +420,6 @@ const ManufactureShipment = enhance((props) => {
                 fullWidth={true}/>
         </div>
     )
-    const wholeEmpty = _.isEmpty(products) && _.isEmpty(materials)
     if (manufactureId <= ZERO) {
         return (
             <Paper transitionEnabled={false} zDepth={1} className={classes.choose}>
@@ -479,40 +485,40 @@ const ManufactureShipment = enhance((props) => {
                                 disableTouchRipple={true}
                                 icon={<Sort/>}
                                 value={TAB.TAB_SORTED}>
-                                {!wholeEmpty
-                                    ? <div className={classes.flexReview}>
-                                        <div className={classes.productsBlock}>
-                                            <Row className={classes.flexTitle}>
-                                                <Col xs={6}><h4>{t('Произведено')}</h4></Col>
-                                                <Col xs={2}><h4>{t('Всего')}</h4></Col>
-                                                <Col xs={2}><h4>{t('Ок')}</h4></Col>
-                                                <Col xs={2}><h4>{t('Брак')}</h4></Col>
-                                            </Row>
-                                            {!_.isEmpty(products)
-                                                ? products
+                                <div className={classes.flexReview}>
+                                    <div className={classes.productsBlock}>
+                                        <Row className={classes.flexTitle}>
+                                            <Col xs={6}><h4>{t('Произведено')}</h4></Col>
+                                            <Col xs={2}><h4>{t('Всего')}</h4></Col>
+                                            <Col xs={2}><h4>{t('Ок')}</h4></Col>
+                                            <Col xs={2}><h4>{t('Брак')}</h4></Col>
+                                        </Row>
+                                        {!_.isEmpty(products)
+                                            ? products
+                                            : productsLoading
+                                                ? <div className={classes.miniLoader}>
+                                                    <Loader size={0.75}/>
+                                                </div>
                                                 : <div className={classes.emptyQuery}>
                                                     <div>{t('Продукции еще не произведены')}</div>
                                                 </div>}
-                                        </div>
-                                        <div className={classes.productsBlock}>
-                                            <Row className={classes.flexTitle}>
-                                                <Col xs={6}><h4>{t('Затраченное сырье')}</h4></Col>
-                                                <Col xs={2}><h4>{t('Кол-во')}</h4></Col>
-                                            </Row>
-                                            {!_.isEmpty(materials)
-                                                ? materials
+                                    </div>
+                                    <div className={classes.productsBlock}>
+                                        <Row className={classes.flexTitle}>
+                                            <Col xs={6}><h4>{t('Затраченное сырье')}</h4></Col>
+                                            <Col xs={2}><h4>{t('Кол-во')}</h4></Col>
+                                        </Row>
+                                        {!_.isEmpty(materials)
+                                            ? materials
+                                            : materialsLoading
+                                                ? <div className={classes.miniLoader}>
+                                                    <Loader size={0.75}/>
+                                                </div>
                                                 : <div className={classes.emptyQuery}>
                                                     <div>{t('Не затрачено сырья')}</div>
                                                 </div>}
-                                        </div>
                                     </div>
-                                    : reviewLoading
-                                        ? <div className={classes.loader}>
-                                            <Loader size={0.75}/>
-                                        </div>
-                                        : <div className={classes.emptyQuery}>
-                                            <div>{t('В данную смену не произведено ни одной продукции')}</div>
-                                        </div>}
+                                </div>
                             </Tab>
 
                             <Tab
