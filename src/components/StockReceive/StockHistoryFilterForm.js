@@ -16,11 +16,10 @@ import {
     DateToDateField,
     StockHistoryTypeSearchField,
     StockStatusSearchField,
-    StockMultiSearchField,
     ProductTypeParentSearchField,
     ProductTypeChildSearchField
 } from '../ReduxForm'
-
+import OwnStocksSearchField from '../ReduxForm/Remainder/OwnStocksSearchField'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 import t from '../../helpers/translate'
@@ -217,7 +216,7 @@ const HistoryFilterForm = enhance((props) => {
                         <Field
                             className={classes.inputFieldCustom}
                             name="stock"
-                            component={StockMultiSearchField}
+                            component={OwnStocksSearchField}
                             label={t('Склад')}
                             fullWidth={true}/>
                     </div>

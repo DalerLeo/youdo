@@ -11,9 +11,9 @@ import PropTypes from 'prop-types'
 import {
     ProductTypeParentSearchField,
     ProductTypeChildSearchField,
-    MeasurementMultiSearchField,
-    StockMultiSearchField
+    MeasurementMultiSearchField
 } from '../ReduxForm'
+import OwnStocksSearchField from '../ReduxForm/Remainder/OwnStocksSearchField'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import {Link} from 'react-router'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
@@ -173,7 +173,7 @@ const RemainderFilterForm = enhance((props) => {
                         <Field
                             className={classes.inputFieldCustom}
                             name="stock"
-                            component={StockMultiSearchField}
+                            component={OwnStocksSearchField}
                             label={t('Склад')}
                             fullWidth={true}/>
                         <Field

@@ -12,7 +12,7 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import TextField from '../ReduxForm/Basic/TextField'
 import RemainderListProductField from '../ReduxForm/Remainder/RemainderDiscardProductListField'
-import {StockSearchField} from '../ReduxForm'
+import OwnStocksSearchField from '../ReduxForm/Remainder/OwnStocksSearchField'
 import ToolTip from '../ToolTip'
 import t from '../../helpers/translate'
 
@@ -236,7 +236,7 @@ const RemainderDiscardDialog = enhance((props) => {
                         <Field
                             className={classes.inputFieldCustom}
                             name="fromStock"
-                            component={StockSearchField}
+                            component={OwnStocksSearchField}
                             label={t('С какого склада')}
                         />
                         <Field
