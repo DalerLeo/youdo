@@ -246,7 +246,7 @@ const enhance = compose(
     withState('closed', 'setClosed', false)
 )
 
-const OrderCreateDialog = enhance((props) => {
+const   OrderCreateDialog = enhance((props) => {
     const {
         open,
         handleSubmit,

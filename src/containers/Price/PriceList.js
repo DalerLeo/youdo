@@ -62,7 +62,7 @@ const enhance = compose(
         const priceItemHistoryLoading = _.get(state, ['price', 'history', 'loading'])
         const priceItemExpenseList = _.get(state, ['price', 'expense', 'data'])
         const priceItemExpenseLoading = _.get(state, ['price', 'expense', 'loading'])
-        const setCurrenyForm = _.get(state, ['form', 'SetCurrenyForm'])
+        const setPricesForm = _.get(state, ['form', 'SetPricesForm'])
         const productsData = _.get(state, ['price', 'product', 'data'])
         const productsDataLoading = _.get(state, ['price', 'product', 'loading'])
         const pricePriceList = _.get(state, ['price', 'priceList', 'data'])
@@ -86,7 +86,7 @@ const enhance = compose(
             priceItemExpenseLoading,
             globalForm,
             setDefaultForm,
-            setCurrenyForm,
+            setPricesForm,
             productsData,
             pricePriceList,
             productsDataLoading,
@@ -231,8 +231,8 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[SET_PRICE_DIALOG_OPEN]: false, 'pdSearch': null, 'pdCurrency': null})})
         },
         handleSubmitSetPriceDialog: props => (items, closeDialog) => {
-            const {location: {pathname, query}, dispatch, filter} = props
-            return dispatch(setPriceCreateFetchAction(items, query))
+            const {location: {pathname}, dispatch, filter, setPricesForm} = props
+            return dispatch(setPriceCreateFetchAction(_.get(setPricesForm, 'values')))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
@@ -248,9 +248,9 @@ const enhance = compose(
                 })
         },
         handleFilterSetPriceCurrency: props => () => {
-            const {filter, setCurrenyForm, setCurrencyChooseDialog, dispatch} = props
-            const cashCurrency = _.get(setCurrenyForm, ['values', 'cashCurrency', 'value']) || null
-            const bankCurrency = _.get(setCurrenyForm, ['values', 'bankCurrency', 'value']) || null
+            const {filter, setPricesForm, setCurrencyChooseDialog, dispatch} = props
+            const cashCurrency = _.get(setPricesForm, ['values', 'cashCurrency', 'value']) || null
+            const bankCurrency = _.get(setPricesForm, ['values', 'bankCurrency', 'value']) || null
             filter.filterBy({'cashCurrency': cashCurrency})
             filter.filterBy({'bankCurrency': bankCurrency})
             setCurrencyChooseDialog(false)

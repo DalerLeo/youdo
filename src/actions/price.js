@@ -109,9 +109,10 @@ export const priceItemExpensesFetchAction = (id) => {
         payload
     }
 }
-export const setPriceCreateFetchAction = (id) => {
+export const setPriceCreateFetchAction = (formValues) => {
+    const requestData = serializers.setPricesSerializer(formValues)
     const payload = axios()
-        .get(sprintf(API.PRICE_LIST_ITEM_EXPENSES, id))
+        .get(sprintf(API.PRICE_LIST_ITEM_EXPENSES))
         .then((response) => {
             return _.get(response, 'data')
         })

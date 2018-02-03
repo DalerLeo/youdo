@@ -80,3 +80,34 @@ export const listFilterSerializer = (data, manufacture) => {
     }
 }
 
+export const setPricesSerializer = (data) => {
+    const cashCurrency = _.get(data, 'cashCurrency')
+    const transferCurrency = _.get(data, 'bankCurrency')
+
+    const products = _.map(_.get(data, 'product'), (item, index) => {
+        const product = index
+        const prices = _.map(_.get(item, 'cashPrice'), (priceItem, priceIndex) => {
+            return {
+                'price_list': priceIndex,
+                'cash_price': _.toNumber(priceItem),
+                'cash_price': _.toNumber(priceItem)
+            }
+        })
+        const priceList = _.get(item, 'bankPrice')
+        const cashPrice = _.get(item, 'cashPrice')
+        const transferPrice = _.get(item, 'bankPrice')
+
+        return {
+            product,
+            priceList,
+            cashPrice,
+            transferPrice
+        }
+    })
+
+    return {
+        'product': products,
+        'cashCurrency': cashCurrency,
+        'transferCurrency': transferCurrency
+    }
+}
