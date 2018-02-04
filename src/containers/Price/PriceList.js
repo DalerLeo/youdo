@@ -239,7 +239,6 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[SET_PRICE_DIALOG_OPEN]: false, 'pdSearch': null, 'pdCurrency': null})})
                     closeDialog(false)
-                    // dispatch(setPriceProductListFetchAction(filter))
                 })
                 .catch((error) => {
                     dispatch(openErrorAction({

@@ -3,11 +3,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose, withState, withHandlers} from 'recompose'
 import injectSheet from 'react-jss'
-import {Row, Col} from 'react-flexbox-grid'
 import {Field, reduxForm} from 'redux-form'
 import {hashHistory} from 'react-router'
 import Loader from '../Loader'
-import LinearProgress from '../LinearProgress'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
@@ -23,7 +21,6 @@ import {
     CurrencySearchField,
     normalizeNumber
 } from '../ReduxForm'
-import SetPriceOverallDialog from './SetPriceOverallDialog'
 import t from '../../helpers/translate'
 
 const ZERO = 0
