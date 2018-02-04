@@ -5,6 +5,8 @@ import DatePicker from 'material-ui/DatePicker'
 import DateRange from 'material-ui/svg-icons/action/date-range'
 import IntlPolyfill from 'intl'
 import 'intl/locale-data/jsonp/ru'
+import {getLanguage} from '../../../helpers/storage'
+import t from '../../../helpers/translate'
 
 const errorStyle = {
     textAlign: 'left'
@@ -17,6 +19,7 @@ const DateField = ({classes, input, label, meta: {error}, ...defaultProps}) => {
     }
 
     const DateTimeFormat = IntlPolyfill.DateTimeFormat
+    const lang = getLanguage() === 'uz' ? 'ru' : getLanguage()
 
     return (
         <div className={classes.wrapper}>
@@ -30,13 +33,13 @@ const DateField = ({classes, input, label, meta: {error}, ...defaultProps}) => {
                     {...defaultProps}
                     okLabel="Ок"
                     DateTimeFormat={DateTimeFormat}
-                    formatDate={new DateTimeFormat('ru', {
+                    formatDate={new DateTimeFormat(lang, {
                         day: 'numeric',
                         month: 'long',
                         year: 'numeric'
                     }).format}
-                    locale="ru"
-                    cancelLabel="Отмена"
+                    locale={lang}
+                    cancelLabel={t('Отмена')}
                 />
                 <div className={classes.icon}>
                     <DateRange />

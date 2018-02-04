@@ -476,7 +476,7 @@ export default class GoogleCustomMap extends React.Component {
             <div style={{height: '100%', width: '100%', overflow: 'hidden'}}>
                 <div style={marker}>
                     <Checkbox
-                        label="Магазины"
+                        label={t('Магазины')}
                         checked={this.state.showMarkets}
                         onCheck={this.updateCheck.bind(this)}
                         style={styles}
@@ -526,7 +526,7 @@ export default class GoogleCustomMap extends React.Component {
                     onClose={deleteZone.handleCloseDeleteZone}
                     onSubmit={deleteZone.handleSendDeleteZone}
                     deleteZone={this.handleDeleteZone}
-                    message="Удалить выбранную зону?"
+                    message={t('Удалить выбранную зону?')}
                     type="submit"
 
                 />

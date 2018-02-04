@@ -5,11 +5,13 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import ReactHighcharts from 'react-highcharts'
 import getConfig from '../../helpers/getConfig'
+import {getLanguage} from '../../helpers/storage'
 import moment from 'moment'
 
 const dateFormat = (date, time, defaultText) => {
-    const dateTime = moment(date).locale('ru').format('DD MMM YYYY')
-    return (date && time) ? dateTime : (date) ? moment(date).locale('ru').format('D MMM') : defaultText
+    const lan = getLanguage() === 'uz' ? 'ru' : 'en'
+    const dateTime = moment(date).locale(lan).format('DD MMM YYYY')
+    return (date && time) ? dateTime : (date) ? moment(date).locale(lan).format('D MMM') : defaultText
 }
 
 const enhance = compose(

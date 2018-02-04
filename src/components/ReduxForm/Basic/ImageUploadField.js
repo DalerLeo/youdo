@@ -72,11 +72,11 @@ const ImageUploadField = ({classes, setFileUploadLoading, fileUploadLoading, set
         }
 
         if (fileUploadErrors !== null) {
-            return (<div className={classes.error}>Ошибка: {fileUploadErrors}</div>)
+            return (<div className={classes.error}>{t('Ошибка')}: {fileUploadErrors}</div>)
         }
 
         if (error) {
-            return (<div className={classes.error}>Ошибка: {error}</div>)
+            return (<div className={classes.error}>{t('Ошибка')}: {error}</div>)
         }
 
         if (acceptedFiles.length === zero) {

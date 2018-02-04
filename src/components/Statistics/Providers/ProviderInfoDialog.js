@@ -266,7 +266,7 @@ const ProviderInfoDialog = enhance((props) => {
                     <div className={amount > ZERO ? classes.green : amount < ZERO ? classes.red : ''} style={{display: 'flex', justifyContent: 'flex-end'}}>
                         {numberFormat(amount, currency)}
                         <div style={{marginLeft: '10px'}}>
-                            <ToolTip position="bottom" text={paymentType === 'bank' ? 'банковский счет' : 'наличные'}>
+                            <ToolTip position="bottom" text={paymentType === 'bank' ? t('банковский счет') : t('наличные')}>
                                 {paymentType === 'bank'
                                     ? <BankPayment style={{height: '18px', width: '18px', color: '#6261b0'}}/>
                                     : <CashPayment style={{height: '18px', width: '18px', color: '#12aaeb'}}/>}
@@ -356,15 +356,15 @@ const ProviderInfoDialog = enhance((props) => {
                     <Field
                         name={'division'}
                         component={DivisionSearchField}
-                        label={'Организация'}/>
+                        label={t('Организация')}/>
                     <Field
-                        name={'currency'}
+                        name={t('currency')}
                         component={CurrencySearchField}
-                        label={'Валюта'}/>
+                        label={t('Валюта')}/>
                     <Field
-                        name={'paymentType'}
+                        name={t('paymentType')}
                         component={PaymentTypeSearchField}
-                        label={'Тип оплаты'}/>
+                        label={t('Тип оплаты')}/>
                     <Pagination filter={filterItem}/>
                 </div>
                 <div className={classes.content}>

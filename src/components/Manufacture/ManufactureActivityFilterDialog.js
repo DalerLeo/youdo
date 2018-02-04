@@ -7,6 +7,7 @@ import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import Paper from 'material-ui/Paper'
 import Close from 'material-ui/svg-icons/action/highlight-off'
+import t from '../../helpers/translate'
 
 export const MANUF_ACTIVITY_FILTER_KEY = {
     SHIFT: 'shift'
@@ -94,7 +95,7 @@ const ManufactureActivityFilter = enhance((props) => {
             <Paper zDepth={2} className={isOpen ? classes.form : classes.closedForm}>
                 <form onSubmit={handleSubmit(filterDialog.handleSubmitFilterDialog)}>
                     <div className={classes.filter}>
-                        <h3>Фильтр</h3>
+                        <h3>{t('Фильтр')}</h3>
                         {fields}
                         <IconButton
                             className={classes.closeFilter}
@@ -104,7 +105,7 @@ const ManufactureActivityFilter = enhance((props) => {
                             <Close/>
                         </IconButton>
                         <FlatButton
-                            label="Применить"
+                            label={t('Применить')}
                             fullWidth={false}
                             labelStyle={{color: '#12aaeb', textTransform: 'none', fontWeight: '600'}}
                             className={classes.searchButton}

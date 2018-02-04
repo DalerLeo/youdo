@@ -1,10 +1,11 @@
 import _ from 'lodash'
 import React from 'react'
 import SearchField from './Basic/SearchField'
+import t from '../../helpers/translate'
 
 const Items = [
-    {id: 'orders', name: 'Заказ'},
-    {id: 'transfers', name: 'Передача'}
+    {id: 'orders', name: t('Заказ')},
+    {id: 'transfers', name: t('Передача')}
 ]
 
 const getOptions = (search) => {

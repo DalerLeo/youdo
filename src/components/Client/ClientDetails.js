@@ -217,9 +217,9 @@ const ClientDetails = enhance((props) => {
                             const email = _.get(item, 'email') || t('Не указан')
                             return (
                                 <Row key={item.id} className="dottedList">
-                                    <Col xs={4}><span>Имя:</span> <br/>{name}</Col>
-                                    <Col xs={4}><span>Email:</span> <br/>{email}</Col>
-                                    <Col xs={4}><span>Телефон:</span> <br/>{phone}</Col>
+                                    <Col xs={4}><span>{t('Имя')}:</span> <br/>{name}</Col>
+                                    <Col xs={4}><span>{t('Email')}:</span> <br/>{email}</Col>
+                                    <Col xs={4}><span>{t('Телефон')}:</span> <br/>{phone}</Col>
                                 </Row>
                             )
                         })}

@@ -254,7 +254,7 @@ const RemainderDiscardDialog = enhance((props) => {
                         <div className={classes.addButtons}>
                             <strong>{t('Список товаров')}</strong>
                             {!fromStock
-                                ? <ToolTip text={t('Выберите склад')} position="right">
+                                ? <ToolTip text={t('Выберите склад')} position="bottom">
                                     <FlatButton
                                         disabled={true}
                                         label={t('добавить товары')}

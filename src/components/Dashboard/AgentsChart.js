@@ -5,6 +5,7 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import ReactHighcharts from 'react-highcharts'
 import getConfig from '../../helpers/getConfig'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -85,16 +86,16 @@ const AgentsChart = enhance((props) => {
             headerFormat: '<b>{point.x}</b><br/>'
         },
         series: [{
-            name: 'Продажи',
+            name: t('Продажи'),
             data: ordersData,
             color: '#5d6474'
         },
         {
-            name: 'Возвраты',
+            name: t('Возвраты'),
             data: returnsData,
             color: '#ff526d'
         }, {
-            name: 'Фактически',
+            name: t('Фактически'),
             data: factsData,
             color: '#12aaeb'
         }]

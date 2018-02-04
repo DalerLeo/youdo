@@ -113,7 +113,7 @@ const InventoryDetails = enhance((props) => {
     const createdBy = _.get(detailData, ['data', 'createdBy', 'firstName']) + ' ' + _.get(detailData, ['data', 'createdBy', 'secondName'])
     const createdDate = dateFormat(_.get(detailData, ['data', 'createdDate']))
     const stock = _.get(detailData, ['data', 'stock', 'name'])
-    const comment = _.get(detailData, ['data', 'comment']) || 'Комментариев нет'
+    const comment = _.get(detailData, ['data', 'comment']) || t('Комментариев нет')
     const products = _.get(detailData, ['data', 'inventoryProducts'])
 
     if (isLoading) {

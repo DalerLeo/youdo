@@ -390,7 +390,7 @@ const OrderCreateDialog = enhance((props) => {
                                             name="paymentDate"
                                             component={DateField}
                                             className={classes.inputDateCustom}
-                                            floatingLabelText="Дата окончательной оплаты"
+                                            floatingLabelText={t('Дата окончательной оплаты')}
                                             container="inline"
                                             fullWidth={true}/>
                                     </div>

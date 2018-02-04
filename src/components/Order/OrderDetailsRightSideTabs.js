@@ -7,6 +7,7 @@ import Loader from '../Loader'
 import {Row, Col} from 'react-flexbox-grid'
 import numberFormat from '../../helpers/numberFormat'
 import dateFormat from '../../helpers/dateFormat'
+import t from '../../helpers/translate'
 import {Tabs, Tab} from 'material-ui/Tabs'
 import * as TAB from '../../constants/orderTab'
 import NotFound from '../Images/not-found.png'
@@ -157,7 +158,7 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                 inkBarStyle={{background: '#12aaeb', marginTop: '-2px', height: '2px'}}
                 onChange={(value) => tabData.handleTabChange(value, id)}>
                 <Tab
-                    label="Список товаров"
+                    label={t('Список товаров')}
                     buttonStyle={tabStyle.button}
                     value={TAB.ORDER_TAB_PRODUCT_LIST}
                     disableTouchRipple={true}>
@@ -166,12 +167,12 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                             <Row className="dottedList">
                                 <Col xs={4}>
                                     <span style={{marginRight: 10}}>№</span>
-                                    <span>Товар</span>
+                                    <span>{t('Товар')}</span>
                                 </Col>
-                                <Col xs={2}>Количество</Col>
-                                <Col xs={2}>Цена ({primaryCurrency})</Col>
-                                <Col xs={2}>Сумма ({primaryCurrency})</Col>
-                                <Col xs={2}>Скидка ({primaryCurrency})</Col>
+                                <Col xs={2}>{t('Количество')}</Col>
+                                <Col xs={2}>{t('Цена')} ({primaryCurrency})</Col>
+                                <Col xs={2}>{t('Сумма')} ({primaryCurrency})</Col>
+                                <Col xs={2}>{t('Скидка')} ({primaryCurrency})</Col>
                             </Row>
 
                             {_.map(products, (item, index) => {
@@ -186,7 +187,7 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                 const isBonus = _.get(item, 'isBonus')
                                 const measurement = _.get(product, ['measurement', 'name'])
                                 const discount = numberFormat(_.toNumber(_.get(item, 'discountPrice')) * _.toNumber(amount))
-                                const tooltipText = 'Количество возврата'
+                                const tooltipText = t('Количество возврата')
                                 if (type === firstType) {
                                     commonMeasurement = true
                                 }
@@ -196,7 +197,7 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                         <Col xs={4}>
                                             <span style={{marginRight: 10, fontWeight: 600}}>{index + ONE}</span>
                                             <span>{productName} {stock ? <strong>({stock})</strong> : null}
-                                            {isBonus && <strong className="greenFont"> (бонус)</strong>}</span>
+                                            {isBonus && <strong className="greenFont"> ({t('бонус')})</strong>}</span>
                                         </Col>
                                         <Col xs={2}>
                                             {numberFormat(amount)}
@@ -215,8 +216,8 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                         </div>
                         <Row className={classes.summary}>
                             <Col xs={4}>{commonMeasurement
-                                ? <span>Итого:</span>
-                                : <span>Общая сумма {primaryCurrency}</span>}
+                                ? <span>{t('Итого')}:</span>
+                                : <span>{t('Общая сумма')} {primaryCurrency}</span>}
                             </Col>
                             {commonMeasurement
                                 ? <Col xs={2}>
@@ -233,7 +234,7 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                 </Tab>
 
                 <Tab
-                    label="Возврат"
+                    label={t('Возврат')}
                     buttonStyle={tabStyle.button}
                     value={TAB.ORDER_TAB_RETURN}
                     disableTouchRipple={true}>
@@ -241,10 +242,10 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                         ? <div className={classes.tabContent}>
                             {!returnDataLoading ? <div className={classes.tabWrapper}>
                                 <Row className="dottedList">
-                                    <Col xs={3} style={{textAlign: 'left'}}>Причина возврата</Col>
-                                    <Col xs={3} style={{textAlign: 'left'}}>Склад</Col>
-                                    <Col xs={2}>Дата возврата</Col>
-                                    <Col xs={3}>Сумма ({primaryCurrency})</Col>
+                                    <Col xs={3} style={{textAlign: 'left'}}>{t('Причина возврата')}</Col>
+                                    <Col xs={3} style={{textAlign: 'left'}}>{t('Склад')}</Col>
+                                    <Col xs={2}>{t('Дата возврата')}</Col>
+                                    <Col xs={3}>{t('Сумма')} ({primaryCurrency})</Col>
                                 </Row>
                                 {_.map(returnData, (item, index) => {
                                     const returnId = _.get(item, 'id')
@@ -279,7 +280,7 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                             }
                         </div>
                         : (!returnDataLoading && <div className={classes.emptyQuery}>
-                            <div>В данном заказе нет возвратов</div>
+                            <div>{t('В данном заказе нет возвратов')}</div>
                         </div>)}
                 </Tab>
             </Tabs>

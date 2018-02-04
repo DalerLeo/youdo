@@ -3,6 +3,7 @@ import {compose} from 'recompose'
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton'
 import getConfig from '../../../helpers/getConfig'
 import numberFormat from '../../../helpers/numberFormat'
+import t from '../../../helpers/translate'
 
 const enhance = compose()
 const RateRadioButton = enhance((props) => {
@@ -26,19 +27,19 @@ const RateRadioButton = enhance((props) => {
                     <RadioButton
                         value={'current'}
                         style={{margin: '10px 0'}}
-                        label="Текущий курс"
+                        label={t('Текущий курс')}
                     />
                     <RadioButton
                         value={'order'}
                         disabled={!showOrderRate}
                         style={{margin: '10px 0'}}
-                        label="Курс при оформлении"
+                        label={t('Курс при оформлении')}
                     />
                     <RadioButton
                         value={'custom'}
                         disabled={!canSetCustomRate}
                         style={{margin: '10px 0 0'}}
-                        label="Индивидуальный"
+                        label={t('Индивидуальный')}
                     />
                 </RadioButtonGroup>
             </div>

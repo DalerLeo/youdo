@@ -258,7 +258,7 @@ const StockTabTransfer = enhance((props) => {
             <StockReceiveTabList currentTab={TAB.STOCK_RECEIVE_TAB_TRANSFER}/>
             <div className={toggle === 'delivery' ? classes.filters : classes.filtersReverse}>
                 {toggle === 'delivery' &&
-                <ToolTip position="bottom" text="Период доставки">
+                <ToolTip position="left" text="Период доставки">
                     <StockTabTransferDateRange filter={filterDelivery} initialValues={filterDialog.initialValues}/>
                 </ToolTip>}
                 <div className={classes.toggleWrapper}>
@@ -297,14 +297,14 @@ const StockTabTransfer = enhance((props) => {
                 />}
             <ConfirmDialog
                 type="submit"
-                message={'Запрос № ' + _.get(detailData, 'id')}
+                message={t('Запрос') + ' № ' + _.get(detailData, 'id')}
                 onClose={confirmDialog.handleCloseConfirmDialog}
                 onSubmit={confirmDialog.handleSubmitTransferAcceptDialog}
                 open={toBoolean(confirmDialog.openConfirmDialog)}
             />
             <ConfirmDialog
                 type="submit"
-                message={'Передать доставщику?'}
+                message={t('Передать доставщику?')}
                 onClose={confirmTransfer.handleCloseDeliveryConfirmDialog}
                 onSubmit={confirmTransfer.handleSubmitDeliveryConfirmDialog}
                 open={_.toInteger(confirmTransfer.openConfirmTransfer) > ZERO}

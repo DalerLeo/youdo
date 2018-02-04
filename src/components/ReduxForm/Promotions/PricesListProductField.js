@@ -14,6 +14,7 @@ import ProductCustomSearchField from '../Promotions/ProductCustomSearchField'
 import TextField from '../Basic/TextField'
 import Check from 'material-ui/svg-icons/navigation/check'
 import numberFormat from '../../../helpers/numberFormat'
+import t from '../../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -180,7 +181,7 @@ const PricesListProductField = ({classes, state, dispatch, handleAdd, handleRemo
         <div className={classes.wrapper}>
             <div>
                 {!state.open && <div className={classes.headers} style={{marginTop: '-10px'}}>
-                    <div className={classes.title}>Список товаров</div>
+                    <div className={classes.title}>{t('Список товаров')}</div>
                     <FlatButton
                         label="+ добавить товар"
                         style={{color: '#12aaeb'}}

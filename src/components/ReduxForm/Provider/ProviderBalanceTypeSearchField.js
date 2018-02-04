@@ -1,10 +1,11 @@
 import _ from 'lodash'
 import React from 'react'
 import SearchField from '../Basic/SearchField'
+import t from '../../../helpers/translate'
 
 const Items = [
-    {value: 'debtor', name: 'Долг поставщику'},
-    {value: 'loaner', name: 'Долг поставщика'}
+    {value: 'debtor', name: t('Долг поставщику')},
+    {value: 'loaner', name: t('Долг поставщика')}
 ]
 const getOptions = () => {
     return Promise.resolve(Items)

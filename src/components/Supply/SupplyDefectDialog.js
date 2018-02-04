@@ -81,7 +81,7 @@ const SupplyDefectDialog = enhance((props) => {
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>{t('Бракованные товараы')}</span>
+                <span>{t('Бракованные товары')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>

@@ -195,7 +195,7 @@ const TransactionsList = enhance((props) => {
                     <div className={amount > ZERO ? classes.green : (amount < ZERO ? classes.red : '')}>
                         <div className={classes.payment}>
                             {numberFormat(amount, currency)}
-                            <ToolTip position="bottom" text={paymentType === 'bank' ? 'банковский счет' : 'наличные'}>
+                            <ToolTip position="bottom" text={paymentType === 'bank' ? t('банковский счет') : t('наличные')}>
                                 {paymentType === 'bank'
                                     ? <BankPayment style={{height: '18px', width: '18px', color: '#6261b0'}}/>
                                     : <CashPayment style={{height: '18px', width: '18px', color: '#12aaeb'}}/>}

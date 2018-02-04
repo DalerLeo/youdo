@@ -1,10 +1,11 @@
 import _ from 'lodash'
 import React from 'react'
 import SearchField from './Basic/SearchField'
+import t from '../../helpers/translate'
 
 const Items = [
-    {id: 'bank', name: 'Банковский счет'},
-    {id: 'cash', name: 'Наличный'}
+    {id: 'bank', name: t('Банковский счет')},
+    {id: 'cash', name: t('Наличный')}
 ]
 
 const getOptions = () => {

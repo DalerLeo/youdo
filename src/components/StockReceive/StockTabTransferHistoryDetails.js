@@ -157,7 +157,7 @@ const StockTransferDetails = enhance((props) => {
     } = props
     const detail = _.get(detailData, 'data')
     const products = _.get(detail, 'products')
-    const comment = _.get(detail, 'comment') || 'Комментарий не отсутствует'
+    const comment = _.get(detail, 'comment') || t('Комментарий не отсутствует')
     const id = _.get(detailData, 'id')
     const dateRequest = dateFormat(_.get(detailData, ['currentDetail', 'dateRequest']))
     const dateDelivery = dateFormat(_.get(detailData, ['currentDetail', 'dateDelivery']))
@@ -198,7 +198,7 @@ const StockTransferDetails = enhance((props) => {
                             <Col xs={2}>{receiver}</Col>
                             <Col xs={2} className={classes.flex}><span>{dateDelivery}</span>
                                 <div>
-                                    <ToolTip position="bottom" text={t('Распечатать накладную')}>
+                                    <ToolTip position="left" text={t('Распечатать накладную')}>
                                         <IconButton
                                             iconStyle={iconStyle.icon}
                                             style={iconStyle.button}
@@ -209,7 +209,7 @@ const StockTransferDetails = enhance((props) => {
                                             <PrintIcon/>
                                         </IconButton>
                                     </ToolTip>
-                                    <ToolTip position="right" text={tooltipCancelText}>
+                                    <ToolTip position="left" text={tooltipCancelText}>
                                         <IconButton
                                             iconStyle={iconStyle.icon}
                                             style={iconStyle.button}

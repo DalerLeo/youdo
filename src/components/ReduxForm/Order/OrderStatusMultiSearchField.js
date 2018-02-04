@@ -1,13 +1,13 @@
 import React from 'react'
 import MultiSelectField from '../Basic/MultiSelectField'
-
+import t from '../../../helpers/translate'
 const Items = [
-    {id: 0, name: 'Запрос отправлен'},
-    {id: 1, name: 'Есть на складе'},
-    {id: 2, name: 'Передан доставщику'},
-    {id: 3, name: 'Доставлен'},
-    {id: 4, name: 'Отменен'},
-    {id: 5, name: 'Не подтвержден'}
+    {id: 0, name: t('Запрос отправлен')},
+    {id: 1, name: t('Есть на складе')},
+    {id: 2, name: t('Передан доставщику')},
+    {id: 3, name: t('Доставлен')},
+    {id: 4, name: t('Отменен')},
+    {id: 5, name: t('Не подтвержден')}
 ]
 const getOptions = () => {
     return Promise.resolve(Items)

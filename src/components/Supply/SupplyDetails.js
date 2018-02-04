@@ -447,7 +447,7 @@ const SupplyDetails = enhance((props) => {
                                     <span>{t('Оплачено')}:</span>
                                     <span>{totalPaid > zero
                                         ? <a onClick={() => { transactionsDialog.handleOpenTransactionsDialog(id) }}>
-                                            <strong>{numberFormat(totalPaid, currency)}</strong>
+                                            <strong style={{borderBottom: '1px dashed'}}>{numberFormat(totalPaid, currency)}</strong>
                                         </a>
                                         : numberFormat(totalPaid, currency)}</span>
                                 </li>

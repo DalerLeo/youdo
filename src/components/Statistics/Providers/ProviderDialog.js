@@ -170,7 +170,7 @@ const StatProviderDialog = enhance((props) => {
         const id = _.get(item, 'id')
         const market = _.get(item, ['market', 'name'])
         const totalPrice = _.get(item, 'totalPrice')
-        const paymentType = _.get(item, 'paymentType') === 'cash' ? 'Наличные' : 'Перечисление'
+        const paymentType = _.get(item, 'paymentType') === 'cash' ? t('Наличные') : t('Перечисление')
         const createdDate = dateTimeFormat(_.get(item, 'createdDate'))
 
         return (

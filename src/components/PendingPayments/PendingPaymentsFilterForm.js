@@ -171,7 +171,7 @@ const PendingPaymentsFilterForm = enhance((props) => {
                             className={classes.inputFieldCustom}
                             name="market"
                             component={MarketMultiSearchField}
-                            label="Магазин"
+                            label={t('Магазин')}
                             fullWidth={true}/>
                     </div>}
                     <div>
@@ -179,7 +179,7 @@ const PendingPaymentsFilterForm = enhance((props) => {
                             className={classes.inputFieldCustom}
                             name="client"
                             component={ClientMultiSearchField}
-                            label="Клиент"
+                            label={t('Клиент')}
                             fullWidth={true}/>
                     </div>
                     <div>
@@ -187,7 +187,7 @@ const PendingPaymentsFilterForm = enhance((props) => {
                             className={classes.inputFieldCustom}
                             name="paymentType"
                             component={PaymentTypeSearchField}
-                            label="Тип оплаты"
+                            label={t('Тип оплаты')}
                             fullWidth={true}/>
                     </div>
                     <div>
@@ -195,7 +195,7 @@ const PendingPaymentsFilterForm = enhance((props) => {
                             className={classes.inputFieldCustom}
                             name="division"
                             component={DivisionMultiSearchField}
-                            label="Организация"
+                            label={t('Организация')}
                             fullWidth={true}/>
                     </div>
                     <div>
@@ -203,7 +203,7 @@ const PendingPaymentsFilterForm = enhance((props) => {
                             className={classes.inputFieldCustom}
                             name="date"
                             component={DateToDateField}
-                            label="Диапазон дат"
+                            label={t('Диапазон дат')}
                             fullWidth={true}/>
                     </div>
                     <RaisedButton
@@ -211,7 +211,7 @@ const PendingPaymentsFilterForm = enhance((props) => {
                         primary={true}
                         buttonStyle={{color: '#fff'}}
                         labelStyle={{fontSize: '13px'}}
-                        label="Применить"
+                        label={t('Применить')}
                         style={{marginTop: '15px'}}>
                     </RaisedButton>
                 </form>
