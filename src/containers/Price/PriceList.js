@@ -232,14 +232,14 @@ const enhance = compose(
         },
         handleSubmitSetPriceDialog: props => (items, closeDialog) => {
             const {location: {pathname}, dispatch, filter, setPricesForm} = props
-            return dispatch(setPriceCreateFetchAction(_.get(setPricesForm, 'values')))
+            return dispatch(setPriceCreateFetchAction(_.get(setPricesForm, ['values'])))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[SET_PRICE_DIALOG_OPEN]: false, 'pdSearch': null, 'pdCurrency': null})})
                     closeDialog(false)
-                    dispatch(setPriceProductListFetchAction(filter))
+                    // dispatch(setPriceProductListFetchAction(filter))
                 })
                 .catch((error) => {
                     dispatch(openErrorAction({

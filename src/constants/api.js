@@ -342,6 +342,7 @@ export const PRICE_LIST_ITEM_HISTORY = 'stock/supply_product_history/%d/'
 export const PRICE_LIST_ITEM_EXPENSES = 'stock/supply_product_expenses/%d/'
 export const PRICE_LIST_ITEM_LIST = `/${PRICE_LIST_ITEM}/`
 export const PRICE_LIST_ITEM_ADD = `/${PRICE_LIST_ITEM}/add_items/`
+export const SET_PRICE_LIST = 'sales/price_list_item/add_items_separately/'
 
 export const TRACKING = 'market/agents_location/'
 export const TRACKING_LIST = `${TRACKING}`

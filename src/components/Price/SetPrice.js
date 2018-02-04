@@ -340,7 +340,6 @@ const enhance = compose(
             'margin-right': ({stat}) => stat ? '-30px' : 'unset'
         },
         tableRow: {
-            cursor: 'pointer',
             '& td': {
                 borderRight: '1px #efefef solid',
                 textAlign: 'left',
@@ -422,8 +421,6 @@ const SetPrice = enhance((props) => {
         formProducts,
         cashCurrency,
         bankCurrency,
-        openOverallDialog,
-        setOpenOverallDialog,
         priceList
     } = props
     const cashCurrencyShow = _.toInteger(filter.getParam('pdCashCurrency')) > ZERO
@@ -438,6 +435,7 @@ const SetPrice = enhance((props) => {
         return _.toNumber(numberWithoutSpaces(_.get(item, 'amount'))) > ZERO ||
             _.toNumber(numberWithoutSpaces(_.get(item, 'defect')))
     })
+    console.log(_.get(data, 'results'), 'products')
     const products = (
         <div className={classes.leftTable}>
             <div><span>{t('Product')}</span></div>
@@ -480,7 +478,7 @@ const SetPrice = enhance((props) => {
                             return (
                                 <td key={index}>
                                     <Field
-                                        name={'product[' + id + '][cashPrice]' + index}
+                                        name={'products[' + id + '][' + val.id + '][cashPrice]'}
                                         component={TextField}
                                         className={classes.inputFieldCustom}
                                         underlineStyle={{borderColor: '#5d6474'}}
@@ -488,7 +486,7 @@ const SetPrice = enhance((props) => {
                                         fullWidth={true}/>
                                     <span className={classes.marginRightField}>{cashCurrencyName}</span>
                                     <Field
-                                        name={'product[' + id + '][bankPrice]' + index}
+                                        name={'products[' + id + '][' + val.id + '][bankPrice]'}
                                         component={TextField}
                                         className={classes.inputFieldCustom}
                                         underlineStyle={{borderColor: '#5d6474'}}
@@ -581,7 +579,7 @@ const SetPrice = enhance((props) => {
                                     fullWidth={true}
                                 />
                             </div>
-                            <form onSubmit={onSubmitSearch} className={classes.search}>
+                            <div onSubmit={onSubmitSearch} className={classes.search}>
                                 <TextFieldSearch
                                     fullWidth={true}
                                     hintText={t('Поиск товаров') + '...'}
@@ -596,39 +594,21 @@ const SetPrice = enhance((props) => {
                                     disableTouchRipple={true}>
                                     <SearchIcon/>
                                 </IconButton>
-                            </form>
+                            </div>
                         </header>
-                        <form className={classes.productsList}>
+                        <div className={classes.productsList}>
                             <div className={classes.expandedTable}>
                                 {lists}
                             </div>
                             <div className={classes.bottomButton}>
-                                <FlatButton
-                                    type='submit'
-                                    label={t('Далее')}
-                                    disabled={_.isEmpty(filteredProducts)}
-                                    labelStyle={_.isEmpty(filteredProducts) ? {
-                                        fontSize: 13,
-                                        color: '#b3b3b3'
-                                    } : {fontSize: 13}}
-                                    className={classes.actionButton}
-                                    primary={true}
-                                    onTouchTap={() => {
-                                        setOpenOverallDialog(true)
-                                    }}/>
+                                <button className={classes.actionButton} primary={true} onClick={() => { onSubmit() }}>
+                                    {t('Далее')}
+                                </button>
                             </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            {openOverallDialog &&
-            <SetPriceOverallDialog
-                data={data}
-                formData={formProducts}
-                closeDialog={setOpenOverallDialog}
-                submitDialog={onSubmit}
-            />}
         </div>
     )
 })

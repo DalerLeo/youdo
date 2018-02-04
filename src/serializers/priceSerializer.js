@@ -81,33 +81,31 @@ export const listFilterSerializer = (data, manufacture) => {
 }
 
 export const setPricesSerializer = (data) => {
-    const cashCurrency = _.get(data, 'cashCurrency')
-    const transferCurrency = _.get(data, 'bankCurrency')
 
-    const products = _.map(_.get(data, 'product'), (item, index) => {
-        const product = index
-        const prices = _.map(_.get(item, 'cashPrice'), (priceItem, priceIndex) => {
+    const cashCurrency = _.get(data, ['cashCurrency', 'value'])
+    const transferCurrency = _.get(data, ['bankCurrency', 'value'])
+    console.log(data, 'data')
+    const products = _.map(_.get(data, 'products'), (item, index) => {
+        if (!_.isEmpty(item)) {
+            console.log(item, 'item')
+            const prices = _.map(item, (priceItem, priceIndex) => {
+                return {
+                    'price_list': priceIndex,
+                    'cash_price': _.get(priceItem, 'cashPrice'),
+                    'transfer_price': _.get(priceItem, 'bankPrice')
+                }
+            })
+
             return {
-                'price_list': priceIndex,
-                'cash_price': _.toNumber(priceItem),
-                'cash_price': _.toNumber(priceItem)
+                'product': index,
+                'prices': _.filter(prices, (o) => {return !_.isEmpty(o.cash_price) || !_.isEmpty(o.transfer_price)}),
             }
-        })
-        const priceList = _.get(item, 'bankPrice')
-        const cashPrice = _.get(item, 'cashPrice')
-        const transferPrice = _.get(item, 'bankPrice')
-
-        return {
-            product,
-            priceList,
-            cashPrice,
-            transferPrice
         }
     })
 
     return {
-        'product': products,
-        'cashCurrency': cashCurrency,
-        'transferCurrency': transferCurrency
+        'products': _.filter(products, (o) => {return !_.isEmpty(o)}),
+        'cash_currency': cashCurrency,
+        'transfer_currency': transferCurrency
     }
 }
