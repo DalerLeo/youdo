@@ -9,6 +9,7 @@ import toCamelCase from '../../../helpers/toCamelCase'
 import * as actionTypes from '../../../constants/actionTypes'
 import {connect} from 'react-redux'
 import numberFormat from '../../../helpers/numberFormat'
+import t from '../../../helpers/translate'
 
 const getOptions = (search, type, stock) => {
     return axios().get(`${PATH.REMAINDER_LIST}?type=${type || ''}&page_size=100&search=${search || ''}&stock=${stock || ''}`)
@@ -65,8 +66,8 @@ const DiscardProductSearchField = enhance((props) => {
                 return (
                     <div>
                         <div><strong>{name}</strong></div>
-                        <div>Доступно: {available}</div>
-                        <div>Браковано: {defects}</div>
+                        <div>{t('Доступно')}: {available}</div>
+                        <div>{t('Браковано')}: {defects}</div>
                     </div>
                 )
             }}

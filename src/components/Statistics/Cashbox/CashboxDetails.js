@@ -205,7 +205,7 @@ const enhance = compose(
             }
         },
         salesSummary: {
-            width: '335px',
+            width: '340px',
             display: 'flex',
             justifyContent: 'space-between'
         }
@@ -331,7 +331,7 @@ const StatCashboxDetails = enhance((props) => {
                                     </div>
                                 </div>
                             </div>
-                            <div style={{width: 'calc(100% - 335px)'}}>
+                            <div style={{width: 'calc(100% - 340px)'}}>
                                 <StatisticsChart
                                     primaryText={t('Баланс')}
                                     primaryValues={graphAmount}

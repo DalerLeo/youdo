@@ -290,11 +290,11 @@ const StatReportGridList = enhance((props) => {
             <span>{t('Задолжности')} ({t('клиенты')})</span>
             <ul>
                 <li>
-                    <span>{t('Закладчики нал.')}  ({_.get(clientsDebtData, 'borrowersCountCash')})</span>
+                    <span>{t('Задолжники нал')}.  ({_.get(clientsDebtData, 'borrowersCountCash')})</span>
                     <span>{moduleFormat(_.get(clientsDebtData, 'borrowersSumCash'), currency)}</span>
                 </li>
                 <li>
-                    <span>{t('Задолжники переч.')} ({_.get(clientsDebtData, 'borrowersCountBank')})</span>
+                    <span>{t('Задолжники переч')}. ({_.get(clientsDebtData, 'borrowersCountBank')})</span>
                     <span>{moduleFormat(_.get(clientsDebtData, 'borrowersSumBank'), currency)}</span>
                 </li>
                 <li>
@@ -314,11 +314,11 @@ const StatReportGridList = enhance((props) => {
             <span>{t('Задолжности')} ({t('поставщики')})</span>
             <ul>
                 <li>
-                    <span>{t('Закладчики нал.')} ({_.get(providersDebtData, 'borrowersCountCash')})</span>
+                    <span>{t('Задолжники нал')}. ({_.get(providersDebtData, 'borrowersCountCash')})</span>
                     <span>{moduleFormat(_.get(providersDebtData, 'borrowersSumCash'), currency)}</span>
                 </li>
                 <li>
-                    <span>{t('Закладчики переч.')} ({_.get(providersDebtData, 'borrowersCountBank')})</span>
+                    <span>{t('Задолжники переч')}. ({_.get(providersDebtData, 'borrowersCountBank')})</span>
                     <span>{moduleFormat(_.get(providersDebtData, 'borrowersSumBank'), currency)}</span>
                 </li>
                 <li>
