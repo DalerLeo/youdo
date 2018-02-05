@@ -17,7 +17,7 @@ const ProviderTransactionFormat = enhance((props) => {
         case TRANS_TYPE.SUPPLY: return (
             <Link target={'_blank'}
                   to={{pathname: sprintf(ROUTES.SUPPLY_ITEM_PATH, supply), query: {search: supply, exclude: false}}}>
-                {t('Поставка ')} № {supply}
+                {t('Поставка')} № {supply}
             </Link>
         )
         case TRANS_TYPE.SUPPLY_EXPENSE: return (

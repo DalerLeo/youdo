@@ -146,7 +146,7 @@ const ClientTransactionFilterForm = enhance((props) => {
                 <Link
                     className={classes.arrow}
                     onTouchTap={filterDialog.handleOpenFilterDialog}>
-                    <div>{t('Показать фильтр ')} <KeyboardArrowDown color="#12aaeb" /></div>
+                    <div>{t('Показать фильтр')} <KeyboardArrowDown color="#12aaeb" /></div>
                 </Link>
             </div>
         )
@@ -162,10 +162,26 @@ const ClientTransactionFilterForm = enhance((props) => {
                     </IconButton>
                 </div>
                 <form onSubmit={handleSubmit(filterDialog.handleSubmitFilterDialog)}>
-                    <Field className={classes.inputFieldCustom} name="division" component={DivisionMultiSearchField} label="Организация"/>
-                    <Field className={classes.inputFieldCustom} name="client" component={UsersMultiSearchField} label="Клиент"/>
-                    <Field className={classes.inputFieldCustom} name="status" component={ClientTransactionStatusSearchField} label="Статус"/>
-                    <Field className={classes.inputFieldCustom} name="createdDate" component={DateToDateField} label="Период создания"/>
+                    <Field
+                        className={classes.inputFieldCustom}
+                        name="division"
+                        component={DivisionMultiSearchField}
+                        label={t('Организация')}/>
+                    <Field
+                        className={classes.inputFieldCustom}
+                        name="client"
+                        component={UsersMultiSearchField}
+                        label={t('Клиент')}/>
+                    <Field
+                        className={classes.inputFieldCustom}
+                        name="status"
+                        component={ClientTransactionStatusSearchField}
+                        label={t('Статус')}/>
+                    <Field
+                        className={classes.inputFieldCustom}
+                        name="createdDate"
+                        component={DateToDateField}
+                        label={t('Период создания')}/>
 
                     <RaisedButton
                         type="submit"

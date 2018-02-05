@@ -132,7 +132,7 @@ const TelegramNewsDetails = enhance((props) => {
                 <div className={classes.titleLabel}>{title}</div>
                 <div className={classes.closeDetail} onClick={handleCloseDetail}/>
                 <div className={classes.titleButtons}>
-                    <ToolTip position="bottom" text="Изменить">
+                    <ToolTip position="bottom" text={t('Изменить')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
@@ -141,7 +141,7 @@ const TelegramNewsDetails = enhance((props) => {
                             <Edit />
                         </IconButton>
                     </ToolTip>
-                    <ToolTip position="bottom" text="Удалить">
+                    <ToolTip position="bottom" text={t('Удалить')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}

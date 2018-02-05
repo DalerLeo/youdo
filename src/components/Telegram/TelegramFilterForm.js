@@ -187,7 +187,7 @@ const TelegramFilterForm = enhance((props) => {
                         className={classes.inputFieldCustom}
                         name="market"
                         component={MarketMultiSearchField}
-                        label={t('Магазина')}
+                        label={t('Магазин')}
                         fullWidth={true}/>
                     <Field
                         className={classes.inputFieldCustom}

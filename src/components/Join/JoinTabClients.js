@@ -146,7 +146,7 @@ const JoinTabClients = enhance((props) => {
                 <Col xs={3}>{createdDate}</Col>
                 <Col xs={1}>
                     <div className={classes.iconBtn}>
-                        <ToolTip position="bottom" text="Объединить">
+                        <ToolTip position="bottom" text={t('Объединить')}>
                             <IconButton
                                 onTouchTap={() => { joinClientDialog.handleOpenJoinClients(id) }}
                                 iconStyle={iconStyle.icon}
@@ -169,7 +169,7 @@ const JoinTabClients = enhance((props) => {
     return (
         <div className={classes.wrapper}>
             <div className={classes.mainButton}>
-                <ToolTip position="left" text="Объединить">
+                <ToolTip position="left" text={t('Объединить')}>
                     <FloatingActionButton
                         onTouchTap={() => { joinClientDialog.handleOpenJoinClients(true) }}
                         backgroundColor="#12aaeb"

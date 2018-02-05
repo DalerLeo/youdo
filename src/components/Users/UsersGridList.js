@@ -167,12 +167,12 @@ const UsersGridList = enhance((props) => {
     const usersList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const isActive = toBoolean(_.get(item, 'isActive'))
-        const username = isActive ? _.get(item, 'username') : 'Не указано'
+        const username = isActive ? _.get(item, 'username') : t('Не указано')
         const firstName = _.get(item, 'firstName')
         const secondName = _.get(item, 'secondName')
         const phoneNumber = _.get(item, 'phoneNumber') || '-'
-        const job = _.get(item, ['job', 'name']) || 'Не указана'
-        const position = _.get(item, ['position', 'name']) || 'Не выбрано'
+        const job = _.get(item, ['job', 'name']) || t('Не указана')
+        const position = _.get(item, ['position', 'name']) || t('Не выбрано')
         return (
             <Row key={id} className={classes.listRow}>
                 <Col xs={1}>{id}</Col>
@@ -222,7 +222,7 @@ const UsersGridList = enhance((props) => {
                 backgroundColor="#fff"
                 labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb'}}
                 className={classes.addButton}
-                label="добавить пользователя"
+                label={t('добавить пользователя')}
                 onTouchTap={createDialog.handleOpenCreateDialog}
                 icon={<ContentAdd color="#12aaeb"/>}>
             </FlatButton>

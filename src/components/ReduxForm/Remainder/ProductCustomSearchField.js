@@ -7,6 +7,7 @@ import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
 import numberFormat from '../../../helpers/numberFormat'
+import t from '../../../helpers/translate'
 import * as actionTypes from '../../../constants/actionTypes'
 import {connect} from 'react-redux'
 import caughtCancel from '../../../helpers/caughtCancel'
@@ -77,8 +78,8 @@ const ProductCustomSearchField = enhance((props) => {
                 return (
                     <div>
                         <div><strong>{name}</strong></div>
-                        <div>Доступно: {available}</div>
-                        <div>Браковано: {defects}</div>
+                        <div>{t('Доступно')}: {available}</div>
+                        <div>{t('Браковано')}: {defects}</div>
                     </div>
                 )
             }}

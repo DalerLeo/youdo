@@ -17,31 +17,32 @@ import ToolTip from '../ToolTip'
 import {Link} from 'react-router'
 import TelegramNewsDetail from './TelegramNewsDetails'
 import dateFormat from '../../helpers/dateFormat'
+import t from '../../helpers/translate'
 
 const listHeader = [
     {
         sorting: true,
         name: 'title',
         xs: 3,
-        title: 'Заголовок'
+        title: t('Заголовок')
     },
     {
         sorting: true,
         name: 'description',
         xs: 3,
-        title: 'Описание'
+        title: t('Описание')
     },
     {
         sorting: true,
         xs: 3,
         name: 'created_date',
-        title: 'Дата создания'
+        title: t('Дата создания')
     },
     {
         sorting: true,
         xs: 3,
         name: 'modified_date',
-        title: 'Дата изменения'
+        title: t('Дата изменения')
     }
 ]
 
@@ -130,7 +131,7 @@ const TelegramNewsGridList = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.TELEGRAM_NEWS_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
-                <ToolTip position="left" text="Добавить новость">
+                <ToolTip position="left" text={t('Добавить новость')}>
                     <FloatingActionButton
                         mini={true}
                         zDepth={1}
