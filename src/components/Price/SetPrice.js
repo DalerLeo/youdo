@@ -13,7 +13,6 @@ import TextFieldSearch from 'material-ui/TextField'
 import Paper from 'material-ui/Paper'
 import SearchIcon from 'material-ui/svg-icons/action/search'
 import NotFound from '../Images/not-found.png'
-import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
 import {connect} from 'react-redux'
 import {
     TextField,
@@ -224,7 +223,6 @@ const enhance = compose(
         inputFieldCustom: {
             fontSize: '13px !important',
             height: '20px !important',
-            // marginTop: '7px',
             marginLeft: '5px',
             width: '30px !important',
             '& div': {
@@ -347,7 +345,7 @@ const enhance = compose(
             '&:nth-child(odd)': {
                 backgroundColor: '#f9f9f9'
             }
-        },
+        }
     }),
     reduxForm({
         form: 'SetPricesForm',
@@ -415,7 +413,6 @@ const SetPrice = enhance((props) => {
         onSubmitSearch,
         currencyChooseDialog,
         filterCurrency,
-        formProducts,
         cashCurrency,
         bankCurrency,
         priceList
@@ -428,11 +425,6 @@ const SetPrice = enhance((props) => {
     const bankCurrencyName = _.get(bankCurrency, 'text')
     const bankCurrencyValue = _.get(bankCurrency, 'value')
 
-    const filteredProducts = _.filter(formProducts, (item) => {
-        return _.toNumber(numberWithoutSpaces(_.get(item, 'amount'))) > ZERO ||
-            _.toNumber(numberWithoutSpaces(_.get(item, 'defect')))
-    })
-    console.log(_.get(data, 'results'), 'products')
     const products = (
         <div className={classes.leftTable}>
             <div><span>{t('Product')}</span></div>
