@@ -3,11 +3,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose, withState, withHandlers} from 'recompose'
 import injectSheet from 'react-jss'
-import {Row, Col} from 'react-flexbox-grid'
 import {Field, reduxForm} from 'redux-form'
 import {hashHistory} from 'react-router'
 import Loader from '../Loader'
-import LinearProgress from '../LinearProgress'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
@@ -15,7 +13,6 @@ import TextFieldSearch from 'material-ui/TextField'
 import Paper from 'material-ui/Paper'
 import SearchIcon from 'material-ui/svg-icons/action/search'
 import NotFound from '../Images/not-found.png'
-import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
 import {connect} from 'react-redux'
 import {
     TextField,
@@ -23,7 +20,6 @@ import {
     CurrencySearchField,
     normalizeNumber
 } from '../ReduxForm'
-import SetPriceOverallDialog from './SetPriceOverallDialog'
 import t from '../../helpers/translate'
 
 const ZERO = 0
@@ -226,10 +222,9 @@ const enhance = compose(
         },
         inputFieldCustom: {
             fontSize: '13px !important',
-            height: '45px !important',
-            marginTop: '7px',
+            height: '20px !important',
             marginLeft: '5px',
-            width: '50px !important',
+            width: '30px !important',
             '& div': {
                 fontSize: '13px !important'
             },
@@ -271,10 +266,89 @@ const enhance = compose(
         },
         marginRightField: {
             marginRight: '10px'
+        },
+
+        leftTable: {
+            color: '#666',
+            fontWeight: '600',
+            zIndex: '4',
+            width: '350px',
+            boxShadow: '5px 0 8px -3px #ccc',
+            '& > div': {
+                '&:hover': {
+                    '& > div': {
+                        opacity: '1'
+                    }
+                },
+                position: 'relative',
+                '&:nth-child(odd)': {
+                    backgroundColor: '#f9f9f9'
+                },
+                height: '40px',
+                '&:nth-child(2)': {
+                    height: '39px'
+                },
+                '&:first-child': {
+                    backgroundColor: 'white',
+                    height: '41px',
+                    borderTop: '1px #efefef solid',
+                    borderBottom: '1px #efefef solid'
+                },
+                '& span': {
+                    lineHeight: '40px',
+                    paddingLeft: '30px'
+                }
+            }
+        },
+        mainTableWrapper: {
+            overflowX: 'auto',
+            overflowY: 'hidden'
+        },
+        mainTable: {
+            width: '100%',
+            minWidth: '850px',
+            color: '#666',
+            borderCollapse: 'collapse',
+            '& tr, td': {
+                height: '40px'
+            },
+            '& td': {
+                padding: '0 20px',
+                minWidth: '200px'
+            },
+            '& tr > td:last-child': {
+                borderRight: 'none'
+            }
+        },
+        tableWrapper: {
+            display: 'flex',
+            overflow: 'hidden',
+            marginLeft: '-30px',
+            'padding-left': ({stat}) => stat ? '0' : '30px',
+            'margin-right': ({stat}) => stat ? '-30px' : 'unset'
+        },
+        tableWrapperLoading: {
+            display: 'block',
+            overflow: 'hidden',
+            marginLeft: '-30px',
+            'padding-left': ({stat}) => stat ? '0' : '30px',
+            'margin-right': ({stat}) => stat ? '-30px' : 'unset'
+        },
+        tableRow: {
+            '& td': {
+                borderRight: '1px #efefef solid',
+                textAlign: 'left',
+                '&:first-child': {
+                    width: '200px !important'
+                }
+            },
+            '&:nth-child(odd)': {
+                backgroundColor: '#f9f9f9'
+            }
         }
     }),
     reduxForm({
-        form: 'SetCurrenyForm',
+        form: 'SetPricesForm',
         enableReinitialize: true
     }),
     withState('pdSearch', 'setSearch', ({filter}) => filter.getParam('pdSearch')),
@@ -287,9 +361,9 @@ const enhance = compose(
         }
     }),
     connect((state) => {
-        const formProducts = _.get(state, ['form', 'SetCurrenyForm', 'values', 'product'])
-        const cashCurrency = _.get(state, ['form', 'SetCurrenyForm', 'values', 'cashCurrency'])
-        const bankCurrency = _.get(state, ['form', 'SetCurrenyForm', 'values', 'bankCurrency'])
+        const formProducts = _.get(state, ['form', 'SetPricesForm', 'values', 'product'])
+        const cashCurrency = _.get(state, ['form', 'SetPricesForm', 'values', 'cashCurrency'])
+        const bankCurrency = _.get(state, ['form', 'SetPricesForm', 'values', 'bankCurrency'])
         const itemsCount = _.get(state, ['remainder', 'inventory', 'data', 'count'])
         return {
             formProducts,
@@ -324,7 +398,7 @@ const flatButtonStyle = {
         fontWeight: '600'
     }
 }
-
+let head = []
 const SetPrice = enhance((props) => {
     const {
         open,
@@ -339,11 +413,8 @@ const SetPrice = enhance((props) => {
         onSubmitSearch,
         currencyChooseDialog,
         filterCurrency,
-        formProducts,
         cashCurrency,
         bankCurrency,
-        openOverallDialog,
-        setOpenOverallDialog,
         priceList
     } = props
     const cashCurrencyShow = _.toInteger(filter.getParam('pdCashCurrency')) > ZERO
@@ -354,45 +425,92 @@ const SetPrice = enhance((props) => {
     const bankCurrencyName = _.get(bankCurrency, 'text')
     const bankCurrencyValue = _.get(bankCurrency, 'value')
 
-    const filteredProducts = _.filter(formProducts, (item) => {
-        return _.toNumber(numberWithoutSpaces(_.get(item, 'amount'))) > ZERO ||
-            _.toNumber(numberWithoutSpaces(_.get(item, 'defect')))
+    const products = (
+        <div className={classes.leftTable}>
+            <div><span>{t('Product')}</span></div>
+            {_.map(_.get(data, 'results'), (item) => {
+                const id = _.get(item, 'id')
+                const name = _.get(item, 'name') || t('No')
+                const code = _.get(item, 'code', '-') || t('No')
+                return (
+                    <div key={id}>
+                        <td>{name}</td>
+                        <td>{code}</td>
+                    </div>
+                )
+            })}
+        </div>
+    )
+    head = []
+    _.map(_.get(priceList, 'results'), (item) => {
+        head.push({name: item.name, id: item.id})
     })
-    const products = _.map(_.get(data, 'results'), (item) => {
-        const id = _.get(item, 'id')
-        const name = _.get(item, 'name')
-        const code = _.get(item, 'code', '-')
 
-        return (
-            <Row key={id} className="dottedList">
-                <Col xs={2}>{name}</Col>
-                <Col xs={2}>{code}</Col>
-                {_.map(_.get(priceList, 'results'), () => {
+    const tableList = (
+        <table className={classes.mainTable}>
+            <tbody>
+            <tr className={classes.title}>
+                {_.map(head, (item, index) => {
                     return (
-                        <Col xs={2} className={classes.flex} style={{justifyContent: 'flex-start'}}>
-                            <Field
-                                name={'product[' + id + '][cashPrice]'}
-                                component={TextField}
-                                className={classes.inputFieldCustom}
-                                underlineStyle={{borderColor: '#5d6474'}}
-                                normalize={normalizeNumber}
-                                fullWidth={true}/>
-                            <span className={classes.marginRightField}>{cashCurrencyName}</span>
-                            <Field
-                                name={'product[' + id + '][bankPrice]'}
-                                component={TextField}
-                                className={classes.inputFieldCustom}
-                                underlineStyle={{borderColor: '#5d6474'}}
-                                normalize={normalizeNumber}
-                                fullWidth={true}/>
-                            <span className={classes.marginRightField}>{bankCurrencyName}</span>
-                        </Col>
+                        <td key={index}>
+                            {item.name}
+                        </td>
                     )
                 })}
-            </Row>
-        )
-    })
+            </tr>
 
+            {_.map(_.get(data, 'results'), (item) => {
+                const id = _.get(item, 'id')
+                return (
+                    <tr key={id} className={classes.tableRow}>
+                        {_.map(_.get(priceList, 'results'), (val, index) => {
+                            return (
+                                <td key={index}>
+                                    <Field
+                                        name={'products[' + id + '][' + val.id + '][cashPrice]'}
+                                        component={TextField}
+                                        className={classes.inputFieldCustom}
+                                        underlineStyle={{borderColor: '#5d6474'}}
+                                        normalize={normalizeNumber}
+                                        fullWidth={true}/>
+                                    <span className={classes.marginRightField}>{cashCurrencyName}</span>
+                                    <Field
+                                        name={'products[' + id + '][' + val.id + '][bankPrice]'}
+                                        component={TextField}
+                                        className={classes.inputFieldCustom}
+                                        underlineStyle={{borderColor: '#5d6474'}}
+                                        normalize={normalizeNumber}
+                                        fullWidth={true}/>
+                                    <span className={classes.marginRightField}>{bankCurrencyName}</span>
+                                </td>
+                            )
+                        })}
+                    </tr>
+                )
+            })}
+            </tbody>
+        </table>
+    )
+    const emptyData = _.isEmpty(_.get(data, 'results'))
+    const lists = (
+        <div className={(loading || emptyData)
+            ? classes.tableWrapperLoading
+            : classes.tableWrapper}
+             style={{marginBottom: 30}}>
+            {loading &&
+            <div className={classes.loader}>
+                <Loader size={0.75}/>
+            </div>}
+            {!loading && emptyData &&
+            <div className={classes.emptyQuery}>
+                <div>{t('По вашему запросу ничего не найдено')}</div>
+            </div>}
+            {!loading && !emptyData && products}
+            <div ref="mainTable" className={classes.mainTableWrapper} style={{width: 'calc(100% - 350px)'}}>
+                {!loading && !emptyData && tableList}
+            </div>
+        </div>
+    )
     if (!open) {
         return null
     }
@@ -450,7 +568,7 @@ const SetPrice = enhance((props) => {
                                     fullWidth={true}
                                 />
                             </div>
-                            <form onSubmit={onSubmitSearch} className={classes.search}>
+                            <div onSubmit={onSubmitSearch} className={classes.search}>
                                 <TextFieldSearch
                                     fullWidth={true}
                                     hintText={t('Поиск товаров') + '...'}
@@ -465,59 +583,21 @@ const SetPrice = enhance((props) => {
                                     disableTouchRipple={true}>
                                     <SearchIcon/>
                                 </IconButton>
-                            </form>
+                            </div>
                         </header>
-                        <form className={classes.productsList}>
-                            {!_.isEmpty(products) &&
-                            <Row className="dottedList">
-                                <Col xs={2}>{t('Наименование')}</Col>
-                                <Col xs={2}>{t('Код')}</Col>
-                                {_.map(_.get(priceList, 'results'), (item) => {
-                                    return (
-                                        <Col xs={2}>
-                                            <div style={{textAlign: 'center'}}>
-                                                <p style={{padding: '5px 0'}}>{item.name}</p>
-                                            </div>
-                                            <div style={{display: 'flex'}}>
-                                                <Col xs={6}>{t('Нал.')}</Col>
-                                                <Col xs={6}>{t('Пер.')}</Col>
-                                            </div>
-                                        </Col>
-                                    )
-                                })}
-                            </Row>}
-                            {loading && <div className={classes.linearProgress}>
-                                <LinearProgress/>
-                            </div>}
-                            {!_.isEmpty(products)
-                                ? products
-                                : <div className={classes.emptyQuery}>
-                                    <div>{t('По вашему запросу ничего не найдено')}...</div>
-                                </div>}
-
-                        </form>
-                    </div>
-                    <div className={classes.bottomButton}>
-                        <FlatButton
-                            label={t('Далее')}
-                            disabled={_.isEmpty(filteredProducts)}
-                            labelStyle={_.isEmpty(filteredProducts) ? {fontSize: 13, color: '#b3b3b3'} : {fontSize: 13}}
-                            className={classes.actionButton}
-                            primary={true}
-                            onTouchTap={() => {
-                                setOpenOverallDialog(true)
-                            }}/>
+                        <div className={classes.productsList}>
+                            <div className={classes.expandedTable}>
+                                {lists}
+                            </div>
+                            <div className={classes.bottomButton}>
+                                <button className={classes.actionButton} primary={true} onClick={() => { onSubmit() }}>
+                                    {t('Далее')}
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            {openOverallDialog &&
-            <SetPriceOverallDialog
-                data={data}
-                formData={formProducts}
-                closeDialog={setOpenOverallDialog}
-                submitDialog={onSubmit}
-            />}
         </div>
     )
 })
