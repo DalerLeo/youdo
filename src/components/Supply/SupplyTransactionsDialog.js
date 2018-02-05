@@ -149,7 +149,7 @@ const OrderTransactionsDialog = enhance((props) => {
                     </div>
                     : <div className={classes.inContent}>
                         <div className={classes.field}>
-                            {!_.isEmpty(_.get(data, 'list')) ? <div className={classes.transactions}>
+                            {!_.isEmpty(data) ? <div className={classes.transactions}>
                                     <Row className="dottedList">
                                         <Col xs={2}>{t('Дата')}</Col>
                                         <Col xs={2}>{t('Клиент')}</Col>
@@ -158,7 +158,7 @@ const OrderTransactionsDialog = enhance((props) => {
                                         <Col xs={2} className={classes.rightAlign}>{t('Сумма')}</Col>
                                         <Col xs={2} className={classes.rightAlign}>{t('На поставку')}</Col>
                                     </Row>
-                                    {_.map(_.get(data, 'list'), (item, index) => {
+                                    {_.map(data, (item, index) => {
                                         const user = _.get(item, ['fromTransaction', 'user'])
                                         const comment = _.get(item, ['fromTransaction', 'comment'])
                                         const client = _.get(item, ['fromTransaction', 'client', 'name'])

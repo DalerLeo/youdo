@@ -20,13 +20,19 @@ export const createSerializer = (data) => {
     const intersection = _.intersectionBy(boxes, childMeasurement, 'measurement')
     const image = _.get(data, 'image')
     const imageId = (_.get(image, ['id'])) ? _.get(image, ['id']) : image
-    const requset = {
+    const requset = _.isEmpty(boxes) ? {
+        name,
+        code,
+        type,
+        priority,
+        measurement
+    } : {
         name,
         code,
         type,
         priority,
         measurement,
-        boxes: _.isEmpty(intersection) ? null : intersection
+        boxes: intersection
     }
     return image ? _.merge(requset, {image: imageId}) : requset
 }
