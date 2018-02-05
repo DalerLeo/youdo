@@ -9,6 +9,7 @@ import {connect} from 'react-redux'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import MarketSearchFieldCustom from './MarketSearchFieldCustom'
 import TargetRadio from './TargetRadio'
+import t from '../../../helpers/translate'
 import {Field} from 'redux-form'
 
 const enhance = compose(
@@ -210,7 +211,7 @@ const JoinShopListField = ({classes, handleAdd, handleRemove, ...defaultProps}) 
                 <Row className={classes.background}>
                     <Col xs={5}>
                         <MarketSearchFieldCustom
-                            label="Магазин"
+                            label={t('Магазин')}
                             className={classes.searchFieldCustom}
                             fullWidth={true}
                             {..._.get(defaultProps, 'market')}
@@ -218,7 +219,7 @@ const JoinShopListField = ({classes, handleAdd, handleRemove, ...defaultProps}) 
                     </Col>
                     <Col xs={7} style={{textAlign: 'right'}}>
                         <FlatButton
-                            label="Добавить"
+                            label={t('Добавить')}
                             labelStyle={flatButton.label}
                             onTouchTap={handleAdd}>
                         </FlatButton>
@@ -235,15 +236,15 @@ const JoinShopListField = ({classes, handleAdd, handleRemove, ...defaultProps}) 
                 />
                 <div className={classes.list}>
                     <Row>
-                        <Col xs={3}>Наименование</Col>
-                        <Col xs={3}>Клиент</Col>
-                        <Col xs={2}>Телефон</Col>
-                        <Col xs={3}>Адрес</Col>
+                        <Col xs={3}>{t('Наименование')}</Col>
+                        <Col xs={3}>{t('Клиент')}</Col>
+                        <Col xs={2}>{t('Телефон')}</Col>
+                        <Col xs={3}>{t('Адрес')}</Col>
                     </Row>
                     {_.map(markets, (item, index) => {
                         const name = _.get(item, ['market', 'text'])
                         const client = _.get(item, 'client')
-                        const phone = _.get(item, 'phone')
+                        const phone = _.get(item, 'phone') || t('Не указано')
                         const address = _.get(item, 'address')
 
                         return (

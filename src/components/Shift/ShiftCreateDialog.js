@@ -11,7 +11,6 @@ import {TextField, TimeField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import Loader from '../Loader'
-import MainStyles from '../Styles/MainStyles'
 import t from '../../helpers/translate'
 
 export const SHIFT_CREATE_DIALOG_OPEN = 'openCreateDialog'
@@ -29,7 +28,7 @@ const validate = (data) => {
 }
 
 const enhance = compose(
-    injectSheet(_.merge(MainStyles, {
+    injectSheet({
         buttonSub: {
             textAlign: 'right',
             marginTop: '10px',
@@ -64,8 +63,130 @@ const enhance = compose(
             '& label': {
                 top: '20px !important'
             }
+        },
+        popUp: {
+            color: '#333 !important',
+            overflowY: 'unset !important',
+            overflowX: 'unset !important',
+            fontSize: '13px !important',
+            position: 'relative',
+            padding: '0 !important',
+            height: '100%',
+            maxHeight: 'none !important',
+            marginBottom: '64px'
+        },
+        titleContent: {
+            background: '#fff',
+            color: '#333',
+            fontWeight: 'bold',
+            textTransform: 'uppercase',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            borderBottom: '1px solid #efefef',
+            padding: '20px 30px',
+            zIndex: '999',
+            '& button': {
+                right: '13px',
+                position: 'absolute !important'
+            }
+        },
+        inContent: {
+            display: 'flex',
+            minHeight: '184px',
+            overflow: 'unset',
+            padding: '0 30px',
+            color: '#333'
+        },
+        bodyContent: {
+            width: '100%'
+        },
+        form: {
+            position: 'relative'
+        },
+        field: {
+            width: '100%'
+        },
+        inputField: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
+        },
+        bottomButton: {
+            bottom: '0',
+            left: '0',
+            right: '0',
+            padding: '10px',
+            zIndex: '999',
+            borderTop: '1px solid #efefef',
+            background: '#fff',
+            textAlign: 'right',
+            '& span': {
+                fontSize: '13px !important',
+                fontWeight: '600 !important',
+                color: '#129fdd',
+                verticalAlign: 'inherit !important'
+            }
+        },
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
+        },
+        inputDateCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            },
+            '& div:first-child': {
+                height: '45px !important'
+            }
+        },
+        actionButton: {
+            fontSize: '13px !important',
+            margin: '0 !important'
+        },
+        loader: {
+            height: '70px',
+            width: '100%',
+            background: '#fff',
+            alignItems: 'center',
+            justifyContent: 'center',
+            display: 'flex'
+        },
+        body: {
+            padding: '0 !important'
         }
-    })),
+    }),
     reduxForm({
         form: 'ShiftCreateForm',
         enableReinitialize: true
@@ -93,10 +214,11 @@ const ShiftCreateDialog = enhance((props) => {
             </div>
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit}>
-                    <div className={classes.loader}>
+                    { loading
+                    ? <div className={classes.loader}>
                         <Loader size={0.75}/>
                     </div>
-                    <div className={classes.inContent} style={{minHeight: '150px'}}>
+                    : <div className={classes.inContent} style={{minHeight: '150px'}}>
                         <div className={classes.field} style={{paddingTop: '15px'}}>
                             <Field
                                 name="name"
@@ -119,7 +241,7 @@ const ShiftCreateDialog = enhance((props) => {
                                     fullWidth={true}/>
                             </div>
                         </div>
-                    </div>
+                    </div>}
                     <div className={classes.bottomButton}>
                         <FlatButton
                             label={t('Применить')}
