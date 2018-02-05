@@ -792,10 +792,8 @@ const SupplyList = enhance((props) => {
 
     const transactionsDialog = {
         open: openTransactionsDialog,
-        data: {
-            list: _.get(paidList, 'results'),
-            loading: paidListLoading
-        },
+        loading: paidListLoading,
+        data: _.get(paidList, 'results'),
         handleOpenTransactionsDialog: props.handleOpenTransactionsDialog,
         handleCloseTransactionsDialog: props.handleCloseTransactionsDialog
     }

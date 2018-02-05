@@ -378,6 +378,7 @@ const SupplyGridList = enhance((props) => {
             <SupplyTransactionsDialog
                 open={transactionsDialog.open}
                 data={transactionsDialog.data}
+                loading={transactionsDialog.loading}
                 supplyID={_.get(detailData, ['data', 'id'])}
                 onClose={transactionsDialog.handleCloseTransactionsDialog}
             />

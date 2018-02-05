@@ -81,7 +81,7 @@ const enhance = compose(
 )
 
 const SetDateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, status} = props
+    const {open, loading, handleSubmit, onClose, classes, status, initialValues} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     return (
         <Dialog
@@ -117,7 +117,8 @@ const SetDateDialog = enhance((props) => {
                                         component={TimeField}
                                         className={classes.inputFieldTime}
                                         label={t('Начало')}
-                                        fullWidth={true}/>
+                                        fullWidth={true}
+                                        value={initialValues.fromTime}/>
                                 </div>
                                 <div style={{width: '48%'}}>
                                     <Field
