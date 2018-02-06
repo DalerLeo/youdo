@@ -3,7 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose, withReducer} from 'recompose'
 import injectSheet from 'react-jss'
-import {Field, Fields, reduxForm, SubmissionError} from 'redux-form'
+import {Field, Fields, reduxForm} from 'redux-form'
 import {connect} from 'react-redux'
 import Dialog from 'material-ui/Dialog'
 import Loader from '../Loader'
@@ -19,17 +19,8 @@ import {
     CurrencySearchField
 } from '../ReduxForm'
 import MarketSearchField from '../ReduxForm/ClientBalance/MarketSearchField'
-import toCamelCase from '../../helpers/toCamelCase'
-import numberFormat from '../../helpers/numberFormat'
 import t from '../../helpers/translate'
-const validate = (data) => {
-    const errors = toCamelCase(data)
-    const nonFieldErrors = _.get(errors, 'nonFieldErrors')
-    throw new SubmissionError({
-        ...errors,
-        _error: nonFieldErrors
-    })
-}
+
 const enhance = compose(
     injectSheet({
         loader: {
@@ -141,7 +132,7 @@ const enhance = compose(
         bottomButton: {
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between',
+            justifyContent: 'flex-end',
             padding: '10px 14px 10px 30px',
             borderTop: '1px solid #efefef',
             background: '#fff',
@@ -226,17 +217,8 @@ const enhance = compose(
     }),
     connect((state) => {
         const clientId = _.get(state, ['form', 'ReturnCreateForm', 'values', 'client', 'value'])
-        const returnedProducts = _.get(state, ['form', 'ReturnCreateForm', 'values', 'products'])
-        const currency = _.get(state, ['form', 'ReturnCreateForm', 'values', 'currency', 'text'])
-        const totalCost = _.sumBy(returnedProducts, (item) => {
-            const itemCost = _.toNumber(_.get(item, 'cost'))
-            const itemAmount = _.toNumber(_.get(item, 'amount'))
-            return (itemAmount * itemCost)
-        })
         return {
-            clientId,
-            totalCost,
-            currency
+            clientId
         }
     }),
     withReducer('state', 'dispatch', (state, action) => {
@@ -251,20 +233,17 @@ const customContentStyle = {
 const ReturnCreateDialog = enhance((props) => {
     const {
         open,
-        handleSubmit,
         onClose,
         classes,
         clientId,
         isUpdate,
         name,
         editOnlyCost,
-        totalCost,
         initialValues,
-        currency,
         hasMarket,
-        handleOpenAddProduct
+        handleOpenAddProduct,
+        onPreviewOpen
     } = props
-    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     return (
         <Dialog
             modal={true}
@@ -281,7 +260,7 @@ const ReturnCreateDialog = enhance((props) => {
                 </IconButton>
             </div>
             <div className={classes.bodyContent}>
-                <form onSubmit={onSubmit} scrolling="auto" className={classes.form}>
+                <form scrolling="auto" className={classes.form}>
                     <div className={classes.loader}>
                         <Loader size={0.75}/>
                     </div>
@@ -360,12 +339,11 @@ const ReturnCreateDialog = enhance((props) => {
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
-                    <div>{t('Общая сумма возврата')}: <b>{numberFormat(totalCost, currency)}</b></div>
                         <FlatButton
-                            label={isUpdate ? t('Изменить возврат') : t('Оформить возврат')}
+                            label={t('Далее')}
                             className={classes.actionButton}
                             primary={true}
-                            type="submit"
+                            onTouchTap={() => onPreviewOpen()}
                         />
                     </div>
                 </form>
