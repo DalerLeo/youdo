@@ -126,7 +126,9 @@ export const addProductsListAction = (filter, type, market, currency) => {
         page: _.get(filter.getParams(), 'pdPage'),
         search: _.get(filter.getParams(), 'pdSearch'),
         type,
-        market
+        market,
+        currency,
+        'price_list': '1'
     }
     const payload = axios()
         .get(API.RETURN_CREATE_PRODUCTS_LIST, {params})
@@ -139,6 +141,23 @@ export const addProductsListAction = (filter, type, market, currency) => {
 
     return {
         type: actionTypes.RETURN_PRODUCT_ADD,
+        payload
+    }
+}
+
+export const returnPreviewAction = (formValues) => {
+    const requestData = serializers.createReturnSerializer(formValues)
+    const payload = axios()
+        .post(API.RETURN_PREVIEW, requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.RETURN_PREVIEW,
         payload
     }
 }

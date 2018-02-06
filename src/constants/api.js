@@ -532,6 +532,7 @@ export const RETURN_CANCEL = `${RETURN}/%d/cancel/`
 export const RETURN_CREATE_PRODUCTS = 'sales/product_sales'
 export const RETURN_CREATE_PRODUCTS_LIST = `${RETURN_CREATE_PRODUCTS}/`
 export const RETURN_CREATE_PRODUCTS_ITEM = `${RETURN_CREATE_PRODUCTS}/%d/`
+export const RETURN_PREVIEW = `${RETURN}/client_return_preview/`
 
 export const JOIN_MARKETS = 'market/merge/'
 export const JOIN_CLIENTS = 'sales/merge_clients/'
