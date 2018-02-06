@@ -109,14 +109,14 @@ export const createReturnSerializer = (data) => {
     })
 
     return {
+        'price_list': priceList || '1',
         client,
         stock,
         comment,
         currency,
         products,
         market,
-        payment_type: paymentType,
-        price_list: priceList
+        payment_type: paymentType
     }
 }
 

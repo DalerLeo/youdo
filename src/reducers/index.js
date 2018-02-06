@@ -470,6 +470,7 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.RETURN_UPDATE),
         cancel: createThunkReducer(actionTypes.RETURN_CANCEL),
         listPrint: createThunkReducer(actionTypes.RETURN_PRINT),
+        previewList: createThunkReducer(actionTypes.RETURN_PREVIEW),
         addProducts: createThunkReducer(actionTypes.RETURN_PRODUCT_ADD)
     }),
     plan: combineReducers({
