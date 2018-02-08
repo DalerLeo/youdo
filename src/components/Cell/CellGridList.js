@@ -148,7 +148,7 @@ const CellGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const barcode = _.get(item, ['barcode'])
-        const cellType = _.get(item, ['cellType'])
+        const cellType = _.get(item, ['cellType', 'name'])
         const createdDate = dateFormat(_.get(item, ['createdDate']))
 
         return (

@@ -194,6 +194,11 @@ const enhance = compose(
                     hashHistory.push(filter.createURL({[CURRENCY_UPDATE_DIALOG_OPEN]: false}))
                     dispatch(currencyListFetchAction(filter))
                 })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
+                })
         },
 
         handleCurrencyClick: props => (id) => {

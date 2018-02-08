@@ -232,7 +232,7 @@ const PositionGridList = enhance((props) => {
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
                                 onTouchTap={() => {
-                                    confirmDialog.handleOpenConfirmDialog()
+                                    confirmDialog.handleOpenConfirmDialog(id)
                                 }}
                                 touch={true}>
                                 <DeleteIcon/>

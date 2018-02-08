@@ -130,7 +130,7 @@ const PostGridList = enhance((props) => {
     const postList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const createdDate = dateFormat(_.get(item, 'createdDate'))
+        const createdDate = dateFormat(_.get(item, 'createdDate'), 'DD:MM:YYYY')
         return (
             <Row key={id} className={classes.listRow}>
                 <Col xs={2}>{id}</Col>
