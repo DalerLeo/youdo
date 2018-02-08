@@ -13,7 +13,7 @@ import numberFormat from '../../helpers/numberFormat'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
 import noPayment from '../Images/noPayment.png'
 import NotFound from '../Images/not-found.png'
-import ClientBalanceFormat from '../Statistics/ClientTransactions/ClientBalanceFormat'
+import ProviderTransactionFormat from '../Statistics/Providers/ProviderTransactionFormat'
 import getConfig from '../../helpers/getConfig'
 import t from '../../helpers/translate'
 
@@ -152,7 +152,7 @@ const OrderTransactionsDialog = enhance((props) => {
                             {!_.isEmpty(data) ? <div className={classes.transactions}>
                                     <Row className="dottedList">
                                         <Col xs={2}>{t('Дата')}</Col>
-                                        <Col xs={2}>{t('Клиент')}</Col>
+                                        <Col xs={2}>{t('Поставщик')}</Col>
                                         <Col xs={2}>{t('Пользователь')}</Col>
                                         <Col xs={2}>{t('Описание')}</Col>
                                         <Col xs={2} className={classes.rightAlign}>{t('Сумма')}</Col>
@@ -161,7 +161,7 @@ const OrderTransactionsDialog = enhance((props) => {
                                     {_.map(data, (item, index) => {
                                         const user = _.get(item, ['fromTransaction', 'user'])
                                         const comment = _.get(item, ['fromTransaction', 'comment'])
-                                        const client = _.get(item, ['fromTransaction', 'client', 'name'])
+                                        const provider = _.get(item, ['fromTransaction', 'provider', 'name'])
                                         const currency = _.get(item, ['fromTransaction', 'currency', 'name'])
                                         const fromCurrency = _.get(item, ['fromTransaction', 'currency', 'name'])
                                         const toCurrency = _.get(item, ['toTransaction', 'currency', 'name'])
@@ -173,19 +173,17 @@ const OrderTransactionsDialog = enhance((props) => {
                                         const internal = _.toNumber(_.get(item, ['fromTransaction', 'internal']))
                                         const customRate = _.get(item, ['fromTransaction', 'customRate']) ? _.toInteger(_.get(item, ['fromTransaction', 'customRate'])) : _.toInteger(amount / internal)
                                         const type = _.get(item, ['fromTransaction', 'type'])
-                                        const orderIdItem = _.get(item, ['fromTransaction', 'order'])
-                                        const orderReturnId = _.get(item, ['fromTransaction', 'orderReturn'])
+                                        const supply = _.get(item, ['fromTransaction', 'supply'])
                                         return (
                                             <Row key={index} className="dottedList">
                                                 <Col xs={2}>{date}</Col>
-                                                <Col xs={2}>{client}</Col>
+                                                <Col xs={2}>{provider}</Col>
                                                 <Col xs={2}>{userName}</Col>
                                                 <Col xs={2}>
                                                     {type && <div>
-                                                        <ClientBalanceFormat
+                                                        <ProviderTransactionFormat
                                                             type={type}
-                                                            order={orderIdItem}
-                                                            orderReturn={orderReturnId}/>
+                                                            supply={supply}/>
                                                     </div>}
                                                     {comment && <div><strong>{t('Комментарий')}:</strong> {comment}</div>}
                                                 </Col>

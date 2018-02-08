@@ -101,6 +101,13 @@ const enhance = compose(
                 overflowY: 'hidden'
             }
         },
+        tableWrapperLoading: {
+            display: 'block',
+            overflow: 'hidden',
+            marginLeft: '-30px',
+            'padding-left': ({stat}) => stat ? '0' : '30px',
+            'margin-right': ({stat}) => stat ? '-30px' : 'unset'
+        },
         leftTable: {
             color: '#666',
             display: 'table',
@@ -720,7 +727,9 @@ const StatProviderGridList = enhance((props) => {
             {listLoading && <div className={classes.loader}>
                 <Loader size={0.75}/>
             </div>}
-            <div className={classes.tableWrapper}>
+            <div className={(listLoading || emptyData)
+                    ? classes.tableWrapperLoading
+                    : classes.tableWrapper}>
                 {providers}
                 {emptyData && !listLoading &&
                 <div className={classes.emptyQuery}>

@@ -543,7 +543,8 @@ const OrderGridList = enhance((props) => {
                 scrollData={scrollData}
             />
 
-            {createDialog.openCreateDialog && <OrderCreateDialog
+            {createDialog.openCreateDialog &&
+            <OrderCreateDialog
                 hasMarket={hasMarket}
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
@@ -560,7 +561,8 @@ const OrderGridList = enhance((props) => {
                 canChangePrice={canChangePrice}
             />}
 
-            {updateDialog.openUpdateDialog && <OrderCreateDialog
+            {updateDialog.openUpdateDialog &&
+            <OrderCreateDialog
                 hasMarket={hasMarket}
                 isUpdate={true}
                 status={_.toInteger(_.get(detailData, ['data', 'status'])) || {}}

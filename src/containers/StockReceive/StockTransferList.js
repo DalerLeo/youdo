@@ -66,6 +66,7 @@ const enhance = compose(
         const routePrintLoading = _.get(state, ['stockReceive', 'routePrint', 'loading'])
         const historyFilterForm = _.get(state, ['form', 'HistoryFilterForm'])
         const filterForm = _.get(state, ['form', 'TabTransferFilterForm'])
+        const transferForm = _.get(state, ['form', 'StockOrderTransferForm'])
         const filter = filterHelper(list, pathname, query)
         const filterDelivery = filterHelper(deliveryList, pathname, query)
         const toggle = _.get(query, TOGGLE) || 'order'
@@ -87,6 +88,7 @@ const enhance = compose(
             printLoading,
             historyFilterForm,
             filterForm,
+            transferForm,
             toggle,
             beginDate,
             endDate,
@@ -291,18 +293,19 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[STOCK_CONFIRM_DIALOG_OPEN]: false})})
                     dispatch(stockReceiveListFetchAction(filter))
-                    return dispatch(openSnackbarAction({message: t('Успешно принять')}))
+                    return dispatch(openSnackbarAction({message: t('Успешно принято')}))
                 })
         },
         handleSubmitTransferAcceptDialog: props => () => {
-            const {dispatch, filter, location: {pathname, query}, params} = props
+            const {dispatch, filter, location: {pathname, query}, params, transferForm} = props
             const id = _.toInteger(_.get(params, 'stockTransferId'))
             const stockId = Number(_.get(query, TYPE))
-            return dispatch(stockTransferItemAcceptAction(id, stockId))
+            const deliveryMan = _.get(transferForm, ['values', 'deliveryMan', 'value'])
+            return dispatch(stockTransferItemAcceptAction(id, stockId, deliveryMan))
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[STOCK_CONFIRM_DIALOG_OPEN]: false})})
                     dispatch(stockTransferListFetchAction(filter))
-                    return dispatch(openSnackbarAction({message: t('Успешно принять')}))
+                    return dispatch(openSnackbarAction({message: t('Успешно принято')}))
                 })
                 .catch((error) => {
                     dispatch(openErrorAction({
@@ -551,6 +554,11 @@ const StockTransferList = enhance((props) => {
     const getRoute = {
         handleGetRoute: props.handleGetRoute
     }
+    const initialValues = {
+        deliveryMan: {
+            value: _.get(detailData, ['data', 'deliveryMan', 'id'])
+        }
+    }
     return (
         <Layout {...layout}>
             <TabTransfer
@@ -569,6 +577,7 @@ const StockTransferList = enhance((props) => {
                 printDialog={printDialog}
                 printRouteDialog={printRouteDialog}
                 confirmTransfer={confirmTransfer}
+                initialValues={initialValues}
                 currentDeliverer={currentDeliverer}/>
         </Layout>
     )

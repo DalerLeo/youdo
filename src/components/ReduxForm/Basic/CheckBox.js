@@ -30,7 +30,7 @@ const enhance = compose(
 )
 
 const Checkbox = enhance((props) => {
-    const {classes, input, label, defaultChecked} = props
+    const {classes, input, label, defaultChecked, disabled} = props
     return (
         <MUICheckbox
             label={label}
@@ -39,6 +39,7 @@ const Checkbox = enhance((props) => {
             iconStyle={{width: '20px', height: '20px'}}
             labelStyle={{lineHeight: '20px', left: '-10px'}}
             checked={toBoolean(input.value)}
+            disabled={disabled}
             onCheck={input.onChange}
             defaultChecked={defaultChecked}
         />)

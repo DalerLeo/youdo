@@ -11,6 +11,7 @@ import ContentAdd from 'material-ui/svg-icons/content/add'
 import ReturnDetails from './ReturnDetails'
 import * as ROUTES from '../../constants/routes'
 import ReturnCreateDialog from './ReturnCreateDialog'
+import ReturnPreviewDialog from './ReturnPreviewDialog'
 import GridList from '../GridList'
 import Container from '../Container'
 import ReturnFilterForm from './ReturnFilterForm'
@@ -25,12 +26,10 @@ import ReturnUpdateDialog from '../Order/OrderReturnDialog'
 import AddProductsDialog from '../Order/OrderAddProductsDialog'
 import Print from 'material-ui/svg-icons/action/print'
 import t from '../../helpers/translate'
-import getConfig from '../../helpers/getConfig'
 import {
     ORDER_RETURN_COMPLETED
 } from '../../constants/backendConstants'
 
-const canReturnFromCLient = toBoolean(getConfig('CAN_RETURN_FROM_CLIENT'))
 const listHeader = [
     {
         sorting: true,
@@ -136,7 +135,8 @@ const OrderGridList = enhance((props) => {
         isAdmin,
         canChangeAnyReturn,
         hasMarket,
-        addProductDialog
+        addProductDialog,
+        previewDialog
     } = props
 
     const showCheckboxes = toBoolean(_.get(filter.getParams(), 'showCheckboxes'))
@@ -218,7 +218,7 @@ const OrderGridList = enhance((props) => {
     return (
         <Container>
             <SubMenu url={ROUTES.RETURN_LIST_URL}/>
-            {canChangeAnyReturn && canReturnFromCLient &&
+            {canChangeAnyReturn &&
             <div className={classes.addButtonWrapper}>
                 <ToolTip position="left" text={t('Возврат с клиента')}>
                     <FloatingActionButton
@@ -255,10 +255,18 @@ const OrderGridList = enhance((props) => {
             />}
             <ReturnCreateDialog
                 open={_.get(createDialog, 'openCreateDialog')}
+                onPreviewOpen={previewDialog.handleOpenPreviewDialog}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
                 hasMarket={hasMarket}
                 handleOpenAddProduct={addProductDialog.handleOpenAddProduct}
+            />
+            <ReturnPreviewDialog
+                loading={_.get(previewDialog, 'loading')}
+                data={_.get(previewDialog, 'data')}
+                open={_.get(previewDialog, 'openPreviewDialog')}
+                onClose={previewDialog.handleClosePreviewDialog}
+                onSubmit={createDialog.handleSubmitCreateDialog}
             />
             {(returnType === CLIENT_RETURN)
                 ? (isAdmin &&
@@ -340,7 +348,13 @@ OrderGridList.propTypes = {
         handleOpenCreateDialog: PropTypes.func.isRequired,
         handleCloseCreateDialog: PropTypes.func.isRequired,
         handleSubmitCreateDialog: PropTypes.func.isRequired
-    }).isRequired
+    }).isRequired,
+    previewDialog: PropTypes.shape({
+        openPreviewDialog: PropTypes.bool.isRequired,
+        handleOpenPreviewDialog: PropTypes.func.isRequired,
+        handleCloseCreateDialog: PropTypes.func.isRequired,
+        handleSubmitCreateDialog: PropTypes.func.isRequired
+    })
 }
 
 export default OrderGridList
