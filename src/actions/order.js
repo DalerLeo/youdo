@@ -305,11 +305,12 @@ export const orderMultiUpdateAction = (data, orders, release) => {
     }
 }
 
-export const orderAddProductsListAction = (priceList, filter, productType, currency) => {
+export const orderAddProductsListAction = (priceList, filter, productType, currency, user) => {
     const params = priceList === MINUS_ONE
         ? {
             'with_net_cost': ONE,
             currency: currency,
+            user: user,
             page_size: _.get(filter.getParams(), 'pdPageSize'),
             page: _.get(filter.getParams(), 'pdPage'),
             search: _.get(filter.getParams(), 'pdSearch'),
@@ -318,6 +319,7 @@ export const orderAddProductsListAction = (priceList, filter, productType, curre
         : {
             price_list: priceList,
             currency: currency,
+            user: user,
             page_size: _.get(filter.getParams(), 'pdPageSize'),
             page: _.get(filter.getParams(), 'pdPage'),
             search: _.get(filter.getParams(), 'pdSearch'),

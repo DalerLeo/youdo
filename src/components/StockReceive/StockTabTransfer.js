@@ -19,6 +19,8 @@ import Delivery from 'material-ui/svg-icons/maps/local-taxi'
 import ToolTip from '../ToolTip'
 import toBoolean from '../../helpers/toBoolean'
 import t from '../../helpers/translate'
+import {reduxForm, Field} from 'redux-form'
+import {UsersSearchField} from '../ReduxForm'
 
 const ZERO = 0
 
@@ -134,6 +136,10 @@ const enhance = compose(
                 marginRight: '5px'
             }
         }
+    }),
+    reduxForm({
+        form: 'StockOrderTransferForm',
+        enableReinitialize: true
     })
 )
 
@@ -166,6 +172,17 @@ const StockTabTransfer = enhance((props) => {
             filter={filter}
             filterDialog={filterDialog}
         />
+    )
+
+    const message = (
+        <form>
+            <div>{t('Запрос') + ' № ' + _.get(detailData, 'id')}</div>
+            <Field
+                name="deliveryMan"
+                label={t('Доставщик')}
+                component={UsersSearchField}
+            />
+        </form>
     )
 
     const deliveryDetail = (
@@ -283,13 +300,13 @@ const StockTabTransfer = enhance((props) => {
                 </div>
             </div>
             {toggle === 'order'
-            ? <GridList
+                ? <GridList
                     filter={filter}
                     list={list}
                     detail={historyDetail}
                     filterDialog={usersFilterDialog}
                 />
-            : <GridList
+                : <GridList
                     filter={filterDelivery}
                     list={listDelivery}
                     detail={deliveryDetail}
@@ -297,7 +314,7 @@ const StockTabTransfer = enhance((props) => {
                 />}
             <ConfirmDialog
                 type="submit"
-                message={t('Запрос') + ' № ' + _.get(detailData, 'id')}
+                message={message}
                 onClose={confirmDialog.handleCloseConfirmDialog}
                 onSubmit={confirmDialog.handleSubmitTransferAcceptDialog}
                 open={toBoolean(confirmDialog.openConfirmDialog)}

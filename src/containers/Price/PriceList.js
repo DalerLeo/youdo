@@ -96,6 +96,9 @@ const enhance = compose(
     withState('currencyChooseDialog', 'setCurrencyChooseDialog', true),
     withPropsOnChange((props, nextProps) => {
         const except = {
+            openSetPrice: null,
+            pdCurrency: null,
+            pdSearch: null,
             openPriceSetDefault: null
         }
         return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)

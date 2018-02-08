@@ -13,11 +13,11 @@ import t from '../../helpers/translate'
 const enhance = compose(
     injectSheet({
         popUp: {
-            overflowY: 'hidden !important',
+            overflowY: 'unset !important',
             fontSize: '13px !important',
             position: 'relative',
             padding: '0 !important',
-            overflowX: 'hidden',
+            overflowX: 'unset',
             height: '100%',
             marginBottom: '64px'
         },
@@ -41,7 +41,7 @@ const enhance = compose(
         inContent: {
             maxHeight: '50vh',
             minHeight: '184px',
-            overflow: 'auto',
+            overflow: 'unset',
             padding: '0 30px',
             color: '#333',
             position: 'relative'
@@ -190,7 +190,7 @@ const ConfirmDialog = enhance((props) => {
 
 ConfirmDialog.propTypes = {
     type: PropTypes.oneOf(['delete', 'cancel', 'submit']).isRequired,
-    message: PropTypes.string.isRequired,
+    message: PropTypes.any.isRequired,
     loading: PropTypes.bool,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,

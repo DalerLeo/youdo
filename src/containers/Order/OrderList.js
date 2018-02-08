@@ -320,11 +320,12 @@ const enhance = compose(
             const priceList = _.get(createForm, ['values', 'priceList', 'value'])
             const currency = _.get(createForm, ['values', 'currency', 'value'])
             const productType = _.get(addProductsForm, ['values', 'type', 'value'])
+            const user = _.get(addProductsForm, ['values', 'user', 'value'])
             if (!_.isEmpty(products)) {
                 setOpenAddProductConfirm(true)
             } else if (priceList && openAddProductDialog && _.isEmpty(products)) {
                 setOpenAddProductConfirm(false)
-                dispatch(orderAddProductsListAction(priceList, filterProducts, productType, currency))
+                dispatch(orderAddProductsListAction(priceList, filterProducts, productType, currency, user))
             }
         }),
 
@@ -333,9 +334,10 @@ const enhance = compose(
     }, ({dispatch, createForm, openAddProductDialog, filterProducts, setOpenAddProductConfirm}) => {
         const priceList = _.get(createForm, ['values', 'priceList', 'value'])
         const currency = _.get(createForm, ['values', 'currency', 'value'])
+        const user = _.get(createForm, ['values', 'user', 'value'])
         if (openAddProductDialog) {
             setOpenAddProductConfirm(false)
-            dispatch(orderAddProductsListAction(priceList, filterProducts, null, currency))
+            dispatch(orderAddProductsListAction(priceList, filterProducts, null, currency, user))
         }
     }),
 
@@ -660,13 +662,17 @@ const enhance = compose(
             const {dispatch, createForm, addProductsForm, filterProducts, setOpenAddProductConfirm} = props
             const priceList = _.get(createForm, ['values', 'priceList', 'value'])
             const productType = _.get(addProductsForm, ['values', 'type', 'value'])
-            dispatch(orderAddProductsListAction(priceList, filterProducts, productType))
+            const currency = _.get(addProductsForm, ['values', 'currency', 'value'])
+            const user = _.get(addProductsForm, ['values', 'user', 'value'])
+            dispatch(orderAddProductsListAction(priceList, filterProducts, productType, currency, user))
             setOpenAddProductConfirm(false)
         },
 
         handleSubmitAddProductConfirm: props => () => {
             const {addProductsForm, editProducts, dispatch, createForm, filterProducts, setOpenAddProductConfirm} = props
             const priceList = _.get(createForm, ['values', 'priceList', 'value'])
+            const currency = _.get(createForm, ['values', 'currency', 'value'])
+            const user = _.get(createForm, ['values', 'user', 'value'])
             const productType = _.get(addProductsForm, ['values', 'type', 'value'])
             const existingProducts = _.get(createForm, ['values', 'products']) || []
             const values = _.get(addProductsForm, ['values', 'product'])
@@ -705,7 +711,7 @@ const enhance = compose(
                 return o.product.value.id
             })
             dispatch(change('OrderCreateForm', 'products', _.concat(newProductsArray, checkDifference)))
-            dispatch(orderAddProductsListAction(priceList, filterProducts, productType))
+            dispatch(orderAddProductsListAction(priceList, filterProducts, productType, currency, user))
             setOpenAddProductConfirm(false)
         },
 
