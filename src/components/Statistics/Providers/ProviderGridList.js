@@ -56,12 +56,7 @@ const enhance = compose(
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            position: 'absolute',
-            top: '0',
-            left: ({stat}) => stat ? '-30px' : '0',
-            right: ({stat}) => stat ? '-30px' : '0',
-            bottom: '0',
-            padding: ({stat}) => stat ? '100px 0' : '0',
+            padding: '100px 0',
             background: '#fff',
             zIndex: '30'
         },
@@ -291,14 +286,9 @@ const enhance = compose(
             }
         },
         emptyQuery: {
-            position: 'absolute',
-            top: '0',
-            left: '0',
-            right: '0',
-            bottom: '0',
             background: '#fff url(' + NotFound + ') no-repeat center 20px',
             backgroundSize: '200px',
-            padding: '160px 0 0',
+            padding: '160px 0 20px',
             textAlign: 'center',
             fontSize: '13px',
             color: '#666',
@@ -730,13 +720,13 @@ const StatProviderGridList = enhance((props) => {
             <div className={(listLoading || emptyData)
                     ? classes.tableWrapperLoading
                     : classes.tableWrapper}>
-                {providers}
+                {!(emptyData || listLoading) && providers}
                 {emptyData && !listLoading &&
                 <div className={classes.emptyQuery}>
                     <div>{t('По вашему запросу ничего не найдено')}</div>
                 </div>}
                 <div ref="horizontalTable">
-                    {tableList}
+                    {!(emptyData || listLoading) && tableList}
                 </div>
             </div>
         </div>

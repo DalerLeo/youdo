@@ -262,7 +262,8 @@ const StatSalesGridList = enhance((props) => {
         setSalesInfoDialog,
         hasMarket,
         downloadDocuments,
-        statsData
+        statsData,
+        tabData
     } = props
     const statsLoading = _.get(statsData, 'loading')
     const graphLoading = _.get(graphData, 'graphLoading') || statsLoading
@@ -451,7 +452,8 @@ const StatSalesGridList = enhance((props) => {
                 detailData={detailData}
                 open={statSaleDialog.openStatSaleDialog}
                 onClose={statSaleDialog.handleCloseStatSaleDialog}
-                filter={filter}/>
+                filter={filter}
+                tabData={tabData}/>
         </Container>
     )
 })

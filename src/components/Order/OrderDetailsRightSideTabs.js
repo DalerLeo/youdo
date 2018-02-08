@@ -64,6 +64,7 @@ const enhance = compose(
             overflowY: 'auto',
             overflowX: 'hidden',
             paddingRight: '30px',
+            paddingBottom: '20px',
             '& .row': {
                 height: '50px',
                 margin: '0 -30px',
@@ -77,7 +78,7 @@ const enhance = compose(
             }
         },
         summary: {
-            margin: '20px -30px 0',
+            margin: '0 -30px 0',
             padding: '0 30px',
             fontWeight: '600',
             textAlign: 'right'
@@ -98,9 +99,9 @@ const enhance = compose(
             }
         },
         emptyQuery: {
-            background: 'url(' + NotFound + ') no-repeat center center',
-            backgroundSize: '215px',
-            padding: '215px 0 0',
+            background: 'url(' + NotFound + ') no-repeat center 20px',
+            backgroundSize: '185px',
+            padding: '150px 0 30px',
             textAlign: 'center',
             color: '#999'
         },
@@ -202,9 +203,9 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                         <Col xs={2}>
                                             {numberFormat(amount)}
                                             {(returnAmount > ZERO) &&
-                                            <span className={classes.returnAmount}>
+                                            <strong className={classes.returnAmount}>
                                                 <ToolTip position="bottom" text={tooltipText}>-{returnAmount}</ToolTip>
-                                            </span>}
+                                            </strong>}
                                             {measurement}
                                         </Col>
                                         <Col xs={2}>{numberFormat(price)}</Col>
@@ -297,7 +298,7 @@ OrderDetailsRightSideTabs.propTypes = {
     data: PropTypes.object.isRequired,
     returnData: PropTypes.array,
     returnDataLoading: PropTypes.bool,
-    cancelOrderReturnOpen: PropTypes.func.isRequired
+    cancelOrderReturnOpen: PropTypes.func
 }
 
 export default OrderDetailsRightSideTabs
