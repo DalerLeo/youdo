@@ -22,6 +22,7 @@ import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat'
 import dataFormat from '../../helpers/dateFormat'
 import t from '../../helpers/translate'
+import FlatButton from 'material-ui/FlatButton'
 
 const listHeader = [
     {
@@ -93,7 +94,7 @@ const enhance = compose(
         excelButton: {
             position: 'absolute',
             top: '0',
-            right: '50px',
+            right: '0',
             display: 'flex',
             alignItems: 'center',
             height: '60px',
@@ -149,6 +150,31 @@ const enhance = compose(
         }
     })
 )
+
+const flatButtonStyle = {
+    backgroundColorPrice: '#12aaeb',
+    backgroundColorExcel: '#71ce87',
+    style: {
+        height: '34px',
+        lineHeight: '34px',
+        overflow: 'unset'
+    },
+    iconStyle: {
+        color: '#fff',
+        fill: '#fff',
+        width: '18px',
+        height: '18px',
+        marginBottom: '4px'
+    },
+    labelStyle: {
+        color: '#fff',
+        fontWeight: '600',
+        verticalAlign: 'baseline',
+        textTransform: 'none'
+    },
+    rippleColor: '#fff'
+}
+
 const PriceGridList = enhance((props) => {
     const {
         classes,
@@ -191,14 +217,26 @@ const PriceGridList = enhance((props) => {
     const excelButton = (
         <div className={classes.excelButton}>
             <div>
-                <a className={classes.excel} onClick={setPriceDialog.handleOpenSetPriceDialog}>
-                    <Price color="#fff"/><span>{t('Добавить цену')}</span>
-                </a>
+                <FlatButton
+                    label={t('Добавить цену')}
+                    style={flatButtonStyle.style}
+                    onClick={setPriceDialog.handleOpenSetPriceDialog}
+                    backgroundColor={flatButtonStyle.backgroundColorPrice}
+                    hoverColor={flatButtonStyle.backgroundColorPrice}
+                    rippleColor={flatButtonStyle.rippleColor}
+                    labelStyle={flatButtonStyle.labelStyle}
+                    icon={<Price style={flatButtonStyle.iconStyle}/>}/>
             </div>
             <div>
-                <a className={classes.excel} onClick={getDocument}>
-                    <Excel color="#fff"/> <span>{t('Скачать')}</span>
-                </a>
+                <FlatButton
+                    label={t('Скачать')}
+                    style={flatButtonStyle.style}
+                    onClick={getDocument}
+                    backgroundColor={flatButtonStyle.backgroundColorExcel}
+                    hoverColor={flatButtonStyle.backgroundColorExcel}
+                    rippleColor={flatButtonStyle.rippleColor}
+                    labelStyle={flatButtonStyle.labelStyle}
+                    icon={<Excel style={flatButtonStyle.iconStyle}/>}/>
             </div>
         </div>
     )

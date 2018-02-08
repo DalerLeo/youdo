@@ -42,6 +42,7 @@ const enhance = compose(
         const summary = _.get(state, ['statProvider', 'sum', 'data'])
         const summaryLoading = _.get(state, ['statProvider', 'sum', 'loading'])
         const filterForm = _.get(state, ['form', 'ProviderBalanceFilterForm'])
+        const filterSearchForm = _.get(state, ['form', 'StatisticsFilterForm'])
         const infoForm = _.get(state, ['form', 'ProviderBalanceForm'])
         const info = _.get(state, ['statProvider', 'detail', 'data'])
         const infoLoading = _.get(state, ['statProvider', 'detail', 'loading'])
@@ -61,6 +62,7 @@ const enhance = compose(
             filter,
             query,
             filterForm,
+            filterSearchForm,
             infoForm,
             info,
             infoLoading,
@@ -141,8 +143,8 @@ const enhance = compose(
             hashHistory.push({pathname, query: {pageSize: '25'}})
         },
         handleSubmitFilterDialog: props => () => {
-            const {filter, filterForm} = props
-            const search = _.get(filterForm, ['values', 'search']) || null
+            const {filter, filterForm, filterSearchForm} = props
+            const search = _.get(filterSearchForm, ['values', 'search']) || null
             const paymentType = _.get(filterForm, ['values', 'paymentType', 'value']) || null
             const balanceType = _.get(filterForm, ['values', 'balanceType', 'value']) || null
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
@@ -282,7 +284,7 @@ const StatProviderList = enhance((props) => {
             balanceType: {
                 value: balanceType
             },
-            searching: search
+            search: search
         },
         filterLoading: false,
         openFilterDialog,

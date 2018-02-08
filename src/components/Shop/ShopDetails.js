@@ -9,6 +9,7 @@ import IconButton from 'material-ui/IconButton'
 import Paper from 'material-ui/Paper'
 import Edit from 'material-ui/svg-icons/image/edit'
 import Delete from 'material-ui/svg-icons/action/delete'
+import Info from 'material-ui/svg-icons/action/info-outline'
 import Add from 'material-ui/svg-icons/content/add'
 import ToolTip from '../ToolTip'
 import t from '../../helpers/translate'
@@ -259,6 +260,17 @@ const enhance = compose(
             bottom: '0',
             cursor: 'pointer',
             zIndex: '1'
+        },
+        flex: {
+            display: 'flex',
+            alignItems: 'center'
+        },
+        phonesList: {
+            position: 'relative',
+            '& > svg': {
+                position: 'absolute',
+                right: '0'
+            }
         }
     }),
     withState('openMapDialog', 'setOpenMapDialog', false),
@@ -450,13 +462,13 @@ const ShopDetails = enhance((props) => {
                             <li>{t('Имя контакта')}: <span>{contactName}</span></li>
                             <li>{t('Адрес')}: <span><a onClick={() => { setOpenMapDialog(true) }}>{address}</a></span></li>
                             <li>{t('Ориентир')}: <span>{guide}</span></li>
-                            <li onMouseEnter={() => { setShowPhones(true) }}>
+                            <li className={classes.phonesList}
+                                onMouseEnter={() => { setShowPhones(true) }}
+                                onMouseLeave={() => { setShowPhones(false) }}>
                                 {t('Телефоны')}: <span className={classes.phonesWrapper}>
                                 {firstPhone}
                                 {showPhones && _.get(phones, 'length') > ONE &&
-                                <Paper zDepth={1}
-                                       onMouseLeave={() => { setShowPhones(false) }}
-                                       className={classes.phones}>
+                                <Paper zDepth={1} className={classes.phones}>
                                     {_.map(phones, (item) => {
                                         const phoneID = _.get(item, 'id')
                                         const ph = _.get(item, 'phone')
@@ -464,6 +476,7 @@ const ShopDetails = enhance((props) => {
                                     })}
                                 </Paper>}
                                 </span>
+                                <Info style={iconStyle.icon}/>
                             </li>
                         </ul>
                     </div>
