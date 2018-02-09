@@ -16,7 +16,6 @@ import MoneyOffIcon from 'material-ui/svg-icons/editor/money-off'
 import IconButton from 'material-ui/IconButton'
 import OrderTransactionsDialog from './OrderTransactionsDialog'
 import OrderReturnDialog from './OrderReturnDialog'
-import StatRightSide from './OrderStatDetailsRightSide'
 import OrderSetDiscountDialog from './OrderSetDiscountDialog'
 import RightSide from './OrderDetailsRightSideTabs'
 import ConfirmDialog from '../ConfirmDialog'
@@ -490,17 +489,13 @@ const OrderDetails = enhance((props) => {
                         </div>
                     </div>
                 </div>
-                {type &&
                 <RightSide
                     data={data}
                     tabData={tabData}
                     returnData={returnData}
                     returnDataLoading={returnDataLoading}
-                    cancelOrderReturnOpen={cancelOrderReturnDialog.handleOpenCancelOrderReturnDialog}
-                />}
-                {!type &&
-                <StatRightSide
-                    data={data}/>}
+                    cancelOrderReturnOpen={type ? cancelOrderReturnDialog.handleOpenCancelOrderReturnDialog : null}
+                />
             </div>
             {type && <OrderTransactionsDialog
                 open={transactionsDialog.openTransactionsDialog}

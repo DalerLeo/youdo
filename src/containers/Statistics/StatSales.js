@@ -14,7 +14,12 @@ import * as serializers from '../../serializers/Statistics/statSalesSerializer'
 import getDocuments from '../../helpers/getDocument'
 import {StatSalesGridList, STAT_SALES_DIALOG_OPEN} from '../../components/Statistics'
 import {STAT_SALES_FILTER_KEY} from '../../components/Statistics/Sales/SalesGridList'
-import {orderItemFetchAction} from '../../actions/order'
+import {TAB} from '../../components/Order'
+import * as ORDER_TAB from '../../constants/orderTab'
+import {
+    orderItemFetchAction,
+    orderItemReturnFetchAction
+} from '../../actions/order'
 import * as API from '../../constants/api'
 import {
     statSalesDataFetchAction,
@@ -23,15 +28,18 @@ import {
 } from '../../actions/statSales'
 import getConfig from '../../helpers/getConfig'
 
+const ZERO = 0
 const ONE = 1
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
-        const detail = _.get(state, ['order', 'item', 'data'])
         const graphList = _.get(state, ['statSales', 'data', 'data'])
         const graphLoading = _.get(state, ['statSales', 'data', 'loading'])
+        const detail = _.get(state, ['order', 'item', 'data'])
         const detailLoading = _.get(state, ['order', 'item', 'loading'])
+        const returnData = _.get(state, ['order', 'return', 'data', 'results'])
+        const returnLoading = _.get(state, ['order', 'return', 'loading'])
         const list = _.get(state, ['order', 'list', 'data'])
         const listLoading = _.get(state, ['order', 'list', 'loading'])
         const stats = _.get(state, ['statSales', 'stats', 'data'])
@@ -51,7 +59,9 @@ const enhance = compose(
             graphLoading,
             stats,
             statsLoading,
-            hasMarket
+            hasMarket,
+            returnData,
+            returnLoading
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -75,7 +85,10 @@ const enhance = compose(
         return saleId && _.get(props, ['params', 'statSaleId']) !== saleId
     }, ({dispatch, params}) => {
         const saleId = _.toInteger(_.get(params, 'statSaleId'))
-        saleId && dispatch(orderItemFetchAction(saleId))
+        if (saleId > ZERO) {
+            dispatch(orderItemFetchAction(saleId))
+            dispatch(orderItemReturnFetchAction(saleId))
+        }
     }),
     withState('salesInfoDialog', 'setSalesInfoDialog', false),
 
@@ -150,6 +163,14 @@ const enhance = compose(
             const {filter} = props
             const params = serializers.listFilterSerializer(filter.getParams(), null)
             getDocuments(API.ORDER_SALES_RELEASE, params)
+        },
+
+        handleTabChange: props => (tab) => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({
+                pathname: pathname,
+                query: filter.getParams({[TAB]: tab})
+            })
         }
     })
 )
@@ -164,6 +185,7 @@ const StatSalesList = enhance((props) => {
         filter,
         layout,
         returnData,
+        returnLoading,
         params,
         graphList,
         graphLoading,
@@ -176,6 +198,7 @@ const StatSalesList = enhance((props) => {
 
     const detailId = _.toInteger(_.get(params, 'statSaleId'))
     const openStatSaleDialog = toBoolean(_.get(location, ['query', STAT_SALES_DIALOG_OPEN]))
+    const tab = _.get(location, ['query', TAB]) || ORDER_TAB.ORDER_DEFAULT_TAB
 
     const client = filter.getParam(STAT_SALES_FILTER_KEY.CLIENT)
     const dept = _.toInteger(filter.getParam(STAT_SALES_FILTER_KEY.DEPT))
@@ -210,7 +233,8 @@ const StatSalesList = enhance((props) => {
     const detailData = {
         id: detailId,
         data: detail || {},
-        return: returnData || {},
+        return: returnData || [],
+        returnLoading,
         detailLoading,
         handleCloseDetail: props.handleCloseDetail
     }
@@ -266,6 +290,11 @@ const StatSalesList = enhance((props) => {
         handleGetDocument: props.handleGetDocument
     }
 
+    const tabData = {
+        tab,
+        handleTabChange: props.handleTabChange
+    }
+
     const order = false
     return (
         <Layout {...layout}>
@@ -284,6 +313,7 @@ const StatSalesList = enhance((props) => {
                 hasMarket={hasMarket}
                 downloadDocuments={downloadDocuments}
                 statsData={statsData}
+                tabData={tabData}
             />
         </Layout>
     )
