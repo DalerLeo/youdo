@@ -13,7 +13,6 @@ import {openErrorAction} from '../../actions/error'
 import updateStore from '../../helpers/updateStore'
 import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
 import * as actionTypes from '../../constants/actionTypes'
-import checkPermission from '../../helpers/checkPermission'
 import getConfig from '../../helpers/getConfig'
 import t from '../../helpers/translate'
 import {
@@ -559,8 +558,6 @@ const ReturnList = enhance((props) => {
 
     const detailId = _.toInteger(_.get(params, 'returnId'))
 
-    const canChangeAnyReturn = checkPermission('frontend_add_client_return')
-
     const cancelReturnDialog = {
         openCancelDialog,
         handleOpenCancelReturnDialog: props.handleOpenCancelReturnDialog,
@@ -761,7 +758,6 @@ const ReturnList = enhance((props) => {
     return (
         <Layout {...layout}>
             <ReturnGridList
-                canChangeAnyReturn={canChangeAnyReturn}
                 filter={filter}
                 listData={listData}
                 detailData={detailData}

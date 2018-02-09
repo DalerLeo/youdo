@@ -24,8 +24,14 @@ import ContentAdd from 'material-ui/svg-icons/content/add'
 import ToolTip from '../ToolTip'
 import t from '../../helpers/translate'
 import toBoolean from '../../helpers/toBoolean'
+import checkPermission from '../../helpers/checkPermission'
 import Edit from 'material-ui/svg-icons/editor/mode-edit'
 import IconButton from 'material-ui/IconButton'
+
+// CHECKING PERMISSIONS
+const canCreateMarket = checkPermission('add_market')
+const canEditMarket = checkPermission('change_market')
+const canDeleteMarket = checkPermission('delete_market')
 
 const listHeader = [
     {
@@ -157,6 +163,8 @@ const ShopGridList = enhance((props) => {
             slideShowDialog={slideShowDialog}
             handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
             mapDialog={mapDialog}
+            canEditMarket={canEditMarket}
+            canDeleteMarket={canDeleteMarket}
         />
     )
     const shopList = _.map(_.get(listData, 'data'), (item) => {
@@ -189,6 +197,7 @@ const ShopGridList = enhance((props) => {
     return (
         <Container>
             <SubMenu url={ROUTES.SHOP_LIST_URL}/>
+            {canCreateMarket &&
             <div className={classes.addButtonWrapper}>
                 <ToolTip position="left" text={t('Добавить магазин')}>
                     <FloatingActionButton
@@ -199,13 +208,13 @@ const ShopGridList = enhance((props) => {
                         <ContentAdd />
                     </FloatingActionButton>
                 </ToolTip>
-            </div>
+            </div>}
             <GridList
                 filter={filter}
                 list={list}
                 detail={shopDetail}
                 filterDialog={shopFilterDialog}
-                withCheckboxes={true}
+                withCheckboxes={canEditMarket}
                 activeCheckboxes={showCheckboxes}
                 checkboxActions={checkboxActions}
             />
