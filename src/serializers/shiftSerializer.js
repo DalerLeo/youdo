@@ -23,7 +23,8 @@ export const listFilterSerializer = (data, manufacture) => {
         'name': _.get(defaultData, 'name'),
         'begin_time': _.get(defaultData, 'begin_time'),
         'end_time': _.get(defaultData, 'end_time'),
-        'ordering': ordering && orderingSnakeCase(ordering)
+        'ordering': ordering && orderingSnakeCase(ordering),
+        'search': _.get(defaultData, 'search')
     }
 }
 export const shiftManufactureSerializer = (manufactureId) => {

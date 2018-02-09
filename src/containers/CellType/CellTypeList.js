@@ -23,6 +23,7 @@ import {
     cellTypeItemFetchAction
 } from '../../actions/cellType'
 import {openSnackbarAction} from '../../actions/snackbar'
+import {openErrorAction} from '../../actions/error'
 import t from '../../helpers/translate'
 
 const enhance = compose(
@@ -120,6 +121,11 @@ const enhance = compose(
                     hashHistory.push({pathname, query: filter.getParams({[CELL_TYPE_CREATE_DIALOG_OPEN]: false})})
                     dispatch(cellTypeListFetchAction(filter))
                 })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
+                })
         },
 
         handleOpenUpdateDialog: props => (id) => {
@@ -146,6 +152,11 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push(filter.createURL({[CELL_TYPE_UPDATE_DIALOG_OPEN]: false}))
                     dispatch(cellTypeListFetchAction(filter))
+                })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
                 })
         }
     })

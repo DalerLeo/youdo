@@ -100,9 +100,9 @@ const enhance = compose(
             return null
         },
 
-        handleOpenConfirmDialog: props => () => {
+        handleOpenConfirmDialog: props => (id) => {
             const {setOpenConfirmDialog} = props
-            setOpenConfirmDialog(true)
+            setOpenConfirmDialog(id)
         },
 
         handleCloseConfirmDialog: props => () => {
@@ -110,8 +110,8 @@ const enhance = compose(
             setOpenConfirmDialog(false)
         },
         handleSendConfirmDialog: props => () => {
-            const {dispatch, detailId, filter, setOpenConfirmDialog} = props
-            dispatch(positionDeleteAction(_.toNumber(detailId)))
+            const {dispatch, filter, setOpenConfirmDialog, openConfirmDialog} = props
+            dispatch(positionDeleteAction(_.toNumber(openConfirmDialog)))
                 .then(() => {
                     setOpenConfirmDialog(false)
                     dispatch(positionListFetchAction(filter))
