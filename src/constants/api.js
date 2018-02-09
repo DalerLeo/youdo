@@ -165,6 +165,7 @@ export const ORDER_SALES_PRINT = '/stock/delivery_products/custom_releases/'
 export const ORDER_SALES_RELEASE = '/stock/delivery_products/custom_release/export'
 export const ORDER_CANCEL = `/${ORDER}/%d/cancel/`
 export const ORDER_EXCEL = `/${ORDER}/download_invoice/`
+export const ORDER_CHECK_DELIVERY = `/${ORDER}/delivered/`
 export const GET_DOCUMENT = 'order_document/%d/'
 
 export const SUPPLY_EXPENSE = 'stock/supply_expanse'

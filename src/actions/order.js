@@ -339,3 +339,19 @@ export const orderAddProductsListAction = (priceList, filter, productType, curre
         payload
     }
 }
+
+export const orderCheckDeliveryAction = (order) => {
+    const payload = axios()
+        .post(API.ORDER_CHECK_DELIVERY, {orders: [order]})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.ORDER_CHECK_DELIVERY,
+        payload
+    }
+}
