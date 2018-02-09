@@ -70,7 +70,6 @@ const enhance = compose(
 const IncomeCategoryCreateDialog = enhance((props) => {
     const {open, loading, handleSubmit, onClose, classes, isUpdate, data, dataLoading, showOptions} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
-
     return (
         <Dialog
             modal={true}
