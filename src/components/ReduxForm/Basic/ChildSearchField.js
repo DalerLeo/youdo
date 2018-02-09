@@ -129,6 +129,7 @@ const SearchField = enhance((props) => {
                 clearValueText='Очистить'
                 valueRenderer={valueRenderer}
                 labelKey={'text'}
+                disabled={props.disabled}
                 filterOptions={options => options}
             />
         </div>

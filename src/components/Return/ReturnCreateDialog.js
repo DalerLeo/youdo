@@ -239,7 +239,6 @@ const ReturnCreateDialog = enhance((props) => {
         isUpdate,
         name,
         editOnlyCost,
-        initialValues,
         hasMarket,
         handleOpenAddProduct,
         onPreviewOpen
@@ -284,7 +283,6 @@ const ReturnCreateDialog = enhance((props) => {
                                         className={classes.searchFieldCustom}
                                         label={t('Магазин')}
                                         clientId={clientId}
-                                        initialVal={_.get(initialValues, ['market', 'value'])}
                                         disabled={!clientId}
                                         fullWidth={true}/>
                                 </div>}

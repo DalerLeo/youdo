@@ -136,7 +136,8 @@ const OrderGridList = enhance((props) => {
         canChangeAnyReturn,
         hasMarket,
         addProductDialog,
-        previewDialog
+        previewDialog,
+        canSetPriceOnReturn
     } = props
 
     const showCheckboxes = toBoolean(_.get(filter.getParams(), 'showCheckboxes'))
@@ -280,6 +281,7 @@ const OrderGridList = enhance((props) => {
                         onClose={updateDialog.handleCloseUpdateDialog}
                         onSubmit={updateDialog.handleSubmitUpdateDialog}
                         hasMarket={hasMarket}
+                        onPreviewOpen={previewDialog.handleOpenPreviewDialog}
                         handleOpenAddProduct={addProductDialog.handleOpenAddProduct}
                     />)
                 : (isAdmin &&
@@ -304,8 +306,8 @@ const OrderGridList = enhance((props) => {
                 openAddProductConfirm={addProductDialog.openAddProductConfirm}
                 handleCloseAddProductConfirm={addProductDialog.handleCloseAddProductConfirm}
                 handleSubmitAddProductConfirm={addProductDialog.handleSubmitAddProductConfirm}
-                withoutCustomPrice={true}
                 isReturn={true}
+                canChangeAnyPrice={canSetPriceOnReturn}
             />}
         </Container>
     )
@@ -315,6 +317,7 @@ OrderGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
+    canSetPriceOnReturn: PropTypes.bool,
     confirmDialog: PropTypes.shape({
         openConfirmDialog: PropTypes.bool.isRequired,
         handleOpenConfirmDialog: PropTypes.func.isRequired,
