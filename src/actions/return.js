@@ -128,8 +128,7 @@ export const addProductsListAction = (filter, type, market, currency, client) =>
         type,
         market,
         currency,
-        client,
-        'price_list': '1'
+        client
     }
     const payload = axios()
         .get(API.RETURN_CREATE_PRODUCTS_LIST, {params})

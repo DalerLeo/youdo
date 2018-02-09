@@ -152,6 +152,7 @@ const ReturnCreateDialog = enhance((props) => {
             modal={true}
             contentStyle={customContentStyle}
             open={open}
+            style={{zIndex: '1501'}}
             onRequestClose={onClose}
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
