@@ -345,7 +345,7 @@ const OrderAddProductsDialog = enhance((props) => {
                         name={'product[' + id + '][amount]'}
                         component={TextField}
                         className={classes.inputFieldCustom}
-                        normalize={normalizeNumber}
+                        normalize={value => normalizeNumber(value, !fromAllBalances ? balance : null)}
                         inputStyle={{textAlign: 'right'}}
                         fullWidth={true}/>
                     <span>{measurement}</span>

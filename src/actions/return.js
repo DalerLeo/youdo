@@ -120,7 +120,7 @@ export const clientReturnAction = (formValues, id) => {
     }
 }
 
-export const addProductsListAction = (filter, type, market, currency) => {
+export const addProductsListAction = (filter, type, market, currency, client) => {
     const params = {
         page_size: _.get(filter.getParams(), 'pdPageSize'),
         page: _.get(filter.getParams(), 'pdPage'),
@@ -128,6 +128,7 @@ export const addProductsListAction = (filter, type, market, currency) => {
         type,
         market,
         currency,
+        client,
         'price_list': '1'
     }
     const payload = axios()
