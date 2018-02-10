@@ -43,6 +43,7 @@ const canEditOrderWhenGivenOrDelivered = checkPermission('can_update_order_after
 const canSetDiscount = checkPermission('can_set_discount')
 const canCancelOrder = checkPermission('delete_order')
 const canAddOrderReturn = checkPermission('add_orderreturn')
+const canMarkDelivery = checkPermission('can_mark_delivery')
 
 const popupWidth = 210
 const enhance = compose(
@@ -305,7 +306,7 @@ const OrderDetails = enhance((props) => {
                     <div className={classes.arrowShadow}> </div>
                 </div>
                 <div className={classes.titleButtons}>
-                    {status !== ORDER_DELIVERED && status === ORDER_GIVEN &&
+                    {status !== ORDER_DELIVERED && status === ORDER_GIVEN && canMarkDelivery &&
                     <ToolTip position="bottom" text={t('Отметить доставку')}>
                         <IconButton
                             iconStyle={iconStyle.icon}

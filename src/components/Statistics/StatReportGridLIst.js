@@ -210,7 +210,7 @@ const StatReportGridList = enhance((props) => {
                     <span>{numberFormat(_.get(salesData, 'factSum'), currency)}</span>
                 </li>
                 <li>
-                    <span>{t('Себестоимость товара')}</span>
+                    <span dangerouslySetInnerHTML={{__html: t('Себестоимость фактически<br/> проданных товаров')}}/>
                     <span>{numberFormat(_.get(salesData, 'netCost'), currency)}</span>
                 </li>
                 <li>
@@ -254,7 +254,7 @@ const StatReportGridList = enhance((props) => {
             <span>{t('Отчет по кассам')}</span>
             <ul>
                 <li>
-                    <span dangerouslySetInnerHTML={{__html: t('Баланс <br/> на начало периода')}}></span>
+                    <span dangerouslySetInnerHTML={{__html: t('Баланс <br/> на начало периода')}}/>
                     <div>
                         <span>{numberFormat(_.get(cashBoxesData, ['startBalance', 'cash']), currency)}</span>
                         <span>{numberFormat(_.get(cashBoxesData, ['startBalance', 'bank']), currency)}</span>

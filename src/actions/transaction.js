@@ -327,3 +327,19 @@ export const transactionDetalizationAction = (id) => {
         payload
     }
 }
+
+export const optionsListFetchAction = () => {
+    const payload = axios()
+        .get(API.OPTIONS_LIST, {params: {page_size: 100}})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.OPTIONS_LIST,
+        payload
+    }
+}
