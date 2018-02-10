@@ -215,7 +215,7 @@ const ReturnFilterForm = enhance((props) => {
                         <Field className={classes.inputFieldCustom} name="initiator" component={UsersMultiSearchField} label={t('Инициатор')}/>
                         <Field className={classes.inputFieldCustom} name="code" component={TextField} label={t('Код')}/>
                         <Field className={classes.inputDateCustom} name="data" component={DateToDateField} label={t('Период создания')}/>
-                        <Field name="exclude" component={CheckBox} label={t('Показать отмененные заказы')}/>
+                        <Field name="exclude" component={CheckBox} label={t('Показать отмененные возвраты')}/>
                     </div>
 
                     <RaisedButton

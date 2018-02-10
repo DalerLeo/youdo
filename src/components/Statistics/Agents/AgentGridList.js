@@ -452,8 +452,7 @@ const listHeader = [
 ]
 
 const styleOnHover = {
-    background: '#efefef',
-    cursor: 'pointer'
+    background: '#efefef'
 }
 
 const iconStyle = {
@@ -513,7 +512,7 @@ const StatAgentGridList = enhance((props) => {
                 onMouseEnter={() => { updateRow(id) }}
                 onMouseLeave={() => { updateRow(null) }}
                 onClick={ () => { statAgentDialog.handleOpenStatAgentDialog(id) }}>
-                <span>{name}</span>
+                <span style={{cursor: 'pointer'}}>{name}</span>
             </div>
         )
     })
@@ -527,8 +526,8 @@ const StatAgentGridList = enhance((props) => {
         const paymentTotal = numberFormat(_.get(item, 'paymentTotal'), primaryCurrency)
         const planTotal = numberFormat(_.get(item, 'planTotal'), primaryCurrency)
         const planLeft = numberFormat(_.get(item, 'planLeft'), primaryCurrency)
-        const planDebt = numberFormat(_.get(item, 'planDebt'), primaryCurrency)
-        const debt = numberFormat(_.get(item, 'planDebt'), primaryCurrency)
+        const debtFromOrder = numberFormat(_.get(item, 'debtFromOrder'), primaryCurrency)
+        const totalDebt = numberFormat(_.get(item, 'totalDebt'), primaryCurrency)
 
         return (
             <tr
@@ -548,8 +547,8 @@ const StatAgentGridList = enhance((props) => {
 
                 <td>{planTotal}</td>
                 <td>{planLeft}</td>
-                <td>{planDebt}</td>
-                <td>{debt}</td>
+                <td>{debtFromOrder}</td>
+                <td>{totalDebt}</td>
             </tr>
         )
     })
