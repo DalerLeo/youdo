@@ -268,8 +268,9 @@ const enhance = compose(
         phonesList: {
             position: 'relative',
             '& > svg': {
+                height: '22px !important',
                 position: 'absolute',
-                right: '0'
+                right: '-25px'
             }
         }
     }),
@@ -302,7 +303,9 @@ const ShopDetails = enhance((props) => {
         openMapDialog,
         setOpenMapDialog,
         showPhones,
-        setShowPhones
+        setShowPhones,
+        canEditMarket,
+        canDeleteMarket
     } = props
 
     const ZERO = 0
@@ -402,6 +405,7 @@ const ShopDetails = enhance((props) => {
                     {isActive ? <div className={classes.status} style={{background: '#81c784'}}>{t('Магазин активен')}</div>
                         : <div className={classes.status} style={{background: '#ff717e'}}>{t('Магазин неактивен')}</div>
                     }
+                    {canEditMarket &&
                     <ToolTip position="bottom" text={t('Изменить')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
@@ -410,7 +414,8 @@ const ShopDetails = enhance((props) => {
                             onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
                             <Edit />
                         </IconButton>
-                    </ToolTip>
+                    </ToolTip>}
+                    {canDeleteMarket &&
                     <ToolTip position="bottom" text={t('Удалить')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
@@ -419,7 +424,7 @@ const ShopDetails = enhance((props) => {
                             onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}>
                             <Delete />
                         </IconButton>
-                    </ToolTip>
+                    </ToolTip>}
                 </div>
             </div>
             <div className={classes.content}>
@@ -476,7 +481,7 @@ const ShopDetails = enhance((props) => {
                                     })}
                                 </Paper>}
                                 </span>
-                                <Info style={iconStyle.icon}/>
+                                {_.get(phones, 'length') > ONE && <Info style={iconStyle.icon}/>}
                             </li>
                         </ul>
                     </div>
