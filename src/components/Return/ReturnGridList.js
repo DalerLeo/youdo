@@ -220,7 +220,6 @@ const OrderGridList = enhance((props) => {
     return (
         <Container>
             <SubMenu url={ROUTES.RETURN_LIST_URL}/>
-            {canChangeAnyReturn &&
             <div className={classes.addButtonWrapper}>
                 <ToolTip position="left" text={t('Возврат с клиента')}>
                     <FloatingActionButton
@@ -231,7 +230,7 @@ const OrderGridList = enhance((props) => {
                         <ContentAdd />
                     </FloatingActionButton>
                 </ToolTip>
-            </div>}
+            </div>
 
             <GridList
                 filter={filter}

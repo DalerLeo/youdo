@@ -138,7 +138,7 @@ const ReturnCreateDialog = enhance((props) => {
         const cost = numberFormat(item.cost, currency)
         const productName = item.product.name
         return (
-            <Row key={productName} className="dottedList">
+            <Row key={productName + order} className="dottedList">
                 <Col xs={5}>{productName}</Col>
                 <Col xs={2}>{order}</Col>
                 <Col xs={2}>{amount}</Col>
