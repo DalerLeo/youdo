@@ -163,6 +163,9 @@ const OrderGridList = enhance((props) => {
             hasMarket={hasMarket}
         />
     )
+    const CLIENT_RETURN = 2
+    const ORDER_RETURN = 1
+    const returnType = _.toInteger(_.get(detailData, ['data', 'type']))
     const detStatus = _.toInteger(_.get(detailData, ['data', 'status']))
 
     const orderList = _.map(_.get(listData, 'data'), (item) => {
@@ -267,30 +270,31 @@ const OrderGridList = enhance((props) => {
                 onClose={previewDialog.handleClosePreviewDialog}
                 onSubmit={updateDialog.openUpdateDialog ? updateDialog.handleSubmitUpdateDialog : createDialog.handleSubmitCreateDialog}
             />
-            {(isAdmin &&
-                <ReturnCreateDialog
-                    isUpdate={true}
-                    editOnlyCost={detStatus === ORDER_RETURN_COMPLETED}
-                    name={_.get(detailData, ['data', 'client', 'name'])}
-                    initialValues={updateDialog.initialValues}
-                    loading={updateDialog.updateLoading}
-                    open={updateDialog.openUpdateDialog}
-                    onClose={updateDialog.handleCloseUpdateDialog}
-                    onSubmit={updateDialog.handleSubmitUpdateDialog}
-                    hasMarket={hasMarket}
-                    onPreviewOpen={previewDialog.handleOpenPreviewDialog}
-                    handleOpenAddProduct={addProductDialog.handleOpenAddProduct}
-                />)}
-            {(isAdmin &&
-                <ReturnUpdateDialog
-                    isUpdate={true}
-                    orderData={_.get(detailData, 'data')}
-                    initialValues={updateDialog.initialValues}
-                    loading={updateDialog.updateLoading}
-                    open={updateDialog.openOrderUpdateDialog}
-                    onClose={updateDialog.handleCloseOrderUpdateDialog}
-                    onSubmit={updateDialog.handleSubmitUpdateDialog}
-                />)}
+            {(returnType === CLIENT_RETURN)
+                ? (isAdmin &&
+                    <ReturnCreateDialog
+                        isUpdate={true}
+                        editOnlyCost={detStatus === ORDER_RETURN_COMPLETED}
+                        name={_.get(detailData, ['data', 'client', 'name'])}
+                        initialValues={updateDialog.initialValues}
+                        loading={updateDialog.updateLoading}
+                        open={updateDialog.openUpdateDialog}
+                        onClose={updateDialog.handleCloseUpdateDialog}
+                        onSubmit={updateDialog.handleSubmitUpdateDialog}
+                        hasMarket={hasMarket}
+                        onPreviewOpen={previewDialog.handleOpenPreviewDialog}
+                        handleOpenAddProduct={addProductDialog.handleOpenAddProduct}
+                    />)
+                : (isAdmin && returnType === ORDER_RETURN &&
+                    <ReturnUpdateDialog
+                        isUpdate={true}
+                        orderData={_.get(detailData, 'data')}
+                        initialValues={updateDialog.initialValues}
+                        loading={updateDialog.updateLoading}
+                        open={updateDialog.openUpdateDialog}
+                        onClose={updateDialog.handleCloseUpdateDialog}
+                        onSubmit={updateDialog.handleSubmitUpdateDialog}
+                    />)}
             {addProductDialog.openAddProductDialog &&
             <AddProductsDialog
                 open={addProductDialog.openAddProductDialog}
