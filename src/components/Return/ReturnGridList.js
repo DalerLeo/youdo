@@ -353,10 +353,10 @@ OrderGridList.propTypes = {
         handleSubmitCreateDialog: PropTypes.func.isRequired
     }).isRequired,
     previewDialog: PropTypes.shape({
-        openPreviewDialog: PropTypes.bool.isRequired,
-        handleOpenPreviewDialog: PropTypes.func.isRequired,
-        handleCloseCreateDialog: PropTypes.func.isRequired,
-        handleSubmitCreateDialog: PropTypes.func.isRequired
+        openPreviewDialog: PropTypes.bool,
+        handleOpenPreviewDialog: PropTypes.func,
+        handleCloseCreateDialog: PropTypes.func,
+        handleSubmitCreateDialog: PropTypes.func
     })
 }
 

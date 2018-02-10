@@ -37,7 +37,8 @@ import {
     orderAddProductsListAction,
     orderChangePriceListAction,
     orderChangeCurrencyListAction,
-    orderSalesPrintFetchAction
+    orderSalesPrintFetchAction,
+    orderCheckDeliveryAction
 } from '../../actions/order'
 import {openSnackbarAction} from '../../actions/snackbar'
 import updateStore from '../../helpers/updateStore'
@@ -59,15 +60,17 @@ import {
     OrderContractPrint
 } from '../../components/Order'
 import t from '../../helpers/translate'
+import {
+    ZERO,
+    ORDER_GIVEN,
+    ORDER_DELIVERED,
+    ORDER_CANCELED,
+    ORDER_NOT_CONFIRMED
+} from '../../constants/backendConstants'
 
 const CLIENT_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const CANCEL_ORDER_RETURN_DIALOG_OPEN = 'openCancelConfirmDialog'
 const MINUS_ONE = -1
-const ZERO = 0
-const TWO = 2
-const THREE = 3
-const FOUR = 4
-const FIVE = 5
 const HUNDRED = 1000
 const enhance = compose(
     connect((state, props) => {
@@ -284,6 +287,7 @@ const enhance = compose(
 
     withState('openAddProductDialog', 'setOpenAddProductDialog', false),
     withState('openAddProductConfirm', 'setOpenAddProductConfirm', false),
+    withState('openCheckDeliveryConfirm', 'setOpenCheckDeliveryConfirm', false),
     withPropsOnChange((props, nextProps) => {
         const except = {
             page: null,
@@ -889,6 +893,33 @@ const enhance = compose(
         handleCloseContractPrint: props => () => {
             const {setOpenContractPrint} = props
             setOpenContractPrint(false)
+        },
+
+        handleOpenCheckDeliveryDialog: props => () => {
+            const {setOpenCheckDeliveryConfirm} = props
+            setOpenCheckDeliveryConfirm(true)
+        },
+
+        handleCloseCheckDeliveryDialog: props => () => {
+            const {setOpenCheckDeliveryConfirm} = props
+            setOpenCheckDeliveryConfirm(false)
+        },
+
+        handleSubmitCheckDeliveryDialog: props => () => {
+            const {dispatch, setOpenCheckDeliveryConfirm, params} = props
+            const orderID = _.toInteger(_.get(params, 'orderId'))
+            return dispatch(orderCheckDeliveryAction(orderID))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: t('Заказ отмечен как "доставлен"')}))
+                })
+                .then(() => {
+                    setOpenCheckDeliveryConfirm(false)
+                    return dispatch(orderItemFetchAction(orderID))
+                }).catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
+                })
         }
     }),
 )
@@ -930,7 +961,8 @@ const OrderList = enhance((props) => {
         salesPrintDataLoading,
         openContractPrint,
         marketDetailsLoading,
-        marketDetails
+        marketDetails,
+        openCheckDeliveryConfirm
     } = props
     const openFilterDialog = toBoolean(_.get(location, ['query', ORDER_FILTER_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', ORDER_CREATE_DIALOG_OPEN]))
@@ -1092,7 +1124,7 @@ const OrderList = enhance((props) => {
                     value: deliveryType,
                     text: deliveryTypeText
                 },
-                isConfirmed: _.toNumber(_.get(detail, 'status')) !== FIVE,
+                isConfirmed: _.toNumber(_.get(detail, 'status')) !== ORDER_NOT_CONFIRMED,
                 dealType: dealType || '',
                 paymentType: paymentType || '',
                 deliveryDate: _.get(detail, ['dateDelivery']) ? moment(_.get(detail, ['dateDelivery'])).toDate() : '',
@@ -1124,7 +1156,7 @@ const OrderList = enhance((props) => {
         .split('-')
         .map((item) => {
             const statusItem = _.toInteger(_.get(_.find(_.get(list, 'results'), {'id': _.toInteger(item)}), 'status'))
-            return (statusItem === TWO || statusItem === THREE)
+            return (statusItem === ORDER_GIVEN || statusItem === ORDER_DELIVERED)
         })
         .value(), true)
     const cancelled = _.includes(_
@@ -1132,7 +1164,7 @@ const OrderList = enhance((props) => {
         .split('-')
         .map((item) => {
             const statusItem = _.toInteger(_.get(_.find(_.get(list, 'results'), {'id': _.toInteger(item)}), 'status'))
-            return statusItem === FOUR
+            return statusItem === ORDER_CANCELED
         })
         .value(), true)
 
@@ -1296,9 +1328,17 @@ const OrderList = enhance((props) => {
 
     const releaseDialog = {
         openReleaseDialog,
+        givenOrDelivery,
         handleOpenReleaseDialog: props.handleOpenReleaseDialog,
         handleCloseReleaseDialog: props.handleCloseReleaseDialog,
         handleSubmitReleaseDialog: props.handleSubmitReleaseDialog
+    }
+
+    const checkDeliveryDialog = {
+        open: openCheckDeliveryConfirm,
+        handleOpen: props.handleOpenCheckDeliveryDialog,
+        handleClose: props.handleCloseCheckDeliveryDialog,
+        handleSubmit: props.handleSubmitCheckDeliveryDialog
     }
 
     document.getElementById('wrapper').style.height = '100%'
@@ -1339,6 +1379,7 @@ const OrderList = enhance((props) => {
                 printSalesDialog={printSalesDialog}
                 printContractDialog={printContractDialog}
                 scrollValue={_.get(layout, 'scrollValue')}
+                checkDeliveryDialog={checkDeliveryDialog}
             />
         </Layout>
     )
