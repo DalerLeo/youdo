@@ -164,6 +164,7 @@ const OrderGridList = enhance((props) => {
         />
     )
     const CLIENT_RETURN = 2
+    const ORDER_RETURN = 1
     const returnType = _.toInteger(_.get(detailData, ['data', 'type']))
     const detStatus = _.toInteger(_.get(detailData, ['data', 'status']))
 
@@ -284,7 +285,7 @@ const OrderGridList = enhance((props) => {
                         onPreviewOpen={previewDialog.handleOpenPreviewDialog}
                         handleOpenAddProduct={addProductDialog.handleOpenAddProduct}
                     />)
-                : (isAdmin &&
+                : (isAdmin && returnType === ORDER_RETURN &&
                     <ReturnUpdateDialog
                         isUpdate={true}
                         orderData={_.get(detailData, 'data')}
