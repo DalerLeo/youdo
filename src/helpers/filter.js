@@ -220,7 +220,8 @@ const filter = (data, pathname, query = {}, newKeys = {}) => {
             openRepealHistoryDialog: null,
             openCategoryPopop: null,
             openTransactionDialog: null,
-            key: null
+            key: null,
+            openSetPrice: null
         }
         return paramsToQueryUrl(_.assign({}, params, _.merge(except, defaultExcept)))
     }

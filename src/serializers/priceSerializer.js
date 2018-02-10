@@ -102,7 +102,7 @@ export const setPricesSerializer = (data) => {
 
     return {
         'products': _.filter(products, (o) => {
-            return !_.isEmpty(o)
+            return !_.isEmpty(o.prices)
         }),
         'cash_currency': cashCurrency,
         'transfer_currency': transferCurrency

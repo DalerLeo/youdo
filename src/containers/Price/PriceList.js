@@ -2,8 +2,10 @@ import React from 'react'
 import _ from 'lodash'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
-import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers, withState} from 'recompose'
+import getDocuments from '../../helpers/getDocument'
+import {reset} from 'redux-form'
+import Layout from '../../components/Layout'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
@@ -11,8 +13,6 @@ import numberFormat from '../../helpers/numberFormat'
 import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
 import * as API from '../../constants/api'
 import * as serializers from '../../serializers/priceSerializer'
-import getDocuments from '../../helpers/getDocument'
-import {reset} from 'redux-form'
 import {
     PRICE_FILTER_KEY,
     PRICE_FILTER_OPEN,
@@ -53,7 +53,6 @@ const enhance = compose(
         const createForm = _.get(state, ['form', 'PriceCreateForm'])
         const globalForm = _.get(state, ['form', 'PriceGlobalForm'])
         const setDefaultForm = _.get(state, ['form', 'PriceSetDefaultForm'])
-        const filter = filterHelper(list, pathname, query)
         const priceLists = _.get(state, ['priceListSetting', 'list', 'data'])
         const priceListLoading = _.get(state, ['priceListSetting', 'list', 'loading'])
         const priceListItemsList = _.get(state, ['price', 'price', 'data'])
@@ -62,11 +61,12 @@ const enhance = compose(
         const priceItemHistoryLoading = _.get(state, ['price', 'history', 'loading'])
         const priceItemExpenseList = _.get(state, ['price', 'expense', 'data'])
         const priceItemExpenseLoading = _.get(state, ['price', 'expense', 'loading'])
-        const setPricesForm = _.get(state, ['form', 'SetPricesForm'])
+        const setPricesForm = _.get(state, ['form', 'setPricesForm'])
         const productsData = _.get(state, ['price', 'product', 'data'])
         const productsDataLoading = _.get(state, ['price', 'product', 'loading'])
         const pricePriceList = _.get(state, ['price', 'priceList', 'data'])
         const pricePriceLoading = _.get(state, ['price', 'priceList', 'loading'])
+        const filter = filterHelper(list, pathname, query)
 
         return {
             list,
@@ -101,6 +101,17 @@ const enhance = compose(
         return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
         dispatch(priceListFetchAction(filter))
+    }),
+    withPropsOnChange((props, nextProps) => {
+        const productType = _.get(props, ['setPricesForm', 'values', 'productType', 'value'])
+        const productTypeNext = _.get(nextProps, ['setPricesForm', 'values', 'productType', 'value'])
+        return productType !== productTypeNext
+    }, ({dispatch, setPricesForm}) => {
+        console.log(setPricesForm, 'props')
+        const proType = _.get(setPricesForm, ['values', 'productType', 'value'])
+        dispatch(setPriceProductListFetchAction(proType))
+        dispatch(setPricePriceListFetchAction())
+
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -222,39 +233,52 @@ const enhance = compose(
 
         handleOpenSetPriceDialog: props => () => {
             const {location: {pathname}, filter, dispatch, setCurrencyChooseDialog} = props
-            dispatch(reset('SetPriceSetPriceForm'))
             hashHistory.push({pathname, query: filter.getParams({[SET_PRICE_DIALOG_OPEN]: true})})
             setCurrencyChooseDialog(true)
+            dispatch(reset('setPricesForm'))
         },
         handleCloseSetPriceDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[SET_PRICE_DIALOG_OPEN]: false, 'pdSearch': null, 'pdCurrency': null})})
+            hashHistory.push({pathname, query: filter.getParams({[SET_PRICE_DIALOG_OPEN]: false})})
         },
         handleSubmitSetPriceDialog: props => (items, closeDialog) => {
-            const {location: {pathname}, dispatch, filter, setPricesForm} = props
+            const {location, dispatch, filter, setPricesForm, params} = props
             return dispatch(setPriceCreateFetchAction(_.get(setPricesForm, ['values'])))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[SET_PRICE_DIALOG_OPEN]: false, 'pdSearch': null, 'pdCurrency': null})})
+                    hashHistory.push({
+                        pathname: _.get(location, 'pathname'),
+                        query: filter.getParams({[SET_PRICE_DIALOG_OPEN]: false})
+                    })
+                    const priceId = _.toInteger(_.get(params, 'priceId'))
+                    const supplyId = _.toInteger(_.get(location, ['query', PRICE_SUPPLY_DIALOG_OPEN]))
+                    if (priceId > ZERO) {
+                        dispatch(priceItemFetchAction(priceId))
+                        dispatch(getPriceItemsAction(priceId))
+                        dispatch(priceListSettingGetAllAction())
+                        dispatch(priceItemHistoryFetchAction(priceId))
+                    }
+                    if (supplyId > ZERO) {
+                        dispatch(priceItemExpensesFetchAction(supplyId))
+                    }
                     closeDialog(false)
                 })
                 .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
+                    if (!_.isEmpty(error)) {
+                        dispatch(openErrorAction({
+                            message: error
+                        }))
+                    }
                 })
         },
         handleFilterSetPriceCurrency: props => () => {
-            const {filter, setPricesForm, setCurrencyChooseDialog, dispatch} = props
-            const cashCurrency = _.get(setPricesForm, ['values', 'cashCurrency', 'value']) || null
-            const bankCurrency = _.get(setPricesForm, ['values', 'bankCurrency', 'value']) || null
-            filter.filterBy({'cashCurrency': cashCurrency})
-            filter.filterBy({'bankCurrency': bankCurrency})
+            const {setCurrencyChooseDialog, dispatch, setPricesForm} = props
+            const productType = _.get(setPricesForm, ['values', 'productType', 'value'])
             setCurrencyChooseDialog(false)
-            dispatch(setPriceProductListFetchAction(filter))
-            dispatch(setPricePriceListFetchAction(filter))
+            dispatch(setPriceProductListFetchAction(productType))
+            dispatch(setPricePriceListFetchAction())
         }
     })
 )

@@ -348,7 +348,7 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'SetPricesForm',
+        form: 'setPricesForm',
         enableReinitialize: true
     }),
     withState('pdSearch', 'setSearch', ({filter}) => filter.getParam('pdSearch')),
@@ -361,15 +361,11 @@ const enhance = compose(
         }
     }),
     connect((state) => {
-        const formProducts = _.get(state, ['form', 'SetPricesForm', 'values', 'product'])
-        const cashCurrency = _.get(state, ['form', 'SetPricesForm', 'values', 'cashCurrency'])
-        const bankCurrency = _.get(state, ['form', 'SetPricesForm', 'values', 'bankCurrency'])
-        const itemsCount = _.get(state, ['remainder', 'inventory', 'data', 'count'])
+        const cashCurrency = _.get(state, ['form', 'setPricesForm', 'values', 'cashCurrency'])
+        const bankCurrency = _.get(state, ['form', 'setPricesForm', 'values', 'bankCurrency'])
         return {
-            formProducts,
             cashCurrency,
-            bankCurrency,
-            itemsCount
+            bankCurrency
         }
     })
 )
@@ -587,7 +583,9 @@ const SetPrice = enhance((props) => {
                         </header>
                         <div className={classes.productsList}>
                             <div className={classes.expandedTable}>
-                                {lists}
+                                {currencyChooseDialog
+                                    ? <div></div>
+                                    : lists}
                             </div>
                             <div className={classes.bottomButton}>
                                 <button className={classes.actionButton} primary={true} onClick={() => { onSubmit() }}>
