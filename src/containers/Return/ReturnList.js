@@ -22,6 +22,7 @@ import {
     RETURN_CREATE_DIALOG_OPEN,
     CANCEL_RETURN_DIALOG_OPEN,
     RETURN_UPDATE_DIALOG_OPEN,
+    ORDER_UPDATE_DIALOG_OPEN,
     ReturnGridList,
     ReturnPrint
 } from '../../components/Return'
@@ -94,7 +95,8 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         const except = {
             showCheckboxes: null,
-            openPreviewDialog: null
+            openPreviewDialog: null,
+            openOrderUpdateDialog: null
         }
         return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
@@ -143,6 +145,7 @@ const enhance = compose(
             deliveryToDate: null,
             paymentType: null,
             openCreateDialog: null,
+            openOrderUpdateDialog: null,
             openPreviewDialog: null,
             openFilterDialog: null,
             product: null,
@@ -319,6 +322,16 @@ const enhance = compose(
         handleCloseUpdateDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[RETURN_UPDATE_DIALOG_OPEN]: false})})
+        },
+
+        handleOpenOrderUpdateDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[ORDER_UPDATE_DIALOG_OPEN]: true})})
+        },
+
+        handleCloseOrderUpdateDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[ORDER_UPDATE_DIALOG_OPEN]: false})})
         },
 
         handleSubmitUpdateDialog: props => () => {
@@ -550,6 +563,7 @@ const ReturnList = enhance((props) => {
     const openFilterDialog = toBoolean(_.get(location, ['query', RETURN_FILTER_OPEN]))
     const openCancelDialog = _.toInteger(_.get(location, ['query', CANCEL_RETURN_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', RETURN_UPDATE_DIALOG_OPEN]))
+    const openOrderUpdateDialog = toBoolean(_.get(location, ['query', ORDER_UPDATE_DIALOG_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', RETURN_CREATE_DIALOG_OPEN]))
 
     const client = filter.getParam(RETURN_FILTER_KEY.CLIENT)
@@ -734,6 +748,9 @@ const ReturnList = enhance((props) => {
         })(),
         updateLoading,
         openUpdateDialog,
+        openOrderUpdateDialog,
+        handleOpenOrderUpdateDialog: props.handleOpenOrderUpdateDialog,
+        handleCloseOrderUpdateDialog: props.handleCloseOrderUpdateDialog,
         handleOpenUpdateDialog: props.handleOpenUpdateDialog,
         handleCloseUpdateDialog: props.handleCloseUpdateDialog,
         handleSubmitUpdateDialog: props.handleSubmitUpdateDialog

@@ -29,6 +29,7 @@ import {
 // CHECKING PERMISSIONS
 const canEditOrderReturn = checkPermission('change_orderreturn')
 const canCancelOrderReturn = checkPermission('delete_orderreturn')
+const CLIENT_RETURN = 2
 
 const enhance = compose(
     injectSheet({
@@ -275,7 +276,7 @@ const ReturnDetails = enhance((props) => {
                             style={iconStyle.button}
                             disabled={status === ORDER_RETURN_CANCELED || (order && status === ORDER_RETURN_COMPLETED) || (!canEditOrderReturn && typeClient === RETURN_TYPE_CLIENT)}
                             touch={true}
-                            onTouchTap={() => { updateDialog.handleOpenUpdateDialog() }}>
+                            onTouchTap={() => { typeClient === CLIENT_RETURN ? updateDialog.handleOpenUpdateDialog() : updateDialog.handleOpenOrderUpdateDialog() }}>
                             <Edit />
                         </IconButton>
                     </ToolTip>}
