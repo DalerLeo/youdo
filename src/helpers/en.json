@@ -651,6 +651,7 @@
   "Сумма товаров на конец периода": "Product amount at the end of period",
   "Стоимость проданного товара": "Price of sold product",
   "Себестоимость товара": "Product net cost",
+  "Себестоимость фактически<br/> проданных товаров": "Netcost of <br/>actual sold products",
   "Сумма товаров, проданных<br/> дешевле себестоимости": "Amount of product sold cheaper then net cost",
   "Прибыль от продаж": "Sales profit",
   "Реализация товара": "Product sales",
