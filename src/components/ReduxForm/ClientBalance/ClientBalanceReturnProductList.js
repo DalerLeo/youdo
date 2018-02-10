@@ -144,12 +144,14 @@ const enhance = compose(
     }),
     connect((state) => {
         const currency = _.get(state, ['form', 'ReturnCreateForm', 'values', 'currency', 'text'])
+        const client = _.get(state, ['form', 'ReturnCreateForm', 'values', 'client', 'value'])
         const measurement = _.get(state, ['form', 'ReturnCreateForm', 'values', 'product', 'value', 'measurement', 'name'])
-        const market = _.get(state, ['form', 'ReturnCreateForm', 'values', 'market', 'value']) || _.get(state, ['form', 'ReturnCreateForm', 'values', 'client', 'value'])
+        const market = _.get(state, ['form', 'ReturnCreateForm', 'values', 'market', 'value'])
         return {
             currency,
             measurement,
-            market
+            market,
+            client
         }
     }),
     withReducer('state', 'dispatch', (state, action) => {
@@ -237,7 +239,7 @@ const iconStyle = {
     }
 }
 
-const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, handleEdit, handleRemove, editItem, setEditItem, measurement, isUpdate, editOnlyCost, market, currency, handleOpenAddProduct, ...defaultProps}) => {
+const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, handleEdit, handleRemove, editItem, setEditItem, measurement, isUpdate, editOnlyCost, market, currency, client, handleOpenAddProduct, ...defaultProps}) => {
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
     const error = _.get(defaultProps, ['products', 'meta', 'error'])
     const configMarkets = toBoolean(getConfig('MARKETS_MODULE'))
@@ -247,7 +249,7 @@ const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, h
             <div>
                 <div className={classes.headers} style={{marginTop: '-10px'}}>
                     <div className={classes.title}>{t('Список товаров')}</div>
-                    {!isUpdate && (withMarket && currency) &&
+                    {!isUpdate && (withMarket && currency && client) &&
                     <div>
                         <FlatButton
                             label={'+ ' + t('добавить товар')}
@@ -443,7 +445,7 @@ const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, h
                         <img src={Groceries} alt=""/>
                         {isUpdate
                             ? <div>{t('Список возвращаемого товара пуст')}.</div>
-                            : (market && currency)
+                            : (withMarket && currency && client)
                                 ? <div>{t('Вы еще не выбрали ни одного товара')}. <br/> <a onClick={() => dispatch({open: !state.open})}>{t('Добавить')}</a> {t('товар')}?</div>
                                 : <div>{t('Для добавления товаров')} <br/>{t('выберите магазин и прайс-лист')}.</div>}
                     </div>

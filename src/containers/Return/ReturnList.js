@@ -121,7 +121,13 @@ const enhance = compose(
         const nextOpen = _.get(nextProps, ['openPreview'])
         return open !== nextOpen && nextOpen
     }, ({dispatch, createForm, openPreview}) => {
-        toBoolean(openPreview) && dispatch(returnPreviewAction(_.get(createForm, 'values')))
+        toBoolean(openPreview) &&
+        dispatch(returnPreviewAction(_.get(createForm, 'values')))
+            .catch((error) => {
+                dispatch(openErrorAction({
+                    message: error
+                }))
+            })
     }),
     withState('openAddProductDialog', 'setOpenAddProductDialog', false),
     withState('openAddProductConfirm', 'setOpenAddProductConfirm', false),
@@ -150,6 +156,7 @@ const enhance = compose(
     }, ({setOpenAddProductConfirm, addProductsForm, openAddProductDialog, dispatch, filterProducts, createForm}) => {
         const currency = _.get(createForm, ['values', 'currency', 'value'])
         const market = _.get(createForm, ['values', 'market', 'value'])
+        const client = _.get(createForm, ['values', 'client', 'value'])
         const products = _.filter(_.get(addProductsForm, ['values', 'product']), (item) => {
             const amount = _.toNumber(_.get(item, 'amount'))
             const price = _.toNumber(_.get(item, 'price'))
@@ -160,7 +167,7 @@ const enhance = compose(
             setOpenAddProductConfirm(true)
         } else if (openAddProductDialog && _.isEmpty(products)) {
             setOpenAddProductConfirm(false)
-            dispatch(addProductsListAction(filterProducts, productType, market, currency))
+            dispatch(addProductsListAction(filterProducts, productType, market, currency, client))
         }
     }),
 
@@ -170,9 +177,10 @@ const enhance = compose(
         const productType = _.get(addProductsForm, ['values', 'type', 'value'])
         const currency = _.get(createForm, ['values', 'currency', 'value'])
         const market = _.get(createForm, ['values', 'market', 'value'])
+        const client = _.get(createForm, ['values', 'client', 'value'])
         if (openAddProductDialog) {
             setOpenAddProductConfirm(false)
-            dispatch(addProductsListAction(filterProducts, productType, market, currency))
+            dispatch(addProductsListAction(filterProducts, productType, market, currency, client))
         }
     }),
 
@@ -558,6 +566,9 @@ const ReturnList = enhance((props) => {
 
     const detailId = _.toInteger(_.get(params, 'returnId'))
 
+    const canChangeAnyReturn = checkPermission('frontend_add_client_return')
+    const canSetPriceOnReturn = checkPermission('can_set_any_price')
+
     const cancelReturnDialog = {
         openCancelDialog,
         handleOpenCancelReturnDialog: props.handleOpenCancelReturnDialog,
@@ -775,6 +786,7 @@ const ReturnList = enhance((props) => {
                 hasMarket={hasMarket}
                 addProductDialog={addProductDialog}
                 previewDialog={previewDialog}
+                canSetPriceOnReturn={canSetPriceOnReturn}
             />
         </Layout>
     )

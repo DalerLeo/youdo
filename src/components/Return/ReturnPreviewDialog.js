@@ -12,6 +12,7 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import numberFormat from '../../helpers/numberFormat'
 import {Row, Col} from 'react-flexbox-grid'
 import t from '../../helpers/translate'
+import NotFound from '../Images/not-found.png'
 
 const enhance = compose(
     injectSheet({
@@ -95,6 +96,14 @@ const enhance = compose(
         actionButton: {
             fontSize: '13px !important',
             margin: '0 !important'
+        },
+        emptyQuery: {
+            background: 'url(' + NotFound + ') no-repeat center 20px',
+            backgroundSize: '175px',
+            padding: '140px 0 20px',
+            textAlign: 'center',
+            fontSize: '13px',
+            color: '#666'
         }
     }),
     connect((state) => {
@@ -143,6 +152,7 @@ const ReturnCreateDialog = enhance((props) => {
             modal={true}
             contentStyle={customContentStyle}
             open={open}
+            style={{zIndex: '1501'}}
             onRequestClose={onClose}
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
@@ -158,27 +168,35 @@ const ReturnCreateDialog = enhance((props) => {
                         <Loader size={0.75}/>
                     </div>
                     <div className={classes.inContent}>
-                        <Row className="dottedList">
-                            <Col xs={5}>{t('Наименование')}</Col>
-                            <Col xs={2}>{t('Заказ')}</Col>
-                            <Col xs={2}>{t('Кол-во')}</Col>
-                            <Col xs={3} style={{textAlign: 'right'}}>{t('Сумма')}</Col>
-                         </Row>
-                        {list}
-                    </div>
-                    <div className={classes.bottomButton}>
-                        <div>
-                            <div>
-                                {t('Общая сумма возврата')}: <strong>{numberFormat(totalReturn, currency)}</strong>
+                        {_.isEmpty(list)
+                            ? <div className={classes.emptyQuery}>
+                                <div>{t('По вашему запросу ничего не найдено')}</div>
                             </div>
-                        </div>
-                        <FlatButton
-                            label={t('Оформить возврат')}
-                            className={classes.actionButton}
-                            primary={true}
-                            onTouchTap={() => onSubmit()}
-                        />
+                            : <div>
+                                <Row className="dottedList">
+                                    <Col xs={5}>{t('Наименование')}</Col>
+                                    <Col xs={2}>{t('Заказ')}</Col>
+                                    <Col xs={2}>{t('Кол-во')}</Col>
+                                    <Col xs={3} style={{textAlign: 'right'}}>{t('Сумма')}</Col>
+                                 </Row>
+                                {list}
+                            </div>}
                     </div>
+                    {!_.isEmpty(list) &&
+                        <div className={classes.bottomButton}>
+                            <div>
+                                <div>
+                                    {t('Общая сумма возврата')}: <strong>{numberFormat(totalReturn, currency)}</strong>
+                                </div>
+                            </div>
+                            <FlatButton
+                                label={t('Оформить возврат')}
+                                className={classes.actionButton}
+                                primary={true}
+                                onTouchTap={() => onSubmit()}
+                            />
+                        </div>
+                    }
                 </form>
             </div>
         </Dialog>

@@ -74,7 +74,7 @@ const TransactionsFormat = enhance((props) => {
     const categoryOutput = () => {
         switch (categoryOptions) {
             case 'order': return redirect(sprintf(ROUTES.ORDER_ITEM_PATH, order), {search: order, exclude: false}, categoryName)
-            case 'supply': return redirect(sprintf(ROUTES.SUPPLY_ITEM_PATH, supply), {search: supply}, categoryName)
+            case 'supply': return supply ? redirect(sprintf(ROUTES.SUPPLY_ITEM_PATH, supply), {search: supply}, categoryName) : categoryName
             case 'client': return redirect(ROUTES.CLIENT_BALANCE_LIST_URL, {search: clientID}, categoryName)
             case 'staff_expanse': return handleOpenCategoryPopop
                 ? openDialog(handleOpenCategoryPopop, 'staff_expanse', categoryName)
