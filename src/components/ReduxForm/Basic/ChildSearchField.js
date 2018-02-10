@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import {compose, withPropsOnChange, withReducer, withHandlers, lifecycle, withState} from 'recompose'
 import Select from 'react-select'
+import t from '../../../helpers/translate'
 import 'react-select/dist/react-select.css'
 const DELAY_FOR_TYPE_ATTACK = 300
 
@@ -74,11 +75,12 @@ const enhance = compose(
     }),
     withReducer('state', 'dispatch', (state, action) => {
         return {...state, ...action}
-    }, {dataSource: [], text: '', loading: false, firstTime: true}),
+    }, {dataSource: [], text: '', loading: false, firstTime: true, open: false}),
     withState('mount', 'setMount', false),
+
     withPropsOnChange((props, nextProps) => {
-        return (_.get(props, ['parent']) !== _.get(nextProps, ['parent']) && _.get(nextProps, ['parent'])) ||
-            (_.get(props, ['mount']) !== _.get(nextProps, ['mount']) && _.get(nextProps, ['mount']))
+        return ((_.get(props, ['parent']) !== _.get(nextProps, ['parent']) && _.get(nextProps, ['parent'])) ||
+            (_.get(props, ['mount']) !== _.get(nextProps, ['mount']) && _.get(nextProps, ['mount']))) && _.get(nextProps, ['state', 'open'])
     }, (props) => {
         props.mount && _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props, true)
     }),
@@ -124,12 +126,13 @@ const SearchField = enhance((props) => {
                 onInputChange={text => dispatch({text: text})}
                 onChange={value => { input.onChange(value) }}
                 placeholder={label}
-                noResultsText={'Не найдено'}
+                noResultsText={t('Не найдено')}
                 isLoading={state.loading}
-                clearValueText='Очистить'
+                clearValueText={t('Очистить')}
                 valueRenderer={valueRenderer}
                 labelKey={'text'}
-                disabled={props.disabled}
+                onOpen={() => dispatch({open: true})}
+                disabled={props.disabled || state.loading}
                 filterOptions={options => options}
             />
         </div>

@@ -14,12 +14,12 @@ const CancelToken = axios().CancelToken
 let productCustomListToken = null
 
 const ZERO = 0
-const getOptions = (search, type, priceList, currency) => {
+const getOptions = (search, type, priceList, currency, user) => {
     if (productCustomListToken) {
         productCustomListToken.cancel()
     }
     productCustomListToken = CancelToken.source()
-    return axios().get(`${PATH.PRODUCT_FOR_ORDER_SELECT_LIST}?price_list=${priceList || ''}&currency=${currency || ''}&type=${type || ''}&page_size=100&search=${search || ''}`, {cancelToken: productCustomListToken.token})
+    return axios().get(`${PATH.PRODUCT_FOR_ORDER_SELECT_LIST}?price_list=${priceList || ''}&currency=${currency || ''}&user=${user || ''}&type=${type || ''}&page_size=100&search=${search || ''}`, {cancelToken: productCustomListToken.token})
         .then(({data}) => {
             return Promise.resolve(toCamelCase(data.results))
         })
@@ -51,18 +51,20 @@ const enhance = compose(
         const dispatch = _.get(props, 'dispatch')
         const priceList = _.get(state, ['form', 'OrderCreateForm', 'values', 'priceList', 'value'])
         const currency = _.get(state, ['form', 'OrderCreateForm', 'values', 'currency', 'value'])
+        const user = _.get(state, ['form', 'OrderCreateForm', 'values', 'user', 'value'])
 
         return {
             state,
             dispatch,
             priceList,
-            currency
+            currency,
+            user
         }
     })
 )
 
 const ProductCustomSearchField = enhance((props) => {
-    const {dispatch, state, priceList, currency, ...defaultProps} = props
+    const {dispatch, state, priceList, currency, user, ...defaultProps} = props
     const test = (id) => {
         return getItem(id, dispatch, priceList, currency)
     }
@@ -80,7 +82,7 @@ const ProductCustomSearchField = enhance((props) => {
                     <div>{name} <strong>({numberFormat(balance, measurement)})</strong></div>
                 )
             }}
-            getOptions={ (search) => { return getOptions(search, type, priceList, currency) }}
+            getOptions={ (search) => { return getOptions(search, type, priceList, currency, user) }}
             getItem={test}
             getItemText={(value) => {
                 return _.get(value, ['name'])
