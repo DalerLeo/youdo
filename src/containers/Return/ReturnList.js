@@ -12,6 +12,7 @@ import toBoolean from '../../helpers/toBoolean'
 import {openErrorAction} from '../../actions/error'
 import updateStore from '../../helpers/updateStore'
 import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
+import checkPermission from '../../helpers/checkPermission'
 import * as actionTypes from '../../constants/actionTypes'
 import getConfig from '../../helpers/getConfig'
 import t from '../../helpers/translate'
@@ -566,7 +567,6 @@ const ReturnList = enhance((props) => {
 
     const detailId = _.toInteger(_.get(params, 'returnId'))
 
-    const canChangeAnyReturn = checkPermission('frontend_add_client_return')
     const canSetPriceOnReturn = checkPermission('can_set_any_price')
 
     const cancelReturnDialog = {

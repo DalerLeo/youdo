@@ -244,7 +244,6 @@ const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, h
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
     const error = _.get(defaultProps, ['products', 'meta', 'error'])
     const configMarkets = toBoolean(getConfig('MARKETS_MODULE'))
-    console.warn(editOnlyCost)
     const canSetPrice = checkPermission('can_set_any_price')
     const withMarket = configMarkets ? market : true
     return (
@@ -366,6 +365,7 @@ const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, h
                                         </TableRowColumn>
                                         <TableRowColumn>
                                             {!editOnlyCost
+                                                // If RETURN NOT COMPLETED can change amount otherwise only PRICE
                                             ? <TextField
                                                 hintText={amount}
                                                 className={classes.inputFieldCustom}
@@ -376,7 +376,9 @@ const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, h
                                             }
                                         </TableRowColumn>
                                         <TableRowColumn>
+
                                             {canSetPrice
+                                                // If permission granted PRICE can be changed otherwise only AMOUNT
                                             ? <TextField
                                                 hintText={cost}
                                                 className={classes.inputFieldCustom}
@@ -396,31 +398,7 @@ const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, h
                                         </TableRowColumn>
                                     </TableRow>
                                 )
-                            }/* else if (editItem === index && editOnlyCost) {
-                                return (
-                                    <TableRow key={index} className={classes.tableRow}>
-                                        <TableRowColumn>
-                                            {product}
-                                        </TableRowColumn>
-                                        <TableRowColumn>{amount} {itemMeasurement}</TableRowColumn>
-                                        <TableRowColumn>
-                                            <TextField
-                                                hintText={cost}
-                                                className={classes.inputFieldCustom}
-                                                fullWidth={true}
-                                                {..._.get(defaultProps, 'editCost')}
-                                            />
-                                        </TableRowColumn>
-                                        <TableRowColumn>{numberFormat(cost * amount, currency)}</TableRowColumn>
-                                        <TableRowColumn style={{textAlign: 'right'}}>
-                                            <IconButton
-                                                onTouchTap={() => { handleEdit(index) }}>
-                                                <Check color="#12aaeb"/>
-                                            </IconButton>
-                                        </TableRowColumn>
-                                    </TableRow>
-                                )
-                            }*/
+                            }
 
                             return (
                                 <TableRow key={index} className={classes.tableRow}>
