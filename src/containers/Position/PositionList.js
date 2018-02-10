@@ -1,6 +1,5 @@
 import React from 'react'
 import _ from 'lodash'
-import {reset} from 'redux-form'
 import sprintf from 'sprintf'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
@@ -12,11 +11,9 @@ import toBoolean from '../../helpers/toBoolean'
 import {
     POSITION_CREATE_DIALOG_OPEN,
     POSITION_UPDATE_DIALOG_OPEN,
-    ADD_COURSE_DIALOG_OPEN,
     PositionGridList
 } from '../../components/Position'
 import {
-    courseCreateAction,
     positionCreateAction,
     positionUpdateAction,
     positionListFetchAction,
@@ -27,6 +24,7 @@ import {
 import {openErrorAction} from '../../actions/error'
 import {openSnackbarAction} from '../../actions/snackbar'
 import t from '../../helpers/translate'
+import {ZERO} from '../../constants/backendConstants'
 
 const enhance = compose(
     connect((state, props) => {
@@ -96,19 +94,18 @@ const enhance = compose(
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
 
     withHandlers({
-        handleActionEdit: props => () => {
-            return null
-        },
-
         handleOpenConfirmDialog: props => (id) => {
-            const {setOpenConfirmDialog} = props
+            const {filter, setOpenConfirmDialog} = props
             setOpenConfirmDialog(id)
+            hashHistory.push({pathname: sprintf(ROUTER.POSITION_ITEM_PATH, id), query: filter.getParams()})
         },
 
         handleCloseConfirmDialog: props => () => {
-            const {setOpenConfirmDialog} = props
+            const {filter, setOpenConfirmDialog, location: {pathname}} = props
             setOpenConfirmDialog(false)
+            hashHistory.push({pathname, query: filter.getParams()})
         },
+
         handleSendConfirmDialog: props => () => {
             const {dispatch, filter, setOpenConfirmDialog, openConfirmDialog} = props
             dispatch(positionDeleteAction(_.toNumber(openConfirmDialog)))
@@ -119,48 +116,6 @@ const enhance = compose(
                 })
                 .catch(() => {
                     return dispatch(openSnackbarAction({message: t('Удаление невозможно из-за связи с другими данными')}))
-                })
-        },
-
-        handleOpenDeleteDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({
-                pathname,
-                query: filter.getParams({openDeleteDialog: 'yes'})
-            })
-        },
-
-        handleCloseDeleteDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({openDeleteDialog: false})})
-        },
-
-        handleOpenCourseDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[ADD_COURSE_DIALOG_OPEN]: true})})
-        },
-
-        handleCloseCourseDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[ADD_COURSE_DIALOG_OPEN]: false})})
-        },
-
-        handleSubmitCourseDialog: props => () => {
-            const {location: {pathname}, dispatch, courseForm, filter, params} = props
-            const position = _.get(params, 'positionId')
-            return dispatch(courseCreateAction(_.get(courseForm, ['values']), position))
-                .then(() => {
-                    return dispatch(openSnackbarAction({message: t('Курс обновлен')}))
-                })
-                .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[ADD_COURSE_DIALOG_OPEN]: false})})
-                    dispatch(positionListFetchAction(filter))
-                    dispatch(reset('AddCourseForm'))
-                })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
                 })
         },
 
@@ -207,6 +162,7 @@ const enhance = compose(
                 query: filter.getParams({[POSITION_UPDATE_DIALOG_OPEN]: false})
             })
         },
+
         handleSubmitUpdateDialog: props => () => {
             const {dispatch, createForm, filter, detailId} = props
             return dispatch(positionUpdateAction(detailId, _.get(createForm, ['values'])))
@@ -243,22 +199,13 @@ const PositionList = enhance((props) => {
         openConfirmDialog,
         filter,
         layout,
-        params,
         detailId,
-        detailFilter,
         permissionLoading,
         permissionList
     } = props
 
     const openCreateDialog = toBoolean(_.get(location, ['query', POSITION_CREATE_DIALOG_OPEN]))
-    const openCourseDialog = toBoolean(_.get(location, ['query', ADD_COURSE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', POSITION_UPDATE_DIALOG_OPEN]))
-    const positionDetailId = _.toInteger(_.get(params, 'positionId'))
-
-    const actionsDialog = {
-        handleActionEdit: props.handleActionEdit,
-        handleActionDelete: props.handleOpenDeleteDialog
-    }
 
     const createDialog = {
         initialValues: (() => {
@@ -272,18 +219,9 @@ const PositionList = enhance((props) => {
         handleCloseCreateDialog: props.handleCloseCreateDialog,
         handleSubmitCreateDialog: props.handleSubmitCreateDialog
     }
-    const courseDialog = {
-        initialValues: (() => {
-            return {}
-        })(),
-        openCourseDialog,
-        handleOpenCourseDialog: props.handleOpenCourseDialog,
-        handleCloseCourseDialog: props.handleCloseCourseDialog,
-        handleSubmitCourseDialog: props.handleSubmitCourseDialog
-    }
 
     const confirmDialog = {
-        openConfirmDialog: openConfirmDialog,
+        openConfirmDialog: openConfirmDialog > ZERO,
         handleOpenConfirmDialog: props.handleOpenConfirmDialog,
         handleCloseConfirmDialog: props.handleCloseConfirmDialog,
         handleSendConfirmDialog: props.handleSendConfirmDialog
@@ -318,25 +256,15 @@ const PositionList = enhance((props) => {
         handlePositionClick: props.handlePositionClick
     }
 
-    const detailData = {
-        id: positionDetailId,
-        data: detail,
-        detailLoading
-    }
-
     return (
         <Layout {...layout}>
             <PositionGridList
                 filter={filter}
                 listData={listData}
-                detailData={detailData}
                 createDialog={createDialog}
-                courseDialog={courseDialog}
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
-                actionsDialog={actionsDialog}
                 detailId={detailId}
-                detailFilter={detailFilter}
             />
         </Layout>
     )

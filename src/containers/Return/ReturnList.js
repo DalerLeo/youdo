@@ -14,6 +14,7 @@ import updateStore from '../../helpers/updateStore'
 import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
 import * as actionTypes from '../../constants/actionTypes'
 import getConfig from '../../helpers/getConfig'
+import checkPermission from '../../helpers/checkPermission'
 import t from '../../helpers/translate'
 import {
     RETURN_FILTER_KEY,
@@ -566,7 +567,6 @@ const ReturnList = enhance((props) => {
 
     const detailId = _.toInteger(_.get(params, 'returnId'))
 
-    const canChangeAnyReturn = checkPermission('frontend_add_client_return')
     const canSetPriceOnReturn = checkPermission('can_set_any_price')
 
     const cancelReturnDialog = {
