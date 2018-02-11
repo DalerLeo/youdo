@@ -15,7 +15,6 @@ import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
 import checkPermission from '../../helpers/checkPermission'
 import * as actionTypes from '../../constants/actionTypes'
 import getConfig from '../../helpers/getConfig'
-import checkPermission from '../../helpers/checkPermission'
 import t from '../../helpers/translate'
 import {
     RETURN_FILTER_KEY,
