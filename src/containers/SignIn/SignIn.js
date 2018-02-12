@@ -34,7 +34,7 @@ const enhance = compose(
         return prevApi !== nextApi && nextApi
     }, ({location}) => {
         const api = _.get(location, ['query', 'api_host'])
-        if (api) {
+        if (!_.isEmpty(api)) {
             return setApi(api)
         }
         return null
