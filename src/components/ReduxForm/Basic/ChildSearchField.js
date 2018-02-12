@@ -79,8 +79,8 @@ const enhance = compose(
     withState('mount', 'setMount', false),
 
     withPropsOnChange((props, nextProps) => {
-        return ((_.get(props, ['parent']) !== _.get(nextProps, ['parent']) && _.get(nextProps, ['parent'])) ||
-            (_.get(props, ['mount']) !== _.get(nextProps, ['mount']) && _.get(nextProps, ['mount']))) && _.get(nextProps, ['state', 'open'])
+        return (_.get(props, ['parent']) !== _.get(nextProps, ['parent']) && _.get(nextProps, ['parent'])) ||
+            (_.get(props, ['mount']) !== _.get(nextProps, ['mount']) && _.get(nextProps, ['mount']))
     }, (props) => {
         props.mount && _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props, true)
     }),
