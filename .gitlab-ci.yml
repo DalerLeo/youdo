@@ -45,6 +45,7 @@ test:
 deploy:
   stage: deploy
   script:
+    - "/usr/bin/supervisorctl reatart all"
     - "export SOURCE_DIR=`pwd`"
     - "export API_HOST=api.wienerdeming.com"
     - "yarn install"
