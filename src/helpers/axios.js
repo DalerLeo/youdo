@@ -8,10 +8,12 @@ import sprintf from 'sprintf'
 const axiosRequest = (useToken = true) => {
     const TOKEN = storageHelper.getToken()
     const LANG = storageHelper.getLanguage()
+    const GIVEN_URL = storageHelper.getApi()
+    const FORMED_URL = GIVEN_URL ? `${GIVEN_URL}/%s/api/v1` : API_URL
     const UNAUTHORIZATE_STATUS = 401
     const NORM_STATUS_BEGIN = 200
     const NORM_STATUS_END = 300
-    axios.defaults.baseURL = sprintf(API_URL, LANG)
+    axios.defaults.baseURL = sprintf(FORMED_URL, LANG)
 
     if (TOKEN) {
         if (useToken) {
