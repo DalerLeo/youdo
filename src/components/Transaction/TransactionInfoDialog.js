@@ -160,8 +160,8 @@ const enhance = compose(
     }, {open: false}),
 )
 const TWO = 2
+const THREE = 3
 const FOUR = 4
-const FIVE = 5
 
 const TransactionInfoDialog = enhance((props) => {
     const {
@@ -177,7 +177,7 @@ const TransactionInfoDialog = enhance((props) => {
     return (
         <Dialog
             modal={true}
-            contentStyle={loading ? {width: '500px'} : {width: '900px', maxWidth: 'unset'}}
+            contentStyle={loading ? {width: '500px'} : {width: '1000px', maxWidth: 'unset'}}
             open={open > ZERO}
             onRequestClose={onClose}
             className={classes.dialog}
@@ -196,25 +196,28 @@ const TransactionInfoDialog = enhance((props) => {
                 <div className={classes.inContent} style={{minHeight: 'initial'}}>
                     <div className={classes.list}>
                         <Row className="dottedList">
-                            <Col xs={hasMarket ? FOUR : FIVE}>{t('Клиент')}</Col>
+                            <Col xs={hasMarket ? THREE : FOUR}>{t('Клиент')}</Col>
+                            <Col xs={hasMarket ? TWO : THREE}>{t('Организация')}</Col>
                             {hasMarket && <Col xs={3}>{t('Магазин')}</Col>}
-                            <Col xs={hasMarket ? TWO : FOUR}>№ {t('заказа')} </Col>
-                            <Col xs={3}>{t('Сумма')}</Col>
+                            <Col xs={hasMarket ? TWO : THREE}>№ {t('заказа')} </Col>
+                            <Col xs={2}>{t('Сумма')}</Col>
                         </Row>
                         {_.map(data, (item) => {
                             const clientName = _.get(item, ['client', 'name'])
-                            const marketName = _.get(item, ['market', 'name'])
+                            const marketName = _.get(item, ['market', 'name']) || 'Не определен'
                             const currency = _.get(item, ['currency', 'name'])
+                            const division = _.get(item, ['division', 'name'])
                             const order = _.get(item, 'order') || 'Не определен'
                             const customRate = _.get(item, ['customRate'])
                             const internal = _.toNumber(_.get(item, 'internal'))
                             const amount = _.toNumber(_.get(item, 'amount'))
                             return (
                                 <Row key={_.get(item, 'id')} className='dottedList'>
-                                    <Col xs={hasMarket ? FOUR : FIVE}>{clientName}</Col>
+                                    <Col xs={hasMarket ? THREE : FOUR}>{clientName}</Col>
+                                    <Col xs={2}>{division}</Col>
                                     {hasMarket && <Col xs={3}>{marketName}</Col>}
-                                    <Col xs={hasMarket ? TWO : FOUR}>{order}</Col>
-                                    <Col xs={3}>
+                                    <Col xs={hasMarket ? TWO : THREE}>{order}</Col>
+                                    <Col xs={2}>
                                         <div style={{fontWeight: '600'}}>{numberFormat(amount, currency)}</div>
                                         <div>{currency !== primaryCurrency
                                             ? customRate

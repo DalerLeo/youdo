@@ -169,7 +169,7 @@ const TransactionGridList = enhance((props) => {
         const currency = _.get(item, ['currency', 'name'])
         const currencyID = _.get(item, ['currency', 'id'])
         const type = _.get(item, 'type')
-        const balance = _.toInteger(_.get(item, 'balance'))
+        const balance = _.toNumber(_.get(item, 'balance'))
         const isActive = item.id === _.get(cashboxData, 'cashboxId')
         const ZERO_NUM = 0
         return (

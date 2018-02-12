@@ -9,7 +9,7 @@ const normalizeMaxNumber = (value, amount) => {
     } else if (_.isNaN(numberValue)) {
         return ''
     }
-    const formVal = amount && numberValue > amountValue ? amountValue : value
+    const formVal = _.isNumber(amount) && (numberValue > amountValue) ? amountValue : value
     const onlyNums = _.replace(_.replace(formVal, ',', '.'), / /g, '')
     return onlyNums.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
 }

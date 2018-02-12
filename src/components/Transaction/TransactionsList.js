@@ -24,6 +24,7 @@ import getConfig from '../../helpers/getConfig'
 import moment from 'moment'
 import t from '../../helpers/translate'
 import {TRANSACTION_DETALIZATION_DIALOG} from './index'
+import * as TRANS_TYPE from '../../constants/transactionTypes'
 
 const currentDay = new Date()
 const enhance = compose(
@@ -181,8 +182,6 @@ const enhance = compose(
 )
 
 const ZERO = 0
-const TWO = 2
-const ONE = 1
 const TransactionsList = enhance((props) => {
     const {
         filter,
@@ -348,6 +347,7 @@ const TransactionsList = enhance((props) => {
         const cashbox = showCashbox ? _.get(_.find(_.get(cashboxData, 'data'), {'id': cashboxID}), 'name') : null
         const clientName = _.get(item, ['client', 'name'])
         const providerName = _.get(item, ['provider', 'name'])
+        const division = _.get(item, ['division', 'name'])
         const expenseCategory = _.get(item, ['expenseCategory'])
         const incomeCategory = _.get(item, ['incomeCategory'])
         const transType = _.get(item, 'type')
@@ -378,6 +378,7 @@ const TransactionsList = enhance((props) => {
                         user={user}
                         comment={comment}
                         supplyExpenseId={supplyExpenseId}
+                        division={division}
                     />
                     {!showCashbox ? clientName && <div><strong>{t('Клиент')}:</strong> {clientName}</div> : null}
                     {!showCashbox ? providerName && <div><strong>{t('Поставщик')}:</strong> {providerName}</div> : null}
@@ -390,11 +391,12 @@ const TransactionsList = enhance((props) => {
                         {internal !== ZERO &&
                         <span style={{fontSize: 11, color: '#333', fontWeight: 600}}> ({rate})</span>}</div>}
                 </div>
-                {!isDeleted && <div className={classes.actionButtons}>
+                {!isDeleted &&
+                <div className={classes.actionButtons}>
                     <IconButton
                         className={classes.deleteBtn}
                         style={iconStyle.button}
-                        disabled={transType === TWO || transType === ONE}
+                        disabled={transType === TRANS_TYPE.TO_TRANSFER || transType === TRANS_TYPE.FROM_TRANSFER}
                         iconStyle={iconStyle.icon}
                         disableTouchRipple={true}
                         onTouchTap={() => {
@@ -405,7 +407,7 @@ const TransactionsList = enhance((props) => {
                     <IconButton
                         className={classes.deleteBtn}
                         style={iconStyle.button}
-                        disabled={transType === TWO || transType === ONE}
+                        disabled={transType === TRANS_TYPE.TO_TRANSFER || transType === TRANS_TYPE.FROM_TRANSFER || transType === TRANS_TYPE.INCOME_FROM_AGENT}
                         iconStyle={iconStyle.icon}
                         disableTouchRipple={true}
                         onTouchTap={() => {
