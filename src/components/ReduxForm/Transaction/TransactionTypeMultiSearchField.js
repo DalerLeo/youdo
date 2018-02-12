@@ -5,7 +5,7 @@ import {
     INCOME_FROM_AGENT,
     formattedType,
     INCOME,
-    OUTCOME_FOR_SUPPLY_EXPANSE,
+    OUTCOME_FOR_SUPPLY_EXPENSE,
     OUTCOME,
     OUTCOME_FROM_CLIENT,
     TO_TRANSFER,
@@ -22,7 +22,7 @@ const Items = [
     {id: INCOME_TO_CLIENT, name: formattedType[INCOME_TO_CLIENT]},
     {id: OUTCOME_FROM_CLIENT, name: formattedType[OUTCOME_FROM_CLIENT]},
     {id: INCOME_FROM_AGENT, name: formattedType[INCOME_FROM_AGENT]},
-    {id: OUTCOME_FOR_SUPPLY_EXPANSE, name: formattedType[OUTCOME_FOR_SUPPLY_EXPANSE]}
+    {id: OUTCOME_FOR_SUPPLY_EXPENSE, name: formattedType[OUTCOME_FOR_SUPPLY_EXPENSE]}
 ]
 
 const getOptions = () => {

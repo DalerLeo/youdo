@@ -9,8 +9,8 @@ export const createSerializer = (data, expenseId) => {
     const categoryId = _.get(data, ['categoryId', 'value'])
     return {
         'cashbox': cashboxId,
-        'expanse': expenseId,
-        'expanse_category': categoryId
+        'expense': expenseId,
+        'expense_category': categoryId
     }
 }
 

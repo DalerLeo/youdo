@@ -43,7 +43,7 @@ export const MEASUREMENT_H_ITEM = `/${MEASUREMENT}/hierarchy/%d/`
 export const MEASUREMENT_ITEM = `/${MEASUREMENT}/%d/`
 export const MEASUREMENT_DELETE = `/${MEASUREMENT}/%d/`
 
-export const EXPENSIVE_CATEGORY = 'finance/expanse_category'
+export const EXPENSIVE_CATEGORY = 'finance/expense_category'
 export const EXPENSIVE_CATEGORY_CREATE = `/${EXPENSIVE_CATEGORY}/`
 export const EXPENSIVE_CATEGORY_LIST = `/${EXPENSIVE_CATEGORY}/`
 export const EXPENSIVE_CATEGORY_ITEM = `/${EXPENSIVE_CATEGORY}/%d/`
@@ -127,7 +127,7 @@ export const TRANSACTION_ITEM = `/${TRANSACTION}/%d/`
 export const TRANSACTION_SEND = 'finance/transfer/'
 export const TRANSACTION_DELETE = `/${TRANSACTION}/%d/`
 export const TRANSACTION_PAYMENT_DELETE = 'sales/client_transaction/%d/cancel/'
-export const TRANSACTION_CATEGORY_DATA_LIST = 'sales/staff_expanse/'
+export const TRANSACTION_CATEGORY_DATA_LIST = 'sales/staff_expense/'
 export const TRANSACTION_DETALIZATION_LIST = `/${TRANSACTION}/%d/children/`
 
 export const SUPPLY = 'stock/supply'
@@ -168,7 +168,7 @@ export const ORDER_EXCEL = `/${ORDER}/download_invoice/`
 export const ORDER_CHECK_DELIVERY = `/${ORDER}/delivered/`
 export const GET_DOCUMENT = 'order_document/%d/'
 
-export const SUPPLY_EXPENSE = 'stock/supply_expanse'
+export const SUPPLY_EXPENSE = 'stock/supply_expense'
 export const SUPPLY_EXPENSE_CREATE = `/${SUPPLY_EXPENSE}/`
 export const SUPPLY_EXPENSE_LIST = `/${SUPPLY_EXPENSE}/`
 export const SUPPLY_PAID_LIST = 'finance/transaction/'
@@ -242,7 +242,7 @@ export const USER_SHIFT_LIST = `/${USER_SHIFT}/`
 export const USER_SHIFT_ITEM = `/${USER_SHIFT}/%d/`
 export const USER_SHIFT_DELETE = `/${USER_SHIFT}/%d/`
 
-export const PENDING_EXPENSES = 'stock/supply_expanse'
+export const PENDING_EXPENSES = 'stock/supply_expense'
 export const PENDING_EXPENSES_UPDATE = 'finance/transaction/'
 export const PENDING_EXPENSES_LIST = 'finance/pending_payments/'
 export const PENDING_EXPENSES_ITEM = `/${PENDING_EXPENSES}/%d/`

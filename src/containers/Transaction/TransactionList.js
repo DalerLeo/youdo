@@ -162,24 +162,24 @@ const enhance = compose(
     withState('openStaff', 'setOpenStaff', false),
     // EXPENSE && INCOME CATEGORIES
     withPropsOnChange((props, nextProps) => {
-        const prevExpenseCat = _.get(props, ['createForm', 'values', 'expanseCategory', 'value', 'options'])
-        const nextExpenseCat = _.get(nextProps, ['createForm', 'values', 'expanseCategory', 'value', 'options'])
+        const prevExpenseCat = _.get(props, ['createForm', 'values', 'expenseCategory', 'value', 'options'])
+        const nextExpenseCat = _.get(nextProps, ['createForm', 'values', 'expenseCategory', 'value', 'options'])
         const prevIncomeCat = _.get(props, ['createForm', 'values', 'incomeCategory', 'value', 'options'])
         const nextIncomeCat = _.get(nextProps, ['createForm', 'values', 'incomeCategory', 'value', 'options'])
         return (!_.isEqual(prevExpenseCat, nextExpenseCat) && !_.isEmpty(nextExpenseCat)) ||
             (!_.isEqual(prevIncomeCat, nextIncomeCat) && !_.isEmpty(nextIncomeCat))
     }, ({dispatch, createForm, setOpenStaff, location: {query}}) => {
-        const category = _.get(createForm, ['values', 'expanseCategory', 'value', 'id']) ||
+        const category = _.get(createForm, ['values', 'expenseCategory', 'value', 'id']) ||
             _.get(createForm, ['values', 'incomeCategory', 'value', 'id'])
         const form = 'TransactionCreateForm'
         if (_.isInteger(category)) {
-            const categoryOptions = _.first(_.get(createForm, ['values', 'expanseCategory', 'value', 'options'])) ||
+            const categoryOptions = _.first(_.get(createForm, ['values', 'expenseCategory', 'value', 'options'])) ||
                 _.first(_.get(createForm, ['values', 'incomeCategory', 'value', 'options']))
             const updateTransactionID = _.toInteger(_.get(query, UPDATE_TRANSACTION))
             dispatch(optionsListFetchAction())
                 .then((data) => {
                     const options = _.get(data, ['value', 'results'])
-                    const staffExpenseOptionId = _.get(_.find(options, {'key_name': 'staff_expanse'}), 'id')
+                    const staffExpenseOptionId = _.get(_.find(options, {'key_name': 'staff_expense'}), 'id')
                     const detalizationOptionId = _.get(_.find(options, {'key_name': 'transaction_child'}), 'id')
                     const clientOptionId = _.get(_.find(options, {'key_name': 'client'}), 'id')
                     switch (categoryOptions) {
@@ -810,7 +810,7 @@ const enhance = compose(
         handleOpenCategoryPopop: props => (id, key) => {
             const {location: {pathname}, filter} = props
             switch (key) {
-                case 'staff_expanse': return hashHistory.push({pathname: pathname, query: filter.getParams({[TRANSACTION_STAFF_EXPENSE_DIALOG]: id})})
+                case 'staff_expense': return hashHistory.push({pathname: pathname, query: filter.getParams({[TRANSACTION_STAFF_EXPENSE_DIALOG]: id})})
                 case 'transaction_child': return hashHistory.push({pathname: pathname, query: filter.getParams({[TRANSACTION_DETALIZATION_DIALOG]: id})})
                 default: return null
             }
@@ -946,9 +946,9 @@ const TransactionList = enhance((props) => {
             }
             return {
                 comment: _.get(detail, 'comment'),
-                expanseCategory: {
-                    value: _.get(detail, ['expanseCategory', 'id']),
-                    text: _.get(detail, ['expanseCategory', 'name'])
+                expenseCategory: {
+                    value: _.get(detail, ['expenseCategory', 'id']),
+                    text: _.get(detail, ['expenseCategory', 'name'])
                 },
                 amount: amount,
                 custom_rate: _.get(detail, ['clientTransaction', 'customRate']),
@@ -984,9 +984,9 @@ const TransactionList = enhance((props) => {
                 amount: amount,
                 client: {value: clientIncome},
                 showClients: showIncomeClients,
-                expanseCategory: {
-                    value: _.get(detail, ['expanseCategory', 'id']),
-                    text: _.get(detail, ['expanseCategory', 'name'])
+                expenseCategory: {
+                    value: _.get(detail, ['expenseCategory', 'id']),
+                    text: _.get(detail, ['expenseCategory', 'name'])
                 },
                 custom_rate: _.get(detail, ['clientTransaction', 'customRate']),
                 division: {value: _.get(detail, ['clientTransaction', 'division', 'id'])},

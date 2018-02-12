@@ -239,7 +239,7 @@ const StatReportGridList = enhance((props) => {
                 </li>
                 <li>
                     <span>{t('Прочие расходы фирмы')}</span>
-                    <span>{numberFormat(_.get(transferData, 'expanses'), currency)}</span>
+                    <span>{numberFormat(_.get(transferData, 'expenses'), currency)}</span>
                 </li>
                 <li>
                     <span>{t('Прибыль фирмы')}</span>

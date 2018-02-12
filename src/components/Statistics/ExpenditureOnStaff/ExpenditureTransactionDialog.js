@@ -170,11 +170,11 @@ const ExpenditureTransactionDialog = enhance((props) => {
         const cashbox = isOutcome ? _.get(item, ['cashbox', 'name']) : _.get(item, ['transaction', 'cashbox', 'name'])
         const order = _.get(item, 'order')
         const supply = _.get(item, 'supply')
-        const supplyExpanseId = _.get(item, 'supplyExpanseId')
+        const supplyExpenseId = _.get(item, 'supplyExpenseId')
         const transType = _.toInteger(_.get(item, ['transaction', 'type']))
         const user = _.get(item, 'user')
         const client = _.get(item, ['client'])
-        const expenseCategory = _.get(item, ['expanseCategory'])
+        const expenseCategory = _.get(item, ['expenseCategory'])
         return (
       <Row key={id} className="dottedList">
           <Col xs={1}>{id}</Col>
@@ -189,7 +189,7 @@ const ExpenditureTransactionDialog = enhance((props) => {
                 client={client}
                 supply={supply}
                 order={order}
-                supplyExpanseId={supplyExpanseId}
+                supplyExpenseId={supplyExpenseId}
                 user={user}
               />
           </Col>
