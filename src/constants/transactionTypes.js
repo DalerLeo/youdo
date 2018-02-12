@@ -20,4 +20,3 @@ export const formattedType = {
     9: 'Доп.расход на поставку',
     10: 'Расход на поставку'
 }
-asdasdasdasd
