@@ -17,6 +17,7 @@ import * as JOIN_TAB from '../../constants/joinTab'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import getConfig from '../../helpers/getConfig'
+import {openErrorAction} from '../../actions/error'
 import t from '../../helpers/translate'
 
 const enhance = compose(
@@ -114,6 +115,11 @@ const enhance = compose(
                     hashHistory.push({pathname, query: marketFilter.getParams({[JOIN_MARKET]: false})})
                     dispatch(shopDublicateListFetchAction(marketFilter))
                 })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
+                })
         },
 
         handleOpenJoinClients: props => (id) => {
@@ -137,6 +143,11 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: clientFilter.getParams({[JOIN_CLIENT]: false})})
                     dispatch(clientDublicateListFetchAction(clientFilter))
+                })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
                 })
         }
     })

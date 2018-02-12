@@ -13,10 +13,10 @@ import IconMenu from 'material-ui/IconMenu'
 import {connect} from 'react-redux'
 import PrintIcon from 'material-ui/svg-icons/action/print'
 import MoneyOffIcon from 'material-ui/svg-icons/editor/money-off'
+import CheckDelivery from 'material-ui/svg-icons/action/assignment-turned-in'
 import IconButton from 'material-ui/IconButton'
 import OrderTransactionsDialog from './OrderTransactionsDialog'
 import OrderReturnDialog from './OrderReturnDialog'
-import StatRightSide from './OrderStatDetailsRightSide'
 import OrderSetDiscountDialog from './OrderSetDiscountDialog'
 import RightSide from './OrderDetailsRightSideTabs'
 import ConfirmDialog from '../ConfirmDialog'
@@ -35,7 +35,15 @@ import {
     ZERO
 } from '../../constants/backendConstants'
 import getConfig from '../../helpers/getConfig'
+import checkPermission from '../../helpers/checkPermission'
 import t from '../../helpers/translate'
+
+const canEditOrder = checkPermission('change_order')
+const canEditOrderWhenGivenOrDelivered = checkPermission('can_update_order_after_stock')
+const canSetDiscount = checkPermission('can_set_discount')
+const canCancelOrder = checkPermission('delete_order')
+const canAddOrderReturn = checkPermission('add_orderreturn')
+const canMarkDelivery = checkPermission('can_mark_delivery')
 
 const popupWidth = 210
 const enhance = compose(
@@ -236,8 +244,7 @@ const OrderDetails = enhance((props) => {
         handleSubmitSetZeroDiscountDialog,
         handleOpenPrintContract,
         hasMarket,
-        isSuperUser,
-        userCurrencies
+        checkDeliveryDialog
     } = props
     const discounted = _.toNumber(_.get(data, 'discountPrice')) > ZERO
     const id = _.get(data, 'id')
@@ -251,17 +258,15 @@ const OrderDetails = enhance((props) => {
         ? _.get(data, ['deliveryMan', 'firstName']) + ' ' + _.get(data, ['deliveryMan', 'secondName'])
         : null
     const client = _.get(data, ['client', 'name'])
-    const contract = _.get(data, ['contract']) || 'Не указан'
+    const contract = _.get(data, ['contract']) || t('Не указан')
     const deliveryType = _.get(data, 'deliveryType')
     const dateDelivery = dateFormat(_.get(data, 'dateDelivery'), false, false)
     const createdDate = dateFormat(_.get(data, 'createdDate'))
     const paymentDate = dateFormat(_.get(data, 'paymentDate'))
     const nextPaymentDate = dateFormat(_.get(data, 'nextPaymentDate'), false, false)
-    const requestDeadline = _.get(data, 'requestDeadline') ? dateFormat(_.get(data, 'requestDeadline')) : 'Не задан'
+    const requestDeadline = _.get(data, 'requestDeadline') ? dateFormat(_.get(data, 'requestDeadline')) : t('Не задан')
     const currency = _.get(data, ['currency', 'name'])
-    const currencyAccess = _.isEmpty(_.find(userCurrencies, {'id': _.get(data, ['currency', 'id'])}))
     const status = _.toInteger(_.get(data, 'status'))
-    const editableWhenGiven = status === ORDER_GIVEN && isSuperUser
     const totalPaid = _.toNumber(_.get(data, 'totalPaid'))
     const priceList = _.get(data, ['priceList', 'name'])
     const paymentType = _.get(data, 'paymentType')
@@ -301,6 +306,17 @@ const OrderDetails = enhance((props) => {
                     <div className={classes.arrowShadow}> </div>
                 </div>
                 <div className={classes.titleButtons}>
+                    {status !== ORDER_DELIVERED && status === ORDER_GIVEN && canMarkDelivery &&
+                    <ToolTip position="bottom" text={t('Отметить доставку')}>
+                        <IconButton
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            touch={true}
+                            onTouchTap={checkDeliveryDialog.handleOpen}>
+                            <CheckDelivery />
+                        </IconButton>
+                    </ToolTip>}
+                    {canAddOrderReturn &&
                     <ToolTip position="bottom" text={t('Добавить возврат')}>
                         <IconButton
                             disabled={!(status === ORDER_DELIVERED || status === ORDER_GIVEN)}
@@ -310,7 +326,7 @@ const OrderDetails = enhance((props) => {
                             onTouchTap={returnDialog.handleOpenReturnDialog}>
                             <Return />
                         </IconButton>
-                    </ToolTip>
+                    </ToolTip>}
                     <ToolTip position="left" text={t('Распечатать')}>
                         <IconMenu
                             menuItemStyle={{fontSize: '13px'}}
@@ -336,7 +352,10 @@ const OrderDetails = enhance((props) => {
                     </ToolTip>
                     <ToolTip position="bottom" text={t(discounted ? 'Сперва отмените скидку' : 'Изменить')}>
                         <IconButton
-                            disabled={(status === ORDER_CANCELED ? true : status === ORDER_GIVEN ? !editableWhenGiven : currencyAccess) || discounted}
+                            disabled={(status === ORDER_CANCELED
+                                ? true : (status === ORDER_GIVEN || status === ORDER_DELIVERED)
+                                    ? !canEditOrderWhenGivenOrDelivered
+                                    : !canEditOrder) || discounted}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
@@ -344,6 +363,7 @@ const OrderDetails = enhance((props) => {
                             <Edit />
                         </IconButton>
                     </ToolTip>
+                    {canSetDiscount &&
                     <ToolTip position="bottom" text={t('Скидка')}>
                         <IconButton
                             disabled={(status === ORDER_CANCELED) || (totalReturned > ZERO)}
@@ -353,7 +373,8 @@ const OrderDetails = enhance((props) => {
                             onTouchTap={() => { setOpenDiscountDialog(!openDiscountDialog) }}>
                             <MoneyOffIcon />
                         </IconButton>
-                    </ToolTip>
+                    </ToolTip>}
+                    {canCancelOrder &&
                     <ToolTip position="bottom" text={t('Отменить')}>
                         <IconButton
                             disabled={(status === ORDER_CANCELED || status === ORDER_GIVEN || status === ORDER_DELIVERED)}
@@ -363,7 +384,7 @@ const OrderDetails = enhance((props) => {
                             onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}>
                             <Delete />
                         </IconButton>
-                    </ToolTip>
+                    </ToolTip>}
                 </div>
             </div>}
             <div className={classes.content}>
@@ -490,17 +511,13 @@ const OrderDetails = enhance((props) => {
                         </div>
                     </div>
                 </div>
-                {type &&
                 <RightSide
                     data={data}
                     tabData={tabData}
                     returnData={returnData}
                     returnDataLoading={returnDataLoading}
-                    cancelOrderReturnOpen={cancelOrderReturnDialog.handleOpenCancelOrderReturnDialog}
-                />}
-                {!type &&
-                <StatRightSide
-                    data={data}/>}
+                    cancelOrderReturnOpen={type ? cancelOrderReturnDialog.handleOpenCancelOrderReturnDialog : null}
+                />
             </div>
             {type && <OrderTransactionsDialog
                 open={transactionsDialog.openTransactionsDialog}

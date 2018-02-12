@@ -188,8 +188,9 @@ const enhance = compose(
         const planType = _.get(planDetails, ['recurrences', '0', 'type'])
         const priority = _.get(planDetails, 'priority')
         const weekday = _.map(_.get(planDetails, 'recurrences'), (item) => {
+            const id = planType === 'month' ? String(_.get(item, 'monthDay')) : String(_.get(item, 'weekDay'))
             return {
-                id: String(_.get(item, 'weekDay')) || String(_.get(item, 'monthDay')),
+                id,
                 active: true
             }
         })
@@ -250,8 +251,11 @@ const enhance = compose(
         const nextTab = _.get(nextProps, ['query', 'group'])
         const prevSearch = _.get(props, ['query', 'search'])
         const nextSearch = _.get(nextProps, ['query', 'search'])
+        const except = {
+            openPlanSales: null
+        }
 
-        return (props.usersList && props.filter.filterRequest() !== nextProps.filter.filterRequest()) ||
+        return (props.usersList && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)) ||
             (prevTab !== nextTab) ||
             (prevSearch !== nextSearch)
     }, ({dispatch, filter}) => {
@@ -554,7 +558,6 @@ const PlanList = enhance((props) => {
         selectedDay,
         selectedWeekDay,
         marketsLocation,
-        planDetails,
         combinationDetails,
         combinationLoading,
         createPlanLoading,
@@ -613,46 +616,52 @@ const PlanList = enhance((props) => {
     }
 
     const updatePlan = {
-        initialValues: (() => {
-            const planType = _.get(planDetails, ['recurrences', '0', 'type'])
-            const priority = _.get(planDetails, 'priority')
-            const comboPlanDetails = _.find(combinationDetails, {'id': comboPlanId})
-            const comboPlanType = _.get(comboPlanDetails, ['recurrences', '0', 'type'])
-            const comboWeekday = _.map(_.get(comboPlanDetails, 'recurrences'), (item) => {
-                return {
-                    id: String(_.get(item, 'weekDay')) || String(_.get(item, 'monthDay')),
-                    active: true
-                }
-            })
-            const weekday = _.map(_.get(planDetails, 'recurrences'), (item) => {
-                return {
-                    id: String(_.get(item, 'weekDay')) || String(_.get(item, 'monthDay')),
-                    active: true
-                }
-            })
-            return (!openUpdatePlan)
-            ? {
-                planType: 'week',
-                weekday: [
-                    {
-                        id: selectedWeekDay,
-                        active: true
-                    }
-                ]
-            }
-            : (openComboPlan && comboPlanId)
-                ? {
-                    planType: comboPlanType,
-                    weekday: comboWeekday
-                }
-                : {
-                    priority: {
-                        value: priority
-                    },
-                    planType: planType,
-                    weekday: weekday
-                }
-        })(),
+        // .. initialValues: (() => {
+        // ..     const planType = _.get(planDetails, ['recurrences', '0', 'type'])
+        // ..     const priority = _.get(planDetails, 'priority')
+        // ..     const comboPlanDetails = _.find(combinationDetails, {'id': comboPlanId})
+        // ..     const comboPlanType = _.get(comboPlanDetails, ['recurrences', '0', 'type'])
+        // ..     const comboWeekday = _.map(_.get(comboPlanDetails, 'recurrences'), (item) => {
+        // ..         const type = _.get(item, 'type')
+        // ..         return {
+        // ..             id: (type === 'month'
+        // ..                 ? String(_.get(item, 'monthDay'))
+        // ..                 : String(_.get(item, 'weekDay'))),
+        // ..             active: true
+        // ..         }
+        // ..     })
+        // ..     const weekday = _.map(_.get(planDetails, 'recurrences'), (item) => {
+        // ..         const type = _.get(item, 'type')
+        // ..         return {
+        // ..             id: (type === 'month'
+        // ..                 ? String(_.get(item, 'monthDay'))
+        // ..                 : String(_.get(item, 'weekDay'))),
+        // ..             active: true
+        // ..         }
+        // ..     })
+        // ..     return (!openUpdatePlan)
+        // ..     ? {
+        // ..         planType: 'week',
+        // ..         weekday: [
+        // ..             {
+        // ..                 id: selectedWeekDay,
+        // ..                 active: true
+        // ..             }
+        // ..         ]
+        // ..     }
+        // ..     : (openComboPlan && comboPlanId)
+        // ..         ? {
+        // ..             planType: comboPlanType,
+        // ..             weekday: comboWeekday
+        // ..         }
+        // ..         : {
+        // ..             priority: {
+        // ..                 value: priority
+        // ..             },
+        // ..             planType: planType,
+        // ..             weekday: weekday
+        // ..         }
+        // .. })(),
         openUpdatePlan,
         updatePlanLoading,
         openConfirmDialog,

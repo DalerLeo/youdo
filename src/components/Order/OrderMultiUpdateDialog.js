@@ -8,6 +8,7 @@ import Loader from '../Loader'
 import FlatButton from 'material-ui/FlatButton'
 import IconButton from 'material-ui/IconButton'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
+import WarnIcon from 'material-ui/svg-icons/alert/warning'
 import {
     DateField,
     DeliveryManSearchField
@@ -86,7 +87,6 @@ const enhance = compose(
             }
         },
         inContent: {
-            display: 'flex',
             padding: '20px 30px',
             color: '#333',
             '& form': {
@@ -122,6 +122,21 @@ const enhance = compose(
         },
         bodyContent: {
             width: '100%'
+        },
+        warning: {
+            background: '#fff8e1',
+            color: '#ff8f00',
+            display: 'flex',
+            alignItems: 'center',
+            margin: '-20px -30px 20px',
+            padding: '10px 30px',
+            '& > svg': {
+                minWidth: '22px',
+                width: '22px !important',
+                height: '22px !important',
+                color: '#ff8f00 !important',
+                marginRight: '5px'
+            }
         }
     }),
     reduxForm({
@@ -157,6 +172,11 @@ const OrderMultiUpdateDialog = enhance((props) => {
                         <Loader size={0.75}/>
                     </div>
                     : <div className={classes.inContent}>
+                        {givenOrDelivery &&
+                        <div className={classes.warning}>
+                            <WarnIcon/>
+                            <span>{t('Невозможно изменить данные о доставке, т.к. статус заказа - доставлен или передан доставщику')}</span>
+                        </div>}
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <div className={classes.field}>
                                 <Field

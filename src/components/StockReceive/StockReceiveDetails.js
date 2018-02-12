@@ -222,9 +222,9 @@ const TransferDetail = enhance((props) => {
     const date = (_.get(detailData, ['data', 'createdDate']) ? dateFormat(_.get(detailData, ['data', 'createdDate'])) : dateFormat(_.get(detailData, ['currentDetail', 'date'])))
     const stockName = _.get(detailData, ['data', 'toStock', 'name']) || _.get(detailData, ['currentDetail', 'stock', 'name'])
     const id = _.get(detailData, 'id') || _.get(detailData, ['data', 'id'])
-    const tooltipText = t('Подтвердить Запрос') + '№' + id
-    const tooltipCancelText = t('Отменить Запрос') + '№' + id
-    const tooltipUpdateText = t('Изменить Запрос') + '№' + id
+    const tooltipText = t('Подтвердить Запрос') + ' №' + id
+    const tooltipCancelText = t('Отменить Запрос') + ' №' + id
+    const tooltipUpdateText = t('Изменить Запрос') + ' №' + id
     const detailLoading = _.get(detailData, 'detailLoading')
     const products = (type === 'order_return') ? _.get(detailData, ['data', 'returnedProducts']) : _.get(detailData, ['data', 'products'])
     let showCount = true
@@ -421,7 +421,7 @@ const TransferDetail = enhance((props) => {
                                 const name = _.get(item, ['product', 'name'])
                                 const measurement = _.get(item, ['product', 'measurement', 'name'])
                                 const productType = _.get(item, ['product', 'type', 'name'])
-                                const isDefect = toBoolean(_.get(item, 'isDefect')) ? 'Брак' : 'ОК'
+                                const isDefect = toBoolean(_.get(item, 'isDefect')) ? t('Брак') : 'ОК'
                                 const amount = numberFormat(_.get(item, 'amount'), measurement)
                                 count += _.toNumber(_.get(item, 'amount'))
                                 if (measurement !== showCountChange) {
@@ -437,7 +437,7 @@ const TransferDetail = enhance((props) => {
                                 )
                             })}
                             {showCount && <Row className='dottedList'>
-                                <b>{t('Общий количество')} {count} {showCountChange}</b>
+                                <b>{t('Общее количество')} {count} {showCountChange}</b>
                             </Row>}
                         </div>
                         }

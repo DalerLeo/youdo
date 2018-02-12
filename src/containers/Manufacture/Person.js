@@ -56,9 +56,14 @@ const enhance = compose(
         }
     }),
     withPropsOnChange((props, nextProps) => {
+        const except = {
+            openUpdateDialog: null,
+            personId: null,
+            openUserDeleteDialog: null
+        }
         const manufactureId = _.toInteger(_.get(props, ['params', 'manufactureId']))
         const nextManufactureId = _.toInteger(_.get(nextProps, ['params', 'manufactureId']))
-        return (props.filterUser.filterRequest() !== nextProps.filterUser.filterRequest() && nextManufactureId > ZERO) ||
+        return (props.filterUser.filterRequest(except) !== nextProps.filterUser.filterRequest(except) && nextManufactureId > ZERO) ||
             (manufactureId !== nextManufactureId && nextManufactureId)
     }, ({dispatch, filterUser, params}) => {
         const manufactureId = _.toInteger(_.get(params, 'manufactureId'))

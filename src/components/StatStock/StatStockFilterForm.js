@@ -14,6 +14,7 @@ import ExportExel from '../Images/excel.png'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 import {BrandSearchField, ProductTypeSearchField} from '../../components/ReduxForm'
+import t from '../../helpers/translate'
 
 export const STATSTOCK_FILTER_OPEN = 'openFilterDialog'
 
@@ -164,7 +165,7 @@ const StatStockFilterForm = enhance((props) => {
                         primary={true}
                         buttonStyle={{color: '#fff'}}
                         labelStyle={{fontSize: '13px'}}
-                        label="Применить"
+                        label={t('Применить')}
                         style={{marginTop: '15px'}}>
                     </RaisedButton>
                 </form>

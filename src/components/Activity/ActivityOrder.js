@@ -161,7 +161,9 @@ const ActivityOrder = enhance((props) => {
     const bankSummary = _.join(_.map(bankData, (item) => {
         return numberFormat(_.get(item, 'totalAmount'), _.get(item, 'currencyName'))
     }), ', ')
-    const tooltipText = '<div>' + t('Сумма (нал)') + ': ' + cashSummary + '</div> <div>' + t('Сумма (пер)') + ': ' + bankSummary + '</div>'
+    const cashTooltip = cashSummary ? '<div>' + t('Сумма (нал)') + ': ' + cashSummary + '</div>' : ''
+    const bankTooltip = bankSummary ? '<div>' + t('Сумма (нал)') + ': ' + bankSummary + '</div>' : ''
+    const tooltipText = cashTooltip + bankTooltip
     const orderList = _.map(_.get(orderlistData, 'data'), (item) => {
         const id = _.get(item, ['order', 'id'])
         const name = _.get(item, ['order', 'user', 'firstName']) + ' ' + _.get(item, ['order', 'user', 'secondName'])
@@ -179,7 +181,7 @@ const ActivityOrder = enhance((props) => {
                 onClick={() => { orderDetails.handleOpenOrderDetails(id) }}>
                 <div className={classes.tubeTitle}>
                     <span>{name}</span>
-                    <div className={classes.statusGreen}> </div>
+                    <div className={classes.statusGreen}/>
                 </div>
                 <div className={classes.tubeTime}>{createdDate}</div>
                 <div className={classes.tubeInfo}>Сделка №{id} с магазина "{marketName}" на сумму {orderPrice} ({paymentType})

@@ -150,7 +150,7 @@ export const MenuItems = [
         childs: [
             {section: STATS_SALES, name: t('Оборот'), url: ROUTES.STATISTICS_SALES_URL, permission: 'frontend_stat_sales'},
             {section: STATS_SALES, name: t('Агенты'), url: ROUTES.STATISTICS_AGENT_URL, permission: 'frontend_stat_agents', query: {pageSize: 25}},
-            {section: STATS_SALES, name: t('Товары'), url: ROUTES.STATISTICS_PRODUCT_URL, permission: 'frontend_stat_product', query: {pageSize: 25}},
+            {section: STATS_SALES, name: t('Товары'), url: ROUTES.STATISTICS_PRODUCT_URL, permission: 'frontend_stat_product', query: {pageSize: 25, ordering: '-salesIncome'}},
             {section: STATS_SALES, name: t('Магазины'), url: ROUTES.STATISTICS_MARKET_URL, permission: 'frontend_stat_markets', query: {pageSize: 25}},
             {section: STATS_SALES, name: t('Возврат'), url: ROUTES.STATISTICS_RETURN_URL, permission: 'frontend_stat_order_returns'},
             // -------------------------------------------------------------------------------------------------- //

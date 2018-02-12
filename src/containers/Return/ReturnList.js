@@ -12,8 +12,8 @@ import toBoolean from '../../helpers/toBoolean'
 import {openErrorAction} from '../../actions/error'
 import updateStore from '../../helpers/updateStore'
 import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
-import * as actionTypes from '../../constants/actionTypes'
 import checkPermission from '../../helpers/checkPermission'
+import * as actionTypes from '../../constants/actionTypes'
 import getConfig from '../../helpers/getConfig'
 import t from '../../helpers/translate'
 import {
@@ -33,7 +33,8 @@ import {
     returnUpdateAction,
     clientReturnUpdateAction,
     clientReturnAction,
-    addProductsListAction
+    addProductsListAction,
+    returnPreviewAction
 } from '../../actions/return'
 import {orderItemFetchAction} from '../../actions/order'
 import {openSnackbarAction} from '../../actions/snackbar'
@@ -63,6 +64,8 @@ const enhance = compose(
         const addProductsForm = _.get(state, ['form', 'OrderAddProductsForm'])
         const addProducts = _.get(state, ['return', 'addProducts', 'data'])
         const addProductsLoading = _.get(state, ['return', 'addProducts', 'loading'])
+        const previewList = _.get(state, ['return', 'previewList', 'data'])
+        const previewListLoading = _.get(state, ['return', 'previewList', 'loading'])
         const filterProducts = filterHelper(addProducts, pathname, query, {'page': 'pdPage', 'pageSize': 'pdPageSize'})
         return {
             list,
@@ -83,12 +86,15 @@ const enhance = compose(
             addProductsForm,
             addProducts,
             addProductsLoading,
-            filterProducts
+            filterProducts,
+            previewList,
+            previewListLoading
         }
     }),
     withPropsOnChange((props, nextProps) => {
         const except = {
-            showCheckboxes: null
+            showCheckboxes: null,
+            openPreviewDialog: null
         }
         return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
@@ -110,6 +116,20 @@ const enhance = compose(
         const orderID = _.toInteger(_.get(detail, 'order'))
         orderID && dispatch(orderItemFetchAction(orderID))
     }),
+    withState('openPreview', 'setOpenPreview', false),
+    withPropsOnChange((props, nextProps) => {
+        const open = _.get(props, ['openPreview'])
+        const nextOpen = _.get(nextProps, ['openPreview'])
+        return open !== nextOpen && nextOpen
+    }, ({dispatch, createForm, openPreview}) => {
+        toBoolean(openPreview) &&
+        dispatch(returnPreviewAction(_.get(createForm, 'values')))
+            .catch((error) => {
+                dispatch(openErrorAction({
+                    message: error
+                }))
+            })
+    }),
     withState('openAddProductDialog', 'setOpenAddProductDialog', false),
     withState('openAddProductConfirm', 'setOpenAddProductConfirm', false),
     withPropsOnChange((props, nextProps) => {
@@ -123,6 +143,7 @@ const enhance = compose(
             deliveryToDate: null,
             paymentType: null,
             openCreateDialog: null,
+            openPreviewDialog: null,
             openFilterDialog: null,
             product: null,
             provider: null,
@@ -136,6 +157,7 @@ const enhance = compose(
     }, ({setOpenAddProductConfirm, addProductsForm, openAddProductDialog, dispatch, filterProducts, createForm}) => {
         const currency = _.get(createForm, ['values', 'currency', 'value'])
         const market = _.get(createForm, ['values', 'market', 'value'])
+        const client = _.get(createForm, ['values', 'client', 'value'])
         const products = _.filter(_.get(addProductsForm, ['values', 'product']), (item) => {
             const amount = _.toNumber(_.get(item, 'amount'))
             const price = _.toNumber(_.get(item, 'price'))
@@ -146,7 +168,7 @@ const enhance = compose(
             setOpenAddProductConfirm(true)
         } else if (openAddProductDialog && _.isEmpty(products)) {
             setOpenAddProductConfirm(false)
-            dispatch(addProductsListAction(filterProducts, productType, market, currency))
+            dispatch(addProductsListAction(filterProducts, productType, market, currency, client))
         }
     }),
 
@@ -156,9 +178,10 @@ const enhance = compose(
         const productType = _.get(addProductsForm, ['values', 'type', 'value'])
         const currency = _.get(createForm, ['values', 'currency', 'value'])
         const market = _.get(createForm, ['values', 'market', 'value'])
+        const client = _.get(createForm, ['values', 'client', 'value'])
         if (openAddProductDialog) {
             setOpenAddProductConfirm(false)
-            dispatch(addProductsListAction(filterProducts, productType, market, currency))
+            dispatch(addProductsListAction(filterProducts, productType, market, currency, client))
         }
     }),
 
@@ -235,7 +258,7 @@ const enhance = compose(
             const division = _.get(filterForm, ['values', 'division']) || null
             const paymentType = _.get(filterForm, ['values', 'paymentType', 'value']) || null
             const code = _.get(filterForm, ['values', 'code']) || null
-            const exclude = _.get(filterForm, ['values', 'exclude']) || false
+            const exclude = _.get(filterForm, ['values', 'exclude']) || null
 
             filter.filterBy({
                 [RETURN_FILTER_OPEN]: false,
@@ -360,12 +383,13 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({[RETURN_CREATE_DIALOG_OPEN]: false})})
         },
         handleSubmitCreateDialog: props => () => {
-            const {location: {pathname}, dispatch, createForm, filter} = props
+            const {location: {pathname}, dispatch, createForm, filter, setOpenPreview} = props
             return dispatch(clientReturnAction(_.get(createForm, ['values'])))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
+                    setOpenPreview(false)
                     hashHistory.push({
                         pathname,
                         query: filter.getParams({[RETURN_CREATE_DIALOG_OPEN]: false})
@@ -377,6 +401,15 @@ const enhance = compose(
                         message: error
                     }))
                 })
+        },
+        handleOpenPreviewDialog: props => () => {
+            const {setOpenPreview} = props
+            setOpenPreview(true)
+        },
+
+        handleClosePreviewDialog: props => () => {
+            const {setOpenPreview} = props
+            setOpenPreview(false)
         },
         handleCloseDetail: props => () => {
             const {filter} = props
@@ -508,7 +541,10 @@ const ReturnList = enhance((props) => {
         addProductsLoading,
         filterProducts,
         openAddProductDialog,
-        openAddProductConfirm
+        openAddProductConfirm,
+        previewList,
+        previewListLoading,
+        openPreview
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', RETURN_FILTER_OPEN]))
@@ -527,11 +563,11 @@ const ReturnList = enhance((props) => {
     const deliveryFromDate = filter.getParam(RETURN_FILTER_KEY.DELIVERY_FROM_DATE)
     const toDate = filter.getParam(RETURN_FILTER_KEY.TO_DATE)
     const deliveryToDate = filter.getParam(RETURN_FILTER_KEY.DELIVERY_TO_DATE)
-    const exclude = _.isUndefined(filter.getParam(RETURN_FILTER_KEY.EXCLUDE)) ? true : filter.getParam(RETURN_FILTER_KEY.EXCLUDE)
+    const exclude = filter.getParam(RETURN_FILTER_KEY.EXCLUDE)
 
     const detailId = _.toInteger(_.get(params, 'returnId'))
 
-    const canChangeAnyReturn = checkPermission('frontend_add_client_return')
+    const canSetPriceOnReturn = checkPermission('can_set_any_price')
 
     const cancelReturnDialog = {
         openCancelDialog,
@@ -661,6 +697,15 @@ const ReturnList = enhance((props) => {
         handleSubmitCreateDialog: props.handleSubmitCreateDialog
     }
 
+    const previewDialog = {
+        data: previewList,
+        loading: previewListLoading,
+        openPreviewDialog: openPreview,
+        handleOpenPreviewDialog: props.handleOpenPreviewDialog,
+        handleClosePreviewDialog: props.handleClosePreviewDialog,
+        handleSubmitPreviewDialog: props.handleSubmitPreviewDialog
+    }
+
     const updateDialog = {
         initialValues: (() => {
             if (!detail || openCreateDialog) {
@@ -724,7 +769,6 @@ const ReturnList = enhance((props) => {
     return (
         <Layout {...layout}>
             <ReturnGridList
-                canChangeAnyReturn={canChangeAnyReturn}
                 filter={filter}
                 listData={listData}
                 detailData={detailData}
@@ -741,6 +785,8 @@ const ReturnList = enhance((props) => {
                 createDialog={createDialog}
                 hasMarket={hasMarket}
                 addProductDialog={addProductDialog}
+                previewDialog={previewDialog}
+                canSetPriceOnReturn={canSetPriceOnReturn}
             />
         </Layout>
     )

@@ -186,7 +186,8 @@ const StatisticsFilterExcel = enhance((props) => {
                 className={classes.overlay}
                 onClick={() => { setOpenFilter(false) }}> </div>}
             {openFilter && <Paper zDepth={2} className={classes.form}>
-                <form onSubmit={() => {
+                <form onSubmit={(event) => {
+                    event.preventDefault()
                     handleSubmitFilterDialog()
                     setOpenFilter(false)
                 }}>

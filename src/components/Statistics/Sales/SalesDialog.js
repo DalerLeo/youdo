@@ -38,21 +38,9 @@ const enhance = compose(
             marginBottom: '64px'
         },
         content: {
-            width: '100%',
-            display: 'block',
-            '& > div': {
-                width: 'auto',
-                border: 'none',
-                padding: '0',
-                maxHeight: '573px',
-                '& > div > div:last-child > div > div:first-child': {
-                    maxHeight: '465px',
-                    overflowY: 'auto',
-                    margin: '0 -30px',
-                    padding: '0 30px'
-                },
-                '& > div > div:last-child > div > div:last-child': {
-                    padding: '0'
+            '& .dottedList': {
+                '& > div > span:first-child': {
+                    display: 'none'
                 }
             }
         },
@@ -146,7 +134,8 @@ const StatSaleDialog = enhance((props) => {
         onClose,
         classes,
         detailData,
-        loading
+        loading,
+        tabData
     } = props
     const id = _.get(detailData, 'id')
     return (
@@ -164,7 +153,7 @@ const StatSaleDialog = enhance((props) => {
                 : <div>
                     <div className={classes.titleContent}>
                         <div>
-                            <div>{t('Заказ')} №{id}</div>
+                            <div>{t('Заказ')} № {id}</div>
                         </div>
                         <IconButton onTouchTap={onClose}>
                             <CloseIcon color="#666666"/>
@@ -173,8 +162,11 @@ const StatSaleDialog = enhance((props) => {
                     <div className={classes.content}>
                         <OrderDetails
                             data={_.get(detailData, 'data')}
+                            returnData={_.get(detailData, 'return')}
+                            returnDataLoading={_.get(detailData, 'returnLoading')}
+                            tabData={tabData}
                             loading={loading}
-                            stat={true}/>
+                        />
                     </div>
                 </div>}
         </Dialog>

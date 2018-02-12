@@ -258,7 +258,7 @@ const OrderReturnDialog = enhance((props) => {
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
-                        <div className={classes.summary}>Общая сумма возврата: <strong>{numberFormat(totalCost, currency)}</strong></div>
+                        <div className={classes.summary}>{t('Общая сумма возврата')}: <strong>{numberFormat(totalCost, currency)}</strong></div>
                         <FlatButton
                             label={isUpdate ? t('Изменить') : t('Возврат')}
                             className={classes.actionButton}

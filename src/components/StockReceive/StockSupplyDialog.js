@@ -151,7 +151,7 @@ const StatSaleDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>{t('Движение товаров. Поставка')} №{supplyId}</span>
+                <span>{t('Движение товаров. Поставка')} № {supplyId}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>

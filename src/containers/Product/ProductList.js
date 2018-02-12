@@ -10,6 +10,9 @@ import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import {splitToArray, joinArray} from '../../helpers/joinSplitValues'
 import toBoolean from '../../helpers/toBoolean'
+import updateStore from '../../helpers/updateStore'
+import * as actionTypes from '../../constants/actionTypes'
+
 import {
     PRODUCT_CREATE_DIALOG_OPEN,
     PRODUCT_SHOW_PHOTO_OPEN,
@@ -204,16 +207,23 @@ const enhance = compose(
         },
 
         handleSubmitUpdateDialog: props => () => {
-            const {dispatch, createForm, filter} = props
+            const {dispatch, createForm, filter, list} = props
             const productId = _.toInteger(_.get(props, ['params', 'productId']))
 
             return dispatch(productUpdateAction(productId, _.get(createForm, ['values'])))
-                .then(() => {
+                .then((data) => {
+                    const detailData = _.get(data, 'value')
+                    dispatch(updateStore(productId, list, actionTypes.PRODUCT_LIST, {
+                        name: _.get(detailData, 'name'),
+                        measurement: _.get(detailData, 'measurement'),
+                        code: _.get(detailData, 'code'),
+                        type: _.get(detailData, 'type'),
+                        priority: _.get(detailData, 'priority')
+                    }))
                     return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push({pathname: ROUTER.PRODUCT_LIST_URL, query: filter.getParams({[PRODUCT_UPDATE_DIALOG_OPEN]: false})})
-                    dispatch(productListFetchAction(filter))
                 })
                 .catch((error) => {
                     dispatch(openErrorAction({

@@ -11,6 +11,7 @@ import ShopFilterForm from './ShopFilterForm'
 import ShopDetails from './ShopDetails'
 import ShopCreateDialog from './ShopCreateDialog'
 import MapDialog from './ShopMapDialog'
+import ShopMultiUpdateDialog from './ShopMultiUpdateDialog'
 import AddPhotoDialog from './AddPhotoDialog'
 import SlideShowDialog from './SlideShowDialog'
 import DeleteDialog from '../DeleteDialog'
@@ -22,6 +23,15 @@ import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import ToolTip from '../ToolTip'
 import t from '../../helpers/translate'
+import toBoolean from '../../helpers/toBoolean'
+import checkPermission from '../../helpers/checkPermission'
+import Edit from 'material-ui/svg-icons/editor/mode-edit'
+import IconButton from 'material-ui/IconButton'
+
+// CHECKING PERMISSIONS
+const canCreateMarket = checkPermission('add_market')
+const canEditMarket = checkPermission('change_market')
+const canDeleteMarket = checkPermission('delete_market')
 
 const listHeader = [
     {
@@ -51,8 +61,8 @@ const listHeader = [
     {
         xs: 2,
         sorting: false,
-        name: 'is_active',
-        title: t('Статус')
+        name: 'responsible_agent',
+        title: t('Ответственный агент')
     }
 ]
 const enhance = compose(
@@ -65,24 +75,40 @@ const enhance = compose(
         },
         listRow: {
             position: 'relative',
+            margin: '0 -30px !important',
+            padding: '0 30px !important',
+            width: 'auto !important',
             '& > a': {
-                display: 'flex',
-                alignItems: 'center',
                 position: 'absolute',
                 top: '0',
-                left: '-30px',
-                right: '-30px',
-                bottom: '0',
-                padding: '0 30px',
-                '& > div': {
-                    '&:first-child': {
-                        paddingLeft: '0'
-                    },
-                    '&:last-child': {
-                        paddingRight: '0'
-                    }
-                }
+                left: '0',
+                right: '0',
+                bottom: '0'
             }
+        },
+        listWithCheckbox: {
+            marginLeft: '-50px !important',
+            paddingLeft: '55px !important'
+        },
+        buttons: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-around'
+        },
+        status: {
+            position: 'absolute',
+            left: '0',
+            top: '0',
+            bottom: '0',
+            width: '3px'
+        },
+        statusActive: {
+            extend: 'status',
+            background: '#81c784'
+        },
+        statusInactive: {
+            extend: 'status',
+            background: '#e57373'
         }
     })
 )
@@ -103,9 +129,20 @@ const ShopGridList = enhance((props) => {
         detailData,
         mapLocation,
         navigationButtons,
+        multiUpdateDialog,
         classes
     } = props
 
+    const showCheckboxes = toBoolean(_.get(filter.getParams(), 'showCheckboxes'))
+    const checkboxActions = (
+        <div className={classes.buttons}>
+            <ToolTip position="left" text={t('Изменить выбранные магазины')}>
+                <IconButton onTouchTap={multiUpdateDialog.handleOpenMultiUpdate}>
+                    <Edit color="#666"/>
+                </IconButton>
+            </ToolTip>
+        </div>
+    )
     const shopFilterDialog = (
         <ShopFilterForm
             initialValues={filterDialog.initialValues}
@@ -126,6 +163,8 @@ const ShopGridList = enhance((props) => {
             slideShowDialog={slideShowDialog}
             handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
             mapDialog={mapDialog}
+            canEditMarket={canEditMarket}
+            canDeleteMarket={canDeleteMarket}
         />
     )
     const shopList = _.map(_.get(listData, 'data'), (item) => {
@@ -133,23 +172,20 @@ const ShopGridList = enhance((props) => {
         const name = _.get(item, 'name')
         const client = _.get(item, ['client', 'name'])
         const marketType = _.get(item, ['marketType', 'name'])
+        const responsibleAgent = _.get(item, ['responsibleAgent', 'firstName']) + ' ' + _.get(item, ['responsibleAgent', 'secondName'])
         const zone = _.get(item, ['border', 'title']) || t('Не определена')
         const isActive = _.get(item, 'isActive')
         return (
-            <Row key={id} className={classes.listRow}>
+            <Row key={id} className={classes.listRow + ' ' + (showCheckboxes ? classes.listWithCheckbox : '')}>
+                <Col xs={3}>{name}</Col>
+                <Col xs={3}>{client}</Col>
                 <Link to={{
                     pathname: sprintf(ROUTES.SHOP_ITEM_PATH, id),
-                    query: filter.getParams()
-                }}>
-                    <Col xs={3}>{name}</Col>
-                    <Col xs={3}>{client}</Col>
-                    <Col xs={2}>{marketType}</Col>
-                    <Col xs={2}>{zone}</Col>
-                    <Col xs={2}>
-                        {isActive ? <span className="greenFont">{t('Активен')}</span>
-                            : <span className="redFont">{t('Не активен')}</span>}
-                    </Col>
-                </Link>
+                    query: filter.getParams()}}/>
+                <div className={classes.status + ' ' + (isActive ? classes.statusActive : classes.statusInactive)}/>
+                <Col xs={2}>{marketType}</Col>
+                <Col xs={2}>{zone}</Col>
+                <Col xs={2}>{responsibleAgent}</Col>
             </Row>
         )
     })
@@ -161,6 +197,7 @@ const ShopGridList = enhance((props) => {
     return (
         <Container>
             <SubMenu url={ROUTES.SHOP_LIST_URL}/>
+            {canCreateMarket &&
             <div className={classes.addButtonWrapper}>
                 <ToolTip position="left" text={t('Добавить магазин')}>
                     <FloatingActionButton
@@ -171,12 +208,15 @@ const ShopGridList = enhance((props) => {
                         <ContentAdd />
                     </FloatingActionButton>
                 </ToolTip>
-            </div>
+            </div>}
             <GridList
                 filter={filter}
                 list={list}
                 detail={shopDetail}
                 filterDialog={shopFilterDialog}
+                withCheckboxes={canEditMarket}
+                activeCheckboxes={showCheckboxes}
+                checkboxActions={checkboxActions}
             />
             <ShopCreateDialog
                 mapDialog={mapDialog}
@@ -247,6 +287,12 @@ const ShopGridList = enhance((props) => {
                 onSubmit={imageDeleteDialog.handleSendDeleteImageDialog}
                 open={imageDeleteDialog.openDeleteImage}
             />}
+
+            <ShopMultiUpdateDialog
+                open={multiUpdateDialog.open}
+                onClose={multiUpdateDialog.handleCloseMultiUpdate}
+                onSubmit={multiUpdateDialog.handleSubmitMultiUpdate}
+            />
         </Container>
     )
 })
@@ -320,6 +366,12 @@ ShopGridList.propTypes = {
     navigationButtons: PropTypes.shape({
         handlePrevImage: PropTypes.func.isRequired,
         handleNextImage: PropTypes.func.isRequired
+    }),
+    multiUpdateDialog: PropTypes.shape({
+        open: PropTypes.bool.isRequired,
+        handleOpenMultiUpdate: PropTypes.func.isRequired,
+        handleCloseMultiUpdate: PropTypes.func.isRequired,
+        handleSubmitMultiUpdate: PropTypes.func.isRequired
     })
 }
 export default ShopGridList

@@ -40,13 +40,18 @@ import toBoolean from '../../helpers/toBoolean'
 import MenuItem from 'material-ui/MenuItem'
 import IconMenu from 'material-ui/IconMenu'
 import getConfig from '../../helpers/getConfig'
+import checkPermission from '../../helpers/checkPermission'
 import t from '../../helpers/translate'
 import {
-    REQUESTED,
-    NOT_CONFIRMED,
-    READY,
+    ORDER_REQUESTED,
+    ORDER_NOT_CONFIRMED,
+    ORDER_READY,
     ZERO
 } from '../../constants/backendConstants'
+
+// CHECKING PERMISSIONS
+const canCreateOrder = checkPermission('add_order')
+const canEditOrder = checkPermission('change_order')
 
 const listHeader = [
     {
@@ -255,14 +260,15 @@ const OrderGridList = enhance((props) => {
         addProductDialog,
         printSalesDialog,
         printContractDialog,
-        scrollValue
+        scrollValue,
+        checkDeliveryDialog
     } = props
 
     const hasMarket = toBoolean(getConfig('MARKETS_MODULE'))
     const showCheckboxes = toBoolean(_.get(filter.getParams(), 'showCheckboxes'))
-    const statusIsReady = _.get(filter.getParams(), 'status') && _.toNumber(_.get(filter.getParams(), 'status')) === READY
-    const statusIsRequested = _.get(filter.getParams(), 'status') && _.toNumber(_.get(filter.getParams(), 'status')) === REQUESTED
-    const statusIsUnconfirmed = _.get(filter.getParams(), 'status') && _.toNumber(_.get(filter.getParams(), 'status')) === NOT_CONFIRMED
+    const statusIsReady = _.get(filter.getParams(), 'status') && _.toNumber(_.get(filter.getParams(), 'status')) === ORDER_READY
+    const statusIsRequested = _.get(filter.getParams(), 'status') && _.toNumber(_.get(filter.getParams(), 'status')) === ORDER_REQUESTED
+    const statusIsUnconfirmed = _.get(filter.getParams(), 'status') && _.toNumber(_.get(filter.getParams(), 'status')) === ORDER_NOT_CONFIRMED
     const orderCounts = _.get(listData, 'orderCounts')
     const readyCount = _.get(orderCounts, 'readyCount')
     const requestedCount = _.get(orderCounts, 'requestedCount')
@@ -302,6 +308,7 @@ const OrderGridList = enhance((props) => {
             isSuperUser={isSuperUser}
             handleOpenPrintContract={printContractDialog.handleOpenContractPrint}
             hasMarket={hasMarket}
+            checkDeliveryDialog={checkDeliveryDialog}
         />
     )
     const iconButton = (
@@ -408,13 +415,13 @@ const OrderGridList = enhance((props) => {
     }
 
     const filterByReady = () => {
-        return hashHistory.push(filter.createURL({status: READY}))
+        return hashHistory.push(filter.createURL({status: ORDER_READY}))
     }
     const filterByRequested = () => {
-        return hashHistory.push(filter.createURL({status: REQUESTED}))
+        return hashHistory.push(filter.createURL({status: ORDER_REQUESTED}))
     }
     const filterByUnconfirmed = () => {
-        return hashHistory.push(filter.createURL({status: NOT_CONFIRMED}))
+        return hashHistory.push(filter.createURL({status: ORDER_NOT_CONFIRMED}))
     }
 
     const extraButtons = (
@@ -492,17 +499,19 @@ const OrderGridList = enhance((props) => {
                     <Excel color="#666"/>
                 </IconButton>
             </ToolTip>
+            {canEditOrder &&
             <ToolTip position="left" text={t('Изменить выбранные заказы')}>
                 <IconButton onTouchTap={multiUpdateDialog.handleOpenMultiUpdate}
                             disabled={multiUpdateDialog.cancelled}>
                     <Edit color="#666"/>
                 </IconButton>
-            </ToolTip>
+            </ToolTip>}
+            {canEditOrder &&
             <ToolTip position="left" text={t('Сформировать Релиз')}>
                 <IconButton onTouchTap={releaseDialog.handleOpenReleaseDialog}>
                     <GetRelease color="#666"/>
                 </IconButton>
-            </ToolTip>
+            </ToolTip>}
         </div>
     )
 
@@ -516,6 +525,7 @@ const OrderGridList = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.ORDER_LIST_URL}/>
 
+            {canCreateOrder &&
             <div className={classes.addButtonWrapper}>
                 <ToolTip position="left" text={t('Добавить заказ')}>
                     <FloatingActionButton
@@ -526,7 +536,7 @@ const OrderGridList = enhance((props) => {
                         <ContentAdd/>
                     </FloatingActionButton>
                 </ToolTip>
-            </div>
+            </div>}
 
             <GridList
                 filter={filter}
@@ -543,7 +553,8 @@ const OrderGridList = enhance((props) => {
                 scrollData={scrollData}
             />
 
-            {createDialog.openCreateDialog && <OrderCreateDialog
+            {createDialog.openCreateDialog &&
+            <OrderCreateDialog
                 hasMarket={hasMarket}
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
@@ -560,7 +571,8 @@ const OrderGridList = enhance((props) => {
                 canChangePrice={canChangePrice}
             />}
 
-            {updateDialog.openUpdateDialog && <OrderCreateDialog
+            {updateDialog.openUpdateDialog &&
+            <OrderCreateDialog
                 hasMarket={hasMarket}
                 isUpdate={true}
                 status={_.toInteger(_.get(detailData, ['data', 'status'])) || {}}
@@ -596,6 +608,7 @@ const OrderGridList = enhance((props) => {
             />
             <OrderReleaseDialog
                 open={releaseDialog.openReleaseDialog}
+                givenOrDelivery={releaseDialog.givenOrDelivery}
                 onClose={releaseDialog.handleCloseReleaseDialog}
                 onSubmit={releaseDialog.handleSubmitReleaseDialog}
             />
@@ -623,6 +636,14 @@ const OrderGridList = enhance((props) => {
                 onClose={confirmDialog.handleCloseConfirmDialog}
                 onSubmit={confirmDialog.handleSendConfirmDialog}
                 open={confirmDialog.openConfirmDialog}
+            />}
+
+            {detailData.data && <ConfirmDialog
+                type="submit"
+                message={t('Отметить доставку')}
+                onClose={checkDeliveryDialog.handleClose}
+                onSubmit={checkDeliveryDialog.handleSubmit}
+                open={checkDeliveryDialog.open}
             />}
         </Container>
     )

@@ -15,6 +15,9 @@ const MANUFACTURE_CREATE_PRODUCT_DIALOG_OPEN = 'createMaterials'
 const OPEN_DELETE_MATERIALS_DIALOG = 'openDeleteIngredient'
 const OPEN_USER_CONFIRM_DIALOG = 'openUserDeleteDialog'
 const MANUFACTURE_CHANGE = 'openChangeManufacture'
+const OPEN_ADD_PRODUCT_MATERIAL_DIALOG = 'openProductMaterialDialog'
+const TYPE_PRODUCT = 'product'
+const TYPE_RAW = 'raw'
 
 export {
     OPEN_FILTER,
@@ -27,7 +30,10 @@ export {
     OPEN_USER_CONFIRM_DIALOG,
     OPEN_USER_UPDATE_DIALOG,
     OPEN_DELETE_MATERIALS_DIALOG,
+    OPEN_ADD_PRODUCT_MATERIAL_DIALOG,
     MANUFACTURE_CHANGE,
+    TYPE_PRODUCT,
+    TYPE_RAW,
     ManufactureProductWrapper,
     ManufacturePersonWrapper,
     ManufactureEquipmentWrapper,

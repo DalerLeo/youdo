@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import numberFormat from '../../../helpers/numberFormat'
+import t from '../../../helpers/translate'
 import Paper from 'material-ui/Paper'
 
 const enhance = compose(
@@ -81,10 +82,10 @@ const SalesInfoDialog = enhance((props) => {
     return (
          <Paper zDepth={2} className={classes.wrapper}>
              <div className={classes.salesType}>
-                 <div className={classes.title}>Фактические продажи</div>
+                 <div className={classes.title}>{t('Фактические продажи')}</div>
                  {!noCashData &&
                  <div>
-                     <i>Нал:</i>
+                     <i>{t('Нал')}:</i>
                      {_.map(cashSummary, (obj, i) => {
                          const currency = _.get(obj, 'currency')
                          const amount = _.get(obj, 'fact')
@@ -93,7 +94,7 @@ const SalesInfoDialog = enhance((props) => {
                  </div>}
                  {!noBankData &&
                  <div>
-                     <i>Переч:</i>
+                     <i>{t('Переч')}:</i>
                      {_.map(bankSummary, (obj, i) => {
                          const currency = _.get(obj, 'currency')
                          const amount = _.get(obj, 'fact')
@@ -103,10 +104,10 @@ const SalesInfoDialog = enhance((props) => {
              </div>
 
              <div className={classes.salesType}>
-                 <div className={classes.title}>Сумма продаж</div>
+                 <div className={classes.title}>{t('Сумма продаж')}</div>
                  {!noCashData &&
                  <div>
-                     <i>Нал:</i>
+                     <i>{t('Нал')}:</i>
                      {_.map(cashSummary, (obj, i) => {
                          const currency = _.get(obj, 'currency')
                          const amount = _.get(obj, 'total')
@@ -115,7 +116,7 @@ const SalesInfoDialog = enhance((props) => {
                  </div>}
                  {!noBankData &&
                  <div>
-                     <i>Переч:</i>
+                     <i>{t('Переч')}:</i>
                      {_.map(bankSummary, (obj, i) => {
                          const currency = _.get(obj, 'currency')
                          const amount = _.get(obj, 'total')
@@ -125,10 +126,10 @@ const SalesInfoDialog = enhance((props) => {
              </div>
 
              <div className={classes.salesType}>
-                 <div className={classes.title}>Сумма возвратов</div>
+                 <div className={classes.title}>{t('Сумма возвратов')}</div>
                  {!noCashData &&
                  <div>
-                     <i>Нал:</i>
+                     <i>{t('Нал')}:</i>
                      {_.map(cashSummary, (obj, i) => {
                          const currency = _.get(obj, 'currency')
                          const amount = _.get(obj, 'returns')
@@ -137,7 +138,7 @@ const SalesInfoDialog = enhance((props) => {
                  </div>}
                  {!noBankData &&
                  <div>
-                     <i>Переч:</i>
+                     <i>{t('Переч')}:</i>
                      {_.map(bankSummary, (obj, i) => {
                          const currency = _.get(obj, 'currency')
                          const amount = _.get(obj, 'returns')

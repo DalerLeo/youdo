@@ -108,6 +108,7 @@ const enhance = compose(
             },
             '& > div:last-child': {
                 width: 'calc(100% - 350px)',
+                alignSelf: 'baseline',
                 overflowX: 'auto',
                 overflowY: 'hidden'
             }
@@ -509,7 +510,7 @@ const StatDebtorsGridList = enhance((props) => {
                             : <div className={classes.debtors}>
                                 <div>
                                     <span>{t('Всего должников')}</span>
-                                    <div>{countDebtors} клиентов</div>
+                                    <div>{countDebtors} {t('клиентов')}</div>
                                 </div>
                                 <div>
                                     <span>{t('Просроченные платежи')}</span>

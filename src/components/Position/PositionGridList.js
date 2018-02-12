@@ -158,7 +158,6 @@ const enhance = compose(
         form: 'PositionPermissionForm'
     })
 )
-const MINUS_ONE = -1
 
 const iconStyle = {
     icon: {
@@ -189,7 +188,7 @@ const PositionGridList = enhance((props) => {
         <Row className="dottedList">
             <Col xs={2}>{t('Права доступа')}</Col>
             <Col xs={9}>{t('Возможности')}</Col>
-            <Col xs={1}></Col>
+            <Col xs={1}/>
         </Row>
     )
     const permissionList = _.map(_.get(listData, ['data']), (item, index) => {
@@ -232,7 +231,7 @@ const PositionGridList = enhance((props) => {
                                 iconStyle={iconStyle.icon}
                                 style={iconStyle.button}
                                 onTouchTap={() => {
-                                    confirmDialog.handleOpenConfirmDialog()
+                                    confirmDialog.handleOpenConfirmDialog(id)
                                 }}
                                 touch={true}>
                                 <DeleteIcon/>
@@ -245,7 +244,7 @@ const PositionGridList = enhance((props) => {
     })
 
     const currentDetail = _.find(_.get(listData, 'data'), {'id': _.toInteger(detailId)})
-    const confirmMessage = t('Валюта') + ': ' + _.get(currentDetail, 'name')
+    const confirmMessage = t('Права доступа') + ': ' + _.get(currentDetail, 'name')
     return (
         <Container>
             <div className={classes.wrapper}>
@@ -290,7 +289,8 @@ const PositionGridList = enhance((props) => {
                     onClose={updateDialog.handleCloseUpdateDialog}
                     onSubmit={updateDialog.handleSubmitUpdateDialog}
                 />
-                {detailId !== MINUS_ONE && <ConfirmDialog
+                {confirmDialog.openConfirmDialog &&
+                <ConfirmDialog
                     type="delete"
                     message={confirmMessage}
                     onClose={confirmDialog.handleCloseConfirmDialog}
@@ -313,13 +313,6 @@ PositionGridList.propTypes = {
         handleCloseCreateDialog: PropTypes.func.isRequired,
         handleSubmitCreateDialog: PropTypes.func.isRequired
     }).isRequired,
-    setPositionUpdateDialog: PropTypes.shape({
-        setPositionLoading: PropTypes.bool.isRequired,
-        openSetPositionDialog: PropTypes.bool.isRequired,
-        handleOpenSetPositionDialog: PropTypes.func.isRequired,
-        handleCloseSetPositionDialog: PropTypes.func.isRequired,
-        handleSubmitSetPositionDialog: PropTypes.func.isRequired
-    }),
     confirmDialog: PropTypes.shape({
         openConfirmDialog: PropTypes.bool.isRequired,
         handleOpenConfirmDialog: PropTypes.func.isRequired,
@@ -332,10 +325,6 @@ PositionGridList.propTypes = {
         handleOpenUpdateDialog: PropTypes.func.isRequired,
         handleCloseUpdateDialog: PropTypes.func.isRequired,
         handleSubmitUpdateDialog: PropTypes.func.isRequired
-    }).isRequired,
-    actionsDialog: PropTypes.shape({
-        handleActionEdit: PropTypes.func.isRequired,
-        handleActionDelete: PropTypes.func.isRequired
     }).isRequired
 }
 

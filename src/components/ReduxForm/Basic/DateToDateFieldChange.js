@@ -8,6 +8,7 @@ import PropTypes from 'prop-types'
 import {DateRange} from 'react-date-range-ru'
 import {Popover, FlatButton} from 'material-ui'
 import dateFormat from '../../../helpers/dateFormat'
+import {getLanguage} from '../../../helpers/storage'
 import MUITextField from 'material-ui/TextField'
 import moment from 'moment'
 import {hashHistory} from 'react-router'
@@ -150,7 +151,7 @@ class DateToDateField extends React.Component {
                         <DateRange
                             startDate={_.get(input, ['value', 'startDate']) || moment()}
                             endDate={_.get(input, ['value', 'endDate']) || moment()}
-                            lang={'ru'}
+                            lang={getLanguage()}
                             ranges={ range }
                             onChange={onChange}
                             theme={{

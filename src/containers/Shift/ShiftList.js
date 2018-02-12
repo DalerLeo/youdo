@@ -52,7 +52,7 @@ const enhance = compose(
     }),
     withPropsOnChange((props, nextProps) => {
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
-    }, ({dispatch, filter}) => {
+    }, ({dispatch, filter, location}) => {
         dispatch(shiftListFetchAction(filter))
     }),
 

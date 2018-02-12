@@ -7,6 +7,7 @@ import Loader from '../Loader'
 import {Row, Col} from 'react-flexbox-grid'
 import numberFormat from '../../helpers/numberFormat'
 import dateFormat from '../../helpers/dateFormat'
+import t from '../../helpers/translate'
 import {Tabs, Tab} from 'material-ui/Tabs'
 import * as TAB from '../../constants/orderTab'
 import NotFound from '../Images/not-found.png'
@@ -44,15 +45,18 @@ const enhance = compose(
                 '& > div:first-child': {
                     textAlign: 'left',
                     display: 'flex'
-                },
-                '& .redFont > div': {
-                    display: 'inline-block',
-                    background: '#ff9393',
-                    color: '#fff',
-                    fontWeight: '600',
-                    padding: '0 6px',
-                    borderRadius: '2px'
                 }
+            }
+        },
+        returnAmount: {
+            '& > div': {
+                display: 'inline-block',
+                background: '#ff9393',
+                color: '#fff',
+                fontWeight: '600',
+                padding: '0 6px',
+                margin: '0 3px',
+                borderRadius: '2px'
             }
         },
         tabWrapper: {
@@ -60,6 +64,7 @@ const enhance = compose(
             overflowY: 'auto',
             overflowX: 'hidden',
             paddingRight: '30px',
+            paddingBottom: '20px',
             '& .row': {
                 height: '50px',
                 margin: '0 -30px',
@@ -73,7 +78,7 @@ const enhance = compose(
             }
         },
         summary: {
-            margin: '20px -30px 0',
+            margin: '0 -30px 0',
             padding: '0 30px',
             fontWeight: '600',
             textAlign: 'right'
@@ -94,9 +99,9 @@ const enhance = compose(
             }
         },
         emptyQuery: {
-            background: 'url(' + NotFound + ') no-repeat center center',
-            backgroundSize: '215px',
-            padding: '215px 0 0',
+            background: 'url(' + NotFound + ') no-repeat center 20px',
+            backgroundSize: '185px',
+            padding: '150px 0 30px',
             textAlign: 'center',
             color: '#999'
         },
@@ -137,14 +142,14 @@ const OrderDetailsRightSideTabs = enhance((props) => {
     const products = _.get(data, 'products')
     const discountPrice = _.get(data, 'discountPrice')
     const primaryCurrency = _.get(data, ['currency', 'name'])
-    const firstType = _.get(products, ['0', 'product', 'productType', 'id'])
-    const firstMeasurement = _.get(products, ['0', 'product', 'measurement', 'name'])
-    const totalProductPrice = _.sumBy(products, (item) => {
-        return _.toNumber(_.get(item, 'totalPrice'))
-    })
-    const wholeAmount = _.sumBy(products, (o) => {
-        return _.toNumber(_.get(o, 'amount'))
-    })
+
+    const firstType = _.get(_.first(products), ['product', 'productType', 'id'])
+    const firstMeasurement = _.get(_.first(products), ['product', 'measurement', 'name'])
+
+    const totalProductPrice = _.sumBy(products, (item) => _.toNumber(_.get(item, 'totalPrice')))
+    const wholeAmount = _.sumBy(products, (item) => _.toNumber(_.get(item, 'amount')))
+    const wholeReturnAmount = _.sumBy(products, (item) => _.toNumber(_.get(item, 'returnAmount')))
+
     let commonMeasurement = false
     return (
         <div className={classes.rightSide}>
@@ -154,7 +159,7 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                 inkBarStyle={{background: '#12aaeb', marginTop: '-2px', height: '2px'}}
                 onChange={(value) => tabData.handleTabChange(value, id)}>
                 <Tab
-                    label="Список товаров"
+                    label={t('Список товаров')}
                     buttonStyle={tabStyle.button}
                     value={TAB.ORDER_TAB_PRODUCT_LIST}
                     disableTouchRipple={true}>
@@ -163,12 +168,12 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                             <Row className="dottedList">
                                 <Col xs={4}>
                                     <span style={{marginRight: 10}}>№</span>
-                                    <span>Товар</span>
+                                    <span>{t('Товар')}</span>
                                 </Col>
-                                <Col xs={2}>Количество</Col>
-                                <Col xs={2}>Цена ({primaryCurrency})</Col>
-                                <Col xs={2}>Сумма ({primaryCurrency})</Col>
-                                <Col xs={2}>Скидка ({primaryCurrency})</Col>
+                                <Col xs={2}>{t('Количество')}</Col>
+                                <Col xs={2}>{t('Цена')} ({primaryCurrency})</Col>
+                                <Col xs={2}>{t('Сумма')} ({primaryCurrency})</Col>
+                                <Col xs={2}>{t('Скидка')} ({primaryCurrency})</Col>
                             </Row>
 
                             {_.map(products, (item, index) => {
@@ -183,7 +188,7 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                 const isBonus = _.get(item, 'isBonus')
                                 const measurement = _.get(product, ['measurement', 'name'])
                                 const discount = numberFormat(_.toNumber(_.get(item, 'discountPrice')) * _.toNumber(amount))
-                                const tooltipText = 'Количество возврата'
+                                const tooltipText = t('Количество возврата')
                                 if (type === firstType) {
                                     commonMeasurement = true
                                 }
@@ -193,14 +198,15 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                         <Col xs={4}>
                                             <span style={{marginRight: 10, fontWeight: 600}}>{index + ONE}</span>
                                             <span>{productName} {stock ? <strong>({stock})</strong> : null}
-                                            {isBonus && <strong className="greenFont"> (бонус)</strong>}</span>
+                                            {isBonus && <strong className="greenFont"> ({t('бонус')})</strong>}</span>
                                         </Col>
                                         <Col xs={2}>
-                                            {numberFormat(amount)}&nbsp;
+                                            {numberFormat(amount)}
                                             {(returnAmount > ZERO) &&
-                                            <span className="redFont">
+                                            <strong className={classes.returnAmount}>
                                                 <ToolTip position="bottom" text={tooltipText}>-{returnAmount}</ToolTip>
-                                            </span>} {measurement}
+                                            </strong>}
+                                            {measurement}
                                         </Col>
                                         <Col xs={2}>{numberFormat(price)}</Col>
                                         <Col xs={2}>{numberFormat(productTotal)}</Col>
@@ -210,9 +216,16 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                             })}
                         </div>
                         <Row className={classes.summary}>
-                            <Col xs={4}>{commonMeasurement ? <span>Итого:</span> : <span>Общая сумма {primaryCurrency}</span>}</Col>
+                            <Col xs={4}>{commonMeasurement
+                                ? <span>{t('Итого')}:</span>
+                                : <span>{t('Общая сумма')} {primaryCurrency}</span>}
+                            </Col>
                             {commonMeasurement
-                                ? <Col xs={2}>{(wholeAmount > ZERO) && <span>{numberFormat(wholeAmount, firstMeasurement)}</span>}</Col>
+                                ? <Col xs={2}>
+                                    {wholeAmount > ZERO && <span>{numberFormat(wholeAmount)}</span>}
+                                    {wholeReturnAmount > ZERO && <span className={classes.returnAmount}><div>-{wholeReturnAmount}</div></span>}
+                                    {firstMeasurement}
+                                </Col>
                                 : <Col xs={2}/>}
                             <Col xs={2}> </Col>
                             <Col xs={2}>{numberFormat(totalProductPrice)}</Col>
@@ -222,7 +235,7 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                 </Tab>
 
                 <Tab
-                    label="Возврат"
+                    label={t('Возврат')}
                     buttonStyle={tabStyle.button}
                     value={TAB.ORDER_TAB_RETURN}
                     disableTouchRipple={true}>
@@ -230,10 +243,10 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                         ? <div className={classes.tabContent}>
                             {!returnDataLoading ? <div className={classes.tabWrapper}>
                                 <Row className="dottedList">
-                                    <Col xs={3} style={{textAlign: 'left'}}>Причина возврата</Col>
-                                    <Col xs={3} style={{textAlign: 'left'}}>Склад</Col>
-                                    <Col xs={2}>Дата возврата</Col>
-                                    <Col xs={3}>Сумма ({primaryCurrency})</Col>
+                                    <Col xs={3} style={{textAlign: 'left'}}>{t('Причина возврата')}</Col>
+                                    <Col xs={3} style={{textAlign: 'left'}}>{t('Склад')}</Col>
+                                    <Col xs={2}>{t('Дата возврата')}</Col>
+                                    <Col xs={3}>{t('Сумма')} ({primaryCurrency})</Col>
                                 </Row>
                                 {_.map(returnData, (item, index) => {
                                     const returnId = _.get(item, 'id')
@@ -268,7 +281,7 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                             }
                         </div>
                         : (!returnDataLoading && <div className={classes.emptyQuery}>
-                            <div>В данном заказе нет возвратов</div>
+                            <div>{t('В данном заказе нет возвратов')}</div>
                         </div>)}
                 </Tab>
             </Tabs>
@@ -285,7 +298,7 @@ OrderDetailsRightSideTabs.propTypes = {
     data: PropTypes.object.isRequired,
     returnData: PropTypes.array,
     returnDataLoading: PropTypes.bool,
-    cancelOrderReturnOpen: PropTypes.func.isRequired
+    cancelOrderReturnOpen: PropTypes.func
 }
 
 export default OrderDetailsRightSideTabs

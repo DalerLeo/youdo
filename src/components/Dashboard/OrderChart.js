@@ -23,19 +23,16 @@ const OrderChart = enhance((props) => {
         tooltipTitle,
         cashValues,
         bankValues,
-        primaryText,
-        secondaryText,
+        cashText,
+        bankText,
         height
     } = props
 
-    const tooltipDate = _.map(tooltipTitle, (item) => {
-        return dateFormat(item)
-    })
-
+    const tooltipDate = _.map(tooltipTitle, (item) => dateFormat(item))
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const config = {
         chart: {
-            type: 'column',
+            type: 'area',
             height: height
         },
         title: {
@@ -45,7 +42,14 @@ const OrderChart = enhance((props) => {
             }
         },
         legend: {
-            enabled: false
+            enabled: true,
+            itemStyle: {
+                fontWeight: 600,
+                fontFamily: 'Open Sans',
+                fontSize: 11
+            },
+            symbolHeight: 9,
+            symbolWidth: 9
         },
         credits: {
             enabled: false
@@ -75,14 +79,15 @@ const OrderChart = enhance((props) => {
         },
         plotOptions: {
             series: {
-                lineWidth: 0
+                lineWidth: 0,
+                pointPlacement: 'on'
             },
-            column: {
-                borderRadius: 2,
+            area: {
                 stacking: 'normal'
             }
         },
         tooltip: {
+            shared: true,
             valueSuffix: ' ' + primaryCurrency,
             backgroundColor: '#fff',
             style: {
@@ -92,20 +97,25 @@ const OrderChart = enhance((props) => {
             },
             borderRadius: 0,
             borderWidth: 0,
-            headerFormat: '<b>{point.x}</b><br/>',
-            pointFormat: '{series.name}: {point.y}<br/>Сумма: {point.stackTotal}'
+            headerFormat: '<b>{point.x}</b><br/>'
         },
-        series: [{
-            name: primaryText,
-            data: cashValues,
-            color: '#12aaeb'
-
-        },
-        {
-            name: secondaryText,
-            data: bankValues,
-            color: '#5d6474'
-        }]
+        series: [
+            {
+                marker: {
+                    enabled: false
+                },
+                name: cashText,
+                data: cashValues,
+                color: '#12aaeb'
+            },
+            {
+                marker: {
+                    enabled: false
+                },
+                name: bankText,
+                data: bankValues,
+                color: '#5d6474'
+            }]
     }
 
     return (
@@ -117,7 +127,8 @@ OrderChart.propTypes = {
     tooltipTitle: PropTypes.any.isRequired,
     cashValues: PropTypes.array.isRequired,
     bankValues: PropTypes.array.isRequired,
-    primaryText: PropTypes.string.isRequired,
+    cashText: PropTypes.string.isRequired,
+    bankText: PropTypes.string.isRequired,
     height: PropTypes.number.isRequired
 }
 

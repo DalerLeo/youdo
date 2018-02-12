@@ -45,7 +45,14 @@ const FinanceChart = enhance((props) => {
             }
         },
         legend: {
-            enabled: false
+            enabled: true,
+            itemStyle: {
+                fontWeight: 600,
+                fontFamily: 'Open Sans',
+                fontSize: 11
+            },
+            symbolHeight: 9,
+            symbolWidth: 9
         },
         credits: {
             enabled: false
@@ -98,16 +105,11 @@ const FinanceChart = enhance((props) => {
             shadow: true,
             useHTML: true,
             crosshairs: true,
-            headerFormat: '<b>{point.x}</b><br/>',
-            pointFormat:
-            '<div class="diagramToolTip">' +
-            '{series.name}: {point.y}' +
-            '</div>'
+            headerFormat: '<b>{point.x}</b><br/>'
         },
         series: [{
             marker: {
-                enabled: false,
-                symbol: 'circle'
+                enabled: false
             },
             name: primaryText,
             data: primaryValues,
@@ -116,8 +118,7 @@ const FinanceChart = enhance((props) => {
         },
         {
             marker: {
-                enabled: false,
-                symbol: 'circle'
+                enabled: false
             },
             name: secondaryText,
             data: secondaryValues,

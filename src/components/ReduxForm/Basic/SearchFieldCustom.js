@@ -132,7 +132,7 @@ const enhance = compose(
     }, (props) => {
         const {state, input, getItem, dispatch, getText, getValue, addProduct} = props
         const finder = _.find(state.dataSource, {'value': input.value.value})
-        // Add product flag is for SearchFields of CREATE_DIALOGS whic does not have initial Values
+        // Add product flag is for SearchFields of CREATE_DIALOGS which does not have initial Values
         if (_.isEmpty(finder) && input.value.value && !addProduct) {
             getItem(input.value.value).then((data) => {
                 if (!_.isEmpty(data)) {

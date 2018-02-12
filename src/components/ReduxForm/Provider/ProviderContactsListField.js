@@ -6,6 +6,7 @@ import ContentRemove from 'material-ui/svg-icons/content/remove'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import {Field} from 'redux-form'
 import TextField from '../Basic/TextField'
+import t from '../../../helpers/translate'
 
 /**
  * {['contacts', 'contactName', 'email', 'phoneNumber']}
@@ -90,7 +91,7 @@ const ProviderContactsListField = ({classes, fields}) => {
                         </div>
                         <div >
                             <Field
-                                label="Контактное лицо"
+                                label={t('Контактное лицо')}
                                 name={`${contact}.name`}
                                 component={TextField}
                                 className={classes.inputFieldCustom}
@@ -107,7 +108,7 @@ const ProviderContactsListField = ({classes, fields}) => {
                                 />
 
                                 <Field
-                                    label="Телефон номер"
+                                    label={t('Телефон номер')}
                                     name={`${contact}.phone`}
                                     component={TextField}
                                     className={classes.inputFieldCustom}

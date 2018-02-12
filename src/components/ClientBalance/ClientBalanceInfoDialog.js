@@ -320,7 +320,7 @@ const ClientBalanceInfoDialog = enhance((props) => {
                         <div className={amount > ZERO ? classes.green : amount < ZERO ? classes.red : ''} style={{display: 'flex', justifyContent: 'flex-end'}}>
                             {numberFormat(amount, currency)}
                             <div style={{marginLeft: '10px'}}>
-                                <ToolTip position="bottom" text={paymentType === 'bank' ? 'банковский счет' : 'наличные'}>
+                                <ToolTip position="bottom" text={paymentType === 'bank' ? t('банковский счет') : t('наличные')}>
                                     {paymentType === 'bank'
                                         ? <BankPayment style={{height: '18px', width: '18px', color: '#6261b0'}}/>
                                         : <CashPayment style={{height: '18px', width: '18px', color: '#12aaeb'}}/>}
@@ -362,7 +362,7 @@ const ClientBalanceInfoDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>Информация по балансу клиента {name}</span>
+                <span>{t('Информация по балансу клиента')} {name}</span>
                 <IconButton
                     iconStyle={iconStyle.icon}
                     style={iconStyle.button}
@@ -412,12 +412,12 @@ const ClientBalanceInfoDialog = enhance((props) => {
                                             <div className={classes.divisionTitle}>{division}</div>
                                             {!_.isEmpty(cash) &&
                                             <div className={classes.paymentType}>
-                                                <i>Наличными:</i>
+                                                <i>{t('Наличными')}:</i>
                                                 {cash}
                                             </div>}
                                             {!_.isEmpty(bank) &&
                                             <div className={classes.paymentType}>
-                                                <i>Перечислением:</i>
+                                                <i>{t('Перечислением')}:</i>
                                                 {bank}
                                             </div>}
                                         </div>
@@ -429,15 +429,15 @@ const ClientBalanceInfoDialog = enhance((props) => {
                         <Field
                             name={'division'}
                             component={DivisionSearchField}
-                            label={'Организация'}/>
+                            label={t('Организация')}/>
                         <Field
                             name={'currency'}
                             component={CurrencySearchField}
-                            label={'Валюта'}/>
+                            label={t('Валюта')}/>
                         <Field
-                            name={'paymentType'}
+                            name={t('paymentType')}
                             component={PaymentTypeSearchField}
-                            label={'Тип оплаты'}/>
+                            label={t('Тип оплаты')}/>
                         <Pagination filter={filterItem}/>
                     </div>
                     <div className={classes.content}>

@@ -8,6 +8,7 @@ import {Field} from 'redux-form'
 import TextField from '../Basic/TextField'
 import IconButton from 'material-ui/IconButton'
 import ToolTip from '../../ToolTip'
+import t from '../../../helpers/translate'
 
 /**
  * {['contacts', 'contactName', 'email', 'phoneNumber']}
@@ -98,14 +99,14 @@ const MarketPhoneListField = (props) => {
                         <div>
                             <div className={classes.flex}>
                                 <Field
-                                    label="Номер телефона"
+                                    label={t('Номер телефона')}
                                     name={`${phone}.phone`}
                                     component={TextField}
                                     className={classes.inputFieldCustom}
                                 />
                             </div>
                         </div>
-                        <ToolTip position="bottom" text={fields.length !== index + ONE ? 'Убрать' : 'Добавить еще'}>
+                        <ToolTip position="bottom" text={fields.length !== index + ONE ? t('Убрать') : t('Добавить еще')}>
                             <IconButton
                                 onTouchTap={() => handleTouchTap(index)}
                                 iconStyle={iconStyle.icon}

@@ -177,7 +177,7 @@ const TelegramFilterForm = enhance((props) => {
         <div>
             <Paper className={classes.wrapper} zDepth={2}>
                 <div className={classes.header}>
-                    <span className={classes.title}>Фильтр</span>
+                    <span className={classes.title}>{t('Фильтр')}</span>
                     <IconButton onTouchTap={filterDialog.handleCloseFilterDialog}>
                         <CloseIcon className={classes.icon} />
                     </IconButton>
@@ -187,7 +187,7 @@ const TelegramFilterForm = enhance((props) => {
                         className={classes.inputFieldCustom}
                         name="market"
                         component={MarketMultiSearchField}
-                        label={t('Магазина')}
+                        label={t('Магазин')}
                         fullWidth={true}/>
                     <Field
                         className={classes.inputFieldCustom}

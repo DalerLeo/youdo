@@ -168,7 +168,7 @@ const SupplyFilterForm = enhance((props) => {
         <div>
             <Paper className={classes.wrapper} zDepth={2}>
                 <div className={classes.header}>
-                    <span className={classes.title}>Фильтр</span>
+                    <span className={classes.title}>{t('Фильтр')}</span>
                     <IconButton onTouchTap={filterDialog.handleCloseFilterDialog}>
                         <CloseIcon className={classes.icon} />
                     </IconButton>
@@ -195,7 +195,7 @@ const SupplyFilterForm = enhance((props) => {
                         primary={true}
                         buttonStyle={{color: '#fff'}}
                         labelStyle={{fontSize: '13px'}}
-                        label="Применить"
+                        label={t('Применить')}
                         style={{marginTop: '15px'}}>
                     </RaisedButton>
                 </form>

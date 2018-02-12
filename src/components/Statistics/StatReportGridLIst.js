@@ -4,13 +4,14 @@ import React from 'react'
 import {Row} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import {reduxForm, Field} from 'redux-form'
+import {Field} from 'redux-form'
 import Loader from '../Loader'
 import StatSideMenu from './StatSideMenu'
-import {DateToDateField} from '../ReduxForm'
+import {DateToDateField, DivisionMultiSearchField} from '../ReduxForm'
 import Container from '../Container'
 import * as ROUTES from '../../constants/routes'
 import numberFormat from '../../helpers/numberFormat'
+import moduleFormat from '../../helpers/moduleFormat'
 import getConfig from '../../helpers/getConfig'
 import {StatisticsFilterExcel} from '../Statistics'
 import t from '../../helpers/translate'
@@ -113,10 +114,6 @@ const enhance = compose(
                 marginTop: '0 !important'
             }
         }
-    }),
-    reduxForm({
-        form: 'StatReportFilterForm',
-        enableReinitialize: true
     })
 )
 
@@ -139,9 +136,11 @@ const StatReportGridList = enhance((props) => {
     const listLoading = _.get(listData, 'listLoading')
 
     const currency = getConfig('PRIMARY_CURRENCY')
+    const measurement = 'шт'
     const stockData = _.get(listData, ['data', 'stock'])
     const cashBoxesData = _.get(listData, ['data', 'cashboxes'])
-    const debtorsData = _.get(listData, ['data', 'debtors'])
+    const clientsDebtData = _.get(listData, ['data', 'debtors', 'clientsDebt'])
+    const providersDebtData = _.get(listData, ['data', 'debtors', 'providersDebt'])
     const salesData = _.get(listData, ['data', 'sales'])
     const transferData = _.get(listData, ['data', 'transfer'])
     const stock = (
@@ -150,27 +149,45 @@ const StatReportGridList = enhance((props) => {
             <ul>
                 <li>
                     <span>{t('Сумма товаров на начало периода')}</span>
-                    <span>{numberFormat(_.get(stockData, 'beginPriceSum'), currency)}</span>
+                    <div>
+                        <div>{moduleFormat(_.get(stockData, 'beginBalanceSum'), measurement)}</div>
+                        <div>{moduleFormat(_.get(stockData, 'beginPriceSum'), currency)}</div>
+                    </div>
                 </li>
                 <li>
                     <span>{t('Поступления на склад')}</span>
-                    <span>{numberFormat(_.get(stockData, 'inPriceSum'), currency)}</span>
+                    <div>
+                        <div>{moduleFormat(_.get(stockData, 'inBalanceSum'), measurement)}</div>
+                        <div>{moduleFormat(_.get(stockData, 'inPriceSum'), currency)}</div>
+                    </div>
                 </li>
                 <li>
                     <span>{t('Возврат за период')}</span>
-                    <span>{numberFormat(_.get(stockData, 'returnedSum'), currency)}</span>
+                    <div>
+                        <div>{moduleFormat(_.get(stockData, 'returnBalanceSum'), measurement)}</div>
+                        <div>{moduleFormat(_.get(stockData, 'returnPriceSum'), currency)}</div>
+                    </div>
                 </li>
                 <li>
                     <span>{t('Выдано по заказам')}</span>
-                    <span>{numberFormat(_.get(stockData, 'outPriceSum'), currency)}</span>
+                    <div>
+                        <div>{moduleFormat(_.get(stockData, 'outBalanceSum'), measurement)}</div>
+                        <div>{moduleFormat(_.get(stockData, 'outPriceSum'), currency)}</div>
+                    </div>
                 </li>
                 <li>
                     <span>{t('Списано со склада')}</span>
-                    <span>{numberFormat(_.get(stockData, 'writeoffSum'), currency)}</span>
+                    <div>
+                        <div>{moduleFormat(_.get(stockData, 'writeoffBalanceSum'), measurement)}</div>
+                        <div>{moduleFormat(_.get(stockData, 'writeoffPriceSum'), currency)}</div>
+                    </div>
                 </li>
                 <li>
                     <span>{t('Сумма товаров на конец периода')}</span>
-                    <span>{numberFormat(_.get(stockData, 'endPriceSum'), currency)}</span>
+                    <div>
+                        <div>{moduleFormat(_.get(stockData, 'endBalanceSum'), measurement)}</div>
+                        <div>{moduleFormat(_.get(stockData, 'endPriceSum'), currency)}</div>
+                    </div>
                 </li>
             </ul>
         </div>
@@ -185,7 +202,15 @@ const StatReportGridList = enhance((props) => {
                     <span>{numberFormat(_.get(salesData, 'salesSum'), currency)}</span>
                 </li>
                 <li>
-                    <span>{t('Себестоимость товара')}</span>
+                    <span>{t('Сумма возвратов')}</span>
+                    <span>{numberFormat(_.get(salesData, 'returnSum'), currency)}</span>
+                </li>
+                <li>
+                    <span>{t('Фактическая сумма продаж')}</span>
+                    <span>{numberFormat(_.get(salesData, 'factSum'), currency)}</span>
+                </li>
+                <li>
+                    <span dangerouslySetInnerHTML={{__html: t('Себестоимость фактически<br/> проданных товаров')}}/>
                     <span>{numberFormat(_.get(salesData, 'netCost'), currency)}</span>
                 </li>
                 <li>
@@ -205,8 +230,8 @@ const StatReportGridList = enhance((props) => {
             <span>{t('Доходы / Расходы')}</span>
             <ul>
                 <li>
-                    <span>{t('Доход от продаж')}</span>
-                    <span>{numberFormat(_.get(transferData, 'salesSum'), currency)}</span>
+                    <span>{t('Прибыль от продаж')}</span>
+                    <span>{numberFormat(_.get(transferData, 'salesProfit'), currency)}</span>
                 </li>
                 <li>
                     <span>{t('Списанные товары')}</span>
@@ -226,31 +251,31 @@ const StatReportGridList = enhance((props) => {
 
     const cashboxReports = (
         <div className={classes.block}>
-            <span>Отчет по кассам</span>
+            <span>{t('Отчет по кассам')}</span>
             <ul>
                 <li>
-                    <span>Баланс <br/> на начало периода</span>
+                    <span dangerouslySetInnerHTML={{__html: t('Баланс <br/> на начало периода')}}/>
                     <div>
                         <span>{numberFormat(_.get(cashBoxesData, ['startBalance', 'cash']), currency)}</span>
                         <span>{numberFormat(_.get(cashBoxesData, ['startBalance', 'bank']), currency)}</span>
                     </div>
                 </li>
                 <li>
-                    <span>Поступления</span>
+                    <span>{t('Поступления')}</span>
                     <div>
                         <span>{numberFormat(_.get(cashBoxesData, ['income', 'cash']), currency)}</span>
                         <span>{numberFormat(_.get(cashBoxesData, ['income', 'bank']), currency)}</span>
                     </div>
                 </li>
                 <li>
-                    <span>Списания</span>
+                    <span>{t('Списания')}</span>
                     <div>
                         <span>{numberFormat(_.get(cashBoxesData, ['expenses', 'cash']), currency)}</span>
                         <span>{numberFormat(_.get(cashBoxesData, ['expenses', 'bank']), currency)}</span>
                     </div>
                 </li>
                 <li>
-                    <span>Баланс <br/> на конец периода</span>
+                    <span dangerouslySetInnerHTML={{__html: t('Баланс <br/> на конец периода')}}></span>
                     <div>
                         <span>{numberFormat(_.get(cashBoxesData, ['endBalance', 'cash']), currency)}</span>
                         <span>{numberFormat(_.get(cashBoxesData, ['endBalance', 'bank']), currency)}</span>
@@ -260,29 +285,69 @@ const StatReportGridList = enhance((props) => {
         </div>
     )
 
-    const debtors = (
+    const clientDebtors = (
         <div className={classes.block}>
-            <span>Задолжности</span>
+            <span>{t('Задолжности')} ({t('клиенты')})</span>
             <ul>
                 <li>
-                    <span>Задолжности клиентов</span>
-                    <span>{numberFormat(_.get(debtorsData, 'debtsSum'), currency)}</span>
+                    <span>{t('Задолжники нал')}.  ({_.get(clientsDebtData, 'borrowersCountCash')})</span>
+                    <span>{moduleFormat(_.get(clientsDebtData, 'borrowersSumCash'), currency)}</span>
                 </li>
                 <li>
-                    <span>Задолжности фирмы</span>
-                    <span>{numberFormat(_.get(debtorsData, 'expectSum'), currency)}</span>
+                    <span>{t('Задолжники переч')}. ({_.get(clientsDebtData, 'borrowersCountBank')})</span>
+                    <span>{moduleFormat(_.get(clientsDebtData, 'borrowersSumBank'), currency)}</span>
+                </li>
+                <li>
+                    <span>{t('Закладчики нал.')}  ({_.get(clientsDebtData, 'loanersCountCash')})</span>
+                    <span>{moduleFormat(_.get(clientsDebtData, 'loanersSumCash'), currency)}</span>
+                </li>
+                <li>
+                    <span>{t('Закладчики переч.')} ({_.get(clientsDebtData, 'loanersCountBank')})</span>
+                    <span>{moduleFormat(_.get(clientsDebtData, 'loanersSumBank'), currency)}</span>
+                </li>
+            </ul>
+        </div>
+    )
+
+    const providerDebtors = (
+        <div className={classes.block}>
+            <span>{t('Задолжности')} ({t('поставщики')})</span>
+            <ul>
+                <li>
+                    <span>{t('Задолжники нал')}. ({_.get(providersDebtData, 'borrowersCountCash')})</span>
+                    <span>{moduleFormat(_.get(providersDebtData, 'borrowersSumCash'), currency)}</span>
+                </li>
+                <li>
+                    <span>{t('Задолжники переч')}. ({_.get(providersDebtData, 'borrowersCountBank')})</span>
+                    <span>{moduleFormat(_.get(providersDebtData, 'borrowersSumBank'), currency)}</span>
+                </li>
+                <li>
+                    <span>{t('Закладчики нал.')} ({_.get(providersDebtData, 'loanersCountCash')})</span>
+                    <span>{moduleFormat(_.get(providersDebtData, 'loanersSumCash'), currency)}</span>
+                </li>
+                <li>
+                    <span>{t('Закладчики переч.')} ({_.get(providersDebtData, 'loanersCountBank')})</span>
+                    <span>{moduleFormat(_.get(providersDebtData, 'loanersSumBank'), currency)}</span>
                 </li>
             </ul>
         </div>
     )
 
     const fields = (
-        <Field
-            className={classes.inputFieldCustom}
-            name="date"
-            component={DateToDateField}
-            label="Диапазон дат"
-            fullWidth={true}/>
+        <div>
+            <Field
+                className={classes.inputFieldCustom}
+                name="date"
+                component={DateToDateField}
+                label="Диапазон дат"
+                fullWidth={true}/>
+            <Field
+                className={classes.inputFieldCustom}
+                name="division"
+                component={DivisionMultiSearchField}
+                label={t('Организация')}
+                fullWidth={true}/>
+        </div>
     )
 
     const page = (
@@ -313,7 +378,8 @@ const StatReportGridList = enhance((props) => {
                                 </div>
                                 <div>
                                     {cashboxReports}
-                                    {debtors}
+                                    {clientDebtors}
+                                    {providerDebtors}
                                 </div>
                             </div>}
                     </div>

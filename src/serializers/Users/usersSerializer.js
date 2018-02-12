@@ -1,20 +1,22 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../../helpers/serializer'
+import toBoolean from '../../helpers/toBoolean'
+import getConfig from '../../helpers/getConfig'
+
+const multiStock = toBoolean(getConfig('MULTI_SELECT_STOCK'))
 
 export const createSerializer = (data) => {
     const singleStock = [_.get(data, 'radioStock')]
-    const singleStockCheck = _.get(data, 'radioStock')
     const username = _.get(data, 'username')
     const firstName = _.get(data, 'firstName')
     const secondName = _.get(data, 'secondName')
     const phoneNumber = _.get(data, 'phoneNumber')
-    const image = _.get(data, 'image')
+    const photo = _.get(data, 'image')
     const password = _.get(data, 'password')
     const isActive = _.get(data, 'isActive')
     const position = _.get(data, ['position', 'value'])
     const job = _.get(data, ['job', 'value'])
-    const stocks = _(data)
-        .get('stocks')
+    const stocks = _.get(data, 'stocks')
         .filter((item) => _.get(item, 'selected'))
         .map((item) => _.get(item, 'id'))
     const currencies = _(data)
@@ -39,12 +41,12 @@ export const createSerializer = (data) => {
         'first_name': firstName,
         'second_name': secondName,
         'phone_number': phoneNumber,
-        image,
+        photo,
         job,
         password,
         position,
         'is_active': isActive,
-        'stocks': singleStockCheck ? singleStock : stocks,
+        'stocks': multiStock ? stocks : singleStock,
         'price_lists': newMarket,
         currencies,
         divisions

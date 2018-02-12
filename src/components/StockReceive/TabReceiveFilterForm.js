@@ -11,10 +11,10 @@ import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import {
     DateToDateField,
-    StockMultiSearchField,
     StockReceiveTypeSearchFiled,
     UsersMultiSearchField
 } from '../ReduxForm'
+import OwnStocksSearchField from '../ReduxForm/Remainder/OwnStocksSearchField'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 import t from '../../helpers/translate'
@@ -153,7 +153,7 @@ const TabReceiveFilterForm = enhance((props) => {
         <div>
             <Paper className={classes.wrapper} zDepth={2}>
                 <div className={classes.header}>
-                    <span className={classes.title}>Фильтр</span>
+                    <span className={classes.title}>{t('Фильтр')}</span>
                     <IconButton onTouchTap={filterDialog.handleCloseFilterDialog}>
                         <CloseIcon className={classes.icon} />
                     </IconButton>
@@ -163,7 +163,7 @@ const TabReceiveFilterForm = enhance((props) => {
                         <Field
                             className={classes.inputFieldCustom}
                             name="stock"
-                            component={StockMultiSearchField}
+                            component={OwnStocksSearchField}
                             label={t('Склад')}
                             fullWidth={true}/>
                     </div>

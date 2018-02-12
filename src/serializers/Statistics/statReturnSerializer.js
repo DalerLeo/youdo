@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../../helpers/serializer'
+import toBoolean from '../../helpers/toBoolean'
 import moment from 'moment'
 
 const firstDayOfMonth = moment().format('YYYY-MM-01')
@@ -33,6 +34,7 @@ export const listFilterSerializer = (data) => {
 export const orderListFilterSerializer = (data, withOrderReturn) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
+    const excludeCanceled = toBoolean(_.get(defaultData, 'exclude')) ? null : 'True'
     return {
         'client': _.get(defaultData, 'client'),
         'division': _.get(defaultData, 'division'),
@@ -44,6 +46,7 @@ export const orderListFilterSerializer = (data, withOrderReturn) => {
         'created_date_1': _.get(defaultData, 'toDate') || lastDayOfMonth,
         'delivery_date_0': _.get(defaultData, 'deliveryFromDate'),
         'delivery_date_1': _.get(defaultData, 'deliveryToDate') || _.get(defaultData, 'deliveryFromDate'),
+        'exclude_cancelled': excludeCanceled ? 'True' : null,
         'search': _.get(defaultData, 'search'),
 
         'page': _.get(defaultData, 'page'),

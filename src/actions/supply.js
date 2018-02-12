@@ -144,3 +144,19 @@ export const supplySyncAction = (supplyId) => {
     }
 }
 
+export const supplyTransactionsAction = (supplyId) => {
+    const payload = axios()
+        .get(API.SUPPLY_TRANSACTIONS, {params: {supply: supplyId}})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.SUPPLY_TRANSACTIONS,
+        payload
+    }
+}
+

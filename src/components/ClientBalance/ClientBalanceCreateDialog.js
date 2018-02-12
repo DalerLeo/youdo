@@ -79,8 +79,8 @@ const ClientBalanceCreateDialog = enhance((props) => {
     const divisionStatus = getConfig('DIVISIONS')
 
     _.map(_.get(data, 'divisions'), (item) => {
-        balanceArr.push({amount: _.get(item, 'cash'), name: _.get(item, 'name'), type: 'нал.'})
-        balanceArr.push({amount: _.get(item, 'bank'), name: _.get(item, 'name'), type: 'переч.'})
+        balanceArr.push({amount: _.get(item, 'cash'), name: _.get(item, 'name'), type: t(' нал.')})
+        balanceArr.push({amount: _.get(item, 'bank'), name: _.get(item, 'name'), type: t(' переч.')})
     })
     const balanceInfo = _.map(balanceArr, (balance, index) => {
         const balanceName = _.get(balance, 'name')
@@ -101,7 +101,7 @@ const ClientBalanceCreateDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '500px'} : {width: '500px'}}
+            contentStyle={loading ? {width: '450px'} : {width: '500px'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
                 <span>{addDialog ? t('Добавить приход клиенту') : t('Добавить расход клиенту')}</span>

@@ -6,6 +6,7 @@ import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
 import numberFormat from '../../helpers/numberFormat'
 import dateFormat from '../../helpers/dateFormat'
+import t from '../../helpers/translate'
 import NotFound from '../Images/not-found.png'
 import LinearProgress from '../LinearProgress'
 
@@ -112,7 +113,7 @@ const InventoryDetails = enhance((props) => {
     const createdBy = _.get(detailData, ['data', 'createdBy', 'firstName']) + ' ' + _.get(detailData, ['data', 'createdBy', 'secondName'])
     const createdDate = dateFormat(_.get(detailData, ['data', 'createdDate']))
     const stock = _.get(detailData, ['data', 'stock', 'name'])
-    const comment = _.get(detailData, ['data', 'comment']) || 'Комментариев нет'
+    const comment = _.get(detailData, ['data', 'comment']) || t('Комментариев нет')
     const products = _.get(detailData, ['data', 'inventoryProducts'])
 
     if (isLoading) {
@@ -131,20 +132,20 @@ const InventoryDetails = enhance((props) => {
                 </div>
                 <div className={classes.content}>
                     <div className={classes.leftSide}>
-                        <div>Склад: <strong>{stock}</strong></div>
-                        <div>Дата создания: <strong>{createdDate}</strong></div>
-                        <div>Комментарий: <strong>{comment}</strong></div>
+                        <div>{t('Склад')}: <strong>{stock}</strong></div>
+                        <div>{t('Дата создания')}: <strong>{createdDate}</strong></div>
+                        <div>{t('Комментарий')}: <strong>{comment}</strong></div>
                     </div>
                     {_.isEmpty(_.get(detailData, ['data', 'inventoryProducts']))
                         ? <div className={classes.emptyQuery}>
-                            <div>Товаров не найдено</div>
+                            <div>{t('Товаров не найдено')}</div>
                         </div>
                         : <div className={classes.rightSide}>
                             <Row className={'dottedList'}>
-                                <Col xs={3}>Наименование</Col>
-                                <Col xs={3}>Баланс (до)</Col>
-                                <Col xs={3}>Баланс (после)</Col>
-                                <Col xs={3}>Разница</Col>
+                                <Col xs={3}>{t('Наименование')}</Col>
+                                <Col xs={3}>{t('Баланс (до)')}</Col>
+                                <Col xs={3}>{t('Баланс (после)')}</Col>
+                                <Col xs={3}>{t('Разница')}</Col>
                             </Row>
                             {_.map(products, (item) => {
                                 const id = _.get(item, 'id')

@@ -22,9 +22,9 @@ import {connect} from 'react-redux'
 import {
     TextField,
     ProductTypeSearchField,
-    StockSearchField,
     normalizeNumber
 } from '../ReduxForm'
+import OwnStocksSearchField from '../ReduxForm/Remainder/OwnStocksSearchField'
 import InventoryOverallDialog from './InventoryOverallDialog'
 import t from '../../helpers/translate'
 
@@ -408,12 +408,12 @@ const InventoryDialog = enhance((props) => {
             {stockChooseDialog && !stock &&
             <div className={classes.confirm}>
                 <Paper zDepth={2} className={classes.confirmContent}>
-                    <header>Выберите склад</header>
+                    <header>{t('Выберите склад')}</header>
                     <div className={classes.fields}>
                         <Field
                             name={'stock'}
                             label={t('Выберите склад')}
-                            component={StockSearchField}
+                            component={OwnStocksSearchField}
                             fullWidth={true}/>
                     </div>
                     <div className={classes.buttons}>

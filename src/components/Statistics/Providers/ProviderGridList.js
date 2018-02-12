@@ -53,11 +53,9 @@ const types = {
 const enhance = compose(
     injectSheet({
         loader: {
-            position: 'absolute',
-            top: '0',
-            left: '-30px',
-            right: '-30px',
-            bottom: '0',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
             padding: '100px 0',
             background: '#fff',
             zIndex: '30'
@@ -97,6 +95,13 @@ const enhance = compose(
                 overflowX: 'auto',
                 overflowY: 'hidden'
             }
+        },
+        tableWrapperLoading: {
+            display: 'block',
+            overflow: 'hidden',
+            marginLeft: '-30px',
+            'padding-left': ({stat}) => stat ? '0' : '30px',
+            'margin-right': ({stat}) => stat ? '-30px' : 'unset'
         },
         leftTable: {
             color: '#666',
@@ -281,14 +286,9 @@ const enhance = compose(
             }
         },
         emptyQuery: {
-            position: 'absolute',
-            top: '0',
-            left: '0',
-            right: '0',
-            bottom: '0',
             background: '#fff url(' + NotFound + ') no-repeat center 20px',
             backgroundSize: '200px',
-            padding: '160px 0 0',
+            padding: '160px 0 20px',
             textAlign: 'center',
             fontSize: '13px',
             color: '#666',
@@ -477,7 +477,7 @@ const StatProviderGridList = enhance((props) => {
             : <ArrowDownIcon className={classes.icon}/>
     const providers = (
         <div className={classes.leftTable}>
-            <div><span>Поставщик</span></div>
+            <div><span>{t('Поставщик')}</span></div>
             {_.map(_.get(listData, 'data'), (item) => {
                 const id = _.get(item, 'id')
                 const name = _.get(item, 'name')
@@ -509,7 +509,7 @@ const StatProviderGridList = enhance((props) => {
         <div>
             <Field
                 className={classes.inputFieldCustom}
-                name="date"
+                name="createdDate"
                 component={DateToDateField}
                 label={t('Диапазон дат')}
                 fullWidth={true}/>
@@ -717,14 +717,16 @@ const StatProviderGridList = enhance((props) => {
             {listLoading && <div className={classes.loader}>
                 <Loader size={0.75}/>
             </div>}
-            <div className={classes.tableWrapper}>
-                {providers}
+            <div className={(listLoading || emptyData)
+                    ? classes.tableWrapperLoading
+                    : classes.tableWrapper}>
+                {!(emptyData || listLoading) && providers}
                 {emptyData && !listLoading &&
                 <div className={classes.emptyQuery}>
                     <div>{t('По вашему запросу ничего не найдено')}</div>
                 </div>}
                 <div ref="horizontalTable">
-                    {tableList}
+                    {!(emptyData || listLoading) && tableList}
                 </div>
             </div>
         </div>
@@ -744,6 +746,7 @@ const StatProviderGridList = enhance((props) => {
                             fields={fields}
                             filterKeys={STAT_PROVIDER_FILTER_KEY}
                             initialValues={initialValues}
+                            withoutDate={true}
                             handleSubmitFilterDialog={handleSubmitFilterDialog}
                             handleGetDocument={getDocument.handleGetDocument}
                         />

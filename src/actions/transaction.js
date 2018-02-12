@@ -84,8 +84,8 @@ export const pendingTransactionFetchAction = (filter) => {
     }
 }
 
-export const transactionCreateSendAction = (formValues, cashboxId, withPersent) => {
-    const requestData = serializers.createSendSerializer(formValues, cashboxId, withPersent)
+export const transactionCreateSendAction = (formValues, cashboxId, withPersent, defaultCurrency, sameCurType) => {
+    const requestData = serializers.createSendSerializer(formValues, cashboxId, withPersent, defaultCurrency, sameCurType)
     const payload = axios()
         .post(API.TRANSACTION_SEND, requestData)
         .then((response) => {
@@ -324,6 +324,22 @@ export const transactionDetalizationAction = (id) => {
 
     return {
         type: actionTypes.TRANSACTION_DETALIZATION_LIST,
+        payload
+    }
+}
+
+export const optionsListFetchAction = () => {
+    const payload = axios()
+        .get(API.OPTIONS_LIST, {params: {page_size: 100}})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.OPTIONS_LIST,
         payload
     }
 }

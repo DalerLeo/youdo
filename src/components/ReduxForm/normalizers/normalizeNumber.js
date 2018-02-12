@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import numberWithoutSpaces from '../../../helpers/numberWithoutSpaces'
 
-const normalizeNumber = value => {
+const normalizeNumber = (value) => {
     const numberValue = _.toNumber(numberWithoutSpaces(value))
     if (!value) {
         return value

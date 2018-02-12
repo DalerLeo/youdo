@@ -227,12 +227,14 @@ const filter = (data, pathname, query = {}, newKeys = {}) => {
     }
 
     const filterBy = (newParams) => {
+        const notNullParams = _.omitBy(newParams, (item) => {
+            return _.isNull(item) || item === ''
+        })
         hashHistory.push({
             pathname,
             query: {
-                ...params,
                 page: first,
-                ...newParams
+                ...notNullParams
             }
         })
     }

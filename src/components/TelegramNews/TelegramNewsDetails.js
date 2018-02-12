@@ -9,6 +9,7 @@ import IconButton from 'material-ui/IconButton'
 import Delete from 'material-ui/svg-icons/action/delete'
 import ToolTip from '../ToolTip'
 import dateFormat from '../../helpers/dateFormat'
+import t from '../../helpers/translate'
 
 const colorBlue = '#12aaeb !important'
 const enhance = compose(
@@ -131,7 +132,7 @@ const TelegramNewsDetails = enhance((props) => {
                 <div className={classes.titleLabel}>{title}</div>
                 <div className={classes.closeDetail} onClick={handleCloseDetail}/>
                 <div className={classes.titleButtons}>
-                    <ToolTip position="bottom" text="Изменить">
+                    <ToolTip position="bottom" text={t('Изменить')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
@@ -140,7 +141,7 @@ const TelegramNewsDetails = enhance((props) => {
                             <Edit />
                         </IconButton>
                     </ToolTip>
-                    <ToolTip position="bottom" text="Удалить">
+                    <ToolTip position="bottom" text={t('Удалить')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
@@ -154,9 +155,9 @@ const TelegramNewsDetails = enhance((props) => {
             <div className={classes.container}>
                 <div className={classes.info}>
                     <ul>
-                        <li>Описание: <span>{description}</span></li>
-                        <li>Дата создания: <span>{createdDate}</span></li>
-                        <li>Дата редактирования: <span>{modifiedDate}</span></li>
+                        <li>{t('Описание')}: <span>{description}</span></li>
+                        <li>{t('Дата создания')}: <span>{createdDate}</span></li>
+                        <li>{t('Дата редактирования')}: <span>{modifiedDate}</span></li>
                     </ul>
                 </div>
                 <div className={classes.content}>{content}</div>

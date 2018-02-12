@@ -90,7 +90,7 @@ export const incomeCategoryItemFetchAction = (id) => {
 
 export const optionsListFetchAction = () => {
     const payload = axios()
-        .get(API.OPTIONS_LIST, {params: {page_size: 100}})
+        .get(API.OPTIONS_LIST, {params: {page_size: 100, use: 'income'}})
         .then((response) => {
             return _.get(response, 'data')
         })

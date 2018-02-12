@@ -9,6 +9,7 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import Dot from 'material-ui/svg-icons/av/fiber-manual-record'
 import MarketImage from '../Images/no-shop.svg'
 import dateFormat from '../../helpers/dateFormat'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -102,14 +103,14 @@ const TrackingShopDetails = enhance((props) => {
     const isActive = _.get(data, 'isActive')
     const client = _.get(data, ['client', 'name'])
     const contactName = _.get(data, 'contactName')
-    const phone = _.get(data, 'phone')
+    const phone = _.get(data, 'phone') || t('Не указан')
     const address = _.get(data, 'address')
     const guide = _.get(data, 'guide')
     const border = _.get(data, ['border', 'title'])
     const createdDate = dateFormat(_.get(data, ['createdDate']))
     const createdBy = _.get(data, 'createdBy')
         ? _.get(data, ['createdBy', 'firstName']) + ' ' + _.get(data, ['createdBy', 'secondName'])
-        : 'Неизвестно'
+        : t('Неизвестно')
 
     const freq = _.get(data, 'visitFrequency')
     const EVERY_DAY = '1'
@@ -152,51 +153,55 @@ const TrackingShopDetails = enhance((props) => {
                     ? image
                     : <div className={classes.image + ' ' + classes.opacity}>{null}</div>}
                 <div className={classes.block}>
-                    <div className={classes.subtitle}>Детали</div>
+                    <div className={classes.subtitle}>{t('Детали')}</div>
                     <div>
-                        <span>Клиент:</span>
+                        <span>{t('Клиент')}:</span>
                         <span>{client}</span>
                     </div>
                     <div>
-                        <span>Тип заведения:</span>
+                        <span>{t('Тип заведения')}:</span>
                         <span>{marketType}</span>
                     </div>
                     <div>
-                        <span>Частота посещений:</span>
+                        <span>{t('Частота посещений')}:</span>
                         <span>{
-                        freq === EVERY_DAY ? 'Каждый день' : (
-                            freq === ONCE_IN_A_WEEK ? 'Раз в неделю' : (
-                                freq === TWICE_IN_A_WEEK ? '2 раза в неделю' : (
-                                    freq === IN_A_DAY ? 'Через день' : ''
+                        freq === EVERY_DAY ? t('Каждый день') : (
+                            freq === ONCE_IN_A_WEEK ? t('Раз в неделю') : (
+                                freq === TWICE_IN_A_WEEK ? t('2 раза в неделю') : (
+                                    freq === IN_A_DAY ? t('Через день') : ''
                                 )
                             )
                         )}</span>
                     </div>
                     <div>
-                        <span>Создал:</span>
+                        <span>{t('Создал')}:</span>
                         <span>{createdBy}</span>
                     </div>
                     <div>
-                        <span>Дата:</span>
+                        <span>{t('Дата')}:</span>
                         <span>{createdDate}</span>
                     </div>
                     <div>
-                        <span>Зона:</span>
+                        <span>{t('Зона')}:</span>
                         <span>{border}</span>
                     </div>
                 </div>
                 <div className={classes.block}>
-                    <div className={classes.subtitle}>Контакты</div>
+                    <div className={classes.subtitle}>{t('Контакты')}</div>
                     <div>
+                        <span>{t('Имя')}:</span>
                         <span>{contactName}</span>
+                    </div>
+                    <div>
+                        <span>{t('Телефон')}:</span>
                         <span>{phone}</span>
                     </div>
                     <div>
-                        <span>Адрес:</span>
+                        <span>{t('Адрес')}:</span>
                         <span>{address}</span>
                     </div>
                     <div>
-                        <span>Ориентир:</span>
+                        <span>{t('Ориентир')}:</span>
                         <span>{guide}</span>
                     </div>
                 </div>

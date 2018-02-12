@@ -372,7 +372,6 @@ const UsersList = enhance((props) => {
                     isActive: true
                 }
             }
-
             return {
                 username: _.get(detail, 'username'),
                 firstName: _.get(detail, 'firstName'),

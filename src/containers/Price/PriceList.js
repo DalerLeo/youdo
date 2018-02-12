@@ -96,6 +96,9 @@ const enhance = compose(
     withState('currencyChooseDialog', 'setCurrencyChooseDialog', true),
     withPropsOnChange((props, nextProps) => {
         const except = {
+            openSetPrice: null,
+            pdCurrency: null,
+            pdSearch: null,
             openPriceSetDefault: null
         }
         return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
@@ -155,7 +158,7 @@ const enhance = compose(
             filter.filterBy({
                 [PRICE_FILTER_OPEN]: false,
                 [PRICE_FILTER_KEY.TYPE_PARENT]: typeParent,
-                [PRICE_FILTER_KEY.TYPE_CHILD]: typeChild,
+                [PRICE_FILTER_KEY.TYPE_CHILD]: typeParent && typeChild,
                 [PRICE_FILTER_KEY.MEASUREMENT]: _.join(measurement, '-'),
                 [PRICE_FILTER_KEY.WITHOUT_NET_COST]: withoutNetCost
             })

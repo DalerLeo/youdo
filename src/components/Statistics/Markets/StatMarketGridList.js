@@ -419,6 +419,7 @@ const enhance = compose(
             '& > span': {
                 display: 'flex !important',
                 alignItems: 'center',
+                minHeight: '39px',
                 justifyContent: 'space-between',
                 height: '100%'
             }
@@ -656,7 +657,7 @@ const StatMarketGridList = enhance((props) => {
                             </div>}
                         <div className={expandedTable ? classes.expandedTable : ''}>
                             <div className={classes.pagination}>
-                                <div>{isMarket ? t('Продажи по магазинам в зоне') : t('Продажи по типам магазинов в зоне')}</div>
+                                <div>{isMarket ? t('Продажи по магазинам') : t('Продажи по типам магазинов')}</div>
                                 <form onSubmit={handleSubmit(handleSubmitFilterDialog)}>
                                     <Field
                                         className={classes.inputFieldCustom}
@@ -692,11 +693,11 @@ const StatMarketGridList = enhance((props) => {
                                 <div className={classes.flexCenter + ' ' + classes.flexSpaceBetween}>
                                     {isMarketType && currentParent &&
                                     <div className={classes.filtered}>
-                                        Отфильтровано по: <strong>{currentParent}</strong>
+                                        {t('Отфильтровано по')}: <strong>{currentParent}</strong>
                                         <a onClick={() => {
                                             updateCurrentParent(null)
                                             handleResetChilds()
-                                        }}>Сбросить фильтр</a>
+                                        }}>{t('Сбросить фильтр')}</a>
                                     </div>}
                                     <div className={classes.toggleWrapper} style={currentParent ? {width: 'auto'} : {width: '100%'}}>
                                     <ToolTip position="left" text="Показать по магазинам">

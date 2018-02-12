@@ -1,4 +1,3 @@
-import moment from 'moment'
 import PropTypes from 'prop-types'
 import React from 'react'
 import _ from 'lodash'
@@ -14,6 +13,7 @@ import StatSideMenu from '../StatSideMenu'
 import Pagination from '../../GridList/GridListNavPagination'
 import OrderStatusIcons from '../../Order/OrderStatusIcons'
 import numberFormat from '../../../helpers/numberFormat'
+import dateTimeFormat from '../../../helpers/dateTimeFormat'
 import StatSaleDialog from './SalesDialog'
 import SalesInfoDialog from './SalesInfoDialog'
 import {StatisticsFilterExcel, StatisticsChart} from '../../Statistics'
@@ -35,7 +35,7 @@ import {
 } from '../../ReduxForm'
 import t from '../../../helpers/translate'
 import {
-    CANCELLED
+    ORDER_CANCELED
 } from '../../../constants/backendConstants'
 
 export const STAT_SALES_FILTER_KEY = {
@@ -262,7 +262,8 @@ const StatSalesGridList = enhance((props) => {
         setSalesInfoDialog,
         hasMarket,
         downloadDocuments,
-        statsData
+        statsData,
+        tabData
     } = props
     const statsLoading = _.get(statsData, 'loading')
     const graphLoading = _.get(graphData, 'graphLoading') || statsLoading
@@ -309,7 +310,7 @@ const StatSalesGridList = enhance((props) => {
             const marketName = _.get(item, ['market', 'name'])
             const currency = _.get(item, ['currency', 'name'])
             const id = _.get(item, 'id')
-            const createdDate = _.get(item, 'createdDate') ? moment(_.get(item, 'createdDate')).locale('ru').format('DD MMM YYYY HH:MM') : t('Не указана')
+            const createdDate = _.get(item, 'createdDate') ? dateTimeFormat(_.get(item, 'createdDate')) : t('Не указана')
             const firstName = _.get(item, ['user', 'firstName'])
             const totalPrice = _.get(item, 'totalPrice')
             const totalBalance = _.get(item, 'totalBalance')
@@ -317,7 +318,7 @@ const StatSalesGridList = enhance((props) => {
             const balanceToolTip = numberFormat(totalBalance, currentCurrency)
             const paymentType = _.get(item, 'paymentType') === 'cash' ? t('наличный') : t('банковский счет')
             return (
-                <Row key={id} className="dottedList" style={status === CANCELLED ? {color: '#999', cursor: 'pointer'} : {cursor: 'pointer'}} onClick={() => { statSaleDialog.handleOpenStatSaleDialog(id) }}>
+                <Row key={id} className="dottedList" style={status === ORDER_CANCELED ? {color: '#999', cursor: 'pointer'} : {cursor: 'pointer'}} onClick={() => { statSaleDialog.handleOpenStatSaleDialog(id) }}>
                     <Col xs={1}>{id}</Col>
                     <Col xs={2}>{createdDate}</Col>
                     {hasMarket && <Col xs={2}>{marketName}</Col>}
@@ -342,6 +343,7 @@ const StatSalesGridList = enhance((props) => {
 
     const fields = (
         <div>
+            <Field name="createdDate" className={classes.inputDateCustom} component={DateToDateField} label={t('Период создания')}/>
             <Field name="client" className={classes.inputFieldCustom} component={ClientMultiSearchField} label={t('Клиент')}/>
             <Field name="deliveryMan" className={classes.inputFieldCustom} component={DeliveryManMultiSearchField} label={t('Доставщик')}/>
             <Field name="product" className={classes.inputFieldCustom} component={ProductMultiSearchField} label={t('Товар')}/>
@@ -351,11 +353,10 @@ const StatSalesGridList = enhance((props) => {
             <Field name="initiator" className={classes.inputFieldCustom} component={UsersMultiSearchField} label={t('Инициатор')}/>
             <Field name="dept" className={classes.inputFieldCustom} component={DeptSearchField} label={t('Статус оплаты')}/>
             <Field name="zone" className={classes.inputFieldCustom} component={ZoneMultiSearchField} label={t('Зона')}/>
-            <Field name="createdDate" className={classes.inputDateCustom} component={DateToDateField} label={t('Период создания')}/>
             <Field name="deliveryDate" className={classes.inputDateCustom} component={DateToDateField} label={t('Дата доставки')}/>
             <Field name="deadlineDate" className={classes.inputDateCustom} component={DateToDateField} label={t('Период изготовления')}/>
             <Field name="onlyBonus" component={CheckBox} label={t('Только бонусные заказы')}/>
-            <Field name="exclude" component={CheckBox} label={t('Исключить отмененные заказы')}/>
+            <Field name="exclude" component={CheckBox} label={t('Показать отмененные заказы')}/>
         </div>
     )
 
@@ -451,7 +452,8 @@ const StatSalesGridList = enhance((props) => {
                 detailData={detailData}
                 open={statSaleDialog.openStatSaleDialog}
                 onClose={statSaleDialog.handleCloseStatSaleDialog}
-                filter={filter}/>
+                filter={filter}
+                tabData={tabData}/>
         </Container>
     )
 })

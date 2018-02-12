@@ -41,7 +41,7 @@ import TransactionCreateDetalization from './TransactionCreateDetalization'
 const validateForm = values => {
     const errors = {}
     if (values.showClients && values.amount && !values.client) {
-        errors.client = 'Клиент не выбран'
+        errors.client = t('Клиент не выбран')
     }
 
     return errors
@@ -299,10 +299,12 @@ const TransactionCreateDialog = enhance((props) => {
     const supplyOptionId = _.get(_.find(optionsList, {'keyName': 'supply'}), 'id')
     const supplyExpenseOptionId = _.get(_.find(optionsList, {'keyName': 'supply_expanse'}), 'id')
     const detailizationOptionId = _.get(_.find(optionsList, {'keyName': 'transaction_child'}), 'id')
+    const staffExpenseOptionId = _.get(_.find(optionsList, {'keyName': 'staff_expanse'}), 'id')
 
     const showClients = isExpense ? _.includes(expenseCategoryOptions, clientOptionId) : _.includes(incomeCategoryOptions, clientOptionId)
     const showProviders = isExpense ? _.includes(expenseCategoryOptions, providerOptionId) : _.includes(incomeCategoryOptions, providerOptionId)
     const showDetalization = isExpense ? _.includes(expenseCategoryOptions, detailizationOptionId) : _.includes(incomeCategoryOptions, detailizationOptionId)
+    const showStaffExpense = isExpense ? _.includes(expenseCategoryOptions, staffExpenseOptionId) : _.includes(incomeCategoryOptions, staffExpenseOptionId)
     const showOrders = _.includes(incomeCategoryOptions, orderOptionId)
     const showSupplies = _.includes(expenseCategoryOptions, supplyOptionId)
     const showSupplyExpenses = _.includes(expenseCategoryOptions, supplyExpenseOptionId)
@@ -314,7 +316,7 @@ const TransactionCreateDialog = enhance((props) => {
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const divisionStatus = getConfig('DIVISIONS')
     const isSalary = _.get(usersData, 'open')
-    const amountToConvert = isSalary ? totalStaffAmount : amount
+    const amountToConvert = (isSalary && showStaffExpense) ? totalStaffAmount : amount
     const convert = convertCurrency(amountToConvert, rate)
     const customRateField = (primaryCurrency !== currency && currency && date && canSetCustomRate)
         ? (
@@ -336,7 +338,7 @@ const TransactionCreateDialog = enhance((props) => {
             className={classes.dialog}
             contentStyle={loading
                 ? {width: '500px'}
-                : (isSalary || showDetalization) ? {width: '1000px', maxWidth: 'none'} : {width: '500px'}}
+                : ((isSalary && showStaffExpense) || showDetalization) ? {width: '1000px', maxWidth: 'none'} : {width: '500px'}}
             bodyClassName={classes.popUp}>
             <div className={classes.loader}>
                 <Loader size={0.75}/>
@@ -423,7 +425,7 @@ const TransactionCreateDialog = enhance((props) => {
                                     </div>
                                 }
                                 <div className={classes.flex} style={{justifyContent: 'space-between'}}>
-                                    {!(isSalary) &&
+                                    {!(isSalary && showStaffExpense) &&
                                     <div className={classes.flex} style={{alignItems: 'baseline', width: '100%'}}>
                                         <Field
                                             name="amount"
@@ -472,7 +474,7 @@ const TransactionCreateDialog = enhance((props) => {
                                             <Link target={'_blank'} to={{pathname: ROUTE.PROVIDER_LIST_URL, query: {openCreateDialog: true}}}>{t('добавить')}</Link>
                                         </div>
                                         : null}
-                                {!(isSalary) &&
+                                {!(isSalary && showStaffExpense) &&
                                 <div className={classes.flex} style={{justifyContent: 'space-between'}}>
                                     <div className={classes.flex} style={{alignItems: 'baseline', width: '100%'}}>
                                         <Field
@@ -509,11 +511,11 @@ const TransactionCreateDialog = enhance((props) => {
                                 <strong> {convert} {primaryCurrency}</strong>
                             </div> : null}
                     </div>
-                    {isSalary && <TransactionCreateSalary usersData={usersData}/>}
+                    {(isSalary && showStaffExpense) && <TransactionCreateSalary usersData={usersData}/>}
                     {showDetalization && <FieldArray name={'transaction_child'} component={TransactionCreateDetalization}/>}
                 </form>
                 <div className={classes.bottomButton}>
-                    {isSalary && <div className={classes.commentField}>
+                    {(isSalary && showStaffExpense) && <div className={classes.commentField}>
                         {isExpense ? t('Сумма расхода') : t('Сумма прихода')}: <b>{numberFormat(totalStaffAmount, currency)}</b>
                     </div>}
                     <FlatButton

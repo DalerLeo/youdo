@@ -37,7 +37,8 @@ import {
     orderAddProductsListAction,
     orderChangePriceListAction,
     orderChangeCurrencyListAction,
-    orderSalesPrintFetchAction
+    orderSalesPrintFetchAction,
+    orderCheckDeliveryAction
 } from '../../actions/order'
 import {openSnackbarAction} from '../../actions/snackbar'
 import updateStore from '../../helpers/updateStore'
@@ -59,15 +60,17 @@ import {
     OrderContractPrint
 } from '../../components/Order'
 import t from '../../helpers/translate'
+import {
+    ZERO,
+    ORDER_GIVEN,
+    ORDER_DELIVERED,
+    ORDER_CANCELED,
+    ORDER_NOT_CONFIRMED
+} from '../../constants/backendConstants'
 
 const CLIENT_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const CANCEL_ORDER_RETURN_DIALOG_OPEN = 'openCancelConfirmDialog'
 const MINUS_ONE = -1
-const ZERO = 0
-const TWO = 2
-const THREE = 3
-const FOUR = 4
-const FIVE = 5
 const HUNDRED = 1000
 const enhance = compose(
     connect((state, props) => {
@@ -284,6 +287,7 @@ const enhance = compose(
 
     withState('openAddProductDialog', 'setOpenAddProductDialog', false),
     withState('openAddProductConfirm', 'setOpenAddProductConfirm', false),
+    withState('openCheckDeliveryConfirm', 'setOpenCheckDeliveryConfirm', false),
     withPropsOnChange((props, nextProps) => {
         const except = {
             page: null,
@@ -320,11 +324,12 @@ const enhance = compose(
             const priceList = _.get(createForm, ['values', 'priceList', 'value'])
             const currency = _.get(createForm, ['values', 'currency', 'value'])
             const productType = _.get(addProductsForm, ['values', 'type', 'value'])
+            const user = _.get(addProductsForm, ['values', 'user', 'value'])
             if (!_.isEmpty(products)) {
                 setOpenAddProductConfirm(true)
             } else if (priceList && openAddProductDialog && _.isEmpty(products)) {
                 setOpenAddProductConfirm(false)
-                dispatch(orderAddProductsListAction(priceList, filterProducts, productType, currency))
+                dispatch(orderAddProductsListAction(priceList, filterProducts, productType, currency, user))
             }
         }),
 
@@ -333,9 +338,10 @@ const enhance = compose(
     }, ({dispatch, createForm, openAddProductDialog, filterProducts, setOpenAddProductConfirm}) => {
         const priceList = _.get(createForm, ['values', 'priceList', 'value'])
         const currency = _.get(createForm, ['values', 'currency', 'value'])
+        const user = _.get(createForm, ['values', 'user', 'value'])
         if (openAddProductDialog) {
             setOpenAddProductConfirm(false)
-            dispatch(orderAddProductsListAction(priceList, filterProducts, null, currency))
+            dispatch(orderAddProductsListAction(priceList, filterProducts, null, currency, user))
         }
     }),
 
@@ -456,7 +462,7 @@ const enhance = compose(
             const initiator = _.get(filterForm, ['values', 'initiator']) || null
             const deliveryMan = _.get(filterForm, ['values', 'deliveryMan']) || null
             const onlyBonus = _.get(filterForm, ['values', 'onlyBonus']) || null
-            const exclude = _.get(filterForm, ['values', 'exclude']) || false
+            const exclude = _.get(filterForm, ['values', 'exclude']) || null
 
             filter.filterBy({
                 [ORDER_FILTER_OPEN]: false,
@@ -660,13 +666,17 @@ const enhance = compose(
             const {dispatch, createForm, addProductsForm, filterProducts, setOpenAddProductConfirm} = props
             const priceList = _.get(createForm, ['values', 'priceList', 'value'])
             const productType = _.get(addProductsForm, ['values', 'type', 'value'])
-            dispatch(orderAddProductsListAction(priceList, filterProducts, productType))
+            const currency = _.get(addProductsForm, ['values', 'currency', 'value'])
+            const user = _.get(addProductsForm, ['values', 'user', 'value'])
+            dispatch(orderAddProductsListAction(priceList, filterProducts, productType, currency, user))
             setOpenAddProductConfirm(false)
         },
 
         handleSubmitAddProductConfirm: props => () => {
             const {addProductsForm, editProducts, dispatch, createForm, filterProducts, setOpenAddProductConfirm} = props
             const priceList = _.get(createForm, ['values', 'priceList', 'value'])
+            const currency = _.get(createForm, ['values', 'currency', 'value'])
+            const user = _.get(createForm, ['values', 'user', 'value'])
             const productType = _.get(addProductsForm, ['values', 'type', 'value'])
             const existingProducts = _.get(createForm, ['values', 'products']) || []
             const values = _.get(addProductsForm, ['values', 'product'])
@@ -705,7 +715,7 @@ const enhance = compose(
                 return o.product.value.id
             })
             dispatch(change('OrderCreateForm', 'products', _.concat(newProductsArray, checkDifference)))
-            dispatch(orderAddProductsListAction(priceList, filterProducts, productType))
+            dispatch(orderAddProductsListAction(priceList, filterProducts, productType, currency, user))
             setOpenAddProductConfirm(false)
         },
 
@@ -883,6 +893,40 @@ const enhance = compose(
         handleCloseContractPrint: props => () => {
             const {setOpenContractPrint} = props
             setOpenContractPrint(false)
+        },
+
+        handleOpenCheckDeliveryDialog: props => () => {
+            const {setOpenCheckDeliveryConfirm} = props
+            setOpenCheckDeliveryConfirm(true)
+        },
+
+        handleCloseCheckDeliveryDialog: props => () => {
+            const {setOpenCheckDeliveryConfirm} = props
+            setOpenCheckDeliveryConfirm(false)
+        },
+
+        handleSubmitCheckDeliveryDialog: props => () => {
+            const {dispatch, setOpenCheckDeliveryConfirm, params, list} = props
+            const orderID = _.toInteger(_.get(params, 'orderId'))
+            return dispatch(orderCheckDeliveryAction(orderID))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: t('Заказ отмечен как "доставлен"')}))
+                })
+                .then(() => {
+                    setOpenCheckDeliveryConfirm(false)
+                    return dispatch(orderItemFetchAction(orderID))
+                })
+                .then((data) => {
+                    const detail = _.get(data, 'value')
+                    dispatch(updateStore(orderID, list, actionTypes.ORDER_LIST, {
+                        status: _.get(detail, 'status')
+                    }))
+                })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
+                })
         }
     }),
 )
@@ -924,7 +968,8 @@ const OrderList = enhance((props) => {
         salesPrintDataLoading,
         openContractPrint,
         marketDetailsLoading,
-        marketDetails
+        marketDetails,
+        openCheckDeliveryConfirm
     } = props
     const openFilterDialog = toBoolean(_.get(location, ['query', ORDER_FILTER_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', ORDER_CREATE_DIALOG_OPEN]))
@@ -953,7 +998,7 @@ const OrderList = enhance((props) => {
     const deadlineFromDate = filter.getParam(ORDER_FILTER_KEY.DEADLINE_FROM_DATE)
     const deadlineToDate = filter.getParam(ORDER_FILTER_KEY.DEADLINE_TO_DATE)
     const onlyBonus = filter.getParam(ORDER_FILTER_KEY.ONLY_BONUS)
-    const exclude = _.isUndefined(filter.getParam(ORDER_FILTER_KEY.EXCLUDE)) ? true : filter.getParam(ORDER_FILTER_KEY.EXCLUDE)
+    const exclude = filter.getParam(ORDER_FILTER_KEY.EXCLUDE)
 
     const detailId = _.toInteger(_.get(params, 'orderId'))
     const tab = _.get(location, ['query', TAB]) || ORDER_TAB.ORDER_DEFAULT_TAB
@@ -1086,7 +1131,7 @@ const OrderList = enhance((props) => {
                     value: deliveryType,
                     text: deliveryTypeText
                 },
-                isConfirmed: _.toNumber(_.get(detail, 'status')) !== FIVE,
+                isConfirmed: _.toNumber(_.get(detail, 'status')) !== ORDER_NOT_CONFIRMED,
                 dealType: dealType || '',
                 paymentType: paymentType || '',
                 deliveryDate: _.get(detail, ['dateDelivery']) ? moment(_.get(detail, ['dateDelivery'])).toDate() : '',
@@ -1118,7 +1163,7 @@ const OrderList = enhance((props) => {
         .split('-')
         .map((item) => {
             const statusItem = _.toInteger(_.get(_.find(_.get(list, 'results'), {'id': _.toInteger(item)}), 'status'))
-            return (statusItem === TWO || statusItem === THREE)
+            return (statusItem === ORDER_GIVEN || statusItem === ORDER_DELIVERED)
         })
         .value(), true)
     const cancelled = _.includes(_
@@ -1126,7 +1171,7 @@ const OrderList = enhance((props) => {
         .split('-')
         .map((item) => {
             const statusItem = _.toInteger(_.get(_.find(_.get(list, 'results'), {'id': _.toInteger(item)}), 'status'))
-            return statusItem === FOUR
+            return statusItem === ORDER_CANCELED
         })
         .value(), true)
 
@@ -1290,9 +1335,17 @@ const OrderList = enhance((props) => {
 
     const releaseDialog = {
         openReleaseDialog,
+        givenOrDelivery,
         handleOpenReleaseDialog: props.handleOpenReleaseDialog,
         handleCloseReleaseDialog: props.handleCloseReleaseDialog,
         handleSubmitReleaseDialog: props.handleSubmitReleaseDialog
+    }
+
+    const checkDeliveryDialog = {
+        open: openCheckDeliveryConfirm,
+        handleOpen: props.handleOpenCheckDeliveryDialog,
+        handleClose: props.handleCloseCheckDeliveryDialog,
+        handleSubmit: props.handleSubmitCheckDeliveryDialog
     }
 
     document.getElementById('wrapper').style.height = '100%'
@@ -1333,6 +1386,7 @@ const OrderList = enhance((props) => {
                 printSalesDialog={printSalesDialog}
                 printContractDialog={printContractDialog}
                 scrollValue={_.get(layout, 'scrollValue')}
+                checkDeliveryDialog={checkDeliveryDialog}
             />
         </Layout>
     )

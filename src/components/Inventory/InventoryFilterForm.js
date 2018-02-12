@@ -8,7 +8,6 @@ import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import PropTypes from 'prop-types'
 import {
-    StockMultiSearchField,
     UsersMultiSearchField,
     DateToDateField
 } from '../ReduxForm'
@@ -16,6 +15,8 @@ import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import {Link} from 'react-router'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
+import OwnStocksSearchField from '../ReduxForm/Remainder/OwnStocksSearchField'
+import t from '../../helpers/translate'
 export const INVENTORY_FILTER_OPEN = 'openFilterDialog'
 
 export const INVENTORY_FILTER_KEY = {
@@ -124,7 +125,7 @@ const InventoryFilterForm = enhance((props) => {
         if (filterCounts) {
             return (
                 <div className={classes.afterFilter}>
-                    <div>Фильтр: {filterCounts} элемента</div>
+                    <div>{t('Фильтр')}: {filterCounts} {t('элемента')}</div>
                     <div>
                         <IconButton onTouchTap={filterDialog.handleOpenFilterDialog}>
                             <BorderColorIcon color="#8f8f8f" />
@@ -142,7 +143,7 @@ const InventoryFilterForm = enhance((props) => {
                 <Link
                     className={classes.arrow}
                     onTouchTap={filterDialog.handleOpenFilterDialog}>
-                    <div>Показать фильтр <KeyboardArrowDown color="#12aaeb" /></div>
+                    <div>{t('Показать фильтр')} <KeyboardArrowDown color="#12aaeb" /></div>
                 </Link>
             </div>
         )
@@ -151,7 +152,7 @@ const InventoryFilterForm = enhance((props) => {
         <div>
             <Paper className={classes.wrapper} zDepth={2}>
                 <div className={classes.header}>
-                    <span className={classes.title}>Фильтр</span>
+                    <span className={classes.title}>{t('Фильтр')}</span>
                     <IconButton onTouchTap={filterDialog.handleCloseFilterDialog}>
                         <CloseIcon className={classes.icon} />
                     </IconButton>
@@ -161,20 +162,20 @@ const InventoryFilterForm = enhance((props) => {
                         <Field
                             className={classes.inputFieldCustom}
                             name="stock"
-                            component={StockMultiSearchField}
-                            label="Склад"
+                            component={OwnStocksSearchField}
+                            label={t('Склад')}
                             fullWidth={true}/>
                         <Field
                             className={classes.inputFieldCustom}
                             name="createdBy"
                             component={UsersMultiSearchField}
-                            label="Создал"
+                            label={t('Создал')}
                             fullWidth={true}/>
                         <Field
                             className={classes.inputFieldCustom}
                             name="date"
                             component={DateToDateField}
-                            label="Период создания"
+                            label={t('Период создания')}
                             fullWidth={true}/>
                     </div>
 
@@ -183,7 +184,7 @@ const InventoryFilterForm = enhance((props) => {
                         primary={true}
                         buttonStyle={{color: '#fff'}}
                         labelStyle={{fontSize: '13px'}}
-                        label="Применить"
+                        label={t('Применить')}
                         style={{marginTop: '15px'}}>
                     </RaisedButton>
                 </form>

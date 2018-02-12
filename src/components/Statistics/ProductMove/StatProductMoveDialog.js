@@ -13,6 +13,7 @@ import Pagination from '../../GridList/GridListNavPagination/index'
 import getConfig from '../../../helpers/getConfig'
 import numberFormat from '../../../helpers/numberFormat.js'
 import dateFormat from '../../../helpers/dateFormat'
+import t from '../../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -188,15 +189,15 @@ const StatProductMove = enhance((props) => {
                     </div>
                     <div className={classes.content}>
                         <div className={classes.titleSummary}>
-                            <div>Период: <strong>{dateRange}</strong></div>
-                            <div>Сумма: <strong>{income}</strong></div>
+                            <div>{t('Период')}: <strong>{dateRange}</strong></div>
+                            <div>{t('Сумма')}: <strong>{income}</strong></div>
                         </div>
                         <div className={classes.tableWrapper}>
                             <Row className="dottedList">
-                                <Col xs={2}>№ заказа</Col>
-                                <Col xs={6}>Магазин</Col>
-                                <Col xs={2}>Дата</Col>
-                                <Col xs={2}>Сумма</Col>
+                                <Col xs={2}>{t('№ заказа')}</Col>
+                                <Col xs={6}>{t('Магазин')}</Col>
+                                <Col xs={2}>{t('Дата')}</Col>
+                                <Col xs={2}>{t('Сумма')}</Col>
                             </Row>
                             {orderList}
                         </div>

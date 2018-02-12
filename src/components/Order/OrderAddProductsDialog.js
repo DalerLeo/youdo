@@ -20,7 +20,8 @@ import ToolTip from '../ToolTip'
 import {
     TextField,
     ProductTypeSearchField,
-    normalizeNumber
+    normalizeNumber,
+    normalizeMaxNumber
 } from '../ReduxForm'
 import {connect} from 'react-redux'
 import t from '../../helpers/translate'
@@ -309,10 +310,10 @@ const OrderAddProductsDialog = enhance((props) => {
     const onSubmit = handleSubmit(props.onSubmit)
     const primaryCurrency = currency
     const products = _.map(data, (item) => {
+        const balance = isReturn ? _.get(item, 'sales') : _.get(item, 'balance')
         const id = _.get(item, 'id')
         const name = fromAllBalances ? _.get(item, 'title') : _.get(item, 'name')
         const code = _.get(item, 'code') || '-'
-        const balance = isReturn ? _.get(item, 'sales') : _.get(item, 'balance')
         const customPrice = _.get(item, 'customPrice')
         const available = numberFormat(_.get(item, 'available'))
         const defects = numberFormat(_.get(item, 'defects'))
@@ -345,7 +346,7 @@ const OrderAddProductsDialog = enhance((props) => {
                         name={'product[' + id + '][amount]'}
                         component={TextField}
                         className={classes.inputFieldCustom}
-                        normalize={normalizeNumber}
+                        normalize={value => normalizeMaxNumber(value, !fromAllBalances && balance)}
                         inputStyle={{textAlign: 'right'}}
                         fullWidth={true}/>
                     <span>{measurement}</span>

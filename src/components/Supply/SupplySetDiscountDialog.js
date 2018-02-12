@@ -104,7 +104,7 @@ const OrderSetDiscountDialog = enhance((props) => {
                     primary={true}
                     type="submit"
                 />
-                {percent > ZERO && <a onClick={() => { handleSubmitSetZeroDiscountDialog(id) }}>Отменить скидку</a>}
+                {percent > ZERO && <a onClick={() => { handleSubmitSetZeroDiscountDialog(id) }}>{t('Отменить скидку')}</a>}
             </form>
         </Paper>
     )

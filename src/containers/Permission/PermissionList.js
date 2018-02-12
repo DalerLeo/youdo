@@ -1,5 +1,6 @@
 import React from 'react'
 import _ from 'lodash'
+import moment from 'moment'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
@@ -116,8 +117,8 @@ const PermissionList = enhance((props) => {
                     text: getPermName[_.toInteger(_.get(detail, 'status'))],
                     value: _.toInteger(_.get(detail, 'status'))
                 },
-                fromTime: _.get(detail, 'fromTime'),
-                toTime: _.get(detail, 'toTime')
+                fromTime: moment(_.get(detail, 'fromTime'), 'HH:mm:ss').toDate(),
+                toTime: moment(_.get(detail, 'toTime'), 'HH:mm:ss').toDate()
             }
         })(),
         open: openSetDateDialog,

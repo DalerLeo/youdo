@@ -5,6 +5,7 @@ import axios from '../../helpers/axios'
 import * as PATH from '../../constants/api'
 import toCamelCase from '../../helpers/toCamelCase'
 import caughtCancel from '../../helpers/caughtCancel'
+import t from '../../helpers/translate'
 
 const CancelToken = axios().CancelToken
 let usersAgentListToken = null
@@ -32,10 +33,10 @@ const getIdsOption = (ids) => {
 
 const getRussianText = (obj) => {
     const name = _.get(obj, 'name')
-    return name === 'order return accept' ? 'Возврат'
-            : (name === 'order transfer product' ? 'Заказ'
-            : (name === 'stock transfer product' ? 'Передача'
-            : (name === 'supply accept' ? 'Поставка' : name)))
+    return name === 'order return accept' ? t('Возврат')
+            : (name === 'order transfer product' ? t('Заказ')
+            : (name === 'stock transfer product' ? t('Передача')
+            : (name === 'supply accept' ? t('Поставка') : name)))
 }
 
 const StockHistoryTypeSearchField = (props) => {

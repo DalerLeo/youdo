@@ -358,9 +358,9 @@ const OrderCreateDialog = enhance((props) => {
                                             fullWidth={true}/>}
                                     </div>
 
-                                    {notEnough && <div className={classes.notEnough}>Недостаточно товаров на складе</div>}
+                                    {notEnough && <div className={classes.notEnough}>{t('Недостаточно товаров на складе')}</div>}
                                     <div className={classes.condition}>
-                                        <div className={classes.subTitleOrderNoPad}>Оплата</div>
+                                        <div className={classes.subTitleOrderNoPad}>{t('Оплата')}</div>
                                         <Field
                                             name="paymentType"
                                             component={OrderPaymentTypeRadio}
@@ -390,12 +390,12 @@ const OrderCreateDialog = enhance((props) => {
                                             name="paymentDate"
                                             component={DateField}
                                             className={classes.inputDateCustom}
-                                            floatingLabelText="Дата окончательной оплаты"
+                                            floatingLabelText={t('Дата окончательной оплаты')}
                                             container="inline"
                                             fullWidth={true}/>
                                     </div>
                                     <div className={classes.condition}>
-                                        <div className={classes.subTitleOrderNoPad}>Условия договора</div>
+                                        <div className={classes.subTitleOrderNoPad}>{t('Условия договора')}</div>
                                         <Field
                                             name="dealType"
                                             isUpdate={isUpdate}
@@ -405,7 +405,7 @@ const OrderCreateDialog = enhance((props) => {
                                             name="nextPaymentDate"
                                             component={DateField}
                                             className={classes.inputDateCustom}
-                                            floatingLabelText="Дата следующей оплаты"
+                                            floatingLabelText={t('Дата следующей оплаты')}
                                             maxDate={maxDate}
                                             container="inline"
                                             fullWidth={true}/>}
@@ -417,7 +417,7 @@ const OrderCreateDialog = enhance((props) => {
                                             fullWidth={true}/>
                                     </div>
                                     <div className={classes.condition}>
-                                        <div className={classes.subTitleOrderNoPad}>Условия доставки</div>
+                                        <div className={classes.subTitleOrderNoPad}>{t('Условия доставки')}</div>
                                         <Field
                                             name="deliveryType"
                                             component={DeliveryTypeSearchField}
@@ -442,6 +442,7 @@ const OrderCreateDialog = enhance((props) => {
                                         <Field
                                             name="isConfirmed"
                                             component={CheckBox}
+                                            disabled={status === ORDER_DELIVERED}
                                             label={t('Подтвержденный')}/>
                                     </div>
                                 </div>

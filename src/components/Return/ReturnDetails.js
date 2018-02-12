@@ -14,6 +14,7 @@ import ToolTip from '../ToolTip'
 import numberFormat from '../../helpers/numberFormat'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
 import t from '../../helpers/translate'
+import checkPermission from '../../helpers/checkPermission'
 import {Link} from 'react-router'
 import sprintf from 'sprintf'
 import * as ROUTES from '../../constants/routes'
@@ -24,6 +25,10 @@ import {
     ORDER_RETURN_COMPLETED,
     ORDER_RETURN_CANCELED
 } from '../../constants/backendConstants'
+
+// CHECKING PERMISSIONS
+const canEditOrderReturn = checkPermission('change_orderreturn')
+const canCancelOrderReturn = checkPermission('delete_orderreturn')
 
 const enhance = compose(
     injectSheet({
@@ -198,7 +203,7 @@ const iconStyle = {
         padding: 0
     }
 }
-const TWO = 2
+const RETURN_TYPE_CLIENT = 2
 const ReturnDetails = enhance((props) => {
     const {
         classes,
@@ -211,7 +216,6 @@ const ReturnDetails = enhance((props) => {
         getDocument,
         handleCloseDetail,
         stat,
-        canChangeAnyReturn,
         hasMarket
     } = props
 
@@ -253,7 +257,8 @@ const ReturnDetails = enhance((props) => {
                      onClick={handleCloseDetail}>
                 </div>
                 <div className={classes.titleButtons}>
-                    {getDocument && !stat && <ToolTip position="bottom" text={t('Распечатать накладную')}>
+                    {getDocument && !stat &&
+                    <ToolTip position="bottom" text={t('Распечатать накладную')}>
                         <IconButton
                             disabled={status === ORDER_RETURN_CANCELED}
                             iconStyle={iconStyle.icon}
@@ -263,19 +268,21 @@ const ReturnDetails = enhance((props) => {
                             <PrintIcon />
                         </IconButton>
                     </ToolTip>}
-                    <ToolTip position="bottom" text={!canChangeAnyReturn && typeClient === TWO ? t('У вас нет доступа') : t('Изменить')}>
+                    {!stat &&
+                    <ToolTip position="bottom" text={!canEditOrderReturn && typeClient === RETURN_TYPE_CLIENT ? t('У вас нет доступа') : t('Изменить')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
-                            disabled={status === ORDER_RETURN_CANCELED || (order && status === ORDER_RETURN_COMPLETED) || (!canChangeAnyReturn && typeClient === TWO)}
+                            disabled={status === ORDER_RETURN_CANCELED || (order && status === ORDER_RETURN_COMPLETED) || (!canEditOrderReturn && typeClient === RETURN_TYPE_CLIENT)}
                             touch={true}
                             onTouchTap={() => { updateDialog.handleOpenUpdateDialog() }}>
                             <Edit />
                         </IconButton>
-                    </ToolTip>
-                    {confirmDialog && !stat && <ToolTip position="bottom" text={!canChangeAnyReturn && typeClient === TWO ? t('У вас нет доступа') : t('Отменить')}>
+                    </ToolTip>}
+                    {confirmDialog && canCancelOrderReturn && !stat &&
+                    <ToolTip position="bottom" text={!canEditOrderReturn && typeClient === RETURN_TYPE_CLIENT ? t('У вас нет доступа') : t('Отменить')}>
                         <IconButton
-                            disabled={!(status === ORDER_RETURN_IN_PROGRESS || status === ORDER_RETURN_PENDING) || (!canChangeAnyReturn && typeClient === TWO)}
+                            disabled={!(status === ORDER_RETURN_IN_PROGRESS || status === ORDER_RETURN_PENDING) || (!canEditOrderReturn && typeClient === RETURN_TYPE_CLIENT)}
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}

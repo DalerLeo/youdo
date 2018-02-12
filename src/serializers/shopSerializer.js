@@ -101,6 +101,7 @@ export const listFilterSerializer = (data) => {
     return {
         'client': _.get(defaultData, 'client') || null,
         'created_by': _.get(defaultData, 'createdBy') || null,
+        'responsible_agent': _.get(defaultData, 'responsibleAgent') || null,
         'is_active': _.toNumber(_.get(defaultData, 'isActive')) === TWO ? false : _.get(defaultData, 'isActive'),
         'frequency': _.get(defaultData, 'frequency'),
         'border': _.get(defaultData, 'zone') || null,
@@ -112,6 +113,19 @@ export const listFilterSerializer = (data) => {
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),
         'ordering': ordering && orderingSnakeCase(ordering)
+    }
+}
+
+export const multiUpdateSerializer = (data, markets) => {
+    const marketType = _.get(data, ['marketType', 'value']) || _.get(data, ['marketTypeParent', 'value'])
+    const responsibleAgent = _.get(data, ['responsibleAgent', 'value'])
+    const status = _.get(data, ['status', 'value'])
+    const isActive = status ? status === STATUS_ACTIVE : status
+    return {
+        markets: _.split(markets, '-'),
+        responsible_agent: responsibleAgent,
+        market_type: marketType,
+        is_active: isActive
     }
 }
 

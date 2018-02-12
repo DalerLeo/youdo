@@ -7,6 +7,7 @@ import {Row, Col} from 'react-flexbox-grid'
 import numberFormat from '../../helpers/numberFormat'
 import NotFound from '../Images/not-found.png'
 import getConfig from '../../helpers/getConfig'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -98,11 +99,11 @@ const OrderStatDetailsRightSide = enhance((props) => {
             <div className={classes.tabContent}>
                 <div className={classes.tabWrapper}>
                     <Row className="dottedList">
-                        <Col xs={4}>Товар</Col>
-                        <Col xs={2}>Количество</Col>
-                        <Col xs={2}>Цена {primaryCurrency}</Col>
-                        <Col xs={2}>Сумма {primaryCurrency}</Col>
-                        <Col xs={2}>Скидка ({primaryCurrency})</Col>
+                        <Col xs={4}>{t('Товар')}</Col>
+                        <Col xs={2}>{t('Количество')}</Col>
+                        <Col xs={2}>{t('Цена')} {primaryCurrency}</Col>
+                        <Col xs={2}>{t('Сумма')} {primaryCurrency}</Col>
+                        <Col xs={2}>{t('Скидка')} ({primaryCurrency})</Col>
 
                     </Row>
 
@@ -118,7 +119,7 @@ const OrderStatDetailsRightSide = enhance((props) => {
 
                         return (
                             <Row className="dottedList" key={index}>
-                                <Col xs={4}>{productName} {isBonus && <strong className="greenFont">(бонус)</strong>}</Col>
+                                <Col xs={4}>{productName} {isBonus && <strong className="greenFont">({t('бонус')})</strong>}</Col>
                                 <Col xs={2}>{numberFormat(amount)} {measurement}</Col>
                                 <Col xs={2}>{numberFormat(price)}</Col>
                                 <Col xs={2}>{numberFormat(productTotal)}</Col>
@@ -128,7 +129,7 @@ const OrderStatDetailsRightSide = enhance((props) => {
                     })}
                 </div>
                 <Row className={classes.summary}>
-                    <Col xs={4}>ОБЩАЯ СУММА ({primaryCurrency}):</Col>
+                    <Col xs={4}>{t('ОБЩАЯ СУММА')} ({primaryCurrency}):</Col>
                     <Col xs={4}> </Col>
                     <Col xs={2}>{numberFormat(totalProductPrice)}</Col>
                     <Col xs={2}>{numberFormat(totalDiscount)}</Col>

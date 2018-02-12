@@ -10,6 +10,7 @@ import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import ClientSearchFieldCustom from './ClientSearchFieldCustom'
 import {Field} from 'redux-form'
 import TargetRadio from './TargetRadio'
+import t from '../../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -202,7 +203,7 @@ const JoinClientListField = ({classes, handleAdd, handleRemove, ...defaultProps}
                 <Row className={classes.background}>
                     <Col xs={5}>
                         <ClientSearchFieldCustom
-                            label="Клиент"
+                            label={t('Клиент')}
                             className={classes.searchFieldCustom}
                             fullWidth={true}
                             {..._.get(defaultProps, 'client')}
@@ -210,7 +211,7 @@ const JoinClientListField = ({classes, handleAdd, handleRemove, ...defaultProps}
                     </Col>
                     <Col xs={7} style={{textAlign: 'right'}}>
                         <FlatButton
-                            label="Добавить"
+                            label={t('Добавить')}
                             labelStyle={flatButton.label}
                             onTouchTap={handleAdd}>
                         </FlatButton>
@@ -227,7 +228,7 @@ const JoinClientListField = ({classes, handleAdd, handleRemove, ...defaultProps}
                 />
                 <div className={classes.list}>
                     <Row>
-                        <Col xs={11}>Наименование</Col>
+                        <Col xs={11}>{t('Наименование')}</Col>
                     </Row>
                     {_.map(clients, (item, index) => {
                         const million = 1000000

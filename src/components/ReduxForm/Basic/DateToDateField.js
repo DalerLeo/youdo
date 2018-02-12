@@ -10,6 +10,8 @@ import {Popover, FlatButton} from 'material-ui'
 import Close from 'material-ui/svg-icons/navigation/close'
 import Check from 'material-ui/svg-icons/navigation/check'
 import dateFormat from '../../../helpers/dateFormat'
+import {getLanguage} from '../../../helpers/storage'
+import t from '../../../helpers/translate'
 import MUITextField from 'material-ui/TextField'
 import moment from 'moment'
 import ToolTip from '../../ToolTip/ToolTip'
@@ -66,6 +68,44 @@ const range = {
     }
 }
 
+const rangeEn = {
+    'Today': {
+        startDate: (now) => {
+            return now
+        },
+        endDate: (now) => {
+            return now
+        }
+    },
+
+    'Yesterday': {
+        startDate: (now) => {
+            return now.add(MINUS_ONE, 'days')
+        },
+        endDate: (now) => {
+            return now.add(MINUS_ONE, 'days')
+        }
+    },
+
+    'Last 7 days': {
+        startDate: (now) => {
+            return now.add(MINUS_SEVEN, 'days')
+        },
+        endDate: (now) => {
+            return now
+        }
+    },
+
+    'Current month': {
+        startDate: (now) => {
+            return now.add((TODAY * MINUS_ONE) + ONE, 'days')
+        },
+        endDate: (now) => {
+            return now
+        }
+    }
+}
+
 class DateToDateField extends React.Component {
 
     constructor (props) {
@@ -92,6 +132,7 @@ class DateToDateField extends React.Component {
     }
     render () {
         const {label, classes, input, meta: {error}} = this.props
+        const lang = getLanguage() === 'uz' ? 'ru' : getLanguage()
         const {
             open,
             anchorEl
@@ -117,14 +158,14 @@ class DateToDateField extends React.Component {
                         anchorEl={anchorEl}
                         onRequestClose={this.handleOnRequestClose}>
                         <div className={classes.clear}>
-                            <ToolTip position="top" text="Очистить">
+                            <ToolTip position="top" text={t('Очистить')}>
                                 <FlatButton
                                     disableTouchRipple={true}
                                     onClick={() => { input.onChange({startDate: undefined, endDate: undefined}) }}>
                                     <Close color="#fff"/>
                                 </FlatButton>
                             </ToolTip>
-                            <ToolTip position="top" text="Применить">
+                            <ToolTip position="top" text={t('Применить')}>
                                 <FlatButton
                                     disableTouchRipple={true}
                                     onClick={() => { this.handleOnRequestClose() }}>
@@ -135,8 +176,8 @@ class DateToDateField extends React.Component {
                         <DateRange
                             startDate={_.get(input, ['value', 'fromDate']) || moment()}
                             endDate={_.get(input, ['value', 'toDate']) || moment()}
-                            lang={'ru'}
-                            ranges={ range }
+                            lang={lang}
+                            ranges={ lang === 'en' ? rangeEn : range }
                             onChange={ (which) => {
                                 input.onChange({fromDate: which.startDate, toDate: which.endDate})
                             }}

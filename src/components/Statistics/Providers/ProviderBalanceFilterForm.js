@@ -112,7 +112,7 @@ const enhance = compose(
                 .length
         }
     }),
-    connect((state, props) => {
+    connect((state) => {
         const showPaymentType = _.get(state, ['form', 'ProviderBalanceFilterForm', 'values', 'balanceType', 'value'])
         return {
             showPaymentType
@@ -175,7 +175,8 @@ const ProviderBalanceFilterForm = enhance((props) => {
                             component={ProviderBalanceTypeSearchField}
                             label={t('Тип баланса')}
                             fullWidth={true}/>
-                        {showPaymentType && <Field
+                        {showPaymentType &&
+                        <Field
                             className={classes.inputFieldCustom}
                             name="paymentType"
                             disable={true}

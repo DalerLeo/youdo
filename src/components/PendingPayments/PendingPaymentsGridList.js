@@ -253,7 +253,7 @@ const PendingPaymentsGridList = enhance((props) => {
                 noCashbox={true}
                 hideRedundant={true}
                 cashboxData={cashboxData}
-                incomeCategoryKey={'order'}
+                incomeCategoryKey={'order-client'}
                 additionalData={additionalData}
                 open={updateDialog.openUpdateDialog}
                 onClose={updateDialog.handleCloseUpdateDialog}

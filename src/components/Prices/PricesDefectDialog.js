@@ -8,6 +8,7 @@ import {Row, Col} from 'react-flexbox-grid'
 import Loader from '../Loader'
 import IconButton from 'material-ui/IconButton'
 import numberFormat from '../../helpers/numberFormat'
+import t from '../../helpers/translate'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import MainStyles from '../Styles/MainStyles'
 
@@ -80,7 +81,7 @@ const PricesDefectDialog = enhance((props) => {
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>Бракованные товараы</span>
+                <span>{t('Бракованные товары')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -93,9 +94,9 @@ const PricesDefectDialog = enhance((props) => {
                     <div className={classes.inContent} style={{minHeight: '350px', position: 'relative'}}>
                         <div className={classes.defect}>
                             <Row className="dottedList">
-                                <Col xs={2}>Баркод</Col>
-                                <Col xs={2}>Кол-во</Col>
-                                <Col xs={6}>Комментарий</Col>
+                                <Col xs={2}>{t('Баркод')}</Col>
+                                <Col xs={2}>{t('Кол-во')}</Col>
+                                <Col xs={6}>{t('Комментарий')}</Col>
                                 <Col xs={2}></Col>
                             </Row>
                             {defectItems}

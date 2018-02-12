@@ -8,6 +8,7 @@ import {Link} from 'react-router'
 import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
+import t from '../../helpers/translate'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import {
     PaymentTypeSearchField,
@@ -131,7 +132,7 @@ const PendingPaymentsFilterForm = enhance((props) => {
         if (filterCounts) {
             return (
                 <div className={classes.afterFilter}>
-                    <div>Фильтр: {filterCounts} элемента</div>
+                    <div>{t('Фильтр')}: {filterCounts} {t('элемента')}</div>
                     <div>
                         <IconButton onTouchTap={filterDialog.handleOpenFilterDialog}>
                             <BorderColorIcon color="#8f8f8f" />
@@ -149,7 +150,7 @@ const PendingPaymentsFilterForm = enhance((props) => {
                 <Link
                     className={classes.arrow}
                     onTouchTap={filterDialog.handleOpenFilterDialog}>
-                    <div>Показать фильтр <KeyboardArrowDown color="#12aaeb" /></div>
+                    <div>{t('Показать фильтр')} <KeyboardArrowDown color="#12aaeb" /></div>
                 </Link>
             </div>
         )
@@ -159,7 +160,7 @@ const PendingPaymentsFilterForm = enhance((props) => {
         <div>
             <Paper className={classes.wrapper} zDepth={2}>
                 <div className={classes.header}>
-                    <span className={classes.title}>Фильтр</span>
+                    <span className={classes.title}>{t('Фильтр')}</span>
                     <IconButton onTouchTap={filterDialog.handleCloseFilterDialog}>
                         <CloseIcon className={classes.icon} />
                     </IconButton>
@@ -170,7 +171,7 @@ const PendingPaymentsFilterForm = enhance((props) => {
                             className={classes.inputFieldCustom}
                             name="market"
                             component={MarketMultiSearchField}
-                            label="Магазин"
+                            label={t('Магазин')}
                             fullWidth={true}/>
                     </div>}
                     <div>
@@ -178,7 +179,7 @@ const PendingPaymentsFilterForm = enhance((props) => {
                             className={classes.inputFieldCustom}
                             name="client"
                             component={ClientMultiSearchField}
-                            label="Клиент"
+                            label={t('Клиент')}
                             fullWidth={true}/>
                     </div>
                     <div>
@@ -186,7 +187,7 @@ const PendingPaymentsFilterForm = enhance((props) => {
                             className={classes.inputFieldCustom}
                             name="paymentType"
                             component={PaymentTypeSearchField}
-                            label="Тип оплаты"
+                            label={t('Тип оплаты')}
                             fullWidth={true}/>
                     </div>
                     <div>
@@ -194,7 +195,7 @@ const PendingPaymentsFilterForm = enhance((props) => {
                             className={classes.inputFieldCustom}
                             name="division"
                             component={DivisionMultiSearchField}
-                            label="Организация"
+                            label={t('Организация')}
                             fullWidth={true}/>
                     </div>
                     <div>
@@ -202,7 +203,7 @@ const PendingPaymentsFilterForm = enhance((props) => {
                             className={classes.inputFieldCustom}
                             name="date"
                             component={DateToDateField}
-                            label="Диапазон дат"
+                            label={t('Диапазон дат')}
                             fullWidth={true}/>
                     </div>
                     <RaisedButton
@@ -210,7 +211,7 @@ const PendingPaymentsFilterForm = enhance((props) => {
                         primary={true}
                         buttonStyle={{color: '#fff'}}
                         labelStyle={{fontSize: '13px'}}
-                        label="Применить"
+                        label={t('Применить')}
                         style={{marginTop: '15px'}}>
                     </RaisedButton>
                 </form>

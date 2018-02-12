@@ -147,7 +147,7 @@ const ActivityReturn = enhance((props) => {
     const isEmpty = _.isEmpty(_.get(returnListData, 'data')) && !returnlistLoading
     const summaryCount = _.get(summary, 'count')
     const summaryPrice = numberFormat(_.get(summary, 'totalPrice'), currentCurrency)
-    const tooltipText = '<div>Cумма возврата ' + summaryPrice + '</div>'
+    const tooltipText = '<div>Cумма возврата: ' + summaryPrice + '</div>'
     const returnList = _.map(_.get(returnListData, 'data'), (item) => {
         const id = _.get(item, ['orderReturn', 'id'])
         const market = _.get(item, ['orderReturn', 'market', 'name'])

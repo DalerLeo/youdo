@@ -22,6 +22,7 @@ import {
     ADD_PHOTO_DIALOG_OPEN,
     SHOP_SLIDESHOW_DIALOG_OPEN,
     DELETE_IMAGE_OPEN,
+    SHOP_MULTI_EDIT_OPEN,
     ShopGridList
 } from '../../components/Shop'
 import {
@@ -33,7 +34,8 @@ import {
     shopDeleteAction,
     shopItemFetchAction,
     shopListFetchAction,
-    slideShowFetchAction
+    slideShowFetchAction,
+    shopMultiUpdateAction
 } from '../../actions/shop'
 import {openErrorAction} from '../../actions/error'
 import {openSnackbarAction} from '../../actions/snackbar'
@@ -54,6 +56,7 @@ const enhance = compose(
         const listLoading = _.get(state, ['shop', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'ShopFilterForm'])
         const createForm = _.get(state, ['form', 'ShopCreateForm'])
+        const multiUpdateForm = _.get(state, ['form', 'ShopMultiUpdateForm'])
         const mapForm = _.get(state, ['form', 'ShopMapForm'])
         const addPhotoForm = _.get(state, ['form', 'ShopAddPhotoForm', 'values'])
         const mapLocation = _.get(state, ['form', 'ShopMapForm', 'values', 'latLng'])
@@ -72,6 +75,7 @@ const enhance = compose(
             filter,
             filterForm,
             createForm,
+            multiUpdateForm,
             mapForm,
             mapLocation,
             addPhotoForm,
@@ -81,7 +85,12 @@ const enhance = compose(
         }
     }),
     withPropsOnChange((props, nextProps) => {
-        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
+        const except = {
+            showCheckboxes: null,
+            select: null,
+            openMultiUpdateDialog: null
+        }
+        return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
         dispatch(shopListFetchAction(filter))
     }),
@@ -194,6 +203,7 @@ const enhance = compose(
             const {filter, filterForm} = props
             const client = _.get(filterForm, ['values', 'client']) || null
             const createdBy = _.get(filterForm, ['values', 'createdBy']) || null
+            const responsibleAgent = _.get(filterForm, ['values', 'responsibleAgent']) || null
             const marketType = _.get(filterForm, ['values', 'marketType', 'value']) || null
             const marketTypeParent = _.get(filterForm, ['values', 'marketTypeParent', 'value']) || null
             const zone = _.get(filterForm, ['values', 'zone']) || null
@@ -205,6 +215,7 @@ const enhance = compose(
                 [SHOP_FILTER_OPEN]: false,
                 [SHOP_FILTER_KEY.CLIENT]: joinArray(client),
                 [SHOP_FILTER_KEY.CREATED_BY]: joinArray(createdBy),
+                [SHOP_FILTER_KEY.RESPONSIBLE_AGENT]: joinArray(responsibleAgent),
                 [SHOP_FILTER_KEY.MARKET_TYPE]: marketType,
                 [SHOP_FILTER_KEY.MARKET_TYPE_PARENT]: marketTypeParent,
                 [SHOP_FILTER_KEY.STATUS]: isActive,
@@ -370,6 +381,33 @@ const enhance = compose(
         handleCloseDetail: props => () => {
             const {filter} = props
             hashHistory.push({pathname: ROUTER.SHOP_LIST_URL, query: filter.getParams()})
+        },
+
+        handleOpenMultiUpdate: props => () => {
+            const {dispatch, location: {pathname}, filter} = props
+            dispatch(reset('ShopMultiUpdateForm'))
+            hashHistory.push({pathname, query: filter.getParams({[SHOP_MULTI_EDIT_OPEN]: true})})
+        },
+
+        handleCloseMultiUpdate: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[SHOP_MULTI_EDIT_OPEN]: false})})
+        },
+
+        handleSubmitMultiUpdate: props => () => {
+            const {dispatch, multiUpdateForm, filter, location: {pathname, query}} = props
+            const markets = _.get(query, 'select')
+
+            return dispatch(shopMultiUpdateAction(_.get(multiUpdateForm, 'values'), markets))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: t('Выбранные магазины успешно изменены')}))
+                })
+                .then(() => {
+                    hashHistory.push({pathname, query: filter.getParams({[SHOP_MULTI_EDIT_OPEN]: false})})
+                    dispatch(shopListFetchAction(filter))
+                }).catch((error) => {
+                    dispatch(openErrorAction({message: error}))
+                })
         }
     })
 )
@@ -398,12 +436,14 @@ const ShopList = enhance((props) => {
     const openUpdateDialog = toBoolean(_.get(location, ['query', SHOP_UPDATE_DIALOG_OPEN]))
     const openDeleteDialog = toBoolean(_.get(location, ['query', DELETE_DIALOG_OPEN]))
     const openAddPhotoDialog = toBoolean(_.get(location, ['query', ADD_PHOTO_DIALOG_OPEN]))
+    const openMultiUpdateDialog = toBoolean(_.get(location, ['query', SHOP_MULTI_EDIT_OPEN]))
     const openSlideShowDialog = _.toInteger(_.get(location, ['query', SHOP_SLIDESHOW_DIALOG_OPEN]) || MINUS_ONE) > MINUS_ONE
 
     const client = (filter.getParam(SHOP_FILTER_KEY.CLIENT))
     const marketType = _.toInteger(filter.getParam(SHOP_FILTER_KEY.MARKET_TYPE))
     const marketTypeParent = _.toInteger(filter.getParam(SHOP_FILTER_KEY.MARKET_TYPE_PARENT))
     const createdBy = filter.getParam(SHOP_FILTER_KEY.CREATED_BY)
+    const responsibleAgent = filter.getParam(SHOP_FILTER_KEY.RESPONSIBLE_AGENT)
     const zone = filter.getParam(SHOP_FILTER_KEY.ZONE)
     const frequency = filter.getParam(SHOP_FILTER_KEY.FREQUENCY)
     const filterIsActive = _.toInteger(filter.getParam(SHOP_FILTER_KEY.STATUS))
@@ -553,6 +593,7 @@ const ShopList = enhance((props) => {
     const filterDialog = {
         initialValues: {
             createdBy: createdBy && splitToArray(createdBy),
+            responsibleAgent: responsibleAgent && splitToArray(responsibleAgent),
             zone: zone && splitToArray(zone),
             client: client && splitToArray(client),
             marketType: {value: marketType},
@@ -584,6 +625,13 @@ const ShopList = enhance((props) => {
         handleSetPrimaryImage: props.handleSetPrimaryImage
     }
 
+    const multiUpdateDialog = {
+        open: openMultiUpdateDialog,
+        handleOpenMultiUpdate: props.handleOpenMultiUpdate,
+        handleCloseMultiUpdate: props.handleCloseMultiUpdate,
+        handleSubmitMultiUpdate: props.handleSubmitMultiUpdate
+    }
+
     return (
         <Layout {...layout}>
             <ShopGridList
@@ -602,6 +650,7 @@ const ShopList = enhance((props) => {
                 filterDialog={filterDialog}
                 mapLocation={mapLocation}
                 navigationButtons={navigationButtons}
+                multiUpdateDialog={multiUpdateDialog}
             />
         </Layout>
     )

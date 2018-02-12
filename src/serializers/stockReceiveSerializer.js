@@ -3,10 +3,11 @@ import {orderingSnakeCase} from '../helpers/serializer'
 import numberWithoutSpaces from '../helpers/numberWithoutSpaces'
 
 const ZERO = 0
-export const acceptSerializer = (id, stock) => {
+export const acceptSerializer = (order, stock, deliveryMan) => {
     return {
-        'order': id,
-        stock
+        order,
+        stock,
+        delivery_man: deliveryMan
     }
 }
 

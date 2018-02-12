@@ -11,7 +11,16 @@ import Loader from '../Loader'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, ImageUploadField, CheckBox, PositionSearchField, UserStockRadioButtonField, PostSearchField} from '../ReduxForm'
+import t from '../../helpers/translate'
+import toBoolean from '../../helpers/toBoolean'
+import {
+    TextField,
+    ImageUploadField,
+    CheckBox,
+    PositionSearchField,
+    UserStockRadioButtonField,
+    PostSearchField
+} from '../ReduxForm'
 import getConfig from '../../helpers/getConfig'
 import {connect} from 'react-redux'
 
@@ -32,7 +41,7 @@ const validate = (data) => {
 const validateForm = values => {
     const errors = {}
     if (values.password && values.passwordExp && values.password !== values.passwordExp) {
-        errors.password = 'Пароли не совпадают'
+        errors.password = t('Пароли не совпадают')
     }
     return errors
 }
@@ -221,11 +230,19 @@ const UsersCreateDialog = enhance((props) => {
     } = props
     const errorText = _.get(errorData, 'errorText')
     const show = _.get(errorData, 'show')
-    const multiStock = getConfig('MULTI_SELECT_STOCK')
+    const multiStock = toBoolean(getConfig('MULTI_SELECT_STOCK'))
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const agent = _.some(positionGroups, {'name': 'agent'})
     const manufacture = _.some(positionGroups, {'name': 'manufacture'})
     const manager = _.some(positionGroups, {'name': 'manager'})
+    const transStyle = {
+        transition: 'all 200ms ease',
+        maxHeight: isActive && (agent || manager || manufacture) && !positionLoading
+            ? '400px'
+            : isActive ? '200px' : '20px',
+        minHeight: isActive && (agent || manager || manufacture) && !positionLoading
+            ? '10px' : isActive ? '5px' : '1px'
+    }
     return (
         <Dialog
             modal={true}
@@ -235,7 +252,7 @@ const UsersCreateDialog = enhance((props) => {
             contentStyle={loading ? {width: '400px'} : {width: '600px'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>{isUpdate ? 'Изменить cотрудника' : 'Добавить cотрудника'}</span>
+                <span>{isUpdate ? t('Изменить cотрудника') : t('Добавить cотрудника')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -251,31 +268,31 @@ const UsersCreateDialog = enhance((props) => {
                                 <Field
                                     name="firstName"
                                     component={TextField}
-                                    label="Имя"
+                                    label={t('Имя ')}
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
                                 <Field
                                     name="secondName"
                                     component={TextField}
-                                    label="Фамилия"
+                                    label={t('Фамилия')}
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
                                 <Field
                                     name="phoneNumber"
                                     component={TextField}
-                                    label="Телефон"
+                                    label={t('Телефон')}
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
                                 <Field
                                     name="job"
                                     component={PostSearchField}
-                                    label="Должность"
+                                    label={t('Должность')}
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}/>
                                 <Field
                                     name="isActive"
                                     component={CheckBox}
-                                    label="Доступ к системе"/>
+                                    label={t('Доступ к системе')}/>
                             </Col>
                             <Col xs={5}>
                                 <Field
@@ -286,7 +303,7 @@ const UsersCreateDialog = enhance((props) => {
                             </Col>
                         </Row>
                         <div>
-                            <div className={classes.subTitle}>Организации</div>
+                            <div className={classes.subTitle}>{t('Организации')}</div>
                             {(!loading) && _.get(divisionData, 'divisionListLoading')
                                 ? <div className={classes.groupLoader}>
                                     <Loader size={0.75}/>
@@ -305,124 +322,126 @@ const UsersCreateDialog = enhance((props) => {
                                     })}
                                 </div>}
                         </div>
-                        {isActive &&
-                        <div>
-                            <Row className={classes.field}>
-                                <Col xs={6}>
-                                    <Field
-                                        name="username"
-                                        component={TextField}
-                                        label="Логин"
-                                        className={classes.inputFieldCustom}
-                                        fullWidth={true}/>
-                                    <Field
-                                        name="position"
-                                        component={PositionSearchField}
-                                        label="Права доступа"
-                                        fullWidth={true}/>
-                                </Col>
-                                <Col xs={6}>
-                                    <Field
-                                        name="password"
-                                        component={TextField}
-                                        type="password"
-                                        label={isUpdate ? 'Изменить пароль' : 'Пароль'}
-                                        className={classes.inputFieldCustom}
-                                        fullWidth={true}/>
-                                    <Field
-                                        name="passwordExp"
-                                        errorText={show ? errorText : ''}
-                                        type="password"
-                                        component={TextField}
-                                        label="Подтвердите пароль"
-                                        className={classes.inputFieldCustom}
-                                        fullWidth={true}/>
-                                </Col>
-                            </Row>
-                            {positionLoading &&
-                            <div className={classes.groupLoader}>
-                                <Loader size={0.75}/>
-                            </div>}
-                            {(agent || manager || manufacture) && !positionLoading &&
+                        <div style={transStyle}>
+                            {isActive &&
                             <div>
-                                <div className={classes.subTitle}>{multiStock ? 'Связанные склады' : 'Связанный склад'}</div>
-                                {(!loading) && _.get(stockListData, 'stockListLoading')
-                                    ? <div className={classes.groupLoader}>
-                                        <Loader size={0.75}/>
-                                    </div>
-                                    : (multiStock)
-                                        ? <div className={classes.stocksCheckList}>
-                                            {_.map(_.get(stockListData, 'data'), (item, index) => {
-                                                const name = _.get(item, 'name')
-                                                const id = _.get(item, 'id')
-                                                return (
+                                <Row className={classes.field}>
+                                    <Col xs={6}>
+                                        <Field
+                                            name="username"
+                                            component={TextField}
+                                            label={t('Логин')}
+                                            className={classes.inputFieldCustom}
+                                            fullWidth={true}/>
+                                        <Field
+                                            name="position"
+                                            component={PositionSearchField}
+                                            label={t('Права доступа')}
+                                            fullWidth={true}/>
+                                    </Col>
+                                    <Col xs={6}>
+                                        <Field
+                                            name="password"
+                                            component={TextField}
+                                            type="password"
+                                            label={isUpdate ? t('Изменить пароль') : t('Пароль')}
+                                            className={classes.inputFieldCustom}
+                                            fullWidth={true}/>
+                                        <Field
+                                            name="passwordExp"
+                                            errorText={show ? errorText : ''}
+                                            type="password"
+                                            component={TextField}
+                                            label={t('Подтвердите пароль')}
+                                            className={classes.inputFieldCustom}
+                                            fullWidth={true}/>
+                                    </Col>
+                                </Row>
+                                {positionLoading &&
+                                <div className={classes.groupLoader}>
+                                    <Loader size={0.75}/>
+                                </div>}
+                                {(agent || manager || manufacture) && !positionLoading &&
+                                <div>
+                                    <div className={classes.subTitle}>{multiStock ? t('Связанные склады') : t('Связанный склад')}</div>
+                                    {(!loading) && _.get(stockListData, 'stockListLoading')
+                                        ? <div className={classes.groupLoader}>
+                                            <Loader size={0.75}/>
+                                        </div>
+                                        : (multiStock)
+                                            ? <div className={classes.stocksCheckList}>
+                                                {_.map(_.get(stockListData, 'data'), (item, index) => {
+                                                    const name = _.get(item, 'name')
+                                                    const id = _.get(item, 'id')
+                                                    return (
+                                                        <Field
+                                                            key={id}
+                                                            name={'stocks[' + index + '][selected]'}
+                                                            component={CheckBox}
+                                                            label={name}/>
+                                                    )
+                                                })}
+                                            </div>
+                                            : <div className={classes.radioStock}>
+                                                <Field
+                                                    name='radioStock'
+                                                    stockList={_.get(stockListData, 'data')}
+                                                    loading={loading}
+                                                    component={UserStockRadioButtonField}/>
+                                            </div>
+                                    }
+                                 </div>}
+                                {agent && !positionLoading &&
+                                <div>
+                                    <div className={classes.subTitle}>{t('Поддерживаемый прайс лист')}</div>
+                                    <Row>
+                                        {(!loading) && _.get(marketTypeData, 'marketTypeLoading') &&
+                                        <div className={classes.groupLoader}>
+                                            <Loader size={0.75}/>
+                                        </div>}
+                                        {!_.get(marketTypeData, 'marketTypeLoading') &&
+                                        _.map(_.get(marketTypeData, 'data'), (item, index) => {
+                                            const id = _.get(item, 'id')
+                                            const name = _.get(item, 'name')
+                                            return (
+                                                <div key={id} style={{flexBasis: '33.33333%', maxWidth: '33.33333%', padding: '0 10px'}}>
                                                     <Field
-                                                        key={id}
-                                                        name={'stocks[' + index + '][selected]'}
+                                                        name={'types[' + index + '][selected]'}
                                                         component={CheckBox}
                                                         label={name}/>
-                                                )
-                                            })}
-                                        </div>
-                                        : <div className={classes.radioStock}>
-                                            <Field
-                                                name='radioStock'
-                                                stockList={_.get(stockListData, 'data')}
-                                                loading={loading}
-                                                component={UserStockRadioButtonField}/>
-                                        </div>
-                                }
-                             </div>}
-                            {agent && !positionLoading &&
-                            <div>
-                                <div className={classes.subTitle}>Поддерживаемый  прайс лист</div>
-                                <Row>
-                                    {(!loading) && _.get(marketTypeData, 'marketTypeLoading') &&
-                                    <div className={classes.groupLoader}>
-                                        <Loader size={0.75}/>
-                                    </div>}
-                                    {!_.get(marketTypeData, 'marketTypeLoading') &&
-                                    _.map(_.get(marketTypeData, 'data'), (item, index) => {
-                                        const id = _.get(item, 'id')
-                                        const name = _.get(item, 'name')
-                                        return (
-                                            <div key={id} style={{flexBasis: '33.33333%', maxWidth: '33.33333%', padding: '0 10px'}}>
-                                                <Field
-                                                    name={'types[' + index + '][selected]'}
-                                                    component={CheckBox}
-                                                    label={name}/>
-                                            </div>
-                                        )
-                                    })}
-                                </Row>
-                                <div className={classes.subTitle}>Валюты</div>
-                                <Row>
-                                    {(!loading) && _.get(currencyData, 'currencyListLoading') &&
-                                    <div className={classes.groupLoader}>
-                                        <Loader size={0.75}/>
-                                    </div>}
-                                    {!_.get(currencyData, 'currencyListLoading') &&
-                                    _.map(_.get(currencyData, 'data'), (item, index) => {
-                                        const id = _.get(item, 'id')
-                                        const name = _.get(item, 'name')
-                                        return (
-                                            <div key={id} style={{flexBasis: '33.33333%', maxWidth: '33.33333%', padding: '0 10px'}}>
-                                                <Field
-                                                    name={'currencies[' + index + '][selected]'}
-                                                    component={CheckBox}
-                                                    label={name}/>
-                                            </div>
-                                        )
-                                    })}
-                                </Row>
+                                                </div>
+                                            )
+                                        })}
+                                    </Row>
+                                    <div className={classes.subTitle}>{t('Валюты')}</div>
+                                    <Row>
+                                        {(!loading) && _.get(currencyData, 'currencyListLoading') &&
+                                        <div className={classes.groupLoader}>
+                                            <Loader size={0.75}/>
+                                        </div>}
+                                        {!_.get(currencyData, 'currencyListLoading') &&
+                                        _.map(_.get(currencyData, 'data'), (item, index) => {
+                                            const id = _.get(item, 'id')
+                                            const name = _.get(item, 'name')
+                                            return (
+                                                <div key={id} style={{flexBasis: '33.33333%', maxWidth: '33.33333%', padding: '0 10px'}}>
+                                                    <Field
+                                                        name={'currencies[' + index + '][selected]'}
+                                                        component={CheckBox}
+                                                        label={name}/>
+                                                </div>
+                                            )
+                                        })}
+                                    </Row>
+                                </div>}
                             </div>}
-                        </div>}
+                        </div>
                     </div>
                     <div className={classes.bottomButtonUsers}>
                         <div>
                         </div>
                         <FlatButton
-                            label="Сохранить"
+                            label={t('Сохранить')}
                             className={classes.actionButton}
                             labelStyle={{fontSize: '13px'}}
                             primary={true}

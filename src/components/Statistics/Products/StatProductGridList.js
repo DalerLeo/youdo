@@ -199,6 +199,7 @@ const enhance = compose(
             '& > span': {
                 display: 'flex !important',
                 alignItems: 'center',
+                minHeight: '39px',
                 justifyContent: 'space-between',
                 height: '100%'
             }
@@ -450,6 +451,7 @@ const StatProductGridList = enhance((props) => {
     }
 
     const toggle = filter.getParam('toggle') || PRODUCT
+    const parent = filter.getParam('parent') && true
     const primaryColor = '#12aaeb'
     const disabledColor = '#dadada'
     const whiteColor = '#fff'
@@ -468,7 +470,7 @@ const StatProductGridList = enhance((props) => {
             <div
                 key={index}
                 className={classes.leftTableList}
-                onClick={isProductType && !currentParent
+                onClick={isProductType && !parent
                     ? () => {
                         updateCurrentParent(name)
                         handleGetChilds(id)
@@ -477,7 +479,7 @@ const StatProductGridList = enhance((props) => {
                 style={index === currentRow ? styleOnHover : {}}
                 onMouseEnter={() => { updateRow(index) }}
                 onMouseLeave={() => { updateRow(null) }}>
-                <span>{name} {isProductType && !currentParent && <ExpandList color={'#12aaeb'}/>}</span>
+                <span>{name} {isProductType && !parent && <ExpandList color={'#12aaeb'}/>}</span>
             </div>
         )
     })
@@ -627,34 +629,34 @@ const StatProductGridList = enhance((props) => {
                                 </div>
                             </div>
                             <div className={classes.flexCenter + ' ' + classes.flexSpaceBetween}>
-                                {isProductType && currentParent &&
+                                {isProductType && parent &&
                                 <div className={classes.filtered}>
-                                    Отфильтровано по: <strong>{currentParent}</strong>
+                                    {t('Отфильтровано по')}: <strong>{currentParent}</strong>
                                     <a onClick={() => {
                                         updateCurrentParent(null)
                                         handleResetChilds()
-                                    }}>Сбросить фильтр</a>
+                                    }}>{t('Сбросить фильтр')}</a>
                                 </div>}
-                                <div className={classes.toggleWrapper} style={currentParent ? {width: 'auto'} : {width: '100%'}}>
-                                    <ToolTip position="left" text="Показать по товарам">
+                                <div className={classes.toggleWrapper} style={parent ? {width: 'auto'} : {width: '100%'}}>
+                                    <ToolTip position="left" text={t('Показать по товарам')}>
                                         <FlatButton
                                             icon={<Product color={whiteColor}/>}
                                             className={isProduct ? classes.shadowButton : ''}
                                             onTouchTap={() => {
                                                 updateCurrentParent(null)
-                                                hashHistory.push(filter.createURL({toggle: PRODUCT}))
+                                                hashHistory.push(filter.createURL({toggle: PRODUCT, parent: null}))
                                             }}
                                             backgroundColor={isProduct ? primaryColor : disabledColor}
                                             rippleColor={whiteColor}
                                             hoverColor={isProduct ? primaryColor : disabledColor}/>
                                     </ToolTip>
-                                    <ToolTip position="left" text="Показать по типам товаров">
+                                    <ToolTip position="left" text={t('Показать по типам товаров')}>
                                         <FlatButton
                                             icon={<ProductType color={whiteColor}/>}
                                             className={isProductType ? classes.shadowButton : ''}
                                             onTouchTap={() => {
                                                 updateCurrentParent(null)
-                                                hashHistory.push(filter.createURL({toggle: PRODUCT_TYPE}))
+                                                hashHistory.push(filter.createURL({toggle: PRODUCT_TYPE, parent: null}))
                                             }}
                                             backgroundColor={isProductType ? primaryColor : disabledColor}
                                             rippleColor={whiteColor}
@@ -673,7 +675,7 @@ const StatProductGridList = enhance((props) => {
                                     </div>
                                     {_.isEmpty(tableList) && !listLoading &&
                                     <div className={classes.emptyQuery}>
-                                        <div>По вашему запросу ничего не найдено</div>
+                                        <div>{t('По вашему запросу ничего не найдено')}</div>
                                     </div>}
                                     <div ref="horizontalTable">
                                         <table className={classes.mainTable}>

@@ -192,9 +192,8 @@ const NotificationGridList = enhance((props) => {
                         {_.map(_.get(item, 'users'), (user) => {
                             const userId = _.get(user, 'id')
                             const username = _.get(user, 'firstName') + ' ' + _.get(user, 'secondName')
-
                             return (
-                                <div className={classes.person}>
+                                <div className={classes.person} key={id}>
                                     {username}
                                     <div className={classes.deletePers}>
                                         <CloseIcon

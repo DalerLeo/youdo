@@ -74,7 +74,7 @@ const TransactionsFormat = enhance((props) => {
     const categoryOutput = () => {
         switch (categoryOptions) {
             case 'order': return redirect(sprintf(ROUTES.ORDER_ITEM_PATH, order), {search: order, exclude: false}, categoryName)
-            case 'supply': return redirect(sprintf(ROUTES.SUPPLY_ITEM_PATH, supply), {search: supply}, categoryName)
+            case 'supply': return supply ? redirect(sprintf(ROUTES.SUPPLY_ITEM_PATH, supply), {search: supply}, categoryName) : categoryName
             case 'client': return redirect(ROUTES.CLIENT_BALANCE_LIST_URL, {search: clientID}, categoryName)
             case 'staff_expanse': return handleOpenCategoryPopop
                 ? openDialog(handleOpenCategoryPopop, 'staff_expanse', categoryName)
@@ -93,7 +93,7 @@ const TransactionsFormat = enhance((props) => {
 
             case TRANS_TYPE.TO_TRANSFER: return <span>{t('Перевод на кассу')}</span>
 
-            case TRANS_TYPE.ORDER: return redirect(sprintf(ROUTES.ORDER_ITEM_PATH, order), {search: order, exclude: false}, 'Оплата заказа №' + order)
+            case TRANS_TYPE.ORDER: return redirect(sprintf(ROUTES.ORDER_ITEM_PATH, order), {search: order, exclude: false}, t('Оплата заказа') + ' № ' + order)
 
             case TRANS_TYPE.INCOME: return <span>{t('Приход')}</span>
 
@@ -107,10 +107,10 @@ const TransactionsFormat = enhance((props) => {
                 ? <Link onClick={handleClickAgentIncome}><strong>{t('Приемка наличных с агента')} {userName}</strong></Link>
                 : redirect(ROUTES.TRANSACTION_LIST_URL, {[TRANSACTION_INFO_OPEN]: id}, t('Приемка наличных с агента') + ' ' + userName)
 
-            case TRANS_TYPE.OUTCOME_FOR_SUPPLY_EXPANSE: return <span>{t('Расход на поставку')}{redirect(sprintf(ROUTES.SUPPLY_ITEM_PATH, supply), {search: supply}, '№' + supply)}</span>
+            case TRANS_TYPE.OUTCOME_FOR_SUPPLY_EXPANSE: return <span>{t('Расход на поставку')}{redirect(sprintf(ROUTES.SUPPLY_ITEM_PATH, supply), {search: supply}, ' № ' + supply)}</span>
 
-            case TRANS_TYPE.SUPPLY_EXPENCE: return <span>{t('Доп. расход')} {supplyExpanseId ? '№' + supplyExpanseId : ''} {t('на поставку')}
-                {redirect(sprintf(ROUTES.SUPPLY_ITEM_PATH, supply), {search: supply}, '№' + supply)}</span>
+            case TRANS_TYPE.SUPPLY_EXPENCE: return <span>{t('Доп. расход')} {supplyExpanseId ? ' № ' + supplyExpanseId : ''} {t('на поставку')}
+                {redirect(sprintf(ROUTES.SUPPLY_ITEM_PATH, supply), {search: supply}, ' № ' + supply)}</span>
 
             default: return null
         }

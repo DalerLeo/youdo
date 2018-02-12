@@ -92,7 +92,7 @@ const enhance = compose(
             paddingTop: '25px',
             '& > div': {
                 marginTop: '140px',
-                fontSize: '15px',
+                fontSize: '13px',
                 width: '50%',
                 textAlign: 'center'
             }

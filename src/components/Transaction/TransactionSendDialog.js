@@ -91,6 +91,7 @@ const enhance = compose(
     })
 )
 
+const ONE = 1
 const HUNDRED = 100
 const TransactionSendDialog = enhance((props) => {
     const {open, loading, handleSubmit, onClose, classes, cashboxData, chosenCashboxId, amountFrom, rate, amountFromPersent, amountToPersent, noCashbox, currentCashbox} = props
@@ -99,16 +100,18 @@ const TransactionSendDialog = enhance((props) => {
     const cashboxId = noCashbox ? _.get(currentCashbox, 'id') : _.get(cashboxData, 'cashboxId')
     const cashbox = _.find(_.get(cashboxData, 'data'), {'id': cashboxId})
     const chosenCashbox = _.find(_.get(cashboxData, 'data'), {'id': _.toInteger(chosenCashboxId)})
-    const courseOrPersent = _.get(cashbox, ['currency', 'name']) === _.get(chosenCashbox, ['currency', 'name']) && _.get(cashbox, 'type') !== _.get(chosenCashbox, 'type')
+    const sameCurrencyDiffType = _.get(cashbox, ['currency', 'name']) === _.get(chosenCashbox, ['currency', 'name']) && _.get(cashbox, 'type') !== _.get(chosenCashbox, 'type')
+    const sameCurrencyType = _.get(cashbox, ['currency', 'name']) === _.get(chosenCashbox, ['currency', 'name']) && _.get(cashbox, 'type') === _.get(chosenCashbox, 'type')
+    const diffCurrency = _.get(cashbox, ['currency', 'name']) !== _.get(chosenCashbox, ['currency', 'name'])
     const chosenCurrencyId = _.get(chosenCashbox, ['currency', 'id'])
     const currentCurrencyName = _.get(cashbox, ['currency', 'name'])
     const chosenCurrencyName = _.get(chosenCashbox, ['currency', 'name'])
     const convertedAmount = primaryCurrency === currentCurrencyName
         ? _.toNumber(numberWithoutSpaces(amountFrom)) * _.toNumber(numberWithoutSpaces(rate))
-        : _.toNumber(numberWithoutSpaces(amountFrom)) / _.toNumber(numberWithoutSpaces(rate))
+        : _.toNumber(numberWithoutSpaces(amountFrom)) / _.toNumber(numberWithoutSpaces(diffCurrency ? rate : ONE))
     const customRatePersent = _.toNumber(numberWithoutSpaces(amountFromPersent)) * _.toNumber(numberWithoutSpaces(amountToPersent)) / HUNDRED
     const ROUND_VAL = 5
-    const onSubmit = handleSubmit(() => props.onSubmit(courseOrPersent && amountToPersent).catch(validate))
+    const onSubmit = handleSubmit(() => props.onSubmit(sameCurrencyDiffType && amountToPersent, sameCurrencyType).catch(validate))
 
     return (
         <Dialog
@@ -152,7 +155,7 @@ const TransactionSendDialog = enhance((props) => {
                                 cashbox={cashbox}
                                 label={t('Касса получатель')}
                                 fullWidth={true}/>
-                            {!courseOrPersent &&
+                            {!sameCurrencyDiffType &&
                             <div>
                                 <div className={classes.flex} style={{justifyContent: 'space-between'}}>
                                     <div style={{display: 'flex', alignItems: 'baseline', width: '48%'}}>
@@ -165,7 +168,7 @@ const TransactionSendDialog = enhance((props) => {
                                             fullWidth={true}/>}
                                         <span style={{marginLeft: '10px'}}>{currentCurrencyName}</span>
                                     </div>
-                                    {chosenCurrencyId &&
+                                    {chosenCurrencyId && diffCurrency &&
                                     <div style={{display: 'flex', alignItems: 'baseline', width: '48%'}}>
                                         <Field
                                             name="rate"
@@ -176,13 +179,13 @@ const TransactionSendDialog = enhance((props) => {
                                             fullWidth={true}/>
                                     </div>}
                                 </div>
-                                {(amountFrom && rate) &&
+                                {(amountFrom && (rate || !diffCurrency)) &&
                                 <div style={{padding: '10px 0'}}>
-                                    Сумма перевода: <strong>{numberFormat(_.round(convertedAmount, ROUND_VAL), chosenCurrencyName)}</strong>
+                                    {t('Сумма перевода')}: <strong>{numberFormat(_.round(convertedAmount, ROUND_VAL), chosenCurrencyName)}</strong>
                                 </div>}
                             </div>
                             }
-                            {courseOrPersent &&
+                            {sameCurrencyDiffType &&
                             <div>
                                 <div className={classes.flex} style={{justifyContent: 'space-between'}}>
                                     <div style={{display: 'flex', alignItems: 'baseline', width: '48%'}}>
@@ -208,7 +211,7 @@ const TransactionSendDialog = enhance((props) => {
                                 </div>
                                 {(amountFromPersent && amountToPersent) &&
                                 <div style={{padding: '10px 0'}}>
-                                    Касса <i>{_.get(chosenCashbox, 'name')}</i> получает: <strong>{numberFormat(_.round(customRatePersent, ROUND_VAL), chosenCurrencyName)} </strong>
+                                    {t('Касса')} <i>{_.get(chosenCashbox, 'name')}</i> {t('получает')}: <strong>{numberFormat(_.round(customRatePersent, ROUND_VAL), chosenCurrencyName)} </strong>
                                 </div>}
                             </div>
                             }

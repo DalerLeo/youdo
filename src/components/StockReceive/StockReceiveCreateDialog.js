@@ -202,7 +202,7 @@ const OrderCreateDialog = enhance((props) => {
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>{isUpdate ? t('ИЗМЕНИТЬ ПРИЕМКУ ТОВАРА') : 'ПРИЕМКА ТОВАРА'} (Заказ №${supplyId})</span>
+                <span>{isUpdate ? t('ИЗМЕНИТЬ ПРИЕМКУ ТОВАРА') : 'ПРИЕМКА ТОВАРА'} ({t('Заказ')} №${supplyId})</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -230,8 +230,8 @@ const OrderCreateDialog = enhance((props) => {
                                             </div>
                                         </ToolTip>
                                     </Col>
-                                    <Col xs={2}>Принято</Col>
-                                    <Col xs={2}>Брак</Col>
+                                    <Col xs={2}>{t('Принято')}</Col>
+                                    <Col xs={2}>{t('Брак')}</Col>
                                 </Row>
                                 {_.map(products, (item, index) => {
                                     const disable = Boolean(stock[index])
@@ -248,7 +248,7 @@ const OrderCreateDialog = enhance((props) => {
                                             <Col xs={2}>{amount} {measurement}</Col>
                                             {isUpdate
                                                 ? <Col xs={1}>
-                                                    <ToolTip position="left" text='Без браков'>
+                                                    <ToolTip position="left" text={t('Без браков')}>
                                                         <Field
                                                             key={id}
                                                             name={'stocks[' + index + '][selected]'}
@@ -256,7 +256,7 @@ const OrderCreateDialog = enhance((props) => {
                                                     </ToolTip>
                                                 </Col>
                                                 : <Col xs={1}>
-                                                    <ToolTip position="left" text='Без браков'>
+                                                    <ToolTip position="left" text={t('Без браков')}>
                                                         <div>
                                                             <Field
                                                                 key={id}

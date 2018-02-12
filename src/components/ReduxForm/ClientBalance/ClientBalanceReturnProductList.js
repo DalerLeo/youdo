@@ -12,6 +12,7 @@ import numberFormat from '../../../helpers/numberFormat'
 import getConfig from '../../../helpers/getConfig'
 import toBoolean from '../../../helpers/toBoolean'
 import numberWithoutSpaces from '../../../helpers/numberWithoutSpaces'
+import checkPermission from '../../../helpers/checkPermission'
 import {
     Table,
     TableBody,
@@ -144,12 +145,14 @@ const enhance = compose(
     }),
     connect((state) => {
         const currency = _.get(state, ['form', 'ReturnCreateForm', 'values', 'currency', 'text'])
+        const client = _.get(state, ['form', 'ReturnCreateForm', 'values', 'client', 'value'])
         const measurement = _.get(state, ['form', 'ReturnCreateForm', 'values', 'product', 'value', 'measurement', 'name'])
-        const market = _.get(state, ['form', 'ReturnCreateForm', 'values', 'market', 'value']) || _.get(state, ['form', 'ReturnCreateForm', 'values', 'client', 'value'])
+        const market = _.get(state, ['form', 'ReturnCreateForm', 'values', 'market', 'value'])
         return {
             currency,
             measurement,
-            market
+            market,
+            client
         }
     }),
     withReducer('state', 'dispatch', (state, action) => {
@@ -237,17 +240,18 @@ const iconStyle = {
     }
 }
 
-const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, handleEdit, handleRemove, editItem, setEditItem, measurement, isUpdate, editOnlyCost, market, currency, handleOpenAddProduct, ...defaultProps}) => {
+const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, handleEdit, handleRemove, editItem, setEditItem, measurement, isUpdate, editOnlyCost, market, currency, client, handleOpenAddProduct, ...defaultProps}) => {
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
     const error = _.get(defaultProps, ['products', 'meta', 'error'])
     const configMarkets = toBoolean(getConfig('MARKETS_MODULE'))
+    const canSetPrice = checkPermission('can_set_any_price')
     const withMarket = configMarkets ? market : true
     return (
         <div className={classes.wrapper}>
             <div>
                 <div className={classes.headers} style={{marginTop: '-10px'}}>
                     <div className={classes.title}>{t('Список товаров')}</div>
-                    {!isUpdate && (withMarket && currency) &&
+                    {!isUpdate && (withMarket && currency && client) &&
                     <div>
                         <FlatButton
                             label={'+ ' + t('добавить товар')}
@@ -353,51 +357,37 @@ const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, h
                             const cost = _.toNumber(_.get(item, 'cost'))
                             const amount = _.toNumber(_.get(item, 'amount'))
 
-                            if (editItem === index && !editOnlyCost) {
+                            if (editItem === index) {
                                 return (
                                     <TableRow key={index} className={classes.tableRow}>
                                         <TableRowColumn>
                                             {product}
                                         </TableRowColumn>
                                         <TableRowColumn>
-                                            <TextField
+                                            {!editOnlyCost
+                                                // If RETURN NOT COMPLETED can change amount otherwise only PRICE
+                                            ? <TextField
                                                 hintText={amount}
                                                 className={classes.inputFieldCustom}
                                                 fullWidth={true}
                                                 {..._.get(defaultProps, 'editAmount')}
                                             />
+                                            : <TableRowColumn>{amount} {itemMeasurement}</TableRowColumn>
+                                            }
                                         </TableRowColumn>
                                         <TableRowColumn>
-                                            <TextField
+
+                                            {canSetPrice
+                                                // If permission granted PRICE can be changed otherwise only AMOUNT
+                                            ? <TextField
                                                 hintText={cost}
                                                 className={classes.inputFieldCustom}
                                                 fullWidth={true}
                                                 {..._.get(defaultProps, 'editCost')}
                                             />
-                                        </TableRowColumn>
-                                        <TableRowColumn>{numberFormat(cost * amount, currency)}</TableRowColumn>
-                                        <TableRowColumn style={{textAlign: 'right'}}>
-                                            <IconButton
-                                                onTouchTap={() => { handleEdit(index) }}>
-                                                <Check color="#12aaeb"/>
-                                            </IconButton>
-                                        </TableRowColumn>
-                                    </TableRow>
-                                )
-                            } else if (editItem === index && editOnlyCost) {
-                                return (
-                                    <TableRow key={index} className={classes.tableRow}>
-                                        <TableRowColumn>
-                                            {product}
-                                        </TableRowColumn>
-                                        <TableRowColumn>{amount} {itemMeasurement}</TableRowColumn>
-                                        <TableRowColumn>
-                                            <TextField
-                                                hintText={cost}
-                                                className={classes.inputFieldCustom}
-                                                fullWidth={true}
-                                                {..._.get(defaultProps, 'editCost')}
-                                            />
+                                            : <TableRowColumn>{numberFormat(cost, currency)}</TableRowColumn>
+
+                                            }
                                         </TableRowColumn>
                                         <TableRowColumn>{numberFormat(cost * amount, currency)}</TableRowColumn>
                                         <TableRowColumn style={{textAlign: 'right'}}>
@@ -443,7 +433,7 @@ const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, h
                         <img src={Groceries} alt=""/>
                         {isUpdate
                             ? <div>{t('Список возвращаемого товара пуст')}.</div>
-                            : (market && currency)
+                            : (withMarket && currency && client)
                                 ? <div>{t('Вы еще не выбрали ни одного товара')}. <br/> <a onClick={() => dispatch({open: !state.open})}>{t('Добавить')}</a> {t('товар')}?</div>
                                 : <div>{t('Для добавления товаров')} <br/>{t('выберите магазин и прайс-лист')}.</div>}
                     </div>

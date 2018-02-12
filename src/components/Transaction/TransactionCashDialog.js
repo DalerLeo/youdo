@@ -329,7 +329,7 @@ const TransactionCashDialog = enhance((props) => {
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>
             <div className={classes.titleContent}>
-                <span>Принять наличные</span>
+                <span>{t('Принять наличные')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -386,10 +386,10 @@ const TransactionCashDialog = enhance((props) => {
                                             <Row className={classes.detailsRow}>
                                                 <Col xs={1}>№</Col>
                                                 <Col xs={hasMarket ? TWO : THREE}>{t('Клиент')}</Col>
-                                                {hasMarket && <Col xs={2}>Магазин</Col>}
+                                                {hasMarket && <Col xs={2}>{t('Магазин')}</Col>}
                                                 <Col xs={2}>{t('Организация')}</Col>
                                                 <Col xs={hasMarket ? ONE : THREE}>{t('Заказ')}</Col>
-                                                <Col xs={1}>Дата</Col>
+                                                <Col xs={1}>{t('Дата')}</Col>
                                                 <Col xs={2} style={{textAlign: 'right', paddingRight: '0'}}>{t('Сумма')}</Col>
                                                 <Col xs={1}> </Col>
                                             </Row>

@@ -13,6 +13,7 @@ import {googleMapStyle} from '../../constants/googleMapsStyle'
 import Location from '../Images/market-green.png'
 import MarketOff from '../Images/market-red.png'
 import Checkbox from 'material-ui/Checkbox'
+import t from '../../helpers/translate'
 const MARKER_SIZE = 30
 const ZERO = 0
 const INFO_WINDOW_OFFSET = -7
@@ -146,7 +147,7 @@ export default class GoogleCustomMap extends React.Component {
                 animation: google.maps.Animation.DROP,
                 map: this.map
             })
-            const info = '<div><p><b>Название:</b> ' + item.name + '</p><p><b>Адрес:</b> ' + item.address + '</p></div>'
+            const info = `<div><p><b>${t('Название')}:</b> ${item.name} </p><p><b> ${t('Адрес')}:</b> ${item.address} </p></div>`
             const infoWindow = new google.maps.InfoWindow({
                 content: info,
                 pixelOffset: new google.maps.Size(INFO_WINDOW_OFFSET, ZERO)
@@ -475,7 +476,7 @@ export default class GoogleCustomMap extends React.Component {
             <div style={{height: '100%', width: '100%', overflow: 'hidden'}}>
                 <div style={marker}>
                     <Checkbox
-                        label="Магазины"
+                        label={t('Магазины')}
                         checked={this.state.showMarkets}
                         onCheck={this.updateCheck.bind(this)}
                         style={styles}
@@ -525,7 +526,7 @@ export default class GoogleCustomMap extends React.Component {
                     onClose={deleteZone.handleCloseDeleteZone}
                     onSubmit={deleteZone.handleSendDeleteZone}
                     deleteZone={this.handleDeleteZone}
-                    message="Удалить выбранную зону?"
+                    message={t('Удалить выбранную зону?')}
                     type="submit"
 
                 />

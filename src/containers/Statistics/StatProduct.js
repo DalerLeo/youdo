@@ -56,18 +56,20 @@ const enhance = compose(
     }),
     withPropsOnChange((props, nextProps) => {
         return props.filter.filterRequest() !== nextProps.filter.filterRequest()
-    }, ({dispatch, filter}) => {
+    }, ({dispatch, filter, filterProductType}) => {
         const toggle = filter.getParam('toggle') || PRODUCT
         return toggle === PRODUCT
             ? dispatch(statProductListFetchAction(filter))
-            : dispatch(statProductTypeListFetchAction(filter))
+            : dispatch(statProductTypeListFetchAction(filterProductType))
     }),
 
     withPropsOnChange((props, nextProps) => {
         const except = {
             page: null,
             pageSize: null,
-            search: null
+            search: null,
+            ordering: null,
+            parent: null
         }
         return props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
@@ -105,17 +107,21 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({search: term})})
         },
         handleGetDocument: props => () => {
-            const {filter} = props
+            const {filter, location: {query}, filterProductType} = props
+            const toggle = _.get(query, 'toggle') || PRODUCT
             const params = serializers.listFilterSerializer(filter.getParams())
-            getDocuments(API.STAT_PRODUCT_GET_DOCUMENT, params)
+            const typeParams = serializers.listFilterSerializer(filterProductType.getParams())
+            return toggle === PRODUCT
+                ? getDocuments(API.STAT_PRODUCT_GET_DOCUMENT, params)
+                : getDocuments(API.STAT_PRODUCT_TYPE_GET_DOCUMENT, typeParams)
         },
         handleGetChilds: props => (id) => {
-            const {dispatch, filterProductType} = props
-            return dispatch(statProductTypeListFetchAction(filterProductType, id))
+            const {filterProductType, location: {pathname}} = props
+            hashHistory.push({pathname, query: filterProductType.getParams({parent: id})})
         },
         handleResetChilds: props => () => {
-            const {dispatch, filterProductType} = props
-            return dispatch(statProductTypeListFetchAction(filterProductType))
+            const {filterProductType, location: {pathname}} = props
+            hashHistory.push({pathname, query: filterProductType.getParams({parent: null})})
         }
     })
 )

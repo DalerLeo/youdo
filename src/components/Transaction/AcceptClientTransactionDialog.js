@@ -10,6 +10,7 @@ import Loader from '../Loader'
 import IconButton from 'material-ui/IconButton'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import AcceptClientTransactionCashBoxSearchField from '../ReduxForm/Cashbox/AcceptClientTransactionCashBoxSearchField'
+import {DateField} from '../ReduxForm'
 import FlatButton from 'material-ui/FlatButton'
 import numberFormat from '../../helpers/numberFormat'
 import t from '../../helpers/translate'
@@ -56,6 +57,24 @@ const enhance = compose(
             },
             '& input': {
                 marginTop: '0 !important'
+            }
+        },
+        inputDateCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            },
+            '& div:first-child': {
+                height: '45px !important'
             }
         },
         popUp: {
@@ -177,6 +196,13 @@ const AcceptClientTransactionDialog = enhance((props) => {
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}
                                     label={t('Кассы')}
+                                />
+                                <Field
+                                    name="date"
+                                    component={DateField}
+                                    className={classes.inputDateCustom}
+                                    fullWidth={true}
+                                    label={t('Дата')}
                                 />
                             </div>
                         </div>

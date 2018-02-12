@@ -16,6 +16,7 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import Draw from 'material-ui/svg-icons/action/timeline'
 import Touch from 'material-ui/svg-icons/action/touch-app'
 import {hashHistory} from 'react-router'
+import t from '../../helpers/translate'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -127,10 +128,10 @@ const AddZonePopup = enhance((props) => {
                         name="zoneName"
                         component={TextField}
                         className={classes.inputFieldCustom}
-                        label="Наименование зоны"
+                        label={t('Наименование зоны')}
                         fullWidth={true}/>
                     <div className={classes.buttons}>
-                        <ToolTip text="Режим рисования" position="bottom">
+                        <ToolTip text={t('Режим рисования')} position="bottom">
                             <IconButton
                                 disableTouchRipple={true}
                                 className={isDrawing ? classes.activeButton : classes.button}
@@ -139,7 +140,7 @@ const AddZonePopup = enhance((props) => {
                             </IconButton>
                         </ToolTip>
 
-                        <ToolTip text="Обычный режим" position="bottom">
+                        <ToolTip text={t('Обычный режим')} position="bottom">
                             <IconButton
                                 disableTouchRipple={true}
                                 className={!isDrawing ? classes.activeButton : classes.button}
@@ -148,7 +149,7 @@ const AddZonePopup = enhance((props) => {
                             </IconButton>
                         </ToolTip>
 
-                        {!update && <ToolTip text="Очистить" position="bottom">
+                        {!update && <ToolTip text={t('Очистить')} position="bottom">
                             <IconButton>
                                 <DeleteIcon color="#666"
                                 onTouchTap={() => { handleClearDrawing() }}
@@ -157,7 +158,7 @@ const AddZonePopup = enhance((props) => {
                         </ToolTip>}
                     </div>
                     <FlatButton
-                        label="Сохранить"
+                        label={t('Сохранить')}
                         labelStyle={{fontSize: '13px'}}
                         className={classes.actionButton}
                         primary={true}
@@ -167,7 +168,7 @@ const AddZonePopup = enhance((props) => {
             </Paper>
 
             <div className={classes.addZoneClose}>
-                <ToolTip position="left" text="Закрыть">
+                <ToolTip position="left" text={t('Закрыть')}>
                     <FloatingActionButton
                         mini={true}
                         zDepth={1}

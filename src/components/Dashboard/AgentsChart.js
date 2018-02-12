@@ -5,6 +5,7 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import ReactHighcharts from 'react-highcharts'
 import getConfig from '../../helpers/getConfig'
+import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -19,28 +20,15 @@ const AgentsChart = enhance((props) => {
         returnsData,
         factsData
     } = props
-    const ONE = 1
-    const TWO = 2
-    const THREE = 3
-    const FOUR = 4
-    const FIVE = 5
     const agentsCount = _.get(agentsList, 'length')
-    const getChartHeight = () => {
-        switch (agentsCount) {
-            case ONE: return '100'
-            case TWO: return '150'
-            case THREE: return '200'
-            case FOUR: return '250'
-            case FIVE: return '300'
-            default: return '400'
-        }
-    }
+    const initialHeight = 100
+    const heightPerItem = 60
 
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const config = {
         chart: {
             type: 'bar',
-            height: _.toInteger(getChartHeight())
+            height: initialHeight + (agentsCount * heightPerItem)
         },
         title: {
             text: '',
@@ -49,7 +37,14 @@ const AgentsChart = enhance((props) => {
             }
         },
         legend: {
-            enabled: false
+            enabled: true,
+            itemStyle: {
+                fontWeight: 600,
+                fontFamily: 'Open Sans',
+                fontSize: 11
+            },
+            symbolHeight: 9,
+            symbolWidth: 9
         },
         credits: {
             enabled: false
@@ -88,27 +83,19 @@ const AgentsChart = enhance((props) => {
             },
             borderRadius: 0,
             borderWidth: 0,
-            enabled: true,
-            shadow: true,
-            useHTML: true,
-            crosshairs: true,
-            headerFormat: '<b>{point.x}</b><br/>',
-            pointFormat:
-            '<div>' +
-            '{series.name}: {point.y}' +
-            '</div>'
+            headerFormat: '<b>{point.x}</b><br/>'
         },
         series: [{
-            name: 'Продажи',
+            name: t('Продажи'),
             data: ordersData,
             color: '#5d6474'
         },
         {
-            name: 'Возвраты',
+            name: t('Возвраты'),
             data: returnsData,
             color: '#ff526d'
         }, {
-            name: 'Фактически',
+            name: t('Фактически'),
             data: factsData,
             color: '#12aaeb'
         }]

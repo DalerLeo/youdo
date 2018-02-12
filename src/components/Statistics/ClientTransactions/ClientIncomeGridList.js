@@ -314,13 +314,13 @@ const ClientIncomeGridList = enhance((props) => {
                     {type && <div>
                         <ClientBalanceFormat type={type} order={orderId} orderReturn={orderReturnId}/>
                     </div>}
-                    {comment && <div><strong>Комментарий:</strong> {comment}</div>}
+                    {comment && <div><strong>{t('Комментарий')}:</strong> {comment}</div>}
                 </Col>
                 <Col xs={2} style={{textAlign: 'right'}}>
                     <div className={amount > ZERO ? classes.green : (amount === ZERO ? '' : classes.red)}>
                         <div className={classes.payment}>
                             {numberFormat(amount, currency)}
-                            <ToolTip position="bottom" text={paymentType === 'bank' ? 'банковский счет' : 'наличные'}>
+                            <ToolTip position="bottom" text={paymentType === 'bank' ? t('банковский счет') : t('наличные')}>
                                 {paymentType === 'bank'
                                     ? <BankPayment style={{height: '18px', width: '18px', color: '#6261b0'}}/>
                                     : <CashPayment style={{height: '18px', width: '18px', color: '#12aaeb'}}/>}
@@ -411,7 +411,7 @@ const ClientIncomeGridList = enhance((props) => {
                                 </Col>
                             </Row>}
                         <div className={classes.pagination}>
-                            <div><b>История транзакции</b></div>
+                            <div><b>{t('История транзакции')}</b></div>
                             <form onSubmit={handleSubmit(handleSubmitFilterDialog)}>
                                 <Field
                                     className={classes.inputFieldCustom}

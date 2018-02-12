@@ -97,6 +97,7 @@ export const SHOP_SET_PRIMARY_IMAGE = `/${SHOP}/%d/set_primary_image/`
 export const SHOP_ITEM_SHOW_IMAGE = 'main/file/%d/'
 export const SHOP_ITEM_DELETE_IMAGE = `/${SHOP}/%d/images/%d/`
 export const SHOP_DELETE = `/${SHOP}/%d/`
+export const SHOP_MULTI_UPDATE = `/${SHOP}/bulk_update/`
 
 export const USERS = 'main/crud'
 export const USERS_CREATE = `/${USERS}/`
@@ -136,6 +137,7 @@ export const SUPPLY_ITEM = `/${SUPPLY}/%d/`
 export const SUPPLY_DEFECT = `/${SUPPLY}/%d/product_detail/%d/`
 export const SUPPLY_CANCEL = `/${SUPPLY}/cancel`
 export const SUPPLY_SYNC = `/${SUPPLY}/%d/update_amount/`
+export const SUPPLY_TRANSACTIONS = 'finance/provider_debt_separations/'
 
 export const PRICES = 'market/promotion'
 export const PRICES_CREATE = `/${PRICES}/`
@@ -163,6 +165,7 @@ export const ORDER_SALES_PRINT = '/stock/delivery_products/custom_releases/'
 export const ORDER_SALES_RELEASE = '/stock/delivery_products/custom_release/export'
 export const ORDER_CANCEL = `/${ORDER}/%d/cancel/`
 export const ORDER_EXCEL = `/${ORDER}/download_invoice/`
+export const ORDER_CHECK_DELIVERY = `/${ORDER}/delivered/`
 export const GET_DOCUMENT = 'order_document/%d/'
 
 export const SUPPLY_EXPENSE = 'stock/supply_expanse'
@@ -293,18 +296,31 @@ export const STAT_CLIENT_INCOME = 'stats/client_transactions'
 export const STAT_CLIENT_INCOME_LIST = `/${STAT_CLIENT_INCOME}/`
 export const STAT_CLIENT_INCOME_GET_DOCUMENT = '/sales/client_transaction/export/'
 
+export const REMAINDER = 'stock'
+export const REMAINDER_LIST = `/${REMAINDER}/all_balances/`
+export const REMAINDER_ITEM = 'stock/stock/balances_by_product/%d/'
+export const REMAINDER_TRANSFER = '/stock/stock_transfer/wb_create/'
+export const REMAINDER_DISCARD = '/stock/writeoff/'
+export const REMAINDER_RESERVED = '/stock/reserved_product/'
+
 export const MANUFACTURE_PRODUCT = 'manufacture/create_ingredient'
 export const MANUFACTURE_PRODUCT_CREATE = `/${MANUFACTURE_PRODUCT}/`
 export const MANUFACTURE_PRODUCT_LIST = `/${MANUFACTURE_PRODUCT}/`
 export const MANUFACTURE_PRODUCT_DELETE = 'manufacture/delete_ingredient/%d/'
 export const MANUFACTURE_PRODUCT_CHANGE = '/main/product/%d/change_manufacture/'
 
+export const SHIPMENT_PRODUCTS = 'manufacture/manufacture_return'
+export const SHIPMENT_MATERIALS = 'manufacture/manufacture_writeoff'
 export const SHIPMENT = 'staff/personal_rotation'
 export const SHIPMENT_LIST = `/${SHIPMENT}/`
 export const SHIPMENT_ITEM = `/${SHIPMENT}/%d/`
 export const SHIPMENT_LOGS = '/manufacture/logs/'
-export const SHIPMENT_PRODUCTS_LIST = '/manufacture/manufacture_return/review/'
-export const SHIPMENT_MATERIALS_LIST = '/manufacture/manufacture_writeoff/review/'
+export const SHIPMENT_PRODUCTS_LIST = `/${SHIPMENT_PRODUCTS}/review/`
+export const SHIPMENT_MATERIALS_LIST = `/${SHIPMENT_MATERIALS}/review/`
+export const SHIPMENT_ADD_PRODUCTS_LIST = `/${PRODUCT}/`
+export const SHIPMENT_ADD_RAW_LIST = `${REMAINDER_LIST}`
+export const SHIPMENT_ADD_PRODUCTS_CREATE = `/${SHIPMENT_PRODUCTS}/wb_create/`
+export const SHIPMENT_ADD_RAW_CREATE = `/${SHIPMENT_MATERIALS}/wb_create/`
 
 export const MARKET_TYPE = 'market/market_type'
 export const MARKET_TYPE_CREATE = `/${MARKET_TYPE}/`
@@ -350,13 +366,6 @@ export const TRACKING_ITEM = `${TRACKING}/%d/`
 export const MARKETS_LOCATION = `${SHOP}/locations/`
 export const LOCATION_LIST = 'market/location/'
 
-export const REMAINDER = 'stock'
-export const REMAINDER_LIST = `/${REMAINDER}/all_balances/`
-export const REMAINDER_ITEM = 'stock/stock/balances_by_product/%d/'
-export const REMAINDER_TRANSFER = '/stock/stock_transfer/wb_create/'
-export const REMAINDER_DISCARD = '/stock/writeoff/'
-export const REMAINDER_RESERVED = '/stock/reserved_product/'
-
 export const STAT_AGENT_LIST = 'stats/agents/statistics/all/'
 export const STAT_AGENT_SUM = 'stats/agents/statistics/all/sum/'
 export const STAT_AGENT_ITEM = 'sales/order/'
@@ -366,9 +375,11 @@ export const STAT_PROVIDER_LIST = 'stock/provider_balances/'
 export const STAT_PROVIDER_ITEM = 'finance/provider_transactions/'
 export const STAT_PROVIDER_SUM = 'stats/provider/balances/'
 export const STAT_PROVIDER_DETAIL = 'stock/provider_balances/%d/detail/'
+export const STAT_PROVIDER_GET_DOCUMENT = '/stock/provider_balances/export/'
 
 export const STAT_PROVIDER_TRANSACTIONS_LIST = 'finance/provider_transactions/'
 export const STAT_PROVIDER_TRANSACTIONS_SUM = 'stats/provider_transactions/'
+export const STAT_PROVIDER_TRANSACTIONS_GET_DOCUMENT = '/finance/provider_transactions/export/'
 
 export const STAT_MARKET = 'stats/markets'
 export const STAT_MARKET_LIST = `${STAT_MARKET}/`
@@ -389,7 +400,7 @@ export const STAT_INCOME_LIST = 'finance/transaction/'
 
 export const STAT_OUTCOME_DATA = 'stats/transactions/'
 export const STAT_OUTCOME_LIST = 'finance/transaction/'
-export const STAT_OUTCOME_GET_DOCUMENT = '/stats/transactions/export'
+export const STAT_OUTCOME_GET_DOCUMENT = '/stats/expenses/export/'
 
 export const STAT_SALES_DATA = '/stats/orders/'
 export const STAT_SALES_STATS = '/stats/orders/statistics'
@@ -398,6 +409,7 @@ export const STAT_SALES_GET_DOCUMENT = '/sales/order/export/'
 export const STAT_PRODUCT_LIST = 'stats/products/'
 export const STAT_PRODUCT_SUM_DATA = 'stats/products/total/'
 export const STAT_PRODUCT_TYPE_LIST = 'stats/product_types/'
+export const STAT_PRODUCT_TYPE_GET_DOCUMENT = '/stats/product_types/export/'
 export const STAT_PRODUCT_GET_DOCUMENT = '/stats/products/export'
 
 export const STAT_RETURN_LIST = '/stats/order_returns/'
@@ -416,7 +428,7 @@ export const STATISTICS_CASHBOX_ITEM = `/${CASHBOX}/%d/`
 
 export const STAT_EXPENDITURE_ON_STAFF_LIST = '/stats/staff_expenses/'
 export const STAT_EXPENDITURE_ON_STAFF_ITEM = '/sales/order/'
-export const STAT_EXPENDITURE_ON_STAFFGET_DOCUMENT = '/stats/agents/export/'
+export const STAT_EXPENDITURE_ON_STAFFGET_DOCUMENT = '/stats/staff_expenses/export'
 
 export const CONTENT_TYPE_SEARCH = 'stock/barcode_history/types/'
 export const STOCK_RECEIVE = 'stock/supply'
@@ -521,6 +533,7 @@ export const RETURN_CANCEL = `${RETURN}/%d/cancel/`
 export const RETURN_CREATE_PRODUCTS = 'sales/product_sales'
 export const RETURN_CREATE_PRODUCTS_LIST = `${RETURN_CREATE_PRODUCTS}/`
 export const RETURN_CREATE_PRODUCTS_ITEM = `${RETURN_CREATE_PRODUCTS}/%d/`
+export const RETURN_PREVIEW = `${RETURN}/client_return_preview/`
 
 export const JOIN_MARKETS = 'market/merge/'
 export const JOIN_CLIENTS = 'sales/merge_clients/'

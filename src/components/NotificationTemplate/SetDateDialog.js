@@ -124,7 +124,7 @@ const SetDateDialog = enhance((props) => {
                                         name="toTime"
                                         component={TimeField}
                                         className={classes.inputFieldTime}
-                                        label="Конец"
+                                        label={t('Конец')}
                                         fullWidth={true}/>
                                 </div>
                             </div>
@@ -132,7 +132,7 @@ const SetDateDialog = enhance((props) => {
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
-                            label="Применить"
+                            label={t('Применить')}
                             className={classes.actionButton}
                             labelStyle={{fontSize: '13px'}}
                             type="submit"

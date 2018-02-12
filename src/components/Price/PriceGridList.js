@@ -23,6 +23,7 @@ import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat'
 import dataFormat from '../../helpers/dateFormat'
 import t from '../../helpers/translate'
+import FlatButton from 'material-ui/FlatButton'
 
 const listHeader = [
     {
@@ -94,7 +95,7 @@ const enhance = compose(
         excelButton: {
             position: 'absolute',
             top: '0',
-            right: '50px',
+            right: '0',
             display: 'flex',
             alignItems: 'center',
             height: '60px',

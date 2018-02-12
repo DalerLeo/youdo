@@ -18,6 +18,7 @@ import {
     DivisionMultiSearchField
 } from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
+import t from '../../helpers/translate'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
 export const PENDING_EXPENSES_FILTER_OPEN = 'openFilterDialog'
@@ -130,7 +131,7 @@ const PendingExpensesFilterForm = enhance((props) => {
         if (filterCounts) {
             return (
                 <div className={classes.afterFilter}>
-                    <div>Фильтр: {filterCounts} элемента</div>
+                    <div>{t('Фильтр')}: {filterCounts} {t('элемента')}</div>
                     <div>
                         <IconButton onTouchTap={filterDialog.handleOpenFilterDialog}>
                             <BorderColorIcon color="#8f8f8f" />
@@ -148,7 +149,7 @@ const PendingExpensesFilterForm = enhance((props) => {
                 <Link
                     className={classes.arrow}
                     onTouchTap={filterDialog.handleOpenFilterDialog}>
-                    <div>Показать фильтр <KeyboardArrowDown color="#12aaeb" /></div>
+                    <div>{t('Показать фильтр')} <KeyboardArrowDown color="#12aaeb" /></div>
                 </Link>
             </div>
         )
@@ -158,7 +159,7 @@ const PendingExpensesFilterForm = enhance((props) => {
         <div>
             <Paper className={classes.wrapper} zDepth={2}>
                 <div className={classes.header}>
-                    <span className={classes.title}>Фильтр</span>
+                    <span className={classes.title}>{t('Фильтр')}</span>
                     <IconButton onTouchTap={filterDialog.handleCloseFilterDialog}>
                         <CloseIcon className={classes.icon} />
                     </IconButton>
@@ -168,39 +169,39 @@ const PendingExpensesFilterForm = enhance((props) => {
                         <Field className={classes.inputFieldCustom}
                                name="date"
                                component={DateToDateField}
-                               label="Диапазон дат"
+                               label={t('Диапазон дат')}
                                fullWidth={true}/>
                         <Field className={classes.inputFieldCustom}
                                name="type"
                                component={PendingExpensesTypeSearchField}
-                               label="Тип"
+                               label={t('Тип')}
                                fullWidth={true}/>
                         <Field className={classes.inputFieldCustom}
                                name="paymentType"
                                component={PaymentTypeSearchField}
-                               label="Тип оплаты"
+                               label={t('Тип оплаты')}
                                fullWidth={true}/>
                         <Field className={classes.inputFieldCustom}
                                name="provider"
                                component={ProviderMultiSearchField}
-                               label="Поставщик"
+                               label={t('Поставщик')}
                                fullWidth={true}/>
                         <Field className={classes.inputFieldCustom}
                                name="supply"
                                component={SupplyMultiSearchField}
-                               label="Поставка"
+                               label={t('Поставка')}
                                fullWidth={true}/>
                         <Field className={classes.inputFieldCustom}
                                name="division"
                                component={DivisionMultiSearchField}
-                               label="Организация"
+                               label={t('Организация')}
                                fullWidth={true}/>
                     </div>
                     <RaisedButton
                         type="submit"
                         primary={true}
                         buttonStyle={{color: '#fff'}}
-                        label="Применить"
+                        label={t('Применить')}
                         labelStyle={{fontSize: '13px'}}
                         style={{marginTop: '15px'}}>
                     </RaisedButton>

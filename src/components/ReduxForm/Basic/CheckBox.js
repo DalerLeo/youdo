@@ -2,6 +2,7 @@ import React from 'react'
 import MUICheckbox from 'material-ui/Checkbox'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
+import toBoolean from '../../../helpers/toBoolean'
 
 const checkboxStyle = {
     textAlign: 'left',
@@ -29,7 +30,7 @@ const enhance = compose(
 )
 
 const Checkbox = enhance((props) => {
-    const {classes, input, label, defaultChecked} = props
+    const {classes, input, label, defaultChecked, disabled} = props
     return (
         <MUICheckbox
             label={label}
@@ -37,7 +38,8 @@ const Checkbox = enhance((props) => {
             style={checkboxStyle}
             iconStyle={{width: '20px', height: '20px'}}
             labelStyle={{lineHeight: '20px', left: '-10px'}}
-            checked={Boolean(input.value)}
+            checked={toBoolean(input.value)}
+            disabled={disabled}
             onCheck={input.onChange}
             defaultChecked={defaultChecked}
         />)

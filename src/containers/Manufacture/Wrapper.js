@@ -16,7 +16,7 @@ const enhance = compose(
             position: 'absolute',
             top: '0',
             left: '0',
-            paddingTop: '20px',
+            padding: '20px 0',
             height: '100%',
             width: '100%',
             display: 'flex'
@@ -81,7 +81,7 @@ const ManufactureWrapper = enhance((props) => {
     return (
         <div className={classes.wrapper}>
             <ManufacturesList listData={listData} detailData={detailData} detailId={detailId} handleClick={clickDetail}/>
-            <div style={{width: 'calc(100% - 280px)', marginTop: '-20px', padding: '20px 30px', overflowY: 'auto'}}>
+            <div style={{width: 'calc(100% - 280px)', marginTop: '-20px', padding: '20px 30px 0'}}>
             {children}
             </div>
         </div>

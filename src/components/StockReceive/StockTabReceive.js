@@ -268,7 +268,7 @@ const StockTabReceive = enhance((props) => {
 
             <ConfirmDialog
                 type={confirmDialog.openConfirmDialog === CANCEL ? 'cancel' : 'submit'}
-                message={'Запрос № ' + _.get(detailData, 'id')}
+                message={t('Запрос') + ' № ' + _.get(detailData, 'id')}
                 onClose={confirmDialog.handleCloseConfirmDialog}
                 onSubmit={confirmDialog.openConfirmDialog === RETURN
                     ? confirmDialog.handleSubmitOrderReturnDialog
@@ -279,7 +279,7 @@ const StockTabReceive = enhance((props) => {
 
             {history && <ConfirmDialog
                 type="submit"
-                message={'Запрос № ' + _.get(detailData, 'id')}
+                message={t('Запрос') + ' № ' + _.get(detailData, 'id')}
                 onClose={repealDialog.handleCloseRepealDialog}
                 onSubmit={repealDialog.handleSubmitRepealDialog}
                 open={repealDialog.openRepealDialog}

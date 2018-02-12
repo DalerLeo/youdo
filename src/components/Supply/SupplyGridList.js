@@ -21,6 +21,7 @@ import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import SupplyExpenseCreateDialog from './SupplyExpenseCreateDialog'
+import SupplyTransactionsDialog from './SupplyTransactionsDialog'
 import ToolTip from '../ToolTip'
 import numberFormat from '../../helpers/numberFormat'
 import dateFormat from '../../helpers/dateFormat'
@@ -178,9 +179,9 @@ const SupplyGridList = enhance((props) => {
         supplyExpenseCreateDialog,
         supplyListData,
         tabData,
-        paidData,
         addProductDialog,
-        confirmSyncDialog
+        confirmSyncDialog,
+        transactionsDialog
     } = props
 
     const actions = (
@@ -219,8 +220,8 @@ const SupplyGridList = enhance((props) => {
             filter={filterItem}
             isAdmin={isAdmin}
             tabData={tabData}
-            paidData={paidData}
             confirmSyncDialog={confirmSyncDialog}
+            transactionsDialog={transactionsDialog}
         />
     )
 
@@ -373,6 +374,14 @@ const SupplyGridList = enhance((props) => {
                 withoutCustomPrice={true}
                 fromAllBalances={true}
             />}
+
+            <SupplyTransactionsDialog
+                open={transactionsDialog.open}
+                data={transactionsDialog.data}
+                loading={transactionsDialog.loading}
+                supplyID={_.get(detailData, ['data', 'id'])}
+                onClose={transactionsDialog.handleCloseTransactionsDialog}
+            />
         </Container>
     )
 })
@@ -441,6 +450,12 @@ SupplyGridList.propTypes = {
         data: PropTypes.array,
         supplyExpenseListLoading: PropTypes.bool.isRequired,
         openSupplyExpenseConfirmDialog: PropTypes.bool.isRequired
+    }),
+    transactionsDialog: PropTypes.shape({
+        open: PropTypes.bool.isRequired,
+        data: PropTypes.object.isRequired,
+        handleOpenTransactionsDialog: PropTypes.func.isRequired,
+        handleCloseTransactionsDialog: PropTypes.func.isRequired
     })
 }
 

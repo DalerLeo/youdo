@@ -5,11 +5,13 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import ReactHighcharts from 'react-highcharts'
 import getConfig from '../../helpers/getConfig'
+import {getLanguage} from '../../helpers/storage'
 import moment from 'moment'
 
 const dateFormat = (date, time, defaultText) => {
-    const dateTime = moment(date).locale('ru').format('DD MMM YYYY')
-    return (date && time) ? dateTime : (date) ? moment(date).locale('ru').format('D MMM') : defaultText
+    const lan = getLanguage() === 'uz' ? 'ru' : 'en'
+    const dateTime = moment(date).locale(lan).format('DD MMM YYYY')
+    return (date && time) ? dateTime : (date) ? moment(date).locale(lan).format('D MMM') : defaultText
 }
 
 const enhance = compose(
@@ -28,11 +30,9 @@ const StatisticsChart = enhance((props) => {
         height
     } = props
 
-    const tooltipDate = _.map(tooltipTitle, (item) => {
-        return dateFormat(item)
-    })
-
+    const tooltipDate = _.map(tooltipTitle, (item) => dateFormat(item))
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
+
     const config = {
         chart: {
             type: 'areaspline',
@@ -45,7 +45,15 @@ const StatisticsChart = enhance((props) => {
             }
         },
         legend: {
-            enabled: false
+            enabled: !_.isEmpty(secondaryValues),
+            itemStyle: {
+                fontWeight: 600,
+                fontFamily: 'Open Sans',
+                fontSize: 11
+            },
+            symbolHeight: 9,
+            symbolWidth: 9,
+            margin: 5
         },
         credits: {
             enabled: false
@@ -98,10 +106,7 @@ const StatisticsChart = enhance((props) => {
             shadow: true,
             useHTML: true,
             crosshairs: true,
-            pointFormat:
-            '<div class="diagramToolTip">' +
-            '{series.name}: {point.y}' +
-            '</div>'
+            headerFormat: '<b>{point.x}</b><br/>'
         },
         series: [{
             marker: {
@@ -110,7 +115,7 @@ const StatisticsChart = enhance((props) => {
             },
             name: primaryText,
             data: primaryValues,
-            color: '#58bed9'
+            color: '#12aaeb'
 
         },
         {
@@ -120,7 +125,7 @@ const StatisticsChart = enhance((props) => {
             },
             name: secondaryText,
             data: secondaryValues,
-            color: '#ff4a4a'
+            color: '#ff526d'
 
         }]
     }

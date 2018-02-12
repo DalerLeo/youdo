@@ -11,6 +11,7 @@ import ContentAdd from 'material-ui/svg-icons/content/add'
 import ReturnDetails from './ReturnDetails'
 import * as ROUTES from '../../constants/routes'
 import ReturnCreateDialog from './ReturnCreateDialog'
+import ReturnPreviewDialog from './ReturnPreviewDialog'
 import GridList from '../GridList'
 import Container from '../Container'
 import ReturnFilterForm from './ReturnFilterForm'
@@ -26,7 +27,7 @@ import AddProductsDialog from '../Order/OrderAddProductsDialog'
 import Print from 'material-ui/svg-icons/action/print'
 import t from '../../helpers/translate'
 import {
-    COMPLETED
+    ORDER_RETURN_COMPLETED
 } from '../../constants/backendConstants'
 
 const listHeader = [
@@ -134,7 +135,9 @@ const OrderGridList = enhance((props) => {
         isAdmin,
         canChangeAnyReturn,
         hasMarket,
-        addProductDialog
+        addProductDialog,
+        previewDialog,
+        canSetPriceOnReturn
     } = props
 
     const showCheckboxes = toBoolean(_.get(filter.getParams(), 'showCheckboxes'))
@@ -161,6 +164,7 @@ const OrderGridList = enhance((props) => {
         />
     )
     const CLIENT_RETURN = 2
+    const ORDER_RETURN = 1
     const returnType = _.toInteger(_.get(detailData, ['data', 'type']))
     const detStatus = _.toInteger(_.get(detailData, ['data', 'status']))
 
@@ -216,7 +220,6 @@ const OrderGridList = enhance((props) => {
     return (
         <Container>
             <SubMenu url={ROUTES.RETURN_LIST_URL}/>
-            {canChangeAnyReturn &&
             <div className={classes.addButtonWrapper}>
                 <ToolTip position="left" text={t('Возврат с клиента')}>
                     <FloatingActionButton
@@ -227,7 +230,7 @@ const OrderGridList = enhance((props) => {
                         <ContentAdd />
                     </FloatingActionButton>
                 </ToolTip>
-            </div>}
+            </div>
 
             <GridList
                 filter={filter}
@@ -243,7 +246,8 @@ const OrderGridList = enhance((props) => {
 
             />
 
-            {detailData.data && <ConfirmDialog
+            {detailData.data &&
+            <ConfirmDialog
                 type="cancel"
                 message={t('Заказ') + ' № ' + _.get(detailData, ['data', 'id'])}
                 onClose={confirmDialog.handleCloseConfirmDialog}
@@ -252,16 +256,24 @@ const OrderGridList = enhance((props) => {
             />}
             <ReturnCreateDialog
                 open={_.get(createDialog, 'openCreateDialog')}
+                onPreviewOpen={previewDialog.handleOpenPreviewDialog}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
                 hasMarket={hasMarket}
                 handleOpenAddProduct={addProductDialog.handleOpenAddProduct}
             />
+            <ReturnPreviewDialog
+                loading={_.get(previewDialog, 'loading')}
+                data={_.get(previewDialog, 'data')}
+                open={_.get(previewDialog, 'openPreviewDialog')}
+                onClose={previewDialog.handleClosePreviewDialog}
+                onSubmit={updateDialog.openUpdateDialog ? updateDialog.handleSubmitUpdateDialog : createDialog.handleSubmitCreateDialog}
+            />
             {(returnType === CLIENT_RETURN)
                 ? (isAdmin &&
                     <ReturnCreateDialog
                         isUpdate={true}
-                        editOnlyCost={detStatus === COMPLETED}
+                        editOnlyCost={detStatus === ORDER_RETURN_COMPLETED}
                         name={_.get(detailData, ['data', 'client', 'name'])}
                         initialValues={updateDialog.initialValues}
                         loading={updateDialog.updateLoading}
@@ -269,9 +281,10 @@ const OrderGridList = enhance((props) => {
                         onClose={updateDialog.handleCloseUpdateDialog}
                         onSubmit={updateDialog.handleSubmitUpdateDialog}
                         hasMarket={hasMarket}
+                        onPreviewOpen={previewDialog.handleOpenPreviewDialog}
                         handleOpenAddProduct={addProductDialog.handleOpenAddProduct}
                     />)
-                : (isAdmin &&
+                : (isAdmin && returnType === ORDER_RETURN &&
                     <ReturnUpdateDialog
                         isUpdate={true}
                         orderData={_.get(detailData, 'data')}
@@ -293,8 +306,8 @@ const OrderGridList = enhance((props) => {
                 openAddProductConfirm={addProductDialog.openAddProductConfirm}
                 handleCloseAddProductConfirm={addProductDialog.handleCloseAddProductConfirm}
                 handleSubmitAddProductConfirm={addProductDialog.handleSubmitAddProductConfirm}
-                withoutCustomPrice={true}
                 isReturn={true}
+                canChangeAnyPrice={canSetPriceOnReturn}
             />}
         </Container>
     )
@@ -304,6 +317,7 @@ OrderGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
+    canSetPriceOnReturn: PropTypes.bool,
     confirmDialog: PropTypes.shape({
         openConfirmDialog: PropTypes.bool.isRequired,
         handleOpenConfirmDialog: PropTypes.func.isRequired,
@@ -337,7 +351,13 @@ OrderGridList.propTypes = {
         handleOpenCreateDialog: PropTypes.func.isRequired,
         handleCloseCreateDialog: PropTypes.func.isRequired,
         handleSubmitCreateDialog: PropTypes.func.isRequired
-    }).isRequired
+    }).isRequired,
+    previewDialog: PropTypes.shape({
+        openPreviewDialog: PropTypes.bool,
+        handleOpenPreviewDialog: PropTypes.func,
+        handleCloseCreateDialog: PropTypes.func,
+        handleSubmitCreateDialog: PropTypes.func
+    })
 }
 
 export default OrderGridList

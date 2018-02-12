@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../helpers/serializer'
 import numberWithoutSpaces from '../helpers/numberWithoutSpaces'
+import toBoolean from '../helpers/toBoolean'
 
 export const updateSerializer = (data, detail, CLIENT_RETURN) => {
     const type = _.toInteger(_.get(detail, 'type'))
@@ -59,12 +60,7 @@ export const updateSerializer = (data, detail, CLIENT_RETURN) => {
 export const listFilterSerializer = (data, id) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
-    const exclude = _.get(defaultData, 'exclude')
-    const excludeCanceled = _.isUndefined(exclude)
-        ? 'True'
-        : exclude === 'true'
-            ? 'True'
-            : null
+    const excludeCanceled = toBoolean(_.get(defaultData, 'exclude')) ? null : 'True'
 
     if (id) {
         return {
@@ -113,14 +109,14 @@ export const createReturnSerializer = (data) => {
     })
 
     return {
+        'price_list': priceList || '1',
         client,
         stock,
         comment,
         currency,
         products,
         market,
-        payment_type: paymentType,
-        price_list: priceList
+        payment_type: paymentType
     }
 }
 

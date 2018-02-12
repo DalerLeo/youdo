@@ -18,7 +18,8 @@ import {
     ZoneMultiSearchField,
     MarketTypeParentSearchField,
     MarketTypeSearchField,
-    CheckBox} from '../ReduxForm'
+    CheckBox
+} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 import t from '../../helpers/translate'
@@ -33,6 +34,7 @@ export const SHOP_FILTER_KEY = {
     FREQUENCY: 'frequency',
     ZONE: 'zone',
     CREATED_BY: 'createdBy',
+    RESPONSIBLE_AGENT: 'responsibleAgent',
     NULL_BORDER: 'nullBorder'
 }
 
@@ -201,6 +203,11 @@ const ShopFilterForm = enhance((props) => {
                         name="createdBy"
                         component={UsersMultiSearchField}
                         label={t('Создал')}/>
+                    <Field
+                        className={classes.inputFieldCustom}
+                        name="responsibleAgent"
+                        component={UsersMultiSearchField}
+                        label={t('Ответственный агент')}/>
                     <Field
                         className={classes.inputFieldCustom}
                         name="client"

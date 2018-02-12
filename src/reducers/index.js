@@ -50,7 +50,9 @@ const rootReducer = combineReducers({
         item: createThunkReducer(actionTypes.SHIPMENT_ITEM),
         logs: createThunkReducer(actionTypes.SHIPMENT_LOGS),
         products: createThunkReducer(actionTypes.SHIPMENT_PRODUCTS_LIST),
-        materials: createThunkReducer(actionTypes.SHIPMENT_MATERIALS_LIST)
+        materials: createThunkReducer(actionTypes.SHIPMENT_MATERIALS_LIST),
+        addProducts: createThunkReducer(actionTypes.SHIPMENT_ADD_PRODUCTS_LIST),
+        addRaws: createThunkReducer(actionTypes.SHIPMENT_ADD_RAW_LIST)
     }),
     transaction: combineReducers({
         create: createThunkReducer(actionTypes.TRANSACTION_CREATE),
@@ -67,7 +69,8 @@ const rootReducer = combineReducers({
         list: createThunkReducer(actionTypes.SUPPLY_LIST),
         item: createThunkReducer(actionTypes.SUPPLY_ITEM),
         update: createThunkReducer(actionTypes.SUPPLY_UPDATE),
-        defect: createThunkReducer(actionTypes.SUPPLY_DEFECT)
+        defect: createThunkReducer(actionTypes.SUPPLY_DEFECT),
+        transactions: createThunkReducer(actionTypes.SUPPLY_TRANSACTIONS)
     }),
     prices: combineReducers({
         create: createThunkReducer(actionTypes.PRICES_CREATE),
@@ -467,6 +470,7 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.RETURN_UPDATE),
         cancel: createThunkReducer(actionTypes.RETURN_CANCEL),
         listPrint: createThunkReducer(actionTypes.RETURN_PRINT),
+        previewList: createThunkReducer(actionTypes.RETURN_PREVIEW),
         addProducts: createThunkReducer(actionTypes.RETURN_PRODUCT_ADD)
     }),
     plan: combineReducers({

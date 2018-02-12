@@ -171,8 +171,8 @@ export const stockTransferDeliveryTransferAction = (details, stockId, dateRange,
     }
 }
 
-export const stockTransferItemAcceptAction = (id, stock) => {
-    const requestData = serializers.acceptSerializer(id, stock)
+export const stockTransferItemAcceptAction = (id, stock, deliveryMan) => {
+    const requestData = serializers.acceptSerializer(id, stock, deliveryMan)
     const payload = axios()
         .post(API.STOCK_TRANSFER_ACCEPT, requestData)
         .then((response) => {

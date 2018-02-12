@@ -221,7 +221,7 @@ const OrderFilterForm = enhance((props) => {
                         <Field className={classes.inputDateCustom} name="deliveryDate" component={DateToDateField} label={t('Дата доставки')}/>
                         <Field className={classes.inputDateCustom} name="deadlineDate" component={DateToDateField} label={t('Период изготовления')}/>
                         <Field name="onlyBonus" component={CheckBox} label={t('Только бонусные заказы')}/>
-                        <Field name="exclude" component={CheckBox} label={t('Исключить отмененные заказы')}/>
+                        <Field name="exclude" component={CheckBox} label={t('Показать отмененные заказы')}/>
                     </div>
 
                     <RaisedButton
@@ -229,7 +229,7 @@ const OrderFilterForm = enhance((props) => {
                         primary={true}
                         buttonStyle={{color: '#fff'}}
                         labelStyle={{fontSize: '13px'}}
-                        label="Применить"
+                        label={t('Применить')}
                         style={{marginTop: '15px'}}>
                     </RaisedButton>
                 </form>
