@@ -164,6 +164,7 @@ const OrderGridList = enhance((props) => {
         />
     )
     const CLIENT_RETURN = 2
+    const ORDER_RETURN = 1
     const returnType = _.toInteger(_.get(detailData, ['data', 'type']))
     const detStatus = _.toInteger(_.get(detailData, ['data', 'status']))
 
@@ -219,7 +220,6 @@ const OrderGridList = enhance((props) => {
     return (
         <Container>
             <SubMenu url={ROUTES.RETURN_LIST_URL}/>
-            {canChangeAnyReturn &&
             <div className={classes.addButtonWrapper}>
                 <ToolTip position="left" text={t('Возврат с клиента')}>
                     <FloatingActionButton
@@ -230,7 +230,7 @@ const OrderGridList = enhance((props) => {
                         <ContentAdd />
                     </FloatingActionButton>
                 </ToolTip>
-            </div>}
+            </div>
 
             <GridList
                 filter={filter}
@@ -284,7 +284,7 @@ const OrderGridList = enhance((props) => {
                         onPreviewOpen={previewDialog.handleOpenPreviewDialog}
                         handleOpenAddProduct={addProductDialog.handleOpenAddProduct}
                     />)
-                : (isAdmin &&
+                : (isAdmin && returnType === ORDER_RETURN &&
                     <ReturnUpdateDialog
                         isUpdate={true}
                         orderData={_.get(detailData, 'data')}

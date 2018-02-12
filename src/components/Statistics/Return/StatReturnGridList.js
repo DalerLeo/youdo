@@ -341,7 +341,7 @@ const StatReturnGridList = enhance((props) => {
             <Field
                 name="exclude"
                 component={CheckBox}
-                label={t('Показать отмененные заказы')}/>
+                label={t('Показать отмененные возвраты')}/>
 
         </div>
     )

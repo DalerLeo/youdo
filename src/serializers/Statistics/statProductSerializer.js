@@ -10,7 +10,7 @@ export const createSerializer = (data) => {
     }
 }
 
-export const listFilterSerializer = (data, parent) => {
+export const listFilterSerializer = (data) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
 
@@ -28,7 +28,7 @@ export const listFilterSerializer = (data, parent) => {
         type,
         'begin_date': _.get(defaultData, 'fromDate') || firstDayOfMonth,
         'end_date': _.get(defaultData, 'toDate') || lastDayOfMonth,
-        parent
+        parent: _.get(defaultData, 'parent')
     }
 }
 

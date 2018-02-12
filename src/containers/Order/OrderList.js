@@ -906,7 +906,7 @@ const enhance = compose(
         },
 
         handleSubmitCheckDeliveryDialog: props => () => {
-            const {dispatch, setOpenCheckDeliveryConfirm, params} = props
+            const {dispatch, setOpenCheckDeliveryConfirm, params, list} = props
             const orderID = _.toInteger(_.get(params, 'orderId'))
             return dispatch(orderCheckDeliveryAction(orderID))
                 .then(() => {
@@ -915,7 +915,14 @@ const enhance = compose(
                 .then(() => {
                     setOpenCheckDeliveryConfirm(false)
                     return dispatch(orderItemFetchAction(orderID))
-                }).catch((error) => {
+                })
+                .then((data) => {
+                    const detail = _.get(data, 'value')
+                    dispatch(updateStore(orderID, list, actionTypes.ORDER_LIST, {
+                        status: _.get(detail, 'status')
+                    }))
+                })
+                .catch((error) => {
                     dispatch(openErrorAction({
                         message: error
                     }))

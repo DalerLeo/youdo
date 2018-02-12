@@ -12,9 +12,9 @@ import toBoolean from '../../helpers/toBoolean'
 import {openErrorAction} from '../../actions/error'
 import updateStore from '../../helpers/updateStore'
 import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
+import checkPermission from '../../helpers/checkPermission'
 import * as actionTypes from '../../constants/actionTypes'
 import getConfig from '../../helpers/getConfig'
-import checkPermission from '../../helpers/checkPermission'
 import t from '../../helpers/translate'
 import {
     RETURN_FILTER_KEY,
