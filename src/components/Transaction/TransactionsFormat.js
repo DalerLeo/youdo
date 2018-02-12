@@ -45,7 +45,8 @@ const TransactionsFormat = enhance((props) => {
         incomeCategory,
         handleOpenCategoryPopop,
         handleOpenDetalization,
-        comment
+        comment,
+        division
     } = props
     const clientName = _.get(client, 'name')
     const clientID = _.get(client, 'id')
@@ -119,6 +120,7 @@ const TransactionsFormat = enhance((props) => {
         <div className={classes.format}>
             {output() && <div><strong>{t('Описание')}: </strong>{output()}</div>}
             {categoryName && <div><strong>{t('Категория')}: </strong>{categoryOutput()}</div>}
+            {division && <div><strong>{t('Организация')}: </strong>{division}</div>}
             {comment && <div><strong>{t('Комментарий')}: </strong>{comment}</div>}
         </div>
     )

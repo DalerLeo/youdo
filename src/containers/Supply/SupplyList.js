@@ -98,7 +98,12 @@ const enhance = compose(
         }
     }),
     withPropsOnChange((props, nextProps) => {
-        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
+        const except = {
+            pdPage: null,
+            pdPageSize: null,
+            pdSearch: null
+        }
+        return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
         dispatch(supplyListFetchAction(filter))
     }),
@@ -116,9 +121,14 @@ const enhance = compose(
     }),
 
     withPropsOnChange((props, nextProps) => {
+        const except = {
+            pdPage: null,
+            pdPageSize: null,
+            pdSearch: null
+        }
         const supplyId = _.get(nextProps, ['params', 'supplyId'])
         return supplyId && (_.get(props, ['params', 'supplyId']) !== supplyId ||
-            props.filterItem.filterRequest() !== nextProps.filterItem.filterRequest())
+            props.filterItem.filterRequest(except) !== nextProps.filterItem.filterRequest(except))
     }, ({dispatch, params}) => {
         const supplyId = _.toInteger(_.get(params, 'supplyId'))
         supplyId && dispatch(supplyItemFetchAction(supplyId))

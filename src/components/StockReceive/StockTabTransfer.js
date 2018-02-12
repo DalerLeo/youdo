@@ -177,11 +177,11 @@ const StockTabTransfer = enhance((props) => {
     const message = (
         <form>
             <div>{t('Запрос') + ' № ' + _.get(detailData, 'id')}</div>
+            {_.get(detailData, ['data', 'deliveryMan']) &&
             <Field
                 name="deliveryMan"
                 label={t('Доставщик')}
-                component={UsersSearchField}
-            />
+                component={UsersSearchField}/>}
         </form>
     )
 

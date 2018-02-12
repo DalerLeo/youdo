@@ -9,12 +9,14 @@ import Loader from '../Loader'
 import StatSideMenu from './StatSideMenu'
 import {DateToDateField, DivisionMultiSearchField} from '../ReduxForm'
 import Container from '../Container'
+import ToolTip from '../ToolTip'
 import * as ROUTES from '../../constants/routes'
 import numberFormat from '../../helpers/numberFormat'
 import moduleFormat from '../../helpers/moduleFormat'
 import getConfig from '../../helpers/getConfig'
 import {StatisticsFilterExcel} from '../Statistics'
 import t from '../../helpers/translate'
+import Info from 'material-ui/svg-icons/action/info-outline'
 
 const enhance = compose(
     injectSheet({
@@ -88,6 +90,31 @@ const enhance = compose(
                 }
             }
         },
+        listWithInfo: {
+            padding: '0 !important',
+            '& > div': {
+                textAlign: 'left !important',
+                width: '100%',
+                '& > div:first-child': {
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '15px',
+                    '& > div': {
+                        display: 'flex',
+                        alignItems: 'center',
+                        '& > svg': {
+                            marginRight: '5px',
+                            width: '22px !important',
+                            height: '22px !important'
+                        }
+                    }
+                }
+            },
+            '& span:after, span:before': {
+                display: 'none'
+            }
+        },
         leftPanel: {
             backgroundColor: '#f2f5f8',
             flexBasis: '250px',
@@ -143,6 +170,7 @@ const StatReportGridList = enhance((props) => {
     const providersDebtData = _.get(listData, ['data', 'debtors', 'providersDebt'])
     const salesData = _.get(listData, ['data', 'sales'])
     const transferData = _.get(listData, ['data', 'transfer'])
+
     const stock = (
         <div className={classes.block}>
             <span>{t('Склад')}</span>
@@ -193,6 +221,7 @@ const StatReportGridList = enhance((props) => {
         </div>
     )
 
+    const infoMessage = t('Данные будут высчитываться <br/>после выдачи товаров со склада')
     const productRealisation = (
         <div className={classes.block}>
             <span>{t('Реализация товара')}</span>
@@ -209,13 +238,25 @@ const StatReportGridList = enhance((props) => {
                     <span>{t('Фактическая сумма продаж')}</span>
                     <span>{numberFormat(_.get(salesData, 'factSum'), currency)}</span>
                 </li>
-                <li>
-                    <span dangerouslySetInnerHTML={{__html: t('Себестоимость фактически<br/> проданных товаров')}}/>
-                    <span>{numberFormat(_.get(salesData, 'netCost'), currency)}</span>
+                <li className={classes.listWithInfo}>
+                    <ToolTip position={'right'} text={infoMessage}>
+                        <div>
+                            <Info color={'#666'}/>
+                            <span
+                                dangerouslySetInnerHTML={{__html: t('Себестоимость фактически<br/> проданных товаров')}}/>
+                        </div>
+                        <span>{numberFormat(_.get(salesData, 'netCost'), currency)}</span>
+                    </ToolTip>
                 </li>
-                <li>
-                    <span dangerouslySetInnerHTML={{__html: t('Сумма товаров, проданных<br/> дешевле себестоимости')}}/>
-                    <span>{numberFormat(_.get(salesData, 'lessNetCostSum'), currency)}</span>
+                <li className={classes.listWithInfo}>
+                    <ToolTip position={'right'} text={infoMessage}>
+                        <div>
+                            <Info color={'#666'}/>
+                            <span
+                                dangerouslySetInnerHTML={{__html: t('Сумма товаров, проданных<br/> дешевле себестоимости')}}/>
+                        </div>
+                        <span>{numberFormat(_.get(salesData, 'lessNetCostSum'), currency)}</span>
+                    </ToolTip>
                 </li>
                 <li>
                     <span>{t('Прибыль от продаж')}</span>

@@ -383,13 +383,15 @@ const ReturnDetails = enhance((props) => {
                 <div className={classes.rightSide}>
                     <div className={classes.list}>
                         <Row className="dottedList">
-                            <Col xs={4}>{t('Товар')}</Col>
+                            <Col xs={1}>{t('Заказ')}</Col>
+                            <Col xs={3}>{t('Товар')}</Col>
                             <Col xs={2}>{t('Код товара')}</Col>
                             <Col xs={2}>{t('Количество')}</Col>
                             <Col xs={2}>{t('Цена')} ({currency})</Col>
                             <Col xs={2}>{t('Сумма')} ({currency})</Col>
                         </Row>
                         {_.map(products, (item) => {
+                            const productOrder = _.get(item, 'order')
                             const product = _.get(item, ['product', 'name'])
                             const measurement = _.get(item, ['product', 'measurement', 'name'])
                             const code = _.get(item, ['product', 'code'])
@@ -399,7 +401,8 @@ const ReturnDetails = enhance((props) => {
                             const summmary = amount * cost
                             return (
                                 <Row key={returnId} className="dottedList">
-                                    <Col xs={4}>{product}</Col>
+                                    <Col xs={1}>{productOrder}</Col>
+                                    <Col xs={3}>{product}</Col>
                                     <Col xs={2}>{code}</Col>
                                     <Col xs={2}>{numberFormat(amount, measurement)}</Col>
                                     <Col xs={2}>{numberFormat(cost)}</Col>

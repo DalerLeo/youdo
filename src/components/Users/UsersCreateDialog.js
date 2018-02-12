@@ -12,16 +12,13 @@ import {Field, reduxForm, SubmissionError} from 'redux-form'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import toCamelCase from '../../helpers/toCamelCase'
 import t from '../../helpers/translate'
-import toBoolean from '../../helpers/toBoolean'
 import {
     TextField,
     ImageUploadField,
     CheckBox,
     PositionSearchField,
-    UserStockRadioButtonField,
     PostSearchField
 } from '../ReduxForm'
-import getConfig from '../../helpers/getConfig'
 import {connect} from 'react-redux'
 
 export const USERS_CREATE_DIALOG_OPEN = 'openCreateDialog'
@@ -230,7 +227,6 @@ const UsersCreateDialog = enhance((props) => {
     } = props
     const errorText = _.get(errorData, 'errorText')
     const show = _.get(errorData, 'show')
-    const multiStock = toBoolean(getConfig('MULTI_SELECT_STOCK'))
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const agent = _.some(positionGroups, {'name': 'agent'})
     const manufacture = _.some(positionGroups, {'name': 'manufacture'})
@@ -363,32 +359,24 @@ const UsersCreateDialog = enhance((props) => {
                                 </div>}
                                 {(agent || manager || manufacture) && !positionLoading &&
                                 <div>
-                                    <div className={classes.subTitle}>{multiStock ? t('Связанные склады') : t('Связанный склад')}</div>
+                                    <div className={classes.subTitle}>{t('Связанные склады')}</div>
                                     {(!loading) && _.get(stockListData, 'stockListLoading')
                                         ? <div className={classes.groupLoader}>
                                             <Loader size={0.75}/>
                                         </div>
-                                        : (multiStock)
-                                            ? <div className={classes.stocksCheckList}>
-                                                {_.map(_.get(stockListData, 'data'), (item, index) => {
-                                                    const name = _.get(item, 'name')
-                                                    const id = _.get(item, 'id')
-                                                    return (
-                                                        <Field
-                                                            key={id}
-                                                            name={'stocks[' + index + '][selected]'}
-                                                            component={CheckBox}
-                                                            label={name}/>
-                                                    )
-                                                })}
-                                            </div>
-                                            : <div className={classes.radioStock}>
-                                                <Field
-                                                    name='radioStock'
-                                                    stockList={_.get(stockListData, 'data')}
-                                                    loading={loading}
-                                                    component={UserStockRadioButtonField}/>
-                                            </div>
+                                        : <div className={classes.stocksCheckList}>
+                                            {_.map(_.get(stockListData, 'data'), (item, index) => {
+                                                const name = _.get(item, 'name')
+                                                const id = _.get(item, 'id')
+                                                return (
+                                                    <Field
+                                                        key={id}
+                                                        name={'stocks[' + index + '][selected]'}
+                                                        component={CheckBox}
+                                                        label={name}/>
+                                                )
+                                            })}
+                                        </div>
                                     }
                                  </div>}
                                 {agent && !positionLoading &&
