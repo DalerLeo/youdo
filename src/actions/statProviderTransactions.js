@@ -5,7 +5,7 @@ import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/Statistics/statProviderTransactionsSerializer'
 
 export const providerTransactionsOutDataFetchAction = (filter) => {
-    const type = {amount_type: 'expanse'}
+    const type = {amount_type: 'expense'}
     const params = serializers.graphSerializer(filter.getParams())
     const payload = axios()
         .get(API.STAT_PROVIDER_TRANSACTIONS_SUM, {params: _.merge(type, params)})

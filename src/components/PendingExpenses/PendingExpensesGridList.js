@@ -226,7 +226,7 @@ const PendingExpensesGridList = enhance((props) => {
                 noCashbox={true}
                 hideRedundant={true}
                 cashboxData={cashboxData}
-                expenseCategoryKey={'supply-supply_expanse-provider'}
+                expenseCategoryKey={'supply-supply_expense-provider'}
                 additionalData={additionalData}
                 open={updateDialog.openUpdateDialog}
                 onClose={updateDialog.handleCloseUpdateDialog}

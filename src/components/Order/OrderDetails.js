@@ -25,6 +25,7 @@ import * as ROUTES from '../../constants/routes'
 import LinearProgress from '../LinearProgress'
 import numberFormat from '../../helpers/numberFormat'
 import dateFormat from '../../helpers/dateFormat'
+import toBoolean from '../../helpers/toBoolean'
 import {
     ORDER_DELIVERED,
     ORDER_GIVEN,
@@ -44,6 +45,7 @@ const canSetDiscount = checkPermission('can_set_discount')
 const canCancelOrder = checkPermission('delete_order')
 const canAddOrderReturn = checkPermission('add_orderreturn')
 const canMarkDelivery = checkPermission('can_mark_delivery')
+const canReturnFromOrderConfig = toBoolean(getConfig('CAN_RETURN_FROM_ORDER'))
 
 const popupWidth = 210
 const enhance = compose(
@@ -316,7 +318,7 @@ const OrderDetails = enhance((props) => {
                             <CheckDelivery />
                         </IconButton>
                     </ToolTip>}
-                    {canAddOrderReturn &&
+                    {canAddOrderReturn && canReturnFromOrderConfig &&
                     <ToolTip position="bottom" text={t('Добавить возврат')}>
                         <IconButton
                             disabled={!(status === ORDER_DELIVERED || status === ORDER_GIVEN)}

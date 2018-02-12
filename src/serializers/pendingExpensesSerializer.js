@@ -18,7 +18,7 @@ export const createSerializer = (data, detail) => {
         return {
             'cashbox': cashboxId,
             'supply': expenseId,
-            'expanse_category': categoryId,
+            'expense_category': categoryId,
             comment,
             amount,
             paymentType
@@ -27,8 +27,8 @@ export const createSerializer = (data, detail) => {
 
     return {
         'cashbox': cashboxId,
-        'supply_expanse': expenseId,
-        'expanse_category': categoryId,
+        'supply_expense': expenseId,
+        'expense_category': categoryId,
         comment,
         amount,
         paymentType
@@ -43,7 +43,7 @@ export const createExpenseSerializer = (data) => {
     const division = _.get(data, ['division', 'value'])
     const supply = _.get(data, ['supply', 'value']) || null
     const supplyExpense = _.get(data, ['supplyExpense', 'value']) || null
-    const expenseCategory = _.get(data, ['expanseCategory', 'value', 'id'])
+    const expenseCategory = _.get(data, ['expenseCategory', 'value', 'id'])
     const currencyRate = _.get(data, 'currencyRate')
     const getRateType = () => {
         switch (currencyRate) {
@@ -60,8 +60,8 @@ export const createExpenseSerializer = (data) => {
         division,
         comment,
         supply,
-        supply_expanse: supplyExpense,
-        expanse_category: expenseCategory,
+        supply_expense: supplyExpense,
+        expense_category: expenseCategory,
         rate_type: getRateType()
     }
 }
