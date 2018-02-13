@@ -23,6 +23,7 @@ import {
     productTypeItemFetchAction
 } from '../../actions/productType'
 import {openSnackbarAction} from '../../actions/snackbar'
+import {openErrorAction} from '../../actions/error'
 import t from '../../helpers/translate'
 
 const enhance = compose(
@@ -146,6 +147,11 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push(filter.createURL({[PRODUCT_TYPE_UPDATE_DIALOG_OPEN]: false}))
                     dispatch(productTypeListFetchAction(filter))
+                })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
                 })
         }
     })
