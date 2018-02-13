@@ -6,6 +6,8 @@ export const ORDER_GIVEN = 2
 export const ORDER_DELIVERED = 3
 export const ORDER_CANCELED = 4
 export const ORDER_NOT_CONFIRMED = 5
+export const ORDER_TYPE_DELIVERY = 'delivery'
+export const ORDER_TYPE_SELF = 'self'
 
 export const ORDER_RETURN_PENDING = 0
 export const ORDER_RETURN_IN_PROGRESS = 1

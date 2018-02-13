@@ -519,7 +519,6 @@ const OrderDetails = enhance((props) => {
                     returnData={returnData}
                     returnDataLoading={returnDataLoading}
                     cancelOrderReturnOpen={type ? cancelOrderReturnDialog.handleOpenCancelOrderReturnDialog : null}
-                    canReturnFromOrderConfig={canReturnFromOrderConfig}
                 />
             </div>
             {type && <OrderTransactionsDialog

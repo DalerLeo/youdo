@@ -9,6 +9,7 @@ import * as ROUTER from '../../constants/routes'
 import * as API from '../../constants/api'
 import Layout from '../../components/Layout'
 import filterHelper from '../../helpers/filter'
+import {reset} from 'redux-form'
 import {joinArray, splitToArray} from '../../helpers/joinSplitValues'
 import toBoolean from '../../helpers/toBoolean'
 import TabTransfer from '../../components/StockReceive/StockTabTransfer'
@@ -279,7 +280,8 @@ const enhance = compose(
         },
 
         handleOpenConfirmDialog: props => () => {
-            const {location: {pathname}, filter} = props
+            const {dispatch, location: {pathname}, filter} = props
+            dispatch(reset('StockOrderTransferForm'))
             hashHistory.push({pathname, query: filter.getParams({[STOCK_CONFIRM_DIALOG_OPEN]: true})})
         },
         handleCloseConfirmDialog: props => () => {
