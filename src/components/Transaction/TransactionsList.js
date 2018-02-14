@@ -285,6 +285,15 @@ const TransactionsList = enhance((props) => {
 
     /* Forming initial value in order to Update Transaction */
     const currentItemAmount = _.toNumber(_.get(currentItem, 'amount'))
+    const currentItemRateType = _.get(currentItem, 'rateType')
+    const getRateType = () => {
+        switch (currentItemRateType) {
+            case '0': return 'current'
+            case '1': return 'order'
+            case '2': return 'custom'
+            default: return '0'
+        }
+    }
     const TransactionInitialValues = currentTransaction
         ? {
             cashbox: {
@@ -327,7 +336,7 @@ const TransactionsList = enhance((props) => {
                             options: incomeOptions
                         } : {}
                 } : null,
-            currencyRate: 'custom'
+            currencyRate: getRateType()
         }
         : {
             transaction_child: [{}],
