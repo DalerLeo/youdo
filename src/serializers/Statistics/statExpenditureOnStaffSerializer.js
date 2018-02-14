@@ -16,7 +16,7 @@ export const listFilterSerializer = (data) => {
         'ordering': ordering && orderingSnakeCase(ordering),
         'begin_date': _.get(defaultData, 'fromDate') || firstDayOfMonth,
         'end_date': _.get(defaultData, 'toDate') || lastDayOfMonth,
-        'expanse_category': _.get(defaultData, 'categoryExpense')
+        'expense_category': _.get(defaultData, 'categoryExpense')
     }
 }
 

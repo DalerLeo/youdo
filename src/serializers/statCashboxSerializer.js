@@ -23,7 +23,7 @@ export const listFilterSerializer = (data, id) => {
         'search': _.get(defaultData, 'search'),
         'type': _.get(defaultData, 'type'),
         'page': _.get(defaultData, 'page'),
-        'expanse_category': _.get(data, 'categoryExpense'),
+        'expense_category': _.get(data, 'categoryExpense'),
         'page_size': _.get(defaultData, 'pageSize'),
         'ordering': ordering && orderingSnakeCase(ordering),
         'begin_date': _.get(defaultData, 'fromDate') || firstDayOfMonth,

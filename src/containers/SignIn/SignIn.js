@@ -34,7 +34,9 @@ const enhance = compose(
         return prevApi !== nextApi && nextApi
     }, ({location}) => {
         const api = _.get(location, ['query', 'api_host'])
-        setApi(api)
+        if (!_.isEmpty(api)) {
+            return setApi(api)
+        }
         return null
     }),
 )
@@ -74,7 +76,7 @@ const SignIn = enhance((props) => {
 
     return (
         <div className={classes.container}>
-            <SignInForm loading={loading} onSubmit={onSubmit} />
+            <SignInForm loading={loading} onSubmit={onSubmit}/>
         </div>
     )
 })

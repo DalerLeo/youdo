@@ -299,7 +299,6 @@ const OrderAddProductsDialog = enhance((props) => {
         openAddProductConfirm,
         handleCloseAddProductConfirm,
         handleSubmitAddProductConfirm,
-        isSuperUser,
         withoutCustomPrice,
         fromAllBalances,
         currency,
@@ -307,17 +306,18 @@ const OrderAddProductsDialog = enhance((props) => {
         canChangePrice,
         isReturn
     } = props
+    const ZERO = 0
     const onSubmit = handleSubmit(props.onSubmit)
     const primaryCurrency = currency
     const products = _.map(data, (item) => {
-        const balance = isReturn ? _.get(item, 'sales') : _.get(item, 'balance')
+        const balance = isReturn ? _.get(item, 'sales') || ZERO : _.get(item, 'balance') || ZERO
         const id = _.get(item, 'id')
         const name = fromAllBalances ? _.get(item, 'title') : _.get(item, 'name')
         const code = _.get(item, 'code') || '-'
         const customPrice = _.get(item, 'customPrice')
         const available = numberFormat(_.get(item, 'available'))
         const defects = numberFormat(_.get(item, 'defects'))
-        const userCanChangePrice = (canChangeAnyPrice || isSuperUser || withoutCustomPrice)
+        const userCanChangePrice = (canChangeAnyPrice || withoutCustomPrice)
             ? true
             : Boolean(canChangePrice && customPrice)
         const measurement = _.get(item, ['measurement', 'name'])

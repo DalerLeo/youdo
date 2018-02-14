@@ -103,7 +103,7 @@ export const createExpenseSerializer = (data, cashboxId) => {
     const amount = Math.abs(numberWithoutSpaces(_.get(data, 'amount'))) * MINUS_ONE
     const salaryAmount = _.sumBy(staffs, item => _.get(item, 'amount') * MINUS_ONE)
     const comment = _.get(data, 'comment')
-    const expenseId = _.get(data, ['expanseCategory', 'value', 'id'])
+    const expenseId = _.get(data, ['expenseCategory', 'value', 'id'])
     const clientId = _.get(data, ['client', 'value'])
     const providerId = _.get(data, ['provider', 'value'])
     const supplyExpense = _.get(data, ['supplyExpense', 'value'])
@@ -120,8 +120,8 @@ export const createExpenseSerializer = (data, cashboxId) => {
             : salaryAmount,
         comment,
         'cashbox': _.toInteger(cashboxId) === ZERO ? cashbox : cashboxId,
-        'expanse_category': expenseId,
-        'supply_expanse': supplyExpense,
+        'expense_category': expenseId,
+        'supply_expense': supplyExpense,
         'custom_rate': customRate,
         staffs,
         supply,
@@ -189,6 +189,6 @@ export const listFilterSerializer = (data, cashbox) => {
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),
         'ordering': ordering && orderingSnakeCase(ordering),
-        'expanse_category': _.get(data, 'categoryExpense')
+        'expense_category': _.get(data, 'categoryExpense')
     }
 }

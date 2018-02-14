@@ -156,7 +156,7 @@ const TransactionsList = enhance((props) => {
         const customRate = _.get(item, 'customRate') ? _.toInteger(_.get(item, 'customRate')) : _.toInteger(amount / internal)
         const comment = _.get(item, 'comment')
         const cashbox = _.get(item, ['cashbox', 'name'])
-        const expenseCategory = _.get(item, ['expanseCategory'])
+        const expenseCategory = _.get(item, ['expenseCategory'])
         const order = _.get(item, 'order')
         const transType = _.toInteger(_.get(item, 'type'))
         const user = _.get(item, 'user')
@@ -166,7 +166,7 @@ const TransactionsList = enhance((props) => {
         const providerName = _.get(provider, 'name')
         const supply = _.get(item, ['supply'])
         const incomeCategory = _.get(item, ['incomeCategory'])
-        const supplyExpanseId = _.get(item, 'supplyExpanseId')
+        const supplyExpenseId = _.get(item, 'supplyExpenseId')
         const paymentType = _.get(item, 'paymentType')
 
         return (
@@ -184,7 +184,7 @@ const TransactionsList = enhance((props) => {
                         user={user}
                         comment={comment}
                         supply={supply}
-                        supplyExpanseId={supplyExpanseId}
+                        supplyExpenseId={supplyExpenseId}
                         expenseCategory={expenseCategory}
                         incomeCategory={incomeCategory}
                     />

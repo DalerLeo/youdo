@@ -24,6 +24,7 @@ import getConfig from '../../helpers/getConfig'
 import moment from 'moment'
 import t from '../../helpers/translate'
 import {TRANSACTION_DETALIZATION_DIALOG} from './index'
+import * as TRANS_TYPE from '../../constants/transactionTypes'
 
 const currentDay = new Date()
 const enhance = compose(
@@ -181,8 +182,6 @@ const enhance = compose(
 )
 
 const ZERO = 0
-const TWO = 2
-const ONE = 1
 const TransactionsList = enhance((props) => {
     const {
         filter,
@@ -277,7 +276,7 @@ const TransactionsList = enhance((props) => {
     const currentTransaction = _.get(updateTransactionDialog, 'open')
     const currentItem = _.find(_.get(listData, 'data'), {'id': currentTransaction})
 
-    const expenseOptions = _.map(_.get(currentItem, ['expanseCategory', 'options']), (item) => {
+    const expenseOptions = _.map(_.get(currentItem, ['expenseCategory', 'options']), (item) => {
         return _.get(_.find(optionsList, {'keyName': _.get(item, 'keyName')}), 'id')
     })
     const incomeOptions = _.map(_.get(currentItem, ['incomeCategory', 'options']), (item) => {
@@ -310,12 +309,12 @@ const TransactionsList = enhance((props) => {
             },
             custom_rate: numberFormat(_.get(currentItem, 'customRate')),
             comment: _.get(currentItem, 'comment'),
-            expanseCategory: !_.isNil(_.get(currentItem, 'expanseCategory'))
+            expenseCategory: !_.isNil(_.get(currentItem, 'expenseCategory'))
                 ? {
                     value: currentItemAmount < ZERO
                         ? {
-                            id: _.get(currentItem, ['expanseCategory', 'id']),
-                            name: _.get(currentItem, ['expanseCategory', 'name']),
+                            id: _.get(currentItem, ['expenseCategory', 'id']),
+                            name: _.get(currentItem, ['expenseCategory', 'name']),
                             options: expenseOptions
                         } : {}
                 } : null,
@@ -348,14 +347,15 @@ const TransactionsList = enhance((props) => {
         const cashbox = showCashbox ? _.get(_.find(_.get(cashboxData, 'data'), {'id': cashboxID}), 'name') : null
         const clientName = _.get(item, ['client', 'name'])
         const providerName = _.get(item, ['provider', 'name'])
-        const expenseCategory = _.get(item, ['expanseCategory'])
+        const division = _.get(item, ['division', 'name'])
+        const expenseCategory = _.get(item, ['expenseCategory'])
         const incomeCategory = _.get(item, ['incomeCategory'])
         const transType = _.get(item, 'type')
         const customRate = _.toNumber(_.get(item, 'customRate'))
         const rate = customRate > ZERO ? customRate : _.toInteger(amount / internal)
         const isDeleted = _.get(item, 'isDelete')
         const supply = _.get(item, 'supply')
-        const supplyExpanseId = _.get(item, 'supplyExpanseId')
+        const supplyExpenseId = _.get(item, 'supplyExpenseId')
         return (
             <div key={id} className={isDeleted ? classes.deletedRow : classes.listRow}>
                 <div style={{flexBasis: '10%', maxWidth: '10%'}}>{id}</div>
@@ -377,7 +377,8 @@ const TransactionsList = enhance((props) => {
                         incomeCategory={incomeCategory}
                         user={user}
                         comment={comment}
-                        supplyExpanseId={supplyExpanseId}
+                        supplyExpenseId={supplyExpenseId}
+                        division={division}
                     />
                     {!showCashbox ? clientName && <div><strong>{t('Клиент')}:</strong> {clientName}</div> : null}
                     {!showCashbox ? providerName && <div><strong>{t('Поставщик')}:</strong> {providerName}</div> : null}
@@ -390,11 +391,12 @@ const TransactionsList = enhance((props) => {
                         {internal !== ZERO &&
                         <span style={{fontSize: 11, color: '#333', fontWeight: 600}}> ({rate})</span>}</div>}
                 </div>
-                {!isDeleted && <div className={classes.actionButtons}>
+                {!isDeleted &&
+                <div className={classes.actionButtons}>
                     <IconButton
                         className={classes.deleteBtn}
                         style={iconStyle.button}
-                        disabled={transType === TWO || transType === ONE}
+                        disabled={transType === TRANS_TYPE.TO_TRANSFER || transType === TRANS_TYPE.FROM_TRANSFER}
                         iconStyle={iconStyle.icon}
                         disableTouchRipple={true}
                         onTouchTap={() => {
@@ -405,7 +407,7 @@ const TransactionsList = enhance((props) => {
                     <IconButton
                         className={classes.deleteBtn}
                         style={iconStyle.button}
-                        disabled={transType === TWO || transType === ONE}
+                        disabled={transType === TRANS_TYPE.TO_TRANSFER || transType === TRANS_TYPE.FROM_TRANSFER || transType === TRANS_TYPE.INCOME_FROM_AGENT}
                         iconStyle={iconStyle.icon}
                         disableTouchRipple={true}
                         onTouchTap={() => {

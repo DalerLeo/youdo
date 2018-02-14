@@ -40,12 +40,13 @@ const TransactionsFormat = enhance((props) => {
         provider,
         handleClickAgentIncome,
         supply,
-        supplyExpanseId,
+        supplyExpenseId,
         expenseCategory,
         incomeCategory,
         handleOpenCategoryPopop,
         handleOpenDetalization,
-        comment
+        comment,
+        division
     } = props
     const clientName = _.get(client, 'name')
     const clientID = _.get(client, 'id')
@@ -76,8 +77,8 @@ const TransactionsFormat = enhance((props) => {
             case 'order': return redirect(sprintf(ROUTES.ORDER_ITEM_PATH, order), {search: order, exclude: false}, categoryName)
             case 'supply': return supply ? redirect(sprintf(ROUTES.SUPPLY_ITEM_PATH, supply), {search: supply}, categoryName) : categoryName
             case 'client': return redirect(ROUTES.CLIENT_BALANCE_LIST_URL, {search: clientID}, categoryName)
-            case 'staff_expanse': return handleOpenCategoryPopop
-                ? openDialog(handleOpenCategoryPopop, 'staff_expanse', categoryName)
+            case 'staff_expense': return handleOpenCategoryPopop
+                ? openDialog(handleOpenCategoryPopop, 'staff_expense', categoryName)
                 : redirect(ROUTES.TRANSACTION_LIST_URL, {[TRANSACTION_STAFF_EXPENSE_DIALOG]: id}, categoryName)
             case 'transaction_child': return handleOpenDetalization
                 ? openDialog(handleOpenDetalization, 'transaction_child', categoryName)
@@ -107,9 +108,9 @@ const TransactionsFormat = enhance((props) => {
                 ? <Link onClick={handleClickAgentIncome}><strong>{t('Приемка наличных с агента')} {userName}</strong></Link>
                 : redirect(ROUTES.TRANSACTION_LIST_URL, {[TRANSACTION_INFO_OPEN]: id}, t('Приемка наличных с агента') + ' ' + userName)
 
-            case TRANS_TYPE.OUTCOME_FOR_SUPPLY_EXPANSE: return <span>{t('Расход на поставку')}{redirect(sprintf(ROUTES.SUPPLY_ITEM_PATH, supply), {search: supply}, ' № ' + supply)}</span>
+            case TRANS_TYPE.OUTCOME_FOR_SUPPLY_EXPENSE: return <span>{t('Расход на поставку')}{redirect(sprintf(ROUTES.SUPPLY_ITEM_PATH, supply), {search: supply}, ' № ' + supply)}</span>
 
-            case TRANS_TYPE.SUPPLY_EXPENCE: return <span>{t('Доп. расход')} {supplyExpanseId ? ' № ' + supplyExpanseId : ''} {t('на поставку')}
+            case TRANS_TYPE.SUPPLY_EXPENCE: return <span>{t('Доп. расход')} {supplyExpenseId ? ' № ' + supplyExpenseId : ''} {t('на поставку')}
                 {redirect(sprintf(ROUTES.SUPPLY_ITEM_PATH, supply), {search: supply}, ' № ' + supply)}</span>
 
             default: return null
@@ -119,6 +120,7 @@ const TransactionsFormat = enhance((props) => {
         <div className={classes.format}>
             {output() && <div><strong>{t('Описание')}: </strong>{output()}</div>}
             {categoryName && <div><strong>{t('Категория')}: </strong>{categoryOutput()}</div>}
+            {division && <div><strong>{t('Организация')}: </strong>{division}</div>}
             {comment && <div><strong>{t('Комментарий')}: </strong>{comment}</div>}
         </div>
     )
@@ -132,7 +134,7 @@ TransactionsFormat.propTypes = {
     client: PropTypes.object,
     user: PropTypes.object,
     supply: PropTypes.number,
-    supplyExpanseId: PropTypes.number
+    supplyExpenseId: PropTypes.number
 }
 
 export default TransactionsFormat

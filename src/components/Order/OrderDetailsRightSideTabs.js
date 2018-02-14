@@ -242,37 +242,37 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                     {!_.isEmpty(returnData)
                         ? <div className={classes.tabContent}>
                             {!returnDataLoading ? <div className={classes.tabWrapper}>
-                                <Row className="dottedList">
-                                    <Col xs={3} style={{textAlign: 'left'}}>{t('Причина возврата')}</Col>
-                                    <Col xs={3} style={{textAlign: 'left'}}>{t('Склад')}</Col>
-                                    <Col xs={2}>{t('Дата возврата')}</Col>
-                                    <Col xs={3}>{t('Сумма')} ({primaryCurrency})</Col>
-                                </Row>
-                                {_.map(returnData, (item, index) => {
-                                    const returnId = _.get(item, 'id')
-                                    const comment = _.get(item, 'comment')
-                                    const stock = _.get(item, ['stock', 'name'])
-                                    const status = _.toNumber(_.get(item, 'status'))
-                                    const dateReturn = dateFormat(_.get(item, 'createdDate'))
-                                    const totalSum = numberFormat(_.get(item, 'totalPrice'))
-                                    return (
-                                        <Row className="dottedList" key={index}>
-                                            <Link target={'_blank'}
-                                                to={{pathname: sprintf(ROUTES.RETURN_ITEM_PATH, returnId), query: {search: returnId, exclude: false}}}
-                                                className={classes.link}/>
-                                            <Col style={{textAlign: 'left'}} xs={3}>{comment}</Col>
-                                            <Col style={{textAlign: 'left'}} xs={3}>{stock}</Col>
-                                            <Col xs={2}>{dateReturn}</Col>
-                                            <Col xs={3}>{totalSum}</Col>
-                                            <Col xs={1}>
-                                                <div className={classes.buttons}>
-                                                    <OrderReturnStatusIcons status={status}/>
-                                                </div>
-                                            </Col>
-                                        </Row>
-                                    )
-                                })}
-                            </div>
+                                    <Row className="dottedList">
+                                        <Col xs={3} style={{textAlign: 'left'}}>{t('Причина возврата')}</Col>
+                                        <Col xs={3} style={{textAlign: 'left'}}>{t('Склад')}</Col>
+                                        <Col xs={2}>{t('Дата возврата')}</Col>
+                                        <Col xs={3}>{t('Сумма')} ({primaryCurrency})</Col>
+                                    </Row>
+                                    {_.map(returnData, (item, index) => {
+                                        const returnId = _.get(item, 'id')
+                                        const comment = _.get(item, 'comment')
+                                        const stock = _.get(item, ['stock', 'name'])
+                                        const status = _.toNumber(_.get(item, 'status'))
+                                        const dateReturn = dateFormat(_.get(item, 'createdDate'))
+                                        const totalSum = numberFormat(_.get(item, 'totalPrice'))
+                                        return (
+                                            <Row className="dottedList" key={index}>
+                                                <Link target={'_blank'}
+                                                      to={{pathname: sprintf(ROUTES.RETURN_ITEM_PATH, returnId), query: {search: returnId, exclude: false}}}
+                                                      className={classes.link}/>
+                                                <Col style={{textAlign: 'left'}} xs={3}>{comment}</Col>
+                                                <Col style={{textAlign: 'left'}} xs={3}>{stock}</Col>
+                                                <Col xs={2}>{dateReturn}</Col>
+                                                <Col xs={3}>{totalSum}</Col>
+                                                <Col xs={1}>
+                                                    <div className={classes.buttons}>
+                                                        <OrderReturnStatusIcons status={status}/>
+                                                    </div>
+                                                </Col>
+                                            </Row>
+                                        )
+                                    })}
+                                </div>
                                 : <div className={classes.loader} style={{height: '265px', marginTop: '1px'}}>
                                     <div>
                                         <Loader size={0.75}/>

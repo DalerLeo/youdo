@@ -226,7 +226,7 @@ const enhance = compose(
         const incomeCategory = _.get(state, ['form', 'TransactionCreateForm', 'values', 'incomeCategory', 'value'])
         const optionsList = _.get(state, ['expensiveCategory', 'options', 'data', 'results'])
         const incomeCategoryOptions = _.get(state, ['form', 'TransactionCreateForm', 'values', 'incomeCategory', 'value', 'options'])
-        const expenseCategoryOptions = _.get(state, ['form', 'TransactionCreateForm', 'values', 'expanseCategory', 'value', 'options'])
+        const expenseCategoryOptions = _.get(state, ['form', 'TransactionCreateForm', 'values', 'expenseCategory', 'value', 'options'])
         const users = _.get(state, ['form', 'TransactionCreateForm', 'values', 'users'])
         return {
             rate,
@@ -297,9 +297,9 @@ const TransactionCreateDialog = enhance((props) => {
     const providerOptionId = _.get(_.find(optionsList, {'keyName': 'provider'}), 'id')
     const orderOptionId = _.get(_.find(optionsList, {'keyName': 'order'}), 'id')
     const supplyOptionId = _.get(_.find(optionsList, {'keyName': 'supply'}), 'id')
-    const supplyExpenseOptionId = _.get(_.find(optionsList, {'keyName': 'supply_expanse'}), 'id')
+    const supplyExpenseOptionId = _.get(_.find(optionsList, {'keyName': 'supply_expense'}), 'id')
     const detailizationOptionId = _.get(_.find(optionsList, {'keyName': 'transaction_child'}), 'id')
-    const staffExpenseOptionId = _.get(_.find(optionsList, {'keyName': 'staff_expanse'}), 'id')
+    const staffExpenseOptionId = _.get(_.find(optionsList, {'keyName': 'staff_expense'}), 'id')
 
     const showClients = isExpense ? _.includes(expenseCategoryOptions, clientOptionId) : _.includes(incomeCategoryOptions, clientOptionId)
     const showProviders = isExpense ? _.includes(expenseCategoryOptions, providerOptionId) : _.includes(incomeCategoryOptions, providerOptionId)
@@ -383,7 +383,7 @@ const TransactionCreateDialog = enhance((props) => {
                         {isExpense
                             ? <div className={classes.field}>
                                 <Field
-                                    name="expanseCategory"
+                                    name="expenseCategory"
                                     data-key-name={expenseCategoryKey}
                                     component={ExpensiveCategoryCustomSearchField}
                                     label={t('Категория расхода')}

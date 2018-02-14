@@ -28,7 +28,7 @@ export const transactionSerializer = (data, dataTransaction, id) => {
         'page_size': _.get(defaultDataTransaction, 'dPageSize'),
         'begin_date': _.get(defaultDataTransaction, 'fromDate') || firstDayOfMonth,
         'end_date': _.get(defaultData, 'toDate') || lastDayOfMonth,
-        'expanse_category': id
+        'expense_category': id
     }
 }
 

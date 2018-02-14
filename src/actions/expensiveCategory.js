@@ -90,7 +90,7 @@ export const expensiveCategoryItemFetchAction = (id) => {
 
 export const optionsListFetchAction = () => {
     const payload = axios()
-        .get(API.OPTIONS_LIST, {params: {page_size: 100, use: 'expanse'}})
+        .get(API.OPTIONS_LIST, {params: {page_size: 100, use: 'expense'}})
         .then((response) => {
             return _.get(response, 'data')
         })

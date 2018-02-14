@@ -62,7 +62,10 @@ const enhance = compose(
             height: '100%',
             '& .dottedList': {
                 padding: '10px 0',
-                minHeight: '50px'
+                minHeight: '50px',
+                '&:first-child': {
+                    fontWeight: '600'
+                }
             }
         },
         bodyContent: {
@@ -131,14 +134,14 @@ const ReturnCreateDialog = enhance((props) => {
         return _.toNumber(item.cost)
     })
 
-    const list = _.map(data, (item) => {
-        const measure = item.product.measurement.name
-        const amount = numberFormat(item.amount, measure)
-        const order = item.order
-        const cost = numberFormat(item.cost, currency)
-        const productName = item.product.name
+    const list = _.map(data, (item, index) => {
+        const measure = _.get(item, ['product', 'measurement', 'name'])
+        const amount = numberFormat(_.get(item, 'amount'), measure)
+        const order = _.get(item, 'order')
+        const cost = numberFormat(_.get(item, 'cost'), currency)
+        const productName = _.get(item, ['product', 'name'])
         return (
-            <Row key={productName + order} className="dottedList">
+            <Row key={index} className="dottedList">
                 <Col xs={5}>{productName}</Col>
                 <Col xs={2}>{order}</Col>
                 <Col xs={2}>{amount}</Col>
@@ -185,9 +188,7 @@ const ReturnCreateDialog = enhance((props) => {
                     {!_.isEmpty(list) &&
                         <div className={classes.bottomButton}>
                             <div>
-                                <div>
-                                    {t('Общая сумма возврата')}: <strong>{numberFormat(totalReturn, currency)}</strong>
-                                </div>
+                                <b>{t('Общая сумма возврата')}: <strong>{numberFormat(totalReturn, currency)}</strong></b>
                             </div>
                             <FlatButton
                                 label={t('Оформить возврат')}

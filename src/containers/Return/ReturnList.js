@@ -161,7 +161,7 @@ const enhance = compose(
         const products = _.filter(_.get(addProductsForm, ['values', 'product']), (item) => {
             const amount = _.toNumber(_.get(item, 'amount'))
             const price = _.toNumber(_.get(item, 'price'))
-            return amount > ZERO && price > ZERO
+            return amount > ZERO || price > ZERO
         })
         const productType = _.get(addProductsForm, ['values', 'type', 'value'])
         if (!_.isEmpty(products)) {
@@ -440,7 +440,7 @@ const enhance = compose(
                 const product = getProductData(id)
                 const amount = _.get(item, 'amount')
                 const price = _.get(item, 'price')
-                if (amount && price) {
+                if (amount || price) {
                     newProductsArray.push({
                         amount: numberWithoutSpaces(_.get(item, 'amount')),
                         cost: numberWithoutSpaces(_.get(item, 'price')),
@@ -489,7 +489,7 @@ const enhance = compose(
                 const product = getProductData(id)
                 const amount = _.get(item, 'amount')
                 const price = _.get(item, 'price')
-                if (amount && price) {
+                if (amount || price) {
                     newProductsArray.push({
                         amount: numberWithoutSpaces(_.get(item, 'amount')),
                         cost: numberWithoutSpaces(_.get(item, 'price')),
