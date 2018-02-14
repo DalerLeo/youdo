@@ -23,7 +23,6 @@ import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat'
 import dataFormat from '../../helpers/dateFormat'
 import t from '../../helpers/translate'
-import FlatButton from 'material-ui/FlatButton'
 
 const listHeader = [
     {
