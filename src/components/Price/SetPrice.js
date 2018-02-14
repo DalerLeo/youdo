@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {compose, withState, withHandlers} from 'recompose'
+import {compose, withState, withHandlers, lifecycle} from 'recompose'
 import injectSheet from 'react-jss'
 import {Field, reduxForm} from 'redux-form'
 import {hashHistory} from 'react-router'
@@ -12,6 +12,8 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import TextFieldSearch from 'material-ui/TextField'
 import Paper from 'material-ui/Paper'
 import SearchIcon from 'material-ui/svg-icons/action/search'
+import CashPayment from 'material-ui/svg-icons/maps/local-atm'
+import BankPayment from 'material-ui/svg-icons/action/credit-card'
 import NotFound from '../Images/not-found.png'
 import {connect} from 'react-redux'
 import {
@@ -21,6 +23,7 @@ import {
     normalizeNumber
 } from '../ReduxForm'
 import t from '../../helpers/translate'
+import horizontalScroll from '../../helpers/horizontalScroll'
 
 const ZERO = 0
 const TWO = 2
@@ -52,7 +55,8 @@ const enhance = compose(
         confirmContent: {
             width: '500px',
             '& > header': {
-                padding: '24px 30px'
+                padding: '20px 30px',
+                borderBottom: '1px #efefef solid'
             }
         },
         fields: {
@@ -153,40 +157,8 @@ const enhance = compose(
             right: '0'
         },
         productsList: {
-            padding: '0 30px',
             height: 'calc(100% - 56px)',
-            overflowY: 'auto',
-            '& .dottedList': {
-                margin: '0 -30px',
-                padding: '15px 30px',
-                height: '50px',
-                borderBottom: '1px #f2f5f8 solid',
-                transition: 'all 150ms ease',
-                '&:first-child': {
-                    fontWeight: '600',
-                    borderBottom: '1px #efefef solid',
-                    '&:hover': {
-                        background: 'transparent'
-                    }
-                },
-                '&:last-child': {
-                    borderBottom: 'none'
-                },
-                '&:hover': {
-                    background: '#f2f5f8'
-                },
-                '&:after': {
-                    display: 'none'
-                },
-                '& > div': {
-                    '&:first-child': {
-                        paddingLeft: '0'
-                    },
-                    '&:last-child': {
-                        paddingRight: '0'
-                    }
-                }
-            }
+            overflowY: 'auto'
         },
         flex: {
             display: 'flex',
@@ -222,9 +194,8 @@ const enhance = compose(
         },
         inputFieldCustom: {
             fontSize: '13px !important',
-            height: '20px !important',
             marginLeft: '5px',
-            width: '30px !important',
+            width: '100px !important',
             '& div': {
                 fontSize: '13px !important'
             },
@@ -264,10 +235,10 @@ const enhance = compose(
             fontSize: '13px',
             color: '#666'
         },
-        marginRightField: {
-            marginRight: '10px'
+        currencyName: {
+            marginRight: '10px',
+            alignItems: 'center'
         },
-
         leftTable: {
             color: '#666',
             fontWeight: '600',
@@ -275,80 +246,73 @@ const enhance = compose(
             width: '350px',
             boxShadow: '5px 0 8px -3px #ccc',
             '& > div': {
-                '&:hover': {
-                    '& > div': {
-                        opacity: '1'
-                    }
-                },
                 position: 'relative',
                 '&:nth-child(odd)': {
                     backgroundColor: '#f9f9f9'
                 },
-                height: '40px',
+                height: '50px',
                 '&:nth-child(2)': {
-                    height: '39px'
+                    height: '49px'
                 },
                 '&:first-child': {
                     backgroundColor: 'white',
-                    height: '41px',
-                    borderTop: '1px #efefef solid',
+                    height: '51px',
                     borderBottom: '1px #efefef solid'
                 },
                 '& span': {
-                    lineHeight: '40px',
+                    lineHeight: '50px',
                     paddingLeft: '30px'
                 }
             }
         },
         mainTableWrapper: {
             overflowX: 'auto',
-            overflowY: 'hidden'
+            overflowY: 'hidden',
+            width: 'calc(100% - 350px)'
         },
         mainTable: {
             width: '100%',
             minWidth: '850px',
             color: '#666',
-            borderCollapse: 'collapse',
-            '& tr, td': {
-                height: '40px'
-            },
-            '& td': {
-                padding: '0 20px',
-                minWidth: '200px'
-            },
-            '& tr > td:last-child': {
-                borderRight: 'none'
-            }
+            display: 'table',
+            borderCollapse: 'collapse'
         },
         tableWrapper: {
             display: 'flex',
-            overflow: 'hidden',
-            marginLeft: '-30px',
-            'padding-left': ({stat}) => stat ? '0' : '30px',
-            'margin-right': ({stat}) => stat ? '-30px' : 'unset'
+            overflow: 'hidden'
         },
         tableWrapperLoading: {
-            display: 'block',
-            overflow: 'hidden',
-            marginLeft: '-30px',
-            'padding-left': ({stat}) => stat ? '0' : '30px',
-            'margin-right': ({stat}) => stat ? '-30px' : 'unset'
+            extend: 'tableWrapper'
         },
         tableRow: {
-            '& td': {
+            height: '50px',
+            display: 'table-row',
+            '& > div': {
+                height: '50px',
+                display: 'table-cell',
                 borderRight: '1px #efefef solid',
                 textAlign: 'left',
-                '&:first-child': {
-                    width: '200px !important'
+                padding: '0 20px',
+                verticalAlign: 'middle',
+                minWidth: '200px',
+                whiteSpace: 'nowrap',
+                '&:last-child': {
+                    borderRight: 'none'
                 }
             },
             '&:nth-child(odd)': {
-                backgroundColor: '#f9f9f9'
+                background: '#f9f9f9'
             }
+        },
+        tableRowTitle: {
+            background: 'none !important',
+            borderBottom: '1px #efefef solid',
+            extend: 'tableRow',
+            fontWeight: '600'
         }
     }),
     reduxForm({
-        form: 'SetPricesForm',
+        form: 'setPricesForm',
         enableReinitialize: true
     }),
     withState('pdSearch', 'setSearch', ({filter}) => filter.getParam('pdSearch')),
@@ -361,15 +325,17 @@ const enhance = compose(
         }
     }),
     connect((state) => {
-        const formProducts = _.get(state, ['form', 'SetPricesForm', 'values', 'product'])
-        const cashCurrency = _.get(state, ['form', 'SetPricesForm', 'values', 'cashCurrency'])
-        const bankCurrency = _.get(state, ['form', 'SetPricesForm', 'values', 'bankCurrency'])
-        const itemsCount = _.get(state, ['remainder', 'inventory', 'data', 'count'])
+        const cashCurrency = _.get(state, ['form', 'setPricesForm', 'values', 'cashCurrency'])
+        const bankCurrency = _.get(state, ['form', 'setPricesForm', 'values', 'bankCurrency'])
         return {
-            formProducts,
             cashCurrency,
-            bankCurrency,
-            itemsCount
+            bankCurrency
+        }
+    }),
+    lifecycle({
+        componentDidMount () {
+            const table = this.refs.mainTable
+            horizontalScroll(table)
         }
     })
 )
@@ -398,7 +364,12 @@ const flatButtonStyle = {
         fontWeight: '600'
     }
 }
-let head = []
+
+const paymentStyle = {
+    height: '18px',
+    width: '18px',
+    verticalAlign: 'sub'
+}
 const SetPrice = enhance((props) => {
     const {
         open,
@@ -427,76 +398,73 @@ const SetPrice = enhance((props) => {
 
     const products = (
         <div className={classes.leftTable}>
-            <div><span>{t('Product')}</span></div>
+            <div><span>{t('Товар')}</span></div>
             {_.map(_.get(data, 'results'), (item) => {
                 const id = _.get(item, 'id')
-                const name = _.get(item, 'name') || t('No')
-                const code = _.get(item, 'code', '-') || t('No')
+                const name = _.get(item, 'name')
                 return (
                     <div key={id}>
-                        <td>{name}</td>
-                        <td>{code}</td>
+                        <span>{name}</span>
                     </div>
                 )
             })}
         </div>
     )
-    head = []
-    _.map(_.get(priceList, 'results'), (item) => {
-        head.push({name: item.name, id: item.id})
-    })
+    const getTableTitle = () => {
+        let head = []
+        head = []
+        _.map(_.get(priceList, 'results'), (item) => {
+            head.push({name: item.name, id: item.id})
+        })
+        return head
+    }
 
     const tableList = (
-        <table className={classes.mainTable}>
-            <tbody>
-            <tr className={classes.title}>
-                {_.map(head, (item, index) => {
+        <div className={classes.mainTable}>
+            <div className={classes.tableRowTitle}>
+                {_.map(getTableTitle(), (item, index) => {
                     return (
-                        <td key={index}>
+                        <div key={index}>
                             {item.name}
-                        </td>
+                        </div>
                     )
                 })}
-            </tr>
+            </div>
 
             {_.map(_.get(data, 'results'), (item) => {
                 const id = _.get(item, 'id')
                 return (
-                    <tr key={id} className={classes.tableRow}>
+                    <div key={id} className={classes.tableRow}>
                         {_.map(_.get(priceList, 'results'), (val, index) => {
                             return (
-                                <td key={index}>
+                                <div key={index}>
                                     <Field
                                         name={'products[' + id + '][' + val.id + '][cashPrice]'}
                                         component={TextField}
                                         className={classes.inputFieldCustom}
-                                        underlineStyle={{borderColor: '#5d6474'}}
-                                        normalize={normalizeNumber}
-                                        fullWidth={true}/>
-                                    <span className={classes.marginRightField}>{cashCurrencyName}</span>
+                                        normalize={normalizeNumber}/>
+                                    <span className={classes.currencyName}>{cashCurrencyName}</span>
+                                    <CashPayment style={paymentStyle} color={'#12aaeb'}/>
                                     <Field
                                         name={'products[' + id + '][' + val.id + '][bankPrice]'}
                                         component={TextField}
                                         className={classes.inputFieldCustom}
-                                        underlineStyle={{borderColor: '#5d6474'}}
-                                        normalize={normalizeNumber}
-                                        fullWidth={true}/>
-                                    <span className={classes.marginRightField}>{bankCurrencyName}</span>
-                                </td>
+                                        normalize={normalizeNumber}/>
+                                    <span className={classes.currencyName}>{bankCurrencyName}</span>
+                                    <BankPayment style={paymentStyle} color={'#6261b0'}/>
+                                </div>
                             )
                         })}
-                    </tr>
+                    </div>
                 )
             })}
-            </tbody>
-        </table>
+        </div>
     )
     const emptyData = _.isEmpty(_.get(data, 'results'))
     const lists = (
         <div className={(loading || emptyData)
             ? classes.tableWrapperLoading
-            : classes.tableWrapper}
-             style={{marginBottom: 30}}>
+            : classes.tableWrapper}>
             {loading &&
             <div className={classes.loader}>
                 <Loader size={0.75}/>
@@ -506,7 +474,7 @@ const SetPrice = enhance((props) => {
                 <div>{t('По вашему запросу ничего не найдено')}</div>
             </div>}
             {!loading && !emptyData && products}
-            <div ref="mainTable" className={classes.mainTableWrapper} style={{width: 'calc(100% - 350px)'}}>
+            <div ref="mainTable" className={classes.mainTableWrapper}>
                 {!loading && !emptyData && tableList}
             </div>
         </div>
@@ -585,15 +553,20 @@ const SetPrice = enhance((props) => {
                                 </IconButton>
                             </div>
                         </header>
-                        <div className={classes.productsList}>
+                        <div
+                            className={classes.productsList}
+                            style={currencyChooseDialog ? {visibility: 'hidden'} : {visibility: 'visible'}}>
                             <div className={classes.expandedTable}>
                                 {lists}
                             </div>
-                            <div className={classes.bottomButton}>
-                                <button className={classes.actionButton} primary={true} onClick={() => { onSubmit() }}>
-                                    {t('Далее')}
-                                </button>
-                            </div>
+                        </div>
+                        <div className={classes.bottomButton}>
+                            <FlatButton
+                                label={t('Далее')}
+                                className={classes.actionButton}
+                                primary={true}
+                                onClick={onSubmit}
+                            />
                         </div>
                     </div>
                 </div>

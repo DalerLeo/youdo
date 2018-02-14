@@ -125,10 +125,9 @@ export const setPriceCreateFetchAction = (formValues) => {
     }
 }
 
-export const setPriceProductListFetchAction = (filter) => {
-    const params = serializers.listFilterSerializer(filter.getParams())
+export const setPriceProductListFetchAction = (productType) => {
     const payload = axios()
-        .get((API.PRODUCT_LIST), {params})
+        .get((API.PRODUCT_LIST), {params: {'type': productType}})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -141,10 +140,9 @@ export const setPriceProductListFetchAction = (filter) => {
         payload
     }
 }
-export const setPricePriceListFetchAction = (filter) => {
-    const params = serializers.listFilterSerializer(filter.getParams())
+export const setPricePriceListFetchAction = () => {
     const payload = axios()
-        .get((API.PRICE_LIST_SETTING_LIST), {params})
+        .get(API.PRICE_LIST_SETTING_LIST)
         .then((response) => {
             return _.get(response, 'data')
         })

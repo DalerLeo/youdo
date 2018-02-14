@@ -9,6 +9,7 @@ import {compose} from 'recompose'
 import Price from 'material-ui/svg-icons/editor/attach-money'
 import Excel from 'material-ui/svg-icons/av/equalizer'
 import Person from 'material-ui/svg-icons/social/person'
+import FlatButton from 'material-ui/FlatButton'
 import PriceFilterForm from './PriceFilterForm'
 import PriceDetails from './PriceDetails'
 import PriceSupplyDialog from './PriceSupplyDialog'
@@ -22,7 +23,6 @@ import getConfig from '../../helpers/getConfig'
 import numberFormat from '../../helpers/numberFormat'
 import dataFormat from '../../helpers/dateFormat'
 import t from '../../helpers/translate'
-import FlatButton from 'material-ui/FlatButton'
 
 const listHeader = [
     {
@@ -150,7 +150,6 @@ const enhance = compose(
         }
     })
 )
-
 const flatButtonStyle = {
     backgroundColorPrice: '#12aaeb',
     backgroundColorExcel: '#71ce87',
@@ -240,6 +239,7 @@ const PriceGridList = enhance((props) => {
             </div>
         </div>
     )
+
     const priceList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')

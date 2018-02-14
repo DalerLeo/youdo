@@ -1,6 +1,6 @@
 import React from 'react'
 import {compose} from 'recompose'
-import RaisedButton from 'material-ui/RaisedButton'
+import FlatButton from 'material-ui/FlatButton'
 import Loader from '../Loader'
 import Paper from 'material-ui/Paper'
 import {Field, reduxForm} from 'redux-form'
@@ -25,19 +25,17 @@ const enhance = compose(
         wrapper: {
             width: '320px',
             margin: '0 auto',
-            padding: '25px 55px 25px 45px',
-            textAlign: 'center',
-            display: 'inline-block'
+            padding: '25px 45px'
         },
 
         title: {
             paddingTop: '5px',
             paddingBottom: '22px',
             fontSize: '14px',
-            fontWeight: '600',
+            fontWeight: 'bold',
             textTransform: 'uppercase',
             textAlign: 'center',
-            color: '#647994',
+            color: '#5d6474',
             position: 'relative',
             '&:after': {
                 content: '""',
@@ -92,16 +90,21 @@ const SignInForm = enhance((props) => {
                     </div>
                 </div>
                 <div>
-                    <div className={classes.error}>{error}</div>
-
+                    {error && <div className={classes.error}>{error}</div>}
                     <Field className={classes.loginForm} name="username" component={TextField} label={t('Логин')} fullWidth={true} />
                     <Field className={classes.loginForm} name="password" component={TextField} label={t('Пароль')} type="password" fullWidth={true} />
                     <div style={{margin: '20px 0'}}><Field name="rememberMe" component={CheckBox} label={t('Запомнить меня')} className={classes.rememberMe} /></div>
 
-                    <RaisedButton
+                    <FlatButton
                         type="submit"
+                        backgroundColor={'#5d6474'}
+                        hoverColor={'#5d6474'}
+                        rippleColor={'#fff'}
                         label={t('Войти')}
-                        labelStyle={{fontSize: '13px'}}
+                        labelStyle={{
+                            color: '#fff',
+                            verticalAlign: 'baseline'
+                        }}
                         primary={true}
                         fullWidth={true}
                     />
