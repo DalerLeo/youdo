@@ -52,8 +52,8 @@ export const updateSerializer = (data, location, detail) => {
     const guide = _.get(data, 'guide')
     const frequency = _.get(data, ['frequency', 'value'])
     const status = _.get(data, ['status', 'value'])
-    const lat = _.get(location, 'lat')
-    const lon = _.get(location, 'lng')
+    const lat = _.get(location, 'lat') || _.get(data, ['latLng', 'lat'])
+    const lon = _.get(location, 'lng') || _.get(data, ['latLng', 'lng'])
     const contactName = _.get(data, ['contactName'])
     const phones = _.filter(_.map(_.get(data, 'phones'), (phone) => {
         return {
