@@ -321,6 +321,8 @@ export const SHIPMENT_ADD_PRODUCTS_LIST = `/${PRODUCT}/`
 export const SHIPMENT_ADD_RAW_LIST = `${REMAINDER_LIST}`
 export const SHIPMENT_ADD_PRODUCTS_CREATE = `/${SHIPMENT_PRODUCTS}/wb_create/`
 export const SHIPMENT_ADD_RAW_CREATE = `/${SHIPMENT_MATERIALS}/wb_create/`
+export const SHIPMENT_EDIT_PRODUCT_AMOUNT = `/${SHIPMENT_PRODUCTS}/%d/`
+export const SHIPMENT_EDIT_MATERIAL_AMOUNT = `/${SHIPMENT_MATERIALS}/%d/`
 
 export const MARKET_TYPE = 'market/market_type'
 export const MARKET_TYPE_CREATE = `/${MARKET_TYPE}/`

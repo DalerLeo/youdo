@@ -2,7 +2,8 @@ import _ from 'lodash'
 import React from 'react'
 import {Row, Col} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
-import {compose} from 'recompose'
+import {hashHistory} from 'react-router'
+import {compose, withState} from 'recompose'
 import Filter from 'material-ui/svg-icons/content/filter-list'
 import * as TAB from '../../../constants/manufactureShipmentTab'
 import ManufactureActivityDateRange from '../ManufactureActivityDateRange'
@@ -11,22 +12,27 @@ import ManufactureAddProductMaterial from '../ManufactureAddProductMaterial'
 import ShipmentAddProductsDialog from '../ShipmentAddProductsDialog'
 import Paper from 'material-ui/Paper'
 import Loader from '../../Loader'
+import ToolTip from '../../ToolTip'
 import {Tabs, Tab} from 'material-ui/Tabs'
 import FlatButton from 'material-ui/FlatButton'
 import Sort from 'material-ui/svg-icons/content/sort'
+import DeleteIcon from 'material-ui/svg-icons/action/delete'
+import EditIcon from 'material-ui/svg-icons/editor/mode-edit'
 import Log from 'material-ui/svg-icons/content/content-paste'
 import Shift from 'material-ui/svg-icons/av/loop'
-import {Field} from 'redux-form'
 import Raw from 'material-ui/svg-icons/action/exit-to-app'
 import Product from '../../CustomIcons/Product'
 import Material from 'material-ui/svg-icons/maps/layers'
+import {Field, reduxForm, change} from 'redux-form'
 import Defected from 'material-ui/svg-icons/image/broken-image'
+import Check from 'material-ui/svg-icons/navigation/check'
 import Pagination from '../../GridList/GridListNavPagination'
 import Choose from '../../Images/choose-menu.png'
 import NotFound from '../../Images/not-found.png'
 import dateTimeFormat from '../../../helpers/dateTimeFormat'
 import numberFormat from '../../../helpers/numberFormat'
-import {ShiftMultiSearchField} from '../../ReduxForm'
+import {ShiftMultiSearchField, TextField} from '../../ReduxForm'
+import IconButton from 'material-ui/IconButton'
 import t from '../../../helpers/translate'
 import {TYPE_PRODUCT, TYPE_RAW} from '../index'
 
@@ -196,6 +202,8 @@ const enhance = compose(
         },
         product: {
             display: 'flex',
+            alignItems: 'center',
+            height: '45px',
             padding: '5px 0',
             justifyContent: 'space-between',
             '& span': {
@@ -272,7 +280,12 @@ const enhance = compose(
                 marginTop: '0 !important'
             }
         }
-    })
+    }),
+    reduxForm({
+        form: 'LogEditForm',
+        enableReinitialize: true
+    }),
+    withState('edit', 'setEdit', null)
 )
 
 const iconStyles = {
@@ -290,6 +303,16 @@ const iconStyles = {
         width: 20,
         height: 20,
         color: '#e57373'
+    },
+    icon: {
+        color: '#666',
+        width: 22,
+        height: 22
+    },
+    button: {
+        width: 30,
+        height: 25,
+        padding: 0
     }
 }
 const tabStyles = {
@@ -309,7 +332,10 @@ const ManufactureShipment = enhance((props) => {
         classes,
         manufactureId,
         productMaterialDialog,
-        addProductDialog
+        addProductDialog,
+        edit,
+        handleEditProductAmount,
+        setEdit
     } = props
     const ZERO = 0
     const filter = _.get(shipmentData, 'filter')
@@ -322,6 +348,17 @@ const ManufactureShipment = enhance((props) => {
     const logsLoading = _.get(detailData, 'logsLoading')
     const productsLoading = _.get(detailData, 'productsLoading')
     const materialsLoading = _.get(detailData, 'materialsLoading')
+
+    const handleEdit = (index, type, id) => {
+        props.dispatch(change('LogEditForm', 'editAmount', ''))
+        setEdit(index)
+        hashHistory.push(filter.createURL({openType: type, openId: id}))
+    }
+    const handleSubmit = () => {
+        setEdit(null)
+        handleEditProductAmount()
+        props.dispatch(change('LogEditForm', 'editAmount', ''))
+    }
 
     const groupedProducts = _.groupBy(_.get(detailData, 'products'), (item) => item.product.id)
     const products = _.map(groupedProducts, (item, index) => {
@@ -371,12 +408,13 @@ const ManufactureShipment = enhance((props) => {
         const createdDate = dateTimeFormat(_.get(item, 'createdDate'))
         const amount = _.get(item, 'amount')
         const type = _.get(item, 'type')
+        const id = _.get(item, 'id')
         const kind = _.get(item, 'kind')
         const isDefect = _.get(item, 'isDefect')
         return (
             <Row key={index} className={isDefect ? classes.productDefected : classes.product}>
                 {type === PRODUCT
-                    ? <Col xs={6}><span>
+                    ? <Col xs={5}><span>
                         {isDefect
                             ? <Defected style={iconStyles.defected}/>
                             : kind === MATERIAL
@@ -386,7 +424,7 @@ const ManufactureShipment = enhance((props) => {
                         {product}
                         </span>
                     </Col>
-                    : <Col xs={6}>
+                    : <Col xs={5}>
                         <span><Raw style={isDefect ? iconStyles.defected : iconStyles.material}/>{product}</span>
                     </Col>}
                 <Col xs={2}>
@@ -396,8 +434,49 @@ const ManufactureShipment = enhance((props) => {
                             : t('Продукт')
                         : t('Сырье')}
                 </Col>
-                <Col xs={2}>{numberFormat(amount, measurement)}</Col>
+                {edit === index
+                ? <Col xs={2}>
+                    <Field
+                        className={classes.inputFieldCustom}
+                        fullWidth={true}
+                        component={TextField}
+                        name={'editAmount'}
+                        label={numberFormat(amount, measurement)}/>
+                  </Col>
+                : <Col xs={2}>{numberFormat(amount, measurement)}</Col>}
                 <Col xs={2}>{createdDate}</Col>
+                <Col xs={1}>
+                    {edit === index
+                    ? <div>
+                            <IconButton
+                                onTouchTap={() => {
+                                    handleSubmit()
+                                }}>
+                                <Check color="#12aaeb"/>
+                            </IconButton>
+                        </div>
+                    : <div style={{display: 'flex'}}>
+                        <ToolTip position="bottom" text={t('Изменить')}>
+                            <IconButton
+                                iconStyle={iconStyles.icon}
+                                style={iconStyles.button}
+                                disableTouchRipple={true}
+                                onTouchTap={() => handleEdit(index, type, id)}
+                                touch={true}>
+                                <EditIcon/>
+                            </IconButton>
+                        </ToolTip>
+                        <ToolTip position="bottom" text={t('Удалить')}>
+                            <IconButton
+                                disableTouchRipple={true}
+                                iconStyle={iconStyles.icon}
+                                style={iconStyles.button}
+                                touch={true}>
+                                <DeleteIcon />
+                            </IconButton>
+                        </ToolTip>
+                    </div>}
+                </Col>
             </Row>
         )
     })
@@ -537,10 +616,11 @@ const ManufactureShipment = enhance((props) => {
                                             <Pagination filter={filterLogs}/>
                                         </div>
                                         <Row className={classes.flexTitle}>
-                                            <Col xs={6}><h4>{t('Продукт / сырье')}</h4></Col>
+                                            <Col xs={5}><h4>{t('Продукт / сырье')}</h4></Col>
                                             <Col xs={2}><h4>{t('Тип')}</h4></Col>
                                             <Col xs={2}><h4>{t('Кол-во')}</h4></Col>
                                             <Col xs={2}><h4>{t('Дата, время')}</h4></Col>
+                                            <Col xs={1}></Col>
                                         </Row>
                                         {logsLoading
                                             ? <div className={classes.loader}>

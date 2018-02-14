@@ -30,7 +30,9 @@ import {
     addProductsListAction,
     addRawsListAction,
     addProductsSubmitAction,
-    addRawsSubmitAction
+    addRawsSubmitAction,
+    editReturnAmountAction,
+    editWriteOffAmountAction
 } from '../../actions/manufactureShipment'
 import {openSnackbarAction} from '../../actions/snackbar'
 import {openErrorAction} from '../../actions/error'
@@ -71,6 +73,7 @@ const enhance = compose(
         const filterForm = _.get(state, ['form', 'ManufactureActivityFilterForm'])
         const productMaterialForm = _.get(state, ['form', 'ManufactureProductMaterialForm'])
         const addProductsForm = _.get(state, ['form', 'ShipmentAddProductsForm'])
+        const LogEditForm = _.get(state, ['form', 'LogEditForm'])
 
         return {
             query,
@@ -97,7 +100,8 @@ const enhance = compose(
             addProductsMaterialsList,
             addProductsMaterialsLoading,
             filterProducts,
-            addProductsForm
+            addProductsForm,
+            LogEditForm
         }
     }),
 
@@ -129,7 +133,9 @@ const enhance = compose(
             openProductMaterialDialog: null,
             pdPage: null,
             pdPageSize: null,
-            pdSearch: null
+            pdSearch: null,
+            openId: null,
+            openType: null
         }
         const manufacture = _.toInteger(_.get(props, ['params', 'manufactureId']))
         const nextManufacture = _.toInteger(_.get(nextProps, ['params', 'manufactureId']))
@@ -153,7 +159,9 @@ const enhance = compose(
             openProductMaterialDialog: null,
             pdPage: null,
             pdPageSize: null,
-            pdSearch: null
+            pdSearch: null,
+            openId: null,
+            openType: null
         }
         const manufactureId = _.get(props, ['params', 'manufactureId'])
         const nextManufactureId = _.get(nextProps, ['params', 'manufactureId'])
@@ -188,7 +196,9 @@ const enhance = compose(
             product: null,
             provider: null,
             status: null,
-            stock: null
+            stock: null,
+            openId: null,
+            openType: null
         }
         const productType = _.get(props, ['addProductsForm', 'values', 'productType', 'value'])
         const productTypeNext = _.get(nextProps, ['addProductsForm', 'values', 'productType', 'value'])
@@ -429,6 +439,17 @@ const enhance = compose(
             return dialogType === TYPE_PRODUCT
                 ? dispatch(addProductsListAction(filterProducts, productType, manufacture))
                 : dispatch(addRawsListAction(filterProducts, productType, stock, manufacture))
+        },
+        handleEditProductAmount: props => () => {
+            const {dispatch, LogEditForm, filter} = props
+            const amount = _.get(LogEditForm, ['values', 'editAmount'])
+            const type = filter.getParam('openType')
+            const id = _.toNumber(filter.getParam('openId'))
+            if (type === 'writeoff') {
+                dispatch(editWriteOffAmountAction(id, amount))
+            } else if (type === 'return') {
+                dispatch(editReturnAmountAction(id, amount))
+            }
         }
     })
 )
@@ -553,6 +574,7 @@ const ManufactureShipmentList = enhance((props) => {
                     detailData={detailData}
                     productMaterialDialog={productMaterialDialog}
                     addProductDialog={addProductDialog}
+                    handleEditProductAmount={props.handleEditProductAmount}
                 />
             </ManufactureWrapper>
         </Layout>

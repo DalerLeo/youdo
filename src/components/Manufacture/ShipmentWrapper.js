@@ -60,7 +60,8 @@ const ManufactureShipmentWrapper = enhance((props) => {
         detailData,
         shipmentData,
         productMaterialDialog,
-        addProductDialog
+        addProductDialog,
+        handleEditProductAmount
     } = props
     return (
         <div>
@@ -75,6 +76,7 @@ const ManufactureShipmentWrapper = enhance((props) => {
                 handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
                 productMaterialDialog={productMaterialDialog}
                 filterLogs={filterLogs}
+                handleEditProductAmount={handleEditProductAmount}
                 addProductDialog={addProductDialog}/>
         </div>
     )
@@ -83,7 +85,8 @@ const ManufactureShipmentWrapper = enhance((props) => {
 ManufactureShipmentWrapper.propTypes = {
     listData: PropTypes.object,
     detailData: PropTypes.object,
-    shipmentData: PropTypes.object
+    shipmentData: PropTypes.object,
+    handleEditProductAmount: PropTypes.func.isRequired
 }
 
 export default ManufactureShipmentWrapper
