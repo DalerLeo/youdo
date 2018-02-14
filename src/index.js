@@ -28,7 +28,7 @@ const muiTheme = getMuiTheme({
     fontFamily: 'Open Sans, sans-serif',
     fontSize: '13px',
     palette: {
-        primary1Color: '#5d6474',
+        primary1Color: '#12aaeb',
         primary2Color: '#5d6474',
         primary3Color: '#5d6474',
         accent1Color: '#5d6474',
@@ -47,12 +47,20 @@ const muiTheme = getMuiTheme({
         fontSize: 13,
         fontWeight: 400
     },
+    datePicker: {
+        color: '#12aaeb',
+        selectColor: '#12aaeb'
+    },
     raisedButton: {
         fontSize: 13,
-        fontWeight: 400
+        fontWeight: 400,
+        primaryColor: '#5d6474'
     },
     timePicker: {
         headerColor: '#2d3037'
+    },
+    textField: {
+        focusColor: '#5d6474'
     },
     tabs: {
         backgroundColor: '#fff',

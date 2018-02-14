@@ -52,7 +52,7 @@ export const createIncomeSerializer = (data, cashboxId) => {
     const customRate = numberWithoutSpaces(_.get(data, 'custom_rate'))
     const division = _.get(data, ['division', 'value'])
     const cashbox = _.get(data, ['cashbox', 'value'])
-    const date = moment(_.get(data, 'date')).format('YYYY-MM-DD HH:00:00')
+    const date = moment(_.get(data, 'date')).format('YYYY-MM-DD HH:mm')
     const currencyRate = _.get(data, 'currencyRate')
     const staffs = _.filter(_.map(_.get(data, 'users'), (item, index) => {
         return {
@@ -111,7 +111,7 @@ export const createExpenseSerializer = (data, cashboxId) => {
     const division = _.get(data, ['division', 'value'])
     const cashbox = _.get(data, ['cashbox', 'value'])
     const supply = _.get(data, ['supply', 'value'])
-    const date = moment(_.get(data, 'date')).format('YYYY-MM-DD HH:00:00')
+    const date = moment(_.get(data, 'date')).format('YYYY-MM-DD HH:mm')
     const currencyRate = _.get(data, 'currencyRate')
 
     const request = {
