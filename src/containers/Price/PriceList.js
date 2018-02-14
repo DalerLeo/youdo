@@ -110,11 +110,8 @@ const enhance = compose(
         const productTypeNext = _.get(nextProps, ['setPricesForm', 'values', 'productType', 'value'])
         return productType !== productTypeNext
     }, ({dispatch, setPricesForm}) => {
-        console.log(setPricesForm, 'props')
-        const proType = _.get(setPricesForm, ['values', 'productType', 'value'])
-        dispatch(setPriceProductListFetchAction(proType))
-        dispatch(setPricePriceListFetchAction())
-
+        const productType = _.get(setPricesForm, ['values', 'productType', 'value'])
+        dispatch(setPriceProductListFetchAction(productType))
     }),
 
     withPropsOnChange((props, nextProps) => {

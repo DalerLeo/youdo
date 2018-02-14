@@ -87,8 +87,8 @@ export const setPricesSerializer = (data) => {
         const prices = _.map(item, (priceItem, priceIndex) => {
             return {
                 'price_list': priceIndex,
-                'cash_price': _.get(priceItem, 'cashPrice'),
-                'transfer_price': _.get(priceItem, 'bankPrice')
+                'cash_price': numberWithoutSpaces(_.get(priceItem, 'cashPrice')),
+                'transfer_price': numberWithoutSpaces(_.get(priceItem, 'bankPrice'))
             }
         })
 

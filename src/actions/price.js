@@ -126,9 +126,8 @@ export const setPriceCreateFetchAction = (formValues) => {
 }
 
 export const setPriceProductListFetchAction = (productType) => {
-    console.log(productType, 'productType')
     const payload = axios()
-        .get((API.PRODUCT_LIST), {'productType': productType})
+        .get((API.PRODUCT_LIST), {params: {'type': productType}})
         .then((response) => {
             return _.get(response, 'data')
         })
