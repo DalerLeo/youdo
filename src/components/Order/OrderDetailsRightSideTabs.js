@@ -127,8 +127,7 @@ const OrderDetailsRightSideTabs = enhance((props) => {
         data,
         tabData,
         returnData,
-        returnDataLoading,
-        canReturnFromOrderConfig
+        returnDataLoading
     } = props
 
     const tabStyle = {
@@ -235,7 +234,6 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                     </div>
                 </Tab>
 
-                {canReturnFromOrderConfig &&
                 <Tab
                     label={t('Возврат')}
                     buttonStyle={tabStyle.button}
@@ -285,7 +283,7 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                         : (!returnDataLoading && <div className={classes.emptyQuery}>
                             <div>{t('В данном заказе нет возвратов')}</div>
                         </div>)}
-                </Tab>}
+                </Tab>
             </Tabs>
         </div>
     )

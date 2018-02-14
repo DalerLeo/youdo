@@ -21,6 +21,7 @@ import toBoolean from '../../helpers/toBoolean'
 import t from '../../helpers/translate'
 import {reduxForm, Field} from 'redux-form'
 import {UsersSearchField} from '../ReduxForm'
+import {ORDER_TYPE_DELIVERY} from '../../constants/backendConstants'
 
 const ZERO = 0
 
@@ -174,10 +175,11 @@ const StockTabTransfer = enhance((props) => {
         />
     )
 
+    const deliveryType = _.get(detailData, ['data', 'deliveryType'])
     const message = (
         <form>
             <div>{t('Запрос') + ' № ' + _.get(detailData, 'id')}</div>
-            {_.get(detailData, ['data', 'deliveryMan']) &&
+            {deliveryType === ORDER_TYPE_DELIVERY &&
             <Field
                 name="deliveryMan"
                 label={t('Доставщик')}
