@@ -10,6 +10,7 @@ import ManufactureActivityDateRange from '../ManufactureActivityDateRange'
 import ManufactureActivityFilterDialog from '../ManufactureActivityFilterDialog'
 import ManufactureAddProductMaterial from '../ManufactureAddProductMaterial'
 import ShipmentAddProductsDialog from '../ShipmentAddProductsDialog'
+import ConfirmDialog from '../../ConfirmDialog'
 import Paper from 'material-ui/Paper'
 import Loader from '../../Loader'
 import ToolTip from '../../ToolTip'
@@ -35,7 +36,7 @@ import {ShiftMultiSearchField, TextField} from '../../ReduxForm'
 import IconButton from 'material-ui/IconButton'
 import t from '../../../helpers/translate'
 import {TYPE_PRODUCT, TYPE_RAW} from '../index'
-
+const ZERO = 0
 const enhance = compose(
     injectSheet({
         buttons: {
@@ -285,7 +286,8 @@ const enhance = compose(
         form: 'LogEditForm',
         enableReinitialize: true
     }),
-    withState('edit', 'setEdit', null)
+    withState('edit', 'setEdit', null),
+    withState('deleteItem', 'setDeleteItem', null)
 )
 
 const iconStyles = {
@@ -335,7 +337,10 @@ const ManufactureShipment = enhance((props) => {
         addProductDialog,
         edit,
         handleEditProductAmount,
-        setEdit
+        setEdit,
+        deleteItem,
+        setDeleteItem,
+        handleDeleteProduct
     } = props
     const ZERO = 0
     const filter = _.get(shipmentData, 'filter')
@@ -349,6 +354,13 @@ const ManufactureShipment = enhance((props) => {
     const productsLoading = _.get(detailData, 'productsLoading')
     const materialsLoading = _.get(detailData, 'materialsLoading')
 
+    const handleOpenDelete = (item, type, id) => {
+        setDeleteItem(item)
+        hashHistory.push(filter.createURL({openType: type, openId: id}))
+    }
+    const handleCloseDelete = () => {
+        setDeleteItem(null)
+    }
     const handleEdit = (index, type, id) => {
         props.dispatch(change('LogEditForm', 'editAmount', ''))
         setEdit(index)
@@ -416,16 +428,18 @@ const ManufactureShipment = enhance((props) => {
                 {type === PRODUCT
                     ? <Col xs={5}><span>
                         {isDefect
-                            ? <Defected style={iconStyles.defected}/>
+                            ? <ToolTip position="left" text={t('Брак')}><Defected style={iconStyles.defected}/></ToolTip>
                             : kind === MATERIAL
-                                ? <Material style={iconStyles.material}/>
-                                : <Product style={iconStyles.product}/>
+                                ? <ToolTip position="left" text={t('Сырье')}><Material style={iconStyles.material}/></ToolTip>
+                                : <ToolTip position="left" text={t('Нормалный Продукт')}><Product style={iconStyles.product}/></ToolTip>
                         }
                         {product}
                         </span>
                     </Col>
                     : <Col xs={5}>
-                        <span><Raw style={isDefect ? iconStyles.defected : iconStyles.material}/>{product}</span>
+                        <ToolTip position="left" text={t(isDefect ? 'Брак' : 'Сырье')}>
+                            <span><Raw style={isDefect ? iconStyles.defected : iconStyles.material}/>{product}</span>
+                        </ToolTip>
                     </Col>}
                 <Col xs={2}>
                     {type === PRODUCT
@@ -471,6 +485,7 @@ const ManufactureShipment = enhance((props) => {
                                 disableTouchRipple={true}
                                 iconStyle={iconStyles.icon}
                                 style={iconStyles.button}
+                                onTouchTap={() => handleOpenDelete(item, type, id)}
                                 touch={true}>
                                 <DeleteIcon />
                             </IconButton>
@@ -692,6 +707,13 @@ const ManufactureShipment = enhance((props) => {
                 openAddProductConfirm={addProductDialog.openAddProductConfirm}
                 handleCloseAddProductConfirm={addProductDialog.handleCloseAddProductConfirm}
                 handleSubmitAddProductConfirm={addProductDialog.handleSubmitAddProductConfirm}
+            />
+            <ConfirmDialog
+                type="delete"
+                message={_.get(deleteItem, ['product', 'name']) + ' ' + numberFormat(_.get(deleteItem, 'amount'), _.get(deleteItem, ['product', 'measurement', 'name']))}
+                onClose={handleCloseDelete}
+                open={_.get(deleteItem, 'id') > ZERO}
+                onSubmit={handleDeleteProduct}
             />
         </div>
     )
