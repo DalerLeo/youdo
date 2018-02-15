@@ -171,3 +171,35 @@ export const addRawsSubmitAction = (data) => {
         payload
     }
 }
+
+export const editReturnAmountAction = (id, amount) => {
+    const payload = axios()
+        .put(sprintf(API.SHIPMENT_EDIT_PRODUCT_AMOUNT, id), {amount})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.SHIPMENT_EDIT_AMOUNT,
+        payload
+    }
+}
+
+export const editWriteOffAmountAction = (id, amount) => {
+    const payload = axios()
+        .put(sprintf(API.SHIPMENT_EDIT_MATERIAL_AMOUNT, id), {amount})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.SHIPMENT_EDIT_AMOUNT,
+        payload
+    }
+}
