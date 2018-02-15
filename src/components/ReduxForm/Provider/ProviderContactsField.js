@@ -12,10 +12,6 @@ const enhance = compose(
             '&>div': {
                 marginBottom: '10px'
             },
-            '& svg': {
-                width: '20px !important',
-                height: '20px !important'
-            },
             '& label': {
                 top: '-2px',
                 marginLeft: '-7px'
@@ -26,8 +22,7 @@ const enhance = compose(
             fontSize: '14px',
             color: 'red'
         }
-    })
-    ,
+    }),
     connect((state) => {
         const contacts = _.get(state, ['provider', 'contacts', 'data'])
         const contactsLoading = _.get(state, ['provider', 'contacts', 'loading'])
@@ -44,18 +39,25 @@ const ProviderContactsField = enhance((props) => {
     const {classes, contacts, contactsLoading, input, meta: {error}, detail} = props
     return (
         <div>
-            { contactsLoading && <div>Загрузка ...</div> }
+            {contactsLoading && <div>Загрузка ...</div>}
             {error && <div className={classes.error}>{error}</div>}
-            {!contactsLoading && <RadioButtonGroup name="contact" className={classes.radioButton}
-                                                   onChange={input.onChange} defaultSelected={_.toInteger(input.value)}>
+            {!contactsLoading &&
+            <RadioButtonGroup
+                name="contact"
+                className={classes.radioButton}
+                onChange={input.onChange}
+                defaultSelected={_.toInteger(input.value)}>
                 {_.map(contacts, (item) => {
                     const id = _.toInteger(_.get(item, 'id'))
                     const forLabel = _.get(item, 'name') + ' ' + _.get(item, 'phone') + ' ' + _.get(item, 'email')
                     return (
-                        <RadioButton key={id}
-                                     value={id}
-                                     label={forLabel}
-                                     checked={!_.get(detail, ['contact', 'id']) === _.get(item, 'id')}
+                        <RadioButton
+                            key={id}
+                            value={id}
+                            label={forLabel}
+                            iconStyle={{width: 20, height: 20}}
+                            disableTouchRipple={true}
+                            checked={!_.get(detail, ['contact', 'id']) === _.get(item, 'id')}
                         />
                     )
                 })}

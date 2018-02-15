@@ -24,14 +24,17 @@ setObservableConfig({
 })
 setObservableConfig(rxjsconfig)
 
+const primaryColor = '#5d6474'
+const secondaryColor = '#12aaeb'
+
 const muiTheme = getMuiTheme({
     fontFamily: 'Open Sans, sans-serif',
     fontSize: '13px',
     palette: {
-        primary1Color: '#12aaeb',
-        primary2Color: '#5d6474',
-        primary3Color: '#5d6474',
-        accent1Color: '#5d6474',
+        primary1Color: secondaryColor,
+        primary2Color: primaryColor,
+        primary3Color: primaryColor,
+        accent1Color: primaryColor,
         accent2Color: '#fff',
         accent3Color: '#fff',
         textColor: '#333'
@@ -39,6 +42,9 @@ const muiTheme = getMuiTheme({
     appBar: {
         height: 50,
         textColor: 'white'
+    },
+    checkbox: {
+        checkedColor: primaryColor
     },
     chip: {
         fontSize: 13
@@ -48,23 +54,26 @@ const muiTheme = getMuiTheme({
         fontWeight: 400
     },
     datePicker: {
-        color: '#12aaeb',
-        selectColor: '#12aaeb'
+        color: secondaryColor,
+        selectColor: secondaryColor
+    },
+    radioButton: {
+        checkedColor: primaryColor
     },
     raisedButton: {
         fontSize: 13,
         fontWeight: 400,
-        primaryColor: '#5d6474'
+        primaryColor: primaryColor
     },
     timePicker: {
         headerColor: '#2d3037'
     },
     textField: {
-        focusColor: '#5d6474'
+        focusColor: primaryColor
     },
     tabs: {
         backgroundColor: '#fff',
-        selectedTextColor: '#12aaeb',
+        selectedTextColor: secondaryColor,
         textColor: '#333'
     }
 })

@@ -579,8 +579,8 @@ const ShopList = enhance((props) => {
             }
             return {
                 latLng: {
-                    lat: _.get(mapLocation, 'lat'),
-                    lng: _.get(mapLocation, 'lng')
+                    lat: _.get(mapLocation, 'lat') || _.get(detail, ['location', 'lat']),
+                    lng: _.get(mapLocation, 'lng') || _.get(detail, ['location', 'lon'])
                 }
             }
         })(),
