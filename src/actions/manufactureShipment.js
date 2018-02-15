@@ -203,3 +203,35 @@ export const editWriteOffAmountAction = (id, amount) => {
         payload
     }
 }
+
+export const deleteReturnProductAction = (id) => {
+    const payload = axios()
+        .delete(sprintf(API.SHIPMENT_DELETE_PRODUCT, id))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.SHIPMENT_EDIT_AMOUNT,
+        payload
+    }
+}
+
+export const deleteWriteOffProductAction = (id) => {
+    const payload = axios()
+        .delete(sprintf(API.SHIPMENT_DELETE_MATERIAL, id))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.SHIPMENT_DELETE,
+        payload
+    }
+}

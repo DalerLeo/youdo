@@ -32,7 +32,9 @@ import {
     addProductsSubmitAction,
     addRawsSubmitAction,
     editReturnAmountAction,
-    editWriteOffAmountAction
+    editWriteOffAmountAction,
+    deleteReturnProductAction,
+    deleteWriteOffProductAction
 } from '../../actions/manufactureShipment'
 import {openSnackbarAction} from '../../actions/snackbar'
 import {openErrorAction} from '../../actions/error'
@@ -441,15 +443,62 @@ const enhance = compose(
                 : dispatch(addRawsListAction(filterProducts, productType, stock, manufacture))
         },
         handleEditProductAmount: props => () => {
-            const {dispatch, LogEditForm, filter} = props
+            const {dispatch, LogEditForm, filter, filterLogs, location: {params}, beginDate, endDate} = props
             const amount = _.get(LogEditForm, ['values', 'editAmount'])
+            const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
             const type = filter.getParam('openType')
+            const dateRange = {
+                beginDate,
+                endDate
+            }
+            const id = _.toNumber(filter.getParam('openId'))
+            if (type === 'writeoff' && amount) {
+                dispatch(editWriteOffAmountAction(id, amount))
+                    .then(() => {
+                        dispatch(shipmentLogsListFetchAction(filterLogs, manufactureId, dateRange))
+                    })
+                    .catch((error) => {
+                        dispatch(openErrorAction({message: error}))
+                    })
+            } else if (type === 'return' && amount) {
+                dispatch(editReturnAmountAction(id, amount))
+                    .then(() => {
+                        dispatch(shipmentLogsListFetchAction(filterLogs, manufactureId, dateRange))
+                    })
+                    .catch((error) => {
+                        dispatch(openErrorAction({message: error}))
+                    })
+            }
+            return null
+        },
+        handleDeleteProduct: props => () => {
+            const {dispatch, filter, filterLogs, location: {params}, beginDate, endDate} = props
+            const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
+            const type = filter.getParam('openType')
+            const dateRange = {
+                beginDate,
+                endDate
+            }
             const id = _.toNumber(filter.getParam('openId'))
             if (type === 'writeoff') {
-                dispatch(editWriteOffAmountAction(id, amount))
+                return dispatch(deleteWriteOffProductAction(id))
+                .then(() => {
+                    dispatch(shipmentLogsListFetchAction(filterLogs, manufactureId, dateRange))
+                })
+                .catch((error) => {
+                    dispatch(openErrorAction({message: error}))
+                })
             } else if (type === 'return') {
-                dispatch(editReturnAmountAction(id, amount))
+                dispatch(deleteReturnProductAction(id))
+                .then(() => {
+                    dispatch(shipmentLogsListFetchAction(filterLogs, manufactureId, dateRange))
+                })
+                .catch((error) => {
+                    dispatch(openErrorAction({message: error}))
+                })
             }
+
+            return null
         }
     })
 )
@@ -575,6 +624,7 @@ const ManufactureShipmentList = enhance((props) => {
                     productMaterialDialog={productMaterialDialog}
                     addProductDialog={addProductDialog}
                     handleEditProductAmount={props.handleEditProductAmount}
+                    handleDeleteProduct={props.handleDeleteProduct}
                 />
             </ManufactureWrapper>
         </Layout>
