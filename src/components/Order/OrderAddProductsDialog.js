@@ -87,6 +87,7 @@ const enhance = compose(
             borderBottom: '1px solid #efefef',
             padding: '0 10px 0 30px',
             height: '60px',
+            minHeight: '60px',
             zIndex: '999'
         },
         bodyContent: {
@@ -419,10 +420,10 @@ const OrderAddProductsDialog = enhance((props) => {
                         <form className={classes.productsList}>
                             {!_.isEmpty(products) &&
                             <Row className="dottedList">
-                                <Col xs={4}>{t('Наименование')}</Col>
-                                <Col xs={2}>{t('Код')}</Col>
+                                <Col xs={isReturn ? FIVE : FOUR}>{t('Наименование')}</Col>
+                                <Col xs={isReturn ? THREE : TWO}>{t('Код')}</Col>
                                 <Col xs={2}>{t(isReturn ? 'Продано' : 'В наличии')}</Col>
-                                <Col xs={2} className={classes.rightAlign}>{t('Цена')}</Col>
+                                {!isReturn && <Col xs={2} className={classes.rightAlign}>{t('Цена')}</Col>}
                                 <Col xs={2} className={classes.rightAlign}>{t('Кол-во')}</Col>
                             </Row>}
                             {!_.isEmpty(products)

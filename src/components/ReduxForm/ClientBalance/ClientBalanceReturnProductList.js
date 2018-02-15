@@ -8,7 +8,6 @@ import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import Groceries from '../../Images/groceries.svg'
 import {connect} from 'react-redux'
-import numberFormat from '../../../helpers/numberFormat'
 import getConfig from '../../../helpers/getConfig'
 import toBoolean from '../../../helpers/toBoolean'
 import numberWithoutSpaces from '../../../helpers/numberWithoutSpaces'
@@ -23,7 +22,6 @@ import {
 } from 'material-ui/Table'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import EditIcon from 'material-ui/svg-icons/editor/mode-edit'
-import normalizeNumber from '../normalizers/normalizeNumber'
 import ProductCustomSearchField from './ProductCustomSearchField'
 import {TextField} from '../../ReduxForm'
 import ClientBalanceProductTypeSearchField from './ClientBalanceProductTypeSearchField'
@@ -67,7 +65,7 @@ const enhance = compose(
             height: '40px !important',
             border: 'none !important',
             '& td:first-child': {
-                width: '250px'
+                width: '400px'
             },
             '& tr': {
                 border: 'none !important'
@@ -77,7 +75,7 @@ const enhance = compose(
                 padding: '0 5px !important'
             },
             '& th:first-child': {
-                width: '250px',
+                width: '400px',
                 textAlign: 'left !important',
                 fontWeight: '600 !important'
             },
@@ -164,26 +162,25 @@ const enhance = compose(
         handleAdd: props => () => {
             const product = _.get(props, ['product', 'input', 'value'])
             const amount = numberWithoutSpaces(_.get(props, ['amount', 'input', 'value']))
-            const cost = numberWithoutSpaces(_.get(props, ['cost', 'input', 'value']))
             const currency = _.get(props, 'currency')
             const measurement = _.get(props, ['measurement'])
             const onChange = _.get(props, ['products', 'input', 'onChange'])
             const products = _.get(props, ['products', 'input', 'value'])
-            if (!_.isEmpty(_.get(product, 'value')) && amount && cost) {
+            if (!_.isEmpty(_.get(product, 'value')) && amount) {
                 let has = false
                 _.map(products, (item) => {
                     if (_.get(item, 'product') === product) {
                         has = true
                     }
                 })
-                const fields = ['amount', 'cost', 'product']
+                const fields = ['amount', 'product']
                 for (let i = 0; i < fields.length; i++) {
                     let newChange = _.get(props, [fields[i], 'input', 'onChange'])
                     props.dispatch(newChange(null))
                 }
 
                 if (!has) {
-                    let newArray = [{product, amount, cost, currency, measurement}]
+                    let newArray = [{product, amount, currency, measurement}]
                     _.map(products, (obj) => {
                         newArray.push(obj)
                     })
@@ -197,18 +194,14 @@ const enhance = compose(
             const {setEditItem} = props
             const products = _.get(props, ['products', 'input', 'value'])
             const amount = numberWithoutSpaces(_.get(props, ['editAmount', 'input', 'value']))
-            const cost = numberWithoutSpaces(_.get(props, ['editCost', 'input', 'value']))
             _.map(products, (item, index) => {
                 if (index === listIndex) {
                     if (!_.isEmpty(amount) && item.amount !== amount) {
                         item.amount = _.toNumber(amount)
                     }
-                    if (!_.isEmpty(cost)) {
-                        item.cost = _.toNumber(cost)
-                    }
                 }
             })
-            const fields = ['editAmount', 'editCost']
+            const fields = ['editAmount']
             for (let i = 0; i < fields.length; i++) {
                 let newChange = _.get(props, [fields[i], 'input', 'onChange'])
                 props.dispatch(newChange(null))
@@ -244,7 +237,6 @@ const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, h
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
     const error = _.get(defaultProps, ['products', 'meta', 'error'])
     const configMarkets = toBoolean(getConfig('MARKETS_MODULE'))
-    const canSetPrice = checkPermission('can_set_any_price')
     const withMarket = configMarkets ? market : true
     return (
         <div className={classes.wrapper}>
@@ -305,17 +297,6 @@ const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, h
                             {measurement}
                         </div>
                     </Col>
-                    <Col xs={2}>
-                        <Field
-                            component={TextField}
-                            label={t('Сумма за ед')}
-                            name="cost"
-                            className={classes.inputFieldCustom}
-                            fullWidth={true}
-                            normalize={normalizeNumber}
-                            {..._.get(defaultProps, 'cost')}
-                        />
-                    </Col>
                     <Col xs={1}>
                         <IconButton
                             label={t('Применить')}
@@ -341,8 +322,6 @@ const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, h
                             <TableHeaderColumn
                                 className={classes.tableTitle}>{t('Наименование')}</TableHeaderColumn>
                             <TableHeaderColumn className={classes.tableTitle}>{t('Кол-во')}</TableHeaderColumn>
-                            <TableHeaderColumn className={classes.tableTitle}>{t('Сумма')} ({t('ед')}.)</TableHeaderColumn>
-                            <TableHeaderColumn className={classes.tableTitle}>{t('Всего')}</TableHeaderColumn>
                             <TableHeaderColumn/>
                         </TableRow>
                     </TableHeader>
@@ -354,41 +333,23 @@ const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, h
                         {_.map(products, (item, index) => {
                             const product = _.get(item, ['product', 'value', 'name'])
                             const itemMeasurement = _.get(item, ['product', 'value', 'measurement', 'name'])
-                            const cost = _.toNumber(_.get(item, 'cost'))
                             const amount = _.toNumber(_.get(item, 'amount'))
 
                             if (editItem === index) {
                                 return (
                                     <TableRow key={index} className={classes.tableRow}>
-                                        <TableRowColumn>
-                                            {product}
-                                        </TableRowColumn>
+                                        <TableRowColumn>{product}</TableRowColumn>
                                         <TableRowColumn>
                                             {!editOnlyCost
-                                                // If RETURN NOT COMPLETED can change amount otherwise only PRICE
+                                            // If RETURN NOT COMPLETED can change amount otherwise only PRICE
                                             ? <TextField
                                                 hintText={amount}
                                                 className={classes.inputFieldCustom}
                                                 fullWidth={true}
                                                 {..._.get(defaultProps, 'editAmount')}
                                             />
-                                            : <TableRowColumn>{amount} {itemMeasurement}</TableRowColumn>
-                                            }
+                                            : <TableRowColumn>{amount} {itemMeasurement}</TableRowColumn>}
                                         </TableRowColumn>
-                                        <TableRowColumn>
-
-                                            {canSetPrice
-                                                // If permission granted PRICE can be changed otherwise only AMOUNT
-                                            ? <TextField
-                                                hintText={cost}
-                                                className={classes.inputFieldCustom}
-                                                fullWidth={true}
-                                                {..._.get(defaultProps, 'editCost')}
-                                            />
-                                            : <TableRowColumn>{numberFormat(cost, currency)}</TableRowColumn>}
-
-                                        </TableRowColumn>
-                                        <TableRowColumn>{numberFormat(cost * amount, currency)}</TableRowColumn>
                                         <TableRowColumn style={{textAlign: 'right'}}>
                                             <IconButton
                                                 onTouchTap={() => { handleEdit(index) }}>
@@ -402,10 +363,7 @@ const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, h
                             return (
                                 <TableRow key={index} className={classes.tableRow}>
                                     <TableRowColumn>{product}</TableRowColumn>
-                                    <TableRowColumn>
-                                        {amount} {itemMeasurement}</TableRowColumn>
-                                    <TableRowColumn>{numberFormat(cost, currency)}</TableRowColumn>
-                                    <TableRowColumn>{numberFormat(cost * amount, currency)}</TableRowColumn>
+                                    <TableRowColumn>{amount} {itemMeasurement}</TableRowColumn>
                                     <TableRowColumn style={{textAlign: 'right'}}>
                                         <IconButton
                                             onTouchTap={() => setEditItem(index)}

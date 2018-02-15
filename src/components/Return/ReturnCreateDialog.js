@@ -307,7 +307,7 @@ const ReturnCreateDialog = enhance((props) => {
                                     isUpdate={isUpdate}
                                     editOnlyCost={editOnlyCost}
                                     handleOpenAddProduct={handleOpenAddProduct}
-                                    names={['products', 'product', 'amount', 'cost', 'editAmount', 'editCost']}
+                                    names={['products', 'product', 'amount', 'editAmount']}
                                     component={ClientBalanceReturnProductList}
                                 />
                             </div>
