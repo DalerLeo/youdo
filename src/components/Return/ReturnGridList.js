@@ -249,7 +249,7 @@ const OrderGridList = enhance((props) => {
             {detailData.data &&
             <ConfirmDialog
                 type="cancel"
-                message={t('Заказ') + ' № ' + _.get(detailData, ['data', 'id'])}
+                message={t('Возврат') + ' №' + _.get(detailData, ['data', 'id'])}
                 onClose={confirmDialog.handleCloseConfirmDialog}
                 onSubmit={confirmDialog.handleSendConfirmDialog}
                 open={confirmDialog.openConfirmDialog}

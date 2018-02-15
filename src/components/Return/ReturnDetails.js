@@ -15,8 +15,6 @@ import numberFormat from '../../helpers/numberFormat'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
 import t from '../../helpers/translate'
 import checkPermission from '../../helpers/checkPermission'
-import toBoolean from '../../helpers/toBoolean'
-import getConfig from '../../helpers/getConfig'
 import {Link} from 'react-router'
 import sprintf from 'sprintf'
 import * as ROUTES from '../../constants/routes'
@@ -31,7 +29,6 @@ import {
 // CHECKING PERMISSIONS
 const canEditOrderReturn = checkPermission('change_orderreturn')
 const canCancelOrderReturn = checkPermission('delete_orderreturn')
-const canReturnFromOrderConfig = toBoolean(getConfig('CAN_RETURN_FROM_ORDER'))
 
 const enhance = compose(
     injectSheet({
@@ -206,7 +203,6 @@ const iconStyle = {
         padding: 0
     }
 }
-const RETURN_TYPE_ORDER = 1
 const RETURN_TYPE_CLIENT = 2
 const ReturnDetails = enhance((props) => {
     const {
@@ -272,7 +268,7 @@ const ReturnDetails = enhance((props) => {
                             <PrintIcon />
                         </IconButton>
                     </ToolTip>}
-                    {!stat && (status === RETURN_TYPE_ORDER && canReturnFromOrderConfig) &&
+                    {!stat && canEditOrderReturn &&
                     <ToolTip position="bottom" text={!canEditOrderReturn && typeClient === RETURN_TYPE_CLIENT ? t('У вас нет доступа') : t('Изменить')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
@@ -283,7 +279,7 @@ const ReturnDetails = enhance((props) => {
                             <Edit />
                         </IconButton>
                     </ToolTip>}
-                    {confirmDialog && canCancelOrderReturn && !stat && (status === RETURN_TYPE_ORDER && canReturnFromOrderConfig) &&
+                    {confirmDialog && canCancelOrderReturn && !stat &&
                     <ToolTip position="bottom" text={!canEditOrderReturn && typeClient === RETURN_TYPE_CLIENT ? t('У вас нет доступа') : t('Отменить')}>
                         <IconButton
                             disabled={!(status === ORDER_RETURN_IN_PROGRESS || status === ORDER_RETURN_PENDING) || (!canEditOrderReturn && typeClient === RETURN_TYPE_CLIENT)}
@@ -417,7 +413,7 @@ const ReturnDetails = enhance((props) => {
             {type &&
             <ConfirmDialog
                 type="cancel"
-                message={t('Возврат') + ' № ' + cancelReturnDialog.openCancelDialog}
+                message={t('Возврат') + ' №' + cancelReturnDialog.openCancelDialog}
                 onClose={cancelReturnDialog.handleCloseCancelReturnDialog}
                 onSubmit={cancelReturnDialog.handleSubmitCancelReturnDialog}
                 open={cancelReturnDialog.openCancelDialog > ZERO}/>

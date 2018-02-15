@@ -223,7 +223,6 @@ const enhance = compose(
             fontWeight: '600'
         },
         paymentType: {
-            marginBottom: '10px',
             lineHeight: '1.5',
             '&:last-child': {
                 marginBottom: '0'
@@ -259,7 +258,7 @@ const ClientBalanceInfoDialog = enhance((props) => {
     const currentCurrencyId = _.toInteger(getConfig('PRIMARY_CURRENCY_ID'))
     const loading = _.get(detailData, 'detailLoading')
 
-    const hasIcon = _.map(_.get(detailData, 'data'), (item, index) => {
+    const hasIcon = _.map(_.get(detailData, 'data'), (item) => {
         return _.get(item, 'type') === PAYMENT
     })
     const detailList = _.map(_.get(detailData, 'data'), (item, index) => {
