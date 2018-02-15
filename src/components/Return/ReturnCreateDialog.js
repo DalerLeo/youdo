@@ -14,9 +14,7 @@ import {
     StockSearchField,
     ClientBalanceReturnProductList,
     TextField,
-    PaymentTypeSearchField,
-    ClientSearchField,
-    CurrencySearchField
+    ClientSearchField
 } from '../ReduxForm'
 import MarketSearchField from '../ReduxForm/ClientBalance/MarketSearchField'
 import t from '../../helpers/translate'
@@ -289,23 +287,6 @@ const ReturnCreateDialog = enhance((props) => {
                                         className={classes.searchFieldCustom}
                                         label={t('Склад')}
                                         disabled={editOnlyCost}
-                                        fullWidth={true}/>
-                                </div>
-                                <div className={classes.condition}>
-                                    <Field
-                                        name="currency"
-                                        component={CurrencySearchField}
-                                        className={classes.searchFieldCustom}
-                                        label={t('Валюта')}
-                                        fullWidth={true}/>
-                                </div>
-                                <div className={classes.condition}>
-                                    <Field
-                                        name="paymentType"
-                                        style={{lineHeight: '20px', fontSize: '13px'}}
-                                        component={PaymentTypeSearchField}
-                                        className={classes.searchFieldCustom}
-                                        label={t('Тип оплаты')}
                                         fullWidth={true}/>
                                 </div>
                                 <div>

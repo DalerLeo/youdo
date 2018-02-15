@@ -34,7 +34,8 @@ import {
     editReturnAmountAction,
     editWriteOffAmountAction,
     deleteReturnProductAction,
-    deleteWriteOffProductAction
+    deleteWriteOffProductAction,
+    sendPersonalRotation
 } from '../../actions/manufactureShipment'
 import {openSnackbarAction} from '../../actions/snackbar'
 import {openErrorAction} from '../../actions/error'
@@ -113,17 +114,20 @@ const enhance = compose(
         const endDate = _.get(props, 'endDate')
         const nextBeginDate = _.get(nextProps, 'beginDate')
         const nextEndDate = _.get(nextProps, 'endDate')
+        const shift = _.toInteger(_.get(props, ['location', 'query', 'shift']))
+        const nextShift = _.toInteger(_.get(nextProps, ['location', 'query', 'shift']))
         const manufacture = _.toInteger(_.get(props, ['params', 'manufactureId']))
         const nextManufacture = _.toInteger(_.get(nextProps, ['params', 'manufactureId']))
-        return (beginDate !== nextBeginDate) || (endDate !== nextEndDate) || (manufacture !== nextManufacture)
-    }, ({dispatch, beginDate, endDate, params}) => {
+        return (beginDate !== nextBeginDate) || (endDate !== nextEndDate) || (manufacture !== nextManufacture) || (shift !== nextShift)
+    }, ({dispatch, beginDate, endDate, params, location: {query}}) => {
         const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
+        const shift = _.toInteger(_.get(query, 'shift'))
         const dateRange = {
             beginDate,
             endDate
         }
-        dispatch(shipmentProductsListFetchAction(dateRange, manufactureId))
-        dispatch(shipmentMaterialsListFetchAction(dateRange, manufactureId))
+        dispatch(shipmentProductsListFetchAction(dateRange, shift, manufactureId))
+        dispatch(shipmentMaterialsListFetchAction(dateRange, shift, manufactureId))
     }),
 
     // LOGS LIST
@@ -137,6 +141,7 @@ const enhance = compose(
             pdPageSize: null,
             pdSearch: null,
             openId: null,
+            openShift: null,
             openType: null
         }
         const manufacture = _.toInteger(_.get(props, ['params', 'manufactureId']))
@@ -163,6 +168,7 @@ const enhance = compose(
             pdPageSize: null,
             pdSearch: null,
             openId: null,
+            openShift: null,
             openType: null
         }
         const manufactureId = _.get(props, ['params', 'manufactureId'])
@@ -262,6 +268,35 @@ const enhance = compose(
             hashHistory.push({pathname: sprintf(ROUTER.MANUFACTURE_SHIPMENT_ITEM_PATH, id), query: filterShipment.getParams()})
         },
 
+        // SEND PERSONAL ROTATION
+        handleOpenSendDialog: props => (id) => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({openShift: id})})
+        },
+        handleCloseSendDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({openShift: false})})
+        },
+        handleSubmitSendDialog: props => () => {
+            const {dispatch, filterShipment, location: {query}, params, beginDate, endDate} = props
+            const personalRotation = _.toInteger(_.get(query, ['openShift']))
+            return dispatch(sendPersonalRotation(personalRotation))
+                .then(() => {
+                    const dateRange = {
+                        beginDate,
+                        endDate
+                    }
+                    const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
+                    dispatch(shipmentListFetchAction(filterShipment, manufactureId, dateRange))
+                })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
+                })
+        },
+
+        // FILTER
         handleOpenFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[OPEN_FILTER]: true})})
@@ -538,6 +573,7 @@ const ManufactureShipmentList = enhance((props) => {
     const openFilterDialog = toBoolean(_.get(location, ['query', OPEN_FILTER]))
     const openProductMaterialDialog = _.get(location, ['query', OPEN_ADD_PRODUCT_MATERIAL_DIALOG])
     const shift = _.get(location, ['query', MANUF_ACTIVITY_FILTER_KEY.SHIFT])
+    const openSendDialog = _.toInteger(_.get(location, ['query', 'openShift'])) > ZERO
 
     const tabData = {
         tab,
@@ -610,6 +646,13 @@ const ManufactureShipmentList = enhance((props) => {
         handleSubmitAddProductConfirm: props.handleSubmitAddProductConfirm
     }
 
+    const sendDialog = {
+        open: openSendDialog,
+        handleOpen: props.handleOpenSendDialog,
+        handleClose: props.handleCloseSendDialog,
+        handleSubmit: props.handleSubmitSendDialog
+    }
+
     return (
         <Layout {...layout}>
             <ManufactureWrapper detailId={detailId} clickDetail={props.handleClickItem}>
@@ -625,6 +668,7 @@ const ManufactureShipmentList = enhance((props) => {
                     addProductDialog={addProductDialog}
                     handleEditProductAmount={props.handleEditProductAmount}
                     handleDeleteProduct={props.handleDeleteProduct}
+                    sendDialog={sendDialog}
                 />
             </ManufactureWrapper>
         </Layout>

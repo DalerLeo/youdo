@@ -55,11 +55,16 @@ export const shipmentLogsListFetchAction = (filter, manufacture, dateRange) => {
     }
 }
 
-export const shipmentProductsListFetchAction = (dateRange, manufactureId) => {
+export const shipmentProductsListFetchAction = (dateRange, shift, manufactureId) => {
     const beginDate = _.get(dateRange, 'beginDate')
     const endDate = _.get(dateRange, 'endDate')
     const payload = axios()
-        .get(API.SHIPMENT_PRODUCTS_LIST, {params: {manufacture: manufactureId, begin_date: beginDate, end_date: endDate}})
+        .get(API.SHIPMENT_PRODUCTS_LIST, {params: {
+            manufacture: manufactureId,
+            shift: shift,
+            begin_date: beginDate,
+            end_date: endDate
+        }})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -73,11 +78,16 @@ export const shipmentProductsListFetchAction = (dateRange, manufactureId) => {
     }
 }
 
-export const shipmentMaterialsListFetchAction = (dateRange, manufactureId) => {
+export const shipmentMaterialsListFetchAction = (dateRange, shift, manufactureId) => {
     const beginDate = _.get(dateRange, 'beginDate')
     const endDate = _.get(dateRange, 'endDate')
     const payload = axios()
-        .get(API.SHIPMENT_MATERIALS_LIST, {params: {manufacture: manufactureId, begin_date: beginDate, end_date: endDate}})
+        .get(API.SHIPMENT_MATERIALS_LIST, {params: {
+            manufacture: manufactureId,
+            shift: shift,
+            begin_date: beginDate,
+            end_date: endDate
+        }})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -232,6 +242,22 @@ export const deleteWriteOffProductAction = (id) => {
 
     return {
         type: actionTypes.SHIPMENT_DELETE,
+        payload
+    }
+}
+
+export const sendPersonalRotation = (id) => {
+    const payload = axios()
+        .post(API.SHIPMENT_SEND_TO_STOCK, {personal_rotation: id})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.SHIPMENT_SEND_TO_STOCK,
         payload
     }
 }

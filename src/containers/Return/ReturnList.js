@@ -155,7 +155,6 @@ const enhance = compose(
         return ((props.filterProducts.filterRequest(except) !== nextProps.filterProducts.filterRequest(except)) ||
             (productType !== productTypeNext && nextProps.openAddProductDialog)) && !(props.openAddProductDialog !== nextProps.openAddProductDialog && nextProps.openAddProductDialog)
     }, ({setOpenAddProductConfirm, addProductsForm, openAddProductDialog, dispatch, filterProducts, createForm}) => {
-        const currency = _.get(createForm, ['values', 'currency', 'value'])
         const market = _.get(createForm, ['values', 'market', 'value'])
         const client = _.get(createForm, ['values', 'client', 'value'])
         const products = _.filter(_.get(addProductsForm, ['values', 'product']), (item) => {
@@ -168,20 +167,19 @@ const enhance = compose(
             setOpenAddProductConfirm(true)
         } else if (openAddProductDialog && _.isEmpty(products)) {
             setOpenAddProductConfirm(false)
-            dispatch(addProductsListAction(filterProducts, productType, market, currency, client))
+            dispatch(addProductsListAction(filterProducts, productType, market, client))
         }
     }),
 
     withPropsOnChange((props, nextProps) => {
         return props.openAddProductDialog !== nextProps.openAddProductDialog && nextProps.openAddProductDialog
-    }, ({dispatch, addProductsForm, openAddProductDialog, filterProducts, setOpenAddProductConfirm, createForm, ...data}) => {
+    }, ({dispatch, addProductsForm, openAddProductDialog, filterProducts, setOpenAddProductConfirm, createForm}) => {
         const productType = _.get(addProductsForm, ['values', 'type', 'value'])
-        const currency = _.get(createForm, ['values', 'currency', 'value'])
         const market = _.get(createForm, ['values', 'market', 'value'])
         const client = _.get(createForm, ['values', 'client', 'value'])
         if (openAddProductDialog) {
             setOpenAddProductConfirm(false)
-            dispatch(addProductsListAction(filterProducts, productType, market, currency, client))
+            dispatch(addProductsListAction(filterProducts, productType, market, client))
         }
     }),
 
@@ -716,11 +714,6 @@ const ReturnList = enhance((props) => {
                     stock: {value: _.get(detail, ['stock', 'id'])},
                     market: {value: _.get(detail, ['market', 'id'])},
                     priceList: {value: _.get(detail, ['priceList', 'id'])},
-                    currency: {
-                        value: _.get(detail, ['currency', 'id']),
-                        text: _.get(detail, ['currency', 'name'])
-                    },
-                    paymentType: {value: _.get(detail, ['paymentType'])},
                     comment: _.get(detail, 'comment'),
                     products: forUpdateProducts
                 }

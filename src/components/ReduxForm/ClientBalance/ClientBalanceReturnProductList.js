@@ -251,7 +251,7 @@ const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, h
             <div>
                 <div className={classes.headers} style={{marginTop: '-10px'}}>
                     <div className={classes.title}>{t('Список товаров')}</div>
-                    {!isUpdate && (withMarket && currency && client) &&
+                    {!isUpdate && (withMarket && client) &&
                     <div>
                         <FlatButton
                             label={'+ ' + t('добавить товар')}
@@ -385,9 +385,8 @@ const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, h
                                                 fullWidth={true}
                                                 {..._.get(defaultProps, 'editCost')}
                                             />
-                                            : <TableRowColumn>{numberFormat(cost, currency)}</TableRowColumn>
+                                            : <TableRowColumn>{numberFormat(cost, currency)}</TableRowColumn>}
 
-                                            }
                                         </TableRowColumn>
                                         <TableRowColumn>{numberFormat(cost * amount, currency)}</TableRowColumn>
                                         <TableRowColumn style={{textAlign: 'right'}}>

@@ -280,6 +280,11 @@ const flatButtonStyle = {
     }
 }
 
+const TWO = 2
+const THREE = 3
+const FOUR = 4
+const FIVE = 5
+
 const OrderAddProductsDialog = enhance((props) => {
     const {
         open,
@@ -318,13 +323,14 @@ const OrderAddProductsDialog = enhance((props) => {
         const measurement = _.get(item, ['measurement', 'name'])
         return (
             <Row key={id} className="dottedList">
-                <Col xs={4}>{name}</Col>
-                <Col xs={2}>{code}</Col>
+                <Col xs={isReturn ? FIVE : FOUR}>{name}</Col>
+                <Col xs={isReturn ? THREE : TWO}>{code}</Col>
                 <Col xs={2}>
                     {fromAllBalances
                         ? <ToolTip position="left" text={t('доступно / брак')}>{available} / {defects} {measurement}</ToolTip>
                         : numberFormat(balance, measurement)}
                 </Col>
+                {!isReturn &&
                 <Col xs={2} className={classes.flex}>
                     <Field
                         name={'product[' + id + '][price]'}
@@ -335,7 +341,7 @@ const OrderAddProductsDialog = enhance((props) => {
                         disabled={!userCanChangePrice}
                         fullWidth={true}/>
                     <span>{primaryCurrency}</span>
-                </Col>
+                </Col>}
                 <Col xs={2} className={classes.flex}>
                     <Field
                         name={'product[' + id + '][amount]'}
