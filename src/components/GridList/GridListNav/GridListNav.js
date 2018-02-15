@@ -51,7 +51,7 @@ const GridListNav = ({classes, filter, filterDialog, addButton, withoutSearch, c
                 </Row>}
 
                 {(selectIsEmpty && (!filterIsEmpty || !addButtonIsEmpty)) && <Row>
-                    <Col xs={3}>
+                    <Col xs={3} className={!filterIsEmpty ? classes.filterWrapper : ''}>
                         {filterIsEmpty ? addButton : filterDialog}
                     </Col>
                     <Col xs={3}>
@@ -153,6 +153,22 @@ export default injectSheet({
             },
             '&:last-child': {
                 paddingRight: '0'
+            }
+        }
+    },
+    filterWrapper: {
+        display: 'flex',
+        alignItems: 'center',
+        '& > div': {
+            display: 'flex',
+            alignItems: 'center',
+            '& a': {
+                position: 'relative',
+                '& svg': {
+                    position: 'absolute',
+                    top: '0',
+                    right: '0'
+                }
             }
         }
     },
