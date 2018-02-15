@@ -50,7 +50,7 @@ const enhance = compose(
         },
         returnAmount: {
             '& > div': {
-                display: 'inline-block',
+                display: 'inline-flex',
                 background: '#ff9393',
                 color: '#fff',
                 fontWeight: '600',

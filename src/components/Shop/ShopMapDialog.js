@@ -40,12 +40,10 @@ const enhance = compose(
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            padding: '30px',
             zIndex: '999',
             '& button': {
-                top: '8px',
-                right: '8px',
-                padding: '0 !important',
+                top: '5px',
+                right: '5px',
                 position: 'absolute !important'
             }
         },

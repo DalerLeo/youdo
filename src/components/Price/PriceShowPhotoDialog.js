@@ -40,14 +40,10 @@ const enhance = compose(
             justifyContent: 'space-between',
             alignItems: 'center',
             borderBottom: '1px solid #efefef',
-            padding: '20px 30px',
+            padding: '0 10px 0 30px',
+            height: '60px',
             border: 'none !important',
-            zIndex: '999',
-            '& button': {
-                right: '13px',
-                padding: '0 !important',
-                position: 'absolute !important'
-            }
+            zIndex: '999'
         },
         inContent: {
             display: 'flex',
