@@ -187,6 +187,9 @@ const enhance = compose(
                     top: '10px'
                 }
             }
+        },
+        alignRight: {
+            textAlign: 'right'
         }
     })
 )
@@ -374,12 +377,13 @@ const ReturnDetails = enhance((props) => {
                             <Col xs={3}>{t('Товар')}</Col>
                             <Col xs={2}>{t('Код товара')}</Col>
                             <Col xs={2}>{t('Количество')}</Col>
-                            <Col xs={2}>{t('Цена')}</Col>
-                            <Col xs={2}>{t('Сумма')}</Col>
+                            <Col xs={2} className={classes.alignRight}>{t('Цена')}</Col>
+                            <Col xs={2} className={classes.alignRight}>{t('Сумма')}</Col>
                         </Row>
                         {_.map(products, (item) => {
                             const productOrder = _.get(item, 'order')
                             const product = _.get(item, ['product', 'name'])
+                            const itemCurrency = _.get(item, ['currency', 'name'])
                             const measurement = _.get(item, ['product', 'measurement', 'name'])
                             const code = _.get(item, ['product', 'code'])
                             const amount = _.toNumber(_.get(item, 'amount'))
@@ -397,8 +401,8 @@ const ReturnDetails = enhance((props) => {
                                     <Col xs={3}>{product}</Col>
                                     <Col xs={2}>{code}</Col>
                                     <Col xs={2}>{numberFormat(amount, measurement)}</Col>
-                                    <Col xs={2}>{numberFormat(cost)}</Col>
-                                    <Col xs={2}>{numberFormat(summmary)}</Col>
+                                    <Col xs={2} className={classes.alignRight}>{numberFormat(cost, itemCurrency)}</Col>
+                                    <Col xs={2} className={classes.alignRight}>{numberFormat(summmary, itemCurrency)}</Col>
                                 </Row>
                             )
                         })}

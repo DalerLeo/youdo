@@ -5,11 +5,11 @@ import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import Loader from '../Loader'
-import {connect} from 'react-redux'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import numberFormat from '../../helpers/numberFormat'
+import getConfig from '../../helpers/getConfig'
 import {Row, Col} from 'react-flexbox-grid'
 import t from '../../helpers/translate'
 import NotFound from '../Images/not-found.png'
@@ -104,13 +104,7 @@ const enhance = compose(
             fontSize: '13px',
             color: '#666'
         }
-    }),
-    connect((state) => {
-        const currency = _.get(state, ['form', 'ReturnCreateForm', 'values', 'currency', 'text'])
-        return {
-            currency
-        }
-    }),
+    })
 )
 
 const customContentStyle = {
@@ -123,15 +117,16 @@ const ReturnCreateDialog = enhance((props) => {
         onClose,
         classes,
         data,
-        currency,
         onSubmit
     } = props
+    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const totalReturn = _.sumBy(data, (item) => {
-        return _.toNumber(item.cost)
+        return _.toNumber(_.get(item, 'totalInternal'))
     })
 
     const list = _.map(data, (item, index) => {
         const measure = _.get(item, ['product', 'measurement', 'name'])
+        const currency = _.get(item, ['currency', 'name'])
         const amount = numberFormat(_.get(item, 'amount'), measure)
         const order = _.get(item, 'order')
         const cost = numberFormat(_.get(item, 'cost'), currency)
@@ -184,7 +179,7 @@ const ReturnCreateDialog = enhance((props) => {
                     {!_.isEmpty(list) &&
                         <div className={classes.bottomButton}>
                             <div>
-                                <b>{t('Общая сумма возврата')}: <strong>{numberFormat(totalReturn, currency)}</strong></b>
+                                <b>{t('Общая сумма возврата')}: <strong>{numberFormat(totalReturn, primaryCurrency)}</strong></b>
                             </div>
                             <FlatButton
                                 label={t('Оформить возврат')}
