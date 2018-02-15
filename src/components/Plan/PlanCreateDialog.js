@@ -71,16 +71,8 @@ const enhance = compose(
             alignItems: 'center',
             borderBottom: '1px solid #efefef',
             padding: '0 10px 0 30px',
-            minHeight: '59px',
-            zIndex: '999',
-            '& button': {
-                padding: '0 !important',
-                '& > div': {
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center'
-                }
-            }
+            height: '60px',
+            zIndex: '999'
         },
         inContent: {
             display: 'flex',

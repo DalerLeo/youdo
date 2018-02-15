@@ -84,18 +84,13 @@ const enhance = compose(
             justifyContent: 'space-between',
             alignItems: 'center',
             borderBottom: '1px solid #efefef',
-            padding: '0 30px',
+            padding: '0 10px 0 30px',
             height: '59px',
             zIndex: '999',
-            '& button': {
-                right: '13px',
-                position: 'absolute !important'
-            },
             '& div': {
                 display: 'flex',
                 alignItems: 'center'
             }
-
         },
         tableWrapper: {
             padding: '0 30px',
