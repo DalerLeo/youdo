@@ -342,7 +342,6 @@ const ManufactureShipment = enhance((props) => {
         setDeleteItem,
         handleDeleteProduct
     } = props
-    const ZERO = 0
     const filter = _.get(shipmentData, 'filter')
     const PRODUCT = 'return'
     const MATERIAL = 'material'
@@ -560,11 +559,10 @@ const ManufactureShipment = enhance((props) => {
             <Paper transitionEnabled={false} zDepth={1} className={classes.shipmentContent}>
                 <header>
                     <ManufactureActivityDateRange filter={filter} initialValues={filterDialog.initialValues}/>
-                    {tab === TAB.TAB_SHIFT &&
                     <a className={classes.filterBtn} onClick={filterDialog.handleOpenFilterDialog}>
                         <Filter/>
                         <span>{t('Фильтр')}</span>
-                    </a>}
+                    </a>
                 </header>
                 <ManufactureActivityFilterDialog
                     filterDialog={filterDialog}
