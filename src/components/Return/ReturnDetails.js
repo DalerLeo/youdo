@@ -235,7 +235,6 @@ const ReturnDetails = enhance((props) => {
     const priceList = _.get(data, ['priceList', 'name'])
     const market = _.get(data, 'market')
     const status = _.toInteger(_.get(data, 'status'))
-    const paymentType = _.get(data, 'paymentType') === 'cash' ? t('Наличными') : t('Перечислением')
     const totalPrice = numberFormat(_.get(data, 'totalPrice'), currency)
     const typeClient = _.toInteger(_.get(data, 'type'))
 
@@ -298,7 +297,7 @@ const ReturnDetails = enhance((props) => {
                         <div className={classes.dataBox}>
                             <ul>
                                 {order && <li>
-                                    <Link to={{
+                                    <Link target={'_blank'} to={{
                                         pathname: sprintf(ROUTES.ORDER_ITEM_PATH, order),
                                         query: {search: order, exclude: false}
                                     }}><strong>{t('Заказ')} №{order}</strong></Link>
@@ -320,16 +319,8 @@ const ReturnDetails = enhance((props) => {
                                     <span>{createdDate}</span>
                                 </li>
                                 <li>
-                                    <span>{t('Валюта')}:</span>
-                                    <span>{currency}</span>
-                                </li>
-                                <li>
                                     <span>{t('Прайс-лист')}:</span>
                                     <span>{priceList}</span>
-                                </li>
-                                <li>
-                                    <span>{t('Тип оплаты')}</span>
-                                    <span>{paymentType}</span>
                                 </li>
                             </ul>
                         </div>
@@ -383,8 +374,8 @@ const ReturnDetails = enhance((props) => {
                             <Col xs={3}>{t('Товар')}</Col>
                             <Col xs={2}>{t('Код товара')}</Col>
                             <Col xs={2}>{t('Количество')}</Col>
-                            <Col xs={2}>{t('Цена')} ({currency})</Col>
-                            <Col xs={2}>{t('Сумма')} ({currency})</Col>
+                            <Col xs={2}>{t('Цена')}</Col>
+                            <Col xs={2}>{t('Сумма')}</Col>
                         </Row>
                         {_.map(products, (item) => {
                             const productOrder = _.get(item, 'order')
@@ -397,7 +388,12 @@ const ReturnDetails = enhance((props) => {
                             const summmary = amount * cost
                             return (
                                 <Row key={returnId} className="dottedList">
-                                    <Col xs={1}>{productOrder}</Col>
+                                    <Col xs={1}>
+                                        <Link target={'_blank'} to={{
+                                            pathname: sprintf(ROUTES.ORDER_ITEM_PATH, productOrder),
+                                            query: {search: productOrder, exclude: false}
+                                        }}><strong>{productOrder}</strong></Link>
+                                    </Col>
                                     <Col xs={3}>{product}</Col>
                                     <Col xs={2}>{code}</Col>
                                     <Col xs={2}>{numberFormat(amount, measurement)}</Col>

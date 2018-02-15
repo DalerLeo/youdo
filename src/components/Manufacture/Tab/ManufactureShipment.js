@@ -27,6 +27,7 @@ import Material from 'material-ui/svg-icons/maps/layers'
 import {Field, reduxForm, change} from 'redux-form'
 import Defected from 'material-ui/svg-icons/image/broken-image'
 import Check from 'material-ui/svg-icons/navigation/check'
+import SendIcon from 'material-ui/svg-icons/content/reply-all'
 import Pagination from '../../GridList/GridListNavPagination'
 import Choose from '../../Images/choose-menu.png'
 import NotFound from '../../Images/not-found.png'
@@ -216,6 +217,9 @@ const enhance = compose(
             },
             '& > div:last-child': {
                 textAlign: 'right'
+            },
+            '&:hover div': {
+                opacity: '1 !important'
             }
         },
         productAmount: {
@@ -280,6 +284,12 @@ const enhance = compose(
             '& input': {
                 marginTop: '0 !important'
             }
+        },
+        actionButtons: {
+            display: 'flex',
+            justifyContent: 'flex-end',
+            opacity: '0',
+            transitions: 'opacity 200ms ease'
         }
     }),
     reduxForm({
@@ -287,7 +297,7 @@ const enhance = compose(
         enableReinitialize: true
     }),
     withState('edit', 'setEdit', null),
-    withState('deleteItem', 'setDeleteItem', null)
+        withState('deleteItem', 'setDeleteItem', null)
 )
 
 const iconStyles = {
@@ -313,7 +323,7 @@ const iconStyles = {
     },
     button: {
         width: 30,
-        height: 25,
+        height: 30,
         padding: 0
     }
 }
@@ -340,7 +350,8 @@ const ManufactureShipment = enhance((props) => {
         setEdit,
         deleteItem,
         setDeleteItem,
-        handleDeleteProduct
+        handleDeleteProduct,
+        sendDialog
     } = props
     const filter = _.get(shipmentData, 'filter')
     const PRODUCT = 'return'
@@ -429,15 +440,19 @@ const ManufactureShipment = enhance((props) => {
                         {isDefect
                             ? <ToolTip position="left" text={t('Брак')}><Defected style={iconStyles.defected}/></ToolTip>
                             : kind === MATERIAL
-                                ? <ToolTip position="left" text={t('Сырье')}><Material style={iconStyles.material}/></ToolTip>
-                                : <ToolTip position="left" text={t('Нормалный Продукт')}><Product style={iconStyles.product}/></ToolTip>
+                                ? <Material style={iconStyles.material}/>
+                                : <Product style={iconStyles.product}/>
                         }
                         {product}
                         </span>
                     </Col>
                     : <Col xs={4}>
-                        <span><ToolTip position="left" text={t(isDefect ? 'Брак' : 'Сырье')}>
-                            <Raw style={isDefect ? iconStyles.defected : iconStyles.material}/></ToolTip>{product}</span>
+                        <span>
+                            <ToolTip position="left" text={t(isDefect ? 'Брак' : '')}>
+                                <Raw style={isDefect ? iconStyles.defected : iconStyles.material}/>
+                            </ToolTip>
+                            {product}
+                        </span>
 
                     </Col>}
                 <Col xs={2}>
@@ -457,8 +472,8 @@ const ManufactureShipment = enhance((props) => {
                         label={numberFormat(amount, measurement)}/>
                   </Col>
                 : <Col xs={2}>{numberFormat(amount, measurement)}</Col>}
-                <Col xs={2}>{createdDate}</Col>
-                <Col xs={2}>
+                <Col xs={3}>{createdDate}</Col>
+                <Col xs={1}>
                     {edit === index
                     ? <div>
                             <IconButton
@@ -468,7 +483,7 @@ const ManufactureShipment = enhance((props) => {
                                 <Check color="#12aaeb"/>
                             </IconButton>
                         </div>
-                    : <div style={{display: 'flex'}}>
+                    : <div className={classes.actionButtons}>
                         <ToolTip position="bottom" text={t('Изменить')}>
                             <IconButton
                                 iconStyle={iconStyles.icon}
@@ -494,6 +509,8 @@ const ManufactureShipment = enhance((props) => {
             </Row>
         )
     })
+    const selectedShiftId = _.toInteger(filter.getParam('openShift'))
+    const selectedShift = _.find(shipmentList, {'id': selectedShiftId})
     const shifts = _.map(shipmentList, (item) => {
         const id = _.get(item, 'id')
         const openedTime = dateTimeFormat(_.get(item, 'openedTime'))
@@ -501,9 +518,23 @@ const ManufactureShipment = enhance((props) => {
         const userName = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'firstName'])
         return (
             <Row key={id} className={classes.shift}>
-                <Col xs={6}>{userName}</Col>
+                <Col xs={5}>{userName}</Col>
                 <Col xs={3}>{openedTime}</Col>
                 <Col xs={3}>{closedTime}</Col>
+                <Col xs={1}>
+                    <div className={classes.actionButtons}>
+                        <ToolTip position="bottom" text={t('Передать на склад')}>
+                            <IconButton
+                                iconStyle={iconStyles.icon}
+                                style={iconStyles.button}
+                                disableTouchRipple={true}
+                                onTouchTap={() => sendDialog.handleOpen(id)}
+                                touch={true}>
+                                <SendIcon/>
+                            </IconButton>
+                        </ToolTip>
+                    </div>
+                </Col>
             </Row>
         )
     })
@@ -589,12 +620,12 @@ const ManufactureShipment = enhance((props) => {
                                             <Col xs={2}><h4>{t('Ок')}</h4></Col>
                                             <Col xs={2}><h4>{t('Брак')}</h4></Col>
                                         </Row>
-                                        {!_.isEmpty(products)
-                                            ? products
-                                            : productsLoading
-                                                ? <div className={classes.miniLoader}>
-                                                    <Loader size={0.75}/>
-                                                </div>
+                                        {productsLoading
+                                            ? <div className={classes.miniLoader}>
+                                                <Loader size={0.75}/>
+                                            </div>
+                                            : !_.isEmpty(products)
+                                                ? products
                                                 : <div className={classes.emptyQuery}>
                                                     <div>{t('Продукции еще не произведены')}</div>
                                                 </div>}
@@ -604,12 +635,12 @@ const ManufactureShipment = enhance((props) => {
                                             <Col xs={6}><h4>{t('Затраченное сырье')}</h4></Col>
                                             <Col xs={2}><h4>{t('Кол-во')}</h4></Col>
                                         </Row>
-                                        {!_.isEmpty(materials)
-                                            ? materials
-                                            : materialsLoading
-                                                ? <div className={classes.miniLoader}>
-                                                    <Loader size={0.75}/>
-                                                </div>
+                                        {materialsLoading
+                                            ? <div className={classes.miniLoader}>
+                                                <Loader size={0.75}/>
+                                            </div>
+                                            : !_.isEmpty(materials)
+                                                ? materials
                                                 : <div className={classes.emptyQuery}>
                                                     <div>{t('Не затрачено сырья')}</div>
                                                 </div>}
@@ -632,8 +663,8 @@ const ManufactureShipment = enhance((props) => {
                                             <Col xs={4}><h4>{t('Продукт / сырье')}</h4></Col>
                                             <Col xs={2}><h4>{t('Тип')}</h4></Col>
                                             <Col xs={2}><h4>{t('Кол-во')}</h4></Col>
-                                            <Col xs={2}><h4>{t('Дата, время')}</h4></Col>
-                                            <Col xs={2}></Col>
+                                            <Col xs={3}><h4>{t('Дата, время')}</h4></Col>
+                                            <Col xs={1}/>
                                         </Row>
                                         {logsLoading
                                             ? <div className={classes.loader}>
@@ -662,9 +693,10 @@ const ManufactureShipment = enhance((props) => {
                                             <Pagination filter={filter}/>
                                         </div>
                                         <Row className={classes.flexTitleShift}>
-                                            <Col xs={6}><h4>{t('Работник')}</h4></Col>
+                                            <Col xs={5}><h4>{t('Работник')}</h4></Col>
                                             <Col xs={3}><h4>{t('Начало смены')}</h4></Col>
                                             <Col xs={3}><h4>{t('Конец смены')}</h4></Col>
+                                            <Col xs={1}/>
                                         </Row>
                                         {shiftsLoading
                                             ? <div className={classes.loader}>
@@ -712,6 +744,14 @@ const ManufactureShipment = enhance((props) => {
                 onClose={handleCloseDelete}
                 open={_.get(deleteItem, 'id') > ZERO}
                 onSubmit={handleDeleteProduct}
+            />
+
+            <ConfirmDialog
+                type="submit"
+                message={_.get(selectedShift, ['user', 'firstName']) + ' ' + _.get(selectedShift, ['user', 'secondName'])}
+                onClose={sendDialog.handleClose}
+                open={sendDialog.open}
+                onSubmit={sendDialog.handleSubmit}
             />
         </div>
     )

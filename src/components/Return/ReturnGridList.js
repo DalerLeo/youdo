@@ -21,6 +21,7 @@ import SubMenu from '../SubMenu'
 import toBoolean from '../../helpers/toBoolean'
 import ToolTip from '../ToolTip'
 import numberFormat from '../../helpers/numberFormat'
+import checkPermission from '../../helpers/checkPermission'
 import dateFormat from '../../helpers/dateTimeFormat'
 import ReturnUpdateDialog from '../Order/OrderReturnDialog'
 import AddProductsDialog from '../Order/OrderAddProductsDialog'
@@ -29,6 +30,8 @@ import t from '../../helpers/translate'
 import {
     ORDER_RETURN_COMPLETED
 } from '../../constants/backendConstants'
+
+const canCreateReturn = checkPermission('add_orderreturn')
 
 const listHeader = [
     {
@@ -220,6 +223,7 @@ const OrderGridList = enhance((props) => {
     return (
         <Container>
             <SubMenu url={ROUTES.RETURN_LIST_URL}/>
+            {canCreateReturn &&
             <div className={classes.addButtonWrapper}>
                 <ToolTip position="left" text={t('Возврат с клиента')}>
                     <FloatingActionButton
@@ -230,7 +234,7 @@ const OrderGridList = enhance((props) => {
                         <ContentAdd />
                     </FloatingActionButton>
                 </ToolTip>
-            </div>
+            </div>}
 
             <GridList
                 filter={filter}
@@ -270,21 +274,20 @@ const OrderGridList = enhance((props) => {
                 onSubmit={updateDialog.openUpdateDialog ? updateDialog.handleSubmitUpdateDialog : createDialog.handleSubmitCreateDialog}
             />
             {(returnType === CLIENT_RETURN)
-                ? (isAdmin &&
-                    <ReturnCreateDialog
-                        isUpdate={true}
-                        editOnlyCost={detStatus === ORDER_RETURN_COMPLETED}
-                        name={_.get(detailData, ['data', 'client', 'name'])}
-                        initialValues={updateDialog.initialValues}
-                        loading={updateDialog.updateLoading}
-                        open={updateDialog.openUpdateDialog}
-                        onClose={updateDialog.handleCloseUpdateDialog}
-                        onSubmit={updateDialog.handleSubmitUpdateDialog}
-                        hasMarket={hasMarket}
-                        onPreviewOpen={previewDialog.handleOpenPreviewDialog}
-                        handleOpenAddProduct={addProductDialog.handleOpenAddProduct}
-                    />)
-                : (isAdmin && returnType === ORDER_RETURN &&
+                ? <ReturnCreateDialog
+                    isUpdate={true}
+                    editOnlyCost={detStatus === ORDER_RETURN_COMPLETED}
+                    name={_.get(detailData, ['data', 'client', 'name'])}
+                    initialValues={updateDialog.initialValues}
+                    loading={updateDialog.updateLoading}
+                    open={updateDialog.openUpdateDialog}
+                    onClose={updateDialog.handleCloseUpdateDialog}
+                    onSubmit={updateDialog.handleSubmitUpdateDialog}
+                    hasMarket={hasMarket}
+                    onPreviewOpen={previewDialog.handleOpenPreviewDialog}
+                    handleOpenAddProduct={addProductDialog.handleOpenAddProduct}
+                    />
+                : (returnType === ORDER_RETURN &&
                     <ReturnUpdateDialog
                         isUpdate={true}
                         orderData={_.get(detailData, 'data')}

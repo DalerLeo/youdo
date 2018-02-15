@@ -162,6 +162,7 @@ export default injectSheet({
         '& > div': {
             display: 'flex',
             alignItems: 'center',
+            width: '100%',
             '& a': {
                 position: 'relative',
                 '& svg': {

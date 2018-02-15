@@ -17,8 +17,7 @@ const enhance = compose(
             position: 'relative',
             padding: '0 !important',
             overflowX: 'hidden',
-            height: '100%',
-            marginBottom: '64px'
+            height: '100%'
         },
         inContent: {
             background: '#ff6663',
