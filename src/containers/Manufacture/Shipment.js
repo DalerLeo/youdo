@@ -469,6 +469,7 @@ const enhance = compose(
                         dispatch(openErrorAction({message: error}))
                     })
             }
+            return null
         },
         handleDeleteProduct: props => () => {
             const {dispatch, filter, filterLogs, location: {params}, beginDate, endDate} = props
@@ -496,6 +497,8 @@ const enhance = compose(
                     dispatch(openErrorAction({message: error}))
                 })
             }
+
+            return null
         }
     })
 )

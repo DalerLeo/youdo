@@ -425,7 +425,7 @@ const ManufactureShipment = enhance((props) => {
         return (
             <Row key={index} className={isDefect ? classes.productDefected : classes.product}>
                 {type === PRODUCT
-                    ? <Col xs={5}><span>
+                    ? <Col xs={4}><span>
                         {isDefect
                             ? <ToolTip position="left" text={t('Брак')}><Defected style={iconStyles.defected}/></ToolTip>
                             : kind === MATERIAL
@@ -435,10 +435,10 @@ const ManufactureShipment = enhance((props) => {
                         {product}
                         </span>
                     </Col>
-                    : <Col xs={5}>
-                        <ToolTip position="left" text={t(isDefect ? 'Брак' : 'Сырье')}>
-                            <span><Raw style={isDefect ? iconStyles.defected : iconStyles.material}/>{product}</span>
-                        </ToolTip>
+                    : <Col xs={4}>
+                        <span><ToolTip position="left" text={t(isDefect ? 'Брак' : 'Сырье')}>
+                            <Raw style={isDefect ? iconStyles.defected : iconStyles.material}/></ToolTip>{product}</span>
+
                     </Col>}
                 <Col xs={2}>
                     {type === PRODUCT
@@ -458,7 +458,7 @@ const ManufactureShipment = enhance((props) => {
                   </Col>
                 : <Col xs={2}>{numberFormat(amount, measurement)}</Col>}
                 <Col xs={2}>{createdDate}</Col>
-                <Col xs={1}>
+                <Col xs={2}>
                     {edit === index
                     ? <div>
                             <IconButton
@@ -629,11 +629,11 @@ const ManufactureShipment = enhance((props) => {
                                             <Pagination filter={filterLogs}/>
                                         </div>
                                         <Row className={classes.flexTitle}>
-                                            <Col xs={5}><h4>{t('Продукт / сырье')}</h4></Col>
+                                            <Col xs={4}><h4>{t('Продукт / сырье')}</h4></Col>
                                             <Col xs={2}><h4>{t('Тип')}</h4></Col>
                                             <Col xs={2}><h4>{t('Кол-во')}</h4></Col>
                                             <Col xs={2}><h4>{t('Дата, время')}</h4></Col>
-                                            <Col xs={1}></Col>
+                                            <Col xs={2}></Col>
                                         </Row>
                                         {logsLoading
                                             ? <div className={classes.loader}>
