@@ -142,6 +142,11 @@ const enhance = compose(
                     dispatch(currencyListFetchAction(filter))
                     dispatch(reset('AddCourseForm'))
                 })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
+                })
         },
 
         handleOpenCreateDialog: props => () => {

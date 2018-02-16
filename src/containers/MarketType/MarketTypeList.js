@@ -153,6 +153,11 @@ const enhance = compose(
                     hashHistory.push(filter.createURL({[MARKET_TYPE_UPDATE_DIALOG_OPEN]: false}))
                     dispatch(marketTypeListFetchAction(filter))
                 })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
+                })
         }
     })
 )
