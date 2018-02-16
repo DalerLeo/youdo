@@ -10,7 +10,7 @@ import {reduxForm, Field} from 'redux-form'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import Loader from '../Loader'
 import t from '../../helpers/translate'
-import {StockSearchField} from "../ReduxForm";
+import {StockSearchField} from "../ReduxForm"
 
 const enhance = compose(
     injectSheet({
@@ -136,10 +136,14 @@ const ShipmentConfirmDialog = enhance((props) => {
     const {open, onClose, classes, type, message, onSubmit, loading, warning} = props
     const typesList = {
         delete: {
-            name: t('Подтверждение удаления'), submitName: t('Удалить'), text: t('Вы уверены что хотите удалить эти данные?')
+            name: t('Подтверждение удаления'),
+            submitName: t('Удалить'),
+            text: t('Вы уверены что хотите удалить эти данные?')
         },
         cancel: {
-            name: t('Подтверждение отмены'), submitName: t('Подтвердить'), text: t('Вы уверены что хотите отменить эти данные?')
+            name: t('Подтверждение отмены'),
+            submitName: t('Подтвердить'),
+            text: t('Вы уверены что хотите отменить эти данные?')
         },
         submit: {
             name: t('Выполнить'), submitName: t('Да'), text: t('Подтверждение запроса')
@@ -171,11 +175,11 @@ const ShipmentConfirmDialog = enhance((props) => {
                     {message && <div className={warning ? classes.warningBackground : classes.background}>
                         {message}
                     </div>}
-                    {loading ?
-                    <div className={classes.loader}>
-                        <Loader size={0.75}/>
-                    </div>
-                    : <Field
+                    {loading
+                        ? <div className={classes.loader}>
+                            <Loader size={0.75}/>
+                        </div>
+                        : <Field
                             className={classes.inputFieldCustom}
                             name="stock"
                             component={StockSearchField}

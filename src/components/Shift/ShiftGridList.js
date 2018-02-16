@@ -121,6 +121,8 @@ const iconStyle = {
     }
 }
 
+const ZERO = 0
+const FIVE = 5
 const ShiftGridList = enhance((props) => {
     const {
         filter,
@@ -145,8 +147,8 @@ const ShiftGridList = enhance((props) => {
     const shiftList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const beginTime = _.get(item, 'beginTime').slice(0, 5)
-        const endTime = _.get(item, 'endTime').slice(0, 5)
+        const beginTime = _.get(item, 'beginTime').slice(ZERO, FIVE)
+        const endTime = _.get(item, 'endTime').slice(ZERO, FIVE)
         return (
             <Row key={id} className={classes.listRow}>
                 <Col xs={1}>{id}</Col>
