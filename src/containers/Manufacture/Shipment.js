@@ -310,6 +310,7 @@ const enhance = compose(
             const shift = _.get(filterForm, ['values', 'shift']) || null
             filter.filterBy({
                 [OPEN_FILTER]: false,
+                [TAB]: SHIPMENT_TAB.TAB_SHIFT,
                 [MANUF_ACTIVITY_FILTER_KEY.SHIFT]: joinArray(shift)
             })
         },
@@ -481,6 +482,7 @@ const enhance = compose(
             const {dispatch, LogEditForm, filter, filterLogs, location: {params}, beginDate, endDate} = props
             const amount = _.get(LogEditForm, ['values', 'editAmount'])
             const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
+
             const type = filter.getParam('openType')
             const dateRange = {
                 beginDate,

@@ -37,7 +37,12 @@ import {ShiftMultiSearchField, TextField} from '../../ReduxForm'
 import IconButton from 'material-ui/IconButton'
 import t from '../../../helpers/translate'
 import {TYPE_PRODUCT, TYPE_RAW} from '../index'
+
 const ZERO = 0
+export const MANUFACTURES_FILTERS_KEY = {
+    SHIFT: 'shift'
+}
+
 const enhance = compose(
     injectSheet({
         buttons: {
@@ -92,7 +97,7 @@ const enhance = compose(
             color: '#666 !important'
         },
         filterBtn: {
-            background: '#71ce87',
+            background: '#12aaeb',
             borderRadius: '2px',
             color: '#fff',
             fontWeight: '600',
@@ -220,6 +225,9 @@ const enhance = compose(
             },
             '&:hover div': {
                 opacity: '1 !important'
+            },
+            '&:hover': {
+                background: '#f2f5f8'
             }
         },
         productAmount: {
@@ -253,7 +261,10 @@ const enhance = compose(
             extend: 'product',
             background: '#ffebee',
             borderRadius: '2px',
-            color: '#f44336'
+            color: '#f44336',
+            '&:hover': {
+                background: '#f2f5f8'
+            }
         },
         pagination: {
             position: 'absolute',
@@ -516,6 +527,7 @@ const ManufactureShipment = enhance((props) => {
         const openedTime = dateTimeFormat(_.get(item, 'openedTime'))
         const closedTime = _.get(item, 'closedTime') ? dateTimeFormat(_.get(item, 'closedTime')) : t('Не закончилась')
         const userName = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'firstName'])
+        const isTransferrred = _.get(item, 'isTransferrred')
         return (
             <Row key={id} className={classes.shift}>
                 <Col xs={5}>{userName}</Col>
@@ -523,9 +535,10 @@ const ManufactureShipment = enhance((props) => {
                 <Col xs={3}>{closedTime}</Col>
                 <Col xs={1}>
                     <div className={classes.actionButtons}>
-                        <ToolTip position="bottom" text={t('Передать на склад')}>
+                        <ToolTip position="bottom" text={isTransferrred ? t('Уже передан на склад') : t('Передать на склад')}>
                             <IconButton
                                 iconStyle={iconStyles.icon}
+                                disabled={isTransferrred}
                                 style={iconStyles.button}
                                 disableTouchRipple={true}
                                 onTouchTap={() => sendDialog.handleOpen(id)}
@@ -565,6 +578,16 @@ const ManufactureShipment = enhance((props) => {
             textTransform: 'none'
         }
     }
+
+    const getFilterCount = (filterKeys) => {
+        return _(filterKeys)
+            .values()
+            .filter(item => item !== filterKeys.FROM_DATE && item !== filterKeys.SEARCH)
+            .filter(item => filter.getParam(item))
+            .value()
+            .length
+    }
+    const filterCount = getFilterCount(MANUFACTURES_FILTERS_KEY)
     return (
         <div>
             <div className={classes.buttons}>
@@ -592,7 +615,7 @@ const ManufactureShipment = enhance((props) => {
                     <ManufactureActivityDateRange filter={filter} initialValues={filterDialog.initialValues}/>
                     <a className={classes.filterBtn} onClick={filterDialog.handleOpenFilterDialog}>
                         <Filter/>
-                        <span>{t('Фильтр')}</span>
+                        <span>{t('Фильтр') + (filterCount > ZERO ? ' / ' + filterCount : '')}</span>
                     </a>
                 </header>
                 <ManufactureActivityFilterDialog
