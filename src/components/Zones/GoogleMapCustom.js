@@ -16,6 +16,7 @@ import Checkbox from 'material-ui/Checkbox'
 import t from '../../helpers/translate'
 const MARKER_SIZE = 30
 const ZERO = 0
+const FOUR = 4
 const INFO_WINDOW_OFFSET = -7
 const ANCHOR = 7
 const SCALED = 14
@@ -27,6 +28,10 @@ const classes = {
         alignItems: 'center',
         justifyContent: 'center',
         display: 'flex'
+    },
+    zoneName: {
+        diplay: 'block',
+        zIndex: '202'
     }
 }
 
@@ -260,16 +265,20 @@ export default class GoogleCustomMap extends React.Component {
             let mapCanvasProjection = overlayEl.getProjection()
             const bounds = new google.maps.LatLngBounds(
                 new google.maps.LatLng(meanLat, meanLng))
-            let sw = mapCanvasProjection.fromLatLngToDivPixel(bounds.getCenter())
-            let div = overlayEl.onAdd()
-            div.style.left = sw.x + 'px'
-            div.style.top = sw.y + 'px'
-            div.style.color = '#333'
-            div.style.fontSize = '20px'
-            div.style.fontWeight = '700'
-            div.style.whiteSpace = 'nowrap'
-            div.innerHTML = title
-            mapPanes[GOOGLE_MAP.FLOATPANE].appendChild(div)
+            if (mapCanvasProjection) {
+                let sw = mapCanvasProjection.fromLatLngToDivPixel(bounds.getCenter())
+                let div = overlayEl.onAdd()
+                div.style.left = sw.x + 'px'
+                div.style.top = sw.y + 'px'
+                div.style.color = '#333'
+                div.style.fontSize = (this.map.getZoom() + FOUR) + 'px'
+                div.style.fontWeight = '700'
+                div.style.whiteSpace = 'nowrap'
+                div.innerHTML = title
+                if (mapPanes[GOOGLE_MAP.FLOATPANE].firstChild) {
+                    mapPanes[GOOGLE_MAP.FLOATPANE].replaceChild(div, mapPanes[GOOGLE_MAP.FLOATPANE].firstChild)
+                }
+            }
         }
 
         this.overlayView.onRemove = () => {
@@ -441,13 +450,6 @@ export default class GoogleCustomMap extends React.Component {
     }
 
     render () {
-        if (this.map && this.overlayView) {
-            this.map.addListener('zoom_changed', () => {
-                let mapFloatPane = this.overlayView.getPanes()
-                mapFloatPane[GOOGLE_MAP.FLOATPANE].innerHTML = ''
-            })
-        }
-
         const {addZone, filter, updateZone, isOpenAddZone, isOpenUpdateZone, deleteZone, isOpenToggle} = this.props
 
         const marker = {
