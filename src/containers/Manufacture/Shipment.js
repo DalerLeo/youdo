@@ -77,6 +77,7 @@ const enhance = compose(
         const productMaterialForm = _.get(state, ['form', 'ManufactureProductMaterialForm'])
         const addProductsForm = _.get(state, ['form', 'ShipmentAddProductsForm'])
         const LogEditForm = _.get(state, ['form', 'LogEditForm'])
+        const shipmentConfirmForm = _.get(state, ['form', 'ShipmentConfirmForm'])
 
         return {
             query,
@@ -104,7 +105,8 @@ const enhance = compose(
             addProductsMaterialsLoading,
             filterProducts,
             addProductsForm,
-            LogEditForm
+            LogEditForm,
+            shipmentConfirmForm
         }
     }),
 
@@ -278,9 +280,10 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({openShift: false})})
         },
         handleSubmitSendDialog: props => () => {
-            const {dispatch, filterShipment, location: {query}, params, beginDate, endDate} = props
+            const {dispatch, filterShipment, location: {query}, params, beginDate, endDate, shipmentConfirmForm, filter} = props
             const personalRotation = _.toInteger(_.get(query, ['openShift']))
-            return dispatch(sendPersonalRotation(personalRotation))
+            const stock = _.get(shipmentConfirmForm, ['values', 'stock', 'value'])
+            return dispatch(sendPersonalRotation(personalRotation, stock))
                 .then(() => {
                     const dateRange = {
                         beginDate,
@@ -288,6 +291,7 @@ const enhance = compose(
                     }
                     const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
                     dispatch(shipmentListFetchAction(filterShipment, manufactureId, dateRange))
+                    hashHistory.push({pathname, query: filter.getParams({openShift: false})})
                 })
                 .catch((error) => {
                     dispatch(openErrorAction({

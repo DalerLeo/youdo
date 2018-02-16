@@ -5,15 +5,8 @@ import injectSheet from 'react-jss'
 import {hashHistory} from 'react-router'
 import {compose, withState} from 'recompose'
 import Filter from 'material-ui/svg-icons/content/filter-list'
-import * as TAB from '../../../constants/manufactureShipmentTab'
-import ManufactureActivityDateRange from '../ManufactureActivityDateRange'
-import ManufactureActivityFilterDialog from '../ManufactureActivityFilterDialog'
-import ManufactureAddProductMaterial from '../ManufactureAddProductMaterial'
-import ShipmentAddProductsDialog from '../ShipmentAddProductsDialog'
-import ConfirmDialog from '../../ConfirmDialog'
 import Paper from 'material-ui/Paper'
-import Loader from '../../Loader'
-import ToolTip from '../../ToolTip'
+import IconButton from 'material-ui/IconButton'
 import {Tabs, Tab} from 'material-ui/Tabs'
 import FlatButton from 'material-ui/FlatButton'
 import Sort from 'material-ui/svg-icons/content/sort'
@@ -28,13 +21,21 @@ import {Field, reduxForm, change} from 'redux-form'
 import Defected from 'material-ui/svg-icons/image/broken-image'
 import Check from 'material-ui/svg-icons/navigation/check'
 import SendIcon from 'material-ui/svg-icons/content/reply-all'
+import Loader from '../../Loader'
+import ToolTip from '../../ToolTip'
+import ManufactureActivityDateRange from '../ManufactureActivityDateRange'
+import ManufactureActivityFilterDialog from '../ManufactureActivityFilterDialog'
+import ManufactureAddProductMaterial from '../ManufactureAddProductMaterial'
+import ShipmentAddProductsDialog from '../ShipmentAddProductsDialog'
+import ConfirmDialog from '../../ConfirmDialog'
 import Pagination from '../../GridList/GridListNavPagination'
 import Choose from '../../Images/choose-menu.png'
 import NotFound from '../../Images/not-found.png'
 import dateTimeFormat from '../../../helpers/dateTimeFormat'
 import numberFormat from '../../../helpers/numberFormat'
 import {ShiftMultiSearchField, TextField} from '../../ReduxForm'
-import IconButton from 'material-ui/IconButton'
+import * as TAB from '../../../constants/manufactureShipmentTab'
+import ShipmentConfirmDialog from '../../../components/Manufacture/ShipmentConfirmDialog'
 import t from '../../../helpers/translate'
 import {TYPE_PRODUCT, TYPE_RAW} from '../index'
 
@@ -527,7 +528,7 @@ const ManufactureShipment = enhance((props) => {
         const openedTime = dateTimeFormat(_.get(item, 'openedTime'))
         const closedTime = _.get(item, 'closedTime') ? dateTimeFormat(_.get(item, 'closedTime')) : t('Не закончилась')
         const userName = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'firstName'])
-        const isTransferrred = _.get(item, 'isTransferrred')
+        const isTransferrred = _.get(item, 'isTransferred')
         return (
             <Row key={id} className={classes.shift}>
                 <Col xs={5}>{userName}</Col>
@@ -769,7 +770,7 @@ const ManufactureShipment = enhance((props) => {
                 onSubmit={handleDeleteProduct}
             />
 
-            <ConfirmDialog
+            <ShipmentConfirmDialog
                 type="submit"
                 message={_.get(selectedShift, ['user', 'firstName']) + ' ' + _.get(selectedShift, ['user', 'secondName'])}
                 onClose={sendDialog.handleClose}

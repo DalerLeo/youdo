@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
-import moment from 'moment'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList'
 import Container from '../Container'
@@ -146,8 +145,8 @@ const ShiftGridList = enhance((props) => {
     const shiftList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const beginTime = _.get(item, 'beginTime').slice(0,5)
-        const endTime = _.get(item, 'endTime').slice(0,5)
+        const beginTime = _.get(item, 'beginTime').slice(0, 5)
+        const endTime = _.get(item, 'endTime').slice(0, 5)
         return (
             <Row key={id} className={classes.listRow}>
                 <Col xs={1}>{id}</Col>
