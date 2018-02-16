@@ -10,7 +10,7 @@ import {reduxForm, Field} from 'redux-form'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import Loader from '../Loader'
 import t from '../../helpers/translate'
-import {StockSearchField} from "../ReduxForm"
+import {StockSearchField} from '../ReduxForm'
 
 const enhance = compose(
     injectSheet({
