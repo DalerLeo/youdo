@@ -11,7 +11,6 @@ import {connect} from 'react-redux'
 import getConfig from '../../../helpers/getConfig'
 import toBoolean from '../../../helpers/toBoolean'
 import numberWithoutSpaces from '../../../helpers/numberWithoutSpaces'
-import checkPermission from '../../../helpers/checkPermission'
 import {
     Table,
     TableBody,

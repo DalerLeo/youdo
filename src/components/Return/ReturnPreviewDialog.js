@@ -53,7 +53,7 @@ const enhance = compose(
             zIndex: '999'
         },
         inContent: {
-            padding: '20px 30px',
+            padding: '0 30px',
             color: '#333',
             height: '100%',
             '& .dottedList': {
@@ -61,6 +61,9 @@ const enhance = compose(
                 minHeight: '50px',
                 '&:first-child': {
                     fontWeight: '600'
+                },
+                '&:last-child:after': {
+                    display: 'none'
                 }
             }
         },
@@ -78,13 +81,10 @@ const enhance = compose(
         bottomButton: {
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between',
+            justifyContent: 'flex-end',
             padding: '10px 14px 10px 30px',
             borderTop: '1px solid #efefef',
             background: '#fff',
-            '& > div:first-child': {
-                textTransform: 'uppercase'
-            },
             '& span': {
                 fontSize: '13px !important',
                 fontWeight: '600 !important',
@@ -103,6 +103,24 @@ const enhance = compose(
             textAlign: 'center',
             fontSize: '13px',
             color: '#666'
+        },
+        totalReturn: {
+            background: '#f2f5f8',
+            fontWeight: 'bold',
+            textTransform: 'uppercase',
+            padding: '15px 30px',
+            margin: '0 -30px'
+        },
+        totalSum: {
+            fontWeight: '600 !important',
+            marginRight: '5px',
+            position: 'relative',
+            '&:after': {
+                content: '","'
+            },
+            '&:last-child:after': {
+                display: 'none'
+            }
         }
     })
 )
@@ -119,24 +137,32 @@ const ReturnCreateDialog = enhance((props) => {
         data,
         onSubmit
     } = props
-    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
-    const totalReturn = _.sumBy(data, (item) => {
-        return _.toNumber(_.get(item, 'totalInternal'))
+    const byCurrency = _.groupBy(data, (item) => _.get(item, ['currency', 'name']))
+    const totalReturn = _.map(byCurrency, (item, index) => {
+        const currency = index
+        const totalPrice = _.sumBy(item, (o) => {
+            const amount = _.toNumber(_.get(o, 'amount'))
+            const cost = _.toNumber(_.get(o, 'cost'))
+            return amount * cost
+        })
+        return (
+            <span className={classes.totalSum}>{numberFormat(totalPrice, currency)}</span>
+        )
     })
 
     const list = _.map(data, (item, index) => {
         const measure = _.get(item, ['product', 'measurement', 'name'])
         const currency = _.get(item, ['currency', 'name'])
-        const amount = numberFormat(_.get(item, 'amount'), measure)
+        const amount = _.toNumber(_.get(item, 'amount'))
         const order = _.get(item, 'order')
-        const cost = numberFormat(_.get(item, 'cost'), currency)
+        const cost = _.toNumber(_.get(item, 'cost'))
         const productName = _.get(item, ['product', 'name'])
         return (
             <Row key={index} className="dottedList">
                 <Col xs={5}>{productName}</Col>
                 <Col xs={2}>{order}</Col>
-                <Col xs={2}>{amount}</Col>
-                <Col xs={3} style={{textAlign: 'right'}}>{cost}</Col>
+                <Col xs={2}>{numberFormat(amount, measure)}</Col>
+                <Col xs={3} style={{textAlign: 'right'}}>{numberFormat((cost * amount), currency)}</Col>
             </Row>
         )
     })
@@ -175,12 +201,10 @@ const ReturnCreateDialog = enhance((props) => {
                                  </Row>
                                 {list}
                             </div>}
+                        <div className={classes.totalReturn}>{t('Общая сумма возврата')}: {totalReturn}</div>
                     </div>
                     {!_.isEmpty(list) &&
                         <div className={classes.bottomButton}>
-                            <div>
-                                <b>{t('Общая сумма возврата')}: <strong>{numberFormat(totalReturn, primaryCurrency)}</strong></b>
-                            </div>
                             <FlatButton
                                 label={t('Оформить возврат')}
                                 className={classes.actionButton}
