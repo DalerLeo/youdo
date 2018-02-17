@@ -148,6 +148,11 @@ const enhance = compose(
                     hashHistory.push(filter.createURL({[POST_UPDATE_DIALOG_OPEN]: false}))
                     dispatch(postListFetchAction(filter))
                 })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
+                })
         }
     })
 )

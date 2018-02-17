@@ -121,6 +121,11 @@ const enhance = compose(
                     hashHistory.push({pathname, query: filter.getParams({[PRODUCT_TYPE_CREATE_DIALOG_OPEN]: false})})
                     dispatch(productTypeListFetchAction(filter))
                 })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
+                })
         },
 
         handleOpenUpdateDialog: props => (id) => {

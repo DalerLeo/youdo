@@ -153,6 +153,11 @@ const enhance = compose(
                     hashHistory.push(filter.createURL({[PRICE_LIST_SETTING_UPDATE_DIALOG_OPEN]: false}))
                     dispatch(priceListSettingListFetchAction(filter))
                 })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
+                })
         }
     })
 )
