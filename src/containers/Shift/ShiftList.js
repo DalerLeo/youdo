@@ -155,6 +155,11 @@ const enhance = compose(
                     hashHistory.push(filter.createURL({[SHIFT_UPDATE_DIALOG_OPEN]: false}))
                     dispatch(shiftListFetchAction(filter))
                 })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
+                })
         }
     })
 )

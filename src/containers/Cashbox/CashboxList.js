@@ -164,6 +164,11 @@ const enhance = compose(
                     hashHistory.push(filter.createURL({[CASHBOX_UPDATE_DIALOG_OPEN]: false}))
                     dispatch(cashboxListFetchAction(filter))
                 })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
+                })
         }
     })
 )
