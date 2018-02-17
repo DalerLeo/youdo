@@ -25,7 +25,7 @@ const fetchList = ({state, dispatch, getOptions, getText, getValue, input}) => {
         })
         .then((data) => {
             const selectedValues = _.intersectionBy(state.dataSource, newValues, 'value')
-            dispatch({dataSource: _.unionBy(data, selectedValues), loading: false})
+            dispatch({dataSource: _.unionBy(data, selectedValues, 'value'), loading: false})
         })
 }
 
