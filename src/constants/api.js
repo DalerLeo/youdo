@@ -325,7 +325,7 @@ export const SHIPMENT_EDIT_PRODUCT_AMOUNT = `/${SHIPMENT_PRODUCTS}/%d/update_amo
 export const SHIPMENT_EDIT_MATERIAL_AMOUNT = `/${SHIPMENT_MATERIALS}/%d/update_amount/`
 export const SHIPMENT_DELETE_PRODUCT = `/${SHIPMENT_PRODUCTS}/%d/`
 export const SHIPMENT_DELETE_MATERIAL = `/${SHIPMENT_MATERIALS}/%d/`
-export const SHIPMENT_SEND_TO_STOCK = 'api_dlya_otpravki_na_sklad'
+export const SHIPMENT_SEND_TO_STOCK = 'staff/personal_rotation/%d/give/'
 
 export const MARKET_TYPE = 'market/market_type'
 export const MARKET_TYPE_CREATE = `/${MARKET_TYPE}/`
