@@ -246,9 +246,9 @@ export const deleteWriteOffProductAction = (id) => {
     }
 }
 
-export const sendPersonalRotation = (id) => {
+export const sendPersonalRotation = (id, stock) => {
     const payload = axios()
-        .post(API.SHIPMENT_SEND_TO_STOCK, {personal_rotation: id})
+        .post(sprintf(API.SHIPMENT_SEND_TO_STOCK, id), {'stock': stock})
         .then((response) => {
             return _.get(response, 'data')
         })
