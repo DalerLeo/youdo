@@ -320,7 +320,7 @@ const enhance = compose(
         },
 
         handleSubmitUpdateDialog: props => () => {
-            const {dispatch, updateForm, updateClientForm, filter, location: {pathname}, detail, list} = props
+            const {dispatch, updateForm, updateClientForm, filter, location: {pathname}, detail, list, setOpenPreview} = props
             const type = _.toInteger(_.get(detail, 'type'))
             const returnId = _.toInteger(_.get(props, ['params', 'returnId']))
             if (type === TWO) {
@@ -340,8 +340,10 @@ const enhance = compose(
                         return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                     })
                     .then(() => {
+                        setOpenPreview(false)
                         hashHistory.push({pathname, query: filter.getParams({[RETURN_UPDATE_DIALOG_OPEN]: false})})
-                    }).catch((error) => {
+                    })
+                    .catch((error) => {
                         dispatch(openErrorAction({
                             message: error
                         }))
@@ -700,8 +702,7 @@ const ReturnList = enhance((props) => {
         loading: previewListLoading,
         openPreviewDialog: openPreview,
         handleOpenPreviewDialog: props.handleOpenPreviewDialog,
-        handleClosePreviewDialog: props.handleClosePreviewDialog,
-        handleSubmitPreviewDialog: props.handleSubmitPreviewDialog
+        handleClosePreviewDialog: props.handleClosePreviewDialog
     }
 
     const updateDialog = {

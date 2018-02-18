@@ -214,7 +214,7 @@ const StatProviderList = enhance((props) => {
     const openFilterDialog = toBoolean(_.get(location, ['query', PROVIDER_BALANCE_FILTER_OPEN]))
     const paymentType = filter.getParam(STAT_PROVIDER_FILTER_KEY.PAYMENT_TYPE)
     const balanceType = filter.getParam(STAT_PROVIDER_FILTER_KEY.BALANCE_TYPE)
-    const detailId = _.toInteger(_.get(params, 'statProviderId'))
+    const detailId = _.toInteger(_.get(params, 'providerBalanceId'))
     const division = !_.isNull(_.get(location, ['query', 'division'])) && _.toInteger(_.get(location, ['query', 'division']))
     const search = !_.isNull(_.get(location, ['query', 'search'])) ? _.get(location, ['query', 'search']) : null
     const type = _.get(location, ['query', 'type'])

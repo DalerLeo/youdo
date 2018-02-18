@@ -254,6 +254,7 @@ const SupplyDetails = enhance((props) => {
     const id = _.get(data, 'id')
     const agent = _.get(data, ['user', 'firstName']) + ' ' + _.get(data, ['user', 'secondName'])
     const provider = _.get(data, ['provider', 'name'])
+    const division = _.get(data, ['division', 'name'])
     const stockName = _.get(data, ['stock', 'name']) || t('Не указан')
     const paymentType = _.get(data, 'paymentType') === 'cash' ? t('Наличный') : t('Банковский счет')
     const phone = _.get(data, ['contact', 'phone']) || t('Не указан')
@@ -397,6 +398,10 @@ const SupplyDetails = enhance((props) => {
                                 <li>
                                     <span>{t('Договор')} №:</span>
                                     <span>{contract}</span>
+                                </li>
+                                <li>
+                                    <span>{t('Организация')}:</span>
+                                    <span>{division}</span>
                                 </li>
                                 <li>
                                     <span>{t('Поставщик')}:</span>

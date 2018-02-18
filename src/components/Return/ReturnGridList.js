@@ -271,7 +271,9 @@ const OrderGridList = enhance((props) => {
                 data={_.get(previewDialog, 'data')}
                 open={_.get(previewDialog, 'openPreviewDialog')}
                 onClose={previewDialog.handleClosePreviewDialog}
-                onSubmit={updateDialog.openUpdateDialog ? updateDialog.handleSubmitUpdateDialog : createDialog.handleSubmitCreateDialog}
+                onSubmit={updateDialog.openUpdateDialog
+                    ? updateDialog.handleSubmitUpdateDialog
+                    : createDialog.handleSubmitCreateDialog}
             />
             {(returnType === CLIENT_RETURN)
                 ? <ReturnCreateDialog

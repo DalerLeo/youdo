@@ -8,7 +8,14 @@ import {connect} from 'react-redux'
 import injectSheet from 'react-jss'
 import {compose, withState, lifecycle} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
-import {TextField, ZoneMultiSearchField, DivisionMultiSearchField, DateToDateField, ProviderBalanceTypeSearchField, PaymentTypeSearchField} from '../../ReduxForm'
+import {
+    TextField,
+    ZoneMultiSearchField,
+    DivisionMultiSearchField,
+    DateToDateField,
+    ProviderBalanceTypeSearchField,
+    PaymentTypeSearchField
+} from '../../ReduxForm'
 import ProviderInfoDialog from './ProviderInfoDialog'
 import StatSideMenu from '../StatSideMenu'
 import Loader from '../../Loader'

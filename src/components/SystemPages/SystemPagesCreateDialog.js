@@ -254,29 +254,32 @@ const SystemPagesCreateDialog = enhance((props) => {
                             <div className={classes.textArea}>
                                 {dialogTab === 'ru'
                                     ? <Field
-                                        name="[translations][ru][body]"
-                                        multiLine={true}
-                                        rows={7}
-                                        fullWidth={true}
-                                        rowsMax={7}
                                         floatingLabelText="Содержание"
+                                        name="[translations][ru][body]"
+                                        inputStyle={{fontSize: '13px'}}
+                                        multiLine={true}
+                                        fullWidth={true}
+                                        rows={7}
+                                        rowsMax={7}
                                         component={TextField}/>
                                     : dialogTab === 'uz'
                                         ? <Field
-                                            name="[translations][uz][body]"
-                                            multiLine={true}
-                                            rows={7}
-                                            fullWidth={true}
-                                            rowsMax={7}
                                             floatingLabelText="Matn"
+                                            name="[translations][uz][body]"
+                                            inputStyle={{fontSize: '13px'}}
+                                            multiLine={true}
+                                            fullWidth={true}
+                                            rows={7}
+                                            rowsMax={7}
                                             component={TextField}/>
                                         : <Field
-                                            name="[translations][en][body]"
-                                            multiLine={true}
-                                            rows={7}
-                                            fullWidth={true}
-                                            rowsMax={7}
                                             floatingLabelText="Content"
+                                            name="[translations][en][body]"
+                                            inputStyle={{fontSize: '13px'}}
+                                            multiLine={true}
+                                            fullWidth={true}
+                                            rows={7}
+                                            rowsMax={7}
                                             component={TextField}/>}
                             </div>
                         </div>

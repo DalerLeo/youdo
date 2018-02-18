@@ -109,7 +109,7 @@ const enhance = compose(
             '& div': {
                 fontWeight: '600',
                 fontSize: '14px',
-                margin: '-5px 0 10px -10px'
+                marginBottom: '10px'
             }
         }
     }),
@@ -147,7 +147,7 @@ const SystemPagesDetails = enhance((props) => {
     const body = _.get(data, ['translations', tab, 'body'])
     const createdDate = dateFormat(_.get(data, 'createdDate'), true)
     const modifiedDate = dateFormat(_.get(data, 'modifiedDate'), true)
-    const content = tab === 'ru' ? 'Содержания' : tab === 'uz' ? 'Matn' : 'Content'
+    const content = tab === 'ru' ? 'Содержание' : tab === 'uz' ? 'Matn' : 'Content'
 
     if (loading) {
         return (
