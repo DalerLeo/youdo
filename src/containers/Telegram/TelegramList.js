@@ -125,12 +125,12 @@ const enhance = compose(
             setOpenConfirmDialog(false)
         },
         handleSendConfirmDialog: props => () => {
-            const {location: {pathname}, dispatch, params, setOpenConfirmDialog, filter} = props
-            const detailID = _.toInteger(_.get(params, 'telegramId'))
+            const {location, dispatch, setOpenConfirmDialog, filter} = props
+            const detailID = _.toInteger(_.get(location, ['query', 'deactivateID']))
             dispatch(telegramDeleteAction(detailID))
                 .then(() => {
                     setOpenConfirmDialog(false)
-                    hashHistory.push({pathname, query: filter.getParams({[TELEGRAM_DEACTIVATE_ID]: null})})
+                    hashHistory.push({pathname: _.get(location, 'pathname'), query: filter.getParams({[TELEGRAM_DEACTIVATE_ID]: null})})
                     dispatch(telegramListFetchAction(filter))
                     return dispatch(openSnackbarAction({message: t('Успешно удалено')}))
                 })

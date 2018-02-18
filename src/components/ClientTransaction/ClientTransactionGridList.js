@@ -228,7 +228,7 @@ const ClientTransactionGridList = enhance((props) => {
                 </Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
                     <div className={classes.buttons}>
-                        {confirmation === REJECTED &&
+                        {(confirmation === REJECTED || confirmation === REQUESTED) &&
                         <ToolTip position={'left'} text={t('Переотправить запрос')}>
                             <IconButton
                                 onTouchTap={() => { resendDialog.handleOpenResendDialog(id) }}
@@ -237,7 +237,7 @@ const ClientTransactionGridList = enhance((props) => {
                                 <ResendIcon/>
                             </IconButton>
                         </ToolTip>}
-                        {isAdmin &&
+                        {(isAdmin && (confirmation === REJECTED || confirmation === REQUESTED)) &&
                         <ToolTip position={'left'} text={t('Удалить транзакцию')}>
                             <IconButton
                                 onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
