@@ -1,1 +1,3 @@
-import ShiftList from './ShiftList'export {ShiftList}
+import ShiftList from './ShiftList'
+
+export {ShiftList}

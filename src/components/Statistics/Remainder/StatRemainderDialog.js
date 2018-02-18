@@ -1,1 +1,179 @@
-import _ from 'lodash'import React from 'react'import PropTypes from 'prop-types'import {compose} from 'recompose'import injectSheet from 'react-jss'import Dialog from 'material-ui/Dialog'import CloseIcon from 'material-ui/svg-icons/navigation/close'import IconButton from 'material-ui/IconButton'import Loader from '../../Loader'import {Row, Col} from 'react-flexbox-grid'import Pagination from '../../GridList/GridListNavPagination/index'import dateFormat from '../../../helpers/dateFormat'import numberFormat from '../../../helpers/numberFormat'import t from '../../../helpers/translate'const enhance = compose(    injectSheet({        loader: {            width: '100%',            height: '400px',            background: '#fff',            alignItems: 'center',            zIndex: '999',            justifyContent: 'center',            display: 'flex'        },        popUp: {            color: '#333 !important',            overflowY: 'hidden !important',            fontSize: '13px !important',            position: 'relative',            padding: '0 !important',            overflowX: 'hidden',            height: '100%',            marginBottom: '64px'        },        content: {            width: '100%',            display: 'block',            '& > div:last-child': {                padding: '0 30px',                borderTop: '1px #efefef solid'            }        },        titleSummary: {            padding: '20px 30px',            display: 'flex',            justifyContent: 'space-between'        },        downBlock: {            padding: '20px 30px',            '& .row': {                lineHeight: '35px',                padding: '0 10px',                display: 'flex',                justifyContent: 'space-between',                '& > div:last-child': {                    textAlign: 'right',                    fontWeight: '600'                }            },            '& .row:last-child': {                fontWeight: '600',                borderTop: '1px #efefef solid'            }        },        subTitle: {            paddingBottom: '8px',            fontStyle: 'italic',            fontWeight: '400'        },        titleContent: {            background: '#fff',            color: '#333',            fontWeight: 'bold',            textTransform: 'uppercase',            display: 'flex',            justifyContent: 'space-between',            alignItems: 'center',            borderBottom: '1px solid #efefef',            padding: '0 10px 0 30px',            height: '60px',            zIndex: '999'        },        tableWrapper: {            padding: '0 30px',            maxHeight: '424px',            overflowY: 'auto',            '& .row': {                '&:first-child': {                    fontWeight: '600'                }            },            '& .dottedList': {                padding: '15px 0',                '& > div:last-child': {                    textAlign: 'right'                },                '&:last-child:after': {                    display: 'none'                }            }        }    }),)const StatRemainderDialog = enhance((props) => {    const {        open,        onClose,        classes,        detailData,        filterItem    } = props    const loading = _.get(detailData, 'detailLoading')    const agentName = _.get(detailData, ['rowDetail', '0', 'title'])    const measurement = _.get(detailData, ['rowDetail', '0', 'measurement', 'name'])    const remainderList = _.map(_.get(detailData, ['data', 'results']), (item) => {        const balance = numberFormat(_.get(item, ['balance']), measurement)        const barcode = _.get(item, 'barcode')        const createdDate = dateFormat(_.get(item, 'createdDate'))        const isDefect = _.get(item, 'isDefect') ? 'Брак' : 'OK'        return (            <Row key={barcode} className="dottedList">                <Col xs={3}>{barcode}</Col>                <Col xs={4}>{createdDate}</Col>                <Col xs={3}>{balance}</Col>                <Col xs={2} style={{textAlign: 'left'}}>{isDefect}</Col>            </Row>        )    })    return (        <Dialog            modal={true}            open={open}            onRequestClose={onClose}            className={classes.dialog}            contentStyle={loading ? {width: '400px'} : {width: '700px'}}            bodyStyle={{minHeight: 'auto'}}            bodyClassName={classes.popUp}>            {loading ? <div className={classes.loader}>                <Loader size={0.75}/>            </div>                : <div>                    <div className={classes.titleContent}>                        <div>{agentName}</div>                        <IconButton onTouchTap={onClose}>                            <CloseIcon color="#666666"/>                        </IconButton>                    </div>                    <div className={classes.content}>                        <div className={classes.tableWrapper}>                            <Row className="dottedList">                                <Col xs={3}>{t('Код')}</Col>                                <Col xs={4}>{t('Дата приемки')}</Col>                                <Col xs={3}>{t('Кол-во')}</Col>                                <Col xs={2} style={{textAlign: 'left'}}>{t('Статус')}</Col>                            </Row>                            {remainderList}                        </div>                        <Pagination filter={filterItem}/>                    </div>                </div>}        </Dialog>    )})StatRemainderDialog.propTyeps = {    filterItem: PropTypes.object.isRequired,    open: PropTypes.bool.isRequired,    onClose: PropTypes.func.isRequired,    loading: PropTypes.bool}export default StatRemainderDialog
+import _ from 'lodash'
+import React from 'react'
+import PropTypes from 'prop-types'
+import {compose} from 'recompose'
+import injectSheet from 'react-jss'
+import Dialog from 'material-ui/Dialog'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
+import IconButton from 'material-ui/IconButton'
+import Loader from '../../Loader'
+import {Row, Col} from 'react-flexbox-grid'
+import Pagination from '../../GridList/GridListNavPagination/index'
+import dateFormat from '../../../helpers/dateFormat'
+import numberFormat from '../../../helpers/numberFormat'
+import t from '../../../helpers/translate'
+
+const enhance = compose(
+    injectSheet({
+        loader: {
+            width: '100%',
+            height: '400px',
+            background: '#fff',
+            alignItems: 'center',
+            zIndex: '999',
+            justifyContent: 'center',
+            display: 'flex'
+        },
+        popUp: {
+            color: '#333 !important',
+            overflowY: 'hidden !important',
+            fontSize: '13px !important',
+            position: 'relative',
+            padding: '0 !important',
+            overflowX: 'hidden',
+            height: '100%',
+            marginBottom: '64px'
+        },
+        content: {
+            width: '100%',
+            display: 'block',
+            '& > div:last-child': {
+                padding: '0 30px',
+                borderTop: '1px #efefef solid'
+            }
+        },
+        titleSummary: {
+            padding: '20px 30px',
+            display: 'flex',
+            justifyContent: 'space-between'
+        },
+        downBlock: {
+            padding: '20px 30px',
+            '& .row': {
+                lineHeight: '35px',
+                padding: '0 10px',
+                display: 'flex',
+                justifyContent: 'space-between',
+                '& > div:last-child': {
+                    textAlign: 'right',
+                    fontWeight: '600'
+                }
+            },
+            '& .row:last-child': {
+                fontWeight: '600',
+                borderTop: '1px #efefef solid'
+            }
+        },
+        subTitle: {
+            paddingBottom: '8px',
+            fontStyle: 'italic',
+            fontWeight: '400'
+        },
+        titleContent: {
+            background: '#fff',
+            color: '#333',
+            fontWeight: 'bold',
+            textTransform: 'uppercase',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            borderBottom: '1px solid #efefef',
+            padding: '0 10px 0 30px',
+            height: '60px',
+            zIndex: '999'
+        },
+        tableWrapper: {
+            padding: '0 30px',
+            maxHeight: '424px',
+            overflowY: 'auto',
+            '& .row': {
+                '&:first-child': {
+                    fontWeight: '600'
+                }
+            },
+            '& .dottedList': {
+                padding: '15px 0',
+                '& > div:last-child': {
+                    textAlign: 'right'
+                },
+                '&:last-child:after': {
+                    display: 'none'
+                }
+            }
+        }
+    }),
+)
+
+const StatRemainderDialog = enhance((props) => {
+    const {
+        open,
+        onClose,
+        classes,
+        detailData,
+        filterItem
+    } = props
+
+    const loading = _.get(detailData, 'detailLoading')
+    const agentName = _.get(detailData, ['rowDetail', '0', 'title'])
+    const measurement = _.get(detailData, ['rowDetail', '0', 'measurement', 'name'])
+
+    const remainderList = _.map(_.get(detailData, ['data', 'results']), (item) => {
+        const balance = numberFormat(_.get(item, ['balance']), measurement)
+        const barcode = _.get(item, 'barcode')
+        const createdDate = dateFormat(_.get(item, 'createdDate'))
+        const isDefect = _.get(item, 'isDefect') ? 'Брак' : 'OK'
+
+        return (
+            <Row key={barcode} className="dottedList">
+                <Col xs={3}>{barcode}</Col>
+                <Col xs={4}>{createdDate}</Col>
+                <Col xs={3}>{balance}</Col>
+                <Col xs={2} style={{textAlign: 'left'}}>{isDefect}</Col>
+            </Row>
+        )
+    })
+
+    return (
+        <Dialog
+            modal={true}
+            open={open}
+            onRequestClose={onClose}
+            className={classes.dialog}
+            contentStyle={loading ? {width: '400px'} : {width: '700px'}}
+            bodyStyle={{minHeight: 'auto'}}
+            bodyClassName={classes.popUp}>
+            {loading ? <div className={classes.loader}>
+                <Loader size={0.75}/>
+            </div>
+                : <div>
+                    <div className={classes.titleContent}>
+                        <div>{agentName}</div>
+                        <IconButton onTouchTap={onClose}>
+                            <CloseIcon color="#666666"/>
+                        </IconButton>
+                    </div>
+                    <div className={classes.content}>
+                        <div className={classes.tableWrapper}>
+                            <Row className="dottedList">
+                                <Col xs={3}>{t('Код')}</Col>
+                                <Col xs={4}>{t('Дата приемки')}</Col>
+                                <Col xs={3}>{t('Кол-во')}</Col>
+                                <Col xs={2} style={{textAlign: 'left'}}>{t('Статус')}</Col>
+                            </Row>
+                            {remainderList}
+                        </div>
+                        <Pagination filter={filterItem}/>
+                    </div>
+                </div>}
+        </Dialog>
+    )
+})
+
+StatRemainderDialog.propTyeps = {
+    filterItem: PropTypes.object.isRequired,
+    open: PropTypes.bool.isRequired,
+    onClose: PropTypes.func.isRequired,
+    loading: PropTypes.bool
+}
+
+export default StatRemainderDialog

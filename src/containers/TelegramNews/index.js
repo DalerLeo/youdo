@@ -1,1 +1,3 @@
-import TelegramNewsList from './TelegramNewsList'export {TelegramNewsList}
+import TelegramNewsList from './TelegramNewsList'
+
+export {TelegramNewsList}

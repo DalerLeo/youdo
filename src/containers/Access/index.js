@@ -1,1 +1,3 @@
-import AccessList from './AccessList'export {AccessList}
+import AccessList from './AccessList'
+
+export {AccessList}

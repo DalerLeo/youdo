@@ -1,1 +1,3 @@
-import GridList from './GridList'export default GridList
+import GridList from './GridList'
+
+export default GridList

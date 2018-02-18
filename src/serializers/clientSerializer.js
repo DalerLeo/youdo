@@ -1,1 +1,39 @@
-import _ from 'lodash'import {orderingSnakeCase} from '../helpers/serializer'export const createSerializer = (data) => {    const name = _.get(data, 'name')    const inBlacklist = _.get(data, 'inBlacklist')    const fromWhom = _.get(data, ['from', 'value'])    const address = _.get(data, 'address')    const contacts = _(data)        .get('contacts')        .filter((item) => {            return !_.isEmpty(item)        })    return {        name,        address,        contacts,        'from_whom': fromWhom,        'in_blacklist': inBlacklist || false    }}export const listFilterSerializer = (data) => {    const {...defaultData} = data    const ordering = _.get(data, 'ordering')    return {        'created_date_0': _.get(defaultData, 'fromDate'),        'created_date_1': _.get(defaultData, 'toDate'),        'in_blacklist': _.get(defaultData, 'inBlacklist'),        'from_whom': _.get(defaultData, 'fromWho'),        'search': _.get(defaultData, 'search'),        'page': _.get(defaultData, 'page'),        'page_size': _.get(defaultData, 'pageSize'),        'ordering': ordering && orderingSnakeCase(ordering)    }}
+import _ from 'lodash'
+import {orderingSnakeCase} from '../helpers/serializer'
+
+export const createSerializer = (data) => {
+    const name = _.get(data, 'name')
+    const inBlacklist = _.get(data, 'inBlacklist')
+    const fromWhom = _.get(data, ['from', 'value'])
+    const address = _.get(data, 'address')
+    const contacts = _(data)
+        .get('contacts')
+        .filter((item) => {
+            return !_.isEmpty(item)
+        })
+    return {
+        name,
+        address,
+        contacts,
+        'from_whom': fromWhom,
+        'in_blacklist': inBlacklist || false
+
+    }
+}
+
+export const listFilterSerializer = (data) => {
+    const {...defaultData} = data
+    const ordering = _.get(data, 'ordering')
+
+    return {
+        'created_date_0': _.get(defaultData, 'fromDate'),
+        'created_date_1': _.get(defaultData, 'toDate'),
+        'in_blacklist': _.get(defaultData, 'inBlacklist'),
+        'from_whom': _.get(defaultData, 'fromWho'),
+        'search': _.get(defaultData, 'search'),
+        'page': _.get(defaultData, 'page'),
+        'page_size': _.get(defaultData, 'pageSize'),
+        'ordering': ordering && orderingSnakeCase(ordering)
+    }
+}
+

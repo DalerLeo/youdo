@@ -1,1 +1,3 @@
-import SupplyList from './SupplyList'export {SupplyList}
+import SupplyList from './SupplyList'
+
+export {SupplyList}

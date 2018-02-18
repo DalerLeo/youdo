@@ -1,1 +1,3 @@
-import PendingPaymentsList from './PendingPaymentsList'export {PendingPaymentsList}
+import PendingPaymentsList from './PendingPaymentsList'
+
+export {PendingPaymentsList}

@@ -1,1 +1,3 @@
-import Telegram from './Telegram'export default Telegram
+import Telegram from './Telegram'
+
+export default Telegram

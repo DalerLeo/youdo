@@ -1,1 +1,3 @@
-import ActivityList from './ActivityList'export {ActivityList}
+import ActivityList from './ActivityList'
+
+export {ActivityList}

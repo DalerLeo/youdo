@@ -1,1 +1,3 @@
-import ClientBalanceList from './ClientBalanceList'export {ClientBalanceList}
+import ClientBalanceList from './ClientBalanceList'
+
+export {ClientBalanceList}

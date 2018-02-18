@@ -1,1 +1,3 @@
-import BrandList from './BrandList'export {BrandList}
+import BrandList from './BrandList'
+
+export {BrandList}

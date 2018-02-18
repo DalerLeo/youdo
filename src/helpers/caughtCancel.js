@@ -1,1 +1,5 @@
-const caughtCancel = (error) => {    return error}export default caughtCancel
+const caughtCancel = (error) => {
+    return error
+}
+
+export default caughtCancel

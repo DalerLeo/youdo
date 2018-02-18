@@ -1,1 +1,3 @@
-import StatCashbox from './StatCashbox'export {StatCashbox}
+import StatCashbox from './StatCashbox'
+
+export {StatCashbox}

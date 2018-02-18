@@ -1,1 +1,3 @@
-import CurrencyList from './CurrencyList'export {CurrencyList}
+import CurrencyList from './CurrencyList'
+
+export {CurrencyList}

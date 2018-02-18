@@ -1,1 +1,3 @@
-import DownloadDialog from './DownloadDialog'export default DownloadDialog
+import DownloadDialog from './DownloadDialog'
+
+export default DownloadDialog

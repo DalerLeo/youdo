@@ -1,1 +1,45 @@
-import React from 'react'import MultiSelectField from '../Basic/MultiSelectField'import axios from '../../../helpers/axios'import * as PATH from '../../../constants/api'import toCamelCase from '../../../helpers/toCamelCase'import caughtCancel from '../../../helpers/caughtCancel'const CancelToken = axios().CancelTokenlet providerListToken = nullconst getOptions = (search) => {    if (providerListToken) {        providerListToken.cancel()    }    providerListToken = CancelToken.source()    return axios().get(`${PATH.PROVIDER_LIST}?search=${search || ''}&page_size=100`, {cancelToken: providerListToken.token})        .then(({data}) => {            return Promise.resolve(toCamelCase(data.results))        })}const getIdsOption = (ids) => {    return axios().get(`${PATH.PROVIDER_LIST}?ids=${ids || ''}`)        .then(({data}) => {            return Promise.resolve(toCamelCase(data.results))        })        .catch((error) => {            caughtCancel(error)        })}const ProviderMultiSearchField = (props) => {    return (        <MultiSelectField            getValue={MultiSelectField.defaultGetValue('id')}            getText={MultiSelectField.defaultGetText('name')}            getOptions={getOptions}            getIdsOption={getIdsOption}            getItemText={MultiSelectField.defaultGetText('name')}            withDetails={true}            {...props}        />    )}export default ProviderMultiSearchField
+import React from 'react'
+import MultiSelectField from '../Basic/MultiSelectField'
+import axios from '../../../helpers/axios'
+import * as PATH from '../../../constants/api'
+import toCamelCase from '../../../helpers/toCamelCase'
+import caughtCancel from '../../../helpers/caughtCancel'
+
+const CancelToken = axios().CancelToken
+let providerListToken = null
+
+const getOptions = (search) => {
+    if (providerListToken) {
+        providerListToken.cancel()
+    }
+    providerListToken = CancelToken.source()
+    return axios().get(`${PATH.PROVIDER_LIST}?search=${search || ''}&page_size=100`, {cancelToken: providerListToken.token})
+        .then(({data}) => {
+            return Promise.resolve(toCamelCase(data.results))
+        })
+}
+const getIdsOption = (ids) => {
+    return axios().get(`${PATH.PROVIDER_LIST}?ids=${ids || ''}`)
+        .then(({data}) => {
+            return Promise.resolve(toCamelCase(data.results))
+        })
+        .catch((error) => {
+            caughtCancel(error)
+        })
+}
+
+const ProviderMultiSearchField = (props) => {
+    return (
+        <MultiSelectField
+            getValue={MultiSelectField.defaultGetValue('id')}
+            getText={MultiSelectField.defaultGetText('name')}
+            getOptions={getOptions}
+            getIdsOption={getIdsOption}
+            getItemText={MultiSelectField.defaultGetText('name')}
+            withDetails={true}
+            {...props}
+        />
+    )
+}
+
+export default ProviderMultiSearchField

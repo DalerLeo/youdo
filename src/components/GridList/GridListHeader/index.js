@@ -1,1 +1,3 @@
-import GridListHeader from './GridListHeader'export default GridListHeader
+import GridListHeader from './GridListHeader'
+
+export default GridListHeader

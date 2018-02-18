@@ -1,1 +1,3 @@
-import GridListNavPagination from './GridListNavPagination'export default GridListNavPagination
+import GridListNavPagination from './GridListNavPagination'
+
+export default GridListNavPagination

@@ -1,1 +1,3 @@
-import ErrorDialog from './ErrorDialog'export default ErrorDialog
+import ErrorDialog from './ErrorDialog'
+
+export default ErrorDialog

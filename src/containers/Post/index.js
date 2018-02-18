@@ -1,1 +1,3 @@
-import PostList from './PostList'export {PostList}
+import PostList from './PostList'
+
+export {PostList}

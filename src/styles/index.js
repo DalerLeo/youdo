@@ -1,1 +1,1 @@
-import './custom.css'
+import './custom.css'

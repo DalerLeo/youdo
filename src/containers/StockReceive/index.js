@@ -1,1 +1,15 @@
-import StockReceiveList from './StockReceiveList'import StockReceiveHistoryList from './StockReceiveHistoryList'import StockTransferList from './StockTransferList'import StockTransferHistoryList from './StockTransferHistoryList'import StockOutHistoryList from './StockOutHistoryList'import StockTabList from './StockReceiveTabList'export {    StockReceiveList,    StockReceiveHistoryList,    StockTransferList,    StockTransferHistoryList,    StockOutHistoryList,    StockTabList}
+import StockReceiveList from './StockReceiveList'
+import StockReceiveHistoryList from './StockReceiveHistoryList'
+import StockTransferList from './StockTransferList'
+import StockTransferHistoryList from './StockTransferHistoryList'
+import StockOutHistoryList from './StockOutHistoryList'
+import StockTabList from './StockReceiveTabList'
+
+export {
+    StockReceiveList,
+    StockReceiveHistoryList,
+    StockTransferList,
+    StockTransferHistoryList,
+    StockOutHistoryList,
+    StockTabList
+}

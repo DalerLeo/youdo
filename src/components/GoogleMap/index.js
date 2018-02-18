@@ -1,1 +1,3 @@
-import GoogleMap from './GoogleMap'export default GoogleMap
+import GoogleMap from './GoogleMap'
+
+export default GoogleMap

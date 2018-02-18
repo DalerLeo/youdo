@@ -1,1 +1,3 @@
-import MainList from './MainList'export {MainList}
+import MainList from './MainList'
+
+export {MainList}

@@ -1,1 +1,3 @@
-import SettingsSideMenu from './SettingsSideMenu'export {SettingsSideMenu}
+import SettingsSideMenu from './SettingsSideMenu'
+
+export {SettingsSideMenu}

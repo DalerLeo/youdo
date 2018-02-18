@@ -1,1 +1,3 @@
-import GridListBody from './GridListBody'export default GridListBody
+import GridListBody from './GridListBody'
+
+export default GridListBody

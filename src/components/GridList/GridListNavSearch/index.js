@@ -1,1 +1,3 @@
-import GridListNavSearch from './GridListNavSearch'export default GridListNavSearch
+import GridListNavSearch from './GridListNavSearch'
+
+export default GridListNavSearch
