@@ -1,3 +1,1 @@
-import PendingExpensesList from './PendingExpensesList'
-
-export {PendingExpensesList}
+import PendingExpensesList from './PendingExpensesList'export {PendingExpensesList}

@@ -1,3 +1,1 @@
-import MeasurementList from './MeasurementList'
-
-export {MeasurementList}
+import MeasurementList from './MeasurementList'export {MeasurementList}

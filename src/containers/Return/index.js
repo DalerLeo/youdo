@@ -1,3 +1,1 @@
-import ReturnList from './ReturnList'
-
-export {ReturnList}
+import ReturnList from './ReturnList'export {ReturnList}

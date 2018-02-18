@@ -1,3 +1,1 @@
-import DivisionList from './DivisionList'
-
-export {DivisionList}
+import DivisionList from './DivisionList'export {DivisionList}

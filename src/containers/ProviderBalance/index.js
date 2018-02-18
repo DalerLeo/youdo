@@ -1,5 +1,1 @@
-import ProviderBalanceList from './ProviderBalanceList'
-
-export {
-    ProviderBalanceList
-}
+import ProviderBalanceList from './ProviderBalanceList'export {    ProviderBalanceList}

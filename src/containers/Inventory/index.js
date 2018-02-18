@@ -1,3 +1,1 @@
-import InventoryList from './InventoryList'
-
-export {InventoryList}
+import InventoryList from './InventoryList'export {InventoryList}

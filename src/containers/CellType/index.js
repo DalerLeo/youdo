@@ -1,3 +1,1 @@
-import CellTypeList from './CellTypeList'
-
-export {CellTypeList}
+import CellTypeList from './CellTypeList'export {CellTypeList}

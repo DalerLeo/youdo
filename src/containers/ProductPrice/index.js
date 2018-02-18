@@ -1,3 +1,1 @@
-import ProductPriceList from './ProductPriceList'
-
-export {ProductPriceList}
+import ProductPriceList from './ProductPriceList'export {ProductPriceList}

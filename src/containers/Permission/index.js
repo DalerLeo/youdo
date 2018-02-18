@@ -1,3 +1,1 @@
-import PermissionList from './PermissionList'
-
-export {PermissionList}
+import PermissionList from './PermissionList'export {PermissionList}

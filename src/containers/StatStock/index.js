@@ -1,3 +1,1 @@
-import StatStock from './StatStock'
-
-export {StatStock}
+import StatStock from './StatStock'export {StatStock}

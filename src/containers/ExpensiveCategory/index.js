@@ -1,3 +1,1 @@
-import ExpensiveCategoryList from './ExpensiveCategoryList'
-
-export {ExpensiveCategoryList}
+import ExpensiveCategoryList from './ExpensiveCategoryList'export {ExpensiveCategoryList}

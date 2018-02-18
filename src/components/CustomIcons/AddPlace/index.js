@@ -1,3 +1,1 @@
-import AddPlace from './AddPlace'
-
-export default AddPlace
+import AddPlace from './AddPlace'export default AddPlace

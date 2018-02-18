@@ -1,3 +1,1 @@
-import SingInLayout from './SingInLayout'
-
-export default SingInLayout
+import SingInLayout from './SingInLayout'export default SingInLayout

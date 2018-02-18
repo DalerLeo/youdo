@@ -1,3 +1,1 @@
-import StatManufacture from './StatManufacture'
-
-export {StatManufacture}
+import StatManufacture from './StatManufacture'export {StatManufacture}

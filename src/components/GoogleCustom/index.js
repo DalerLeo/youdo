@@ -1,3 +1,1 @@
-import GoogleCustom from './GoogleCustom'
-
-export default GoogleCustom
+import GoogleCustom from './GoogleCustom'export default GoogleCustom

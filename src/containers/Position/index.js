@@ -1,3 +1,1 @@
-import PositionList from './PositionList'
-
-export {PositionList}
+import PositionList from './PositionList'export {PositionList}

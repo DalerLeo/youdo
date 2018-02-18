@@ -1,83 +1,1 @@
-import sprintf from 'sprintf'
-import _ from 'lodash'
-import React from 'react'
-import {compose} from 'recompose'
-import SearchFieldCustom from '../Basic/SearchFieldCustom'
-import axios from '../../../helpers/axios'
-import * as PATH from '../../../constants/api'
-import toCamelCase from '../../../helpers/toCamelCase'
-import * as actionTypes from '../../../constants/actionTypes'
-import {connect} from 'react-redux'
-import caughtCancel from '../../../helpers/caughtCancel'
-
-const CancelToken = axios().CancelToken
-let priceProductGiftListToken = null
-
-const getOptions = (search, type) => {
-    if (priceProductGiftListToken) {
-        priceProductGiftListToken.cancel()
-    }
-    priceProductGiftListToken = CancelToken.source()
-    return axios().get(`${PATH.PRODUCT_LIST}?type=${type || ''}&page_size=1000&search=${search || ''}`, {cancelToken: priceProductGiftListToken.token})
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data.results))
-        })
-        .catch((error) => {
-            caughtCancel(error)
-        })
-}
-
-const setMeasurementAction = (data, loading) => {
-    return {
-        type: actionTypes.PRODUCT_MEASUREMENT,
-        data: data,
-        loading: loading
-    }
-}
-
-const getItem = (value, dispatch) => {
-    const id = _.isObject(value) ? _.get(value, 'id') : value
-    dispatch(setMeasurementAction(null, true))
-    return axios().get(sprintf(PATH.PRODUCT_ITEM, id))
-        .then(({data}) => {
-            dispatch(setMeasurementAction(_.get(data, ['measurement', 'name']), false))
-            return Promise.resolve(toCamelCase(data))
-        })
-}
-
-const enhance = compose(
-    connect((state, props) => {
-        const dispatch = _.get(props, 'dispatch')
-        return {
-            state,
-            dispatch
-        }
-    })
-)
-
-const ProductCustomGiftSearchField = enhance((props) => {
-    const {dispatch, state, ...defaultProps} = props
-    const test = (id) => {
-        return getItem(id, dispatch)
-    }
-    const type = _.get(state, ['form', 'PricesCreateForm', 'values', 'giftType', 'value'])
-    return (
-        <SearchFieldCustom
-            getValue={(value) => {
-                return _.get(value, 'id')
-            }}
-            getText={(value) => {
-                return _.get(value, ['name'])
-            }}
-            getOptions={ (search) => { return getOptions(search, type) }}
-            getItem={test}
-            getItemText={(value) => {
-                return _.get(value, ['name'])
-            }}
-            parent={type}
-            {...defaultProps}
-        />
-    )
-})
-
-export default ProductCustomGiftSearchField
+import sprintf from 'sprintf'import _ from 'lodash'import React from 'react'import {compose} from 'recompose'import SearchFieldCustom from '../Basic/SearchFieldCustom'import axios from '../../../helpers/axios'import * as PATH from '../../../constants/api'import toCamelCase from '../../../helpers/toCamelCase'import * as actionTypes from '../../../constants/actionTypes'import {connect} from 'react-redux'import caughtCancel from '../../../helpers/caughtCancel'const CancelToken = axios().CancelTokenlet priceProductGiftListToken = nullconst getOptions = (search, type) => {    if (priceProductGiftListToken) {        priceProductGiftListToken.cancel()    }    priceProductGiftListToken = CancelToken.source()    return axios().get(`${PATH.PRODUCT_LIST}?type=${type || ''}&page_size=1000&search=${search || ''}`, {cancelToken: priceProductGiftListToken.token})        .then(({data}) => {            return Promise.resolve(toCamelCase(data.results))        })        .catch((error) => {            caughtCancel(error)        })}const setMeasurementAction = (data, loading) => {    return {        type: actionTypes.PRODUCT_MEASUREMENT,        data: data,        loading: loading    }}const getItem = (value, dispatch) => {    const id = _.isObject(value) ? _.get(value, 'id') : value    dispatch(setMeasurementAction(null, true))    return axios().get(sprintf(PATH.PRODUCT_ITEM, id))        .then(({data}) => {            dispatch(setMeasurementAction(_.get(data, ['measurement', 'name']), false))            return Promise.resolve(toCamelCase(data))        })}const enhance = compose(    connect((state, props) => {        const dispatch = _.get(props, 'dispatch')        return {            state,            dispatch        }    }))const ProductCustomGiftSearchField = enhance((props) => {    const {dispatch, state, ...defaultProps} = props    const test = (id) => {        return getItem(id, dispatch)    }    const type = _.get(state, ['form', 'PricesCreateForm', 'values', 'giftType', 'value'])    return (        <SearchFieldCustom            getValue={(value) => {                return _.get(value, 'id')            }}            getText={(value) => {                return _.get(value, ['name'])            }}            getOptions={ (search) => { return getOptions(search, type) }}            getItem={test}            getItemText={(value) => {                return _.get(value, ['name'])            }}            parent={type}            {...defaultProps}        />    )})export default ProductCustomGiftSearchField

@@ -1,3 +1,1 @@
-import NotificationTemplateList from './NotificationTemplateList'
-
-export {NotificationTemplateList}
+import NotificationTemplateList from './NotificationTemplateList'export {NotificationTemplateList}

@@ -1,3 +1,1 @@
-import MarketTypeList from './MarketTypeList'
-
-export {MarketTypeList}
+import MarketTypeList from './MarketTypeList'export {MarketTypeList}

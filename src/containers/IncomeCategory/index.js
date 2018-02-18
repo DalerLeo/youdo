@@ -1,3 +1,1 @@
-import IncomeCategoryList from './IncomeCategoryList'
-
-export {IncomeCategoryList}
+import IncomeCategoryList from './IncomeCategoryList'export {IncomeCategoryList}

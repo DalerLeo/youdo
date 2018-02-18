@@ -1,3 +1,1 @@
-import TransactionList from './TransactionList'
-
-export {TransactionList}
+import TransactionList from './TransactionList'export {TransactionList}

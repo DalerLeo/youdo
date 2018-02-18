@@ -1,3 +1,1 @@
-import RemainderList from './RemainderList'
-
-export {RemainderList}
+import RemainderList from './RemainderList'export {RemainderList}

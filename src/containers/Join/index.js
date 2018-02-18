@@ -1,3 +1,1 @@
-import JoinList from './JoinList'
-
-export {JoinList}
+import JoinList from './JoinList'export {JoinList}

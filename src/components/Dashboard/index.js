@@ -1,3 +1,1 @@
-import Dashboard from './Dashboard'
-
-export default Dashboard
+import Dashboard from './Dashboard'export default Dashboard

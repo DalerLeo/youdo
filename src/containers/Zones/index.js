@@ -1,3 +1,1 @@
-import ZonesList from './ZoneList'
-
-export {ZonesList}
+import ZonesList from './ZoneList'export {ZonesList}

@@ -1,3 +1,1 @@
-import ConfirmDialog from './ConfirmDialog'
-
-export default ConfirmDialog
+import ConfirmDialog from './ConfirmDialog'export default ConfirmDialog

@@ -1,3 +1,1 @@
-import SystemPagesList from './SystemPagesList'
-
-export {SystemPagesList}
+import SystemPagesList from './SystemPagesList'export {SystemPagesList}

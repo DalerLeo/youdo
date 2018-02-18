@@ -1,3 +1,1 @@
-import PricesList from './PricesList'
-
-export {PricesList}
+import PricesList from './PricesList'export {PricesList}

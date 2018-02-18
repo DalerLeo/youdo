@@ -1,3 +1,1 @@
-import ProviderList from './ProviderList'
-
-export {ProviderList}
+import ProviderList from './ProviderList'export {ProviderList}

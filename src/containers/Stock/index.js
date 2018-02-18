@@ -1,3 +1,1 @@
-import StockList from './StockList'
-
-export {StockList}
+import StockList from './StockList'export {StockList}

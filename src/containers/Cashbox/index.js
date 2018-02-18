@@ -1,3 +1,1 @@
-import CashboxList from './CashboxList'
-
-export {CashboxList}
+import CashboxList from './CashboxList'export {CashboxList}

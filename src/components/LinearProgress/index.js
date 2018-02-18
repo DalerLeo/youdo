@@ -1,3 +1,1 @@
-import LinearProgress from './LinearProgress'
-
-export default LinearProgress
+import LinearProgress from './LinearProgress'export default LinearProgress

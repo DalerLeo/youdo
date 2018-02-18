@@ -1,3 +1,1 @@
-import Snackbar from './Snackbar'
-
-export default Snackbar
+import Snackbar from './Snackbar'export default Snackbar

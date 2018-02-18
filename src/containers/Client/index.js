@@ -1,3 +1,1 @@
-import ClientList from './ClientList'
-
-export {ClientList}
+import ClientList from './ClientList'export {ClientList}

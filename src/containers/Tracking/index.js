@@ -1,3 +1,1 @@
-import Tracking from './Tracking'
-
-export {Tracking}
+import Tracking from './Tracking'export {Tracking}
