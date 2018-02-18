@@ -220,7 +220,7 @@ export default class GoogleCustomMap extends React.Component {
                 draggable: false,
                 zIndex: 1
             })
-            zones.push({zone: existingZone, id, title})
+            zones.push({zone: existingZone, id, title, meanLat, meanLng})
             this.createOverlays(meanLat, meanLng, title)
             existingZone.setMap(this.map)
         })
@@ -264,7 +264,7 @@ export default class GoogleCustomMap extends React.Component {
 
             let mapCanvasProjection = overlayEl.getProjection()
             const bounds = new google.maps.LatLngBounds(
-                new google.maps.LatLng(meanLat, meanLng))
+                    new google.maps.LatLng(meanLat, meanLng))
             if (mapCanvasProjection) {
                 let sw = mapCanvasProjection.fromLatLngToDivPixel(bounds.getCenter())
                 let div = overlayEl.onAdd()
@@ -450,6 +450,13 @@ export default class GoogleCustomMap extends React.Component {
     }
 
     render () {
+        if (this.map && this.overlayView) {
+            this.map.addListener('zoom_changed', () => {
+                let mapFloatPane = this.overlayView.getPanes()
+                mapFloatPane[GOOGLE_MAP.FLOATPANE].innerHTML = '<div></div>'
+            })
+        }
+
         const {addZone, filter, updateZone, isOpenAddZone, isOpenUpdateZone, deleteZone, isOpenToggle} = this.props
 
         const marker = {

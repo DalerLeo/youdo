@@ -207,7 +207,7 @@ const enhance = compose(
         handleFilterInventoryStock: props => () => {
             const {filter, inventoryForm, setStockChooseDialog} = props
             const stock = _.get(inventoryForm, ['values', 'stock', 'value']) || null
-            filter.filterBy({'pdStock': stock})
+            filter.filterBy({'pdStock': stock, [INVENTORY_INVENTORY_DIALOG_OPEN]: true})
             setStockChooseDialog(false)
         },
         handleLoadMoreItems: props => (page) => {

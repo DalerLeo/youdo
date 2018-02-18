@@ -2,7 +2,7 @@ import _ from 'lodash'
 import React from 'react'
 import {Row, Col} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
-import {hashHistory} from 'react-router'
+import {hashHistory, Link} from 'react-router'
 import {compose, withState} from 'recompose'
 import Filter from 'material-ui/svg-icons/content/filter-list'
 import Paper from 'material-ui/Paper'
@@ -31,9 +31,11 @@ import ConfirmDialog from '../../ConfirmDialog'
 import Pagination from '../../GridList/GridListNavPagination'
 import Choose from '../../Images/choose-menu.png'
 import NotFound from '../../Images/not-found.png'
+import * as ROUTES from '../../../constants/routes'
+import {INVENTORY_INVENTORY_DIALOG_OPEN} from '../../Inventory'
 import dateTimeFormat from '../../../helpers/dateTimeFormat'
 import numberFormat from '../../../helpers/numberFormat'
-import {ShiftMultiSearchField, TextField} from '../../ReduxForm'
+import {ShiftMultiSearchField, TextField, normalizeNumber} from '../../ReduxForm'
 import * as TAB from '../../../constants/manufactureShipmentTab'
 import ShipmentConfirmDialog from '../../../components/Manufacture/ShipmentConfirmDialog'
 import t from '../../../helpers/translate'
@@ -81,6 +83,10 @@ const enhance = compose(
             alignItems: 'center',
             marginTop: '56px',
             padding: '100px 0'
+        },
+        load: {
+            display: 'flex',
+            alignItems: 'center'
         },
         miniLoader: {
             display: 'flex',
@@ -363,7 +369,8 @@ const ManufactureShipment = enhance((props) => {
         deleteItem,
         setDeleteItem,
         handleDeleteProduct,
-        sendDialog
+        sendDialog,
+        stock
     } = props
     const filter = _.get(shipmentData, 'filter')
     const PRODUCT = 'return'
@@ -373,6 +380,7 @@ const ManufactureShipment = enhance((props) => {
     const shipmentList = _.get(shipmentData, 'shipmentList')
     const shiftsLoading = _.get(shipmentData, 'listLoading')
     const logsLoading = _.get(detailData, 'logsLoading')
+    const editlogsLoading = _.get(detailData, 'editlogsLoading')
     const productsLoading = _.get(detailData, 'productsLoading')
     const materialsLoading = _.get(detailData, 'materialsLoading')
 
@@ -389,6 +397,11 @@ const ManufactureShipment = enhance((props) => {
         hashHistory.push(filter.createURL({openType: type, openId: id}))
     }
     const handleSubmit = () => {
+        setEdit(null)
+        handleEditProductAmount()
+        props.dispatch(change('LogEditForm', 'editAmount', ''))
+    }
+    const handleOpenInventory = () => {
         setEdit(null)
         handleEditProductAmount()
         props.dispatch(change('LogEditForm', 'editAmount', ''))
@@ -481,9 +494,10 @@ const ManufactureShipment = enhance((props) => {
                         fullWidth={true}
                         component={TextField}
                         name={'editAmount'}
+                        normalize={normalizeNumber}
                         label={numberFormat(amount, measurement)}/>
                   </Col>
-                : <Col xs={2}>{numberFormat(amount, measurement)}</Col>}
+                : <Col xs={2}>{editlogsLoading ? <div className={classes.load}><Loader size={0.5}/></div> : numberFormat(amount, measurement)}</Col>}
                 <Col xs={3}>{createdDate}</Col>
                 <Col xs={1}>
                     {edit === index
@@ -570,6 +584,7 @@ const ManufactureShipment = enhance((props) => {
         )
     }
     const flatButtonStyle = {
+        verifyColor: '#81C784',
         productColor: '#4db6ac',
         rawColor: '#12aaeb',
         labelStyle: {
@@ -592,6 +607,19 @@ const ManufactureShipment = enhance((props) => {
     return (
         <div>
             <div className={classes.buttons}>
+                <Link target={'_blank'}
+                      to={{pathname: ROUTES.INVENTORY_LIST_URL, query: {[INVENTORY_INVENTORY_DIALOG_OPEN]: true, 'pdStock': stock}}}
+                      className={classes.link}>
+                    <FlatButton
+                        label={t('Сверить')}
+                        labelStyle={flatButtonStyle.labelStyle}
+                        backgroundColor={flatButtonStyle.verifyColor}
+                        hoverColor={flatButtonStyle.verifyColor}
+                        rippleColor={'#fff'}
+                        onTouchTap={() => { handleOpenInventory() }}
+                        icon={<Product color={'#fff'}/>}
+                    />
+                </Link>
                 <FlatButton
                     label={t('Добавить продукт')}
                     labelStyle={flatButtonStyle.labelStyle}

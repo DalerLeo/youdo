@@ -9,8 +9,11 @@ import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers, withState} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
+import updateStore from '../../helpers/updateStore'
+import * as actionTypes from '../../constants/actionTypes'
 import {splitToArray, joinArray} from '../../helpers/joinSplitValues'
 import toBoolean from '../../helpers/toBoolean'
+import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
 import t from '../../helpers/translate'
 import {
     ManufactureShipmentWrapper,
@@ -18,6 +21,7 @@ import {
     OPEN_ADD_PRODUCT_MATERIAL_DIALOG,
     TYPE_PRODUCT,
     TYPE_RAW
+
 } from '../../components/Manufacture'
 import * as SHIPMENT_TAB from '../../constants/manufactureShipmentTab'
 import {MANUF_ACTIVITY_FILTER_KEY} from '../../components/Manufacture/ManufactureActivityFilterDialog'
@@ -58,6 +62,7 @@ const enhance = compose(
         const shipmentDetailLoading = _.get(state, ['shipment', 'item', 'loading'])
         const shipmentLogs = _.get(state, ['shipment', 'logs', 'data'])
         const shipmentLogsLoading = _.get(state, ['shipment', 'logs', 'loading'])
+        const shipmentLogsEditLoading = _.get(state, ['shipment', 'edit', 'loading'])
         const shipmentProducts = _.get(state, ['shipment', 'products', 'data'])
         const shipmentProductsLoading = _.get(state, ['shipment', 'products', 'loading'])
         const shipmentMaterials = _.get(state, ['shipment', 'materials', 'data'])
@@ -106,7 +111,8 @@ const enhance = compose(
             filterProducts,
             addProductsForm,
             LogEditForm,
-            shipmentConfirmForm
+            shipmentConfirmForm,
+            shipmentLogsEditLoading
         }
     }),
 
@@ -120,16 +126,19 @@ const enhance = compose(
         const nextShift = _.toInteger(_.get(nextProps, ['location', 'query', 'shift']))
         const manufacture = _.toInteger(_.get(props, ['params', 'manufactureId']))
         const nextManufacture = _.toInteger(_.get(nextProps, ['params', 'manufactureId']))
-        return (beginDate !== nextBeginDate) || (endDate !== nextEndDate) || (manufacture !== nextManufacture) || (shift !== nextShift)
-    }, ({dispatch, beginDate, endDate, params, location: {query}}) => {
+        const nextTab = nextProps.filter.getParam('tab')
+        const prevTab = props.filter.getParam('tab')
+        return (beginDate !== nextBeginDate) || (endDate !== nextEndDate) || (manufacture !== nextManufacture) || (shift !== nextShift) || (nextTab !== prevTab && nextTab === SHIPMENT_TAB.TAB_SORTED)
+    }, ({dispatch, beginDate, endDate, params, location: {query}, filter}) => {
         const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
-        const shift = _.toInteger(_.get(query, 'shift'))
+        const tab = filter.getParam('tab')
+        const shift = _.toInteger(_.get(query, 'shift')) || null
         const dateRange = {
             beginDate,
             endDate
         }
-        dispatch(shipmentProductsListFetchAction(dateRange, shift, manufactureId))
-        dispatch(shipmentMaterialsListFetchAction(dateRange, shift, manufactureId))
+        if (tab === SHIPMENT_TAB.TAB_SORTED || _.isUndefined(tab)) dispatch(shipmentProductsListFetchAction(dateRange, shift, manufactureId))
+        if (tab === SHIPMENT_TAB.TAB_SORTED || _.isUndefined(tab)) dispatch(shipmentMaterialsListFetchAction(dateRange, shift, manufactureId))
     }),
 
     // LOGS LIST
@@ -148,15 +157,18 @@ const enhance = compose(
         }
         const manufacture = _.toInteger(_.get(props, ['params', 'manufactureId']))
         const nextManufacture = _.toInteger(_.get(nextProps, ['params', 'manufactureId']))
+        const nextTab = nextProps.filterLogs.getParam('tab')
+        const prevTab = props.filterLogs.getParam('tab')
         return (props.filterLogs.filterRequest(except) !== nextProps.filterLogs.filterRequest(except) && nextManufacture > ZERO) ||
-            (manufacture !== nextManufacture && nextManufacture)
+            ((manufacture !== nextManufacture && nextManufacture) || (nextTab !== prevTab && nextTab === SHIPMENT_TAB.TAB_LOGS))
     }, ({dispatch, filterLogs, params, beginDate, endDate}) => {
+        const tab = filterLogs.getParam('tab')
         const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
         const dateRange = {
             beginDate,
             endDate
         }
-        dispatch(shipmentLogsListFetchAction(filterLogs, manufactureId, dateRange))
+        tab === SHIPMENT_TAB.TAB_LOGS && dispatch(shipmentLogsListFetchAction(filterLogs, manufactureId, dateRange))
     }),
 
     // SHIFTS LIST
@@ -175,15 +187,18 @@ const enhance = compose(
         }
         const manufactureId = _.get(props, ['params', 'manufactureId'])
         const nextManufactureId = _.get(nextProps, ['params', 'manufactureId'])
+        const nextTab = nextProps.filterShipment.getParam('tab')
+        const prevTab = props.filterShipment.getParam('tab')
         return (props.filterShipment.filterRequest(except) !== nextProps.filterShipment.filterRequest(except) && nextManufactureId > ZERO) ||
-            (manufactureId !== nextManufactureId && nextManufactureId)
+            ((manufactureId !== nextManufactureId && nextManufactureId) || (prevTab !== nextTab && nextTab === SHIPMENT_TAB.TAB_SHIFT))
     }, ({dispatch, filterShipment, params, beginDate, endDate}) => {
         const dateRange = {
             beginDate,
             endDate
         }
+        const tab = filterShipment.getParam('tab')
         const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
-        if (manufactureId > ZERO) {
+        if (manufactureId > ZERO && tab === SHIPMENT_TAB.TAB_SHIFT) {
             dispatch(shipmentListFetchAction(filterShipment, manufactureId, dateRange))
         }
     }),
@@ -311,10 +326,11 @@ const enhance = compose(
         },
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
+            const tab = filter.getParam('tab')
             const shift = _.get(filterForm, ['values', 'shift']) || null
             filter.filterBy({
                 [OPEN_FILTER]: false,
-                [TAB]: SHIPMENT_TAB.TAB_SHIFT,
+                [TAB]: tab,
                 [MANUF_ACTIVITY_FILTER_KEY.SHIFT]: joinArray(shift)
             })
         },
@@ -483,28 +499,26 @@ const enhance = compose(
                 : dispatch(addRawsListAction(filterProducts, productType, stock, manufacture))
         },
         handleEditProductAmount: props => () => {
-            const {dispatch, LogEditForm, filter, filterLogs, location: {params}, beginDate, endDate} = props
-            const amount = _.get(LogEditForm, ['values', 'editAmount'])
-            const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
-
+            const {dispatch, LogEditForm, filter, shipmentLogs} = props
+            const amount = numberWithoutSpaces(_.get(LogEditForm, ['values', 'editAmount']))
             const type = filter.getParam('openType')
-            const dateRange = {
-                beginDate,
-                endDate
-            }
             const id = _.toNumber(filter.getParam('openId'))
             if (type === 'writeoff' && amount) {
                 dispatch(editWriteOffAmountAction(id, amount))
-                    .then(() => {
-                        dispatch(shipmentLogsListFetchAction(filterLogs, manufactureId, dateRange))
+                    .then((data) => {
+                        return dispatch(updateStore(id, shipmentLogs, actionTypes.SHIPMENT_LOGS, {
+                            amount: _.get(data, 'value')
+                        }))
                     })
                     .catch((error) => {
                         dispatch(openErrorAction({message: error}))
                     })
             } else if (type === 'return' && amount) {
                 dispatch(editReturnAmountAction(id, amount))
-                    .then(() => {
-                        dispatch(shipmentLogsListFetchAction(filterLogs, manufactureId, dateRange))
+                    .then((data) => {
+                        return dispatch(updateStore(id, shipmentLogs, actionTypes.SHIPMENT_LOGS, {
+                            amount: _.get(data, 'value')
+                        }))
                     })
                     .catch((error) => {
                         dispatch(openErrorAction({message: error}))
@@ -513,7 +527,7 @@ const enhance = compose(
             return null
         },
         handleDeleteProduct: props => () => {
-            const {dispatch, filter, filterLogs, location: {params}, beginDate, endDate} = props
+            const {dispatch, filter, filterLogs, params, beginDate, endDate} = props
             const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
             const type = filter.getParam('openType')
             const dateRange = {
@@ -570,7 +584,8 @@ const ManufactureShipmentList = enhance((props) => {
         openAddProductConfirm,
         addProductsMaterialsList,
         addProductsMaterialsLoading,
-        filterProducts
+        filterProducts,
+        shipmentLogsEditLoading
     } = props
 
     const detailId = _.toInteger(_.get(params, 'manufactureId'))
@@ -587,7 +602,7 @@ const ManufactureShipmentList = enhance((props) => {
     }
 
     const listData = {
-        data: _.get(list, 'results'),
+        data: _.get(list, 'results') || {},
         listLoading,
         handleClickItem: props.handleClickItem
     }
@@ -597,12 +612,14 @@ const ManufactureShipmentList = enhance((props) => {
         handleCloseDetail: props.handleCloseDetail
     }
 
+    const stock = _.get(_.find(listData.data, {'id': detailId}), ['warehouse', 'id'])
     const shipmentDetailData = {
         id: shipmentId,
         data: shipmentDetail,
         loading: shipmentDetailLoading,
         logs: _.get(shipmentLogs, 'results'),
         logsLoading: shipmentLogsLoading,
+        editlogsLoading: shipmentLogsEditLoading,
         products: shipmentProducts,
         productsLoading: shipmentProductsLoading,
         materials: shipmentMaterials,
@@ -675,6 +692,7 @@ const ManufactureShipmentList = enhance((props) => {
                     handleEditProductAmount={props.handleEditProductAmount}
                     handleDeleteProduct={props.handleDeleteProduct}
                     sendDialog={sendDialog}
+                    stock={stock}
                 />
             </ManufactureWrapper>
         </Layout>
