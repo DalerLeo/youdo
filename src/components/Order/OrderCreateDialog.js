@@ -412,6 +412,7 @@ const OrderCreateDialog = enhance((props) => {
                                             label={t('Номер договора')}
                                             fullWidth={true}/>
                                     </div>
+                                    {status !== ORDER_GIVEN &&
                                     <div className={classes.condition}>
                                         <div className={classes.subTitleOrderNoPad}>{t('Условия доставки')}</div>
                                         <Field
@@ -440,7 +441,7 @@ const OrderCreateDialog = enhance((props) => {
                                             component={CheckBox}
                                             disabled={status === ORDER_DELIVERED}
                                             label={t('Подтвержденный')}/>
-                                    </div>
+                                    </div>}
                                 </div>
                                 <div className={classes.rightOrderPart}>
                                     <Fields
