@@ -12,18 +12,7 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 import t from '../../helpers/translate'
-
-const validate = (data) => {
-    const errors = toCamelCase(data)
-    const nonFieldErrors = _.get(errors, 'nonFieldErrors')
-    const latLng = (_.get(errors, 'lat') || _.get(errors, 'lon')) && 'Location is required.'
-
-    throw new SubmissionError({
-        ...errors,
-        latLng,
-        _error: nonFieldErrors
-    })
-}
+import {openErrorAction} from '../../actions/error'
 
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
@@ -51,7 +40,21 @@ const enhance = compose(
 )
 
 const PrimaryCurrencyDialog = enhance((props) => {
-    const {classes, open, onClose, handleSubmit, loading} = props
+    const {classes, dispatch, open, onClose, handleSubmit, loading} = props
+    const validate = (error) => {
+        const errors = toCamelCase(error)
+        const nonFieldErrors = _.get(errors, 'nonFieldErrors')
+        if (!_.isEmpty(nonFieldErrors)) {
+            return dispatch(openErrorAction({
+                message: nonFieldErrors
+            }))
+        }
+
+        throw new SubmissionError({
+            ...errors,
+            _error: nonFieldErrors
+        })
+    }
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
     return (

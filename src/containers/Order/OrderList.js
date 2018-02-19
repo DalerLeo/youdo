@@ -240,7 +240,7 @@ const enhance = compose(
     }, ({dispatch, params, location, detail}) => {
         const orderId = _.toInteger(_.get(params, 'orderId'))
         const priceList = _.toInteger(_.get(detail, ['priceList', 'id']))
-        const size = _.get(location, ['query', 'pdPageSize'])
+        const size = 1000
         const openUpdate = toBoolean(_.get(location, ['query', ORDER_UPDATE_DIALOG_OPEN]))
         if (orderId > ZERO && priceList > ZERO && openUpdate) {
             dispatch(orderProductMobileAction(orderId, priceList, size))

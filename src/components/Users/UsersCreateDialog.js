@@ -20,20 +20,9 @@ import {
     PostSearchField
 } from '../ReduxForm'
 import {connect} from 'react-redux'
+import {openErrorAction} from '../../actions/error'
 
 export const USERS_CREATE_DIALOG_OPEN = 'openCreateDialog'
-
-const validate = (data) => {
-    const errors = toCamelCase(data)
-    const nonFieldErrors = _.get(errors, 'nonFieldErrors')
-    const latLng = (_.get(errors, 'lat') || _.get(errors, 'lon')) && 'Location is required.'
-
-    throw new SubmissionError({
-        ...errors,
-        latLng,
-        _error: nonFieldErrors
-    })
-}
 
 const validateForm = values => {
     const errors = {}
@@ -209,6 +198,7 @@ const UsersCreateDialog = enhance((props) => {
     const {
         open,
         loading,
+        dispatch,
         handleSubmit,
         onClose,
         classes,
@@ -222,6 +212,21 @@ const UsersCreateDialog = enhance((props) => {
         divisionData,
         isActive
     } = props
+    const validate = (data) => {
+        const errors = toCamelCase(data)
+        const nonFieldErrors = _.get(errors, 'nonFieldErrors')
+        if (!_.isEmpty(nonFieldErrors)) {
+            return dispatch(openErrorAction({
+                message: nonFieldErrors
+            }))
+        }
+
+        throw new SubmissionError({
+            ...errors,
+            _error: nonFieldErrors
+        })
+    }
+
     const errorText = _.get(errorData, 'errorText')
     const show = _.get(errorData, 'show')
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))

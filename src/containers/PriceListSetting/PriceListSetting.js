@@ -22,7 +22,6 @@ import {
     priceListSettingDeleteAction,
     priceListSettingItemFetchAction
 } from '../../actions/priceListSetting'
-import {openErrorAction} from '../../actions/error'
 import {openSnackbarAction} from '../../actions/snackbar'
 import t from '../../helpers/translate'
 
@@ -121,11 +120,6 @@ const enhance = compose(
                     hashHistory.push({pathname, query: filter.getParams({[PRICE_LIST_SETTING_CREATE_DIALOG_OPEN]: false})})
                     dispatch(priceListSettingListFetchAction(filter))
                 })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
-                })
         },
 
         handleOpenUpdateDialog: props => (id) => {
@@ -152,11 +146,6 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push(filter.createURL({[PRICE_LIST_SETTING_UPDATE_DIALOG_OPEN]: false}))
                     dispatch(priceListSettingListFetchAction(filter))
-                })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
                 })
         }
     })

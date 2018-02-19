@@ -31,7 +31,6 @@ import {
 } from '../../actions/priceListSetting'
 import {stockListFetchAction} from '../../actions/stock'
 import {openSnackbarAction} from '../../actions/snackbar'
-import {openErrorAction} from '../../actions/error'
 import {currencyListFetchAction} from '../../actions/currency'
 import {divisionListFetchAction} from '../../actions/division'
 import t from '../../helpers/translate'
@@ -208,11 +207,6 @@ const enhance = compose(
                     hashHistory.push({pathname, query: filter.getParams({[USERS_CREATE_DIALOG_OPEN]: false})})
                     dispatch(usersListFetchAction(filter))
                 })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
-                })
         },
 
         handleOpenUpdateDialog: props => (id) => {
@@ -242,11 +236,6 @@ const enhance = compose(
                     })
                     dispatch(usersListFetchAction(filter))
                     dispatch(usersItemFetchAction(usersId))
-                })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
                 })
         }
     })

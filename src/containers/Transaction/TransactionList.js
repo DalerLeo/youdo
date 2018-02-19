@@ -576,11 +576,6 @@ const enhance = compose(
                     dispatch(transactionListFetchAction(filter, cashboxId))
                     dispatch(cashboxListFetchAction(filterCashbox))
                 })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
-                })
         },
 
         handleClickCashbox: props => (id, currency) => {

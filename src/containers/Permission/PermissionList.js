@@ -15,7 +15,6 @@ import {
     setDateAction
 } from '../../actions/permission'
 import {openSnackbarAction} from '../../actions/snackbar'
-import {openErrorAction} from '../../actions/error'
 import {getPermName} from '../../constants/permissionTime'
 import t from '../../helpers/translate'
 
@@ -80,11 +79,6 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[SET_DATE_DIALOG_DATE]: false})})
                     dispatch(permissionListFetchAction(filter))
-                })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
                 })
         }
     })

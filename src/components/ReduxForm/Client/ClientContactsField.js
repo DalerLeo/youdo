@@ -21,8 +21,7 @@ const enhance = compose(
                 marginLeft: '-7px'
             }
         }
-    })
-    ,
+    }),
     connect((state) => {
         const contacts = _.get(state, ['client', 'contacts', 'data'])
         const contactsLoading = _.get(state, ['client', 'contacts', 'loading'])

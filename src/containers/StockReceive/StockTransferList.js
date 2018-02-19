@@ -307,7 +307,7 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[STOCK_CONFIRM_DIALOG_OPEN]: false})})
                     dispatch(stockTransferListFetchAction(filter))
-                    return dispatch(openSnackbarAction({message: t('Успешно принято')}))
+                    return dispatch(openSnackbarAction({message: t('Успешно передан')}))
                 })
                 .catch((error) => {
                     dispatch(openErrorAction({

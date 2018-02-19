@@ -338,6 +338,13 @@ const TrackingWrapper = enhance((props) => {
         return searchValue.indexOf(searchQuery) !== NOT_FOUND
     })
 
+    const isAgentOnline = (locationDate) => {
+        const FIVE_MIN = 350000
+        const dateNow = _.toInteger(moment().format('x'))
+        const difference = dateNow - locationDate
+        return difference <= FIVE_MIN
+    }
+
     const zoneInfoToggle = (
         <div className={classes.trackingInfo} style={openAgentsInfo ? {right: -28} : {right: (-378)}}>
             <div className={classes.wrapper}>
@@ -357,20 +364,13 @@ const TrackingWrapper = enhance((props) => {
                         </div>
                         : <div className={classes.online}>
                             <div>
-                                {
-                                    _.map(_.get(listData, 'data'), (item) => {
-                                        const FIVE_MIN = 350000
-                                        const dateNow = _.toInteger(moment().format('x'))
-                                        const registeredDate = _.toInteger(moment(_.get(item, 'registeredDate')).format('x'))
-                                        let isOnline = false
-                                        if ((dateNow - registeredDate) <= FIVE_MIN) {
-                                            isOnline = true
-                                        }
-                                        if (isOnline) {
-                                            agentsOnline++
-                                        }
-                                    })
-                                }
+                                {_.map(_.get(listData, 'data'), (item) => {
+                                    const registeredDate = _.toInteger(moment(_.get(item, 'locationDate')).format('x'))
+                                    const isOnline = isAgentOnline(registeredDate)
+                                    if (isOnline) {
+                                        agentsOnline++
+                                    }
+                                })}
                                 <span
                                     className={agentsOnline > ZERO && classes.green}>{agentsOnline}</span>/<span>{agentsCount}</span>
                             </div>
@@ -418,14 +418,8 @@ const TrackingWrapper = enhance((props) => {
                                 {_.map(filteredList, (item) => {
                                     const id = _.get(item, 'id')
                                     const agent = _.get(item, 'agent')
-                                    const FIVE_MIN = 350000
-                                    const dateNow = _.toInteger(moment().format('x'))
-                                    const registeredDate = _.toInteger(moment(_.get(item, 'registeredDate')).format('x'))
-                                    const difference = dateNow - registeredDate
-                                    let isOnline = false
-                                    if (difference <= FIVE_MIN) {
-                                        isOnline = true
-                                    }
+                                    const registeredDate = _.toInteger(moment(_.get(item, 'locationDate')).format('x'))
+                                    const isOnline = isAgentOnline(registeredDate)
                                     const lastSeen = moment(registeredDate).fromNow()
 
                                     return (
@@ -440,8 +434,7 @@ const TrackingWrapper = enhance((props) => {
                                             {!isOnline && <i>({lastSeen})</i>}
                                         </div>
                                     )
-                                })
-                                }
+                                })}
                             </div>
                             : <div className={classes.emptyQuery}>
                                 <div>{t('По вашему запросу сотрудников не найдено')}...</div>

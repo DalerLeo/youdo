@@ -438,7 +438,7 @@ const OrderCreateDialog = enhance((props) => {
                                         <Field
                                             name="isConfirmed"
                                             component={CheckBox}
-                                            disabled={status === ORDER_DELIVERED}
+                                            disabled={status === ORDER_DELIVERED || status === ORDER_GIVEN}
                                             label={t('Подтвержденный')}/>
                                     </div>
                                 </div>
