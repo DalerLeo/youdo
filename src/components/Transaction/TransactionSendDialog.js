@@ -18,18 +18,7 @@ import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
 import t from '../../helpers/translate'
-
-const validate = (data) => {
-    const errors = toCamelCase(data)
-    const nonFieldErrors = _.get(errors, 'nonFieldErrors')
-    const latLng = (_.get(errors, 'lat') || _.get(errors, 'lon')) && 'Location is required.'
-
-    throw new SubmissionError({
-        ...errors,
-        latLng,
-        _error: nonFieldErrors
-    })
-}
+import {openErrorAction} from '../../actions/error'
 
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
@@ -94,7 +83,36 @@ const enhance = compose(
 const ONE = 1
 const HUNDRED = 100
 const TransactionSendDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, cashboxData, chosenCashboxId, amountFrom, rate, amountFromPersent, amountToPersent, noCashbox, currentCashbox} = props
+    const {
+        open,
+        loading,
+        dispatch,
+        handleSubmit,
+        onClose,
+        classes,
+        cashboxData,
+        chosenCashboxId,
+        amountFrom,
+        rate,
+        amountFromPersent,
+        amountToPersent,
+        noCashbox,
+        currentCashbox
+    } = props
+    const validate = (data) => {
+        const errors = toCamelCase(data)
+        const nonFieldErrors = _.get(errors, 'nonFieldErrors')
+        if (!_.isEmpty(nonFieldErrors)) {
+            return dispatch(openErrorAction({
+                message: nonFieldErrors
+            }))
+        }
+
+        throw new SubmissionError({
+            ...errors,
+            _error: nonFieldErrors
+        })
+    }
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
 
     const cashboxId = noCashbox ? _.get(currentCashbox, 'id') : _.get(cashboxData, 'cashboxId')

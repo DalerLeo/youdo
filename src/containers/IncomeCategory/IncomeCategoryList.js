@@ -25,7 +25,6 @@ import {
 } from '../../actions/incomeCategory'
 import {openSnackbarAction} from '../../actions/snackbar'
 import t from '../../helpers/translate'
-import {openErrorAction} from '../../actions/error'
 
 const enhance = compose(
     connect((state, props) => {
@@ -137,11 +136,6 @@ const enhance = compose(
                     hashHistory.push({pathname, query: filter.getParams({[INCOME_CATEGORY_CREATE_DIALOG_OPEN]: false})})
                     dispatch(incomeCategoryListFetchAction(filter))
                 })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
-                })
         },
 
         handleOpenUpdateDialog: props => (id) => {
@@ -168,11 +162,6 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push(filter.createURL({[INCOME_CATEGORY_UPDATE_DIALOG_OPEN]: false}))
                     dispatch(incomeCategoryListFetchAction(filter))
-                })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
                 })
         }
     })

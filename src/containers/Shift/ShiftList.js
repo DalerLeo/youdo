@@ -22,7 +22,6 @@ import {
     shiftDeleteAction,
     shiftItemFetchAction
 } from '../../actions/shift'
-import {openErrorAction} from '../../actions/error'
 import {openSnackbarAction} from '../../actions/snackbar'
 import t from '../../helpers/translate'
 
@@ -120,11 +119,6 @@ const enhance = compose(
                     hashHistory.push({pathname, query: filter.getParams({[SHIFT_CREATE_DIALOG_OPEN]: false})})
                     dispatch(shiftListFetchAction(filter))
                 })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
-                })
         },
 
         handleOpenUpdateDialog: props => (id) => {
@@ -154,11 +148,6 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push(filter.createURL({[SHIFT_UPDATE_DIALOG_OPEN]: false}))
                     dispatch(shiftListFetchAction(filter))
-                })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
                 })
         }
     })

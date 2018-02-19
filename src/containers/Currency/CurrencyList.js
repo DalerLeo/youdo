@@ -26,7 +26,6 @@ import {
     currencyItemFetchAction
 } from '../../actions/currency'
 import {openSnackbarAction} from '../../actions/snackbar'
-import {openErrorAction} from '../../actions/error'
 import t from '../../helpers/translate'
 
 const enhance = compose(
@@ -142,11 +141,6 @@ const enhance = compose(
                     dispatch(currencyListFetchAction(filter))
                     dispatch(reset('AddCourseForm'))
                 })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
-                })
         },
 
         handleOpenCreateDialog: props => () => {
@@ -169,11 +163,6 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[CURRENCY_CREATE_DIALOG_OPEN]: false})})
                     dispatch(currencyListFetchAction(filter))
-                })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
                 })
         },
 
@@ -198,11 +187,6 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push(filter.createURL({[CURRENCY_UPDATE_DIALOG_OPEN]: false}))
                     dispatch(currencyListFetchAction(filter))
-                })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
                 })
         },
 

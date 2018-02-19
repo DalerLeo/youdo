@@ -9,7 +9,6 @@ import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
-import {openErrorAction} from '../../actions/error'
 import {
     POST_CREATE_DIALOG_OPEN,
     POST_UPDATE_DIALOG_OPEN,
@@ -116,11 +115,6 @@ const enhance = compose(
                     hashHistory.push({pathname, query: filter.getParams({[POST_CREATE_DIALOG_OPEN]: false})})
                     dispatch(postListFetchAction(filter))
                 })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
-                })
         },
 
         handleOpenUpdateDialog: props => (id) => {
@@ -147,11 +141,6 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push(filter.createURL({[POST_UPDATE_DIALOG_OPEN]: false}))
                     dispatch(postListFetchAction(filter))
-                })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
                 })
         }
     })

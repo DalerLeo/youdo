@@ -28,6 +28,10 @@ const enhance = compose(
             justifyContent: 'center',
             display: ({loading}) => loading ? 'flex' : 'none'
         },
+        dialog: {
+            overflowY: 'auto',
+            zIndex: '1501'
+        },
         popUp: {
             background: '#fff',
             overflowY: 'hidden !important',
@@ -35,6 +39,7 @@ const enhance = compose(
             position: 'relative',
             padding: '0 !important',
             overflowX: 'hidden',
+            maxHeight: 'unset !important',
             height: '100%',
             marginBottom: '64px'
         },
@@ -171,7 +176,7 @@ const ReturnCreateDialog = enhance((props) => {
             modal={true}
             contentStyle={customContentStyle}
             open={open}
-            style={{zIndex: '1501'}}
+            className={classes.dialog}
             onRequestClose={onClose}
             bodyClassName={classes.popUp}
             autoScrollBodyContent={true}>

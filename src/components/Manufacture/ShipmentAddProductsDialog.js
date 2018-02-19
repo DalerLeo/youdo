@@ -85,6 +85,7 @@ const enhance = compose(
             borderBottom: '1px solid #efefef',
             padding: '0 10px 0 30px',
             height: '60px',
+            minHeight: '60px',
             zIndex: '999'
         },
         bodyContent: {

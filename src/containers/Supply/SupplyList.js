@@ -351,11 +351,6 @@ const enhance = compose(
                     hashHistory.push({pathname, query: filter.getParams({[SUPPLY_CREATE_DIALOG_OPEN]: false})})
                     dispatch(supplyListFetchAction(filter))
                 })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
-                })
         },
 
         handleOpenDefectDialog: props => (id) => {
@@ -392,11 +387,6 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push(filter.createURL({[SUPPLY_UPDATE_DIALOG_OPEN]: false}))
                     dispatch(supplyListFetchAction(filter))
-                })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
                 })
         },
         handleCloseDetail: props => () => {

@@ -21,7 +21,6 @@ import {
     positionItemFetchAction,
     positionPermissionListFetchAction
 } from '../../actions/position'
-import {openErrorAction} from '../../actions/error'
 import {openSnackbarAction} from '../../actions/snackbar'
 import t from '../../helpers/translate'
 import {ZERO} from '../../constants/backendConstants'
@@ -140,11 +139,6 @@ const enhance = compose(
                     hashHistory.push({pathname, query: filter.getParams({[POSITION_CREATE_DIALOG_OPEN]: false})})
                     dispatch(positionListFetchAction(filter))
                 })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
-                })
         },
 
         handleOpenUpdateDialog: props => (id) => {
@@ -172,11 +166,6 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push(filter.createURL({[POSITION_UPDATE_DIALOG_OPEN]: false}))
                     dispatch(positionListFetchAction(filter))
-                })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
                 })
         },
 

@@ -12,20 +12,9 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import Loader from '../Loader'
 import t from '../../helpers/translate'
+import {openErrorAction} from '../../actions/error'
 
 export const SHIFT_CREATE_DIALOG_OPEN = 'openCreateDialog'
-
-const validate = (data) => {
-    const errors = toCamelCase(data)
-    const nonFieldErrors = _.get(errors, 'nonFieldErrors')
-    const latLng = (_.get(errors, 'lat') || _.get(errors, 'lon')) && 'Location is required.'
-
-    throw new SubmissionError({
-        ...errors,
-        latLng,
-        _error: nonFieldErrors
-    })
-}
 
 const enhance = compose(
     injectSheet({
@@ -191,7 +180,21 @@ const enhance = compose(
 )
 
 const ShiftCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, isUpdate} = props
+    const {open, loading, dispatch, handleSubmit, onClose, classes, isUpdate} = props
+    const validate = (data) => {
+        const errors = toCamelCase(data)
+        const nonFieldErrors = _.get(errors, 'nonFieldErrors')
+        if (!_.isEmpty(nonFieldErrors)) {
+            return dispatch(openErrorAction({
+                message: nonFieldErrors
+            }))
+        }
+
+        throw new SubmissionError({
+            ...errors,
+            _error: nonFieldErrors
+        })
+    }
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
     return (

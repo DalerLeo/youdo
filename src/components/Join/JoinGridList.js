@@ -64,7 +64,7 @@ const enhance = compose(
                     height: '52px',
                     alignItems: 'center',
                     '& button': {
-                        color: '#333 !important'
+                        textTransform: 'none !important'
                     }
                 },
                 '&:nth-child(2)': {
@@ -108,6 +108,14 @@ const enhance = compose(
     })
 )
 
+const tabStyles = {
+    ink: {
+        background: '#12aaeb',
+        margin: '0',
+        height: '2px'
+    }
+}
+
 const JoinGridList = enhance((props) => {
     const {
         marketFilter,
@@ -124,13 +132,13 @@ const JoinGridList = enhance((props) => {
     const tabList = (
         <div className={classes.tabWrapper}>
             <Tabs
-                inkBarStyle={{backgroundColor: '#12aaeb', height: '3px'}}
+                inkBarStyle={tabStyles.ink}
                 tabItemContainerStyle={{backgroundColor: '#fff', color: '#333'}}
                 value={tab}
                 className={classes.tabs}
                 onChange={(value) => tabData.handleTabChange(value)}>
-                {hasMarket && <Tab label={t('Магазины')} value={TAB.JOIN_TAB_MARKETS}/>}
-                <Tab label={t('Клиенты')} value={TAB.JOIN_TAB_CLIENTS}/>
+                {hasMarket && <Tab label={t('Магазины')} value={TAB.JOIN_TAB_MARKETS} disableTouchRipple={true}/>}
+                <Tab label={t('Клиенты')} value={TAB.JOIN_TAB_CLIENTS} disableTouchRipple={true}/>
             </Tabs>
             {TAB.JOIN_TAB_MARKETS === tab && hasMarket &&
             <TabMarkets

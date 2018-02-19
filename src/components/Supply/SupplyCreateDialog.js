@@ -1,9 +1,8 @@
-import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {compose, withReducer} from 'recompose'
 import injectSheet from 'react-jss'
-import {Field, Fields, reduxForm, SubmissionError} from 'redux-form'
+import {Field, Fields, reduxForm} from 'redux-form'
 import Dialog from 'material-ui/Dialog'
 import Loader from '../Loader'
 import IconButton from 'material-ui/IconButton'
@@ -23,18 +22,10 @@ import {
 import {PROVIDER_CREATE_DIALOG_OPEN} from '../Provider'
 import {Link} from 'react-router'
 import * as ROUTES from '../../constants/routes'
-import toCamelCase from '../../helpers/toCamelCase'
+import formValidate from '../../helpers/formValidate'
 import t from '../../helpers/translate'
 
 export const SUPPLY_CREATE_DIALOG_OPEN = 'openCreateDialog'
-const validate = (data) => {
-    const errors = toCamelCase(data)
-    const nonFieldErrors = _.get(errors, 'nonFieldErrors')
-    throw new SubmissionError({
-        ...errors,
-        _error: nonFieldErrors
-    })
-}
 const enhance = compose(
     injectSheet({
         loader: {
@@ -236,8 +227,11 @@ const customContentStyle = {
     maxWidth: 'none'
 }
 const SupplyCreateDialog = enhance((props) => {
-    const {open, handleSubmit, onClose, classes, isUpdate, handleOpenAddProduct, editOnlyPrice, acceptedByStock} = props
-    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+    const {open, handleSubmit, onClose, classes, dispatch, isUpdate, handleOpenAddProduct, editOnlyPrice, acceptedByStock} = props
+    const onSubmit = handleSubmit(() => props.onSubmit()
+        .catch((error) => {
+            formValidate('SupplyCreateForm', dispatch, error)
+        }))
     return (
         <Dialog
             modal={true}
