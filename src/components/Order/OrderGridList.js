@@ -49,10 +49,6 @@ import {
     ZERO
 } from '../../constants/backendConstants'
 
-// CHECKING PERMISSIONS
-const canCreateOrder = checkPermission('add_order')
-const canEditOrder = checkPermission('change_order')
-
 const listHeader = [
     {
         sorting: true,
@@ -264,6 +260,9 @@ const OrderGridList = enhance((props) => {
         checkDeliveryDialog
     } = props
 
+    // CHECKING PERMISSIONS
+    const canCreateOrder = checkPermission('add_order')
+    const canEditOrder = checkPermission('change_order')
     const hasMarket = toBoolean(getConfig('MARKETS_MODULE'))
     const showCheckboxes = toBoolean(_.get(filter.getParams(), 'showCheckboxes'))
     const statusIsReady = _.get(filter.getParams(), 'status') && _.toNumber(_.get(filter.getParams(), 'status')) === ORDER_READY
@@ -520,11 +519,9 @@ const OrderGridList = enhance((props) => {
         leftOffset: 'standart',
         rightOffset: 'standart'
     }
-
     return (
         <Container>
             <SubMenu url={ROUTES.ORDER_LIST_URL}/>
-
             {canCreateOrder &&
             <div className={classes.addButtonWrapper}>
                 <ToolTip position="left" text={t('Добавить заказ')}>

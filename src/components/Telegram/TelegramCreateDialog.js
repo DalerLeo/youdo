@@ -108,6 +108,13 @@ const enhance = compose(
         actionButton: {
             fontSize: '13px !important',
             margin: '0 !important'
+        },
+        phone: {
+            display: 'flex',
+            alignItems: 'baseline',
+            '& > span': {
+                marginRight: '5px'
+            }
         }
     }),
     reduxForm({
@@ -119,7 +126,6 @@ const enhance = compose(
 const TelegramCreateDialog = enhance((props) => {
     const {open, loading, handleSubmit, onClose, classes} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
-
     return (
         <Dialog
             modal={true}
@@ -148,12 +154,15 @@ const TelegramCreateDialog = enhance((props) => {
                                 className={classes.inputFieldCustom}
                                 label={t('Магазин')}
                                 fullWidth={true}/>
-                            <Field
-                                name="phone"
-                                component={TextField}
-                                className={classes.inputFieldCustom}
-                                label={t('Телефон')}
-                                fullWidth={true}/>
+                            <div className={classes.phone}>
+                                <span>+998</span>
+                                <Field
+                                    name="phone"
+                                    component={TextField}
+                                    className={classes.inputFieldCustom}
+                                    label={t('Телефон')}
+                                    fullWidth={true}/>
+                            </div>
                         </div>
                     </div>
                     <div className={classes.bottomButton}>
