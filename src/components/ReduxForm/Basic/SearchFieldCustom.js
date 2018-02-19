@@ -98,6 +98,13 @@ const enhance = compose(
             '& .Select-clear-zone': {
                 paddingTop: '12px'
             }
+        },
+        error: {
+            color: 'rgb(244, 67, 54)',
+            position: 'absolute',
+            bottom: '0',
+            borderTop: 'red 1px solid',
+            width: '100%'
         }
     }),
     withState('mount', 'setMount', false),
@@ -157,11 +164,16 @@ const SearchFieldCustom = enhance((props) => {
         getValue,
         state,
         dispatch,
-        disabled
+        disabled,
+        meta
     } = props
+    const errorStyle = meta.error ? {
+        height: '60px',
+        position: 'relative'
+    } : {}
     return (
         <div className={classes.wrapper}>
-            <div className={classes.wrapper}>
+            <div className={classes.wrapper} style={errorStyle}>
                 <Select
                     className={classes.select}
                     options={state.dataSource}
@@ -178,6 +190,7 @@ const SearchFieldCustom = enhance((props) => {
                     disabled={disabled}
                     filterOptions={options => options}
                 />
+                {meta.error && <span className={classes.error}>{meta.error}</span>}
             </div>
         </div>
     )
