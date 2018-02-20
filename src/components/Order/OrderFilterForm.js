@@ -217,7 +217,7 @@ const OrderFilterForm = enhance((props) => {
                         <Field className={classes.inputFieldCustom} name="initiator" component={UsersAgentMultiSearchField} label={t('Инициатор')}/>
                         <Field className={classes.inputFieldCustom} name="dept" component={DeptSearchField} label={t('Статус оплаты')}/>
                         <Field className={classes.inputFieldCustom} name="zone" component={ZoneMultiSearchField} label={t('Зона')}/>
-                        <Field className={classes.inputDateCustom} name="data" component={DateToDateField} label={t('Период создания')}/>
+                        <Field className={classes.inputDateCustom} name="createdDate" component={DateToDateField} label={t('Период создания')}/>
                         <Field className={classes.inputDateCustom} name="deliveryDate" component={DateToDateField} label={t('Дата доставки')}/>
                         <Field className={classes.inputDateCustom} name="deadlineDate" component={DateToDateField} label={t('Период изготовления')}/>
                         <Field name="onlyBonus" component={CheckBox} label={t('Только бонусные заказы')}/>
