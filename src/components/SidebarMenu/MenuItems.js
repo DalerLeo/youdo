@@ -161,7 +161,7 @@ export const MenuItems = [
             // -------------------------------------------------------------------------------------------------- //
             {section: STATS_CLIENTS, name: t('Оборот клиентов'), url: ROUTES.STATISTICS_CLIENT_INCOME_URL, permission: 'frontend_stat_client_income'},
             {section: STATS_CLIENTS, name: t('Баланс клиентов'), url: ROUTES.STATISTICS_CLIENT_BALANCE_URL, permission: 'frontend_stat_client_balance', query: {pageSize: 25}},
-            {section: STATS_CLIENTS, name: t('Должники'), url: ROUTES.STATISTICS_DEBTORS_URL, permission: 'frontend_stat_debtors'},
+            {section: STATS_CLIENTS, name: t('Должники'), url: ROUTES.STATISTICS_DEBTORS_URL, permission: 'frontend_stat_debtors', query: {pageSize: 25}},
             // -------------------------------------------------------------------------------------------------- //
             {section: STATS_PROVIDERS, name: t('Оборот поставщиков'), url: ROUTES.STATISTICS_PROVIDER_TRANSACTIONS_URL, permission: 'frontend_stat_providers_transactions'},
             {section: STATS_PROVIDERS, name: t('Баланс поставщиков'), url: ROUTES.STATISTICS_PROVIDERS_URL, permission: 'frontend_stat_providers', query: {pageSize: 25}},
