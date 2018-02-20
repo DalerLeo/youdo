@@ -60,15 +60,13 @@ const enhance = compose(
             }
         },
         tabWrapper: {
-            maxHeight: '400px',
+            maxHeight: '500px',
             overflowY: 'auto',
             overflowX: 'hidden',
             paddingRight: '30px',
-            paddingBottom: '20px',
             '& .row': {
                 height: '50px',
-                margin: '0 -30px',
-                padding: '0 10px 0 30px',
+                padding: '0 0 0 5px',
                 '&:first-child:hover': {
                     background: 'inherit'
                 },
@@ -78,8 +76,8 @@ const enhance = compose(
             }
         },
         summary: {
-            margin: '0 -30px 0',
-            padding: '0 30px',
+            marginTop: '20px',
+            padding: '0 30px 0 5px',
             fontWeight: '600',
             textAlign: 'right'
         },
@@ -215,24 +213,22 @@ const OrderDetailsRightSideTabs = enhance((props) => {
                                 )
                             })}
                         </div>
-                        <div className={classes.summary}>
-                            <Row>
-                                <Col xs={4}>{commonMeasurement
-                                    ? <span>{t('Итого')}:</span>
-                                    : <span>{t('Общая сумма')} {primaryCurrency}</span>}
+                        <Row className={classes.summary}>
+                            <Col xs={4}>{commonMeasurement
+                                ? <span>{t('Итого')}:</span>
+                                : <span>{t('Общая сумма')} {primaryCurrency}</span>}
+                            </Col>
+                            {commonMeasurement
+                                ? <Col xs={2}>
+                                    {wholeAmount > ZERO && <span>{numberFormat(wholeAmount)}</span>}
+                                    {wholeReturnAmount > ZERO && <span className={classes.returnAmount}><div>-{wholeReturnAmount}</div></span>}
+                                    {firstMeasurement}
                                 </Col>
-                                {commonMeasurement
-                                    ? <Col xs={2}>
-                                        {wholeAmount > ZERO && <span>{numberFormat(wholeAmount)}</span>}
-                                        {wholeReturnAmount > ZERO && <span className={classes.returnAmount}><div>-{wholeReturnAmount}</div></span>}
-                                        {firstMeasurement}
-                                    </Col>
-                                    : <Col xs={2}/>}
-                                <Col xs={2}> </Col>
-                                <Col xs={2}>{numberFormat(totalProductPrice)}</Col>
-                                <Col xs={2}>{numberFormat(discountPrice)}</Col>
-                            </Row>
-                        </div>
+                                : <Col xs={2}/>}
+                            <Col xs={2}> </Col>
+                            <Col xs={2}>{numberFormat(totalProductPrice)}</Col>
+                            <Col xs={2}>{numberFormat(discountPrice)}</Col>
+                        </Row>
                     </div>
                 </Tab>
 

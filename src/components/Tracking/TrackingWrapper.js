@@ -231,6 +231,13 @@ const enhance = compose(
     withState('searchQuery', 'setSearchQuery', '')
 )
 
+export const isAgentOnline = (locationDate) => {
+    const FIVE_MIN = 350000
+    const dateNow = _.toInteger(moment().format('x'))
+    const difference = dateNow - locationDate
+    return difference <= FIVE_MIN
+}
+
 const TrackingWrapper = enhance((props) => {
     const NOT_FOUND = -1
     const ZERO = 0
@@ -337,13 +344,6 @@ const TrackingWrapper = enhance((props) => {
         const searchValue = el.agent.toLowerCase()
         return searchValue.indexOf(searchQuery) !== NOT_FOUND
     })
-
-    const isAgentOnline = (locationDate) => {
-        const FIVE_MIN = 350000
-        const dateNow = _.toInteger(moment().format('x'))
-        const difference = dateNow - locationDate
-        return difference <= FIVE_MIN
-    }
 
     const zoneInfoToggle = (
         <div className={classes.trackingInfo} style={openAgentsInfo ? {right: -28} : {right: (-378)}}>

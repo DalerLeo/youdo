@@ -241,6 +241,16 @@ const TelegramGridList = enhance((props) => {
             : t('Неизвестно')
         const username = _.get(item, 'username') ? '@' + _.get(item, 'username') : ''
         const createdBy = _.get(item, ['createdBy', 'firstName']) + ' ' + _.get(item, ['createdBy', 'secondName']) || ''
+        const activatedDateFalse = (
+            <ToolTip position="left" text={t('Скопировать ссылку')}>
+                    <span
+                        style={{color: '#12aaeb', cursor: 'pointer'}}
+                        onClick={() => copyToClipBoard.handleCopyLinkInList(token)}>
+                        {t('Не активирован')}
+                    </span>
+            </ToolTip>
+        )
+        const activatedDate = dateFormat(_.get(item, 'activatedDate'), true, activatedDateFalse)
         const createdDate = dateFormat(_.get(item, 'createdDate'), true)
         const market = _.get(item, ['market', 'name']) || t('Неизвестно')
         return (
@@ -256,15 +266,7 @@ const TelegramGridList = enhance((props) => {
                     </div>
                 </Col>
                 <Col xs={2}>{phone}</Col>
-                <Col xs={2}>
-                <ToolTip position="left" text={t('Скопировать ссылку')}>
-                        <span
-                            style={{color: '#12aaeb', cursor: 'pointer'}}
-                            onClick={() => copyToClipBoard.handleCopyLinkInList(token)}>
-                            {t('Не активирован')}
-                        </span>
-                </ToolTip>
-                </Col>
+                <Col xs={2}>{activatedDate}</Col>
                 <Col xs={1}>
                     <div className={classes.flex + ' ' + classes.rightFlex}>
                         <ToolTip position="left" text={t('Деактивировать')}>

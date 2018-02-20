@@ -190,7 +190,6 @@ const enhance = compose(
             }
         },
         paymentsWrapper: {
-            borderTop: '1px #efefef solid',
             padding: '10px 30px',
             display: 'flex',
             width: '100%'

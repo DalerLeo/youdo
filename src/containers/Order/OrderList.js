@@ -446,8 +446,8 @@ const enhance = compose(
 
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
-            const fromDate = _.get(filterForm, ['values', 'data', 'fromDate']) || null
-            const toDate = _.get(filterForm, ['values', 'data', 'toDate']) || null
+            const fromDate = _.get(filterForm, ['values', 'createdDate', 'fromDate']) || null
+            const toDate = _.get(filterForm, ['values', 'createdDate', 'toDate']) || null
             const deliveryFromDate = _.get(filterForm, ['values', 'deliveryDate', 'fromDate']) || null
             const deliveryToDate = _.get(filterForm, ['values', 'deliveryDate', 'toDate']) || null
             const deadlineFromDate = _.get(filterForm, ['values', 'deadlineDate', 'fromDate']) || null
@@ -1139,7 +1139,9 @@ const OrderList = enhance((props) => {
                 deliveryPrice: numberFormat(_.get(detail, 'deliveryPrice')),
                 discountPrice: discount,
                 paymentDate: moment(_.get(detail, ['paymentDate'])).toDate(),
-                nextPaymentDate: moment(_.get(detail, ['nextPaymentDate'])).toDate(),
+                nextPaymentDate: _.get(detail, ['nextPaymentDate'])
+                    ? moment(_.get(detail, ['nextPaymentDate'])).toDate()
+                    : moment().toDate(),
                 products: groupedProducts,
                 priceList: {
                     value: _.get(detail, ['priceList', 'id']),
@@ -1226,7 +1228,7 @@ const OrderList = enhance((props) => {
             },
             onlyBonus: onlyBonus,
             exclude: exclude,
-            date: {
+            createdDate: {
                 fromDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),
                 toDate: toDate && moment(toDate, 'YYYY-MM-DD')
             }

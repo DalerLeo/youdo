@@ -250,8 +250,10 @@ const enhance = compose(
             position: 'relative !important'
         },
         listLoader: {
+            alignItems: 'baseline',
             position: 'absolute',
             top: '65px',
+            bottom: '0',
             padding: '100px 0',
             width: '100%',
             display: 'flex',

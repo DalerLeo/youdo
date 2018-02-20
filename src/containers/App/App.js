@@ -16,9 +16,13 @@ const refreshAgentsList = 45000
             const {dispatch} = prop
             event.preventDefault()
 
-            dispatch(signOutAction()).then(() => {
-                hashHistory.push(ROUTES.SIGN_IN)
-            })
+            dispatch(signOutAction())
+                .then(() => {
+                    hashHistory.push(ROUTES.SIGN_IN)
+                })
+                .then(() => {
+                    window.location.replace(ROUTES.DASHBOARD_URL)
+                })
         }
     }),
     withState('scrollValue', 'updateScrollValue', false)
