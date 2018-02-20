@@ -17,13 +17,15 @@ import {
     InventoryGridList,
     INVENTORY_FILTER_OPEN,
     INVENTORY_FILTER_KEY,
-    INVENTORY_INVENTORY_DIALOG_OPEN
+    INVENTORY_INVENTORY_DIALOG_OPEN,
+    INVENTORY_VERIFY_DIALOG_OPEN
 } from '../../components/Inventory'
 import {
     inventoryListFetchAction,
     inventoryItemFetchAction,
     inventoryProductsFetchAction,
-    inventoryCreateFetchAction
+    inventoryCreateFetchAction,
+    inventoryVerifyAction
 } from '../../actions/inventory'
 import t from '../../helpers/translate'
 
@@ -41,6 +43,7 @@ const enhance = compose(
         const filterForm = _.get(state, ['form', 'InventoryFilterForm'])
         const searchForm = _.get(state, ['form', 'InventorySearchForm'])
         const inventoryForm = _.get(state, ['form', 'InventoryForm'])
+        const InventoryVerifyForm = _.get(state, ['form', 'InventoryVerifyForm'])
         const filter = filterHelper(list, pathname, query)
 
         return {
@@ -53,7 +56,8 @@ const enhance = compose(
             filter,
             filterForm,
             searchForm,
-            inventoryForm
+            inventoryForm,
+            InventoryVerifyForm
         }
     }),
     withState('openAddProductDialog', 'setOpenAddProductDialog', false),
@@ -66,7 +70,8 @@ const enhance = compose(
         const except = {
             openInventoryDialog: null,
             pdSearch: null,
-            pdStock: null
+            pdStock: null,
+            openVerifyDialog: null
         }
         return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
@@ -100,7 +105,8 @@ const enhance = compose(
             stock: null,
             pdPage: null,
             pdPageSize: null,
-            openDiscardDialog: null
+            openDiscardDialog: null,
+            openVerifyDialog: null
         }
         const nextDialog = toBoolean(_.get(nextProps, ['location', 'query', INVENTORY_INVENTORY_DIALOG_OPEN]))
         const productType = _.get(props, ['inventoryForm', 'values', 'productType', 'value'])
@@ -214,6 +220,27 @@ const enhance = compose(
             const {dispatch, filter, inventoryForm} = props
             const productType = _.get(inventoryForm, ['values', 'productType', 'value']) || null
             dispatch(inventoryProductsFetchAction(filter, productType, page))
+        },
+        handleOpenVerifyDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[INVENTORY_VERIFY_DIALOG_OPEN]: true})})
+        },
+        handleCloseVerifyDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[INVENTORY_VERIFY_DIALOG_OPEN]: false})})
+        },
+        handleSubmitVerifyDialog: props => () => {
+            const {dispatch, params, InventoryVerifyForm} = props
+            const detailId = _.toInteger(_.get(params, 'inventoryId'))
+            return dispatch(inventoryVerifyAction(_.get(InventoryVerifyForm, 'values'), detailId))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
+                })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
+                })
         }
     })
 )
@@ -240,6 +267,7 @@ const InventoryList = enhance((props) => {
     const toDate = (filter.getParam(INVENTORY_FILTER_KEY.DATE_TO))
     const openFilterDialog = toBoolean(_.get(location, ['query', INVENTORY_FILTER_OPEN]))
     const openInventoryDialog = toBoolean(_.get(location, ['query', INVENTORY_INVENTORY_DIALOG_OPEN]))
+    const openVerifyDialog = toBoolean(_.get(location, ['query', INVENTORY_VERIFY_DIALOG_OPEN]))
     const detailId = _.toInteger(_.get(params, 'inventoryId'))
 
     const filterDialog = {
@@ -284,6 +312,12 @@ const InventoryList = enhance((props) => {
         currentRow
     }
 
+    const verifyDialog = {
+        openVerifyDialog,
+        handleOpenVerifyDialog: props.handleOpenVerifyDialog,
+        handleCloseVerifyDialog: props.handleCloseVerifyDialog,
+        handleSubmitVerifyDialog: props.handleSubmitVerifyDialog
+    }
     return (
         <Layout {...layout}>
             <InventoryGridList
@@ -297,6 +331,7 @@ const InventoryList = enhance((props) => {
                 searchSubmit={props.handleSubmitSearch}
                 filterItem={filterItem}
                 inventoryDialog={inventoryDialog}
+                verifyDialog={verifyDialog}
             />
         </Layout>
     )

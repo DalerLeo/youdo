@@ -30,8 +30,8 @@ export const listFilterSerializer = (data) => {
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),
         'ordering': ordering && orderingSnakeCase(ordering),
-        'created_date_0': _.get(defaultData, 'fromDate') || firstDayOfMonth,
-        'created_date_1': _.get(defaultData, 'toDate') || lastDayOfMonth
+        'begin_date': _.get(defaultData, 'fromDate') || firstDayOfMonth,
+        'end_date': _.get(defaultData, 'toDate') || lastDayOfMonth
     }
 }
 

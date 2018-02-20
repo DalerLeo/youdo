@@ -9,6 +9,9 @@ import dateFormat from '../../helpers/dateFormat'
 import t from '../../helpers/translate'
 import NotFound from '../Images/not-found.png'
 import LinearProgress from '../LinearProgress'
+import ToolTip from '../ToolTip'
+import IconButton from 'material-ui/IconButton'
+import CheckCircleIcon from 'material-ui/svg-icons/action/check-circle'
 
 const enhance = compose(
     injectSheet({
@@ -78,6 +81,7 @@ const enhance = compose(
             position: 'relative',
             padding: '0 30px',
             width: '100%',
+            justifyContent: 'space-between',
             '& span': {
                 fontSize: '16px',
                 fontWeight: 'bold'
@@ -105,10 +109,22 @@ const enhance = compose(
     }),
     withState('openDetails', 'setOpenDetails', false)
 )
+const iconStyle = {
+    icon: {
+        color: '#666',
+        width: 20,
+        height: 20
+    },
+    button: {
+        width: 48,
+        height: 48,
+        padding: 0
+    }
+}
 
 const InventoryDetails = enhance((props) => {
     const ZERO = 0
-    const {classes, detailData, handleCloseDetail} = props
+    const {classes, detailData, handleCloseDetail, handleOpenVerifyDialog} = props
     const isLoading = _.get(detailData, 'detailLoading')
     const createdBy = _.get(detailData, ['data', 'createdBy', 'firstName']) + ' ' + _.get(detailData, ['data', 'createdBy', 'secondName'])
     const createdDate = dateFormat(_.get(detailData, ['data', 'createdDate']))
@@ -129,6 +145,15 @@ const InventoryDetails = enhance((props) => {
                 <div className={classes.header}>
                     <div className={classes.closeDetail} onClick={handleCloseDetail}/>
                     <span>{createdBy}</span>
+                    <ToolTip position="bottom" text={t('Сверить сырье')}>
+                        <IconButton
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            touch={true}
+                            onTouchTap={() => handleOpenVerifyDialog()}>
+                            <CheckCircleIcon />
+                        </IconButton>
+                    </ToolTip>
                 </div>
                 <div className={classes.content}>
                     <div className={classes.leftSide}>

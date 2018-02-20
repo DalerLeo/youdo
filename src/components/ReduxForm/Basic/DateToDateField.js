@@ -18,7 +18,6 @@ import ToolTip from '../../ToolTip/ToolTip'
 
 const MINUS_ONE = -1
 const MINUS_SEVEN = -7
-const MINUS_THIRTY = -30
 const x = new Date()
 const TODAY = x.getDate()
 const ONE = 1
@@ -53,14 +52,6 @@ const range = {
     'Текущий месяц': {
         startDate: (now) => {
             return now.add((TODAY * MINUS_ONE) + ONE, 'days')
-        },
-        endDate: (now) => {
-            return now
-        }
-    },
-    'Последние 30 дней': {
-        startDate: (now) => {
-            return now.add(MINUS_THIRTY, 'days')
         },
         endDate: (now) => {
             return now

@@ -3,7 +3,7 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import {Field, reduxForm} from 'redux-form'
 import DateToDateField from '../ReduxForm/Basic/DateToDateFieldChange'
-
+import t from '../../helpers/translate'
 const enhance = compose(
     injectSheet({
         titleDate: {
@@ -39,6 +39,7 @@ const ManufactureActivityDateRange = enhance((props) => {
                 name="dateRange"
                 className={classes.inputDateCustom}
                 filter={filter}
+                hintText={t('Выберите период')}
                 component={DateToDateField}
                 fullWidth={true}
             />

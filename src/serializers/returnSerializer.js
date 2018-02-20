@@ -78,7 +78,7 @@ export const listFilterSerializer = (data, id) => {
         'order': _.get(defaultData, 'order'),
         'created_by': _.get(defaultData, 'initiator') || null,
         'payment_type': _.get(defaultData, 'paymentType'),
-        'status': _.get(defaultData, 'status') || null,
+        'statuses': _.get(defaultData, 'status') || null,
         'begin_date': _.get(defaultData, 'fromDate'),
         'end_date': _.get(defaultData, 'toDate') || _.get(defaultData, 'fromDate'),
         'exclude_cancelled': excludeCanceled,

@@ -72,3 +72,20 @@ export const inventoryCreateFetchAction = (formData, queryData) => {
     }
 }
 
+export const inventoryVerifyAction = (formData, id) => {
+    const manufacture = _.get(formData, ['manufacture', 'value'])
+    const payload = axios()
+        .post(sprintf(API.REMAINDER_INVENTORY_VERIFY, id), {manufacture})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.REMAINDER_INVENTORY_VERIFY,
+        payload
+    }
+}
+

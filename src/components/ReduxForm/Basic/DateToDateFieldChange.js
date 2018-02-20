@@ -9,9 +9,13 @@ import {DateRange} from 'react-date-range-ru'
 import {Popover, FlatButton} from 'material-ui'
 import dateFormat from '../../../helpers/dateFormat'
 import {getLanguage} from '../../../helpers/storage'
+import t from '../../../helpers/translate'
 import MUITextField from 'material-ui/TextField'
 import moment from 'moment'
 import {hashHistory} from 'react-router'
+import Close from 'material-ui/svg-icons/navigation/close'
+import Check from 'material-ui/svg-icons/navigation/check'
+import ToolTip from '../../ToolTip/ToolTip'
 
 const MINUS_ONE = -1
 const MINUS_SEVEN = -7
@@ -84,7 +88,43 @@ const range = {
         }
     }
 }
+const rangeEn = {
+    'Today': {
+        startDate: (now) => {
+            return now
+        },
+        endDate: (now) => {
+            return now
+        }
+    },
 
+    'Yesterday': {
+        startDate: (now) => {
+            return now.add(MINUS_ONE, 'days')
+        },
+        endDate: (now) => {
+            return now.add(MINUS_ONE, 'days')
+        }
+    },
+
+    'Last 7 days': {
+        startDate: (now) => {
+            return now.add(MINUS_SEVEN, 'days')
+        },
+        endDate: (now) => {
+            return now
+        }
+    },
+
+    'Current month': {
+        startDate: (now) => {
+            return now.add((TODAY * MINUS_ONE) + ONE, 'days')
+        },
+        endDate: (now) => {
+            return now
+        }
+    }
+}
 class DateToDateField extends React.Component {
 
     constructor (props) {
@@ -109,7 +149,7 @@ class DateToDateField extends React.Component {
         })
     }
     render () {
-        const {label, classes, input, meta: {error}, filter} = this.props
+        const {label, classes, input, meta: {error}, filter, hintText} = this.props
         const {
             open,
             anchorEl
@@ -124,6 +164,13 @@ class DateToDateField extends React.Component {
             input.onChange(inputDate)
             hashHistory.push(filter.createURL({beginDate: beginDateUrl, endDate: endDateUrl}))
         }
+        const lang = getLanguage() === 'uz' ? 'ru' : getLanguage()
+
+        const hintStyle = {
+            color: '#12aaeb',
+            bottom: '-12px',
+            fontSize: '15px !important'
+        }
         return (
 
             <div>
@@ -132,6 +179,8 @@ class DateToDateField extends React.Component {
                         name="dateField"
                         errorText={error}
                         floatingLabelText={label}
+                        hintText={!label ? hintText : ''}
+                        hintStyle={!label && hintText ? hintStyle : {}}
                         onFocus={this.handleOnTouchTap}
                         value={dateLabel}
                         className={classes.inputDateCustom}
@@ -140,19 +189,27 @@ class DateToDateField extends React.Component {
                         open={open}
                         anchorEl={anchorEl}
                         onRequestClose={this.handleOnRequestClose}>
-                        <div
-                            className={classes.clear}
-                            onClick={() => { input.onChange({startDate: undefined, endDate: undefined}) }}>
-                            <FlatButton
-                                label="Очистить"
-                                labelStyle={{fontSize: '13px'}}
-                            />
+                        <div className={classes.clear}>
+                            <ToolTip position="top" text={t('Очистить')}>
+                                <FlatButton
+                                    disableTouchRipple={true}
+                                    onClick={() => { input.onChange({startDate: undefined, endDate: undefined}) }}>
+                                    <Close color="#fff"/>
+                                </FlatButton>
+                            </ToolTip>
+                            <ToolTip position="top" text={t('Применить')}>
+                                <FlatButton
+                                    disableTouchRipple={true}
+                                    onClick={() => { this.handleOnRequestClose() }}>
+                                    <Check color="#fff"/>
+                                </FlatButton>
+                            </ToolTip>
                         </div>
                         <DateRange
                             startDate={_.get(input, ['value', 'startDate']) || moment()}
                             endDate={_.get(input, ['value', 'endDate']) || moment()}
-                            lang={getLanguage()}
-                            ranges={ range }
+                            lang={lang}
+                            ranges={ lang === 'en' ? rangeEn : range }
                             onChange={onChange}
                             theme={{
                                 Calendar: {width: 350},
@@ -247,12 +304,25 @@ export default injectSheet({
     clear: {
         position: 'absolute',
         bottom: '0',
-        backgroundColor: '#5d6474',
+        display: 'flex',
+        justifyContent: 'space-between',
         borderRadius: '3px',
         margin: '10px',
         width: '140px',
+        '& > div': {
+            width: '100%'
+        },
         '& button': {
+            margin: '0 5px!important',
             width: '100%',
+            background: '#5d6474 !important',
+            minWidth: 'unset !important',
+            lineHeight: '0 !important',
+            height: '26px !important',
+            '& svg': {
+                width: '18px !important',
+                height: '18px !important'
+            },
             '& span': {
                 textTransform: 'none !important',
                 color: '#fff !important'

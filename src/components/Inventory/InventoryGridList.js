@@ -16,6 +16,7 @@ import {reduxForm} from 'redux-form'
 import GridList from '../GridList'
 import ToolTip from '../ToolTip'
 import InventoryDialog from './InventoryDialog'
+import InventoryVerifyDialog from './InventoryVerifyDialog'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd from 'material-ui/svg-icons/communication/clear-all'
 import t from '../../helpers/translate'
@@ -104,7 +105,8 @@ const InventoryGridList = enhance((props) => {
         listData,
         handleCloseDetail,
         filterDialog,
-        inventoryDialog
+        inventoryDialog,
+        verifyDialog
     } = props
     const listLoading = _.get(listData, 'listLoading')
 
@@ -119,7 +121,9 @@ const InventoryGridList = enhance((props) => {
         <InventoryDetails
             key={_.get(detailData, 'id')}
             detailData={detailData || {}}
-            handleCloseDetail={handleCloseDetail}/>
+            handleCloseDetail={handleCloseDetail}
+            handleOpenVerifyDialog={verifyDialog.handleOpenVerifyDialog}
+        />
 
     )
 
@@ -184,6 +188,10 @@ const InventoryGridList = enhance((props) => {
                 filterStock={inventoryDialog.filterStock}
                 filter={filter}
             />
+            <InventoryVerifyDialog
+                open={verifyDialog.openVerifyDialog}
+                onClose={verifyDialog.handleCloseVerifyDialog}
+                onSubmit={verifyDialog.handleSubmitVerifyDialog}/>
         </Container>
     )
 })
@@ -199,6 +207,12 @@ InventoryGridList.propTypes = {
         handleOpenFilterDialog: PropTypes.func.isRequired,
         handleSubmitFilterDialog: PropTypes.func.isRequired,
         handleClearFilterDialog: PropTypes.func.isRequired
+    }).isRequired,
+    verifyDialog: PropTypes.shape({
+        openVerifyDialog: PropTypes.bool.isRequired,
+        handleOpenVerifyDialog: PropTypes.func.isRequired,
+        handleCloseVerifyDialog: PropTypes.func.isRequired,
+        handleSubmitVerifyDialog: PropTypes.func.isRequired
     }).isRequired,
     inventoryDialog: PropTypes.shape({
         data: PropTypes.array,

@@ -20,8 +20,8 @@ export const listFilterSerializer = (data, groupBy) => {
 
     return {
         'group_by': groupBy,
-        'created_date_0': _.get(defaultData, 'fromDate'),
-        'created_date_1': _.get(defaultData, 'toDate'),
+        'begin_date': _.get(defaultData, 'fromDate'),
+        'end_date': _.get(defaultData, 'toDate'),
         'search': _.get(defaultData, 'search'),
         'balance_type': _.get(defaultData, 'balanceType'),
         'payment_type': _.get(defaultData, 'paymentType'),
@@ -35,8 +35,8 @@ export const sumFilterSerializer = (data) => {
     const {...defaultData} = data
 
     return {
-        'created_date_0': _.get(defaultData, 'fromDate'),
-        'created_date_1': _.get(defaultData, 'toDate')
+        'begin_date': _.get(defaultData, 'fromDate'),
+        'end_date': _.get(defaultData, 'toDate')
     }
 }
 export const itemFilterSerializer = (data, id, division, currency, type) => {
