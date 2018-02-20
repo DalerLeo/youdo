@@ -119,6 +119,7 @@ import TransactionIncomeCategoryMultiSearch from './Transaction/TransactionIncom
 import CellTypeParentSearchField from './CellTypeParentSearchField'
 import CellTypeChildrenSearchField from './CellTypeChildrenSearchField'
 import normalizeMaxNumber from './normalizers/normalizeMaxNumber'
+import normalizePhone from './normalizers/normalizePhone'
 
 export {
     CashboxTypeCurrencyField,
@@ -241,5 +242,6 @@ export {
     TransactionIncomeCategoryMultiSearch,
     CellTypeParentSearchField,
     CellTypeChildrenSearchField,
-    normalizeMaxNumber
+    normalizeMaxNumber,
+    normalizePhone
 }

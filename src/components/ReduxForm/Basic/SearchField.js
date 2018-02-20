@@ -80,6 +80,13 @@ const enhance = compose(
             '& .Select-clear-zone': {
                 paddingTop: '12px'
             }
+        },
+        error: {
+            color: 'rgb(244, 67, 54)',
+            position: 'absolute',
+            bottom: '0',
+            borderTop: 'red 1px solid',
+            width: '100%'
         }
     }),
 
@@ -142,18 +149,23 @@ const SearchField = enhance((props) => {
         valueRenderer,
         input,
         disabled,
-        clearValue
+        clearValue,
+        meta
     } = props
-    const hintText = state.loading ? <div>Загрузка...</div> : <div>Не найдено</div>
+    const hintText = !state.loading ? <div>Загрузка...</div> : <div>Не найдено</div>
+    const errorStyle = meta.error ? {
+        height: '60px',
+        position: 'relative'
+    } : {}
     return (
-        <div className={classes.wrapper}>
+        <div className={classes.wrapper} style={errorStyle}>
             <Select
                 className={classes.select}
                 options={state.dataSource}
                 value={input.value.value || null}
                 onInputChange={text => dispatch({text: text})}
                 onChange={value => input.onChange(value)}
-                placeholder={label}
+                placeholder={<span>{label}</span>}
                 noResultsText={hintText}
                 isLoading={state.loading}
                 valueRenderer={valueRenderer}
@@ -165,6 +177,7 @@ const SearchField = enhance((props) => {
                 clearable={clearValue}
                 loadingPlaceholder="Загрузка..."
             />
+            {meta.error && <span className={classes.error}>{meta.error}</span>}
         </div>
     )
 })

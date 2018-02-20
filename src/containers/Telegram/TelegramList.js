@@ -301,7 +301,7 @@ const TelegramList = enhance((props) => {
     const openCreateDialog = toBoolean(_.get(location, ['query', TELEGRAM_CREATE_DIALOG_OPEN]))
     const openFilterDialog = toBoolean(_.get(location, ['query', TELEGRAM_FILTER_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', TELEGRAM_UPDATE_DIALOG_OPEN]))
-    const openLogsDialog = _.get(location, ['query', TELEGRAM_LOGS_DIALOG_OPEN])
+    const openLogsDialog = _.toNumber(_.get(location, ['query', TELEGRAM_LOGS_DIALOG_OPEN]))
     const detailId = _.toInteger(_.get(params, 'telegramId'))
     const tab = _.get(params, 'tab')
     const market = (filter.getParam(TELEGRAM_FILTER_KEY.MARKET))

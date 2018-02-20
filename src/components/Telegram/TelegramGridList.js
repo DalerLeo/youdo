@@ -192,7 +192,7 @@ const enhance = compose(
         }
     })
 )
-
+const ZERO = 0
 const iconStyle = {
     icon: {
         width: 22,
@@ -336,7 +336,7 @@ const TelegramGridList = enhance((props) => {
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
             />
             <TelegramLogsDialog
-                open={logsDialog.openLogsDialog}
+                open={logsDialog.openLogsDialog > ZERO}
                 onClose={logsDialog.handleCloseLogsDialog}
                 filter={filterItem}
                 data={logsDialog.logsData}
@@ -346,7 +346,7 @@ const TelegramGridList = enhance((props) => {
             />
             <ConfirmDialog
                 type="submit"
-                message={_.get(detailData, ['data', 'name'])}
+                message={_.get(detailData, ['data', 'name']) || ''}
                 onClose={confirmDialog.handleCloseConfirmDialog}
                 onSubmit={confirmDialog.handleSendConfirmDialog}
                 open={confirmDialog.openConfirmDialog}
@@ -357,7 +357,7 @@ const TelegramGridList = enhance((props) => {
 
 TelegramGridList.propTypes = {
     filter: PropTypes.object.isRequired,
-    filterItem: PropTypes.object.filterItem,
+    filterItem: PropTypes.object,
     listData: PropTypes.object,
     detailData: PropTypes.object,
     tabData: PropTypes.object.isRequired,
@@ -390,7 +390,7 @@ TelegramGridList.propTypes = {
     logsDialog: PropTypes.shape({
         logsData: PropTypes.object.Required,
         logsLoading: PropTypes.bool.Required,
-        openLogsDialog: PropTypes.bool.isRequired,
+        openLogsDialog: PropTypes.number.isRequired,
         handleOpenLogsDialog: PropTypes.func.isRequired,
         handleCloseLogsDialog: PropTypes.func.isRequired
     }).isRequired
