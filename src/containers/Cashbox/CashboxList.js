@@ -22,7 +22,6 @@ import {
     cashboxDeleteAction,
     cashboxItemFetchAction
 } from '../../actions/cashbox'
-import {openErrorAction} from '../../actions/error'
 import {openSnackbarAction} from '../../actions/snackbar'
 import t from '../../helpers/translate'
 
@@ -129,11 +128,6 @@ const enhance = compose(
                     hashHistory.push({pathname, query: filter.getParams({[CASHBOX_CREATE_DIALOG_OPEN]: false})})
                     dispatch(cashboxListFetchAction(filter))
                 })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
-                })
         },
 
         handleOpenUpdateDialog: props => (id) => {
@@ -163,11 +157,6 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push(filter.createURL({[CASHBOX_UPDATE_DIALOG_OPEN]: false}))
                     dispatch(cashboxListFetchAction(filter))
-                })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
                 })
         }
     })

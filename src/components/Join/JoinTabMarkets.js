@@ -120,12 +120,13 @@ const JoinTabMarkets = enhance((props) => {
         filter,
         listData,
         classes,
-        joinMarketDialog
+        joinMarketDialog,
+        openConfirm,
+        setOpenConfirm
     } = props
 
     const shopDetail = (
-        <div>-</div>
-
+        <div/>
     )
     const shopList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
@@ -189,6 +190,8 @@ const JoinTabMarkets = enhance((props) => {
                 onClose={joinMarketDialog.handleCloseJoinMarkets}
                 onSubmit={joinMarketDialog.handleSubmitJoinMarkets}
                 initialValues={joinMarketDialog.initialValues}
+                openConfirm={openConfirm}
+                setOpenConfirm={setOpenConfirm}
             />
         </div>
     )

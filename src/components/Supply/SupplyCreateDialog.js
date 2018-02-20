@@ -228,9 +228,20 @@ const customContentStyle = {
 }
 const SupplyCreateDialog = enhance((props) => {
     const {open, handleSubmit, onClose, classes, dispatch, isUpdate, handleOpenAddProduct, editOnlyPrice, acceptedByStock} = props
+    const formNames = [
+        'provider',
+        'contact',
+        'dateDelivery',
+        'division',
+        'stock',
+        'currency',
+        'paymentType',
+        'contract',
+        'comment'
+    ]
     const onSubmit = handleSubmit(() => props.onSubmit()
         .catch((error) => {
-            formValidate('SupplyCreateForm', dispatch, error)
+            formValidate(formNames, dispatch, error)
         }))
     return (
         <Dialog
@@ -248,7 +259,7 @@ const SupplyCreateDialog = enhance((props) => {
                 </IconButton>
             </div>
             <div className={classes.bodyContent}>
-                <form onSubmit={onSubmit} scrolling="auto" className={classes.form}>
+                <form onSubmit={onSubmit} className={classes.form}>
                     <div className={classes.loader}>
                         <Loader size={0.75}/>
                     </div>
@@ -279,7 +290,7 @@ const SupplyCreateDialog = enhance((props) => {
                                 <div className={classes.condition}>
                                     <div className={classes.subTitleOrder}>{t('Условия доставки')}</div>
                                     <Field
-                                        name="date_delivery"
+                                        name="dateDelivery"
                                         component={DateField}
                                         className={classes.inputDateCustom}
                                         floatingLabelText={t('Дата поставки')}

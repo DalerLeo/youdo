@@ -100,10 +100,10 @@ const enhance = compose(
             }
         },
         error: {
-            color: 'rgb(244, 67, 54)',
+            color: '#f44336',
             position: 'absolute',
-            bottom: '0',
-            borderTop: 'red 1px solid',
+            bottom: '-2px',
+            borderTop: '#f44336 2px solid',
             width: '100%'
         }
     }),

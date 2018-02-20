@@ -126,7 +126,9 @@ const JoinGridList = enhance((props) => {
         clientsData,
         joinMarketDialog,
         joinClientDialog,
-        hasMarket
+        hasMarket,
+        openConfirm,
+        setOpenConfirm
     } = props
     const tab = _.get(tabData, 'tab')
     const tabList = (
@@ -145,12 +147,16 @@ const JoinGridList = enhance((props) => {
                 filter={marketFilter}
                 listData={marketsData}
                 joinMarketDialog={joinMarketDialog}
+                openConfirm={openConfirm}
+                setOpenConfirm={setOpenConfirm}
             />}
             {TAB.JOIN_TAB_CLIENTS === tab &&
             <TabClients
                 filter={clientFilter}
                 listData={clientsData}
                 joinClientDialog={joinClientDialog}
+                openConfirm={openConfirm}
+                setOpenConfirm={setOpenConfirm}
             />}
         </div>
     )

@@ -128,7 +128,9 @@ const JoinTabClients = enhance((props) => {
         listData,
         filter,
         classes,
-        joinClientDialog
+        joinClientDialog,
+        openConfirm,
+        setOpenConfirm
     } = props
     const listLoading = _.get(listData, 'clientsListLoading')
     const clientDetails = (<div>2</div>)
@@ -191,6 +193,8 @@ const JoinTabClients = enhance((props) => {
                 loading={joinClientDialog.clientsItemLoading}
                 onClose={joinClientDialog.handleCloseJoinClients}
                 onSubmit={joinClientDialog.handleSubmitJoinClients}
+                openConfirm={openConfirm}
+                setOpenConfirm={setOpenConfirm}
             />
         </div>
     )

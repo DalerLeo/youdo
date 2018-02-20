@@ -38,7 +38,7 @@ const MainStyles = {
         display: 'flex',
         minHeight: '184px',
         overflow: 'unset',
-        padding: '0 30px',
+        padding: '0 30px 20px',
         color: '#333'
     },
     bodyContent: {

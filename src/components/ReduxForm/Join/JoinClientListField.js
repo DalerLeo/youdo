@@ -21,9 +21,13 @@ const enhance = compose(
             position: 'relative'
         },
         error: {
+            background: '#ffebee',
+            borderRadius: '2px',
+            color: '#f44336',
+            fontSize: '13px',
             textAlign: 'center',
-            fontSize: '14px',
-            color: 'red'
+            margin: '10px -30px 0',
+            padding: '10px 15px'
         },
         imagePlaceholder: {
             width: '100%',
@@ -196,7 +200,7 @@ const flatButton = {
 const JoinClientListField = ({classes, handleAdd, handleRemove, ...defaultProps}) => {
     const clients = _.get(defaultProps, ['clients', 'input', 'value']) || []
     const target = _.get(defaultProps, ['target', 'input', 'value']) || false
-    const error = _.get(defaultProps, ['clients', 'meta', 'error'])
+    const error = _.get(defaultProps, ['target', 'meta', 'error'])
     return (
         <div className={classes.wrapper}>
             <div>
@@ -231,12 +235,10 @@ const JoinClientListField = ({classes, handleAdd, handleRemove, ...defaultProps}
                         <Col xs={11}>{t('Наименование')}</Col>
                     </Row>
                     {_.map(clients, (item, index) => {
-                        const million = 1000000
-                        const id = _.get(item, ['client', 'value'])
                         const name = _.get(item, ['client', 'text'])
 
                         return (
-                            <Row key={id * million} className={classes.tableRow}>
+                            <Row key={index} className={classes.tableRow}>
                                 <Col xs={11}>{name}</Col>
                                 <Col xs={1} style={{textAlign: 'right', width: '40px'}}>
                                     <IconButton

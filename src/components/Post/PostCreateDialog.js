@@ -6,14 +6,13 @@ import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import Loader from '../Loader'
-import {Field, reduxForm, SubmissionError} from 'redux-form'
-import toCamelCase from '../../helpers/toCamelCase'
+import {Field, reduxForm} from 'redux-form'
 import {TextField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 import t from '../../helpers/translate'
-import {openErrorAction} from '../../actions/error'
+import formValidate from '../../helpers/formValidate'
 
 export const POST_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -40,21 +39,11 @@ const enhance = compose(
 
 const PostCreateDialog = enhance((props) => {
     const {open, loading, dispatch, handleSubmit, onClose, classes, isUpdate} = props
-    const validate = (data) => {
-        const errors = toCamelCase(data)
-        const nonFieldErrors = _.get(errors, 'nonFieldErrors')
-        if (!_.isEmpty(nonFieldErrors)) {
-            return dispatch(openErrorAction({
-                message: nonFieldErrors
-            }))
-        }
-
-        throw new SubmissionError({
-            ...errors,
-            _error: nonFieldErrors
-        })
-    }
-    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+    const formNames = ['name', 'beginTime', 'endTime']
+    const onSubmit = handleSubmit(() => props.onSubmit()
+        .catch((error) => {
+            formValidate(formNames, dispatch, error)
+        }))
 
     return (
         <Dialog
@@ -66,7 +55,7 @@ const PostCreateDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>{isUpdate ? t('Изменить должностью') : t('Добавить должность')}</span>
+                <span>{isUpdate ? t('Изменить должность') : t('Добавить должность')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
