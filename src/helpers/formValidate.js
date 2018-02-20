@@ -3,14 +3,17 @@ import toCamelCase from '../helpers/toCamelCase'
 import {openErrorAction} from '../actions/error'
 import {SubmissionError} from 'redux-form'
 
-const validate = (formName, dispatch, error) => {
+const validate = (formNames, dispatch, error) => {
     const errors = toCamelCase(error)
     const nonFieldErrors = _.get(errors, 'nonFieldErrors')
-    if (!_.isEmpty(nonFieldErrors)) {
-        return dispatch(openErrorAction({
-            message: nonFieldErrors
-        }))
-    }
+    _.map(errors, (item, index) => {
+        if (!_.includes(formNames, index)) {
+            return dispatch(openErrorAction({
+                message: error
+            }))
+        }
+        return null
+    })
 
     throw new SubmissionError({
         ...errors,

@@ -6,27 +6,15 @@ import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import Loader from '../Loader'
 import FlatButton from 'material-ui/FlatButton'
-import {Field, reduxForm, SubmissionError} from 'redux-form'
-import toCamelCase from '../../helpers/toCamelCase'
+import {Field, reduxForm} from 'redux-form'
 import {TextField, CurrencySearchField, UsersSearchField, PaymentTypeSearchField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 import t from '../../helpers/translate'
+import formValidate from '../../helpers/formValidate'
 
 export const CASHBOX_CREATE_DIALOG_OPEN = 'openCreateDialog'
-
-const validate = (data) => {
-    const errors = toCamelCase(data)
-    const nonFieldErrors = _.get(errors, 'nonFieldErrors')
-    const latLng = (_.get(errors, 'lat') || _.get(errors, 'lon')) && 'Location is required.'
-
-    throw new SubmissionError({
-        ...errors,
-        latLng,
-        _error: nonFieldErrors
-    })
-}
 
 const styles = _.merge(MainStyles, {
     loader: {
@@ -52,8 +40,12 @@ const enhance = compose(
 )
 
 const CashboxCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, isUpdate} = props
-    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+    const {open, loading, dispatch, handleSubmit, onClose, classes, isUpdate} = props
+    const formNames = ['name', 'currency', 'cashier', 'type']
+    const onSubmit = handleSubmit(() => props.onSubmit()
+        .catch((error) => {
+            formValidate(formNames, dispatch, error)
+        }))
 
     return (
         <Dialog

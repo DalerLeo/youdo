@@ -1,9 +1,8 @@
-import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {compose, withReducer, withState} from 'recompose'
+import {compose, withReducer} from 'recompose'
 import injectSheet from 'react-jss'
-import {Fields, reduxForm, SubmissionError} from 'redux-form'
+import {Fields, reduxForm} from 'redux-form'
 import Dialog from 'material-ui/Dialog'
 import Loader from '../Loader'
 import IconButton from 'material-ui/IconButton'
@@ -11,17 +10,9 @@ import FlatButton from 'material-ui/FlatButton'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import JoinShopListField from '../ReduxForm/Join/JoinShopListField'
 import JoinClientListField from '../ReduxForm/Join/JoinClientListField'
-import toCamelCase from '../../helpers/toCamelCase'
 import t from '../../helpers/translate'
+import formValidate from '../../helpers/formValidate'
 
-const validate = (data) => {
-    const errors = toCamelCase(data)
-    const nonFieldErrors = _.get(errors, 'nonFieldErrors')
-    throw new SubmissionError({
-        ...errors,
-        _error: nonFieldErrors
-    })
-}
 const enhance = compose(
     injectSheet({
         loader: {
@@ -138,7 +129,6 @@ const enhance = compose(
     withReducer('state', 'dispatch', (state, action) => {
         return {...state, ...action}
     }, {open: false}),
-    withState('openConfirm', 'setOpenConfirm', false)
 )
 
 const flatButton = {
@@ -149,14 +139,14 @@ const flatButton = {
     }
 }
 const JoinDialog = enhance((props) => {
-    const {open, handleSubmit, onClose, classes, isClient, openConfirm, setOpenConfirm, loading} = props
-    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+    const {open, handleSubmit, dispatch, onClose, classes, isClient, openConfirm, setOpenConfirm, loading} = props
+    const formNames = []
+    const onSubmit = handleSubmit(() => props.onSubmit()
+        .catch((error) => {
+            formValidate(formNames, dispatch, error)
+        }))
     const ZERO = 0
 
-    const customSubmit = () => {
-        onSubmit()
-        setOpenConfirm(false)
-    }
     return (
         <Dialog
             modal={true}
@@ -176,7 +166,7 @@ const JoinDialog = enhance((props) => {
                 {loading && <div className={classes.loader}>
                     <Loader size={0.75}/>
                 </div>}
-                <form onSubmit={onSubmit} scrolling="auto" className={classes.form}>
+                <form className={classes.form}>
                     {openConfirm && <div className={classes.confirm}>
                         <div className={classes.confirmButtons}>
                             <div>{t('Вы уверены')}?</div>
@@ -190,9 +180,9 @@ const JoinDialog = enhance((props) => {
                             <FlatButton
                                 label={t('Да')}
                                 labelStyle={flatButton.label}
+                                onTouchTap={onSubmit}
                                 className={classes.actionButton}
                                 primary={true}
-                                onTouchTap={customSubmit}
                             />
                         </div>
                     </div>}
@@ -201,11 +191,11 @@ const JoinDialog = enhance((props) => {
                             <div className={classes.wrapper}>
                                 {isClient
                                 ? <Fields
-                                        names={['clients', 'client', 'target']}
-                                        component={JoinClientListField}/>
+                                    names={['clients', 'client', 'target']}
+                                    component={JoinClientListField}/>
                                 : <Fields
-                                        names={['markets', 'market', 'target']}
-                                        component={JoinShopListField}/>}
+                                    names={['markets', 'market', 'target']}
+                                    component={JoinShopListField}/>}
                             </div>
                         </div>
                     </div>

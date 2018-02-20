@@ -1,18 +1,16 @@
-import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
-import {Field, reduxForm, SubmissionError} from 'redux-form'
-import toCamelCase from '../../helpers/toCamelCase'
+import {Field, reduxForm} from 'redux-form'
 import {TextField, TimeField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import Loader from '../Loader'
 import t from '../../helpers/translate'
-import {openErrorAction} from '../../actions/error'
+import formValidate from '../../helpers/formValidate'
 
 export const SHIFT_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -168,9 +166,6 @@ const enhance = compose(
             alignItems: 'center',
             justifyContent: 'center',
             display: 'flex'
-        },
-        body: {
-            padding: '0 !important'
         }
     }),
     reduxForm({
@@ -181,21 +176,11 @@ const enhance = compose(
 
 const ShiftCreateDialog = enhance((props) => {
     const {open, loading, dispatch, handleSubmit, onClose, classes, isUpdate} = props
-    const validate = (data) => {
-        const errors = toCamelCase(data)
-        const nonFieldErrors = _.get(errors, 'nonFieldErrors')
-        if (!_.isEmpty(nonFieldErrors)) {
-            return dispatch(openErrorAction({
-                message: nonFieldErrors
-            }))
-        }
-
-        throw new SubmissionError({
-            ...errors,
-            _error: nonFieldErrors
-        })
-    }
-    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+    const formNames = ['name', 'beginTime', 'endTime']
+    const onSubmit = handleSubmit(() => props.onSubmit()
+        .catch((error) => {
+            formValidate(formNames, dispatch, error)
+        }))
 
     return (
         <Dialog
@@ -205,7 +190,7 @@ const ShiftCreateDialog = enhance((props) => {
             className={classes.dialog}
             contentStyle={loading ? {width: '300px'} : {width: '500px'}}
             bodyStyle={{minHeight: 'auto'}}
-            bodyClassName={classes.body}>
+            bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
                 <span>{isUpdate ? t('Редактирование смены') : t('Добавить смену')}</span>
                 <IconButton onTouchTap={onClose}>
@@ -223,7 +208,7 @@ const ShiftCreateDialog = enhance((props) => {
                             <Field
                                 name="name"
                                 component={TextField}
-                                className={classes.inputFieldShift}
+                                className={classes.inputFieldCustom}
                                 label={t('Наименование')}
                                 fullWidth={true}/>
                             <div className={classes.timePick}>

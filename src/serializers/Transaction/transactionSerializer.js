@@ -144,9 +144,9 @@ export const createSendSerializer = (data, cashboxId, withPersent, defaultCurren
     const rate = _.toNumber(numberWithoutSpaces(_.get(data, 'rate')))
     const amountTo = primaryCurrency === cashboxFromName ? amountFrom * rate : _.round(amountFrom / rate, FOUR)
     const amountFromPersent = _.toNumber(numberWithoutSpaces(_.get(data, 'amountFromPersent')))
-    const toCashbox = _.get(data, ['categoryId', 'value'])
+    const toCashbox = _.get(data, ['toCashbox', 'value'])
     const comment = _.get(data, 'comment')
-    const cashbox = _.get(data, ['cashbox', 'value', 'id'])
+    const cashbox = _.get(data, ['fromCashbox', 'value', 'id'])
     return {
         amount_from: withPersent ? amountFromPersent : amountFrom,
         amount_to: (sameCurType && amountFrom) || (withPersent ? amountFromPersent * withPersent / HUNDRED : amountTo),

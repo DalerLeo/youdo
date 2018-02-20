@@ -6,15 +6,14 @@ import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import Loader from '../Loader'
-import {Field, reduxForm, SubmissionError} from 'redux-form'
-import toCamelCase from '../../helpers/toCamelCase'
+import {Field, reduxForm} from 'redux-form'
 import {TextField} from '../ReduxForm'
 import MeasurementParentSearchField from '../ReduxForm/Measurement/MeasurementParentSearchField'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 import t from '../../helpers/translate'
-import {openErrorAction} from '../../actions/error'
+import formValidate from '../../helpers/formValidate'
 
 export const MEASUREMENT_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -41,21 +40,11 @@ const enhance = compose(
 
 const MeasurementCreateDialog = enhance((props) => {
     const {open, loading, dispatch, handleSubmit, onClose, classes, isUpdate} = props
-    const validate = (error) => {
-        const errors = toCamelCase(error)
-        const nonFieldErrors = _.get(errors, 'nonFieldErrors')
-        if (!_.isEmpty(nonFieldErrors)) {
-            return dispatch(openErrorAction({
-                message: nonFieldErrors
-            }))
-        }
-
-        throw new SubmissionError({
-            ...errors,
-            _error: nonFieldErrors
-        })
-    }
-    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+    const formNames = ['parent', 'name']
+    const onSubmit = handleSubmit(() => props.onSubmit()
+        .catch((error) => {
+            formValidate(formNames, dispatch, error)
+        }))
 
     return (
         <Dialog

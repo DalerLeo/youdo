@@ -9,8 +9,7 @@ import FlatButton from 'material-ui/FlatButton'
 import IconButton from 'material-ui/IconButton'
 import Loader from '../Loader'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
-import {Field, reduxForm, SubmissionError} from 'redux-form'
-import toCamelCase from '../../helpers/toCamelCase'
+import {Field, reduxForm} from 'redux-form'
 import {TextField, CashboxTypeSearchField, CashboxSearchField} from '../ReduxForm'
 import MainStyles from '../Styles/MainStyles'
 import normalizeNumber from '../ReduxForm/normalizers/normalizeNumber'
@@ -18,7 +17,7 @@ import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
 import numberFormat from '../../helpers/numberFormat'
 import getConfig from '../../helpers/getConfig'
 import t from '../../helpers/translate'
-import {openErrorAction} from '../../actions/error'
+import formValidate from '../../helpers/formValidate'
 
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
@@ -63,12 +62,12 @@ const enhance = compose(
         enableReinitialize: true
     }),
     connect((state) => {
-        const chosenCashboxId = _.get(state, ['form', 'TransactionSendForm', 'values', 'categoryId', 'value'])
+        const chosenCashboxId = _.get(state, ['form', 'TransactionSendForm', 'values', 'toCashbox', 'value'])
         const amountFrom = _.get(state, ['form', 'TransactionSendForm', 'values', 'amountFrom'])
         const rate = _.get(state, ['form', 'TransactionSendForm', 'values', 'rate'])
         const amountFromPersent = _.get(state, ['form', 'TransactionSendForm', 'values', 'amountFromPersent'])
         const amountToPersent = _.get(state, ['form', 'TransactionSendForm', 'values', 'amountToPersent'])
-        const currentCashbox = _.get(state, ['form', 'TransactionSendForm', 'values', 'cashbox', 'value'])
+        const currentCashbox = _.get(state, ['form', 'TransactionSendForm', 'values', 'fromCashbox', 'value'])
         return {
             chosenCashboxId,
             amountFrom,
@@ -99,20 +98,6 @@ const TransactionSendDialog = enhance((props) => {
         noCashbox,
         currentCashbox
     } = props
-    const validate = (data) => {
-        const errors = toCamelCase(data)
-        const nonFieldErrors = _.get(errors, 'nonFieldErrors')
-        if (!_.isEmpty(nonFieldErrors)) {
-            return dispatch(openErrorAction({
-                message: nonFieldErrors
-            }))
-        }
-
-        throw new SubmissionError({
-            ...errors,
-            _error: nonFieldErrors
-        })
-    }
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
 
     const cashboxId = noCashbox ? _.get(currentCashbox, 'id') : _.get(cashboxData, 'cashboxId')
@@ -124,12 +109,18 @@ const TransactionSendDialog = enhance((props) => {
     const chosenCurrencyId = _.get(chosenCashbox, ['currency', 'id'])
     const currentCurrencyName = _.get(cashbox, ['currency', 'name'])
     const chosenCurrencyName = _.get(chosenCashbox, ['currency', 'name'])
+    const rateOutput = primaryCurrency === currentCurrencyName ? ONE : rate
     const convertedAmount = primaryCurrency === currentCurrencyName
-        ? _.toNumber(numberWithoutSpaces(amountFrom)) * _.toNumber(numberWithoutSpaces(rate))
-        : _.toNumber(numberWithoutSpaces(amountFrom)) / _.toNumber(numberWithoutSpaces(diffCurrency ? rate : ONE))
+        ? _.toNumber(numberWithoutSpaces(amountFrom)) * _.toNumber(numberWithoutSpaces(rateOutput))
+        : _.toNumber(numberWithoutSpaces(amountFrom)) / _.toNumber(numberWithoutSpaces(diffCurrency ? rateOutput : ONE))
     const customRatePersent = _.toNumber(numberWithoutSpaces(amountFromPersent)) * _.toNumber(numberWithoutSpaces(amountToPersent)) / HUNDRED
     const ROUND_VAL = 5
-    const onSubmit = handleSubmit(() => props.onSubmit(sameCurrencyDiffType && amountToPersent, sameCurrencyType).catch(validate))
+
+    const formNames = ['fromCashbox', 'toCashbox', 'amountFrom', 'amountTo', 'rate', 'comment']
+    const onSubmit = handleSubmit(() => props.onSubmit(sameCurrencyDiffType && amountToPersent, sameCurrencyType)
+        .catch((error) => {
+            formValidate(formNames, dispatch, error)
+        }))
 
     return (
         <Dialog
@@ -155,7 +146,7 @@ const TransactionSendDialog = enhance((props) => {
                             {noCashbox
                                 ? <div style={{marginTop: '15px'}}>
                                     <Field
-                                        name="cashbox"
+                                        name="fromCashbox"
                                         className={classes.inputFieldCustom}
                                         component={CashboxSearchField}
                                         label={t('Текущая касса')}
@@ -166,7 +157,7 @@ const TransactionSendDialog = enhance((props) => {
                                     <div style={{fontWeight: '600'}}>{_.get(cashbox, 'name')}</div>
                                 </div>}
                             <Field
-                                name="categoryId"
+                                name="toCashbox"
                                 className={classes.inputFieldCustom}
                                 component={CashboxTypeSearchField}
                                 data-exclude-only={true}

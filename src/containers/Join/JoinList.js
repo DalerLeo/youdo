@@ -4,10 +4,10 @@ import {connect} from 'react-redux'
 import {reset} from 'redux-form'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
-import {compose, withPropsOnChange, withHandlers} from 'recompose'
+import {compose, withPropsOnChange, withHandlers, withState} from 'recompose'
 import {
-JoinGridList,
-TAB, JOIN_CLIENT, JOIN_MARKET
+    JoinGridList,
+    TAB, JOIN_CLIENT, JOIN_MARKET
 } from '../../components/Join'
 import {openSnackbarAction} from '../../actions/snackbar'
 import {shopDublicateListFetchAction, shopJoinListFetchAction} from '../../actions/shop'
@@ -17,9 +17,9 @@ import * as JOIN_TAB from '../../constants/joinTab'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import getConfig from '../../helpers/getConfig'
-import {openErrorAction} from '../../actions/error'
 import t from '../../helpers/translate'
 
+const ZERO = 0
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -54,7 +54,7 @@ const enhance = compose(
             hasMarket
         }
     }),
-
+    withState('openConfirm', 'setOpenConfirm', false),
     withPropsOnChange((props, nextProps) => {
         const prevTab = _.get(props, ['location', 'query', 'tab']) || JOIN_TAB.JOIN_DEFAULT_TAB
         const nextTab = _.get(nextProps, ['location', 'query', 'tab']) || JOIN_TAB.JOIN_DEFAULT_TAB
@@ -77,10 +77,10 @@ const enhance = compose(
         return ((prevPop !== nextPop && nextPop) || (prevShop !== nextShop && nextShop))
     }, ({dispatch, location}) => {
         const currentTab = _.get(location, ['query', 'tab']) || JOIN_TAB.JOIN_DEFAULT_TAB
-        const currentId = _.get(location, ['query', 'joinMarket']) || _.get(location, ['query', 'joinClient'])
-        if (currentTab === JOIN_TAB.JOIN_TAB_MARKETS && (currentId !== 'false' && currentId)) {
+        const currentId = _.toInteger(_.get(location, ['query', 'joinMarket'])) || _.toInteger(_.get(location, ['query', 'joinClient']))
+        if (currentTab === JOIN_TAB.JOIN_TAB_MARKETS && (currentId > ZERO && currentId)) {
             dispatch(shopJoinListFetchAction(_.toNumber(currentId)))
-        } else if (currentTab === JOIN_TAB.JOIN_TAB_CLIENTS && (currentId !== 'false' && currentId)) {
+        } else if (currentTab === JOIN_TAB.JOIN_TAB_CLIENTS && (currentId > ZERO && currentId)) {
             dispatch(clientJoinListFetchAction(_.toNumber(currentId)))
         }
     }),
@@ -105,8 +105,8 @@ const enhance = compose(
         },
 
         handleSubmitJoinMarkets: props => () => {
-            const {dispatch, createForm, marketFilter, location: {pathname}} = props
-
+            const {dispatch, createForm, marketFilter, location: {pathname}, setOpenConfirm} = props
+            setOpenConfirm(false)
             return dispatch(joinMarketsAction(_.get(createForm, ['values'])))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: t('Данные успешно объединены')}))
@@ -114,11 +114,6 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: marketFilter.getParams({[JOIN_MARKET]: false})})
                     dispatch(shopDublicateListFetchAction(marketFilter))
-                })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
                 })
         },
 
@@ -134,8 +129,8 @@ const enhance = compose(
         },
 
         handleSubmitJoinClients: props => () => {
-            const {dispatch, createForm, clientFilter, location: {pathname}} = props
-
+            const {dispatch, createForm, clientFilter, location: {pathname}, setOpenConfirm} = props
+            setOpenConfirm(false)
             return dispatch(joinClientsAction(_.get(createForm, ['values'])))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: t('Данные успешно объединены')}))
@@ -143,11 +138,6 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: clientFilter.getParams({[JOIN_CLIENT]: false})})
                     dispatch(clientDublicateListFetchAction(clientFilter))
-                })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
                 })
         }
     })
@@ -168,7 +158,9 @@ const JoinList = enhance((props) => {
         joinLoading,
         location,
         layout,
-        hasMarket
+        hasMarket,
+        openConfirm,
+        setOpenConfirm
     } =
     props
 
@@ -253,6 +245,8 @@ const JoinList = enhance((props) => {
                 joinMarketDialog={joinMarketDialog}
                 joinClientDialog={joinClientDialog}
                 hasMarket={hasMarket}
+                openConfirm={openConfirm}
+                setOpenConfirm={setOpenConfirm}
             />
         </Layout>
     )

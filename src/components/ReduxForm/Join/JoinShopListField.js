@@ -21,9 +21,13 @@ const enhance = compose(
             position: 'relative'
         },
         error: {
+            background: '#ffebee',
+            borderRadius: '2px',
+            color: '#f44336',
+            fontSize: '13px',
             textAlign: 'center',
-            fontSize: '14px',
-            color: 'red'
+            margin: '10px -30px 0',
+            padding: '10px 15px'
         },
         imagePlaceholder: {
             width: '100%',
@@ -203,7 +207,7 @@ const flatButton = {
 
 const JoinShopListField = ({classes, handleAdd, handleRemove, ...defaultProps}) => {
     const markets = _.get(defaultProps, ['markets', 'input', 'value']) || []
-    const error = _.get(defaultProps, ['markets', 'meta', 'error'])
+    const error = _.get(defaultProps, ['target', 'meta', 'error'])
     const target = _.get(defaultProps, ['target', 'input', 'value']) || false
     return (
         <div className={classes.wrapper}>
@@ -244,7 +248,7 @@ const JoinShopListField = ({classes, handleAdd, handleRemove, ...defaultProps}) 
                     {_.map(markets, (item, index) => {
                         const name = _.get(item, ['market', 'text'])
                         const client = _.get(item, 'client')
-                        const phone = _.get(item, 'phone') || t('Не указано')
+                        const phone = _.get(item, 'phone') || t('Не указан')
                         const address = _.get(item, 'address')
 
                         return (

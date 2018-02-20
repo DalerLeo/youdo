@@ -8,9 +8,8 @@ import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import IconButton from 'material-ui/IconButton'
 import Loader from '../Loader'
-import {Field, reduxForm, SubmissionError} from 'redux-form'
+import {Field, reduxForm} from 'redux-form'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
-import toCamelCase from '../../helpers/toCamelCase'
 import t from '../../helpers/translate'
 import {
     TextField,
@@ -20,7 +19,7 @@ import {
     PostSearchField
 } from '../ReduxForm'
 import {connect} from 'react-redux'
-import {openErrorAction} from '../../actions/error'
+import formValidate from '../../helpers/formValidate'
 
 export const USERS_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -212,24 +211,27 @@ const UsersCreateDialog = enhance((props) => {
         divisionData,
         isActive
     } = props
-    const validate = (data) => {
-        const errors = toCamelCase(data)
-        const nonFieldErrors = _.get(errors, 'nonFieldErrors')
-        if (!_.isEmpty(nonFieldErrors)) {
-            return dispatch(openErrorAction({
-                message: nonFieldErrors
-            }))
-        }
-
-        throw new SubmissionError({
-            ...errors,
-            _error: nonFieldErrors
-        })
-    }
+    const formNames = [
+        'firstName',
+        'secondName',
+        'phoneNumber',
+        'job',
+        'image',
+        'divisions',
+        'username',
+        'position',
+        'password',
+        'stocks',
+        'priceList',
+        'currencies'
+    ]
 
     const errorText = _.get(errorData, 'errorText')
     const show = _.get(errorData, 'show')
-    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+    const onSubmit = handleSubmit(() => props.onSubmit()
+        .catch((error) => {
+            formValidate(formNames, dispatch, error)
+        }))
     const agent = _.some(positionGroups, {'name': 'agent'})
     const manufacture = _.some(positionGroups, {'name': 'manufacture'})
     const manager = _.some(positionGroups, {'name': 'manager'})

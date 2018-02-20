@@ -32,7 +32,7 @@ export const createSerializer = (data) => {
         comment,
         division,
         'payment_type': paymentType,
-        'date_delivery': moment(_.get(data, ['date_delivery'])).format('YYYY-MM-DD'),
+        'date_delivery': moment(_.get(data, ['dateDelivery'])).format('YYYY-MM-DD'),
         currency,
         products
     }
