@@ -238,6 +238,7 @@ const Dashboard = enhance((props) => {
         handleChangePassword
     } = props
     const ZERO = 0
+    const FLOOR = 2
     const MAX_OUTPUT = 10
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
 
@@ -249,19 +250,19 @@ const Dashboard = enhance((props) => {
     const orderChartActive = _.get(orderChart, 'active')
     const orderChartLoading = _.get(orderChart, 'loading')
     const orderChartDate = _.map(_.get(orderChart, 'data'), (item) => _.get(item, 'date'))
-    const orderChartSalesCash = _.map(_.get(orderChart, 'data'), (item) => _.toNumber(_.get(item, 'amountCash'))) || null
-    const orderChartSalesBank = _.map(_.get(orderChart, 'data'), (item) => _.toNumber(_.get(item, 'amountBank'))) || null
-    const orderChartSalesBankSum = _.sumBy(_.get(orderChart, 'data'), (item) => _.toNumber(_.get(item, 'amountBank')))
-    const orderChartSalesCashSum = _.sumBy(_.get(orderChart, 'data'), (item) => _.toNumber(_.get(item, 'amountCash')))
+    const orderChartSalesCash = _.map(_.get(orderChart, 'data'), (item) => _.floor(_.toNumber(_.get(item, 'amountCash')), FLOOR)) || null
+    const orderChartSalesBank = _.map(_.get(orderChart, 'data'), (item) => _.floor(_.toNumber(_.get(item, 'amountBank')), FLOOR)) || null
+    const orderChartSalesBankSum = _.sumBy(_.get(orderChart, 'data'), (item) => _.floor(_.toNumber(_.get(item, 'amountBank')), FLOOR))
+    const orderChartSalesCashSum = _.sumBy(_.get(orderChart, 'data'), (item) => _.floor(_.toNumber(_.get(item, 'amountCash')), FLOOR))
     const orderChartSalesTotalSum = orderChartSalesCashSum + orderChartSalesBankSum
 
     // ORDERS & RETURNS //
     const orderReturnActive = _.get(ordersReturnsChart, 'active')
     const orderReturnLoading = _.get(ordersReturnsChart, 'loading')
-    const orderChartReturns = _.map(_.get(ordersReturnsChart, 'data'), (item) => _.toNumber(_.get(item, 'returnAmount')))
-    const orderChartSales = _.map(_.get(ordersReturnsChart, 'data'), (item) => _.toNumber(_.get(item, 'amountCash')) + _.toNumber(_.get(item, 'amountBank')))
+    const orderChartReturns = _.map(_.get(ordersReturnsChart, 'data'), (item) => _.floor(_.toNumber(_.get(item, 'returnAmount')), FLOOR))
+    const orderChartSales = _.map(_.get(ordersReturnsChart, 'data'), (item) => _.floor(_.toNumber(_.get(item, 'amountCash')) + _.toNumber(_.get(item, 'amountBank')), FLOOR))
     const orderReturnDate = _.map(_.get(ordersReturnsChart, 'data'), (item) => _.get(item, 'date'))
-    const orderChartReturnsSum = _.sumBy(_.get(ordersReturnsChart, 'data'), (item) => _.toNumber(_.get(item, 'returnAmount')))
+    const orderChartReturnsSum = _.sumBy(_.get(ordersReturnsChart, 'data'), (item) => _.floor(_.toNumber(_.get(item, 'returnAmount')), FLOOR))
     const orderChartFactSum = orderChartSalesTotalSum - orderChartReturnsSum
 
     // AGENTS //
@@ -270,18 +271,10 @@ const Dashboard = enhance((props) => {
     const sortedAgentsList = _.slice(_.filter(_.orderBy(_.get(agentsChart, 'data'), ['salesTotal'], ['desc']), (item) => {
         return !_.isNull(_.get(item, 'salesTotal'))
     }), ZERO, MAX_OUTPUT)
-    const agentsList = _.map(sortedAgentsList, item => {
-        return _.get(item, 'name')
-    })
-    const agentsOrders = _.map(sortedAgentsList, item => {
-        return _.get(item, 'salesTotal') || ZERO
-    })
-    const agentsReturns = _.map(sortedAgentsList, item => {
-        return _.get(item, 'returnTotal') || ZERO
-    })
-    const agentsFact = _.map(sortedAgentsList, item => {
-        return _.get(item, 'salesFact') || ZERO
-    })
+    const agentsList = _.map(sortedAgentsList, item => _.get(item, 'name'))
+    const agentsOrders = _.map(sortedAgentsList, item => _.floor(_.get(item, 'salesTotal'), FLOOR) || ZERO)
+    const agentsReturns = _.map(sortedAgentsList, item => _.floor(_.get(item, 'returnTotal'), FLOOR) || ZERO)
+    const agentsFact = _.map(sortedAgentsList, item => _.floor(_.get(item, 'salesFact'), FLOOR) || ZERO)
 
     // FINANCE //
     const financeChartActive = _.get(financeChart, 'active')
@@ -290,10 +283,10 @@ const Dashboard = enhance((props) => {
         return index
     })
     const financeIncome = _.map(_.get(financeChart, 'data'), (item) => {
-        return _.get(item, 'in') || null
+        return _.floor(_.get(item, 'in'), FLOOR) || null
     })
     const financeExpense = _.map(_.get(financeChart, 'data'), (item) => {
-        return _.get(item, 'out') || null
+        return _.floor(_.get(item, 'out'), FLOOR) || null
     })
     const financeIncomeSum = _.sumBy(financeIncome, (item) => {
         return item
