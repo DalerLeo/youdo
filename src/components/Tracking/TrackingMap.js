@@ -24,6 +24,7 @@ import MarketOn from '../Images/market-green.png'
 import {googleMapStyle} from '../../constants/googleMapsStyle'
 import {connect} from 'react-redux'
 import toBoolean from '../../helpers/toBoolean'
+import {isAgentOnline} from './TrackingWrapper'
 
 const ZERO = 0
 const TWO = 2
@@ -102,27 +103,24 @@ const GoogleMapWrapper = enhance(({
 
     const minutePerHour = 60
     const TEN = 10
-    let hour = _.floor(sliderValue / minutePerHour) || ZERO
-    if (hour < TEN) {
-        hour = '0' + hour
-    }
-    let minute = _.floor(sliderValue % minutePerHour) || ZERO
-    if (minute < TEN) {
-        minute = '0' + minute
-    }
+    const hourSlider = _.floor(sliderValue / minutePerHour) || ZERO
+    const hour = hourSlider < TEN ? '0' + hourSlider : hourSlider
+
+    const minuteSlider = _.floor(sliderValue % minutePerHour) || ZERO
+    const minute = minuteSlider < TEN ? '0' + minuteSlider : minuteSlider
     const filterDate = _.toInteger(moment(moment(date).format('YYYY-MM-DD ' + hour + ':' + minute)).format('x'))
 
     const filterAgentLocation = _.filter(_.get(agentLocation, 'results'), (o) => {
-        const regDate = _.toInteger(moment(_.get(o, 'registeredDate')).format('x'))
+        const regDate = _.toInteger(moment(_.get(o, 'locationDate')).format('x'))
         return regDate <= filterDate
     })
     const agentCoordinates = _.map(filterAgentLocation, (item) => {
         const lat = _.get(item, ['point', 'lat'])
         const lng = _.get(item, ['point', 'lon'])
-        const registeredDate = _.get(item, 'registeredDate')
+        const registeredDate = _.get(item, 'locationDate')
         return {
-            lat: lat,
-            lng: lng,
+            lat,
+            lng,
             date: moment(registeredDate).format('HH:mm:ss')
         }
     })
@@ -133,15 +131,14 @@ const GoogleMapWrapper = enhance(({
             const lat = _.get(p, '0')
             const lng = _.get(p, '1')
 
-            return {lat: lat, lng: lng}
+            return {
+                lat,
+                lng
+            }
         })
 
-        const meanLat = _.mean(_.map(_.get(item, ['coordinates', 'coordinates', '0']), (p) => {
-            return _.get(p, '0')
-        }))
-        const meanLng = _.mean(_.map(_.get(item, ['coordinates', 'coordinates', '0']), (p) => {
-            return _.get(p, '1')
-        }))
+        const meanLat = _.mean(_.map(_.get(item, ['coordinates', 'coordinates', '0']), (p) => _.get(p, '0')))
+        const meanLng = _.mean(_.map(_.get(item, ['coordinates', 'coordinates', '0']), (p) => _.get(p, '1')))
         return (
             <div key={id}>
                 <Polygon
@@ -165,19 +162,11 @@ const GoogleMapWrapper = enhance(({
         strokeWeight: 3
     }
 
-    const hoverMarket = (id) => {
-        setOpenMarketInfo(id)
-    }
-    const mouseOutMarket = () => {
-        setOpenMarketInfo(ZERO)
-    }
+    const hoverMarket = (id) => setOpenMarketInfo(id)
+    const mouseOutMarket = () => setOpenMarketInfo(ZERO)
 
-    const hoverAgent = (id) => {
-        setOpenAgentInfo(id)
-    }
-    const mouseOutAgent = () => {
-        setOpenAgentInfo(ZERO)
-    }
+    const hoverAgent = (id) => setOpenAgentInfo(id)
+    const mouseOutAgent = () => setOpenAgentInfo(ZERO)
     const getPixelPositionOffset = (width, height) => ({
         x: -(width / TWO)
     })
@@ -238,14 +227,9 @@ const GoogleMapWrapper = enhance(({
                 const lat = _.get(item, ['location', 'lat'])
                 const lng = _.get(item, ['location', 'lon'])
 
-                const FIVE_MIN = 300000
-                const dateNow = _.toInteger(moment().format('x'))
-                const registeredDate = _.toInteger(moment(_.get(item, 'registeredDate')).format('x'))
-                const difference = dateNow - registeredDate
-                let isOnline = false
-                if (difference <= FIVE_MIN) {
-                    isOnline = true
-                }
+                const registeredDate = _.toInteger(moment(_.get(item, 'locationDate')).format('x'))
+                const isOnline = isAgentOnline(registeredDate)
+
                 const lastLat = _.get(_.last(filterAgentLocation), ['point', 'lat'])
                 const lastLon = _.get(_.last(filterAgentLocation), ['point', 'lon'])
                 if (id === agentId) {
@@ -313,14 +297,8 @@ const GoogleMapWrapper = enhance(({
                     const lat = _.get(item, ['location', 'lat'])
                     const lng = _.get(item, ['location', 'lon'])
 
-                    const FIVE_MIN = 300000
-                    const dateNow = _.toInteger(moment().format('x'))
-                    const registeredDate = _.toInteger(moment(_.get(item, 'registeredDate')).format('x'))
-                    const difference = dateNow - registeredDate
-                    let isOnline = false
-                    if (difference <= FIVE_MIN) {
-                        isOnline = true
-                    }
+                    const registeredDate = _.toInteger(moment(_.get(item, 'locationDate')).format('x'))
+                    const isOnline = isAgentOnline(registeredDate)
                     if (id !== agentId) {
                         return (
                             <div key={id}>
