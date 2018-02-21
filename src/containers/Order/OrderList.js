@@ -1141,7 +1141,7 @@ const OrderList = enhance((props) => {
                 paymentDate: moment(_.get(detail, ['paymentDate'])).toDate(),
                 nextPaymentDate: _.get(detail, ['nextPaymentDate'])
                     ? moment(_.get(detail, ['nextPaymentDate'])).toDate()
-                    : moment().toDate(),
+                    : null,
                 products: groupedProducts,
                 priceList: {
                     value: _.get(detail, ['priceList', 'id']),

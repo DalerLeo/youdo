@@ -64,7 +64,8 @@ const enhance = compose(
     })
 )
 
-const ProviderContactsListField = ({classes, fields}) => {
+const ProviderContactsListField = ({classes, fields, ...defaultProps}) => {
+    console.warn(defaultProps)
     const ONE = 1
     const handleTouchTap = (index) => {
         const LAST_INDEX = index + ONE

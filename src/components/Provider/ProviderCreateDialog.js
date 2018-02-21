@@ -6,29 +6,17 @@ import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import Loader from '../Loader'
-import {Field, FieldArray, reduxForm, SubmissionError} from 'redux-form'
-import toCamelCase from '../../helpers/toCamelCase'
+import {Field, FieldArray, reduxForm} from 'redux-form'
 import {TextField} from '../ReduxForm'
 import ProviderContactsListField from '../ReduxForm/Provider/ProviderContactsListField'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 import t from '../../helpers/translate'
+import formValidate from '../../helpers/formValidate'
 
 export const PROVIDER_CREATE_DIALOG_OPEN = 'openCreateDialog'
 export const PROVIDER_UPDATE_DIALOG_OPEN = 'openUpdateDialog'
-
-const validate = (data) => {
-    const errors = toCamelCase(data)
-    const nonFieldErrors = _.get(errors, 'nonFieldErrors')
-    const latLng = (_.get(errors, 'lat') || _.get(errors, 'lon')) && 'Location is required.'
-
-    throw new SubmissionError({
-        ...errors,
-        latLng,
-        _error: nonFieldErrors
-    })
-}
 
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
@@ -73,8 +61,12 @@ const enhance = compose(
 )
 
 const ProviderCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, isUpdate} = props
-    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+    const {dispatch, open, loading, handleSubmit, onClose, classes, isUpdate} = props
+    const formNames = ['name', 'address', 'contacts']
+    const onSubmit = handleSubmit(() => props.onSubmit()
+        .catch((error) => {
+            formValidate(formNames, dispatch, error)
+        }))
 
     return (
         <Dialog
