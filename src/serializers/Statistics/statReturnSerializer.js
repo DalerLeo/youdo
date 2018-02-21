@@ -42,8 +42,8 @@ export const orderListFilterSerializer = (data, withOrderReturn) => {
         'date_delivery': _.get(defaultData, 'dateDelivery'),
         'total_price': _.get(defaultData, 'totalPrice'),
         'total_balance': _.get(defaultData, 'totalBalance'),
-        'created_date_0': _.get(defaultData, 'fromDate') || firstDayOfMonth,
-        'created_date_1': _.get(defaultData, 'toDate') || lastDayOfMonth,
+        'begin_date': _.get(defaultData, 'fromDate') || firstDayOfMonth,
+        'end_date': _.get(defaultData, 'toDate') || lastDayOfMonth,
         'delivery_date_0': _.get(defaultData, 'deliveryFromDate'),
         'delivery_date_1': _.get(defaultData, 'deliveryToDate') || _.get(defaultData, 'deliveryFromDate'),
         'exclude_cancelled': excludeCanceled ? 'True' : null,
@@ -62,8 +62,8 @@ export const returnGraphSerializer = (data) => {
     const urlToDate = _.get(defaultData, 'toDate')
 
     return {
-        'created_date_0': urlFromDate || firstDayOfMonth,
-        'created_date_1': urlToDate || lastDayOfMonth,
+        'begin_date': urlFromDate || firstDayOfMonth,
+        'end_date': urlToDate || lastDayOfMonth,
         'division': _.get(defaultData, 'division')
     }
 }

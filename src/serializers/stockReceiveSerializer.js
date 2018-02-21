@@ -64,8 +64,8 @@ export const listFilterSerializer = (data, history, outHistory) => {
             'type': outHistory ? _.get(defaultData, 'status') : _.get(defaultData, 'type'),
             'product': _.get(defaultData, 'product'),
             'product_type': productType,
-            'accepted_time_0': _.get(defaultData, 'fromDate'),
-            'accepted_time_1': _.get(defaultData, 'toDate'),
+            'begin_date': _.get(defaultData, 'fromDate'),
+            'end_date': _.get(defaultData, 'toDate'),
             'ordering': ordering && orderingSnakeCase(ordering),
             history
 

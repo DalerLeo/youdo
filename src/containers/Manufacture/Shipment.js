@@ -364,7 +364,7 @@ const enhance = compose(
         },
 
         handleSubmitAddProductMaterial: props => () => {
-            const {dispatch, location: {pathname, query}, params, filter, productMaterialForm, filterShipment, filterLogs, beginDate, endDate} = props
+            const {dispatch, location: {pathname, query}, params, filter, productMaterialForm, beginDate, endDate} = props
             const dialogType = _.get(query, OPEN_ADD_PRODUCT_MATERIAL_DIALOG)
             const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
             const dateRange = {
@@ -379,10 +379,8 @@ const enhance = compose(
                     return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
-                    dispatch(shipmentListFetchAction(filterShipment, manufactureId, dateRange))
-                    dispatch(shipmentLogsListFetchAction(filterLogs, manufactureId, dateRange))
-                    dispatch(shipmentProductsListFetchAction(dateRange, manufactureId))
-                    dispatch(shipmentMaterialsListFetchAction(dateRange, manufactureId))
+                    dispatch(shipmentProductsListFetchAction(dateRange, null, manufactureId))
+                    dispatch(shipmentMaterialsListFetchAction(dateRange, null, manufactureId))
                 })
                 .catch((error) => {
                     dispatch(openErrorAction({

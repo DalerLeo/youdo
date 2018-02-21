@@ -315,7 +315,7 @@ const enhance = compose(
         enableReinitialize: true
     }),
     withState('edit', 'setEdit', null),
-        withState('deleteItem', 'setDeleteItem', null)
+    withState('deleteItem', 'setDeleteItem', null)
 )
 
 const iconStyles = {
@@ -406,7 +406,11 @@ const ManufactureShipment = enhance((props) => {
         handleEditProductAmount()
         props.dispatch(change('LogEditForm', 'editAmount', ''))
     }
-
+    const handleDeleteSubmit = () => {
+        handleDeleteProduct()
+        setDeleteItem(null)
+        return null
+    }
     const groupedProducts = _.groupBy(_.get(detailData, 'products'), (item) => item.product.id)
     const products = _.map(groupedProducts, (item, index) => {
         const productName = _.get(_.find(_.get(detailData, 'products'), (obj) => {
@@ -607,7 +611,7 @@ const ManufactureShipment = enhance((props) => {
     return (
         <div>
             <div className={classes.buttons}>
-                <Link target={'_blank'}
+                <Link
                       to={{pathname: ROUTES.INVENTORY_LIST_URL, query: {[INVENTORY_INVENTORY_DIALOG_OPEN]: true, 'pdStock': stock}}}
                       className={classes.link}>
                     <FlatButton
@@ -790,12 +794,13 @@ const ManufactureShipment = enhance((props) => {
                 handleCloseAddProductConfirm={addProductDialog.handleCloseAddProductConfirm}
                 handleSubmitAddProductConfirm={addProductDialog.handleSubmitAddProductConfirm}
             />
+
             <ConfirmDialog
                 type="delete"
                 message={_.get(deleteItem, ['product', 'name']) + ' ' + numberFormat(_.get(deleteItem, 'amount'), _.get(deleteItem, ['product', 'measurement', 'name']))}
                 onClose={handleCloseDelete}
-                open={_.get(deleteItem, 'id') > ZERO}
-                onSubmit={handleDeleteProduct}
+                open={_.toInteger(_.get(deleteItem, 'id')) > ZERO}
+                onSubmit={handleDeleteSubmit}
             />
 
             <ShipmentConfirmDialog

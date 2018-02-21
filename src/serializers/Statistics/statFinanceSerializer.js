@@ -41,8 +41,8 @@ export const listFilterSerializer = (data) => {
     const {...defaultData} = data
     const type = _.get(defaultData, 'type')
     return {
-        'created_date_0': _.get(defaultData, 'fromDate') || firstDayOfMonth,
-        'created_date_1': _.get(defaultData, 'toDate') || lastDayOfMonth,
+        'begin_date': _.get(defaultData, 'fromDate') || firstDayOfMonth,
+        'end_date': _.get(defaultData, 'toDate') || lastDayOfMonth,
         'type': type,
         'search': _.get(defaultData, 'search'),
         'page': _.get(defaultData, 'page'),

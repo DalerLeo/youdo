@@ -21,8 +21,8 @@ export const returnChart = (data) => {
     const urlToDate = _.get(defaultData, 'endDate') || moment().format('YYYY-MM-' + lastDayOfMonth)
 
     return {
-        'created_date_0': urlFromDate,
-        'created_date_1': urlToDate
+        'begin_date': urlFromDate,
+        'end_date': urlToDate
     }
 }
 

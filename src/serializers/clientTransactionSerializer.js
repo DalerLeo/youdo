@@ -6,8 +6,8 @@ export const listFilterSerializer = (data) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
     return {
-        'created_date_0': _.get(defaultData, 'fromDate'),
-        'created_date_1': _.get(defaultData, 'toDate'),
+        'begin_date': _.get(defaultData, 'fromDate'),
+        'end_date': _.get(defaultData, 'toDate'),
         'client': _.get(defaultData, 'client'),
         'division': _.get(defaultData, 'division'),
         'type': TYPE_PAYMENT,
@@ -22,8 +22,8 @@ export const listFilterSerializer = (data) => {
 export const totalSumFilterSerializer = (data) => {
     const {...defaultData} = data
     return {
-        'created_date_0': _.get(defaultData, 'fromDate'),
-        'created_date_1': _.get(defaultData, 'toDate'),
+        'begin_date': _.get(defaultData, 'fromDate'),
+        'end_date': _.get(defaultData, 'toDate'),
         'client': _.get(defaultData, 'client'),
         'division': _.get(defaultData, 'division'),
         'type': TYPE_PAYMENT
