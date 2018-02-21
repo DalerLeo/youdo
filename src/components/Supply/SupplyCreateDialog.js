@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {compose, withReducer} from 'recompose'
+import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import {Field, Fields, reduxForm} from 'redux-form'
 import Dialog from 'material-ui/Dialog'
@@ -216,10 +216,7 @@ const enhance = compose(
     reduxForm({
         form: 'SupplyCreateForm',
         enableReinitialize: true
-    }),
-    withReducer('state', 'dispatch', (state, action) => {
-        return {...state, ...action}
-    }, {open: false}),
+    })
 )
 
 const customContentStyle = {
@@ -233,6 +230,7 @@ const SupplyCreateDialog = enhance((props) => {
         'contact',
         'dateDelivery',
         'division',
+        'products',
         'stock',
         'currency',
         'paymentType',

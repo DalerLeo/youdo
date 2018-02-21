@@ -6,14 +6,17 @@ import {SubmissionError} from 'redux-form'
 const validate = (formNames, dispatch, error) => {
     const errors = toCamelCase(error)
     const nonFieldErrors = _.get(errors, 'nonFieldErrors')
-    _.map(errors, (item, index) => {
-        if (!_.includes(formNames, index)) {
-            return dispatch(openErrorAction({
-                message: error
-            }))
-        }
-        return null
-    })
+    const bigError = _.includes(_
+        .chain(errors)
+        .map((item, index) => {
+            return !_.includes(formNames, index)
+        })
+        .value(), true)
+    if (bigError) {
+        return dispatch(openErrorAction({
+            message: error
+        }))
+    }
 
     throw new SubmissionError({
         ...errors,
