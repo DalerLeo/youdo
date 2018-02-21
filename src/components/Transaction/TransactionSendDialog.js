@@ -116,7 +116,7 @@ const TransactionSendDialog = enhance((props) => {
     const customRatePersent = _.toNumber(numberWithoutSpaces(amountFromPersent)) * _.toNumber(numberWithoutSpaces(amountToPersent)) / HUNDRED
     const ROUND_VAL = 5
 
-    const formNames = ['fromCashbox', 'toCashbox', 'amountFrom', 'amountTo', 'rate', 'comment']
+    const formNames = ['fromCashbox', 'toCashbox', 'amountFrom', 'rate', 'comment']
     const onSubmit = handleSubmit(() => props.onSubmit(sameCurrencyDiffType && amountToPersent, sameCurrencyType)
         .catch((error) => {
             formValidate(formNames, dispatch, error)
