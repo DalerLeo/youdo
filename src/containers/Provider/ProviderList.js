@@ -22,7 +22,6 @@ import {
     providerItemFetchAction
 } from '../../actions/provider'
 import {openSnackbarAction} from '../../actions/snackbar'
-import {openErrorAction} from '../../actions/error'
 import t from '../../helpers/translate'
 
 const enhance = compose(
@@ -110,11 +109,6 @@ const enhance = compose(
                     hashHistory.push({pathname, query: filter.getParams({[PROVIDER_CREATE_DIALOG_OPEN]: false})})
                     dispatch(providerListFetchAction(filter))
                 })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
-                })
         },
 
         handleOpenUpdateDialog: props => (id) => {
@@ -144,11 +138,6 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push(filter.createURL({[PROVIDER_UPDATE_DIALOG_OPEN]: false}))
                     dispatch(providerListFetchAction(filter))
-                })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
                 })
         },
 
