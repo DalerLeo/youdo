@@ -95,7 +95,7 @@ export const comboSerializer = (data, query) => {
     })
 
     return {
-        agent: _.get(data, 'agents'),
+        agent: _.get(data, 'agent'),
         market: _.get(query, 'market'),
         recurrences,
         priority

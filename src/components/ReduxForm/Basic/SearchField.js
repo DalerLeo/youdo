@@ -26,6 +26,7 @@ const fetchList = ({state, dispatch, getOptions, getText, getValue, input}) => {
 const enhance = compose(
     injectSheet({
         wrapper: {
+            height: 'auto',
             width: '100%',
             '& .is-focused:not(.is-open) > .Select-control': {
                 borderBottom: 'solid 2px #5d6474',
@@ -33,6 +34,7 @@ const enhance = compose(
             }
         },
         select: {
+            position: 'relative',
             '& .Select-menu': {
                 background: '#fff',
                 maxHeight: '200px'
@@ -81,11 +83,16 @@ const enhance = compose(
                 paddingTop: '12px'
             }
         },
+        selectError: {
+            extend: 'select',
+            '& .Select-control': {
+                borderBottom: '2px solid #f44336'
+            }
+        },
         error: {
+            fontSize: '12px',
+            marginTop: '-5px',
             color: '#f44336',
-            position: 'absolute',
-            bottom: '-2px',
-            borderTop: '#f44336 2px solid',
             width: '100%'
         }
     }),
@@ -153,14 +160,10 @@ const SearchField = enhance((props) => {
         meta
     } = props
     const hintText = !state.loading ? <div>Загрузка...</div> : <div>Не найдено</div>
-    const errorStyle = meta.error ? {
-        height: '60px',
-        position: 'relative'
-    } : {}
     return (
-        <div className={classes.wrapper} style={errorStyle}>
+        <div className={classes.wrapper}>
             <Select
-                className={classes.select}
+                className={meta.error ? classes.selectError : classes.select}
                 options={state.dataSource}
                 value={input.value.value || null}
                 onInputChange={text => dispatch({text: text})}
@@ -177,7 +180,7 @@ const SearchField = enhance((props) => {
                 clearable={clearValue}
                 loadingPlaceholder="Загрузка..."
             />
-            {meta.error && <span className={classes.error}>{meta.error}</span>}
+            {meta.error && <div className={classes.error}>{meta.error}</div>}
         </div>
     )
 })

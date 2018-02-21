@@ -4,7 +4,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
-import {Field, Fields, reduxForm, SubmissionError} from 'redux-form'
+import {Field, Fields, reduxForm} from 'redux-form'
 import Dialog from 'material-ui/Dialog'
 import Loader from '../Loader'
 import IconButton from 'material-ui/IconButton'
@@ -24,7 +24,6 @@ import {
     UserCurrenciesSearchField,
     DeliveryTypeSearchField
 } from '../ReduxForm'
-import toCamelCase from '../../helpers/toCamelCase'
 import numberFormat from '../../helpers/numberFormat'
 import checkPermission from '../../helpers/checkPermission'
 import OrderDealTypeRadio from '../ReduxForm/Order/OrderDealTypeRadio'
@@ -37,19 +36,12 @@ import {
     ORDER_DELIVERED,
     ORDER_CANCELED
 } from '../../constants/backendConstants'
+import formValidate from '../../helpers/formValidate'
 
 export const ORDER_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const SHOP_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const CLIENT_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
-const validate = (data) => {
-    const errors = toCamelCase(data)
-    const nonFieldErrors = _.get(errors, 'nonFieldErrors')
-    throw new SubmissionError({
-        ...errors,
-        _error: nonFieldErrors
-    })
-}
 const enhance = compose(
     injectSheet({
         loader: {
@@ -153,7 +145,7 @@ const enhance = compose(
             margin: '0 !important'
         },
         leftOrderPart: {
-            width: '275px',
+            width: '280px',
             padding: '20px 30px 5px',
             borderRight: '1px #efefef solid',
             '& .Select-menu-outer': {
@@ -161,18 +153,14 @@ const enhance = compose(
             }
         },
         rightOrderPart: {
-            width: 'calc(100% - 275px)',
+            width: 'calc(100% - 280px)',
             padding: '20px 30px',
             overflowY: 'auto',
             maxHeight: '800px'
         },
         inputFieldCustom: {
-            fontSize: '13px !important',
             height: '45px !important',
             marginTop: '7px',
-            '& div': {
-                fontSize: '13px !important'
-            },
             '& label': {
                 top: '20px !important',
                 lineHeight: '5px !important'
@@ -182,12 +170,7 @@ const enhance = compose(
             }
         },
         inputDateCustom: {
-            fontSize: '13px !important',
-            height: '45px !important',
             marginTop: '7px',
-            '& div': {
-                fontSize: '13px !important'
-            },
             '& label': {
                 top: '20px !important',
                 lineHeight: '5px !important'
@@ -267,8 +250,28 @@ const OrderCreateDialog = enhance((props) => {
         dealType,
         paymentDate,
         closed,
-        setClosed
+        setClosed,
+        dispatch
     } = props
+
+    const formNames = [
+        'client',
+        'market',
+        'paymentType',
+        'currency',
+        'priceList',
+        'user',
+        'paymentDate',
+        'dealType',
+        'nextPaymentDate',
+        'contract',
+        'deliveryType',
+        'products'
+    ]
+    const onSubmit = handleSubmit(() => props.onSubmit()
+        .catch((error) => {
+            formValidate(formNames, dispatch, error)
+        }))
 
     const customContentStyle = {
         width: loading ? '800px' : '1000px',
@@ -276,7 +279,6 @@ const OrderCreateDialog = enhance((props) => {
         height: '100%'
     }
     const canSetDeliveryMan = checkPermission('can_set_delivery_man')
-    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
     const totalCost = _.sumBy(orderProducts, (item) => {
         const amount = _.toNumber(_.get(item, 'amount'))
         const cost = _.toNumber(_.get(item, 'cost'))
@@ -320,7 +322,8 @@ const OrderCreateDialog = enhance((props) => {
                                     <div className={classes.subTitleOrder}>
                                         {hasMarket && <span>{t('Выбор магазина')}</span>}
                                         {!hasMarket && <span>{t('Выбор клиента')}</span>}
-                                        {hasMarket && <Link style={{color: '#12aaeb'}}
+                                        {hasMarket &&
+                                        <Link style={{color: '#12aaeb'}}
                                               target="_blank"
                                               to={{
                                                   pathname: [ROUTES.SHOP_LIST_URL],
@@ -328,12 +331,13 @@ const OrderCreateDialog = enhance((props) => {
                                               }}>
                                             + {t('добавить')}
                                         </Link>}
-                                        {!hasMarket && <Link style={{color: '#12aaeb'}}
-                                                            target="_blank"
-                                                            to={{
-                                                                pathname: [ROUTES.CLIENT_LIST_URL],
-                                                                query: {[CLIENT_CREATE_DIALOG_OPEN]: true}
-                                                            }}>
+                                        {!hasMarket &&
+                                        <Link style={{color: '#12aaeb'}}
+                                              target="_blank"
+                                              to={{
+                                                  pathname: [ROUTES.CLIENT_LIST_URL],
+                                                  query: {[CLIENT_CREATE_DIALOG_OPEN]: true}
+                                              }}>
                                             + {t('добавить')}
                                         </Link>}
                                     </div>
@@ -387,6 +391,7 @@ const OrderCreateDialog = enhance((props) => {
                                             component={DateField}
                                             className={classes.inputDateCustom}
                                             floatingLabelText={t('Дата окончательной оплаты')}
+                                            errorStyle={{bottom: 2}}
                                             container="inline"
                                             fullWidth={true}/>
                                     </div>
@@ -408,7 +413,7 @@ const OrderCreateDialog = enhance((props) => {
                                         <Field
                                             name="contract"
                                             component={TextField}
-                                            className={classes.inputDateCustom}
+                                            className={classes.inputFieldCustom}
                                             label={t('Номер договора')}
                                             fullWidth={true}/>
                                     </div>

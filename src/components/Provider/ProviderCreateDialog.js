@@ -62,7 +62,7 @@ const enhance = compose(
 
 const ProviderCreateDialog = enhance((props) => {
     const {dispatch, open, loading, handleSubmit, onClose, classes, isUpdate} = props
-    const formNames = ['name', 'address', 'contacts']
+    const formNames = ['name', 'address']
     const onSubmit = handleSubmit(() => props.onSubmit()
         .catch((error) => {
             formValidate(formNames, dispatch, error)

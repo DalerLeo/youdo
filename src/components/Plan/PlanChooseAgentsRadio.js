@@ -57,7 +57,7 @@ const PlanChooseAgentsRadio = (props) => {
 
     return (
         <RadioButtonGroup
-            name="agents"
+            name="agent"
             style={radioButtonGroupStyle}
             onChange={input.onChange}
             valueSelected={input.value}

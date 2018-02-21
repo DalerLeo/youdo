@@ -1,24 +1,14 @@
-import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {compose, withReducer} from 'recompose'
 import injectSheet from 'react-jss'
-import {reduxForm, Field, SubmissionError} from 'redux-form'
+import {reduxForm, Field} from 'redux-form'
 import FlatButton from 'material-ui/FlatButton'
 import {TextField, normalizeDiscount} from '../ReduxForm'
 import Paper from 'material-ui/Paper'
-import toCamelCase from '../../helpers/toCamelCase'
 import numberFormat from '../../helpers/numberFormat'
 import t from '../../helpers/translate'
 
-const validate = (data) => {
-    const errors = toCamelCase(data)
-    const nonFieldErrors = _.get(errors, 'nonFieldErrors')
-    throw new SubmissionError({
-        ...errors,
-        _error: nonFieldErrors
-    })
-}
 const enhance = compose(
     injectSheet({
         form: {
@@ -75,7 +65,7 @@ const OrderSetDiscountDialog = enhance((props) => {
     const {classes, handleSubmit, id, setOpenDiscountDialog, percent, handleSubmitSetZeroDiscountDialog} = props
     const ZERO = 0
     const onSubmit = handleSubmit(() => {
-        props.onSubmit(id).catch(validate)
+        props.onSubmit(id)
             .then(() => {
                 setOpenDiscountDialog(false)
             })

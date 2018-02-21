@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {compose, withReducer} from 'recompose'
+import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import {Field, Fields, reduxForm} from 'redux-form'
 import {connect} from 'react-redux'
@@ -18,6 +18,7 @@ import {
 } from '../ReduxForm'
 import MarketSearchField from '../ReduxForm/ClientBalance/MarketSearchField'
 import t from '../../helpers/translate'
+import formValidate from '../../helpers/formValidate'
 
 const enhance = compose(
     injectSheet({
@@ -214,10 +215,7 @@ const enhance = compose(
         return {
             clientId
         }
-    }),
-    withReducer('state', 'dispatch', (state, action) => {
-        return {...state, ...action}
-    }, {open: false}),
+    })
 )
 
 const customContentStyle = {
@@ -235,8 +233,20 @@ const ReturnCreateDialog = enhance((props) => {
         editOnlyCost,
         hasMarket,
         handleOpenAddProduct,
-        onPreviewOpen
+        handleSubmit,
+        dispatch
     } = props
+    const formNames = [
+        'client',
+        'market',
+        'stock',
+        'comment',
+        'products'
+    ]
+    const onSubmit = handleSubmit(() => props.onSubmit()
+        .catch((error) => {
+            formValidate(formNames, dispatch, error)
+        }))
     return (
         <Dialog
             modal={true}
@@ -253,7 +263,7 @@ const ReturnCreateDialog = enhance((props) => {
                 </IconButton>
             </div>
             <div className={classes.bodyContent}>
-                <form scrolling="auto" className={classes.form}>
+                <form className={classes.form}>
                     <div className={classes.loader}>
                         <Loader size={0.75}/>
                     </div>
@@ -318,7 +328,7 @@ const ReturnCreateDialog = enhance((props) => {
                             label={t('Далее')}
                             className={classes.actionButton}
                             primary={true}
-                            onTouchTap={() => onPreviewOpen()}
+                            onTouchTap={onSubmit}
                         />
                     </div>
                 </form>

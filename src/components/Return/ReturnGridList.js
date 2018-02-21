@@ -262,7 +262,7 @@ const OrderGridList = enhance((props) => {
                 open={_.get(createDialog, 'openCreateDialog')}
                 onPreviewOpen={previewDialog.handleOpenPreviewDialog}
                 onClose={createDialog.handleCloseCreateDialog}
-                onSubmit={createDialog.handleSubmitCreateDialog}
+                onSubmit={previewDialog.handleSubmit}
                 hasMarket={hasMarket}
                 handleOpenAddProduct={addProductDialog.handleOpenAddProduct}
             />
@@ -284,7 +284,7 @@ const OrderGridList = enhance((props) => {
                     loading={updateDialog.updateLoading}
                     open={updateDialog.openUpdateDialog}
                     onClose={updateDialog.handleCloseUpdateDialog}
-                    onSubmit={updateDialog.handleSubmitUpdateDialog}
+                    onSubmit={previewDialog.handleSubmit}
                     hasMarket={hasMarket}
                     onPreviewOpen={previewDialog.handleOpenPreviewDialog}
                     handleOpenAddProduct={addProductDialog.handleOpenAddProduct}

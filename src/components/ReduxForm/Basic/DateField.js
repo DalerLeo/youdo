@@ -28,6 +28,7 @@ const DateField = ({classes, input, label, meta: {error}, ...defaultProps}) => {
                     errorText={error}
                     errorStyle={errorStyle}
                     floatingLabelText={label}
+                    inputStyle={{fontSize: 13}}
                     {...input}
                     onChange={(event, value) => input.onChange(value)}
                     {...defaultProps}
@@ -39,13 +40,11 @@ const DateField = ({classes, input, label, meta: {error}, ...defaultProps}) => {
                         year: 'numeric'
                     }).format}
                     locale={lang}
-                    cancelLabel={t('Отмена')}
-                />
+                    cancelLabel={t('Отмена')}/>
                 <div className={classes.icon}>
                     <DateRange />
                 </div>
             </div>
-            {error && <span>{error}</span>}
         </div>
     )
 }

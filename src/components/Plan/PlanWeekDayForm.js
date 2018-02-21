@@ -16,6 +16,7 @@ import PlanAddPrioritySearchField from '../ReduxForm/PlanAddPrioritySearchField'
 import {MARKET, UPDATE_PLAN} from '../Plan'
 import Loader from '../Loader'
 import t from '../../helpers/translate'
+import formValidate from '../../helpers/formValidate'
 
 const enhance = compose(
     injectSheet({
@@ -95,7 +96,6 @@ const PlanWeekDayForm = enhance((props) => {
     const {
         classes,
         handleSubmit,
-        onSubmit,
         isUpdate,
         comboPlan,
         combo,
@@ -106,7 +106,8 @@ const PlanWeekDayForm = enhance((props) => {
         submitDelete,
         openConfirmDialog,
         setOpenConfirmDialog,
-        selectedWeekDay
+        selectedWeekDay,
+        dispatch
     } = props
     const closeForm = () => {
         hashHistory.push(filter.createURL({[MARKET]: null}))
@@ -114,6 +115,11 @@ const PlanWeekDayForm = enhance((props) => {
     const closeUpdateForm = () => {
         hashHistory.push(filter.createURL({[MARKET]: null, [UPDATE_PLAN]: false}))
     }
+    const formNames = ['agent', 'planType', 'weekday', 'priority']
+    const onSubmit = handleSubmit(() => props.onSubmit()
+        .catch((error) => {
+            formValidate(formNames, dispatch, error)
+        }))
     const comboLoading = _.get(comboPlan, 'combinationLoading')
     const comboPlanId = _.get(comboPlan, 'comboPlanId')
     const agents = _.get(comboPlan, 'agents')
@@ -123,14 +129,14 @@ const PlanWeekDayForm = enhance((props) => {
             <div className={classes.closeIcon}>
                 <Close onClick={(isUpdate || combo) ? closeUpdateForm : closeForm}/>
             </div>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={onSubmit}>
                 {combo && comboLoading
                     ? <div/>
                     : combo && !comboLoading &&
                     <div>
                         <div className={classes.title}>{t('Закрепленные агенты')}</div>
                         <Field
-                            name="agents"
+                            name="agent"
                             agents={agents}
                             data={comboPlan.combinationDetails}
                             component={PlanChooseAgentsRadio}
