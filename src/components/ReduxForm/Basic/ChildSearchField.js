@@ -30,14 +30,15 @@ const fetchList = ({state, dispatch, getOptions, getText, getValue, input}, pare
 const enhance = compose(
     injectSheet({
         wrapper: {
+            height: 'auto',
             width: '100%',
-            height: '45px',
             '& .is-focused:not(.is-open) > .Select-control': {
                 borderBottom: 'solid 2px #5d6474',
                 boxShadow: 'unset'
             }
         },
         select: {
+            position: 'relative',
             '& .Select-menu': {
                 background: '#fff',
                 maxHeight: '200px'
@@ -71,6 +72,18 @@ const enhance = compose(
             '& .Select-option.is-focused, .Select-option.is-selected': {
                 background: 'unset'
             }
+        },
+        selectError: {
+            extend: 'select',
+            '& .Select-control': {
+                borderBottom: '2px solid #f44336'
+            }
+        },
+        error: {
+            fontSize: '12px',
+            marginTop: '-5px',
+            color: '#f44336',
+            width: '100%'
         }
     }),
     withReducer('state', 'dispatch', (state, action) => {
@@ -115,12 +128,13 @@ const SearchField = enhance((props) => {
         state,
         dispatch,
         valueRenderer,
-        input
+        input,
+        meta
     } = props
     return (
         <div className={classes.wrapper}>
             <Select
-                className={classes.select}
+                className={meta.error ? classes.selectError : classes.select}
                 options={state.dataSource}
                 value={input.value.value || null}
                 onInputChange={text => dispatch({text: text})}
@@ -135,6 +149,7 @@ const SearchField = enhance((props) => {
                 disabled={props.disabled || state.loading}
                 filterOptions={options => options}
             />
+            {meta.error && <span className={classes.error}>{meta.error}</span>}
         </div>
     )
 })

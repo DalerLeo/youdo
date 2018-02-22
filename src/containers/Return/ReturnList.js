@@ -117,19 +117,6 @@ const enhance = compose(
         orderID && dispatch(orderItemFetchAction(orderID))
     }),
     withState('openPreview', 'setOpenPreview', false),
-    withPropsOnChange((props, nextProps) => {
-        const open = _.get(props, ['openPreview'])
-        const nextOpen = _.get(nextProps, ['openPreview'])
-        return open !== nextOpen && nextOpen
-    }, ({dispatch, createForm, openPreview}) => {
-        toBoolean(openPreview) &&
-        dispatch(returnPreviewAction(_.get(createForm, 'values')))
-            .catch((error) => {
-                dispatch(openErrorAction({
-                    message: error
-                }))
-            })
-    }),
     withState('openAddProductDialog', 'setOpenAddProductDialog', false),
     withState('openAddProductConfirm', 'setOpenAddProductConfirm', false),
     withPropsOnChange((props, nextProps) => {
@@ -343,11 +330,6 @@ const enhance = compose(
                         setOpenPreview(false)
                         hashHistory.push({pathname, query: filter.getParams({[RETURN_UPDATE_DIALOG_OPEN]: false})})
                     })
-                    .catch((error) => {
-                        dispatch(openErrorAction({
-                            message: error
-                        }))
-                    })
             }
             return dispatch(returnUpdateAction(returnId, _.get(updateForm, ['values']), detail))
                 .then(() => {
@@ -366,10 +348,6 @@ const enhance = compose(
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[RETURN_UPDATE_DIALOG_OPEN]: false})})
-                }).catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
                 })
         },
         handleOpenCreateDialog: props => () => {
@@ -382,6 +360,7 @@ const enhance = compose(
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[RETURN_CREATE_DIALOG_OPEN]: false})})
         },
+
         handleSubmitCreateDialog: props => () => {
             const {location: {pathname}, dispatch, createForm, filter, setOpenPreview} = props
             return dispatch(clientReturnAction(_.get(createForm, ['values'])))
@@ -396,10 +375,6 @@ const enhance = compose(
                     })
                     dispatch(returnListFetchAction(filter))
                     dispatch(reset('ReturnCreateForm'))
-                }).catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
                 })
         },
         handleOpenPreviewDialog: props => () => {
@@ -411,6 +386,15 @@ const enhance = compose(
             const {setOpenPreview} = props
             setOpenPreview(false)
         },
+
+        handleSubmitPreviewDialog: props => () => {
+            const {dispatch, createForm, setOpenPreview} = props
+            return dispatch(returnPreviewAction(_.get(createForm, 'values')))
+                .then(() => {
+                    setOpenPreview(true)
+                })
+        },
+
         handleCloseDetail: props => () => {
             const {filter} = props
             hashHistory.push({pathname: ROUTER.RETURN_LIST_URL, query: filter.getParams()})
@@ -702,7 +686,8 @@ const ReturnList = enhance((props) => {
         loading: previewListLoading,
         openPreviewDialog: openPreview,
         handleOpenPreviewDialog: props.handleOpenPreviewDialog,
-        handleClosePreviewDialog: props.handleClosePreviewDialog
+        handleClosePreviewDialog: props.handleClosePreviewDialog,
+        handleSubmit: props.handleSubmitPreviewDialog
     }
 
     const updateDialog = {

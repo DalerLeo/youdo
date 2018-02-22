@@ -5,8 +5,7 @@ import {compose} from 'recompose'
 import {connect} from 'react-redux'
 import injectSheet from 'react-jss'
 import FlatButton from 'material-ui/FlatButton'
-import {Field, reduxForm, SubmissionError} from 'redux-form'
-import toCamelCase from '../../helpers/toCamelCase'
+import {Field, reduxForm} from 'redux-form'
 import getConfig from '../../helpers/getConfig'
 import {
     TextField,
@@ -20,18 +19,17 @@ import IconButton from 'material-ui/IconButton'
 import {Row, Col} from 'react-flexbox-grid'
 import ToolTip from '../ToolTip'
 import t from '../../helpers/translate'
-const validate = (data) => {
-    const errors = toCamelCase(data)
-    const nonFieldErrors = _.get(errors, 'nonFieldErrors')
-    const latLng = (_.get(errors, 'lat') || _.get(errors, 'lon')) && 'Location is required.'
-    throw new SubmissionError({
-        ...errors,
-        latLng,
-        _error: nonFieldErrors
-    })
-}
+import formValidate from '../../helpers/formValidate'
+
 const enhance = compose(
     injectSheet({
+        wrapper: {
+            '& .dottedList': {
+                '&:last-child:after': {
+                    display: 'none'
+                }
+            }
+        },
         loader: {
             position: 'absolute',
             width: '100%',
@@ -69,13 +67,17 @@ const enhance = compose(
             },
             '& .row': {
                 padding: '0 !important',
+                height: '45px',
                 '& > div:first-child': {
                     textAlign: 'left'
-                },
-                '& .dottedList': {
-                    padding: '0px!important',
-                    '& > div:last-child': {
-                        padding: '100px'
+                }
+            },
+            '& .dottedList': {
+                position: 'relative',
+                '& > div': {
+                    paddingBottom: '5px',
+                    '&:first-child': {
+                        paddingBottom: '0'
                     }
                 }
             },
@@ -100,8 +102,8 @@ const enhance = compose(
         },
         inputField: {
             fontSize: '13px !important',
-            marginTop: '0px!important',
-            height: '40px!important'
+            marginTop: '7px !important',
+            height: '45px !important'
         },
         inputFieldCustom: {
             fontSize: '13px !important',
@@ -149,11 +151,13 @@ const enhance = compose(
             '& > div': {
                 '&:first-child': {
                     fontWeight: '600',
-                    height: '40px'
+                    height: '45px'
                 }
             },
             '& .dottedList': {
-                padding: '10px 0 !important'
+                padding: '10px 0 !important',
+                height: '45px !important',
+                display: 'block !important'
             }
         }
     }),
@@ -175,10 +179,15 @@ const PriceSetForm = enhance((props) => {
         mergedList,
         onClose,
         priceUpdatedDate,
-        agentCan
+        agentCan,
+        dispatch
     } = props
 
-    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+    const formNames = []
+    const onSubmit = handleSubmit(() => props.onSubmit()
+        .catch((error) => {
+            formValidate(formNames, dispatch, error)
+        }))
     const currentCurrency = getConfig('PRIMARY_CURRENCY')
     const iconStyle = {
         icon: {
@@ -195,7 +204,7 @@ const PriceSetForm = enhance((props) => {
         }
     }
     return (
-        <div>
+        <div className={classes.wrapper}>
             <form onSubmit={onSubmit} className={classes.form}>
                 <div className={classes.bodyTitle}>
                     <div>{t('Цены на товар')}
@@ -264,7 +273,7 @@ const PriceSetForm = enhance((props) => {
                 </div>
                 <div style={{display: 'flex'}}>
                     <div className={classes.radios}>
-                        <div></div>
+                        <div/>
                         <div>
                             <Field
                                 name='isPrimary'
@@ -277,7 +286,7 @@ const PriceSetForm = enhance((props) => {
                     </div>
                     <div className={classes.tableContent}>
                         <Row className={classes.priceRow}>
-                            <Col xs={3}>{t('Тип обьекта')}</Col>
+                            <Col xs={4}>{t('Тип обьекта')}</Col>
                             <Col style={{textAlign: 'left'}} xs={2}>{t('Нал')}</Col>
                             <Col style={{textAlign: 'left'}} xs={2}>{t('Валюта')}</Col>
                             <Col style={{textAlign: 'left'}} xs={2}>{t('Безнал')}</Col>
@@ -289,7 +298,7 @@ const PriceSetForm = enhance((props) => {
                             const transferPrice = _.get(item, 'transfer_price')
                             return (
                                 <Row className='dottedList' key={index}>
-                                    <Col xs={3}> {priceListName}</Col>
+                                    <Col xs={4}> {priceListName}</Col>
                                     <Col style={{textAlign: 'left'}} xs={2}>
                                         <Field
                                             name={'prices[' + index + '][cash_price]'}
@@ -303,7 +312,6 @@ const PriceSetForm = enhance((props) => {
                                     <Col xs={2}>
                                         <Field
                                             name={'prices[' + index + '][cashCurrency]'}
-                                            className={classes.inputField}
                                             clearValue={false}
                                             placeholder={t('Выберите')}
                                             component={CurrencySearchField}
@@ -319,10 +327,9 @@ const PriceSetForm = enhance((props) => {
                                             fullWidth={true}
                                         />
                                     </Col>
-                                    <Col xs={3}>
+                                    <Col xs={2}>
                                         <Field
                                             name={'prices[' + index + '][transferCurrency]'}
-                                            className={classes.inputField}
                                             component={CurrencySearchField}
                                             placeholder={t('Выберите')}
                                             clearValue={false}

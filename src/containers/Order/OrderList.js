@@ -512,11 +512,6 @@ const enhance = compose(
                         })})
                     dispatch(orderListFetchAction(filter))
                 })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
-                })
         },
 
         handleOpenTransactionsDialog: props => () => {
@@ -549,11 +544,6 @@ const enhance = compose(
                     hashHistory.push({pathname, query: filter.getParams({[ORDER_RETURN_DIALOG_OPEN]: false})})
                     dispatch(orderItemReturnFetchAction(orderId))
                     dispatch(orderItemFetchAction(orderId))
-                })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
                 })
         },
         handleOpenCancelOrderReturnDialog: props => (id) => {
@@ -629,10 +619,6 @@ const enhance = compose(
                             [ORDER_UPDATE_DIALOG_OPEN]: false,
                             [ORDER_SHORTAGE_DIALOG_OPEN]: false
                         })})
-                }).catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
                 })
         },
 
@@ -748,7 +734,8 @@ const enhance = compose(
                 })
                 .then(() => {
                     return dispatch(orderItemFetchAction(id))
-                }).catch((error) => {
+                })
+                .catch((error) => {
                     dispatch(openErrorAction({
                         message: error
                     }))
@@ -762,7 +749,8 @@ const enhance = compose(
                 })
                 .then(() => {
                     return dispatch(orderItemFetchAction(id))
-                }).catch((error) => {
+                })
+                .catch((error) => {
                     dispatch(openErrorAction({
                         message: error
                     }))

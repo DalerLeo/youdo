@@ -92,6 +92,7 @@ const enhance = compose(
             borderBottom: '1px solid #efefef',
             padding: '0 10px 0 30px',
             height: '60px',
+            minheight: '60px',
             zIndex: '999'
         },
         bodyContent: {
@@ -383,6 +384,7 @@ const SetPrice = enhance((props) => {
         bankCurrency,
         priceList
     } = props
+
     const cashCurrencyShow = _.toInteger(filter.getParam('pdCashCurrency')) > ZERO
     const cashCurrencyName = _.get(cashCurrency, 'text')
     const cashCurrencyValue = _.get(cashCurrency, 'value')

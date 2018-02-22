@@ -12,6 +12,7 @@ import numberFormat from '../../helpers/numberFormat'
 import {Row, Col} from 'react-flexbox-grid'
 import t from '../../helpers/translate'
 import NotFound from '../Images/not-found.png'
+import {reduxForm} from 'redux-form'
 
 const enhance = compose(
     injectSheet({
@@ -126,6 +127,10 @@ const enhance = compose(
                 display: 'none'
             }
         }
+    }),
+    reduxForm({
+        form: 'ReturnCreateForm',
+        enableReinitialize: true
     })
 )
 
@@ -138,9 +143,10 @@ const ReturnCreateDialog = enhance((props) => {
         open,
         onClose,
         classes,
-        data,
-        onSubmit
+        onSubmit,
+        data
     } = props
+
     const byCurrency = _.groupBy(data, (item) => _.get(item, ['currency', 'name']))
     const totalReturn = _.map(byCurrency, (item, index) => {
         const currency = index
@@ -187,7 +193,7 @@ const ReturnCreateDialog = enhance((props) => {
                 </IconButton>
             </div>
             <div className={classes.bodyContent}>
-                <form scrolling="auto" className={classes.form}>
+                <form className={classes.form}>
                     <div className={classes.loader}>
                         <Loader size={0.75}/>
                     </div>

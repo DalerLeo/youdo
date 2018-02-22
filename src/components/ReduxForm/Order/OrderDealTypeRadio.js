@@ -6,8 +6,18 @@ import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton'
 import getConfig from '../../../helpers/getConfig'
 import toBoolean from '../../../helpers/toBoolean'
 import t from '../../../helpers/translate'
+import injectSheet from 'react-jss'
 
 const enhance = compose(
+    injectSheet({
+        wrapper: {
+            width: '100%'
+        },
+        error: {
+            color: '#f44336',
+            fontSize: '12px'
+        }
+    }),
     connect((state) => {
         const dealType = _.get(state, ['form', 'OrderCreateForm', 'values', 'dealType'])
         return {
@@ -16,12 +26,12 @@ const enhance = compose(
     }),
 )
 const OrderDealTypeRadio = enhance((props) => {
-    const {input, isUpdate} = props
+    const {classes, input, isUpdate, meta: {error}} = props
     const individual = toBoolean(getConfig('INDIVIDUAL_DEAL_TYPE'))
 
     if (individual) {
         return (
-            <div style={{width: '205px', marginBottom: '20px'}}>
+            <div className={classes.wrapper}>
                 {(input.value || !isUpdate) &&
                 <RadioButtonGroup name="dealType" onChange={input.onChange} defaultSelected={input.value}>
                     <RadioButton
@@ -39,14 +49,13 @@ const OrderDealTypeRadio = enhance((props) => {
                         style={{margin: '10px 0'}}
                         label={t('Индивидуальный')}
                     />
-                </RadioButtonGroup>
-                }
+                </RadioButtonGroup>}
+                {error && <div className={classes.error}>{error}</div>}
             </div>
         )
     }
     return (
-
-        <div style={{width: '205px', marginBottom: '20px'}}>
+        <div className={classes.wrapper}>
             {(input.value || !isUpdate) &&
             <RadioButtonGroup name="dealType" onChange={input.onChange} defaultSelected={input.value}>
                 <RadioButton
@@ -59,8 +68,8 @@ const OrderDealTypeRadio = enhance((props) => {
                     style={{margin: '10px 0'}}
                     label={t('Консигнация')}
                 />
-            </RadioButtonGroup>
-            }
+            </RadioButtonGroup>}
+            {error && <div className={classes.error}>{error}</div>}
         </div>
     )
 })
