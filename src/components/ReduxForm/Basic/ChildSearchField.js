@@ -81,7 +81,7 @@ const enhance = compose(
         },
         error: {
             fontSize: '12px',
-            marginTop: '-5px',
+            marginTop: '-8px',
             color: '#f44336',
             width: '100%'
         }

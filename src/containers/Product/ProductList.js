@@ -34,7 +34,6 @@ import {
     measurementListFetchAction
 } from '../../actions/measurement'
 
-import {openErrorAction} from '../../actions/error'
 import {openSnackbarAction} from '../../actions/snackbar'
 import t from '../../helpers/translate'
 
@@ -186,11 +185,6 @@ const enhance = compose(
                     hashHistory.push({pathname, query: filter.getParams({[PRODUCT_CREATE_DIALOG_OPEN]: false})})
                     dispatch(productListFetchAction(filter))
                 })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
-                })
         },
 
         handleOpenUpdateDialog: props => (id) => {
@@ -224,11 +218,6 @@ const enhance = compose(
                 })
                 .then(() => {
                     hashHistory.push({pathname: ROUTER.PRODUCT_LIST_URL, query: filter.getParams({[PRODUCT_UPDATE_DIALOG_OPEN]: false})})
-                })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
                 })
         }
     })

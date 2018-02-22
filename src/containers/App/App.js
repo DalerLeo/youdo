@@ -20,9 +20,6 @@ const refreshAgentsList = 45000
                 .then(() => {
                     hashHistory.push(ROUTES.SIGN_IN)
                 })
-                .then(() => {
-                    window.location.replace(ROUTES.DASHBOARD_URL)
-                })
         }
     }),
     withState('scrollValue', 'updateScrollValue', false)

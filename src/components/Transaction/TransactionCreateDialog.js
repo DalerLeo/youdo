@@ -37,6 +37,7 @@ import * as ROUTE from '../../constants/routes'
 import {Link} from 'react-router'
 import TransactionCreateSalary from './TransactionCreateSalary'
 import TransactionCreateDetalization from './TransactionCreateDetalization'
+import formValidate from '../../helpers/formValidate'
 
 const validateForm = values => {
     const errors = {}
@@ -280,8 +281,29 @@ const TransactionCreateDialog = enhance((props) => {
         expenseCategoryKey,
         incomeCategoryKey,
         additionalData,
-        hideRedundant
+        hideRedundant,
+        dispatch
     } = props
+
+    const formNames = [
+        'cashbox',
+        'division',
+        'date',
+        'expenseCategory',
+        'supply',
+        'supplyExpense',
+        'client',
+        'provider',
+        'amount',
+        'incomeCategory',
+        'order',
+        'comment',
+        'currencyRate'
+    ]
+    const onSubmit = handleSubmit(() => props.onSubmit()
+        .catch((error) => {
+            formValidate(formNames, dispatch, error)
+        }))
 
     const totalStaffAmount = _.sumBy(_.toArray(users), (item) => {
         return _.toNumber(numberWithoutSpaces(_.get(item, 'amount')))
@@ -305,7 +327,6 @@ const TransactionCreateDialog = enhance((props) => {
     const showSupplies = _.includes(expenseCategoryOptions, supplyOptionId)
     const showSupplyExpenses = _.includes(expenseCategoryOptions, supplyExpenseOptionId)
 
-    const onSubmit = handleSubmit(() => props.onSubmit().catch(props.validate))
     const cashboxId = noCashbox ? chosenCashbox : _.get(cashboxData, 'cashboxId')
     const cashbox = _.find(_.get(cashboxData, 'data'), {'id': cashboxId})
     const currency = _.get(cashbox, ['currency', 'name'])

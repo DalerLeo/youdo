@@ -1,10 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {compose, withReducer} from 'recompose'
+import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import _ from 'lodash'
-import {reduxForm, SubmissionError, Field} from 'redux-form'
-import toCamelCase from '../../helpers/toCamelCase'
+import {reduxForm, Field} from 'redux-form'
 import Dialog from 'material-ui/Dialog'
 import Loader from '../Loader'
 import IconButton from 'material-ui/IconButton'
@@ -14,20 +13,9 @@ import {DateField} from '../ReduxForm'
 import FlatButton from 'material-ui/FlatButton'
 import numberFormat from '../../helpers/numberFormat'
 import t from '../../helpers/translate'
+import formValidate from '../../helpers/formValidate'
 
 const ZERO = 0
-
-const validate = (data) => {
-    const errors = toCamelCase(data)
-    const nonFieldErrors = _.get(errors, 'nonFieldErrors')
-    const latLng = (_.get(errors, 'lat') || _.get(errors, 'lon')) && 'Location is required.'
-
-    throw new SubmissionError({
-        ...errors,
-        latLng,
-        _error: nonFieldErrors
-    })
-}
 
 const enhance = compose(
     injectSheet({
@@ -150,15 +138,16 @@ const enhance = compose(
     reduxForm({
         form: 'AcceptClientTransactionForm',
         enableReinitialize: true
-    }),
-    withReducer('state', 'dispatch', (state, action) => {
-        return {...state, ...action}
-    }, {open: false}),
+    })
 )
 
 const AcceptClientTransactionDialog = enhance((props) => {
-    const {open, onClose, classes, loading, handleSubmit, data, currency} = props
-    const onSubmit = handleSubmit(() => props.onSubmit(_.get(data, ['sum'])).catch(validate))
+    const {dispatch, open, onClose, classes, loading, handleSubmit, data, currency} = props
+    const formNames = ['cashbox', 'date']
+    const onSubmit = handleSubmit(() => props.onSubmit(_.get(data, ['sum']))
+        .catch((error) => {
+            formValidate(formNames, dispatch, error)
+        }))
     const user = _.get(data, ['user', 'name'])
     const currencyName = _.get(data, ['currency', 'name'])
     const amount = numberFormat(_.get(data, ['sum']), currencyName)
@@ -186,7 +175,7 @@ const AcceptClientTransactionDialog = enhance((props) => {
                             <div>{t('Агент')}: <span>{user}</span></div>
                             <div className={classes.list}>
                                 <Field
-                                    name="cashBox"
+                                    name="cashbox"
                                     component={AcceptClientTransactionCashBoxSearchField}
                                     data-currency={currency}
                                     className={classes.inputFieldCustom}

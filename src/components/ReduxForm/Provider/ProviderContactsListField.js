@@ -95,8 +95,7 @@ const ProviderContactsListField = ({classes, fields}) => {
                                 name={`${contact}.name`}
                                 component={TextField}
                                 className={classes.inputFieldCustom}
-                                fullWidth={true}
-                            />
+                                fullWidth={true}/>
 
                             <div className={classes.flex}>
                                 <Field
@@ -104,16 +103,14 @@ const ProviderContactsListField = ({classes, fields}) => {
                                     name={`${contact}.email`}
                                     component={TextField}
                                     className={classes.inputFieldCustom}
-                                    fullWidth={true}
-                                />
+                                    fullWidth={true}/>
 
                                 <Field
                                     label={t('Телефон номер')}
                                     name={`${contact}.phone`}
                                     component={TextField}
                                     className={classes.inputFieldCustom}
-                                    fullWidth={true}
-                                />
+                                    fullWidth={true}/>
                             </div>
                         </div>
                     </div>

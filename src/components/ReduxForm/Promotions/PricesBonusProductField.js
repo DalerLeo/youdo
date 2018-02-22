@@ -24,9 +24,13 @@ const enhance = compose(
             position: 'relative'
         },
         error: {
+            background: '#ffebee',
+            borderRadius: '2px',
+            color: '#f44336',
+            fontSize: '13px',
             textAlign: 'center',
-            fontSize: '14px',
-            color: 'red'
+            marginTop: '10px',
+            padding: '10px 15px'
         },
         imagePlaceholder: {
             width: '100%',
@@ -113,7 +117,7 @@ const enhance = compose(
                 padding: '0 30px'
             }
         },
-        bonusProduct: {
+        product: {
             borderRight: '1px #ccc solid'
         },
         addProduct: {
@@ -146,19 +150,19 @@ const enhance = compose(
 
     withHandlers({
         handleAddBonus: props => () => {
-            const bonusProduct = _.get(props, ['bonusProduct', 'input', 'value'])
-            const onChange = _.get(props, ['bonusProducts', 'input', 'onChange'])
-            const bonusProducts = _.get(props, ['bonusProducts', 'input', 'value'])
+            const product = _.get(props, ['product', 'input', 'value'])
+            const onChange = _.get(props, ['products', 'input', 'onChange'])
+            const products = _.get(props, ['products', 'input', 'value'])
 
-            if (!_.isEmpty(bonusProduct)) {
+            if (!_.isEmpty(product)) {
                 let has = false
-                _.map(bonusProducts, (item) => {
-                    if (_.get(item, 'bonusProduct') === bonusProduct) {
+                _.map(products, (item) => {
+                    if (_.get(item, 'product') === product) {
                         has = true
                     }
                 })
                 if (!has) {
-                    onChange(_.union(bonusProducts, [{bonusProduct}]))
+                    onChange(_.union(products, [{product}]))
                     has = false
                 }
             }
@@ -186,12 +190,12 @@ const enhance = compose(
         },
 
         handleRemoveBonus: props => (listIndex) => {
-            const onChange = _.get(props, ['bonusProducts', 'input', 'onChange'])
-            const bonusProducts = _(props)
-                .get(['bonusProducts', 'input', 'value'])
+            const onChange = _.get(props, ['products', 'input', 'onChange'])
+            const products = _(props)
+                .get(['products', 'input', 'value'])
                 .filter((item, index) => index !== listIndex)
 
-            onChange(bonusProducts)
+            onChange(products)
         },
 
         handleRemoveGift: props => (listIndex) => {
@@ -206,8 +210,9 @@ const enhance = compose(
 )
 
 const PricesBonusProductField = ({classes, state, dispatch, handleAddBonus, handleAddGift, handleRemoveBonus, handleRemoveGift, ...defaultProps}) => {
-    const bonusProducts = _.get(defaultProps, ['bonusProducts', 'input', 'value']) || []
+    const products = _.get(defaultProps, ['products', 'input', 'value']) || []
     const giftProducts = _.get(defaultProps, ['giftProducts', 'input', 'value']) || []
+    const error = _.get(defaultProps, ['products', 'meta', 'error', 'products'])
     return (
         <div className={classes.wrapper}>
             <div>
@@ -222,20 +227,20 @@ const PricesBonusProductField = ({classes, state, dispatch, handleAddBonus, hand
                     />
                 </div>}
                 {state.open && <Row className={classes.background}>
-                    <div className={classes.bonusProduct}>
+                    <div className={classes.product}>
                         <div className={classes.subTitle}>{t('Бонусный товар')}</div>
                         <Field
                             label={t('Тип товара')}
-                            name="bonusType"
+                            name="type"
                             component={ProductTypeSearchField}
                             className={classes.searchFieldCustom}
                             fullWidth={true}
                         />
                         <div className={classes.productAmount}>
-                            <div style={{width: '100%', marginTop: '8px'}}>
+                            <div style={{width: '100%'}}>
                                 <Field
                                     label={t('Наименование')}
-                                    name="bonusProduct"
+                                    name="product"
                                     component={ProductCustomBonusSearchField}
                                     className={classes.searchFieldCustom}
                                     fullWidth={true}
@@ -281,15 +286,16 @@ const PricesBonusProductField = ({classes, state, dispatch, handleAddBonus, hand
                     </div>
                 </Row>}
             </div>
-            {(!_.isEmpty(bonusProducts) || !_.isEmpty(giftProducts))
+            {error && <div className={classes.error}>{error}</div>}
+            {(!_.isEmpty(products) || !_.isEmpty(giftProducts))
             ? <div className={classes.table}>
-                    {(!_.isEmpty(bonusProducts)) && <div className={classes.halfTable}>
+                    {(!_.isEmpty(products)) && <div className={classes.halfTable}>
                         <div className={classes.subTitle}>{t('При покупке')}:</div>
-                        {_.map(bonusProducts, (item, index) => {
-                            const bonusProduct = _.get(item, ['bonusProduct', 'value', 'name'])
+                        {_.map(products, (item, index) => {
+                            const product = _.get(item, ['product', 'value', 'name'])
                             return (
                                 <div key={index} className="dottedList">
-                                    <div>{bonusProduct}</div>
+                                    <div>{product}</div>
                                     <DeleteIcon color="#666666" onClick={() => { handleRemoveBonus(index) }}/>
                                 </div>
                             )
@@ -313,8 +319,7 @@ const PricesBonusProductField = ({classes, state, dispatch, handleAddBonus, hand
             : <div className={classes.imagePlaceholder}>
                     <div style={{textAlign: 'center', color: '#adadad'}}>
                         <img src={Groceries} alt=""/>
-                        <div>{t('Вы еще не выбрали ни одного товара')}. <br/> <a onClick={() => dispatch({open: !state.open})}>{t('Добавить')}</a>
-                            {t('товар')}?
+                        <div>{t('Вы еще не выбрали ни одного товара')}. <br/> <a onClick={() => dispatch({open: !state.open})}>{t('Добавить')}</a> {t('товар')}?
                         </div>
                     </div>
                 </div>}

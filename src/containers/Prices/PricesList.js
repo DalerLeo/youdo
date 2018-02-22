@@ -28,7 +28,6 @@ import {
 } from '../../actions/prices'
 
 import {openSnackbarAction} from '../../actions/snackbar'
-import {openErrorAction} from '../../actions/error'
 import t from '../../helpers/translate'
 
 const enhance = compose(
@@ -144,11 +143,6 @@ const enhance = compose(
                     hashHistory.push({pathname, query: filter.getParams({[PRICES_CREATE_DIALOG_OPEN]: false})})
                     dispatch(pricesListFetchAction(filter))
                 })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
-                })
         },
 
         handleOpenUpdateDialog: props => () => {
@@ -175,11 +169,6 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push(filter.createURL({[PRICES_UPDATE_DIALOG_OPEN]: false}))
                     dispatch(pricesListFetchAction(filter))
-                })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
                 })
         },
         handleCloseDetail: props => () => {

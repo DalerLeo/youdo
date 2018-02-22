@@ -9,6 +9,7 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import {Row} from 'react-flexbox-grid'
 import getConfig from '../../helpers/getConfig'
+import dateFormat from '../../helpers/dateFormat'
 import t from '../../helpers/translate'
 import numberFormat from '../../helpers/numberFormat'
 import Loader from '../Loader'
@@ -102,12 +103,14 @@ const enhance = compose(
 )
 const PriceSupplyDialog = enhance((props) => {
     const {open, loading, onClose, classes, list} = props
-    const dateDelivery = _.get(list, 'dateDelivery')
+    const dateDelivery = dateFormat(_.get(list, 'dateDelivery'))
     const product = _.get(list, 'product')
     const provider = _.get(list, 'provider')
     const supplyId = _.get(list, 'supplyId')
 
-    let price = ZERO
+    const price = _.sumBy(_.get(list, 'expenses'), (item) => {
+        return _.toNumber(_.get(item, 'internalCost'))
+    })
     return (
         <Dialog
             modal={true}
@@ -117,7 +120,7 @@ const PriceSupplyDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <div>{t('Поставка')} № {supplyId}</div>
+                <div>{t('Поставка')} №{supplyId}</div>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -146,7 +149,6 @@ const PriceSupplyDialog = enhance((props) => {
                         <div className={classes.subTitle}>{t('Расчет себестоимости за еденицу товара')}:</div>
                         {_.map(_.get(list, 'expenses'), (item, index) => {
                             const interalCost = _.get(item, 'internalCost')
-                            price = Number(price) + Number(interalCost)
                             const comment = _.get(item, 'comment')
                             return (
                                 <Row key={index}>

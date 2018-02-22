@@ -6,8 +6,7 @@ import {connect} from 'react-redux'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
-import {Field, Fields, reduxForm, SubmissionError} from 'redux-form'
-import toCamelCase from '../../helpers/toCamelCase'
+import {Field, Fields, reduxForm} from 'redux-form'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import TextField from '../ReduxForm/Basic/TextField'
@@ -15,20 +14,9 @@ import RemainderListProductField from '../ReduxForm/Remainder/RemainderDiscardPr
 import OwnStocksSearchField from '../ReduxForm/Remainder/OwnStocksSearchField'
 import ToolTip from '../ToolTip'
 import t from '../../helpers/translate'
+import formValidate from '../../helpers/formValidate'
 
 export const REMAINDER_DISCARD_DIALOG_OPEN = 'openDiscardDialog'
-
-const validate = (data) => {
-    const errors = toCamelCase(data)
-    const nonFieldErrors = _.get(errors, 'nonFieldErrors')
-    const latLng = (_.get(errors, 'lat') || _.get(errors, 'lon')) && 'Location is required.'
-
-    throw new SubmissionError({
-        ...errors,
-        latLng,
-        _error: nonFieldErrors
-    })
-}
 
 const enhance = compose(
     injectSheet({
@@ -162,8 +150,7 @@ const enhance = compose(
             }
         },
         leftSide: {
-            flexBasis: '25%',
-            maxWidth: '25%',
+            width: '30%',
             borderRight: '1px #efefef solid',
             padding: '20px 30px',
             '&  > div > div:first-child': {
@@ -172,8 +159,7 @@ const enhance = compose(
 
         },
         rightSide: {
-            flexBasis: '75%',
-            maxWidth: '75%'
+            width: '70%'
         },
         addButtons: {
             display: 'flex',
@@ -187,7 +173,7 @@ const enhance = compose(
         enableReinitialize: true
     }),
     connect((state) => {
-        const fromStock = _.get(state, ['form', 'RemainderDiscardForm', 'values', 'fromStock'])
+        const fromStock = _.get(state, ['form', 'RemainderDiscardForm', 'values', 'stock'])
         return {
             fromStock
         }
@@ -195,8 +181,12 @@ const enhance = compose(
 )
 
 const RemainderDiscardDialog = enhance((props) => {
-    const {open, handleSubmit, onClose, classes, handleOpenAddProduct, fromStock} = props
-    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+    const {dispatch, open, handleSubmit, onClose, classes, handleOpenAddProduct, fromStock} = props
+    const formNames = ['stock', 'comment', 'products']
+    const onSubmit = handleSubmit(() => props.onSubmit()
+        .catch((error) => {
+            formValidate(formNames, dispatch, error)
+        }))
 
     const iconStyle = {
         icon: {
@@ -235,16 +225,15 @@ const RemainderDiscardDialog = enhance((props) => {
                     <div className={classes.leftSide}>
                         <Field
                             className={classes.inputFieldCustom}
-                            name="fromStock"
+                            name="stock"
                             component={OwnStocksSearchField}
                             label={t('С какого склада')}
                         />
                         <Field
-                            style={{marginTop: '-20px', lineHeight: '20px', fontSize: '13px'}}
+                            style={{marginTop: '-20px', lineHeight: '20px'}}
                             name="comment"
                             component={TextField}
                             label={t('Оставить комментарий') + '...'}
-
                             multiLine={true}
                             rows={1}
                             rowsMax={6}

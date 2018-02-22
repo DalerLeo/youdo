@@ -37,7 +37,6 @@ import {
     slideShowFetchAction,
     shopMultiUpdateAction
 } from '../../actions/shop'
-import {openErrorAction} from '../../actions/error'
 import {openSnackbarAction} from '../../actions/snackbar'
 import t from '../../helpers/translate'
 
@@ -246,11 +245,6 @@ const enhance = compose(
                     hashHistory.push({pathname, query: filter.getParams({[SHOP_CREATE_DIALOG_OPEN]: false})})
                     dispatch(shopListFetchAction(filter))
                 })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
-                })
         },
 
         handleOpenSlideShowDialog: props => (index) => {
@@ -373,9 +367,6 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push(filter.createURL({[SHOP_UPDATE_DIALOG_OPEN]: false}))
                 })
-                .catch((error) => {
-                    return dispatch(openErrorAction({message: error}))
-                })
         },
 
         handleCloseDetail: props => () => {
@@ -405,8 +396,6 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[SHOP_MULTI_EDIT_OPEN]: false})})
                     dispatch(shopListFetchAction(filter))
-                }).catch((error) => {
-                    dispatch(openErrorAction({message: error}))
                 })
         }
     })

@@ -12,7 +12,6 @@ import ToolTip from '../ToolTip'
 import PriceSetForm from './PriceSetForm'
 import getConfig from '../../helpers/getConfig'
 import * as ROUTES from '../../constants/routes'
-import moment from 'moment'
 import Loader from '../Loader'
 import PriceSetDefaultDialog from './PriceSetDefaultDialog'
 import numberFormat from '../../helpers/numberFormat'
@@ -190,8 +189,10 @@ const PriceDetails = enhance((props) => {
     const priceHistoryLoading = _.get(detailData, 'priceItemHistoryLoading')
     const name = _.get(detailData, ['data', 'name'])
     const measurement = _.get(detailData, ['data', 'measurement', 'name'])
-    const priceUpdated = _.get(listDetailData, ['0', 'priceUpdated']) ? moment(_.get(listDetailData, ['0', 'priceUpdated'])).format('DD.MM.YYYY') : t('Не установлены')
-    const averageCost = _.get(listDetailData, ['0', 'netCost'])
+    const priceUpdated = _.get(_.first(listDetailData), 'priceUpdated')
+        ? dateFomat(_.get(_.first(listDetailData), 'priceUpdated'))
+        : t('Не установлены')
+    const averageCost = _.get(_.first(listDetailData), 'netCost')
     const minPrice = numberFormat(_.get(detailData, ['data', 'minPrice']))
     const maxPrice = numberFormat(_.get(detailData, ['data', 'maxPrice']))
     const customPrice = _.get(detailData, ['data', 'customPrice'])
@@ -314,7 +315,7 @@ const PriceDetails = enhance((props) => {
                     {!priceHistoryLoading && (!_.isEmpty(priceHistoryList))
                         ? <div className={classes.tableContent}>
                             <Row>
-                                <Col xs={1} style={{fontSize: '15px'}}>№</Col>
+                                <Col xs={1}>№</Col>
                                 <Col style={{textAlign: 'left'}} xs={3}>{t('Дата')}</Col>
                                 <Col style={{textAlign: 'left'}} xs={3}>{t('Кол-во')}</Col>
                                 <Col style={{textAlign: 'left'}} xs={2}>{t('На складе')}</Col>

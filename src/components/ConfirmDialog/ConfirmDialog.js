@@ -55,7 +55,7 @@ const enhance = compose(
             fontSize: '13px !important',
             height: '45px !important',
             marginTop: '7px',
-            '& div': {
+            '& > div:first-child': {
                 fontSize: '13px !important'
             },
             '& label': {

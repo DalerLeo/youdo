@@ -53,9 +53,13 @@ const enhance = compose(
             position: 'relative'
         },
         error: {
+            background: '#ffebee',
+            borderRadius: '2px',
+            color: '#f44336',
+            fontSize: '13px',
             textAlign: 'center',
-            fontSize: '14px',
-            color: 'red'
+            marginTop: '10px',
+            padding: '10px 15px'
         },
         imagePlaceholder: {
             width: '100%',

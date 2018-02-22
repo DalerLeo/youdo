@@ -301,7 +301,7 @@ const ReturnCreateDialog = enhance((props) => {
                                 </div>
                                 <div>
                                     <Field
-                                        style={{lineHeight: '20px', fontSize: '13px'}}
+                                        style={{lineHeight: '20px'}}
                                         name="comment"
                                         component={TextField}
                                         label={t('Оставить комментарий') + '...'}
