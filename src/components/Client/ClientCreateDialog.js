@@ -6,29 +6,17 @@ import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import Loader from '../Loader'
-import {Field, FieldArray, reduxForm, SubmissionError} from 'redux-form'
-import toCamelCase from '../../helpers/toCamelCase'
+import {Field, FieldArray, reduxForm} from 'redux-form'
 import {TextField, UsersSearchField, CheckBox} from '../ReduxForm'
 import ClientContactsListField from '../ReduxForm/Client/ClientContactsListField'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 import t from '../../helpers/translate'
+import formValidate from '../../helpers/formValidate'
 
 export const CLIENT_CREATE_DIALOG_OPEN = 'openCreateDialog'
 export const CLIENT_UPDATE_DIALOG_OPEN = 'openUpdateDialog'
-
-const validate = (data) => {
-    const errors = toCamelCase(data)
-    const nonFieldErrors = _.get(errors, 'nonFieldErrors')
-    const latLng = (_.get(errors, 'lat') || _.get(errors, 'lon')) && 'Location is required.'
-
-    throw new SubmissionError({
-        ...errors,
-        latLng,
-        _error: nonFieldErrors
-    })
-}
 
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
@@ -58,8 +46,12 @@ const enhance = compose(
 )
 
 const ClientCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, isUpdate} = props
-    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+    const {open, loading, handleSubmit, onClose, classes, isUpdate, dispatch} = props
+    const formNames = ['name', 'address', 'from', 'inBlackList']
+    const onSubmit = handleSubmit(() => props.onSubmit()
+        .catch((error) => {
+            formValidate(formNames, dispatch, error)
+        }))
 
     return (
         <Dialog
@@ -81,7 +73,7 @@ const ClientCreateDialog = enhance((props) => {
                     <div className={classes.loader}>
                         <Loader size={0.75}/>
                     </div>
-                    <div className={classes.inContent} style={{minHeight: '300px'}}>
+                    <div className={classes.inContent} style={{minHeight: '300px', paddingBottom: '0'}}>
                         <div className={classes.field} style={{padding: '10px 0 0'}}>
                             <Field
                                 name="name"

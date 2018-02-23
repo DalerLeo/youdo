@@ -31,8 +31,6 @@ import {
     ORDER_RETURN_COMPLETED
 } from '../../constants/backendConstants'
 
-const canCreateReturn = checkPermission('add_orderreturn')
-
 const listHeader = [
     {
         sorting: true,
@@ -143,6 +141,7 @@ const OrderGridList = enhance((props) => {
         canSetPriceOnReturn
     } = props
 
+    const canCreateReturn = checkPermission('add_orderreturn')
     const showCheckboxes = toBoolean(_.get(filter.getParams(), 'showCheckboxes'))
     const orderFilterDialog = (
         <ReturnFilterForm

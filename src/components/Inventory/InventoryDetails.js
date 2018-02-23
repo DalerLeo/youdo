@@ -185,9 +185,9 @@ const InventoryDetails = enhance((props) => {
                                 return (
                                     <Row key={id} className={'dottedList'}>
                                         <Col xs={3}>{name}</Col>
-                                        <Col xs={3}>{balanceAmount} / <span className={classes.defect}>{numberFormat(balanceDefectAmount, measurement)}</span></Col>
-                                        <Col xs={3}>{amount} / <span className={classes.defect}>{numberFormat(defectAmount, measurement)}</span></Col>
-                                        <Col xs={3}>{amountDiff} / <span className={classes.defect}>{numberFormat(defectDiff, measurement)}</span></Col>
+                                        <Col xs={3}>{numberFormat(balanceAmount)} / <span className={classes.defect}>{numberFormat(balanceDefectAmount, measurement)}</span></Col>
+                                        <Col xs={3}>{numberFormat(amount)} / <span className={classes.defect}>{numberFormat(defectAmount, measurement)}</span></Col>
+                                        <Col xs={3}>{numberFormat(amountDiff)} / <span className={classes.defect}>{numberFormat(defectDiff, measurement)}</span></Col>
                                     </Row>
                                 )
                             })}

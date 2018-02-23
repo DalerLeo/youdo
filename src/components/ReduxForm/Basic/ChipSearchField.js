@@ -45,6 +45,11 @@ const enhance = compose(
             right: '0',
             top: '20px'
         },
+        loader: {
+            position: 'absolute',
+            top: '5px',
+            right: '-10px'
+        },
         chipWrapper: {
             display: 'flex',
             flexWrap: 'wrap'
@@ -122,17 +127,19 @@ const ChipSearchField = enhance((props) => {
                 openOnFocus={true}
                 style={{position: 'relative'}}
                 menuStyle={{maxHeight: '300px', overflowY: 'auto'}}
+                inputStyle={{fontSize: 13}}
                 textFieldStyle={{width: '400px'}}
                 listStyle={{}}
                 className="autocomplete"
                 {...autoCompleteProps}
             />
-            {!state.loading && <div className={classes.icon}>
-                <KeyboardArrowDown style={{color: '#ccc', height: '20px', width: '20px'}}/>
-            </div>}
-            {state.loading && <div className={classes.icon}>
-                <Loader size={0.5}/>
-            </div>}
+            {state.loading
+                ? <div className={classes.loader}>
+                    <Loader size={0.5}/>
+                </div>
+                : <div className={classes.icon}>
+                    <KeyboardArrowDown style={{color: '#ccc', height: '20px', width: '20px'}}/>
+                </div>}
         </div>
             <div className={classes.chipWrapper}>
                 {_.map(state.chips, (item) => {

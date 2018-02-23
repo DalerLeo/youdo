@@ -6,7 +6,7 @@ import toBoolean from '../../helpers/toBoolean'
 import moment from 'moment'
 
 const ZERO = 0
-const FOUR = 4
+const ROUND = 2
 const MINUS_ONE = -1
 
 const getRateType = (rateType) => {
@@ -142,7 +142,7 @@ export const createSendSerializer = (data, cashboxId, withPersent, defaultCurren
     const cashboxFromName = _.get(data, ['cashbox', 'value', 'currency', 'name']) || defaultCurrency
     const amountFrom = _.toNumber(numberWithoutSpaces(_.get(data, 'amountFrom')))
     const rate = _.toNumber(numberWithoutSpaces(_.get(data, 'rate')))
-    const amountTo = primaryCurrency === cashboxFromName ? amountFrom * rate : _.round(amountFrom / rate, FOUR)
+    const amountTo = primaryCurrency === cashboxFromName ? amountFrom * rate : _.round(amountFrom / rate, ROUND)
     const amountFromPersent = _.toNumber(numberWithoutSpaces(_.get(data, 'amountFromPersent')))
     const toCashbox = _.get(data, ['toCashbox', 'value'])
     const comment = _.get(data, 'comment')

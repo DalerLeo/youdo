@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import _ from 'lodash'
 import {connect} from 'react-redux'
-import {compose, withReducer} from 'recompose'
+import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import {Field, reduxForm} from 'redux-form'
 import Dialog from 'material-ui/Dialog'
@@ -17,6 +17,7 @@ import {
     ShopStatusSearchField
 } from '../ReduxForm'
 import t from '../../helpers/translate'
+import formValidate from '../../helpers/formValidate'
 
 const enhance = compose(
     injectSheet({
@@ -129,20 +130,22 @@ const enhance = compose(
         enableReinitialize: true
     }),
     connect((state) => {
-        const typeParent = _.get(state, ['form', 'ShopMultiUpdateForm', 'values', 'marketTypeParent', 'value'])
-        const marketType = _.get(state, ['form', 'ShopMultiUpdateForm', 'values', 'marketType', 'value'])
+        const typeParent = _.get(state, ['form', 'ShopMultiUpdateForm', 'values', 'marketType', 'value'])
+        const marketType = _.get(state, ['form', 'ShopMultiUpdateForm', 'values', 'marketTypeChild', 'value'])
         return {
             typeParent,
             marketType
         }
-    }),
-    withReducer('state', 'dispatch', (state, action) => {
-        return {...state, ...action}
-    }, {open: false}),
+    })
 )
 
 const ShopMultiUpdateDialog = enhance((props) => {
-    const {open, onSubmit, loading, onClose, classes, handleSubmit, typeParent, marketType} = props
+    const {dispatch, open, loading, onClose, classes, handleSubmit, typeParent, marketType} = props
+    const formNames = ['responsibleAgent', 'marketType', 'status']
+    const onSubmit = handleSubmit(() => props.onSubmit()
+        .catch((error) => {
+            formValidate(formNames, dispatch, error)
+        }))
 
     return (
         <Dialog
@@ -165,7 +168,7 @@ const ShopMultiUpdateDialog = enhance((props) => {
                         <Loader size={0.75}/>
                     </div>
                     : <div className={classes.inContent}>
-                        <form onSubmit={handleSubmit(onSubmit)}>
+                        <form onSubmit={onSubmit}>
                             <div className={classes.field}>
                                 <Field
                                     name="responsibleAgent"
@@ -176,7 +179,7 @@ const ShopMultiUpdateDialog = enhance((props) => {
                             </div>
                             <div className={classes.field}>
                                 <Field
-                                    name="marketTypeParent"
+                                    name="marketType"
                                     component={MarketTypeParentSearchField}
                                     className={classes.inputFieldCustom}
                                     label={t('Тип заведения')}
@@ -185,7 +188,7 @@ const ShopMultiUpdateDialog = enhance((props) => {
                             {(typeParent || marketType) &&
                             <div className={classes.field}>
                                 <Field
-                                    name="marketType"
+                                    name="marketTypeChild"
                                     component={MarketTypeSearchField}
                                     className={classes.inputFieldCustom}
                                     parentType={typeParent}

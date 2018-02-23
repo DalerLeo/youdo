@@ -91,9 +91,13 @@ const enhance = compose(
         },
         error: {
             fontSize: '12px',
-            marginTop: '-5px',
+            marginTop: '-8px',
             color: '#f44336',
             width: '100%'
+        },
+        noTextError: {
+            extend: 'error',
+            marginTop: '0'
         }
     }),
 
@@ -157,7 +161,8 @@ const SearchField = enhance((props) => {
         input,
         disabled,
         clearValue,
-        meta
+        meta,
+        withoutErrorText
     } = props
     const hintText = !state.loading ? <div>Загрузка...</div> : <div>Не найдено</div>
     return (
@@ -180,7 +185,10 @@ const SearchField = enhance((props) => {
                 clearable={clearValue}
                 loadingPlaceholder="Загрузка..."
             />
-            {meta.error && <div className={classes.error}>{meta.error}</div>}
+            {meta.error &&
+            <div className={withoutErrorText ? classes.noTextError : classes.error}>
+                {withoutErrorText ? null : meta.error}
+            </div>}
         </div>
     )
 })

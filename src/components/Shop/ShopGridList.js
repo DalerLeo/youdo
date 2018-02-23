@@ -28,11 +28,6 @@ import checkPermission from '../../helpers/checkPermission'
 import Edit from 'material-ui/svg-icons/editor/mode-edit'
 import IconButton from 'material-ui/IconButton'
 
-// CHECKING PERMISSIONS
-const canCreateMarket = checkPermission('add_market')
-const canEditMarket = checkPermission('change_market')
-const canDeleteMarket = checkPermission('delete_market')
-
 const listHeader = [
     {
         xs: 3,
@@ -132,6 +127,11 @@ const ShopGridList = enhance((props) => {
         multiUpdateDialog,
         classes
     } = props
+
+    // CHECKING PERMISSIONS
+    const canCreateMarket = checkPermission('add_market')
+    const canEditMarket = checkPermission('change_market')
+    const canDeleteMarket = checkPermission('delete_market')
 
     const showCheckboxes = toBoolean(_.get(filter.getParams(), 'showCheckboxes'))
     const checkboxActions = (

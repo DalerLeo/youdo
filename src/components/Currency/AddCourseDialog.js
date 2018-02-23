@@ -28,7 +28,6 @@ const enhance = compose(
             textAlign: 'center',
             display: ({loading}) => loading ? 'flex' : 'none'
         },
-
         fields: {
             width: '100%'
         }

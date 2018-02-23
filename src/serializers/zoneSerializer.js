@@ -1,9 +1,9 @@
 import _ from 'lodash'
 
 export const createSerializer = (data) => {
-    const title = _.get(data, ['zoneName'])
+    const title = _.get(data, ['title'])
     const coordinates = _.get(data, 'polygon')
-    let newCoordinates = [coordinates]
+    const newCoordinates = [coordinates]
     const firstCoordinate = _.first(coordinates)
     coordinates.push(firstCoordinate)
     return {
@@ -16,7 +16,7 @@ export const createSerializer = (data) => {
 }
 
 export const updateSerializer = (data) => {
-    const title = _.get(data, ['zoneName'])
+    const title = _.get(data, ['title'])
     return {
         title
     }
@@ -24,8 +24,10 @@ export const updateSerializer = (data) => {
 
 export const createCustomSerializer = (title, points) => {
     const firstCoordinate = _.first(points)
-    let cordinates = points
-    cordinates.push(firstCoordinate)
+    const cordinates = points
+    if (cordinates) {
+        cordinates.push(firstCoordinate)
+    }
     return {
         title,
         'coordinates': {

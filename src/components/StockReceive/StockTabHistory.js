@@ -75,6 +75,10 @@ const enhance = compose(
                 marginRight: '5px'
             }
         },
+        defected: {
+            color: '#e57373',
+            fontWeight: '600'
+        },
         infoDialog: {
             color: '#129fdd',
             cursor: 'pointer',
@@ -123,7 +127,7 @@ const StockTabHistory = enhance((props) => {
         const type = _.get(item, 'type')
         const isDefect = _.get(item, 'isDefect')
         return (
-            <Row key={id} style={isDefect ? {color: '#e57373'} : {}}>
+            <Row key={id} className={isDefect ? classes.defected : ''}>
                 <Col xs={4}>
                     {(type === 'Out') ? <ArrowUp color="#e57373"/> : <ArrowDown color="#81c784"/>}
                     {product} {isDefect && <strong>{t('брак')}</strong>}

@@ -39,14 +39,6 @@ import getConfig from '../../helpers/getConfig'
 import checkPermission from '../../helpers/checkPermission'
 import t from '../../helpers/translate'
 
-const canEditOrder = checkPermission('change_order')
-const canEditOrderWhenGivenOrDelivered = checkPermission('can_update_order_after_stock')
-const canSetDiscount = checkPermission('can_set_discount')
-const canCancelOrder = checkPermission('delete_order')
-const canAddOrderReturn = checkPermission('add_orderreturn')
-const canMarkDelivery = checkPermission('can_mark_delivery')
-const canReturnFromOrderConfig = toBoolean(getConfig('CAN_RETURN_FROM_ORDER'))
-
 const popupWidth = 210
 const enhance = compose(
     injectSheet({
@@ -248,6 +240,16 @@ const OrderDetails = enhance((props) => {
         hasMarket,
         checkDeliveryDialog
     } = props
+
+    // PERMISSIONS
+    const canEditOrder = checkPermission('change_order')
+    const canEditOrderWhenGivenOrDelivered = checkPermission('can_update_order_after_stock')
+    const canSetDiscount = checkPermission('can_set_discount')
+    const canCancelOrder = checkPermission('delete_order')
+    const canAddOrderReturn = checkPermission('add_orderreturn')
+    const canMarkDelivery = checkPermission('can_mark_delivery')
+    const canReturnFromOrderConfig = toBoolean(getConfig('CAN_RETURN_FROM_ORDER'))
+
     const discounted = _.toNumber(_.get(data, 'discountPrice')) > ZERO
     const id = _.get(data, 'id')
     const market = _.get(data, ['market', 'name'])

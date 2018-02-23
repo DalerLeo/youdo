@@ -3,7 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
-import {Field, Fields, reduxForm, SubmissionError} from 'redux-form'
+import {Field, Fields, reduxForm} from 'redux-form'
 import Dialog from 'material-ui/Dialog'
 import Loader from '../Loader'
 import IconButton from 'material-ui/IconButton'
@@ -18,18 +18,11 @@ import {
     CustomChipField
 } from '../ReduxForm'
 import PromotionsRadioButton from '../ReduxForm/Promotions/PromotionsRadioButton'
-import toCamelCase from '../../helpers/toCamelCase'
 import t from '../../helpers/translate'
+import formValidate from '../../helpers/formValidate'
 
 export const PRICES_CREATE_DIALOG_OPEN = 'openCreateDialog'
-const validate = (data) => {
-    const errors = toCamelCase(data)
-    const nonFieldErrors = _.get(errors, 'nonFieldErrors')
-    throw new SubmissionError({
-        ...errors,
-        _error: nonFieldErrors
-    })
-}
+
 const enhance = compose(
     injectSheet({
         loader: {
@@ -174,10 +167,9 @@ const enhance = compose(
         },
         inputFieldCustom: {
             width: '100% !important',
-            fontSize: '13px !important',
             height: '45px !important',
             marginTop: '7px',
-            '& div': {
+            '& > div:first-child': {
                 fontSize: '13px !important'
             },
             '& label': {
@@ -189,12 +181,7 @@ const enhance = compose(
             }
         },
         inputDateCustom: {
-            fontSize: '13px !important',
-            height: '45px !important',
             marginTop: '7px',
-            '& div': {
-                fontSize: '13px !important'
-            },
             '& label': {
                 top: '20px !important',
                 lineHeight: '5px !important'
@@ -227,17 +214,19 @@ const enhance = compose(
 )
 
 const customContentStyle = {
-    width: '930px',
+    width: '1000px',
     maxWidth: 'none'
 }
 const PricesCreateDialog = enhance((props) => {
-    const {openDialog, handleSubmit, onClose, classes, isUpdate, type} = props
-    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+    const {dispatch, openDialog, handleSubmit, onClose, classes, isUpdate, type} = props
+    const formNames = ['name', 'beginDate', 'tillDate', 'discount', 'totalAmount', 'marketTypes', 'products']
+    const onSubmit = handleSubmit(() => props.onSubmit()
+        .catch((error) => {
+            formValidate(formNames, dispatch, error)
+        })
+    )
 
-    let isDiscount = false
-    if (type === 'discount') {
-        isDiscount = true
-    }
+    const isDiscount = type === 'discount'
 
     return (
         <Dialog
@@ -255,7 +244,7 @@ const PricesCreateDialog = enhance((props) => {
                 </IconButton>
             </div>
             <div className={classes.bodyContent}>
-                <form onSubmit={onSubmit} scrolling="auto" className={classes.form}>
+                <form onSubmit={onSubmit} className={classes.form}>
                     <div className={classes.loader}>
                         <Loader size={0.75}/>
                     </div>
@@ -286,6 +275,7 @@ const PricesCreateDialog = enhance((props) => {
                                         className={classes.inputDateCustom}
                                         floatingLabelText={t('Дата начала акции')}
                                         container="inline"
+                                        errorStyle={{bottom: 2}}
                                         fullWidth={true}/>
                                     <Field
                                         name="tillDate"
@@ -293,25 +283,24 @@ const PricesCreateDialog = enhance((props) => {
                                         className={classes.inputDateCustom}
                                         floatingLabelText={t('Дата завершения акции')}
                                         container="inline"
+                                        errorStyle={{bottom: 2}}
                                         fullWidth={true}/>
-                                    <div className={classes.halfField}>
-                                        {isDiscount
-                                        ? <Field
-                                            name="discount"
-                                            component={TextField}
-                                            className={classes.inputFieldCustom}
-                                            fullWidth={true}
-                                            label={t('Размер скидки')}
-                                            hintText="10%"
-                                        />
-                                        : <Field
-                                            name="amount"
-                                            component={TextField}
-                                            className={classes.inputFieldCustom}
-                                            fullWidth={true}
-                                            label={t('Кол-во')}
-                                        />}
-                                    </div>
+                                    {isDiscount
+                                    ? <Field
+                                        name="discount"
+                                        component={TextField}
+                                        className={classes.inputFieldCustom}
+                                        fullWidth={true}
+                                        label={t('Размер скидки')}
+                                        hintText="10%"
+                                    />
+                                    : <Field
+                                        name="totalAmount"
+                                        component={TextField}
+                                        className={classes.inputFieldCustom}
+                                        fullWidth={true}
+                                        label={t('Кол-во')}
+                                    />}
                                     <Field
                                         name="marketTypes"
                                         component={CustomChipField}
@@ -328,7 +317,7 @@ const PricesCreateDialog = enhance((props) => {
                                         names={['products', 'product', 'amount', 'type']}
                                         component={PricesListProductField}/>
                                     : <Fields
-                                        names={['bonusProducts', 'bonusProduct', 'bonusType', 'giftProducts', 'giftProduct', 'giftAmount', 'giftType']}
+                                        names={['products', 'product', 'type', 'giftProducts', 'giftProduct', 'giftAmount', 'giftType']}
                                         component={PricesBonusProductField}/>
                                     }
                             </div>

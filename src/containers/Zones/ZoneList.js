@@ -31,7 +31,6 @@ import {
     shopListFetchAction,
     marketsLocationFetchAction
 } from '../../actions/zones'
-import {openErrorAction} from '../../actions/error'
 import {shopItemFetchAction} from '../../actions/shop'
 import {openSnackbarAction} from '../../actions/snackbar'
 import t from '../../helpers/translate'
@@ -223,7 +222,7 @@ const enhance = compose(
 
         handleSubmitAddZone: props => (points) => {
             const {location: {pathname}, dispatch, createForm, filter} = props
-            return dispatch(zoneCustomCreateAction(_.get(createForm, ['zoneName']), points))
+            return dispatch(zoneCustomCreateAction(_.get(createForm, ['title']), points))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: t('Зона успешно добавлена')}))
                 })
@@ -231,10 +230,6 @@ const enhance = compose(
                     hashHistory.push({pathname, query: filter.getParams({[ADD_ZONE]: false, [TOGGLE_INFO]: true, [ZONE_ID]: null})})
                     dispatch(zoneListFetchAction(filter))
                     dispatch(zoneStatisticsFetchAction(filter))
-                }).catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
                 })
         },
 
@@ -253,7 +248,7 @@ const enhance = compose(
         handleSubmitUpdateZone: props => (data) => {
             const {location: {pathname, query}, dispatch, createForm, filter} = props
             const zoneId = _.toNumber(_.get(query, ZONE_ID))
-            const title = _.get(createForm, ['zoneName']) || _.get(data, 'title')
+            const title = _.get(createForm, ['title']) || _.get(data, 'title')
             return dispatch(zoneCustomUpdateAction(zoneId, title, _.get(data, 'points')))
                 .then(() => {
                     return dispatch(zoneItemFetchAction(zoneId))
@@ -266,10 +261,6 @@ const enhance = compose(
                 })
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[UPDATE_ZONE]: false, [TOGGLE_INFO]: true, [ZONE_ID]: null})})
-                }).catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
                 })
         },
 
@@ -358,7 +349,7 @@ const Zones = enhance((props) => {
             }
 
             return {
-                zoneName: _.get(detail, ['properties', 'title'])
+                title: _.get(detail, ['properties', 'title'])
             }
         })(),
         openUpdateZone,

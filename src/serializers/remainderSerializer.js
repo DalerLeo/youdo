@@ -33,7 +33,7 @@ export const transferSerializer = (data) => {
     const fromStock = _.get(data, ['fromStock', 'value'])
     const toStock = _.get(data, ['toStock', 'value'])
     const comment = _.get(data, ['comment'])
-    const deliveryDate = _.get(data, 'deliveryDate') ? moment(_.get(data, 'deliveryDate')).format('YYYY-MM-DD') : null
+    const deliveryDate = _.get(data, 'dateDelivery') ? moment(_.get(data, 'dateDelivery')).format('YYYY-MM-DD') : null
     const products = _.map(_.get(data, 'products'), (item) => {
         return {
             amount: item.amount || ZERO,
@@ -53,7 +53,7 @@ export const transferSerializer = (data) => {
 
 export const discardSerializer = (data) => {
     const comment = _.get(data, ['comment'])
-    const stock = _.get(data, ['fromStock', 'value'])
+    const stock = _.get(data, ['stock', 'value'])
     const products = _.map(_.get(data, 'products'), (item) => {
         return {
             amount: item.amount || ZERO,

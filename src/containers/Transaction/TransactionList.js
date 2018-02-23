@@ -502,11 +502,6 @@ const enhance = compose(
                     dispatch(transactionListFetchAction(filter, cashboxId))
                     dispatch(cashboxListFetchAction(filterCashbox))
                 })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
-                })
         },
 
         handleOpenCreateIncomeDialog: props => () => {
@@ -540,11 +535,6 @@ const enhance = compose(
                     })
                     dispatch(transactionListFetchAction(filter, cashboxId))
                     dispatch(cashboxListFetchAction(filterCashbox))
-                })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
                 })
         },
 
@@ -667,13 +657,14 @@ const enhance = compose(
         handleSubmitCashBoxDialog: props => (amount) => {
             const {dispatch, acceptForm, filter, location: {pathname}} = props
             const cashboxId = _.toInteger(filter.getParam('cashboxId'))
+            const date = _.get(acceptForm, ['values', 'date'])
             const data = {
                 'currency': _.toInteger(filter.getParam(OPEN_CURRENCY)),
                 'agent': _.toInteger(filter.getParam(OPEN_USER)),
                 'division': _.toInteger(filter.getParam(OPEN_DIVISION)),
                 'amount': _.toNumber(amount),
-                'cashbox': _.get(acceptForm, ['values', 'cashBox', 'value']),
-                'date': moment(_.get(acceptForm, ['values', 'date'])).format('YYYY-MM-DD HH:mm')
+                'cashbox': _.get(acceptForm, ['values', 'cashbox', 'value']),
+                'date': date ? moment(date).format('YYYY-MM-DD HH:mm') : null
             }
             return dispatch(acceptClientTransactionAction(data))
                 .then(() => {
@@ -686,10 +677,6 @@ const enhance = compose(
                     dispatch(transactionListFetchAction(filter, cashboxId))
 
                     hashHistory.push({pathname, query: filter.getParams({[TRANSACTION_ACCEPT_DIALOG_OPEN]: false})})
-                }).catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
                 })
         },
         handleOpenAcceptCashDetail: props => (user, currency, division) => {
@@ -777,11 +764,6 @@ const enhance = compose(
                     dispatch(transactionListFetchAction(filter, cashboxId))
                     dispatch(cashboxListFetchAction(filterCashbox))
                 })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
-                })
         },
         handleSubmitUpdateIncomeDialog: props => () => {
             const {dispatch, createForm, filter, cashboxId, location: {query, pathname}, filterCashbox} = props
@@ -794,11 +776,6 @@ const enhance = compose(
                     hashHistory.push({pathname, query: filter.getParams({[UPDATE_TRANSACTION]: false})})
                     dispatch(transactionListFetchAction(filter, cashboxId))
                     dispatch(cashboxListFetchAction(filterCashbox))
-                })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
                 })
         },
 

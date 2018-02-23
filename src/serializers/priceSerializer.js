@@ -10,7 +10,7 @@ export const createSerializer = (data, productId, priceList) => {
     const isCustomPrice = _.get(data, 'agentCanChange')
     const minPrice = _.get(data, 'minPrice')
     const maxPrice = _.get(data, 'maxPrice')
-    const customCurrency = _.get(data, ['priceCurrency', 'value'])
+    const customCurrency = _.get(data, ['currency', 'value'])
 
     const getPriceByType = (priceListId, type) => {
         const price = _.find(_.get(priceList, ['results']), (item) => {
@@ -32,10 +32,10 @@ export const createSerializer = (data, productId, priceList) => {
     }
 
     const newPrices = _.map(prices, (val) => {
-        let obj = {
-            'cash_price': getNum(_.get(val, 'cash_price'), getPriceByType(_.get(val, 'price_list'), 'cash')),
+        const obj = {
+            'cash_price': getNum(_.get(val, 'cashPrice'), getPriceByType(_.get(val, 'price_list'), 'cash')),
             'price_list': _.get(val, 'price_list'),
-            'transfer_price': getNum(_.get(val, 'transfer_price'), getPriceByType(_.get(val, 'price_list'), 'transfer')),
+            'transfer_price': getNum(_.get(val, 'transferPrice'), getPriceByType(_.get(val, 'price_list'), 'transfer')),
             'cash_currency': _.get(val, ['cashCurrency', 'value']),
             'transfer_currency': _.get(val, ['transferCurrency', 'value'])
         }

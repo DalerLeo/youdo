@@ -7,8 +7,7 @@ import {connect} from 'react-redux'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import Loader from '../Loader'
-import {Field, reduxForm, SubmissionError, FieldArray} from 'redux-form'
-import toCamelCase from '../../helpers/toCamelCase'
+import {Field, reduxForm, FieldArray} from 'redux-form'
 import {
     TextField,
     MarketTypeSearchField,
@@ -23,20 +22,9 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import Place from '../CustomIcons/AddPlace'
 import Dot from '../Images/dot.png'
 import t from '../../helpers/translate'
+import formValidate from '../../helpers/formValidate'
 
 export const SHOP_CREATE_DIALOG_OPEN = 'openCreateDialog'
-
-const validate = (data) => {
-    const errors = toCamelCase(data)
-    const nonFieldErrors = _.get(errors, 'nonFieldErrors')
-    const latLng = (_.get(errors, 'lat') || _.get(errors, 'lon')) && 'Location is required.'
-
-    throw new SubmissionError({
-        ...errors,
-        latLng,
-        _error: nonFieldErrors
-    })
-}
 
 const enhance = compose(
     injectSheet({
@@ -207,8 +195,8 @@ const enhance = compose(
         enableReinitialize: true
     }),
     connect((state) => {
-        const typeParent = _.get(state, ['form', 'ShopCreateForm', 'values', 'marketTypeParent', 'value'])
-        const marketType = _.get(state, ['form', 'ShopCreateForm', 'values', 'marketType', 'value'])
+        const typeParent = _.get(state, ['form', 'ShopCreateForm', 'values', 'marketType', 'value'])
+        const marketType = _.get(state, ['form', 'ShopCreateForm', 'values', 'marketTypeChild', 'value'])
         return {
             typeParent,
             marketType
@@ -221,6 +209,7 @@ const ShopCreateDialog = enhance((props) => {
         open,
         loading,
         handleSubmit,
+        submitFailed,
         onClose,
         classes,
         isUpdate,
@@ -231,11 +220,30 @@ const ShopCreateDialog = enhance((props) => {
         mapLocation,
         typeParent,
         marketType,
-        initialValues
+        initialValues,
+        dispatch
     } = props
-    const onSubmit = handleSubmit(() => props.onSubmit(openClient).catch(validate))
+    const formNames = [
+        'name',
+        'client',
+        'marketType',
+        'address',
+        'guide',
+        'frequency',
+        'status',
+        'contactName',
+        'location',
+        'lat',
+        'lon'
+    ]
+    const onSubmit = handleSubmit(() => props.onSubmit()
+        .catch((error) => {
+            formValidate(formNames, dispatch, error)
+        }))
     const lat = _.get(mapLocation, 'lat') || _.get(initialValues, ['latLng', 'lat'])
     const lng = _.get(mapLocation, 'lng') || _.get(initialValues, ['latLng', 'lng'])
+    const isSetLocation = lat && lng
+    const locationError = submitFailed && !isSetLocation
 
     return (
         <Dialog
@@ -259,18 +267,20 @@ const ShopCreateDialog = enhance((props) => {
                     <div className={classes.inContent}>
                         <div className={classes.leftSide}>
                             <div className={classes.divider}>
-                                {!isUpdate ? (!openClient ? <Field
-                                        name="client"
-                                        component={ClientSearchField}
-                                        className={classes.inputFieldCustom}
-                                        label={t('Клиент')}
-                                        fullWidth={true}/>
-                                    : <Field
-                                        name="newClientName"
-                                        component={TextField}
-                                        className={classes.inputFieldCustom}
-                                        label={t('Наименование фирмы')}
-                                        fullWidth={true}/>)
+                                {!isUpdate
+                                    ? (!openClient
+                                        ? <Field
+                                            name="client"
+                                            component={ClientSearchField}
+                                            className={classes.inputFieldCustom}
+                                            label={t('Клиент')}
+                                            fullWidth={true}/>
+                                        : <Field
+                                            name="newClientName"
+                                            component={TextField}
+                                            className={classes.inputFieldCustom}
+                                            label={t('Наименование фирмы')}
+                                            fullWidth={true}/>)
                                     : <Field
                                         name="client"
                                         component={TextField}
@@ -294,14 +304,14 @@ const ShopCreateDialog = enhance((props) => {
                                     label={t('Наименование')}
                                     fullWidth={true}/>
                                 <Field
-                                    name="marketTypeParent"
+                                    name="marketType"
                                     component={MarketTypeParentSearchField}
                                     className={classes.inputFieldCustom}
                                     label={t('Тип заведения')}
                                     fullWidth={true}/>
                                 {(typeParent || marketType) &&
                                 <Field
-                                    name="marketType"
+                                    name="marketTypeChild"
                                     component={MarketTypeSearchField}
                                     className={classes.inputFieldCustom}
                                     parentType={typeParent}
@@ -323,7 +333,8 @@ const ShopCreateDialog = enhance((props) => {
                                     fullWidth={true}/>
                                 <div className={classes.addPlace}>
                                     {!(lat && lng)
-                                        ? <a onClick={mapDialog.handleOpenMapDialog}><Place color="#129fdd"/>
+                                        ? <a onClick={mapDialog.handleOpenMapDialog} style={locationError ? {color: '#f44336'} : {}}>
+                                            <Place color={locationError ? '#f44336' : '#129fdd'}/>
                                             {t('отметить местоположение на карте')}
                                         </a>
                                         : <div className={classes.flex}>

@@ -11,7 +11,6 @@ import {splitToArray, joinArray} from '../../helpers/joinSplitValues'
 import toBoolean from '../../helpers/toBoolean'
 import sprintf from 'sprintf'
 import {openSnackbarAction} from '../../actions/snackbar'
-import {openErrorAction} from '../../actions/error'
 import {
     RemainderGridList,
     REMAINDER_TRANSFER_DIALOG_OPEN,
@@ -232,11 +231,6 @@ const enhance = compose(
                     hashHistory.push({pathname, query: filter.getParams({[REMAINDER_TRANSFER_DIALOG_OPEN]: false})})
                     dispatch(remainderListFetchAction(filter))
                 })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
-                })
         },
         handleOpenDiscardDialog: props => () => {
             const {location: {pathname}, filter, dispatch} = props
@@ -256,10 +250,6 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[REMAINDER_DISCARD_DIALOG_OPEN]: false})})
                     dispatch(remainderListFetchAction(filter))
-                }).catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
                 })
         },
         handleResetFilter: props => () => {
