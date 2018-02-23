@@ -15,6 +15,7 @@ import {
     MarketMultiSearchField,
     ClientMultiSearchField,
     DivisionMultiSearchField,
+    UsersMultiSearchField,
     DateToDateField
 } from '../ReduxForm'
 
@@ -29,6 +30,7 @@ export const PENDING_PAYMENTS_FILTER_KEY = {
     CLIENT: 'client',
     MARKET: 'market',
     PAYMENT_TYPE: 'paymentType',
+    AGENT: 'agent',
     DIVISION: 'division'
 }
 
@@ -180,6 +182,14 @@ const PendingPaymentsFilterForm = enhance((props) => {
                             name="client"
                             component={ClientMultiSearchField}
                             label={t('Клиент')}
+                            fullWidth={true}/>
+                    </div>
+                    <div>
+                        <Field
+                            className={classes.inputFieldCustom}
+                            name="agent"
+                            component={UsersMultiSearchField}
+                            label={t('Агент')}
                             fullWidth={true}/>
                     </div>
                     <div>

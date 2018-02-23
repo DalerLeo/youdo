@@ -11,6 +11,7 @@ import EditIcon from 'material-ui/svg-icons/editor/mode-edit'
 import numberFormat from '../../../helpers/numberFormat'
 import t from '../../../helpers/translate'
 import Groceries from '../../Images/groceries.svg'
+import {TYPE_PRODUCT} from '../../Manufacture'
 
 const enhance = compose(
     injectSheet({
@@ -108,7 +109,9 @@ const enhance = compose(
     })
 )
 
-const ShipmentProductsMaterialsList = ({classes, handleRemove, handleEdit, editItem, setEditItem, handleOpenAddProduct, ...defaultProps}) => {
+const THREE = 3
+const FIVE = 5
+const ShipmentProductsMaterialsList = ({dialogType, classes, handleRemove, handleEdit, editItem, setEditItem, handleOpenAddProduct, ...defaultProps}) => {
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
     const iconStyle = {
         button: {
@@ -126,10 +129,10 @@ const ShipmentProductsMaterialsList = ({classes, handleRemove, handleEdit, editI
         ? (
             <div className={classes.productsList}>
                 <Row className="dottedList">
-                    <Col xs={3}>{t('Наименование')}</Col>
+                    <Col xs={dialogType === TYPE_PRODUCT ? THREE : FIVE}>{t('Наименование')}</Col>
                     <Col xs={3}>{t('Тип')}</Col>
-                    <Col xs={2} className={classes.alignRight}>ОК</Col>
-                    <Col xs={2} className={classes.alignRight}>{t('Брак')}</Col>
+                    <Col xs={2} className={classes.alignRight}>{dialogType === TYPE_PRODUCT ? 'ОК' : t('Кол-во')}</Col>
+                    {dialogType === TYPE_PRODUCT && <Col xs={2} className={classes.alignRight}>{t('Брак')}</Col>}
                     <Col xs={2}/>
                 </Row>
                 {_.map(products, (item, index) => {
@@ -142,7 +145,7 @@ const ShipmentProductsMaterialsList = ({classes, handleRemove, handleEdit, editI
                     if (editItem === index) {
                         return (
                             <Row key={index} className="dottedList">
-                                <Col xs={3}>{product}</Col>
+                                <Col xs={dialogType === TYPE_PRODUCT ? THREE : FIVE}>{product}</Col>
                                 <Col xs={3}>{type}</Col>
                                 <Col xs={2} className={classes.alignRight}>
                                     <TextField
@@ -154,6 +157,7 @@ const ShipmentProductsMaterialsList = ({classes, handleRemove, handleEdit, editI
                                         className={classes.inputFieldCustom}
                                         {..._.get(defaultProps, 'editAmount')}/>
                                 </Col>
+                                {dialogType === TYPE_PRODUCT &&
                                 <Col xs={2} className={classes.alignRight}>
                                     <TextField
                                         name="editDefect"
@@ -163,7 +167,7 @@ const ShipmentProductsMaterialsList = ({classes, handleRemove, handleEdit, editI
                                         fullWidth={true}
                                         className={classes.inputFieldCustom}
                                         {..._.get(defaultProps, 'editDefect')}/>
-                                </Col>
+                                </Col>}
                                 <Col xs={2} style={{textAlign: 'right', width: '118px'}}>
                                     <IconButton
                                         onTouchTap={() => { handleEdit(index) }}>
@@ -175,10 +179,10 @@ const ShipmentProductsMaterialsList = ({classes, handleRemove, handleEdit, editI
                     }
                     return (
                         <Row key={index} className="dottedList">
-                            <Col xs={3}>{product}</Col>
+                            <Col xs={dialogType === TYPE_PRODUCT ? THREE : FIVE}>{product}</Col>
                             <Col xs={3}>{type}</Col>
                             <Col xs={2} className={classes.alignRight}>{amount}</Col>
-                            <Col xs={2} className={classes.alignRight}>{defect}</Col>
+                            {dialogType === TYPE_PRODUCT && <Col xs={2} className={classes.alignRight}>{defect}</Col>}
                             <Col xs={2} className={classes.buttons}>
                                 <IconButton
                                     style={iconStyle.button}

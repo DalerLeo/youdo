@@ -132,6 +132,7 @@ export const listFilterSerializer = (data, id, withOrderReturn, print) => {
         'total_balance': _.get(defaultData, 'totalBalance'),
         'status': status,
         'only_bonus': _.get(defaultData, 'onlyBonus') ? 'True' : null,
+        'is_new': _.get(defaultData, 'isNew') ? 'True' : null,
         'exclude_cancelled': excludeCanceled,
         'begin_date': _.get(defaultData, 'fromDate'),
         'end_date': _.get(defaultData, 'toDate') || _.get(defaultData, 'fromDate'),

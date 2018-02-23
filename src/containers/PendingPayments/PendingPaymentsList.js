@@ -149,6 +149,7 @@ const enhance = compose(
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
             const client = _.get(filterForm, ['values', 'client']) || null
             const market = _.get(filterForm, ['values', 'market']) || null
+            const agent = _.get(filterForm, ['values', 'agent']) || null
             const paymentType = _.get(filterForm, ['values', 'paymentType', 'value']) || null
             const division = _.get(filterForm, ['values', 'division']) || null
 
@@ -157,6 +158,7 @@ const enhance = compose(
                 [PENDING_PAYMENTS_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [PENDING_PAYMENTS_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD'),
                 [PENDING_PAYMENTS_FILTER_KEY.MARKET]: _.join(market, '-'),
+                [PENDING_PAYMENTS_FILTER_KEY.AGENT]: _.join(agent, '-'),
                 [PENDING_PAYMENTS_FILTER_KEY.DIVISION]: _.join(division, '-'),
                 [PENDING_PAYMENTS_FILTER_KEY.CLIENT]: _.join(client, '-'),
                 [PENDING_PAYMENTS_FILTER_KEY.PAYMENT_TYPE]: paymentType
@@ -223,6 +225,7 @@ const PendingPaymentsList = enhance((props) => {
     const paymentType = filter.getParam(PENDING_PAYMENTS_FILTER_KEY.PAYMENT_TYPE)
     const client = filter.getParam(PENDING_PAYMENTS_FILTER_KEY.CLIENT)
     const market = filter.getParam(PENDING_PAYMENTS_FILTER_KEY.MARKET)
+    const agent = filter.getParam(PENDING_PAYMENTS_FILTER_KEY.AGENT)
     const division = filter.getParam(PENDING_PAYMENTS_FILTER_KEY.DIVISION)
     const toDate = filter.getParam(PENDING_PAYMENTS_FILTER_KEY.TO_DATE)
     const detailId = _.toInteger(_.get(params, 'pendingPaymentsId'))
@@ -261,6 +264,9 @@ const PendingPaymentsList = enhance((props) => {
                 return _.toNumber(item)
             }),
             market: market && _.map(_.split(market, '-'), (item) => {
+                return _.toNumber(item)
+            }),
+            agent: agent && _.map(_.split(agent, '-'), (item) => {
                 return _.toNumber(item)
             }),
             division: division && _.map(_.split(division, '-'), (item) => {

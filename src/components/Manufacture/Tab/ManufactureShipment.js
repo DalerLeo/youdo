@@ -230,11 +230,11 @@ const enhance = compose(
             '& > div:last-child': {
                 textAlign: 'right'
             },
-            '&:hover div': {
-                opacity: '1 !important'
-            },
             '&:hover': {
-                background: '#f2f5f8'
+                background: '#f2f5f8',
+                '& div': {
+                    opacity: '1'
+                }
             }
         },
         productAmount: {
@@ -376,6 +376,7 @@ const ManufactureShipment = enhance((props) => {
     const PRODUCT = 'return'
     const MATERIAL = 'material'
     const tab = _.get(tabData, 'tab')
+    const openID = _.toInteger(filter.getParam('openId'))
     const detailData = _.get(shipmentData, 'detailData')
     const shipmentList = _.get(shipmentData, 'shipmentList')
     const shiftsLoading = _.get(shipmentData, 'listLoading')
@@ -391,9 +392,9 @@ const ManufactureShipment = enhance((props) => {
     const handleCloseDelete = () => {
         setDeleteItem(null)
     }
-    const handleEdit = (index, type, id) => {
+    const handleEdit = (type, id) => {
         props.dispatch(change('LogEditForm', 'editAmount', ''))
-        setEdit(index)
+        setEdit(id)
         hashHistory.push(filter.createURL({openType: type, openId: id}))
     }
     const handleSubmit = () => {
@@ -491,25 +492,28 @@ const ManufactureShipment = enhance((props) => {
                             : t('Продукт')
                         : t('Сырье')}
                 </Col>
-                {edit === index
-                ? <Col xs={2}>
-                    <Field
-                        className={classes.inputFieldCustom}
-                        fullWidth={true}
-                        component={TextField}
-                        name={'editAmount'}
-                        normalize={normalizeNumber}
-                        label={numberFormat(amount, measurement)}/>
-                  </Col>
-                : <Col xs={2}>{editlogsLoading ? <div className={classes.load}><Loader size={0.5}/></div> : numberFormat(amount, measurement)}</Col>}
+                {edit === id
+                    ? <Col xs={2}>
+                        <Field
+                            className={classes.inputFieldCustom}
+                            fullWidth={true}
+                            component={TextField}
+                            name={'editAmount'}
+                            normalize={normalizeNumber}
+                            hintText={numberFormat(amount, measurement)}/>
+                    </Col>
+                    : <Col xs={2}>
+                        {editlogsLoading && (openID === id)
+                            ? <div className={classes.load}><Loader size={0.5}/></div>
+                            : numberFormat(amount, measurement)}
+                    </Col>}
                 <Col xs={3}>{createdDate}</Col>
                 <Col xs={1}>
-                    {edit === index
+                    {edit === id
                     ? <div>
                             <IconButton
-                                onTouchTap={() => {
-                                    handleSubmit()
-                                }}>
+                                disableTouchRipple={true}
+                                onTouchTap={handleSubmit}>
                                 <Check color="#12aaeb"/>
                             </IconButton>
                         </div>
@@ -519,7 +523,7 @@ const ManufactureShipment = enhance((props) => {
                                 iconStyle={iconStyles.icon}
                                 style={iconStyles.button}
                                 disableTouchRipple={true}
-                                onTouchTap={() => handleEdit(index, type, id)}
+                                onTouchTap={() => handleEdit(type, id)}
                                 touch={true}>
                                 <EditIcon/>
                             </IconButton>

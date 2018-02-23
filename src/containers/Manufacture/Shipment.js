@@ -382,11 +382,6 @@ const enhance = compose(
                     dispatch(shipmentProductsListFetchAction(dateRange, null, manufactureId))
                     dispatch(shipmentMaterialsListFetchAction(dateRange, null, manufactureId))
                 })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
-                })
         },
 
         // ADD PRODUCTS BIG DIALOG
@@ -543,12 +538,15 @@ const enhance = compose(
                 })
             } else if (type === 'return') {
                 dispatch(deleteReturnProductAction(id))
-                .then(() => {
-                    dispatch(shipmentLogsListFetchAction(filterLogs, manufactureId, dateRange))
-                })
-                .catch((error) => {
-                    dispatch(openErrorAction({message: error}))
-                })
+                    .then(() => {
+                        return dispatch(openSnackbarAction({message: t('Успешно удалено')}))
+                    })
+                    .then(() => {
+                        dispatch(shipmentLogsListFetchAction(filterLogs, manufactureId, dateRange))
+                    })
+                    .catch((error) => {
+                        dispatch(openErrorAction({message: error}))
+                    })
             }
 
             return null

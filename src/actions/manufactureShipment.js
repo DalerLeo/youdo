@@ -225,7 +225,7 @@ export const deleteReturnProductAction = (id) => {
         })
 
     return {
-        type: actionTypes.SHIPMENT_EDIT_AMOUNT,
+        type: actionTypes.SHIPMENT_DELETE_AMOUNT,
         payload
     }
 }
