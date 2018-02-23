@@ -109,7 +109,8 @@ const enhance = compose(
         },
         error: {
             fontSize: '12px',
-            marginTop: '-5px',
+            position: 'relative',
+            top: '-8px',
             color: '#f44336',
             width: '100%'
         }
@@ -176,25 +177,23 @@ const SearchFieldCustom = enhance((props) => {
     } = props
     return (
         <div className={classes.wrapper}>
-            <div className={classes.wrapper}>
-                <Select
-                    className={meta.error ? classes.selectError : classes.select}
-                    options={state.dataSource}
-                    value={getValue(_.get(input, ['value', 'value']))}
-                    onInputChange={text => { dispatch({text: text}) }}
-                    onChange={value => {
-                        value ? fetchItem(props, value) : fetchList(props)
-                    }}
-                    placeholder={label}
-                    noResultsText={'Не найдено'}
-                    isLoading={state.loading}
-                    labelKey={'text'}
-                    onOpen={() => dispatch({open: true})}
-                    disabled={disabled}
-                    filterOptions={options => options}
-                />
-                {meta.error && <span className={classes.error}>{meta.error}</span>}
-            </div>
+            <Select
+                className={meta.error ? classes.selectError : classes.select}
+                options={state.dataSource}
+                value={getValue(_.get(input, ['value', 'value']))}
+                onInputChange={text => { dispatch({text: text}) }}
+                onChange={value => {
+                    value ? fetchItem(props, value) : fetchList(props)
+                }}
+                placeholder={label}
+                noResultsText={'Не найдено'}
+                isLoading={state.loading}
+                labelKey={'text'}
+                onOpen={() => dispatch({open: true})}
+                disabled={disabled}
+                filterOptions={options => options}
+            />
+            {meta.error && <span className={classes.error}>{meta.error}</span>}
         </div>
     )
 })

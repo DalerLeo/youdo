@@ -8,7 +8,7 @@ export const createSerializer = (data) => {
     const name = _.get(data, 'name')
     const discount = _.get(data, ['discount']) || '0'
     const type = _.get(data, 'promotionType') || 'bonus'
-    const totalAmount = _.get(data, 'amount')
+    const totalAmount = _.get(data, 'totalAmount')
     const marketTypesArray = _.map(_.get(data, 'marketTypes'), (item) => {
         return item.value
     })

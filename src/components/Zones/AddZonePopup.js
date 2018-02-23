@@ -1,34 +1,21 @@
-import _ from 'lodash'
 import React from 'react'
 import IconButton from 'material-ui/IconButton'
 import Paper from 'material-ui/Paper'
 import PropTypes from 'prop-types'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
-import {Field, reduxForm, SubmissionError} from 'redux-form'
+import {Field, reduxForm} from 'redux-form'
 import FlatButton from 'material-ui/FlatButton'
 import {TextField} from '../ReduxForm'
-import toCamelCase from '../../helpers/toCamelCase'
 import injectSheet from 'react-jss'
-import {compose, withHandlers} from 'recompose'
+import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ToolTip from '../ToolTip'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import Draw from 'material-ui/svg-icons/action/timeline'
 import Touch from 'material-ui/svg-icons/action/touch-app'
-import {hashHistory} from 'react-router'
 import t from '../../helpers/translate'
+import formValidate from '../../helpers/formValidate'
 
-const validate = (data) => {
-    const errors = toCamelCase(data)
-    const nonFieldErrors = _.get(errors, 'nonFieldErrors')
-
-    throw new SubmissionError({
-        ...errors,
-        _error: nonFieldErrors
-    })
-}
-const DRAW = 'draw'
-const pathname = 'googleMap'
 const enhance = compose(
     injectSheet({
         addZoneWrapper: {
@@ -95,16 +82,6 @@ const enhance = compose(
     reduxForm({
         form: 'ZoneCreateForm',
         enableReinitialize: true
-    }),
-    withHandlers({
-        clickDraw: props => () => {
-            const {filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[DRAW]: true})})
-        },
-        clickPoint: props => () => {
-            const {filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[DRAW]: false})})
-        }
     })
 )
 const AddZonePopup = enhance((props) => {
@@ -117,17 +94,24 @@ const AddZonePopup = enhance((props) => {
         edit,
         data,
         isDrawing,
-        update
+        update,
+        dispatch
     } = props
-    const submitZone = handleSubmit(() => props.onSubmit(data()).catch(validate))
+    const formNames = ['title']
+    const submitZone = handleSubmit(() => props.onSubmit(data())
+        .catch((error) => {
+            formValidate(formNames, dispatch, error)
+        })
+    )
     return (
         <div>
             <Paper zDepth={1} className={classes.addZoneWrapper}>
                 <form onSubmit={submitZone}>
                     <Field
-                        name="zoneName"
+                        name="title"
                         component={TextField}
                         className={classes.inputFieldCustom}
+                        withoutErrorText={true}
                         label={t('Наименование зоны')}
                         fullWidth={true}/>
                     <div className={classes.buttons}>
@@ -149,7 +133,8 @@ const AddZonePopup = enhance((props) => {
                             </IconButton>
                         </ToolTip>
 
-                        {!update && <ToolTip text={t('Очистить')} position="bottom">
+                        {!update &&
+                        <ToolTip text={t('Очистить')} position="bottom">
                             <IconButton>
                                 <DeleteIcon color="#666"
                                 onTouchTap={() => { handleClearDrawing() }}

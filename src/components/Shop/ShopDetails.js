@@ -13,6 +13,12 @@ import Info from 'material-ui/svg-icons/action/info-outline'
 import Add from 'material-ui/svg-icons/content/add'
 import ToolTip from '../ToolTip'
 import t from '../../helpers/translate'
+import {
+    MARKET_FREQ_EVERY_DAY,
+    MARKET_FREQ_IN_A_DAY,
+    MARKET_FREQ_ONCE_IN_A_WEEK,
+    MARKET_FREQ_TWICE_IN_A_WEEK
+} from '../../constants/backendConstants'
 import MapDialog from './ShopMapDialog'
 
 const enhance = compose(
@@ -313,10 +319,6 @@ const ShopDetails = enhance((props) => {
     const MAX_IMAGE_COUNT = 5
     const FOUR = 4
 
-    const EVERY_DAY = '1'
-    const ONCE_IN_A_WEEK = '2'
-    const TWICE_IN_A_WEEK = '3'
-    const IN_A_DAY = '4'
     const id = _.get(data, 'id')
     const name = _.get(data, 'name')
     const okad = _.get(data, 'okad') || t('не указано')
@@ -394,10 +396,10 @@ const ShopDetails = enhance((props) => {
                 <div className={classes.titleButtons}>
                     <div className={classes.frequency}>
                         <span>{t('Частота посещений')}:</span>
-                        <b>{ freq === EVERY_DAY ? t('Каждый день') : (
-                            freq === ONCE_IN_A_WEEK ? t('Раз в неделю') : (
-                                freq === TWICE_IN_A_WEEK ? t('2 раза в неделю') : (
-                                    freq === IN_A_DAY ? t('Через день') : ''
+                        <b>{ freq === MARKET_FREQ_EVERY_DAY ? t('Каждый день') : (
+                            freq === MARKET_FREQ_ONCE_IN_A_WEEK ? t('Раз в неделю') : (
+                                freq === MARKET_FREQ_TWICE_IN_A_WEEK ? t('2 раза в неделю') : (
+                                    freq === MARKET_FREQ_IN_A_DAY ? t('Через день') : ''
                                 )
                             )
                         )}</b>

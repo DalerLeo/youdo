@@ -459,10 +459,10 @@ export default class GoogleCustomMap extends React.Component {
 
         const {addZone, filter, updateZone, isOpenAddZone, isOpenUpdateZone, deleteZone, isOpenToggle} = this.props
 
-        const marker = {
+        const marketToggle = {
             background: '#fff',
             position: 'absolute',
-            bottom: '2px',
+            bottom: '0',
             right: isOpenToggle ? '450px' : '0',
             zIndex: '1',
             padding: '8px 15px',
@@ -483,7 +483,7 @@ export default class GoogleCustomMap extends React.Component {
 
         return (
             <div style={{height: '100%', width: '100%', overflow: 'hidden'}}>
-                <div style={marker}>
+                <div style={marketToggle}>
                     <Checkbox
                         label={t('Магазины')}
                         checked={this.state.showMarkets}

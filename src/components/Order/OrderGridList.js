@@ -263,6 +263,7 @@ const OrderGridList = enhance((props) => {
     // CHECKING PERMISSIONS
     const canCreateOrder = checkPermission('add_order')
     const canEditOrder = checkPermission('change_order')
+
     const hasMarket = toBoolean(getConfig('MARKETS_MODULE'))
     const showCheckboxes = toBoolean(_.get(filter.getParams(), 'showCheckboxes'))
     const statusIsReady = _.get(filter.getParams(), 'status') && _.toNumber(_.get(filter.getParams(), 'status')) === ORDER_READY

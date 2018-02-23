@@ -5,7 +5,7 @@ export const createSerializer = (data) => {
     const name = _.get(data, ['name'])
     const code = _.get(data, 'code') || _.get(data, 'undefined')
     const priority = _.get(data, 'priority') || _.get(data, 'undefined')
-    const type = _.get(data, ['type', 'value']) || _.get(data, ['productTypeParent', 'value'])
+    const type = _.get(data, ['typeChild', 'value']) || _.get(data, ['type', 'value'])
     const measurement = _.get(data, ['measurement', 'value', 'id'])
     const childMeasurement = _.map(_.get(data, ['measurement', 'value', 'children']), (item) => {
         return {measurement: _.get(item, 'id')}

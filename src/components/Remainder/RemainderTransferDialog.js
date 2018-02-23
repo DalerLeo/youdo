@@ -6,8 +6,7 @@ import {connect} from 'react-redux'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
-import {Field, Fields, reduxForm, SubmissionError} from 'redux-form'
-import toCamelCase from '../../helpers/toCamelCase'
+import {Field, Fields, reduxForm} from 'redux-form'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import ToolTip from '../ToolTip'
@@ -17,20 +16,9 @@ import DateField from '../ReduxForm/Basic/DateField'
 import TextField from '../ReduxForm/Basic/TextField'
 import RemainderListProductField from '../ReduxForm/Remainder/RemainderListProductField'
 import t from '../../helpers/translate'
+import formValidate from '../../helpers/formValidate'
 
 export const REMAINDER_TRANSFER_DIALOG_OPEN = 'openTransferDialog'
-
-const validate = (data) => {
-    const errors = toCamelCase(data)
-    const nonFieldErrors = _.get(errors, 'nonFieldErrors')
-    const latLng = (_.get(errors, 'lat') || _.get(errors, 'lon')) && 'Location is required.'
-
-    throw new SubmissionError({
-        ...errors,
-        latLng,
-        _error: nonFieldErrors
-    })
-}
 
 const enhance = compose(
     injectSheet({
@@ -78,8 +66,7 @@ const enhance = compose(
             }
         },
         leftSide: {
-            flexBasis: '25%',
-            maxWidth: '25%',
+            width: '30%',
             borderRight: '1px #efefef solid',
             padding: '20px 30px',
             '&  > div > div:first-child': {
@@ -88,8 +75,7 @@ const enhance = compose(
 
         },
         rightSide: {
-            flexBasis: '75%',
-            maxWidth: '75%'
+            width: '70%'
         },
         dialog: {
             overflowY: 'auto',
@@ -126,18 +112,16 @@ const enhance = compose(
             }
         },
         inputDateCustom: {
-            height: '45px !important',
-            '& input': {
-                marginTop: '0 !important'
-            },
+            marginTop: '7px',
             '& label': {
                 top: '20px !important',
                 lineHeight: '5px !important'
             },
-            '& div': {
-                fontSize: '13px !important',
-                height: '45px !important',
-                width: '100% !important'
+            '& input': {
+                marginTop: '0 !important'
+            },
+            '& div:first-child': {
+                height: '45px !important'
             }
         },
         bottomButton: {
@@ -180,8 +164,12 @@ const enhance = compose(
 )
 
 const RemainderTransferDialog = enhance((props) => {
-    const {open, handleSubmit, onClose, classes, handleOpenAddProduct, fromStock} = props
-    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+    const {dispatch, open, handleSubmit, onClose, classes, handleOpenAddProduct, fromStock} = props
+    const formNames = ['fromStock', 'toStock', 'dateDelivery', 'comment', 'products']
+    const onSubmit = handleSubmit(() => props.onSubmit()
+        .catch((error) => {
+            formValidate(formNames, dispatch, error)
+        }))
 
     return (
         <Dialog
@@ -216,20 +204,23 @@ const RemainderTransferDialog = enhance((props) => {
                     />
                     <Field
                         className={classes.inputDateCustom}
-                        name="deliveryDate"
+                        name="dateDelivery"
+                        errorStyle={{bottom: 2}}
                         component={DateField}
                         label={t('Дата доставки')}
+                        fullWidth={true}
                     />
-                    <Field
-                        style={{marginTop: '-20px', lineHeight: '20px', fontSize: '13px'}}
-                        name="comment"
-                        component={TextField}
-                        label={t('Оставить комментарий') + '...'}
-
-                        multiLine={true}
-                        rows={1}
-                        rowsMax={6}
-                        fullWidth={true}/>
+                    <div>
+                        <Field
+                            style={{marginTop: '-20px', lineHeight: '20px'}}
+                            name="comment"
+                            component={TextField}
+                            label={t('Оставить комментарий') + '...'}
+                            multiLine={true}
+                            rows={1}
+                            rowsMax={6}
+                            fullWidth={true}/>
+                    </div>
                 </div>
                 <div className={classes.rightSide}>
                     <div className={classes.addButtons}>

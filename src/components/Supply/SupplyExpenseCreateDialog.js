@@ -3,28 +3,21 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
-import {Field, reduxForm, SubmissionError} from 'redux-form'
+import {Field, reduxForm} from 'redux-form'
 import Loader from '../Loader'
 import IconButton from 'material-ui/IconButton'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
-import toCamelCase from '../../helpers/toCamelCase'
 import {TextField, CurrencySearchField, CheckBox, normalizeNumber, PaymentTypeSearchField} from '../ReduxForm'
 import MainStyles from '../Styles/MainStyles'
 import SupplyProductsSearchField from '../ReduxForm/Supply/SupplyProductsSearchField'
 import {connect} from 'react-redux'
 import t from '../../helpers/translate'
+import formValidate from '../../helpers/formValidate'
 
 export const SUPPLY_EXPENSE_CREATE_DIALOG_OPEN = 'openSupplyExpenseCreateDialog'
-const validate = (data) => {
-    const errors = toCamelCase(data)
-    const nonFieldErrors = _.get(errors, 'nonFieldErrors')
-    throw new SubmissionError({
-        ...errors,
-        _error: nonFieldErrors
-    })
-}
+
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
         loader: {
@@ -46,7 +39,7 @@ const enhance = compose(
         fieldCustom: {
             fontSize: '13px !important',
             height: '45px !important',
-            '& div': {
+            '& > div:first-child': {
                 fontSize: '13px !important'
             },
             '& label': {
@@ -71,8 +64,12 @@ const enhance = compose(
 )
 
 const ExpenseCreateDialog = enhance((props) => {
-    const {open, handleSubmit, onClose, classes, loading, isChecked} = props
-    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+    const {dispatch, open, handleSubmit, onClose, classes, loading, isChecked} = props
+    const formNames = ['comment', 'amount', 'currency', 'paymentType', 'product']
+    const onSubmit = handleSubmit(() => props.onSubmit()
+        .catch((error) => {
+            formValidate(formNames, dispatch, error)
+        }))
     return (
         <Dialog
             modal={true}
@@ -92,7 +89,7 @@ const ExpenseCreateDialog = enhance((props) => {
                     <div className={classes.loader}>
                         <Loader size={0.75}/>
                     </div>
-                    <div className={classes.inContent} style={{minHeight: 'auto', paddingBottom: '20px', paddingTop: '20px'}}>
+                    <div className={classes.inContent} style={{minHeight: 'auto', paddingBottom: '0'}}>
                         <div className={classes.field}>
                             <Field
                                 name="comment"

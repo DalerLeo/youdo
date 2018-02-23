@@ -26,10 +26,6 @@ import {
     ORDER_RETURN_CANCELED
 } from '../../constants/backendConstants'
 
-// CHECKING PERMISSIONS
-const canEditOrderReturn = checkPermission('change_orderreturn')
-const canCancelOrderReturn = checkPermission('delete_orderreturn')
-
 const enhance = compose(
     injectSheet({
         dottedList: {
@@ -221,6 +217,9 @@ const ReturnDetails = enhance((props) => {
         stat,
         hasMarket
     } = props
+    // CHECKING PERMISSIONS
+    const canEditOrderReturn = checkPermission('change_orderreturn')
+    const canCancelOrderReturn = checkPermission('delete_orderreturn')
 
     const id = _.get(data, 'id')
     const user = _.get(data, ['createdBy', 'firstName']) + ' ' + _.get(data, ['createdBy', 'secondName'])

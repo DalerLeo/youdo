@@ -66,7 +66,7 @@ const enhance = compose(
         const amountFrom = _.get(state, ['form', 'TransactionSendForm', 'values', 'amountFrom'])
         const rate = _.get(state, ['form', 'TransactionSendForm', 'values', 'rate'])
         const amountFromPersent = _.get(state, ['form', 'TransactionSendForm', 'values', 'amountFromPersent'])
-        const amountToPersent = _.get(state, ['form', 'TransactionSendForm', 'values', 'amountToPersent'])
+        const amountToPersent = _.get(state, ['form', 'TransactionSendForm', 'values', 'amountTo'])
         const currentCashbox = _.get(state, ['form', 'TransactionSendForm', 'values', 'fromCashbox', 'value'])
         return {
             chosenCashboxId,
@@ -116,7 +116,7 @@ const TransactionSendDialog = enhance((props) => {
     const customRatePersent = _.toNumber(numberWithoutSpaces(amountFromPersent)) * _.toNumber(numberWithoutSpaces(amountToPersent)) / HUNDRED
     const ROUND_VAL = 5
 
-    const formNames = ['fromCashbox', 'toCashbox', 'amountFrom', 'rate', 'comment']
+    const formNames = ['fromCashbox', 'toCashbox', 'amountFrom', 'amountTo', 'rate', 'comment']
     const onSubmit = handleSubmit(() => props.onSubmit(sameCurrencyDiffType && amountToPersent, sameCurrencyType)
         .catch((error) => {
             formValidate(formNames, dispatch, error)
@@ -209,7 +209,7 @@ const TransactionSendDialog = enhance((props) => {
                                     </div>
                                     <div style={{display: 'flex', alignItems: 'baseline', width: '48%'}}>
                                         <Field
-                                            name="amountToPersent"
+                                            name="amountTo"
                                             className={classes.inputFieldCustom}
                                             component={TextField}
                                             label={t('Процент')}

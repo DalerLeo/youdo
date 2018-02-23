@@ -205,7 +205,6 @@ const enhance = compose(
         handleSubmitPriceSetForm: props => () => {
             const {dispatch, createForm, detail, priceListItemsList, params: {priceId}, location: {pathname}, filter} = props
             const detailId = _.get(detail, 'id')
-
             return dispatch(priceCreateAction(_.get(createForm, ['values']), priceId, priceListItemsList))
                 .then(() => {
                     dispatch(priceListFetchAction(filter))
@@ -213,11 +212,6 @@ const enhance = compose(
                     dispatch(getPriceItemsAction(detailId))
                     hashHistory.push({pathname, query: filter.getParams({[PRICE_SET_FORM_OPEN]: false})})
                     return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
-                })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
                 })
         },
 
@@ -421,7 +415,7 @@ const PriceList = enhance((props) => {
                 'agentCanChange': _.get(detail, 'customPrice'),
                 'minPrice': _.get(detail, 'minPrice'),
                 'maxPrice': _.get(detail, 'maxPrice'),
-                'priceCurrency': {value: _.get(detail, ['currencyId'])}
+                'currency': {value: _.get(detail, ['currencyId'])}
             }
         })(),
         openPriceSetForm,

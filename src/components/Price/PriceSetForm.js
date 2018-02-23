@@ -183,7 +183,7 @@ const PriceSetForm = enhance((props) => {
         dispatch
     } = props
 
-    const formNames = []
+    const formNames = ['prices', 'currency']
     const onSubmit = handleSubmit(() => props.onSubmit()
         .catch((error) => {
             formValidate(formNames, dispatch, error)
@@ -261,7 +261,7 @@ const PriceSetForm = enhance((props) => {
                             </Col>
                             <Col xs={4}>
                                 <Field
-                                    name="priceCurrency"
+                                    name="currency"
                                     className={classes.inputFieldCustom}
                                     component={CurrencySearchField}
                                     label={t('Валюта')}
@@ -301,7 +301,7 @@ const PriceSetForm = enhance((props) => {
                                     <Col xs={4}> {priceListName}</Col>
                                     <Col style={{textAlign: 'left'}} xs={2}>
                                         <Field
-                                            name={'prices[' + index + '][cash_price]'}
+                                            name={'prices[' + index + '][cashPrice]'}
                                             className={classes.inputField}
                                             component={TextField}
                                             placeholder={cashPrice}
@@ -315,11 +315,12 @@ const PriceSetForm = enhance((props) => {
                                             clearValue={false}
                                             placeholder={t('Выберите')}
                                             component={CurrencySearchField}
+                                            withoutErrorText={true}
                                             fullWidth={true}/>
                                     </Col>
                                     <Col style={{textAlign: 'left'}} xs={2}>
                                         <Field
-                                            name={'prices[' + index + '][transfer_price]'}
+                                            name={'prices[' + index + '][transferPrice]'}
                                             className={classes.inputField}
                                             component={TextField}
                                             normalize={normalizeNumber}
@@ -333,6 +334,7 @@ const PriceSetForm = enhance((props) => {
                                             component={CurrencySearchField}
                                             placeholder={t('Выберите')}
                                             clearValue={false}
+                                            withoutErrorText={true}
                                             fullWidth={true}/>
                                     </Col>
                                 </Row>

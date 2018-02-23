@@ -7,8 +7,7 @@ import {connect} from 'react-redux'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import Loader from '../Loader'
-import {Field, reduxForm, SubmissionError} from 'redux-form'
-import toCamelCase from '../../helpers/toCamelCase'
+import {Field, reduxForm} from 'redux-form'
 import {
     TextField,
     ProductTypeParentSearchField,
@@ -20,20 +19,10 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
 import t from '../../helpers/translate'
+import formValidate from '../../helpers/formValidate'
 
 export const PRODUCT_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
-const validate = (data) => {
-    const errors = toCamelCase(data)
-    const nonFieldErrors = _.get(errors, 'nonFieldErrors')
-    const latLng = (_.get(errors, 'lat') || _.get(errors, 'lon')) && 'Location is required.'
-
-    throw new SubmissionError({
-        ...errors,
-        latLng,
-        _error: nonFieldErrors
-    })
-}
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
         loader: {
@@ -52,7 +41,7 @@ const enhance = compose(
             display: 'flex',
             justifyContent: 'space-between',
             '& > div': {
-                width: 'calc(50% - 10px) !important'
+                width: 'calc((100% / 3) - 10px) !important'
             }
         }
     })),
@@ -61,7 +50,7 @@ const enhance = compose(
         enableReinitialize: true
     }),
     connect((state) => {
-        const typeParent = _.get(state, ['form', 'ProductCreateForm', 'values', 'productTypeParent', 'value'])
+        const typeParent = _.get(state, ['form', 'ProductCreateForm', 'values', 'type', 'value'])
         const measurementParent = _.get(state, ['form', 'ProductCreateForm', 'values', 'measurement', 'value'])
         const boxes = _.get(state, ['form', 'ProductCreateForm', 'values', 'boxes'])
         return {
@@ -73,8 +62,12 @@ const enhance = compose(
 )
 
 const ProductCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, isUpdate, typeParent, measurementParent} = props
-    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+    const {open, loading, handleSubmit, onClose, classes, isUpdate, typeParent, measurementParent, dispatch} = props
+    const formNames = ['name', 'type', 'measurement']
+    const onSubmit = handleSubmit(() => props.onSubmit()
+        .catch((error) => {
+            formValidate(formNames, dispatch, error)
+        }))
     const measurementChilds = _.get(measurementParent, 'children')
     return (
         <Dialog
@@ -113,14 +106,14 @@ const ProductCreateDialog = enhance((props) => {
                                 fullWidth={true}
                             />
                             <Field
-                                name="productTypeParent"
+                                name="type"
                                 className={classes.inputFieldCustom}
                                 component={ProductTypeParentSearchField}
                                 label={t('Тип продукта')}
                                 fullWidth={true}
                             />
                             {typeParent && <Field
-                                name="type"
+                                name="typeChild"
                                 className={classes.inputFieldCustom}
                                 component={ProductTypeChildSearchField}
                                 parentType={typeParent}
