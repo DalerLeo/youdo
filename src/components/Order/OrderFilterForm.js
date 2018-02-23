@@ -46,7 +46,8 @@ export const ORDER_FILTER_KEY = {
     ZONE: 'zone',
     ONLY_BONUS: 'onlyBonus',
     EXCLUDE: 'exclude',
-    DELIVERY_MAN: 'deliveryMan'
+    DELIVERY_MAN: 'deliveryMan',
+    IS_NEW: 'isNew'
 }
 
 const enhance = compose(
@@ -222,6 +223,7 @@ const OrderFilterForm = enhance((props) => {
                         <Field className={classes.inputDateCustom} name="deadlineDate" component={DateToDateField} label={t('Период изготовления')}/>
                         <Field name="onlyBonus" component={CheckBox} label={t('Только бонусные заказы')}/>
                         <Field name="exclude" component={CheckBox} label={t('Показать отмененные заказы')}/>
+                        <Field name="isNew" component={CheckBox} label={t('Показать новые заказы')}/>
                     </div>
 
                     <RaisedButton

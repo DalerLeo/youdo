@@ -463,6 +463,7 @@ const enhance = compose(
             const deliveryMan = _.get(filterForm, ['values', 'deliveryMan']) || null
             const onlyBonus = _.get(filterForm, ['values', 'onlyBonus']) || null
             const exclude = _.get(filterForm, ['values', 'exclude']) || null
+            const isNew = _.get(filterForm, ['values', 'isNew']) || null
 
             filter.filterBy({
                 [ORDER_FILTER_OPEN]: false,
@@ -476,6 +477,7 @@ const enhance = compose(
                 [ORDER_FILTER_KEY.DEPT]: dept,
                 [ORDER_FILTER_KEY.ONLY_BONUS]: onlyBonus,
                 [ORDER_FILTER_KEY.EXCLUDE]: exclude,
+                [ORDER_FILTER_KEY.IS_NEW]: isNew,
                 [ORDER_FILTER_KEY.DELIVERY_MAN]: _.join(deliveryMan, '-'),
                 [ORDER_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [ORDER_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD'),
@@ -987,6 +989,7 @@ const OrderList = enhance((props) => {
     const deadlineToDate = filter.getParam(ORDER_FILTER_KEY.DEADLINE_TO_DATE)
     const onlyBonus = filter.getParam(ORDER_FILTER_KEY.ONLY_BONUS)
     const exclude = filter.getParam(ORDER_FILTER_KEY.EXCLUDE)
+    const isNew = filter.getParam(ORDER_FILTER_KEY.IS_NEW)
 
     const detailId = _.toInteger(_.get(params, 'orderId'))
     const tab = _.get(location, ['query', TAB]) || ORDER_TAB.ORDER_DEFAULT_TAB
@@ -1216,6 +1219,7 @@ const OrderList = enhance((props) => {
             },
             onlyBonus: onlyBonus,
             exclude: exclude,
+            isNew: isNew,
             createdDate: {
                 fromDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),
                 toDate: toDate && moment(toDate, 'YYYY-MM-DD')
