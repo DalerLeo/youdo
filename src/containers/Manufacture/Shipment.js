@@ -382,11 +382,6 @@ const enhance = compose(
                     dispatch(shipmentProductsListFetchAction(dateRange, null, manufactureId))
                     dispatch(shipmentMaterialsListFetchAction(dateRange, null, manufactureId))
                 })
-                .catch((error) => {
-                    dispatch(openErrorAction({
-                        message: error
-                    }))
-                })
         },
 
         // ADD PRODUCTS BIG DIALOG

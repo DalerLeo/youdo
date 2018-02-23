@@ -241,7 +241,6 @@ const OrderCreateDialog = enhance((props) => {
         loading,
         orderProducts,
         currencyItem,
-        isSuperUser,
         editProductsLoading,
         handleOpenAddProduct,
         deliveryType,
@@ -278,7 +277,10 @@ const OrderCreateDialog = enhance((props) => {
         maxWidth: 'none',
         height: '100%'
     }
+    // PERMISSIONS
     const canSetDeliveryMan = checkPermission('can_set_delivery_man')
+    const canSetAgent = checkPermission('can_set_agent')
+
     const totalCost = _.sumBy(orderProducts, (item) => {
         const amount = _.toNumber(_.get(item, 'amount'))
         const cost = _.toNumber(_.get(item, 'cost'))
@@ -378,7 +380,7 @@ const OrderCreateDialog = enhance((props) => {
                                             className={classes.inputFieldCustom}
                                             label={t('Прайс лист')}
                                             fullWidth={true}/>
-                                        {isSuperUser && <Field
+                                        {canSetAgent && <Field
                                             name="user"
                                             component={UsersSearchField}
                                             className={classes.inputFieldCustom}

@@ -11,6 +11,7 @@ import t from '../../helpers/translate'
 import {TYPE_RAW} from '../Manufacture'
 import {EquipmentSearchField, ShiftSearchField, DateField} from '../ReduxForm'
 import ShipmentProductsMaterialsList from '../ReduxForm/Manufacture/ShipmentProductsMaterialsList'
+import formValidate from '../../helpers/formValidate'
 
 const enhance = compose(
     injectSheet({
@@ -204,8 +205,12 @@ const enhance = compose(
 )
 
 const ManufactureAddProductMaterial = enhance((props) => {
-    const {type, open, handleSubmit, onClose, classes, handleOpenAddProduct, manufacture} = props
-    const onSubmit = handleSubmit(() => props.onSubmit())
+    const {dispatch, type, open, handleSubmit, onClose, classes, handleOpenAddProduct, manufacture} = props
+    const formNames = ['date', 'shift', 'equipment', 'products']
+    const onSubmit = handleSubmit(() => props.onSubmit()
+        .catch((error) => {
+            formValidate(formNames, dispatch, error)
+        }))
 
     const iconStyle = {
         icon: {
@@ -274,6 +279,7 @@ const ManufactureAddProductMaterial = enhance((props) => {
                             names={['products', 'product', 'defect', 'amount', 'editDefect', 'editAmount']}
                             handleOpenAddProduct={handleOpenAddProduct}
                             component={ShipmentProductsMaterialsList}
+                            dialogType={type}
                         />
                     </div>
                 </div>

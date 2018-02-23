@@ -47,8 +47,7 @@ export const productsMaterialsCreate = (data) => {
     const products = _.map(_.get(data, 'products'), (item) => {
         return {
             product: _.get(item, ['product', 'value', 'id']),
-            amount: numberWithoutSpaces(_.get(item, 'amount')),
-            defected: numberWithoutSpaces(_.get(item, 'defect'))
+            amount: numberWithoutSpaces(_.get(item, 'amount'))
         }
     })
     return {

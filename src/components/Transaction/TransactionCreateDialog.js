@@ -137,12 +137,7 @@ const enhance = compose(
             }
         },
         inputDateCustom: {
-            fontSize: '13px !important',
-            height: '45px !important',
             marginTop: '7px',
-            '& div': {
-                fontSize: '13px !important'
-            },
             '& label': {
                 top: '20px !important',
                 lineHeight: '5px !important'
@@ -392,6 +387,7 @@ const TransactionCreateDialog = enhance((props) => {
                         <Field
                             name="date"
                             className={classes.inputDateCustom}
+                            errorStyle={{bottom: 2}}
                             component={DateField}
                             fullWidth={true}
                             container="inline"

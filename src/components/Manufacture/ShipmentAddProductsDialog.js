@@ -15,7 +15,6 @@ import TextFieldSearch from 'material-ui/TextField'
 import Paper from 'material-ui/Paper'
 import SearchIcon from 'material-ui/svg-icons/action/search'
 import NotFound from '../Images/not-found.png'
-import ToolTip from '../ToolTip'
 import numberFormat from '../../helpers/numberFormat'
 import {
     TextField,
@@ -291,7 +290,6 @@ const ShipmentAddProductsDialog = enhance((props) => {
         const id = _.get(item, 'id')
         const name = type === TYPE_PRODUCT ? _.get(item, 'name') : _.get(item, 'title')
         const productType = _.get(item, ['type', 'name'])
-        const defect = _.toNumber(_.get(item, 'defects'))
         const available = _.toNumber(_.get(item, 'available'))
         const measurement = _.get(item, ['measurement', 'name'])
         return type === TYPE_PRODUCT
@@ -321,22 +319,11 @@ const ShipmentAddProductsDialog = enhance((props) => {
             )
         : (
             <Row key={id} className="dottedList">
-                <Col xs={5}>{name}</Col>
-                <Col xs={3}>
-                    <ToolTip text={t('доступно / брак')} position="left">{numberFormat(available)} / {numberFormat(defect, measurement)}</ToolTip>
-                </Col>
+                <Col xs={7}>{name}</Col>
+                <Col xs={3}>{numberFormat(available, measurement)}</Col>
                 <Col xs={2} className={classes.flex}>
                     <Field
                         name={'product[' + id + '][amount]'}
-                        component={TextField}
-                        className={classes.inputFieldCustom}
-                        inputStyle={{textAlign: 'right'}}
-                        fullWidth={true}/>
-                    <span>{measurement}</span>
-                </Col>
-                <Col xs={2} className={classes.flex}>
-                    <Field
-                        name={'product[' + id + '][defect]'}
                         component={TextField}
                         className={classes.inputFieldCustom}
                         inputStyle={{textAlign: 'right'}}
@@ -416,10 +403,9 @@ const ShipmentAddProductsDialog = enhance((props) => {
                                     <Col xs={2} className={classes.rightAlign}>{t('Брак')}</Col>
                                 </Row>
                                 : <Row className="dottedList">
-                                    <Col xs={5}>{t('Наименование')}</Col>
+                                    <Col xs={7}>{t('Наименование')}</Col>
                                     <Col xs={3}>{t('В наличии')}</Col>
-                                    <Col xs={2} className={classes.rightAlign}>ОК</Col>
-                                    <Col xs={2} className={classes.rightAlign}>{t('Брак')}</Col>
+                                    <Col xs={2} className={classes.rightAlign}>{t('Кол-во')}</Col>
                                 </Row>}
                             {!_.isEmpty(products)
                                 ? products
