@@ -5,6 +5,7 @@ import injectSheet from 'react-jss'
 import {compose, withPropsOnChange, withReducer, withHandlers} from 'recompose'
 import Select from 'react-select'
 import 'react-select/dist/react-select.css'
+import t from '../../../helpers/translate'
 const DELAY_FOR_TYPE_ATTACK = 300
 
 const fetchList = ({state, dispatch, getOptions, getText, getValue, input}) => {
@@ -164,7 +165,7 @@ const SearchField = enhance((props) => {
         meta,
         withoutErrorText
     } = props
-    const hintText = !state.loading ? <div>Загрузка...</div> : <div>Не найдено</div>
+    const hintText = state.loading ? <div>{t('Загрузка')}...</div> : <div>{t('Не найдено')}</div>
     return (
         <div className={classes.wrapper}>
             <Select
@@ -183,7 +184,7 @@ const SearchField = enhance((props) => {
                 closeOnSelect={true}
                 filterOptions={options => options}
                 clearable={clearValue}
-                loadingPlaceholder="Загрузка..."
+                loadingPlaceholder={t('Загрузка') + '...'}
             />
             {meta.error &&
             <div className={withoutErrorText ? classes.noTextError : classes.error}>

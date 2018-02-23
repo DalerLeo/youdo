@@ -5,7 +5,7 @@ import injectSheet from 'react-jss'
 import {compose, withPropsOnChange, withReducer, withState, lifecycle} from 'recompose'
 import Select from 'react-select'
 import 'react-select/dist/react-select.css'
-
+import t from '../../../helpers/translate'
 const DELAY_FOR_TYPE_ATTACK = 300
 
 const fetchList = ({state, dispatch, getOptions, getText, getValue, input}) => {
@@ -186,7 +186,7 @@ const SearchFieldCustom = enhance((props) => {
                     value ? fetchItem(props, value) : fetchList(props)
                 }}
                 placeholder={label}
-                noResultsText={'Не найдено'}
+                noResultsText={t('Не найдено')}
                 isLoading={state.loading}
                 labelKey={'text'}
                 onOpen={() => dispatch({open: true})}
