@@ -6,6 +6,7 @@ import {compose, withPropsOnChange, withReducer, withHandlers} from 'recompose'
 import Select from 'react-select'
 import 'react-select/dist/react-select.css'
 const DELAY_FOR_TYPE_ATTACK = 300
+import t from '../../../helpers/translate'
 
 const fetchList = ({state, dispatch, getOptions, getText, getValue, input}) => {
     const newValues = _.map(input.value, (item) => {
@@ -190,7 +191,7 @@ const MultiSelectField = enhance((props) => {
         input,
         filterOptionRender
     } = props
-    const hintText = state.loading ? <div>Загрузка...</div> : <div>Не найдено</div>
+    const hintText = state.loading ? <div>{t('Загрузка')}...</div> : <div>{t('Не найдено')}</div>
     return (
         <div className={classes.wrapper}>
             <Select
@@ -210,9 +211,9 @@ const MultiSelectField = enhance((props) => {
                 disabled={disabled}
                 rtl={true}
                 filterOptions={filterOptionRender}
-                loadingPlaceholder="Загрузка..."
+                loadingPlaceholder={t('Загрузка') + '...'}
                 onOpen={() => dispatch({open: true})}
-                clearAllText="Очистить"
+                clearAllText={t('Очистить')}
             />
         </div>
     )
