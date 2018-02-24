@@ -162,7 +162,7 @@ const ActivityOrder = enhance((props) => {
         return numberFormat(_.get(item, 'totalAmount'), _.get(item, 'currencyName'))
     }), ', ')
     const cashTooltip = cashSummary ? '<div>' + t('Сумма (нал)') + ': ' + cashSummary + '</div>' : ''
-    const bankTooltip = bankSummary ? '<div>' + t('Сумма (нал)') + ': ' + bankSummary + '</div>' : ''
+    const bankTooltip = bankSummary ? '<div>' + t('Сумма (пер)') + ': ' + bankSummary + '</div>' : ''
     const tooltipText = cashTooltip + bankTooltip
     const orderList = _.map(_.get(orderlistData, 'data'), (item) => {
         const id = _.get(item, ['order', 'id'])
