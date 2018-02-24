@@ -19,7 +19,6 @@ import {
     OrderListProductField,
     DateField,
     UsersSearchField,
-    DeliveryManSearchField,
     PriceListSearchField,
     UserCurrenciesSearchField,
     DeliveryTypeSearchField

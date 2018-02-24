@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import sprintf from 'sprintf'
 import React from 'react'
 import SearchField from './Basic/SearchField'

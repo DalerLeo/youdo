@@ -14,21 +14,6 @@ import {connect} from 'react-redux'
 
 const configMarkets = toBoolean(getConfig('MARKETS_MODULE'))
 
-const getOptions = (search, type, market, client, priceList, currency) => {
-    return axios().get(PATH.RETURN_CREATE_PRODUCTS_LIST,
-        {params: {
-            type: type,
-            market: market,
-            client: !configMarkets ? client : null,
-            price_list: priceList,
-            currency: currency,
-            search: search
-        }})
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data.results))
-        })
-}
-
 const setMeasurementAction = (data, loading) => {
     return {
         type: actionTypes.PRODUCT_MEASUREMENT,

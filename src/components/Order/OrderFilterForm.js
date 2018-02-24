@@ -13,7 +13,6 @@ import DateToDateField from '../ReduxForm/Basic/DateToDateField'
 import {
     ClientMultiSearchField,
     MarketMultiSearchField,
-    UsersAgentMultiSearchField,
     DeptSearchField,
     ZoneMultiSearchField,
     DivisionMultiSearchField,
