@@ -24,7 +24,7 @@ import {
 
 } from '../../components/Manufacture'
 import * as SHIPMENT_TAB from '../../constants/manufactureShipmentTab'
-import {MANUF_ACTIVITY_FILTER_KEY} from '../../components/Manufacture/ManufactureActivityFilterDialog'
+import {MANUFACTURES_FILTERS_KEY} from '../../components/Manufacture/Tab/ManufactureShipment'
 import {
     shipmentListFetchAction,
     shipmentItemFetchAction,
@@ -328,10 +328,12 @@ const enhance = compose(
             const {filter, filterForm} = props
             const tab = filter.getParam('tab')
             const shift = _.get(filterForm, ['values', 'shift']) || null
+            const type = _.get(filterForm, ['values', 'type', 'value']) || null
             filter.filterBy({
                 [OPEN_FILTER]: false,
                 [TAB]: tab,
-                [MANUF_ACTIVITY_FILTER_KEY.SHIFT]: joinArray(shift)
+                [MANUFACTURES_FILTERS_KEY.SHIFT]: joinArray(shift),
+                [MANUFACTURES_FILTERS_KEY.TYPE]: type
             })
         },
 
@@ -589,7 +591,7 @@ const ManufactureShipmentList = enhance((props) => {
     const tab = _.get(location, ['query', TAB]) || SHIPMENT_TAB.DEFAULT_TAB
     const openFilterDialog = toBoolean(_.get(location, ['query', OPEN_FILTER]))
     const openProductMaterialDialog = _.get(location, ['query', OPEN_ADD_PRODUCT_MATERIAL_DIALOG])
-    const shift = _.get(location, ['query', MANUF_ACTIVITY_FILTER_KEY.SHIFT])
+    const shift = _.get(location, ['query', MANUFACTURES_FILTERS_KEY.SHIFT])
     const openSendDialog = _.toInteger(_.get(location, ['query', 'openShift'])) > ZERO
 
     const tabData = {
