@@ -221,9 +221,11 @@ export default class GoogleCustomMap extends React.Component {
                 zIndex: 1
             })
             zones.push({zone: existingZone, id, title, meanLat, meanLng})
-            this.createOverlays(meanLat, meanLng, title)
             existingZone.setMap(this.map)
         })
+        this.overlayView = new google.maps.OverlayView()
+        this.overlayView.setMap(this.map)
+        this.createOverlays()
 
         this.setState({
             zone: zones,
@@ -248,36 +250,45 @@ export default class GoogleCustomMap extends React.Component {
         })
     }
 
-    createOverlays (meanLat, meanLng, title) {
-        this.overlayView = new google.maps.OverlayView()
-        this.overlayView.setMap(this.map)
+    createOverlays () {
         this.overlayView.onAdd = () => {
             this.containerElement = document.createElement('div')
             this.containerElement.style.borderStyle = 'none'
             this.containerElement.style.borderWidth = '0px'
+            let overlayEl = this.overlayView
+            let mapPanes = overlayEl.getPanes()
+            let elem = document.createElement('div')
+            mapPanes[GOOGLE_MAP.FLOATPANE].appendChild(elem)
             this.containerElement.style.position = 'absolute'
-            return this.containerElement
         }
         this.overlayView.draw = () => {
+            while (this.containerElement.firstChild) {
+                this.containerElement.removeChild(this.containerElement.firstChild)
+            }
+
             let overlayEl = this.overlayView
             let mapPanes = overlayEl.getPanes()
 
             let mapCanvasProjection = overlayEl.getProjection()
-            const bounds = new google.maps.LatLngBounds(
-                    new google.maps.LatLng(meanLat, meanLng))
-            if (mapCanvasProjection) {
+            _.map(this.state.zone, (zone) => {
+                const bounds = new google.maps.LatLngBounds(
+                    new google.maps.LatLng(zone.meanLat, zone.meanLng))
                 let sw = mapCanvasProjection.fromLatLngToDivPixel(bounds.getCenter())
-                let div = overlayEl.onAdd()
-                div.style.left = sw.x + 'px'
-                div.style.top = sw.y + 'px'
-                div.style.color = '#333'
-                div.style.fontSize = (this.map.getZoom() + FOUR) + 'px'
-                div.style.fontWeight = '700'
-                div.style.whiteSpace = 'nowrap'
-                div.innerHTML = title
-                if (mapPanes[GOOGLE_MAP.FLOATPANE].firstChild) {
-                    mapPanes[GOOGLE_MAP.FLOATPANE].replaceChild(div, mapPanes[GOOGLE_MAP.FLOATPANE].firstChild)
-                }
+                let elem = document.createElement('div')
+                elem.style.borderStyle = 'none'
+                elem.style.borderWidth = '0px'
+                elem.style.position = 'absolute'
+                elem.style.left = sw.x + 'px'
+                elem.style.top = sw.y + 'px'
+                elem.style.color = '#333'
+                elem.style.fontSize = (this.map.getZoom() + FOUR) + 'px'
+                elem.style.fontWeight = '700'
+                elem.style.whiteSpace = 'nowrap'
+                elem.innerText = zone.title
+                this.containerElement.appendChild(elem)
+            })
+            if (mapPanes[GOOGLE_MAP.FLOATPANE].firstChild) {
+                mapPanes[GOOGLE_MAP.FLOATPANE].replaceChild(this.containerElement, mapPanes[GOOGLE_MAP.FLOATPANE].firstChild)
             }
         }
 
@@ -450,13 +461,6 @@ export default class GoogleCustomMap extends React.Component {
     }
 
     render () {
-        if (this.map && this.overlayView) {
-            this.map.addListener('zoom_changed', () => {
-                let mapFloatPane = this.overlayView.getPanes()
-                mapFloatPane[GOOGLE_MAP.FLOATPANE].innerHTML = '<div></div>'
-            })
-        }
-
         const {addZone, filter, updateZone, isOpenAddZone, isOpenUpdateZone, deleteZone, isOpenToggle} = this.props
 
         const marketToggle = {
