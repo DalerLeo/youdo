@@ -9,7 +9,7 @@ import FlatButton from 'material-ui/FlatButton'
 import Loader from '../Loader'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, CashboxPaymentTypeSearchField, normalizeNumber} from '../ReduxForm'
+import {TextField, normalizeNumber, CashBoxSimpleSearch} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
@@ -165,7 +165,8 @@ const PendingPaymentsCreateDialog = enhance((props) => {
                                 <Field
                                     name="cashbox"
                                     className={classes.inputFieldCustom}
-                                    component={CashboxPaymentTypeSearchField}
+                                    component={CashBoxSimpleSearch}
+                                    params={{type: _.get(detailData, ['data', 'paymentType'])}}
                                     data-payment-type={_.get(detailData, ['data', 'paymentType'])}
                                     label={t('Касса получатель')}
                                     fullWidth={true}/>}

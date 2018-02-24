@@ -28,7 +28,6 @@ import {
     DeptSearchField,
     ZoneMultiSearchField,
     DivisionMultiSearchField,
-    DeliveryManMultiSearchField,
     ProductMultiSearchField,
     OrderStatusMultiSearchField,
     CheckBox
@@ -345,7 +344,12 @@ const StatSalesGridList = enhance((props) => {
         <div>
             <Field name="createdDate" className={classes.inputDateCustom} component={DateToDateField} label={t('Период создания')}/>
             <Field name="client" className={classes.inputFieldCustom} component={ClientMultiSearchField} label={t('Клиент')}/>
-            <Field name="deliveryMan" className={classes.inputFieldCustom} component={DeliveryManMultiSearchField} label={t('Доставщик')}/>
+            <Field
+                name="deliveryMan"
+                className={classes.inputFieldCustom}
+                component={UsersMultiSearchField}
+                params={{group: 'delivery'}}
+                label={t('Доставщик')}/>
             <Field name="product" className={classes.inputFieldCustom} component={ProductMultiSearchField} label={t('Товар')}/>
             <Field name="status" className={classes.inputFieldCustom} component={OrderStatusMultiSearchField} label={t('Статус')}/>
             {hasMarket && <Field name="shop" className={classes.inputFieldCustom} component={MarketMultiSearchField} label={t('Магазин')}/>}

@@ -7,7 +7,7 @@ import injectSheet from 'react-jss'
 import {reduxForm, Field} from 'redux-form'
 import * as ROUTES from '../../../constants/routes'
 import Container from '../../Container/index'
-import {TextField, AgentSearchField, MarketTypeMultiSearchField} from '../../ReduxForm'
+import {TextField, MarketTypeMultiSearchField, UsersMultiSearchField} from '../../ReduxForm'
 import DateToDateField from '../../ReduxForm/Basic/DateToDateField'
 import StatSideMenu from '../StatSideMenu'
 import Loader from '../../Loader'
@@ -602,15 +602,13 @@ const StatMarketGridList = enhance((props) => {
                 component={MarketTypeMultiSearchField}
                 className={classes.inputFieldCustom}
                 label={t('Тип магазина')}
-                fullWidth={true}
-            />
+                fullWidth={true}/>
             <Field
                 name="user"
-                component={AgentSearchField}
+                component={UsersMultiSearchField}
                 className={classes.inputFieldCustom}
                 label={t('Агент')}
-                fullWidth={true}
-            />
+                fullWidth={true}/>
         </div>
     )
 

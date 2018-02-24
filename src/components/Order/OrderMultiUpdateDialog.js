@@ -11,7 +11,7 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import WarnIcon from 'material-ui/svg-icons/alert/warning'
 import {
     DateField,
-    DeliveryManSearchField
+    UsersSearchField
 } from '../ReduxForm'
 import t from '../../helpers/translate'
 
@@ -177,7 +177,8 @@ const OrderMultiUpdateDialog = enhance((props) => {
                             <div className={classes.field}>
                                 <Field
                                     name="deliveryMan"
-                                    component={DeliveryManSearchField}
+                                    component={UsersSearchField}
+                                    params={{group: 'delivery'}}
                                     disabled={givenOrDelivery}
                                     className={classes.inputDateCustom}
                                     label={t('Доставщик')}

@@ -19,7 +19,7 @@ import {
     DivisionMultiSearchField,
     ProductMultiSearchField,
     CheckBox,
-    DeliveryManMultiSearchField,
+    UsersMultiSearchField,
     OrderStatusMultiSearchField
 } from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
@@ -210,12 +210,22 @@ const OrderFilterForm = enhance((props) => {
                 <form onSubmit={handleSubmit(filterDialog.handleSubmitFilterDialog)}>
                     <div>
                         <Field className={classes.inputFieldCustom} name="client" component={ClientMultiSearchField} label={t('Клиент')}/>
-                        <Field className={classes.inputFieldCustom} name="deliveryMan" component={DeliveryManMultiSearchField} label={t('Доставщик')}/>
+                        <Field
+                            className={classes.inputFieldCustom}
+                            name="deliveryMan"
+                            component={UsersMultiSearchField}
+                            params={{group: 'delivery'}}
+                            label={t('Доставщик')}/>
                         <Field className={classes.inputFieldCustom} name="product" component={ProductMultiSearchField} label={t('Товар')}/>
                         <Field className={classes.inputFieldCustom} name="status" component={OrderStatusMultiSearchField} label={t('Статус')}/>
                         {hasMarket && <Field className={classes.inputFieldCustom} name="shop" component={MarketMultiSearchField} label={t('Магазин')}/>}
                         {divisionStatus && <Field className={classes.inputFieldCustom} name="division" component={DivisionMultiSearchField} label={t('Организация')}/>}
-                        <Field className={classes.inputFieldCustom} name="initiator" component={UsersAgentMultiSearchField} label={t('Инициатор')}/>
+                        <Field
+                            className={classes.inputFieldCustom}
+                            name="initiator"
+                            component={UsersMultiSearchField}
+                            params={{group: 'agent'}}
+                            label={t('Инициатор')}/>
                         <Field className={classes.inputFieldCustom} name="dept" component={DeptSearchField} label={t('Статус оплаты')}/>
                         <Field className={classes.inputFieldCustom} name="zone" component={ZoneMultiSearchField} label={t('Зона')}/>
                         <Field className={classes.inputDateCustom} name="createdDate" component={DateToDateField} label={t('Период создания')}/>

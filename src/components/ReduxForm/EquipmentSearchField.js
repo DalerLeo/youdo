@@ -5,19 +5,7 @@ import SearchField from './Basic/SearchField'
 import axios from '../../helpers/axios'
 import * as PATH from '../../constants/api'
 import toCamelCase from '../../helpers/toCamelCase'
-
-const getOptions = (search, manufacture) => {
-    return axios().get(`${PATH.EQUIPMENT_LIST}?search=${search || ''}&manufacture=` + manufacture)
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data.results))
-        })
-}
-
-const custom = (manufacture) => {
-    return (search) => {
-        return getOptions(search, manufacture)
-    }
-}
+import searchFieldGetOptions from '../../helpers/searchFieldGetOptions'
 
 const getItem = (id) => {
     return axios().get(sprintf(PATH.EQUIPMENT_ITEM, id))
@@ -27,12 +15,12 @@ const getItem = (id) => {
 }
 
 const EquipmentSearchField = (props) => {
-    const manufacture = _.get(props, 'data-manufacture')
+    const {params, pageSize} = props
     return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
             getText={SearchField.defaultGetText('name')}
-            getOptions={custom(manufacture)}
+            getOptions={search => searchFieldGetOptions(PATH.EQUIPMENT_LIST, search, params, pageSize)}
             getItem={getItem}
             getItemText={SearchField.defaultGetText('name')}
             {...props}

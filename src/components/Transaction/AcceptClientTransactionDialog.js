@@ -11,6 +11,7 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import AcceptClientTransactionCashBoxSearchField from '../ReduxForm/Cashbox/AcceptClientTransactionCashBoxSearchField'
 import {DateField} from '../ReduxForm'
 import FlatButton from 'material-ui/FlatButton'
+import {CashBoxSimpleSearch} from '../ReduxForm'
 import numberFormat from '../../helpers/numberFormat'
 import t from '../../helpers/translate'
 import formValidate from '../../helpers/formValidate'
@@ -178,6 +179,7 @@ const AcceptClientTransactionDialog = enhance((props) => {
                                     name="cashbox"
                                     component={AcceptClientTransactionCashBoxSearchField}
                                     data-currency={currency}
+                                    params={{currency, type: 'cash'}}
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}
                                     label={t('Кассы')}

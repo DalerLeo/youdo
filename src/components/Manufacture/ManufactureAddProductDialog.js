@@ -252,9 +252,9 @@ const ManufactureAddProductDialog = enhance((props) => {
                             {manufacture && <Field
                                 name="equipment"
                                 label={t('Оборудование')}
-                                data-manufacture={manufacture}
                                 className={classes.inputFieldCustom}
                                 component={EquipmentSearchField}
+                                params={{manufacture}}
                                 fullWidth={true}/>}
                             <Fields
                                 names={['ingredients', 'ingredient', 'amount', 'editAmount']}

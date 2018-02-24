@@ -25,10 +25,10 @@ import {
     TransactionIncomeCategory,
     OrderSearchField,
     SupplySearchField,
-    SupplyExpenseSearchField
+    SupplyExpenseSearchField,
+    CashBoxSimpleSearch
 } from '../ReduxForm'
 import RateRadioButton from '../ReduxForm/Transaction/RateRadioButton'
-import CashboxSearchField from '../ReduxForm/Cashbox/CashBoxSimpleSearch'
 import ExpensiveCategoryCustomSearchField from '../ReduxForm/ExpenseCategory/ExpensiveCategoryCustomSearchField'
 import {openErrorAction} from '../../actions/error'
 import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
@@ -370,7 +370,7 @@ const TransactionCreateDialog = enhance((props) => {
                                 <Field
                                     name="cashbox"
                                     className={classes.inputFieldCustom}
-                                    component={CashboxSearchField}
+                                    component={CashBoxSimpleSearch}
                                     label={t('Касса')}/>
                             </div>
                             : <div className={classes.itemList}>
