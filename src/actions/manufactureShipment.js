@@ -261,3 +261,19 @@ export const sendPersonalRotation = (id, stock) => {
         payload
     }
 }
+export const inventoryFetchListAction = (filter, stock, dateRange) => {
+    const params = serializers.inventorySerializer(filter, stock, dateRange)
+    const payload = axios()
+        .get(API.REMAINDER_INVENTORY_LIST, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.SHIPMENT_INVENTORY_LIST,
+        payload
+    }
+}

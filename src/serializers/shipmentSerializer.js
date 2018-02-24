@@ -58,3 +58,15 @@ export const productsMaterialsCreate = (data) => {
         equipment
     }
 }
+
+export const inventorySerializer = (data, stock, dateRange) => {
+    const {...defaultData} = data
+
+    return {
+        'shift': _.get(defaultData, 'shift'),
+        beginDate: _.get(dateRange, 'beginDate'),
+        endDate: _.get(dateRange, 'endDate'),
+        stock: stock,
+        type: 'manufacture_writeoff'
+    }
+}
