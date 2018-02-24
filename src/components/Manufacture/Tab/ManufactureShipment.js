@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 import {Row, Col} from 'react-flexbox-grid'
+import sprintf from 'sprintf'
 import injectSheet from 'react-jss'
 import {hashHistory, Link} from 'react-router'
 import {compose, withState} from 'recompose'
@@ -14,7 +15,7 @@ import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import EditIcon from 'material-ui/svg-icons/editor/mode-edit'
 import Log from 'material-ui/svg-icons/content/content-paste'
 import Shift from 'material-ui/svg-icons/av/loop'
-import Inventory from 'material-ui/svg-icons/notification/event-note'
+import InventoryIcon from 'material-ui/svg-icons/notification/event-note'
 import Raw from 'material-ui/svg-icons/action/exit-to-app'
 import Product from '../../CustomIcons/Product'
 import Material from 'material-ui/svg-icons/maps/layers'
@@ -35,6 +36,7 @@ import NotFound from '../../Images/not-found.png'
 import * as ROUTES from '../../../constants/routes'
 import {INVENTORY_INVENTORY_DIALOG_OPEN} from '../../Inventory'
 import dateTimeFormat from '../../../helpers/dateTimeFormat'
+import dateFormat from '../../../helpers/dateFormat'
 import numberFormat from '../../../helpers/numberFormat'
 import {ShiftMultiSearchField, TextField, normalizeNumber, ManufactureLogTypeSearchField} from '../../ReduxForm'
 import * as TAB from '../../../constants/manufactureShipmentTab'
@@ -150,10 +152,10 @@ const enhance = compose(
             position: 'relative',
             '& > div > div': {
                 '&:nth-child(1)': {
-                    paddingRight: 'calc(100% - 330px)'
+                    paddingRight: 'calc(100% - 550px)'
                 },
                 '&:nth-child(2)': {
-                    paddingRight: 'calc(100% - 330px)'
+                    paddingRight: 'calc(100% - 550px)'
                 }
             }
         },
@@ -257,6 +259,24 @@ const enhance = compose(
             padding: '8px 0',
             '&:hover': {
                 background: '#f2f5f8'
+            },
+            '& > div': {
+                textAlign: 'right',
+                '&:first-child': {
+                    textAlign: 'left'
+                },
+                '&:nth-child(2)': {
+                    textAlign: 'left'
+                }
+            }
+        },
+        inventory: {
+            extend: 'product',
+            borderRadius: '2px',
+            padding: '8px 0',
+            '&:hover': {
+                background: '#f2f5f8',
+                cursor: 'pointer'
             },
             '& > div': {
                 textAlign: 'right',
@@ -395,6 +415,7 @@ const ManufactureShipment = enhance((props) => {
     const editlogsLoading = _.get(detailData, 'editlogsLoading')
     const productsLoading = _.get(detailData, 'productsLoading')
     const materialsLoading = _.get(detailData, 'materialsLoading')
+    const inventoryLoading = _.get(detailData, 'inventoryLoading')
 
     const handleOpenDelete = (item, type, id) => {
         setDeleteItem(item)
@@ -422,6 +443,11 @@ const ManufactureShipment = enhance((props) => {
         handleDeleteProduct()
         setDeleteItem(null)
         return null
+    }
+    const handleClickInventoryItem = (id) => {
+        hashHistory.push({
+            pathname: sprintf(ROUTES.INVENTORY_ITEM_PATH, id)
+        })
     }
     const groupedProducts = _.groupBy(_.get(detailData, 'products'), (item) => item.product.id)
     const products = _.map(groupedProducts, (item, index) => {
@@ -480,8 +506,7 @@ const ManufactureShipment = enhance((props) => {
                 {type === PRODUCT
                     ? <Col xs={4}><span>
                         {isDefect
-                            ?
-                            <ToolTip position="left" text={t('Брак')}><Defected style={iconStyles.defected}/></ToolTip>
+                            ? <ToolTip position="left" text={t('Брак')}><Defected style={iconStyles.defected}/></ToolTip>
                             : kind === MATERIAL
                                 ? <Material style={iconStyles.material}/>
                                 : <Product style={iconStyles.product}/>
@@ -592,6 +617,23 @@ const ManufactureShipment = enhance((props) => {
             </Row>
         )
     })
+    const inventories = _.map(_.get(detailData, 'inventory'), (item) => {
+        const id = _.get(item, 'id')
+        const stockInventory = _.get(item, ['stock', 'name'])
+        const createdBy = _.get(item, 'createdBy')
+            ? _.get(item, ['createdBy', 'firstName']) + ' ' + _.get(item, ['createdBy', 'secondName'])
+            : 'Не указано'
+        const createdDate = _.get(item, 'createdDate') ? dateFormat(_.get(item, 'createdDate')) : t('Не закончилась')
+        const comment = _.get(item, 'comment') || 'Без комментариев'
+        return (
+            <Row key={id} className={classes.inventory} onTouchTap={() => { handleClickInventoryItem(id) }}>
+                <Col xs={3}>{stockInventory}</Col>
+                <Col xs={3}>{createdBy}</Col>
+                <Col xs={3}>{createdDate}</Col>
+                <Col xs={3}>{comment}</Col>
+            </Row>
+        )
+    })
     const fields = (
         <div>
             <Field
@@ -640,15 +682,6 @@ const ManufactureShipment = enhance((props) => {
     return (
         <div>
             <div className={classes.buttons}>
-                <FlatButton
-                    label={t('Сверки')}
-                    labelStyle={flatButtonStyle.labelStyle}
-                    backgroundColor={flatButtonStyle.reconciliationColor}
-                    hoverColor={flatButtonStyle.reconciliationColor}
-                    rippleColor={'#fff'}
-                    onTouchTap={() => { handleOpenInventory() }}
-                    icon={<Product color={'#fff'}/>}
-                />
                 <Link
                     to={{
                         pathname: ROUTES.INVENTORY_LIST_URL,
@@ -815,6 +848,37 @@ const ManufactureShipment = enhance((props) => {
                                         </div>}
                             </Tab>
 
+                            <Tab
+                                label={t('Инвентаризация')}
+                                className={classes.tab}
+                                disableTouchRipple={true}
+                                icon={<InventoryIcon/>}
+                                value={TAB.TAB_INVENTORY}>
+                                {!_.isEmpty(_.get(detailData, 'inventory'))
+                                    ? <div className={classes.productsBlock}>
+                                        <div className={classes.pagination}>
+                                            <Pagination filter={filter}/>
+                                        </div>
+                                        <Row className={classes.flexTitleShift}>
+                                            <Col xs={3}><h4>{t('Склад')}</h4></Col>
+                                            <Col xs={3}><h4>{t('Создал')}</h4></Col>
+                                            <Col xs={3}><h4>{t('Дата создания')}</h4></Col>
+                                            <Col xs={3}><h4>{t('Комментарий')}</h4></Col>
+                                        </Row>
+                                        {inventoryLoading
+                                            ? <div className={classes.loader}>
+                                                <Loader size={0.75}/>
+                                            </div>
+                                            : inventories}
+                                    </div>
+                                    : inventoryLoading
+                                        ? <div className={classes.loader}>
+                                            <Loader size={0.75}/>
+                                        </div>
+                                        : <div className={classes.emptyQuery}>
+                                            <div>{t('В этом периоде не найдено смен')}</div>
+                                        </div>}
+                            </Tab>
                         </Tabs>
                     </div>
                 </div>
