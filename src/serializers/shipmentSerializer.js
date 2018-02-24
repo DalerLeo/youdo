@@ -35,6 +35,7 @@ export const logsFilterSerializer = (data, manufacture, dateRange) => {
         'end_date': _.get(dateRange, 'endDate'),
         'manufacture': manufacture,
         'shift': _.get(defaultData, 'shift'),
+        'type': _.get(defaultData, 'type'),
         'page': _.get(defaultData, 'logsPage'),
         'page_size': _.get(defaultData, 'logsPageSize')
     }
@@ -55,5 +56,17 @@ export const productsMaterialsCreate = (data) => {
         shift,
         date,
         equipment
+    }
+}
+
+export const inventorySerializer = (data, stock, dateRange) => {
+    const {...defaultData} = data
+
+    return {
+        'shift': _.get(defaultData, 'shift'),
+        beginDate: _.get(dateRange, 'beginDate'),
+        endDate: _.get(dateRange, 'endDate'),
+        stock: stock,
+        type: 'manufacture_writeoff'
     }
 }

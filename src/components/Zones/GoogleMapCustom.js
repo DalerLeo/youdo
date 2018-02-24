@@ -60,6 +60,7 @@ export default class GoogleCustomMap extends React.Component {
         this.handleClearDrawing = this.handleClearDrawing.bind(this)
         this.handleDeleteZone = this.handleDeleteZone.bind(this)
         this.getUpdatedZone = this.getUpdatedZone.bind(this)
+        this.updateMarketCheck = this.updateMarketCheck.bind(this)
     }
 
     handleScriptCreate () {
@@ -268,7 +269,6 @@ export default class GoogleCustomMap extends React.Component {
 
             let overlayEl = this.overlayView
             let mapPanes = overlayEl.getPanes()
-
             let mapCanvasProjection = overlayEl.getProjection()
             _.map(this.state.zone, (zone) => {
                 const bounds = new google.maps.LatLngBounds(
@@ -296,7 +296,6 @@ export default class GoogleCustomMap extends React.Component {
             this.containerElement = null
         }
     }
-
     createCustomZone (nextState) {
         google.maps.event.addListener(nextState.drawing, 'overlaycomplete', (event) => {
             // Disable drawing manager from map
@@ -425,11 +424,16 @@ export default class GoogleCustomMap extends React.Component {
                 this.handleClearDrawing()
             }
         }
+
         // For deleting markers if checkbox unchecked
         if (!nextState.showMarkets && this.cluster) {
             this.cluster.clearMarkers()
             this.markers = null
             this.cluster = null
+        }
+
+        if (nextState.showMarkets && _.get(nextProps.list, 'data') !== _.get(this.props.list, 'data')) {
+            this.updateMarketCheck()
         }
     }
 
@@ -452,7 +456,7 @@ export default class GoogleCustomMap extends React.Component {
         this.cluster = null
         this.map = null
     }
-    updateCheck () {
+    updateMarketCheck () {
         this.setState((oldState) => {
             return {
                 showMarkets: !oldState.showMarkets
@@ -491,7 +495,7 @@ export default class GoogleCustomMap extends React.Component {
                     <Checkbox
                         label={t('Магазины')}
                         checked={this.state.showMarkets}
-                        onCheck={this.updateCheck.bind(this)}
+                        onCheck={this.updateMarketCheck.bind(this)}
                         style={styles}
                         iconStyle={{marginRight: '5px'}}
                     />

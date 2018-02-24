@@ -24,7 +24,7 @@ import {
 
 } from '../../components/Manufacture'
 import * as SHIPMENT_TAB from '../../constants/manufactureShipmentTab'
-import {MANUF_ACTIVITY_FILTER_KEY} from '../../components/Manufacture/ManufactureActivityFilterDialog'
+import {MANUFACTURES_FILTERS_KEY} from '../../components/Manufacture/Tab/ManufactureShipment'
 import {
     shipmentListFetchAction,
     shipmentItemFetchAction,
@@ -39,7 +39,8 @@ import {
     editWriteOffAmountAction,
     deleteReturnProductAction,
     deleteWriteOffProductAction,
-    sendPersonalRotation
+    sendPersonalRotation,
+    inventoryFetchListAction
 } from '../../actions/manufactureShipment'
 import {openSnackbarAction} from '../../actions/snackbar'
 import {openErrorAction} from '../../actions/error'
@@ -65,6 +66,8 @@ const enhance = compose(
         const shipmentLogsEditLoading = _.get(state, ['shipment', 'edit', 'loading'])
         const shipmentProducts = _.get(state, ['shipment', 'products', 'data'])
         const shipmentProductsLoading = _.get(state, ['shipment', 'products', 'loading'])
+        const shipmentInventory = _.get(state, ['shipment', 'inventory', 'data'])
+        const shipmentInventoryLoading = _.get(state, ['shipment', 'inventory', 'loading'])
         const shipmentMaterials = _.get(state, ['shipment', 'materials', 'data'])
         const shipmentMaterialsLoading = _.get(state, ['shipment', 'materials', 'loading'])
         const addProductsMaterialsList = _.get(query, OPEN_ADD_PRODUCT_MATERIAL_DIALOG) === TYPE_PRODUCT
@@ -74,7 +77,11 @@ const enhance = compose(
             ? _.get(state, ['shipment', 'addProducts', 'loading'])
             : _.get(state, ['shipment', 'addRaws', 'loading'])
         const filterShipment = filterHelper(shipmentList, pathname, query)
-        const filterProducts = filterHelper(addProductsMaterialsList, pathname, query, {page: 'pdPage', pageSize: 'pdPageSize'})
+        const filterInventory = filterHelper(shipmentInventory, pathname, query)
+        const filterProducts = filterHelper(addProductsMaterialsList, pathname, query, {
+            page: 'pdPage',
+            pageSize: 'pdPageSize'
+        })
         const filterLogs = filterHelper(shipmentLogs, pathname, query, {page: 'logsPage', pageSize: 'logsPageSize'})
         const beginDate = _.get(query, 'beginDate') || defaultDate
         const endDate = _.get(query, 'endDate') || defaultDate
@@ -95,6 +102,8 @@ const enhance = compose(
             shipmentListLoading,
             shipmentDetail,
             shipmentDetailLoading,
+            shipmentInventory,
+            shipmentInventoryLoading,
             shipmentProducts,
             shipmentProductsLoading,
             shipmentMaterials,
@@ -109,6 +118,7 @@ const enhance = compose(
             addProductsMaterialsList,
             addProductsMaterialsLoading,
             filterProducts,
+            filterInventory,
             addProductsForm,
             LogEditForm,
             shipmentConfirmForm,
@@ -203,6 +213,39 @@ const enhance = compose(
         }
     }),
 
+    // INVENTORY LIST
+    withPropsOnChange((props, nextProps) => {
+        const except = {
+            openFilter: null,
+            logsPage: null,
+            logsPageSize: null,
+            openProductMaterialDialog: null,
+            pdPage: null,
+            pdPageSize: null,
+            pdSearch: null,
+            openId: null,
+            openShift: null,
+            openType: null
+        }
+        const manufactureId = _.get(props, ['params', 'manufactureId'])
+        const nextManufactureId = _.get(nextProps, ['params', 'manufactureId'])
+        const nextTab = nextProps.filterShipment.getParam('tab')
+        const prevTab = props.filterShipment.getParam('tab')
+        return (props.filterShipment.filterRequest(except) !== nextProps.filterShipment.filterRequest(except) && nextManufactureId > ZERO) ||
+            ((manufactureId !== nextManufactureId && nextManufactureId) || (prevTab !== nextTab && nextTab === SHIPMENT_TAB.TAB_INVENTORY))
+    }, ({dispatch, filterShipment, params, beginDate, endDate, list, filterInventory}) => {
+        const dateRange = {
+            beginDate,
+            endDate
+        }
+        const tab = filterShipment.getParam('tab')
+        const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
+        const stock = _.get(_.find(_.get(list, 'results'), {id: manufactureId}), ['warehouse', 'id'])
+        if (manufactureId > ZERO && tab === SHIPMENT_TAB.TAB_INVENTORY) {
+            dispatch(inventoryFetchListAction(filterInventory, stock, dateRange))
+        }
+    }),
+
     // ADD PRODUCTS BIG DIALOG
     withState('openAddProductDialog', 'setOpenAddProductDialog', false),
     withState('openAddProductConfirm', 'setOpenAddProductConfirm', false),
@@ -282,7 +325,10 @@ const enhance = compose(
 
         handleClickItem: props => (id) => {
             const {filterShipment} = props
-            hashHistory.push({pathname: sprintf(ROUTER.MANUFACTURE_SHIPMENT_ITEM_PATH, id), query: filterShipment.getParams()})
+            hashHistory.push({
+                pathname: sprintf(ROUTER.MANUFACTURE_SHIPMENT_ITEM_PATH, id),
+                query: filterShipment.getParams()
+            })
         },
 
         // SEND PERSONAL ROTATION
@@ -306,7 +352,10 @@ const enhance = compose(
                     }
                     const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
                     dispatch(shipmentListFetchAction(filterShipment, manufactureId, dateRange))
-                    hashHistory.push({pathname: _.get(location, 'pathname'), query: filter.getParams({openShift: false})})
+                    hashHistory.push({
+                        pathname: _.get(location, 'pathname'),
+                        query: filter.getParams({openShift: false})
+                    })
                 })
                 .catch((error) => {
                     dispatch(openErrorAction({
@@ -328,10 +377,12 @@ const enhance = compose(
             const {filter, filterForm} = props
             const tab = filter.getParam('tab')
             const shift = _.get(filterForm, ['values', 'shift']) || null
+            const type = _.get(filterForm, ['values', 'type', 'value']) || null
             filter.filterBy({
                 [OPEN_FILTER]: false,
                 [TAB]: tab,
-                [MANUF_ACTIVITY_FILTER_KEY.SHIFT]: joinArray(shift)
+                [MANUFACTURES_FILTERS_KEY.SHIFT]: joinArray(shift),
+                [MANUFACTURES_FILTERS_KEY.TYPE]: type
             })
         },
 
@@ -394,7 +445,10 @@ const enhance = compose(
 
         handleCloseAddProduct: props => () => {
             const {setOpenAddProductDialog, filter, location: {pathname}} = props
-            hashHistory.push({pathname, query: filter.getParams({'pdPage': null, 'pdPageSize': null, 'pdSearch': null})})
+            hashHistory.push({
+                pathname,
+                query: filter.getParams({'pdPage': null, 'pdPageSize': null, 'pdSearch': null})
+            })
             setOpenAddProductDialog(false)
         },
 
@@ -433,7 +487,10 @@ const enhance = compose(
             })
             dispatch(change('ManufactureProductMaterialForm', 'products', _.concat(_.filter(newProductsArray, (item) => item.product.value.id), checkDifference)))
 
-            hashHistory.push({pathname, query: filter.getParams({'pdPage': null, 'pdPageSize': null, 'pdSearch': null})})
+            hashHistory.push({
+                pathname,
+                query: filter.getParams({'pdPage': null, 'pdPageSize': null, 'pdSearch': null})
+            })
             setOpenAddProductDialog(false)
         },
 
@@ -530,12 +587,12 @@ const enhance = compose(
             const id = _.toNumber(filter.getParam('openId'))
             if (type === 'writeoff') {
                 return dispatch(deleteWriteOffProductAction(id))
-                .then(() => {
-                    dispatch(shipmentLogsListFetchAction(filterLogs, manufactureId, dateRange))
-                })
-                .catch((error) => {
-                    dispatch(openErrorAction({message: error}))
-                })
+                    .then(() => {
+                        dispatch(shipmentLogsListFetchAction(filterLogs, manufactureId, dateRange))
+                    })
+                    .catch((error) => {
+                        dispatch(openErrorAction({message: error}))
+                    })
             } else if (type === 'return') {
                 dispatch(deleteReturnProductAction(id))
                     .then(() => {
@@ -571,6 +628,8 @@ const ManufactureShipmentList = enhance((props) => {
         shipmentProductsLoading,
         shipmentMaterials,
         shipmentMaterialsLoading,
+        shipmentInventory,
+        shipmentInventoryLoading,
         filterShipment,
         params,
         layout,
@@ -589,7 +648,7 @@ const ManufactureShipmentList = enhance((props) => {
     const tab = _.get(location, ['query', TAB]) || SHIPMENT_TAB.DEFAULT_TAB
     const openFilterDialog = toBoolean(_.get(location, ['query', OPEN_FILTER]))
     const openProductMaterialDialog = _.get(location, ['query', OPEN_ADD_PRODUCT_MATERIAL_DIALOG])
-    const shift = _.get(location, ['query', MANUF_ACTIVITY_FILTER_KEY.SHIFT])
+    const shift = _.get(location, ['query', MANUFACTURES_FILTERS_KEY.SHIFT])
     const openSendDialog = _.toInteger(_.get(location, ['query', 'openShift'])) > ZERO
 
     const tabData = {
@@ -615,6 +674,8 @@ const ManufactureShipmentList = enhance((props) => {
         loading: shipmentDetailLoading,
         logs: _.get(shipmentLogs, 'results'),
         logsLoading: shipmentLogsLoading,
+        inventory: _.get(shipmentInventory, 'results'),
+        inventoryLoading: shipmentInventoryLoading,
         editlogsLoading: shipmentLogsEditLoading,
         products: shipmentProducts,
         productsLoading: shipmentProductsLoading,

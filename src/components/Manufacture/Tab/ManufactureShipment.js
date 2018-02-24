@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 import {Row, Col} from 'react-flexbox-grid'
+import sprintf from 'sprintf'
 import injectSheet from 'react-jss'
 import {hashHistory, Link} from 'react-router'
 import {compose, withState} from 'recompose'
@@ -14,6 +15,7 @@ import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import EditIcon from 'material-ui/svg-icons/editor/mode-edit'
 import Log from 'material-ui/svg-icons/content/content-paste'
 import Shift from 'material-ui/svg-icons/av/loop'
+import InventoryIcon from 'material-ui/svg-icons/notification/event-note'
 import Raw from 'material-ui/svg-icons/action/exit-to-app'
 import Product from '../../CustomIcons/Product'
 import Material from 'material-ui/svg-icons/maps/layers'
@@ -34,8 +36,9 @@ import NotFound from '../../Images/not-found.png'
 import * as ROUTES from '../../../constants/routes'
 import {INVENTORY_INVENTORY_DIALOG_OPEN} from '../../Inventory'
 import dateTimeFormat from '../../../helpers/dateTimeFormat'
+import dateFormat from '../../../helpers/dateFormat'
 import numberFormat from '../../../helpers/numberFormat'
-import {ShiftMultiSearchField, TextField, normalizeNumber} from '../../ReduxForm'
+import {ShiftMultiSearchField, TextField, normalizeNumber, ManufactureLogTypeSearchField} from '../../ReduxForm'
 import * as TAB from '../../../constants/manufactureShipmentTab'
 import ShipmentConfirmDialog from '../../../components/Manufacture/ShipmentConfirmDialog'
 import t from '../../../helpers/translate'
@@ -43,7 +46,8 @@ import {TYPE_PRODUCT, TYPE_RAW} from '../index'
 
 const ZERO = 0
 export const MANUFACTURES_FILTERS_KEY = {
-    SHIFT: 'shift'
+    SHIFT: 'shift',
+    TYPE: 'type'
 }
 
 const enhance = compose(
@@ -52,6 +56,9 @@ const enhance = compose(
             display: 'flex',
             margin: '10px 0',
             justifyContent: 'flex-end',
+            '& > a': {
+                marginLeft: '10px !important'
+            },
             '& > button': {
                 marginLeft: '10px !important',
                 '& svg': {
@@ -145,10 +152,10 @@ const enhance = compose(
             position: 'relative',
             '& > div > div': {
                 '&:nth-child(1)': {
-                    paddingRight: 'calc(100% - 330px)'
+                    paddingRight: 'calc(100% - 550px)'
                 },
                 '&:nth-child(2)': {
-                    paddingRight: 'calc(100% - 330px)'
+                    paddingRight: 'calc(100% - 550px)'
                 }
             }
         },
@@ -211,6 +218,9 @@ const enhance = compose(
                 textAlign: 'right',
                 '&:first-child': {
                     textAlign: 'left'
+                },
+                '&:nth-child(2)': {
+                    textAlign: 'left'
                 }
             }
         },
@@ -253,6 +263,27 @@ const enhance = compose(
             '& > div': {
                 textAlign: 'right',
                 '&:first-child': {
+                    textAlign: 'left'
+                },
+                '&:nth-child(2)': {
+                    textAlign: 'left'
+                }
+            }
+        },
+        inventory: {
+            extend: 'product',
+            borderRadius: '2px',
+            padding: '8px 0',
+            '&:hover': {
+                background: '#f2f5f8',
+                cursor: 'pointer'
+            },
+            '& > div': {
+                textAlign: 'right',
+                '&:first-child': {
+                    textAlign: 'left'
+                },
+                '&:nth-child(2)': {
                     textAlign: 'left'
                 }
             }
@@ -384,6 +415,7 @@ const ManufactureShipment = enhance((props) => {
     const editlogsLoading = _.get(detailData, 'editlogsLoading')
     const productsLoading = _.get(detailData, 'productsLoading')
     const materialsLoading = _.get(detailData, 'materialsLoading')
+    const inventoryLoading = _.get(detailData, 'inventoryLoading')
 
     const handleOpenDelete = (item, type, id) => {
         setDeleteItem(item)
@@ -411,6 +443,11 @@ const ManufactureShipment = enhance((props) => {
         handleDeleteProduct()
         setDeleteItem(null)
         return null
+    }
+    const handleClickInventoryItem = (id) => {
+        hashHistory.push({
+            pathname: sprintf(ROUTES.INVENTORY_ITEM_PATH, id)
+        })
     }
     const groupedProducts = _.groupBy(_.get(detailData, 'products'), (item) => item.product.id)
     const products = _.map(groupedProducts, (item, index) => {
@@ -463,6 +500,7 @@ const ManufactureShipment = enhance((props) => {
         const id = _.get(item, 'id')
         const kind = _.get(item, 'kind')
         const isDefect = _.get(item, 'isDefect')
+        const isTransferred = _.get(item, ['personalRotation', 'isTransferred'])
         return (
             <Row key={index} className={isDefect ? classes.productDefected : classes.product}>
                 {type === PRODUCT
@@ -510,35 +548,37 @@ const ManufactureShipment = enhance((props) => {
                 <Col xs={3}>{createdDate}</Col>
                 <Col xs={1}>
                     {edit === id
-                    ? <div>
+                        ? <div>
                             <IconButton
                                 disableTouchRipple={true}
                                 onTouchTap={handleSubmit}>
                                 <Check color="#12aaeb"/>
                             </IconButton>
                         </div>
-                    : <div className={classes.actionButtons}>
-                        <ToolTip position="bottom" text={t('Изменить')}>
-                            <IconButton
-                                iconStyle={iconStyles.icon}
-                                style={iconStyles.button}
-                                disableTouchRipple={true}
-                                onTouchTap={() => handleEdit(type, id)}
-                                touch={true}>
-                                <EditIcon/>
-                            </IconButton>
-                        </ToolTip>
-                        <ToolTip position="bottom" text={t('Удалить')}>
-                            <IconButton
-                                disableTouchRipple={true}
-                                iconStyle={iconStyles.icon}
-                                style={iconStyles.button}
-                                onTouchTap={() => handleOpenDelete(item, type, id)}
-                                touch={true}>
-                                <DeleteIcon />
-                            </IconButton>
-                        </ToolTip>
-                    </div>}
+                        : <div className={classes.actionButtons}>
+                            <ToolTip position="bottom" text={t('Изменить')}>
+                                <IconButton
+                                    iconStyle={iconStyles.icon}
+                                    disabled={isTransferred}
+                                    style={iconStyles.button}
+                                    disableTouchRipple={true}
+                                    onTouchTap={() => handleEdit(type, id)}
+                                    touch={true}>
+                                    <EditIcon/>
+                                </IconButton>
+                            </ToolTip>
+                            <ToolTip position="bottom" text={t('Удалить')}>
+                                <IconButton
+                                    disableTouchRipple={true}
+                                    disabled={isTransferred}
+                                    iconStyle={iconStyles.icon}
+                                    style={iconStyles.button}
+                                    onTouchTap={() => handleOpenDelete(item, type, id)}
+                                    touch={true}>
+                                    <DeleteIcon/>
+                                </IconButton>
+                            </ToolTip>
+                        </div>}
                 </Col>
             </Row>
         )
@@ -547,18 +587,21 @@ const ManufactureShipment = enhance((props) => {
     const selectedShift = _.find(shipmentList, {'id': selectedShiftId})
     const shifts = _.map(shipmentList, (item) => {
         const id = _.get(item, 'id')
+        const shiftName = _.get(item, ['shift', 'name'])
         const openedTime = dateTimeFormat(_.get(item, 'openedTime'))
         const closedTime = _.get(item, 'closedTime') ? dateTimeFormat(_.get(item, 'closedTime')) : t('Не закончилась')
         const userName = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'firstName'])
         const isTransferrred = _.get(item, 'isTransferred')
         return (
             <Row key={id} className={classes.shift}>
-                <Col xs={5}>{userName}</Col>
+                <Col xs={3}>{userName}</Col>
+                <Col xs={2}>{shiftName}</Col>
                 <Col xs={3}>{openedTime}</Col>
                 <Col xs={3}>{closedTime}</Col>
                 <Col xs={1}>
                     <div className={classes.actionButtons}>
-                        <ToolTip position="bottom" text={isTransferrred ? t('Уже передан на склад') : t('Передать на склад')}>
+                        <ToolTip position="bottom"
+                                 text={isTransferrred ? t('Уже передан на склад') : t('Передать на склад')}>
                             <IconButton
                                 iconStyle={iconStyles.icon}
                                 disabled={isTransferrred}
@@ -574,6 +617,23 @@ const ManufactureShipment = enhance((props) => {
             </Row>
         )
     })
+    const inventories = _.map(_.get(detailData, 'inventory'), (item) => {
+        const id = _.get(item, 'id')
+        const stockInventory = _.get(item, ['stock', 'name'])
+        const createdBy = _.get(item, 'createdBy')
+            ? _.get(item, ['createdBy', 'firstName']) + ' ' + _.get(item, ['createdBy', 'secondName'])
+            : 'Не указано'
+        const createdDate = _.get(item, 'createdDate') ? dateFormat(_.get(item, 'createdDate')) : t('Не закончилась')
+        const comment = _.get(item, 'comment') || 'Без комментариев'
+        return (
+            <Row key={id} className={classes.inventory} onTouchTap={() => { handleClickInventoryItem(id) }}>
+                <Col xs={3}>{stockInventory}</Col>
+                <Col xs={3}>{createdBy}</Col>
+                <Col xs={3}>{createdDate}</Col>
+                <Col xs={3}>{comment}</Col>
+            </Row>
+        )
+    })
     const fields = (
         <div>
             <Field
@@ -582,6 +642,12 @@ const ManufactureShipment = enhance((props) => {
                 component={ShiftMultiSearchField}
                 label={t('Смена')}
                 fullWidth={true}/>
+            {!_.isEmpty(_.get(detailData, 'logs')) && <Field
+                className={classes.inputFieldCustom}
+                name="type"
+                component={ManufactureLogTypeSearchField}
+                label={t('Тип')}
+                fullWidth={true}/>}
         </div>
     )
     if (manufactureId <= ZERO) {
@@ -592,6 +658,7 @@ const ManufactureShipment = enhance((props) => {
         )
     }
     const flatButtonStyle = {
+        reconciliationColor: '#ff7373',
         verifyColor: '#81C784',
         productColor: '#4db6ac',
         rawColor: '#12aaeb',
@@ -616,8 +683,11 @@ const ManufactureShipment = enhance((props) => {
         <div>
             <div className={classes.buttons}>
                 <Link
-                      to={{pathname: ROUTES.INVENTORY_LIST_URL, query: {[INVENTORY_INVENTORY_DIALOG_OPEN]: true, 'pdStock': stock}}}
-                      className={classes.link}>
+                    to={{
+                        pathname: ROUTES.INVENTORY_LIST_URL,
+                        query: {[INVENTORY_INVENTORY_DIALOG_OPEN]: true, 'pdStock': stock}
+                    }}
+                    className={classes.link}>
                     <FlatButton
                         label={t('Сверить')}
                         labelStyle={flatButtonStyle.labelStyle}
@@ -634,7 +704,9 @@ const ManufactureShipment = enhance((props) => {
                     backgroundColor={flatButtonStyle.productColor}
                     hoverColor={flatButtonStyle.productColor}
                     rippleColor={'#fff'}
-                    onTouchTap={() => { productMaterialDialog.handleOpen(TYPE_PRODUCT) }}
+                    onTouchTap={() => {
+                        productMaterialDialog.handleOpen(TYPE_PRODUCT)
+                    }}
                     icon={<Product color={'#fff'}/>}
                 />
                 <FlatButton
@@ -643,7 +715,9 @@ const ManufactureShipment = enhance((props) => {
                     backgroundColor={flatButtonStyle.rawColor}
                     hoverColor={flatButtonStyle.rawColor}
                     rippleColor={'#fff'}
-                    onTouchTap={() => { productMaterialDialog.handleOpen(TYPE_RAW) }}
+                    onTouchTap={() => {
+                        productMaterialDialog.handleOpen(TYPE_RAW)
+                    }}
                     icon={<Raw color={'#fff'}/>}
                 />
             </div>
@@ -753,7 +827,8 @@ const ManufactureShipment = enhance((props) => {
                                             <Pagination filter={filter}/>
                                         </div>
                                         <Row className={classes.flexTitleShift}>
-                                            <Col xs={5}><h4>{t('Работник')}</h4></Col>
+                                            <Col xs={3}><h4>{t('Работник')}</h4></Col>
+                                            <Col xs={2}><h4>{t('Смена')}</h4></Col>
                                             <Col xs={3}><h4>{t('Начало смены')}</h4></Col>
                                             <Col xs={3}><h4>{t('Конец смены')}</h4></Col>
                                             <Col xs={1}/>
@@ -765,6 +840,38 @@ const ManufactureShipment = enhance((props) => {
                                             : shifts}
                                     </div>
                                     : shiftsLoading
+                                        ? <div className={classes.loader}>
+                                            <Loader size={0.75}/>
+                                        </div>
+                                        : <div className={classes.emptyQuery}>
+                                            <div>{t('В этом периоде не найдено смен')}</div>
+                                        </div>}
+                            </Tab>
+
+                            <Tab
+                                label={t('Инвентаризация')}
+                                className={classes.tab}
+                                disableTouchRipple={true}
+                                icon={<InventoryIcon/>}
+                                value={TAB.TAB_INVENTORY}>
+                                {!_.isEmpty(_.get(detailData, 'inventory'))
+                                    ? <div className={classes.productsBlock}>
+                                        <div className={classes.pagination}>
+                                            <Pagination filter={filter}/>
+                                        </div>
+                                        <Row className={classes.flexTitleShift}>
+                                            <Col xs={3}><h4>{t('Склад')}</h4></Col>
+                                            <Col xs={3}><h4>{t('Создал')}</h4></Col>
+                                            <Col xs={3}><h4>{t('Дата создания')}</h4></Col>
+                                            <Col xs={3}><h4>{t('Комментарий')}</h4></Col>
+                                        </Row>
+                                        {inventoryLoading
+                                            ? <div className={classes.loader}>
+                                                <Loader size={0.75}/>
+                                            </div>
+                                            : inventories}
+                                    </div>
+                                    : inventoryLoading
                                         ? <div className={classes.loader}>
                                             <Loader size={0.75}/>
                                         </div>
