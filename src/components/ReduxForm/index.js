@@ -120,6 +120,7 @@ import CellTypeParentSearchField from './CellTypeParentSearchField'
 import CellTypeChildrenSearchField from './CellTypeChildrenSearchField'
 import normalizeMaxNumber from './normalizers/normalizeMaxNumber'
 import normalizePhone from './normalizers/normalizePhone'
+import ManufactureLogTypeSearchField from './Manufacture/ManufactureLogTypeSearchField'
 
 export {
     CashboxTypeCurrencyField,
@@ -243,5 +244,6 @@ export {
     CellTypeParentSearchField,
     CellTypeChildrenSearchField,
     normalizeMaxNumber,
-    normalizePhone
+    normalizePhone,
+    ManufactureLogTypeSearchField
 }

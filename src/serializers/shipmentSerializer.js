@@ -35,6 +35,7 @@ export const logsFilterSerializer = (data, manufacture, dateRange) => {
         'end_date': _.get(dateRange, 'endDate'),
         'manufacture': manufacture,
         'shift': _.get(defaultData, 'shift'),
+        'type': _.get(defaultData, 'type'),
         'page': _.get(defaultData, 'logsPage'),
         'page_size': _.get(defaultData, 'logsPageSize')
     }
