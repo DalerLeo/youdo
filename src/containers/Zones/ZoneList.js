@@ -212,7 +212,7 @@ const enhance = compose(
 
         handleOpenAddZone: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[ADD_ZONE]: true, [TOGGLE_INFO]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[ADD_ZONE]: true, [TOGGLE_INFO]: false, [UPDATE_ZONE]: null})})
         },
 
         handleCloseAddZone: props => () => {
@@ -236,7 +236,7 @@ const enhance = compose(
         handleOpenUpdateZone: props => (id) => {
             const {filter, location: {pathname}} = props
             hashHistory.push({
-                pathname, query: filter.getParams({[UPDATE_ZONE]: true, [TOGGLE_INFO]: false, [ZONE_ID]: id})
+                pathname, query: filter.getParams({[UPDATE_ZONE]: true, [TOGGLE_INFO]: false, [ZONE_ID]: id, [ADD_ZONE]: null})
             })
         },
 
