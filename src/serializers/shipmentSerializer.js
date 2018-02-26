@@ -59,6 +59,25 @@ export const productsMaterialsCreate = (data) => {
     }
 }
 
+export const productsCreate = (data) => {
+    const shift = _.get(data, ['shift', 'value'])
+    const date = moment(_.get(data, ['date'])).format('YYYY-MM-DD')
+    const equipment = _.get(data, ['equipment', 'value'])
+    const products = _.map(_.get(data, 'products'), (item) => {
+        return {
+            product: _.get(item, ['product', 'value', 'id']),
+            amount: numberWithoutSpaces(_.get(item, 'amount')),
+            defect: numberWithoutSpaces(_.get(item, 'defect'))
+        }
+    })
+    return {
+        products,
+        shift,
+        date,
+        equipment
+    }
+}
+
 export const inventorySerializer = (data, stock, dateRange) => {
     const {...defaultData} = data
 
