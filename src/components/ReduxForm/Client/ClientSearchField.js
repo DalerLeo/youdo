@@ -28,11 +28,10 @@ const getItem = (id, dispatch) => {
 }
 
 const ClientSearchField = connect()((props) => {
-    const {dispatch} = props
+    const {dispatch, params, pageSize} = props
     const test = (id) => {
         return getItem(id, dispatch)
     }
-    const {params, pageSize} = props
     return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}

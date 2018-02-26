@@ -1,32 +1,11 @@
 import _ from 'lodash'
 import React from 'react'
-import {compose} from 'recompose'
 import SearchFieldCustom from '../Basic/SearchFieldCustom'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
-import {connect} from 'react-redux'
 import sprintf from 'sprintf'
-import caughtCancel from '../../../helpers/caughtCancel'
-
-const CancelToken = axios().CancelToken
-let categoryExpensiveListToken = null
-
-const getOptions = (search, keyname) => {
-    if (categoryExpensiveListToken) {
-        categoryExpensiveListToken.cancel()
-    }
-    categoryExpensiveListToken = CancelToken.source()
-    return axios().get(PATH.INCOME_CATEGORY_LIST,
-        {params: {search: search, page_size: 100, key_name: keyname}},
-        {cancelToken: categoryExpensiveListToken.token})
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data.results))
-        })
-        .catch((error) => {
-            caughtCancel(error)
-        })
-}
+import searchFieldGetOptions from '../../../helpers/searchFieldGetOptions'
 
 const getItem = (item) => {
     const ID = _.isObject(item) ? _.get(item, 'id') : item
@@ -36,22 +15,10 @@ const getItem = (item) => {
         })
 }
 
-const enhance = compose(
-    connect((state, props) => {
-        const dispatch = _.get(props, 'dispatch')
-
-        return {
-            state,
-            dispatch
-        }
-    })
-)
-
-const TransactionIncomeCategory = enhance((props) => {
-    const {dispatch, ...defaultProps} = props
-    const keyname = _.get(props, 'data-key-name')
+const TransactionIncomeCategory = (props) => {
+    const {params, pageSize, ...defaultProps} = props
     const test = (id) => {
-        return getItem(id, dispatch)
+        return getItem(id)
     }
     return (
         <SearchFieldCustom
@@ -62,7 +29,7 @@ const TransactionIncomeCategory = enhance((props) => {
                 return _.get(value, 'name')
             }}
             getOptions={(search) => {
-                return getOptions(search, keyname)
+                return searchFieldGetOptions(PATH.INCOME_CATEGORY_LIST, search, params, pageSize)
             }}
             getItem={test}
             getItemText={(value) => {
@@ -71,6 +38,6 @@ const TransactionIncomeCategory = enhance((props) => {
             {...defaultProps}
         />
     )
-})
+}
 
 export default TransactionIncomeCategory

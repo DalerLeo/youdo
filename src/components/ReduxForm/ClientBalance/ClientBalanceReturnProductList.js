@@ -236,7 +236,7 @@ const iconStyle = {
     }
 }
 
-const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, handleEdit, handleRemove, editItem, setEditItem, measurement, isUpdate, editOnlyCost, market, currency, client, handleOpenAddProduct, ...defaultProps}) => {
+const ClientBalanceReturnProductList = ({classes, state, dispatch, handleAdd, handleEdit, handleRemove, editItem, setEditItem, measurement, isUpdate, editOnlyCost, market, currency, client, handleOpenAddProduct, ...defaultProps}) => {
     const products = _.get(defaultProps, ['products', 'input', 'value']) || []
     const error = _.get(defaultProps, ['products', 'meta', 'error'])
     const configMarkets = toBoolean(getConfig('MARKETS_MODULE'))
@@ -403,4 +403,4 @@ const ClientBalanceReturnProductField = ({classes, state, dispatch, handleAdd, h
     )
 }
 
-export default enhance(ClientBalanceReturnProductField)
+export default enhance(ClientBalanceReturnProductList)

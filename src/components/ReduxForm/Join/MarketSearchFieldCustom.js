@@ -8,24 +8,7 @@ import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
 import * as actionTypes from '../../../constants/actionTypes'
 import {connect} from 'react-redux'
-import caughtCancel from '../../../helpers/caughtCancel'
-
-const CancelToken = axios().CancelToken
-let marketCustomListToken = null
-
-const getOptions = (search) => {
-    if (marketCustomListToken) {
-        marketCustomListToken.cancel()
-    }
-    marketCustomListToken = CancelToken.source()
-    return axios().get(`${PATH.SHOP_LIST}?search=${search || ''}&page_size=100`, {cancelToken: marketCustomListToken.token})
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data.results))
-        })
-        .catch((error) => {
-            caughtCancel(error)
-        })
-}
+import searchFieldGetOptions from '../../../helpers/searchFieldGetOptions'
 
 const setShopItemAction = (data, loading) => {
     return {
@@ -55,7 +38,7 @@ const enhance = compose(
 )
 
 const MarketSearchFieldCustom = enhance((props) => {
-    const {dispatch, ...defaultProps} = props
+    const {dispatch, params, pageSize, ...defaultProps} = props
     const test = (id) => {
         return getItem(id, dispatch)
     }
@@ -63,7 +46,7 @@ const MarketSearchFieldCustom = enhance((props) => {
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
             getText={SearchField.defaultGetText('name')}
-            getOptions={getOptions}
+            getOptions={search => searchFieldGetOptions(PATH.SHOP_LIST, search, params, pageSize)}
             getItem={test}
             getItemText={SearchField.defaultGetText('name')}
             {...defaultProps}

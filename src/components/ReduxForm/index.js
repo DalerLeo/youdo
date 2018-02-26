@@ -14,7 +14,6 @@ import BrandSearchField from './Brand/BrandSearchField'
 import MeasurementSearchField from './Measurement/MeasurementSearchField'
 import MeasurementMultiSearchField from './Measurement/MeasurementMultiSearchField'
 import CurrencySearchField from './Currency/CurrencySearchField'
-import CurrencyMultiSearchField from './Currency/CurrencyMultiSearchField'
 import ProviderSearchField from './Provider/ProviderSearchField'
 import ClientSearchField from './Client/ClientSearchField'
 import StockSearchField from './Stock/StockSearchField'
@@ -205,7 +204,6 @@ export {
     ManufactureMultiSearchField,
     MarketTypeParentSearchField,
     MarketPhoneListField,
-    CurrencyMultiSearchField,
     TransactionIncomeCategory,
     OrderSearchField,
     SupplySearchField,

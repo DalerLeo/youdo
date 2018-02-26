@@ -3,24 +3,7 @@ import MultiSelectField from '../Basic/MultiSelectField'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
-import caughtCancel from '../../../helpers/caughtCancel'
-
-const CancelToken = axios().CancelToken
-let measurementMultiListToken = null
-
-const getOptions = (search) => {
-    if (measurementMultiListToken) {
-        measurementMultiListToken.cancel()
-    }
-    measurementMultiListToken = CancelToken.source()
-    return axios().get(`${PATH.MEASUREMENT_LIST}?search=${search || ''}&page_size=100`, {cancelToken: measurementMultiListToken.token})
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data.results))
-        })
-        .catch((error) => {
-            caughtCancel(error)
-        })
-}
+import searchFieldGetOptions from '../../../helpers/searchFieldGetOptions'
 
 const getIdsOption = (ids) => {
     return axios().get(`${PATH.MEASUREMENT_LIST}?ids=${ids || ''}`)
@@ -30,11 +13,13 @@ const getIdsOption = (ids) => {
 }
 
 const MeasurementMultiSearchField = (props) => {
+    const {params, pageSize} = props
+
     return (
         <MultiSelectField
             getValue={MultiSelectField.defaultGetValue('id')}
             getText={MultiSelectField.defaultGetText('name')}
-            getOptions={getOptions}
+            getOptions={search => searchFieldGetOptions(PATH.MEASUREMENT_LIST, search, params, pageSize)}
             getIdsOption={getIdsOption}
             getItemText={MultiSelectField.defaultGetText('name')}
             {...props}
