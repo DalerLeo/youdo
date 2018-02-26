@@ -149,7 +149,7 @@ export const addRawsListAction = (filter, productType, stock, manufacture) => {
 }
 
 export const addProductsSubmitAction = (data) => {
-    const requestData = serializers.productsMaterialsCreate(data)
+    const requestData = serializers.productsCreate(data)
     const payload = axios()
         .post(API.SHIPMENT_ADD_PRODUCTS_CREATE, requestData)
         .then((response) => {

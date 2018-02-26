@@ -249,7 +249,7 @@ const ManufactureAddProductMaterial = enhance((props) => {
                     <div className={classes.leftSide}>
                         <Field
                             name={'date'}
-                            label={t('Дата изготовления')}
+                            label={t('Дата использования')}
                             component={DateField}
                             className={classes.inputDateCustom}/>
                         <Field
