@@ -5,24 +5,7 @@ import SearchField from '../Basic/SearchField'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
-import caughtCancel from '../../../helpers/caughtCancel'
-
-const CancelToken = axios().CancelToken
-let usersListToken = null
-
-const getOptions = (search) => {
-    if (usersListToken) {
-        usersListToken.cancel()
-    }
-    usersListToken = CancelToken.source()
-    return axios().get(`${PATH.USERS_LIST}?search=${search || ''}&page_size=100`, {cancelToken: usersListToken.token})
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data.results))
-        })
-        .catch((error) => {
-            caughtCancel(error)
-        })
-}
+import searchFieldGetOptions from '../../../helpers/searchFieldGetOptions'
 
 const getItem = (id) => {
     return axios().get(sprintf(PATH.USERS_ITEM, id))
@@ -37,12 +20,13 @@ const getText = (obj) => {
 
 const UsersSearchField = (props) => {
     const selectFieldScroll = _.get(props, 'selectFieldScroll')
+    const {params, pageSize} = props
     return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
             getText={getText}
             selectFieldScroll={selectFieldScroll}
-            getOptions={getOptions}
+            getOptions={search => searchFieldGetOptions(PATH.USERS_LIST, search, params, pageSize)}
             getItem={getItem}
             getItemText={getText}
             {...props}

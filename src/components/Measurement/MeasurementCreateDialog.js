@@ -7,8 +7,7 @@ import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import Loader from '../Loader'
 import {Field, reduxForm} from 'redux-form'
-import {TextField} from '../ReduxForm'
-import MeasurementParentSearchField from '../ReduxForm/Measurement/MeasurementParentSearchField'
+import {TextField, MeasurementSearchField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
@@ -70,7 +69,8 @@ const MeasurementCreateDialog = enhance((props) => {
                         <div className={classes.field}>
                             <Field
                                 name="parent"
-                                component={MeasurementParentSearchField}
+                                component={MeasurementSearchField}
+                                params={{parent: 0}}
                                 className={classes.inputFieldCustom}
                                 label={t('Радительская категория')}
                                 fullWidth={true}

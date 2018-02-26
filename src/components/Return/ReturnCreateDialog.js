@@ -286,7 +286,7 @@ const ReturnCreateDialog = enhance((props) => {
                                         component={MarketSearchField}
                                         className={classes.searchFieldCustom}
                                         label={t('Магазин')}
-                                        clientId={clientId}
+                                        params={{client: clientId}}
                                         disabled={!clientId}
                                         fullWidth={true}/>
                                 </div>}

@@ -6,15 +6,9 @@ import axios from '../../helpers/axios'
 import _ from 'lodash'
 import * as PATH from '../../constants/api'
 import toCamelCase from '../../helpers/toCamelCase'
+import searchFieldGetOptions from '../../helpers/searchFieldGetOptions'
 import * as actionTypes from '../../constants/actionTypes'
 import {connect} from 'react-redux'
-
-const getOptions = (search) => {
-    return axios().get(`${PATH.POSITION_LIST}?search=${search || ''}&page_size=100`)
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data.results))
-        })
-}
 
 const setExtraData = (data) => {
     return {
@@ -41,11 +35,12 @@ const enhance = compose(
 )
 
 const PositionSearchField = enhance((props) => {
+    const {params, pageSize} = props
     return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
             getText={SearchField.defaultGetText('name')}
-            getOptions={getOptions}
+            getOptions={search => searchFieldGetOptions(PATH.POSITION_LIST, search, params, pageSize)}
             getItem={id => getItem(id, props.dispatch) }
             getItemText={SearchField.defaultGetText('name')}
             withDetails={true}

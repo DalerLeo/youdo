@@ -131,6 +131,7 @@ const ProductCreateDialog = enhance((props) => {
                                 name="measurement"
                                 className={classes.inputFieldCustom}
                                 component={MeasurementAllValuesSearchField}
+                                params={{parent: 0}}
                                 label={t('Мера')}
                                 fullWidth={true}
                             />

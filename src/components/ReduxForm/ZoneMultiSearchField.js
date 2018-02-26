@@ -4,24 +4,7 @@ import SearchField from './Basic/MultiSelectField'
 import axios from '../../helpers/axios'
 import * as PATH from '../../constants/api'
 import toCamelCase from '../../helpers/toCamelCase'
-import caughtCancel from '../../helpers/caughtCancel'
-
-const CancelToken = axios().CancelToken
-let zoneListToken = null
-
-const getOptions = (search) => {
-    if (zoneListToken) {
-        zoneListToken.cancel()
-    }
-    zoneListToken = CancelToken.source()
-    return axios().get(`${PATH.ZONE_LIST}?search=${search || ''}`, {cancelToken: zoneListToken.token})
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data.results))
-        })
-        .catch((error) => {
-            caughtCancel(error)
-        })
-}
+import searchFieldGetOptions from '../../helpers/searchFieldGetOptions'
 
 const getIdsOption = (ids) => {
     return axios().get(`${PATH.ZONE_LIST}?ids=${ids || ''}`)
@@ -33,12 +16,13 @@ const getIdsOption = (ids) => {
 const itemText = (obj) => {
     return _.get(obj, ['properties', 'title'])
 }
-const ZoneSearchField = (props) => {
+const ZoneMultiSearchField = (props) => {
+    const {params, pageSize} = props
     return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
             getText={SearchField.defaultGetText('title')}
-            getOptions={getOptions}
+            getOptions={search => searchFieldGetOptions(PATH.ZONE_LIST, search, params, pageSize)}
             getIdsOption={getIdsOption}
             getItemText={itemText}
             {...props}
@@ -46,4 +30,4 @@ const ZoneSearchField = (props) => {
     )
 }
 
-export default ZoneSearchField
+export default ZoneMultiSearchField

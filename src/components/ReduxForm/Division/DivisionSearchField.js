@@ -3,7 +3,7 @@ import React from 'react'
 import SearchField from '../Basic/SearchField'
 import * as storageHelper from '../../../helpers/storage'
 
-const UserCurrenciesSearchField = (props) => {
+const DivisionSearchField = (props) => {
     const userData = JSON.parse(storageHelper.getUserData())
     const divisions = _.get(userData, 'divisions')
 
@@ -28,4 +28,4 @@ const UserCurrenciesSearchField = (props) => {
     )
 }
 
-export default UserCurrenciesSearchField
+export default DivisionSearchField

@@ -19,7 +19,6 @@ import {
     OrderListProductField,
     DateField,
     UsersSearchField,
-    DeliveryManSearchField,
     PriceListSearchField,
     UserCurrenciesSearchField,
     DeliveryTypeSearchField
@@ -354,9 +353,9 @@ const OrderCreateDialog = enhance((props) => {
                                         {hasMarket && <Field
                                             name="market"
                                             component={MarketSearchField}
+                                            params={{client: clientId}}
                                             className={classes.inputFieldCustom}
                                             label={t('Название магазина')}
-                                            clientId={clientId}
                                             fullWidth={true}/>}
                                     </div>
 
@@ -431,7 +430,8 @@ const OrderCreateDialog = enhance((props) => {
                                         {deliveryType === 'delivery' && canSetDeliveryMan &&
                                         <Field
                                             name="deliveryMan"
-                                            component={DeliveryManSearchField}
+                                            component={UsersSearchField}
+                                            params={{group: 'delivery'}}
                                             className={classes.inputDateCustom}
                                             label={t('Доставщик')}
                                             fullWidth={true}/>}

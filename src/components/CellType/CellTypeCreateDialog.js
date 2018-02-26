@@ -7,7 +7,7 @@ import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import Loader from '../Loader'
 import {Field, reduxForm} from 'redux-form'
-import {TextField, CellTypeParentSearchField} from '../ReduxForm'
+import {TextField, CellTypeSearchField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
@@ -69,7 +69,8 @@ const CellTypeCreateDialog = enhance((props) => {
                         <div className={classes.field}>
                             <Field
                                 name="parent"
-                                component={CellTypeParentSearchField}
+                                component={CellTypeSearchField}
+                                params={{parent: 0}}
                                 className={classes.inputFieldCustom}
                                 label={t('Родительская категория')}
                                 fullWidth={true}

@@ -4,13 +4,7 @@ import SearchField from '../Basic/SearchField'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
-
-const getOptions = (search) => {
-    return axios().get(`${PATH.CURRENCY_LIST}?search=${search || ''}&page_size=100`)
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data.results))
-        })
-}
+import searchFieldGetOptions from '../../../helpers/searchFieldGetOptions'
 
 const getItem = (id) => {
     return axios().get(sprintf(PATH.CURRENCY_ITEM, id))
@@ -20,11 +14,13 @@ const getItem = (id) => {
 }
 
 const CurrencySearchField = (props) => {
+    const {params, pageSize} = props
+
     return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
             getText={SearchField.defaultGetText('name')}
-            getOptions={getOptions}
+            getOptions={search => searchFieldGetOptions(PATH.CURRENCY_LIST, search, params, pageSize)}
             getItem={getItem}
             getItemText={SearchField.defaultGetText('name')}
             {...props}

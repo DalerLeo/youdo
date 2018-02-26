@@ -8,13 +8,7 @@ import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
 import * as actionTypes from '../../../constants/actionTypes'
 import {connect} from 'react-redux'
-
-const getOptions = (search, type) => {
-    return axios().get(`${PATH.PRODUCT_FOR_SELECT_LIST}?type=${type || ''}&page_size=1000&search=${search || ''}`)
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data.results))
-        })
-}
+import searchFieldGetOptions from '../../../helpers/searchFieldGetOptions'
 
 const setExtraData = (data, loading) => {
     return {
@@ -52,6 +46,7 @@ const ProductCustomSearchField = enhance((props) => {
         return getItem(id, dispatch, market)
     }
     const type = _.get(state, ['form', 'OrderCreateForm', 'values', 'type', 'value'])
+    const params = {type}
     return (
         <SearchFieldCustom
             getValue={(value) => {
@@ -60,7 +55,9 @@ const ProductCustomSearchField = enhance((props) => {
             getText={(value) => {
                 return _.get(value, ['name'])
             }}
-            getOptions={ (search) => { return getOptions(search, type) }}
+            getOptions={ (search) => {
+                return searchFieldGetOptions(PATH.PRODUCT_FOR_SELECT_LIST, search, params)
+            }}
             getItem={test}
             getItemText={(value) => {
                 return _.get(value, ['name'])

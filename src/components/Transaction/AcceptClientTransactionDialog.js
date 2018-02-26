@@ -178,6 +178,7 @@ const AcceptClientTransactionDialog = enhance((props) => {
                                     name="cashbox"
                                     component={AcceptClientTransactionCashBoxSearchField}
                                     data-currency={currency}
+                                    params={{currency, type: 'cash'}}
                                     className={classes.inputFieldCustom}
                                     fullWidth={true}
                                     label={t('Кассы')}

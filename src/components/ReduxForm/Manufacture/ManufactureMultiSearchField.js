@@ -3,13 +3,7 @@ import MultiSelectField from '../Basic/MultiSelectField'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
-
-const getOptions = (search) => {
-    return axios().get(`${PATH.MANUFACTURE_LIST}?search=${search || ''}&page_size=100`)
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data.results))
-        })
-}
+import searchFieldGetOptions from '../../../helpers/searchFieldGetOptions'
 
 const getIdsOption = (ids) => {
     return axios().get(`${PATH.CLIENT_LIST}?ids=${ids || ''}`)
@@ -17,12 +11,13 @@ const getIdsOption = (ids) => {
             return Promise.resolve(toCamelCase(data.results))
         })
 }
-const ManufactureSearchField = (props) => {
+const ManufactureMultiSearchField = (props) => {
+    const {params, pageSize} = props
     return (
         <SearchField
             getValue={MultiSelectField.defaultGetValue('id')}
             getText={MultiSelectField.defaultGetText('name')}
-            getOptions={getOptions}
+            getOptions={search => searchFieldGetOptions(PATH.MANUFACTURE_LIST, search, params, pageSize)}
             getIdsOption={getIdsOption}
             getItemText={MultiSelectField.defaultGetText('name')}
             {...props}
@@ -30,4 +25,4 @@ const ManufactureSearchField = (props) => {
     )
 }
 
-export default ManufactureSearchField
+export default ManufactureMultiSearchField

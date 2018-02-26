@@ -4,25 +4,8 @@ import SearchField from './Basic/MultiSelectField'
 import axios from '../../helpers/axios'
 import * as PATH from '../../constants/api'
 import toCamelCase from '../../helpers/toCamelCase'
-import caughtCancel from '../../helpers/caughtCancel'
 import t from '../../helpers/translate'
-
-const CancelToken = axios().CancelToken
-let usersAgentListToken = null
-
-const getOptions = (search) => {
-    if (usersAgentListToken) {
-        usersAgentListToken.cancel()
-    }
-    usersAgentListToken = CancelToken.source()
-    return axios().get(`${PATH.CONTENT_TYPE_SEARCH}?search=${search || ''}&page_size=100`, {cancelToken: usersAgentListToken.token})
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data))
-        })
-        .catch((error) => {
-            caughtCancel(error)
-        })
-}
+import searchFieldGetOptions from '../../helpers/searchFieldGetOptions'
 
 const getIdsOption = (ids) => {
     return axios().get(`${PATH.CONTENT_TYPE_SEARCH}?ids=${ids || ''}`)
@@ -40,11 +23,12 @@ const getRussianText = (obj) => {
 }
 
 const StockHistoryTypeSearchField = (props) => {
+    const {params, pageSize} = props
     return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
             getText={getRussianText}
-            getOptions={getOptions}
+            getOptions={search => searchFieldGetOptions(PATH.CONTENT_TYPE_SEARCH, search, params, pageSize)}
             getIdsOption={getIdsOption}
             getItemText={getRussianText}
             {...props}

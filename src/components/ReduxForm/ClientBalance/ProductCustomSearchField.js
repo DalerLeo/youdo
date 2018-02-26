@@ -8,25 +8,11 @@ import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
 import getConfig from '../../../helpers/getConfig'
 import toBoolean from '../../../helpers/toBoolean'
+import searchFieldGetOptions from '../../../helpers/searchFieldGetOptions'
 import * as actionTypes from '../../../constants/actionTypes'
 import {connect} from 'react-redux'
 
 const configMarkets = toBoolean(getConfig('MARKETS_MODULE'))
-
-const getOptions = (search, type, market, client, priceList, currency) => {
-    return axios().get(PATH.RETURN_CREATE_PRODUCTS_LIST,
-        {params: {
-            type: type,
-            market: market,
-            client: !configMarkets ? client : null,
-            price_list: priceList,
-            currency: currency,
-            search: search
-        }})
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data.results))
-        })
-}
 
 const setMeasurementAction = (data, loading) => {
     return {
@@ -62,6 +48,13 @@ const ProductCustomSearchField = enhance((props) => {
     const client = _.get(state, ['form', 'ReturnCreateForm', 'values', 'client', 'value'])
     const priceList = _.get(state, ['form', 'ReturnCreateForm', 'values', 'priceList', 'value'])
     const currency = _.get(state, ['form', 'ReturnCreateForm', 'values', 'currency', 'value'])
+    const params = {
+        type,
+        market,
+        client: !configMarkets ? client : null,
+        priceList,
+        currency
+    }
     const test = (id) => {
         return getItem(id, dispatch, market, priceList, currency)
     }
@@ -77,7 +70,7 @@ const ProductCustomSearchField = enhance((props) => {
                     <div>{name} <strong>Продажи {sales}</strong></div>
                 )
             }}
-            getOptions={ (search) => { return getOptions(search, type, market, client, priceList, currency) }}
+            getOptions={ (search) => { return searchFieldGetOptions(PATH.RETURN_CREATE_PRODUCTS_LIST, search, params) }}
             getItem={test}
             getItemText={(value) => {
                 return _.get(value, ['name'])

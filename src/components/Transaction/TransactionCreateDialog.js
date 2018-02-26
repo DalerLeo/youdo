@@ -25,10 +25,10 @@ import {
     TransactionIncomeCategory,
     OrderSearchField,
     SupplySearchField,
-    SupplyExpenseSearchField
+    SupplyExpenseSearchField,
+    CashBoxSimpleSearch
 } from '../ReduxForm'
 import RateRadioButton from '../ReduxForm/Transaction/RateRadioButton'
-import CashboxSearchField from '../ReduxForm/Cashbox/CashBoxSimpleSearch'
 import ExpensiveCategoryCustomSearchField from '../ReduxForm/ExpenseCategory/ExpensiveCategoryCustomSearchField'
 import {openErrorAction} from '../../actions/error'
 import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
@@ -370,7 +370,7 @@ const TransactionCreateDialog = enhance((props) => {
                                 <Field
                                     name="cashbox"
                                     className={classes.inputFieldCustom}
-                                    component={CashboxSearchField}
+                                    component={CashBoxSimpleSearch}
                                     label={t('Касса')}/>
                             </div>
                             : <div className={classes.itemList}>
@@ -397,7 +397,7 @@ const TransactionCreateDialog = enhance((props) => {
                             ? <div className={classes.field}>
                                 <Field
                                     name="expenseCategory"
-                                    data-key-name={expenseCategoryKey}
+                                    params={{'key_name': expenseCategoryKey}}
                                     component={ExpensiveCategoryCustomSearchField}
                                     label={t('Категория расхода')}
                                     className={classes.inputFieldCustom}
@@ -454,7 +454,7 @@ const TransactionCreateDialog = enhance((props) => {
                             : <div className={classes.field}>
                                 <Field
                                     name="incomeCategory"
-                                    data-key-name={incomeCategoryKey}
+                                    params={{'key_name': incomeCategoryKey}}
                                     component={TransactionIncomeCategory}
                                     label={t('Категория прихода')}
                                     className={classes.inputFieldCustom}

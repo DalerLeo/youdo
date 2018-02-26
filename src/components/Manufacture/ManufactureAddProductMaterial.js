@@ -261,7 +261,7 @@ const ManufactureAddProductMaterial = enhance((props) => {
                             name={'equipment'}
                             label={t('Оборудование')}
                             component={EquipmentSearchField}
-                            data-manufacture={manufacture}
+                            params={{manufacture}}
                             className={classes.inputFieldCustom}/>
                     </div>
                     <div className={classes.rightSide}>

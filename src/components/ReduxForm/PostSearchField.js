@@ -8,24 +8,7 @@ import * as PATH from '../../constants/api'
 import toCamelCase from '../../helpers/toCamelCase'
 import * as actionTypes from '../../constants/actionTypes'
 import {connect} from 'react-redux'
-import caughtCancel from '../../helpers/caughtCancel'
-
-const CancelToken = axios().CancelToken
-let postListToken = null
-
-const getOptions = (search) => {
-    if (postListToken) {
-        postListToken.cancel()
-    }
-    postListToken = CancelToken.source()
-    return axios().get(`${PATH.POST_LIST}?search=${search || ''}&page_size=100`, {cancelToken: postListToken.token})
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data.results))
-        })
-        .catch((error) => {
-            caughtCancel(error)
-        })
-}
+import searchFieldGetOptions from '../../helpers/searchFieldGetOptions'
 
 const setExtraData = (data) => {
     return {
@@ -52,11 +35,12 @@ const enhance = compose(
 )
 
 const PositionSearchField = enhance((props) => {
+    const {params, pageSize} = props
     return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
             getText={SearchField.defaultGetText('name')}
-            getOptions={getOptions}
+            getOptions={search => searchFieldGetOptions(PATH.POST_LIST, search, params, pageSize)}
             getItem={id => getItem(id, props.dispatch) }
             getItemText={SearchField.defaultGetText('name')}
             withDetails={true}

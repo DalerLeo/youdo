@@ -4,13 +4,7 @@ import SearchField from '../Basic/MultiSelectField'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
-
-const getOptions = (search) => {
-    return axios().get(`${PATH.BRAND_LIST}?search=${search || ''}&page_size=100`)
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data.results))
-        })
-}
+import searchFieldGetOptions from '../../../helpers/searchFieldGetOptions'
 
 const getItem = (id) => {
     return axios().get(sprintf(PATH.BRAND_ITEM, id))
@@ -20,11 +14,12 @@ const getItem = (id) => {
 }
 
 const BrandSearchField = (props) => {
+    const {params, pageSize} = props
     return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
             getText={SearchField.defaultGetText('name')}
-            getOptions={getOptions}
+            getOptions={search => searchFieldGetOptions(PATH.BRAND_LIST, search, params, pageSize)}
             getItem={getItem}
             getItemText={SearchField.defaultGetText('name')}
             {...props}

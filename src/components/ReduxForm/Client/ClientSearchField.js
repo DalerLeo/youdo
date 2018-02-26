@@ -7,24 +7,7 @@ import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
 import * as actionTypes from '../../../constants/actionTypes'
 import {connect} from 'react-redux'
-import caughtCancel from '../../../helpers/caughtCancel'
-
-const CancelToken = axios().CancelToken
-let clientListToken = null
-
-const getOptions = (search) => {
-    if (clientListToken) {
-        clientListToken.cancel()
-    }
-    clientListToken = CancelToken.source()
-    return axios().get(`${PATH.CLIENT_LIST}?search=${search || ''}&page_size=100`, {cancelToken: clientListToken.token})
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data.results))
-        })
-        .catch((error) => {
-            caughtCancel(error)
-        })
-}
+import searchFieldGetOptions from '../../../helpers/searchFieldGetOptions'
 
 const setItemAction = (data, loading) => {
     return {
@@ -45,7 +28,7 @@ const getItem = (id, dispatch) => {
 }
 
 const ClientSearchField = connect()((props) => {
-    const {dispatch} = props
+    const {dispatch, params, pageSize} = props
     const test = (id) => {
         return getItem(id, dispatch)
     }
@@ -53,7 +36,7 @@ const ClientSearchField = connect()((props) => {
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
             getText={SearchField.defaultGetText('name')}
-            getOptions={getOptions}
+            getOptions={search => searchFieldGetOptions(PATH.CLIENT_LIST, search, params, pageSize)}
             getItem={test}
             getItemText={SearchField.defaultGetText('name')}
             {...props}

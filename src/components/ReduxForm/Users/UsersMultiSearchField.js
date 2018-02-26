@@ -4,24 +4,7 @@ import SearchField from '../Basic/MultiSelectField'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
-import caughtCancel from '../../../helpers/caughtCancel'
-
-const CancelToken = axios().CancelToken
-let usersMultiListToken = null
-
-const getOptions = (search) => {
-    if (usersMultiListToken) {
-        usersMultiListToken.cancel()
-    }
-    usersMultiListToken = CancelToken.source()
-    return axios().get(`${PATH.USERS_LIST}?search=${search || ''}&page_size=100`, {cancelToken: usersMultiListToken.token})
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data.results))
-        })
-        .catch((error) => {
-            caughtCancel(error)
-        })
-}
+import searchFieldGetOptions from '../../../helpers/searchFieldGetOptions'
 
 const getIdsOption = (ids) => {
     return axios().get(`${PATH.USERS_LIST}?ids=${ids || ''}`)
@@ -36,12 +19,13 @@ const getText = (obj) => {
 
 const UsersSearchField = (props) => {
     const selectFieldScroll = _.get(props, 'selectFieldScroll')
+    const {params, pageSize} = props
     return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
             getText={getText}
             selectFieldScroll={selectFieldScroll}
-            getOptions={getOptions}
+            getOptions={search => searchFieldGetOptions(PATH.USERS_LIST, search, params, pageSize)}
             getIdsOption={getIdsOption}
             getItemText={getText}
             {...props}

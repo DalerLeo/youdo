@@ -4,24 +4,8 @@ import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
 import {connect} from 'react-redux'
-import caughtCancel from '../../../helpers/caughtCancel'
+import searchFieldGetOptions from '../../../helpers/searchFieldGetOptions'
 
-const CancelToken = axios().CancelToken
-
-let clientMultiListToken = null
-const getOptions = (search) => {
-    if (clientMultiListToken) {
-        clientMultiListToken.cancel()
-    }
-    clientMultiListToken = CancelToken.source()
-    return axios().get(`${PATH.CLIENT_LIST}?search=${search || ''}&page_size=100`, {cancelToken: clientMultiListToken.token})
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data.results))
-        })
-        .catch((error) => {
-            caughtCancel(error)
-        })
-}
 const getIdsOption = (ids) => {
     return axios().get(`${PATH.CLIENT_LIST}?ids=${ids || ''}`)
         .then(({data}) => {
@@ -29,12 +13,13 @@ const getIdsOption = (ids) => {
         })
 }
 
-const ClientSearchField = connect()((props) => {
+const ClientMultiSearchField = connect()((props) => {
+    const {params, pageSize} = props
     return (
         <MultiSelectField
             getValue={MultiSelectField.defaultGetValue('id')}
             getText={MultiSelectField.defaultGetText('name')}
-            getOptions={getOptions}
+            getOptions={search => searchFieldGetOptions(PATH.CLIENT_LIST, search, params, pageSize)}
             getIdsOption={getIdsOption}
             getItemText={MultiSelectField.defaultGetText('name')}
             {...props}
@@ -42,4 +27,4 @@ const ClientSearchField = connect()((props) => {
     )
 })
 
-export default ClientSearchField
+export default ClientMultiSearchField
