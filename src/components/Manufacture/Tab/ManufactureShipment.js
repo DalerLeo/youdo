@@ -377,7 +377,6 @@ const iconStyles = {
     }
 }
 
-
 const ManufactureShipment = enhance((props) => {
     const {
         filterLogs,
