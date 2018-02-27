@@ -533,14 +533,15 @@ const StatProductGridList = enhance((props) => {
             <Field
                 className={classes.inputFieldCustom}
                 name="productType"
-                component={ProductTypeParentSearchField}
+                component={ProductTypeSearchField}
+                params={{parent: 0}}
                 label={t('Тип товара')}
                 fullWidth={true}/>
             {typeParent ? <Field
                 name="productTypeChild"
                 className={classes.inputFieldCustom}
                 component={ProductTypeChildSearchField}
-                parentType={typeParent}
+                params={{parent: typeParent}}
                 label={t('Подкатегория')}
                 fullWidth={true}
             /> : null}

@@ -205,6 +205,7 @@ const PricesListProductField = ({classes, state, dispatch, handleAdd, handleRemo
                             label="Наименование"
                             name="product"
                             component={ProductCustomSearchField}
+                            pageSize="1000"
                             className={classes.searchFieldCustom}
                             fullWidth={true}
                         />

@@ -4,24 +4,7 @@ import SearchField from '../Basic/SearchField'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
-import caughtCancel from '../../../helpers/caughtCancel'
-
-const CancelToken = axios().CancelToken
-let typeProductListToken = null
-
-const getOptions = (search) => {
-    if (typeProductListToken) {
-        typeProductListToken.cancel()
-    }
-    typeProductListToken = CancelToken.source()
-    return axios().get(`${PATH.PRODUCT_TYPE_LIST}?search=${search || ''}&page_size=100`, {cancelToken: typeProductListToken.token})
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data.results))
-        })
-        .catch((error) => {
-            caughtCancel(error)
-        })
-}
+import searchFieldGetOptions from '../../../helpers/searchFieldGetOptions'
 
 const getItem = (id) => {
     return axios().get(sprintf(PATH.PRODUCT_TYPE_ITEM, id))
@@ -30,14 +13,15 @@ const getItem = (id) => {
         })
 }
 const ProductTypeSearchField = (props) => {
+    const {params, pageSize, ...defaultProps} = props
     return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
             getText={SearchField.defaultGetText('name')}
-            getOptions={getOptions}
+            getOptions={search => searchFieldGetOptions(PATH.PRODUCT_TYPE_LIST, search, params, pageSize)}
             getItem={getItem}
             getItemText={SearchField.defaultGetText('name')}
-            {...props}
+            {...defaultProps}
         />
     )
 }

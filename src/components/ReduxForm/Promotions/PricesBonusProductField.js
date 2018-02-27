@@ -242,6 +242,7 @@ const PricesBonusProductField = ({classes, state, dispatch, handleAddBonus, hand
                                     label={t('Наименование')}
                                     name="product"
                                     component={ProductCustomBonusSearchField}
+                                    pageSize="1000"
                                     className={classes.searchFieldCustom}
                                     fullWidth={true}
                                 />
@@ -266,6 +267,7 @@ const PricesBonusProductField = ({classes, state, dispatch, handleAddBonus, hand
                                     label={t('Наименование')}
                                     name="giftProduct"
                                     component={ProductCustomGiftSearchField}
+                                    pageSize="1000"
                                     className={classes.searchFieldCustom}
                                     fullWidth={true}
                                 />

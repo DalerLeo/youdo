@@ -4,24 +4,7 @@ import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
 import {connect} from 'react-redux'
-import caughtCancel from '../../../helpers/caughtCancel'
-
-const CancelToken = axios().CancelToken
-let productListToken = null
-
-const getOptions = (search) => {
-    if (productListToken) {
-        productListToken.cancel()
-    }
-    productListToken = CancelToken.source()
-    return axios().get(`${PATH.PRODUCT_LIST}?search=${search || ''}&page_size=100`, {cancelToken: productListToken.token})
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data.results))
-        })
-        .catch((error) => {
-            caughtCancel(error)
-        })
-}
+import searchFieldGetOptions from '../../../helpers/searchFieldGetOptions'
 
 const getIdsOption = (ids) => {
     return axios().get(`${PATH.PRODUCT_LIST}?ids=${ids || ''}`)
@@ -31,12 +14,12 @@ const getIdsOption = (ids) => {
 }
 
 const ProductSearchField = connect()((props) => {
-    const {...defaultProps} = props
+    const {params, pageSize, ...defaultProps} = props
     return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
             getText={SearchField.defaultGetText('name')}
-            getOptions={getOptions}
+            getOptions={search => searchFieldGetOptions(PATH.PRODUCT_LIST, search, params, pageSize)}
             getIdsOption={getIdsOption}
             getItemText={SearchField.defaultGetText('name')}
             {...defaultProps}

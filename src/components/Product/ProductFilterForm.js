@@ -13,7 +13,7 @@ import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import {
     MeasurementMultiSearchField,
     ProductTypeChildSearchField,
-    ProductTypeParentSearchField
+    ProductTypeSearchField
 } from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
@@ -168,7 +168,8 @@ const ProductFilterForm = enhance((props) => {
                     <Field
                         name="typeParent"
                         className={classes.inputFieldCustom}
-                        component={ProductTypeParentSearchField}
+                        component={ProductTypeSearchField}
+                        params={{parent: 0}}
                         label={t('Тип продукта')}
                         fullWidth={true}
                     />
@@ -176,7 +177,7 @@ const ProductFilterForm = enhance((props) => {
                         name="typeChild"
                         className={classes.inputFieldCustom}
                         component={ProductTypeChildSearchField}
-                        parentType={typeParent}
+                        params={{parent: typeParent}}
                         label={t('Подкатегория')}
                         fullWidth={true}
                     /> : null}

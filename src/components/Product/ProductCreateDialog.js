@@ -10,7 +10,7 @@ import Loader from '../Loader'
 import {Field, reduxForm} from 'redux-form'
 import {
     TextField,
-    ProductTypeParentSearchField,
+    ProductTypeSearchField,
     ProductTypeChildSearchField,
     ImageUploadField
 } from '../ReduxForm'
@@ -108,7 +108,8 @@ const ProductCreateDialog = enhance((props) => {
                             <Field
                                 name="type"
                                 className={classes.inputFieldCustom}
-                                component={ProductTypeParentSearchField}
+                                component={ProductTypeSearchField}
+                                params={{parent: 0}}
                                 label={t('Тип продукта')}
                                 fullWidth={true}
                             />
@@ -116,7 +117,7 @@ const ProductCreateDialog = enhance((props) => {
                                 name="typeChild"
                                 className={classes.inputFieldCustom}
                                 component={ProductTypeChildSearchField}
-                                parentType={typeParent}
+                                params={{parent: typeParent}}
                                 label={t('Подкатегория')}
                                 fullWidth={true}
                             />}

@@ -1,35 +1,10 @@
 import sprintf from 'sprintf'
 import React from 'react'
-import SearchFieldCustom from '../Basic/ParentSearchField'
+import ParentSearchField from '../Basic/ParentSearchField'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
-import _ from 'lodash'
-import caughtCancel from '../../../helpers/caughtCancel'
-
-const CancelToken = axios().CancelToken
-let orderProductListToken = null
-
-const getOptions = (search) => {
-    if (orderProductListToken) {
-        orderProductListToken.cancel()
-    }
-    orderProductListToken = CancelToken.source()
-    return axios().get(`${PATH.PRODUCT_TYPE_LIST}?page_size=100000&search=${search || ''}`, {cancelToken: orderProductListToken.token})
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data.results))
-        }).then((data) => {
-            return {options: _.map(data, (item) => {
-                return {
-                    label: item.name,
-                    value: item.id
-                }
-            })}
-        })
-        .catch((error) => {
-            caughtCancel(error)
-        })
-}
+import searchFieldGetOptions from '../../../helpers/searchFieldGetOptions'
 
 const getItem = (id) => {
     return axios().get(sprintf(PATH.PRODUCT_TYPE_ITEM, id))
@@ -38,14 +13,15 @@ const getItem = (id) => {
         })
 }
 const OrderProductTypeSearchField = (props) => {
+    const {params, pageSize, ...defaultProps} = props
     return (
-        <SearchFieldCustom
-            getValue={SearchFieldCustom.defaultGetValue('id')}
-            getText={SearchFieldCustom.defaultGetText('name')}
-            getOptions={getOptions}
+        <ParentSearchField
+            getValue={ParentSearchField.defaultGetValue('id')}
+            getText={ParentSearchField.defaultGetText('name')}
+            getOptions={search => searchFieldGetOptions(PATH.PRODUCT_TYPE_LIST, search, params, pageSize)}
             getItem={getItem}
-            getItemText={SearchFieldCustom.defaultGetText('name')}
-            {...props}
+            getItemText={ParentSearchField.defaultGetText('name')}
+            {...defaultProps}
         />
     )
 }

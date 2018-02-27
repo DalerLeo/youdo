@@ -9,7 +9,7 @@ import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import PropTypes from 'prop-types'
 import {
-    ProductTypeParentSearchField,
+    ProductTypeSearchField,
     ProductTypeChildSearchField,
     MeasurementMultiSearchField
 } from '../ReduxForm'
@@ -179,7 +179,8 @@ const RemainderFilterForm = enhance((props) => {
                         <Field
                             name="typeParent"
                             className={classes.inputFieldCustom}
-                            component={ProductTypeParentSearchField}
+                            component={ProductTypeSearchField}
+                            params={{parent: 0}}
                             label={t('Тип продукта')}
                             fullWidth={true}
                         />
@@ -187,7 +188,7 @@ const RemainderFilterForm = enhance((props) => {
                             name="typeChild"
                             className={classes.inputFieldCustom}
                             component={ProductTypeChildSearchField}
-                            parentType={typeParent}
+                            params={{parent: typeParent}}
                             label={t('Подкатегория')}
                             fullWidth={true}
                         />}
