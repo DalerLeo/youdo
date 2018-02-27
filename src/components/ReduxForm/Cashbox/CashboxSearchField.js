@@ -5,24 +5,7 @@ import SearchField from '../Basic/SearchFieldCustom'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
-import caughtCancel from '../../../helpers/caughtCancel'
-
-const CancelToken = axios().CancelToken
-let cashboxListToken = null
-
-const getOptions = (search) => {
-    if (cashboxListToken) {
-        cashboxListToken.cancel()
-    }
-    cashboxListToken = CancelToken.source()
-    return axios().get(`${PATH.CASHBOX_LIST}?search=${search || ''}&page_size=100`, {cancelToken: cashboxListToken.token})
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data.results))
-        })
-        .catch((error) => {
-            caughtCancel(error)
-        })
-}
+import searchFieldGetOptions from '../../../helpers/searchFieldGetOptions'
 
 const getItem = (value) => {
     const id = _.isObject(value) ? _.get(value, 'id') : value
@@ -33,11 +16,12 @@ const getItem = (value) => {
 }
 
 const CashboxSearchField = (props) => {
+    const {params, pageSize} = props
     return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
             getText={SearchField.defaultGetText('name')}
-            getOptions={getOptions}
+            getOptions={search => searchFieldGetOptions(PATH.CASHBOX_LIST, search, params, pageSize)}
             getItem={getItem}
             getItemText={SearchField.defaultGetText('name')}
             {...props}

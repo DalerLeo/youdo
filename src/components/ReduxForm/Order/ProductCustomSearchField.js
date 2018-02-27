@@ -8,25 +8,8 @@ import toCamelCase from '../../../helpers/toCamelCase'
 import numberFormat from '../../../helpers/numberFormat'
 import * as actionTypes from '../../../constants/actionTypes'
 import {connect} from 'react-redux'
-import caughtCancel from '../../../helpers/caughtCancel'
-
-const CancelToken = axios().CancelToken
-let productCustomListToken = null
-
+import searchFieldGetOptions from '../../../helpers/searchFieldGetOptions'
 const ZERO = 0
-const getOptions = (search, type, priceList, currency, user) => {
-    if (productCustomListToken) {
-        productCustomListToken.cancel()
-    }
-    productCustomListToken = CancelToken.source()
-    return axios().get(`${PATH.PRODUCT_FOR_ORDER_SELECT_LIST}?price_list=${priceList || ''}&currency=${currency || ''}&user=${user || ''}&type=${type || ''}&page_size=100&search=${search || ''}`, {cancelToken: productCustomListToken.token})
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data.results))
-        })
-        .catch((error) => {
-            caughtCancel(error)
-        })
-}
 
 const setExtraData = (data, loading) => {
     return {
@@ -69,6 +52,12 @@ const ProductCustomSearchField = enhance((props) => {
         return getItem(id, dispatch, priceList, currency)
     }
     const type = _.get(state, ['form', 'OrderCreateForm', 'values', 'type', 'value'])
+    const params = {
+        type,
+        priceList,
+        currency,
+        user
+    }
     return (
         <SearchFieldCustom
             getValue={(value) => {
@@ -82,7 +71,7 @@ const ProductCustomSearchField = enhance((props) => {
                     <div>{name} <strong>({numberFormat(balance, measurement)})</strong></div>
                 )
             }}
-            getOptions={ (search) => { return getOptions(search, type, priceList, currency, user) }}
+            getOptions={ (search) => { return searchFieldGetOptions(PATH.PRODUCT_FOR_ORDER_SELECT_LIST, search, params) }}
             getItem={test}
             getItemText={(value) => {
                 return _.get(value, ['name'])

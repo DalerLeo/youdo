@@ -6,14 +6,9 @@ import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
 import * as actionTypes from '../../../constants/actionTypes'
-import {connect} from 'react-redux'
+import searchFieldGetOptions from '../../../helpers/searchFieldGetOptions'
 
-const getOptions = (search) => {
-    return axios().get(`${PATH.PRODUCT_LIST}?search=${search || ''}&page_size=100`)
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data.results))
-        })
-}
+import {connect} from 'react-redux'
 
 const setMeasurementAction = (data, loading) => {
     return {
@@ -33,7 +28,7 @@ const getItem = (id, dispatch) => {
 }
 
 const ProductSearchField = connect()((props) => {
-    const {dispatch, ...defaultProps} = props
+    const {dispatch, params, pageSize, ...defaultProps} = props
     const test = (id) => {
         return getItem(id, dispatch)
     }
@@ -41,7 +36,7 @@ const ProductSearchField = connect()((props) => {
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
             getText={SearchField.defaultGetText('name')}
-            getOptions={getOptions}
+            getOptions={search => searchFieldGetOptions(PATH.PRODUCT_LIST, search, params, pageSize)}
             getItem={test}
             getItemText={SearchField.defaultGetText('name')}
             {...defaultProps}

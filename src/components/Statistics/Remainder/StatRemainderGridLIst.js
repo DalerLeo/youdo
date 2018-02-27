@@ -9,7 +9,7 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import {connect} from 'react-redux'
 import {reduxForm, Field} from 'redux-form'
-import {StockMultiSearchField, ProductTypeParentSearchField, ProductTypeChildSearchField, TextField} from '../../ReduxForm'
+import {StockMultiSearchField, ProductTypeSearchField, ProductTypeChildSearchField, TextField} from '../../ReduxForm'
 import StatRemainderDialog from './StatRemainderDialog'
 import StatSideMenu from '../StatSideMenu'
 import Search from 'material-ui/svg-icons/action/search'
@@ -370,13 +370,14 @@ const StatRemainderGridList = enhance((props) => {
             <Field
                 className={classes.inputFieldCustom}
                 name="typeParent"
-                component={ProductTypeParentSearchField}
+                component={ProductTypeSearchField}
+                params={{parent: 0}}
                 label={t('Тип товара')}
                 fullWidth={true}/>
             {typeParent ? <Field
                 className={classes.inputFieldCustom}
                 name="type"
-                parentType={typeParent}
+                params={{parent: typeParent}}
                 component={ProductTypeChildSearchField}
                 label={t('Подкатегория')}
                 fullWidth={true}/> : null}

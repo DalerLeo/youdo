@@ -1,6 +1,6 @@
 import sprintf from 'sprintf'
 import React from 'react'
-import SearchFieldCustom from '../Basic/ParentSearchField'
+import ParentSearchField from '../Basic/ParentSearchField'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
@@ -40,12 +40,12 @@ const getItem = (id) => {
 }
 const RemainderProductTypeSearchField = (props) => {
     return (
-        <SearchFieldCustom
-            getValue={SearchFieldCustom.defaultGetValue('id')}
-            getText={SearchFieldCustom.defaultGetText('name')}
+        <ParentSearchField
+            getValue={ParentSearchField.defaultGetValue('id')}
+            getText={ParentSearchField.defaultGetText('name')}
             getOptions={getOptions}
             getItem={getItem}
-            getItemText={SearchFieldCustom.defaultGetText('name')}
+            getItemText={ParentSearchField.defaultGetText('name')}
             {...props}
         />
     )

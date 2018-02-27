@@ -13,7 +13,7 @@ import horizontalScroll from '../../../helpers/horizontalScroll'
 import {
     DateToDateField,
     StockMultiSearchField,
-    ProductTypeParentSearchField,
+    ProductTypeSearchField,
     ProductTypeChildSearchField,
     TextField
 } from '../../ReduxForm/index'
@@ -532,7 +532,8 @@ const StatProductMoveGridList = enhance((props) => {
             <Field
                 name="typeParent"
                 className={classes.inputFieldCustom}
-                component={ProductTypeParentSearchField}
+                component={ProductTypeSearchField}
+                params={{parent: 0}}
                 label={t('Тип продукта')}
                 fullWidth={true}
             />
@@ -540,7 +541,7 @@ const StatProductMoveGridList = enhance((props) => {
                 name="type"
                 className={classes.inputFieldCustom}
                 component={ProductTypeChildSearchField}
-                parentType={typeParent.value}
+                params={{parent: typeParent.value}}
                 label={t('Подкатегория')}
                 fullWidth={true}
             /> : null}

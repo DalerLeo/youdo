@@ -7,7 +7,7 @@ import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import Loader from '../Loader'
 import {Field, reduxForm} from 'redux-form'
-import {TextField, ProductTypeParentSearchField, DivisionSearchField} from '../ReduxForm'
+import {TextField, ProductTypeSearchField, DivisionSearchField} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../Styles/MainStyles'
@@ -69,8 +69,9 @@ const ProductTypeCreateDialog = enhance((props) => {
                         <div className={classes.field}>
                             <Field
                                 name="parent"
-                                component={ProductTypeParentSearchField}
+                                component={ProductTypeSearchField}
                                 className={classes.inputFieldCustom}
+                                params={{parent: 0}}
                                 label={t('Родительская категория')}
                                 fullWidth={true}
                             />

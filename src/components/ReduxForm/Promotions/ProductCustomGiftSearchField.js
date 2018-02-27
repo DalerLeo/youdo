@@ -8,24 +8,7 @@ import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
 import * as actionTypes from '../../../constants/actionTypes'
 import {connect} from 'react-redux'
-import caughtCancel from '../../../helpers/caughtCancel'
-
-const CancelToken = axios().CancelToken
-let priceProductGiftListToken = null
-
-const getOptions = (search, type) => {
-    if (priceProductGiftListToken) {
-        priceProductGiftListToken.cancel()
-    }
-    priceProductGiftListToken = CancelToken.source()
-    return axios().get(`${PATH.PRODUCT_LIST}?type=${type || ''}&page_size=1000&search=${search || ''}`, {cancelToken: priceProductGiftListToken.token})
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data.results))
-        })
-        .catch((error) => {
-            caughtCancel(error)
-        })
-}
+import searchFieldGetOptions from '../../../helpers/searchFieldGetOptions'
 
 const setMeasurementAction = (data, loading) => {
     return {
@@ -56,11 +39,12 @@ const enhance = compose(
 )
 
 const ProductCustomGiftSearchField = enhance((props) => {
-    const {dispatch, state, ...defaultProps} = props
+    const {dispatch, state, pageSize, ...defaultProps} = props
     const test = (id) => {
         return getItem(id, dispatch)
     }
     const type = _.get(state, ['form', 'PricesCreateForm', 'values', 'giftType', 'value'])
+    const params = {type}
     return (
         <SearchFieldCustom
             getValue={(value) => {
@@ -69,7 +53,7 @@ const ProductCustomGiftSearchField = enhance((props) => {
             getText={(value) => {
                 return _.get(value, ['name'])
             }}
-            getOptions={ (search) => { return getOptions(search, type) }}
+            getOptions={ (search) => { return searchFieldGetOptions(PATH.PRODUCT_LIST, search, params, pageSize) }}
             getItem={test}
             getItemText={(value) => {
                 return _.get(value, ['name'])

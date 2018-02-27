@@ -537,6 +537,7 @@ const OrderListProductField = enhance((props) => {
                             label={t('Тип товара')}
                             name="type"
                             component={OrderProductTypeSearchField}
+                            pageSize="100000"
                             className={classes.searchFieldCustom}
                             fullWidth={true}
                             {..._.get(props, 'type')}

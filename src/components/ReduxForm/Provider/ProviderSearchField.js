@@ -7,13 +7,7 @@ import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
 import * as actionTypes from '../../../constants/actionTypes'
 import {connect} from 'react-redux'
-
-const getOptions = (search) => {
-    return axios().get(`${PATH.PROVIDER_LIST}?search=${search || ''}&page_size=100`)
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data.results))
-        })
-}
+import searchFieldGetOptions from '../../../helpers/searchFieldGetOptions'
 
 export const setItemAction = (data, loading) => {
     return {
@@ -34,7 +28,7 @@ const getItem = (id, dispatch) => {
 }
 
 const ProviderSearchField = connect()((props) => {
-    const {dispatch} = props
+    const {dispatch, params, pageSize} = props
     const test = (id) => {
         return getItem(id, dispatch)
     }
@@ -43,7 +37,7 @@ const ProviderSearchField = connect()((props) => {
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
             getText={SearchField.defaultGetText('name')}
-            getOptions={getOptions}
+            getOptions={search => searchFieldGetOptions(PATH.PROVIDER_LIST, search, params, pageSize)}
             getItem={test}
             getItemText={SearchField.defaultGetText('name')}
             withDetails={true}
