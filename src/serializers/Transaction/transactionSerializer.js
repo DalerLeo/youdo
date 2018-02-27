@@ -11,10 +11,14 @@ const MINUS_ONE = -1
 
 const getRateType = (rateType) => {
     switch (rateType) {
-        case 'current': return '0'
-        case 'order': return '1'
-        case 'custom': return '2'
-        default: return '0'
+        case 'current':
+            return '0'
+        case 'order':
+            return '1'
+        case 'custom':
+            return '2'
+        default:
+            return '0'
     }
 }
 
@@ -107,7 +111,7 @@ export const createExpenseSerializer = (data, cashboxId) => {
     const clientId = _.get(data, ['client', 'value'])
     const providerId = _.get(data, ['provider', 'value'])
     const supplyExpense = _.get(data, ['supplyExpense', 'value'])
-    const customRate = numberWithoutSpaces(_.get(data, 'custom_rate'))
+    const customRate = numberWithoutSpaces(_.get(data, 'customRate'))
     const division = _.get(data, ['division', 'value'])
     const cashbox = _.get(data, ['cashbox', 'value'])
     const supply = _.get(data, ['supply', 'value'])
@@ -130,11 +134,11 @@ export const createExpenseSerializer = (data, cashboxId) => {
         'transaction_child': detalization,
         date
     }
-    return (clientId)
-        ? _.merge(request, {'client': clientId})
-        : (providerId)
-            ? _.merge(request, {'provider': providerId})
-            : request
+    return (clientId && providerId)
+        ? (_.merge(request, {'client': clientId, 'provider': providerId}))
+        : (clientId || providerId)
+            ? (clientId ? _.merge(request, {'client': clientId})
+                : _.merge(request, {'provider': providerId})) : request
 }
 const HUNDRED = 100
 export const createSendSerializer = (data, cashboxId, withPersent, defaultCurrency, sameCurType) => {

@@ -348,6 +348,7 @@ const MarketTypeGridList = enhance((props) => {
                         hoverableList={false}
                         addButton={addButton}
                         listShadow={false}
+                        withoutSearch={true}
                     />
                 </div>
             </div>
