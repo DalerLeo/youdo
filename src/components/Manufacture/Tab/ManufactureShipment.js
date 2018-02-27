@@ -376,13 +376,7 @@ const iconStyles = {
         padding: 0
     }
 }
-const tabStyles = {
-    ink: {
-        background: '#12aaeb',
-        margin: '0',
-        height: '2px'
-    }
-}
+
 
 const ManufactureShipment = enhance((props) => {
     const {
@@ -416,6 +410,13 @@ const ManufactureShipment = enhance((props) => {
     const productsLoading = _.get(detailData, 'productsLoading')
     const materialsLoading = _.get(detailData, 'materialsLoading')
     const inventoryLoading = _.get(detailData, 'inventoryLoading')
+    const tabStyles = {
+        ink: {
+            background: '#12aaeb',
+            margin: '0',
+            height: '2px'
+        }
+    }
 
     const handleOpenDelete = (item, type, id) => {
         setDeleteItem(item)

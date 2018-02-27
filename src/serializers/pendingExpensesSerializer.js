@@ -43,6 +43,7 @@ export const createExpenseSerializer = (data) => {
     const division = _.get(data, ['division', 'value'])
     const supply = _.get(data, ['supply', 'value']) || null
     const supplyExpense = _.get(data, ['supplyExpense', 'value']) || null
+    const provider = _.get(data, ['provider', 'value']) || null
     const expenseCategory = _.get(data, ['expenseCategory', 'value', 'id'])
     const currencyRate = _.get(data, 'currencyRate')
     const getRateType = () => {
@@ -60,6 +61,7 @@ export const createExpenseSerializer = (data) => {
         division,
         comment,
         supply,
+        provider,
         supply_expense: supplyExpense,
         expense_category: expenseCategory,
         rate_type: getRateType()
