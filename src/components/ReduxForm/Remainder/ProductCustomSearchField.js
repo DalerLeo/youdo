@@ -10,24 +10,7 @@ import numberFormat from '../../../helpers/numberFormat'
 import t from '../../../helpers/translate'
 import * as actionTypes from '../../../constants/actionTypes'
 import {connect} from 'react-redux'
-import caughtCancel from '../../../helpers/caughtCancel'
-
-const CancelToken = axios().CancelToken
-let customProductListToken = null
-
-const getOptions = (search, type, stock) => {
-    if (customProductListToken) {
-        customProductListToken.cancel()
-    }
-    customProductListToken = CancelToken.source()
-    return axios().get(`${PATH.REMAINDER_LIST}?type=${type || ''}&page_size=1000&stock=${stock || ''}&search=${search || ''}`, {cancelToken: customProductListToken.token})
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data.results))
-        })
-        .catch((error) => {
-            caughtCancel(error)
-        })
-}
+import searchFieldGetOptions from '../../../helpers/searchFieldGetOptions'
 
 const setMeasurementAction = (data, loading) => {
     return {
@@ -65,6 +48,7 @@ const ProductCustomSearchField = enhance((props) => {
     }
     const stock = _.get(state, ['form', 'RemainderTransferForm', 'values', 'fromStock', 'value'])
     const type = _.get(state, ['form', 'RemainderTransferForm', 'values', 'productType', 'value'])
+    const params = {type, stock}
     return (
         <SearchFieldCustom
             getValue={(value) => {
@@ -83,7 +67,7 @@ const ProductCustomSearchField = enhance((props) => {
                     </div>
                 )
             }}
-            getOptions={ (search) => { return getOptions(search, type, stock) }}
+            getOptions={ (search) => { return searchFieldGetOptions(PATH.REMAINDER_LIST, search, params, '1000') }}
             getItem={test}
             getItemText={(value) => {
                 return _.get(value, ['title'])

@@ -4,6 +4,7 @@ import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton'
 import {connect} from 'react-redux'
+import t from '../../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -39,7 +40,7 @@ const ProviderContactsField = enhance((props) => {
     const {classes, contacts, contactsLoading, input, meta: {error}, detail} = props
     return (
         <div>
-            {contactsLoading && <div>Загрузка ...</div>}
+            {contactsLoading && <div>{t('Загрузка')} ...</div>}
             {error && <div className={classes.error}>{error}</div>}
             {!contactsLoading &&
             <RadioButtonGroup

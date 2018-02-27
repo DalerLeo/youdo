@@ -15,6 +15,7 @@ import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import EditIcon from 'material-ui/svg-icons/editor/mode-edit'
 import Log from 'material-ui/svg-icons/content/content-paste'
 import Shift from 'material-ui/svg-icons/av/loop'
+import BeenHere from 'material-ui/svg-icons/maps/beenhere'
 import InventoryIcon from 'material-ui/svg-icons/notification/event-note'
 import Raw from 'material-ui/svg-icons/action/exit-to-app'
 import Product from '../../CustomIcons/Product'
@@ -57,7 +58,15 @@ const enhance = compose(
             margin: '10px 0',
             justifyContent: 'flex-end',
             '& > a': {
-                marginLeft: '10px !important'
+                marginLeft: '10px !important',
+                '& > button': {
+                    marginLeft: '10px !important',
+                    '& svg': {
+                        verticalAlign: 'text-top !important',
+                        width: '20px !important',
+                        height: '20px !important'
+                    }
+                }
             },
             '& > button': {
                 marginLeft: '10px !important',
@@ -659,7 +668,7 @@ const ManufactureShipment = enhance((props) => {
     }
     const flatButtonStyle = {
         reconciliationColor: '#ff7373',
-        verifyColor: '#81C784',
+        verifyColor: '#FF8A65',
         productColor: '#4db6ac',
         rawColor: '#12aaeb',
         labelStyle: {
@@ -695,7 +704,7 @@ const ManufactureShipment = enhance((props) => {
                         hoverColor={flatButtonStyle.verifyColor}
                         rippleColor={'#fff'}
                         onTouchTap={() => { handleOpenInventory() }}
-                        icon={<Product color={'#fff'}/>}
+                        icon={<BeenHere color={'#fff'}/>}
                     />
                 </Link>
                 <FlatButton
