@@ -116,7 +116,8 @@ export const createReturnSerializer = (data) => {
         currency,
         products,
         market,
-        payment_type: paymentType
+        payment_type: paymentType,
+        'zero_balances': false
     }
 }
 

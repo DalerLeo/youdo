@@ -556,7 +556,7 @@ const ManufactureShipment = enhance((props) => {
                             </IconButton>
                         </div>
                         : <div className={classes.actionButtons}>
-                            <ToolTip position="bottom" text={t('Изменить')}>
+                            <ToolTip position="bottom" text={isTransferred ? t('Уже передан') : t('Изменить')}>
                                 <IconButton
                                     iconStyle={iconStyles.icon}
                                     disabled={isTransferred}
@@ -567,7 +567,7 @@ const ManufactureShipment = enhance((props) => {
                                     <EditIcon/>
                                 </IconButton>
                             </ToolTip>
-                            <ToolTip position="bottom" text={t('Удалить')}>
+                            <ToolTip position="bottom" text={isTransferred ? t('Уже передан') : t('Удалить')}>
                                 <IconButton
                                     disableTouchRipple={true}
                                     disabled={isTransferred}

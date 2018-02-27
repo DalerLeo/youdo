@@ -20,7 +20,6 @@ export const listFilterSerializer = (data) => {
     return {
         'name': _.get(defaultData, 'name'),
         'division': _.get(defaultData, 'division'),
-        'search': _.get(defaultData, 'search'),
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),
         'ordering': ordering && orderingSnakeCase(ordering)
