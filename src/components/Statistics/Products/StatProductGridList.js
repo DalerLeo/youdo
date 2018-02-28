@@ -43,6 +43,7 @@ export const STAT_PRODUCT_FILTER_KEY = {
 
 export const PRODUCT = 'product'
 export const PRODUCT_TYPE = 'productType'
+export const ORGANIZATION = 'organization'
 
 const enhance = compose(
     injectSheet({

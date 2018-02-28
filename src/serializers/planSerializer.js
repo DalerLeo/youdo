@@ -17,20 +17,35 @@ export const listFilterSerializer = (data) => {
     }
 }
 
-export const monthlyPlanSerializer = (data, query, user) => {
+export const monthlyPlanSerializer = (data, query, user, toggle) => {
     const year = moment(_.get(query, 'date')).format('YYYY') || moment().format('YYYY')
     const month = moment(_.get(query, 'date')).format('M') || moment().format('M')
-    return _.map(_.get(data, 'divisions'), (item, index) => {
-        const amount = _.toNumber(numberWithoutSpaces(_.get(item, 'amount')))
-        const division = _.toInteger(_.trim(index, '_'))
-        return {
-            user,
-            division,
-            amount,
-            year,
-            month
-        }
-    })
+    if (toggle != 'product_type') {
+        return _.map(_.get(data, 'divisions'), (item, index) => {
+            const amount = _.toNumber(numberWithoutSpaces(_.get(item, 'amount')))
+            const division = _.toInteger(_.trim(index, '_'))
+            return {
+                user,
+                division,
+                amount,
+                year,
+                month
+            }
+        })
+    } else {
+        return _.map(_.get(data, 'divisions'), (item, index) => {
+            const amount = _.toNumber(numberWithoutSpaces(_.get(item, 'amount')))
+            const product_type = _.toInteger(_.trim(index, '_'))
+            return {
+                user,
+                product_type,
+                amount,
+                year,
+                month
+            }
+        })
+    }
+
 }
 
 export const monthlyPlanItemSerializer = (query, user) => {
