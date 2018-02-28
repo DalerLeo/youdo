@@ -23,6 +23,7 @@ import {
 } from '../../actions/pendingExpenses'
 import {cashboxListFetchAction} from '../../actions/cashbox'
 import {transactionConvertAction} from '../../actions/transaction'
+import {optionsListFetchAction} from '../../actions/expensiveCategory'
 import {openErrorAction} from '../../actions/error'
 import {openSnackbarAction} from '../../actions/snackbar'
 import t from '../../helpers/translate'
@@ -61,6 +62,7 @@ const enhance = compose(
         return !nextProps.cashboxListLoading && _.isNil(nextProps.cashboxList)
     }, ({dispatch, filterCashbox}) => {
         dispatch(cashboxListFetchAction(filterCashbox))
+        dispatch(optionsListFetchAction())
     }),
 
     withPropsOnChange((props, nextProps) => {

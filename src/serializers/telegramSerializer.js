@@ -19,7 +19,7 @@ export const listFilterSerializer = (data) => {
         'page_size': _.get(defaultData, 'pageSize'),
         'ordering': ordering && orderingSnakeCase(ordering),
         'market': _.get(defaultData, 'market') || null,
-        'createdBy': _.get(defaultData, 'createdBy') || null,
+        'created_by': _.get(defaultData, 'createdBy') || null,
         'activated_begin': _.get(defaultData, 'activatedFromDate') || null,
         'activated_end': _.get(defaultData, 'activatedToDate') || null,
         'created_begin': _.get(defaultData, 'createdFromDate') || null,

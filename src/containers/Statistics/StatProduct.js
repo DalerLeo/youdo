@@ -171,7 +171,7 @@ const StatProductList = enhance((props) => {
     }
 
     const listData = {
-        data: toggle === PRODUCT ? _.get(productList, 'results') : _.get(productTypeList, 'results'),
+        data: toggle === PRODUCT ? _.get(productList, 'results') : productTypeList,
         listLoading: toggle === PRODUCT ? productListLoading : productTypeListLoading
     }
 
