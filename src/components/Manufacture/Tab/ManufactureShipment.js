@@ -8,7 +8,6 @@ import {compose, withState} from 'recompose'
 import Filter from 'material-ui/svg-icons/content/filter-list'
 import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
-import {Tabs, Tab} from 'material-ui/Tabs'
 import FlatButton from 'material-ui/FlatButton'
 import Sort from 'material-ui/svg-icons/content/sort'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
@@ -44,6 +43,7 @@ import * as TAB from '../../../constants/manufactureShipmentTab'
 import ShipmentConfirmDialog from '../../../components/Manufacture/ShipmentConfirmDialog'
 import t from '../../../helpers/translate'
 import {TYPE_PRODUCT, TYPE_RAW} from '../index'
+import {CustomTabs} from '../../CustomTabs'
 
 const ZERO = 0
 export const MANUFACTURES_FILTERS_KEY = {
@@ -161,33 +161,16 @@ const enhance = compose(
             position: 'relative',
             '& > div > div': {
                 '&:nth-child(1)': {
-                    paddingRight: 'calc(100% - 550px)'
-                },
-                '&:nth-child(2)': {
-                    paddingRight: 'calc(100% - 550px)'
+                    paddingRight: 'calc(100% - 620px)'
                 }
             }
         },
         tabWrapper: {
             borderTop: '1px #efefef solid',
-            marginTop: '-1px',
-            '& > div > div': {
-                maxHeight: 'calc(100vh - 262px)',
-                overflowY: 'auto'
-            }
+            marginTop: '-1px'
         },
         tab: {
-            textTransform: 'none !important',
-            '& > div': {
-                flexDirection: 'row !important',
-                height: '48px !important',
-                '& svg': {
-                    marginBottom: '0 !important',
-                    marginRight: '5px',
-                    width: '22px !important',
-                    height: '22px !important'
-                }
-            }
+            textTransform: 'none !important'
         },
         flexReview: {
             '& > div': {
@@ -317,7 +300,7 @@ const enhance = compose(
             position: 'absolute',
             display: 'flex',
             height: '48px',
-            top: '-48px',
+            top: '0',
             right: '30px'
         },
         emptyQuery: {
@@ -418,13 +401,6 @@ const ManufactureShipment = enhance((props) => {
     const productsLoading = _.get(detailData, 'productsLoading')
     const materialsLoading = _.get(detailData, 'materialsLoading')
     const inventoryLoading = _.get(detailData, 'inventoryLoading')
-    const tabStyles = {
-        ink: {
-            background: '#12aaeb',
-            margin: '0',
-            height: '2px'
-        }
-    }
 
     const handleOpenDelete = (item, type, id) => {
         setDeleteItem(item)
@@ -688,6 +664,29 @@ const ManufactureShipment = enhance((props) => {
             .length
     }
     const filterCount = getFilterCount(MANUFACTURES_FILTERS_KEY)
+
+    const tabular = [
+        {
+            name: t('Обзор'),
+            key: TAB.TAB_SORTED,
+            icon: <Sort/>
+        },
+        {
+            name: t('Записи'),
+            key: TAB.TAB_LOGS,
+            icon: <Log/>
+        },
+        {
+            name: t('Смены'),
+            key: TAB.TAB_SHIFT,
+            icon: <Shift/>
+        },
+        {
+            name: t('Инвентаризация'),
+            key: TAB.TAB_INVENTORY,
+            icon: <InventoryIcon/>
+        }
+    ]
     return (
         <div>
             <div className={classes.buttons}>
@@ -744,17 +743,14 @@ const ManufactureShipment = enhance((props) => {
                     initialValues={filterDialog.initialValues}/>
                 <div className={classes.details}>
                     <div className={classes.rightSide}>
-                        <Tabs
+                        <CustomTabs
+                            tabs={tabular}
                             value={tab}
-                            contentContainerClassName={classes.tabWrapper}
-                            inkBarStyle={tabStyles.ink}
-                            onChange={(value) => tabData.handleTabChange(value)}>
-                            <Tab
-                                label={t('Обзор')}
+                            mainClassName={classes.tabWrapper}
+                            onChangeTab={(value) => tabData.handleTabChange(value)}>
+                            <div
                                 className={classes.tab}
-                                disableTouchRipple={true}
-                                icon={<Sort/>}
-                                value={TAB.TAB_SORTED}>
+                                key={TAB.TAB_SORTED}>
                                 <div className={classes.flexReview}>
                                     <div className={classes.productsBlock}>
                                         <Row className={classes.flexTitle}>
@@ -789,14 +785,10 @@ const ManufactureShipment = enhance((props) => {
                                                 </div>}
                                     </div>
                                 </div>
-                            </Tab>
-
-                            <Tab
-                                label={t('Записи')}
+                            </div>
+                            <div
                                 className={classes.tab}
-                                disableTouchRipple={true}
-                                icon={<Log/>}
-                                value={TAB.TAB_LOGS}>
+                                key={TAB.TAB_LOGS}>
                                 {!_.isEmpty(logs)
                                     ? <div className={classes.productsBlock}>
                                         <div className={classes.pagination}>
@@ -822,14 +814,10 @@ const ManufactureShipment = enhance((props) => {
                                         : <div className={classes.emptyQuery}>
                                             <div>{t('Нет записей в данной смене')}</div>
                                         </div>}
-                            </Tab>
-
-                            <Tab
-                                label={t('Смены')}
+                            </div>
+                            <div
                                 className={classes.tab}
-                                disableTouchRipple={true}
-                                icon={<Shift/>}
-                                value={TAB.TAB_SHIFT}>
+                                key={TAB.TAB_SHIFT}>
                                 {!_.isEmpty(shifts)
                                     ? <div className={classes.productsBlock}>
                                         <div className={classes.pagination}>
@@ -855,14 +843,10 @@ const ManufactureShipment = enhance((props) => {
                                         : <div className={classes.emptyQuery}>
                                             <div>{t('В этом периоде не найдено смен')}</div>
                                         </div>}
-                            </Tab>
-
-                            <Tab
-                                label={t('Инвентаризация')}
+                            </div>
+                            <div
                                 className={classes.tab}
-                                disableTouchRipple={true}
-                                icon={<InventoryIcon/>}
-                                value={TAB.TAB_INVENTORY}>
+                                key={TAB.TAB_INVENTORY}>
                                 {!_.isEmpty(_.get(detailData, 'inventory'))
                                     ? <div className={classes.productsBlock}>
                                         <div className={classes.pagination}>
@@ -887,8 +871,8 @@ const ManufactureShipment = enhance((props) => {
                                         : <div className={classes.emptyQuery}>
                                             <div>{t('В этом периоде не найдено смен')}</div>
                                         </div>}
-                            </Tab>
-                        </Tabs>
+                            </div>
+                        </CustomTabs>
                     </div>
                 </div>
             </Paper>
