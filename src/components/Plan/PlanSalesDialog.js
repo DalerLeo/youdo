@@ -207,7 +207,7 @@ const enhance = compose(
         },
         shadowButton: {
             boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px'
-        },
+        }
     }),
     reduxForm({
         form: 'PlanSalesForm',
@@ -226,7 +226,6 @@ const inputStyle = {
     }
 }
 
-
 const PlanSalesDialog = enhance((props) => {
     const {
         open,
@@ -241,7 +240,9 @@ const PlanSalesDialog = enhance((props) => {
     } = props
 
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
-    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+    const onSubmit = handleSubmit(() => props.onSubmit()
+        .catch(validate)
+    )
 
     const toggle = filter.getParam('toggle') || ORGANIZATION
     const parent = filter.getParam('parent') && true
@@ -251,7 +252,6 @@ const PlanSalesDialog = enhance((props) => {
     const isOrganization = toggle === ORGANIZATION
     const isProductType = toggle === PRODUCT_TYPE
 
-    console.log(productTypeList, 'sasd')
     return (
         <Dialog
             modal={true}
@@ -273,7 +273,7 @@ const PlanSalesDialog = enhance((props) => {
                         <Loader size={0.75}/>
                     </div>
                     <div className={classes.toggleWrapper} style={parent ? {width: 'auto'} : {width: '100%'}}>
-                        <ToolTip position="left" text={t('Показать по товарам')}>
+                        <ToolTip position="left" text={t('Показать по организации')}>
                             <FlatButton
                                 icon={<Product color={whiteColor}/>}
                                 className={isOrganization ? classes.shadowButton : ''}
@@ -281,7 +281,7 @@ const PlanSalesDialog = enhance((props) => {
                                     updateCurrentParent(null)
                                     hashHistory.push(filter.createURL({toggle: ORGANIZATION, parent: null}))
                                 }}
-                                backgroundColor={primaryColor}
+                                backgroundColor={isOrganization ? primaryColor : disabledColor}
                                 rippleColor={whiteColor}
                                 hoverColor={isOrganization ? primaryColor : disabledColor}/>
                         </ToolTip>
@@ -320,7 +320,7 @@ const PlanSalesDialog = enhance((props) => {
                             })}
                         </div>
                         : <div className={classes.inContent} style={{minHeight: '120px'}}>
-                            {_.map(_.get(productTypeList, 'results'), (item) => {
+                            {_.map(productTypeList, (item) => {
                                 const id = _.get(item, 'id')
                                 const name = _.get(item, 'name')
                                 return (

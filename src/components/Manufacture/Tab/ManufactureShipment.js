@@ -692,6 +692,7 @@ const ManufactureShipment = enhance((props) => {
         <div>
             <div className={classes.buttons}>
                 <Link
+                    target={'_blank'}
                     to={{
                         pathname: ROUTES.INVENTORY_LIST_URL,
                         query: {[INVENTORY_INVENTORY_DIALOG_OPEN]: true, 'pdStock': stock}
