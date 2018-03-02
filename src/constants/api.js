@@ -499,6 +499,8 @@ export const PLAN_AGENTS = 'market/agent_plans/'
 export const PLAN_AGENTS_ITEM = 'market/agent_plans/%d/'
 export const PLAN_AGENTS_ITEM_STATS = `${ACTIVITY}/sum/`
 export const PLAN_COMBINATION = `${PLAN}/combination/`
+export const PLAN_MONTHLY_PRODUCT_TYPE = 'sales/monthly_plan/crete_plan'
+export const PLAN_MONTHLY_PRODUCT_TYPE_CREATE = `${PLAN_MONTHLY_PRODUCT_TYPE}/`
 
 export const POSITION = 'main/position'
 export const POSITION_COURSE_CREATE = 'finance/currency_rate/'

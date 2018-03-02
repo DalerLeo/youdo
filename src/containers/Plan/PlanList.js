@@ -31,6 +31,7 @@ import {
     planZonesListFetchAction,
     planZoneItemFetchAction,
     planMonthlySetAction,
+    planProductTypeMonthlySetAction,
     planMonthlyItemAction,
     agentPlansStatsAction,
     planZonesItemFetchAction,
@@ -40,8 +41,10 @@ import {
     agentPlansAction
 } from '../../actions/plan'
 import {divisionListFetchAction} from '../../actions/division'
+import {productTypeListFetchAction} from '../../actions/productType'
 import {openSnackbarAction} from '../../actions/snackbar'
 import t from '../../helpers/translate'
+import {openErrorAction} from '../../actions/error'
 
 const ZERO = 0
 const ONE = 1
@@ -68,6 +71,8 @@ const enhance = compose(
         const stat = _.get(state, ['plan', 'statistics', 'data'])
         const statLoading = _.get(state, ['plan', 'statistics', 'loading'])
         const plan = _.get(state, ['plan', 'agentPlan', 'data'])
+        const productType = _.get(state, ['productType', 'list', 'data'])
+        const productTypeLoading = _.get(state, ['productType', 'list', 'loading'])
         const planLoading = _.get(state, ['plan', 'agentPlan', 'loading'])
         const createPlanLoading = _.get(state, ['plan', 'createPlan', 'loading'])
         const updatePlanLoading = _.get(state, ['plan', 'update', 'loading'])
@@ -87,6 +92,7 @@ const enhance = compose(
         const combinationLoading = _.get(state, ['plan', 'combination', 'loading'])
         const defaultPriority = _.get(state, ['form', 'PlanCreateForm', 'values', 'priority', 'value'])
         const filter = filterHelper(usersList, pathname, query)
+        const filterProductType = filterHelper(productType, pathname, query)
         const selectedWeekDay = moment(selectedCreateDate + '-' + selectedDay).format('e')
         const agentPlansData = _.get(state, ['plan', 'agentPlansItem', 'data'])
         const agentPlansLoading = _.get(state, ['plan', 'agentPlansItem', 'loading'])
@@ -107,6 +113,8 @@ const enhance = compose(
             zonesLoading,
             divisions,
             divisionsLoading,
+            productTypeLoading,
+            productType,
             monthlyPlanItem,
             monthlyPlanItemLoading,
             zoneDetail,
@@ -135,7 +143,8 @@ const enhance = compose(
             comboPlanId,
             agentStats,
             agentStatsLoading,
-            filter
+            filter,
+            filterProductType
         }
     }),
 
@@ -160,12 +169,17 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         const prevSalesDialog = toBoolean(_.get(props, ['query', OPEN_PLAN_SALES]))
         const nextSalesDialog = toBoolean(_.get(nextProps, ['query', OPEN_PLAN_SALES]))
+        const prevToggle = _.get(props, ['location', 'query', 'toggle'])
+        const nextToggle = _.get(nextProps, ['location', 'query', 'toggle'])
 
-        return prevSalesDialog !== nextSalesDialog && nextSalesDialog === true
+        return (prevSalesDialog !== nextSalesDialog || prevToggle !== nextToggle) && nextSalesDialog === true
     }, ({dispatch, filter, location}) => {
         const openSalesDialog = toBoolean(_.get(location, ['query', OPEN_PLAN_SALES]))
-        if (openSalesDialog) {
+        const toggle = _.get(location, ['query', 'toggle'])
+        if (openSalesDialog && toggle !== 'productType') {
             dispatch(divisionListFetchAction(filter))
+        } else {
+            dispatch(productTypeListFetchAction(filter))
         }
     }),
 
@@ -393,7 +407,10 @@ const enhance = compose(
 
         handleUpdateAgentPlan: props => (plan, agent, market) => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[UPDATE_PLAN]: plan, [AGENT]: agent, [MARKET]: market})})
+            hashHistory.push({
+                pathname,
+                query: filter.getParams({[UPDATE_PLAN]: plan, [AGENT]: agent, [MARKET]: market})
+            })
         },
 
         handleSubmitUpdateAgentPlan: props => () => {
@@ -421,15 +438,15 @@ const enhance = compose(
             return ((comboPlanId && comboChosenAgent)
                 ? dispatch(planComboAction(createForm, filter.getParams(), comboPlanId))
                 : dispatch(planCreateAction(createForm, filter.getParams(), comboChosenAgent)))
-                    .then(() => {
-                        return dispatch(openSnackbarAction({message: t('План успешно изменен')}))
-                    })
-                    .then(() => {
-                        dispatch(change('PlanCreateForm', 'weekday', null))
-                        hashHistory.push({pathname, query: filter.getParams({[UPDATE_PLAN]: false, [MARKET]: ZERO})})
-                        dispatch(planZonesListFetchAction())
-                        dispatch(planZonesItemFetchAction(zone, date))
-                    })
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: t('План успешно изменен')}))
+                })
+                .then(() => {
+                    dispatch(change('PlanCreateForm', 'weekday', null))
+                    hashHistory.push({pathname, query: filter.getParams({[UPDATE_PLAN]: false, [MARKET]: ZERO})})
+                    dispatch(planZonesListFetchAction())
+                    dispatch(planZonesItemFetchAction(zone, date))
+                })
         },
 
         handleDeleteAgentPlan: props => () => {
@@ -463,18 +480,47 @@ const enhance = compose(
         },
 
         handleSubmitPlanSales: props => () => {
-            const {location: {pathname}, dispatch, monthlyPlanForm, filter, params} = props
+            const {location, dispatch, monthlyPlanForm, filter, params} = props
             const user = _.toInteger(_.get(params, 'agentId'))
+            const toggle = _.get(location, ['query', 'toggle'])
 
-            return dispatch(planMonthlySetAction(monthlyPlanForm, filter, user))
+            if (toggle !== 'productType') {
+                return dispatch(planMonthlySetAction(monthlyPlanForm, filter, user, toggle))
+                    .then(() => {
+                        return dispatch(openSnackbarAction({message: t('Успешно обновлено')}))
+                    })
+                    .then(() => {
+                        hashHistory.push({
+                            pathname: _.get(location, 'pathname'),
+                            query: filter.getParams({[OPEN_PLAN_SALES]: false})
+                        })
+                        dispatch(planAgentsListFetchAction(filter))
+                        dispatch(planItemFetchAction(user))
+                        dispatch(planMonthlyItemAction(filter, user))
+                    })
+                    .catch((error) => {
+                        dispatch(openErrorAction({
+                            message: error
+                        }))
+                    })
+            }
+            return dispatch(planProductTypeMonthlySetAction(monthlyPlanForm, filter, user, toggle))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: t('Успешно обновлено')}))
                 })
                 .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[OPEN_PLAN_SALES]: false})})
+                    hashHistory.push({
+                        pathname: _.get(location, 'pathname'),
+                        query: filter.getParams({[OPEN_PLAN_SALES]: false})
+                    })
                     dispatch(planAgentsListFetchAction(filter))
                     dispatch(planItemFetchAction(user))
                     dispatch(planMonthlyItemAction(filter, user))
+                })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
                 })
         },
 
@@ -531,6 +577,7 @@ const enhance = compose(
 const PlanList = enhance((props) => {
     const {
         filter,
+        filterProduct,
         usersList,
         usersListLoading,
         location,
@@ -542,6 +589,8 @@ const PlanList = enhance((props) => {
         detailLoading,
         divisions,
         divisionsLoading,
+        productType,
+        productTypeLoading,
         zones,
         zonesLoading,
         zoneDetail,
@@ -674,17 +723,26 @@ const PlanList = enhance((props) => {
     const planSalesDialog = {
         initialValues: (() => {
             const divisionsObject = {}
+            const productTypeObject = {}
             _.map(monthlyPlanItem, (item) => {
                 divisionsObject['_' + _.get(item, ['division', 'id'])] = {
                     amount: String(numberFormat(_.get(item, 'amount')))
                 }
             })
+            _.map(productType, (item) => {
+                productTypeObject['_' + _.get(item, ['id'])] = {
+                    amount: String(numberFormat(_.get(item, 'amount')))
+                }
+            })
             return {
-                divisions: divisionsObject
+                divisions: divisionsObject,
+                productTypeObject
             }
         })(),
         divisions,
         divisionsLoading,
+        productType,
+        productTypeLoading,
         openPlanSales,
         monthlyPlanCreateLoading,
         handleOpenPlanSales: props.handleOpenPlanSales,
@@ -741,6 +799,7 @@ const PlanList = enhance((props) => {
         <Layout {...layout}>
             <PlanWrapper
                 filter={filter}
+                filterProduct={filterProduct}
                 usersList={listData}
                 statData={statData}
                 addPlan={addPlan}
