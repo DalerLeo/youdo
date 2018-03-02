@@ -65,9 +65,8 @@ const enhance = compose(
             position: 'relative',
             padding: '0 !important',
             overflowX: 'hidden',
-            height: '100%',
             minHeight: '700px',
-            maxHeight: 'inherit !important',
+            maxHeight: 'unset !important',
             marginBottom: '64px'
         },
         titleContent: {
@@ -94,7 +93,7 @@ const enhance = compose(
         bodyContent: {
             color: '#333',
             width: '100%',
-            height: 'calc(100% - 59px)'
+            height: 'auto'
         },
         form: {
             position: 'relative',
