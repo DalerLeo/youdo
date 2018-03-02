@@ -8,7 +8,7 @@ import FlatButton from 'material-ui/FlatButton'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import {hashHistory} from 'react-router'
-import Product from 'material-ui/svg-icons/device/widgets'
+import Division from 'material-ui/svg-icons/communication/business'
 import ProductType from 'material-ui/svg-icons/action/settings-input-component'
 import Loader from '../Loader'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
@@ -27,6 +27,7 @@ const validate = (data) => {
         _error: nonFieldErrors
     })
 }
+
 const enhance = compose(
     injectSheet({
         loader: {
@@ -67,6 +68,7 @@ const enhance = compose(
         },
         inContent: {
             overflow: 'auto',
+            position: 'relative',
             padding: '0 30px',
             color: '#333'
         },
@@ -180,33 +182,51 @@ const enhance = compose(
             fontSize: '13px !important',
             margin: '0 !important'
         },
-        toggleWrapper: {
+        toggleSwitch: {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'flex-end',
-            padding: '10px 30px',
-            borderTop: '1px #efefef solid',
+            padding: '0 30px',
+            height: '50px',
+            borderBottom: '1px #efefef solid'
+        },
+        toggleWrapper: {
+            display: 'flex',
+            borderRadius: '20px',
+            background: '#dadada',
+            position: 'relative',
             '& > div': {
                 display: 'flex',
-                background: 'transparent !important'
+                zIndex: '2'
             },
             '& button': {
-                height: '32px !important',
+                height: '36px !important',
+                width: '36px !important',
                 lineHeight: '32px !important',
-                minWidth: '66px !important',
+                minWidth: 'unset !important',
+                borderRadius: '50% !important',
                 '& > div': {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
+                    height: '100%',
                     '& svg': {
-                        width: '20px !important',
-                        height: '20px !important'
+                        width: '18px !important',
+                        height: '18px !important'
                     }
                 }
             }
         },
-        shadowButton: {
-            boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px'
+        customRipple: {
+            background: '#12aaeb !important',
+            borderRadius: '50%',
+            position: 'absolute',
+            top: '0',
+            bottom: '0',
+            width: '36px',
+            height: '36px',
+            zIndex: '1 !important',
+            transition: 'all 150ms ease-out'
         }
     }),
     reduxForm({
@@ -229,7 +249,6 @@ const inputStyle = {
 const PlanSalesDialog = enhance((props) => {
     const {
         open,
-        loading,
         handleSubmit,
         onClose,
         classes,
@@ -245,12 +264,8 @@ const PlanSalesDialog = enhance((props) => {
     )
 
     const toggle = filter.getParam('toggle') || ORGANIZATION
-    const parent = filter.getParam('parent') && true
-    const primaryColor = '#12aaeb'
-    const disabledColor = '#dadada'
     const whiteColor = '#fff'
     const isOrganization = toggle === ORGANIZATION
-    const isProductType = toggle === PRODUCT_TYPE
 
     return (
         <Dialog
@@ -258,7 +273,7 @@ const PlanSalesDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '300px'} : {width: '400px'}}
+            contentStyle={{width: '400px'}}
             bodyStyle={{minHeight: '100px !important'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
@@ -269,37 +284,39 @@ const PlanSalesDialog = enhance((props) => {
             </div>
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit} className={classes.form} style={{minHeight: 'auto'}}>
-                    <div className={classes.loader}>
-                        <Loader size={0.75}/>
+                    <div className={classes.toggleSwitch}>
+                        <div className={classes.toggleWrapper}>
+                            <ToolTip position="left" text={t('Показать по организации')}>
+                                <FlatButton
+                                    icon={<Division color={whiteColor}/>}
+                                    onTouchTap={() => {
+                                        updateCurrentParent(null)
+                                        hashHistory.push(filter.createURL({toggle: ORGANIZATION}))
+                                    }}
+                                    backgroundColor={'transparent'}
+                                    rippleColor={'transparent'}
+                                    hoverColor={'transparent'}/>
+                            </ToolTip>
+                            <ToolTip position="left" text={t('Показать по типам товаров')}>
+                                <FlatButton
+                                    icon={<ProductType color={whiteColor}/>}
+                                    onTouchTap={() => {
+                                        updateCurrentParent(null)
+                                        hashHistory.push(filter.createURL({toggle: PRODUCT_TYPE}))
+                                    }}
+                                    backgroundColor={'transparent'}
+                                    rippleColor={'transparent'}
+                                    hoverColor={'transparent'}/>
+                            </ToolTip>
+                            <div className={classes.customRipple} style={isOrganization ? {left: '0'} : {left: '36px'}}/>
+                        </div>
                     </div>
-                    <div className={classes.toggleWrapper} style={parent ? {width: 'auto'} : {width: '100%'}}>
-                        <ToolTip position="left" text={t('Показать по организации')}>
-                            <FlatButton
-                                icon={<Product color={whiteColor}/>}
-                                className={isOrganization ? classes.shadowButton : ''}
-                                onTouchTap={() => {
-                                    updateCurrentParent(null)
-                                    hashHistory.push(filter.createURL({toggle: ORGANIZATION, parent: null}))
-                                }}
-                                backgroundColor={isOrganization ? primaryColor : disabledColor}
-                                rippleColor={whiteColor}
-                                hoverColor={isOrganization ? primaryColor : disabledColor}/>
-                        </ToolTip>
-                        <ToolTip position="left" text={t('Показать по типам товаров')}>
-                            <FlatButton
-                                icon={<ProductType color={whiteColor}/>}
-                                className={isProductType ? classes.shadowButton : ''}
-                                onTouchTap={() => {
-                                    updateCurrentParent(null)
-                                    hashHistory.push(filter.createURL({toggle: PRODUCT_TYPE, parent: null}))
-                                }}
-                                backgroundColor={isProductType ? primaryColor : disabledColor}
-                                rippleColor={whiteColor}
-                                hoverColor={isProductType ? primaryColor : disabledColor}/>
-                        </ToolTip>
-                    </div>
-                    {toggle === ORGANIZATION ? <div className={classes.inContent} style={{minHeight: '120px'}}>
-                            {_.map(divisions, (item) => {
+                    <div className={classes.inContent} style={{minHeight: '120px'}}>
+                        <div className={classes.loader}>
+                            <Loader size={0.75}/>
+                        </div>
+                        {toggle === ORGANIZATION
+                            ? _.map(divisions, (item) => {
                                 const id = _.get(item, 'id')
                                 const name = _.get(item, 'name')
                                 return (
@@ -317,10 +334,8 @@ const PlanSalesDialog = enhance((props) => {
                                         <div>{primaryCurrency}</div>
                                     </div>
                                 )
-                            })}
-                        </div>
-                        : <div className={classes.inContent} style={{minHeight: '120px'}}>
-                            {_.map(productTypeList, (item) => {
+                            })
+                            : _.map(productTypeList, (item) => {
                                 const id = _.get(item, 'id')
                                 const name = _.get(item, 'name')
                                 return (
@@ -339,7 +354,7 @@ const PlanSalesDialog = enhance((props) => {
                                     </div>
                                 )
                             })}
-                        </div>}
+                    </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
                             label={t('Сохранить')}
