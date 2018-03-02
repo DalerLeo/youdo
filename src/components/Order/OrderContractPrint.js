@@ -125,6 +125,8 @@ const OrderSalesPrint = enhance((props) => {
     const market = _.get(data, 'market')
     const okad = _.get(marketData, 'okad')
     const bankAddress = _.get(marketData, 'bankAddress')
+    const phones = _.head(_.get(marketData, 'phones'))
+    const phone = _.get(phones, 'phone')
     const checkAccount = _.get(marketData, 'checkingAccount')
     const inn = _.get(marketData, 'inn')
     const mfo = _.get(marketData, 'mfo')
@@ -311,7 +313,7 @@ const OrderSalesPrint = enhance((props) => {
                             </tr>
                             <tr>
                                 <td>Тел.: </td>
-                                <td>Тел.: </td>
+                                <td>Тел.: {phone}</td>
                             </tr>
                             <tr>
                                 <td height={'29px'}> </td>

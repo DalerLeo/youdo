@@ -156,7 +156,8 @@ const OrderPrint = enhance((props) => {
                 const marketName = _.get(item, ['market', 'name']) || 'Не указано'
                 const marketAddress = _.get(item, ['market', 'address']) || 'Не указан'
                 const marketGuide = _.get(item, ['market', 'guide']) || 'Не указан'
-                const marketPhone = _.get(item, ['market', 'phone']) || 'Не указан'
+                const phones = _.head(_.get(item, ['market', 'phones']))
+                const marketPhone = _.get(phones, 'phone') || 'Не указан'
                 const user = _.get(item, ['createdBy', 'firstName']) + ' ' + _.get(item, ['createdBy', 'secondName'])
                 const createdDate = dateTimeFormat(_.get(item, 'createdDate'))
                 const stock = _.get(item, ['stock', 'name'])
