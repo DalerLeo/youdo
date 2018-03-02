@@ -260,13 +260,15 @@ const enhance = compose(
         }
     }),
 
+    // AGENTS LIST (LEFT SIDE)
     withPropsOnChange((props, nextProps) => {
         const prevTab = _.get(props, ['query', 'group'])
         const nextTab = _.get(nextProps, ['query', 'group'])
         const prevSearch = _.get(props, ['query', 'search'])
         const nextSearch = _.get(nextProps, ['query', 'search'])
         const except = {
-            openPlanSales: null
+            openPlanSales: null,
+            toggle: null
         }
 
         return (props.usersList && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)) ||
@@ -276,6 +278,7 @@ const enhance = compose(
         dispatch(planAgentsListFetchAction(filter))
     }),
 
+    // AGENT PLAN DETAILS
     withPropsOnChange((props, nextProps) => {
         const agentId = _.get(nextProps, ['params', 'agentId'])
         const date = _.get(nextProps, ['query', 'date'])
