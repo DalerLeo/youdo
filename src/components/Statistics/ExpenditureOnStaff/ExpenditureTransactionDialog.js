@@ -5,6 +5,7 @@ import {Row, Col} from 'react-flexbox-grid'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import {reduxForm} from 'redux-form'
+import {hashHistory} from 'react-router'
 import Dialog from 'material-ui/Dialog'
 import IconButton from 'material-ui/IconButton'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
@@ -14,8 +15,9 @@ import getConfig from '../../../helpers/getConfig'
 import dateFormat from '../../../helpers/dateFormat'
 import numberFormat from '../../../helpers/numberFormat'
 import GridListNavPagination from '../../../components/GridList/GridListNavPagination'
-import {TransactionsFormat} from '../../Transaction'
+import {TransactionsFormat, TRANSACTION_STAFF_EXPENSE_DIALOG} from '../../Transaction'
 import t from '../../../helpers/translate'
+import * as ROUTES from '../../../constants/routes'
 
 const enhance = compose(
   injectSheet({
@@ -102,6 +104,9 @@ const enhance = compose(
               },
               '&:last-child:after': {
                   display: 'none'
+              },
+              '&:hover': {
+                  backgroundColor: '#efefef'
               }
           }
       },
@@ -146,6 +151,7 @@ const ExpenditureTransactionDialog = enhance((props) => {
         const customRate = _.get(item, ['transaction', 'customRate']) ? _.toInteger(_.get(item, ['transaction', 'customRate'])) : _.toNumber(amount / internalAmount)
         const comment = _.get(item, 'comment')
         const cashbox = isOutcome ? _.get(item, ['cashbox', 'name']) : _.get(item, ['transaction', 'cashbox', 'name'])
+        const transactionId = _.get(item, ['transaction', 'id'])
         const order = _.get(item, 'order')
         const supply = _.get(item, 'supply')
         const supplyExpenseId = _.get(item, 'supplyExpenseId')
@@ -154,7 +160,17 @@ const ExpenditureTransactionDialog = enhance((props) => {
         const client = _.get(item, ['client'])
         const expenseCategory = _.get(item, ['expenseCategory'])
         return (
-      <Row key={id} className="dottedList">
+      <Row key={id}
+           className="dottedList"
+           style={{cursor: isOutcome ? 'unset' : 'pointer'}}
+           onClick={() => {
+               return isOutcome
+                   ? null
+                   : hashHistory.push({
+                       pathname: ROUTES.TRANSACTION_LIST_URL,
+                       query: {[TRANSACTION_STAFF_EXPENSE_DIALOG]: transactionId}
+                   })
+           }}>
           <Col xs={1}>{id}</Col>
           <Col xs={2}>{cashbox}</Col>
           <Col xs={2}>{date}</Col>
