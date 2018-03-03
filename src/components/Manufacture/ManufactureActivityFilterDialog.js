@@ -9,7 +9,6 @@ import Paper from 'material-ui/Paper'
 import Close from 'material-ui/svg-icons/action/highlight-off'
 import t from '../../helpers/translate'
 
-
 const enhance = compose(
     injectSheet({
         filterWrapper: {

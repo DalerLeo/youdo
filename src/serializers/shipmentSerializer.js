@@ -69,7 +69,7 @@ export const productsCreate = (data) => {
         return {
             product: _.get(item, ['product', 'value', 'id']),
             amount: numberWithoutSpaces(_.get(item, 'amount')),
-            defect: numberWithoutSpaces(_.get(item, 'defect'))
+            defected: numberWithoutSpaces(_.get(item, 'defect'))
         }
     })
     return {

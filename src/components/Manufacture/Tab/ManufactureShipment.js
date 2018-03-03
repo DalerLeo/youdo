@@ -83,7 +83,6 @@ const enhance = compose(
         },
         shipmentContent: {
             position: 'relative',
-            overflow: 'hidden',
             '& header': {
                 display: 'flex',
                 justifyContent: 'space-between',
@@ -462,7 +461,6 @@ const ManufactureShipment = enhance((props) => {
     }
     const handleFilterByRotation = (staff, shift) => {
         hashHistory.push(filter.createURL({staff, shift}))
-
     }
     const groupedProducts = _.groupBy(_.get(detailData, 'products'), (item) => item.product.id)
     const products = _.map(groupedProducts, (item, index) => {
@@ -785,11 +783,10 @@ const ManufactureShipment = enhance((props) => {
 
                     {filtered &&
                     <IconButton
-                        tooltipPosition="bottom-left"
                         iconStyle={iconStyles.clearIcon}
                         style={iconStyles.clearButton}
-                        onTouchTap={() => filterDialog.handleClearFilterDialog()}
-                        tooltip={t('Очистить')}><CloseIcon />
+                        onTouchTap={() => filterDialog.handleClearFilterDialog()}>
+                            <CloseIcon />
                     </IconButton>}
                 </header>
                 <ManufactureActivityFilterDialog
