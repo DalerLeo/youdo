@@ -18,6 +18,8 @@ const MANUFACTURE_CHANGE = 'openChangeManufacture'
 const OPEN_ADD_PRODUCT_MATERIAL_DIALOG = 'openProductMaterialDialog'
 const TYPE_PRODUCT = 'product'
 const TYPE_RAW = 'raw'
+const PRODUCT = 'return'
+const MATERIAL = 'material'
 
 export {
     OPEN_FILTER,
@@ -34,6 +36,8 @@ export {
     MANUFACTURE_CHANGE,
     TYPE_PRODUCT,
     TYPE_RAW,
+    PRODUCT,
+    MATERIAL,
     ManufactureProductWrapper,
     ManufacturePersonWrapper,
     ManufactureEquipmentWrapper,

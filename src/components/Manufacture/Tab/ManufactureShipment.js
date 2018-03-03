@@ -1,7 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
 import {Row, Col} from 'react-flexbox-grid'
-import sprintf from 'sprintf'
 import injectSheet from 'react-jss'
 import {hashHistory, Link} from 'react-router'
 import {compose, withState} from 'recompose'
@@ -37,7 +36,6 @@ import NotFound from '../../Images/not-found.png'
 import * as ROUTES from '../../../constants/routes'
 import {INVENTORY_INVENTORY_DIALOG_OPEN} from '../../Inventory'
 import dateTimeFormat from '../../../helpers/dateTimeFormat'
-import dateFormat from '../../../helpers/dateFormat'
 import numberFormat from '../../../helpers/numberFormat'
 import {ShiftMultiSearchField, TextField, normalizeNumber, ManufactureLogTypeSearchField, UsersSearchField} from '../../ReduxForm'
 import * as TAB from '../../../constants/manufactureShipmentTab'
@@ -47,7 +45,7 @@ import t from '../../../helpers/translate'
 import toBoolean from '../../../helpers/toBoolean'
 import {TYPE_PRODUCT, TYPE_RAW} from '../index'
 import {CustomTabs} from '../../CustomTabs'
-
+import ShipmentInventory from './ShipmentInventory'
 const ZERO = 0
 export const MANUFACTURES_FILTERS_KEY = {
     SHIFT: 'shift',
@@ -454,11 +452,6 @@ const ManufactureShipment = enhance((props) => {
         setDeleteItem(null)
         return null
     }
-    const handleClickInventoryItem = (id) => {
-        hashHistory.push({
-            pathname: sprintf(ROUTES.INVENTORY_ITEM_PATH, id)
-        })
-    }
     const handleFilterByRotation = (staff, shift) => {
         hashHistory.push(filter.createURL({staff, shift}))
     }
@@ -635,23 +628,6 @@ const ManufactureShipment = enhance((props) => {
                         </ToolTip>
                     </div>
                 </Col>
-            </Row>
-        )
-    })
-    const inventories = _.map(_.get(detailData, 'inventory'), (item) => {
-        const id = _.get(item, 'id')
-        const stockInventory = _.get(item, ['stock', 'name'])
-        const createdBy = _.get(item, 'createdBy')
-            ? _.get(item, ['createdBy', 'firstName']) + ' ' + _.get(item, ['createdBy', 'secondName'])
-            : 'Не указано'
-        const createdDate = _.get(item, 'createdDate') ? dateFormat(_.get(item, 'createdDate')) : t('Не закончилась')
-        const comment = _.get(item, 'comment') || 'Без комментариев'
-        return (
-            <Row key={id} className={classes.inventory} onTouchTap={() => { handleClickInventoryItem(id) }}>
-                <Col xs={3}>{stockInventory}</Col>
-                <Col xs={3}>{createdBy}</Col>
-                <Col xs={3}>{createdDate}</Col>
-                <Col xs={3}>{comment}</Col>
             </Row>
         )
     })
@@ -895,34 +871,12 @@ const ManufactureShipment = enhance((props) => {
                                             <div>{t('В этом периоде не найдено смен')}</div>
                                         </div>}
                             </div>
-                            <div
-                                className={classes.tab}
-                                key={TAB.TAB_INVENTORY}>
-                                {!_.isEmpty(_.get(detailData, 'inventory'))
-                                    ? <div className={classes.productsBlock}>
-                                        <div className={classes.pagination}>
-                                            <Pagination filter={filter}/>
-                                        </div>
-                                        <Row className={classes.flexTitleShift}>
-                                            <Col xs={3}><h4>{t('Склад')}</h4></Col>
-                                            <Col xs={3}><h4>{t('Создал')}</h4></Col>
-                                            <Col xs={3}><h4>{t('Дата создания')}</h4></Col>
-                                            <Col xs={3}><h4>{t('Комментарий')}</h4></Col>
-                                        </Row>
-                                        {inventoryLoading
-                                            ? <div className={classes.loader}>
-                                                <Loader size={0.75}/>
-                                            </div>
-                                            : inventories}
-                                    </div>
-                                    : inventoryLoading
-                                        ? <div className={classes.loader}>
-                                            <Loader size={0.75}/>
-                                        </div>
-                                        : <div className={classes.emptyQuery}>
-                                            <div>{t('В этом периоде не найдено смен')}</div>
-                                        </div>}
-                            </div>
+                            <ShipmentInventory
+                                key={TAB.TAB_INVENTORY}
+                                data={_.get(detailData, 'inventory')}
+                                loading={inventoryLoading}
+                                filter={filter}
+                                classes={classes}/>
                         </CustomTabs>
                     </div>
                 </div>
