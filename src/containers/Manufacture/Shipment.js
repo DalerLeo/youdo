@@ -142,7 +142,7 @@ const enhance = compose(
     }, ({dispatch, beginDate, endDate, params, location: {query}, filter}) => {
         const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
         const tab = filter.getParam('tab')
-        const shift = _.toInteger(_.get(query, 'shift')) || null
+        const shift = _.toInteger(_.get(query, MANUFACTURES_FILTERS_KEY.SHIFT)) || null
         const dateRange = {
             beginDate,
             endDate
@@ -369,6 +369,14 @@ const enhance = compose(
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[OPEN_FILTER]: true})})
         },
+        handleClearFilterDialog: props => () => {
+            const {location: {pathname}} = props
+            const formedQuery = _.omit(props.location.query, [MANUFACTURES_FILTERS_KEY.SHIFT, MANUFACTURES_FILTERS_KEY.TYPE, MANUFACTURES_FILTERS_KEY.STAFF])
+            hashHistory.push({pathname,
+                query: {
+                    ...formedQuery
+                }})
+        },
         handleCloseFilterDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[OPEN_FILTER]: false})})
@@ -378,11 +386,13 @@ const enhance = compose(
             const tab = filter.getParam('tab')
             const shift = _.get(filterForm, ['values', 'shift']) || null
             const type = _.get(filterForm, ['values', 'type', 'value']) || null
+            const staff = _.get(filterForm, ['values', 'staff', 'value']) || null
             filter.filterBy({
                 [OPEN_FILTER]: false,
                 [TAB]: tab,
                 [MANUFACTURES_FILTERS_KEY.SHIFT]: joinArray(shift),
-                [MANUFACTURES_FILTERS_KEY.TYPE]: type
+                [MANUFACTURES_FILTERS_KEY.TYPE]: type,
+                [MANUFACTURES_FILTERS_KEY.STAFF]: staff
             })
         },
 
@@ -415,8 +425,10 @@ const enhance = compose(
         },
 
         handleSubmitAddProductMaterial: props => () => {
-            const {dispatch, location: {pathname, query}, params, filter, productMaterialForm, beginDate, endDate} = props
+            const {dispatch, location: {pathname, query}, params, filter, productMaterialForm, beginDate, endDate, filterLogs, filterInventory, filterShipment} = props
             const dialogType = _.get(query, OPEN_ADD_PRODUCT_MATERIAL_DIALOG)
+            const shift = _.get(query, MANUFACTURES_FILTERS_KEY.SHIFT)
+            const tab = filter.getParam('tab')
             const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
             const dateRange = {
                 beginDate,
@@ -430,8 +442,11 @@ const enhance = compose(
                     return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
-                    dispatch(shipmentProductsListFetchAction(dateRange, null, manufactureId))
-                    dispatch(shipmentMaterialsListFetchAction(dateRange, null, manufactureId))
+                    tab === SHIPMENT_TAB.TAB_LOGS && dispatch(shipmentLogsListFetchAction(filterLogs, manufactureId, dateRange))
+                    tab === SHIPMENT_TAB.TAB_INVENTORY && dispatch(inventoryFetchListAction(filterInventory, manufactureId, dateRange))
+                    tab === SHIPMENT_TAB.TAB_SHIFT && dispatch(shipmentListFetchAction(filterShipment, manufactureId, dateRange))
+                    if (tab === SHIPMENT_TAB.TAB_SORTED || _.isUndefined(tab)) dispatch(shipmentProductsListFetchAction(dateRange, shift, manufactureId))
+                    if (tab === SHIPMENT_TAB.TAB_SORTED || _.isUndefined(tab)) dispatch(shipmentMaterialsListFetchAction(dateRange, shift, manufactureId))
                 })
         },
 
@@ -649,6 +664,7 @@ const ManufactureShipmentList = enhance((props) => {
     const openFilterDialog = toBoolean(_.get(location, ['query', OPEN_FILTER]))
     const openProductMaterialDialog = _.get(location, ['query', OPEN_ADD_PRODUCT_MATERIAL_DIALOG])
     const shift = _.get(location, ['query', MANUFACTURES_FILTERS_KEY.SHIFT])
+    const staff = _.toInteger(_.get(location, ['query', MANUFACTURES_FILTERS_KEY.STAFF]))
     const openSendDialog = _.toInteger(_.get(location, ['query', 'openShift'])) > ZERO
 
     const tabData = {
@@ -694,12 +710,14 @@ const ManufactureShipmentList = enhance((props) => {
     const filterDialog = {
         initialValues: {
             shift: shift && splitToArray(shift),
+            staff: {value: staff},
             dateRange: {
                 startDate: moment(beginDate),
                 endDate: moment(endDate)
             }
         },
         openFilterDialog,
+        handleClearFilterDialog: props.handleClearFilterDialog,
         handleOpenFilterDialog: props.handleOpenFilterDialog,
         handleCloseFilterDialog: props.handleCloseFilterDialog,
         handleSubmitFilterDialog: props.handleSubmitFilterDialog

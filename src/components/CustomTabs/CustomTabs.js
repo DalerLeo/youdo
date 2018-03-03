@@ -2,7 +2,7 @@ import _ from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
 import injectSheet from 'react-jss'
-import {compose, withState} from 'recompose'
+import {compose} from 'recompose'
 
 const enhance = compose(
     injectSheet({
@@ -12,8 +12,10 @@ const enhance = compose(
             cursor: 'pointer'
         },
         buttonWrapper: {
+            borderBottom: '2px solid #efefef',
             display: 'flex',
             '& > div': {
+                transition: 'border 300ms cubic-bezier(0.63, 0.03, 0.57, 0.36)',
                 display: 'inherit',
                 alignItems: 'center',
                 justifyContent: 'center'
@@ -34,8 +36,7 @@ const enhance = compose(
                 width: '22px'
             }
         }
-    }),
-    withState('tabValue', 'setTabValue', null)
+    })
 )
 
 const CustomTabs = enhance((props) => {
@@ -43,17 +44,15 @@ const CustomTabs = enhance((props) => {
         classes,
         tabs,
         value,
-        tabValue,
-        setTabValue,
         onChangeTab,
         mainClassName
     } = props
 
-    const child = tabValue ? _.find(props.children, {'key': tabValue}) : _.first(props.children)
+    const child = value ? _.find(props.children, {'key': value}) : _.first(props.children)
     const tabsSize = _.size(tabs)
     const styles = {
         border: {
-            border: 'unset',
+            borderBottom: '2px solid transparent',
             width: 'calc(100%/' + tabsSize + ')'
         },
         borderActive: {
@@ -65,14 +64,12 @@ const CustomTabs = enhance((props) => {
     return (
         <div className={mainClassName}>
             <div className={classes.buttonWrapper}>
-            {_.map(tabs, (tab) => {
+            {_.map(tabs, (tab, index) => {
                 if (tab.key === value) {
                     return (
                         <div
-                            onClick={() => {
-                                setTabValue(tab.key)
-                                onChangeTab(tab.key)
-                            }}
+                            key={index}
+                            onClick={() => onChangeTab(tab.key)}
                             className={classes.button}
                             style={styles.borderActive}>
                                 <span className={classes.iconActive}>{tab.icon}</span> {tab.name}
@@ -81,10 +78,8 @@ const CustomTabs = enhance((props) => {
                 }
                 return (
                     <div
-                        onClick={() => {
-                            onChangeTab(tab.key)
-                            setTabValue(tab.key)
-                        }}
+                        key={index}
+                        onClick={() => onChangeTab(tab.key)}
                         className={classes.button}
                         style={styles.border}>
                         <span className={classes.icon}>{tab.icon}</span> {tab.name}
@@ -97,7 +92,7 @@ const CustomTabs = enhance((props) => {
     )
 })
 CustomTabs.propTypes = {
-    tabs: PropTypes.object.isRequired,
+    tabs: PropTypes.array.isRequired,
     value: PropTypes.string.isRequired,
     onChangeTab: PropTypes.func.isRequired
 }

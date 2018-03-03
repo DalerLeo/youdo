@@ -22,6 +22,7 @@ import Material from 'material-ui/svg-icons/maps/layers'
 import {Field, reduxForm, change} from 'redux-form'
 import Defected from 'material-ui/svg-icons/image/broken-image'
 import Check from 'material-ui/svg-icons/navigation/check'
+import Person from 'material-ui/svg-icons/social/person'
 import SendIcon from 'material-ui/svg-icons/content/reply-all'
 import Loader from '../../Loader'
 import ToolTip from '../../ToolTip'
@@ -38,17 +39,20 @@ import {INVENTORY_INVENTORY_DIALOG_OPEN} from '../../Inventory'
 import dateTimeFormat from '../../../helpers/dateTimeFormat'
 import dateFormat from '../../../helpers/dateFormat'
 import numberFormat from '../../../helpers/numberFormat'
-import {ShiftMultiSearchField, TextField, normalizeNumber, ManufactureLogTypeSearchField} from '../../ReduxForm'
+import {ShiftMultiSearchField, TextField, normalizeNumber, ManufactureLogTypeSearchField, UsersSearchField} from '../../ReduxForm'
 import * as TAB from '../../../constants/manufactureShipmentTab'
 import ShipmentConfirmDialog from '../../../components/Manufacture/ShipmentConfirmDialog'
+import CloseIcon from 'material-ui/svg-icons/navigation/cancel'
 import t from '../../../helpers/translate'
+import toBoolean from '../../../helpers/toBoolean'
 import {TYPE_PRODUCT, TYPE_RAW} from '../index'
 import {CustomTabs} from '../../CustomTabs'
 
 const ZERO = 0
 export const MANUFACTURES_FILTERS_KEY = {
     SHIFT: 'shift',
-    TYPE: 'type'
+    TYPE: 'type',
+    STAFF: 'staff'
 }
 
 const enhance = compose(
@@ -127,11 +131,7 @@ const enhance = compose(
             display: 'flex',
             alignItems: 'center',
             position: 'relative',
-            padding: '5px 15px',
-            '& svg': {
-                color: '#fff !important',
-                width: '18px !important'
-            }
+            padding: '5px 15px'
         },
         details: {
             display: 'flex',
@@ -248,6 +248,7 @@ const enhance = compose(
         shift: {
             extend: 'product',
             borderRadius: '2px',
+            cursor: 'pointer',
             padding: '8px 0',
             '&:hover': {
                 background: '#f2f5f8'
@@ -300,8 +301,8 @@ const enhance = compose(
             position: 'absolute',
             display: 'flex',
             height: '48px',
-            top: '0',
-            right: '30px'
+            top: '-55px',
+            right: '150px'
         },
         emptyQuery: {
             background: 'url(' + NotFound + ') no-repeat center 20px',
@@ -366,6 +367,31 @@ const iconStyles = {
         width: 30,
         height: 30,
         padding: 0
+    },
+    clearButton: {
+        width: 23,
+        height: 23,
+        padding: 0,
+        position: 'absolute',
+        borderRadius: '100%',
+        backgroundColor: '#fff',
+        right: '20px',
+        top: '5px'
+    },
+    clearIcon: {
+        color: '#888',
+        width: 23,
+        height: 23
+    },
+    user: {
+        marginRight: '5px',
+        color: '#888',
+        width: 22,
+        height: 22
+    },
+    filterIcon: {
+        color: '#fff',
+        width: 18
     }
 }
 
@@ -434,6 +460,10 @@ const ManufactureShipment = enhance((props) => {
             pathname: sprintf(ROUTES.INVENTORY_ITEM_PATH, id)
         })
     }
+    const handleFilterByRotation = (staff, shift) => {
+        hashHistory.push(filter.createURL({staff, shift}))
+
+    }
     const groupedProducts = _.groupBy(_.get(detailData, 'products'), (item) => item.product.id)
     const products = _.map(groupedProducts, (item, index) => {
         const productName = _.get(_.find(_.get(detailData, 'products'), (obj) => {
@@ -485,11 +515,16 @@ const ManufactureShipment = enhance((props) => {
         const id = _.get(item, 'id')
         const kind = _.get(item, 'kind')
         const isDefect = _.get(item, 'isDefect')
+        const userName = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'firstName'])
         const isTransferred = _.get(item, ['personalRotation', 'isTransferred'])
         return (
             <Row key={index} className={isDefect ? classes.productDefected : classes.product}>
+                <Col xs={4} style={{display: 'flex'}}>
+                    <ToolTip position="left" text={'Создал: ' + userName}>
+                        <Person style={iconStyles.user}/>
+                    </ToolTip>
                 {type === PRODUCT
-                    ? <Col xs={4}><span>
+                    ? <span>
                         {isDefect
                             ? <ToolTip position="left" text={t('Брак')}><Defected style={iconStyles.defected}/></ToolTip>
                             : kind === MATERIAL
@@ -498,16 +533,13 @@ const ManufactureShipment = enhance((props) => {
                         }
                         {product}
                         </span>
-                    </Col>
-                    : <Col xs={4}>
-                        <span>
+                    : <span>
                             <ToolTip position="left" text={t(isDefect ? 'Брак' : '')}>
                                 <Raw style={isDefect ? iconStyles.defected : iconStyles.material}/>
                             </ToolTip>
                             {product}
-                        </span>
-
-                    </Col>}
+                        </span>}
+                </Col>
                 <Col xs={2}>
                     {type === PRODUCT
                         ? (kind === MATERIAL)
@@ -530,41 +562,45 @@ const ManufactureShipment = enhance((props) => {
                             ? <div className={classes.load}><Loader size={0.5}/></div>
                             : numberFormat(amount, measurement)}
                     </Col>}
-                <Col xs={3}>{createdDate}</Col>
-                <Col xs={1}>
-                    {edit === id
-                        ? <div>
-                            <IconButton
-                                disableTouchRipple={true}
-                                onTouchTap={handleSubmit}>
-                                <Check color="#12aaeb"/>
-                            </IconButton>
-                        </div>
-                        : <div className={classes.actionButtons}>
-                            <ToolTip position="bottom" text={isTransferred ? t('Уже передан') : t('Изменить')}>
+                <Col xs={4} style={{position: 'relative', paddingRight: '78px'}}>{createdDate}
+                    <div style={{position: 'absolute', top: '-5px', right: '0'}}>
+                        {edit === id
+                            ? <div>
                                 <IconButton
                                     iconStyle={iconStyles.icon}
-                                    disabled={isTransferred}
                                     style={iconStyles.button}
                                     disableTouchRipple={true}
-                                    onTouchTap={() => handleEdit(type, id)}
-                                    touch={true}>
-                                    <EditIcon/>
+                                    onTouchTap={handleSubmit}>
+                                    <Check color="#12aaeb"/>
                                 </IconButton>
-                            </ToolTip>
-                            <ToolTip position="bottom" text={isTransferred ? t('Уже передан') : t('Удалить')}>
-                                <IconButton
-                                    disableTouchRipple={true}
-                                    disabled={isTransferred}
-                                    iconStyle={iconStyles.icon}
-                                    style={iconStyles.button}
-                                    onTouchTap={() => handleOpenDelete(item, type, id)}
-                                    touch={true}>
-                                    <DeleteIcon/>
-                                </IconButton>
-                            </ToolTip>
-                        </div>}
+                            </div>
+                            : <div className={classes.actionButtons}>
+                                <ToolTip position="bottom" text={isTransferred ? t('Уже передан') : t('Изменить')}>
+                                    <IconButton
+                                        iconStyle={iconStyles.icon}
+                                        disabled={isTransferred}
+                                        style={iconStyles.button}
+                                        disableTouchRipple={true}
+                                        onTouchTap={() => handleEdit(type, id)}
+                                        touch={true}>
+                                        <EditIcon/>
+                                    </IconButton>
+                                </ToolTip>
+                                <ToolTip position="bottom" text={isTransferred ? t('Уже передан') : t('Удалить')}>
+                                    <IconButton
+                                        disableTouchRipple={true}
+                                        disabled={isTransferred}
+                                        iconStyle={iconStyles.icon}
+                                        style={iconStyles.button}
+                                        onTouchTap={() => handleOpenDelete(item, type, id)}
+                                        touch={true}>
+                                        <DeleteIcon/>
+                                    </IconButton>
+                                </ToolTip>
+                            </div>}
+                    </div>
                 </Col>
+
             </Row>
         )
     })
@@ -573,12 +609,14 @@ const ManufactureShipment = enhance((props) => {
     const shifts = _.map(shipmentList, (item) => {
         const id = _.get(item, 'id')
         const shiftName = _.get(item, ['shift', 'name'])
+        const shiftId = _.get(item, ['shift', 'id'])
         const openedTime = dateTimeFormat(_.get(item, 'openedTime'))
         const closedTime = _.get(item, 'closedTime') ? dateTimeFormat(_.get(item, 'closedTime')) : t('Не закончилась')
         const userName = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'firstName'])
+        const userId = _.get(item, ['user', 'id'])
         const isTransferrred = _.get(item, 'isTransferred')
         return (
-            <Row key={id} className={classes.shift}>
+            <Row key={id} className={classes.shift} onClick={() => handleFilterByRotation(userId, shiftId)}>
                 <Col xs={3}>{userName}</Col>
                 <Col xs={2}>{shiftName}</Col>
                 <Col xs={3}>{openedTime}</Col>
@@ -627,6 +665,12 @@ const ManufactureShipment = enhance((props) => {
                 component={ShiftMultiSearchField}
                 label={t('Смена')}
                 fullWidth={true}/>
+            <Field
+                className={classes.inputFieldCustom}
+                name="staff"
+                component={UsersSearchField}
+                label={t('Работник')}
+                fullWidth={true}/>
             {!_.isEmpty(_.get(detailData, 'logs')) && <Field
                 className={classes.inputFieldCustom}
                 name="type"
@@ -664,27 +708,28 @@ const ManufactureShipment = enhance((props) => {
             .length
     }
     const filterCount = getFilterCount(MANUFACTURES_FILTERS_KEY)
+    const filtered = toBoolean(filterCount > ZERO)
 
     const tabular = [
         {
             name: t('Обзор'),
             key: TAB.TAB_SORTED,
-            icon: <Sort/>
+            icon: <Sort style={iconStyles.icon}/>
         },
         {
             name: t('Записи'),
             key: TAB.TAB_LOGS,
-            icon: <Log/>
+            icon: <Log style={iconStyles.icon}/>
         },
         {
             name: t('Смены'),
             key: TAB.TAB_SHIFT,
-            icon: <Shift/>
+            icon: <Shift style={iconStyles.icon}/>
         },
         {
             name: t('Инвентаризация'),
             key: TAB.TAB_INVENTORY,
-            icon: <InventoryIcon/>
+            icon: <InventoryIcon style={iconStyles.icon}/>
         }
     ]
     return (
@@ -732,10 +777,20 @@ const ManufactureShipment = enhance((props) => {
             <Paper transitionEnabled={false} zDepth={1} className={classes.shipmentContent}>
                 <header>
                     <ManufactureActivityDateRange filter={filter} initialValues={filterDialog.initialValues}/>
+
                     <a className={classes.filterBtn} onClick={filterDialog.handleOpenFilterDialog}>
-                        <Filter/>
-                        <span>{t('Фильтр') + (filterCount > ZERO ? ' / ' + filterCount : '')}</span>
+                        <Filter style={iconStyles.filterIcon}/>
+                        <span>{t('Фильтр') + (filtered ? ' / ' + filterCount : '')}</span>
                     </a>
+
+                    {filtered &&
+                    <IconButton
+                        tooltipPosition="bottom-left"
+                        iconStyle={iconStyles.clearIcon}
+                        style={iconStyles.clearButton}
+                        onTouchTap={() => filterDialog.handleClearFilterDialog()}
+                        tooltip={t('Очистить')}><CloseIcon />
+                    </IconButton>}
                 </header>
                 <ManufactureActivityFilterDialog
                     filterDialog={filterDialog}
@@ -798,8 +853,7 @@ const ManufactureShipment = enhance((props) => {
                                             <Col xs={4}><h4>{t('Продукт / сырье')}</h4></Col>
                                             <Col xs={2}><h4>{t('Тип')}</h4></Col>
                                             <Col xs={2}><h4>{t('Кол-во')}</h4></Col>
-                                            <Col xs={3}><h4>{t('Дата, время')}</h4></Col>
-                                            <Col xs={1}/>
+                                            <Col xs={4} style={{paddingRight: '78px'}}><h4>{t('Дата, время')}</h4></Col>
                                         </Row>
                                         {logsLoading
                                             ? <div className={classes.loader}>

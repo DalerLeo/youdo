@@ -18,6 +18,7 @@ export const listFilterSerializer = (data, manufacture, dateRange) => {
         'opened_time': _.get(dateRange, 'beginDate'),
         'closed_time': _.get(dateRange, 'endDate'),
         'shift': _.get(defaultData, 'shift'),
+        'staff': _.get(defaultData, 'staff'),
         'manufacture': manufacture,
         'name': _.get(defaultData, 'name'),
         'search': _.get(defaultData, 'search'),
@@ -35,6 +36,7 @@ export const logsFilterSerializer = (data, manufacture, dateRange) => {
         'end_date': _.get(dateRange, 'endDate'),
         'manufacture': manufacture,
         'shift': _.get(defaultData, 'shift'),
+        'staff': _.get(defaultData, 'staff'),
         'type': _.get(defaultData, 'type'),
         'page': _.get(defaultData, 'logsPage'),
         'page_size': _.get(defaultData, 'logsPageSize')
