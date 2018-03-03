@@ -159,7 +159,8 @@ const TransactionGridList = enhance((props) => {
         canSetCustomRate,
         categryPopop,
         detalizationDialog,
-        optionsList
+        optionsList,
+        canRemoveCashboxTransfers
     } = props
 
     const AllCashboxId = 0
@@ -249,6 +250,7 @@ const TransactionGridList = enhance((props) => {
                     categryPopop={categryPopop}
                     optionsList={_.get(optionsList, 'results')}
                     detalizationDialog={detalizationDialog}
+                    canRemoveCashboxTransfers={canRemoveCashboxTransfers}
                 />
             </div>
         </Container>

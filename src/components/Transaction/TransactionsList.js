@@ -209,7 +209,8 @@ const TransactionsList = enhance((props) => {
         canSetCustomRate,
         categryPopop,
         optionsList,
-        detalizationDialog
+        detalizationDialog,
+        canRemoveCashboxTransfers
     } = props
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const transactionFilterDialog = showOnlyList
@@ -405,7 +406,7 @@ const TransactionsList = enhance((props) => {
                     <IconButton
                         className={classes.deleteBtn}
                         style={iconStyle.button}
-                        disabled={transType === TRANS_TYPE.TO_TRANSFER || transType === TRANS_TYPE.FROM_TRANSFER}
+                        disabled={transType === TRANS_TYPE.TO_TRANSFER || (transType === TRANS_TYPE.FROM_TRANSFER && !canRemoveCashboxTransfers)}
                         iconStyle={iconStyle.icon}
                         disableTouchRipple={true}
                         onTouchTap={() => {

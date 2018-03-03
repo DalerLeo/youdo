@@ -1083,6 +1083,7 @@ const TransactionList = enhance((props) => {
 
     const hasRightCashbox = _.find(_.get(cashboxList, 'results'), {'type': 'cash'})
     const canSetCustomRate = checkPermission('can_set_custom_rate')
+    const canRemoveCashboxTransfers = checkPermission('can_remove_cashbox_transfers')
     return (
         <Layout {...layout}>
             <TransactionGridList
@@ -1109,6 +1110,7 @@ const TransactionList = enhance((props) => {
                 usersData={usersData}
                 hasMarket={hasMarket}
                 canSetCustomRate={canSetCustomRate}
+                canRemoveCashboxTransfers={canRemoveCashboxTransfers}
                 categryPopop={categryPopop}
                 optionsList={optionsList}
                 detalizationDialog={detalizationDialog}

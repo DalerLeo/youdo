@@ -109,7 +109,7 @@ const TransactionSendDialog = enhance((props) => {
     const chosenCurrencyId = _.get(chosenCashbox, ['currency', 'id'])
     const currentCurrencyName = _.get(cashbox, ['currency', 'name'])
     const chosenCurrencyName = _.get(chosenCashbox, ['currency', 'name'])
-    const rateOutput = primaryCurrency === currentCurrencyName ? ONE : rate
+    const rateOutput = chosenCurrencyName === currentCurrencyName ? ONE : rate
     const convertedAmount = primaryCurrency === currentCurrencyName
         ? _.toNumber(numberWithoutSpaces(amountFrom)) * _.toNumber(numberWithoutSpaces(rateOutput))
         : _.toNumber(numberWithoutSpaces(amountFrom)) / _.toNumber(numberWithoutSpaces(diffCurrency ? rateOutput : ONE))
