@@ -9,10 +9,6 @@ import Paper from 'material-ui/Paper'
 import Close from 'material-ui/svg-icons/action/highlight-off'
 import t from '../../helpers/translate'
 
-export const MANUF_ACTIVITY_FILTER_KEY = {
-    SHIFT: 'shift'
-}
-
 const enhance = compose(
     injectSheet({
         filterWrapper: {
