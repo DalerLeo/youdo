@@ -10,6 +10,7 @@ const INDIVIDUAL_DEAL_TYPE = 2
 const ONE = 1
 const TWO = 2
 const MINUS_ONE = -1
+const THOU = 1000
 
 export const createSerializer = (data) => {
     const client = _.get(data, ['client', 'value'])
@@ -148,7 +149,7 @@ export const listFilterSerializer = (data, id, withOrderReturn, print) => {
         'ordering': ordering && orderingSnakeCase(ordering)
     }
 }
-export const priceListFilterSerializer = (orderId, priceList, size, products, currency) => {
+export const priceListFilterSerializer = (orderId, priceList, size = THOU, products, currency) => {
     if (priceList === MINUS_ONE) {
         return {
             'net_cost': ONE,
