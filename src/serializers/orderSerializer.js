@@ -2,7 +2,6 @@ import _ from 'lodash'
 import moment from 'moment'
 import {orderingSnakeCase} from '../helpers/serializer'
 import numberWithoutSpaces from '../helpers/numberWithoutSpaces'
-import toBoolean from '../helpers/toBoolean'
 
 const STANDART = 0
 const CONSIGNMENT = 1
@@ -102,7 +101,6 @@ export const listFilterSerializer = (data, id, withOrderReturn, print) => {
     const ordering = _.get(data, 'ordering')
     const dept = _.toInteger(_.get(defaultData, 'dept'))
     const status = _.get(defaultData, 'status')
-    const excludeCanceled = toBoolean(_.get(defaultData, 'exclude')) ? null : 'True'
 
     if (id && print) {
         return {
@@ -133,15 +131,14 @@ export const listFilterSerializer = (data, id, withOrderReturn, print) => {
         'status': status,
         'only_bonus': _.get(defaultData, 'onlyBonus') ? 'True' : null,
         'is_new': _.get(defaultData, 'isNew') ? 'True' : null,
-        'exclude_cancelled': excludeCanceled,
+        'exclude_cancelled': _.get(defaultData, 'exclude') ? null : 'True',
         'begin_date': _.get(defaultData, 'fromDate'),
         'end_date': _.get(defaultData, 'toDate') || _.get(defaultData, 'fromDate'),
         'delivery_date_0': _.get(defaultData, 'deliveryFromDate'),
         'delivery_date_1': _.get(defaultData, 'deliveryToDate') || _.get(defaultData, 'deliveryFromDate'),
         'request_deadline_0': _.get(defaultData, 'deadlineFromDate'),
-        'request_deadline_1': _.get(defaultData, 'deadlineToDate') || _.get(defaultData, 'deadlineFromDate'),
+        'request_deadline_1': _.get(defaultData, 'deadlineToDate'),
         'search': _.get(defaultData, 'search'),
-
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),
         'with_order_return': withOrderReturn,
