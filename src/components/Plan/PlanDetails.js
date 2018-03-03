@@ -91,7 +91,6 @@ const enhance = compose(
         agentInfo: {
             border: '1px #e9e9e9 solid',
             borderRadius: '2px',
-            overflow: 'hidden',
             position: 'relative',
             boxShadow: '0px 8px 20px 10px #f4f4f4',
             zIndex: '10',

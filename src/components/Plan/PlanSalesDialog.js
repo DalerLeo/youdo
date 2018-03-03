@@ -1,18 +1,23 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {compose} from 'recompose'
+import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
+import IconButton from 'material-ui/IconButton'
+import {hashHistory} from 'react-router'
+import Division from 'material-ui/svg-icons/communication/business'
+import ProductType from 'material-ui/svg-icons/action/settings-input-component'
 import Loader from '../Loader'
 import {Field, reduxForm, SubmissionError} from 'redux-form'
 import toCamelCase from '../../helpers/toCamelCase'
 import getConfig from '../../helpers/getConfig'
 import {TextField, normalizeNumber} from '../ReduxForm'
-import CloseIcon from 'material-ui/svg-icons/navigation/close'
-import IconButton from 'material-ui/IconButton'
+import ToolTip from '../ToolTip'
 import t from '../../helpers/translate'
+import {PRODUCT_TYPE, ORGANIZATION} from '../Statistics/Products/StatProductGridList'
 
 const validate = (data) => {
     const errors = toCamelCase(data)
@@ -22,6 +27,7 @@ const validate = (data) => {
         _error: nonFieldErrors
     })
 }
+
 const enhance = compose(
     injectSheet({
         loader: {
@@ -34,7 +40,7 @@ const enhance = compose(
             alignItems: 'center',
             zIndex: '999',
             justifyContent: 'center',
-            display: ({loading, divisionsLoading}) => (loading || divisionsLoading) ? 'flex' : 'none'
+            display: ({loading}) => (loading) ? 'flex' : 'none'
         },
         popUp: {
             color: '#333 !important',
@@ -62,6 +68,7 @@ const enhance = compose(
         },
         inContent: {
             overflow: 'auto',
+            position: 'relative',
             padding: '0 30px',
             color: '#333'
         },
@@ -174,12 +181,59 @@ const enhance = compose(
         actionButton: {
             fontSize: '13px !important',
             margin: '0 !important'
+        },
+        toggleSwitch: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            padding: '0 30px',
+            height: '50px',
+            borderBottom: '1px #efefef solid'
+        },
+        toggleWrapper: {
+            display: 'flex',
+            borderRadius: '20px',
+            background: '#dadada',
+            position: 'relative',
+            '& > div': {
+                display: 'flex',
+                zIndex: '2'
+            },
+            '& button': {
+                height: '36px !important',
+                width: '36px !important',
+                lineHeight: '32px !important',
+                minWidth: 'unset !important',
+                borderRadius: '50% !important',
+                '& > div': {
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: '100%',
+                    '& svg': {
+                        width: '18px !important',
+                        height: '18px !important'
+                    }
+                }
+            }
+        },
+        customRipple: {
+            background: '#12aaeb !important',
+            borderRadius: '50%',
+            position: 'absolute',
+            top: '0',
+            bottom: '0',
+            width: '36px',
+            height: '36px',
+            zIndex: '1 !important',
+            transition: 'all 150ms ease-out'
         }
     }),
     reduxForm({
         form: 'PlanSalesForm',
         enableReinitialize: true
-    })
+    }),
+    withState('currentParent', 'updateCurrentParent', null)
 )
 
 const inputStyle = {
@@ -193,16 +247,33 @@ const inputStyle = {
 }
 
 const PlanSalesDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, divisions, divisionsLoading} = props
-    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+    const {
+        open,
+        handleSubmit,
+        onClose,
+        classes,
+        divisions,
+        productTypeList,
+        filter,
+        updateCurrentParent
+    } = props
+
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
+    const onSubmit = handleSubmit(() => props.onSubmit()
+        .catch(validate)
+    )
+
+    const toggle = filter.getParam('toggle') || ORGANIZATION
+    const whiteColor = '#fff'
+    const isOrganization = toggle === ORGANIZATION
+
     return (
         <Dialog
             modal={true}
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={(loading || divisionsLoading) ? {width: '300px'} : {width: '400px'}}
+            contentStyle={{width: '400px'}}
             bodyStyle={{minHeight: '100px !important'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
@@ -213,29 +284,76 @@ const PlanSalesDialog = enhance((props) => {
             </div>
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit} className={classes.form} style={{minHeight: 'auto'}}>
-                    <div className={classes.loader}>
-                        <Loader size={0.75}/>
+                    <div className={classes.toggleSwitch}>
+                        <div className={classes.toggleWrapper}>
+                            <ToolTip position="left" text={t('Показать по организации')}>
+                                <FlatButton
+                                    icon={<Division color={whiteColor}/>}
+                                    onTouchTap={() => {
+                                        updateCurrentParent(null)
+                                        hashHistory.push(filter.createURL({toggle: ORGANIZATION}))
+                                    }}
+                                    backgroundColor={'transparent'}
+                                    rippleColor={'transparent'}
+                                    hoverColor={'transparent'}/>
+                            </ToolTip>
+                            <ToolTip position="left" text={t('Показать по типам товаров')}>
+                                <FlatButton
+                                    icon={<ProductType color={whiteColor}/>}
+                                    onTouchTap={() => {
+                                        updateCurrentParent(null)
+                                        hashHistory.push(filter.createURL({toggle: PRODUCT_TYPE}))
+                                    }}
+                                    backgroundColor={'transparent'}
+                                    rippleColor={'transparent'}
+                                    hoverColor={'transparent'}/>
+                            </ToolTip>
+                            <div className={classes.customRipple} style={isOrganization ? {left: '0'} : {left: '36px'}}/>
+                        </div>
                     </div>
                     <div className={classes.inContent} style={{minHeight: '120px'}}>
-                        {_.map(divisions, (item) => {
-                            const id = _.get(item, 'id')
-                            const name = _.get(item, 'name')
-                            return (
-                                <div key={id} className={classes.division}>
-                                    <div>{name}</div>
-                                    <Field
-                                        name={'divisions[_' + id + '][amount]'}
-                                        component={TextField}
-                                        className={classes.inputFieldSimple}
-                                        style={{width: '100px'}}
-                                        normalize={normalizeNumber}
-                                        hintText="0.00"
-                                        hintStyle={inputStyle.hint}
-                                        inputStyle={inputStyle.input}/>
-                                    <div>{primaryCurrency}</div>
-                                </div>
-                            )
-                        })}
+                        <div className={classes.loader}>
+                            <Loader size={0.75}/>
+                        </div>
+                        {toggle === ORGANIZATION
+                            ? _.map(divisions, (item) => {
+                                const id = _.get(item, 'id')
+                                const name = _.get(item, 'name')
+                                return (
+                                    <div key={id} className={classes.division}>
+                                        <div>{name}</div>
+                                        <Field
+                                            name={'divisions[_' + id + '][amount]'}
+                                            component={TextField}
+                                            className={classes.inputFieldSimple}
+                                            style={{width: '100px'}}
+                                            normalize={normalizeNumber}
+                                            hintText="0.00"
+                                            hintStyle={inputStyle.hint}
+                                            inputStyle={inputStyle.input}/>
+                                        <div>{primaryCurrency}</div>
+                                    </div>
+                                )
+                            })
+                            : _.map(productTypeList, (item) => {
+                                const id = _.get(item, 'id')
+                                const name = _.get(item, 'name')
+                                return (
+                                    <div key={id} className={classes.division}>
+                                        <div>{name}</div>
+                                        <Field
+                                            name={'productType[_' + id + '][amount]'}
+                                            component={TextField}
+                                            className={classes.inputFieldSimple}
+                                            style={{width: '100px'}}
+                                            normalize={normalizeNumber}
+                                            hintText="0.00"
+                                            hintStyle={inputStyle.hint}
+                                            inputStyle={inputStyle.input}/>
+                                        <div>{primaryCurrency}</div>
+                                    </div>
+                                )
+                            })}
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
