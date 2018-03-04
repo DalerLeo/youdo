@@ -20,8 +20,8 @@ export const listFilterSerializer = (data) => {
         'ordering': ordering && orderingSnakeCase(ordering),
         'market': _.get(defaultData, 'market') || null,
         'created_by': _.get(defaultData, 'createdBy') || null,
-        'activation_date_0': _.get(defaultData, 'activatedFromDate') || null,
-        'activation_date_1': _.get(defaultData, 'activatedToDate') || null,
+        'activated_date_0': _.get(defaultData, 'activatedFromDate') || null,
+        'activated_date_1': _.get(defaultData, 'activatedToDate') || null,
         'begin_date': _.get(defaultData, 'createdFromDate') || null,
         'end_date': _.get(defaultData, 'createdToDate') || null
 
