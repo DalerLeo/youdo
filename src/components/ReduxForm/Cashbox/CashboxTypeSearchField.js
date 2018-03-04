@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import sprintf from 'sprintf'
 import React from 'react'
-import SearchField from '../Basic/SearchField'
+import SearchField from '../Basic/ChildSearchField'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
@@ -66,6 +66,7 @@ const CashboxTypeSearchField = enhance((props) => {
                 }}
                 type={type}
                 currency={currency}
+                parent={cashboxId}
                 {...defaultProps}
             />
         )
