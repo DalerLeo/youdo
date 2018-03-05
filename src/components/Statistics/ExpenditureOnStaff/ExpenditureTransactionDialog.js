@@ -142,14 +142,14 @@ const ExpenditureTransactionDialog = enhance((props) => {
     const {open, loading, onClose, classes, data, filterTransaction, beginDate, endDate, userName, isOutcome} = props
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const list = _.map(data, (item) => {
-        const id = _.get(item, 'id')
-        const date = dateFormat(isOutcome ? _.get(item, ['createdDate']) : _.get(item, ['transaction', 'createdDate']))
+        const id = isOutcome ? _.get(item, 'id') : _.get(item, ['transaction', 'id'])
+        const date = dateFormat(isOutcome ? _.get(item, ['createdDate']) : _.get(item, ['transaction', 'date']))
         const amount = _.toNumber(_.get(item, 'amount'))
         const currency = _.get(item, ['currency', 'name'])
         const internalAmount = _.toNumber(isOutcome ? _.get(item, ['internalAmount']) : _.get(item, ['transaction', 'internalAmount']))
         const internal = isOutcome ? _.get(item, ['internalAmount']) : (_.get(item, ['internal']))
         const customRate = _.get(item, ['transaction', 'customRate']) ? _.toInteger(_.get(item, ['transaction', 'customRate'])) : _.toNumber(amount / internalAmount)
-        const comment = _.get(item, 'comment')
+        const comment = isOutcome ? _.get(item, 'comment') : _.get(item, ['transaction', 'comment'])
         const cashbox = isOutcome ? _.get(item, ['cashbox', 'name']) : _.get(item, ['transaction', 'cashbox', 'name'])
         const transactionId = _.get(item, ['transaction', 'id'])
         const order = _.get(item, 'order')
