@@ -22,7 +22,6 @@ import {Field, reduxForm, change} from 'redux-form'
 import Defected from 'material-ui/svg-icons/image/broken-image'
 import Check from 'material-ui/svg-icons/navigation/check'
 import Person from 'material-ui/svg-icons/social/person'
-import SendIcon from 'material-ui/svg-icons/content/reply-all'
 import Loader from '../../Loader'
 import ToolTip from '../../ToolTip'
 import ManufactureActivityDateRange from '../ManufactureActivityDateRange'
@@ -46,6 +45,8 @@ import toBoolean from '../../../helpers/toBoolean'
 import {TYPE_PRODUCT, TYPE_RAW} from '../index'
 import {CustomTabs} from '../../CustomTabs'
 import ShipmentInventory from './ShipmentInventory'
+import ShipmentShift from './ShipmentShift'
+import ShipmentReview from './ShipmentReview'
 const ZERO = 0
 export const MANUFACTURES_FILTERS_KEY = {
     SHIFT: 'shift',
@@ -452,51 +453,7 @@ const ManufactureShipment = enhance((props) => {
         setDeleteItem(null)
         return null
     }
-    const handleFilterByRotation = (staff, shift) => {
-        hashHistory.push(filter.createURL({staff, shift}))
-    }
     const groupedProducts = _.groupBy(_.get(detailData, 'products'), (item) => item.product.id)
-    const products = _.map(groupedProducts, (item, index) => {
-        const productName = _.get(_.find(_.get(detailData, 'products'), (obj) => {
-            return _.toInteger(obj.product.id) === _.toInteger(index)
-        }), ['product', 'name'])
-        const totalAmount = _.sumBy(item, (o) => _.toNumber(_.get(o, 'totalAmount')))
-        const totalMeasurement = _.get(_.first(item), ['measurement', 'name'])
-        const defected = _.filter(item, (o) => _.get(o, 'isDefect'))
-        const defectedAmount = _.get(_.first(defected), 'totalAmount')
-
-        return (
-            <Row key={index} className={classes.productReview}>
-                <Col xs={6}>{productName}</Col>
-                <Col xs={2}>{numberFormat(totalAmount, totalMeasurement)}</Col>
-                <Col xs={2}>{_.map(_.filter(item, (o) => {
-                    return !_.get(o, 'isDefect')
-                }), (o, i) => {
-                    const measurement = _.get(o, ['measurement', 'name'])
-                    const amount = _.get(o, 'totalAmount')
-                    return (
-                        <span key={index + '_' + i}>{numberFormat(amount, measurement)}</span>
-                    )
-                })}</Col>
-                <Col xs={2}>
-                    {_.isEmpty(defected) ? numberFormat('0', totalMeasurement) : numberFormat(defectedAmount, totalMeasurement)}
-                </Col>
-            </Row>
-        )
-    })
-    const materials = _.map(_.filter(_.get(detailData, 'materials'), (item) => {
-        return !_.get(item, 'isDefect')
-    }), (item, index) => {
-        const measurement = _.get(item, ['measurement', 'name'])
-        const product = _.get(item, ['product', 'name'])
-        const amount = _.get(item, 'totalAmount')
-        return (
-            <Row key={index} className={classes.productReview}>
-                <Col xs={6}>{product}</Col>
-                <Col xs={6}>{numberFormat(amount, measurement)}</Col>
-            </Row>
-        )
-    })
     const logs = _.map(_.get(detailData, 'logs'), (item, index) => {
         const measurement = _.get(item, ['product', 'measurement', 'name'])
         const product = _.get(item, ['product', 'name'])
@@ -597,40 +554,6 @@ const ManufactureShipment = enhance((props) => {
     })
     const selectedShiftId = _.toInteger(filter.getParam('openShift'))
     const selectedShift = _.find(shipmentList, {'id': selectedShiftId})
-    const shifts = _.map(shipmentList, (item) => {
-        const id = _.get(item, 'id')
-        const shiftName = _.get(item, ['shift', 'name'])
-        const shiftId = _.get(item, ['shift', 'id'])
-        const openedTime = dateTimeFormat(_.get(item, 'openedTime'))
-        const closedTime = _.get(item, 'closedTime') ? dateTimeFormat(_.get(item, 'closedTime')) : t('Не закончилась')
-        const userName = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'firstName'])
-        const userId = _.get(item, ['user', 'id'])
-        const isTransferrred = _.get(item, 'isTransferred')
-        return (
-            <Row key={id} className={classes.shift} onClick={() => handleFilterByRotation(userId, shiftId)}>
-                <Col xs={3}>{userName}</Col>
-                <Col xs={2}>{shiftName}</Col>
-                <Col xs={3}>{openedTime}</Col>
-                <Col xs={3}>{closedTime}</Col>
-                <Col xs={1}>
-                    <div className={classes.actionButtons}>
-                        <ToolTip position="bottom"
-                                 text={isTransferrred ? t('Уже передан на склад') : t('Передать на склад')}>
-                            <IconButton
-                                iconStyle={iconStyles.icon}
-                                disabled={isTransferrred}
-                                style={iconStyles.button}
-                                disableTouchRipple={true}
-                                onTouchTap={() => sendDialog.handleOpen(id)}
-                                touch={true}>
-                                <SendIcon/>
-                            </IconButton>
-                        </ToolTip>
-                    </div>
-                </Col>
-            </Row>
-        )
-    })
     const fields = (
         <div>
             <Field
@@ -777,44 +700,16 @@ const ManufactureShipment = enhance((props) => {
                             value={tab}
                             mainClassName={classes.tabWrapper}
                             onChangeTab={(value) => tabData.handleTabChange(value)}>
-                            <div
-                                className={classes.tab}
-                                key={TAB.TAB_SORTED}>
-                                <div className={classes.flexReview}>
-                                    <div className={classes.productsBlock}>
-                                        <Row className={classes.flexTitle}>
-                                            <Col xs={6}><h4>{t('Произведено')}</h4></Col>
-                                            <Col xs={2}><h4>{t('Всего')}</h4></Col>
-                                            <Col xs={2}><h4>{t('Ок')}</h4></Col>
-                                            <Col xs={2}><h4>{t('Брак')}</h4></Col>
-                                        </Row>
-                                        {productsLoading
-                                            ? <div className={classes.miniLoader}>
-                                                <Loader size={0.75}/>
-                                            </div>
-                                            : !_.isEmpty(products)
-                                                ? products
-                                                : <div className={classes.emptyQuery}>
-                                                    <div>{t('Продукции еще не произведены')}</div>
-                                                </div>}
-                                    </div>
-                                    <div className={classes.productsBlock}>
-                                        <Row className={classes.flexTitle}>
-                                            <Col xs={6}><h4>{t('Затраченное сырье')}</h4></Col>
-                                            <Col xs={2}><h4>{t('Кол-во')}</h4></Col>
-                                        </Row>
-                                        {materialsLoading
-                                            ? <div className={classes.miniLoader}>
-                                                <Loader size={0.75}/>
-                                            </div>
-                                            : !_.isEmpty(materials)
-                                                ? materials
-                                                : <div className={classes.emptyQuery}>
-                                                    <div>{t('Не затрачено сырья')}</div>
-                                                </div>}
-                                    </div>
-                                </div>
-                            </div>
+                            <ShipmentReview
+                                key={TAB.TAB_SORTED}
+                                data={{
+                                    groupedProducts,
+                                    products: _.get(detailData, 'products'),
+                                    materials: _.get(detailData, 'materials')
+                                }}
+                                loading={{productsLoading, materialsLoading}}
+                                filter={filter}
+                                classes={classes}/>
                             <div
                                 className={classes.tab}
                                 key={TAB.TAB_LOGS}>
@@ -843,35 +738,14 @@ const ManufactureShipment = enhance((props) => {
                                             <div>{t('Нет записей в данной смене')}</div>
                                         </div>}
                             </div>
-                            <div
-                                className={classes.tab}
-                                key={TAB.TAB_SHIFT}>
-                                {!_.isEmpty(shifts)
-                                    ? <div className={classes.productsBlock}>
-                                        <div className={classes.pagination}>
-                                            <Pagination filter={filter}/>
-                                        </div>
-                                        <Row className={classes.flexTitleShift}>
-                                            <Col xs={3}><h4>{t('Работник')}</h4></Col>
-                                            <Col xs={2}><h4>{t('Смена')}</h4></Col>
-                                            <Col xs={3}><h4>{t('Начало смены')}</h4></Col>
-                                            <Col xs={3}><h4>{t('Конец смены')}</h4></Col>
-                                            <Col xs={1}/>
-                                        </Row>
-                                        {shiftsLoading
-                                            ? <div className={classes.loader}>
-                                                <Loader size={0.75}/>
-                                            </div>
-                                            : shifts}
-                                    </div>
-                                    : shiftsLoading
-                                        ? <div className={classes.loader}>
-                                            <Loader size={0.75}/>
-                                        </div>
-                                        : <div className={classes.emptyQuery}>
-                                            <div>{t('В этом периоде не найдено смен')}</div>
-                                        </div>}
-                            </div>
+                            <ShipmentShift
+                                key={TAB.TAB_SHIFT}
+                                list={shipmentList}
+                                loading={shiftsLoading}
+                                filter={filter}
+                                classes={classes}
+                                handleSendOpenDialog={sendDialog.handleOpen}
+                            />
                             <ShipmentInventory
                                 key={TAB.TAB_INVENTORY}
                                 data={_.get(detailData, 'inventory')}
