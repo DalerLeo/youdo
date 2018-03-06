@@ -10,9 +10,10 @@ import getDocuments from '../../helpers/getDocument'
 import * as serializers from '../../serializers/Statistics/statOutcomeCategorySerializer'
 import * as API from '../../constants/api'
 import {StatOutcomeCategoryGridList} from '../../components/Statistics'
-import {STAT_OUTCOME_CATEGORY_FILTER_KEY} from '../../components/Statistics/Outcome/StatOutcomeCategoryGridList'
+import {STAT_OUTCOME_CATEGORY_FILTER_KEY} from '../../components/Statistics/ExpensesByCategory/StatOutcomeCategoryGridList'
 import {
     statOutcomeCategoryListFetchAction,
+    statOutcomeCategoryDetailFetchAction,
     getTransactionData
 } from '../../actions/statOutcomeCategory'
 
@@ -27,6 +28,8 @@ const enhance = compose(
         const pathname = _.get(props, ['location', 'pathname'])
         const list = _.get(state, ['statOutcomeCategory', 'list', 'data'])
         const listLoading = _.get(state, ['statOutcomeCategory', 'list', 'loading'])
+        const detail = _.get(state, ['statOutcomeCategory', 'detail', 'data'])
+        const detailLoading = _.get(state, ['statOutcomeCategory', 'detail', 'loading'])
         const transactionData = _.get(state, ['statOutcomeCategory', 'transactionData', 'data'])
         const transactionDataLoading = _.get(state, ['statOutcomeCategory', 'transactionData', 'loading'])
         const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
@@ -37,6 +40,8 @@ const enhance = compose(
         return {
             list,
             listLoading,
+            detail,
+            detailLoading,
             transactionData,
             transactionDataLoading,
             filter,
@@ -64,9 +69,10 @@ const enhance = compose(
         const nextOpen = _.get(nextProps, ['location', 'query', 'openTransactionDialog'])
         return props.filterTransaction.filterRequest() !== nextProps.filterTransaction.filterRequest() || (prevOpen !== nextOpen && _.toNumber(nextOpen) > ZERO)
     }, ({dispatch, filter, filterTransaction, location}) => {
-        const nextOpen = _.toNumber(_.get(location, ['query', [OPEN_TRANSACTION_DIALOG]]))
-        if (nextOpen > ZERO) {
-            dispatch(getTransactionData(filter, filterTransaction, nextOpen))
+        const transaction = _.toNumber(_.get(location, ['query', [OPEN_TRANSACTION_DIALOG]]))
+        if (transaction > ZERO) {
+            dispatch(getTransactionData(filter, filterTransaction, transaction))
+            dispatch(statOutcomeCategoryDetailFetchAction(transaction))
         }
     }),
 
@@ -102,6 +108,8 @@ const StatOutcomeCategoryList = enhance((props) => {
     const {
         list,
         listLoading,
+        detail,
+        detailLoading,
         filter,
         layout,
         filterForm,
@@ -136,6 +144,8 @@ const StatOutcomeCategoryList = enhance((props) => {
         open: openTransactionDialog,
         data: _.get(transactionData, 'results'),
         loading: transactionDataLoading,
+        detail,
+        detailLoading,
         handleOpenTransactionDialog: props.handleOpenTransactionDialog,
         handleCloseTransactionDialog: props.handleCloseTransactionDialog,
         beginDate,

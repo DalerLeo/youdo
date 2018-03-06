@@ -17,6 +17,7 @@ import numberFormat from '../../../helpers/numberFormat'
 import dateFormat from '../../../helpers/dateFormat'
 import Pagination from '../../GridList/GridListNavPagination'
 import t from '../../../helpers/translate'
+import OrderStatusIcons from '../../Order/OrderStatusIcons'
 
 const enhance = compose(
     injectSheet({
@@ -192,6 +193,11 @@ const enhance = compose(
         pagination: {
             padding: '0 30px',
             borderTop: 'solid 1px #efefef'
+        },
+        buttons: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-end'
         }
     }),
     reduxForm({
@@ -227,21 +233,29 @@ const DebtorsDetails = enhance((props) => {
 
     const detailList = _.map(_.get(detailData, 'data'), (item) => {
         const detailId = _.get(item, 'id')
+        const status = _.toInteger(_.get(item, 'status'))
         const currency = _.get(item, ['currency', 'name'])
         const paymentDate = dateFormat(_.get(item, 'paymentDate'))
-        const totalPrice = numberFormat(_.get(item, 'totalPrice'), currency)
-        const totalBalance = numberFormat(_.get(item, 'totalBalance'), currency)
+        const totalPrice = _.toNumber(_.get(item, 'totalPrice'))
+        const totalBalance = _.toNumber(_.get(item, 'totalBalance'))
+        const balanceToolTip = numberFormat(totalBalance, currency)
         const paymentType = _.get(item, 'paymentType')
-        const totalExpected = numberFormat(_.toInteger(_.get(item, 'totalPrice')) - _.toInteger(_.get(item, 'totalBalance')), currency)
+        const totalPaid = numberFormat((totalPrice - totalBalance), currency)
         return (
             <Row key={detailId} className="dottedList">
                 <a onClick={() => statDebtorsDialog.handleOpenStatDebtorsDialog(detailId)} className={classes.openDetails}/>
                 <div style={{flexBasis: '9%', maxWidth: '9%'}}>{detailId}</div>
                 <div style={{flexBasis: '21%', maxWidth: '21%'}}>{paymentDate}</div>
                 <div style={{flexBasis: '14%', maxWidth: '14%'}}>{(paymentType === 'cash') ? t('Нал') + '.' : t('Переч') + '.'}</div>
-                <div style={{flexBasis: '19%', maxWidth: '19%', textAlign: 'right'}}>{totalPrice}</div>
-                <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>{totalBalance}</div>
-                <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>{totalExpected}</div>
+                <div style={{flexBasis: '19%', maxWidth: '19%', textAlign: 'right'}}>{numberFormat(totalPrice, currency)}</div>
+                <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>{totalPaid}</div>
+                <div style={{flexBasis: '15%', maxWidth: '15%'}} className={classes.buttons}>
+                    <OrderStatusIcons
+                        status={status}
+                        balanceToolTip={balanceToolTip}
+                        paymentDate={_.get(item, 'paymentDate')}
+                        totalBalance={totalBalance}/>
+                </div>
                 <div style={{flexBasis: '7%', maxWidth: '7%', paddingRight: '0'}}>
                     <ToolTip position="left" text={'Изменить дату оплаты'}>
                         <IconButton
@@ -261,7 +275,7 @@ const DebtorsDetails = enhance((props) => {
     const client = _.get(detail, ['client', 'name'])
     return (
         <div className={classes.wrapper}>
-            <Paper zDepth={2} className={classes.expandedList}>
+            <Paper zDepth={3} className={classes.expandedList}>
                 <div className={classes.header}>
                     <span>{client}</span>
                     <IconButton
@@ -280,7 +294,7 @@ const DebtorsDetails = enhance((props) => {
                         <div style={{flexBasis: '14%', maxWidth: '14%'}}>{t('Тип оплаты')}</div>
                         <div style={{flexBasis: '19%', maxWidth: '19%', textAlign: 'right'}}>{t('Сумма заказа')}</div>
                         <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>{t('Оплачено')}</div>
-                        <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>{t('Долг')}</div>
+                        <div style={{flexBasis: '15%', maxWidth: '15%', textAlign: 'right'}}>{t('Статус')}</div>
                         <div style={{flexBasis: '7%', maxWidth: '7%', paddingRight: '0'}}>
                             <div className={classes.editButton}>
                                 <ToolTip position="left" text={t('Изменить дату оплаты всех заказов')}>

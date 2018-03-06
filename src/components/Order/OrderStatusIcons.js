@@ -39,8 +39,7 @@ const OrderStatusIcons = (props) => {
         button: {
             width: 30,
             height: 30,
-            padding: 0,
-            zIndex: 0
+            padding: 5
         }
     }
     const now = moment().format('YYYY-MM-DD')

@@ -287,6 +287,8 @@ const StatExpenditureOnStaffGridList = enhance((props) => {
             {page}
             <ExpenditureTransactionDialog
                 data={transactionData.data}
+                detail={transactionData.detail}
+                detailLoading={transactionData.detailLoading}
                 open={transactionData.open > ZERO}
                 loading={transactionData.loading}
                 onClose={transactionData.handleCloseTransactionDialog}

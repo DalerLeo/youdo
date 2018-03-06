@@ -15,7 +15,6 @@ import * as ROUTES from '../../../constants/routes'
 import getConfig from '../../../helpers/getConfig'
 import numberFormat from '../../../helpers/numberFormat'
 import dateTimeFormat from '../../../helpers/dateTimeFormat'
-import dateFormat from '../../../helpers/dateFormat'
 import NotFound from '../../Images/not-found.png'
 import t from '../../../helpers/translate'
 
@@ -150,14 +149,11 @@ const StatAgentDialog = enhance((props) => {
         open,
         onClose,
         classes,
-        salesSummary,
         detailData
     } = props
     const loading = _.get(detailData, 'detailLoading')
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const agentName = _.get(detailData, ['agentDetail', '0', 'name'])
-    const beginDate = dateFormat(_.get(detailData, 'beginDate'))
-    const endDate = dateFormat(_.get(detailData, 'endDate'))
     const filteredData = _.filter(_.get(detailData, ['data', 'results']), (item) => {
         const status = _.toInteger(_.get(item, 'status'))
         return status !== CANCELED
@@ -206,10 +202,6 @@ const StatAgentDialog = enhance((props) => {
                         </IconButton>
                     </div>
                     <div className={classes.content}>
-                        <div className={classes.titleSummary}>
-                            <div>{t('Период')}: <strong>{beginDate} - {endDate}</strong></div>
-                            <div>{t('Сумма')}: <strong>{salesSummary}</strong></div>
-                        </div>
                         <div className={classes.tableWrapper}>
                             <Row className="dottedList">
                                 <Col xs={2}>№ {t('заказа')}</Col>

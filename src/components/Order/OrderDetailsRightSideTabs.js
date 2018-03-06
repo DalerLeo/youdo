@@ -65,7 +65,7 @@ const enhance = compose(
             overflowX: 'hidden',
             paddingRight: '30px',
             '& .row': {
-                height: '50px',
+                height: '60px',
                 padding: '0 0 0 5px',
                 '&:first-child:hover': {
                     background: 'inherit'

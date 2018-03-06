@@ -76,12 +76,10 @@ const enhance = compose(
         },
         tableRow: {
             '& td:nth-child(odd)': {
-                borderRight: '1px #efefef solid',
-                textAlign: 'right'
+                borderRight: '1px #efefef solid'
             },
             '& td:last-child': {
-                borderRight: '1px #efefef solid',
-                textAlign: 'right'
+                borderRight: '1px #efefef solid'
             },
             '& td:nth-child(1)': {
                 textAlign: 'left'
@@ -92,12 +90,10 @@ const enhance = compose(
         },
         tableRowExt: {
             '& td:nth-child(even)': {
-                borderRight: '1px #efefef solid',
-                textAlign: 'right'
+                borderRight: '1px #efefef solid'
             },
             '& td:last-child': {
-                borderRight: '1px #efefef solid',
-                textAlign: 'right'
+                borderRight: '1px #efefef solid'
             },
             '& td:nth-child(1)': {
                 textAlign: 'left'
@@ -186,9 +182,6 @@ const enhance = compose(
         },
         subTitle: {
             extend: 'title',
-            '& td:nth-child(odd)': {
-                borderRight: 'none'
-            },
             '& td:last-child': {
                 borderRight: '1px #efefef solid',
                 textAlign: 'right'
@@ -430,6 +423,12 @@ const enhance = compose(
                 display: 'block',
                 fontWeight: '600'
             }
+        },
+        alignRight: {
+            textAlign: 'right'
+        },
+        borderRight: {
+            borderRight: '1px #efefef solid'
         }
     }),
     withState('currentRow', 'updateRow', null),
@@ -458,29 +457,6 @@ const listHeader = [
         sorting: true,
         title: t('Фактически'),
         tooltip: t('Сумма продаж с учетом возвратов')
-    },
-    // Returns
-    {
-        sorting: true,
-        tooltip: t('Сумма возвратов от продаж'),
-        title: t('По заказам')
-    },
-    {
-        sorting: true,
-        tooltip: t('Сумма возвратов за этот период'),
-        title: t('Общее')
-    },
-    // Payments
-    {
-        sorting: true,
-        title: t('По заказам'),
-        tooltip: t('Сумма оплат с заказов')
-    },
-    // Debt
-    {
-        sorting: true,
-        title: t('По заказам'),
-        tooltip: t('Долг по заказов')
     }
 ]
 
@@ -511,7 +487,6 @@ const StatMarketGridList = enhance((props) => {
     const salesFactSum = _.toNumber(_.get(sumData, 'salesFactSum'))
     const salesTotalSum = _.toNumber(_.get(sumData, 'salesTotalSum'))
     const returnOrdersSum = _.toNumber(_.get(sumData, 'returnOrdersSum'))
-    const returnTotalSum = _.toNumber(_.get(sumData, 'returnTotalSum'))
     const paymentOrdersSum = _.toNumber(_.get(sumData, 'paymentOrdersSum'))
     const debtOrdersSum = _.toNumber(_.get(sumData, 'deptOrdersSum'))
 
@@ -566,7 +541,6 @@ const StatMarketGridList = enhance((props) => {
         const salesFact = _.toNumber(_.get(item, 'salesFact'))
         const salesTotal = _.toNumber(_.get(item, 'salesTotal'))
         const returnOrders = _.toNumber(_.get(item, 'returnOrders'))
-        const returnTotal = _.toNumber(_.get(item, 'returnTotal'))
         const paymentOrders = _.toNumber(_.get(item, 'paymentOrders'))
         const deptOrders = _.toNumber(_.get(item, 'deptOrders'))
         const clientName = _.get(item, 'clientName')
@@ -580,9 +554,8 @@ const StatMarketGridList = enhance((props) => {
                 {isMarket && <td>{clientName}</td>}
 
                 <td>{numberFormat(salesTotal, primaryCurrency)}</td>
-                <td>{numberFormat(salesFact, primaryCurrency)}</td>
-                <td>{numberFormat(returnOrders, primaryCurrency)}</td>
-                <td>{numberFormat(returnTotal, primaryCurrency)}</td>
+                <td className={classes.alignRight}>{numberFormat(salesFact, primaryCurrency)}</td>
+                <td className={classes.borderRight}>{numberFormat(returnOrders, primaryCurrency)}</td>
                 <td>{numberFormat(paymentOrders, primaryCurrency)}</td>
                 <td>{numberFormat(deptOrders, primaryCurrency)}</td>
             </tr>
@@ -641,8 +614,6 @@ const StatMarketGridList = enhance((props) => {
                                 </div>
 
                                 <div>
-                                    <span>{t('Общий возврат')}</span>
-                                    <div>{numberFormat(returnTotalSum, primaryCurrency)}</div>
                                     <span>{t('Возврат по заказам')}</span>
                                     <div>{numberFormat(returnOrdersSum, primaryCurrency)}</div>
                                 </div>
@@ -744,9 +715,9 @@ const StatMarketGridList = enhance((props) => {
                                             <tr className={classes.title}>
                                                 {isMarket && <td rowSpan={2}>{t('Клиент')}</td>}
                                                 <td colSpan={2}>{t('Продажа')}</td>
-                                                <td colSpan={2}>{t('Возврат')}</td>
-                                                <td>{t('Оплачено')}</td>
-                                                <td>{t('Долг')}</td>
+                                                <td rowSpan={2}>{t('Возврат')}</td>
+                                                <td rowSpan={2}>{t('Оплачено')}</td>
+                                                <td rowSpan={2}>{t('Долг')}</td>
                                             </tr>
                                             <tr className={classes.subTitle}>
                                                 {_.map(listHeader, (header, index) => {

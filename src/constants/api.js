@@ -423,6 +423,7 @@ export const STAT_RETURN_GET_DOCUMENT = '/sales/order_return/excel/'
 export const STAT_RETURN_SUM_DETAILS = `${STAT_RETURN_LIST}statistics`
 
 export const STAT_OUTCOME_CATEGORY_LIST = 'stats/expenses/'
+export const STAT_OUTCOME_CATEGORY_DETAIL = 'stats/expenses/currencies/%d/'
 export const STAT_OUTCOME_CATEGORY_ITEM = 'sales/order/'
 export const STAT_OUTCOME_CATEGORY_GET_DOCUMENT = 'stats/agents/export/'
 export const STAT_REMAINDER_LIST = `/${REMAINDER_STOCK}/all_balances/`
@@ -433,6 +434,7 @@ export const STATISTICS_CASHBOX_LIST = `/${CASHBOX}/`
 export const STATISTICS_CASHBOX_ITEM = `/${CASHBOX}/%d/`
 
 export const STAT_EXPENDITURE_ON_STAFF_LIST = '/stats/staff_expenses/'
+export const STAT_EXPENDITURE_ON_STAFF_DETAIL = '/stats/staff_expenses/currencies/%d/'
 export const STAT_EXPENDITURE_ON_STAFF_ITEM = '/sales/order/'
 export const STAT_EXPENDITURE_ON_STAFFGET_DOCUMENT = '/stats/staff_expenses/export'
 

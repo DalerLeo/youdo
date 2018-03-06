@@ -149,7 +149,6 @@ const enhance = compose(
             },
             '& td:nth-child(even)': {
                 borderRight: '1px #efefef solid',
-                textAlign: 'right',
                 '&:first-child': {
                     borderRight: 'none'
                 }
@@ -158,7 +157,6 @@ const enhance = compose(
                 backgroundColor: '#f9f9f9'
             },
             '& td:last-child': {
-                textAlign: 'right',
                 borderRight: '1px #efefef solid',
                 borderLeft: 'none'
             }
@@ -329,6 +327,10 @@ const enhance = compose(
             width: '100%',
             display: 'flex',
             justifyContent: 'space-between',
+            marginBottom: '15px',
+            '&:last-child': {
+                marginBottom: '0'
+            },
             '& > div': {
                 padding: '10px 20px',
                 borderRadius: '2px',
@@ -379,6 +381,12 @@ const enhance = compose(
             zIndex: '999',
             justifyContent: 'center',
             padding: '0'
+        },
+        alignRight: {
+            textAlign: 'right !important'
+        },
+        rightBorder: {
+            borderRight: '1px #efefef solid'
         }
     }),
     withState('currentRow', 'updateRow', null),
@@ -407,28 +415,6 @@ const listHeader = [
         title: t('Фактически'),
         tooltip: t('Сумма продаж с учетом возвратов')
     },
-    // Returns
-    {
-        sorting: true,
-        tooltip: t('Сумма возвратов от продаж'),
-        title: t('По заказам')
-    },
-    {
-        sorting: true,
-        tooltip: t('Сумма возвратов за этот период'),
-        title: t('Общее')
-    },
-    // Payments
-    {
-        sorting: true,
-        title: t('По заказам'),
-        tooltip: t('Сумма оплат с заказов')
-    },
-    {
-        sorting: true,
-        title: t('Общее'),
-        tooltip: t('Общая сумма оплат')
-    },
     // Plan
     {
         sorting: true,
@@ -437,17 +423,6 @@ const listHeader = [
     {
         sorting: true,
         title: t('Осталось')
-    },
-    // Debt
-    {
-        sorting: true,
-        title: t('По заказам'),
-        tooltip: t('Долг по заказам')
-    },
-    {
-        sorting: true,
-        title: t('Общее'),
-        tooltip: t('Общая сумма долга')
     }
 ]
 
@@ -492,16 +467,12 @@ const StatAgentGridList = enhance((props) => {
     const primaryCurrency = getConfig('PRIMARY_CURRENCY')
 
     // Summary
-    const salesTotalSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'salesTotal'])), primaryCurrency)
     const salesFactSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'salesFact'])), primaryCurrency)
     const returnOrdersSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'returnOrders'])), primaryCurrency)
-    const returnTotalSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'returnTotal'])), primaryCurrency)
     const paymentOrdersSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'paymentOrders'])), primaryCurrency)
-    const paymentTotalSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'paymentTotal'])), primaryCurrency)
     const planTotalSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'planTotal'])), primaryCurrency)
     const planLeftSum = numberFormat(_.get(summaryData, ['data', 'planLeft']), primaryCurrency)
     const debtFromOrderSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'debtFromOrder'])), primaryCurrency)
-    const debtTotalSum = numberFormat(Math.abs(_.get(summaryData, ['data', 'debtTotal'])), primaryCurrency)
     const tableLeft = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
@@ -521,13 +492,10 @@ const StatAgentGridList = enhance((props) => {
         const salesTotal = numberFormat(_.get(item, 'salesTotal'), primaryCurrency)
         const salesFact = numberFormat(_.get(item, 'salesFact'), primaryCurrency)
         const returnOrders = numberFormat(_.get(item, 'returnOrders'), primaryCurrency)
-        const returnTotal = numberFormat(_.get(item, 'returnTotal'), primaryCurrency)
         const paymentOrders = numberFormat(_.get(item, 'paymentOrders'), primaryCurrency)
-        const paymentTotal = numberFormat(_.get(item, 'paymentTotal'), primaryCurrency)
         const planTotal = numberFormat(_.get(item, 'planTotal'), primaryCurrency)
         const planLeft = numberFormat(_.get(item, 'planLeft'), primaryCurrency)
         const debtFromOrder = numberFormat(_.get(item, 'debtFromOrder'), primaryCurrency)
-        const totalDebt = numberFormat(_.get(item, 'totalDebt'), primaryCurrency)
 
         return (
             <tr
@@ -537,18 +505,16 @@ const StatAgentGridList = enhance((props) => {
                 onMouseEnter={() => { updateRow(id) }}
                 onMouseLeave={() => { updateRow(null) }}>
                 <td>{salesTotal}</td>
-                <td>{salesFact}</td>
+                <td className={classes.alignRight}>{salesFact}</td>
 
-                <td>{returnOrders}</td>
-                <td>{returnTotal}</td>
+                <td colSpan={2} className={classes.rightBorder}>{returnOrders}</td>
 
-                <td>{paymentOrders}</td>
-                <td>{paymentTotal}</td>
+                <td colSpan={2}>{paymentOrders}</td>
 
                 <td>{planTotal}</td>
-                <td>{planLeft}</td>
-                <td>{debtFromOrder}</td>
-                <td>{totalDebt}</td>
+                <td className={classes.alignRight}>{planLeft}</td>
+
+                <td colSpan={2}>{debtFromOrder}</td>
             </tr>
         )
     })
@@ -600,29 +566,31 @@ const StatAgentGridList = enhance((props) => {
                                 : <div>
                                     <div className={classes.summaryWrapper}>
                                         <div>
-                                            <div>{t('Общая сумма продаж')}</div>
-                                            <div>{salesTotalSum}</div>
                                             <div>{t('Фактическая сумма продаж')}</div>
                                             <div>{salesFactSum}</div>
                                         </div>
                                         <div>
                                             <div>{t('Сумма возвратов от продаж')}</div>
                                             <div>{returnOrdersSum}</div>
-                                            <div>{t('Сумма возвратов за этот период')}</div>
-                                            <div>{returnTotalSum}</div>
                                         </div>
                                         <div>
                                             <div>{t('Сумма оплат с заказов')}</div>
                                             <div>{paymentOrdersSum}</div>
-                                            <div>{t('Общая сумма оплат')}</div>
-                                            <div>{paymentTotalSum}</div>
                                         </div>
                                     </div>
-                                    <div className={classes.summaryPlan}>
-                                        <div><span>{t('План агента')}</span> <span>{planTotalSum}</span></div>
-                                        <div><span>{t('План остаток')}</span> <span>{planLeftSum}</span></div>
-                                        <div><span>{t('Долг по заказам')}</span> <span>{debtFromOrderSum}</span></div>
-                                        <div><span>{t('Общая сумма долга')}</span> <span>{debtTotalSum}</span></div>
+                                    <div className={classes.summaryWrapper}>
+                                        <div>
+                                            <div>{t('План агента')}</div>
+                                            <div>{planTotalSum}</div>
+                                        </div>
+                                        <div>
+                                            <div>{t('План остаток')}</div>
+                                            <div>{planLeftSum}</div>
+                                        </div>
+                                        <div>
+                                            <div>{t('Долг по заказам')}</div>
+                                            <div>{debtFromOrderSum}</div>
+                                        </div>
                                     </div>
                                 </div>}
                         </div>
@@ -677,10 +645,10 @@ const StatAgentGridList = enhance((props) => {
                                             <tbody className={classes.tableBody}>
                                             <tr className={classes.title}>
                                                 <td colSpan={2}>{t('Продажа')}</td>
-                                                <td colSpan={2}>{t('Возврат')}</td>
-                                                <td colSpan={2}>{t('Оплачено')}</td>
+                                                <td colSpan={2} rowSpan={2}>{t('Возврат')}</td>
+                                                <td colSpan={2} rowSpan={2}>{t('Оплачено')}</td>
                                                 <td colSpan={2}>{t('План агента')}</td>
-                                                <td colSpan={2}>{t('Долг')}</td>
+                                                <td colSpan={2} rowSpan={2}>{t('Долг')}</td>
                                             </tr>
                                             <tr className={classes.subTitle}>
                                                 {_.map(listHeader, (header, index) => {
