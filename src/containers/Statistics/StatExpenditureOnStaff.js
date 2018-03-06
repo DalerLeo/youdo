@@ -12,7 +12,8 @@ import * as API from '../../constants/api'
 import {StatExpenditureOnStaffGridList} from '../../components/Statistics'
 import {STAT_EXPENDITURE_ON_STAFF_FILTER_KEY} from '../../components/Statistics/ExpenditureOnStaff/StatExpenditureOnStaffGridList'
 import {
-    statExpenditureOnStaffListFetchAction,
+    listFetchAction,
+    detailFetchAction,
     getTransactionData
 } from '../../actions/statExpenditureOnStaff'
 
@@ -30,6 +31,8 @@ const enhance = compose(
         const pathname = _.get(props, ['location', 'pathname'])
         const list = _.get(state, ['statExpenditureOnStaff', 'list', 'data'])
         const listLoading = _.get(state, ['statExpenditureOnStaff', 'list', 'loading'])
+        const detail = _.get(state, ['statExpenditureOnStaff', 'detail', 'data'])
+        const detailLoading = _.get(state, ['statExpenditureOnStaff', 'detail', 'loading'])
         const transactionData = _.get(state, ['statExpenditureOnStaff', 'transactionData', 'data'])
         const transactionDataLoading = _.get(state, ['statExpenditureOnStaff', 'transactionData', 'loading'])
         const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
@@ -41,6 +44,8 @@ const enhance = compose(
         return {
             list,
             listLoading,
+            detail,
+            detailLoading,
             transactionData,
             transactionDataLoading,
             filter,
@@ -58,7 +63,7 @@ const enhance = compose(
         }
         return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
-        dispatch(statExpenditureOnStaffListFetchAction(filter))
+        dispatch(listFetchAction(filter))
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -69,6 +74,7 @@ const enhance = compose(
         const nextOpen = _.toNumber(_.get(location, ['query', [OPEN_TRANSACTION_DIALOG]]))
         if (nextOpen > ZERO) {
             dispatch(getTransactionData(filter, filterTransaction, nextOpen))
+            dispatch(detailFetchAction(nextOpen))
         }
     }),
 
@@ -104,6 +110,8 @@ const StatExpenditureOnStaffList = enhance((props) => {
     const {
         list,
         listLoading,
+        detail,
+        detailLoading,
         filter,
         layout,
         filterForm,
@@ -134,6 +142,8 @@ const StatExpenditureOnStaffList = enhance((props) => {
     const transactionDialog = {
         open: openTransactionDialog,
         data: _.get(transactionData, 'results'),
+        detail,
+        detailLoading,
         loading: transactionDataLoading,
         handleOpenTransactionDialog: props.handleOpenTransactionDialog,
         handleCloseTransactionDialog: props.handleCloseTransactionDialog,
