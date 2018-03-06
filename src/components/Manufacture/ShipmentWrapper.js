@@ -64,7 +64,8 @@ const ManufactureShipmentWrapper = enhance((props) => {
         handleEditProductAmount,
         handleDeleteProduct,
         sendDialog,
-        stock
+        stock,
+        filterInventory
     } = props
     return (
         <div>
@@ -83,7 +84,8 @@ const ManufactureShipmentWrapper = enhance((props) => {
                 handleDeleteProduct={handleDeleteProduct}
                 addProductDialog={addProductDialog}
                 stock={stock}
-                sendDialog={sendDialog}/>
+                sendDialog={sendDialog}
+                filterInventory={filterInventory}/>
         </div>
     )
 })

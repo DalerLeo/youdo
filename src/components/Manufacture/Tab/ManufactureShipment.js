@@ -1,6 +1,5 @@
 import _ from 'lodash'
 import React from 'react'
-import {Row, Col} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
 import {hashHistory, Link} from 'react-router'
 import {compose, withState} from 'recompose'
@@ -9,34 +8,24 @@ import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import Sort from 'material-ui/svg-icons/content/sort'
-import DeleteIcon from 'material-ui/svg-icons/action/delete'
-import EditIcon from 'material-ui/svg-icons/editor/mode-edit'
 import Log from 'material-ui/svg-icons/content/content-paste'
 import Shift from 'material-ui/svg-icons/av/loop'
 import BeenHere from 'material-ui/svg-icons/maps/beenhere'
 import InventoryIcon from 'material-ui/svg-icons/notification/event-note'
 import Raw from 'material-ui/svg-icons/action/exit-to-app'
 import Product from '../../CustomIcons/Product'
-import Material from 'material-ui/svg-icons/maps/layers'
-import {Field, reduxForm, change} from 'redux-form'
-import Defected from 'material-ui/svg-icons/image/broken-image'
-import Check from 'material-ui/svg-icons/navigation/check'
-import Person from 'material-ui/svg-icons/social/person'
-import Loader from '../../Loader'
-import ToolTip from '../../ToolTip'
+import {Field, reduxForm} from 'redux-form'
 import ManufactureActivityDateRange from '../ManufactureActivityDateRange'
 import ManufactureActivityFilterDialog from '../ManufactureActivityFilterDialog'
 import ManufactureAddProductMaterial from '../ManufactureAddProductMaterial'
 import ShipmentAddProductsDialog from '../ShipmentAddProductsDialog'
 import ConfirmDialog from '../../ConfirmDialog'
-import Pagination from '../../GridList/GridListNavPagination'
 import Choose from '../../Images/choose-menu.png'
 import NotFound from '../../Images/not-found.png'
 import * as ROUTES from '../../../constants/routes'
 import {INVENTORY_INVENTORY_DIALOG_OPEN} from '../../Inventory'
-import dateTimeFormat from '../../../helpers/dateTimeFormat'
 import numberFormat from '../../../helpers/numberFormat'
-import {ShiftMultiSearchField, TextField, normalizeNumber, ManufactureLogTypeSearchField, UsersSearchField} from '../../ReduxForm'
+import {ShiftMultiSearchField, ManufactureLogTypeSearchField, UsersSearchField} from '../../ReduxForm'
 import * as TAB from '../../../constants/manufactureShipmentTab'
 import ShipmentConfirmDialog from '../../../components/Manufacture/ShipmentConfirmDialog'
 import CloseIcon from 'material-ui/svg-icons/navigation/cancel'
@@ -44,9 +33,10 @@ import t from '../../../helpers/translate'
 import toBoolean from '../../../helpers/toBoolean'
 import {TYPE_PRODUCT, TYPE_RAW} from '../index'
 import {CustomTabs} from '../../CustomTabs'
-import ShipmentInventory from './ShipmentInventory'
-import ShipmentShift from './ShipmentShift'
-import ShipmentReview from './ShipmentReview'
+import ShipmentInventoryTab from './ShipmentInventoryTab'
+import ShipmentShiftTab from './ShipmentShiftTab'
+import ShipmentReviewTab from './ShipmentReviewTab'
+import ShipmentLogsTab from './ShipmentLogsTab'
 const ZERO = 0
 export const MANUFACTURES_FILTERS_KEY = {
     SHIFT: 'shift',
@@ -208,9 +198,6 @@ const enhance = compose(
                 textAlign: 'right',
                 '&:first-child': {
                     textAlign: 'left'
-                },
-                '&:nth-child(2)': {
-                    textAlign: 'left'
                 }
             }
         },
@@ -248,6 +235,7 @@ const enhance = compose(
             borderRadius: '2px',
             cursor: 'pointer',
             padding: '8px 0',
+            position: 'relative',
             '&:hover': {
                 background: '#f2f5f8'
             },
@@ -336,35 +324,14 @@ const enhance = compose(
         form: 'LogEditForm',
         enableReinitialize: true
     }),
-    withState('edit', 'setEdit', null),
     withState('deleteItem', 'setDeleteItem', null)
 )
 
 const iconStyles = {
-    product: {
-        width: 20,
-        height: 20,
-        color: '#81c784'
-    },
-    material: {
-        width: 20,
-        height: 20,
-        color: '#999'
-    },
-    defected: {
-        width: 20,
-        height: 20,
-        color: '#e57373'
-    },
     icon: {
         color: '#666',
         width: 22,
         height: 22
-    },
-    button: {
-        width: 30,
-        height: 30,
-        padding: 0
     },
     clearButton: {
         width: 23,
@@ -381,18 +348,24 @@ const iconStyles = {
         width: 23,
         height: 23
     },
-    user: {
-        marginRight: '5px',
-        color: '#888',
-        width: 22,
-        height: 22
-    },
     filterIcon: {
         color: '#fff',
         width: 18
     }
 }
 
+const flatButtonStyle = {
+    reconciliationColor: '#ff7373',
+    verifyColor: '#FF8A65',
+    productColor: '#4db6ac',
+    rawColor: '#12aaeb',
+    labelStyle: {
+        color: '#fff',
+        fontWeight: '600',
+        verticalAlign: 'baseline',
+        textTransform: 'none'
+    }
+}
 const ManufactureShipment = enhance((props) => {
     const {
         filterLogs,
@@ -403,20 +376,16 @@ const ManufactureShipment = enhance((props) => {
         manufactureId,
         productMaterialDialog,
         addProductDialog,
-        edit,
         handleEditProductAmount,
-        setEdit,
         deleteItem,
         setDeleteItem,
         handleDeleteProduct,
         sendDialog,
-        stock
+        stock,
+        filterInventory
     } = props
     const filter = _.get(shipmentData, 'filter')
-    const PRODUCT = 'return'
-    const MATERIAL = 'material'
     const tab = _.get(tabData, 'tab')
-    const openID = _.toInteger(filter.getParam('openId'))
     const detailData = _.get(shipmentData, 'detailData')
     const shipmentList = _.get(shipmentData, 'shipmentList')
     const shiftsLoading = _.get(shipmentData, 'listLoading')
@@ -433,125 +402,13 @@ const ManufactureShipment = enhance((props) => {
     const handleCloseDelete = () => {
         setDeleteItem(null)
     }
-    const handleEdit = (type, id) => {
-        props.dispatch(change('LogEditForm', 'editAmount', ''))
-        setEdit(id)
-        hashHistory.push(filter.createURL({openType: type, openId: id}))
-    }
-    const handleSubmit = () => {
-        setEdit(null)
-        handleEditProductAmount()
-        props.dispatch(change('LogEditForm', 'editAmount', ''))
-    }
-    const handleOpenInventory = () => {
-        setEdit(null)
-        handleEditProductAmount()
-        props.dispatch(change('LogEditForm', 'editAmount', ''))
-    }
     const handleDeleteSubmit = () => {
         handleDeleteProduct()
         setDeleteItem(null)
         return null
     }
-    const groupedProducts = _.groupBy(_.get(detailData, 'products'), (item) => item.product.id)
-    const logs = _.map(_.get(detailData, 'logs'), (item, index) => {
-        const measurement = _.get(item, ['product', 'measurement', 'name'])
-        const product = _.get(item, ['product', 'name'])
-        const createdDate = dateTimeFormat(_.get(item, 'createdDate'))
-        const amount = _.get(item, 'amount')
-        const type = _.get(item, 'type')
-        const id = _.get(item, 'id')
-        const kind = _.get(item, 'kind')
-        const isDefect = _.get(item, 'isDefect')
-        const userName = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'firstName'])
-        const isTransferred = _.get(item, ['personalRotation', 'isTransferred'])
-        return (
-            <Row key={index} className={isDefect ? classes.productDefected : classes.product}>
-                <Col xs={4} style={{display: 'flex'}}>
-                    <ToolTip position="left" text={'Создал: ' + userName}>
-                        <Person style={iconStyles.user}/>
-                    </ToolTip>
-                {type === PRODUCT
-                    ? <span>
-                        {isDefect
-                            ? <ToolTip position="left" text={t('Брак')}><Defected style={iconStyles.defected}/></ToolTip>
-                            : kind === MATERIAL
-                                ? <Material style={iconStyles.material}/>
-                                : <Product style={iconStyles.product}/>
-                        }
-                        {product}
-                        </span>
-                    : <span>
-                            <ToolTip position="left" text={t(isDefect ? 'Брак' : '')}>
-                                <Raw style={isDefect ? iconStyles.defected : iconStyles.material}/>
-                            </ToolTip>
-                            {product}
-                        </span>}
-                </Col>
-                <Col xs={2}>
-                    {type === PRODUCT
-                        ? (kind === MATERIAL)
-                            ? t('Материал')
-                            : t('Продукт')
-                        : t('Сырье')}
-                </Col>
-                {edit === id
-                    ? <Col xs={2}>
-                        <Field
-                            className={classes.inputFieldCustom}
-                            fullWidth={true}
-                            component={TextField}
-                            name={'editAmount'}
-                            normalize={normalizeNumber}
-                            hintText={numberFormat(amount, measurement)}/>
-                    </Col>
-                    : <Col xs={2}>
-                        {editlogsLoading && (openID === id)
-                            ? <div className={classes.load}><Loader size={0.5}/></div>
-                            : numberFormat(amount, measurement)}
-                    </Col>}
-                <Col xs={4} style={{position: 'relative', paddingRight: '78px'}}>{createdDate}
-                    <div style={{position: 'absolute', top: '-5px', right: '0'}}>
-                        {edit === id
-                            ? <div>
-                                <IconButton
-                                    iconStyle={iconStyles.icon}
-                                    style={iconStyles.button}
-                                    disableTouchRipple={true}
-                                    onTouchTap={handleSubmit}>
-                                    <Check color="#12aaeb"/>
-                                </IconButton>
-                            </div>
-                            : <div className={classes.actionButtons}>
-                                <ToolTip position="bottom" text={isTransferred ? t('Уже передан') : t('Изменить')}>
-                                    <IconButton
-                                        iconStyle={iconStyles.icon}
-                                        disabled={isTransferred}
-                                        style={iconStyles.button}
-                                        disableTouchRipple={true}
-                                        onTouchTap={() => handleEdit(type, id)}
-                                        touch={true}>
-                                        <EditIcon/>
-                                    </IconButton>
-                                </ToolTip>
-                                <ToolTip position="bottom" text={isTransferred ? t('Уже передан') : t('Удалить')}>
-                                    <IconButton
-                                        disableTouchRipple={true}
-                                        disabled={isTransferred}
-                                        iconStyle={iconStyles.icon}
-                                        style={iconStyles.button}
-                                        onTouchTap={() => handleOpenDelete(item, type, id)}
-                                        touch={true}>
-                                        <DeleteIcon/>
-                                    </IconButton>
-                                </ToolTip>
-                            </div>}
-                    </div>
-                </Col>
 
-            </Row>
-        )
-    })
+    const groupedProducts = _.groupBy(_.get(detailData, 'products'), (item) => item.product.id)
     const selectedShiftId = _.toInteger(filter.getParam('openShift'))
     const selectedShift = _.find(shipmentList, {'id': selectedShiftId})
     const fields = (
@@ -582,18 +439,6 @@ const ManufactureShipment = enhance((props) => {
                 <div>{t('Выберите производство')}...</div>
             </Paper>
         )
-    }
-    const flatButtonStyle = {
-        reconciliationColor: '#ff7373',
-        verifyColor: '#FF8A65',
-        productColor: '#4db6ac',
-        rawColor: '#12aaeb',
-        labelStyle: {
-            color: '#fff',
-            fontWeight: '600',
-            verticalAlign: 'baseline',
-            textTransform: 'none'
-        }
     }
 
     const getFilterCount = (filterKeys) => {
@@ -629,6 +474,7 @@ const ManufactureShipment = enhance((props) => {
             icon: <InventoryIcon style={iconStyles.icon}/>
         }
     ]
+
     return (
         <div>
             <div className={classes.buttons}>
@@ -645,7 +491,6 @@ const ManufactureShipment = enhance((props) => {
                         backgroundColor={flatButtonStyle.verifyColor}
                         hoverColor={flatButtonStyle.verifyColor}
                         rippleColor={'#fff'}
-                        onTouchTap={() => { handleOpenInventory() }}
                         icon={<BeenHere color={'#fff'}/>}
                     />
                 </Link>
@@ -700,7 +545,7 @@ const ManufactureShipment = enhance((props) => {
                             value={tab}
                             mainClassName={classes.tabWrapper}
                             onChangeTab={(value) => tabData.handleTabChange(value)}>
-                            <ShipmentReview
+                            <ShipmentReviewTab
                                 key={TAB.TAB_SORTED}
                                 data={{
                                     groupedProducts,
@@ -710,35 +555,18 @@ const ManufactureShipment = enhance((props) => {
                                 loading={{productsLoading, materialsLoading}}
                                 filter={filter}
                                 classes={classes}/>
-                            <div
-                                className={classes.tab}
-                                key={TAB.TAB_LOGS}>
-                                {!_.isEmpty(logs)
-                                    ? <div className={classes.productsBlock}>
-                                        <div className={classes.pagination}>
-                                            <Pagination filter={filterLogs}/>
-                                        </div>
-                                        <Row className={classes.flexTitle}>
-                                            <Col xs={4}><h4>{t('Продукт / сырье')}</h4></Col>
-                                            <Col xs={2}><h4>{t('Тип')}</h4></Col>
-                                            <Col xs={2}><h4>{t('Кол-во')}</h4></Col>
-                                            <Col xs={4} style={{paddingRight: '78px'}}><h4>{t('Дата, время')}</h4></Col>
-                                        </Row>
-                                        {logsLoading
-                                            ? <div className={classes.loader}>
-                                                <Loader size={0.75}/>
-                                            </div>
-                                            : logs}
-                                    </div>
-                                    : logsLoading
-                                        ? <div className={classes.loader}>
-                                            <Loader size={0.75}/>
-                                        </div>
-                                        : <div className={classes.emptyQuery}>
-                                            <div>{t('Нет записей в данной смене')}</div>
-                                        </div>}
-                            </div>
-                            <ShipmentShift
+                            <ShipmentLogsTab
+                                key={TAB.TAB_LOGS}
+                                classes={classes}
+                                list={_.get(detailData, 'logs')}
+                                filter={filterLogs}
+                                loading={logsLoading}
+                                dispatch={props.dispatch}
+                                editLoading={editlogsLoading}
+                                handleOpenDelete={handleOpenDelete}
+                                handleEditProductAmount={handleEditProductAmount}
+                            />
+                            <ShipmentShiftTab
                                 key={TAB.TAB_SHIFT}
                                 list={shipmentList}
                                 loading={shiftsLoading}
@@ -746,11 +574,11 @@ const ManufactureShipment = enhance((props) => {
                                 classes={classes}
                                 handleSendOpenDialog={sendDialog.handleOpen}
                             />
-                            <ShipmentInventory
+                            <ShipmentInventoryTab
                                 key={TAB.TAB_INVENTORY}
                                 data={_.get(detailData, 'inventory')}
                                 loading={inventoryLoading}
-                                filter={filter}
+                                filter={filterInventory}
                                 classes={classes}/>
                         </CustomTabs>
                     </div>

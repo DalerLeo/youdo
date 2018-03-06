@@ -11,21 +11,6 @@ import dateTimeFormat from '../../../helpers/dateTimeFormat'
 import {Row, Col} from 'react-flexbox-grid'
 
 const iconStyles = {
-    product: {
-        width: 20,
-        height: 20,
-        color: '#81c784'
-    },
-    material: {
-        width: 20,
-        height: 20,
-        color: '#999'
-    },
-    defected: {
-        width: 20,
-        height: 20,
-        color: '#e57373'
-    },
     icon: {
         color: '#666',
         width: 22,
@@ -35,32 +20,16 @@ const iconStyles = {
         width: 30,
         height: 30,
         padding: 0
-    },
-    clearButton: {
-        width: 23,
-        height: 23,
-        padding: 0,
-        position: 'absolute',
-        borderRadius: '100%',
-        backgroundColor: '#fff',
-        right: '20px',
-        top: '5px'
-    },
-    clearIcon: {
-        color: '#888',
-        width: 23,
-        height: 23
-    },
-    user: {
-        marginRight: '5px',
-        color: '#888',
-        width: 22,
-        height: 22
-    },
-    filterIcon: {
-        color: '#fff',
-        width: 18
     }
+}
+const rowStyle = {
+    position: 'absolute',
+    left: '0',
+    top: '0',
+    right: '0',
+    bottom: '0',
+    cursor: 'pointer',
+    zIndex: '1'
 }
 
 const ShipmentShift = (props) => {
@@ -80,7 +49,8 @@ const ShipmentShift = (props) => {
         const userId = _.get(item, ['user', 'id'])
         const isTransferred = _.get(item, 'isTransferred')
         return (
-            <Row key={id} className={classes.shift} onClick={() => handleFilterByRotation(userId, shiftId)}>
+            <Row key={id} className={classes.shift}>
+                <div style={rowStyle} onClick={() => handleFilterByRotation(userId, shiftId)}/>
                 <Col xs={3}>{userName}</Col>
                 <Col xs={2}>{shiftName}</Col>
                 <Col xs={3}>{openedTime}</Col>

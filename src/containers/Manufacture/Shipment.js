@@ -655,7 +655,8 @@ const ManufactureShipmentList = enhance((props) => {
         addProductsMaterialsList,
         addProductsMaterialsLoading,
         filterProducts,
-        shipmentLogsEditLoading
+        shipmentLogsEditLoading,
+        filterInventory
     } = props
 
     const detailId = _.toInteger(_.get(params, 'manufactureId'))
@@ -758,6 +759,7 @@ const ManufactureShipmentList = enhance((props) => {
                     filter={filter}
                     filterDialog={filterDialog}
                     filterLogs={filterLogs}
+                    filterInventory={filterInventory}
                     tabData={tabData}
                     shipmentData={shipmentData}
                     listData={listData}
