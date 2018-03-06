@@ -11,21 +11,6 @@ import dateTimeFormat from '../../../helpers/dateTimeFormat'
 import {Row, Col} from 'react-flexbox-grid'
 
 const iconStyles = {
-    product: {
-        width: 20,
-        height: 20,
-        color: '#81c784'
-    },
-    material: {
-        width: 20,
-        height: 20,
-        color: '#999'
-    },
-    defected: {
-        width: 20,
-        height: 20,
-        color: '#e57373'
-    },
     icon: {
         color: '#666',
         width: 22,
@@ -35,31 +20,6 @@ const iconStyles = {
         width: 30,
         height: 30,
         padding: 0
-    },
-    clearButton: {
-        width: 23,
-        height: 23,
-        padding: 0,
-        position: 'absolute',
-        borderRadius: '100%',
-        backgroundColor: '#fff',
-        right: '20px',
-        top: '5px'
-    },
-    clearIcon: {
-        color: '#888',
-        width: 23,
-        height: 23
-    },
-    user: {
-        marginRight: '5px',
-        color: '#888',
-        width: 22,
-        height: 22
-    },
-    filterIcon: {
-        color: '#fff',
-        width: 18
     }
 }
 
