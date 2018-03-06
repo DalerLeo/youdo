@@ -105,6 +105,7 @@ const enhance = compose(
             },
             '& .dottedList': {
                 padding: '15px 30px',
+                position: 'relative',
                 margin: '0 -30px',
                 '& > div': {
                     '&:first-child': {
@@ -122,6 +123,15 @@ const enhance = compose(
                     backgroundColor: '#efefef'
                 }
             }
+        },
+        redirect: {
+            cursor: 'pointer',
+            position: 'absolute',
+            top: '0',
+            left: '0',
+            right: '0',
+            bottom: '0',
+            zIndex: '2'
         },
         red: {
             color: '#e57373',
@@ -188,16 +198,12 @@ const ExpenditureTransactionDialog = enhance((props) => {
         return (
             <Row key={id}
                  className="dottedList"
-                 style={{cursor: isOutcome ? 'unset' : 'pointer'}}
-                 onClick={() => {
-                     return isOutcome
-                         ? null
-                         : hashHistory.push({
-                             pathname: ROUTES.TRANSACTION_LIST_URL,
-                             query: {[TRANSACTION_STAFF_EXPENSE_DIALOG]: transactionId}
-                         })
-                 }}>
+                 style={{cursor: isOutcome ? 'unset' : 'pointer'}}>
                 <Col xs={1}>{id}</Col>
+                {!isOutcome && <Link target={'_blank'} className={classes.redirect} to={{
+                    pathname: ROUTES.TRANSACTION_LIST_URL,
+                    query: {[TRANSACTION_STAFF_EXPENSE_DIALOG]: transactionId}
+                }}/>}
                 <Col xs={2}>{cashbox}</Col>
                 <Col xs={2}>{date}</Col>
                 <Col xs={4}>
