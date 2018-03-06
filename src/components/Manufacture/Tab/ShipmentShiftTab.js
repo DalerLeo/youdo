@@ -22,6 +22,15 @@ const iconStyles = {
         padding: 0
     }
 }
+const rowStyle = {
+    position: 'absolute',
+    left: '0',
+    top: '0',
+    right: '0',
+    bottom: '0',
+    cursor: 'pointer',
+    zIndex: '1'
+}
 
 const ShipmentShift = (props) => {
     const {list, loading, filter, classes, handleSendOpenDialog} = props
@@ -40,7 +49,8 @@ const ShipmentShift = (props) => {
         const userId = _.get(item, ['user', 'id'])
         const isTransferred = _.get(item, 'isTransferred')
         return (
-            <Row key={id} className={classes.shift} onClick={() => handleFilterByRotation(userId, shiftId)}>
+            <Row key={id} className={classes.shift}>
+                <div style={rowStyle} onClick={() => handleFilterByRotation(userId, shiftId)}/>
                 <Col xs={3}>{userName}</Col>
                 <Col xs={2}>{shiftName}</Col>
                 <Col xs={3}>{openedTime}</Col>

@@ -1,4 +1,6 @@
 import React from 'react'
+import {change, Field} from 'redux-form'
+import {hashHistory} from 'react-router'
 import _ from 'lodash'
 import t from '../../../helpers/translate'
 import dateTimeFormat from '../../../helpers/dateTimeFormat'
@@ -8,6 +10,15 @@ import {Row, Col} from 'react-flexbox-grid'
 import Loader from '../../Loader'
 import ToolTip from '../../ToolTip'
 import {PRODUCT, MATERIAL} from '../index'
+import Person from 'material-ui/svg-icons/social/person'
+import Product from '../../CustomIcons/Product'
+import IconButton from 'material-ui/IconButton'
+import Check from 'material-ui/svg-icons/navigation/check'
+import DeleteIcon from 'material-ui/svg-icons/action/delete'
+import EditIcon from 'material-ui/svg-icons/editor/mode-edit'
+import Defected from 'material-ui/svg-icons/image/broken-image'
+import Raw from 'material-ui/svg-icons/action/exit-to-app'
+import Pagination from '../../GridList/GridListNavPagination'
 
 const iconStyles = {
     product: {
@@ -35,30 +46,11 @@ const iconStyles = {
         height: 30,
         padding: 0
     },
-    clearButton: {
-        width: 23,
-        height: 23,
-        padding: 0,
-        position: 'absolute',
-        borderRadius: '100%',
-        backgroundColor: '#fff',
-        right: '20px',
-        top: '5px'
-    },
-    clearIcon: {
-        color: '#888',
-        width: 23,
-        height: 23
-    },
     user: {
         marginRight: '5px',
         color: '#888',
         width: 22,
         height: 22
-    },
-    filterIcon: {
-        color: '#fff',
-        width: 18
     }
 }
 
@@ -66,15 +58,33 @@ class ShipmentLogs extends React.Component {
     constructor (props) {
         super(props)
         this.state = {
-            deleteItem: null,
             editItem: null
         }
+        this.handleSubmit = this.handleSubmit.bind(this)
+        this.handleOpenEdit = this.handleOpenEdit.bind(this)
+    }
+
+    handleOpenEdit (type, id) {
+        const {dispatch, filter} = this.props
+        this.setState({
+            editItem: id
+        })
+        dispatch(change('LogEditForm', 'editAmount', ''))
+        hashHistory.push(filter.createURL({openType: type, openId: id}))
+    }
+
+    handleSubmit () {
+        this.setState({
+            editItem: null
+        })
+        this.props.handleEditProductAmount()
     }
 
     render () {
-        const {data, classes, loading, openID} = this.props
+        const {list, classes, loading, filter, handleOpenDelete, editLoading} = this.props
         const {editItem} = this.state
-        const list = _.map(data, (item, index) => {
+        const openID = _.toInteger(filter.getParam('openId'))
+        const logs = _.map(list, (item, index) => {
             const measurement = _.get(item, ['product', 'measurement', 'name'])
             const product = _.get(item, ['product', 'name'])
             const createdDate = dateTimeFormat(_.get(item, 'createdDate'))
@@ -126,7 +136,7 @@ class ShipmentLogs extends React.Component {
                                 hintText={numberFormat(amount, measurement)}/>
                         </Col>
                         : <Col xs={2}>
-                            {loading && (openID === id)
+                            {editLoading && (openID === id)
                                 ? <div className={classes.load}><Loader size={0.5}/></div>
                                 : numberFormat(amount, measurement)}
                         </Col>}
@@ -137,7 +147,8 @@ class ShipmentLogs extends React.Component {
                                     <IconButton
                                         iconStyle={iconStyles.icon}
                                         style={iconStyles.button}
-                                        disableTouchRipple={true}>
+                                        disableTouchRipple={true}
+                                        onTouchTap={() => this.handleSubmit()}>
                                         <Check color="#12aaeb"/>
                                     </IconButton>
                                 </div>
@@ -148,6 +159,7 @@ class ShipmentLogs extends React.Component {
                                             disabled={isTransferred}
                                             style={iconStyles.button}
                                             disableTouchRipple={true}
+                                            onTouchTap={() => this.handleOpenEdit(type, id)}
                                             touch={true}>
                                             <EditIcon/>
                                         </IconButton>
@@ -158,6 +170,7 @@ class ShipmentLogs extends React.Component {
                                             disabled={isTransferred}
                                             iconStyle={iconStyles.icon}
                                             style={iconStyles.button}
+                                            onTouchTap={() => handleOpenDelete(item, type, id)}
                                             touch={true}>
                                             <DeleteIcon/>
                                         </IconButton>
@@ -171,9 +184,11 @@ class ShipmentLogs extends React.Component {
         })
 
         return (
-            !_.isEmpty(data)
+            !_.isEmpty(list)
                 ? <div className={classes.productsBlock}>
-                <div className={classes.pagination}>}
+                <div className={classes.pagination}>
+                    <Pagination filter={filter}/>
+
                 </div>
                 <Row className={classes.flexTitle}>
                     <Col xs={4}><h4>{t('Продукт / сырье')}</h4></Col>
@@ -185,7 +200,7 @@ class ShipmentLogs extends React.Component {
                     ? <div className={classes.loader}>
                         <Loader size={0.75}/>
                     </div>
-                    : list}
+                    : logs}
             </div>
                 : loading
                 ? <div className={classes.loader}>
