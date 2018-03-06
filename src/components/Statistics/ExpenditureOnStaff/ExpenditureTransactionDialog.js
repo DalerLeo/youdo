@@ -5,7 +5,7 @@ import {Row, Col} from 'react-flexbox-grid'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import {reduxForm} from 'redux-form'
-import {hashHistory} from 'react-router'
+import {Link} from 'react-router'
 import Dialog from 'material-ui/Dialog'
 import IconButton from 'material-ui/IconButton'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
@@ -123,6 +123,15 @@ const enhance = compose(
               height: '50px !important',
               color: '#999 !important'
           }
+      },
+      openDetail: {
+          position: 'absolute',
+          left: '0',
+          top: '0',
+          right: '0',
+          bottom: '0',
+          cursor: 'pointer',
+          zIndex: '1'
       }
   }),
   reduxForm({
@@ -162,15 +171,14 @@ const ExpenditureTransactionDialog = enhance((props) => {
         return (
       <Row key={id}
            className="dottedList"
-           style={{cursor: isOutcome ? 'unset' : 'pointer'}}
-           onClick={() => {
-               return isOutcome
-                   ? null
-                   : hashHistory.push({
-                       pathname: ROUTES.TRANSACTION_LIST_URL,
-                       query: {[TRANSACTION_STAFF_EXPENSE_DIALOG]: transactionId}
-                   })
-           }}>
+           style={{cursor: isOutcome ? 'unset' : 'pointer'}}>
+          <Link
+              to={{
+                  pathname: ROUTES.TRANSACTION_LIST_URL,
+                  query: {[TRANSACTION_STAFF_EXPENSE_DIALOG]: transactionId}
+              }}
+             target="_blank"
+             className={classes.openDetail}/>
           <Col xs={1}>{id}</Col>
           <Col xs={2}>{cashbox}</Col>
           <Col xs={2}>{date}</Col>
