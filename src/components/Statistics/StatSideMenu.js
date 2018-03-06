@@ -70,8 +70,8 @@ const lastDayOfMonth = moment().format('YYYY-MM-' + lastDay)
 
 const StatSideMenu = enhance((props) => {
     const {classes, currentUrl, filter, permissions, isAdmin} = props
-    const fromDate = filter ? _.get(filter.getParams(), 'fromDate') : firstDayOfMonth
-    const toDate = filter ? _.get(filter.getParams(), 'toDate') : lastDayOfMonth
+    const fromDate = filter ? _.get(filter.getParams(), 'fromDate') || firstDayOfMonth : firstDayOfMonth
+    const toDate = filter ? _.get(filter.getParams(), 'toDate') || lastDayOfMonth : lastDayOfMonth
     const MenuItems = _.find(getMenus(permissions, isAdmin), {'section': 'Statistics'})
     const sortedMenu = _.groupBy(MenuItems.childs, 'section')
     const customQuery = {fromDate: fromDate, toDate: toDate}
