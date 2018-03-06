@@ -14,7 +14,13 @@ import getConfig from '../../../helpers/getConfig'
 import numberFormat from '../../../helpers/numberFormat.js'
 import horizontalScroll from '../../../helpers/horizontalScroll.js'
 import NotFound from '../../Images/not-found.png'
-import {TextField, ProductTypeChildSearchField, ProductTypeSearchField, DateToDateField, ClientMultiSearchField} from '../../ReduxForm'
+import {
+    TextField,
+    ProductTypeChildSearchField,
+    ProductTypeSearchField,
+    DateToDateField,
+    ClientMultiSearchField
+} from '../../ReduxForm'
 import ordering from '../../../helpers/ordering'
 import {reduxForm, Field} from 'redux-form'
 import IconButton from 'material-ui/IconButton'
@@ -31,6 +37,7 @@ import t from '../../../helpers/translate'
 import Product from 'material-ui/svg-icons/device/widgets'
 import ProductType from 'material-ui/svg-icons/action/settings-input-component'
 import {hashHistory} from 'react-router'
+// .. import ProductsPieChart from './ProductsPieChart'
 
 export const STAT_PRODUCT_FILTER_KEY = {
     SEARCH: 'search',
