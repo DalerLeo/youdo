@@ -9,6 +9,7 @@ import {Field} from 'redux-form'
 import Back from 'material-ui/svg-icons/content/reply'
 import NotFound from '../../Images/not-found.png'
 import numberFormat from '../../../helpers/numberFormat'
+import moduleFormat from '../../../helpers/moduleFormat'
 import getConfig from '../../../helpers/getConfig'
 import t from '../../../helpers/translate'
 import TransactionsList from '../Finance/TransactionsList'
@@ -235,11 +236,11 @@ const StatCashboxDetails = enhance((props) => {
     const startBalance = _.toNumber(_.get(detailData, ['sumItemData', 'startBalance']))
     const endBalance = _.toNumber(_.get(detailData, ['sumItemData', 'endBalance']))
     const income = _.toNumber(_.get(detailData, ['sumItemData', 'income']))
-    const expenses = _.toNumber(_.get(detailData, ['sumItemData', 'expenses']))
+    const expenses = Math.abs(_.get(detailData, ['sumItemData', 'expenses']))
     const intStartBalance = '(' + numberFormat(_.toNumber(_.get(detailData, ['sumItemData', 'internalStartBalance'])), primaryCurrency) + ')'
     const intEndBalance = '(' + numberFormat(_.toNumber(_.get(detailData, ['sumItemData', 'internalEndBalance'])), primaryCurrency) + ')'
     const intIncome = '(' + numberFormat(_.toNumber(_.get(detailData, ['sumItemData', 'internalIncome'])), primaryCurrency) + ')'
-    const intExpenses = '(' + numberFormat(_.toNumber(_.get(detailData, ['sumItemData', 'internalExpenses'])), primaryCurrency) + ')'
+    const intExpenses = '(' + moduleFormat(_.get(detailData, ['sumItemData', 'internalExpenses']), primaryCurrency) + ')'
     const currency = _.get(detailData, ['data', 'currency', 'name'])
 
     const listData = {

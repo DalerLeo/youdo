@@ -51,7 +51,8 @@ const enhance = compose(
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '50px 0'
+            padding: '50px 0',
+            width: '100%'
         },
         dialog: {
             overflowY: 'auto !important',
