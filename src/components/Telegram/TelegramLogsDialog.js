@@ -19,7 +19,7 @@ import dateTimeFormat from '../../helpers/dateTimeFormat'
 import Accepted from 'material-ui/svg-icons/action/done-all'
 import Rejected from 'material-ui/svg-icons/content/block'
 import Requested from 'material-ui/svg-icons/action/schedule'
-import NotFound from '../Images/not-found.png'
+import noPayment from '../Images/noPayment.png'
 import {
     REQUESTED,
     CONFIRMED,
@@ -141,18 +141,21 @@ const enhance = compose(
                 height: '20px !important'
             }
         },
-        emptyQuery: {
-            marginBottom: '15px',
-            background: 'url(' + NotFound + ') no-repeat center center',
-            backgroundSize: '200px',
-            padding: '200px 0 0',
-            textAlign: 'center',
-            fontSize: '13px',
-            color: '#666',
-            '& svg': {
-                width: '50px !important',
-                height: '50px !important',
-                color: '#999 !important'
+        noPayment: {
+            background: 'url(' + noPayment + ') no-repeat center 15px',
+            backgroundSize: '270px',
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            minHeight: '270px',
+            justifyContent: 'center',
+            paddingTop: '45px',
+            '& > div': {
+                color: '#797f94',
+                marginTop: '140px',
+                fontSize: '13px',
+                width: '50%',
+                textAlign: 'center'
             }
         }
     }),
@@ -253,8 +256,8 @@ const StatAgentDialog = enhance((props) => {
                                 <Col xs={2}>{t('Сумма')}</Col>
                             </Row>
                             {_.isEmpty(logsList)
-                                ? <div className={classes.emptyQuery}>
-                                    <div>{t('У данного агента в этом периоде нет заказов')}</div>
+                                ? <div className={classes.noPayment}>
+                                    <div dangerouslySetInnerHTML={{__html: t('Пользователь пока не совершил <br/>никаких транзакции')}}/>
                                 </div>
                                 : logsList}
                         </div>
