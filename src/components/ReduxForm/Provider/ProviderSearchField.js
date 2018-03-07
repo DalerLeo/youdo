@@ -28,7 +28,7 @@ const getItem = (id, dispatch) => {
 }
 
 const ProviderSearchField = connect()((props) => {
-    const {dispatch, params, pageSize} = props
+    const {dispatch, params, pageSize, ...defaultProps} = props
     const test = (id) => {
         return getItem(id, dispatch)
     }
@@ -41,7 +41,7 @@ const ProviderSearchField = connect()((props) => {
             getItem={test}
             getItemText={SearchField.defaultGetText('name')}
             withDetails={true}
-            {...props}
+            {...defaultProps}
         />
     )
 })

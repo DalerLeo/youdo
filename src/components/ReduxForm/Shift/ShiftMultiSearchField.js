@@ -3,24 +3,7 @@ import MultiSelectField from '../Basic/MultiSelectField'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
-import caughtCancel from '../../../helpers/caughtCancel'
-
-const CancelToken = axios().CancelToken
-let shiftListToken = null
-
-const getOptions = (search) => {
-    if (shiftListToken) {
-        shiftListToken.cancel()
-    }
-    shiftListToken = CancelToken.source()
-    return axios().get(`${PATH.SHIFT_LIST}?search=${search || ''}`, {cancelToken: shiftListToken.token})
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data.results))
-        })
-        .catch((error) => {
-            caughtCancel(error)
-        })
-}
+import searchFieldGetOptions from '../../../helpers/searchFieldGetOptions'
 
 const getIdsOption = (ids) => {
     return axios().get(`${PATH.SHIFT_LIST}?ids=${ids || ''}`)
@@ -30,14 +13,16 @@ const getIdsOption = (ids) => {
 }
 
 const ShiftMultiSearchField = (props) => {
+    const {params, pageSize, ...defaultProps} = props
+
     return (
         <MultiSelectField
             getValue={MultiSelectField.defaultGetValue('id')}
             getText={MultiSelectField.defaultGetText('name')}
-            getOptions={getOptions}
+            getOptions={search => searchFieldGetOptions(PATH.SHIFT_LIST, search, params, pageSize)}
             getIdsOption={getIdsOption}
             getItemText={MultiSelectField.defaultGetText('name')}
-            {...props}
+            {...defaultProps}
         />
     )
 }

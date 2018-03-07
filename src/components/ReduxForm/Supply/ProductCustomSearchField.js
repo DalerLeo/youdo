@@ -6,15 +6,10 @@ import SearchFieldCustom from '../Basic/SearchFieldCustom'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
+import searchFieldGetOptions from '../../../helpers/searchFieldGetOptions'
 import * as actionTypes from '../../../constants/actionTypes'
 import {connect} from 'react-redux'
-
-const getOptions = (search, type) => {
-    return axios().get(`${PATH.PRODUCT_FOR_SELECT_LIST}?type=${type || ''}&page_size=1000&search=${search || ''}`)
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data.results))
-        })
-}
+const pageSize = 1000
 
 const setMeasurementAction = (data, loading) => {
     return {
@@ -50,6 +45,7 @@ const ProductCustomSearchField = enhance((props) => {
         return getItem(id, dispatch)
     }
     const type = _.get(state, ['form', 'SupplyCreateForm', 'values', 'type', 'value'])
+    const params = {type}
     return (
         <SearchFieldCustom
             getValue={(value) => {
@@ -58,7 +54,7 @@ const ProductCustomSearchField = enhance((props) => {
             getText={(value) => {
                 return _.get(value, ['name'])
             }}
-            getOptions={ (search) => { return getOptions(search, type) }}
+            getOptions={ (search) => searchFieldGetOptions(PATH.PRODUCT_FOR_SELECT_LIST, search, params, pageSize)}
             getItem={test}
             parent={type}
             {...defaultProps}

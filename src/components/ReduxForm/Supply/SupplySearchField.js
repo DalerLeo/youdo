@@ -4,25 +4,8 @@ import SearchField from '../Basic/SearchField'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
-import caughtCancel from '../../../helpers/caughtCancel'
 import t from '../../../helpers/translate'
-
-const CancelToken = axios().CancelToken
-let supplyListToken = null
-
-const getOptions = (search) => {
-    if (supplyListToken) {
-        supplyListToken.cancel()
-    }
-    supplyListToken = CancelToken.source()
-    return axios().get(`${PATH.SUPPLY_LIST}?search=${search || ''}&page_size=100`, {cancelToken: supplyListToken.token})
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data.results))
-        })
-        .catch((error) => {
-            caughtCancel(error)
-        })
-}
+import searchFieldGetOptions from '../../../helpers/searchFieldGetOptions'
 
 const getItem = (id) => {
     return axios().get(PATH.SUPPLY_LIST)
@@ -33,6 +16,7 @@ const getItem = (id) => {
 }
 
 const SupplySearchField = (props) => {
+    const {params, pageSize, ...defaultProps} = props
     return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
@@ -48,10 +32,10 @@ const SupplySearchField = (props) => {
                     </div>
                 )
             }}
-            getOptions={getOptions}
+            getOptions={search => searchFieldGetOptions(PATH.SUPPLY_LIST, search, params, pageSize)}
             getItem={getItem}
             getItemText={SearchField.defaultGetText('name')}
-            {...props}
+            {...defaultProps}
         />
     )
 }
