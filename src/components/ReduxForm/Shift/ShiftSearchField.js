@@ -4,13 +4,7 @@ import SearchField from '../Basic/SearchField'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
-
-const getOptions = (search) => {
-    return axios().get(`${PATH.SHIFT_LIST}?search=${search || ''}`)
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data.results))
-        })
-}
+import searchFieldGetOptions from '../../../helpers/searchFieldGetOptions'
 
 const getItem = (id) => {
     return axios().get(sprintf(PATH.SHIFT_ITEM, id))
@@ -20,14 +14,15 @@ const getItem = (id) => {
 }
 
 const ShiftSearchField = (props) => {
+    const {params, pageSize, ...defaultProps} = props
     return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
             getText={SearchField.defaultGetText('name')}
-            getOptions={getOptions}
+            getOptions={search => searchFieldGetOptions(PATH.SHIFT_LIST, search, params, pageSize)}
             getItem={getItem}
             getItemText={SearchField.defaultGetText('name')}
-            {...props}
+            {...defaultProps}
         />
     )
 }
