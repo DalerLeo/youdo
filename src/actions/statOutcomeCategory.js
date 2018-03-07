@@ -22,9 +22,10 @@ export const statOutcomeCategoryListFetchAction = (filter) => {
     }
 }
 
-export const statOutcomeCategoryDetailFetchAction = (id) => {
+export const statOutcomeCategoryDetailFetchAction = (id, filter) => {
+    const params = serializers.detailFilterSerializer(filter.getParams())
     const payload = axios()
-        .get(sprintf(API.STAT_OUTCOME_CATEGORY_DETAIL, id))
+        .get(sprintf(API.STAT_OUTCOME_CATEGORY_DETAIL, id), {params})
         .then((response) => {
             return _.get(response, 'data')
         })

@@ -72,7 +72,7 @@ const enhance = compose(
         const transaction = _.toNumber(_.get(location, ['query', [OPEN_TRANSACTION_DIALOG]]))
         if (transaction > ZERO) {
             dispatch(getTransactionData(filter, filterTransaction, transaction))
-            dispatch(statOutcomeCategoryDetailFetchAction(transaction))
+            dispatch(statOutcomeCategoryDetailFetchAction(transaction, filter))
         }
     }),
 
