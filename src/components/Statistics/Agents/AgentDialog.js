@@ -12,7 +12,6 @@ import {Row, Col} from 'react-flexbox-grid'
 import sprintf from 'sprintf'
 import Pagination from '../../GridList/GridListNavPagination'
 import * as ROUTES from '../../../constants/routes'
-import getConfig from '../../../helpers/getConfig'
 import numberFormat from '../../../helpers/numberFormat'
 import dateTimeFormat from '../../../helpers/dateTimeFormat'
 import NotFound from '../../Images/not-found.png'
@@ -21,6 +20,9 @@ import OrderStatusIcons from '../../Order/OrderStatusIcons'
 
 const enhance = compose(
     injectSheet({
+        dialog: {
+            overflowY: 'auto'
+        },
         loader: {
             width: '100%',
             height: '400px',
@@ -37,7 +39,7 @@ const enhance = compose(
             position: 'relative',
             padding: '0 !important',
             overflowX: 'hidden',
-            height: '100%',
+            maxHeight: 'unset !important',
             marginBottom: '64px'
         },
         content: {
@@ -110,7 +112,7 @@ const enhance = compose(
         },
         tableWrapper: {
             padding: '0 30px',
-            maxHeight: '424px',
+            maxHeight: '500px',
             overflowY: 'auto',
             '& .row': {
                 '&:first-child': {
@@ -153,7 +155,6 @@ const StatAgentDialog = enhance((props) => {
         detailData
     } = props
     const loading = _.get(detailData, 'detailLoading')
-    const primaryCurrency = getConfig('PRIMARY_CURRENCY')
     const agentName = _.get(detailData, ['agentDetail', '0', 'name'])
     const filteredData = _.filter(_.get(detailData, ['data', 'results']), (item) => {
         const status = _.toInteger(_.get(item, 'status'))
@@ -181,7 +182,7 @@ const StatAgentDialog = enhance((props) => {
                 <Col xs={4}>{market}</Col>
                 <Col xs={2}>{createdDate}</Col>
                 <Col xs={2} style={{textAlign: 'right'}}>{paymentType}</Col>
-                <Col xs={2} style={{textAlign: 'right'}}>{numberFormat(totalPrice, primaryCurrency)}</Col>
+                <Col xs={2} style={{textAlign: 'right'}}>{numberFormat(totalPrice, currency)}</Col>
                 <Col xs={1} className={classes.buttons}>
                     <OrderStatusIcons
                         status={status}
@@ -199,13 +200,14 @@ const StatAgentDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={loading ? {width: '600px'} : {width: '900px', maxWidth: 'unset'}}
+            contentStyle={loading ? {width: '1000px'} : {width: '1000px', maxWidth: 'unset'}}
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
-            {loading ? <div className={classes.loader}>
-                <Loader size={0.75}/>
-            </div>
-            : <div>
+            {loading
+                ? <div className={classes.loader}>
+                    <Loader size={0.75}/>
+                </div>
+                : <div>
                     <div className={classes.titleContent}>
                         <div>
                             <div>{agentName}</div>
