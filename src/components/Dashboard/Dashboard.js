@@ -249,20 +249,42 @@ const Dashboard = enhance((props) => {
     // SALES //
     const orderChartActive = _.get(orderChart, 'active')
     const orderChartLoading = _.get(orderChart, 'loading')
-    const orderChartDate = _.map(_.get(orderChart, 'data'), (item) => _.get(item, 'date'))
-    const orderChartSalesCash = _.map(_.get(orderChart, 'data'), (item) => _.floor(_.toNumber(_.get(item, 'amountCash')), FLOOR)) || null
-    const orderChartSalesBank = _.map(_.get(orderChart, 'data'), (item) => _.floor(_.toNumber(_.get(item, 'amountBank')), FLOOR)) || null
-    const orderChartSalesBankSum = _.sumBy(_.get(orderChart, 'data'), (item) => _.floor(_.toNumber(_.get(item, 'amountBank')), FLOOR))
-    const orderChartSalesCashSum = _.sumBy(_.get(orderChart, 'data'), (item) => _.floor(_.toNumber(_.get(item, 'amountCash')), FLOOR))
+    const orderChartGroupByDate = _.map(_.groupBy(orderChart.data, 'date'), (item, index) => {
+        const bankSum = _.sumBy(item, (o) => _.toNumber(_.get(o, 'amountBank')))
+        const cashSum = _.sumBy(item, (o) => _.toNumber(_.get(o, 'amountCash')))
+        const returnSum = _.sumBy(item, (o) => _.toNumber(_.get(o, 'returnAmount')))
+        return {
+            date: index,
+            amountBank: bankSum,
+            amountCash: cashSum,
+            returnAmount: returnSum
+        }
+    })
+    const orderChartDate = _.map(orderChartGroupByDate, (item) => _.get(item, 'date'))
+    const orderChartSalesCash = _.map(orderChartGroupByDate, (item) => _.floor(_.toNumber(_.get(item, 'amountCash')), FLOOR)) || null
+    const orderChartSalesBank = _.map(orderChartGroupByDate, (item) => _.floor(_.toNumber(_.get(item, 'amountBank')), FLOOR)) || null
+    const orderChartSalesBankSum = _.sumBy(orderChartGroupByDate, (item) => _.floor(_.toNumber(_.get(item, 'amountBank')), FLOOR))
+    const orderChartSalesCashSum = _.sumBy(orderChartGroupByDate, (item) => _.floor(_.toNumber(_.get(item, 'amountCash')), FLOOR))
     const orderChartSalesTotalSum = orderChartSalesCashSum + orderChartSalesBankSum
 
     // ORDERS & RETURNS //
+    const ordersReturnsChartGroupByDate = _.map(_.groupBy(ordersReturnsChart.data, 'date'), (item, index) => {
+        const bankSum = _.sumBy(item, (o) => _.toNumber(_.get(o, 'amountBank')))
+        const cashSum = _.sumBy(item, (o) => _.toNumber(_.get(o, 'amountCash')))
+        const returnSum = _.sumBy(item, (o) => _.toNumber(_.get(o, 'returnAmount')))
+        return {
+            date: index,
+            amountBank: bankSum,
+            amountCash: cashSum,
+            returnAmount: returnSum
+        }
+    })
     const orderReturnActive = _.get(ordersReturnsChart, 'active')
     const orderReturnLoading = _.get(ordersReturnsChart, 'loading')
-    const orderChartReturns = _.map(_.get(ordersReturnsChart, 'data'), (item) => _.floor(_.toNumber(_.get(item, 'returnAmount')), FLOOR))
-    const orderChartSales = _.map(_.get(ordersReturnsChart, 'data'), (item) => _.floor(_.toNumber(_.get(item, 'amountCash')) + _.toNumber(_.get(item, 'amountBank')), FLOOR))
-    const orderReturnDate = _.map(_.get(ordersReturnsChart, 'data'), (item) => _.get(item, 'date'))
-    const orderChartReturnsSum = _.sumBy(_.get(ordersReturnsChart, 'data'), (item) => _.floor(_.toNumber(_.get(item, 'returnAmount')), FLOOR))
+    const orderChartReturns = _.map(ordersReturnsChartGroupByDate, (item) => _.floor(_.toNumber(_.get(item, 'returnAmount')), FLOOR))
+    const orderChartSales = _.map(ordersReturnsChartGroupByDate, (item) => _.floor(_.toNumber(_.get(item, 'amountCash')) + _.toNumber(_.get(item, 'amountBank')), FLOOR))
+    const orderReturnDate = _.map(ordersReturnsChartGroupByDate, (item) => _.get(item, 'date'))
+    const orderChartReturnsSum = _.sumBy(ordersReturnsChartGroupByDate, (item) => _.floor(_.toNumber(_.get(item, 'returnAmount')), FLOOR))
     const orderChartFactSum = orderChartSalesTotalSum - orderChartReturnsSum
 
     // AGENTS //
@@ -279,21 +301,11 @@ const Dashboard = enhance((props) => {
     // FINANCE //
     const financeChartActive = _.get(financeChart, 'active')
     const financeChartLoading = _.get(financeChart, 'loading')
-    const financeDate = _.map(_.get(financeChart, 'data'), (item, index) => {
-        return index
-    })
-    const financeIncome = _.map(_.get(financeChart, 'data'), (item) => {
-        return _.floor(_.get(item, 'in'), FLOOR) || null
-    })
-    const financeExpense = _.map(_.get(financeChart, 'data'), (item) => {
-        return _.floor(_.get(item, 'out'), FLOOR) || null
-    })
-    const financeIncomeSum = _.sumBy(financeIncome, (item) => {
-        return item
-    })
-    const financeExpenseSum = _.sumBy(financeExpense, (item) => {
-        return item
-    })
+    const financeDate = _.map(_.get(financeChart, 'data'), (item, index) => index)
+    const financeIncome = _.map(_.get(financeChart, 'data'), (item) => _.floor(_.get(item, 'in'), FLOOR) || null)
+    const financeExpense = _.map(_.get(financeChart, 'data'), (item) => _.floor(_.get(item, 'out'), FLOOR) || null)
+    const financeIncomeSum = _.sumBy(financeIncome, (item) => item)
+    const financeExpenseSum = _.sumBy(financeExpense, (item) => item)
 
     // CURRENCY DATA //
     const currencyListActive = _.get(currencyData, 'active')

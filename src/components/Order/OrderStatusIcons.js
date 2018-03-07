@@ -65,7 +65,7 @@ const OrderStatusIcons = (props) => {
     }
     const paymentIcon = status !== ORDER_CANCELED
     ? (
-        <ToolTip position="bottom" text={(totalBalance > ZERO) && (paymentDifference <= ZERO)
+        <ToolTip position="left" text={(totalBalance > ZERO) && (paymentDifference <= ZERO)
             ? PAY_DELAY
             : ((totalBalance > ZERO) && moment(paymentDate).diff(now, 'days') > ZERO)
                 ? PAY_PENDING
@@ -82,7 +82,7 @@ const OrderStatusIcons = (props) => {
 
     const getTooltip = (text, icon) => {
         return (
-            <ToolTip position="bottom" text={text}>
+            <ToolTip position="left" text={text}>
                 <IconButton
                     disableTouchRipple={true}
                     iconStyle={iconStyle.icon}

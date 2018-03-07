@@ -96,6 +96,7 @@ const enhance = compose(
                     height: '81px',
                     verticalAlign: 'bottom',
                     '& span': {
+                        color: 'inherit !important',
                         verticalAlign: 'bottom',
                         padding: '15px 30px',
                         borderTop: '1px #efefef solid',
@@ -103,16 +104,20 @@ const enhance = compose(
                     }
                 },
                 '& span': {
+                    cursor: 'pointer',
                     display: 'table-cell',
                     fontWeight: '600',
                     verticalAlign: 'middle',
-                    padding: '0 30px'
+                    padding: '0 30px',
+                    '&:hover': {
+                        color: '#12aaeb'
+                    }
                 }
             }
         },
         mainTable: {
             width: '100%',
-            minWidth: '1350px',
+            minWidth: '1150px',
             color: '#666',
             borderCollapse: 'collapse',
             '& tr, td': {
@@ -483,7 +488,7 @@ const StatAgentGridList = enhance((props) => {
                 onMouseEnter={() => { updateRow(id) }}
                 onMouseLeave={() => { updateRow(null) }}
                 onClick={ () => { statAgentDialog.handleOpenStatAgentDialog(id) }}>
-                <span style={{cursor: 'pointer'}}>{name}</span>
+                <span>{name}</span>
             </div>
         )
     })

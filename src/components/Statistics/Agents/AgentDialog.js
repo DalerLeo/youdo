@@ -10,13 +10,14 @@ import IconButton from 'material-ui/IconButton'
 import Loader from '../../Loader'
 import {Row, Col} from 'react-flexbox-grid'
 import sprintf from 'sprintf'
-import Pagination from '../../GridList/GridListNavPagination/index'
+import Pagination from '../../GridList/GridListNavPagination'
 import * as ROUTES from '../../../constants/routes'
 import getConfig from '../../../helpers/getConfig'
 import numberFormat from '../../../helpers/numberFormat'
 import dateTimeFormat from '../../../helpers/dateTimeFormat'
 import NotFound from '../../Images/not-found.png'
 import t from '../../../helpers/translate'
+import OrderStatusIcons from '../../Order/OrderStatusIcons'
 
 const enhance = compose(
     injectSheet({
@@ -161,21 +162,33 @@ const StatAgentDialog = enhance((props) => {
     const orderList = _.map(filteredData, (item) => {
         const id = _.get(item, 'id')
         const market = _.get(item, ['market', 'name'])
+        const currency = _.get(item, ['currency', 'name'])
+        const status = _.toInteger(_.get(item, 'status'))
         const totalPrice = _.get(item, 'totalPrice')
+        const totalBalance = _.toNumber(_.get(item, 'totalBalance'))
+        const balanceToolTip = numberFormat(totalBalance, currency)
         const paymentType = _.get(item, 'paymentType') === 'cash' ? t('Наличные') : t('Перечисление')
         const createdDate = dateTimeFormat(_.get(item, 'createdDate'))
 
         return (
             <Row key={id} className="dottedList">
-                <Col xs={2}>
+                <Col xs={1}>
                     <Link to={{
                         pathname: sprintf(ROUTES.ORDER_ITEM_PATH, id),
                         query: {search: id}
-                    }} target="_blank">{t('Заказ')} {id}</Link></Col>
+                    }} target="_blank"><strong>{id}</strong></Link>
+                </Col>
                 <Col xs={4}>{market}</Col>
                 <Col xs={2}>{createdDate}</Col>
                 <Col xs={2} style={{textAlign: 'right'}}>{paymentType}</Col>
-                <Col xs={2}>{numberFormat(totalPrice, primaryCurrency)}</Col>
+                <Col xs={2} style={{textAlign: 'right'}}>{numberFormat(totalPrice, primaryCurrency)}</Col>
+                <Col xs={1} className={classes.buttons}>
+                    <OrderStatusIcons
+                        status={status}
+                        balanceToolTip={balanceToolTip}
+                        paymentDate={_.get(item, 'paymentDate')}
+                        totalBalance={totalBalance}/>
+                </Col>
             </Row>
         )
     })
@@ -204,11 +217,12 @@ const StatAgentDialog = enhance((props) => {
                     <div className={classes.content}>
                         <div className={classes.tableWrapper}>
                             <Row className="dottedList">
-                                <Col xs={2}>№ {t('заказа')}</Col>
+                                <Col xs={1}>{t('Заказ')}</Col>
                                 <Col xs={4}>{t('Магазин')}</Col>
                                 <Col xs={2}>{t('Дата')}</Col>
                                 <Col xs={2} style={{textAlign: 'right'}}>{t('Тип оплаты')}</Col>
-                                <Col xs={2}>{t('Сумма')}</Col>
+                                <Col xs={2} style={{textAlign: 'right'}}>{t('Сумма')}</Col>
+                                <Col xs={1}/>
                             </Row>
                             {_.isEmpty(orderList)
                                 ? <div className={classes.emptyQuery}>

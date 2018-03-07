@@ -269,21 +269,22 @@ const StatSalesGridList = enhance((props) => {
     const divisionStatus = _.get('DIVISION')
 
     const loading = _.get(listData, 'listLoading')
-    const value = _.map(_.get(graphData, 'data'), (item) => {
-        return _.round(_.toNumber(_.get(item, 'amountCash')) + _.toNumber(_.get(item, 'amountBank')), THREE)
+    const graphGroupByDate = _.map(_.groupBy(graphData.data, 'date'), (item, index) => {
+        const bankSum = _.sumBy(item, (o) => _.toNumber(_.get(o, 'amountBank')))
+        const cashSum = _.sumBy(item, (o) => _.toNumber(_.get(o, 'amountCash')))
+        const returnSum = _.sumBy(item, (o) => _.toNumber(_.get(o, 'returnAmount')))
+        return {
+            date: index,
+            amountBank: bankSum,
+            amountCash: cashSum,
+            returnAmount: returnSum
+        }
     })
-    const sum = _.sumBy(_.get(graphData, 'data'), (item) => {
-        return _.toNumber(_.get(item, 'amountCash')) + _.toNumber(_.get(item, 'amountBank'))
-    })
-    const returnedValue = _.map(_.get(graphData, 'data'), (item) => {
-        return _.toNumber(_.get(item, 'returnAmount'))
-    })
-    const returnSum = _.sumBy(_.get(graphData, 'data'), (item) => {
-        return _.toNumber(_.get(item, 'returnAmount'))
-    })
-    const valueName = _.map(_.get(graphData, 'data'), (item) => {
-        return _.get(item, 'date')
-    })
+    const value = _.map(graphGroupByDate, (item) => _.round(_.toNumber(_.get(item, 'amountCash')) + _.toNumber(_.get(item, 'amountBank')), THREE))
+    const sum = _.sumBy(graphGroupByDate, (item) => _.toNumber(_.get(item, 'amountCash')) + _.toNumber(_.get(item, 'amountBank')))
+    const returnedValue = _.map(graphGroupByDate, (item) => _.toNumber(_.get(item, 'returnAmount')))
+    const returnSum = _.sumBy(graphGroupByDate, (item) => _.toNumber(_.get(item, 'returnAmount')))
+    const valueName = _.map(graphGroupByDate, (item) => _.get(item, 'date'))
     const headerStyle = {
         backgroundColor: '#fff',
         fontWeight: '600',

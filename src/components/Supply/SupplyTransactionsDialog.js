@@ -86,6 +86,7 @@ const enhance = compose(
             justifyContent: 'center',
             paddingTop: '25px',
             '& > div': {
+                color: '#797f94',
                 marginTop: '140px',
                 fontSize: '13px',
                 width: '50%',

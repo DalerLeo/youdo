@@ -488,7 +488,7 @@ const OrderDetails = enhance((props) => {
                                 <li>
                                     <span>{t('Текущий статус')}:</span>
                                     {(status === ORDER_REQUESTED) ? <span className={classes.yellow}>{t('Запрос отправлен')}</span>
-                                        : (status === ORDER_READY) ? <span className={classes.green}>{t('Есть на складе')}</span>
+                                        : (status === ORDER_READY) ? <span className={classes.yellow}>{t('Есть на складе')}</span>
                                             : (status === ORDER_GIVEN)
                                                 ? <span className={classes.yellow}>{t('Передан доставщику')}</span>
                                                 : (status === ORDER_DELIVERED)
