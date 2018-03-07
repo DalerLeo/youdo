@@ -112,7 +112,7 @@ const enhance = compose(
         },
         mainTable: {
             width: '100%',
-            minWidth: '1600px',
+            minWidth: '1350px',
             color: '#666',
             borderCollapse: 'collapse',
             '& tr, td': {
