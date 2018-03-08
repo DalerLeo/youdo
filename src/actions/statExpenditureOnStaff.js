@@ -22,9 +22,10 @@ export const listFetchAction = (filter) => {
     }
 }
 
-export const detailFetchAction = (id) => {
+export const detailFetchAction = (id, filter) => {
+    const params = serializers.detailFilterSerializer(filter.getParams())
     const payload = axios()
-        .get(sprintf(API.STAT_EXPENDITURE_ON_STAFF_DETAIL, id))
+        .get(sprintf(API.STAT_EXPENDITURE_ON_STAFF_DETAIL, id), {params})
         .then((response) => {
             return _.get(response, 'data')
         })

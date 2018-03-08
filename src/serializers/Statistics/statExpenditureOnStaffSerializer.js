@@ -20,6 +20,14 @@ export const listFilterSerializer = (data) => {
     }
 }
 
+export const detailFilterSerializer = (data) => {
+    const {...defaultData} = data
+    return {
+        'begin_date': _.get(defaultData, 'fromDate') || firstDayOfMonth,
+        'end_date': _.get(defaultData, 'toDate') || lastDayOfMonth
+    }
+}
+
 export const transactionSerializer = (data, transactionData, staff) => {
     const {...defaultData} = data
     const {...defaultTransactionData} = transactionData

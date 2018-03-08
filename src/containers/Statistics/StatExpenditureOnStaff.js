@@ -74,7 +74,7 @@ const enhance = compose(
         const nextOpen = _.toNumber(_.get(location, ['query', [OPEN_TRANSACTION_DIALOG]]))
         if (nextOpen > ZERO) {
             dispatch(getTransactionData(filter, filterTransaction, nextOpen))
-            dispatch(detailFetchAction(nextOpen))
+            dispatch(detailFetchAction(nextOpen, filter))
         }
     }),
 
