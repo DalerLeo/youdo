@@ -817,7 +817,7 @@ const StatProviderGridList = enhance((props) => {
     const page = (
         <div>
             <SubMenu url={ROUTES.PROVIDER_BALANCE_LIST_URL}/>
-            <Paper style={{marginBottom: '15px', padding: '10px 30px'}}>{summary}</Paper>
+            <div style={{marginBottom: '15px'}}>{summary}</div>
             <Paper className={expandedTable ? classes.expandedTable : ''} style={expandedTable ? {padding: '0'} : {}}>
                 {navigation}
                 {list}
