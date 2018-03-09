@@ -237,7 +237,6 @@ const Dashboard = enhance((props) => {
         setOpenEditPass,
         handleChangePassword
     } = props
-    console.warn(agentsChart)
     const ZERO = 0
     const FLOOR = 2
     const MAX_OUTPUT = 10

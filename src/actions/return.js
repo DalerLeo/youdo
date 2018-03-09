@@ -144,8 +144,8 @@ export const addProductsListAction = (filter, type, market, client) => {
     }
 }
 
-export const returnPreviewAction = (formValues) => {
-    const requestData = serializers.createReturnSerializer(formValues)
+export const returnPreviewAction = (formValues, id) => {
+    const requestData = serializers.createReturnSerializer(formValues, id)
     const payload = axios()
         .post(API.RETURN_PREVIEW, requestData)
         .then((response) => {

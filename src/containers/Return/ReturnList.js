@@ -285,6 +285,11 @@ const enhance = compose(
                     dispatch(returnListFetchAction(filter))
                     dispatch(returnItemFetchAction(orderId))
                 })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
+                })
         },
 
         handleGetDocument: props => (id) => {
@@ -330,6 +335,11 @@ const enhance = compose(
                         setOpenPreview(false)
                         hashHistory.push({pathname, query: filter.getParams({[RETURN_UPDATE_DIALOG_OPEN]: false})})
                     })
+                    .catch((error) => {
+                        dispatch(openErrorAction({
+                            message: error
+                        }))
+                    })
             }
             return dispatch(returnUpdateAction(returnId, _.get(updateForm, ['values']), detail))
                 .then(() => {
@@ -349,6 +359,11 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[RETURN_UPDATE_DIALOG_OPEN]: false})})
                 })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
+                })
         },
         handleOpenCreateDialog: props => () => {
             const {dispatch, location: {pathname}, filter} = props
@@ -362,8 +377,9 @@ const enhance = compose(
         },
 
         handleSubmitCreateDialog: props => () => {
-            const {location: {pathname}, dispatch, createForm, filter, setOpenPreview} = props
-            return dispatch(clientReturnAction(_.get(createForm, ['values'])))
+            const {location: {pathname}, dispatch, createForm, params, filter, setOpenPreview} = props
+            const detailId = _.toInteger(_.get(params, 'returnId'))
+            return dispatch(clientReturnAction(_.get(createForm, ['values']), detailId))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
@@ -375,6 +391,11 @@ const enhance = compose(
                     })
                     dispatch(returnListFetchAction(filter))
                     dispatch(reset('ReturnCreateForm'))
+                })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
                 })
         },
         handleOpenPreviewDialog: props => () => {
@@ -388,8 +409,9 @@ const enhance = compose(
         },
 
         handleSubmitPreviewDialog: props => () => {
-            const {dispatch, createForm, setOpenPreview} = props
-            return dispatch(returnPreviewAction(_.get(createForm, 'values')))
+            const {dispatch, createForm, setOpenPreview, params} = props
+            const detailId = _.toInteger(_.get(params, 'returnId'))
+            return dispatch(returnPreviewAction(_.get(createForm, 'values'), detailId))
                 .then(() => {
                     setOpenPreview(true)
                 })
@@ -631,49 +653,53 @@ const ReturnList = enhance((props) => {
     const CLIENT_RETURN = 2
     const type = _.toInteger(_.get(detail, 'type'))
 
-    const forUpdateProducts = _.map(_.get(detail, 'returnedProducts'), (item) => {
-        const amount = _.toNumber(_.get(item, 'amount'))
-        const price = _.toNumber(_.get(item, 'price'))
+    const combinedProducts = _.groupBy(_.get(detail, 'returnedProducts'), (item) => {
+        return item.product.id
+    })
+    const productlar = _.map(combinedProducts, (groupedItem) => {
+        const price = _.toNumber(_.get(groupedItem, ['0', 'price']))
+        const groupedAmount = _.sumBy(groupedItem, (item) => {
+            return _.toNumber(item.amount)
+        })
         if (type === CLIENT_RETURN) {
             return {
-                id: _.get(item, 'id'),
-                amount,
+                id: _.get(groupedItem, ['0', 'id']),
+                amount: groupedAmount,
                 cost: price,
-                measurement: _.get(item, ['product', 'measurement', 'name']),
+                measurement: _.get(groupedItem, ['0', 'product', 'measurement', 'name']),
                 product: {
                     value: {
-                        id: _.get(item, ['product', 'id']),
-                        productId: _.get(item, ['product', 'id']),
-                        price: _.get(item, 'price'),
-                        name: _.get(item, ['product', 'name']),
+                        id: _.get(groupedItem, ['0', 'product', 'id']),
+                        productId: _.get(groupedItem, ['0', 'product', 'id']),
+                        price,
+                        name: _.get(groupedItem, ['0', 'product', 'name']),
                         measurement: {
-                            id: _.get(item, ['product', 'measurement', 'id']),
-                            name: _.get(item, ['product', 'measurement', 'name'])
+                            id: _.get(groupedItem, ['0', 'product', 'measurement', 'id']),
+                            name: _.get(groupedItem, ['0', 'product', 'measurement', 'name'])
                         }
                     }
                 }
             }
         }
         return {
-            id: _.get(item, 'id'),
-            amount,
+            id: _.get(groupedItem, ['0', 'id']),
+            amount: groupedAmount,
             product: {
                 value: {
-                    id: _.get(item, 'orderProduct'),
+                    id: _.get(groupedItem, ['0', 'product', 'id']),
                     price,
                     product: {
-                        name: _.get(item, ['product', 'name']),
+                        name: _.get(groupedItem, ['0', 'product', 'name']),
                         measurement: {
-                            id: _.get(item, ['product', 'measurement', 'id']),
-                            name: _.get(item, ['product', 'measurement', 'name'])
+                            id: _.get(groupedItem, ['0', 'product', 'measurement', 'id']),
+                            name: _.get(groupedItem, ['0', 'product', 'measurement', 'name'])
                         }
                     }
                 },
-                text: _.get(item, ['product', 'name'])
+                text: _.get(groupedItem, ['0', 'product', 'name'])
             }
         }
     })
-
     const createDialog = {
         openCreateDialog,
         handleOpenCreateDialog: props.handleOpenCreateDialog,
@@ -701,14 +727,14 @@ const ReturnList = enhance((props) => {
                     market: {value: _.get(detail, ['market', 'id'])},
                     priceList: {value: _.get(detail, ['priceList', 'id'])},
                     comment: _.get(detail, 'comment'),
-                    products: forUpdateProducts
+                    products: productlar
                 }
             }
 
             return {
                 stock: {value: _.get(detail, ['stock', 'id']), text: _.get(detail, ['stock', 'name'])},
                 comment: _.get(detail, 'comment'),
-                products: forUpdateProducts
+                products: productlar
             }
         })(),
         updateLoading,
