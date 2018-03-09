@@ -277,7 +277,8 @@ const TransactionCreateDialog = enhance((props) => {
         incomeCategoryKey,
         additionalData,
         hideRedundant,
-        dispatch
+        dispatch,
+        paymentType
     } = props
 
     const formNames = [
@@ -371,6 +372,7 @@ const TransactionCreateDialog = enhance((props) => {
                                     name="cashbox"
                                     className={classes.inputFieldCustom}
                                     component={CashBoxSimpleSearch}
+                                    params={hideRedundant && noCashbox && isExpense && {type: paymentType}}
                                     label={t('Касса')}/>
                             </div>
                             : <div className={classes.itemList}>
@@ -406,6 +408,7 @@ const TransactionCreateDialog = enhance((props) => {
                                     ? !hideRedundant && <Field
                                         name="supply"
                                         component={SupplySearchField}
+                                        params={{exclude_cancelled: 'True'}}
                                         label={t('Поставки')}
                                         className={classes.inputFieldCustom}
                                         fullWidth={true}/> : null}
@@ -426,7 +429,7 @@ const TransactionCreateDialog = enhance((props) => {
                                             fullWidth={true}/>
                                         <Link target={'_blank'} to={{pathname: ROUTE.CLIENT_LIST_URL, query: {openCreateDialog: true}}}>{t('добавить')}</Link>
                                     </div> : null}
-                                {showProviders &&
+                                {showProviders && !(hideRedundant && noCashbox && isExpense) &&
                                     <div className={classes.flex}>
                                         <Field
                                             name="provider"
