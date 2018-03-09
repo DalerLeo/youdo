@@ -23,6 +23,7 @@ import Cancel from 'material-ui/svg-icons/content/remove-circle'
 import Add from 'material-ui/svg-icons/content/add-circle'
 import ToolTip from '../ToolTip'
 import Paper from 'material-ui/Paper'
+import FlatButton from 'material-ui/FlatButton'
 import SearchIcon from 'material-ui/svg-icons/action/search'
 import FullScreen from 'material-ui/svg-icons/navigation/fullscreen'
 import FullScreenExit from 'material-ui/svg-icons/navigation/fullscreen-exit'
@@ -45,6 +46,7 @@ const types = {
     debtor: 'debtor',
     loaner: 'loaner'
 }
+
 const enhance = compose(
     injectSheet({
         loader: {
@@ -58,10 +60,10 @@ const enhance = compose(
         },
         sumLoader: {
             width: '100%',
-            background: '#fff',
             alignItems: 'center',
             zIndex: '999',
             justifyContent: 'center',
+            padding: '25px 0',
             display: 'flex'
         },
         wrapper: {
@@ -307,23 +309,27 @@ const enhance = compose(
             }
         },
         summary: {
-            padding: '20px 0'
+            padding: '10px 0'
         },
         summaryWrapper: {
             width: '100%',
             display: 'flex',
             justifyContent: 'space-between',
-            '& > div': {
-                cursor: 'pointer',
-                fontWeight: '400',
-                '& div': {
-                    fontSize: '17px',
-                    marginTop: '2px',
-                    fontWeight: '600'
-                },
+            '& > button': {
+                height: 'auto !important',
+                lineHeight: 'inherit !important',
+                textAlign: 'left !important',
+                width: 'calc((100% / 4) - 15px)',
                 '&:last-child': {
-                    textAlign: 'right'
+                    textAlign: 'right !important'
                 }
+            }
+        },
+        summaryItem: {
+            padding: '10px 20px',
+            '& > div': {
+                fontSize: '17px',
+                fontWeight: '600'
             }
         },
         groupBy: {
@@ -513,6 +519,49 @@ const ClientBalanceGridList = enhance((props) => {
             ordering(filter, name, props.pathname)
         }
     }
+
+    const headerButtons = [
+        {
+            balanceType: types.debtor,
+            paymentType: types.cash,
+            content: (
+                <div className={classes.summaryItem}>
+                    {t('Задолжники нал')}. ({borrowersCashCount})
+                    <div>{numberFormat(borrowersCash, primaryCurrency)}</div>
+                </div>
+            )
+        },
+        {
+            balanceType: types.debtor,
+            paymentType: types.bank,
+            content: (
+                <div className={classes.summaryItem}>
+                    {t('Задолжники переч')}. ({borrowersBankCount})
+                    <div>{numberFormat(borrowersBank, primaryCurrency)}</div>
+                </div>
+            )
+        },
+        {
+            balanceType: types.loaner,
+            paymentType: types.cash,
+            content: (
+                <div className={classes.summaryItem}>
+                    {t('Закладчики нал')}. ({loanersCashCount})
+                    <div>{numberFormat(loanersCash, primaryCurrency)}</div>
+                </div>
+            )
+        },
+        {
+            balanceType: types.loaner,
+            paymentType: types.bank,
+            content: (
+                <div className={classes.summaryItem}>
+                    {t('Закладчики переч')}. ({loanersBankCount})
+                    <div>{numberFormat(loanersBank, primaryCurrency)}</div>
+                </div>
+            )
+        }
+    ]
 
     const tableList = (
         <table className={classes.mainTable}>
@@ -715,52 +764,44 @@ const ClientBalanceGridList = enhance((props) => {
             </div>
         </div>
     )
+    const balanceType = filter.getParam(CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE)
+    const paymentType = filter.getParam(CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE)
+    const flatButtonStyle = {
+        activeColor: '#71ce87',
+        backgroundColor: 'rgba(0, 0, 0, 0.04)',
+        hoverColor: 'rgba(0, 0, 0, 0.08)',
+        rippleColor: 'rgba(0, 0, 0, 0.12)'
+    }
     const summary = (
         sumLoading
         ? <div className={classes.sumLoader}>
             <Loader size={0.75}/>
         </div>
         : <div className={classes.summaryWrapper}>
-            <div
-                onClick={() => hashHistory.push({
-                    pathname: props.pathname,
-                    query: filter.getParams({
-                        [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: types.cash,
-                        [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: types.debtor})
-                })}>
-                {t('Задолжники нал')}. ({borrowersCashCount})
-                <div>{numberFormat(borrowersCash, primaryCurrency)}</div>
-            </div>
-            <div
-                onClick={() => hashHistory.push({
-                    pathname: props.pathname,
-                    query: filter.getParams({
-                        [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: types.bank,
-                        [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: types.debtor})
-                })}>
-                {t('Задолжники переч')}. ({borrowersBankCount})
-                <div>{numberFormat(borrowersBank, primaryCurrency)}</div>
-            </div>
-            <div
-                onClick={() => hashHistory.push({
-                    pathname: props.pathname,
-                    query: filter.getParams({
-                        [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: types.cash,
-                        [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: types.loaner})
-                })}>
-                {t('Закладчики нал')}. ({loanersCashCount})
-                <div>{numberFormat(loanersCash, primaryCurrency)}</div>
-            </div>
-            <div
-                onClick={() => hashHistory.push({
-                    pathname: props.pathname,
-                    query: filter.getParams({
-                        [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: types.bank,
-                        [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: types.loaner})
-                })}>
-                {t('Закладчики переч')}. ({loanersBankCount})
-                <div>{numberFormat(loanersBank, primaryCurrency)}</div>
-            </div>
+            {_.map(headerButtons, (item, index) => {
+                const isActive = balanceType === item.balanceType && paymentType === item.paymentType
+                return <FlatButton
+                    key={index}
+                    backgroundColor={isActive
+                        ? flatButtonStyle.activeColor
+                        : flatButtonStyle.backgroundColor}
+                    hoverColor={isActive
+                        ? flatButtonStyle.activeColor
+                        : flatButtonStyle.hoverColor}
+                    rippleColor={flatButtonStyle.rippleColor}
+                    disableTouchRipple={isActive}
+                    style={{color: isActive ? '#fff' : '#333'}}
+                    onTouchTap={() => isActive
+                    ? null
+                    : hashHistory.push({
+                        pathname: props.pathname,
+                        query: filter.getParams({
+                            [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: item.paymentType,
+                            [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: item.balanceType})
+                    })}
+                    children={item.content}
+                />
+            })}
         </div>
     )
     return (
@@ -798,7 +839,7 @@ const ClientBalanceGridList = enhance((props) => {
             </div>
             }
             {!stat && <SubMenu url={ROUTES.CLIENT_BALANCE_LIST_URL}/>}
-            {!stat && <Paper style={{marginBottom: '15px', padding: '10px 30px'}}>{summary}</Paper>}
+            {!stat && <div style={{marginBottom: '15px'}}>{summary}</div>}
             {!stat && <Paper className={expandedTable ? classes.expandedTable : ''} style={expandedTable ? {padding: '0'} : {}}>
                 {navigation}
                 {lists}

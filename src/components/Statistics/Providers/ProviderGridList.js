@@ -38,6 +38,7 @@ import Paper from 'material-ui/Paper'
 import ordering from '../../../helpers/ordering'
 import SubMenu from '../../SubMenu/SubMenu'
 import ProviderBalanceFilterForm from './ProviderBalanceFilterForm'
+import FlatButton from 'material-ui/FlatButton'
 
 let amountValues = []
 let head = []
@@ -51,12 +52,14 @@ export const STAT_PROVIDER_FILTER_KEY = {
     PAYMENT_TYPE: 'paymentType',
     BALANCE_TYPE: 'balanceType'
 }
+
 const types = {
     cash: 'cash',
     bank: 'bank',
     debtor: 'debtor',
     loaner: 'loaner'
 }
+
 const enhance = compose(
     injectSheet({
         loader: {
@@ -358,17 +361,21 @@ const enhance = compose(
             width: '100%',
             display: 'flex',
             justifyContent: 'space-between',
-            '& > div': {
-                cursor: 'pointer',
-                fontWeight: '400',
-                '& div': {
-                    fontSize: '17px',
-                    marginTop: '2px',
-                    fontWeight: '600'
-                },
+            '& > button': {
+                height: 'auto !important',
+                lineHeight: 'inherit !important',
+                textAlign: 'left !important',
+                width: 'calc((100% / 4) - 15px)',
                 '&:last-child': {
-                    textAlign: 'right'
+                    textAlign: 'right !important'
                 }
+            }
+        },
+        summaryItem: {
+            padding: '10px 20px',
+            '& > div': {
+                fontSize: '17px',
+                fontWeight: '600'
             }
         },
         summaryLoader: {
@@ -561,6 +568,49 @@ const StatProviderGridList = enhance((props) => {
         }
     }
 
+    const headerButtons = [
+        {
+            balanceType: types.debtor,
+            paymentType: types.cash,
+            content: (
+                <div className={classes.summaryItem}>
+                    {t('Долг поставщику нал')}. ({borrowersCashCount})
+                    <div>{numberFormat(borrowersCash, primaryCurrency)}</div>
+                </div>
+            )
+        },
+        {
+            balanceType: types.debtor,
+            paymentType: types.bank,
+            content: (
+                <div className={classes.summaryItem}>
+                    {t('Долг поставщику переч')}. ({borrowersBankCount})
+                    <div>{numberFormat(borrowersBank, primaryCurrency)}</div>
+                </div>
+            )
+        },
+        {
+            balanceType: types.loaner,
+            paymentType: types.cash,
+            content: (
+                <div className={classes.summaryItem}>
+                    {t('Долг поставщика нал')}. ({loanersCashCount})
+                    <div>{numberFormat(loanersCash, primaryCurrency)}</div>
+                </div>
+            )
+        },
+        {
+            balanceType: types.loaner,
+            paymentType: types.bank,
+            content: (
+                <div className={classes.summaryItem}>
+                    {t('Долг поставщика переч')}. ({loanersBankCount})
+                    <div>{numberFormat(loanersBank, primaryCurrency)}</div>
+                </div>
+            )
+        }
+    ]
+
     const tableList = (
         <table className={classes.mainTable}>
             <tbody>
@@ -635,6 +685,14 @@ const StatProviderGridList = enhance((props) => {
         </table>
     )
 
+    const balanceType = filter.getParam(CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE)
+    const paymentType = filter.getParam(CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE)
+    const flatButtonStyle = {
+        activeColor: '#71ce87',
+        backgroundColor: 'rgba(0, 0, 0, 0.04)',
+        hoverColor: 'rgba(0, 0, 0, 0.08)',
+        rippleColor: 'rgba(0, 0, 0, 0.12)'
+    }
     const summary = (
         <div className={classes.summary}>
             {sumLoading
@@ -642,42 +700,30 @@ const StatProviderGridList = enhance((props) => {
                     <Loader size={0.75}/>
                 </div>
                 : <div className={classes.summaryWrapper}>
-                    <div
-                        onClick={() => hashHistory.push(
-                            filter.createURL({
-                                [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: types.cash,
-                                [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: types.debtor
-                            }))}>
-                        {t('Долг поставщику нал')}. ({borrowersCashCount})
-                        <div>{numberFormat(borrowersCash, primaryCurrency)}</div>
-                    </div>
-                    <div
-                        onClick={() => hashHistory.push(
-                            filter.createURL({
-                                [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: types.bank,
-                                [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: types.debtor
-                            }))}>
-                        {t('Долг поставщику переч')}. ({borrowersBankCount})
-                        <div>{numberFormat(borrowersBank, primaryCurrency)}</div>
-                    </div>
-                    <div
-                        onClick={() => hashHistory.push(
-                            filter.createURL({
-                                [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: types.cash,
-                                [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: types.loaner
-                            }))}>
-                        {t('Долг поставщика нал')}. ({loanersCashCount})
-                        <div>{numberFormat(loanersCash, primaryCurrency)}</div>
-                    </div>
-                    <div
-                        onClick={() => hashHistory.push(
-                            filter.createURL({
-                                [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: types.bank,
-                                [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: types.loaner
-                            }))}>
-                        {t('Долг поставщика переч')}. ({loanersBankCount})
-                        <div>{numberFormat(loanersBank, primaryCurrency)}</div>
-                    </div>
+                    {_.map(headerButtons, (item, index) => {
+                        const isActive = balanceType === item.balanceType && paymentType === item.paymentType
+                        return <FlatButton
+                            key={index}
+                            backgroundColor={isActive
+                                ? flatButtonStyle.activeColor
+                                : flatButtonStyle.backgroundColor}
+                            hoverColor={isActive
+                                ? flatButtonStyle.activeColor
+                                : flatButtonStyle.hoverColor}
+                            rippleColor={flatButtonStyle.rippleColor}
+                            disableTouchRipple={isActive}
+                            style={{color: isActive ? '#fff' : '#333'}}
+                            onTouchTap={() => isActive
+                                ? null
+                                : hashHistory.push({
+                                    pathname: props.pathname,
+                                    query: filter.getParams({
+                                        [CLIENT_BALANCE_FILTER_KEY.PAYMENT_TYPE]: item.paymentType,
+                                        [CLIENT_BALANCE_FILTER_KEY.BALANCE_TYPE]: item.balanceType})
+                                })}
+                            children={item.content}
+                        />
+                    })}
                 </div>}
         </div>
     )
