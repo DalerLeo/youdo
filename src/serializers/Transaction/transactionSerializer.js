@@ -26,7 +26,7 @@ export const updateTransactionSerializer = (data, client) => {
     const amount = numberWithoutSpaces(_.get(data, 'amount'))
     const newAmount = amount > ZERO ? amount : amount * MINUS_ONE
     const comment = _.get(data, 'comment')
-    const customRate = _.get(data, 'custom_rate')
+    const customRate = _.get(data, 'customRate')
     const currency = _.get(data, ['currency', 'value'])
     const division = _.get(data, ['division', 'value'])
     const user = _.get(data, ['user', 'value'])
@@ -53,7 +53,7 @@ export const createIncomeSerializer = (data, cashboxId) => {
     const provider = _.get(data, ['provider', 'value'])
     const incomeCategory = _.get(data, ['incomeCategory', 'value', 'id'])
     const order = _.get(data, ['order', 'value'])
-    const customRate = numberWithoutSpaces(_.get(data, 'custom_rate'))
+    const customRate = numberWithoutSpaces(_.get(data, 'customRate'))
     const division = _.get(data, ['division', 'value'])
     const cashbox = _.get(data, ['cashbox', 'value'])
     const date = moment(_.get(data, 'date')).format('YYYY-MM-DD HH:mm')

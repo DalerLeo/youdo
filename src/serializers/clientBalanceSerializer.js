@@ -106,7 +106,7 @@ export const createAddSerializer = (data, client) => {
 export const updateTransactionSerializer = (data, client) => {
     const newAmount = _.get(data, 'amount')
     const comment = _.get(data, 'comment')
-    const customRate = _.get(data, 'custom_rate')
+    const customRate = _.get(data, 'customRate')
     const currency = _.get(data, ['currency', 'value'])
     const division = _.get(data, ['division', 'value'])
     const user = _.get(data, ['user', 'value'])

@@ -482,10 +482,8 @@ const StatDebtorsGridList = enhance((props) => {
     )
 
     const countDebtors = _.get(listData, ['statData', 'debtors'])
-    const sums = _.map(_.get(listData, ['statData', 'currencies']), (item, currency) => {
-        item.currency = _.find(currencyList, {'id': Number(currency)})
-        return item
-    })
+    const stats = _.get(listData, ['statData', 'currencies'])
+    const statsByCurrency = _.groupBy(stats, (item) => _.get(item, ['currency', 'name']))
     const page = (
         <div className={classes.mainWrapper}>
             <Row style={{margin: '0', height: '100%'}}>
@@ -514,14 +512,16 @@ const StatDebtorsGridList = enhance((props) => {
                                 </div>
                                 <div>
                                     <span>{t('Просроченные платежи')}</span>
-                                    {_.map(sums, (item, index) => {
-                                        return <div key={index}>{numberFormat(item.debts, _.get(item, ['currency', 'name']))}</div>
+                                    {_.map(statsByCurrency, (item, index) => {
+                                        const debts = _.get(_.first(item), 'debts')
+                                        return <div key={index}>{numberFormat(debts, index)}</div>
                                     })}
                                 </div>
                                 <div>
                                     <span>{t('Ожидаемые поступления')}</span>
-                                    {_.map(sums, (item, index) => {
-                                        return <div key={index}>{numberFormat(item.debts, _.get(item, ['currency', 'name']))}</div>
+                                    {_.map(statsByCurrency, (item, index) => {
+                                        const expect = _.get(_.first(item), 'expect')
+                                        return <div key={index}>{numberFormat(expect, index)}</div>
                                     })}
                                 </div>
                             </div>}

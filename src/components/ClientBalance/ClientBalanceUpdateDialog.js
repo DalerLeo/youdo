@@ -112,7 +112,7 @@ const ClientBalanceUpdateDialog = enhance((props) => {
                                     fullWidth={true}/>
                                 {(chosenCurrency !== primaryCurrency && chosenCurrency) &&
                                 <Field
-                                    name="custom_rate"
+                                    name="customRate"
                                     component={TextField}
                                     label={t('Курс')}
                                     normalize={normalizeNumber}

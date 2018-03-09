@@ -615,7 +615,7 @@ const ClientBalanceGridList = enhance((props) => {
         currency: {
             value: _.get(currentItem, ['currency', 'id'])
         },
-        custom_rate: !_.isNil(_.get(currentItem, 'customRate')) ? _.get(currentItem, 'customRate') : _.toInteger(amount / internal),
+        customRate: !_.isNil(_.get(currentItem, 'customRate')) ? _.get(currentItem, 'customRate') : _.toInteger(amount / internal),
         paymentType: {
             value: _.get(currentItem, 'paymentType')
         },

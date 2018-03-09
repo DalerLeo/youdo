@@ -58,7 +58,7 @@ const enhance = compose(
         const chosenCurrency = _.get(state, ['form', 'ClientBalanceUpdateForm', 'values', 'currency', 'value'])
         const chosenCurrencyName = _.get(state, ['form', 'ClientBalanceUpdateForm', 'values', 'currency', 'text'])
         const amount = _.get(state, ['form', 'ClientBalanceUpdateForm', 'values', 'amount'])
-        const rate = _.toNumber(_.get(state, ['form', 'ClientBalanceUpdateForm', 'values', 'custom_rate']))
+        const rate = _.toNumber(_.get(state, ['form', 'ClientBalanceUpdateForm', 'values', 'customRate']))
         return {
             chosenCurrency,
             chosenCurrencyName,
@@ -92,7 +92,7 @@ const TransactionUpdatePriceDialog = enhance((props) => {
     const customRateField = (primaryCurrency !== chosenCurrency && chosenCurrency) &&
     (
             <Field
-                name="custom_rate"
+                name="customRate"
                 component={TextField}
                 className={classes.inputFieldCustom}
                 label={t('Курс')}
