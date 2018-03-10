@@ -10,6 +10,7 @@ import ManufactureEditProductDialog from './ManufactureEditProductDialog'
 import ManufactureTabs from './ManufactureTabs'
 import ConfirmDialog from '../ConfirmDialog'
 import ManufactureProduct from './Tab/ManufactureProduct'
+import {joinArray} from '../../helpers/joinSplitValues'
 import * as ROUTES from '../../constants/routes'
 
 const enhance = compose(
@@ -72,6 +73,10 @@ const ManufactureProductWrapper = enhance((props) => {
 
     const productConfirm = _.get(productData, 'confirmDialog')
     const productCreate = _.get(productData, 'createDialog')
+    const ingredients = joinArray(_.map(_.get(productData, ['detailData', 'data', 'ingredient']), (item) => {
+        return item.ingredient.id
+    }))
+
     const productName = _.get(_.find(_.get(productData, 'productList'), {'id': _.toInteger(_.get(productData, ['detailData', 'id']))}), 'name')
     return (
         <div>
@@ -87,6 +92,7 @@ const ManufactureProductWrapper = enhance((props) => {
                 onSubmit={productCreate.handleSubmitCreateDialog}
             />
             <ManufactureEditProductDialog
+                exclude={ingredients}
                 open={createMaterials.open}
                 onClose={createMaterials.handleClose}
                 onSubmit={createMaterials.handleSubmit}
@@ -100,6 +106,7 @@ const ManufactureProductWrapper = enhance((props) => {
                 onSubmit={editMaterials.handleSubmit}
             />
             <ManufactureChangeDialog
+                initialValues={_.get(productData, ['changeManufacture', 'initialValues'])}
                 open={_.get(productData, ['changeManufacture', 'open'])}
                 onClose={_.get(productData, ['changeManufacture', 'handleCloseChangeManufacture'])}
                 onSubmit={_.get(productData, ['changeManufacture', 'handleSubmitChangeManufacture'])}
