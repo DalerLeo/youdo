@@ -91,12 +91,14 @@ const ManufactureProductWrapper = enhance((props) => {
                 onClose={productCreate.handleCloseCreateDialog}
                 onSubmit={productCreate.handleSubmitCreateDialog}
             />
+            {createMaterials.open &&
             <ManufactureEditProductDialog
                 exclude={ingredients}
                 open={createMaterials.open}
                 onClose={createMaterials.handleClose}
                 onSubmit={createMaterials.handleSubmit}
-            />
+            />}
+            {editMaterials.open &&
             <ManufactureEditProductDialog
                 isUpdate={true}
                 initialValues={editMaterials.initialValues}
@@ -104,7 +106,7 @@ const ManufactureProductWrapper = enhance((props) => {
                 open={editMaterials.open}
                 onClose={editMaterials.handleClose}
                 onSubmit={editMaterials.handleSubmit}
-            />
+            />}
             <ManufactureChangeDialog
                 initialValues={_.get(productData, ['changeManufacture', 'initialValues'])}
                 open={_.get(productData, ['changeManufacture', 'open'])}
@@ -122,16 +124,18 @@ const ManufactureProductWrapper = enhance((props) => {
                 deleteMaterials={deleteMaterials}
                 handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
             />
-            {_.get(deleteMaterials, 'open') !== false && <ConfirmDialog
+            {_.get(deleteMaterials, 'open') !== false &&
+            <ConfirmDialog
                 type="delete"
                 open={deleteMaterials.open}
                 message={_.get(deleteMaterials, 'name')}
                 onClose={deleteMaterials.handleCloseConfirmDialog}
                 onSubmit={deleteMaterials.handleSendConfirmDialog}
             />}
-            {_.get(productData, ['detailData', 'id']) > ZERO && <ConfirmDialog
+            {_.get(productData, ['detailData', 'id']) > ZERO &&
+            <ConfirmDialog
                 type="delete"
-                message={productName}
+                message={productName || ''}
                 onClose={productConfirm.handleCloseConfirmDialog}
                 onSubmit={productConfirm.handleSendConfirmDialog}
                 open={productConfirm.openConfirmDialog}
