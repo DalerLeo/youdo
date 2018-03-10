@@ -89,7 +89,7 @@ const enhance = compose(
         if (cashbox) {
             switch (currencyRate) {
                 case 'order': return dispatch(transactionConvertAction(date, currency, order))
-                case 'custom': return dispatch(change(form, 'custom_rate', ''))
+                case 'custom': return dispatch(change(form, 'customRate', ''))
                 default: return dispatch(transactionConvertAction(date, currency))
             }
         }
@@ -101,7 +101,7 @@ const enhance = compose(
     }, ({dispatch, convertAmount}) => {
         if (convertAmount) {
             const form = 'TransactionCreateForm'
-            dispatch(change(form, 'custom_rate', convertAmount))
+            dispatch(change(form, 'customRate', convertAmount))
         }
     }),
 

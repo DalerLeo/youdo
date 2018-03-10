@@ -7,7 +7,7 @@ export const createSerializer = (data, order) => {
     const amount = numberWithoutSpaces(_.get(data, 'amount'))
     const comment = _.get(data, 'comment')
     const date = moment(_.get(data, 'date')).format('YYYY-MM-DD HH:mm:00')
-    const customRate = numberWithoutSpaces(_.get(data, 'custom_rate'))
+    const customRate = numberWithoutSpaces(_.get(data, 'customRate'))
     const cashbox = _.get(data, ['cashbox', 'value'])
     const incomeCategory = _.get(data, ['incomeCategory', 'value', 'id'])
     const currencyRate = _.get(data, 'currencyRate')

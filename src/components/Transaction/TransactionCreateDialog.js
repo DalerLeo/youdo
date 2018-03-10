@@ -207,7 +207,7 @@ const enhance = compose(
         enableReinitialize: true
     }),
     connect((state) => {
-        const rate = _.get(state, ['form', 'TransactionCreateForm', 'values', 'custom_rate'])
+        const rate = _.get(state, ['form', 'TransactionCreateForm', 'values', 'customRate'])
         const amount = _.get(state, ['form', 'TransactionCreateForm', 'values', 'amount'])
         const chosenCashbox = _.get(state, ['form', 'TransactionCreateForm', 'values', 'cashbox', 'value'])
         const date = _.get(state, ['form', 'TransactionCreateForm', 'values', 'date'])
@@ -333,7 +333,7 @@ const TransactionCreateDialog = enhance((props) => {
     const customRateField = (primaryCurrency !== currency && currency && date && canSetCustomRate)
         ? (
             <Field
-                name="custom_rate"
+                name="customRate"
                 component={TextField}
                 label={t('Курс ') + primaryCurrency}
                 className={classes.inputFieldCustom}

@@ -405,7 +405,7 @@ const StatSalesGridList = enhance((props) => {
                                         <div className={classes.secondarySummary}>
                                             <div>{t('Сумма продаж за период')}</div>
                                             <div>{numberFormat(sum, getConfig('PRIMARY_CURRENCY'))}</div>
-                                            <div>{t('Сумма возврата за период')}</div>
+                                            <div>{t('Сумма возврата с заказов за период')}</div>
                                             <div>{numberFormat(returnSum, getConfig('PRIMARY_CURRENCY'))}</div>
                                         </div>
                                         {salesInfoDialog &&

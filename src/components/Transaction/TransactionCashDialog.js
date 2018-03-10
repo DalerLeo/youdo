@@ -236,7 +236,7 @@ const TransactionCashDialog = enhance((props) => {
     const initialValues = {
         amount: amount1,
         comment: _.get(currentItem, 'comment'),
-        custom_rate: !_.isNull(_.get(currentItem, 'customRate')) ? _.get(currentItem, 'customRate') : _.toInteger(amount1 / internal1),
+        customRate: !_.isNull(_.get(currentItem, 'customRate')) ? _.get(currentItem, 'customRate') : _.toInteger(amount1 / internal1),
         division: {
             value: _.get(currentItem, ['division', 'id'])
         },

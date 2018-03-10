@@ -27,6 +27,9 @@ import Market from 'material-ui/svg-icons/maps/store-mall-directory'
 import MarketType from 'material-ui/svg-icons/maps/local-mall'
 import {hashHistory} from 'react-router'
 import ExpandList from 'material-ui/svg-icons/action/list'
+import ordering from '../../../helpers/ordering'
+import ArrowUpIcon from 'material-ui/svg-icons/navigation/arrow-upward'
+import ArrowDownIcon from 'material-ui/svg-icons/navigation/arrow-downward'
 
 export const STAT_MARKET_FILTER_KEY = {
     SEARCH: 'search',
@@ -429,6 +432,9 @@ const enhance = compose(
         },
         borderRight: {
             borderRight: '1px #efefef solid'
+        },
+        icon: {
+            height: '15px !important'
         }
     }),
     withState('currentRow', 'updateRow', null),
@@ -450,11 +456,13 @@ const listHeader = [
     // Sales
     {
         sorting: true,
+        name: 'salesTotal',
         title: t('Сумма'),
         tooltip: t('Общая сумма продаж')
     },
     {
         sorting: true,
+        name: 'salesFact',
         title: t('Фактически'),
         tooltip: t('Сумма продаж с учетом возвратов')
     }
@@ -476,7 +484,9 @@ const StatMarketGridList = enhance((props) => {
         updateCurrentParent,
         setExpandedTable,
         handleGetChilds,
-        handleResetChilds
+        handleResetChilds,
+        pathname,
+        query
     } = props
 
     const sumData = _.get(listData, 'sumData')
@@ -721,30 +731,21 @@ const StatMarketGridList = enhance((props) => {
                                             </tr>
                                             <tr className={classes.subTitle}>
                                                 {_.map(listHeader, (header, index) => {
-                                                    const ZERO = 0
-                                                    const ONE = 1
-                                                    const EVEN = 2
-                                                    const isEven = (index + ONE) % EVEN === ZERO
-                                                    const tooltip = _.get(header, 'tooltip')
-                                                    const sorting = _.get(header, 'sorting')
-                                                    const position = 'left'
-                                                    if (tooltip) {
-                                                        return (
-                                                            <td key={index}>
-                                                                <ToolTip text={tooltip} position={position} alignRight={isEven}>{header.title}</ToolTip>
-                                                            </td>
-                                                        )
-                                                    } else if (sorting) {
-                                                        if (tooltip) {
-                                                            return (
-                                                                <td key={index} style={{cursor: 'pointer'}}>
-                                                                    <ToolTip text={tooltip} position={position} alignRight={isEven}>{header.title}</ToolTip>
-                                                                </td>
-                                                            )
-                                                        }
-                                                        return <td key={index} style={{cursor: 'pointer'}}>{header.title}</td>
+                                                    const sortingType = filter.getSortingType(header.name)
+                                                    const orderingQuery = _.get(query, 'ordering')
+                                                    const icon = _.isNil(sortingType) ? null : sortingType
+                                                        ? <ArrowUpIcon className={classes.icon}/>
+                                                        : <ArrowDownIcon className={classes.icon}/>
+                                                    if (!header.sorting) {
+                                                        return <td key={index}>{header.title}</td>
                                                     }
-                                                    return <td key={index}>{header.title}</td>
+                                                    return <td key={index} style={{cursor: 'pointer'}} onClick={() => {
+                                                        switch (orderingQuery) {
+                                                            case header.name: return ordering(filter, '-' + header.name, pathname)
+                                                            case '-' + header.name: return ordering(filter, header.name, pathname)
+                                                            default: return ordering(filter, header.name, pathname)
+                                                        }
+                                                    }}>{header.title}{icon}</td>
                                                 })}
                                             </tr>
                                             {tableList}

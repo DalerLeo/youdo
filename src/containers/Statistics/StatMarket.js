@@ -60,7 +60,8 @@ const enhance = compose(
         const except = {
             page: null,
             pageSize: null,
-            search: null
+            search: null,
+            ordering: null
         }
         return (props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except))
     }, ({dispatch, filter}) => {
@@ -203,6 +204,8 @@ const StatMarketList = enhance((props) => {
                 filterForm={filterForm}
                 handleGetChilds={props.handleGetChilds}
                 handleResetChilds={props.handleResetChilds}
+                query={location.query}
+                pathname={location.pathname}
             />
         </Layout>
     )

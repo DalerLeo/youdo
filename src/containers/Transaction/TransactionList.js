@@ -256,13 +256,13 @@ const enhance = compose(
                 case 'order': return dispatch(transactionConvertAction(date, currency, order))
                     .then((data) => {
                         const customRate = _.get(data, ['value', 'amount'])
-                        dispatch(change(form, 'custom_rate', customRate))
+                        dispatch(change(form, 'customRate', customRate))
                     })
-                case 'custom': return updateTransaction ? null : dispatch(change(form, 'custom_rate', ''))
+                case 'custom': return updateTransaction ? null : dispatch(change(form, 'customRate', ''))
                 default: return dispatch(transactionConvertAction(date, currency))
                     .then((data) => {
                         const customRate = _.get(data, ['value', 'amount'])
-                        dispatch(change(form, 'custom_rate', customRate))
+                        dispatch(change(form, 'customRate', customRate))
                     })
             }
         }
@@ -286,13 +286,13 @@ const enhance = compose(
                 case 'order': return dispatch(transactionConvertAction(date, currency, order))
                     .then((data) => {
                         const customRate = _.get(data, ['value', 'amount'])
-                        dispatch(change(form, 'custom_rate', customRate))
+                        dispatch(change(form, 'customRate', customRate))
                     })
-                case 'custom': return dispatch(change(form, 'custom_rate', ''))
+                case 'custom': return dispatch(change(form, 'customRate', ''))
                 default: return dispatch(transactionConvertAction(date, currency))
                     .then((data) => {
                         const customRate = _.get(data, ['value', 'amount'])
-                        dispatch(change(form, 'custom_rate', customRate))
+                        dispatch(change(form, 'customRate', customRate))
                     })
             }
         }
@@ -304,7 +304,7 @@ const enhance = compose(
     }, ({dispatch, convertAmount}) => {
         if (convertAmount) {
             const form = 'TransactionCreateForm'
-            dispatch(change(form, 'custom_rate', convertAmount))
+            dispatch(change(form, 'customRate', convertAmount))
         }
     }),
 
@@ -477,7 +477,7 @@ const enhance = compose(
             dispatch(reset(form))
             Promise.resolve()
                 .then(() => {
-                    dispatch(change(form, 'custom_rate', convertAmount))
+                    dispatch(change(form, 'customRate', convertAmount))
                     dispatch(change(form, 'transaction_child', [{}]))
                 })
         },
@@ -511,7 +511,7 @@ const enhance = compose(
             dispatch(reset(form))
             Promise.resolve()
                 .then(() => {
-                    dispatch(change(form, 'custom_rate', convertAmount))
+                    dispatch(change(form, 'customRate', convertAmount))
                     dispatch(change(form, 'transaction_child', [{}]))
                 })
         },
@@ -923,7 +923,7 @@ const TransactionList = enhance((props) => {
                     text: _.get(detail, ['expenseCategory', 'name'])
                 },
                 amount: amount,
-                custom_rate: _.get(detail, ['clientTransaction', 'customRate']),
+                customRate: _.get(detail, ['clientTransaction', 'customRate']),
                 division: {
                     value: _.get(detail, ['division', 'id'])
                 },
@@ -960,7 +960,7 @@ const TransactionList = enhance((props) => {
                     value: _.get(detail, ['expenseCategory', 'id']),
                     text: _.get(detail, ['expenseCategory', 'name'])
                 },
-                custom_rate: _.get(detail, ['clientTransaction', 'customRate']),
+                customRate: _.get(detail, ['clientTransaction', 'customRate']),
                 division: {value: _.get(detail, ['clientTransaction', 'division', 'id'])},
                 showIncomeClients: showIncomeClients
             }
