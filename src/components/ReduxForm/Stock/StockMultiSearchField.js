@@ -1,16 +1,8 @@
 import React from 'react'
 import SearchField from '../Basic/MultiSelectField'
-import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
-import toCamelCase from '../../../helpers/toCamelCase'
 import searchFieldGetOptions from '../../../helpers/searchFieldGetOptions'
-
-const getIdsOption = (ids) => {
-    return axios().get(`${PATH.STOCK_LIST}?ids=${ids || ''}`)
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data.results))
-        })
-}
+import getIdsOption from '../../../helpers/getIdsOption'
 
 const StockSearchField = (props) => {
     const {params, pageSize, ...defaultProps} = props
@@ -19,7 +11,7 @@ const StockSearchField = (props) => {
             getValue={SearchField.defaultGetValue('id')}
             getText={SearchField.defaultGetText('name')}
             getOptions={search => searchFieldGetOptions(PATH.STOCK_LIST, search, params, pageSize)}
-            getIdsOption={getIdsOption}
+            getIdsOption={(ids) => getIdsOption(ids, PATH.STOCK_LIST)}
             getItemText={SearchField.defaultGetText('name')}
             {...defaultProps}
         />

@@ -35,7 +35,6 @@ import CashboxSearchField from './Cashbox/CashboxSearchField'
 import CashboxTypeSearchField from './Cashbox/CashboxTypeSearchField'
 import DeliveryTypeSearchField from './DeliveryTypeSearchField'
 import ManufactureSearchField from './Manufacture/ManufactureSearchField'
-import ManufactureMultiSearchField from './Manufacture/ManufactureMultiSearchField'
 import ManufactureListMaterialField from './Manufacture/ManufactureListMaterialField'
 import ProviderContactsField from './Provider/ProviderContactsField'
 import ClientContactsField from './Client/ClientContactsField'
@@ -190,7 +189,6 @@ export {
     MeasurementMultiSearchField,
     MarketTypeMultiSearchField,
     TransactionTypeMultiSearchField,
-    ManufactureMultiSearchField,
     MarketTypeParentSearchField,
     MarketPhoneListField,
     TransactionIncomeCategory,
