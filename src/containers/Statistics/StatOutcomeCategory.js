@@ -57,9 +57,7 @@ const enhance = compose(
             dPage: null,
             dPageSize: null
         }
-        return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except) &&
-            (!_.get(props, ['params', 'statOutcomeCategoryId'])) &&
-            (!_.get(nextProps, ['params', 'statOutcomeCategoryId']))
+        return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
         dispatch(statOutcomeCategoryListFetchAction(filter))
     }),

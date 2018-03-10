@@ -11,7 +11,7 @@ import filterHelper from '../../helpers/filter'
 import {splitToArray, joinArray} from '../../helpers/joinSplitValues'
 import toBoolean from '../../helpers/toBoolean'
 import * as API from '../../constants/api'
-import * as serializers from '../../serializers/Statistics/statProductSerializer'
+import * as serializers from '../../serializers/Statistics/statMarketSerializer'
 import getDocuments from '../../helpers/getDocument'
 import {
     statMarketListFetchAction,

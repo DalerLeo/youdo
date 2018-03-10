@@ -5,7 +5,7 @@ const _ = require('lodash')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 const NODE_ENV = process.env.NODE_ENV || 'development'
-const API_HOST = NODE_ENV !== 'development' || process.env.API_HOST ? process.env.API_HOST : 'api.wienerdeming.com'
+const API_HOST = NODE_ENV !== 'development' || process.env.API_HOST ? process.env.API_HOST : 'apitest2.wienerdeming.com'
 
 // Package build for compilation
 const developmentPackage = _.keys(packageJSON.dependencies)
