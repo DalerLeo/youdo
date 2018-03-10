@@ -20,7 +20,7 @@ const fetchList = ({state, dispatch, getOptions, getText, getValue, input}) => {
             })
         })
         .then((data) => {
-            dispatch({dataSource: data, loading: false})
+            dispatch({dataSource: _.unionBy(data, state.dataSource, 'value'), loading: false})
         })
 }
 
@@ -136,14 +136,13 @@ const enhance = compose(
     }, (props) => {
         const {state, input, getItem, dispatch, getText, getValue} = props
         const finder = _.find(state.dataSource, {'value': input.value.value})
-
         if (_.isEmpty(finder) && input.value.value) {
             getItem(input.value.value).then((data) => {
                 if (!_.isEmpty(data)) {
                     return dispatch({
-                        dataSource: _.union(props.state.dataSource, [{
+                        dataSource: _.unionBy(props.state.dataSource, [{
                             text: getText(data), value: getValue(data)
-                        }])
+                        }], 'value')
                     })
                 }
                 return null

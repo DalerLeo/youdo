@@ -290,12 +290,13 @@ const Dashboard = enhance((props) => {
     // AGENTS //
     const agentsChartActive = _.get(agentsChart, 'active')
     const agentsChartLoading = _.get(agentsChart, 'loading')
+
     const sortedAgentsList = _.slice(_.filter(_.orderBy(_.get(agentsChart, 'data'), ['salesTotal'], ['desc']), (item) => {
         return !_.isNull(_.get(item, 'salesTotal'))
     }), ZERO, MAX_OUTPUT)
     const agentsList = _.map(sortedAgentsList, item => _.get(item, 'name'))
     const agentsOrders = _.map(sortedAgentsList, item => _.floor(_.get(item, 'salesTotal'), FLOOR) || ZERO)
-    const agentsReturns = _.map(sortedAgentsList, item => _.floor(_.get(item, 'returnTotal'), FLOOR) || ZERO)
+    const agentsReturns = _.map(sortedAgentsList, item => _.floor(_.get(item, 'returnOrders'), FLOOR) || ZERO)
     const agentsFact = _.map(sortedAgentsList, item => _.floor(_.get(item, 'salesFact'), FLOOR) || ZERO)
 
     // FINANCE //

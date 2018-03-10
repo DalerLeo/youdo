@@ -89,7 +89,7 @@ export const listFilterSerializer = (data, id) => {
     }
 }
 
-export const createReturnSerializer = (data) => {
+export const createReturnSerializer = (data, id) => {
     const client = _.get(data, ['client', 'value'])
     const stock = _.get(data, ['stock', 'value'])
     const market = _.get(data, ['market', 'value'])
@@ -111,6 +111,7 @@ export const createReturnSerializer = (data) => {
     return {
         'price_list': priceList || '1',
         client,
+        'order_return': id,
         stock,
         comment,
         currency,

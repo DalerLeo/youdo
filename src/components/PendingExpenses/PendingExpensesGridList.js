@@ -176,6 +176,7 @@ const PendingExpensesGridList = enhance((props) => {
     const detailAmount = numberFormat(_.get(selectedDetails, 'totalAmount'), detailCurrency)
     const detailRemains = numberFormat(_.get(selectedDetails, 'remains'), detailCurrency)
     const detailProvider = _.get(selectedDetails, ['provider', 'name'])
+    const detailProviderId = _.get(selectedDetails, ['provider', 'id'])
     const detailCreatedDate = _.get(selectedDetails, 'createdDate')
     const detailDivision = _.get(selectedDetails, ['division', 'name'])
     const detailDivisionID = _.get(selectedDetails, ['division', 'id'])
@@ -189,7 +190,8 @@ const PendingExpensesGridList = enhance((props) => {
         },
         division: {
             value: detailDivisionID
-        }
+        },
+        provider: {value: detailType === 'supply' ? detailProviderId : _.get(selectedDetails, 'undefined')}
     }
 
     const additionalData = (
@@ -230,6 +232,7 @@ const PendingExpensesGridList = enhance((props) => {
                 additionalData={additionalData}
                 open={updateDialog.openUpdateDialog}
                 onClose={updateDialog.handleCloseUpdateDialog}
+                paymentType={_.get(selectedDetails, 'paymentType')}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
                 initialValues={initialValues}
             />
