@@ -156,9 +156,10 @@ const enhance = compose(
             getDocuments(API.STAT_CASHBOX_GET_DOCUMENT, params)
         },
         handleDetailGetDocument: props => () => {
-            const {filter} = props
-            const params = serializers.listFilterSerializer(filter.getParams())
-            getDocuments(API.STAT_FINANCE_GET_DOCUMENT, params)
+            const {filterDetail, params} = props
+            const cashbox = _.get(params, 'cashboxId')
+            const request = serializers.listFilterSerializer(filterDetail.getParams(), cashbox)
+            getDocuments(API.STAT_FINANCE_GET_DOCUMENT, request)
         },
         handleGetDataItem: props => (id) => {
             const {filter, dispatch} = props

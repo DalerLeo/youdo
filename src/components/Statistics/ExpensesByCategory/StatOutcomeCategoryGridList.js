@@ -260,7 +260,7 @@ const StatOutcomeCategoryGridList = enhance((props) => {
                             initialValues={initialValues}
                             handleGetDocument={getDocument.handleGetDocument}
                         />
-                        <Pagination filter={filterTransaction}/>
+                        <Pagination filter={filter}/>
                         {listLoading
                             ? <div className={classes.tableWrapper}>
                                 <div className={classes.loader}>
