@@ -8,6 +8,8 @@ import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
+import updateStore from '../../helpers/updateStore'
+import * as actionTypes from '../../constants/actionTypes'
 import toBoolean from '../../helpers/toBoolean'
 import {
     OPEN_USER_CREATE_DIALOG,
@@ -131,16 +133,24 @@ const enhance = compose(
             hashHistory.push({pathname, query: filterUser.getParams({[OPEN_USER_UPDATE_DIALOG]: false, 'personId': -1})})
         },
         handleSubmitUserUpdateDialog: props => () => {
-            const {dispatch, staffCreateForm, filterUser, params} = props
+            const {dispatch, userShiftList, staffCreateForm, filterUser, params} = props
             const manufactureId = _.get(params, 'manufactureId')
             const personId = _.toNumber(_.get(props, ['location', 'query', 'personId']))
             return dispatch(userShiftUpdateAction(personId, _.get(staffCreateForm, ['values']), manufactureId))
-                .then(() => {
+                .then((data) => {
+                    const detail = _.get(data, 'value')
+                    updateStore(
+                        personId,
+                        userShiftList,
+                        actionTypes.USER_SHIFT_LIST,
+                        {
+                            name: _.get(detail, 'name'),
+                            shift: _.get(detail, 'shift')
+                        })
                     return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
                     hashHistory.push(filterUser.createURL({[OPEN_USER_UPDATE_DIALOG]: false, 'personId': -1}))
-                    dispatch(userShiftListFetchAction(filterUser, manufactureId))
                 })
                 .catch((error) => {
                     dispatch(openErrorAction({

@@ -11,7 +11,7 @@ import {Row, Col} from 'react-flexbox-grid'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import toCamelCase from '../../helpers/toCamelCase'
-import {TextField, ProductSearchField} from '../ReduxForm'
+import {TextField, ProductSearchField, normalizeNumber} from '../ReduxForm'
 import t from '../../helpers/translate'
 
 export const MANUFACTURE_EDIT_PRODUCT_DIALOG_OPEN = 'editMaterials'
@@ -223,9 +223,8 @@ const validate = (data) => {
     })
 }
 const ManufactureEditProductDialog = enhance((props) => {
-    const {open, handleSubmit, loading, onClose, classes, isUpdate, measurement, measurementExp} = props
+    const {open, handleSubmit, loading, onClose, classes, isUpdate, measurement, measurementExp, exclude} = props
     const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
-
     return (
         <Dialog
             modal={true}
@@ -245,12 +244,13 @@ const ManufactureEditProductDialog = enhance((props) => {
                     <div className={classes.inContent} style={{minHeight: '115px'}}>
                         <div style={{width: '100%', paddingTop: '10px'}}>
                             <div className={classes.addMaterials}>
-                                <Row className={classes.addRaw} style={{width: '100%'}}>
+                                <Row style={{width: '100%', alignItems: isUpdate ? '' : 'flex-end'}}>
                                     {!isUpdate && <Col xs={8}>
                                         <Field
                                             label={t('Наименование товара')}
                                             name="ingredient"
                                             component={ProductSearchField}
+                                            params={{exclude}}
                                             className={classes.inputFieldCustom}
                                             fullWidth={true}
                                         />
@@ -261,6 +261,7 @@ const ManufactureEditProductDialog = enhance((props) => {
                                             style={{textAlign: 'right', marginTop: '-2px'}}
                                             label={t('Кол-во')}
                                             component={TextField}
+                                            normalize={normalizeNumber}
                                             className={classes.inputFieldCustom}
                                             fullWidth={true}
                                         />

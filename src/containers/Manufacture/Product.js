@@ -8,6 +8,9 @@ import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
+import * as actionTypes from '../../constants/actionTypes'
+import numberFormat from '../../helpers/numberFormat'
+import updateStore from '../../helpers/updateStore'
 import toBoolean from '../../helpers/toBoolean'
 import ManufactureWrapper from './Wrapper'
 import {
@@ -39,7 +42,6 @@ import {
 import {openSnackbarAction} from '../../actions/snackbar'
 import {openErrorAction} from '../../actions/error'
 import t from '../../helpers/translate'
-
 const MINUS_ONE = -1
 const ZERO = 0
 const enhance = compose(
@@ -79,7 +81,8 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         const except = {
             addProduct: null,
-            productId: null
+            productId: null,
+            openDeleteIngredient: null
         }
         const manufactureId = _.toNumber(_.get(props, ['params', 'manufactureId']))
         const nextManufactureId = _.toNumber(_.get(nextProps, ['params', 'manufactureId']))
@@ -278,17 +281,21 @@ const enhance = compose(
             })
         },
         handleSubmitEditMaterials: props => () => {
-            const {dispatch, ingredientCreateForm, filter, location: {pathname}} = props
+            const {dispatch, ingredientCreateForm, productDetail, filter, location: {pathname}} = props
             const productId = _.toNumber(_.get(props, ['location', 'query', 'productId']))
             const ingredientId = _.toNumber(_.get(props, ['location', 'query', 'ingId']))
-            return dispatch(ingredientUpdateAction(_.get(ingredientCreateForm, ['values']), _.toNumber(ingredientId), productId))
-                .then(() => {
+            const innerIngredient = _.find(_.get(productDetail, 'ingredient'), {id: ingredientId})
+            const innerId = _.get(innerIngredient, ['ingredient', 'id'])
+
+            return dispatch(ingredientUpdateAction(_.get(ingredientCreateForm, ['values']), _.toNumber(ingredientId), productId, innerId))
+                .then((data) => {
+                    const amount = _.get(data, ['value', 'amount'])
+                    updateStore(ingredientId, productDetail, actionTypes.INGREDIENT_LIST, {amount}, 'ingredient')
                     hashHistory.push({
                         pathname,
                         query: filter.getParams({[MANUFACTURE_EDIT_PRODUCT_DIALOG_OPEN]: false, 'ingId': MINUS_ONE})
                     })
                     dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
-                    return dispatch(ingredientListFetchAction(productId))
                 })
                 .catch((error) => {
                     dispatch(openErrorAction({
@@ -408,7 +415,7 @@ const ManufactureProductList = enhance((props) => {
     const selectProduct = _.find(_.get(productDetail, 'ingredient'), {'id': _.toInteger(ingredientId)})
     const editMaterials = {
         initialValues: {
-            amount: _.get(selectProduct, 'amount')
+            amount: numberFormat(_.get(selectProduct, 'amount'))
         },
         measurement: _.get(selectProduct, ['ingredient', 'measurement', 'name']),
         open: openEditMaterials,
@@ -452,8 +459,13 @@ const ManufactureProductList = enhance((props) => {
         data: productDetail,
         detailLoading: productDetailLoading
     }
+    const selectedProduct = _.find(_.get(productList, 'results'), {id: _.toNumber(productId)})
 
     const changeManufacture = {
+        initialValues: {
+            manufacture: {value: _.get(productDetail, 'manufacture')},
+            equipment: {value: _.get(selectedProduct, ['equipment', 'id'])}
+        },
         open: openManufactureChangeDialog,
         handleOpenChangeManufacture: props.handleOpenChangeManufacture,
         handleCloseChangeManufacture: props.handleCloseChangeManufacture,
