@@ -1,17 +1,9 @@
 import _ from 'lodash'
 import React from 'react'
 import SearchField from '../Basic/MultiSelectField'
-import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
-import toCamelCase from '../../../helpers/toCamelCase'
 import searchFieldGetOptions from '../../../helpers/searchFieldGetOptions'
-
-const getIdsOption = (ids) => {
-    return axios().get(`${PATH.USERS_LIST}?ids=${ids || ''}`)
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data.results))
-        })
-}
+import getIdsOption from '../../../helpers/getIdsOption'
 
 const getText = (obj) => {
     return _.get(obj, 'firstName') + ' ' + _.get(obj, 'secondName')
@@ -26,7 +18,7 @@ const UsersSearchField = (props) => {
             getText={getText}
             selectFieldScroll={selectFieldScroll}
             getOptions={search => searchFieldGetOptions(PATH.USERS_LIST, search, params, pageSize)}
-            getIdsOption={getIdsOption}
+            getIdsOption={(ids) => getIdsOption(ids, PATH.USERS_LIST)}
             getItemText={getText}
             {...props}
         />
