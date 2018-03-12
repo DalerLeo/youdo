@@ -127,7 +127,6 @@ const enhance = compose(
             _.get(props, ['state', 'open']) !== _.get(nextProps, ['state', 'open'])) &&
             _.get(nextProps, ['state', 'open'])
     }, (props) => {
-        console.warn('WITHPROPS', props.state.dataSource)
         props.state.open && _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)
     }),
 
@@ -165,7 +164,7 @@ const SearchField = enhance((props) => {
         meta,
         withoutErrorText
     } = props
-    console.warn('RENDER', state.dataSource)
+
     const hintText = state.loading ? <div>{t('Загрузка')}...</div> : <div>{t('Не найдено')}</div>
     return (
         <div className={classes.wrapper}>
