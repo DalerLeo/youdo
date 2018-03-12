@@ -552,7 +552,7 @@ const StatMarketGridList = enhance((props) => {
         const salesTotal = _.toNumber(_.get(item, 'salesTotal'))
         const returnOrders = _.toNumber(_.get(item, 'returnOrders'))
         const paymentOrders = _.toNumber(_.get(item, 'paymentOrders'))
-        const deptOrders = _.toNumber(_.get(item, 'deptOrders'))
+        const deptOrders = _.toNumber(_.get(item, 'deptOrders') || _.get(item, 'debtOrders'))
         const clientName = _.get(item, 'clientName')
         return (
             <tr
