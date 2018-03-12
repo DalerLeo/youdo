@@ -37,7 +37,10 @@ const enhance = compose(
         const transactionDataLoading = _.get(state, ['statExpenditureOnStaff', 'transactionData', 'loading'])
         const filterForm = _.get(state, ['form', 'StatisticsFilterForm'])
         const filter = filterHelper(list, pathname, query)
-        const filterTransaction = filterHelper(transactionData, pathname, query, {'page': 'dPage', 'pageSize': 'dPageSize'})
+        const filterTransaction = filterHelper(transactionData, pathname, query, {
+            'page': 'dPage',
+            'pageSize': 'dPageSize'
+        })
         const beginDate = _.get(query, BEGIN_DATE) || firstDayOfMonth
         const endDate = _.get(query, END_DATE) || lastDayOfMonth
 
@@ -84,10 +87,12 @@ const enhance = compose(
 
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
+            const expenseCategory = _.get(filterForm, ['values', 'expenseCategory']) || null
 
             filter.filterBy({
                 [STAT_EXPENDITURE_ON_STAFF_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
-                [STAT_EXPENDITURE_ON_STAFF_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
+                [STAT_EXPENDITURE_ON_STAFF_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD'),
+                [STAT_EXPENDITURE_ON_STAFF_FILTER_KEY.EXPENSE_CATEGORY]: _.join(expenseCategory, '-')
             })
         },
         handleGetDocument: props => () => {
@@ -124,6 +129,7 @@ const StatExpenditureOnStaffList = enhance((props) => {
     } = props
 
     const openTransactionDialog = _.toNumber(_.get(location, ['query', [OPEN_TRANSACTION_DIALOG]]))
+    const expenseCategory = filter.getParam(STAT_EXPENDITURE_ON_STAFF_FILTER_KEY.EXPENSE_CATEGORY)
 
     const listData = {
         data: _.get(list, 'results'),
@@ -137,7 +143,10 @@ const StatExpenditureOnStaffList = enhance((props) => {
         date: {
             fromDate: moment(firstDayOfMonth),
             toDate: moment(lastDayOfMonth)
-        }
+        },
+        expenseCategory: expenseCategory && _.map(_.split(expenseCategory, '-'), (item) => {
+            return _.toNumber(item)
+        })
     }
     const transactionDialog = {
         open: openTransactionDialog,
