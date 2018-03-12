@@ -24,20 +24,21 @@ export const detailFilterSerializer = (data) => {
     const {...defaultData} = data
     return {
         'begin_date': _.get(defaultData, 'fromDate') || firstDayOfMonth,
-        'end_date': _.get(defaultData, 'toDate') || lastDayOfMonth
+        'end_date': _.get(defaultData, 'toDate') || lastDayOfMonth,
+        'expense_category': _.get(defaultData, 'expenseCategory')
     }
 }
 
 export const transactionSerializer = (data, transactionData, staff) => {
     const {...defaultData} = data
     const {...defaultTransactionData} = transactionData
-
     return {
         'page': _.get(defaultTransactionData, 'dPage'),
         'page_size': _.get(defaultTransactionData, 'dPageSize'),
         'begin_date': _.get(defaultData, 'fromDate') || firstDayOfMonth,
         'end_date': _.get(defaultData, 'toDate') || lastDayOfMonth,
-        'staff': staff
+        'staff': staff,
+        'expense_category': _.get(defaultData, 'expenseCategory')
     }
 }
 

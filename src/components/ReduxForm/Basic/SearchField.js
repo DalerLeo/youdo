@@ -20,7 +20,7 @@ const fetchList = ({state, dispatch, getOptions, getText, getValue, input}) => {
             })
         })
         .then((data) => {
-            dispatch({dataSource: _.unionBy(data, state.dataSource, 'value'), loading: false})
+            dispatch({dataSource: data, loading: false})
         })
 }
 
@@ -164,6 +164,7 @@ const SearchField = enhance((props) => {
         meta,
         withoutErrorText
     } = props
+
     const hintText = state.loading ? <div>{t('Загрузка')}...</div> : <div>{t('Не найдено')}</div>
     return (
         <div className={classes.wrapper}>
