@@ -33,7 +33,8 @@ export const TRANSACTION_FILTER_KEY = {
     CLIENT: 'client',
     STAFF: 'staff',
     DIVISION: 'division',
-    WITH_DELETED: 'with_deleted'
+    WITH_DELETED: 'with_deleted',
+    INTERNAL_TRANSFER: 'internalTransfer'
 }
 
 const enhance = compose(
@@ -210,6 +211,10 @@ const TransactionFilterForm = enhance((props) => {
                         component={CheckBox}
                         defaultChecked={true}
                         label={t('Показать удаленные транзакции')}/>
+                    <Field
+                        name="internalTransfer"
+                        component={CheckBox}
+                        label={t('Внутренний расход')}/>
 
                     <RaisedButton
                         type="submit"

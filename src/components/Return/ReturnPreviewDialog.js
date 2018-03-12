@@ -31,7 +31,7 @@ const enhance = compose(
         },
         dialog: {
             overflowY: 'auto',
-            zIndex: '1501'
+            zIndex: '1501 !important'
         },
         popUp: {
             background: '#fff',
@@ -156,7 +156,7 @@ const ReturnCreateDialog = enhance((props) => {
             return amount * cost
         })
         return (
-            <span className={classes.totalSum}>{numberFormat(totalPrice, currency)}</span>
+            <span key={index} className={classes.totalSum}>{numberFormat(totalPrice, currency)}</span>
         )
     })
 

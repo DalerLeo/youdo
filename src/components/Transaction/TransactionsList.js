@@ -319,6 +319,7 @@ const TransactionsList = enhance((props) => {
             },
             customRate: numberFormat(_.get(currentItem, 'customRate')),
             comment: _.get(currentItem, 'comment'),
+            internalTransfer: _.get(currentItem, 'internalTransfer'),
             expenseCategory: !_.isNil(_.get(currentItem, 'expenseCategory'))
                 ? {
                     value: currentItemAmount < ZERO
