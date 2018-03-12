@@ -591,3 +591,9 @@ export const CELL_CREATE = `/${CELL}/`
 export const CELL_LIST = `/${CELL}/`
 export const CELL_ITEM = `/${CELL}/%d/`
 export const CELL_DELETE = `/${CELL}/%d/`
+
+export const HR_APPLICATION = 'stock/provider'
+export const HR_APPLICATION_CREATE = `/${HR_APPLICATION}/`
+export const HR_APPLICATION_DELETE = `/${HR_APPLICATION}/%d/`
+export const HR_APPLICATION_LIST = `/${HR_APPLICATION}/`
+export const HR_APPLICATION_ITEM = `/${HR_APPLICATION}/%d/`

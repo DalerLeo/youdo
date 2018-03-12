@@ -90,6 +90,9 @@ import {ProviderBalanceList} from '../containers/ProviderBalance'
 import {SystemPagesList} from '../containers/SystemPages'
 import {CellTypeList} from '../containers/CellType'
 import {CellList} from '../containers/Cell'
+import {
+    ApplicationList
+} from '../containers/HR'
 
 const userIsAdminChain = compose(userIsAuth, visibleOnlyAdmin)
 
@@ -937,6 +940,17 @@ export default {
                 {
                     path: ROUTES.CELL_ITEM_URL,
                     component: userIsAuth(CellList)
+                }
+            ]
+        },
+        // HR Application
+        {
+            path: ROUTES.HR_APPLICATION_LIST_URL,
+            component: userIsAdminChain(ApplicationList),
+            childRoutes: [
+                {
+                    path: ROUTES.HR_APPLICATION_ITEM_URL,
+                    component: userIsAuth(ApplicationList)
                 }
             ]
         },
