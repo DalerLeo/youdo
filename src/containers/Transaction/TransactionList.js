@@ -454,6 +454,7 @@ const enhance = compose(
             const client = _.get(filterForm, ['values', 'client']) || null
             const staff = _.get(filterForm, ['values', 'staff']) || null
             const withDeleted = _.get(filterForm, ['values', 'with_deleted']) || null
+            const internalTransfer = _.get(filterForm, ['values', 'internalTransfer']) || null
             const categoryExpense = _.get(filterForm, ['values', 'categoryExpense']) || null
 
             filter.filterBy({
@@ -464,6 +465,7 @@ const enhance = compose(
                 [TRANSACTION_FILTER_KEY.WITH_DELETED]: withDeleted,
                 [TRANSACTION_FILTER_KEY.DIVISION]: joinArray(division),
                 [TRANSACTION_FILTER_KEY.CATEGORY_EXPENSE]: joinArray(categoryExpense),
+                [TRANSACTION_FILTER_KEY.INTERNAL_TRANSFER]: internalTransfer,
                 [TRANSACTION_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [TRANSACTION_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
             })
@@ -845,14 +847,17 @@ const TransactionList = enhance((props) => {
     const openSuperUser = _.toInteger(_.get(location, ['query', TRANSACTION_EDIT_PRICE_OPEN])) > ZERO
     const openDeleteTransaction = _.toInteger(_.get(location, ['query', DELETE_TRANSACTION])) > ZERO
     const openUpdateTransaction = _.toInteger(_.get(location, ['query', UPDATE_TRANSACTION]))
+
     const categoryExpense = (filter.getParam(TRANSACTION_FILTER_KEY.CATEGORY_EXPENSE))
     const division = (filter.getParam(TRANSACTION_FILTER_KEY.DIVISION))
     const type = (filter.getParam(TRANSACTION_FILTER_KEY.TYPE))
     const client = (filter.getParam(TRANSACTION_FILTER_KEY.CLIENT))
     const staff = (filter.getParam(TRANSACTION_FILTER_KEY.STAFF))
     const withDeleted = toBoolean(filter.getParam(TRANSACTION_FILTER_KEY.WITH_DELETED))
+    const internalTransfer = toBoolean(filter.getParam(TRANSACTION_FILTER_KEY.INTERNAL_TRANSFER))
     const fromDate = filter.getParam(TRANSACTION_FILTER_KEY.FROM_DATE)
     const toDate = filter.getParam(TRANSACTION_FILTER_KEY.TO_DATE)
+
     const detailId = _.toInteger(_.get(params, 'transactionId'))
     const currencyId = _.toInteger(filter.getParam(OPEN_CURRENCY))
     const divisionId = _.toInteger(filter.getParam(OPEN_DIVISION))
@@ -990,7 +995,8 @@ const TransactionList = enhance((props) => {
                 fromDate: fromDate && moment(fromDate, 'YYYY-MM-DD'),
                 toDate: toDate && moment(toDate, 'YYYY-MM-DD')
             },
-            with_deleted: withDeleted
+            with_deleted: withDeleted,
+            internalTransfer: internalTransfer
         },
         filterLoading: false,
         openFilterDialog,

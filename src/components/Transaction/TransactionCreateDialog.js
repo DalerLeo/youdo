@@ -26,7 +26,8 @@ import {
     OrderSearchField,
     SupplySearchField,
     SupplyExpenseSearchField,
-    CashBoxSimpleSearch
+    CashBoxSimpleSearch,
+    CheckBox
 } from '../ReduxForm'
 import RateRadioButton from '../ReduxForm/Transaction/RateRadioButton'
 import ExpensiveCategoryCustomSearchField from '../ReduxForm/ExpenseCategory/ExpensiveCategoryCustomSearchField'
@@ -513,6 +514,14 @@ const TransactionCreateDialog = enhance((props) => {
                             rows={1}
                             rowsMax={3}
                             fullWidth={true}/>
+                        {isExpense &&
+                        <div style={{marginTop: '-15px'}}>
+                            <Field
+                                name="internalTransfer"
+                                label={t('Внутренний расход')}
+                                component={CheckBox}
+                            />
+                        </div>}
                         <Field
                             name="currencyRate"
                             currency={currency}

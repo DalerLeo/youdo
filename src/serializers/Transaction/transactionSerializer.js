@@ -117,6 +117,7 @@ export const createExpenseSerializer = (data, cashboxId) => {
     const supply = _.get(data, ['supply', 'value'])
     const date = moment(_.get(data, 'date')).format('YYYY-MM-DD HH:mm')
     const currencyRate = _.get(data, 'currencyRate')
+    const internalTransfer = _.get(data, 'internalTransfer')
 
     const request = {
         'amount': _.isEmpty(staffs)
@@ -132,6 +133,7 @@ export const createExpenseSerializer = (data, cashboxId) => {
         'division': division,
         'rate_type': getRateType(currencyRate),
         'transaction_child': detalization,
+        'internal_transfer': internalTransfer,
         date
     }
     return (clientId && providerId)
@@ -188,6 +190,7 @@ export const listFilterSerializer = (data, cashbox) => {
         'client': _.get(data, 'client'),
         'staff': _.get(data, 'staff'),
         'with_deleted': withDeleted ? '1' : null,
+        'internal_transfer': _.get(defaultData, 'internalTransfer'),
         'own': 'True',
         'search': _.get(defaultData, 'search'),
         'page': _.get(defaultData, 'page'),
