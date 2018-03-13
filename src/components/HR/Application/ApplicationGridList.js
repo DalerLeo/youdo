@@ -81,7 +81,10 @@ const ApplicationGridList = enhance((props) => {
         confirmDialog,
         listData,
         detailData,
-        classes
+        classes,
+        openRecruiterList,
+        setOpenRecruiterList,
+        usersData
     } = props
 
     const applicationDetail = (
@@ -144,6 +147,9 @@ const ApplicationGridList = enhance((props) => {
                 loading={createDialog.createLoading}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
+                openRecruiterList={openRecruiterList}
+                setOpenRecruiterList={setOpenRecruiterList}
+                usersData={usersData}
             />
 
             <ApplicationCreateDialog
@@ -153,9 +159,13 @@ const ApplicationGridList = enhance((props) => {
                 loading={updateDialog.updateLoading}
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
+                openRecruiterList={openRecruiterList}
+                setOpenRecruiterList={setOpenRecruiterList}
+                usersData={usersData}
             />
 
-            {detailData.data && <ConfirmDialog
+            {detailData.data &&
+            <ConfirmDialog
                 type="delete"
                 message={_.get(detailData, ['data', 'name'])}
                 onClose={confirmDialog.handleCloseConfirmDialog}

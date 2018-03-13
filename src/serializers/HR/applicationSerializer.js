@@ -2,12 +2,9 @@ import _ from 'lodash'
 import {orderingSnakeCase} from '../../helpers/serializer'
 
 export const createSerializer = (data) => {
-    const name = _.get(data, 'name')
-    const address = _.get(data, 'address')
-
+    const skills = _.split(_.get(data, 'skills'), ', ')
     return {
-        name,
-        address
+        skills
     }
 }
 
@@ -20,6 +17,13 @@ export const listFilterSerializer = (data) => {
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),
         'ordering': ordering && orderingSnakeCase(ordering)
+    }
+}
+
+export const usersListSerializer = () => {
+    return {
+        'user_group': '',
+        'page_size': 100
     }
 }
 

@@ -19,7 +19,8 @@ import {
     applicationUpdateAction,
     applicationListFetchAction,
     applicationDeleteAction,
-    applicationItemFetchAction
+    applicationItemFetchAction,
+    usersListFetchAction
 } from '../../actions/HR/application'
 import {openSnackbarAction} from '../../actions/snackbar'
 import t from '../../helpers/translate'
@@ -34,6 +35,8 @@ const enhance = compose(
         const updateLoading = _.get(state, ['application', 'update', 'loading'])
         const list = _.get(state, ['application', 'list', 'data'])
         const listLoading = _.get(state, ['application', 'list', 'loading'])
+        const usersList = _.get(state, ['users', 'list', 'data'])
+        const usersListLoading = _.get(state, ['users', 'list', 'loading'])
         const createForm = _.get(state, ['form', 'ApplicationCreateForm'])
         const filter = filterHelper(list, pathname, query)
 
@@ -44,10 +47,15 @@ const enhance = compose(
             detailLoading,
             createLoading,
             updateLoading,
+            usersList,
+            usersListLoading,
             filter,
             createForm
         }
     }),
+    withState('openConfirmDialog', 'setOpenConfirmDialog', false),
+    withState('openRecruiterList', 'setOpenRecruiterList', false),
+
     withPropsOnChange((props, nextProps) => {
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
@@ -62,7 +70,15 @@ const enhance = compose(
         applicationId && dispatch(applicationItemFetchAction(applicationId))
     }),
 
-    withState('openConfirmDialog', 'setOpenConfirmDialog', false),
+    withPropsOnChange((props, nextProps) => {
+        const prevOpen = _.get(props, ['openRecruiterList'])
+        const nextOpen = _.get(nextProps, ['openRecruiterList'])
+        return nextOpen !== prevOpen && nextOpen === true
+    }, ({dispatch, openRecruiterList}) => {
+        if (openRecruiterList) {
+            dispatch(usersListFetchAction())
+        }
+    }),
 
     withHandlers({
         handleOpenConfirmDialog: props => () => {
@@ -159,7 +175,11 @@ const ApplicationList = enhance((props) => {
         updateLoading,
         filter,
         layout,
-        params
+        params,
+        openRecruiterList,
+        setOpenRecruiterList,
+        usersList,
+        usersListLoading
     } = props
 
     const openCreateDialog = toBoolean(_.get(location, ['query', APPLICATION_CREATE_DIALOG_OPEN]))
@@ -185,7 +205,7 @@ const ApplicationList = enhance((props) => {
         initialValues: (() => {
             if (!detail || openCreateDialog) {
                 return {
-                    contacts: [{}]
+                    languages: [{name: 'русский'}, {name: 'английский'}]
                 }
             }
             return {
@@ -205,6 +225,11 @@ const ApplicationList = enhance((props) => {
         listLoading
     }
 
+    const usersData = {
+        list: _.get(usersList, 'results'),
+        loading: usersListLoading
+    }
+
     const detailData = {
         id: detailId,
         data: detail,
@@ -221,6 +246,9 @@ const ApplicationList = enhance((props) => {
                 createDialog={createDialog}
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
+                openRecruiterList={openRecruiterList}
+                setOpenRecruiterList={setOpenRecruiterList}
+                usersData={usersData}
             />
         </Layout>
     )

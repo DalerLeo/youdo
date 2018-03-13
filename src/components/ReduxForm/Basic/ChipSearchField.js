@@ -56,7 +56,6 @@ const enhance = compose(
         },
         chip: {
             background: '#efefef !important',
-            border: '1px #d9d9d9 solid !important',
             margin: '0 5px 5px 0 !important',
             '& svg': {
                 width: '20px !important'
@@ -112,42 +111,44 @@ const ChipSearchField = enhance((props) => {
     const MINUS_ONE = -1
     return (
         <div>
-        <div className={classes.wrapper}>
-            <MUIAutoComplete
-                errorText={error}
-                searchText={input.value ? state.text : ''}
-                menuProps={{menuItemStyle: {fontSize: '13px'}}}
-                errorStyle={errorStyle}
-                floatingLabelText={label}
-                filter={(searchText, key) => (searchText.length > ZERO ? key.toLowerCase().search(searchText.toLowerCase()) !== MINUS_ONE : true)}
-                dataSource={_.xorWith(state.dataSource, state.chips, _.isEqual)}
-                dataSourceConfig={{text: 'text', value: 'value'}}
-                onUpdateInput={value => dispatch({text: value})}
-                onNewRequest={value => changed(value, props)}
-                openOnFocus={true}
-                style={{position: 'relative'}}
-                menuStyle={{maxHeight: '300px', overflowY: 'auto'}}
-                inputStyle={{fontSize: 13}}
-                textFieldStyle={{width: '400px'}}
-                listStyle={{}}
-                className="autocomplete"
-                {...autoCompleteProps}
-            />
-            {state.loading
-                ? <div className={classes.loader}>
-                    <Loader size={0.5}/>
-                </div>
-                : <div className={classes.icon}>
-                    <KeyboardArrowDown style={{color: '#ccc', height: '20px', width: '20px'}}/>
-                </div>}
-        </div>
+            <div className={classes.wrapper}>
+                <MUIAutoComplete
+                    errorText={error}
+                    searchText={input.value ? state.text : ''}
+                    menuProps={{menuItemStyle: {fontSize: '13px'}}}
+                    errorStyle={errorStyle}
+                    floatingLabelText={label}
+                    filter={(searchText, key) => (searchText.length > ZERO ? key.toLowerCase().search(searchText.toLowerCase()) !== MINUS_ONE : true)}
+                    dataSource={_.xorWith(state.dataSource, state.chips, _.isEqual)}
+                    dataSourceConfig={{text: 'text', value: 'value'}}
+                    onUpdateInput={value => dispatch({text: value})}
+                    onNewRequest={value => changed(value, props)}
+                    openOnFocus={true}
+                    style={{position: 'relative'}}
+                    menuStyle={{maxHeight: '300px', overflowY: 'auto'}}
+                    inputStyle={{fontSize: 13}}
+                    textFieldStyle={{width: '400px'}}
+                    listStyle={{}}
+                    className="autocomplete"
+                    {...autoCompleteProps}
+                />
+                {state.loading
+                    ? <div className={classes.loader}>
+                        <Loader size={0.5}/>
+                    </div>
+                    : <div className={classes.icon}>
+                        <KeyboardArrowDown style={{color: '#ccc', height: '20px', width: '20px'}}/>
+                    </div>}
+            </div>
             <div className={classes.chipWrapper}>
                 {_.map(state.chips, (item) => {
                     return (
                         <Chip
                             key={item.value}
                             className={classes.chip}
-                            onRequestDelete={() => { handleRequestDelete(item.value) }}>
+                            onRequestDelete={() => {
+                                handleRequestDelete(item.value)
+                            }}>
                             {item.text}
                         </Chip>
                     )

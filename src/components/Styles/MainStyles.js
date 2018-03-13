@@ -118,8 +118,6 @@ const MainStyles = {
         fontSize: '13px !important',
         margin: '0 !important'
     }
-    // GRID LIST
-
 }
 
 export default MainStyles

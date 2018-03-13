@@ -87,3 +87,20 @@ export const applicationItemFetchAction = (id) => {
         payload
     }
 }
+
+export const usersListFetchAction = () => {
+    const params = serializers.usersListSerializer()
+    const payload = axios()
+        .get(API.USERS_LIST, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.USERS_LIST,
+        payload
+    }
+}
