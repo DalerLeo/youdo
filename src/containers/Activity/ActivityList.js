@@ -38,6 +38,10 @@ const ONE = 1
 const currentDate = moment().format('YYYY-MM')
 const today = _.toInteger(moment().format('D'))
 
+const countIsZero = (value) => {
+    return value === ZERO
+}
+
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -103,18 +107,24 @@ const enhance = compose(
         return (props.curDate !== nextProps.curDate) || (prevDay !== nextDay)
     }, ({dispatch, filter, setLoading}) => {
         dispatch(activitySummaryListFetchAction(filter))
-            .then(() => {
-                dispatch(activityOrderListFetchAction(filter))
+            .then(({value}) => {
+                const countOrder = _.get(value, [ACTIVITY_ORDER, 'count'])
+                dispatch(activityOrderListFetchAction(filter, _.get('undefined'), countIsZero(countOrder)))
                     .then(() => {
-                        dispatch(activityVisitListFetchAction(filter))
+                        const countVisit = _.get(value, [ACTIVITY_VISIT, 'count'])
+                        dispatch(activityVisitListFetchAction(filter, _.get('undefined'), countIsZero(countVisit)))
                             .then(() => {
-                                dispatch(activityReportListFetchAction(filter))
+                                const countReport = _.get(value, [ACTIVITY_REPORT, 'count'])
+                                dispatch(activityReportListFetchAction(filter, _.get('undefined'), countIsZero(countReport)))
                                     .then(() => {
-                                        dispatch(activityReturnListFetchAction(filter))
+                                        const countReturn = _.get(value, [ACTIVITY_ORDER_RETURN, 'count'])
+                                        dispatch(activityReturnListFetchAction(filter, _.get('undefined'), countIsZero(countReturn)))
                                             .then(() => {
-                                                dispatch(activityPaymentListFetchAction(filter))
+                                                const countPayment = _.get(value, [ACTIVITY_PAYMENT, 'count'])
+                                                dispatch(activityPaymentListFetchAction(filter, _.get('undefined'), countIsZero(countPayment)))
                                                     .then(() => {
-                                                        dispatch(activityDeliveryListFetchAction(filter))
+                                                        const countDelivery = _.get(value, [ACTIVITY_DELIVERY, 'count'])
+                                                        dispatch(activityDeliveryListFetchAction(filter, _.get('undefined'), countIsZero(countDelivery)))
                                                             .then(() => {
                                                                 setLoading(false)
                                                             })

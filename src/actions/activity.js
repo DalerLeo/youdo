@@ -16,16 +16,17 @@ import {
 const CancelToken = axios().CancelToken
 
 const thumbnailType = 'medium'
-
 // ORDER
 let activityOrderListFetchToken = null
-export const activityOrderListFetchAction = (filter, page) => {
+export const activityOrderListFetchAction = (filter, page, empty) => {
     if (activityOrderListFetchToken) {
         activityOrderListFetchToken.cancel()
     }
     activityOrderListFetchToken = CancelToken.source()
     const params = serializers.listFilterSerializer(filter.getParams(), ACTIVITY_ORDER, page)
-    const payload = axios()
+    const payload = empty
+        ? Promise.resolve({results: []})
+        : axios()
         .get(API.ACTIVITY_ORDER_LIST, {params, cancelToken: activityOrderListFetchToken.token})
         .then((response) => {
             return _.get(response, 'data')
@@ -57,13 +58,15 @@ export const activityOrderItemFetchAction = (id) => {
 
 // VISIT
 let activityVisitListFetchToken = null
-export const activityVisitListFetchAction = (filter, page) => {
+export const activityVisitListFetchAction = (filter, page, empty) => {
     if (activityVisitListFetchToken) {
         activityVisitListFetchToken.cancel()
     }
     activityVisitListFetchToken = CancelToken.source()
     const params = serializers.listFilterSerializer(filter.getParams(), ACTIVITY_VISIT, page)
-    const payload = axios()
+    const payload = empty
+        ? Promise.resolve({results: []})
+        : axios()
         .get(API.ACTIVITY_VISIT_LIST, {params, cancelToken: activityVisitListFetchToken.token})
         .then((response) => {
             return _.get(response, 'data')
@@ -79,13 +82,15 @@ export const activityVisitListFetchAction = (filter, page) => {
 
 // REPORT
 let activityReportListFetchToken = null
-export const activityReportListFetchAction = (filter, page) => {
+export const activityReportListFetchAction = (filter, page, empty) => {
     if (activityReportListFetchToken) {
         activityReportListFetchToken.cancel()
     }
     activityReportListFetchToken = CancelToken.source()
     const params = serializers.listFilterSerializer(filter.getParams(), ACTIVITY_REPORT, page, thumbnailType)
-    const payload = axios()
+    const payload = empty
+        ? Promise.resolve({results: []})
+        : axios()
         .get(API.ACTIVITY_REPORT_LIST, {params, cancelToken: activityReportListFetchToken.token})
         .then((response) => {
             return _.get(response, 'data')
@@ -117,13 +122,15 @@ export const activityReportShowImageAction = (id) => {
 
 // ORDER_RETURN
 let activityReturnListFetchToken = null
-export const activityReturnListFetchAction = (filter, page) => {
+export const activityReturnListFetchAction = (filter, page, empty) => {
     if (activityReturnListFetchToken) {
         activityReturnListFetchToken.cancel()
     }
     activityReturnListFetchToken = CancelToken.source()
     const params = serializers.listFilterSerializer(filter.getParams(), ACTIVITY_ORDER_RETURN, page)
-    const payload = axios()
+    const payload = empty
+        ? Promise.resolve({results: []})
+        : axios()
         .get(API.ACTIVITY_ORDER_RETURN_LIST, {params, cancelToken: activityReturnListFetchToken.token})
         .then((response) => {
             return _.get(response, 'data')
@@ -139,13 +146,15 @@ export const activityReturnListFetchAction = (filter, page) => {
 
 // PAYMENT
 let activityPaymentListFetchToken = null
-export const activityPaymentListFetchAction = (filter, page) => {
+export const activityPaymentListFetchAction = (filter, page, empty) => {
     if (activityPaymentListFetchToken) {
         activityPaymentListFetchToken.cancel()
     }
     activityPaymentListFetchToken = CancelToken.source()
     const params = serializers.listFilterSerializer(filter.getParams(), ACTIVITY_PAYMENT, page)
-    const payload = axios()
+    const payload = empty
+        ? Promise.resolve({results: []})
+        : axios()
         .get(API.ACTIVITY_REPORT_LIST, {params, cancelToken: activityPaymentListFetchToken.token})
         .then((response) => {
             return _.get(response, 'data')
@@ -161,13 +170,15 @@ export const activityPaymentListFetchAction = (filter, page) => {
 
 // DELIVERY
 let activityDeliveryListFetchToken = null
-export const activityDeliveryListFetchAction = (filter, page) => {
+export const activityDeliveryListFetchAction = (filter, page, empty) => {
     if (activityDeliveryListFetchToken) {
         activityDeliveryListFetchToken.cancel()
     }
     activityDeliveryListFetchToken = CancelToken.source()
     const params = serializers.listFilterSerializer(filter.getParams(), ACTIVITY_DELIVERY, page)
-    const payload = axios()
+    const payload = empty
+        ? Promise.resolve({results: []})
+        : axios()
         .get(API.ACTIVITY_REPORT_LIST, {params, cancelToken: activityDeliveryListFetchToken.token})
         .then((response) => {
             return _.get(response, 'data')

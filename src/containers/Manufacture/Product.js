@@ -316,20 +316,21 @@ const enhance = compose(
             })
         },
         handleSendMaterialsConfirmDialog: props => () => {
-            const {dispatch, filter, location: {pathname}} = props
+            const {dispatch, filter, location: {pathname}, productDetail} = props
             const ingId = _.toNumber(_.get(props, ['location', 'query', 'ingId']))
-            const productId = _.toNumber(_.get(props, ['location', 'query', 'productId']))
             dispatch(ingredientDeleteAction(_.toNumber(ingId)))
                 .catch(() => {
                     return dispatch(openSnackbarAction({message: t('Удаление невозможно из-за связи с другими данными')}))
                 })
                 .then(() => {
+                    _.remove(_.get(productDetail, 'ingredient'), (item) => {
+                        return _.toNumber(item.id) === _.toNumber(ingId)
+                    })
                     hashHistory.push({
                         pathname,
                         query: filter.getParams({[OPEN_DELETE_MATERIALS_DIALOG]: false, 'ingId': MINUS_ONE})
                     })
-                    dispatch(openSnackbarAction({message: t('Успешно удалено')}))
-                    return dispatch(ingredientListFetchAction(productId))
+                    return dispatch(openSnackbarAction({message: t('Успешно удалено')}))
                 })
         },
 
