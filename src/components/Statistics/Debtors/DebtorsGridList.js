@@ -483,7 +483,6 @@ const StatDebtorsGridList = enhance((props) => {
 
     const countDebtors = _.get(listData, ['statData', 'debtors'])
     const stats = _.get(listData, ['statData', 'currencies'])
-    const statsByCurrency = _.groupBy(stats, (item) => _.get(item, ['currency', 'name']))
     const page = (
         <div className={classes.mainWrapper}>
             <Row style={{margin: '0', height: '100%'}}>
@@ -512,16 +511,18 @@ const StatDebtorsGridList = enhance((props) => {
                                 </div>
                                 <div>
                                     <span>{t('Просроченные платежи')}</span>
-                                    {_.map(statsByCurrency, (item, index) => {
-                                        const debts = _.get(_.first(item), 'debts')
-                                        return <div key={index}>{numberFormat(debts, index)}</div>
+                                    {_.map(stats, (item, index) => {
+                                        const debts = _.get(item, 'debts')
+                                        const currency = _.find(currencyList, {'id': _.toNumber(index)})
+                                        return debts && <div key={index}>{numberFormat(debts, _.get(currency, 'name'))}</div>
                                     })}
                                 </div>
                                 <div>
                                     <span>{t('Ожидаемые поступления')}</span>
-                                    {_.map(statsByCurrency, (item, index) => {
-                                        const expect = _.get(_.first(item), 'expect')
-                                        return <div key={index}>{numberFormat(expect, index)}</div>
+                                    {_.map(stats, (item, index) => {
+                                        const expect = _.get(item, 'expect')
+                                        const currency = _.find(currencyList, {'id': _.toNumber(index)})
+                                        return expect && <div key={index}>{numberFormat(expect, _.get(currency, 'name'))}</div>
                                     })}
                                 </div>
                             </div>}

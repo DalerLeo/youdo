@@ -16,7 +16,7 @@ const setConfigs = (configs) => {
 
 const getConfig = (text) => {
     const value = getStorage(false).getItem(text)
-    if (_.isEmpty(value)) {
+    if (_.isEmpty(value) && !sessionStorage.length) {
         axios()
             .get(API.CONFIG)
             .then((response) => {
