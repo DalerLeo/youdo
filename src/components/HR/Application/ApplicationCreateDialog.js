@@ -8,7 +8,7 @@ import FlatButton from 'material-ui/FlatButton'
 import Loader from '../../Loader'
 import ToolTip from '../../ToolTip'
 import {Field, FieldArray, reduxForm, change} from 'redux-form'
-import {TextField, CheckBox, DateField} from '../../ReduxForm'
+import {TextField, CheckBox, DateField, ClientSearchField} from '../../ReduxForm'
 import WorkScheduleSearchField from '../../ReduxForm/HR/Application/WorkScheduleSearchField'
 import SexSearchField from '../../ReduxForm/HR/Application/SexSearchField'
 import EducationSearchField from '../../ReduxForm/HR/Application/EducationSearchField'
@@ -19,10 +19,12 @@ import AddPerson from 'material-ui/svg-icons/social/person-add'
 import PersonIcon from 'material-ui/svg-icons/social/person'
 import IconButton from 'material-ui/IconButton'
 import t from '../../../helpers/translate'
+import * as ROUTES from '../../../constants/routes'
 import formValidate from '../../../helpers/formValidate'
 import normalizeNumber from '../../ReduxForm/normalizers/normalizeNumber'
 import {BORDER_STYLE, COLOR_DEFAULT} from '../../../constants/styleConstants'
 import {connect} from 'react-redux'
+import {Link} from 'react-router'
 import Chip from 'material-ui/Chip'
 import Popover from 'material-ui/Popover/Popover'
 
@@ -232,6 +234,9 @@ const enhance = compose(
         alignBaseline: {
             alignItems: 'baseline'
         },
+        alignCenter: {
+            alignItems: 'center'
+        },
         flexBetween: {
             extend: 'flex',
             justifyContent: 'space-between'
@@ -364,21 +369,18 @@ const ApplicationCreateDialog = enhance((props) => {
                         <div className={classes.leftSide}>
                             <div className={classes.block}>
                                 <h4>1. {t('Описание компании')}</h4>
-                                <Field
-                                    name="companyName"
-                                    component={TextField}
-                                    className={classes.inputFieldCustom}
-                                    label={t('Наименование компании')}
-                                    fullWidth={true}/>
-                                <Field
-                                    name="companyDescription"
-                                    component={TextField}
-                                    className={classes.textFieldArea}
-                                    label={t('Описание деятельности компании')}
-                                    fullWidth={true}
-                                    multiLine={true}
-                                    rows={1}
-                                    rowsMax={4}/>
+                                <div className={classes.flex + ' ' + classes.alignCenter}>
+                                    <Field
+                                        name="client"
+                                        component={ClientSearchField}
+                                        className={classes.inputFieldCustom}
+                                        label={t('Клиент')}
+                                        fullWidth={true}/>
+                                    <Link style={{marginLeft: '5px', whiteSpace: 'nowrap'}} target={'_blank'} to={{
+                                        pathname: ROUTES.CLIENT_LIST_URL,
+                                        query: {openCreateDialog: true}
+                                    }}>{t('добавить клиента')}</Link>
+                                </div>
                                 <Field
                                     name="responsibleFullName"
                                     component={TextField}
@@ -390,24 +392,6 @@ const ApplicationCreateDialog = enhance((props) => {
                                     component={TextField}
                                     className={classes.inputFieldCustom}
                                     label={t('Должность ответственного за подбор персонала')}
-                                    fullWidth={true}/>
-                                <Field
-                                    name="phone"
-                                    component={TextField}
-                                    className={classes.inputFieldCustom}
-                                    label={t('Контактный телефон')}
-                                    fullWidth={true}/>
-                                <Field
-                                    name="address"
-                                    component={TextField}
-                                    className={classes.inputFieldCustom}
-                                    label={t('Адрес')}
-                                    fullWidth={true}/>
-                                <Field
-                                    name="email"
-                                    component={TextField}
-                                    className={classes.inputFieldCustom}
-                                    label={t('E-mail')}
                                     fullWidth={true}/>
                             </div>
                         </div>

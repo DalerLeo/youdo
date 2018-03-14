@@ -434,7 +434,7 @@ const OrderGridList = enhance((props) => {
                 </IconButton>
             </ToolTip>
 
-            {unconfirmedCount > ZERO && <ToolTip position="left" text={t('Отфильтровать неподтвержденным заказам')}>
+            {unconfirmedCount > ZERO && <ToolTip position="left" text={t('Отфильтровать по неподтвержденным заказам')}>
                 <Badge
                     primary={true}
                     badgeContent={statusIsUnconfirmed ? <Done style={badgeStyle.iconUnconfirmed}/> : unconfirmedCount}

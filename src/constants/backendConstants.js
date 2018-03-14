@@ -30,3 +30,8 @@ export const MARKET_FREQ_EVERY_DAY = '1'
 export const MARKET_FREQ_ONCE_IN_A_WEEK = '2'
 export const MARKET_FREQ_TWICE_IN_A_WEEK = '3'
 export const MARKET_FREQ_IN_A_DAY = '4'
+
+export const APPLICATION_NOT_ASSIGNED = 'not_assigned'
+export const APPLICATION_ASSIGNED = 'assigned'
+export const APPLICATION_CANCELED = 'canceled'
+export const APPLICATION_COMPLETED = 'completed'

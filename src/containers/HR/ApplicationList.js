@@ -24,6 +24,8 @@ import {
 } from '../../actions/HR/application'
 import {openSnackbarAction} from '../../actions/snackbar'
 import t from '../../helpers/translate'
+import {APPLICATION_FILTER_KEY, APPLICATION_FILTER_OPEN} from '../../components/HR/Application'
+import {PRICE_FILTER_KEY} from '../../components/Price'
 
 const enhance = compose(
     connect((state, props) => {
@@ -81,6 +83,38 @@ const enhance = compose(
     }),
 
     withHandlers({
+        handleOpenFilterDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[APPLICATION_FILTER_OPEN]: true})})
+        },
+
+        handleCloseFilterDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[APPLICATION_FILTER_OPEN]: false})})
+        },
+
+        handleClearFilterDialog: props => () => {
+            const {location: {pathname}, dispatch} = props
+            hashHistory.push({pathname, query: {}})
+            dispatch(reset('ApplicationFilterForm'))
+        },
+
+        handleSubmitFilterDialog: props => () => {
+            const {filter, filterForm} = props
+            const typeParent = _.get(filterForm, ['values', 'typeParent', 'value']) || null
+            const typeChild = _.get(filterForm, ['values', 'typeChild', 'value']) || null
+            const measurement = _.get(filterForm, ['values', 'measurement']) || null
+            const withoutNetCost = _.get(filterForm, ['values', 'withoutNetCost']) || null
+
+            filter.filterBy({
+                [APPLICATION_FILTER_OPEN]: false,
+                [APPLICATION_FILTER_KEY.TYPE_PARENT]: typeParent,
+                [APPLICATION_FILTER_KEY.TYPE_CHILD]: typeParent && typeChild,
+                [APPLICATION_FILTER_KEY.MEASUREMENT]: _.join(measurement, '-'),
+                [APPLICATION_FILTER_KEY.WITHOUT_NET_COST]: withoutNetCost
+            })
+        },
+
         handleOpenConfirmDialog: props => () => {
             const {setOpenConfirmDialog} = props
             setOpenConfirmDialog(true)
@@ -182,9 +216,32 @@ const ApplicationList = enhance((props) => {
         usersListLoading
     } = props
 
+    const openFilterDialog = toBoolean(_.get(location, ['query', APPLICATION_FILTER_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', APPLICATION_CREATE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', APPLICATION_UPDATE_DIALOG_OPEN]))
     const detailId = _.toInteger(_.get(params, 'applicationId'))
+
+    const typeParent = _.toNumber(_.get(location, ['query', PRICE_FILTER_KEY.TYPE_PARENT]))
+    const typeChild = _.toNumber(_.get(location, ['query', PRICE_FILTER_KEY.TYPE_CHILD]))
+    const measurement = _.get(location, ['query', PRICE_FILTER_KEY.MEASUREMENT])
+    const withoutNetCost = toBoolean(_.get(location, ['query', PRICE_FILTER_KEY.WITHOUT_NET_COST]))
+
+    const filterDialog = {
+        initialValues: {
+            typeParent: {value: typeParent},
+            typeChild: {value: typeChild},
+            measurement: measurement && _.map(_.split(measurement, '-'), (item) => {
+                return _.toNumber(item)
+            }),
+            withoutNetCost: withoutNetCost
+        },
+        filterLoading: false,
+        openFilterDialog,
+        handleOpenFilterDialog: props.handleOpenFilterDialog,
+        handleCloseFilterDialog: props.handleCloseFilterDialog,
+        handleClearFilterDialog: props.handleClearFilterDialog,
+        handleSubmitFilterDialog: props.handleSubmitFilterDialog
+    }
 
     const createDialog = {
         createLoading,
@@ -243,6 +300,7 @@ const ApplicationList = enhance((props) => {
                 filter={filter}
                 listData={listData}
                 detailData={detailData}
+                filterDialog={filterDialog}
                 createDialog={createDialog}
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
