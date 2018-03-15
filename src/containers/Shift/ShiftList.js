@@ -1,5 +1,6 @@
 import React from 'react'
 import _ from 'lodash'
+import moment from 'moment/moment'
 import sprintf from 'sprintf'
 import {reset} from 'redux-form'
 import {connect} from 'react-redux'
@@ -10,17 +11,17 @@ import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import {
-    SHIFT_CREATE_DIALOG_OPEN,
-    SHIFT_UPDATE_DIALOG_OPEN,
-    SHIFT_DELETE_DIALOG_OPEN,
-    ShiftGridList
+SHIFT_CREATE_DIALOG_OPEN,
+SHIFT_UPDATE_DIALOG_OPEN,
+SHIFT_DELETE_DIALOG_OPEN,
+ShiftGridList
 } from '../../components/Shift'
 import {
-    shiftCreateAction,
-    shiftUpdateAction,
-    shiftListFetchAction,
-    shiftDeleteAction,
-    shiftItemFetchAction
+shiftCreateAction,
+shiftUpdateAction,
+shiftListFetchAction,
+shiftDeleteAction,
+shiftItemFetchAction
 } from '../../actions/shift'
 import {openSnackbarAction} from '../../actions/snackbar'
 import t from '../../helpers/translate'
@@ -200,12 +201,8 @@ const ShiftList = enhance((props) => {
             }
             return {
                 name: _.get(detail, 'name'),
-                beginTime: {
-                    value: _.get(detail, 'beginTime')
-                },
-                endTime: {
-                    value: _.get(detail, 'endTime')
-                }
+                beginTime: moment(_.get(detail, 'beginTime'), 'HH:mm:ss').toDate(),
+                endTime: moment(_.get(detail, 'endTime'), 'HH:mm:ss').toDate()
             }
         })(),
         updateLoading: detailLoading || updateLoading,

@@ -125,12 +125,16 @@ const enhance = compose(
             const search = _.get(filterForm, ['values', 'search']) || null
             const zone = _.get(filterForm, ['values', 'zone']) || null
             const division = _.get(filterForm, ['values', 'division']) || null
+            const marketTypeParent = _.get(filterForm, ['values', 'marketTypeParent', 'value']) || null
+            const marketType = _.get(filterForm, ['values', 'marketType', 'value']) || null
             const fromDate = _.get(filterForm, ['values', 'date', 'fromDate']) || null
             const toDate = _.get(filterForm, ['values', 'date', 'toDate']) || null
             filter.filterBy({
                 [STAT_AGENT_FILTER_KEY.SEARCH]: search,
                 [STAT_AGENT_FILTER_KEY.ZONE]: _.join(zone, '-'),
                 [STAT_AGENT_FILTER_KEY.DIVISION]: _.join(division, '-'),
+                [STAT_AGENT_FILTER_KEY.MARKET_TYPE_PARENT]: marketTypeParent,
+                [STAT_AGENT_FILTER_KEY.MARKET_TYPE]: marketType,
                 [STAT_AGENT_FILTER_KEY.FROM_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
                 [STAT_AGENT_FILTER_KEY.TO_DATE]: toDate && toDate.format('YYYY-MM-DD')
 
@@ -195,6 +199,8 @@ const StatAgentList = enhance((props) => {
     const lastDayOfMonth = _.get(location, ['query', 'toDate']) || moment().format('YYYY-MM-' + lastDay)
     const zone = !_.isNull(_.get(location, ['query', 'zone'])) && _.get(location, ['query', 'zone'])
     const division = !_.isNull(_.get(location, ['query', 'division'])) && _.get(location, ['query', 'division'])
+    const marketTypeParent = !_.isNull(_.get(location, ['query', 'markettypeParent'])) && _.get(location, ['query', 'markettypeParent'])
+    const marketType = !_.isNull(_.get(location, ['query', 'markettypeChild'])) && _.get(location, ['query', 'markettypeChild'])
     const search = !_.isNull(_.get(location, ['query', 'search'])) ? _.get(location, ['query', 'search']) : null
 
     const statAgentDialog = {
@@ -231,6 +237,8 @@ const StatAgentList = enhance((props) => {
         search: search,
         zone: zone && splitToArray(zone),
         division: division && splitToArray(division),
+        marketTypeParent: marketTypeParent && marketTypeParent,
+        marketType: marketType && marketType,
         date: {
             fromDate: moment(firstDayOfMonth),
             toDate: moment(lastDayOfMonth)
