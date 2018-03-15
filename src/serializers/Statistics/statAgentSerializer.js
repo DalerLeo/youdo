@@ -16,6 +16,7 @@ export const listFilterSerializer = (query) => {
         'search': _.get(defaultData, 'search'),
         'zone': _.get(defaultData, 'zone') || null,
         'division': _.get(defaultData, 'division') || null,
+        'market_type': _.get(defaultData, 'marketType') || null,
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),
         'ordering': ordering && orderingSnakeCase(ordering)
@@ -29,7 +30,8 @@ export const summaryFilterSerializer = (query) => {
         'begin_date': _.get(defaultData, 'fromDate') || firstDayOfMonth,
         'end_date': _.get(defaultData, 'toDate') || lastDayOfMonth,
         'zone': _.get(defaultData, 'zone') || null,
-        'division': _.get(defaultData, 'division') || null
+        'division': _.get(defaultData, 'division') || null,
+        'market_type': _.get(defaultData, 'marketType') || null
     }
 }
 
@@ -44,6 +46,7 @@ export const itemSerializer = (data, filterItem, id) => {
         'page': _.get(filterItem, 'dPage'),
         'page_size': _.get(filterItem, 'dPageSize'),
         'division': _.get(filterItem, 'division'),
+        'market_type': _.get(defaultData, 'marketType') || null,
         'begin_date': begin,
         'end_date': end
     }
