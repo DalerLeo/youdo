@@ -538,7 +538,8 @@ const rootReducer = combineReducers({
         create: createThunkReducer(actionTypes.HR_APPLICATION_CREATE),
         list: createThunkReducer(actionTypes.HR_APPLICATION_LIST),
         update: createThunkReducer(actionTypes.HR_APPLICATION_UPDATE),
-        item: createThunkReducer(actionTypes.HR_APPLICATION_ITEM)
+        item: createThunkReducer(actionTypes.HR_APPLICATION_ITEM),
+        privilege: createThunkReducer(actionTypes.HR_PRIVILEGE_LIST)
     }),
     // HR!
 

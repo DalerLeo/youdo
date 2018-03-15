@@ -104,3 +104,19 @@ export const usersListFetchAction = () => {
         payload
     }
 }
+
+export const privilegeListFetchAction = () => {
+    const payload = axios()
+        .get(API.HR_PRIVILEGE_LIST, {params: {page_size: 100}})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.HR_PRIVILEGE_LIST,
+        payload
+    }
+}

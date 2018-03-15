@@ -1,13 +1,14 @@
 import _ from 'lodash'
 import React from 'react'
-import SearchField from '../../Basic/SearchField'
-import t from '../../../../helpers/translate'
+import SearchField from '../Basic/SearchField'
+import t from '../../../helpers/translate'
 
 const Items = [
-    {id: 'beginner', name: t('Начальный')},
-    {id: 'intermediate', name: t('Средний')},
-    {id: 'advanced', name: t('Продвинутый')},
-    {id: 'fluent', name: t('Свободное владение')}
+    {id: 'no_matter', name: t('Не имеет значения')},
+    {id: 'secondary', name: t('Среднее')},
+    {id: 'higher', name: t('Высшее')},
+    {id: 'master', name: t('Магистратура')},
+    {id: 'doctoral', name: t('Докторантура')}
 ]
 
 const getOptions = () => {
@@ -19,7 +20,7 @@ const getItem = (id) => {
         _.find(Items, (o) => { return o.id === _.toInteger(id) }))
 }
 
-const LanguageLevelSearchField = (props) => {
+const EducationSearchField = (props) => {
     return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
@@ -32,4 +33,4 @@ const LanguageLevelSearchField = (props) => {
     )
 }
 
-export default LanguageLevelSearchField
+export default EducationSearchField

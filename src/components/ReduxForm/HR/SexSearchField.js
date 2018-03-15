@@ -1,14 +1,12 @@
 import _ from 'lodash'
 import React from 'react'
-import SearchField from '../../Basic/SearchField'
-import t from '../../../../helpers/translate'
+import SearchField from '../Basic/SearchField'
+import t from '../../../helpers/translate'
 
 const Items = [
     {id: 'no_matter', name: t('Не имеет значения')},
-    {id: 'secondary', name: t('Среднее')},
-    {id: 'higher', name: t('Высшее')},
-    {id: 'master', name: t('Магистратура')},
-    {id: 'doctoral', name: t('Докторантура')}
+    {id: 'male', name: t('Мужской')},
+    {id: 'female', name: t('Женский')}
 ]
 
 const getOptions = () => {
@@ -20,7 +18,7 @@ const getItem = (id) => {
         _.find(Items, (o) => { return o.id === _.toInteger(id) }))
 }
 
-const EducationSearchField = (props) => {
+const SexSearchField = (props) => {
     return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
@@ -33,4 +31,4 @@ const EducationSearchField = (props) => {
     )
 }
 
-export default EducationSearchField
+export default SexSearchField

@@ -7,12 +7,11 @@ import LinearProgress from '../../LinearProgress'
 import Edit from 'material-ui/svg-icons/image/edit'
 import IconButton from 'material-ui/IconButton'
 import Delete from 'material-ui/svg-icons/action/delete'
-import Person from 'material-ui/svg-icons/social/person'
-import Deadline from 'material-ui/svg-icons/image/timelapse'
 import ToolTip from '../../ToolTip'
 import dateFormat from '../../../helpers/dateFormat'
 import numberFormat from '../../../helpers/numberFormat'
 import t from '../../../helpers/translate'
+import {getStatusName} from './ApplicationGridList'
 import {PADDING_STANDART, BORDER_STYLE} from '../../../constants/styleConstants'
 
 const colorBlue = '#12aaeb !important'
@@ -44,10 +43,6 @@ const enhance = compose(
             padding: '0 30px',
             borderBottom: '1px #efefef solid',
             position: 'relative'
-        },
-        createdDate: {
-            fontSize: '12px',
-            color: '#999'
         },
         container: {
             display: 'flex',
@@ -81,20 +76,13 @@ const enhance = compose(
             justifyContent: 'space-between'
         },
         skill: {
-            // . backgroundColor: '#4db6ac',
-            // . borderRadius: '2px',
-            // . padding: '3px 8px',
-            // . margin: '0 3px',
-            // . display: 'inline-block',
-            // . color: '#fff'
+            backgroundColor: '#4db6ac',
+            borderRadius: '2px',
+            padding: '3px 8px',
+            margin: '0 3px',
             fontWeight: '600',
-            marginLeft: '5px',
-            '&:after': {
-                content: '","'
-            },
-            '&:last-child:after': {
-                display: 'none'
-            }
+            display: 'inline-block',
+            color: '#fff'
         },
         titleLabel: {
             fontSize: '18px',
@@ -168,6 +156,7 @@ const ApplicationDetails = enhance((props) => {
     const responsibility = _.get(data, 'responsibility')
     const sex = _.get(data, 'sex')
     const skills = _.get(data, 'skills')
+    const status = _.get(data, 'status')
     const trialSalaryMin = numberFormat(_.get(data, 'trialSalaryMin'))
     const trialSalaryMax = numberFormat(_.get(data, 'trialSalaryMax'))
 
@@ -182,29 +171,11 @@ const ApplicationDetails = enhance((props) => {
     return (
         <div className={classes.wrapper} key={_.get(data, 'id')}>
             <div className={classes.title}>
-                <div className={classes.titleLabel}>{t('Заявка')} №{applicationId} <span className={classes.createdDate}>({createdDate})</span></div>
+                <div className={classes.titleLabel}>{t('Заявка')} №{applicationId}</div>
                 <div className={classes.closeDetail}
                      onClick={handleCloseDetail}>
                 </div>
                 <div className={classes.titleButtons}>
-                    <ToolTip position="bottom" text={t('Дэдлайн') + ': ' + deadline}>
-                        <IconButton
-                            iconStyle={iconStyle.icon}
-                            style={iconStyle.button}
-                            disableTouchRipple={true}
-                            touch={true}>
-                            <Deadline />
-                        </IconButton>
-                    </ToolTip>
-                    <ToolTip position="bottom" text={t('Рекрутер') + ': ' + recruiter}>
-                        <IconButton
-                            iconStyle={iconStyle.icon}
-                            style={iconStyle.button}
-                            disableTouchRipple={true}
-                            touch={true}>
-                            <Person />
-                        </IconButton>
-                    </ToolTip>
                     <ToolTip position="bottom" text={t('Изменить')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
@@ -223,6 +194,15 @@ const ApplicationDetails = enhance((props) => {
                             <Delete />
                         </IconButton>
                     </ToolTip>
+                </div>
+            </div>
+            <div className={classes.applicationInfo}>
+                <div className={classes.bodyTitle}>{t('Общая информация о заявке')}</div>
+                <div className={classes.info + ' ' + classes.flexBetween}>
+                    <div>{t('Дата создания')}: <strong>{createdDate}</strong></div>
+                    <div>{t('Рекрутер')}: <strong>{recruiter}</strong></div>
+                    <div>{t('Дэдлайн')}: <strong>{deadline}</strong></div>
+                    <div>{t('Статус')}: <strong>{getStatusName(status)}</strong></div>
                 </div>
             </div>
             <div className={classes.container}>
@@ -258,15 +238,13 @@ const ApplicationDetails = enhance((props) => {
                         <div>{t('Знание ПК')}: <strong>{levelPc}</strong></div>
                         <div>{t('Знание языков')}: <strong>{}</strong></div>
                         <div>{t('Минимальный опыт работы по специальности')}: <strong>{experience}</strong></div>
-                        <div>{t('Профессиональные навыки')}:
-                            {_.map(skills, (item) => {
-                                const id = _.get(item, 'id')
-                                const name = _.get(item, 'name')
-                                return (
-                                    <span key={id} className={classes.skill}>{name}</span>
-                                )
-                            })}
-                        </div>
+                        <div>{t('Профессиональные навыки')}: <strong>{_.map(skills, (item) => {
+                            const id = _.get(item, 'id')
+                            const name = _.get(item, 'name')
+                            return (
+                                <span key={id} className={classes.skill}>{name}</span>
+                            )
+                        })}</strong></div>
                     </div>
                 </div>
             </div>

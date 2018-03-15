@@ -8,12 +8,14 @@ import FlatButton from 'material-ui/FlatButton'
 import Loader from '../../Loader'
 import ToolTip from '../../ToolTip'
 import {Field, FieldArray, reduxForm, change} from 'redux-form'
-import {TextField, CheckBox, DateField, ClientSearchField} from '../../ReduxForm'
-import WorkScheduleSearchField from '../../ReduxForm/HR/Application/WorkScheduleSearchField'
-import SexSearchField from '../../ReduxForm/HR/Application/SexSearchField'
-import EducationSearchField from '../../ReduxForm/HR/Application/EducationSearchField'
-import ComputerLevelSearchField from '../../ReduxForm/HR/Application/ComputerLevelSearchField'
+import {TextField, CheckBox, DateField, ClientContactsField} from '../../ReduxForm'
+import WorkScheduleSearchField from '../../ReduxForm/HR/WorkScheduleSearchField'
+import SexSearchField from '../../ReduxForm/HR/SexSearchField'
+import EducationSearchField from '../../ReduxForm/HR/EducationSearchField'
+import ComputerLevelSearchField from '../../ReduxForm/HR/ComputerLevelSearchField'
 import LanguageField from '../../ReduxForm/HR/Application/LanguageField'
+import ClientSearchField from '../../ReduxForm/HR/Application/ClientSearchField'
+import PositionSearchField from '../../ReduxForm/HR/Position/PositionSearchField'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import AddPerson from 'material-ui/svg-icons/social/person-add'
 import PersonIcon from 'material-ui/svg-icons/social/person'
@@ -25,7 +27,6 @@ import normalizeNumber from '../../ReduxForm/normalizers/normalizeNumber'
 import {BORDER_STYLE, COLOR_DEFAULT} from '../../../constants/styleConstants'
 import {connect} from 'react-redux'
 import {Link} from 'react-router'
-import Chip from 'material-ui/Chip'
 import Popover from 'material-ui/Popover/Popover'
 
 export const APPLICATION_CREATE_DIALOG_OPEN = 'openCreateDialog'
@@ -48,7 +49,7 @@ const enhance = compose(
             justifyContent: 'center',
             display: ({loading}) => loading ? 'flex' : 'none'
         },
-        usersLoader: {
+        customLoader: {
             background: '#fff',
             display: 'flex',
             alignItems: 'center',
@@ -125,24 +126,15 @@ const enhance = compose(
                 width: '100%'
             }
         },
-        inContent: {
-            display: 'flex',
-            borderTop: BORDER_STYLE,
-            '&:first-child': {
-                border: 'none'
-            }
-        },
         sidePaddings: {
             padding: '10px 30px 15px'
         },
-        leftSide: {
-            width: '50%',
+        inContent: {
+            borderTop: BORDER_STYLE,
             extend: 'sidePaddings',
-            borderRight: BORDER_STYLE
-        },
-        rightSide: {
-            width: '50%',
-            extend: 'sidePaddings'
+            '&:first-child': {
+                border: 'none'
+            }
         },
         block: {
             '& h4': {
@@ -161,6 +153,13 @@ const enhance = compose(
         },
         skills: {
             display: 'flex'
+        },
+        privileges: {
+            marginTop: '10px',
+            '& > div:first-child': {
+                fontWeight: '600',
+                marginBottom: '5px'
+            }
         },
         chip: {
             background: '#efefef !important',
@@ -242,11 +241,13 @@ const enhance = compose(
             justifyContent: 'space-between'
         },
         halfChild: {
+            flexWrap: 'wrap',
             '& > div': {
                 width: '49% !important'
             }
         },
         thirdChild: {
+            flexWrap: 'wrap',
             '& > div': {
                 width: '32% !important'
             }
@@ -259,9 +260,9 @@ const enhance = compose(
     withState('anchorEl', 'setAnchorEl', null),
     withState('chosenRecruiter', 'chooseRecruiter', false),
     connect((state) => {
-        const skills = _.map(_.split(_.get(state, ['form', 'ApplicationCreateForm', 'values', 'skills']), ', '), _.trim)
+        const recruiter = _.get(state, ['form', 'ApplicationCreateForm', 'values', 'recruiter']) || false
         return {
-            skills
+            recruiter
         }
     })
 )
@@ -274,13 +275,13 @@ const ApplicationCreateDialog = enhance((props) => {
         onClose,
         classes,
         isUpdate,
-        skills,
         openRecruiterList,
         setOpenRecruiterList,
         anchorEl,
         setAnchorEl,
         usersData,
-        chosenRecruiter,
+        privilegeData,
+        recruiter,
         chooseRecruiter
     } = props
     const formNames = ['name', 'address']
@@ -288,8 +289,8 @@ const ApplicationCreateDialog = enhance((props) => {
         .catch((error) => {
             formValidate(formNames, dispatch, error)
         }))
-    const chosenRecruiterName = _.get(chosenRecruiter, 'firstName') + ' ' + _.get(chosenRecruiter, 'secondName')
-    const chosenRecruiterPhoto = _.get(chosenRecruiter, ['photo', 'file'])
+    const chosenRecruiterName = _.get(recruiter, 'firstName') + ' ' + _.get(recruiter, 'secondName')
+    const chosenRecruiterPhoto = _.get(recruiter, ['photo', 'file'])
 
     return (
         <Dialog
@@ -297,12 +298,12 @@ const ApplicationCreateDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={{width: '950px', maxWidth: 'none'}}
+            contentStyle={{width: '600px', maxWidth: 'none'}}
             bodyClassName={classes.popUp}>
 
             <div className={classes.titleContent}>
                 <div className={classes.addRecruiter}>
-                    <ToolTip text={chosenRecruiter ? t('Изменить рекрутера') : t('Назначить рекрутера')} position={'right'}>
+                    <ToolTip text={recruiter ? t('Изменить рекрутера') : t('Назначить рекрутера')} position={'right'}>
                         <IconButton
                             onTouchTap={(event) => {
                                 setAnchorEl(event.currentTarget)
@@ -326,7 +327,7 @@ const ApplicationCreateDialog = enhance((props) => {
                 zDepth={2}>
                 <div className={classes.usersWrapper}>
                     {usersData.loading
-                        ? <div className={classes.usersLoader}>
+                        ? <div className={classes.customLoader}>
                             <Loader size={0.6}/>
                         </div>
                         : _.map(usersData.list, (item) => {
@@ -343,7 +344,7 @@ const ApplicationCreateDialog = enhance((props) => {
                                     className={classes.user}
                                     onClick={() => {
                                         chooseRecruiter(item)
-                                        dispatch(change('ApplicationCreateForm', 'recruiter', id))
+                                        dispatch(change('ApplicationCreateForm', 'recruiter', item))
                                         setOpenRecruiterList(false)
                                     }}><div className={classes.avatar}>{photo}</div>{name} ({job}) 3 / 2</div>
                             )
@@ -351,7 +352,7 @@ const ApplicationCreateDialog = enhance((props) => {
                 </div>
             </Popover>
             <div className={classes.bodyContent}>
-                {chosenRecruiter &&
+                {recruiter &&
                 <div className={classes.recruiter}>
                     <div>{t('Рекрутер')}: <div>
                         <div style={{margin: '0 5px'}} className={classes.avatar}>{chosenRecruiterPhoto
@@ -366,110 +367,124 @@ const ApplicationCreateDialog = enhance((props) => {
                         <div className={classes.loader}>
                             <Loader size={0.75}/>
                         </div>
-                        <div className={classes.leftSide}>
-                            <div className={classes.block}>
-                                <h4>1. {t('Описание компании')}</h4>
-                                <div className={classes.flex + ' ' + classes.alignCenter}>
-                                    <Field
-                                        name="client"
-                                        component={ClientSearchField}
-                                        className={classes.inputFieldCustom}
-                                        label={t('Клиент')}
-                                        fullWidth={true}/>
-                                    <Link style={{marginLeft: '5px', whiteSpace: 'nowrap'}} target={'_blank'} to={{
-                                        pathname: ROUTES.CLIENT_LIST_URL,
-                                        query: {openCreateDialog: true}
-                                    }}>{t('добавить клиента')}</Link>
-                                </div>
+                        <div className={classes.block}>
+                            <h4>1. {t('Описание компании')}</h4>
+                            <div className={classes.flex + ' ' + classes.alignCenter}>
                                 <Field
-                                    name="responsibleFullName"
-                                    component={TextField}
+                                    name="client"
+                                    component={ClientSearchField}
                                     className={classes.inputFieldCustom}
-                                    label={t('Ф.И.О. ответственного за подбор персонала')}
+                                    label={t('Клиент')}
                                     fullWidth={true}/>
-                                <Field
-                                    name="responsiblePosition"
-                                    component={TextField}
-                                    className={classes.inputFieldCustom}
-                                    label={t('Должность ответственного за подбор персонала')}
-                                    fullWidth={true}/>
+                                <Link style={{marginLeft: '5px', whiteSpace: 'nowrap'}} target={'_blank'} to={{
+                                    pathname: ROUTES.CLIENT_LIST_URL,
+                                    query: {openCreateDialog: true}
+                                }}>{t('добавить клиента')}</Link>
                             </div>
-                        </div>
-                        <div className={classes.rightSide}>
-                            <div className={classes.block}>
-                                <h4>2. {t('Описание вакантной должности')}</h4>
-                                <Field
-                                    name="positionName"
-                                    component={TextField}
-                                    className={classes.inputFieldCustom}
-                                    label={t('Наименование вакантной должности')}
-                                    fullWidth={true}/>
-                                <div className={classes.flexBetween + ' ' + classes.alignBaseline}>
-                                    <span>{t('З/п на испытательный срок')}:</span>
-                                    <div className={classes.salaryField}>
-                                        <Field
-                                            name="trialSalary[min]"
-                                            component={TextField}
-                                            className={classes.inputFieldCustom}
-                                            normalize={normalizeNumber}
-                                            label={t('Мин') + '.'}/>
-                                        <Field
-                                            name="trialSalary[max]"
-                                            component={TextField}
-                                            className={classes.inputFieldCustom}
-                                            normalize={normalizeNumber}
-                                            label={t('Макс') + '.'}/>
-                                    </div>
-                                </div>
-                                <div className={classes.flexBetween + ' ' + classes.alignBaseline}>
-                                    <span>{t('З/п после испытательного срока')}:</span>
-                                    <div className={classes.salaryField}>
-                                        <Field
-                                            name="realSalary[min]"
-                                            component={TextField}
-                                            className={classes.inputFieldCustom}
-                                            normalize={normalizeNumber}
-                                            label={t('Мин') + '.'}/>
-                                        <Field
-                                            name="realSalary[max]"
-                                            component={TextField}
-                                            className={classes.inputFieldCustom}
-                                            normalize={normalizeNumber}
-                                            label={t('Макс') + '.'}/>
-                                    </div>
-                                </div>
-                                <Field
-                                    name="schedule"
-                                    component={WorkScheduleSearchField}
-                                    className={classes.inputFieldCustom}
-                                    label={t('График работы')}/>
-                                <Field
-                                    name="responsibilities"
-                                    component={TextField}
-                                    className={classes.textFieldArea}
-                                    label={t('Функциональные обязанности')}
-                                    fullWidth={true}
-                                    multiLine={true}
-                                    rows={1}
-                                    rowsMax={4}/>
-                                <Field
-                                    name="plannedEmploymentDate"
-                                    component={DateField}
-                                    className={classes.inputDateCustom}
-                                    floatingLabelText={t('Дата планируемого приема на работу')}
-                                    errorStyle={{bottom: 2}}
-                                    container="inline"
-                                    fullWidth={true}/>
-                                <Field
-                                    name="businessTrip"
-                                    component={CheckBox}
-                                    className={classes.inputFieldCustom}
-                                    label={t('Предусматриваются ли командировки')}/>
-                            </div>
+                            <Field
+                                name="contact"
+                                extraText={t('Ответстенный за подобор персонала')}
+                                component={ClientContactsField}/>
+                            <Field
+                                name="responsiblePosition"
+                                component={TextField}
+                                className={classes.inputFieldCustom}
+                                label={t('Должность ответственного за подбор персонала')}
+                                fullWidth={true}/>
                         </div>
                     </div>
                     <div className={classes.inContent}>
-                        <div style={{width: '100%', padding: '10px 30px 15px'}}>
+                        <div className={classes.block}>
+                            <h4>2. {t('Описание вакантной должности')}</h4>
+                            <Field
+                                name="position"
+                                component={PositionSearchField}
+                                className={classes.inputFieldCustom}
+                                label={t('Наименование вакантной должности')}
+                                fullWidth={true}/>
+                            <div className={classes.flexBetween + ' ' + classes.alignBaseline}>
+                                <span>{t('З/п на испытательный срок')}:</span>
+                                <div className={classes.salaryField}>
+                                    <Field
+                                        name="trialSalary[min]"
+                                        component={TextField}
+                                        className={classes.inputFieldCustom}
+                                        normalize={normalizeNumber}
+                                        label={t('Мин') + '.'}/>
+                                    <Field
+                                        name="trialSalary[max]"
+                                        component={TextField}
+                                        className={classes.inputFieldCustom}
+                                        normalize={normalizeNumber}
+                                        label={t('Макс') + '.'}/>
+                                </div>
+                            </div>
+                            <div className={classes.flexBetween + ' ' + classes.alignBaseline}>
+                                <span>{t('З/п после испытательного срока')}:</span>
+                                <div className={classes.salaryField}>
+                                    <Field
+                                        name="realSalary[min]"
+                                        component={TextField}
+                                        className={classes.inputFieldCustom}
+                                        normalize={normalizeNumber}
+                                        label={t('Мин') + '.'}/>
+                                    <Field
+                                        name="realSalary[max]"
+                                        component={TextField}
+                                        className={classes.inputFieldCustom}
+                                        normalize={normalizeNumber}
+                                        label={t('Макс') + '.'}/>
+                                </div>
+                            </div>
+                            <div className={classes.privileges}>
+                                <div>{t('Предоставляемые льготы')}</div>
+                                {privilegeData.loading && <Loader size={0.6}/>}
+                                <div className={classes.flex + ' ' + classes.halfChild}>
+                                    {_.map(privilegeData.list, (item) => {
+                                        const id = _.get(item, 'id')
+                                        const label = _.get(item, 'name')
+                                        return (
+                                            <Field
+                                                key={id}
+                                                name={'privileges[' + id + '][selected]'}
+                                                label={label}
+                                                component={CheckBox}
+                                            />
+                                        )
+                                    })}
+                                </div>
+                            </div>
+                            <Field
+                                name="schedule"
+                                component={WorkScheduleSearchField}
+                                className={classes.inputFieldCustom}
+                                label={t('График работы')}/>
+                            <Field
+                                name="responsibilities"
+                                component={TextField}
+                                className={classes.textFieldArea}
+                                label={t('Функциональные обязанности')}
+                                fullWidth={true}
+                                multiLine={true}
+                                rows={1}
+                                rowsMax={4}/>
+                            <Field
+                                name="plannedEmploymentDate"
+                                component={DateField}
+                                className={classes.inputDateCustom}
+                                floatingLabelText={t('Дата планируемого приема на работу')}
+                                errorStyle={{bottom: 2}}
+                                container="inline"
+                                fullWidth={true}/>
+                            <Field
+                                name="businessTrip"
+                                component={CheckBox}
+                                className={classes.inputFieldCustom}
+                                label={t('Предусматриваются ли командировки')}/>
+                        </div>
+                    </div>
+                    <div className={classes.inContent}>
+                        <div>
                             <div className={classes.block}>
                                 <h4>3. {t('Требования к кандидату')}</h4>
                                 <div className={classes.flexBetween + ' ' + classes.halfChild}>
@@ -491,20 +506,22 @@ const ApplicationCreateDialog = enhance((props) => {
                                                 normalize={normalizeNumber}/>
                                         </div>
                                     </div>
+                                </div>
+                                <div className={classes.flexBetween + ' ' + classes.halfChild}>
                                     <Field
                                         name="sex"
                                         component={SexSearchField}
                                         className={classes.inputFieldCustom}
                                         label={t('Пол')}
                                         fullWidth={true}/>
-                                </div>
-                                <div className={classes.flexBetween + ' ' + classes.thirdChild}>
                                     <Field
                                         name="education"
                                         component={EducationSearchField}
                                         className={classes.inputFieldCustom}
                                         label={t('Образование')}
                                         fullWidth={true}/>
+                                </div>
+                                <div className={classes.flexBetween + ' ' + classes.halfChild}>
                                     <Field
                                         name="computerLevel"
                                         component={ComputerLevelSearchField}
@@ -531,16 +548,6 @@ const ApplicationCreateDialog = enhance((props) => {
                                     multiLine={true}
                                     rows={1}
                                     rowsMax={4}/>
-                                <div className={classes.skills}>
-                                    {_.map(_.filter(skills, item => item), (item, index) => {
-                                        const skill = _.trim(item, ',')
-                                        return (
-                                            <Chip key={index} className={classes.chip}>
-                                                {skill}
-                                            </Chip>
-                                        )
-                                    })}
-                                </div>
                             </div>
                         </div>
                     </div>

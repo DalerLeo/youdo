@@ -1,13 +1,13 @@
 import _ from 'lodash'
 import React from 'react'
-import SearchField from '../../Basic/SearchField'
-import t from '../../../../helpers/translate'
+import SearchField from '../Basic/SearchField'
+import t from '../../../helpers/translate'
 
 const Items = [
-    {id: 'full_time', name: t('Полный рабочий день')},
-    {id: 'shift_work', name: t('Сменный график')},
-    {id: 'remote', name: t('Удаленно')},
-    {id: 'part_time', name: t('Частичная занятость')}
+    {id: 'user', name: t('Пользователь')},
+    {id: 'confident_user', name: t('Уверенный пользователь')},
+    {id: 'advanced_user', name: t('Продвинутый пользователь')},
+    {id: 'professional_level', name: t('Профессиональный уровень')}
 ]
 
 const getOptions = () => {
@@ -19,7 +19,7 @@ const getItem = (id) => {
         _.find(Items, (o) => { return o.id === _.toInteger(id) }))
 }
 
-const WorkScheduleSearchField = (props) => {
+const ComputerLevelSearchField = (props) => {
     return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
@@ -32,4 +32,4 @@ const WorkScheduleSearchField = (props) => {
     )
 }
 
-export default WorkScheduleSearchField
+export default ComputerLevelSearchField

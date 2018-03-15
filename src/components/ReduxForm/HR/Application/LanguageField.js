@@ -3,8 +3,8 @@ import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import {Field} from 'redux-form'
 import t from '../../../../helpers/translate'
-import {TextField} from '../../../ReduxForm'
-import LanguageLevelSearchField from './LanguageLevelSearchField'
+import LanguageLevelSearchField from '../LanguageLevelSearchField'
+import LanguageSearchField from '../LanguageSearchField'
 import ContentRemove from 'material-ui/svg-icons/content/remove-circle-outline'
 import IconButton from 'material-ui/IconButton'
 
@@ -100,9 +100,9 @@ const LanguageField = enhance((props) => {
                 <div>
                     <div className={classes.flex}>
                         <Field
-                            hintText={t('Язык')}
+                            label={t('Язык')}
                             name={`${detail}.name`}
-                            component={TextField}
+                            component={LanguageSearchField}
                             className={classes.inputFieldCustom}/>
                         <Field
                             label={t('Уровень')}

@@ -30,6 +30,7 @@ import {
 import {
     COLOR_GREEN,
     COLOR_RED,
+    COLOR_YELLOW,
     COLOR_BLUE_GREY,
     COLOR_WHITE
 } from '../../../constants/styleConstants'
@@ -39,6 +40,16 @@ import NotAssigned from 'material-ui/svg-icons/social/person-outline'
 import Assigned from 'material-ui/svg-icons/action/schedule'
 import Canceled from 'material-ui/svg-icons/notification/do-not-disturb-alt'
 import Completed from 'material-ui/svg-icons/action/done-all'
+
+export const getStatusName = (status) => {
+    switch (status) {
+        case APPLICATION_NOT_ASSIGNED: return t('Неприсвоен')
+        case APPLICATION_ASSIGNED: return t('Присвоен рекрутеру')
+        case APPLICATION_CANCELED: return t('Отменен')
+        case APPLICATION_COMPLETED: return t('Выполнен')
+        default: return null
+    }
+}
 
 const listHeader = [
     {
@@ -73,6 +84,7 @@ const listHeader = [
     },
     {
         sorting: false,
+        alignRight: true,
         xs: 1,
         name: 'status',
         title: t('Статус')
@@ -112,7 +124,7 @@ const enhance = compose(
         buttons: {
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-around'
+            justifyContent: 'flex-end'
         }
     })
 )
@@ -129,7 +141,8 @@ const ApplicationGridList = enhance((props) => {
         classes,
         openRecruiterList,
         setOpenRecruiterList,
-        usersData
+        usersData,
+        privilegeData
     } = props
 
     const statusIsNull = _.isNil(_.get(filter.getParams(), 'status'))
@@ -160,19 +173,58 @@ const ApplicationGridList = enhance((props) => {
             handleCloseDetail={_.get(detailData, 'handleCloseDetail')}/>
     )
 
+    const iconStyle = {
+        icon: {
+            color: '#666',
+            width: 20,
+            height: 20
+        },
+        button: {
+            width: 30,
+            height: 30,
+            padding: 5
+        }
+    }
+
     const applicationList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const name = _.get(item, 'name')
+        const client = _.get(item, ['client', 'name'])
+        const position = _.get(item, ['position', 'name'])
+        const recruiter = _.get(item, ['recruiter'])
+            ? _.get(item, ['recruiter', 'firstName']) + ' ' + _.get(item, ['recruiter', 'secondName'])
+            : t('Не назначен')
         const createdDate = dateFormat(_.get(item, 'createdDate'))
+        const deadline = dateFormat(_.get(item, 'deadline'), true)
+        const status = _.get(item, 'status')
+        const getStatusIcon = () => {
+            switch (status) {
+                case APPLICATION_NOT_ASSIGNED: return <NotAssigned color={COLOR_BLUE_GREY}/>
+                case APPLICATION_ASSIGNED: return <Assigned color={COLOR_YELLOW}/>
+                case APPLICATION_CANCELED: return <Canceled color={COLOR_RED}/>
+                case APPLICATION_COMPLETED: return <Completed color={COLOR_GREEN}/>
+                default: return null
+            }
+        }
         return (
             <Row key={id} className={classes.listRow} style={{alignItems: 'center'}}>
                 <Link to={{
                     pathname: sprintf(ROUTES.HR_APPLICATION_ITEM_PATH, id),
                     query: filter.getParams()
                 }}>
-                    <Col xs={2}>{id}</Col>
-                    <Col xs={7}>{name}</Col>
-                    <Col xs={3}>{createdDate}</Col>
+                    <Col xs={2}>{client}</Col>
+                    <Col xs={3}>{position}</Col>
+                    <Col xs={2}>{recruiter}</Col>
+                    <Col xs={2}>{createdDate}</Col>
+                    <Col xs={2}>{deadline}</Col>
+                    <Col xs={1} className={classes.buttons}>
+                        <ToolTip position={'left'} text={getStatusName(status)}>
+                            <IconButton
+                                style={iconStyle.button}
+                                iconStyle={iconStyle.icon}>
+                                {getStatusIcon()}
+                            </IconButton>
+                        </ToolTip>
+                    </Col>
                 </Link>
             </Row>
         )
@@ -294,7 +346,7 @@ const ApplicationGridList = enhance((props) => {
                     </IconButton>
                 </Badge>
             </ToolTip>
-            <ToolTip position="left" text={t('Отфильтровать по исполняемым заявкам')}>
+            <ToolTip position="left" text={t('Отфильтровать по присвоенным заявкам')}>
                 <Badge
                     primary={true}
                     badgeContent={statusIsAssigned ? <Done style={badgeStyle.iconAssigned}/> : assignedCount}
@@ -367,6 +419,7 @@ const ApplicationGridList = enhance((props) => {
                 openRecruiterList={openRecruiterList}
                 setOpenRecruiterList={setOpenRecruiterList}
                 usersData={usersData}
+                privilegeData={privilegeData}
             />
 
             <ApplicationCreateDialog
@@ -379,6 +432,7 @@ const ApplicationGridList = enhance((props) => {
                 openRecruiterList={openRecruiterList}
                 setOpenRecruiterList={setOpenRecruiterList}
                 usersData={usersData}
+                privilegeData={privilegeData}
             />
 
             {detailData.data &&

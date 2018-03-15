@@ -20,7 +20,8 @@ import {
     applicationListFetchAction,
     applicationDeleteAction,
     applicationItemFetchAction,
-    usersListFetchAction
+    usersListFetchAction,
+    privilegeListFetchAction
 } from '../../actions/HR/application'
 import {openSnackbarAction} from '../../actions/snackbar'
 import t from '../../helpers/translate'
@@ -37,6 +38,8 @@ const enhance = compose(
         const updateLoading = _.get(state, ['application', 'update', 'loading'])
         const list = _.get(state, ['application', 'list', 'data'])
         const listLoading = _.get(state, ['application', 'list', 'loading'])
+        const privilegeList = _.get(state, ['application', 'privilege', 'data'])
+        const privilegeListLoading = _.get(state, ['application', 'privilege', 'loading'])
         const usersList = _.get(state, ['users', 'list', 'data'])
         const usersListLoading = _.get(state, ['users', 'list', 'loading'])
         const createForm = _.get(state, ['form', 'ApplicationCreateForm'])
@@ -51,6 +54,8 @@ const enhance = compose(
             updateLoading,
             usersList,
             usersListLoading,
+            privilegeList,
+            privilegeListLoading,
             filter,
             createForm
         }
@@ -75,10 +80,26 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         const prevOpen = _.get(props, ['openRecruiterList'])
         const nextOpen = _.get(nextProps, ['openRecruiterList'])
-        return nextOpen !== prevOpen && nextOpen === true
+        const usersList = _.get(nextProps, ['usersList'])
+        return nextOpen !== prevOpen && nextOpen === true && !usersList
     }, ({dispatch, openRecruiterList}) => {
         if (openRecruiterList) {
             dispatch(usersListFetchAction())
+        }
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const prevCreate = toBoolean(_.get(props, ['location', 'query', APPLICATION_CREATE_DIALOG_OPEN]))
+        const nextCreate = toBoolean(_.get(nextProps, ['location', 'query', APPLICATION_CREATE_DIALOG_OPEN]))
+        const prevUpdate = toBoolean(_.get(props, ['location', 'query', APPLICATION_UPDATE_DIALOG_OPEN]))
+        const nextUpdate = toBoolean(_.get(nextProps, ['location', 'query', APPLICATION_UPDATE_DIALOG_OPEN]))
+        const privilegeList = _.get(nextProps, ['privilegeList'])
+        return ((prevCreate !== nextCreate && nextCreate === true) || (prevUpdate !== nextUpdate && nextUpdate === true)) && !privilegeList
+    }, ({dispatch, location: {query}}) => {
+        const openCreate = toBoolean(_.get(query, APPLICATION_CREATE_DIALOG_OPEN))
+        const openUpdate = toBoolean(_.get(query, APPLICATION_UPDATE_DIALOG_OPEN))
+        if (openCreate || openUpdate) {
+            dispatch(privilegeListFetchAction())
         }
     }),
 
@@ -213,7 +234,9 @@ const ApplicationList = enhance((props) => {
         openRecruiterList,
         setOpenRecruiterList,
         usersList,
-        usersListLoading
+        usersListLoading,
+        privilegeList,
+        privilegeListLoading
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', APPLICATION_FILTER_OPEN]))
@@ -262,7 +285,7 @@ const ApplicationList = enhance((props) => {
         initialValues: (() => {
             if (!detail || openCreateDialog) {
                 return {
-                    languages: [{name: 'русский'}, {name: 'английский'}]
+                    languages: [{}]
                 }
             }
             return {
@@ -287,6 +310,11 @@ const ApplicationList = enhance((props) => {
         loading: usersListLoading
     }
 
+    const privilegeData = {
+        list: _.get(privilegeList, 'results'),
+        loading: privilegeListLoading
+    }
+
     const detailData = {
         id: detailId,
         data: detail,
@@ -307,6 +335,7 @@ const ApplicationList = enhance((props) => {
                 openRecruiterList={openRecruiterList}
                 setOpenRecruiterList={setOpenRecruiterList}
                 usersData={usersData}
+                privilegeData={privilegeData}
             />
         </Layout>
     )
