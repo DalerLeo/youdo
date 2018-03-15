@@ -1,17 +1,15 @@
 import _ from 'lodash'
 
 const deleteFromStore = (id, list, action, innerObj = 'results') => {
-    const newList = _.remove(_.get(list, innerObj), (item) => {
-        return _.toNumber(item.id) !== _.toNumber(id)
+    const newList = JSON.parse(JSON.stringify(list))
+
+    _.remove(_.get(newList, innerObj), (item) => {
+        return _.toNumber(item.id) === _.toNumber(id)
     })
-    const newData = {...list, [innerObj]: newList}
-    const getNewData = () => {
-        return Promise.resolve(newData)
-    }
 
     return {
         type: action,
-        payload: getNewData()
+        payload: Promise.resolve({...newList, count: _.size(_.get(newList, innerObj))})
     }
 }
 
