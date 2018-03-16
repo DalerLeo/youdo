@@ -27,6 +27,8 @@ import {openSnackbarAction} from '../../actions/snackbar'
 import t from '../../helpers/translate'
 import {APPLICATION_FILTER_KEY, APPLICATION_FILTER_OPEN} from '../../components/HR/Application'
 import {PRICE_FILTER_KEY} from '../../components/Price'
+import numberFormat from '../../helpers/numberFormat'
+import moment from 'moment'
 
 const enhance = compose(
     connect((state, props) => {
@@ -266,6 +268,21 @@ const ApplicationList = enhance((props) => {
         handleSubmitFilterDialog: props.handleSubmitFilterDialog
     }
 
+    const confirmDialog = {
+        openConfirmDialog: props.openConfirmDialog,
+        handleOpenConfirmDialog: props.handleOpenConfirmDialog,
+        handleCloseConfirmDialog: props.handleCloseConfirmDialog,
+        handleSendConfirmDialog: props.handleSendConfirmDialog
+    }
+
+    const isSelectedPrivileges = _.map(_.get(privilegeList, 'results'), (obj) => {
+        const userSelectedPrivilege = _.find(_.get(detail, 'privileges'), {'id': obj.id})
+        if (!openCreateDialog && _.get(userSelectedPrivilege, 'id') === obj.id) {
+            return {id: obj.id, selected: true}
+        }
+        return {id: obj.id, selected: false}
+    })
+
     const createDialog = {
         createLoading,
         openCreateDialog,
@@ -274,23 +291,74 @@ const ApplicationList = enhance((props) => {
         handleSubmitCreateDialog: props.handleSubmitCreateDialog
     }
 
-    const confirmDialog = {
-        openConfirmDialog: props.openConfirmDialog,
-        handleOpenConfirmDialog: props.handleOpenConfirmDialog,
-        handleCloseConfirmDialog: props.handleCloseConfirmDialog,
-        handleSendConfirmDialog: props.handleSendConfirmDialog
-    }
-
     const updateDialog = {
         initialValues: (() => {
             if (!detail || openCreateDialog) {
                 return {
-                    languages: [{}]
+                    languages: [{}],
+                    privileges: isSelectedPrivileges
                 }
             }
+            const ageMin = _.get(detail, 'ageMin')
+            const ageMax = _.get(detail, 'ageMax')
+            const businessTrip = _.get(detail, 'businessTrip')
+            const client = _.get(detail, ['client', 'id'])
+            const deadline = moment(_.get(detail, 'deadline')).toDate()
+            const deadlineTime = moment(_.get(detail, 'deadline')).toDate()
+            const education = _.get(detail, 'education')
+            const experience = _.get(detail, 'experience')
+            const levelPc = _.get(detail, 'levelPc')
+            const workSchedule = _.get(detail, 'mode')
+            const planningDate = moment(_.get(detail, 'planningDate')).toDate()
+            const position = _.get(detail, ['position', 'id'])
+            const realSalaryMin = numberFormat(_.get(detail, 'realSalaryMin'))
+            const realSalaryMax = numberFormat(_.get(detail, 'realSalaryMax'))
+            const recruiter = _.get(detail, ['recruiter'])
+            const responsibility = _.get(detail, 'responsibility')
+            const sex = _.get(detail, 'sex')
+            const skills = _.map(_.get(detail, 'skills'), (item) => _.get(item, 'name'))
+            const trialSalaryMin = numberFormat(_.get(detail, 'trialSalaryMin'))
+            const trialSalaryMax = numberFormat(_.get(detail, 'trialSalaryMax'))
             return {
-                name: _.get(detail, 'name'),
-                address: _.get(detail, 'address')
+                age: {
+                    min: ageMin,
+                    max: ageMax
+                },
+                businessTrip,
+                client: {
+                    value: client
+                },
+                education: {
+                    value: education
+                },
+                experience,
+                deadline,
+                deadlineTime,
+                levelPc: {
+                    value: levelPc
+                },
+                planningDate,
+                position: {
+                    value: position
+                },
+                privileges: isSelectedPrivileges,
+                trialSalary: {
+                    min: trialSalaryMin,
+                    max: trialSalaryMax
+                },
+                realSalary: {
+                    min: realSalaryMin,
+                    max: realSalaryMax
+                },
+                responsibility,
+                sex: {
+                    value: sex
+                },
+                schedule: {
+                    value: workSchedule
+                },
+                skills,
+                recruiter
             }
         })(),
         updateLoading: detailLoading || updateLoading,

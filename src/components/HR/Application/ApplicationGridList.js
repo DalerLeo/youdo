@@ -30,14 +30,13 @@ import {
 import {
     COLOR_GREEN,
     COLOR_RED,
-    COLOR_YELLOW,
     COLOR_BLUE_GREY,
     COLOR_WHITE
 } from '../../../constants/styleConstants'
 import Done from 'material-ui/svg-icons/action/check-circle'
 import List from 'material-ui/svg-icons/action/list'
 import NotAssigned from 'material-ui/svg-icons/social/person-outline'
-import Assigned from 'material-ui/svg-icons/action/schedule'
+import Assigned from 'material-ui/svg-icons/social/person'
 import Canceled from 'material-ui/svg-icons/notification/do-not-disturb-alt'
 import Completed from 'material-ui/svg-icons/action/done-all'
 
@@ -83,7 +82,7 @@ const listHeader = [
         title: t('Дэдлайн')
     },
     {
-        sorting: false,
+        sorting: true,
         alignRight: true,
         xs: 1,
         name: 'status',
@@ -199,7 +198,7 @@ const ApplicationGridList = enhance((props) => {
         const getStatusIcon = () => {
             switch (status) {
                 case APPLICATION_NOT_ASSIGNED: return <NotAssigned color={COLOR_BLUE_GREY}/>
-                case APPLICATION_ASSIGNED: return <Assigned color={COLOR_YELLOW}/>
+                case APPLICATION_ASSIGNED: return <Assigned color={COLOR_BLUE_GREY}/>
                 case APPLICATION_CANCELED: return <Canceled color={COLOR_RED}/>
                 case APPLICATION_COMPLETED: return <Completed color={COLOR_GREEN}/>
                 default: return null
@@ -412,6 +411,7 @@ const ApplicationGridList = enhance((props) => {
             />
 
             <ApplicationCreateDialog
+                initialValues={createDialog.initialValues}
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
                 onClose={createDialog.handleCloseCreateDialog}

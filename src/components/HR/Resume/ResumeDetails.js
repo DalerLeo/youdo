@@ -136,7 +136,7 @@ const iconStyle = {
 }
 withState('openDetails', 'setOpenDetails', false)
 
-const ApplicationDetails = enhance((props) => {
+const ResumeDetails = enhance((props) => {
     const {classes,
         loading,
         data,
@@ -145,7 +145,7 @@ const ApplicationDetails = enhance((props) => {
         handleCloseDetail
     } = props
 
-    const applicationId = _.get(data, 'id')
+    const resumeId = _.get(data, 'id')
     const ageMin = _.get(data, 'ageMin')
     const ageMax = _.get(data, 'ageMax')
     const businessTrip = _.get(data, 'businessTrip') ? t('Да') : t('Нет')
@@ -181,7 +181,7 @@ const ApplicationDetails = enhance((props) => {
     return (
         <div className={classes.wrapper} key={_.get(data, 'id')}>
             <div className={classes.title}>
-                <div className={classes.titleLabel}>{t('Заявка')} №{applicationId} <span className={classes.createdDate}>({createdDate})</span></div>
+                <div className={classes.titleLabel}>{t('Заявка')} №{resumeId} <span className={classes.createdDate}>({createdDate})</span></div>
                 <div className={classes.closeDetail}
                      onClick={handleCloseDetail}>
                 </div>
@@ -209,7 +209,7 @@ const ApplicationDetails = enhance((props) => {
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
-                            onTouchTap={() => { handleOpenUpdateDialog(applicationId) }}>
+                            onTouchTap={() => { handleOpenUpdateDialog(resumeId) }}>
                             <Edit />
                         </IconButton>
                     </ToolTip>
@@ -218,7 +218,7 @@ const ApplicationDetails = enhance((props) => {
                             iconStyle={iconStyle.icon}
                             style={iconStyle.button}
                             touch={true}
-                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(applicationId) }}>
+                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(resumeId) }}>
                             <Delete />
                         </IconButton>
                     </ToolTip>
@@ -283,7 +283,7 @@ const ApplicationDetails = enhance((props) => {
     )
 })
 
-ApplicationDetails.propTypes = {
+ResumeDetails.propTypes = {
     data: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
     confirmDialog: PropTypes.shape({
@@ -294,4 +294,4 @@ ApplicationDetails.propTypes = {
     }).isRequired
 }
 
-export default ApplicationDetails
+export default ResumeDetails

@@ -91,7 +91,8 @@ import {SystemPagesList} from '../containers/SystemPages'
 import {CellTypeList} from '../containers/CellType'
 import {CellList} from '../containers/Cell'
 import {
-    ApplicationList
+    ApplicationList,
+    ResumeList
 } from '../containers/HR'
 
 const userIsAdminChain = compose(userIsAuth, visibleOnlyAdmin)
@@ -951,6 +952,17 @@ export default {
                 {
                     path: ROUTES.HR_APPLICATION_ITEM_URL,
                     component: userIsAuth(ApplicationList)
+                }
+            ]
+        },
+        // HR Resume
+        {
+            path: ROUTES.HR_RESUME_LIST_URL,
+            component: userIsAdminChain(ResumeList),
+            childRoutes: [
+                {
+                    path: ROUTES.HR_RESUME_ITEM_URL,
+                    component: userIsAuth(ResumeList)
                 }
             ]
         },

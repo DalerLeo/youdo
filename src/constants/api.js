@@ -604,7 +604,6 @@ export const HR_POSITION_ITEM = `/${HR_POSITION}/%d/`
 
 export const HR_SKILLS = 'hr/skill'
 export const HR_SKILLS_LIST = `/${HR_SKILLS}/`
-export const HR_SKILLS_ITEM = `/${HR_SKILLS}/%d/`
 
 export const HR_PRIVILEGE = 'hr/privilege'
 export const HR_PRIVILEGE_LIST = `/${HR_PRIVILEGE}`
@@ -612,4 +611,10 @@ export const HR_PRIVILEGE_LIST = `/${HR_PRIVILEGE}`
 export const HR_LANGUAGE = 'hr/language'
 export const HR_LANGUAGE_LIST = `/${HR_LANGUAGE}/`
 export const HR_LANGUAGE_ITEM = `/${HR_LANGUAGE}/%d/`
+
+export const HR_RESUME = 'hr/resume'
+export const HR_RESUME_CREATE = `/${HR_RESUME}/`
+export const HR_RESUME_DELETE = `/${HR_RESUME}/%d/`
+export const HR_RESUME_LIST = `/${HR_RESUME}/`
+export const HR_RESUME_ITEM = `/${HR_RESUME}/%d/`
 

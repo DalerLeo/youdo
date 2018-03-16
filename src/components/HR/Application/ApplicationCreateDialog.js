@@ -468,13 +468,13 @@ const ApplicationCreateDialog = enhance((props) => {
                                 <div>{t('Предоставляемые льготы')}</div>
                                 {privilegeData.loading && <Loader size={0.6}/>}
                                 <div className={classes.flex + ' ' + classes.halfChild}>
-                                    {_.map(privilegeData.list, (item) => {
+                                    {_.map(privilegeData.list, (item, index) => {
                                         const id = _.get(item, 'id')
                                         const label = _.get(item, 'name')
                                         return (
                                             <Field
                                                 key={id}
-                                                name={'privileges[' + id + '][selected]'}
+                                                name={'privileges[' + index + '][selected]'}
                                                 label={label}
                                                 component={CheckBox}
                                             />
@@ -488,7 +488,7 @@ const ApplicationCreateDialog = enhance((props) => {
                                 className={classes.inputFieldCustom}
                                 label={t('График работы')}/>
                             <Field
-                                name="responsibilities"
+                                name="responsibility"
                                 component={TextField}
                                 className={classes.textFieldArea}
                                 label={t('Функциональные обязанности')}
@@ -497,7 +497,7 @@ const ApplicationCreateDialog = enhance((props) => {
                                 rows={1}
                                 rowsMax={4}/>
                             <Field
-                                name="plannedEmploymentDate"
+                                name="planningDate"
                                 component={DateField}
                                 className={classes.inputDateCustom}
                                 floatingLabelText={t('Дата планируемого приема на работу')}
@@ -551,7 +551,7 @@ const ApplicationCreateDialog = enhance((props) => {
                                 </div>
                                 <div className={classes.flexBetween + ' ' + classes.halfChild}>
                                     <Field
-                                        name="computerLevel"
+                                        name="levelPc"
                                         component={ComputerLevelSearchField}
                                         className={classes.inputFieldCustom}
                                         label={t('Уровень владения ПК')}
