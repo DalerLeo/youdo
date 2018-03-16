@@ -602,6 +602,10 @@ export const HR_POSITION = 'hr/position'
 export const HR_POSITION_LIST = `/${HR_POSITION}/`
 export const HR_POSITION_ITEM = `/${HR_POSITION}/%d/`
 
+export const HR_SKILLS = 'hr/skill'
+export const HR_SKILLS_LIST = `/${HR_SKILLS}/`
+export const HR_SKILLS_ITEM = `/${HR_SKILLS}/%d/`
+
 export const HR_PRIVILEGE = 'hr/privilege'
 export const HR_PRIVILEGE_LIST = `/${HR_PRIVILEGE}`
 

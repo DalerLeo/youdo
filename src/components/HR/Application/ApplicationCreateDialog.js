@@ -13,6 +13,7 @@ import WorkScheduleSearchField from '../../ReduxForm/HR/WorkScheduleSearchField'
 import SexSearchField from '../../ReduxForm/HR/SexSearchField'
 import EducationSearchField from '../../ReduxForm/HR/EducationSearchField'
 import ComputerLevelSearchField from '../../ReduxForm/HR/ComputerLevelSearchField'
+import SkillsTagSearchField from '../../ReduxForm/HR/SkillsTagSearchField'
 import LanguageField from '../../ReduxForm/HR/Application/LanguageField'
 import ClientSearchField from '../../ReduxForm/HR/Application/ClientSearchField'
 import PositionSearchField from '../../ReduxForm/HR/Position/PositionSearchField'
@@ -566,15 +567,9 @@ const ApplicationCreateDialog = enhance((props) => {
                                 <FieldArray name={'languages'} component={LanguageField}/>
                                 <Field
                                     name="skills"
-                                    component={TextField}
+                                    component={SkillsTagSearchField}
                                     label={t('Необходимые профессиональные навыки')}
-                                    hintText={t('Перечислите через запятую')}
-                                    fullWidth={true}
-                                    hintStyle={{bottom: 16}}
-                                    className={classes.textFieldArea}
-                                    multiLine={true}
-                                    rows={1}
-                                    rowsMax={4}/>
+                                    fullWidth={true}/>
                             </div>
                         </div>
                     </div>

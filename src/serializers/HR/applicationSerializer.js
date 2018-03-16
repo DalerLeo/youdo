@@ -34,7 +34,7 @@ export const createSerializer = (data) => {
             .map((item, index) => _.get(item, 'selected') ? index : null)
             .filter((item) => item !== null)
         : []
-    const skills = _.split(_.get(data, 'skills'), ', ')
+    const skills = _.filter(_.get(data, 'skills'), (item) => item)
     return {
         age_min: ageMin,
         age_max: ageMax,
