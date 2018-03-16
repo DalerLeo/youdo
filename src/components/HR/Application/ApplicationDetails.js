@@ -14,6 +14,7 @@ import dateFormat from '../../../helpers/dateFormat'
 import numberFormat from '../../../helpers/numberFormat'
 import t from '../../../helpers/translate'
 import {PADDING_STANDART, BORDER_STYLE} from '../../../constants/styleConstants'
+import {SUM_CURRENCY} from '../../../constants/backendConstants'
 
 const colorBlue = '#12aaeb !important'
 const enhance = compose(
@@ -52,21 +53,18 @@ const enhance = compose(
         container: {
             display: 'flex',
             justifyContent: 'space-between',
-            width: '100%'
+            width: '100%',
+            '& > div': {
+                width: '50%'
+            }
         },
-        applicationInfo: {
+        companyInfo: {
             borderBottom: BORDER_STYLE,
-            padding: PADDING_STANDART,
             width: '100%'
         },
         block: {
             borderLeft: BORDER_STYLE,
-            padding: PADDING_STANDART,
-            width: '35%',
-            '&:first-child': {
-                border: 'none',
-                width: '30%'
-            }
+            padding: PADDING_STANDART
         },
         info: {
             '& > div': {
@@ -78,7 +76,8 @@ const enhance = compose(
         },
         flexBetween: {
             display: 'flex',
-            justifyContent: 'space-between'
+            justifyContent: 'space-between',
+            flexWrap: 'wrap'
         },
         skill: {
             // . backgroundColor: '#4db6ac',
@@ -225,10 +224,10 @@ const ApplicationDetails = enhance((props) => {
                     </ToolTip>
                 </div>
             </div>
-            <div className={classes.container}>
+            <div className={classes.companyInfo}>
                 <div className={classes.block}>
                     <div className={classes.bodyTitle}>{t('Описание компании')}</div>
-                    <div className={classes.info}>
+                    <div className={classes.info + ' ' + classes.flexBetween}>
                         <div>{t('Клиент')}: <strong>{client}</strong></div>
                         <div>{t('Контактное лицо')}: <strong>{}</strong></div>
                         <div>{t('Телефон')}: <strong>{}</strong></div>
@@ -236,12 +235,14 @@ const ApplicationDetails = enhance((props) => {
                         <div>{t('Email')}: <strong>{}</strong></div>
                     </div>
                 </div>
+            </div>
+            <div className={classes.container}>
                 <div className={classes.block}>
                     <div className={classes.bodyTitle}>{t('Описание вакантной должности')}</div>
                     <div className={classes.info}>
                         <div>{t('Наименование должности')}: <strong>{position}</strong></div>
-                        <div>{t('З/п на испытательный срок')}: <strong>{trialSalaryMin} - {trialSalaryMax}</strong></div>
-                        <div>{t('З/п после испытательного срока')}: <strong>{realSalaryMin} - {realSalaryMax}</strong></div>
+                        <div>{t('З/п на испытательный срок')}: <strong>{trialSalaryMin} - {trialSalaryMax} {SUM_CURRENCY}</strong></div>
+                        <div>{t('З/п после испытательного срока')}: <strong>{realSalaryMin} - {realSalaryMax} {SUM_CURRENCY}</strong></div>
                         <div>{t('Предоставляемые льготы')}: <strong>{privileges}</strong></div>
                         <div>{t('Режим работы')}: <strong>{workSchedule}</strong></div>
                         <div>{t('Наличие командировок')}: <strong>{businessTrip}</strong></div>

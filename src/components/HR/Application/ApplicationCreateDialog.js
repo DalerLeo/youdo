@@ -8,7 +8,7 @@ import FlatButton from 'material-ui/FlatButton'
 import Loader from '../../Loader'
 import ToolTip from '../../ToolTip'
 import {Field, FieldArray, reduxForm, change} from 'redux-form'
-import {TextField, CheckBox, DateField, ClientContactsField} from '../../ReduxForm'
+import {TextField, CheckBox, DateField, ClientContactsField, TimeField} from '../../ReduxForm'
 import WorkScheduleSearchField from '../../ReduxForm/HR/WorkScheduleSearchField'
 import SexSearchField from '../../ReduxForm/HR/SexSearchField'
 import EducationSearchField from '../../ReduxForm/HR/EducationSearchField'
@@ -59,10 +59,22 @@ const enhance = compose(
         recruiter: {
             padding: '15px 30px',
             fontWeight: '600',
-            borderBottom: BORDER_STYLE,
-            '& div': {
+            '& > div:first-child': {
                 display: 'flex',
-                alignItems: 'center'
+                alignItems: 'center',
+                '& div': {
+                    display: 'flex',
+                    alignItems: 'center'
+                }
+            }
+        },
+        deadline: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginTop: '10px',
+            '& > div': {
+                width: '48%'
             }
         },
         popUp: {
@@ -284,7 +296,7 @@ const ApplicationCreateDialog = enhance((props) => {
         recruiter,
         chooseRecruiter
     } = props
-    const formNames = ['name', 'address']
+    const formNames = []
     const onSubmit = handleSubmit(() => props.onSubmit()
         .catch((error) => {
             formValidate(formNames, dispatch, error)
@@ -352,17 +364,32 @@ const ApplicationCreateDialog = enhance((props) => {
                 </div>
             </Popover>
             <div className={classes.bodyContent}>
-                {recruiter &&
-                <div className={classes.recruiter}>
-                    <div>{t('Рекрутер')}: <div>
-                        <div style={{margin: '0 5px'}} className={classes.avatar}>{chosenRecruiterPhoto
-                            ? <img src={chosenRecruiterPhoto} alt=""/>
-                            : <PersonIcon/>}
-                        </div>
-                        <b>{chosenRecruiterName}</b>
-                    </div></div>
-                </div>}
                 <form onSubmit={onSubmit} className={classes.form}>
+                    {recruiter &&
+                    <div className={classes.recruiter}>
+                        <div>{t('Рекрутер')}: <div>
+                            <div style={{margin: '0 5px'}} className={classes.avatar}>{chosenRecruiterPhoto
+                                ? <img src={chosenRecruiterPhoto} alt=""/>
+                                : <PersonIcon/>}
+                            </div>
+                            <b>{chosenRecruiterName}</b>
+                        </div></div>
+                        <div className={classes.deadline}>
+                            <Field
+                                name="deadline"
+                                component={DateField}
+                                className={classes.inputDateCustom}
+                                floatingLabelText={t('Дэдлайн')}
+                                errorStyle={{bottom: 2}}
+                                fullWidth={true}/>
+                            <Field
+                                name="deadlineTime"
+                                component={TimeField}
+                                hintText={t('Время')}
+                                hintStyle={{fontSize: '13px'}}
+                                fullWidth={true}/>
+                        </div>
+                    </div>}
                     <div className={classes.inContent}>
                         <div className={classes.loader}>
                             <Loader size={0.75}/>

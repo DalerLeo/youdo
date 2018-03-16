@@ -1,3 +1,4 @@
+export const SUM_CURRENCY = 'UZS'
 export const ZERO = 0
 
 export const ORDER_REQUESTED = 0

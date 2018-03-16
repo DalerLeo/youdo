@@ -438,7 +438,7 @@ const ApplicationGridList = enhance((props) => {
             {detailData.data &&
             <ConfirmDialog
                 type="delete"
-                message={_.get(detailData, ['data', 'name'])}
+                message={''}
                 onClose={confirmDialog.handleCloseConfirmDialog}
                 onSubmit={confirmDialog.handleSendConfirmDialog}
                 open={confirmDialog.openConfirmDialog}
