@@ -12,6 +12,7 @@ import Clients from 'material-ui/svg-icons/social/group'
 import Supply from 'material-ui/svg-icons/action/swap-horiz'
 import Products from 'material-ui/svg-icons/device/widgets'
 import Telegram from '../CustomIcons/Telegram'
+import HR from 'material-ui/svg-icons/social/people'
 import {getPageSize} from '../../helpers/storage'
 import t from '../../helpers/translate'
 
@@ -181,6 +182,15 @@ export const MenuItems = [
             {name: t('Новости'), url: ROUTES.TELEGRAM_NEWS_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_telegram_news'},
             {name: t('Оплаты'), url: ROUTES.CLIENT_TRANSACTION_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_client_transaction'},
             {name: t('Системные страницы'), url: ROUTES.SYSTEM_PAGES_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_system_pages'}
+        ]
+    },
+    {
+        name: 'HR',
+        icon: (<HR/>),
+        url: ROUTES.HR_APPLICATION_LIST_URL,
+        childs: [
+            {name: t('Заявки'), url: ROUTES.HR_APPLICATION_LIST_URL, query: defaultPageSizeQuery, permission: ''},
+            {name: t('Резюме'), url: ROUTES.HR_RESUME_LIST_URL, query: defaultPageSizeQuery, permission: ''}
         ]
     },
     {

@@ -10,7 +10,7 @@ const enhance = compose(
     injectSheet({
         radioButton: {
             marginTop: '10px',
-            '&>div': {
+            '& > div': {
                 marginBottom: '10px'
             },
             '& label': {
@@ -40,7 +40,7 @@ const ProviderContactsField = enhance((props) => {
     const {classes, contacts, contactsLoading, input, meta: {error}, detail} = props
     return (
         <div>
-            {contactsLoading && <div>{t('Загрузка')} ...</div>}
+            {contactsLoading && <div>{t('Загрузка')}...</div>}
             {error && <div className={classes.error}>{error}</div>}
             {!contactsLoading &&
             <RadioButtonGroup

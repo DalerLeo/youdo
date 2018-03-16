@@ -533,6 +533,21 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.CELL_UPDATE),
         item: createThunkReducer(actionTypes.CELL_ITEM)
     }),
+    // HR
+    application: combineReducers({
+        create: createThunkReducer(actionTypes.HR_APPLICATION_CREATE),
+        list: createThunkReducer(actionTypes.HR_APPLICATION_LIST),
+        update: createThunkReducer(actionTypes.HR_APPLICATION_UPDATE),
+        item: createThunkReducer(actionTypes.HR_APPLICATION_ITEM),
+        privilege: createThunkReducer(actionTypes.HR_PRIVILEGE_LIST)
+    }),
+    resume: combineReducers({
+        create: createThunkReducer(actionTypes.HR_RESUME_CREATE),
+        list: createThunkReducer(actionTypes.HR_RESUME_LIST),
+        update: createThunkReducer(actionTypes.HR_RESUME_UPDATE),
+        item: createThunkReducer(actionTypes.HR_RESUME_ITEM)
+    }),
+    // HR!
 
     snackbar: snackbarReducer(),
     error: errorReducer(),

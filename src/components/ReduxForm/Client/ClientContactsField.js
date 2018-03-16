@@ -4,12 +4,20 @@ import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton'
 import {connect} from 'react-redux'
+import t from '../../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
+        wrapper: {
+            marginTop: '10px'
+        },
+        title: {
+            fontWeight: '600',
+            paddingBottom: '10px'
+        },
         radioButton: {
             marginTop: '10px',
-            '&>div': {
+            '& > div': {
                 marginBottom: '10px'
             },
             '& svg': {
@@ -33,13 +41,21 @@ const enhance = compose(
 )
 
 const ClientContactsField = enhance((props) => {
-    const {classes, contacts, contactsLoading, input, meta: {error}} = props
+    const {classes, contacts, contactsLoading, input, meta: {error}, extraText} = props
+    if (!contacts && !contactsLoading) {
+        return null
+    }
     return (
-        <div>
-            { contactsLoading && <div>Загрузка  ...</div> }
+        <div className={classes.wrapper}>
+            {extraText && <div className={classes.title}>{extraText}</div>}
+            {contactsLoading && <div>{t('Загрузка')}...</div>}
             {error && <div className={classes.error}>{error}</div>}
-            {!contactsLoading && <RadioButtonGroup name="contact" className={classes.radioButton}
-                                                   onChange={input.onChange} defaultSelected={input.value} >
+            {!contactsLoading &&
+            <RadioButtonGroup
+                name="contact"
+                className={classes.radioButton}
+                onChange={input.onChange}
+                defaultSelected={input.value} >
                 {_.map(contacts, (item) => {
                     const id = _.get(item, 'id')
                     const value = _.get(item, 'name') + ' ' + _.get(item, 'telephone') + ' ' + _.get(item, 'email')
@@ -48,6 +64,8 @@ const ClientContactsField = enhance((props) => {
                             key={id}
                             value={id}
                             label={value}
+                            iconStyle={{width: 20, height: 20}}
+                            disableTouchRipple={true}
                         />
                     )
                 })}

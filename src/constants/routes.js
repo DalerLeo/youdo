@@ -386,3 +386,14 @@ export const CELL_LIST_URL = `/${CELL}`
 export const CELL_ITEM_URL = `${CELL_LIST_URL}/:cellId`
 export const CELL_ITEM_PATH = `${CELL}/%d`
 
+export const HR = 'hr'
+export const HR_URL = `/${HR}`
+export const HR_APPLICATION = `${HR_URL}/application`
+export const HR_APPLICATION_LIST_URL = `${HR_APPLICATION}/`
+export const HR_APPLICATION_ITEM_URL = `${HR_APPLICATION}/:applicationId`
+export const HR_APPLICATION_ITEM_PATH = `${HR_APPLICATION}/%d`
+
+export const HR_RESUME = `${HR_URL}/resume`
+export const HR_RESUME_LIST_URL = `${HR_RESUME}/`
+export const HR_RESUME_ITEM_URL = `${HR_RESUME}/:resumeId`
+export const HR_RESUME_ITEM_PATH = `${HR_RESUME}/%d`

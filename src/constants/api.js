@@ -591,3 +591,30 @@ export const CELL_CREATE = `/${CELL}/`
 export const CELL_LIST = `/${CELL}/`
 export const CELL_ITEM = `/${CELL}/%d/`
 export const CELL_DELETE = `/${CELL}/%d/`
+
+export const HR_APPLICATION = 'hr/application'
+export const HR_APPLICATION_CREATE = `/${HR_APPLICATION}/`
+export const HR_APPLICATION_DELETE = `/${HR_APPLICATION}/%d/`
+export const HR_APPLICATION_LIST = `/${HR_APPLICATION}/`
+export const HR_APPLICATION_ITEM = `/${HR_APPLICATION}/%d/`
+
+export const HR_POSITION = 'hr/position'
+export const HR_POSITION_LIST = `/${HR_POSITION}/`
+export const HR_POSITION_ITEM = `/${HR_POSITION}/%d/`
+
+export const HR_SKILLS = 'hr/skill'
+export const HR_SKILLS_LIST = `/${HR_SKILLS}/`
+
+export const HR_PRIVILEGE = 'hr/privilege'
+export const HR_PRIVILEGE_LIST = `/${HR_PRIVILEGE}`
+
+export const HR_LANGUAGE = 'hr/language'
+export const HR_LANGUAGE_LIST = `/${HR_LANGUAGE}/`
+export const HR_LANGUAGE_ITEM = `/${HR_LANGUAGE}/%d/`
+
+export const HR_RESUME = 'hr/resume'
+export const HR_RESUME_CREATE = `/${HR_RESUME}/`
+export const HR_RESUME_DELETE = `/${HR_RESUME}/%d/`
+export const HR_RESUME_LIST = `/${HR_RESUME}/`
+export const HR_RESUME_ITEM = `/${HR_RESUME}/%d/`
+

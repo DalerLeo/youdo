@@ -36,7 +36,8 @@ const GridListNav = ({classes, filter, filterDialog, addButton, withoutSearch, c
             <div style={{padding: '0 30px'}}>
                 {(selectIsEmpty && filterIsEmpty && addButtonIsEmpty) && <Row>
                     <Col xs={6} style={withoutPagination ? {} : {display: 'flex', alignItems: 'center'}}>
-                        {!withoutSearch && <GridListNavSearch filter={filter} filterIsEmpty={filterIsEmpty || addButtonIsEmpty}/>}
+                        {!withoutSearch &&
+                        <GridListNavSearch filter={filter} filterIsEmpty={filterIsEmpty || addButtonIsEmpty}/>}
                         {withoutSearch &&
                         <div className={classes.currencyName}>
                             <span>{currentCurrency}</span>
@@ -45,8 +46,9 @@ const GridListNav = ({classes, filter, filterDialog, addButton, withoutSearch, c
                             }} className={classes.link}>Установить курс</a>
                         </div>}
                     </Col>
-                    {!withoutPagination && <Col xs={6}>
-                         <GridListNavPagination filter={filter}/>
+                    {!withoutPagination && <Col xs={6} className={classes.flex}>
+                        <GridListNavPagination filter={filter}/>
+                        {extraButtons}
                     </Col>}
                 </Row>}
 
@@ -55,11 +57,13 @@ const GridListNav = ({classes, filter, filterDialog, addButton, withoutSearch, c
                         {filterIsEmpty ? addButton : filterDialog}
                     </Col>
                     <Col xs={3}>
-                        {!withoutSearch && <GridListNavSearch filter={filter} filterIsEmpty={filterIsEmpty || addButtonIsEmpty}/>}
+                        {!withoutSearch &&
+                        <GridListNavSearch filter={filter} filterIsEmpty={filterIsEmpty || addButtonIsEmpty}/>}
                     </Col>
                     <Col xs={6} className={classes.flex}>
                         {!withoutPagination && <GridListNavPagination filter={filter}/>}
-                        {withCheckboxes && <ToolTip position="left" text={showCheckboxes ? t('Спрятать флажки') : t('Выбрать из списка')}>
+                        {withCheckboxes &&
+                        <ToolTip position="left" text={showCheckboxes ? t('Спрятать флажки') : t('Выбрать из списка')}>
                             <IconButton onTouchTap={toggleCheckboxes}>
                                 {showCheckboxes
                                     ? <HideCheck color="#5d6474"/>

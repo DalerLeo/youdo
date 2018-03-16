@@ -51,10 +51,7 @@ const enhance = compose(
                 height: '100% !important',
                 '& > div': {
                     height: '100% !important',
-                    padding: '50px 0',
-                    '& > div': {
-                        height: '100%'
-                    }
+                    padding: '50px 0'
                 }
             }
         },
@@ -65,7 +62,7 @@ const enhance = compose(
             position: 'relative',
             padding: '0 !important',
             overflowX: 'hidden',
-            minHeight: '700px',
+            minHeight: 'unset',
             maxHeight: 'unset !important',
             marginBottom: '64px'
         },

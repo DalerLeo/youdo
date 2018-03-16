@@ -15,14 +15,14 @@ import {
     ProductTypeChildSearchField,
     ProductTypeSearchField,
     CheckBox
-} from '../ReduxForm'
+} from '../../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
-import t from '../../helpers/translate'
+import t from '../../../helpers/translate'
 
-export const PRICE_FILTER_OPEN = 'openFilterDialog'
+export const APPLICATION_FILTER_OPEN = 'openFilterDialog'
 
-export const PRICE_FILTER_KEY = {
+export const APPLICATION_FILTER_KEY = {
     TYPE_PARENT: 'typeParent',
     TYPE_CHILD: 'typeChild',
     MEASUREMENT: 'measurement',
@@ -104,11 +104,11 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'PriceFilterForm',
+        form: 'ApplicationFilterForm',
         enableReinitialize: true
     }),
     connect((state) => {
-        const typeParent = _.get(state, ['form', 'PriceFilterForm', 'values', 'typeParent', 'value'])
+        const typeParent = _.get(state, ['form', 'ApplicationFilterForm', 'values', 'typeParent', 'value'])
         return {
             typeParent
         }
@@ -116,9 +116,9 @@ const enhance = compose(
     withHandlers({
         getCount: props => () => {
             const {filter} = props
-            return _(PRICE_FILTER_KEY)
+            return _(APPLICATION_FILTER_KEY)
                 .values()
-                .filter(item => item !== PRICE_FILTER_KEY.FROM_DATE)
+                .filter(item => item !== APPLICATION_FILTER_KEY.FROM_DATE)
                 .filter(item => filter.getParam(item))
                 .value()
                 .length
@@ -126,7 +126,7 @@ const enhance = compose(
     })
 )
 
-const PriceFilterForm = enhance((props) => {
+const ApplicationFilterForm = enhance((props) => {
     const {classes, filterDialog, getCount, typeParent, handleSubmit} = props
     const filterCounts = getCount()
     if (!filterDialog.openFilterDialog) {
@@ -211,7 +211,7 @@ const PriceFilterForm = enhance((props) => {
     )
 })
 
-PriceFilterForm.propTypes = {
+ApplicationFilterForm.propTypes = {
     filter: PropTypes.object.isRequired,
     filterDialog: PropTypes.shape({
         filterLoading: PropTypes.bool.isRequired,
@@ -222,4 +222,4 @@ PriceFilterForm.propTypes = {
     })
 }
 
-export default PriceFilterForm
+export default ApplicationFilterForm
