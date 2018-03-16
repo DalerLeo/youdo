@@ -24,7 +24,8 @@ export const detailFilterSerializer = (data) => {
 
     return {
         'begin_date': _.get(defaultData, 'fromDate') || firstDayOfMonth,
-        'end_date': _.get(defaultData, 'toDate') || lastDayOfMonth
+        'end_date': _.get(defaultData, 'toDate') || lastDayOfMonth,
+        'internal_transfer': 'False'
     }
 }
 
@@ -37,7 +38,8 @@ export const transactionSerializer = (data, dataTransaction, id) => {
         'page_size': _.get(defaultDataTransaction, 'dPageSize'),
         'begin_date': _.get(defaultDataTransaction, 'fromDate') || firstDayOfMonth,
         'end_date': _.get(defaultData, 'toDate') || lastDayOfMonth,
-        'expense_category': id
+        'expense_category': id,
+        'internal_transfer': 'False'
     }
 }
 

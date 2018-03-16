@@ -11,6 +11,7 @@ import filterHelper from '../../helpers/filter'
 import * as actionTypes from '../../constants/actionTypes'
 import numberFormat from '../../helpers/numberFormat'
 import updateStore from '../../helpers/updateStore'
+import deleteFromStore from '../../helpers/deleteFromStore'
 import toBoolean from '../../helpers/toBoolean'
 import ManufactureWrapper from './Wrapper'
 import {
@@ -186,20 +187,19 @@ const enhance = compose(
             })
         },
         handleSendProductConfirmDialog: props => () => {
-            const {dispatch, filterProduct, location: {pathname}, params} = props
+            const {dispatch, filterProduct, productList, location: {pathname}} = props
             const productId = _.toInteger(_.get(props, ['location', 'query', 'productId']))
-            const manufactureId = _.toInteger(_.get(params, 'manufactureId'))
             dispatch(manufactureProductDeleteAction(productId))
-                .catch(() => {
-                    return dispatch(openSnackbarAction({message: t('Удаление невозможно из-за связи с другими данными')}))
-                })
                 .then(() => {
                     hashHistory.push({
                         pathname,
                         query: filterProduct.getParams({[OPEN_DELETE_PRODUCT_DIALOG]: false})
                     })
                     dispatch(openSnackbarAction({message: 'Успешно удалено'}))
-                    return dispatch(productListFetchAction(filterProduct, manufactureId))
+                    return dispatch(deleteFromStore(productId, productList, actionTypes.PRODUCT_LIST))
+                })
+                .catch(() => {
+                    return dispatch(openSnackbarAction({message: t('Удаление невозможно из-за связи с другими данными')}))
                 })
         },
 
@@ -316,20 +316,19 @@ const enhance = compose(
             })
         },
         handleSendMaterialsConfirmDialog: props => () => {
-            const {dispatch, filter, location: {pathname}} = props
+            const {dispatch, filter, location: {pathname}, productDetail} = props
             const ingId = _.toNumber(_.get(props, ['location', 'query', 'ingId']))
-            const productId = _.toNumber(_.get(props, ['location', 'query', 'productId']))
             dispatch(ingredientDeleteAction(_.toNumber(ingId)))
+                 .then(() => {
+                     dispatch(deleteFromStore(ingId, productDetail, actionTypes.INGREDIENT_LIST, 'ingredient'))
+                     hashHistory.push({
+                         pathname,
+                         query: filter.getParams({[OPEN_DELETE_MATERIALS_DIALOG]: false, 'ingId': MINUS_ONE})
+                     })
+                     return dispatch(openSnackbarAction({message: t('Успешно удалено')}))
+                 })
                 .catch(() => {
                     return dispatch(openSnackbarAction({message: t('Удаление невозможно из-за связи с другими данными')}))
-                })
-                .then(() => {
-                    hashHistory.push({
-                        pathname,
-                        query: filter.getParams({[OPEN_DELETE_MATERIALS_DIALOG]: false, 'ingId': MINUS_ONE})
-                    })
-                    dispatch(openSnackbarAction({message: t('Успешно удалено')}))
-                    return dispatch(ingredientListFetchAction(productId))
                 })
         },
 

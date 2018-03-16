@@ -2,12 +2,13 @@ import _ from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
 import {Row} from 'react-flexbox-grid'
+import {connect} from 'react-redux'
 import * as ROUTES from '../../../constants/routes'
 import Container from '../../Container'
 import injectSheet from 'react-jss'
 import {compose, withState, lifecycle} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
-import {TextField, ZoneMultiSearchField, DivisionMultiSearchField, DateToDateField} from '../../ReduxForm'
+import {TextField, ZoneMultiSearchField, DivisionMultiSearchField, DateToDateField, MarketTypeParentSearchField, MarketTypeSearchField} from '../../ReduxForm'
 import StatAgentDialog from './AgentDialog'
 import StatSideMenu from '../StatSideMenu'
 import Loader from '../../Loader'
@@ -28,6 +29,8 @@ export const STAT_AGENT_FILTER_KEY = {
     TO_DATE: 'toDate',
     ZONE: 'zone',
     DIVISION: 'division',
+    MARKET_TYPE_PARENT: 'marletTypeParent',
+    MARKET_TYPE: 'marketType',
     SEARCH: 'search'
 }
 const enhance = compose(
@@ -400,6 +403,12 @@ const enhance = compose(
         form: 'StatisticsFilterForm',
         enableReinitialize: true
     }),
+    connect((state) => {
+        const typeParent = _.get(state, ['form', 'StatisticsFilterForm', 'values', 'marketTypeParent', 'value'])
+        return {
+            typeParent
+        }
+    }),
     lifecycle({
         componentDidMount () {
             const horizontalTable = this.refs.horizontalTable
@@ -463,7 +472,8 @@ const StatAgentGridList = enhance((props) => {
         currentRow,
         updateRow,
         expandedTable,
-        setExpandedTable
+        setExpandedTable,
+        typeParent
     } = props
 
     const listLoading = _.get(listData, 'listLoading')
@@ -537,6 +547,21 @@ const StatAgentGridList = enhance((props) => {
                 component={ZoneMultiSearchField}
                 label={t('Зона')}
                 fullWidth={true}/>
+            <Field
+                className={classes.inputFieldCustom}
+                name="marketTypeParent"
+                component={MarketTypeParentSearchField}
+                label={t('Тип магазина')}
+                fullWidth={true}/>
+            {typeParent
+                ? <Field
+                    className={classes.inputFieldCustom}
+                    name="marketType"
+                    component={MarketTypeSearchField}
+                    label={t('Подкатегория')}
+                    parentType={typeParent}
+                    fullWidth={true}/>
+                : null}
             {divisionStatus && <Field
                 className={classes.inputFieldCustom}
                 name="division"

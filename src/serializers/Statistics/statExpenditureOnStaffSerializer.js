@@ -25,7 +25,8 @@ export const detailFilterSerializer = (data) => {
     return {
         'begin_date': _.get(defaultData, 'fromDate') || firstDayOfMonth,
         'end_date': _.get(defaultData, 'toDate') || lastDayOfMonth,
-        'expense_category': _.get(defaultData, 'expenseCategory')
+        'expense_category': _.get(defaultData, 'expenseCategory'),
+        'internal_transfer': 'False'
     }
 }
 
@@ -38,7 +39,8 @@ export const transactionSerializer = (data, transactionData, staff) => {
         'begin_date': _.get(defaultData, 'fromDate') || firstDayOfMonth,
         'end_date': _.get(defaultData, 'toDate') || lastDayOfMonth,
         'staff': staff,
-        'expense_category': _.get(defaultData, 'expenseCategory')
+        'expense_category': _.get(defaultData, 'expenseCategory'),
+        'internal_transfer': 'False'
     }
 }
 
